@@ -95,9 +95,10 @@ testCode: |
         { label: 'POS', score: 0.7 },
       ]);
       const out = await ranked(reports, stub);
-      expect(out[0].score).toBe(0.99);
-      expect(out[1].score).toBe(0.7);
-      expect(out[2].score).toBe(0.5);
+      const order = 'Most confident first: the rows come back sorted by score, descending. A row out of place means the pairs were never reordered, or were reordered by something other than the score.';
+      expect(out[0].score, order).toBe(0.99);
+      expect(out[1].score, order).toBe(0.7);
+      expect(out[2].score, order).toBe(0.5);
       const why = 'The classifier answered positionally: prediction i belongs to report i. Reorder the pairs, not the predictions, or every row ends up describing a different report.';
       expect(out[0].text, why).toBe('coolant loop warning');
       expect(out[0].label, why).toBe('NEG');

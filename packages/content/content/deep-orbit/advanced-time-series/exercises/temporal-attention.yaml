@@ -62,7 +62,7 @@ testCode: |
       );
       expect(
         out.summary.shape,
-        'The summary is one number per reading column. A [T] summary means the pooling ran along the wrong axis.',
+        'The summary is one number per READING column, so it is as wide as the readings you were handed and not as wide as the copy you scored. A [T] summary means the pooling ran along the wrong axis instead.',
       ).toEqual([16]);
       expect(
         out.weights.shape,
@@ -116,6 +116,41 @@ testCode: |
         'The scorer prefers the latest step, so the summary reads that step back.',
       ).toBeCloseTo(5, 3);
     });
+    it('a mild scorer leaves the winning step about half the budget', () => {
+      // The scores here come out 0, 0.5 and 1. That spread is small enough
+      // that the softmax stays soft: the top step takes about half the
+      // weight and the other two keep the rest. The other fixtures score
+      // with an extreme scorer, where the softmax lands within 5e-5 of a
+      // one-hot pick (the position fixture's runner-up weighs 4.5e-5), so
+      // this fixture is where a hard pick and a real softmax come apart by
+      // a margin the tests can see.
+      const mild = tf.tensor2d([[0, 4], [0.25, 2], [0.5, 0]]);
+      const out = parts(() =>
+        temporalAttention(mild, tf.tensor2d([[1], [0], [0.5]])),
+      );
+      const w = Array.from(out.weights.dataSync());
+      const s = Array.from(out.summary.dataSync());
+      expect(
+        out.summary.shape,
+        'The summary is as wide as the readings you were handed, two columns here, and not as wide as the copy you scored.',
+      ).toEqual([2]);
+      expect(
+        w[2],
+        'The last step wins by half a point, which is not enough to take the whole budget. A hard pick of the top-scoring step reports 1 here.',
+      ).toBeCloseTo(0.5065, 3);
+      expect(
+        w[0],
+        'The lowest-scoring step still keeps a real share. Softmax never zeroes a step out, however the ranking came out.',
+      ).toBeCloseTo(0.1863, 3);
+      expect(
+        s[0],
+        'The summary is the weighted sum of all three readings. Returning the winning row alone reads 0.5 on this column.',
+      ).toBeCloseTo(0.33, 3);
+      expect(
+        s[1],
+        'This column is never scored, so the losing steps are what carry it. The winning row alone reads 0 here and a flat average reads 2.',
+      ).toBeCloseTo(1.3597, 3);
+    });
     it('a window and its reversal no longer summarize the same', () => {
       const positionScorer = tf.tensor2d([[0], [0], [20]]);
       const forward = parts(() => temporalAttention(readings(), positionScorer));
@@ -156,8 +191,14 @@ testCode: |
       const total = exps.reduce((a, b) => a + b, 0);
       const weights = exps.map((e) => e / total);
       const out = parts(() => temporalAttention(tf.tensor2d(rows), tf.tensor2d(scorer)));
-      expect(out.weights.shape).toEqual([T]);
-      expect(out.summary.shape).toEqual([d]);
+      expect(
+        out.weights.shape,
+        'One weight per step of this drawn window. A weights tensor of another length did not come from a softmax over these five scores.',
+      ).toEqual([T]);
+      expect(
+        out.summary.shape,
+        'One number per reading column, three here. A summary one column wider than that is the widened copy being pooled instead of the readings.',
+      ).toEqual([d]);
       const gotWeights = Array.from(out.weights.dataSync());
       for (let t = 0; t < T; t++) {
         expect(

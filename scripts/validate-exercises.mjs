@@ -32,7 +32,7 @@
  * CI invokes via the root `test:exercises` script.
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { createRequire } from "node:module";
@@ -174,6 +174,184 @@ const tfWithOverrides = new Proxy(realTf, {
   },
 });
 import vm from "node:vm";
+
+// CALL SPY (2026-09-13), the validator half. Mirrors the spy in
+// packages/ui/src/mdx/exercise-runner.ts exactly: counters on tf.__calls,
+// top-level entry points by name, nested namespaces as 'layers.dense',
+// 'io.withSaveHandler', 'train.adam', and LayersModel.prototype.save as
+// 'model.save'. A grader that asserts on tf.__calls behaves identically in
+// both harnesses; the corpus parity test is what proves it.
+const SPIED_ENTRY_POINTS = new Set([
+  "variableGrads",
+  "grad",
+  "grads",
+  "valueAndGrad",
+  "valueAndGrads",
+  "customGrad",
+  "sequential",
+  "model",
+  "tidy",
+  "dispose",
+  "keep",
+  "matMul",
+  "transpose",
+  "add",
+  "sub",
+  "mul",
+  "div",
+  "sum",
+  "mean",
+  "moments",
+]);
+// Tensor METHODS are prototype calls the proxy cannot see; patched once,
+// counted as 'tensor.<name>' into the live per-run object. Same list as the
+// runner.
+const TENSOR_METHODS = [
+  "add",
+  "sub",
+  "mul",
+  "div",
+  "matMul",
+  "dot",
+  "transpose",
+  "sum",
+  "mean",
+  "square",
+  "sqrt",
+  "max",
+  "min",
+  "argMax",
+  "norm",
+  "exp",
+  "log",
+  "sigmoid",
+  "softmax",
+  "reshape",
+  "concat",
+  "dataSync",
+  "data",
+  "arraySync",
+  "dispose",
+];
+const SPIED_NAMESPACES = new Set(["layers", "io", "train", "losses"]);
+let liveCalls = Object.create(null);
+{
+  const tproto = realTf.Tensor && realTf.Tensor.prototype;
+  if (tproto && !tproto.__tcSpied) {
+    for (const name of TENSOR_METHODS) {
+      const real = tproto[name];
+      if (typeof real !== "function") continue;
+      tproto[name] = function (...args) {
+        liveCalls[`tensor.${name}`] = (liveCalls[`tensor.${name}`] || 0) + 1;
+        return real.apply(this, args);
+      };
+    }
+    tproto.__tcSpied = true;
+  }
+  const proto = realTf.LayersModel && realTf.LayersModel.prototype;
+  if (proto && !proto.__tcSpied) {
+    const realSave = proto.save;
+    proto.save = function (...args) {
+      liveCalls["model.save"] = (liveCalls["model.save"] || 0) + 1;
+      return realSave.apply(this, args);
+    };
+    // One count per predict call, for Sequential and functional models alike
+    // (measured 2026-09-13): a grader whose report is a measurement can ask
+    // whether the submission ran the model at all.
+    const realPredict = proto.predict;
+    proto.predict = function (...args) {
+      liveCalls["model.predict"] = (liveCalls["model.predict"] || 0) + 1;
+      return realPredict.apply(this, args);
+    };
+    proto.__tcSpied = true;
+  }
+}
+function spiedTf(base) {
+  const calls = Object.create(null);
+  liveCalls = calls;
+  const bump = (name) => {
+    calls[name] = (calls[name] || 0) + 1;
+  };
+  const spyNamespace = (ns, prefix) =>
+    new Proxy(ns, {
+      get(target, prop) {
+        const v = target[prop];
+        if (typeof v === "function" && typeof prop === "string") {
+          return function (...args) {
+            bump(`${prefix}.${prop}`);
+            return v.apply(this === undefined ? target : this, args);
+          };
+        }
+        return v;
+      },
+    });
+  return new Proxy(base, {
+    get(target, prop) {
+      if (prop === "__calls") return calls;
+      const v = target[prop];
+      if (SPIED_ENTRY_POINTS.has(prop) && typeof v === "function") {
+        return function (...args) {
+          bump(prop);
+          return v.apply(target, args);
+        };
+      }
+      // tf.train is a function with members hung off it, not a plain object,
+      // so both shapes are wrapped (identical rule in the runner).
+      if (
+        SPIED_NAMESPACES.has(prop) &&
+        v &&
+        (typeof v === "object" || typeof v === "function")
+      )
+        return spyNamespace(v, prop);
+      return v;
+    },
+    // The namespace is read-only to the submission: a `tf.randomUniform = ...`
+    // at the top of a submission would otherwise replace the generator the
+    // grader draws its run-time fixtures from (round 7, 2026-09-13). Sloppy
+    // code sees the assignment silently ignored; strict code gets a TypeError.
+    set() {
+      return false;
+    },
+    defineProperty() {
+      return false;
+    },
+    deleteProperty() {
+      return false;
+    },
+  });
+}
+
+// The Math the submission and the tests share, minus the one property a
+// submission could use to pin the grader's draws (round 7, 2026-09-13: a
+// `Math.random = () => 0.5` at the top of a submission turned every drawn
+// fixture in four graders into a constant, because tf's own generator seeds
+// from Math.random on every call as well). Every property of the host Math is
+// copied except random, which is a per-run seeded stream sealed non-writable
+// and non-configurable. The seed comes from the HOST Math.random, which the
+// sandbox never sees. Mirrors the sealing block at the top of WORKER_BODY in
+// packages/ui/src/mdx/exercise-runner.ts.
+function sealedMath() {
+  const m = Object.create(Object.prototype);
+  for (const key of Reflect.ownKeys(Math)) {
+    if (key === "random") continue;
+    Object.defineProperty(m, key, Object.getOwnPropertyDescriptor(Math, key));
+  }
+  let seed = (Math.random() * 0x100000000) >>> 0;
+  const random = () => {
+    seed = (seed + 0x6d2b79f5) >>> 0;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  Object.defineProperty(m, "random", {
+    value: random,
+    writable: false,
+    configurable: false,
+    enumerable: false,
+  });
+  return Object.freeze(m);
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -1931,7 +2109,7 @@ async function runSolutionTests(userCode, testCode) {
       info: () => {},
       debug: () => {},
     },
-    Math,
+    Math: sealedMath(),
     JSON,
     Array,
     Object,
@@ -2002,7 +2180,7 @@ async function runSolutionTests(userCode, testCode) {
     // `expandDims`, transpose flags, etc.) work exactly as they do at runtime.
     // Wrapped via Proxy so `loadLayersModel` / `loadGraphModel` return a
     // synthetic model instead of trying to fetch over HTTP.
-    tf: tfWithOverrides,
+    tf: spiedTf(tfWithOverrides),
     URL,
     URLSearchParams,
     TextEncoder,
@@ -2040,12 +2218,18 @@ async function runSolutionTests(userCode, testCode) {
                   dims: [1, 1],
                 },
               }),
+            // Lifecycle no-ops the real library exposes. Lesson 5 tells the
+            // reader to release the session, and a solution that did so
+            // failed every test with a bare TypeError until these existed
+            // (round 7, 2026-09-13).
+            release: () => Promise.resolve(),
           }),
       },
       Tensor: function (type, data, dims) {
         this.type = type;
         this.data = data;
         this.dims = dims;
+        this.dispose = () => {};
       },
     },
   };
@@ -2646,13 +2830,24 @@ async function main() {
     //    them shipped (audit round 4, 2026-09-07). Only runs with --cheats
     //    so the default path stays fast.
     if (checkCheats) {
-      const cheatPath = resolve(
-        repoRoot,
-        "scripts/exercise-cheats",
-        `${ex.slug}.js`,
-      );
-      if (existsSync(cheatPath)) {
-        const cheatSrc = readFileSync(cheatPath, "utf8");
+      const cheatDir = resolve(repoRoot, "scripts/exercise-cheats");
+      // <slug>.js plus <slug>.<n>.js: one file per shortcut the grader was
+      // hardened against, so that dropping one check re-opens exactly one
+      // cheat instead of leaving the others to mask it (round 7, 2026-09-13:
+      // build-layer's lazy-cache probe beat a grader whose single cheat
+      // file only exercised the tensor-id check).
+      const cheatFiles = existsSync(cheatDir)
+        ? readdirSync(cheatDir)
+            .filter(
+              (f) =>
+                /^\.(\d+\.)?js$/.test(f.slice(ex.slug.length)) &&
+                f.startsWith(ex.slug + "."),
+            )
+            .sort()
+        : [];
+      let cheatGateFailed = false;
+      for (const cheatFile of cheatFiles) {
+        const cheatSrc = readFileSync(resolve(cheatDir, cheatFile), "utf8");
         const cheatRun = await runSolutionTests(cheatSrc, ex.testCode);
         const cheatPassedAll =
           cheatRun.ok &&
@@ -2663,9 +2858,10 @@ async function main() {
           record(
             ex,
             "cheat-passes",
-            `scripts/exercise-cheats/${ex.slug}.js passes every test; the grader does not grade the lesson's point`,
+            `scripts/exercise-cheats/${cheatFile} passes every test; the grader does not grade the lesson's point`,
           );
-          continue;
+          cheatGateFailed = true;
+          break;
         }
         const results = Array.isArray(cheatRun.results) ? cheatRun.results : [];
         const caught = results.filter((r) => !r.passed).map((r) => r.name);
@@ -2682,15 +2878,17 @@ async function main() {
           record(
             ex,
             "cheat-stale",
-            `scripts/exercise-cheats/${ex.slug}.js fails all ${results.length} test(s), so it never ran as a submission (the exercise's function names have probably changed). Rewrite the cheat against the current exercise.`,
+            `scripts/exercise-cheats/${cheatFile} fails all ${results.length} test(s), so it never ran as a submission (the exercise's function names have probably changed). Rewrite the cheat against the current exercise.`,
           );
-          continue;
+          cheatGateFailed = true;
+          break;
         }
         console.log(
-          `  CHEAT-OK ${ex.slug}: ignorant solution cleared ${cleared.length}, rejected by ${caught.length}` +
+          `  CHEAT-OK ${ex.slug}${cheatFile === `${ex.slug}.js` ? "" : ` (${cheatFile})`}: ignorant solution cleared ${cleared.length}, rejected by ${caught.length}` +
             (caught.length ? ` (${caught[0]})` : ""),
         );
       }
+      if (cheatGateFailed) continue;
     }
 
     const loose = implicitPrecisionSites(ex.testCode);

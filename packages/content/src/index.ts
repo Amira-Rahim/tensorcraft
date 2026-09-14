@@ -35,7 +35,11 @@ export { GLOSSARY } from "./glossary";
 export type { GlossaryEntry } from "./glossary";
 
 // Glossary matching: whole-word prose scanner used by rehype plugin + Velite transform.
-export { matchGlossaryTerms, findGlossaryTermsInText } from "./glossary-match";
+export {
+  matchGlossaryTerms,
+  findGlossaryTermsInText,
+  glossaryTermsInCompiledBody,
+} from "./glossary-match";
 export type { GlossaryMatch } from "./glossary-match";
 
 // Content query functions

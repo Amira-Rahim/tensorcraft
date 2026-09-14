@@ -2,7 +2,7 @@ slug: simple-attention
 lessonSlug: beyond-lstm
 title: "Simple Attention Over RNN Hidden States"
 mlContent: model
-instructions: "Build `simpleAttention(query, keys, values)`. `query` is a rank-1 [d] vector: what this step is looking for. `keys` is [T, d], one key per time step, and a key exists only to be scored against the query. `values` is [T, dv], what a step hands over once it is selected, and dv does not have to equal d. Score every key against the query, softmax the scores into weights over the steps, then return the weighted sum of the VALUES as a rank-1 [dv] vector. Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze() the [1, dv] result back to [dv] on the way out. Second trap: scoring a [1, d] query against [T, d] keys needs the keys transposed, because d has to face d. tf.matMul takes two booleans after the two tensors, transposeA and transposeB, and each transposes its own tensor before the multiply, so tf.matMul(q, k, false, true) does the same job as tf.matMul(q, k.transpose()) without building the transposed copy."
+instructions: "Build `simpleAttention(query, keys, values)`. `query` is a rank-1 [d] vector: what this step is looking for. `keys` is [T, d], one key per time step, and a key exists only to be scored against the query. `values` is [T, dv], what a step hands over once it is selected, and dv does not have to equal d. Score every key against the query, softmax the scores into weights over the steps, then return the weighted sum of the VALUES as a rank-1 [dv] vector. Score with the raw dot product: no scaling. A production head divides the scores by the square root of the key width before the softmax, and this one does not, so the tests are pinned to the unscaled scores. Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze() the [1, dv] result back to [dv] on the way out. Second trap: scoring a [1, d] query against [T, d] keys needs the keys transposed, because d has to face d. tf.matMul takes two booleans after the two tensors, transposeA and transposeB, and each transposes its own tensor before the multiply, so tf.matMul(q, k, false, true) does the same job as tf.matMul(q, k.transpose()) without building the transposed copy."
 starterCode: |
   function simpleAttention(query, keys, values) {
     // One tensor gets scored and a different one gets summed, and neither
@@ -105,12 +105,16 @@ testCode: |
       ).toBeGreaterThan(0.2);
       expect(
         first,
-        'One point of score gap sets this split. A weighted sum with weights that are not the softmax of the scores lands somewhere else.',
+        'One point of score gap sets this split. A weighted sum with weights that are not the softmax of the scores lands somewhere else, and so does the scaled dot product: dividing the scores by the square root of the key width reads 0.670 here.',
       ).toBeCloseTo(0.7311, 3);
 
       // The same read, on a score gap drawn at run time. 0.7311 is a number
-      // an answer can carry around; this one is not.
-      const gap = 0.5 + Math.random() * 2;
+      // an answer can carry around; this one is not. The draw comes from a
+      // generator the submission cannot touch: Math.random in the grader is
+      // a sealed per-run stream and the tf namespace is read-only (round 7,
+      // 2026-09-13, after a pinned Math.random made this draw a constant;
+      // tf seeds its own generator from Math.random on every call).
+      const gap = tf.randomUniform([1], 0.5, 2.5).dataSync()[0];
       const drawn = blend(() =>
         simpleAttention(
           tf.tensor1d([gap, 0]),
@@ -143,23 +147,50 @@ testCode: |
       ).toBeCloseTo(7, 2);
     });
 
+    it('the score reads the whole query against the whole key row', () => {
+      // Full dot products: key one scores 1*1 + 2*0 + (-1)*1 = 0, key two
+      // scores 1*0 + 2*1 + (-1)*0 = 2, so the SECOND step wins by two
+      // points. Compare only the first coordinates and the first step wins
+      // instead; drop the third and the gap shrinks to one point. Either way
+      // the blend lands somewhere else. The values are twice the identity
+      // again, so halving the blend reads the weights back out of it.
+      const out = blend(() =>
+        simpleAttention(
+          tf.tensor1d([1, 2, -1]),
+          tf.tensor2d([[1, 0, 1], [0, 1, 0]]),
+          tf.tensor2d([[2, 0], [0, 2]]),
+        ),
+      );
+      const got = Array.from(out.dataSync());
+      expect(
+        got[1] / 2,
+        'A key is scored by multiplying it against the query coordinate for coordinate and adding the products up, all d of them. Score on one coordinate, or leave one out, and this window ranks the wrong step.',
+      ).toBeCloseTo(0.8808, 3);
+      expect(
+        got[0] / 2,
+        'The losing step keeps the rest of the same softmax budget, so this share is whatever the winner left.',
+      ).toBeCloseTo(0.1192, 3);
+    });
+
     it('rederives the blend on keys and values drawn at random, so a memorised answer fails', () => {
       const T = 4;
       const d = 3;
       const dv = 2;
-      const spread = () => (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random());
-      const query = [];
-      for (let i = 0; i < d; i++) query.push(spread());
-      const keys = [];
-      const values = [];
-      for (let t = 0; t < T; t++) {
-        const key = [];
-        for (let i = 0; i < d; i++) key.push(Math.random() * 2 - 1);
-        keys.push(key);
-        const value = [];
-        for (let i = 0; i < dv; i++) value.push(Math.random() * 4 - 2);
-        values.push(value);
-      }
+      // Every number in this window comes from tf's generator rather than
+      // Math.random, so the window is settled outside the sandbox the
+      // submission runs in and a memorised answer has nothing to key on.
+      // Each query coordinate is pushed 0.4 clear of zero so the scores keep
+      // a real spread and the blend is not just the average value row.
+      const queryTensor = tf.tensor1d(
+        Array.from(tf.randomUniform([d], -1, 1).dataSync()).map((v) =>
+          v < 0 ? v - 0.4 : v + 0.4,
+        ),
+      );
+      const keysTensor = tf.randomUniform([T, d], -1, 1);
+      const valuesTensor = tf.randomUniform([T, dv], -2, 2);
+      const query = Array.from(queryTensor.dataSync());
+      const keys = keysTensor.arraySync();
+      const values = valuesTensor.arraySync();
       const scores = keys.map((key) =>
         key.reduce((s, v, i) => s + v * query[i], 0),
       );
@@ -168,11 +199,7 @@ testCode: |
       const total = exps.reduce((a, b) => a + b, 0);
       const weights = exps.map((e) => e / total);
       const out = blend(() =>
-        simpleAttention(
-          tf.tensor1d(query),
-          tf.tensor2d(keys),
-          tf.tensor2d(values),
-        ),
+        simpleAttention(queryTensor, keysTensor, valuesTensor),
       );
       expect(
         out.shape,

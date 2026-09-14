@@ -42,7 +42,7 @@ skillAxes: [model_arch, evaluation]
 
 > **ARIA ARCHIVE · PLAYBACK: SAMPLE 7741** · Logged mid-calm-period. Rule-engine assessment at the time: nominal. Human assessment at the time: none; nobody was looking. End of frame.
 
-Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. The z-score gate still clears it, exactly as it did in the archive; the autoencoder and the LSTM both flag it on the first pass, and two votes out of three is all the ensemble needs. Demir is still staring at that, mid-morning, when the live feed does the same thing at twelve times the highest reconstruction error any normal signal has produced, and the bridge lights up with the loudest alert DEEP SCAN has ever fired.
+Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. The z-score gate still clears it, exactly as it did in the archive; the autoencoder and the LSTM both flag it on the first pass, and two votes out of three is all the ensemble needs. Demir is still staring at that, mid-morning, when the live capture does the same thing: the same 73.4 Hz tone, the same two votes, twelve times the highest reconstruction error any normal signal has produced, and the bridge lights up with the loudest alert DEEP SCAN has ever fired. Two captures from here on, then: sample 7741 in the archive and the live capture on the feed, one signature, and every dial on both inside its band.
 
 By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
 
@@ -51,7 +51,7 @@ I've checked the sensor calibration twice. This is not instrument noise. The mod
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM did not see this reading coming: its forecast for the next reading's three raw features missed by 0.041, past its gate. All three detectors agree.
+The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM did not see this reading coming: its forecast for the next reading's three signal features missed by 0.041, four times its gate. Two of three detectors agree, and the one that stayed quiet is the one that reads amplitude alone. Every dial on this capture sits inside its band, exactly as 7741's did. This is not loud. It is new.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
@@ -59,12 +59,12 @@ What am I looking at, Dr. Farah?
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Something the training data has never contained, Commander. That is the one claim three agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
+Something the training data has never contained, Commander. That is the one claim two agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
 </Dialogue>
 
-In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: this signal is unlike anything the model was taught on, and all three detectors said so by different routes. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 0.010, and this reading came back at 0.062, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
+In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: this signal is unlike anything the model was taught on, and two detectors said so by different routes while the third, which reads one dial, saw nothing. That quiet dial is why sample 7741 sat in the archive for eight days. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 1.0, and this reading came back at 6.2, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
 
-<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what three agreeing detectors can and cannot claim"]} />
+<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection
 
@@ -144,13 +144,20 @@ function detectAnomaly(
 }
 
 // The anomalous signal:
-// statistical: z=3.2 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
-// Agreement: 3 of 3. Every detector fired; none of them says how likely.
-// The statistical vote only just clears its gate: amplitude came in pegged
-// at its full-scale 1.00, which is 3.2 sigma off lesson 1's baseline of
-// mean 0.52, std 0.15. That is as high as the count goes on a spike,
-// because the sensor saturates at 1.00. The low end of the scale reaches
-// further: a dead channel reading 0.00 is 3.47 sigma.`}
+// statistical: z=-0.1 ✗, autoencoder: error=6.2 ✓, lstm: predError=0.041 ✓
+// Agreement: 2 of 3. Two detectors fired; neither says how likely.
+// The statistical vote stays quiet, and that is the tell: the capture's
+// amplitude came in at 0.50, 0.1 sigma under lesson 1's baseline of mean
+// 0.52, std 0.15, so the one dial this gate reads is inside its band. For
+// scale, the gate opens at 3 sigma. A spike pegged at the sensor's
+// full-scale 1.00 is 3.2 sigma, as high as the count goes, because the
+// sensor saturates there; a dead channel reading 0.00 is 3.47 sigma the
+// other way.
+//
+// thresholds.prediction is 0.01 here, set the way lesson 4 set the
+// reconstruction cutoff: above every forecast miss the LSTM made on the
+// calm slice. predError is a mean squared error over the three z-scored
+// features, so this reading's 0.041 is four times the gate.`}
 </CodeBlock>
 
 Separately computed is not the same as independent. All three detectors score the same capture. The statistical gate reads its amplitude channel min-max normalized, and the autoencoder reads that same channel z-scored, as one of the eleven features it is trying to rebuild. That is one hull sensor read twice through two different scalings. If the sensor drifts, both detectors get the drifted number, and neither can tell that the other got it too. The autoencoder and the LSTM were fitted on the same eleven days of telemetry. The votes can therefore fail together, which is why a majority is not three odds multiplied.
@@ -159,15 +166,15 @@ Lesson 2's first run shows the shape of it. 412 contaminated rows taught the aut
 
 ## The Discovery
 
-While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the gaps between them run in Fibonacci proportion: 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it. The carrier keeps its clock. The freight it carries keeps a different one.
+While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the gaps between them run in Fibonacci proportion: 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
 {`// Two views of the same capture: the z-scored eleven the autoencoder
 // rebuilds, and the min-max amplitude the statistical gate measures.
 // Module 5's extractFeatures turns the 64 raw samples into those eleven
 // in raw units. Module 4's preprocess normalizes the first three of them
-// and takes them as a triple, so hand it the capture itself and all three
-// features come back NaN.
+// and takes them as a triple, so if you hand it the capture itself, all
+// three features come back NaN.
 const [amplitude, zeroCrossings, phase] = extractFeatures(rawCapture);
 const anomalousAmplitude = preprocess({
   amplitude,
@@ -182,29 +189,31 @@ const anomalyResult = detectAnomaly(
 
 console.log('=== DEEP SCAN ALERT ===');
 console.log('Anomaly detected:', anomalyResult.isAnomaly);      // true
-console.log('Agreement:', anomalyResult.agreement);               // 3: all three fired
-console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // 3.2
-console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)); // 0.0620
+console.log('Agreement:', anomalyResult.agreement);               // 2: the amplitude gate stayed quiet
+console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // -0.1
+console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)); // 6.2000
 console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
 
 // Feature analysis reveals: the anomaly is in the frequency domain
 // A 73.4 Hz component; each pulse carries Fibonacci-ratio SUB-intervals
 // (the 73.4-second gap BETWEEN pulses holds steady, as always)
-// The same ratios appear in the ship's sensor calibration harmonics
-
-// Is it alien? Is it coincidence? That's not for the model to decide.
-// The model's job is detection. The interpretation is human.`}
+// The same ratios appear in the ship's sensor calibration harmonics`}
 </CodeBlock>
 
 ## Challenge
 
-Write the verdict layer: derive the z-score yourself from the eight recent amplitudes you are handed, take the autoencoder's and the LSTM's scores as they arrive, and return the 2-of-3 vote as a count of failed checks. The statistical detector moves off lesson 1's eleven-day baseline onto that window, so the same full-scale reading that scored 3.2 sigma there scores 32 here.
+Write the verdict layer: derive the z-score yourself from the eight recent amplitudes you are handed, take the autoencoder's and the LSTM's scores as they arrive, and return the 2-of-3 vote as a count of failed checks. The statistical detector moves off lesson 1's eleven-day baseline onto that window, so the same full-scale reading that scored 3.2 sigma there scores 32 here. The LSTM moves too: there it forecasts one amplitude and its miss is compared in 0-to-1 units, not in this lesson's z-space mean squared error.
 
 <Exercise slug="ensemble-detector" />
 
 <RecallPrompt
   question="How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?"
-  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Training needs no anomaly labels at all, only clean normal data. The cutoff is where labels come back. Lesson 4's F1 sweep scored candidates against a labeled validation slice and peaked at 0.004. The label-free alternative is the percentile route, which put the 99th percentile at 0.0048. The two routes give different numbers, and the cutoff Demir locked, 0.010, came from the cost of a false alarm rather than from either. That split is why the technique is usually called semi-supervised rather than unsupervised."
+  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Training needs no anomaly labels at all, only clean normal data. The cutoff is where labels come back. Lesson 4's F1 sweep scored candidates against a labeled validation slice and peaked at 0.4. The label-free alternative is the percentile route, which put the 99th percentile at 0.48. The two routes give different numbers, and the cutoff Demir locked, 1.0, came from the cost of a false alarm rather than from either. That split is why the technique is usually called semi-supervised rather than unsupervised."
+/>
+
+<RecallPrompt
+  question="Module 1's normalization lesson says to keep min-max off open-ended streams, yet this lesson's statistical gate reads the amplitude min-max normalized. What makes that channel safe for min-max, and what does the same fact cost the gate at the top of its range?"
+  answer="Min-max suits data with true, known bounds. The amplitude channel has one: the sensor saturates at its 2048-count full scale, so the stream is not open-ended. The cost sits at the ceiling. A reading pegged at 1.00 is 3.2 sigma off this module's normal-period baseline and can go no higher, while a dead channel at 0.00 reaches 3.47."
 />
 
 <LessonRecap

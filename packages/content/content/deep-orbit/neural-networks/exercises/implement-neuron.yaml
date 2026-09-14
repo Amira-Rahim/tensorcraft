@@ -1,7 +1,7 @@
 slug: implement-neuron
 lessonSlug: first-neuron
 title: "Implement a Neuron"
-instructions: "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader draws its own inputs, weights and bias at grade time and checks your result against the reduce() equivalent, so compute from the arguments."
+instructions: "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader draws its own inputs, weights and bias at grade time and checks your result against the reduce() equivalent, so compute from the arguments. It also watches for values leaving the tensors: a body that pulls the numbers out with dataSync() and totals them in JavaScript is rejected, however right the total is."
 starterCode: |
   function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
     // weighted sum of inputs, plus bias
@@ -40,12 +40,27 @@ testCode: |
       ).toBe(0);
       return result.dataSync()[0];
     };
+    // tf.__calls is the harness's call counter (fresh per run). dataSync,
+    // data and arraySync are every route a value takes out of a tensor and
+    // into plain JavaScript, bufferSync() included (measured: it reads
+    // through dataSync), so a body that reduces the products by hand shows
+    // up here while tf.dot, mul-and-sum and matMul all read zero.
+    const readbacks = () =>
+      (tf.__calls['tensor.dataSync'] || 0) +
+      (tf.__calls['tensor.data'] || 0) +
+      (tf.__calls['tensor.arraySync'] || 0);
     const callNeuron = (inputs, weights, bias) => {
       expect(
         typeof neuron,
         'neuron is not defined. Keep the function the starter handed you: the grader calls it again with arguments of its own.',
       ).toBe('function');
-      return readScalar(neuron(inputs, weights, bias));
+      const before = readbacks();
+      const result = neuron(inputs, weights, bias);
+      expect(
+        readbacks() - before,
+        'neuron() read the values out of the tensors and did the arithmetic in JavaScript. The total can be right and the work still be in the wrong place: a number that has left the tensors carries no gradient, so a neuron built this way can be printed and never trained. Pair the inputs with the weights in one tensor operation and add the bias while the total is still a tensor.',
+      ).toBe(0);
+      return readScalar(result);
     };
     it('computes the starter example from the inputs and weights the starter declares', () => {
       expect(

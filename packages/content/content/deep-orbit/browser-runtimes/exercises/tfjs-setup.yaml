@@ -31,14 +31,16 @@ testCode: |
       // The grader's runtime is already warm, so tf.getBackend() answers even
       // for code that never awaited tf.ready(). This test swaps in a cold
       // runtime instead: it behaves like a fresh tab and has no backend name
-      // to give until ready() has resolved. Both strings are randomized per
-      // run, so a memorized pair cannot pass either.
+      // to give until ready() has resolved. Its ready() takes 25ms, which is
+      // longer than any stray yield, so calling ready() and then awaiting
+      // something else still reads the backend before there is one. Both
+      // strings are randomized per run, so a memorized pair cannot pass either.
       const tag = 'probe-' + Math.floor(Math.random() * 1e9);
       const ver = '4.' + Math.floor(Math.random() * 1000) + '.0-probe';
       const warm = tf;
       let initialized = false;
       const cold = {
-        ready: () => Promise.resolve().then(() => { initialized = true; }),
+        ready: () => new Promise((resolve) => setTimeout(() => { initialized = true; resolve(); }, 25)),
         getBackend: () => (initialized ? tag : null),
         version: { tfjs: ver },
       };

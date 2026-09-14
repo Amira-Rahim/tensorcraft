@@ -1,7 +1,7 @@
 slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
-instructions: "Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }`, four things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, and where the parameters sit. Five rules decide whether the report can be read. (1) Report the megabytes the way the lesson's report does, in MB rather than MiB. (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went. (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because a model's first call pays a one-off compilation cost. (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output. (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile."
+instructions: "Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }`, four things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, and where the parameters sit. Five rules decide whether the report can be read. (1) Report the megabytes the way the lesson's report does, in MB rather than MiB. (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went. (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because a model's first call pays a one-off compilation cost. The warmup only spends that cost if its result comes back the way rule (4) brings the timed ones back: enqueue a call and drop it and the compilation is still sitting in front of your first timed call. (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output. (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile."
 starterCode: |
   interface LayerProfile {
     name: string;
@@ -83,16 +83,20 @@ testCode: |
     // readback, exactly where it sits on a GPU backend. costMs is a
     // parameter so the suite can hand out two models of different speed:
     // a returned constant can match one of them, never both. firstCostMs
-    // makes the mock a compiling backend, where call one is expensive and
-    // every call after it is cheap. Pass an ARRAY for costMs and the mock
-    // serves one cost per call in order (holding the last entry once the
-    // list runs out), which is how a test hands out a run whose calls
-    // disagree with each other. calls.served records what it charged for
-    // each call, so a test can work out the truth about its own run rather
-    // than writing an expected number down.
+    // makes the mock a compiling backend, and the compilation is charged on
+    // the first READBACK rather than on the first predict, because that is
+    // where a real backend spends it: a warmup that enqueues a call and
+    // never reads it back has warmed nothing, and the cost is still waiting
+    // for the first timed call. Pass an ARRAY for costMs and the mock serves
+    // one cost per call in order (holding the last entry once the list runs
+    // out), which is how a test hands out a run whose calls disagree with
+    // each other. calls.served records what it charged for each readback, so
+    // a test can work out the truth about its own run rather than writing an
+    // expected number down.
     function makeModel(parameterCount: number, costMs: any, firstCostMs?: number) {
-      const calls = { predict: 0, served: [] };
+      const calls = { predict: 0, readbacks: 0, served: [] };
       const schedule = Array.isArray(costMs) ? costMs : null;
+      let warmed = false;
       const model = {
         countParams: () => parameterCount,
         layers: [{ name: 'dense_Mock1', countParams: () => parameterCount }],
@@ -101,14 +105,16 @@ testCode: |
           const scheduled = schedule
             ? schedule[Math.min(calls.predict - 1, schedule.length - 1)]
             : costMs;
-          const cost =
-            calls.predict === 1 && firstCostMs !== undefined ? firstCostMs : scheduled;
-          calls.served.push(cost);
           return {
-            data: () =>
-              new Promise((resolve) =>
+            data: () => {
+              calls.readbacks++;
+              const cost = !warmed && firstCostMs !== undefined ? firstCostMs : scheduled;
+              warmed = true;
+              calls.served.push(cost);
+              return new Promise((resolve) =>
                 setTimeout(() => resolve(new Float32Array([0])), cost)
-              ),
+              );
+            },
           };
         },
       };
@@ -187,9 +193,11 @@ testCode: |
     });
 
     it('keeps the compilation cost out of the average', async () => {
-      // A compiling backend: the first call costs 120 ms, the rest cost 4.
-      // The average of the timed calls describes the warm model, so it
-      // lands near 4. Time the first call too and it lands near 23.
+      // A compiling backend: the first readback costs 120 ms, the rest cost
+      // 4. The average of the timed calls describes the warm model, so it
+      // lands near 4. Time the first call too and it lands near 23, and so
+      // does a warmup that was enqueued and never read back, because then
+      // the 120 ms is still in front of timed call one.
       const profile = await profileOf(makeModel(100, 4, 120).model, 5);
       expect(
         profile.avgInferenceMs,
@@ -230,6 +238,10 @@ testCode: |
       expect(
         calls.predict,
         'The warmup is a call the model makes and the average ignores, so the count is one more than `runs`.',
+      ).toBe(8);
+      expect(
+        calls.readbacks,
+        'Every call this profiler makes has to be read back, the warmup included. A warmup that is enqueued and dropped has warmed nothing: the compilation it was meant to pay for is still waiting for the first timed call, and the mean comes back inflated by it.',
       ).toBe(8);
     });
 

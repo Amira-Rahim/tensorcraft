@@ -1,11 +1,17 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
 title: "First Contact: Tensor In, Memory Clean"
-instructions: "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape`, its values into `values` (a plain JS array: remember dataSync()) and their total into `total` (one plain number), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can."
+instructions: "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape`, its values into `values` (a plain JS array: remember dataSync()) and their total into `total` (one plain number: let the tensor add the readings up with `sum()` and read the result back, rather than typing it in or adding it up in plain JavaScript), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can."
 starterCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\n// 1. Create the tensor\nconst reading = null; // your code here\n\n// 2. Capture shape, values and their total BEFORE disposing\nconst shape = null;\nconst values = null;\nconst total = null;\n\n// 3. Release the GPU memory\n"
 solutionCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\nconst reading = tf.tensor(streamValues);\n\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\nconst total = tf.tidy(() => reading.sum().dataSync()[0]);\n\nreading.dispose();"
 testCode: |
   describe('First Contact', () => {
+    // tf.__calls is the harness's call counter, read here at registration:
+    // what the submission's own top-level code did before any test ran.
+    const summedOnTheTensor =
+      (tf.__calls['tensor.sum'] || 0) + (tf.__calls.sum || 0);
+    const readBackFromTheTensor =
+      (tf.__calls['tensor.dataSync'] || 0) + (tf.__calls['tensor.data'] || 0) + (tf.__calls['tensor.arraySync'] || 0);
     // Nothing in here can read the tensor's numbers: step 3 released them
     // before the suite ran. So the tensor is graded on what a released tensor
     // still answers (that tf built it, its rank, size and dtype, and that a
@@ -26,7 +32,8 @@ testCode: |
     // this exercise exists to teach. The float32 sum is 2.7200000286102295
     // on the CPU backend and the arithmetic is not pinned tighter than 4
     // decimals, because the browser runs WebGL and sums in a different
-    // order.
+    // order. Where that number came FROM is graded separately, in the test
+    // added below on 2026-09-13.
     const source = [0.12, 0.94, 0.31, 0.88, 0.47];
     const filled = (value, what) => expect(value, what).toBeDefined();
     it('reading is a tensor, not an object shaped like one', () => {
@@ -83,10 +90,43 @@ testCode: |
         typeof total,
         'Step 2 is unfinished: total has not been captured. Add the readings up while the tensor still holds them, and keep the result as a plain number.',
       ).toBe('number');
+      const summed = tf.tidy(() => tf.tensor(source).sum().dataSync()[0]);
       expect(
         total,
         'This is the total of all five readings. A total that skips one, doubles one, or counts a reading that never arrived lands somewhere else.',
-      ).toBeCloseTo(2.72, 4);
+      ).toBeCloseTo(summed, 4);
+    });
+    it('total came back from the tensor, not off the page', () => {
+      expect(
+        summedOnTheTensor,
+        'No sum ran on a tensor before the grader started. total has to come out of reading.sum() on the backend, not out of Math.fround or a plain JavaScript reduce over the printed decimals, which land on the same float32 bits without touching the tensor.',
+      ).toBeGreaterThan(0);
+      expect(
+        readBackFromTheTensor,
+        'Nothing was read back off a tensor. values comes from dataSync() or arraySync() on the tensor you built; a Float32Array built from the page rounds identically and skips the readback.',
+      ).toBeGreaterThan(0);
+      // Added 2026-09-13, after three ignorant submissions cleared the whole
+      // file: one typed `total = 2.72`, one added the printed decimals up in
+      // plain JavaScript, and one did that on a tensor of zeros. A number the
+      // backend hands back is a float32 value widened to a double, so
+      // Math.fround leaves it exactly where it is. The CPU sum
+      // 2.7200000286102295 survives that round trip, and so does whatever
+      // order WebGL adds in, because both arrive in a Float32Array. Doubles
+      // do not survive it: 2.72 as printed moves to 2.7200000286102295, and
+      // so do both plain-JS sums, 2.7199999999999998 over the instructions
+      // and 2.7199999913573265 over the read-back values (measured on tfjs
+      // 4.22.0, 2026-09-13). This grades the ROUTE the number took, not which
+      // tensor produced it. A submission that sums a SECOND tensor holding
+      // the right readings still clears it, for the reason the note at the
+      // top of this file gives.
+      expect(
+        typeof total,
+        'Step 2 is unfinished: total has not been captured.',
+      ).toBe('number');
+      expect(
+        Math.fround(total) === total,
+        'This total never went through the tensor. The backend stores and adds in float32, and dataSync() hands that number back unchanged, so a total typed off the page or added up in plain JavaScript carries decimals float32 cannot hold.',
+      ).toBe(true);
     });
     it('the memory was released, not just flagged as released', () => {
       filled(reading, 'Step 3 has not happened: nothing has been released.');

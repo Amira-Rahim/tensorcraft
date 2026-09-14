@@ -40,7 +40,7 @@ burn the 6-hour default.
 | Job | What it does | Blocking? |
 | --- | ------------ | --------- |
 | `checks` | Install, `pnpm lint`, `pnpm format:check`, `pnpm typecheck`. Restores the turbo cache across runs, so unchanged packages are near-instant. | Advisory |
-| `audit` | `pnpm audit --prod --audit-level moderate`. Isolated in its own job because a fresh registry advisory goes red with zero code change and must not block the other signals. | Advisory |
+| `audit` | `pnpm audit --prod --audit-level moderate`. Isolated in its own job because a fresh registry advisory goes red with zero code change and must not block the other signals. To clear a red run: bump the direct dependency to the patched version, or for a transitive one raise (or add) its floor under `pnpm.overrides` in the root `package.json`, then `pnpm install` and re-run the audit locally. Dependabot PRs inherit the verdict of the `main` they were cut from, so after the fix is pushed comment `@dependabot rebase` on the open PRs (a plain re-run pins the old merge commit). | Advisory |
 | `build` | `pnpm turbo build:content` + `pnpm build` with NO env vars, deliberately: this is the regression test for building without runtime secrets. | Advisory |
 | `unit-tests` | `pnpm turbo build:content`, `pnpm test` (vitest), exercise validator. | Advisory |
 | `e2e` | Builds the web app WITH placeholder Supabase env (`NEXT_PUBLIC_*` inline at build time), serves it via `next start`, runs `pnpm test:e2e` (Playwright, 2 workers, 1 retry). See the webServer comment in [`playwright.config.ts`](../playwright.config.ts). | Advisory |

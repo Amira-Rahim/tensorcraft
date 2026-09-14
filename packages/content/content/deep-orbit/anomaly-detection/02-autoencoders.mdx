@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "Two jobs, and only one of them is the network: squeeze the input through a narrow bottleneck and rebuild it, and decide first which archive rows the model is allowed to learn from"
   - level: guidance
-    content: "Start with the rows. The flag log is a list of verdicts sitting parallel to the archive, one per reading, so keep the readings it did not name and leave the rest out of the training set. Nothing downstream recovers from that choice, which is why it is yours to make. The stack itself is a funnel and its mirror: each stage narrows toward the middle, then widens back. The last stage has to be as wide as the input, or there is nothing to compare a reconstruction against. The narrowing and widening stages need a nonlinearity between them, since an all-linear stack multiplies out into one projection, which is what PCA gives you without training anything. The output stage is the exception and stays linear, so a reconstruction can reach any value the input can. Only the first stage is told the input width; the rest read theirs from the stage before. Score it as regression, because the target is the rows themselves. Then hand those rows over as one rank-2 batch, since a nested array is not a tensor, and release that tensor when the run is done"
+    content: "Start with the rows. The flag log is a list of verdicts sitting parallel to the archive, one per reading, so keep the readings it did not name and leave the rest out of the training set. Nothing downstream recovers from that choice, which is why it is yours to make. The stack itself is a funnel and its mirror: each stage narrows toward the middle, then widens back. The last stage has to be as wide as the input, or there is nothing to compare a reconstruction against. The narrowing and widening stages need a nonlinearity between them, since an all-linear stack multiplies out into one projection. The output stage is the exception and stays linear, so a reconstruction can reach any value the input can. Only the first stage is told the input width; the rest read theirs from the stage before. Score it as regression, because the target is the rows themselves. Then hand those rows over as one rank-2 batch, since a nested array is not a tensor, and release that tensor when the run is done"
   - level: solution
     content: "const trainingRows = archive.filter((_, i) => !flagged[i]); const model = tf.sequential(); model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 2, activation: 'relu' })); model.add(tf.layers.dense({ units: 4, activation: 'relu' })); model.add(tf.layers.dense({ units: 8 })); model.compile({ optimizer: 'adam', loss: 'meanSquaredError' }); const xs = tf.tensor2d(trainingRows); const history = await model.fit(xs, xs, FIT_OPTIONS); xs.dispose(); return { model, history };"
 keywords:
@@ -82,6 +82,8 @@ autoencoder.add(decoder);  // 4 → 11
 autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
 </CodeBlock>
 
+Those eleven numbers describe one extraction window, not a whole capture. A capture is the 33-second archive block, 256 Hz across 64 channels; the window is 64 consecutive samples of one channel, a quarter of a second. Two different 64s: samples here, hull sensors in lesson 1's drawer. The difference decides how much of a training set a recurring event touches, because an event that lands in nearly half the 33-second captures still reaches only a small slice of the quarter-second windows the features are cut from.
+
 ## Training on Normal Data Only
 
 <CodeBlock language="typescript" title="training.ts">
@@ -109,11 +111,11 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
     },
   },
 });
-// Epoch 0:  loss=0.985944 val_loss=0.890378
-// Epoch 20: loss=0.001636 val_loss=0.001601
-// Epoch 40: loss=0.001304 val_loss=0.001248
-// Epoch 60: loss=0.001208 val_loss=0.001175
-// Epoch 80: loss=0.001161 val_loss=0.001164
+// Epoch 0:  loss=1.002725 val_loss=0.906331
+// Epoch 20: loss=0.132932 val_loss=0.139485
+// Epoch 40: loss=0.116131 val_loss=0.127430
+// Epoch 60: loss=0.110304 val_loss=0.124273
+// Epoch 80: loss=0.107359 val_loss=0.120210
 // (the % 20 callback prints epochs 0 through 80; with epochs: 100 the
 // loop ends after epoch 99, so no line for 100 ever appears)
 
@@ -128,7 +130,7 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 // Read the val_loss column. validationSplit holds back the last 200 of
 // these readings and the model never fits them, so val_loss is the only
 // number here that says anything about readings it has not seen. Above,
-// the two columns track each other within 5% from epoch 20 on, which is
+// val_loss runs 5% to 13% above loss from epoch 20 on, which is
 // what a model that learned the structure looks like. Loss falling while
 // val_loss stalls several times higher is the other outcome: the model
 // memorized the 800 rows it trained on. That autoencoder scores its own
@@ -159,9 +161,9 @@ Screen the archive against the flag log, then train the autoencoder on what surv
 
 <Epilogue>
 
-First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but the flag log only holds what ARIA's rules tripped on, and the pulse comes back on its 73.4-second clock. The same 73.4 Hz component therefore sits in rows nothing ever flagged, and those rows stayed in the training set. A capture runs 33 seconds, but its features come from one 64-sample window inside it: 64 consecutive samples at 256 Hz, a quarter of a second, not the 64 hull sensors of lesson 1's drawer. A pulse lands in nearly half the 33-second captures and in far fewer of the quarter-second windows, so the component reaches a small slice of the training rows rather than half of them. The model learned that component obediently, like everything else it was shown, and now reconstructs the anomalous signal at 1.4x baseline. Close enough to normal to walk straight past any threshold. Farah finds the leak by running the FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
+First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but that log only holds what ARIA's rules tripped on, so rows carrying the 73.4 Hz component stayed in the training set. The model learned the component like everything else it was shown, and now rebuilds the anomalous signal at 1.4x baseline, close enough to walk straight past any threshold. Farah finds the leak with an FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
 
-Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows out of 28,800. The fix she dictates is one sentence long: screen every training row on the 73.4 Hz bin itself instead of trusting the flag log, and make the cutoff a number in the config instead of a hope.
+Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows out of 28,800, and an order to screen every training row on the 73.4 Hz bin itself instead of trusting the flag log.
 
 The second run starts at 0115.
 

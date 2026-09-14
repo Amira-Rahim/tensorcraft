@@ -1,12 +1,12 @@
 slug: quantize-weights
 lessonSlug: quantization
 title: "Quantize a Model and Measure What It Cost"
-instructions: "Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures). Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255, zeroPoint is Math.round(-min / scale), and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255. Then do what TensorFlow.js does at load time: restore each weight as (stored - zeroPoint) * scale and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost. Return { kernels, maxWeightError, predictionsChanged }. kernels carries one entry per kernel, in model order, each { quantized, scale, zeroPoint, shape }, with quantized in the tensor's own flat order. maxWeightError is the largest gap between any original weight and its restored value. predictionsChanged is how many of the captures the model now files under a different class, comparing the largest output before your pass against the largest output after."
+instructions: "Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures). Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255 and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255. Then do what TensorFlow.js does at load time: restore each weight as stored * scale + min, the two numbers a TensorFlow.js weight manifest carries for a quantized tensor, and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost. Return { kernels, maxWeightError, predictionsChanged }. kernels carries one entry per kernel, in model order, each { quantized, scale, min, shape }, with quantized in the tensor's own flat order. maxWeightError is the largest gap between any original weight and its restored value. predictionsChanged is how many of the captures the model now files under a different class, comparing the largest output before your pass against the largest output after."
 starterCode: |
   interface QuantizedKernel {
     quantized: number[];
     scale: number;
-    zeroPoint: number;
+    min: number;
     shape: number[];
   }
 
@@ -28,7 +28,7 @@ solutionCode: |
   interface QuantizedKernel {
     quantized: number[];
     scale: number;
-    zeroPoint: number;
+    min: number;
     shape: number[];
   }
 
@@ -55,12 +55,11 @@ solutionCode: |
       const min = values.reduce((a, b) => Math.min(a, b));
       const max = values.reduce((a, b) => Math.max(a, b));
       const scale = (max - min) / 255;
-      const zeroPoint = Math.round(-min / scale);
       const quantized = values.map(v => Math.round((v - min) / scale));
-      const restored = quantized.map(q => (q - zeroPoint) * scale);
+      const restored = quantized.map(q => q * scale + min);
       const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
       maxWeightError = Math.max(maxWeightError, error);
-      kernels.push({ quantized, scale, zeroPoint, shape: w.shape });
+      kernels.push({ quantized, scale, min, shape: w.shape });
       return tf.tensor(restored, w.shape);
     });
 
@@ -187,13 +186,19 @@ testCode: |
       kernel.quantized.forEach((q: number, i: number) => {
         expect(
           weights[0][i],
-          'The runtime decodes the stored bytes back to float32 and runs those. Quantizing a copy and leaving the trained weights on the model measures a build nobody is shipping.'
-        ).toBeCloseTo((q - kernel.zeroPoint) * kernel.scale, 6);
+          'The runtime decodes the stored bytes back to float32 as stored * scale + min and runs those. Quantizing a copy and leaving the trained weights on the model measures a build nobody is shipping.'
+        ).toBeCloseTo(q * kernel.scale + kernel.min, 6);
       });
+      // The two ends of a kernel round-trip exactly (0 decodes to min and 255
+      // to max), so this grid alone cannot show that the floats reached the
+      // model. The stretched grid can: its 0.05 files into the zero bucket.
+      const stretched = stretchedGrid();
+      await reportOf(stretched, STRETCHED);
+      const stretchedKernel = Array.from(stretched.getWeights()[0].dataSync());
       expect(
-        weights[0].some((v: number) => Math.abs(Math.abs(v) - 2) > 1e-9),
-        'The trained kernel is exactly 2 and -2. If it still is, the restored floats never reached the model.'
-      ).toBe(true);
+        Math.abs(stretchedKernel[3]),
+        'The trained kernel still holds 0.05 in its last slot. That weight files into the zero bucket, so a model running its restored floats reads 0 there. If it still reads 0.05, the restored floats never reached the model.'
+      ).toBeLessThan(1e-6);
       expect(
         weights[1],
         'The 1-D biases are not part of this pass, so they come out bit for bit as they went in.'
@@ -212,8 +217,8 @@ testCode: |
       expect(report.maxWeightError).toBeGreaterThan(0);
       expect(
         report.maxWeightError,
-        'A restored weight sits on a bucket boundary of the grid its kernel was measured against, so it cannot have drifted further than one bucket.'
-      ).toBeLessThanOrEqual(widest + 1e-12);
+        'A restored weight sits on the nearest bucket boundary of the grid its kernel was measured against, so it cannot have drifted further than half a bucket.'
+      ).toBeLessThanOrEqual(widest / 2 + 1e-12);
     });
 
     it('counts the captures the quantized build files differently', async () => {
@@ -230,6 +235,36 @@ testCode: |
         report.predictionsChanged,
         'This model decides by margins far wider than a bucket, so rounding its weights changes no verdict. A count carried over from another model cannot be right on both.'
       ).toBe(0);
+    });
+
+    it('measures the changed verdicts on a model and captures drawn at grade time, by predicting', async () => {
+      // predictionsChanged is the one number in this report that is a
+      // measurement, and the two grids above are hand-built, so a count read
+      // off the bucket width instead of the model cleared them both (round 7,
+      // 2026-09-13). This model and its captures are drawn now; the test
+      // scores it before and after with the model's own outputs, and the
+      // harness counts the predict calls the pass made.
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 3, activation: 'softmax', inputShape: [4] }));
+      const kernel = Array.from({ length: 12 }, () => Math.random() * 2 - 1);
+      kernel[0] = 40;   // one far-out weight widens every bucket on this kernel to about 0.16
+      model.setWeights([tf.tensor2d(kernel, [4, 3]), tf.zeros([3])]);
+      const captures = Array.from({ length: 40 }, () => [0, Math.random(), Math.random(), Math.random()]);
+      const input = tf.tensor2d(captures);
+      const before = Array.from(model.predict(input).argMax(1).dataSync());
+      const predictsBefore = tf.__calls['model.predict'] || 0;
+      const report = await reportOf(model, captures);
+      const predictsMade = (tf.__calls['model.predict'] || 0) - predictsBefore;
+      const after = Array.from(model.predict(input).argMax(1).dataSync());
+      const expected = after.filter((v, i) => v !== before[i]).length;
+      expect(
+        predictsMade,
+        'quantizeModel made ' + predictsMade + ' predict call(s). The count of changed verdicts is a measurement: the model has to be run once on the trained weights and once on the restored ones, so at least two predict calls happen inside the pass.'
+      ).toBeGreaterThanOrEqual(2);
+      expect(
+        report.predictionsChanged,
+        'On a model and captures drawn for this run, ' + expected + ' verdict(s) moved between the trained weights and the restored ones, read off the model\'s own outputs. The report says ' + report.predictionsChanged + '. A number computed from the bucket width, or carried over from another model, cannot track a draw.'
+      ).toBe(expected);
     });
   });
 estimatedMinutes: 15

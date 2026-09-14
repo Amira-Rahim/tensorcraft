@@ -35,7 +35,6 @@ hints:
 keywords:
   - prompt-engineering
   - system-prompt
-  - few-shot
   - structured-output
 skillAxes: [deployment, js_integration]
 ---
@@ -51,6 +50,8 @@ My first prompt was 'Analyze this signal data.' The output was useless: generic,
 </Dialogue>
 
 Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. A search for `error` returns the whole index; a search for the exact string `Error when checking : expected dense_Dense1_input to have shape [null,3]` returns the one answer. Specificity and structure decide what you get back, and a prompt is a query.
+
+One word does double duty across these two lessons. Lesson 1's client set a `role` on every message it sent, which is the API's label for whose turn it is: the system message that stands behind the whole call, then the user's. The role in Farah's four parts is a line of English inside that user message, naming who the model should answer as. It is the same word at two different layers.
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
@@ -94,7 +95,9 @@ The band in the prompt is the one module 7 measured, converted into the counts a
 ## Prompt Templates
 
 <CodeBlock language="typescript" title="templates.ts">
-{`// Reusable prompt templates, like React component templates
+{`// Reusable prompt templates, like React component templates.
+// This is Farah's v8, the last version her red pen still marked up: all
+// four parts are here, and the epilogue names the one line v9 added.
 
 interface SignalData {
   amplitude: number;   // hull counts against the sensor's 2048-count full scale
@@ -107,7 +110,6 @@ function classificationPrompt(signal: SignalData): string {
 
 ## Context
 You are analyzing signals from deep space Sector 7-G.
-Known natural frequencies: 5, 12, 23, 47 Hz.
 Normal amplitude range: 570 to 1560 counts.
 
 ## Signal Data
@@ -137,7 +139,7 @@ function parseClassification(response: string) {
 
 ## Challenge
 
-Write a prompt template that produces structured signal analysis.
+Write v9: the template above with the line it is still missing, the reference the model cannot infer on its own, on a line of its own between the role and the reading.
 
 <Exercise slug="prompt-template" />
 

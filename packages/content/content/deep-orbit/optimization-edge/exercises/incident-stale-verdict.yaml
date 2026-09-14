@@ -4,6 +4,28 @@ title: "Incident: Cache Served a Verdict From the Old Model"
 mlContent: systems
 instructions: |
   PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. An age of exactly ttlSeconds has not exceeded it, so that entry is still served. Everything else is safe to serve. Return { serve, refresh } as arrays of keys, preserving input order.
+hints:
+  - level: nudge
+    content: "The starter's two questions are not a sequence, they are an either: an entry is served only when it passes both, and failing one is enough on its own. Settle what counts as failing the version question before you write it, because the fix that morning could as easily have been a rollback as a new build."
+  - level: guidance
+    content: "Two decisions carry this one, and neither is about where the code goes. The first is what trust means here. The deploy swapped the weights under the cache, so a verdict written under any other build is a verdict the live model may not agree with, and how recently it was written changes nothing about that. Version tags are not an ordering: the fix that morning could as easily have been a rollback to an older build, and a rule that keeps whatever is not older than the version running now would then hold on to exactly the entries it should be sending back. The second is the boundary. Read the brief on it, because the suite checks that case on its own: an age that lands exactly on the allowance has not gone past the allowance, so it is still served, and the wrong side of that line sends back an entry you were told to keep."
+  - level: solution
+    content: |
+      function auditCache(
+        entries: { key: string; modelVersion: string; cachedAt: number }[],
+        currentVersion: string,
+        now: number,
+        ttlSeconds: number,
+      ): { serve: string[]; refresh: string[] } {
+        const serve: string[] = [];
+        const refresh: string[] = [];
+        for (const e of entries) {
+          const expired = now - e.cachedAt > ttlSeconds;
+          const staleModel = e.modelVersion !== currentVersion;
+          (staleModel || expired ? refresh : serve).push(e.key);
+        }
+        return { serve, refresh };
+      }
 starterCode: |
   function auditCache(
     entries: { key: string; modelVersion: string; cachedAt: number }[],
@@ -89,17 +111,27 @@ testCode: |
       expect(r.refresh).toEqual([]);
     });
     it('mixed batch keeps input order within each bucket', () => {
+      // This batch does not arrive in alphabetical order, and neither bucket
+      // comes out in one. Collect the two sets and sort them afterwards and
+      // both lists here come back reversed, which is the refresh queue
+      // running in an order the batch never had.
       const r = auditOf(
         [
+          { key: 'd', modelVersion: 'v2', cachedAt: 998 },
+          { key: 'c', modelVersion: 'v2', cachedAt: 100 },
           { key: 'a', modelVersion: 'v2', cachedAt: 999 },
           { key: 'b', modelVersion: 'v1', cachedAt: 999 },
-          { key: 'c', modelVersion: 'v2', cachedAt: 100 },
-          { key: 'd', modelVersion: 'v2', cachedAt: 998 },
         ],
         'v2', 1000, 60,
       );
-      expect(r.serve).toEqual(['a', 'd']);
-      expect(r.refresh).toEqual(['b', 'c']);
+      expect(
+        r.serve,
+        'Both buckets keep the order the batch arrived in, and this one arrived with d before a. Walking the entries once and adding each key to the end of its list is what preserves that; anything that reorders the keys afterwards loses it.',
+      ).toEqual(['d', 'a']);
+      expect(
+        r.refresh,
+        'Same rule on this side: c was audited before b, so it comes back first. A refresh queue in an order the batch never had stops matching the audit it came from.',
+      ).toEqual(['c', 'b']);
     });
     it('audits a batch that is built here rather than written down', () => {
       // Ten entries and their expected buckets, out of one loop, against a

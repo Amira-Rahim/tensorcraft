@@ -315,7 +315,7 @@ Track learning behavior, engagement, and conversion events.
 Lesson content is authored in **MDX** files stored in the `@tensorcraft/content` package and compiled at build time by **Velite** with **Zod schema validation**. Three collections are defined:
 
 1. **Lessons** (`**/*.mdx`) - Front matter validated by Zod: `slug`, `title`, `moduleId`, `worldId`, `order`, `estimatedMinutes`, `difficulty` (beginner/intermediate/advanced), `context` (narrative + speaker), `concept` (explanation + optional bridge with tier), `consequence` (narrative + next-lesson teaser), `hints` (3-level: nudge/guidance/solution), `keywords`. Body is compiled MDX with embedded components.
-2. **Exercises** (`**/exercises/*.yaml`) - `slug`, `lessonSlug`, `title`, `instructions`, `starterCode`, `solutionCode`, `testCode`, `estimatedMinutes`, `difficulty`.
+2. **Exercises** (`**/exercises/*.yaml`) - `slug`, `lessonSlug`, `title`, `instructions`, `starterCode`, `solutionCode`, `testCode`, `estimatedMinutes`, `difficulty`, and an optional `hints` ladder (nudge/guidance/solution) for a lesson's second exercise; the lesson's own `hints` ladder serves its primary exercise.
 3. **Modules** (`**/module.yaml`) - `slug`, `title`, `worldId`, `order`, `description`, `lessonCount` (always 5), `prerequisites`, `track` (foundations/specialization).
 
 **Build step:** Velite compiles MDX to JavaScript and outputs to `.velite/` directory. Turbo task dependency ensures `build:content` runs before `build`. Strict mode fails the build on any invalid frontmatter. Content is queried at runtime via `packages/content/src/queries.ts` (getModules, getModuleLessons, getLesson, getExercise, getAdjacentLessons).

@@ -21,7 +21,7 @@ concept:
     mlTitle: "Input → Predict → Display"
     mlCode: "const prediction = model.predict(tensor); updateUI(prediction);"
     tier: structural
-    breaks: "Event → Process → Render runs once per user input with code you wrote. Input → Predict → Display passes data through a learned model whose internals you cannot inspect step-by-step. Debugging shifts from breakpoints to interpretation tools (saliency maps, attention viz)."
+    breaks: "Event → Process → Render hands its intermediates to the garbage collector. Input → Predict → Display allocates tensors the collector cannot see, so the handler that fires 86,400 times a day has to free what it made. A leaked listener costs you a closure; a leaked tensor stays allocated until the tab dies, and no devtools panel points at it."
 consequence:
   narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:
@@ -48,7 +48,7 @@ Signal feed is connected. Every second, a new reading arrives: three values. I f
 And what happens to the tensors you create every second? If you don't dispose them, you'll leak memory until the tab crashes. This is not a lab experiment anymore.
 </Dialogue>
 
-One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the count climbs by 7,200 an hour. The bytes barely move: the escaped pair at this model's size is a [1, 3] input and a [1, 1] output, 16 bytes together, so a gigabyte of leaked tensor data is more than a year away at one reading a second. What you run out of first is the count. The incident exercise later in this lesson puts the dashboard's budget at 10,000 tensors, which is about an hour and a half of this leak.
+One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the count climbs by 7,200 an hour. The bytes barely move: the escaped pair at this model's size is a [1, 3] input and a [1, 1] output, 16 bytes together, so a gigabyte of leaked tensor data is more than a year away at one reading a second. What you run out of first is the count. The incident exercise later in this lesson puts the dashboard's budget at 10,000 tensors, which this leak reaches in eighty-three minutes.
 
 <LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Read a climbing tf.memory() tensor count as a leak: turn the slope between two snapshots into hours of headroom"]} />
 
@@ -89,23 +89,25 @@ function preprocess(raw: { amplitude: number; frequency: number; phase: number }
   ];
 }
 
-// Run inference: the core predict call
-function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequency: number; phase: number }) {
-  // tf.tidy() automatically disposes all intermediate tensors
-  // Like a try/finally that cleans up resources; no manual dispose() needed
-  return tf.tidy(() => {
-    const normalized = preprocess(rawSignal);
-    const input = tf.tensor2d([normalized]);        // shape: [1, 3]
-    const output = model.predict(input) as tf.Tensor;
-    const p = output.dataSync()[0];                  // sigmoid: P(anomaly)
-
-    // Confidence is confidence IN THE VERDICT, not the raw sigmoid:
-    // p = 0.12 is not "12% confident", it is "noise, 88% confident".
-    return {
-      class: p > 0.5 ? 'anomaly' : 'noise',
-      confidence: Math.round((p > 0.5 ? p : 1 - p) * 1000) / 1000,
-    };
+// Run inference: the core predict call, in the form that yields to the
+// event loop while the result is read back. tf.tidy() cannot wrap async
+// code, so the tensor math sits inside tidy() and returns ONE tensor (tidy
+// frees everything else and keeps what you return), the read happens
+// outside with await, and that one tensor is disposed by hand.
+async function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequency: number; phase: number }) {
+  const output = tf.tidy(() => {
+    const input = tf.tensor2d([preprocess(rawSignal)]);  // shape: [1, 3]
+    return model.predict(input) as tf.Tensor;            // input freed, output kept
   });
+  const p = (await output.data())[0];                    // sigmoid: P(anomaly)
+  output.dispose();                                      // the one tensor tidy kept
+
+  // Confidence is confidence IN THE VERDICT, not the raw sigmoid:
+  // p = 0.12 is not "12% confident", it is "noise, 88% confident".
+  return {
+    class: p > 0.5 ? 'anomaly' : 'noise',
+    confidence: p > 0.5 ? p : 1 - p,
+  };
 }`}
 </CodeBlock>
 
@@ -144,7 +146,7 @@ console.log(tf.memory());
 
 If that `numTensors` figure climbs while the dashboard idles, something escaped a `tidy()`.
 
-One more dial before the wiring: `dataSync()` blocks the JavaScript thread while the GPU read completes. At this model's scale that stall is invisible, which is why the code above uses it freely. On bigger outputs, or inside a loop that also has UI to paint, prefer `await tensor.data()`: it returns a Promise and yields to the event loop while the transfer happens. The catch is that `tf.tidy()` cannot wrap async code, so the async pattern splits in two: do the tensor math inside `tidy()` and return the tensor, then `await tensor.data()` outside and `dispose()` it yourself.
+One more dial before the wiring: `classify()` above reads its result with `await tensor.data()`, which returns a Promise and yields to the event loop while the GPU transfer happens. The other read, `dataSync()`, blocks the JavaScript thread until the read completes. At this model's scale that stall is invisible, and the synchronous form is the simpler one: read inside the `tidy()` and nothing escapes it, so there is nothing left to dispose by hand. The async form earns its extra lines inside a loop that also has UI to paint, or on outputs big enough for the transfer to show. Either way the rule is the same: every tensor `predict()` allocates is freed before the next reading arrives, by `tidy()` or by you.
 
 ## Wiring It into the Dashboard
 
@@ -164,25 +166,13 @@ interface Classification {
   latencyMs: number;
 }
 
-// Real-time pipeline: process each signal as it arrives
+// Real-time pipeline: process each signal as it arrives. One classify()
+// does the work; the pipeline only adds the clock.
 function createInferencePipeline(model: tf.LayersModel) {
-  return function processSignal(reading: SignalReading): Classification {
+  return async function processSignal(reading: SignalReading): Promise<Classification> {
     const start = performance.now();
-
-    const result = tf.tidy(() => {
-      const normalized = preprocess(reading);
-      const input = tf.tensor2d([normalized]);
-      const output = model.predict(input) as tf.Tensor;
-      return output.dataSync()[0];   // raw sigmoid: P(anomaly)
-    });
-
-    return {
-      class: result > 0.5 ? 'anomaly' : 'noise',
-      // Same rule as classify() above: confidence belongs to the verdict.
-      // A raw sigmoid of 0.12 means "noise" at 0.88 confidence.
-      confidence: result > 0.5 ? result : 1 - result,
-      latencyMs: performance.now() - start,
-    };
+    const verdict = await classify(model, reading);
+    return { ...verdict, latencyMs: performance.now() - start };
   };
 }
 
@@ -190,15 +180,15 @@ function createInferencePipeline(model: tf.LayersModel) {
 const pipeline = createInferencePipeline(model);
 
 // Process each signal reading as it arrives (1Hz)
-signalFeed.addEventListener('reading', (event: CustomEvent<SignalReading>) => {
-  const classification = pipeline(event.detail);
+signalFeed.addEventListener('reading', async (event: CustomEvent<SignalReading>) => {
+  const classification = await pipeline(event.detail);
   updateDashboard(classification);
   // Typical: { class: 'noise', confidence: 0.88, latencyMs: 3.4 }
   // (raw sigmoid 0.12: an anomaly probability, inverted into noise confidence)
 });`}
 </CodeBlock>
 
-That 3.4 ms is the whole handler, not the model. `performance.now()` brackets the normalization, the tensor allocation, the `predict` call and the `dataSync()` readback together. Most of it is the predict call: lesson 5 benchmarks this model at 2.4 ms on WebGL, which is the backend five of the six bridge consoles reported in lesson 2. The rest is the wiring around it.
+That 3.4 ms is the whole handler, not the model. `performance.now()` brackets the normalization, the tensor allocation, the `predict` call, the awaited readback and the turn of the event loop it yields, together. Most of it is the predict call: lesson 5 benchmarks this model at 2.4 ms on WebGL, which is the backend five of the six bridge consoles reported in lesson 2. The rest is not the arithmetic around it. Three subtractions, three divisions and one object literal measure in fractions of a microsecond. What the extra millisecond buys is the await: the readback, and the turn of the event loop it yields on a tab that is also painting.
 
 ## Challenge
 
@@ -210,7 +200,7 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 
 <Exercise slug="incident-tensor-leak" />
 
-<RecallPrompt question="Every prediction in the loop allocates tensors the JavaScript garbage collector cannot see. What keeps 86,400 readings a day from leaving 172,800 tensors behind, and what do you watch to prove it is working?" answer="Wrapping the preprocess-predict-read sequence in tf.tidy() disposes every intermediate tensor when the callback returns; only the plain number you return survives. tf.memory().numTensors is the proof: a count that stays flat while the feed runs means nothing escaped." />
+<RecallPrompt question="Every prediction in the loop allocates tensors the JavaScript garbage collector cannot see. What keeps 86,400 readings a day from leaving 172,800 tensors behind, and what do you watch to prove it is working?" answer="tf.tidy() frees every tensor allocated inside its callback when the callback returns, except what you return. Read inside the tidy and return a plain number, as the exercise asks, and nothing survives; return the output tensor for an async read, as classify() above does, and exactly one survives until you dispose it. Either way tf.memory().numTensors is the proof: a count that stays flat while the feed runs means nothing escaped." />
 
 <RecallPrompt question="numTensors reads 400 at 03:00 and 1,000 at 05:00, and the tab's budget is 10,000 tensors. Is that a leak, and how long does the bridge have?" answer="It is a leak, because the count is climbing: 600 tensors over two hours is 300 an hour. The headroom is the budget minus the LATEST count, 10,000 - 1,000 = 9,000, which at 300 an hour is 30 hours. A count that is flat between the two readings has no rate and no deadline to report." />
 

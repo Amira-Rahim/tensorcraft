@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { PRICING } from "@tensorcraft/shared";
 import { worlds } from "@tensorcraft/worlds";
+import { getWorldLessons, getLessonTotalMinutes } from "@tensorcraft/content";
 import { buildCourseJsonLd } from "../course-jsonld";
 
 /**
@@ -15,7 +16,13 @@ import { buildCourseJsonLd } from "../course-jsonld";
  * and GSC showed zero enhancements sitewide.
  */
 describe("buildCourseJsonLd", () => {
-  const jsonLd = buildCourseJsonLd(worlds["deep-orbit"]);
+  // The same basis page.tsx sums for the module map: lesson minutes plus
+  // the minutes of every exercise embedded in the lesson.
+  const totalMinutes = getWorldLessons("deep-orbit").reduce(
+    (n, lesson) => n + getLessonTotalMinutes(lesson),
+    0,
+  );
+  const jsonLd = buildCourseJsonLd(worlds["deep-orbit"], { totalMinutes });
 
   it("keeps the offer rich-result eligible: category is required by Google", () => {
     expect(jsonLd.offers.category).toBe("Paid");
@@ -40,6 +47,16 @@ describe("buildCourseJsonLd", () => {
     expect(jsonLd.hasCourseInstance["@type"]).toBe("CourseInstance");
     expect(jsonLd.hasCourseInstance.courseMode).toBe("online");
     expect(jsonLd.hasCourseInstance.courseWorkload).toMatch(/^PT\d+H$/);
+  });
+
+  it("states the workload from the corpus, not a hardcode", () => {
+    // "PT27H" sat hardcoded here for eight days while the corpus measured
+    // 28 hours; the format-only assertion above let it drift (round 7,
+    // 2026-09-13). The value must follow the summed minutes.
+    expect(totalMinutes).toBeGreaterThan(0);
+    expect(jsonLd.hasCourseInstance.courseWorkload).toBe(
+      `PT${Math.round(totalMinutes / 60)}H`,
+    );
   });
 
   it("states the audience for the 2026-08 rebrand: JavaScript developers", () => {

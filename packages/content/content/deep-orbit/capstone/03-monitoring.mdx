@@ -134,19 +134,25 @@ class ModelMonitor {
 
   // Confidence tracking, like error rate monitoring
   get avgConfidence(): number {
-    const recent = this.logs.slice(-100);
+    // Every prediction logged so far, not a trailing window. A mean over
+    // the last few reports a settled figure while confidence is falling,
+    // which is the shape this number exists to show.
     // Before the first prediction there is nothing to average, and the
     // mean of an empty list is NaN. A dashboard cannot plot NaN.
-    if (recent.length === 0) return 0;
-    return recent.reduce((sum, p) => sum + p.confidence, 0) / recent.length;
+    if (this.logs.length === 0) return 0;
+    return (
+      this.logs.reduce((sum, p) => sum + p.confidence, 0) / this.logs.length
+    );
   }
 
   // Latency percentiles, like response time monitoring
   getLatencyPercentile(p: number): number {
+    // Sort numerically. The default comparator is textual, so it puts
+    // "400" before "41" and the percentile reads off the wrong row.
     const sorted = this.logs.slice(-1000)
       .map(l => l.latencyMs)
-      .sort((a, b) => a - b);           // numeric: the default sort
-    if (sorted.length === 0) return 0;  // compares strings, and "400" < "41"
+      .sort((a, b) => a - b);
+    if (sorted.length === 0) return 0;
     // length * 100 / 100 is the length itself, one index past the end.
     const index = Math.min(sorted.length - 1, Math.floor(sorted.length * p / 100));
     return sorted[index];

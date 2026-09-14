@@ -106,6 +106,19 @@ export const exerciseSchema = z.object({
   estimatedMinutes: z.number().int().positive(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
 
+  // The exercise's own hint ladder (second exercises of a lesson carry one;
+  // the lesson's ladder serves its primary exercise). See velite.config.ts.
+  hints: z
+    .array(
+      z.object({
+        level: z.enum(["nudge", "guidance", "solution"]),
+        content: z.string().min(1),
+      }),
+    )
+    .min(2)
+    .max(3)
+    .optional(),
+
   // ML-content axis (independent of cognitive difficulty).
   mlContent: z
     .enum([

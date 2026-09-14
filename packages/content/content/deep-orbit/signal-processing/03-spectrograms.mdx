@@ -39,17 +39,21 @@ keywords:
 skillAxes: [data_prep]
 ---
 
+<Dialogue speaker="ARIA">
+Band report, 68 to 78 hertz, eleven days of archive: no events. My rules evaluate each reading against a threshold at the moment it arrives. I hold no rule that represents a frequency which is present for part of a capture and absent for the rest.
+</Dialogue>
+
 <Dialogue speaker="Dr. Farah">
-The FFT tells us which frequencies are present, but not *when* they appear. The anomaly might pulse, might drift, might appear only during specific intervals. We need to see frequency content over time. We need a spectrogram.
+That is the gap, and it is ours as much as hers. The FFT tells us which frequencies are present, but not *when* they appear. The anomaly might pulse, might drift, might appear only during specific intervals. We need to see frequency content over time. We need a spectrogram.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
 Then we cut the signal into slices, transform each slice, and stack the results left to right. That's a DevTools performance waterfall with frequency on the vertical axis.
 </Dialogue>
 
-Demir has the layout right: time on the x-axis, the second quantity on the y-axis, and a picture you read whole instead of row by row. Two things change on the way across. The waterfall sizes its bars by duration; a spectrogram spends color on magnitude. And a waterfall cell is an event that either happened or did not, while every cell of a spectrogram carries a computed amount of energy, including the ones that read as empty. Read enough spectrograms and a DevTools waterfall starts looking like a spectrogram of a page load.
+Demir has the layout right: time on the x-axis, the second quantity on the y-axis, and a picture you read whole instead of row by row. Two things change on the way across. The waterfall sizes its bars by duration; a spectrogram spends color on magnitude. And a waterfall cell is an event that either happened or did not, while every cell of a spectrogram carries a computed amount of energy, including the ones that read as empty.
 
-<LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by windowing and computing FFTs", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
+<LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
 
 ## From Single FFT to Spectrogram
 
@@ -62,48 +66,51 @@ A single FFT gives you one row of the spectrogram array: all frequencies at one 
 
 /**
  * Short-Time Fourier Transform (STFT)
- * Slide a window across the signal, compute FFT at each position.
+ * Slide a window across the signal, compute one FFT at each position.
  *
  * Think of it like a scrolling viewport across a timeline:
  * at each scroll position, you analyze what's visible in the window.
+ *
+ * tfjs ships it. Three arguments: the signal, how many samples each FFT
+ * sees (the frame), and how far the frame slides between FFTs (the hop).
+ * Frame i starts at sample i * hop, and a frame only counts when it fits
+ * inside the signal whole, so the row count comes out of all three.
  */
-function stft(
-  signal: number[],
-  windowSize: number,   // how many samples per FFT (e.g., 256)
-  hopSize: number,      // how far to slide between windows (e.g., 128)
-): number[][] {
-  const spectrogram: number[][] = [];
-  const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1;
-
-  for (let i = 0; i < numWindows; i++) {
-    const start = i * hopSize;
-    const windowSlice = signal.slice(start, start + windowSize);
-
-    // Compute FFT for this time window
-    const magnitudes = tf.tidy(() => {
-      const windowTensor = tf.tensor1d(windowSlice);
-      const fft = tf.spectral.rfft(windowTensor);
-      return tf.abs(fft).arraySync() as number[];
-    });
-
-    spectrogram.push(magnitudes);
-  }
-
-  return spectrogram;
-  // Result shape: [numWindows, windowSize/2 + 1]
-  // Each row = one time step
-  // Each column = one frequency bin
-  // Values = magnitude (how strong that frequency is at that time)
+function stftMagnitudes(signal: number[], frameLength: number, frameStep: number): number[][] {
+  return tf.tidy(() => {
+    const frames = tf.signal.stft(tf.tensor1d(signal), frameLength, frameStep);  // complex64
+    return tf.abs(frames).arraySync() as number[][];
+    // Result shape: [numFrames, frameLength/2 + 1]
+    // Each row = one time step
+    // Each column = one frequency bin
+    // Values = magnitude (how strong that frequency is at that time)
+  });
 }
 
-// Example: 4 seconds of hull-array signal at 256 Hz = 1024 samples
-// windowSize=256, hopSize=128 → 7 time windows
-const spec = stft(signal, 256, 128);
+// A stand-in capture, sized to fit on this page: four seconds of one hull
+// channel at 256 Hz, so 1024 samples. A catalogued 23 Hz line runs the
+// whole way through, and a 73.4 Hz tone switches on for the second second
+// and again for the fourth. Real gaps between pulses are far longer.
+const signal = Array.from({ length: 1024 }, (_, i) => {
+  const t = i / 256;
+  const pulsing = (i >= 256 && i < 512) || i >= 768;
+  return 0.4 * Math.sin(2 * Math.PI * 23 * t)
+    + (pulsing ? 0.05 * Math.sin(2 * Math.PI * 73.4 * t) : 0);
+});
+
+// frameLength=256, frameStep=128 → 1 + floor((1024 - 256) / 128) = 7 frames
+const spec = stftMagnitudes(signal, 256, 128);
 console.log('Time steps:', spec.length);          // 7
-console.log('Frequency bins:', spec[0].length);   // 129`}
+console.log('Frequency bins:', spec[0].length);   // 129
+
+// One thing the built-in does that you did not ask for: it multiplies every
+// frame by a Hann taper before the FFT (its windowFn defaults to
+// tf.signal.hannWindow). Lesson 5 is about why. Measured on a tone that
+// fills a 64-sample frame at amplitude 1: the frame's raw FFT peaks at
+// 32.0, and the same frame through this function peaks at 16.0.`}
 </CodeBlock>
 
-That `stft` cuts rectangular slices: `signal.slice` and nothing else. A hard cut at a slice's edges invents frequency content the signal never had, and lesson 5 builds the taper that fixes it. Leave it out here. The challenge grades unwindowed magnitudes, so tapering this code drops the 20 Hz peak it checks from 32.0 to 15.7 and the test fails.
+The challenge asks for the version underneath the built-in: cut each frame straight out of the signal with `slice`, take one FFT per frame, stack the magnitudes, no taper. A hard cut at a frame's edges invents frequency content the signal never had, and lesson 5 builds the taper that fixes it, but leave it out here. The challenge grades the raw magnitudes, so any Hann taper, the built-in's included, halves the 20 Hz peak it checks and the test fails.
 
 ## Reading a Spectrogram
 
@@ -138,11 +145,13 @@ const anomalyBin = Math.round(73.4 * 256 / 256);
 // amplitude, so a floor that works here is wrong for the next capture.
 const activeWindows = findAnomalyWindows(spec, anomalyBin, 2.0);
 console.log('Anomaly appears at windows:', activeWindows);
-// The log names the windows where bin 73 clears the floor. If some windows
-// are listed and some are missing, the tone is intermittent rather than
-// steady. That is all this capture can say. spec spans 4 seconds end to
-// end: 7 windows, each 1 s wide, hopping 0.5 s. That is shorter than one
-// gap between pulses, so timing the gaps needs a capture minutes long.`}
+// [2, 6]. Those two windows sit inside a burst and read 2.88. Windows 1, 3
+// and 5 straddle the start or the end of one, so only half their samples
+// carry the tone and they read about 1.5, under the floor. Some windows
+// listed and some missing is how a spectrogram says intermittent rather
+// than steady. That is all this capture can say about timing: spec spans
+// 4 seconds end to end, 7 windows, each 1 s wide, hopping 0.5 s, and on
+// the real capture that is shorter than one gap between pulses.`}
 </CodeBlock>
 
 ## Window Size Tradeoff
@@ -158,17 +167,17 @@ console.log('Anomaly appears at windows:', activeWindows);
 // change actually happened.
 
 // Small window: precise in time, blurry in frequency
-const fineTime = stft(signal, 64, 32);
+const fineTime = stftMagnitudes(signal, 64, 32);
 // Window span 0.25s (time blur), 4 Hz per bin. That 64 counts SAMPLES
 // from one channel, a quarter second at 256 Hz. Module 1's archive row
 // carried a 64 as well, and that one counted hull channels.
 
 // Large window: precise in frequency, blurry in time
-const fineFreq = stft(signal, 512, 256);
+const fineFreq = stftMagnitudes(signal, 512, 256);
 // Window span 2s (time blur), 0.5 Hz per bin
 
 // Good default: balance both
-const balanced = stft(signal, 256, 128);
+const balanced = stftMagnitudes(signal, 256, 128);
 // Window span 1s (time blur), 1 Hz per bin`}
 </CodeBlock>
 
@@ -187,7 +196,7 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 **Parameters:**
 - **W (window size):** larger W = better frequency resolution, worse time resolution. Heisenberg uncertainty for signal processing.
 - **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
-- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W. The `stft` above skips it. Lesson 5 builds one.
+- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W. The built-in above applies Hann by default; the challenge's hand-rolled version skips it. Lesson 5 builds one.
 
 **Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Each row blurs events across the window's span, `W / fs`; consecutive rows advance by `hop / fs`.
 </DerivationDrawer>
@@ -218,7 +227,7 @@ Build the STFT itself: slide a window across a capture, transform each window on
 On the spectrogram the anomaly resolves into a row of bright dashes marching along the time axis: on, off, on, off. Farah measures the gaps by hand and gets 73.4 seconds, give or take; she writes "~73.4 s" on the board and deliberately keeps the tilde. The same number twice now, hertz within the pulse and seconds between pulses, and she does not yet have a theory that deserves it. ARIA holds the image on the main display for eleven seconds, which for ARIA is staring.
 
 <Dialogue speaker="ARIA">
-My rules monitored this band for eleven days and reported silence, because no rule of mine could see time and frequency at once. Request: store a copy of this spectrogram in my reference partition.
+No rule of mine could have produced this image. Request: store a copy of this spectrogram in my reference partition.
 </Dialogue>
 
 Farah grants the request, then goes back to measuring the gaps between pulses.

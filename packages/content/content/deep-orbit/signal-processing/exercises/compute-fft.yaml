@@ -86,6 +86,19 @@ testCode: |
         'Counting how often this signal changes sign answers a different question: it crosses zero far more often than its strongest component repeats.',
       ).toBeCloseTo(4, 1);
     });
+    it('is a transform, not a lookup: the tone is drawn at grade time', () => {
+      // 256 samples at 128 Hz space the bin centers 0.5 Hz apart. Drawing the
+      // BIN rather than the frequency keeps the tone exactly on a center, so
+      // the answer is whatever this run's draw makes it.
+      const bin = 20 + Math.floor(Math.random() * 80);
+      const hz = bin * 128 / 256;
+      const signal = Array.from({ length: 256 }, (_, i) =>
+        Math.sin(2 * Math.PI * hz * i / 128));
+      expect(
+        findDominantFrequency(signal, 128),
+        'This tone was drawn when the grader ran, so no table of remembered captures and answers covers it. Its bin is the only one carrying anything, and what that bin is worth in hertz comes from the sample rate and the capture length this run was handed.',
+      ).toBeCloseTo(hz, 1);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

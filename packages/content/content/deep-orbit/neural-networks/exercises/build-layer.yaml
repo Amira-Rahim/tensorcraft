@@ -1,7 +1,7 @@
 slug: build-layer
 lessonSlug: layers-and-architecture
 title: "Build a 3-Layer Sequential Model"
-instructions: "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. Those are drill widths rather than the build wired to the bridge feed, so the lesson's 673 is not the answer here. Then quote the price the way Nazari asks for it: fill in predictParams(width) so it returns the number of parameters this same 16/8/1 stack holds when a reading of `width` values arrives. The grader builds that stack at widths of its own and compares, so one number cannot be the right quote at two widths. Check the formula you write against the lesson before you submit: the same arithmetic on 32 units, then 16, then 1, reading three features, comes back 673."
+instructions: "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. Those are drill widths rather than the build wired to the bridge feed, so the lesson's 673 is not the answer here. Then quote the price the way Nazari asks for it: fill in predictParams(width) so it returns the number of parameters this same 16/8/1 stack holds when a reading of `width` values arrives. The grader builds that stack at widths of its own and compares, so one number cannot be the right quote at two widths. Some of the widths it picks run into the tens of thousands, so counts you printed earlier off stacks you already built will not cover them. It also checks that answering created no tensors, which rules out building a second stack and reading the count off that, disposed or not, and it counts the models and layers your code builds, at the top level and again around every call to predictParams: one stack, three dense layers, and nothing while quoting, so a second stack built at another width, to see what one more arriving value costs, fails too, even one built once and cached. Check the formula you write against the lesson before you submit: the same arithmetic on 32 units, then 16, then 1, reading three features, comes back 673."
 starterCode: |
   // Build a 3-layer sequential model
   const model = tf.sequential();
@@ -24,12 +24,29 @@ solutionCode: |
   }
 testCode: |
   describe('Model', () => {
+    // tf.__calls is the harness's call counter (fresh per run). Read at
+    // registration, this is the count the submission's own top-level code
+    // produced: the one stack the exercise asks for, and nothing else.
+    const builtAtTopLevel = {
+      sequential: tf.__calls.sequential || 0,
+      model: tf.__calls.model || 0,
+      'layers.dense': tf.__calls['layers.dense'] || 0,
+    };
+    // Read again around every call: a stack built lazily inside the
+    // function, on its first call and cached, is the same measurement taken
+    // later, and the registration snapshot above never sees it.
+    const modelsBuilt = () =>
+      (tf.__calls.sequential || 0) + (tf.__calls.model || 0) + (tf.__calls['layers.dense'] || 0);
+    const builtWhileQuoting = (width) =>
+      'predictParams(' + width + ') built a model while it answered. A stack assembled inside the function, on the first call or on every call, is the measurement this exercise replaces with arithmetic: count what one unit owns and total the three stages.';
     const quoteFor = (width) => {
       expect(
         typeof predictParams,
         'predictParams is not defined. The grader calls it to read your quote back, so keep the function the starter handed you.',
       ).toBe('function');
+      const builtBefore = modelsBuilt();
       const quoted = predictParams(width);
+      expect(modelsBuilt() - builtBefore, builtWhileQuoting(width)).toBe(0);
       expect(
         quoted,
         'predictParams() has not been filled in yet. Count what one unit owns, which is a weight for each value that reaches it plus its own bias, then total the three stages.',
@@ -63,6 +80,58 @@ testCode: |
         quoted,
         'Your quote and the model disagree. Check the first stage: the width it was told to expect is what decides how many weights every one of its units owns.',
       ).toBe(model.countParams());
+    });
+    it('builds the stack once: a second stack built to measure the price is the measurement this exercise replaces', () => {
+      // Snapshotted when this describe registered, after the submission's
+      // top-level code ran and before any test built a reference stack.
+      expect(
+        (builtAtTopLevel.sequential || 0) + (builtAtTopLevel.model || 0),
+        'The submission built more than one model at top level. One 16/8/1 stack is the exercise; a second stack built at another width to measure the per-value step is exactly the measurement predictParams is meant to replace with arithmetic.',
+      ).toBe(1);
+      const dense = builtAtTopLevel['layers.dense'] || 0;
+      expect(
+        dense,
+        dense < 3
+          ? 'Only ' + dense + ' dense layer' + (dense === 1 ? '' : 's') + ' went onto the stack at top level. Three model.add() calls make the 16/8/1 stack.'
+          : dense + ' dense layers were built at top level. Three make the stack; more means a second stack was built to read a count off, which is the shortcut this exercise asks you not to take.',
+      ).toBe(3);
+    });
+    it('quotes a width nobody has priced for you, and quotes it without building anything', () => {
+      const stackAt = (width) => {
+        const reference = tf.sequential();
+        reference.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [width] }));
+        reference.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+        reference.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+        return reference.countParams();
+      };
+      const narrow = 6;
+      const pricedNarrow = stackAt(narrow);
+      const perArrivingValue = stackAt(narrow + 1) - pricedNarrow;
+      const wide = 20000 + Math.floor(Math.random() * 80000);
+      expect(
+        typeof predictParams,
+        'predictParams is not defined. The grader calls it to read your quote back, so keep the function the starter handed you.',
+      ).toBe('function');
+      const tensorIdNow = () => {
+        const marker = tf.scalar(0);
+        const id = marker.id;
+        marker.dispose();
+        return id;
+      };
+      const idleFirst = tensorIdNow();
+      const idleCost = tensorIdNow() - idleFirst;
+      const beforeId = tensorIdNow();
+      const builtBefore = modelsBuilt();
+      const quoted = predictParams(wide);
+      expect(modelsBuilt() - builtBefore, builtWhileQuoting(wide)).toBe(0);
+      expect(
+        tensorIdNow() - beforeId,
+        'Answering created tensors, so the quote came from building a second stack and reading the count off it. That is a measurement, and disposing the stack afterwards does not change what it cost to take. Nazari asks for the price before anything is built, so work the count out as arithmetic over the widths and the unit counts.',
+      ).toBe(idleCost);
+      expect(
+        quoted,
+        'Your quote misses at this width. The grader picks widths nobody has printed a summary for, so counts collected off stacks you already built cover none of them. A formula answers at any width it is handed.',
+      ).toBe(pricedNarrow + perArrivingValue * (wide - narrow));
     });
     it('prices the first stage from the width that arrives, so the same stack costs more when the reading is wider', () => {
       for (let trial = 0; trial < 3; trial++) {

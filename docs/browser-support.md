@@ -21,7 +21,9 @@ older than that is best-effort and not blocking for release.
 > projects are `testMatch: /mobile\.spec\.ts/`**, so WebKit only ever runs the
 > mobile smoke file and never touches the exercise, auth, pricing or playback
 > specs. **Firefox has zero automated coverage of any kind.** There is also no
-> `browserslist` anywhere in the repo, so the version floors below are
+> `browserslist` config anywhere in the repo (the `browserslist@4` entry under
+> `pnpm.overrides` in the root `package.json` is a security floor on the npm
+> package, not a target list), so the version floors below are
 > unenforced by tooling - nothing fails a build for using a feature outside
 > them. Treat the "Verified by" column as the honest state.
 

@@ -108,6 +108,32 @@ testCode: |
       expect(r.threshold, why).toBeCloseTo(0.06, 5);
       expect(r.f1, why).toBeCloseTo(0.6154, 3);
     });
+
+    // Every fixture above was built so that accuracy and recall pick the
+    // wrong candidate, and none of them separates F1 from an F-beta that
+    // weights recall more heavily. A sweep that ranks by F2, which counts
+    // recall four times as heavily as precision, and then reports the honest
+    // F1 of whichever cutoff F2 picked, clears all four (round 7,
+    // 2026-09-13). Here the two rankings part. The low cutoff catches all
+    // four anomalies and drags five normal readings in with them; the high
+    // one catches three of the four and flags nothing else. F2 scores them
+    // 0.800 and 0.789, F1 scores them 0.615 and 0.857.
+    it('weighs precision and recall equally, so a recall-first ranking loses', () => {
+      const recallTrapErrors = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.055, 0.30, 0.40, 0.50];
+      const recallTrapLabels = recallTrapErrors.map((_, i) => i >= 10);
+      const r = findBestThreshold(recallTrapErrors, recallTrapLabels, [0.05, 0.20]);
+      expect(r, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
+      const why =
+        'The low cutoff here catches every anomaly and five normal readings ' +
+        'with them; the high one catches three of the four and raises no ' +
+        'false alarm. F1 counts a false alarm and a missed anomaly the same ' +
+        'way, so it picks the high cutoff. A sweep that comes back with 0.05 ' +
+        'and an f1 of 0.615 ranked by something that weights recall above ' +
+        'precision, which is a cost decision lesson 4 asks you to make out ' +
+        'loud rather than hide under the name f1.';
+      expect(r.threshold, why).toBeCloseTo(0.2, 5);
+      expect(r.f1, why).toBeCloseTo(0.857, 3);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

@@ -1,7 +1,7 @@
 slug: build-spectrogram
 lessonSlug: spectrograms
 title: "Build a Spectrogram"
-instructions: "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin."
+instructions: "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -84,13 +84,19 @@ testCode: |
       result.forEach(row => {
         const peak = row.indexOf(Math.max(...row));
         expect(peak).toBe(5);
-        expect(row[5]).toBeCloseTo(32, 0);
+        expect(
+          row[5],
+          'A 1.0 tone on a bin center puts windowSize / 2 = 32 into that bin. Magnitudes arriving at about half their expected height mean the samples were tapered before the transform, which is what tf.signal.stft does unless you hand it your own window.',
+        ).toBeCloseTo(32, 0);
       });
     });
     it('every row is a whole spectrum, so a window holding two tones shows both', () => {
       const result = rowsOf(chord, 64, 32);
       result.forEach(row => {
-        expect(row[5]).toBeCloseTo(32, 0);
+        expect(
+          row[5],
+          'The loud tone puts windowSize / 2 = 32 into bin 5 here. A row that reads about 16 across the board was tapered before the transform rather than cut straight out of the signal.',
+        ).toBeCloseTo(32, 0);
         expect(
           row[15],
           'The second tone is quieter, not missing. A row built by marking one frequency and zeroing the rest can match a peak, but it cannot carry a second component, and carrying every component at once is what a magnitude spectrum is for.',
@@ -126,7 +132,10 @@ testCode: |
         peaks,
         'The tone changes partway through the capture, so the later rows have to disagree with the earlier ones. One spectrum computed once and repeated cannot.',
       ).toEqual([5, 5, 15, 15]);
-      expect(result[0][5]).toBeCloseTo(32, 0);
+      expect(
+        result[0][5],
+        'The first tone is 1.0 loud on a bin center, so its bin holds windowSize / 2 = 32. About half that is the height a tapered window returns.',
+      ).toBeCloseTo(32, 0);
       expect(result[3][15]).toBeCloseTo(32, 0);
     });
     it('a burst leaves the rows before and after it silent', () => {
@@ -136,7 +145,10 @@ testCode: |
       expect(rowMax(result[2])).toBeLessThan(1e-6);
       expect(rowMax(result[3])).toBeLessThan(1e-6);
       expect(result[1].indexOf(rowMax(result[1]))).toBe(10);
-      expect(result[1][10]).toBeCloseTo(32, 0);
+      expect(
+        result[1][10],
+        'The burst fills this window completely, so its bin holds windowSize / 2 = 32. About half that is the height a tapered window returns.',
+      ).toBeCloseTo(32, 0);
     });
     it('rows advance by hopSize, so the loud row moves when hopSize changes', () => {
       const hop64 = rowsOf(burst, 64, 64);

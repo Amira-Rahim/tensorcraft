@@ -6,7 +6,7 @@ instructions: |
 
   1. Write `fitStats(rows)` so it returns `{ mean, std }` for any [n, 2] batch: one mean and one std per FEATURE, not one pair for the whole batch, both measured over the rows the function was handed, `std` taken over n (population), and both returned as tensors, the way `tf.moments` hands them to you, so steps 2 and 5 can broadcast them across a batch. The grader fits it to two batches you have never seen, one of three rows and one of five, so a statistic typed in by hand or a divisor pinned to four rows lands wrong. Fit it to `batch`.
   2. Z-score the batch into `normalized` with those statistics: every column centred on its own mean and measured in its own standard deviations.
-  3. Build `previewModel`: one dense unit reading two features, sigmoid activation, carrying Farah's frozen `KERNEL` and `BIAS`. The grader reads the weights back off the model and expects the kernel first, shaped [2, 1], and the bias second.
+  3. Build `previewModel` with `tf.sequential` and one `tf.layers.dense` unit reading two features, sigmoid activation, carrying Farah's frozen `KERNEL` and `BIAS`; the grader checks it is the model `tf.sequential` returns, not an object with the same methods. The grader reads the weights back off the model and expects the kernel first, shaped [2, 1], and the bias second.
   4. Score the whole normalized batch in one call into `scores`, one verdict per reading, so `scores` comes out [4, 1].
   5. Write `scoreReading(reading)` for any new 1D reading of two features: normalize it with THE STATISTICS YOU ALREADY FITTED, hand it to the neuron the way the neuron expects its input, and return the verdict: the tensor `predict` hands back, or the number inside it. The grader releases the training batch before its last call, because a model in production has no training rows left to measure.
 starterCode: |
@@ -147,6 +147,15 @@ testCode: |
     });
     it('previewModel is a real dense layer carrying the frozen weights', () => {
       filled(previewModel, 'Step 3 is still empty. Build the one-neuron model, then load the frozen weights into it.');
+      expect(
+        previewModel instanceof tf.LayersModel,
+        'getWeights and predict are ordinary methods, so any object can carry them. This asks whether tf.sequential built the model: previewModel has to be the LayersModel it returns.',
+      ).toBe(true);
+      expect(previewModel.layers.length, 'One dense layer, nothing else in the stack.').toBe(1);
+      expect(
+        previewModel.layers[0].getClassName(),
+        'The one layer is tf.layers.dense: one unit reading two features, sigmoid on the way out.',
+      ).toBe('Dense');
       const w = previewModel.getWeights();
       expect(w, 'A dense layer keeps two weight tensors: the kernel and the bias.').toHaveLength(2);
       expect(

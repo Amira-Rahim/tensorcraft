@@ -4,14 +4,14 @@ title: "Train It, Then Roll It Forward"
 instructions: |
   Train the forecaster once, then run it past the end of the data. `trainForecaster(xs, ys, epochs)` takes `xs`, a rank-3 tensor of shape [samples, windowSize, 3], and `ys`, a rank-2 tensor of shape [samples, 3] holding the reading that follows each window.
 
-  1. Build a `tf.sequential()` with `tf.layers.lstm({ units: 8, inputShape: [windowSize, 3] })` (read `windowSize` off `xs.shape`) followed by `tf.layers.dense({ units: 3 })`, one output per channel.
+  1. Build a `tf.sequential()` with `tf.layers.lstm({ units: 8, inputShape: [windowSize, 3] })` (read `windowSize` off `xs.shape`) followed by `tf.layers.dense({ units: 3 })`, one output per channel. The grader trains twice, with a different window length and a different epoch count the second time, so neither number can be typed in.
   2. Compile it with `{ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError', metrics: ['mae'] }`: MSE is the loss because this is regression, and MAE rides along as the diagnostic that reads in the units on the instrument.
-  3. Then `await model.fit(xs, ys, { epochs, batchSize: 32 })` and return `{ model, history }`, the model and the object `fit` resolved to. That object is a `tf.History`, and the grader treats it as one: it checks that your `history` is an instance of it and carries the epoch indices the run walked through, then reads `model.optimizer.iterations`, the counter the optimizer raises once per batch and nothing can assign to, against the epochs that history reports. A trace assembled by hand is not a History, so it fails even when a real fit happened beside it. It trains on a series with real structure in it, so it also expects the last epoch's loss to sit well under the first one's, and it scores the model you hand back on that same data and expects the answer to land beside the loss your history reports.
-  4. Then `forecastMultiStep(model, seed, windowSize, steps, scaler)`: predict `steps` readings one at a time, feeding each prediction back in as history. `seed` holds at least `windowSize` rows of the per-channel z-scores the model was trained on, each row [amplitude, frequency, phase], and `scaler` holds the `mean` and `std` arrays those z-scores were made with.
+  3. Then `await model.fit(xs, ys, { epochs, batchSize: 32 })` and return `{ model, history }`, the model and the object `fit` resolved to. That object is a `tf.History`, and the grader treats it as one: it checks that your `history` is an instance of it and carries the epoch indices the run walked through, then reads `model.optimizer.iterations`, the counter the optimizer raises once per batch and nothing can assign to, against the epochs that history reports. A trace assembled by hand is not a History, so it fails even when a real fit happened beside it. It trains on a series with real structure in it, so it also expects the last epoch's loss to sit well under the first one's, and it scores the model you hand back on that same data and expects the answer to land beside the loss your history reports. It still holds `xs` and `ys` when it does that, so neither one belongs to `trainForecaster`: leave both alive. The tensors to release are the ones the rollout makes, in step 7.
+  4. Then `forecastMultiStep(model, seed, windowSize, steps, scaler)`: predict `steps` readings one at a time, feeding each prediction back in as history. Nothing in this second function is asynchronous, so it returns the rows themselves rather than a promise of them: `model.predict` hands back a tensor you read on the spot. `seed` holds at least `windowSize` rows of the per-channel z-scores the model was trained on, each row [amplitude, frequency, phase], and `scaler` holds the `mean` and `std` arrays those z-scores were made with.
   5. `LIMITS` in the starter is the raw sensor range per channel, so move each one into the model's space first: `(limit - mean[j]) / std[j]`.
   6. At every step, take the LAST `windowSize` rows of the history, hand them to the model as one rank-3 tensor of shape [1, windowSize, 3] (`model.predict` returns a [1, 3] tensor), clamp the predicted row into the converted bounds, and push the CLAMPED row onto the history and onto the forecast. Clamping only what you return is a different function: step i + 1 reads this row as history, so an amplitude the sensors cannot produce becomes the model's own input for the rest of the run.
   7. Release the tensors each step makes, the way the lesson's `multi-step.ts` does. The grader counts live tensors across the call and expects the count to come back where it started.
-  8. Return the `steps` clamped rows, oldest first, and leave `seed` as you found it.
+  8. Return the `steps` clamped rows, oldest first, and leave `seed` as you found it. One of the rollout checks draws its stand-in model, its seed and its scaler fresh on every run, so every number you return has to be computed from the arguments of the call that asked for it.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -89,7 +89,8 @@ testCode: |
   // row that skipped the clamp surfaces in another channel a step later.
   const nextRow = (last) => [last[2] * 4 + 0.7, last[0] * 1.6 - 2.4, last[1] * 0.6];
 
-  const spyModel = () => {
+  const spyModel = (transform) => {
+    const advance = transform || nextRow;
     const calls = [];
     return {
       calls,
@@ -107,7 +108,7 @@ testCode: |
         }
         const rows = input.arraySync()[0];
         calls.push({ shape: input.shape.slice(), rows });
-        return tf.tensor2d([nextRow(rows[rows.length - 1])]);
+        return tf.tensor2d([advance(rows[rows.length - 1])]);
       },
     };
   };
@@ -120,7 +121,8 @@ testCode: |
 
   // The rule from the instruction, run here so every expectation below is
   // derived from the arguments rather than read off a table of answers.
-  const rule = (seed, windowSize, steps, scaler) => {
+  const rule = (seed, windowSize, steps, scaler, transform) => {
+    const advance = transform || nextRow;
     const bounds = boundsFor(scaler);
     const history = seed.map((row) => row.slice());
     const rows = [];
@@ -128,7 +130,7 @@ testCode: |
     for (let step = 0; step < steps; step++) {
       const window = history.slice(-windowSize);
       windows.push(window.map((row) => row.slice()));
-      const bounded = nextRow(window[window.length - 1]).map((value, j) =>
+      const bounded = advance(window[window.length - 1]).map((value, j) =>
         Math.min(Math.max(value, bounds[j].min), bounds[j].max),
       );
       rows.push(bounded);
@@ -203,6 +205,10 @@ testCode: |
       rows,
       'forecastMultiStep handed back nothing. Predict one reading, clamp it, feed it back, and collect the rows you produced.',
     ).toBeTruthy();
+    expect(
+      rows && typeof rows.then === 'function',
+      'forecastMultiStep came back as a Promise. The rollout is synchronous: model.predict returns a tensor you read with dataSync(), so nothing in the loop has to be awaited and the function does not have to be async.',
+    ).toBe(false);
     expect(
       Array.isArray(rows),
       'The forecast comes back as a list of readings, oldest first.',
@@ -286,13 +292,65 @@ testCode: |
         last,
         'Twelve epochs on a series with real structure in it should move the loss a long way down from where it started. A loss that sits where it began means no weight moved.',
       ).toBeLessThan(first * 0.7);
-      const scored = model.evaluate(xs, ys);
+      // The grader scores the model on the tensors it handed in, so a
+      // submission that disposed them lands here rather than in a check of
+      // its own. Caught and named, because the engine error underneath says
+      // nothing a learner can act on.
+      let scored = null;
+      let scoreFailed = null;
+      try {
+        scored = model.evaluate(xs, ys);
+      } catch (error) {
+        scoreFailed = (error && error.message) || String(error);
+      }
+      expect(
+        scoreFailed,
+        'Scoring the model on the data it trained on threw. The grader still holds the xs and ys it handed you and evaluates the returned model on them after your call comes back, so trainForecaster does not own those two tensors: leave them alive. The lesson disposes x and y after its own fit because the code around it made them; here the caller did.',
+      ).toBe(null);
       const measured = Array.isArray(scored) ? scored[0].dataSync()[0] : scored.dataSync()[0];
       expect(
         measured / last,
         'Scoring the returned model on the same data lands a little under the last epoch, because that epoch averaged over batches while the weights were still moving. A ratio far from 1 means the history and the model came from different places.',
       ).toBeGreaterThan(0.5);
       expect(measured / last).toBeLessThan(2);
+    });
+
+    it('reads the window length and the epoch count off the arguments it was handed', async () => {
+      // A second call, shaped deliberately unlike the first: a shorter window
+      // and a shorter schedule, cut from the same series. Nothing about the
+      // first run tells you either number, so both have to be read.
+      const SECOND_WINDOW = TRAIN_WINDOW - 2;
+      const SECOND_EPOCHS = 2;
+      const SECOND_SAMPLES = 16;
+      const xsRows = [];
+      const ysRows = [];
+      for (let i = 0; i < SECOND_SAMPLES; i++) {
+        xsRows.push(SERIES.slice(i, i + SECOND_WINDOW));
+        ysRows.push(SERIES[i + SECOND_WINDOW]);
+      }
+      let second = null;
+      let threw = null;
+      try {
+        second = await trainForecaster(tf.tensor3d(xsRows), tf.tensor2d(ysRows), SECOND_EPOCHS);
+      } catch (error) {
+        threw = (error && error.message) || String(error);
+      }
+      expect(
+        threw,
+        'trainForecaster threw on windows of ' + SECOND_WINDOW + ' rows after fitting windows of ' + TRAIN_WINDOW + '. A window length typed into inputShape only ever fits the one run it was copied from. Read it off xs.shape and the same call handles both.',
+      ).toBe(null);
+      expect(
+        second && second.model && second.history,
+        'The second call handed back nothing. Every call builds, compiles, fits and returns { model, history }, whatever shape it was given.',
+      ).toBeTruthy();
+      expect(
+        second.model.inputs[0].shape,
+        'The LSTM was built for a window of a different length than the one it was handed. inputShape reads off the tensor: [xs.shape[1], xs.shape[2]].',
+      ).toEqual([null, SECOND_WINDOW, 3]);
+      expect(
+        second.history && Array.isArray(second.history.epoch) ? second.history.epoch.length : -1,
+        'This call asked for ' + SECOND_EPOCHS + ' epochs and the history reports a different number. The schedule is the epochs argument, not the count that happened to work on the run before.',
+      ).toBe(SECOND_EPOCHS);
     });
   });
 
@@ -417,6 +475,38 @@ testCode: |
         tight,
         'Two scalings of one sensor put the same physical limit in two different places, so these two runs cannot come back identical. A forecast that does not move with the scaler is clamping against numbers that were fixed before it read one.',
       ).not.toEqual(coarse);
+    });
+
+    it('reads its answer off the model in front of it, so rows carried in from another run do not fit', () => {
+      // Nothing in this fixture is written down. The stand-in's coefficients,
+      // the seed and the scaling are drawn fresh on every run, so these rows
+      // exist nowhere until the rollout produces them.
+      const draw = (low, high) => low + Math.random() * (high - low);
+      const gain = [draw(1.2, 1.6), draw(1.2, 1.6), draw(1.2, 1.6)];
+      const offset = [draw(0.3, 0.8), draw(-0.8, -0.3), draw(0.2, 0.5)];
+      const drawn = (last) => [
+        last[2] * gain[0] + offset[0],
+        last[0] * gain[1] + offset[1],
+        last[1] * gain[2] + offset[2],
+      ];
+      const scaler = {
+        mean: [draw(880, 1120), draw(24, 36), 0],
+        std: [draw(320, 560), draw(11, 18), draw(0.8, 1.4)],
+      };
+      const seed = Array.from({ length: 4 }, () => [draw(-0.5, 0.5), draw(-0.5, 0.5), draw(-0.5, 0.5)]);
+      const expected = rule(seed, 3, 5, scaler, drawn).rows;
+      const rows = roll(spyModel(drawn), seed.map((row) => row.slice()), 3, 5, scaler);
+      rows.forEach((row, step) => {
+        row.forEach((value, j) => {
+          // Four places, not five: the model answers in float32 and every
+          // step reads the step before it, so the honest answer carries a
+          // little rounding down the rollout with it.
+          expect(
+            value,
+            'Step ' + step + ', channel ' + j + ' is not what this model and this scaler produce. Every number in a forecast row comes out of the call that asked for it: the reading the model returned at this step, clamped against the limits converted with THIS mean and standard deviation. A row that was right for another run is a different series.',
+          ).toBeCloseTo(expected[step][j], 4);
+        });
+      });
     });
 
     it('rolls the model you just trained past the end of its own data', async () => {

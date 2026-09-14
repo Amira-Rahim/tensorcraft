@@ -22,14 +22,14 @@ concept:
     tier: structural
     breaks: "createServer() holds a handler that already knows how to answer; one listen() call later it is doing the job it was written for. A compiled model knows nothing yet. Its connection weights are random, and the thing that makes it useful is not a switch you flip but hours of fit() rewriting every one of those numbers."
 consequence:
-  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. Mostly."
+  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. The answers they give are not all as random."
 hints:
   - level: nudge
     content: "Compiling attaches the optimizer and the loss. It leaves the weights exactly as the initializer drew them, so predict() answers the moment the stack is assembled."
   - level: guidance
     content: "The stack and the compile settings are both spelled out in the instructions, and copying them across is not the part worth thinking about. The order is. Both networks have to be read while both are still untrained, because once the first one has trained there is no way to ask it what it used to think. The second one stays out of the training call on purpose. It is the control: a fresh draw of the same architecture, as undecided as the first one was, sitting next to the trained network for comparison."
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); const sweepOne = Array.from(model.predict(readings).dataSync()); const sweepTwo = Array.from(second.predict(readings).dataSync()); await model.fit(readings, labels, { epochs: 50, batchSize: 16 }); const trainedSweep = Array.from(model.predict(readings).dataSync());"
+    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); const initialWeights = model.getWeights().map((w) => Array.from(w.dataSync())); const sweepOne = Array.from(model.predict(readings).dataSync()); const sweepTwo = Array.from(second.predict(readings).dataSync()); await model.fit(readings, labels, { epochs: 50, batchSize: 16 }); const trainedSweep = Array.from(model.predict(readings).dataSync());"
 keywords:
   - compile
   - optimizer
@@ -112,11 +112,16 @@ One difference from the bridge build above, and it is deliberate: the demo wired
   answer="compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random connection weights."
 />
 
+<RecallPrompt
+  question="Foundations lesson 3 gave matMul one inflexible shape rule. Apply it to the 32-unit stage printed in the summary above: what shape must its kernel be, and how does that give the 128 parameters on that row?"
+  answer="Inner dimensions must match: [m, n] x [n, p] produces [m, p]. A batch arrives as [rows, 3], so the kernel has to be [3, 32] for the multiply to run. That is 96 weights, plus one bias per unit: 128."
+/>
+
 <LessonRecap
   whatYouLearned={[
     "Building a sequential network follows four steps: create the model, add layers, compile with optimizer and loss, then call predict() or fit().",
     "model.compile() is configuration, not training: it wires up the optimizer, loss function, and metrics for the later fit() call.",
-    "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for classification, MSE for regression.",
+    "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for a yes/no output, MSE for continuous values.",
     "A new layer starts with random connection weights and zero biases. The random draw stops every unit in the layer from computing the same thing, and Glorot scaling keeps the signal from growing or shrinking as it moves through."
   ]}
   bridge="`http.createServer(handler)` wires a server that has not served a request yet; `model.compile()` wires optimizer and loss onto a model that has not learned anything yet. In both cases the real work happens after assembly."

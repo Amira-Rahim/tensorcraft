@@ -1,7 +1,7 @@
 slug: relu-activation
 lessonSlug: activation-functions
 title: "Apply ReLU Activation"
-instructions: "Write a function `applyRelu(preActivation)` that applies the ReLU activation to any tensor of pre-activation values: negatives become zero, positives pass through unchanged, however large they are."
+instructions: "Write a function `applyRelu(preActivation)` that applies the ReLU activation to any tensor of pre-activation values: negatives become zero, positives pass through unchanged, however large they are. Do it to the tensor rather than to a copy of its numbers: the grader rejects a body that drains the values out with dataSync() and maps them in JavaScript."
 starterCode: |
   function applyRelu(preActivation: tf.Tensor): tf.Tensor {
     // Replace negative values with zero, keep positives unchanged
@@ -71,6 +71,27 @@ testCode: |
         vals[3],
         'A large positive came back changed. ReLU has no upper limit: it replaces the negative half and leaves every other value exactly where it was, which is what separates it from the bounded variants tfjs also ships.',
       ).toBe(nearFloat32Max);
+    });
+    it('runs on the tensor: the values never come out into JavaScript', () => {
+      // tf.__calls is the harness's call counter (fresh per run). dataSync,
+      // data and arraySync are every route a value takes out of a tensor and
+      // into plain JavaScript, bufferSync() included (measured: it reads
+      // through dataSync). Measured on tfjs 4.22.0: relu(), tf.relu(),
+      // tf.maximum() and clipByValue() all leave these at zero.
+      const readbacks = () =>
+        (tf.__calls['tensor.dataSync'] || 0) +
+        (tf.__calls['tensor.data'] || 0) +
+        (tf.__calls['tensor.arraySync'] || 0);
+      const before = readbacks();
+      const out = activate(tf.tensor([-1.5, 0.25, 4.0]));
+      expect(
+        readbacks() - before,
+        'applyRelu() pulled the values out of the tensor and mapped them in JavaScript. Every answer can be right and the work still be in the wrong place: numbers that have left the tensor carry no gradient, so a layer built this way cannot be trained, and the walk costs a readback per call at inference. One elementwise operation covers the whole tensor at once, whatever its shape.',
+      ).toBe(0);
+      const vals = out.dataSync();
+      expect(vals[0], NEGATIVE_WHY).toBe(0);
+      expect(vals[1], POSITIVE_WHY).toBeCloseTo(0.25, 5);
+      expect(vals[2], POSITIVE_WHY).toBeCloseTo(4.0, 5);
     });
     it('is a function, not a lookup: matches Math.max(0, x) on a tensor drawn at grade time', () => {
       const len = 5 + Math.floor(Math.random() * 8);

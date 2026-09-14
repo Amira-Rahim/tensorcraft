@@ -1171,6 +1171,24 @@ function buildFullCode(userCode: string, testCode: string): string {
 // closes the long tail of "is not a function" errors driven by mock gaps.
 const WORKER_BODY = `
 (function() {
+  // Seal Math.random before anything else runs (round 7, 2026-09-13). The
+  // grader's run-time draws and tf's own generator both read it, so a
+  // submission that reassigned it turned every drawn fixture into a constant.
+  // Per-run seed from the original generator, then the property is made
+  // non-writable and non-configurable: a reassignment is ignored in sloppy
+  // code and throws in strict code. Mirrors sealedMath() in
+  // scripts/validate-exercises.mjs.
+  (function() {
+    var seed = (Math.random() * 0x100000000) >>> 0;
+    var random = function() {
+      seed = (seed + 0x6d2b79f5) >>> 0;
+      var t = seed;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    try { Object.defineProperty(Math, 'random', { value: random, writable: false, configurable: false }); } catch (e) {}
+  })();
   var isNode = typeof process !== 'undefined' && process.versions && process.versions.node && typeof importScripts === 'undefined';
   var post, listen;
   if (isNode) {
@@ -1230,6 +1248,42 @@ const WORKER_BODY = `
   function applyShims() {
     var tf = globalThis.tf;
     if (!tf) return;
+
+    // Part of the call spy above: tensor METHODS (a.add(b), x.matMul(w),
+    // t.sum().dataSync()) are prototype calls the proxy cannot see, so the
+    // prototype is patched once and counts into the run's live counter object
+    // as 'tensor.<name>'. A grader that exists to teach a tensor op reads
+    // these; the CI validator patches the same list.
+    var TENSOR_METHODS = ['add', 'sub', 'mul', 'div', 'matMul', 'dot', 'transpose', 'sum', 'mean', 'square', 'sqrt', 'max', 'min', 'argMax', 'norm', 'exp', 'log', 'sigmoid', 'softmax', 'reshape', 'concat', 'dataSync', 'data', 'arraySync', 'dispose'];
+    if (tf.Tensor && tf.Tensor.prototype && !tf.Tensor.prototype.__tcSpied) {
+      TENSOR_METHODS.forEach(function(name) {
+        var real = tf.Tensor.prototype[name];
+        if (typeof real !== 'function') return;
+        tf.Tensor.prototype[name] = function() {
+          var c = globalThis.__tcCalls;
+          if (c) c['tensor.' + name] = (c['tensor.' + name] || 0) + 1;
+          return real.apply(this, arguments);
+        };
+      });
+      tf.Tensor.prototype.__tcSpied = true;
+    }
+    if (tf.LayersModel && tf.LayersModel.prototype && !tf.LayersModel.prototype.__tcSpied) {
+      var realSave = tf.LayersModel.prototype.save;
+      tf.LayersModel.prototype.save = function() {
+        var c = globalThis.__tcCalls;
+        if (c) c['model.save'] = (c['model.save'] || 0) + 1;
+        return realSave.apply(this, arguments);
+      };
+      // One count per predict call, Sequential or functional; same rule as
+      // the validator.
+      var realPredict = tf.LayersModel.prototype.predict;
+      tf.LayersModel.prototype.predict = function() {
+        var c = globalThis.__tcCalls;
+        if (c) c['model.predict'] = (c['model.predict'] || 0) + 1;
+        return realPredict.apply(this, arguments);
+      };
+      tf.LayersModel.prototype.__tcSpied = true;
+    }
 
     // The tf namespace is frozen, so we can't reassign tf.sequential or
     // tf.loadLayersModel. Patch the Sequential prototype + intercept via
@@ -1383,10 +1437,14 @@ const WORKER_BODY = `
                   },
                 });
               },
+              // Lifecycle no-ops the real library exposes (lesson 5 tells the
+              // reader to release the session); kept in step with the
+              // validator's stub.
+              release: function() { return Promise.resolve(); },
             });
           },
         },
-        Tensor: function(type, data, dims) { this.type = type; this.data = data; this.dims = dims; },
+        Tensor: function(type, data, dims) { this.type = type; this.data = data; this.dims = dims; this.dispose = function() {}; },
       };
     }
 
@@ -1435,12 +1493,53 @@ const WORKER_BODY = `
         // Wrap tf in a Proxy so user-side tf.loadLayersModel(url) resolves
         // to the stub (real export is non-writable + non-configurable).
         var stubs = globalThis.__tcStubs || {};
+        // CALL SPY (2026-09-13). tf reaches the submission as a read-only
+        // namespace, so a grader cannot wrap tf.variableGrads or tf.io to see
+        // whether the learner CALLED it; a submission that reproduces the
+        // right numbers by other means (finite differences, a hand-assembled
+        // artifact, a table) passed graders that exist to teach the call.
+        // Counters live on tf.__calls: top-level entry points by name
+        // ('variableGrads', 'sequential', ...), nested namespaces by
+        // 'layers.dense', 'io.withSaveHandler', 'train.adam', and
+        // LayersModel.prototype.save as 'model.save'. Fresh per run. The CI
+        // validator (scripts/validate-exercises.mjs) implements the identical
+        // spy, and the corpus parity test keeps them in step.
+        var calls = Object.create(null);
+        globalThis.__tcCalls = calls;
+        var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
+        var NESTED = { layers: 1, io: 1, train: 1, losses: 1 };
+        function bump(name) { calls[name] = (calls[name] || 0) + 1; }
+        function spyNamespace(ns, prefix) {
+          if (typeof Proxy !== 'function' || !ns) return ns;
+          return new Proxy(ns, {
+            get: function(target, prop) {
+              var v = target[prop];
+              if (typeof v === 'function' && typeof prop === 'string') {
+                return function() { bump(prefix + '.' + prop); return v.apply(this === undefined ? target : this, arguments); };
+              }
+              return v;
+            },
+          });
+        }
         var tfProxy = (typeof Proxy === 'function')
           ? new Proxy(globalThis.tf, {
               get: function(target, prop) {
+                if (prop === '__calls') return calls;
                 if (stubs[prop]) return stubs[prop];
-                return target[prop];
+                var v = target[prop];
+                if (SPIED[prop] && typeof v === 'function') {
+                  return function() { bump(prop); return v.apply(target, arguments); };
+                }
+                // tf.train is a function with members hung off it, not a plain
+                // object, so both shapes are wrapped.
+                if (NESTED[prop] && v && (typeof v === 'object' || typeof v === 'function')) return spyNamespace(v, prop);
+                return v;
               },
+              // Read-only to the submission, same rule as the validator: a
+              // reassigned tf.randomUniform would pin the grader's draws.
+              set: function() { return false; },
+              defineProperty: function() { return false; },
+              deleteProperty: function() { return false; },
             })
           : globalThis.tf;
         var fn = new Function('console', 'tf', code);

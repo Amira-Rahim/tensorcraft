@@ -52,7 +52,7 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 Then run your diff, Ensign. And when it fires, tell me which feature it says changed.
 </Dialogue>
 
-The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will turn out to answer everything except what she asked.
+The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will not answer her.
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Rank each feature's error against that feature's own normal error to find which dimension carries the anomaly"]} />
 
@@ -85,12 +85,12 @@ const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
 // Normal signals: low reconstruction error
 const normalScores = computeAnomalyScores(autoencoder, normalTestData);
-console.log('Normal, mean error:', mean(normalScores).toFixed(6));  // ~0.001
-console.log('Normal, max error:', Math.max(...normalScores).toFixed(6));  // ~0.005
+console.log('Normal, mean error:', mean(normalScores).toFixed(6));  // ~0.10
+console.log('Normal, max error:', Math.max(...normalScores).toFixed(6));  // ~0.50
 
 // Anomalous signal: high reconstruction error
 const anomalyScores = computeAnomalyScores(autoencoder, anomalousData);
-console.log('Anomaly, error:', anomalyScores[0].toFixed(6));  // ~0.062
+console.log('Anomaly, error:', anomalyScores[0].toFixed(6));  // ~6.2
 // 12x the normal maximum: this is clearly anomalous`}
 </CodeBlock>
 
@@ -125,11 +125,11 @@ const analysis = featureErrors(autoencoder, anomalyTensor, [
 ]);
 
 console.log('Top contributors:');
-// fft_5: 0.6412  ← the 73.4 Hz bin, 90x the amplitude row
-// fft_6: 0.0289
-// amplitude: 0.0071
-// Everything else: < 0.001
-// (mean over all 11 = the 0.062 anomaly score from the last block)
+// fft_5: 64.12  ← the 73.4 Hz bin, 90x the amplitude row
+// fft_6: 2.89
+// amplitude: 0.71
+// Everything else: < 0.1
+// (mean over all 11 = the 6.2 anomaly score from the last block)
 
 // That ranking is not yet an answer. Raw squared error also ranks by how
 // hard each feature is to rebuild. Module 5 z-normalizes all eleven
@@ -194,7 +194,7 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 
 <Epilogue>
 
-Demir pins the per-feature error map to the shared display: fft_5, the 73.4 Hz bin, carrying nearly the entire error on its own, with fft_6 and amplitude a long way behind it and the other eight flat below 0.001. He is still labeling the axes when ARIA speaks up, unprompted.
+Demir pins the per-feature error map to the shared display: fft_5, the 73.4 Hz bin, carrying nearly the entire error on its own, with fft_6 and amplitude a long way behind it and the other eight flat below 0.1. He is still labeling the axes when ARIA speaks up, unprompted.
 
 <Dialogue speaker="ARIA">
 Request. When the pipeline is idle, run my last 400 decision records through the autoencoder. I have been comparing my rule outputs against the new model and the divergence is increasing. I would like to know my reconstruction error.

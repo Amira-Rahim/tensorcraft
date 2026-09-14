@@ -123,7 +123,10 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
 // on; every prediction below has been converted back out of that space into
 // the raw sensor units lesson 3 lists, which is how the log reads them:
 // amplitude in hull counts, frequency as a zero-crossing count over the
-// 64-sample capture, phase in radians.
+// 64-sample capture, phase in radians. A capture hands over a whole number
+// of crossings. A forecast of the next capture is an estimate of that
+// count, so it lands between whole numbers, which is why the frequency
+// column below reads 37.4 rather than 37.
 // Confidences are measured, not self-reported: each one is the
 // inverse-variance weight of that member's error on last week's held-out
 // readings, by the formula below this block.
@@ -164,7 +167,7 @@ A forecaster has no trust number of its own, as lesson 3 said, so the `confidenc
 
 ## Why Ensembles Work
 
-Each member fails in its own place. The LSTM reads short patterns and misses long-range drift. The attention model reads long range and can overfit a small archive. The Kalman filter smooths noise off the level and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.036. Uncorrelated errors would have bought 0.027, the mean member error of 0.047 divided by sqrt(3). The attention member runs on an LSTM encoder of its own, so part of its error is the LSTM's error.
+Each member fails in its own place. The LSTM reads short patterns and misses long-range drift. The attention model reads long range and can overfit a small archive. The Kalman filter smooths noise off the level and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. Training each member on a different random resample of the archive is the classic way to buy that difference, and it has a name, bagging. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.036. Uncorrelated errors would have bought 0.027, the mean member error of 0.047 divided by sqrt(3). The attention member runs on an LSTM encoder of its own, so part of its error is the LSTM's error.
 
 That 0.036 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members did worse than one member would have done alone, at three times the inference cost. You only see that if you score every member on the same held-out week. That is the challenge below.
 
@@ -192,6 +195,8 @@ Score each member, score both blends (equal shares, then confidence shares), and
 
 <RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="No. The best member scored 0.036, so the ensemble is worse than the model you already had, and the two other members are what dragged it there. Beating 0.046, the mean of the member scores, means nothing, because averaging clears that bar every time. The comparison worth making is against the best single member." />
 
+<RecallPrompt question="Module 1 normalized sensor channels before a model read them. The member errors here are fractions of each channel's range rather than raw misses in counts and radians. Which module 1 result says what a raw-unit score would have measured instead?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and the louder channel dominated. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the confidences computed from it, would track amplitude alone." />
+
 <LessonRecap
   whatYouLearned={[
     "An ensemble runs all member models on every input and combines their predictions; errors partially cancel when the members make uncorrelated mistakes.",
@@ -203,16 +208,16 @@ Score each member, score both blends (equal shares, then confidence shares), and
   youCanNow="Score every member on one window, blend them by equal shares and by inverse-variance confidence, and say whether the blend beat the best single member."
 />
 
-> **DISPATCH archive · field intercept #16-C:** Hassan's multimodal detour, filed from the edge cell: averaged three models, celebrated the agreement. All three had trained on the same mislabeled batch; the ensemble was three copies of one mistake voting unanimously. The fix was not a fourth model. It was a second dataset.
+> **DISPATCH archive · field intercept #16-C:** Hassan's edge cell averaged three models and celebrated the agreement. All three had trained on the same mislabeled batch; the ensemble was three copies of one mistake voting unanimously. The fix was not a fourth model. It was a second dataset.
 
 <Epilogue>
 
-Farah leaves the forecasters extrapolating overnight from 72.4 seconds, the level the Kalman filter holds for them: the LSTM on short range, the attention model on long. Demir fits the third line by hand off the interval log, a straight sixth of a second per day. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
+Farah leaves the forecasters extrapolating overnight from 72.4 seconds, the level the Kalman filter holds for them: the LSTM on short range, the attention model on long. Demir fits the third line by hand off the interval log, roughly a sixth of a second per day. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
 
 <Dialogue speaker="ARIA" expression="deadpan">
-I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.
+I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to two significant figures; I can supply eleven. You did not request this precision. I had it available.
 </Dialogue>
 
-Two forecasters and a line drawn by hand, agreeing to four significant figures across the log they were fit on. The thing in Sector 7-G is not repeating itself. It is counting down. Run them past the end of that log and they part company on the date, and not one of them says what arrives when the count runs out.
+Two forecasters and a line drawn by hand, laid over the same eight readings and running together across them. The thing in Sector 7-G is not repeating itself. It is counting down. Run them past the end of that log and they part company on the date, and not one of them says what arrives when the count runs out.
 
 </Epilogue>

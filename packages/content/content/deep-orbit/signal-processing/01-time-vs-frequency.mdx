@@ -22,7 +22,7 @@ concept:
     mlTitle: "Time vs Frequency"
     mlCode: "fft(signal) // frequency view of the signal"
     tier: intuition
-    breaks: "DOM and CSSOM are two views of the same authored markup. Time and frequency are two views of the samples you captured, and the transform between them loses nothing either way."
+    breaks: "The DOM and the CSSOM describe different things, and neither one can be computed from the other. Time and frequency are one thing described twice: `rfft` turns the samples into the spectrum, `irfft` turns the spectrum back into the samples, and on this lesson's 512-sample capture the round trip comes back within 4e-7 of the array it started from, which is float32 rounding and nothing else. What the pair costs you happens before the transform runs, when a finite sample rate and a finite window decide which samples exist at all."
 consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
@@ -53,36 +53,33 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-As a first sketch. But the DOM and CSSOM are both lossless views of markup someone wrote. The frequency view is a lossless view of the samples we captured, and the samples are not the whole signal. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
+As a first sketch, and it breaks where it matters. You cannot compute the CSSOM from the DOM, or the DOM from the CSSOM. They describe different things. Time and frequency are one thing described twice, and the transform runs both ways: hand me a spectrum and I hand you back the samples it came from. What costs us happens earlier. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
 </Dialogue>
 
-The rest of this lesson is learning to read that second view.
-
-<LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and what each one costs you", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
+<LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
 
 ## Two Views, One Signal
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="dual-representation.ts">
-{`// TIME DOMAIN: amplitude at each sample
+{`import * as tf from '@tensorflow/tfjs';
+
+// TIME DOMAIN: amplitude at each sample
 // Like reading the DOM: what is the value at each point in time?
 // Twelve samples at 12 Hz, so this is one second holding exactly one cycle.
 const timeDomain = [0.5, 0.87, 1.0, 0.87, 0.5, 0.0, -0.5, -0.87, -1.0, -0.87, -0.5, 0.0];
 // ^ This looks like... a wave? Hard to tell from raw numbers.
 
-// FREQUENCY DOMAIN: which frequencies are present and how strong
-// Like reading the CSSOM: what styles (patterns) are applied?
-// Magnitude here is the sketch's own convention: the amplitude of the tone.
-// A transform reports something larger. Run rfft on the array above and
-// bin 1 comes back at 6.0, the amplitude times half the sample count, and
-// that is the unit lesson 2 onward reads its peaks in.
-const frequencyDomain = [
-  { frequency: 1, magnitude: 1.0 },   // a 1 Hz sine wave, full strength
-  { frequency: 2, magnitude: 0.0 },   // no 2 Hz component
-  { frequency: 3, magnitude: 0.0 },   // no 3 Hz component
-];
-// ^ Crystal clear: this is a pure 1 Hz sine wave.
+// FREQUENCY DOMAIN: which frequencies are present and how strong.
+// The transform hands back an array, and each slot in it is a bin: one
+// frequency's worth of the whole capture. Twelve samples in, seven bins
+// out, and lesson 2 says where the seven comes from.
+const frequencyDomain = tf.abs(tf.spectral.rfft(tf.tensor1d(timeDomain))).arraySync() as number[];
+console.log(frequencyDomain.map((m) => m.toFixed(1)).join(' '));
+// "0.0 6.0 0.0 0.0 0.0 0.0 0.0": one 1 Hz component and nothing else. The
+// 6.0 is the tone's amplitude times half the sample count, and that is the
+// unit every later lesson reads its peaks in.
 
 // Generate a time-domain signal from known frequencies
 function generateSignal(frequencies: { hz: number; amplitude: number }[], samples: number, sampleRate: number): number[] {
@@ -152,17 +149,17 @@ Transform both captures yourself, then say whether they are twins in time and na
 <Exercise slug="time-vs-frequency" />
 
 <RecallPrompt
-  question="You have a signal with a tiny periodic component buried in noise. Why does looking at the frequency domain reveal it when the time domain does not?"
-  answer="The time domain shows amplitude at each moment, so weak periodic patterns are hidden by surrounding noise. The frequency domain accumulates energy from every cycle of a periodic component into a single bin, making even small repeating patterns stand out as a distinct peak above the noise floor."
+  question="A capture holds a tiny periodic component underneath four louder tones. Why does looking at the frequency domain reveal it when the time domain does not?"
+  answer="The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. Every cycle of the weak component adds into the same bin or two, where it stands clear of components that are louder in time but sit somewhere else in frequency."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Every signal has two representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
     "Both views of one capture carry the same information, because the transform loses nothing the samples hold. Each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
-    "The frequency domain is useful for detection tasks because periodic components accumulate into a single frequency bin rather than being spread across many time samples."
+    "The frequency domain is useful for detection tasks because a periodic component accumulates into one bin, or two when its frequency falls between bin centers, rather than being spread across many time samples."
   ]}
-  bridge="Just as `document.querySelector` gives a structural view of a page while `getComputedStyle` gives a computed-value view, `fft(signal)` gives a frequency view of the same samples that the time-domain array already contains."
+  bridge="`document.querySelector` and `getComputedStyle` read different things, and neither answer can be derived from the other. `fft(signal)` is not that kind of pair: it returns the same content the time-domain array already holds, which is why `irfft` can turn it straight back into that array."
   youCanNow="Explain why switching from the time domain to the frequency domain makes a buried periodic signal detectable, and show it on a pair of captures by transforming both and naming the bin where they diverge."
 />
 

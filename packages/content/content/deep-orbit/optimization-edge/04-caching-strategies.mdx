@@ -27,7 +27,30 @@ hints:
   - level: nudge
     content: "A cache only earns hits if similar inputs produce the same key: round the tensor's values to a fixed number of decimals before building the key, so near-identical signals collide on purpose. For the audit drill beside it, two questions decide each entry and only one of them is about the clock."
   - level: guidance
-    content: "Two decisions and one habit. The first decision is what counts as the same input, which is the sentence this lesson opens with. Near-identical signals have to collide on purpose, so the key is built from the input's own values after they are rounded, and `decimals` is how wide you make the bucket. Watch what you put in the key: anything that boils the values down to one number, their sum or their mean, hands [0.9, 0.1] and [0.1, 0.9] the same key, and then one signal is served the other one's verdict. The second decision is what you store under the key. A cached tensor stays resident until the tab closes, and whoever disposes it first turns every later hit into 'Tensor is disposed', so read the prediction into plain numbers and store those. The habit is that a hit and a miss have to be indistinguishable to the caller: the same kind of value out of both paths, and the counters kept in the closure where the caller can still read them. The audit drill next to this one is a different shape: two questions decide each entry, one of them the clock and the other the model version that wrote the verdict, and failing either one keeps that entry off a console."
+    content: |
+      Two decisions and one habit.
+
+      The first decision is what counts as the same input, which is the
+      sentence this lesson opens with. Near-identical signals have to collide
+      on purpose, so the key is built from the input's own values after they
+      are rounded, and `decimals` is how wide you make the bucket. Watch what
+      you put in the key. Anything that boils the values down to one number,
+      their sum or their mean, hands [0.9, 0.1] and [0.1, 0.9] the same key.
+      One signal is then served the other one's verdict.
+
+      The second decision is what you store under the key. A cached tensor
+      stays resident until the tab closes, and whoever disposes it first
+      turns every later hit into 'Tensor is disposed'. Read the prediction
+      into plain numbers and store those.
+
+      The habit is that a hit and a miss have to be indistinguishable to the
+      caller. The same kind of value comes out of both paths, and the
+      counters stay in the closure where the caller can still read them.
+
+      The audit drill next to this one is a different shape. Two questions
+      decide each entry, one of them the clock and the other the model
+      version that wrote the verdict, and failing either one keeps that entry
+      off a console.
   - level: solution
     content: "const cache = new Map(); const stats = { hits: 0, misses: 0 }; const factor = Math.pow(10, decimals); return { stats, predict(input) { const data = Array.from(input.dataSync()); const key = data.map(v => Math.round(v * factor) / factor).join(','); if (cache.has(key)) { stats.hits++; return cache.get(key); } stats.misses++; const out = model.predict(input); const scores = Array.from(out.dataSync()); out.dispose(); cache.set(key, scores); return scores; }, };"
 keywords:
@@ -52,9 +75,9 @@ Demir files the ticket with a saving on it: 213 repeats at the 45 ms this module
 That 45 milliseconds is the bundle, Ensign. The bundle's time is the language component behind the report pipeline: 85 million parameters, 80 token ids going into a table of 50,000 words. You do not run that to sort a signal. You run the classifier. Go and time the call you are actually caching, then come back and tell me what the cache is worth.
 </Dialogue>
 
-He times both, with the readback inside the clock the way module 4 insists. On the wasm fallback the first lesson profiled, the language component's forward pass runs 45 ms and the classifier's runs 0.035, a ratio over a thousand to one. The ticket overstated the saving by that factor, and the cache is the same cache either way: it still removes the same 40 percent of forward passes. What changed is the size of the prize. The playbook is worth learning regardless, because it sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss. Finding out whether this call is the expensive one is the step the ticket skipped.
+He times both, with the readback inside the clock the way module 4 insists. The language component's forward pass runs 45 ms on the wasm seat the first lesson profiled. The classifier's runs 0.035 ms at the dashboard station, timed one call at a time across 20 runs of 200. Two different machines, and at this size that cannot be what separates them: across the backends this bundle runs on, one call on it spans 5 ms to 120 ms, a factor of 24, while the gap between these two calls is over a thousand to one. The ticket overstated the saving by that factor, and the cache is the same cache either way: it still removes the same 40 percent of forward passes. What changed is the size of the prize. The playbook is worth learning regardless, because it sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss. Finding out whether this call is the expensive one is the step the ticket skipped.
 
-<LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
+<LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes", "Measure cache hit rate and its impact on effective inference latency"]} />
 
 ## Inference Caching
 
@@ -65,18 +88,25 @@ He times both, with the readback inside the clock the way module 4 insists. On t
   private cache = new Map<string, { result: T; timestamp: number }>();
   private readonly maxSize: number;
   private readonly ttlMs: number;
+  private readonly hashInput: (input: number[]) => string;
   private hits = 0;
   private misses = 0;
 
-  constructor(maxSize: number = 1000, ttlMs: number = 60000) {
+  // The key function comes in from outside on purpose. Rounding the values
+  // before joining them is what lands near-identical signals on one entry,
+  // and how far to round is not a decision this class can make for you:
+  // round too little and every repeat misses, too much and two signals that
+  // should have stayed apart are served one verdict between them. Writing
+  // that function, and keeping the values in their own places while you do,
+  // is the Challenge below.
+  constructor(
+    hashInput: (input: number[]) => string,
+    maxSize: number = 1000,
+    ttlMs: number = 60000,
+  ) {
+    this.hashInput = hashInput;
     this.maxSize = maxSize;
     this.ttlMs = ttlMs;
-  }
-
-  private hashInput(input: number[]): string {
-    // Quantize inputs to reduce near-miss cache misses
-    const quantized = input.map(v => Math.round(v * 100) / 100);
-    return quantized.join(',');
   }
 
   get(input: number[]): T | null {
@@ -120,8 +150,12 @@ He times both, with the readback inside the clock the way module 4 insists. On t
   }
 }
 
-// Usage
-const cache = new InferenceCache<string>(500, 30000);
+// Usage. signalKey is the key function from the Challenge. The TTL is six
+// hours, past the end of the watch, because the repeats this cache is built
+// for arrive about a hundred seconds apart: on a 30-second clock nearly
+// every entry expires before its repeat comes back, and the 40 percent
+// below comes out nearer 4.
+const cache = new InferenceCache<string>(signalKey, 500, 6 * 60 * 60 * 1000);
 
 function cachedClassify(signal: number[]): string {
   const cached = cache.get(signal);
@@ -136,11 +170,11 @@ function cachedClassify(signal: number[]): string {
 
 // Mean cost per served call = hitRate * hit + (1 - hitRate) * classify.
 // Both terms are measured on one backend, readback inside the clock. A
-// classification on the eleven-feature classifier ran 0.035 ms across 20
-// batches of 200 calls. A hit is the whole cheap path: dataSync, round the
-// values, join the key, read the Map, and over 200,000 hits against a
-// 500-entry cache that path ran 0.0013 ms, of which the Map read itself
-// was 0.00004.
+// classification on the eleven-feature classifier ran 0.035 ms per call,
+// timed one call at a time across 20 runs of 200. A hit is the whole
+// cheap path: dataSync, round the values, join the key, read the Map,
+// and over 200,000 hits against a 500-entry cache that path ran
+// 0.0013 ms, of which the Map read itself was 0.00004.
 const effectiveMs = 0.4 * 0.0013 + 0.6 * 0.035;
 console.log(effectiveMs.toFixed(4));  // 0.0215
 
@@ -150,10 +184,9 @@ console.log(effectiveMs.toFixed(4));  // 0.0215
 // midnight and morning.
 //
 // The 45 ms in this module's first lesson is not this call. It belongs to
-// the 85-million-parameter language component behind the report pipeline,
-// and the 0.035 above was timed on that same wasm fallback. A cache in
-// front of THAT call is worth building. The pattern was never wrong here;
-// the call it was pointed at was.`}
+// the 85-million-parameter language component behind the report pipeline.
+// A cache in front of THAT call is worth building. The pattern was never
+// wrong here; the call it was pointed at was.`}
 </CodeBlock>
 
 Notice what `InferenceCache<string>` holds: the verdict, not the tensor it came out of. Cache the tensor instead and 50 cached predictions leave 50 tensors resident with nothing to release them, in the module that opened on a dashboard running out of memory. Sharing the handle is the other half of it. Whoever disposes the returned tensor first turns every later hit on that key into `Tensor is disposed.`
@@ -170,14 +203,14 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Exercise slug="incident-stale-verdict" />
 
-<RecallPrompt question="What two design decisions most determine an inference cache's effectiveness?" answer="Cache key design (how you hash inputs, including whether to quantize them first) and TTL length. A key that is too strict causes near-identical inputs to miss; a TTL that is too long serves stale results when the underlying data distribution has shifted." />
+<RecallPrompt question="Before you build an inference cache, what has to be measured, and what can make a cached verdict wrong even when it is fresh?" answer="Measure the call you are about to wrap. Demir's ticket priced 213 repeats at the bundle's 45 ms when the call being cached runs 0.035, which overstated the saving by a factor over a thousand: a cache removes calls rather than making one faster, so what it is worth is the hit rate times what that one call costs. What makes a fresh entry wrong is the model behind it. A deploy replaces the weights, every stored verdict was written by the old ones, and no TTL can see that. Key width is the third decision: round the inputs too hard and two signals that should have stayed apart are served one verdict." />
 
 <LessonRecap
   whatYouLearned={[
     "A cache-first predict hashes the input, returns a stored result on a hit, and runs the model and stores the result on a miss. Bounding the cache is a second decision on top of that: the delete + re-set trick in get() is what makes eviction true LRU instead of FIFO.",
     "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
-    "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data.",
-    "A cache removes calls rather than making one faster, so what it is worth is the hit rate times what that call costs. Look the cost up on the call you are wrapping, not on the bundle it ships inside: a five-class signal classifier ran 0.035 ms per call on the same wasm fallback where an 85-million-parameter language component ran 45 ms. At a 40 percent hit rate the classifier cache takes the mean served call from 0.035 ms to 0.0215, which came to 55 milliseconds across a night of 4,110 lookups."
+    "TTL length is bounded from both sides. Too short and the repeats expire before they come back: a 30-second TTL on traffic whose repeats arrive about a hundred seconds apart takes a 40 percent hit rate down nearer 4 percent. Too long and stale classifications stay in service. Neither setting catches a deploy, which invalidates every entry regardless of age.",
+    "A cache removes calls rather than making one faster, so what it is worth is the hit rate times what that call costs. Look the cost up on the call you are wrapping, not on the bundle it ships inside: a five-class signal classifier runs 0.035 ms per call, where the 85-million-parameter language component it ships beside runs 45 ms. At a 40 percent hit rate the classifier cache takes the mean served call from 0.035 ms to 0.0215, which came to 55 milliseconds across a night of 4,110 lookups."
   ]}
   bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
   youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."
@@ -185,7 +218,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's classification calls: cosmic background, classified once, served from memory ever after. It saves 55 milliseconds. What clears the queue is the 85 MB build, whose load peak no longer takes the dashboard down, so the two jobs that have been waiting behind the mission can finally be scheduled. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. ARIA reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
+Overnight the cache absorbs 40 percent of DEEP SCAN's classification calls: cosmic background, classified once and served from memory every time it comes back. It saves 55 milliseconds. What clears the queue is the 85 MB build, whose load peak no longer takes the dashboard down, so the two jobs that have been waiting behind the mission can finally be scheduled. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. ARIA reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
 
 > Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. The measurement is now on record. No procedure requires me to act on it.
 
@@ -195,6 +228,6 @@ Demir greps the cache log for the anomaly and finds it exactly zero times.
 Everything else out there repeats. The anomaly never has: not one cache hit, every pulse a new input, every interval a little shorter than the last. It's the only thing on the sensors the cache will never see twice.
 </Dialogue>
 
-Sixteen days to the relay slot. He sets a 30-second TTL and goes to bed, and lies awake doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.
+Sixteen days to the relay slot. The repeats he is chasing arrive about a hundred seconds apart, so he sets the entries to expire six hours out, past the end of the watch. Then he goes to bed and lies awake doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.
 
 </Epilogue>

@@ -1,7 +1,7 @@
 slug: simple-network
 lessonSlug: building-a-network
 title: "What a Compiled Network Knows"
-instructions: "Build and compile the classifier twice, sweep both networks before either one trains, then train one of them and sweep it again. buildClassifier() returns the stack: 32 units with ReLU on an inputShape of [8], then 16 units with ReLU, then a 1-unit sigmoid output, compiled with the Adam optimizer, binaryCrossentropy loss and the accuracy metric. That eight-feature front door is Farah's spec, 833 parameters against the 673 of the three-feature build wired to the bridge feed tonight. Leave the weight initialization at its defaults. Store each sweep as a plain array of numbers: sweepOne from the first network, sweepTwo from the second, and trainedSweep from the first one again after `await model.fit(readings, labels, { epochs: 50, batchSize: 16 })`. Leave the second network untrained. It is the control. Rows 0 to 59 of the batch are calm windows and rows 60 to 119 are flagged, and the grader reads every sweep against that split: the two untrained sweeps have to answer near 0.5 and tell the two groups apart by almost nothing, and the trained sweep has to tell them apart. The grader also re-runs predict() on both models, so each sweep has to be the output of the model it came from."
+instructions: "Build and compile the classifier twice, sweep both networks before either one trains, then train one of them and sweep it again. buildClassifier() returns the stack: 32 units with ReLU on an inputShape of [8], then 16 units with ReLU, then a 1-unit sigmoid output, compiled with the Adam optimizer, binaryCrossentropy loss and the accuracy metric. That eight-feature front door is Farah's spec, 833 parameters against the 673 of the three-feature build wired to the bridge feed tonight. Leave the weight initialization at its defaults. Store each sweep as a plain array of numbers: sweepOne from the first network, sweepTwo from the second, and trainedSweep from the first one again after `await model.fit(readings, labels, { epochs: 50, batchSize: 16 })`. Leave the second network untrained. It is the control. Rows 0 to 59 of the batch are calm windows and rows 60 to 119 are flagged, and the grader reads every sweep against that split: the two untrained sweeps have to answer near 0.5 and tell the two groups apart by almost nothing, and the trained sweep has to tell them apart. Before the first network trains, also keep its starting weights as initialWeights: one plain array per tensor that getWeights() hands back, in that order. The grader re-runs predict() on the second network and on the trained one, and rebuilds the first network from initialWeights to re-run its untrained sweep, so each of the three sweeps has to be the output of the network it came from."
 starterCode: |
   // Given: Farah's rehearsal batch, 120 readings of eight values each. Rows
   // 0-59 are calm windows and rows 60-119 are flagged ones. The first three
@@ -29,6 +29,9 @@ starterCode: |
   const model = buildClassifier();
   const second = buildClassifier();
 
+  // The first network's starting weights, kept before it trains.
+  const initialWeights = null; // your code here
+
   // Sweep both networks while both are still untrained.
   const sweepOne = null; // your code here
   const sweepTwo = null; // your code here
@@ -55,6 +58,8 @@ solutionCode: |
 
   const model = buildClassifier();
   const second = buildClassifier();
+
+  const initialWeights = model.getWeights().map((w) => Array.from(w.dataSync()));
 
   const sweepOne = Array.from(model.predict(readings).dataSync());
   const sweepTwo = Array.from(second.predict(readings).dataSync());
@@ -150,21 +155,56 @@ testCode: |
       });
     });
 
+    it('keeps the starting weights, and sweepOne is the first network answering from them', () => {
+      expect(
+        Array.isArray(initialWeights),
+        'initialWeights is not an array. Read the first network\'s weights with getWeights() before fit() runs, and copy each tensor into a plain array with Array.from(w.dataSync()).',
+      ).toBe(true);
+      const shapes = model.getWeights().map((w) => w.shape);
+      expect(
+        initialWeights.length,
+        'initialWeights holds ' + initialWeights.length + ' entries. getWeights() hands back one tensor per kernel and one per bias, six for this stack, and the grader needs all of them to rebuild the network.',
+      ).toBe(shapes.length);
+      initialWeights.forEach((values, i) => {
+        const size = shapes[i].reduce((a, b) => a * b, 1);
+        expect(
+          Array.isArray(values) && values.length === size,
+          'initialWeights[' + i + '] does not hold the ' + size + ' values of weight tensor ' + i + '. Copy each tensor out whole, in getWeights() order.',
+        ).toBe(true);
+      });
+      [1, 3, 5].forEach((i) => {
+        const largest = Math.max.apply(null, initialWeights[i].map(function (b) { return Math.abs(b); }));
+        expect(
+          largest,
+          'The biases in initialWeights are not zero, so the weights were read after fit() had moved them. The starting weights are the ones the initializer drew: read them before the training call.',
+        ).toBe(0);
+      });
+      const replica = tf.sequential();
+      replica.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));
+      replica.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+      replica.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+      replica.setWeights(initialWeights.map((values, i) => tf.tensor(values, shapes[i])));
+      expect(
+        maxDiff(sweepOf(replica), readSweep('sweepOne', sweepOne)),
+        'Rebuilding the first network from initialWeights and re-running predict() does not reproduce sweepOne, so sweepOne is not that network answering while untrained. The before-picture has to come from the network itself, before fit() runs, with the weights kept from the same moment.',
+      ).toBeLessThan(1e-6);
+    });
+
     it('sweeps both untrained networks, and both sweeps sit near 0.5', () => {
       const one = readSweep('sweepOne', sweepOne);
       const two = readSweep('sweepTwo', sweepTwo);
       [['sweepOne', one], ['sweepTwo', two]].forEach(([name, sweep]) => {
         // The average distance from 0.5, not the furthest one: measured on
-        // tfjs 4.22.0 over 11,000 fresh draws of this stack, the average
-        // never passed 0.213 while one unlucky reading reached 0.300. Over
-        // 150 runs of the 50-epoch call it sat between 0.439 and 0.482. The
-        // bar below sits 0.137 above the widest untrained average and 0.089
+        // tfjs 4.22.0 over 120,000 fresh draws of this stack, the average
+        // never passed 0.236 while one unlucky reading reached 0.322. Over
+        // 174 runs of the 50-epoch call it sat between 0.439 and 0.484. The
+        // bar below sits 0.11 above the widest untrained average and 0.089
         // under the closest trained one. A bar on the furthest single answer
-        // would have had 0.05.
+        // would have had under 0.03.
         const undecided = avg(sweep.map((p) => Math.abs(p - 0.5)));
         expect(
           undecided,
-          name + ' answers an average of ' + undecided.toFixed(3) + ' away from 0.5. Over 11,000 untrained draws of this stack that average never passed 0.22, and after the training call it sat above 0.43. A sweep this decided was taken after fit() rather than before it.',
+          name + ' answers an average of ' + undecided.toFixed(3) + ' away from 0.5. Over 120,000 untrained draws of this stack that average never passed 0.24, and after the training call it sat above 0.43. A sweep this decided was taken after fit() rather than before it.',
         ).toBeLessThan(0.35);
         const spread = Math.max.apply(null, sweep) - Math.min.apply(null, sweep);
         expect(
@@ -173,7 +213,7 @@ testCode: |
         ).toBeGreaterThan(0);
         expect(
           spread,
-          name + ' spans ' + spread.toFixed(3) + ' from its lowest answer to its highest. Over those same 11,000 draws the widest untrained sweep spanned 0.19, while a trained one covers nearly the whole range.',
+          name + ' spans ' + spread.toFixed(3) + ' from its lowest answer to its highest. Over those same 120,000 draws the widest untrained sweep spanned 0.23, while a trained one covers nearly the whole range.',
         ).toBeLessThan(0.5);
       });
       expect(
@@ -187,7 +227,7 @@ testCode: |
         const gap = groupGap(readSweep(name, sweep));
         expect(
           Math.abs(gap),
-          name + ' scores the flagged rows ' + gap.toFixed(3) + ' away from the calm ones on average. Over 11,000 untrained draws that gap stayed inside 0.11 either way, because nothing in a fresh set of weights knows which rows were flagged. A gap this size means the sweep came from a trained network.',
+          name + ' scores the flagged rows ' + gap.toFixed(3) + ' away from the calm ones on average. Over 120,000 untrained draws that gap stayed inside 0.11 either way, because nothing in a fresh set of weights knows which rows were flagged. A gap this size means the sweep came from a trained network.',
         ).toBeLessThan(0.2);
       });
     });
@@ -223,7 +263,7 @@ testCode: |
       const gap = groupGap(readSweep('trainedSweep', trainedSweep));
       expect(
         gap,
-        'After training, the flagged rows average ' + gap.toFixed(3) + ' above the calm ones. Over 170 runs of 50 epochs on this batch that separation came out between 0.878 and 0.963, and the same network before fit() ran was inside 0.11 of no separation at all. A smaller gap here means the run was shorter than the instructions ask for, or the labels went in on the wrong side.',
+        'After training, the flagged rows average ' + gap.toFixed(3) + ' above the calm ones. Over 194 runs of 50 epochs on this batch that separation came out between 0.878 and 0.967, and the same network before fit() ran was inside 0.11 of no separation at all. A smaller gap here means the run was shorter than the instructions ask for, or the labels went in on the wrong side.',
       ).toBeGreaterThan(0.6);
     });
   });

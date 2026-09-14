@@ -68,13 +68,22 @@ const model = await tf.loadLayersModel('/models/deep-scan/model.json');
 console.log('Input shape:', model.inputs[0].shape);   // [null, 3]
 console.log('Output shape:', model.outputs[0].shape);  // [null, 1]
 model.summary();
-// Layer (type)              Output shape       Param #
-// dense_Dense1 (Dense)      [null, 32]         128
-// dense_Dense2 (Dense)      [null, 16]         528
-// dense_Dense3 (Dense)      [null, 1]          17
-// Total params: 673. The architecture taped to the engineering board in
-// module 2, carrying the weights module 3 trained: the same network,
-// now an asset the dashboard fetches instead of a variable in a notebook.`}
+// __________________________________________________________________________________________
+// Layer (type)                Input Shape               Output shape              Param #
+// ==========================================================================================
+// dense_Dense1 (Dense)        [[null,3]]                [null,32]                 128
+// __________________________________________________________________________________________
+// dense_Dense2 (Dense)        [[null,32]]               [null,16]                 528
+// __________________________________________________________________________________________
+// dense_Dense3 (Dense)        [[null,16]]               [null,1]                  17
+// ==========================================================================================
+// Total params: 673
+// Trainable params: 673
+// Non-trainable params: 0
+// __________________________________________________________________________________________
+// The architecture taped to the engineering board in module 2, carrying
+// the weights module 3 trained: the same network, now an asset the
+// dashboard fetches instead of a variable in a notebook.`}
 </CodeBlock>
 
 Under the hood, `tf.loadLayersModel()` does exactly what you'd do manually:
@@ -122,7 +131,7 @@ A model trained in Python arrives by a different route. `tensorflowjs_converter`
 
 ## Caching with IndexedDB
 
-Models run 5-50MB, and you don't re-download that on every page load, for the same reason static assets sit behind a service worker. DEEP SCAN is 2,692 bytes, so bandwidth is not what caching saves here. The reason to cache this model arrives at the end of the lesson, when a cached copy and a retrained one disagree about a reading.
+Models run 5-50MB, and you don't re-download that on every page load, for the same reason static assets sit behind a service worker. Each load fetches the manifest and every weight shard, so a second load of the same URL is a second download of the whole model. DEEP SCAN is 2,692 bytes, so bandwidth is not what caching saves here. What caching saves here is the network itself. Lesson 1 put the dashboard on a console whose link to the compute bay can go down, and a fetch classifies nothing while it is down; a copy in IndexedDB classifies fine. The bill for that arrives at the end of this lesson, when a cached copy and a retrained one disagree about a reading.
 
 <CodeBlock language="typescript" title="model-caching.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -209,7 +218,7 @@ Load a model once and verify its architecture off the model you loaded.
 
 <RecallPrompt question="What does tf.loadLayersModel() return compared to a plain fetch().then(r => r.json()), and why does the difference matter?" answer="fetch resolves to parsed JSON you read once. tf.loadLayersModel() resolves to a LayersModel with predict and evaluate methods that holds GPU memory until explicitly disposed. You load it like an asset but manage it like a live process." />
 
-<LessonRecap whatYouLearned={["A TF.js model is two parts: model.json holds the architecture and .bin shards hold the learned weights, analogous to code-splitting chunks in a JS build", "Caching a model in IndexedDB prevents re-downloading on every page load, using the same cache-first pattern as service worker asset caching; version the cache key whenever you ship new weights", "The onProgress callback reports weight-shard download progress, giving you the same feedback primitive as a fetch progress event"]} bridge="Just as `fetch(url).then(r => r.json())` loads API data, `tf.loadLayersModel(url)` loads a model: same HTTP fetch shape, but the resolved value is a live compute graph with `predict()` rather than a plain data object." youCanNow="Load a pre-trained TF.js model, read its input and output shapes off the model you loaded, and say why loading the same URL twice is two full downloads." />
+<LessonRecap whatYouLearned={["A TF.js model is two parts: model.json holds the architecture and .bin shards hold the learned weights, analogous to code-splitting chunks in a JS build", "Caching a model in IndexedDB prevents re-downloading on every page load, using the same cache-first pattern as service worker asset caching; version the cache key whenever you ship new weights", "The onProgress callback reports weight-shard download progress, giving you the same feedback primitive as a fetch progress event", "model.save() writes the pair the loader reads: in Node, save('file://./models/deep-scan') gives model.json and weights.bin; in the browser, save('downloads://deep-scan') gives deep-scan.json and deep-scan.weights.bin, so rename them before serving"]} bridge="Just as `fetch(url).then(r => r.json())` loads API data, `tf.loadLayersModel(url)` loads a model: same HTTP fetch shape, but the resolved value is a live compute graph with `predict()` rather than a plain data object." youCanNow="Load a pre-trained TF.js model, read its input and output shapes off the model you loaded, and say why loading the same URL twice is two full downloads." />
 
 <Epilogue>
 

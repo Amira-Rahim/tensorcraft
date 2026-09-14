@@ -94,16 +94,17 @@ class Pipeline {
     return this;
   }
 
+  // run() walks the stages in order with one contract per hop. Before a
+  // stage sees the value, the stage's own validate() has to say yes; a
+  // refusal throws with that stage's name in the message, and the refused
+  // value never reaches its process(). A stage may be async, so its result
+  // is awaited before the next stage reads it. What that does to one bad
+  // window, a 63-sample capture handed to a stage that promised 64:
+  //   await deepScan.run(shortWindow)
+  //   -> Error: Validation failed at: preprocessor
+  // The challenge at the end of this lesson builds this method.
   async run(input: any): Promise<any> {
-    let data = input;
-    for (const stage of this.stages) {
-      if (!stage.validate(data)) {
-        throw new Error(\`Validation failed at: \${stage.name}\`);
-      }
-      console.log(\`[\${stage.name}] Processing...\`);
-      data = await stage.process(data);
-    }
-    return data;
+    // your runner
   }
 }
 
@@ -185,7 +186,7 @@ console.log('Graph valid:', validateGraph(manifest)); // true`}
 
 The manifest and the runner do not describe the same shape. `run()` carries one `data` value from stage to stage, which is exactly a chain: preprocessor, extractor, classifier, reporter. The manifest declares something wider. Two stages depend on `fft-extractor`, and `reporter` lists two dependencies of its own, so `reporter` needs two upstream values at the same time. A single carried variable can only ever hand it one, which is why the anomaly detector is missing from the assembled chain above.
 
-Running the declared graph takes a scheduler instead of a loop. It walks the manifest in dependency order and keeps each stage's output in a map keyed by stage name. `reporter` then reads both of the inputs it asked for by name. The exercise below builds the chain runner, because the chain is what this lesson's `run()` can express. The manifest is the design record, and it is ahead of the runner by one branch.
+Running the declared graph takes a scheduler instead of a loop. It walks the manifest in dependency order and keeps each stage's output in a map keyed by stage name. `reporter` then reads both of the inputs it asked for by name. That map is what the 512 MB dashboard pays for. The chain holds one value at a time and lets the previous one go. The scheduler holds every stage's output until the last stage that asked for it has run, which on this manifest is five stage outputs resident at once instead of one. The exercise below builds the chain runner, because the chain is what this lesson's `run()` can express. The manifest is the design record, and it is ahead of the runner by one branch.
 
 ## Challenge
 

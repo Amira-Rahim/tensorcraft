@@ -20,14 +20,14 @@ concept:
     jsTitle: "localStorage with TTL"
     jsCode: "if (Date.now() > expiry) localStorage.removeItem(key) // forget stale data"
     mlTitle: "LSTM Forget Gate"
-    mlCode: "forgetGate = sigmoid(W_f * [hidden, input]) // learn what to discard"
+    mlCode: "forgetGate = sigmoid(W_f * [hidden, input] + b_f) // learn what to discard"
     tier: structural
     breaks: "localStorage TTL is a hard expiry: value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state: partial forgetting, learned per-input, with no fixed timeout."
 consequence:
   narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Nothing carries between windows; the gates learned the shape once."
 hints:
   - level: nudge
-    content: "Three of the four weight rows are gates and go through sigmoid; only the candidate goes through Math.tanh. The cell update scales the old cell by the forget gate, then adds the input gate's share of the candidate. For the layer, count the columns before you cut: four gates share two kernels and one bias, and they are stored in a fixed order."
+    content: "Two things here are not where you would guess. The library leaves its gates on a different curve from the one you are writing by hand, and the four gates are not packed in the order anyone says them out loud. When your numbers and the layer's disagree, one of those two is usually why."
   - level: guidance
     content: "All four weight groups are read the same way: one row per dimension, three numbers per row, the same arithmetic every time. Write that arithmetic once and call it four times. Three of the four groups are gates, so they saturate; the fourth is the value being proposed for storage, and it needs a range that reaches below zero. The cell update multiplies before it adds: the old value is scaled by its own gate, the proposed value is scaled by its own gate, and only then do the two meet. The hidden state is the new cell value seen through the remaining gate. Cutting the layer up is the same three numbers per gate, taken at one shared column index: one out of each kernel and one out of the bias, and the library's column order is the one this lesson prints, not the one it narrates."
   - level: solution
@@ -81,16 +81,16 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 {`// LSTM Cell: three gates controlling information flow
 
 // 1. FORGET GATE: what to discard from memory
-//    forgetGate = sigmoid(W_f · [prevHidden, input])
+//    forgetGate = sigmoid(W_f · [prevHidden, input] + b_f)
 //    Output: values between 0 (forget completely) and 1 (keep fully)
 
 // 2. INPUT GATE: what new information to store
-//    inputGate = sigmoid(W_i · [prevHidden, input])
-//    candidate = tanh(W_c · [prevHidden, input])
+//    inputGate = sigmoid(W_i · [prevHidden, input] + b_i)
+//    candidate = tanh(W_c · [prevHidden, input] + b_c)
 //    newCell = forgetGate * prevCell + inputGate * candidate
 
 // 3. OUTPUT GATE: what to expose as hidden state
-//    outputGate = sigmoid(W_o · [prevHidden, input])
+//    outputGate = sigmoid(W_o · [prevHidden, input] + b_o)
 //    newHidden = outputGate * tanh(newCell)
 
 // The cell state is only scaled and added to at each step, never pushed
@@ -122,16 +122,18 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 // Shape drill with placeholder tensors: prove the [80, 3] pipeline runs
 // end to end. The labels are random, so watch both numbers rather than
 // one. Over 60 epochs the training loss falls in every run, from about
-// 0.69 to somewhere between 0.31 and 0.59, while the held-out fifth goes
-// nowhere it can trust: its accuracy wanders anywhere from 0.30 to 0.80
-// across the run and lands back near a coin flip, because twenty held-out
-// rows means one lucky row is worth five points, and its loss ends above
-// where it started in eight runs of ten, past 1.0 in the worst of them.
+// 0.69 to somewhere between 0.35 and 0.70, while the held-out fifth goes
+// nowhere it can trust: twenty held-out rows means one row is worth five
+// points, so its accuracy is noise, moving ten points and more inside a
+// single run and ending wherever the last epoch leaves it. Its loss ends
+// above where it started in most runs, past 1.0 in the worst of them.
 // That is what memorizing looks like: 17,473 parameters against 80
 // training rows. Ten reruns measured; the exact figures move with the
-// seed, the gap does not. The real evidence
-// that gates beat plain recurrence on this window is the previous
-// lesson's failed run and tonight's archive replay below.
+// seed, the gap does not. Nothing on this page races the two cells
+// against each other, since both fits in this module train on random
+// labels. What the module has instead is lesson 2's flatline on this
+// same 80-step window and tonight's archive replay below. On a series
+// of your own the check is cheap: train both cells and compare.
 const x = tf.randomNormal([100, 80, 3]);  // 100 samples, 80 time steps
 const y = tf.randomUniform([100, 1]).round();
 
@@ -160,7 +162,7 @@ The second thing is which curve the gates run on. TF.js 4.22 leaves `recurrentAc
 <CodeBlock language="typescript" title="gru-comparison.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// GRU (Gated Recurrent Unit): fewer parameters, often similar performance
+// GRU (Gated Recurrent Unit): one gate fewer, and a quarter fewer weights
 // Two gates instead of three: update gate + reset gate
 
 // 1. UPDATE GATE: one value per dimension, doing the forget gate's job
@@ -186,10 +188,11 @@ gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 // Comparison:
 // LSTM: 4 sets of weight matrices: forget, input, and output gates plus the
-//       candidate state (more parameters, better long-range memory)
-// GRU:  3 sets: reset gate, update gate, candidate state (~25% fewer params, faster training)
-// Rule of thumb: train both and compare. The GRU often wins when the training
-//               set is small; the LSTM tends to win when dependencies run long`}
+//       candidate state
+// GRU:  3 sets: reset gate, update gate, candidate state, which is exactly
+//       25% fewer weights: 13,056 against the LSTM's 17,408 at these settings
+// Which of the two scores better on a given series is a question you measure,
+// so the usual move is to train both on your own data and compare`}
 </CodeBlock>
 
 ## Challenge
@@ -214,7 +217,7 @@ Then build a one-unit `tf.layers.lstm` and cut its four gates out of the packed 
   whatYouLearned={[
     "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that smoothly scale information flow.",
     "Walking backward along the cell state, the gradient picks up one factor per step: that step's forget gate. A gate that stays near 1 carries it across hundreds of steps; a gate that closes drops that dimension deliberately. The decay is learned per dimension instead of forced by the architecture.",
-    "GRUs carry three weight sets where the LSTM carries four: update, reset and candidate against forget, input, output and candidate. That is roughly 25% fewer parameters, and GRUs often match LSTM accuracy, so training both and comparing is a standard first step.",
+    "GRUs carry three weight sets where the LSTM carries four: update, reset and candidate against forget, input, output and candidate. That is exactly 25% fewer parameters for the same units, and which of the two scores better on a given series is something you measure rather than look up.",
     "The flatline this lesson opens on is lesson 2's: a binary loss pinned at 0.693, which is ln 2, the score of a coin flip. On long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
   bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context instead of a timer."

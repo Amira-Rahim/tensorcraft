@@ -72,20 +72,37 @@ testCode: |
       expect(xs).toEqual([[[1, 10], [2, 20]]]);
       expect(ys).toEqual([[3, 30]]);
     });
-    it('follows the parameters, not memorized shapes', () => {
-      // Three shapes the lesson never prints, each with its answer derived
-      // from the arguments, so a table of the fixtures above cannot reach
-      // them: only the loop can.
-      for (const [length, windowSize, stride] of [[12, 4, 3], [17, 5, 4], [9, 2, 1]]) {
+    it('follows the parameters on three settings drawn at grade time', () => {
+      // The window length, the stride and the length of the archive are drawn
+      // here, at grade time, so no table of window positions written against
+      // this file can hold the answers. Each expectation below is computed
+      // from the three numbers that were drawn: only the loop can reach them.
+      for (let trial = 0; trial < 3; trial++) {
+        const windowSize = 2 + Math.floor(Math.random() * 5);
+        const stride = 1 + Math.floor(Math.random() * windowSize);
+        const length = windowSize + 1 + Math.floor(Math.random() * 12);
         const series = Array.from({ length }, (_, i) => [i, i * 10]);
         const starts = [];
         for (let s = 0; s + windowSize < length; s += stride) starts.push(s);
         const { xs, ys } = windows(series, windowSize, stride);
-        expect(xs.length).toBe(starts.length);
-        expect(ys.length).toBe(starts.length);
+        const setting = `windowSize ${windowSize}, stride ${stride}, ${length} readings`;
+        expect(
+          xs.length,
+          `This setting (${setting}) was drawn at grade time, so the number of windows cannot have been worked out in advance. It follows from the three arguments: the first index advances by the stride, and the loop ends while the archive still holds the reading that answers the window.`,
+        ).toBe(starts.length);
+        expect(
+          ys.length,
+          'Each window you keep carries exactly one target, so the two lists end at the same length.',
+        ).toBe(starts.length);
         starts.forEach((start, k) => {
-          expect(xs[k]).toEqual(series.slice(start, start + windowSize));
-          expect(ys[k]).toEqual(series[start + windowSize]);
+          expect(
+            xs[k],
+            `Window ${k} of this setting (${setting}) holds the wrong readings. A window is the windowSize readings starting at its own first index, and those indices step by stride.`,
+          ).toEqual(series.slice(start, start + windowSize));
+          expect(
+            ys[k],
+            `Target ${k} of this setting (${setting}) is not the reading that follows its window. It sits at start plus windowSize, whatever those two numbers happen to be on this call.`,
+          ).toEqual(series[start + windowSize]);
         });
       }
     });

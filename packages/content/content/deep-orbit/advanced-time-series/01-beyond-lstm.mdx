@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "Attention scores every time step against the query, softmaxes the scores into weights, then blends the hidden states in proportion to those weights."
   - level: guidance
-    content: "The query only ever meets the keys. That product gives one score per time step, and softmax turns the scores into weights over the steps. Two booleans follow the pair of tensors in the multiply, transposeA and transposeB, and the keys are the side that needs flipping before the inner sizes meet. The values are touched once, at the end, under those weights. Two of the tests hand you keys and values of different widths, so code that pools the keys instead of the values comes back the wrong width."
+    content: "The query only ever meets the keys. That product gives one score per time step, and softmax turns the scores into weights over the steps. Two booleans follow the pair of tensors in the multiply, transposeA and transposeB, and the keys are the side that needs flipping before the inner sizes meet. The values are touched once, at the end, under those weights. Three of the tests hand you keys and values of different widths, so code that pools the keys instead of the values comes back the wrong width."
   - level: solution
     content: "const queryRow = query.reshape([1, query.shape[0]]); const scores = tf.matMul(queryRow, keys, false, true); const weights = tf.softmax(scores); const blended = tf.matMul(weights, values); return blended.squeeze();"
 keywords:
@@ -50,8 +50,6 @@ That ripple entered the hidden state at step 4 and got averaged into seventy-six
 <Dialogue speaker="Ensign Demir">
 So instead of inheriting whatever survived eighty steps of averaging, the model scores each step against what it is trying to predict and reads the high scorers directly. CSS :focus, except the model picks the target.
 </Dialogue>
-
-Hold that picture against the mechanism's own arithmetic below, three numbers wide, and see how much of the picture survives.
 
 <LearningObjectives objectives={["Understand attention as dynamic relevance scoring: focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
@@ -114,7 +112,7 @@ The worked softmax is the part that vetoes the :focus picture, and it does so wi
 :focus lands on one element. Softmax never does, and the arithmetic you just ran is the proof: every step gets a weight, most of them near zero, none of them zero. Keep your picture, but read the weights as a budget, not a spotlight.
 </Dialogue>
 
-One argument in that block has not come up before. `tf.matMul` takes two booleans after the two tensors, `transposeA` and `transposeB`, and each one transposes its own tensor on the way into the multiply. Here the query is [1, dim] and the keys are [seqLen, dim], so the inner sizes are dim and seqLen and they do not meet. Drop the flags and the op refuses: with a 3-wide query and 4 keys, `tf.matMul(query, keys)` stops at `Error in matMul: inner shapes (3) and (4) of Tensors with shapes 1,3 and 4,3 and transposeA=false and transposeB=false must match.` Passing true for `transposeB` reads the keys as [dim, seqLen], which is what makes the scores come out [1, seqLen]. It is the same arithmetic as `tf.matMul(query, keys.transpose())`: on that 3-by-4 case both calls return the row [1, 2, 3, 6]. The flag version skips building the transposed copy.
+One argument in that block has not come up before. `tf.matMul` takes two booleans after the two tensors, `transposeA` and `transposeB`, and each one transposes its own tensor on the way into the multiply. Here the query is [1, dim] and the keys are [seqLen, dim], so the inner sizes are dim and seqLen and they do not meet. Drop the flags and the op refuses: with a 3-wide query and 4 keys, `tf.matMul(query, keys)` stops at `Error in matMul: inner shapes (3) and (4) of Tensors with shapes 1,3 and 4,3 and transposeA=false and transposeB=false must match.` Passing true for `transposeB` reads the keys as [dim, seqLen], which is what makes the scores come out [1, seqLen]. It is the same arithmetic as `tf.matMul(query, keys.transpose())`: with the query [1, 2, 3] and the keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]], both calls return the row [1, 2, 3, 6]. The flag version skips building the transposed copy.
 
 ## LSTM vs Attention
 
@@ -176,7 +174,7 @@ Nothing in `simpleAttention` knows which step came first. Module 6 spent five le
 
 ## Challenge
 
-Implement attention over a sequence, with the keys and the values handed in separately.
+Implement attention over a sequence, with the keys and the values handed in separately. The exercise's `simpleAttention` is not the one above: its query arrives rank-1 as [d], its values can be a different width from its keys, and it returns the blend on its own rather than a `{ output, weights }` pair. Copy the block above into it and the shapes stop you before the first weight is scored.
 
 <Exercise slug="simple-attention" />
 
@@ -187,9 +185,9 @@ Implement attention over a sequence, with the keys and the values handed in sepa
     "Attention scores every time step simultaneously with a Query-Key-Value computation, then uses softmax weights to focus capacity on the most relevant positions.",
     "Attention scores every step in two matrix multiplies with no sequential dependency, so a fixed 80-step window parallelizes on a GPU where an LSTM's 80 steps cannot. Full self-attention does T-by-T work, so its cost grows faster with sequence length than an LSTM's. The hybrid here keeps an LSTM encoder in front, so it buys the distance fix and not the wall-clock one.",
     "Attention weights are inspectable: they show where the model put its weight, which is far more diagnostic than an LSTM's hidden state and still not proof of what drove the prediction.",
-    "Attention is order-blind on its own: a window and its shuffle produce the same weights. Order comes from a recurrent encoder in front of it, or from a positional encoding added to every step."
+    "Attention is order-blind on its own: shuffle a window and each weight travels with its own step, so the pooled output comes back unchanged, about 1e-7 across 80 steps. Order comes from a recurrent encoder in front of it, or from a positional encoding added to every step."
   ]}
-  bridge="Like CSS `:focus` highlighting the active element, attention learns soft relevance weights across all `timeSteps` and spends model capacity where `softmax(Q * K^T)` scores are highest."
+  bridge="Where CSS `:focus` lands on exactly one element, attention spreads a `softmax(Q * K^T)` budget across every `timeStep` and spends model capacity where the scores are highest."
   youCanNow="Implement attention over a sequence in TensorFlow.js: score every key against the query, turn the scores into softmax weights, and blend the values under them."
 />
 

@@ -49,7 +49,7 @@ The thermal channel reads in the thirties, signal strength lives under one. If w
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic it can't avoid. Fix the scales and the bias never exists.
+Not think. Compute. That pull isn't an opinion the model forms; it's arithmetic it can't avoid. Fix the scales and the pull never exists.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why normalization is critical for ML", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
@@ -61,7 +61,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
     {
       label: "cooperate",
       display: "File a formal anomaly flag, start an investigation",
-      consequence: "An investigation with no instruments: the crew has normalization and eyeballs, nothing else yet. The flag ages into noise, and by the time real detectors exist, formal-flag fatigue has already taught the bridge to skim past entries like it. Spend your alarms early and they are gone when you need them."
+      consequence: "An investigation with no instruments: the crew has normalization and eyeballs, nothing else yet. The flag ages into noise, and by the time real detectors exist, formal-flag fatigue has already taught the bridge to skim past entries like it."
     },
     {
       label: "defect",
@@ -76,7 +76,7 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
     {
       label: "dominant",
       display: "Keep it, tag it, move on: a question mark is an instrument",
-      consequence: "Farah's actual call, and it has a price she pays every day: the tag just sits there for ten modules, looking like nothing, while the not-knowing wears on whoever filed it. No alarm, no deletion: a named oddity every future instrument gets pointed at, starting with a preview model tonight. Patience is a detector too; nobody says it is a comfortable one."
+      consequence: "Farah's actual call, and it has a price she pays every day: the tag just sits there for ten modules, looking like nothing, while the not-knowing wears on whoever filed it. No alarm, no deletion: a named oddity every future instrument gets pointed at, starting with a preview model tonight."
     }
   ]}
 />
@@ -89,6 +89,8 @@ Not think. Compute. The bias isn't an opinion the model forms; it's arithmetic i
 Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
 
 Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. The louder feature dominates what the model learns; the quiet one barely registers, even when it carries the signal you actually care about.
+
+Two names in the code below. The standard deviation is the typical distance between a value and its column's mean, so dividing by it measures a feature in its own units of spread: a z-score of 1 sits one typical distance above the mean, whatever the raw units were. `tf.moments` hands back the variance instead, that distance squared and averaged, so the standard deviation is `variance.sqrt()`. The averaging divides by the number of rows, n, which makes both statistics the population version. The sample version divides by n minus 1 instead and comes out slightly larger.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -145,7 +147,22 @@ Min-max maps to the 0-1 range and suits data with true, known bounds: pixel valu
 
 ## What the Preview Neuron Computes
 
-The exercise ends at a model, so here is all of it. `tf.sequential()` holds an ordered list of layers. `tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })` adds one neuron that reads two features, and `setWeights` loads Farah's frozen numbers: one weight per feature (0.9 for temperature, -1.4 for signal strength) and one bias, -0.3.
+The exercise ends at a model, so here is all of it. `tf.sequential()` holds an ordered list of layers, and here the list is one entry long: a single dense unit that reads two features. Farah's frozen numbers are one weight per feature, 0.9 for temperature and -1.4 for signal strength, plus one bias of -0.3.
+
+<CodeBlock language="typescript" title="preview-neuron.ts">
+{`// One neuron, built and frozen: two features in, one verdict out.
+const neuron = tf.sequential();
+neuron.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
+
+// setWeights is positional: the kernel first, one weight per input feature
+// arranged as a column, then the bias, one number per unit. Farah's numbers
+// arrive as plain JS arrays, so each becomes a tensor on the way in.
+neuron.setWeights([tf.tensor2d([[0.9], [-1.4]]), tf.tensor1d([-0.3])]);
+
+// predict reads a batch: [n, 2] rows in, [n, 1] verdicts out. normalizedBatch
+// is the batch above with every column z-scored.
+const verdicts = neuron.predict(normalizedBatch);`}
+</CodeBlock>
 
 The neuron multiplies each normalized feature by its weight and adds the bias. It passes the total through sigmoid, `1 / (1 + Math.exp(-x))`, which squashes any number into the range 0 to 1.
 
@@ -153,7 +170,7 @@ The numbers below come from the exercise's four-reading batch, not the five read
 
 Now run those same four readings through the same neuron raw, without normalizing, and every verdict comes back 1.000000. The temperature term alone gets there: `0.9 * 20` is 18, and sigmoid is flat at the top long before signal strength contributes its `-1.4 * 0.2`. Normalized, the same neuron answers 0.59, 0.07, 0.67 and 0.57, and the lowest of the four belongs to `[22, 0.8]`, the reading with the strongest signal. Same weights, same bias, both times. Only the scales changed.
 
-Module 2 builds these layers and module 3 trains their weights. Tonight one of them is a fixed function you feed.
+Module 2 builds these layers and module 3 trains their weights. Tonight the layer is a fixed function you feed.
 
 ## Challenge
 
@@ -166,6 +183,11 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 <RecallPrompt
   question="Why normalize features before training?"
   answer="On different scales, the louder feature dominates what the model learns: a typical temperature value near 25 arrives about fifty times larger than a typical signal strength near 0.5. Normalization (z-score or min-max) brings every feature to a comparable scale, so the quiet one still registers."
+/>
+
+<RecallPrompt
+  question="The z-score step subtracts a [2] tensor of column means from a [5, 2] batch of readings, and nothing throws. Which rule from lesson 3 allows that, and how does it line the two shapes up?"
+  answer="Broadcasting. TensorFlow.js lines the two tensors up from the last axis backwards and stretches any axis of size 1, or any axis the smaller tensor does not have at all, until it matches the larger one. Here that takes each column's mean down its own column."
 />
 
 <LessonRecap

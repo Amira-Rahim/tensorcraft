@@ -27,7 +27,23 @@ hints:
   - level: nudge
     content: "Every name in the ladder gets one attempt. A backend that refuses, whichever way it refuses, is a reason to try the next one rather than a reason to stop."
   - level: guidance
-    content: "Two of the three questions in this ladder have answers that surprise people, and both of them come straight from the real API. First: how does a backend say no? In two different ways, and only one of those is an exception, so a loop built out of try and catch alone reads one of the refusals as a success and reports a backend the page is not running on. That is the bug the if in the lesson exists to prevent. Second: what do you know once the ladder is exhausted? Not nothing. The engine has settled on something by then, so ask it after the switch has finished instead of naming the last thing you tried. The third question is ordering, and its rule is that the preference list belongs to the caller. Walk it as given, stop at the first success, and leave everything under the winner alone, since a GPU context you take is one the page may not get back."
+    content: |
+      Two of the three questions in this ladder have answers that surprise
+      people, and both come straight from the real API.
+
+      First: how does a backend say no? In two different ways, and only one
+      of them is an exception. A loop built out of try and catch alone reads
+      the other refusal as a success and reports a backend the page is not
+      running on. That is the bug the if in the lesson exists to prevent.
+
+      Second: what do you know once the ladder is exhausted? Not nothing. The
+      engine has settled on something by then, so ask it after the switch has
+      finished instead of naming the last thing you tried.
+
+      The third question is ordering, and its rule is that the preference
+      list belongs to the caller. Walk it as given, stop at the first
+      success, and leave everything under the winner alone, since a GPU
+      context you take is one the page may not get back.
   - level: solution
     content: "async function initBestBackend( preference: BackendName[], runtime: Runtime ): Promise<BackendName> { for (const name of preference) { let started = false; try { started = await runtime.setBackend(name); } catch { started = false; } if (started) { await runtime.ready(); return name; } } await runtime.ready(); return runtime.getBackend(); }"
 keywords:
@@ -203,6 +219,8 @@ Walk a preference order and return the backend that is actually running, reading
 <Exercise slug="gpu-backend" />
 
 <RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 3x faster at the bridge console, and another GPU will give another ratio." />
+
+<RecallPrompt question="Demir's first WebGPU timing run printed 0.4 ms and was wrong. Which rule from module 4's backend benchmark does that run break, and would disposing the output tensor before stopping the clock have fixed it?" answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms." />
 
 <LessonRecap
   whatYouLearned={[

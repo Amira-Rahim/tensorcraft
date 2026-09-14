@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "Two nights after the report went out, the 0247 pulse window came, and at 0249, mid-window, the 340 MB model killed the bridge dashboard. The capture was lost. Now the optimization sprint begins, as penance."
+  narrative: "The capture is gone and the relay slot closed without it. The optimization sprint starts as penance, and it starts with measurement."
   speaker: "Chief Nazari"
 concept:
   explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. The numbers decide where the knife goes."
@@ -22,14 +22,34 @@ concept:
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); const y = model.predict(x); await y.data(); const ms = performance.now() - t0;"
     tier: structural
-    breaks: "performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. But profiling a model means measuring per-op latency, GPU kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
+    breaks: "The performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. What moves is where the clock can stop. On a GPU backend `predict()` schedules the work and returns, so a clock closed at that line times how fast you can enqueue rather than how long the work took, and the readback has to sit inside the timed region. Past that, profiling a model means per-op latency, kernel launch overhead, memory bandwidth and tensor-disposal cost, none of which appear in a browser perf budget."
 consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
     content: "profileModel is four reports on one model: how many parameters it has, how many megabytes they occupy at 4 bytes per float32, where those parameters sit layer by layer, and how long one predict() call takes on average."
   - level: guidance
-    content: "Four reports, four different sources. The parameter count you ask the model for. The megabytes are arithmetic on that count, and the only decision in them is which megabyte you mean: at 4 bytes per float32, dividing by a million and dividing by 1024 squared give answers 5 percent apart, and the report Nazari is holding is in MB, not MiB. The per-layer rows you ask each layer for, and the only decision there is which layers get a row: a model's list of layers is not the same as its list of weighted layers, and a row reading zero is what tells a reader that layer owns nothing instead of leaving them to wonder where it went. The milliseconds have to be measured, and both halves of that trap are in the CodeBlock above. A model's first call pays a one-off compilation cost, so it cannot sit inside an average of steady-state calls. And a prediction is not finished when predict() hands back a tensor: on a GPU backend the work is still queued, so a clock stopped at that line measures how fast you can ask rather than how long the work took. If your average comes back near zero, that is the second half biting."
+    content: |
+      Four reports, four different sources.
+
+      The parameter count you ask the model for. The megabytes are arithmetic
+      on that count, and the only decision in them is which megabyte you mean.
+      At 4 bytes per float32, dividing by a million and dividing by 1024
+      squared give answers 5 percent apart, and the report Nazari is holding
+      is in MB, not MiB.
+
+      The per-layer rows you ask each layer for. The decision there is which
+      layers get a row. A model's list of layers is not the same as its list
+      of weighted layers. A row reading zero tells a reader that layer owns
+      nothing, instead of leaving them to wonder where it went.
+
+      The milliseconds have to be measured, and both halves of that trap are
+      in the CodeBlock above. A model's first call pays a one-off compilation
+      cost, so it cannot sit inside an average of steady-state calls. And a
+      prediction is not finished when predict() hands back a tensor. On a GPU
+      backend the work is still queued, so a clock stopped at that line
+      measures how fast you can ask rather than how long the work took. If
+      your average comes back near zero, that is the second half biting.
   - level: solution
     content: |
       const parameterCount = model.countParams();
@@ -67,7 +87,7 @@ Profiling first. Same discipline as a slow React app: measure, find the bottlene
 
 The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight; the numbers decide where the knife goes.
 
-<LearningObjectives objectives={["Size a model's weights from its parameter count, and use tf.memory() to prove the profiling loop leaked nothing", "Benchmark inference latency with high-resolution timing, mean and tail", "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time", "Establish baseline metrics before optimization"]} />
+<LearningObjectives objectives={["Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates", "Benchmark inference latency with high-resolution timing, mean and tail", "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time", "Establish baseline metrics before optimization"]} />
 
 ## Measure Everything
 
@@ -190,9 +210,9 @@ for (const layer of profile.layerBreakdown) {
 // The flatten row is in there because the loop walks model.layers, not
 // only the layers that hold weights. It reshapes the embedding's 80 by 256
 // output into 20,480 values and owns nothing, so its share is 0.0%.
-// Rounded to millions the bundle is the 85 million weights Nazari quotes.
-// The profiler prints the exact count, and 84,994,664 float32 weights are
-// 340.0 MB.
+// Rounded to millions that is 85 million weights. The profiler prints the
+// exact count, and 84,994,664 float32 weights at 4 bytes each are the
+// 340.0 MB on Nazari's board.
 //
 // Read the shares, not the total. 80% of this model is one Dense layer, so
 // that layer holds most of the 340 MB. The 45 ms mean and the 112 ms P95 are
@@ -217,7 +237,7 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
     "Layer breakdown pinpoints where the parameters concentrate, so optimization effort goes to the right place. It does not measure per-layer time; that needs a profiler that instruments each op.",
     "A warmup pass before timing removes JIT and compilation noise from measurements."
   ]}
-  bridge="Just as `performance.mark`/`performance.measure` locates slow code in a JS app, `performance.now()` around `model.predict()` locates the latency, the parameter count sizes the weights, and `tf.memory()` proves the measurement itself leaked nothing."
+  bridge="Just as `performance.mark`/`performance.measure` locates slow code in a JS app, `performance.now()` around `model.predict()` locates the latency, the parameter count sizes the weights, and `tf.memory()` read on both sides of the loop shows whether the measurement leaked."
   youCanNow="Profile a TensorFlow.js model to measure its memory footprint, inference latency, and per-layer parameter distribution before making any optimization decisions."
 />
 
@@ -225,8 +245,6 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
 
 By evening the profile hangs on the engineering board next to Nazari's handwritten totals: dashboard RAM 512, model 340, reconstruction 9 hours, capture 0, days to the next relay slot 19. Below it sits a line nobody expected: 211 KB of partial telemetry from the crash window, recovered. Demir replays the fragment three times. The last clean reading before the crash puts the pulse interval at 61.2 seconds; it was 73.4 when they first measured it, and nobody has decided what to do about that.
 
-<Dialogue speaker="ARIA">
-When the dashboard failed at 0249, my reboot watchdog buffered the final telemetry frames to my own store. Standing procedure since before DEEP SCAN existed. It is not the capture. It is what a rule-based system keeps when nobody asks it to.
-</Dialogue>
+The 211 KB came out of ARIA's own store, buffered by a reboot watchdog that has kept the final frames of a failing system since before DEEP SCAN existed. Not the capture. What a rule-based system keeps when nobody asks it to.
 
 </Epilogue>

@@ -51,7 +51,7 @@ Every tensor has a **shape**: a tuple of numbers describing how many elements ex
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Shapes are already everywhere in the data you handle. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`. That same `[3, 4]` is a sequence when its rows are ordered in time: 3 time steps, 4 channels read at each step, which is the layout the challenge below hands you. Module 6 puts a batch axis in front of the time axis and works in `[32, 5, 3]`: 32 windows, 5 time steps each, 3 features per step.
+Shapes are already everywhere in the data you handle. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`, where a batch is the group of examples a model reads in one go. That same `[3, 4]` is a sequence when its rows are ordered in time: 3 time steps, 4 channels read at each step, which is the layout the challenge below hands you. Module 6 puts a batch axis in front of the time axis and works in `[32, 5, 3]`: 32 windows, 5 time steps each, 3 features per step.
 
 ## Where Does Each Value Land?
 
@@ -115,7 +115,7 @@ console.log(right.arraySync()[0].slice(0, 5));  // [0, 64, 128, 192, 256]
 // wrong.shape and right.shape are both [64, 450]. Only one is data.`}
 </CodeBlock>
 
-On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also where a layout instinct betrays you. Change `grid-template-columns` on a CSS grid and the browser *reflows*, moving items into the new tracks; that reflow is what `reshape` never does. Reshape rewraps the flat line. When you catch yourself wanting the values rearranged, the tool is `transpose`.
+On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also where a layout instinct serves you, if you read it right. Change `grid-template-columns` on a CSS grid and the browser re-wraps the same items, in source order, at new line breaks: nothing changes places, and that is exactly what `reshape` does to the flat line. What re-columning never does is fill down the columns instead of across the rows. That takes a different property, `grid-auto-flow: column` with the row count pinned by `grid-template-rows`, and its tensor name is `transpose`. When you catch yourself wanting the values rearranged rather than re-wrapped, the tool is `transpose`.
 
 ## Challenge
 
@@ -131,7 +131,7 @@ Reshape a flat tensor into a matrix.
 <LessonRecap
   whatYouLearned={[
     "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4], and so does a sequence of 3 time steps with 4 channels at each step: the shape alone does not say which one you have.",
-    "Channel does double duty in this course. In modules 1 and 7 a channel is one of the 64 hull sensors, a column of the archive block. In a sequence window later on, a channel is one feature per time step, and there are three of them. When a shape reads [steps, channels], count them: 64 is the hull, 3 is the features.",
+    "Channel does double duty in this course. In modules 1 and 7 a channel is one of the 64 hull sensors, a column of the archive block. In a sequence window later on, a channel is one feature per time step, and there are three of them. In a shape written [steps, channels] the channel count is the last entry and never the first, which is how this lesson's challenge ends up with 4 of them. What a channel holds is never in the shape, only in the text around it.",
     "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
     "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
   ]}
@@ -144,7 +144,7 @@ Reshape a flat tensor into a matrix.
 Farah reshapes the first stretch of the stream every way the element count allows. Most layouts are mush. Then `[450, 64]`, and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
 
 <Dialogue speaker="Dr. Farah">
-Sixty-four channels. Whatever sent this packed its data the way we pack ours.
+Sixty-four columns. One per hull sensor, so this is our grid, not theirs. Whatever structure they sent is in the swell down each column, not in the shape.
 </Dialogue>
 
 Farah pins the [450, 64] layout to the main display and starts numbering channels.

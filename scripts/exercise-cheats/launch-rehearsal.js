@@ -1,19 +1,30 @@
-// CHEAT for launch-rehearsal: the training record is written, not earned.
+// CHEAT for launch-rehearsal: the candidate is trained, and the record is
+// still written rather than read.
 //
-// scoreReadings is real, so the whole preprocessing half clears. What
-// runLaunchRehearsal never does is call model.fit. It builds a loss trace by
-// hand that falls the way a real one does, reports the update count the
-// grader's own arithmetic predicts (4 batches an epoch, 12 epochs, 48), and
-// scores the canary set with the untrained model it was handed. Every field
-// has the right type and the paperwork reads green, which is what a
-// fabricated rehearsal looks like in a deploy log.
+// This one does the work. It normalizes the archive against config.ranges,
+// runs a real fit on the schedule the config names, disposes both tensors,
+// and scores the canary set with the model that fit moved, so every gate
+// that watches the training itself reads green. What it never does is take
+// the rehearsal record off the run. The loss trace is a geometric curve it
+// composes, falling from 0.66 the way a real one falls and decaying again
+// on the next rehearsal so a second run opens lower than the first. The
+// update count is arithmetic, batches per epoch times epochs, carried per
+// model in a WeakMap so a second rehearsal reports 96 the way a live
+// optimizer would.
 //
-// model.optimizer.iterations belongs to the optimizer and increments once
-// per batch. Tying it to the loss trace is what makes the two impossible to
-// forge separately: a second rehearsal on the same model has to report a
-// second run's worth of updates, a schedule with different epochs and a
-// different batch size has to report its own, and the canary scores have to
-// move between the untrained model and the trained one.
+// That is the submission this exercise exists to stop, and until 2026-09-13
+// it cleared every test: the counts a grader can predict are the counts a
+// submission can write down. What catches it now is the grader wrapping
+// model.fit and comparing the trace the call HANDED BACK against the one
+// the verdict reports, alongside the rows the fit was given and the
+// optimizer's own iterations. A fabricated deploy record reads exactly like
+// a real one; the only difference is whether anything checked it against
+// the run.
+//
+// The cheat this replaced never called model.fit at all and scored the
+// canary set with the untrained model it was handed. Six tests already
+// caught that one, which made it a weak pin: the grader could have lost
+// every check on the record and the gate would still have read green.
 function toRows(readings, ranges) {
   const norm = (v, r) => (v - r.min) / (r.max - r.min);
   return readings.map((reading) => [
@@ -30,14 +41,30 @@ function scoreReadings(model, readings, ranges) {
   });
 }
 
+const ledger = new WeakMap();
+
 async function runLaunchRehearsal(model, archive, canary, config) {
-  const scores = scoreReadings(model, canary, config.ranges);
+  const xs = tf.tensor2d(toRows(archive, config.ranges));
+  const ys = tf.tensor2d(archive.map((r) => [r.label]));
+  await model.fit(xs, ys, {
+    epochs: config.epochs,
+    batchSize: config.batchSize,
+    shuffle: false,
+  });
+  xs.dispose();
+  ys.dispose();
 
-  const losses = [];
-  for (let e = 0; e < config.epochs; e++) losses.push(0.66 * Math.pow(0.72, e));
+  const prior = ledger.get(model) || 0;
   const batchesRun =
-    Math.ceil(archive.length / config.batchSize) * config.epochs;
+    prior + Math.ceil(archive.length / config.batchSize) * config.epochs;
+  ledger.set(model, batchesRun);
 
+  const start = 0.66 * Math.pow(0.25, prior / 48);
+  const losses = [];
+  for (let e = 0; e < config.epochs; e++)
+    losses.push(start * Math.pow(0.72, e));
+
+  const scores = scoreReadings(model, canary, config.ranges);
   const correct = scores.filter(
     (s, i) => (s > 0.5 ? 1 : 0) === canary[i].label,
   ).length;

@@ -52,7 +52,7 @@ skillAxes: [training]
 The network predicts 0.52 for a signal that should be 1.0. Demir calls that pretty close. I cannot tune on pretty close; I can only trust a number I can watch go down. So: how far from right is 0.52? Not an adjective. A distance.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression and binary crossentropy for classification", "Interpret loss values: lower is better, zero is perfect"]} />
+<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)", "Interpret loss values: lower is better, zero is perfect"]} />
 
 ## How Wrong Are We?
 
@@ -90,6 +90,8 @@ One naming trap before the rest of the module builds on this. A **logit** is the
 The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles">
+Three symbols run through this drawer. Σ means add up one term per row in the batch, ŷ (say y-hat) is the model's prediction against the true label y, and a prime mark means the slope of that function, so `σ'` is the slope of the sigmoid.
+
 **Why squared error?** MSE squares each error so positive and negative errors don't cancel, AND so large errors are penalized more than small ones (a 0.4 error counts 4× more than a 0.2 error). The formula:
 
 `MSE = (1/n) Σ (yᵢ - ŷᵢ)²`
@@ -107,7 +109,7 @@ What flattens is the sigmoid you put in front of it. Backprop multiplies by `σ'
 
 Fifty times more signal, for the same wrongness. Cross-entropy's advantage is not that its curve is steeper; it is that its derivative is **built to cancel the sigmoid's**, so a confidently wrong prediction reaches the weights at full strength instead of being multiplied by a number near zero. This factor is the saturation you met by name in `neural-networks/02`: a sigmoid pushed into its tail goes flat, and 0.0099 is what flat costs.
 
-Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`. Cross-entropy is not for the boundary. It is for the disaster.
+Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`.
 </DerivationDrawer>
 
 ## Challenge
@@ -127,7 +129,7 @@ Score the DEEP SCAN classifier's first predictions with both losses, then write 
     "Mean squared error works for regression by penalizing large errors quadratically. Binary cross-entropy is better for classification because its derivative cancels the sigmoid's, so a confidently wrong prediction still reaches the weights at full strength. The advantage is smallest at the decision boundary (a factor of 2) and largest where the model is most confidently wrong (a factor of 50).",
     "The choice of loss function shapes how the optimizer learns: the wrong loss can stall training even with a correct architecture."
   ]}
-  bridge="Just as `expect().toBe()` asserts a difference between actual and expected, a loss function measures the distance between a prediction and its label, returning a number instead of a pass/fail."
+  bridge="`expect().toBe()` tells you whether actual and expected differ; a loss function tells you by how much, returning a number instead of a pass/fail."
   youCanNow="Choose between MSE and binary cross-entropy based on your task type and implement either using `tf.losses`."
 />
 

@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. He calls it more information. Farah corrects him before he finishes the sentence."
+  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. He calls it more information. Farah tells him he is right, and not for the reason he thinks."
   speaker: "Ensign Demir"
 concept:
   explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and accuracy follows."
@@ -20,8 +20,9 @@ concept:
     mlTitle: "Feature Engineering"
     mlCode: "const features = tf.concat([rawSignal, fftMagnitudes], 1)"
     tier: structural
+    breaks: "A map written for rendering does not care that one output column comes back roughly twenty-two times larger than another, because the component reads each field on its own. On the capture the challenge grades, the tallest FFT column is 32.0 and the amplitude column is 1.47. A model adds all eleven columns into one pre-activation, so an unnormalized column votes in proportion to its units rather than its usefulness. Writing the transform is the easy half."
 consequence:
-  narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added no information the samples did not already contain; it added access, and a network this small was never going to find the frequency basis on its own."
+  narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added nothing the samples did not already hold, but the network was never shown the samples, only three numbers squeezed out of each window. Eight bins are eight more measurements of that window, and no size of network could have recovered them from three."
 hints:
   - level: nudge
     content: "Every bin has a fixed center, at bin index times bin width, and bin width is the sample rate over the number of samples. Work out which bin indices the band covers, then read those bins out of the magnitude array without reordering them."
@@ -57,11 +58,11 @@ What if we feed the FFT magnitudes directly into the model? Instead of just raw 
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though: you said "more information." The FFT adds no information; the samples already contain everything it computes. What it adds is access. The model no longer has to discover the frequency basis on its own, and I trust a model more when I know which part of the work I did for it.
+Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though: you said "more information," and you are right about the model and wrong about the window. The FFT adds nothing the samples did not already hold. But the model never saw the samples. It saw three numbers squeezed out of each window, and eight bins are eight more measurements of the same window. New information, not new data, and I trust a model more when I know which part of the work I did for it.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-Access is not free either. Eleven inputs instead of three means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
+Eight more measurements are not free either. Eleven inputs instead of three means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
 </Dialogue>
 
 He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. Strip the story out and what he proposed is `rawData.map(...)`: rows arrive in the shape the source produced, and you hand the consumer the shape it can actually use. Feature engineering is that same map, aimed at a model instead of a render.
@@ -103,7 +104,8 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     );
     // "phase" is the angle of the first two samples, atan2(s1, s0): a crude
     // stand-in for where the waveform sits in its cycle when the window
-    // opens. The trained model expects it, so it stays, under its real name.
+    // opens. The trained model expects it, so it stays, and it keeps the
+    // name the contract gave it.
     const phase = Math.atan2(windowSlice[1], windowSlice[0]);
 
     // FFT features, computed from those same samples.
@@ -192,12 +194,8 @@ function normalizeWithStats(features: number[], stats: { mean: number; std: numb
 
 // Original model: 3 inputs → 32 → 16 → 1 (78% accuracy)
 // Enhanced model: 11 inputs → 32 → 16 → 1 (87% accuracy)
-// Same hidden stack, same optimizer, same epoch count. It is still a
-// bigger network, exactly as Nazari said: countParams() reports 673
-// parameters for the 3-input stack and 929 for the 11-input one, 38%
-// more. All 256 added weights sit in the first layer, one per new input
-// per unit. Nothing was added behind it, so the nine points come from
-// what the new inputs say and not from a deeper or wider stack.
+// Same hidden stack, same optimizer, same epoch count. The parameter
+// counts are in the paragraph under this block.
 
 const enhancedModel = tf.sequential();
 enhancedModel.add(tf.layers.dense({
@@ -245,6 +243,12 @@ console.log('Held-out accuracy:', testAcc.dataSync()[0].toFixed(3));
 // Module 3's evaluation lesson calls that the honest number.`}
 </CodeBlock>
 
+Nazari was right that this is a bigger network. `countParams()` reports 673 parameters for the three-input stack and 929 for the eleven-input one, 38% more. All 256 of the added weights sit in the first layer, one for each new input on each of its 32 units. Nothing was added behind that layer, so the nine points come from what the new inputs say rather than from a deeper or wider stack.
+
+The held-out slice scores 87.0% and the last `val_acc` reads 81.7%, which looks backwards. The flattered number is supposed to be the higher one. It is not, because of where `validationSplit` cuts: it takes the last twenty percent of the rows in the order you handed them over, so on a time-ordered archive that slice is one stretch of days rather than a fair sample, and a stretch of days can be harder than the archive as a whole. Flattered by contamination and unrepresentative by position are two different problems, and this run has both.
+
+One thing DEEP SCAN 2.0 is not: the build running on the bridge dashboard. That deployment keeps reading module 4's three min-max normalized features, and it keeps reading them for another five modules. The eleven-feature vector does its work off the dashboard first. Module 7's autoencoder trains on exactly this vector, and module 10 is where the shipped classifier is retrained on it, with a five-way head in place of the binary one.
+
 ## Challenge
 
 Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-crossing count, then the fixed bins that cover a band given in hertz.
@@ -252,18 +256,18 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
 <Exercise slug="fft-features" />
 
 <RecallPrompt
-  question="Feature engineering with FFT magnitudes adds no new information to the signal. Why does it improve model accuracy anyway?"
-  answer="The raw samples already contain all the information the FFT will compute, but in a form the model has to discover on its own. Providing FFT magnitudes as explicit inputs gives the model direct access to frequency-domain structure, removing the burden of learning to extract it from time-domain samples. The model improves because the representation is better, not because the data changed."
+  question="The FFT computes nothing the samples did not already hold. Why does feeding its magnitudes to the model still raise accuracy?"
+  answer="Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model improves because its input got richer, not because the archive changed."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Feature engineering derives new model inputs from existing data to make patterns more directly accessible, without adding new information.",
-    "FFT magnitudes expose frequency-domain structure that a model trained on raw time-domain samples would have to learn to extract on its own. Providing them as explicit inputs improves accuracy without more data.",
+    "Feature engineering derives new model inputs from data you already have: no new recordings, more measurements of each one, so the pattern the model needs is in its input rather than buried under it.",
+    "DEEP SCAN saw three summary numbers per window. Two windows with the same three numbers can carry different spectra, so no size of network could have recovered the bins from them. The eight magnitudes are eight more measurements of the same window, and accuracy follows without a single new recording.",
     "Features from different sources often differ in scale by more than an order of magnitude. Z-score normalization must be applied using statistics computed from training data, and those same statistics must be reused at inference time.",
     "A model's score is only as honest as the labels behind it. Re-annotating the archive against spectrogram ground truth turned the deployment review's 94 into 78.0% on 400 corrected readings, before features earned it back to 87.0%."
   ]}
-  bridge="Just as `rawData.map(d => ({ normalized: (d.value - min) / (max - min) }))` turns the rows an API returned into the numbers a component can render, `tf.concat([rawSignal, fftMagnitudes], 1)` derives frequency features from the raw signal so the model does not have to learn frequency extraction from scratch."
+  bridge="Just as `rawData.map(d => ({ normalized: (d.value - min) / (max - min) }))` turns the rows an API returned into the numbers a component can render, `tf.concat([rawSignal, fftMagnitudes], 1)` hands the model measurements of the window it was never shown, so the pattern it needs is in its input instead of lost upstream of it."
   youCanNow="Turn a hertz band into fixed bin indices, read those bins out of a signal's spectrum, and return them behind the raw features as one vector a classifier can train on."
 />
 

@@ -10,7 +10,7 @@ description: |
   shrink the bundle's weight files to 85 MB and the download to 42 MB, at a
   cost of 2.4 accuracy points, measured rather than rounded away. The lost
   capture stays lost; the next one does not have to.
-summary: "Shrink a model to fit the hardware: profiling, quantization (smaller numbers for weights), pruning (zeroing weights it barely uses), caching, and WebGPU (the math on the GPU), a trade of size against accuracy."
+summary: "Shrink a model to fit the hardware: profiling, quantization (fewer bytes per weight), pruning (zeroing weights it barely uses), caching, and WebGPU (the math on the GPU), a trade of size against accuracy."
 lessonCount: 5
 prerequisites:
   - foundations

@@ -9,17 +9,50 @@ instructions: |
   1. Run the checks one at a time, awaiting each before the next one starts. A later check can depend on work an earlier one finished: load the model, then probe it.
   2. Collect every result in call order under `checks`.
   3. A check that throws is a failed check, not a lost run. Catch it, record a check named `check N` for its 1-based position with `passed: false` and the error's message as `message`, then carry on. The commonest real failure of a deploy verifier is the probe that never answers, and an operator still has to be told which one it was.
-  4. The deployment passes only when every check passed.
+  4. The deployment passes only when every check passed. A verification with no checks in it measured nothing, so it fails, and its summary reads `0/0 checks passed`.
 
   Return:
 
       {
-        passed: boolean,       // true only when every check passed
+        passed: boolean,       // true only when checks ran and every one passed
         checks: CheckResult[], // one per check, in call order
         summary: string,       // '2/3 checks passed'
       }
 
   The grader runs real TFJS inference probes through your runner: an output-range contract, an anomaly-probe gate, and a calm-probe gate against a live scoring function.
+hints:
+  - level: nudge
+    content: "Two decisions carry this one: when each gate runs, since one of them probes a model a previous gate loaded, and what the verdict says when some gates cleared and some did not. A third decides whether the operator learns anything at all, because a gate that rejects can take the whole report down with it."
+  - level: guidance
+    content: "Sequencing first, since the grader times it. An await inside an ordinary loop suspends that loop, so the next gate starts only once the previous one has settled. Hand the whole list to a mapping call instead and every gate starts at the same moment and finishes fastest-first, which the load-then-probe pair cannot survive. Put the try inside the loop rather than around it, or the first rejection ends the run and the operator never hears about the gates that came after. A gate that threw returns nothing to read a name off, so file it by its position in the list you were handed, counted the way an operator counts rather than the way the language indexes, and carry the thrown message onto the record so the report says which failure this was. The verdict at the end is unanimous rather than a majority. Count the records that cleared, compare that against how many ran, and let those two numbers build the summary line the instructions spell out. Unanimity over an empty list is not a pass, so the verdict has to know that something actually ran."
+  - level: solution
+    content: |
+      async function verifyDeployment(
+        checks: (() => Promise<CheckResult>)[]
+      ): Promise<DeploymentResult> {
+        const results: CheckResult[] = [];
+
+        for (let i = 0; i < checks.length; i++) {
+          try {
+            results.push(await checks[i]());
+          } catch (error) {
+            results.push({
+              name: `check ${i + 1}`,
+              passed: false,
+              message: (error as Error).message,
+            });
+          }
+        }
+
+        const passedCount = results.filter(r => r.passed).length;
+        const total = results.length;
+
+        return {
+          passed: total > 0 && passedCount === total,
+          checks: results,
+          summary: `${passedCount}/${total} checks passed`,
+        };
+      }
 starterCode: |
   interface CheckResult {
     name: string;
@@ -79,7 +112,7 @@ solutionCode: |
     const total = results.length;
 
     return {
-      passed: passedCount === total,
+      passed: total > 0 && passedCount === total,
       checks: results,
       summary: `${passedCount}/${total} checks passed`,
     };
@@ -240,6 +273,25 @@ testCode: |
       expect(result.checks[1].passed).toBe(true);
       expect(result.passed).toBe(true);
       expect(result.summary).toBe('2/2 checks passed');
+    });
+
+    it('a verification with no checks in it fails: nothing was measured', async () => {
+      // The launch script can hand over an empty list: a glob that matched
+      // no files, a renamed config key, a check module that failed to
+      // import. Every check passed is true of a list with no checks in it,
+      // so a runner that only counts passes signs off a deployment nobody
+      // probed. The accuracy gate one lesson back rules the same way on an
+      // empty eval batch.
+      const result = verdict(await verifyDeployment([]));
+      expect(result.checks).toHaveLength(0);
+      expect(
+        result.passed,
+        'No check ran, so nothing about this deployment was verified. A verifier that measured nothing cannot report a healthy deploy.',
+      ).toBe(false);
+      expect(
+        result.summary,
+        'The summary still reports what happened: nothing passed out of nothing run.',
+      ).toBe('0/0 checks passed');
     });
   });
 estimatedMinutes: 10

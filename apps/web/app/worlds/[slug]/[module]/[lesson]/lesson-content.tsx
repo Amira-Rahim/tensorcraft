@@ -453,6 +453,7 @@ export function LessonContent({
           <Exercise
             {...props}
             bridge={bridgeHint}
+            onHintRevealed={handleHintRevealed}
             onSubmit={(result: ExerciseSubmitResult) => {
               handleExerciseSubmit(result);
               if (result.passed) {
@@ -464,7 +465,11 @@ export function LessonContent({
     } else {
       base.Exercise = (props: { slug: string }) =>
         shouldShow("Exercise") ? (
-          <Exercise {...props} bridge={bridgeHint} />
+          <Exercise
+            {...props}
+            bridge={bridgeHint}
+            onHintRevealed={handleHintRevealed}
+          />
         ) : null;
     }
 

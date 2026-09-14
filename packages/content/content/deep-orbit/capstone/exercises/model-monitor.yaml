@@ -6,7 +6,7 @@ instructions: |
 
   1. Confidence. `logPrediction(confidence)` records one verdict, and `avgConfidence` is the mean over every prediction logged so far, 0 before anything has been logged.
   2. Latency percentiles. Record each inference time with `logLatency(ms)`, then `getLatencyPercentile(p)` reads one value off the recorded times. Order a copy of them ascending as numbers first, since the default comparison is textual and puts 400 ahead of 41. The value is the one at index `Math.floor(count * p / 100)`, clamped to the last index so p = 100 lands on the slowest call rather than past the end. With nothing recorded it returns 0.
-  3. Drift. `computeDrift(recentInputs)` collapses the recent window to its column means first, then returns the Euclidean distance from the baseline mean vector. An empty window returns 0. No traffic is not drift, and a window that never averaged anything sits at the origin, which is the loudest reading this detector can produce.
+  3. Drift. `computeDrift(recentInputs)` collapses the recent window to its column means first, then returns the Euclidean distance from the baseline mean vector. An empty window returns 0. No traffic is not drift, and a window that never averaged anything sits at the origin. The distance from the baseline to the origin is the length of the baseline vector itself, 1.02 on the five-feature baseline the grader uses, which is twice the 0.5 alert threshold. A quiet hour would page someone.
 starterCode: |
   class ModelMonitor {
     private confidences: number[] = [];
@@ -127,6 +127,26 @@ testCode: |
       ).toBe(0);
     });
 
+    it('divides by the count so far, so the average moves with every prediction', () => {
+      // Five verdicts over one shift, confidence decaying while the input
+      // window drifts. Both parts of the average move as each one lands: the
+      // total and the number of predictions it is divided by. A fixed
+      // divisor, or a mean over a trailing window of the last few, reports a
+      // settled figure while the model is losing its grip. These five average
+      // 0.68, and the last three of them average 0.533.
+      const monitor = new ModelMonitor([0, 0]);
+      const scores = [0.92, 0.88, 0.61, 0.55, 0.44];
+      let sum = 0;
+      scores.forEach((score, i) => {
+        monitor.logPrediction(score);
+        sum += score;
+        expect(
+          monitor.avgConfidence,
+          'The average is the total of every prediction logged so far over how many there have been, and both of those change with each call. After the first prediction the average is that prediction.',
+        ).toBeCloseTo(sum / (i + 1), 5);
+      });
+    });
+
     it('detects no drift when data matches baseline', () => {
       const monitor = new ModelMonitor([1.0, 2.0]);
       const drift = monitor.computeDrift([[1.0, 2.0], [1.0, 2.0]]);
@@ -139,10 +159,10 @@ testCode: |
 
     it('an empty window is not drift: a quiet hour scores 0', () => {
       // The averaging loop never runs, so a recent mean of all zeros is not
-      // a measurement, it is the absence of one. Returning the distance
-      // from the baseline to the origin makes an hour with no traffic the
-      // loudest drift the detector can report, and the alert threshold is
-      // 0.5.
+      // a measurement, it is the absence of one. The distance from this
+      // baseline to the origin is 1.0188, the length of the baseline
+      // vector, against an alert threshold of 0.5. Report that and an hour
+      // with no traffic pages someone.
       const monitor = new ModelMonitor([0.31, 0.47, 0.52, 0.28, 0.61]);
       expect(
         monitor.computeDrift([]),

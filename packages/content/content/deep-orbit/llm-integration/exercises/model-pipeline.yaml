@@ -206,6 +206,33 @@ testCode: |
         expect(r.classification).toBe('anomaly');
       }
     });
+
+    it('hands the capture itself to every stage', async () => {
+      // The lesson's headline point: every stage does its own preprocessing
+      // on the raw capture, so each one has to receive the array the
+      // pipeline was handed. Every stub above ignored its first argument, and
+      // a submission that called every stage with nothing at all cleared the
+      // suite (round 7, 2026-09-13).
+      const capture = [7, 8, 9];
+      const seenBy = { classify: [], detectAnomaly: [], generateAlert: [] };
+      const r = await runPipeline(
+        capture,
+        async (s) => { seenBy.classify.push(s); return { class: 'anomaly', confidence: 0.9 }; },
+        async (s, cls) => { seenBy.detectAnomaly.push(s); return true; },
+        async (s, cls) => { seenBy.generateAlert.push(s); return 'ALERT!'; },
+      );
+      expect(r.alert).toBe('ALERT!');
+      for (const stage of ['classify', 'detectAnomaly', 'generateAlert']) {
+        expect(
+          seenBy[stage].length,
+          stage + ' ran ' + seenBy[stage].length + ' time(s) on this run; it has to run exactly once.',
+        ).toBe(1);
+        expect(
+          seenBy[stage][0],
+          stage + ' received something other than the capture the pipeline was handed. Every stage is handed the raw capture itself and does its own preprocessing on it; the classifier\'s verdict rides along as context, it does not replace the signal.',
+        ).toEqual(capture);
+      }
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

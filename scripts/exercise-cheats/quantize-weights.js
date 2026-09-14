@@ -28,15 +28,14 @@ async function quantizeModel(model, captures) {
     const min = values.reduce((a, b) => Math.min(a, b));
     const max = values.reduce((a, b) => Math.max(a, b));
     const scale = (max - min) / 255;
-    const zeroPoint = Math.round(-min / scale);
     const quantized = values.map((v) => Math.round((v - min) / scale));
-    const restored = quantized.map((q) => (q - zeroPoint) * scale);
+    const restored = quantized.map((q) => q * scale + min);
     const error = restored.reduce(
       (worst, v, i) => Math.max(worst, Math.abs(v - values[i])),
       0,
     );
     maxWeightError = Math.max(maxWeightError, error);
-    kernels.push({ quantized, scale, zeroPoint, shape: w.shape });
+    kernels.push({ quantized, scale, min, shape: w.shape });
   }
 
   const after = Array.from(await model.predict(input).argMax(1).data());

@@ -105,6 +105,29 @@ describe("exerciseSchema", () => {
     difficulty: "beginner" as const,
   };
 
+  it("accepts an exercise-level hint ladder of two or three rungs and rejects one", () => {
+    const rung = (level: "nudge" | "guidance" | "solution") => ({
+      level,
+      content: "x",
+    });
+    expect(
+      exerciseSchema.safeParse({
+        ...validExercise,
+        hints: [rung("nudge"), rung("guidance"), rung("solution")],
+      }).success,
+    ).toBe(true);
+    expect(
+      exerciseSchema.safeParse({
+        ...validExercise,
+        hints: [rung("nudge"), rung("solution")],
+      }).success,
+    ).toBe(true);
+    expect(
+      exerciseSchema.safeParse({ ...validExercise, hints: [rung("nudge")] })
+        .success,
+    ).toBe(false);
+  });
+
   it("accepts a valid exercise", () => {
     const result = exerciseSchema.safeParse(validExercise);
     expect(result.success).toBe(true);

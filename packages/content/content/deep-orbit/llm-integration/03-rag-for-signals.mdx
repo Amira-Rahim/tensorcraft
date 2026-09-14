@@ -10,7 +10,7 @@ scene:
   epilogueLocation: "Archimedes, Bridge"
   portraitAlt: "Farah and Demir trace archive rows flowing into a prompt panel on the lab displays, building retrieval before generation."
   epiloguePortraitAlt: "On the bridge display wall a generated answer overruns its retrieved context; Nazari points at the mismatch while Demir looks on."
-estimatedMinutes: 13
+estimatedMinutes: 15
 difficulty: advanced
 context:
   narrative: "The LLM doesn't know about DEEP SCAN's specific signals. Farah builds a RAG pipeline: retrieving relevant signal rows from the database and injecting them into the prompt."
@@ -25,12 +25,12 @@ concept:
     tier: structural
     breaks: "Server Components render server-side and ship deterministic HTML. RAG retrieves passages then conditions an LLM on them; the answer is generated, not extracted. Models routinely contradict the retrieved passages while citing them. Confidence in RAG output requires verifying the answer matches the cited chunks, not just trusting the citation exists."
 consequence:
-  narrative: "The crew asks for Band-7 anomalies from the last 72 hours, the pipeline matches those three terms against the catalogue, and the model answers from the rows it retrieved."
+  narrative: "The pipeline retrieves fourteen Band-7 rows and the model reports seventeen, so the audit hour buys a checker."
 hints:
   - level: nudge
-    content: "Two challenges here, and the rungs under this one follow the retrieval. For the retrieval: three reads off the question, each applied only when the question carries it, then the cap that keeps the prompt inside its token budget, then the count and the flag that say what the cap cost. For the checker: every number in the answer is a claim, the retrieved readings are the only evidence you may admit, and the retrieval that came back empty is the case that settles the rule."
+    content: "These rungs are about the retrieval. The checker below carries its own. Three reads off the question, each applied only when the question carries it, then the cap that keeps the prompt inside its token budget, then the count and the flag that say what the cap cost."
   - level: guidance
-    content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached. The checker is its own set of decisions, and the instructions state all three. Absolute tolerance rather than a percentage, because a model reprinting a logged reading rounds it by a little while a model inventing one misses by a lot, and a percentage forgives the large readings most. Compare magnitudes rather than characters, or a 9 in the answer finds a row holding 29.7 and every digit in a timestamp becomes evidence. And an empty retrieval decides the rest: no evidence was in hand, so nothing the answer says traces to anything, which puts every number in it on the same list."
+    content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached."
   - level: solution
     content: |
       const bandMatch = query.match(/band[- ]?(\w+)/i);
@@ -113,11 +113,8 @@ interface Retrieval {
 
 // The honest label for that step: keyword-and-metadata retrieval. It
 // works here because the catalogue is 12,001 STRUCTURED rows with named
-// fields you can match on. Production RAG over prose replaces that one
-// function with embeddings: every document and every query mapped to a
-// vector, retrieval = the k nearest by cosine similarity (top-k). Different
-// machinery, identical contract: retrieve -> ground -> verify. When your
-// corpus stops having fields, swap this one function and keep the contract.
+// fields you can match on. What production RAG reaches for when the corpus
+// has no fields is the paragraph right under this block.
 
 // Step 2: AUGMENT: inject retrieved data into prompt
 function buildRAGPrompt(query: string, signals: Signal[]): string {
@@ -137,6 +134,7 @@ If the data doesn't contain the answer, say "insufficient data."
 ## Instructions
 - Cite each signal by copying its bracketed timestamp from the rows above
 - Every number you write has to be one of the readings in those rows: a confidence, an amplitude, a frequency or an anomaly score. Do not add them up, average them, or count them
+- Write a band name in words rather than digits: Band seven, not Band-7
 - Say plainly when the rows do not answer the question\`;
 }
 
@@ -180,7 +178,9 @@ if (unsourced.length > 0 || fabricated.length > 0) {
 }`}
 </CodeBlock>
 
-Two of those instructions exist to keep the answer inside what the checker can admit. The checker compares numbers, and the only numbers it admits are the readings in the retrieved rows. The band and the timestamp are labels, not readings, so the checker admits neither, and a sentence that quotes "Band-7" as a number would be turned away: that is why the citation strip runs before the number check, and why the prompt names the four readings and nothing else. A sum, an average or a count is a number the model worked out rather than read, so the checker calls it fabricated unless it happens to land within the tolerance of some reading. When the report needs a count of matching rows, `matched` already holds it and JavaScript can print it exactly. Ask the model for that count instead and you have bought a number somebody now has to verify.
+That retrieval is a keyword-and-metadata match, and it works only because every row has fields. A corpus of prose has none, and that is where production RAG stops looking like a database query. Each document goes through a model that turns it into an embedding, an array of a few hundred floats positioned so that documents about similar things land near each other, and the question goes through the same model to get an array of its own. Retrieval is then a nearest-neighbor lookup over those arrays, scored by cosine similarity, which measures how closely two of them point the same way and ignores how long they are. A keyword index answers which rows contain this word. An embedding index answers which rows mean something like this. The machinery changes and the contract does not: retrieve, ground, verify.
+
+Three of those four instructions exist to keep the answer inside what the checker can admit. The checker compares numbers, and the only numbers it admits are the readings in the retrieved rows. The band and the timestamp are labels rather than readings, so the checker admits neither, and each one is kept out of the answer's way by a different mechanism. The timestamp gets a fix in code: the citation strip runs before the number check, because a bracketed timestamp has a shape we control and can lift out of the sentence. The band gets no strip, since a band name is whatever the catalogue calls it. What stands in for one is the prompt line asking for band names in words, because a sentence quoting Band-7 reaches the checker as a claim of -7, and that answer is held even when every reading in it is right. A sum, an average or a count is a number the model worked out rather than read, so the checker calls it fabricated unless it happens to land within the tolerance of some reading. When the report needs a count of matching rows, `matched` already holds it and JavaScript can print it exactly. Ask the model for that count instead and you have bought a number somebody now has to verify.
 
 ## Challenge
 

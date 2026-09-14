@@ -1,9 +1,45 @@
 slug: backprop-chain
 lessonSlug: backpropagation
 title: "Automatic Backpropagation"
-instructions: "Use tf.variableGrads() to compute gradients automatically. The starter declares the variable w at 3.0. Write lossFn so it returns w squared, then fill in gradOf(fn) so it returns tf.variableGrads() called on the function it was handed. The grader reassigns w and calls gradOf() again, and its last two calls hand gradOf loss functions the exercise never shows you, the second of them over three variables at once. It also counts how many times your gradOf runs the loss it was given, so the gradients have to come off one recorded forward pass rather than off the page."
-starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// 1. lossFn: the forward pass. Return w squared.\nconst lossFn = () => null; // your code here\n\n// 2. gradOf: differentiate whatever loss function it is handed. The grader\n// calls it again after changing w, and once on a loss of its own.\nfunction gradOf(fn) {\n  return { value: null, grads: null }; // your code here\n}\n\nconst { value: loss, grads } = gradOf(lossFn);"
-solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst lossFn = () => w.square();\n\nfunction gradOf(fn) {\n  return tf.variableGrads(fn);\n}\n\nconst { value: loss, grads } = gradOf(lossFn);"
+instructions: "Two ways to reach the same slope, and the exercise is the comparison between them. The starter declares the variable w at 3.0. (1) Write lossFn so it returns w squared. (2) Fill in gradOf(fn), which differentiates whatever loss function it is handed. It returns the loss the forward pass produced and, beside it, a gradient for every variable that loss touched, filed under the variable's own name. No derivative you worked out yourself appears anywhere in it. (3) Fill in numericGradOf(fn, variable), the estimate this lesson opens with, for one scalar variable at a time. Run fn at the variable's current value, run it again with that variable 0.001 higher, turn the difference into a slope, put the variable back, and return a plain number. The grader reassigns w and calls gradOf again, hands it two loss functions the exercise never shows you, the second over three variables at once, and checks that your two answers for it land within 0.05 of each other. It also counts how many times each of them runs the loss it was given, because that count is the difference between the two methods: the estimate pays a forward pass per variable, and the recorded pass pays one for all of them."
+starterCode: |
+  const w = tf.variable(tf.scalar(3.0));
+
+  // 1. lossFn: the forward pass. Return w squared.
+  const lossFn = () => null; // your code here
+
+  // 2. gradOf: differentiate whatever loss function it is handed. The grader
+  // calls it again after changing w, and once on a loss of its own.
+  function gradOf(fn) {
+    return { value: null, grads: null }; // your code here
+  }
+
+  const { value: loss, grads } = gradOf(lossFn);
+
+  // The older method, kept beside the newer one so the two can be measured
+  // against each other. One scalar variable at a time, one plain number back.
+  function numericGradOf(fn, variable) {
+    return null; // your code here
+  }
+solutionCode: |
+  const w = tf.variable(tf.scalar(3.0));
+
+  const lossFn = () => w.square();
+
+  function gradOf(fn) {
+    return tf.variableGrads(fn);
+  }
+
+  const { value: loss, grads } = gradOf(lossFn);
+
+  function numericGradOf(fn, variable) {
+    const saved = variable.dataSync()[0];
+    const base = fn().dataSync()[0];
+    variable.assign(tf.scalar(saved + 0.001));
+    const bumped = fn().dataSync()[0];
+    variable.assign(tf.scalar(saved));
+    return (bumped - base) / 0.001;
+  }
 testCode: |
   describe('Backprop', () => {
     it('the forward-pass value comes back next to the gradients', () => {
@@ -67,6 +103,51 @@ testCode: |
       expect(out.grads[b.name].dataSync()[0], 'The second variable only ever appears squared.').toBeCloseTo(-1.0, 4);
       expect(out.grads[c.name].dataSync()[0], 'The third variable is multiplied by the first, so its slope is whatever the first one currently holds.').toBeCloseTo(1.5, 4);
       expect(passes, 'The loss function ran more times than a recorded forward pass needs. Re-running it per parameter is the numeric-gradient method this lesson retires: 673 extra forward passes for DEEP SCAN, 27 seconds a step. The backward pass runs the forward pass once and reads every gradient off that one sweep.').toBeLessThanOrEqual(2);
+    });
+    it('the estimate agrees with the recorded pass and costs a forward pass per variable', () => {
+      // Where the lesson's claim gets measured rather than asserted. Both
+      // methods answer the same question here, so the only thing separating
+      // them is what they cost, and the learner reads that off their own two
+      // functions. THE TOLERANCE IS MEASURED, not chosen for comfort. With the
+      // 0.001 step the instructions name, on float32 scalars, the estimate
+      // missed the recorded gradient by 0.000519 on the parabola and by
+      // 0.000422, 0.001026 and 0.000010 on the three variables of the
+      // composed loss (2026-09-13, cpu backend). Most of that is the forward
+      // difference itself: a one-sided nudge of size h carries an error of
+      // about h/2 times the curvature, which comes to 0.001 on the two
+      // squared terms. The checks allow 0.05, roughly fifty times the worst
+      // of those, since the learner's browser runs webgl and this harness
+      // cannot measure its float arithmetic. Every wrong answer this test
+      // exists to catch misses by at least a whole unit.
+      expect(typeof numericGradOf, 'numericGradOf is missing. This exercise asks for the method the lesson retires as well as the one that replaces it, because the cost of the first is the whole argument for the second.').toBe('function');
+      w.assign(tf.scalar(3.0));
+      const recorded = gradOf(lossFn).grads[w.name].dataSync()[0];
+      const estimate = numericGradOf(lossFn, w);
+      expect(typeof estimate, 'numericGradOf hands back a plain number: a change in loss divided by the nudge that caused it. A tensor or an object is the shape the other function returns.').toBe('number');
+      expect(estimate, 'The estimate is nowhere near the slope the backward pass reports at this weight. A nudge of the size the instructions name lands within 0.001 of it on this loss, so a gap this wide is a different calculation rather than a rounding difference.').toBeCloseTo(recorded, 1);
+      expect(w.dataSync()[0], 'The weight came back changed. A nudge that is never undone leaves the model somewhere the optimizer did not put it, and every number read afterwards is read at the wrong place.').toBeCloseTo(3.0, 4);
+      const a = tf.variable(tf.scalar(1.5));
+      const b = tf.variable(tf.scalar(-0.5));
+      const c = tf.variable(tf.scalar(0.25));
+      let passes = 0;
+      const composed = () => {
+        passes += 1;
+        return a.sin().add(b.square()).add(c.mul(a));
+      };
+      const autoNames = ['variableGrads', 'grad', 'grads', 'valueAndGrad', 'valueAndGrads', 'customGrad'];
+      const autoCalls = () => autoNames.reduce((s, k) => s + (tf.__calls[k] || 0), 0);
+      gradOf(composed);
+      const recordedPasses = passes;
+      passes = 0;
+      const before = autoCalls();
+      const est = [numericGradOf(composed, a), numericGradOf(composed, b), numericGradOf(composed, c)];
+      const estimatePasses = passes;
+      expect(autoCalls() - before, 'numericGradOf called the automatic differentiator. That is the other half of this exercise. This half is the method that needs none, and routing it through the recorded pass reports the cost of the recorded pass, which is the one number the comparison cannot borrow.').toBe(0);
+      expect(est[0], 'The estimate for the first variable misses the slope the backward pass reports for it. That variable reaches the loss along two routes, and a nudge moves both at once, so the estimate carries the sum the same way the chain rule does.').toBeCloseTo(Math.cos(1.5) + 0.25, 1);
+      expect(est[1], 'The estimate for the second variable misses its slope. Only one variable may move per estimate: the other two stay where they are, or the difference in loss belongs to more than one of them.').toBeCloseTo(-1.0, 1);
+      expect(est[2], 'The estimate for the third variable misses its slope.').toBeCloseTo(1.5, 1);
+      expect(recordedPasses, 'gradOf ran the loss more times than one recording needs, so the two costs below are not being compared on equal terms.').toBeLessThanOrEqual(2);
+      expect(estimatePasses, 'Estimating three slopes ran the forward pass ' + estimatePasses + ' times, against ' + recordedPasses + ' for the recorded pass that produced all three at once. Each estimate needs the loss where the variable stands and the loss with it moved, so three of them cannot cost fewer than six runs. DEEP SCAN has 673 parameters and the same arithmetic applies to every one of them.').toBeGreaterThanOrEqual(6);
     });
   });
 estimatedMinutes: 15

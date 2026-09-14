@@ -14,6 +14,13 @@ context:
   narrative: "Ensign Demir sets up the data pipeline for the analysis system."
 concept:
   explanation: "ML models require properly formatted input data: batched, shuffled, and normalized."
+  bridge:
+    jsTitle: "Paged fetch behind an infinite scroll"
+    jsCode: "for await (const page of fetchPages(cursor)) render(page.items)"
+    mlTitle: "tf.data pipeline"
+    mlCode: "tf.data.generator(readRows).shuffle(100).batch(32)"
+    tier: structural
+    breaks: "A paged fetch keeps the server's order and hands you whatever size the API chose. The pipeline is the consumer AND the shuffler: it decides the batch size, and it has to reorder rows inside its buffer before it batches them, because a batch that keeps arrival order is a block of neighbours the model learns as a group."
 consequence:
   narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
 hints:
@@ -56,9 +63,11 @@ What keeps this pipeline alive on real sensor data is where the readings come fr
 
 ## From Fetch to Feed
 
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
 You already know half of this pattern. A paginated fetch pulls page 1, hands it off, and never touches page 2 until something asks for it. A tf.data pipeline works the same way, except the thing asking is a model: **nothing is loaded until it's asked for.**
 
-A **feature** is one number the model reads about a single example. A **label** is what you want predicted about that example, here a 0 or 1 for whether the reading is worth flagging. TensorFlow.js names the pair `xs` and `ys`, features and labels, and every `tf.data` example you meet uses those two keys.
+A **feature** is one number the model reads about a single example. A **label** is what you want predicted about that example, here a 0 or 1 for whether the reading is worth flagging. TensorFlow.js names the pair `xs` and `ys`, features and labels, and every `tf.data` example you meet uses those two keys. Learning from examples that come with their labels attached has a name, supervised learning, and it is what every model in this course does until module 7, where the model's target is its own input and no human has to label an anomaly for it to learn what normal looks like.
 
 Picking which numbers become features is a decision, and on this ship it is already made. A reading's raw capture is 64 channels of samples, about two megabytes per reading, and none of it reaches the model. Three summary values come off each capture instead: amplitude, frequency (a zero-crossing count, not hertz), and phase. The extraction reads a 64-sample window, a quarter second of one channel at 256 Hz, which is a different 64 from the row's 64 channels. Module 5 writes it and then widens the feature set with FFT bins measured over that same window. The classifier you start building in module 2 reads those three, so `row.features` holds three numbers per reading, not 64 channel values, and `xs` is three wide. Reading a record still touches its two-megabyte capture block, which is why the source has to hand them over one at a time.
 
@@ -112,7 +121,7 @@ Memory is only half the reason 32 is the number. The other half is training. The
 
 ## Splitting Without Leaking
 
-Batching decides what the model sees on each step. The split decides what it never sees while training. Get the second one wrong and your validation score is measuring memory, not learning.
+Batching decides what the model sees on each step. The split decides what it never sees while training. Get the second one wrong and your validation score is measuring what the model already memorized, not what it learned.
 
 <CodeBlock language="typescript" title="train-test-split.ts">
 {`// Split data into training (80%) and validation (20%)
@@ -137,16 +146,16 @@ function* splitGenerator(idx: Uint32Array) {
 
 const trainData = tf.data.generator(() => splitGenerator(trainIdx)).batch(32);
 const valData = tf.data.generator(() => splitGenerator(valIdx)).batch(32);
-// Disjoint by construction, the same split on every epoch, and no tensor is
-// built for a reading this side skips. The index shuffle above is a full
-// shuffle, so neither pipeline needs a shuffle buffer.`}
+// Disjoint by construction, the same split every time you train over the data,
+// and no tensor is built for a reading this side skips. The index shuffle
+// above is a full shuffle, so neither pipeline needs a shuffle buffer.`}
 </CodeBlock>
 
 One condition rides under all of this. A random split is the right split when the rows are independent. These 28,800 readings are recorded in time order, so a reading is not independent of the one before it. It still works here, because the classifier you build in module 2 reads one reading at a time and nothing about its neighbors. Module 6 makes each sample a window of consecutive readings, and there a random split leaks: neighboring windows overlap, so validation rows arrive half seen. That module splits by time instead.
 
 ## Challenge
 
-Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generator, shuffle, batch, without ever holding it in memory. The grader counts your reads, and it drains your generator a second time asking for one sample at a time.
+Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generator, shuffle, batch, without ever holding it in memory. The stand-in can be read by id, so a production pipeline would shuffle its indices instead. Build the buffer version here, because it is the one that puts the shuffle-before-batch rule in your hands. The grader counts your reads, and it drains your generator a second time asking for one sample at a time.
 
 <Exercise slug="batch-data" />
 
@@ -160,7 +169,7 @@ Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generato
     "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
     "Shuffle before you batch, never after: batching first freezes each batch's membership, so every batch stays a block of consecutive readings. A shuffle buffer mixes only inside its own window, which is all you get when records arrive as a stream you cannot index. When you can read a record by id, shuffle the indices up front for a full shuffle.",
     "Split train/validation by dealing the deck once: shuffle the indices yourself and read only the ones this side owns, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets.",
-    "One word, two sizes. In this module a capture is the archive row: 33 seconds of 64 channels at 256 Hz, about two megabytes. From module 4 on, a capture is the 64-sample, quarter-second window the classifier reads three features off. Same word, different object; the number beside it tells you which."
+    "One word, two sizes. In this module a capture is the archive row: 33 seconds of 64 channels at 256 Hz, about two megabytes. The quarter second the three features come off is the extraction window: module 4 calls it that, module 5 just says window, and modules 8 and 11 sometimes call that 64-sample window a capture too. Same word, different object; the number beside it tells you which."
   ]}
   bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it. Node streams call that backpressure: the consumer sets the pace."
   youCanNow="Build a tf.data pipeline that reads lazily with a generator and shuffles records before it batches them, and recognize a train/validation split that does not leak."

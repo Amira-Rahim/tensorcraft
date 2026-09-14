@@ -1,7 +1,7 @@
 slug: llm-client
 lessonSlug: llms-for-science
 title: "Read the Model's Reply"
-instructions: "Write a function that takes a prompt string, sends it to the LLM API, and returns a structured analysis object. What comes back is text, so find the JSON object inside it before parsing. Then check the parsed object for the three fields an analysis carries, `classification`, `confidence` and `reasoning`, and throw when the reply carries no JSON or leaves a field out. Three rules the tests hold you to. A number that reads zero is a real reading rather than a missing field. A reply that volunteers fields you did not ask for is still valid. And the check reads the parsed object, never the raw text: a model that writes the word `reasoning` in a sentence and leaves the field out of its JSON has not sent you a reasoning. Two of the tests build their replies at grade time, so no answer that recognises the fixtures can clear the suite."
+instructions: "Write a function that takes a prompt string, sends it to the LLM API, and returns a structured analysis object. What comes back is text, so find the JSON object inside it before parsing. Then check the parsed object for the three fields an analysis carries, `classification`, `confidence` and `reasoning`, and throw when the reply carries no JSON or leaves a field out. A reply the parser refuses carries no JSON, whatever field names are legible in the text. Three rules the tests hold you to. A number that reads zero is a real reading rather than a missing field. A reply that volunteers fields you did not ask for is still valid. And the check reads the parsed object, never the raw text: a model that writes the word `reasoning` in a sentence and leaves the field out of its JSON has not sent you a reasoning. Two of the tests build their replies at grade time, so no answer that recognises the fixtures can clear the suite."
 starterCode: |
   interface Analysis {
     classification: string;
@@ -162,6 +162,20 @@ testCode: |
       await expect(
         analyzeSignal('test', renamedInsideAValue),
         'This object has a reasoning whose text contains the word confidence, and no confidence field. A string search over the block finds the word; the parsed object does not have the key.',
+      ).rejects.toThrow();
+    });
+    it('refuses a reply whose object never parses, however complete it reads', async () => {
+      const trailingComma = async () =>
+        '{"classification":"anomaly","confidence":0.95,"reasoning":"High amplitude",}';
+      await expect(
+        analyzeSignal('test', trailingComma),
+        'All three field names sit in this reply with a value beside each one, and the object is still not JSON. Lifting the fields straight out of the text with a pattern shaped like key, colon, value finds all three and hands back an analysis nothing ever parsed. Parsing is what tells the two apart.',
+      ).rejects.toThrow();
+      const cutOff = async () =>
+        'Assessment follows.\n{"classification":"noise","confidence":0.2,"reasoning":"Zero crossings sit inside the natural band"';
+      await expect(
+        analyzeSignal('test', cutOff),
+        'This reply stopped mid-object, which is what a truncated response looks like. A reader that scrapes the three fields out of what arrived reports an analysis as though the model had finished answering.',
       ).rejects.toThrow();
     });
     it('reads replies built at grade time, field for field', async () => {

@@ -154,7 +154,7 @@ export const WORLD_CONTENT = {
   // every marketing surface (/learn, FAQ, onboarding) - three surfaces
   // carried three different counts (50+/51/55) until 2026-07-14. Pinned to
   // the real corpus by packages/content/__tests__/bridge-breaks.test.ts.
-  lessonBridges: 55,
+  lessonBridges: 56,
   // Module 1 is free; it is the funnel's whole hook. Named here because both
   // paywall surfaces quote what sits BEHIND the wall, and both pasted the
   // literal 51 until 2026-07-15.

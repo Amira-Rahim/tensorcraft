@@ -8,6 +8,33 @@ instructions: |
   Both rankings exist and they are not the same one. Raw error ranks the features by how hard each is to rebuild; the ratio ranks them by how far each sits from its own normal, which is the one that says where the anomaly is. The fixtures put those two orders in different places on purpose.
 
   The training set was normal-only, so genuinely anomalous structure should be hard to reconstruct. When error on a feature that should be hard comes in far below that feature's baseline, the model is leaning on memorized sensor quirks instead of learned structure. That is a retraining problem, not a threshold problem.
+hints:
+  - level: nudge
+    content: "Both rankings judge a feature's error against that feature's own normal error, so a single cutoff shared across all features cannot serve either one. The tell also points the other way from an alarm: the feature to worry about is the one the model rebuilt better than it usually manages."
+  - level: guidance
+    content: "Start with the gaps, because the other three fields all read off them. For each feature, how far the rebuild landed from the reading, size only: a rebuild that came in high missed by as much as one that came in low. Then the ordering, and the order you want is not the order of those gaps. A feature the model always rebuilds badly tops the raw list on a calm reading too, so divide each gap by what that feature normally misses by and rank the features on that ratio. Sort indices rather than the gaps themselves, or you hand back values where the caller asked for positions. The flag list runs the same per-feature comparison in the other direction: an error under half of what the feature normally carries is the one to keep, since the model trained on normal readings only and should have struggled with anomalous structure. A feature with no normal error at all has nothing to be judged against, so leave it out of that comparison instead of letting a division by zero decide the audit. The last field is only whether that list ended up with anything in it."
+  - level: solution
+    content: |
+      function auditReconstruction(input, reconstruction, perFeatureBaseline) {
+        const perFeatureError = input.map((v, i) => Math.abs(v - reconstruction[i]));
+        const ratio = (i) => perFeatureError[i] / perFeatureBaseline[i];
+        const rankedByRatio = perFeatureError
+          .map((_, i) => i)
+          .sort((a, b) => ratio(b) - ratio(a));
+        const suspiciouslyLowFeatures = [];
+        for (let i = 0; i < perFeatureError.length; i++) {
+          const baseline = perFeatureBaseline[i];
+          if (baseline > 0 && perFeatureError[i] < baseline * 0.5) {
+            suspiciouslyLowFeatures.push(i);
+          }
+        }
+        return {
+          perFeatureError,
+          rankedByRatio,
+          suspiciouslyLowFeatures,
+          requiresRetrain: suspiciouslyLowFeatures.length > 0,
+        };
+      }
 starterCode: |
   function auditReconstruction(input, reconstruction, perFeatureBaseline) {
     // Trained on normal readings only, the model should find anomalous

@@ -1,7 +1,7 @@
 slug: forward-pass
 lessonSlug: forward-pass
 title: "Run a Forward Pass"
-instructions: "Create a sequential model with one dense layer (3 units, inputShape [2], activation left at its default, which is linear: the grader recomputes the pass as input times kernel plus bias), then write forward(batch) so a single model.predict() call carries the whole batch, and assign prediction = forward(input). The provided input is a stack of 2 readings with 2 features each. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand. It also calls forward() with taller stacks of its own and counts the predict calls each one costs. Then fix the shape that ended Demir's demo: singleReading arrives flat, shape [2] rather than [1, 2]. Write asBatch(reading) so it hands back that same reading with a batch axis in front, and assign batched = asBatch(singleReading). The grader calls asBatch() with readings of its own width, so the axis goes on whatever arrives rather than on a width written into the body."
+instructions: "Create a sequential model with one dense layer (3 units, inputShape [2], activation left at its default, which is linear: the grader recomputes the pass as input times kernel plus bias), then write forward(batch) so a single model.predict() call carries the whole batch, and assign prediction = forward(input). The provided input is a stack of 2 readings with 2 features each. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand. It also calls forward() with taller stacks of its own, counts the predict calls each one costs, and checks that what comes back is the tensor that call handed over: the model's own answer, not one recomputed beside it from the layer's weights. Then fix the shape that ended Demir's demo: singleReading arrives flat, shape [2] rather than [1, 2]. Write asBatch(reading) so it hands back that same reading with a batch axis in front, and assign batched = asBatch(singleReading). The grader calls asBatch() with readings of its own width, so the axis goes on whatever arrives rather than on a width written into the body."
 starterCode: |
   const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);
 
@@ -103,8 +103,12 @@ testCode: |
       const realPredict = model.predict.bind(model);
       const realOnBatch = model.predictOnBatch ? model.predictOnBatch.bind(model) : null;
       let calls = 0;
-      model.predict = function (x) { calls++; return realPredict(x); };
-      if (realOnBatch) model.predictOnBatch = function (x) { calls++; return realOnBatch(x); };
+      // The tensor the model last handed back. Counting calls alone only
+      // proves predict ran somewhere; holding on to what it returned is what
+      // ties the answer to the model.
+      let answered = null;
+      model.predict = function (x) { calls++; answered = realPredict(x); return answered; };
+      if (realOnBatch) model.predictOnBatch = function (x) { calls++; answered = realOnBatch(x); return answered; };
       let out;
       try {
         out = submitted(stack);
@@ -130,6 +134,10 @@ testCode: |
         calls,
         'The batch axis is free: one predict call answers a stack of any height. Feeding the rows in one at a time and stitching the answers together gets the same numbers and misses the point of the lesson.',
       ).toBe(1);
+      expect(
+        out === answered,
+        'forward() called the model and then handed back a different tensor. This layer is one linear stage, so input times kernel plus bias reproduces its output to the last decimal and no check on the numbers can tell a hand-rolled pass from the model\'s own answer. Hand back what predict() returned: running the stack is the work, and the arithmetic stops being reproducible by hand as soon as the stack grows.',
+      ).toBe(true);
     });
     it('gives one flat reading the batch axis the layer expects', () => {
       expect(

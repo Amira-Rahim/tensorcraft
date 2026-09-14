@@ -1,7 +1,7 @@
 slug: onnx-comparison
 lessonSlug: onnx-runtime-web
 title: "Benchmark TF.js Against ONNX Runtime"
-instructions: "Build `compareRuntimes(model, modelPath, signal)`. `model` is the DEEP SCAN classifier already loaded in TF.js, `modelPath` is the same network exported to ONNX, and `signal` is three normalized numbers. Send that one signal through both runtimes as a [1, 3] float32 input, in the order you were handed it, and return `{ tfjsMs, onnxMs, outputsAgree, pick }`. Time the inference call on each side, not the loading. Pin the ONNX session to the WASM execution provider, the way the lesson's benchmark pins both sides: change the runtime and the backend at once and you have measured the backend. `outputsAgree` is true when the two values the runtimes handed back differ by at most 0.0001, and both numbers have to be the ones they returned rather than ones you worked out. `pick` is where to start looking, read off `model.countParams()`: 'wasm' under a million parameters, 'gpu' at a million or more, before any benchmark has been run. The harness clock is too coarse to grade a duration, so the tests read your two timings as numbers and grade the comparison and the pick."
+instructions: "Build `compareRuntimes(model, modelPath, signal)`. `model` is the DEEP SCAN classifier already loaded in TF.js, `modelPath` is the same network exported to ONNX, and `signal` is three normalized numbers. Send that one signal through both runtimes as a [1, 3] float32 input, in the order you were handed it, and return `{ tfjsMs, onnxMs, outputsAgree, pick }`. Time the inference call on each side, not the loading. Pin the ONNX session to the WASM execution provider, the way the lesson's benchmark pins both sides: change the runtime and the backend at once and you have measured the backend. `outputsAgree` is true when the two values the runtimes handed back differ by at most 0.0001, and both numbers have to be the ones they returned rather than ones you worked out. `pick` is where to start looking, read off `model.countParams()`: 'wasm' under a million parameters, 'gpu' at a million or more, before any benchmark has been run. Read the clock with `performance.now()` on both sides. The harness clock is too coarse to say how long a call really took, so the tests check that each timing is the gap between two readings rather than grading the duration itself."
 starterCode: |
   import * as ort from 'onnxruntime-web';
 
@@ -95,14 +95,26 @@ testCode: |
 
     it('runs one signal through both runtimes and finds that they agree', async () => {
       const model = deepScanModel();
+      // The harness clock is too coarse to say how long either call took, so
+      // for this one test it is replaced by something that is not a clock at
+      // all: every reading is the one before it plus a fixed amount drawn
+      // this run. A gap measured across a call is then a whole number of
+      // those steps, and a number that came from anywhere else is not.
+      const realNow = performance.now;
+      const step = 7 + Math.floor(Math.random() * 90);
+      let reading = step * 1000 + 1;
+      performance.now = function () { reading += step; return reading; };
+      let out;
       try {
-        const out = await report(model, '/models/deep-scan.onnx', SIGNAL);
-        expect(Number.isFinite(out.tfjsMs), 'tfjsMs has to be a number of milliseconds you measured around the TF.js call.').toBe(true);
-        expect(Number.isFinite(out.onnxMs), 'onnxMs has to be a number of milliseconds you measured around the ONNX call.').toBe(true);
-        expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or the two sides were fed different inputs.').toBe(true);
+        out = await report(model, '/models/deep-scan.onnx', SIGNAL);
       } finally {
+        performance.now = realNow;
         model.dispose();
       }
+      const rule = ' has to be the gap between two readings of performance.now() taken around that call. The starter reports a placeholder instead, and a placeholder is not a measurement.';
+      expect(Number.isFinite(out.tfjsMs) && out.tfjsMs > 0 && out.tfjsMs % step === 0, 'tfjsMs' + rule).toBe(true);
+      expect(Number.isFinite(out.onnxMs) && out.onnxMs > 0 && out.onnxMs % step === 0, 'onnxMs' + rule).toBe(true);
+      expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or the two sides were fed different inputs.').toBe(true);
     });
 
     it('reads the backend off the model in front of it, not off the lesson', async () => {

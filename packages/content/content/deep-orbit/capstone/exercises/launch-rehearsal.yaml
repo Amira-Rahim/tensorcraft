@@ -9,7 +9,7 @@ instructions: |
 
   `runLaunchRehearsal(model, archive, canary, config)` is async and runs the rehearsal.
 
-  1. Train. The model arrives compiled, so do not compile it again. Build `tf.tensor2d` for the archive rows and for their labels, `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })`, then dispose both tensors.
+  1. Train. The model arrives compiled, so do not compile it again. Normalize the archive rows the way `scoreReadings` does, against `config.ranges`, and build one `tf.tensor2d` of those rows and one of their labels. Then `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })` and dispose both tensors.
   2. Score the canary set with `scoreReadings` and the model you just trained.
   3. Gate the run.
 
@@ -24,7 +24,68 @@ instructions: |
         launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
       }
 
-  `batchesRun` reads `model.optimizer.iterations`, which the optimizer increments once per batch and nothing outside it can set. The grader checks it against the number of epochs in `losses`, and runs a second schedule with different numbers, so a loss trace and a trained model have to come from the same call.
+  `batchesRun` reads `model.optimizer.iterations`, which the optimizer increments once per batch and nothing outside it can set. The grader checks it against the number of epochs in `losses`, and runs a second schedule with different numbers, so a loss trace and a trained model have to come from the same call. It also watches the fit itself: the schedule you pass, the trace it hands back, which is the trace `losses` reports, and the rows you hand it, on a rehearsal where all three channels have been recalibrated, so every limit has to come off `config.ranges` rather than from the full scale. One candidate arrives warm, with updates already on that counter from an earlier fit, so `batchesRun` is what the optimizer reads after your fit rather than the number your own schedule added to it.
+hints:
+  - level: nudge
+    content: "Every number in the verdict has to come from the same training run, so the order of operations is the exercise: train first, then judge what you trained. The one number you cannot write down yourself is the update count, and that is what makes it the number a grader can trust."
+  - level: guidance
+    content: |
+      Three decisions carry this rehearsal, and the scoring path holds the first two. Every reading arrives in instrument units, and the limits a value is scaled against belong to the instrument, so read them off the argument that carries them rather than assuming a full scale. Phase is the one that catches people: its lower limit is negative, so subtracting it moves a value up. Then memory. Everything the scoring path allocates has to be gone by the time plain numbers come back, and the grader counts live tensors either side of the call. A scope that frees what it holds covers the synchronous path. It cannot hold an await, so the two big tensors the training call is handed have to be released by hand once that call resolves.
+
+      The third decision is the verdict. The candidate arrives compiled, and compiling it again resets the counter the optimizer keeps and discards the training state CI handed over. A second rehearsal on the same model should therefore report a larger count than the first, not the same one. That counter is the piece of the verdict nothing outside the optimizer can assign, and the grader reads it against the epochs in the trace you report beside it, on two schedules with different numbers. Score the canary set after the training call, with the model that call moved. Then gate twice: the fraction of canary verdicts that matched their labels against the floor the config names, and the average score against the recorded baseline, inside the tolerance the config names. Launch needs both.
+  - level: solution
+    content: |
+      function toRows(readings: Reading[], ranges: Ranges): number[][] {
+        const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
+        return readings.map((reading) => [
+          norm(reading.amplitude, ranges.amplitude),
+          norm(reading.frequency, ranges.frequency),
+          norm(reading.phase, ranges.phase),
+        ]);
+      }
+
+      function scoreReadings(
+        model: tf.LayersModel,
+        readings: Reading[],
+        ranges: Ranges,
+      ): number[] {
+        return tf.tidy(() => {
+          const out = model.predict(tf.tensor2d(toRows(readings, ranges))) as tf.Tensor;
+          return Array.from(out.dataSync());
+        });
+      }
+
+      async function runLaunchRehearsal(
+        model: tf.LayersModel,
+        archive: Reading[],
+        canary: Reading[],
+        config: RehearsalConfig,
+      ): Promise<RehearsalVerdict> {
+        const xs = tf.tensor2d(toRows(archive, config.ranges));
+        const ys = tf.tensor2d(archive.map((r) => [r.label]));
+        const history = await model.fit(xs, ys, {
+          epochs: config.epochs,
+          batchSize: config.batchSize,
+          shuffle: false,
+        });
+        xs.dispose();
+        ys.dispose();
+
+        const losses = history.history.loss as number[];
+        const batchesRun = model.optimizer.iterations;
+
+        const scores = scoreReadings(model, canary, config.ranges);
+
+        const correct = scores.filter(
+          (s, i) => (s > 0.5 ? 1 : 0) === canary[i].label,
+        ).length;
+        const canaryAccuracy = correct / canary.length;
+        const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+        const drift = Math.abs(mean - config.baselineMeanScore) > config.driftTolerance;
+        const launch = canaryAccuracy >= config.minAccuracy && !drift;
+
+        return { scores, losses, batchesRun, canaryAccuracy, drift, launch };
+      }
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -239,6 +300,7 @@ testCode: |
         { amplitude: 1024, frequency: 30, phase: -0.7 * Math.PI, label: 0 },
       ];
       const scores = scoreReadings(probe, readings, ranges);
+      expect(scores, 'scoreReadings returns one plain number per reading. The starter returns null until you build it.').toBeDefined();
       expect(scores[0]).toBeCloseTo(0.8, 4);
       expect(
         scores[1],
@@ -256,6 +318,7 @@ testCode: |
         { amplitude: 896, frequency: 0, phase: -Math.PI, label: 0 },   // 0.375
       ];
       const scores = scoreReadings(probe, readings, recalibrated);
+      expect(scores, 'scoreReadings returns one plain number per reading. The starter returns null until you build it.').toBeDefined();
       // Read against the old 0-2048 scale these would be 0.5625 and 0.4375.
       expect(scores[0]).toBeCloseTo(0.625, 4);
       expect(scores[1]).toBeCloseTo(0.375, 4);
@@ -312,9 +375,108 @@ testCode: |
       shorter.dispose();
     });
 
+    it('the verdict reports the fit that ran: its rows, its trace, its count', async () => {
+      // A schedule and an instrument calibration this file uses nowhere
+      // else, so nothing below can be recognized instead of read: the
+      // amplitude channel offset by 512 counts with 1024 of span, the
+      // frequency counter reading against a 40-crossing ceiling, and a
+      // phase sensor re-zeroed to report 0 to 2*PI instead of -PI to PI.
+      // The expected rows are recomputed here from the config's own
+      // limits, and the loss trace is whatever the fit hands back on the
+      // day.
+      const model = buildCandidate();
+      const recalibrated = {
+        ...greenConfig,
+        ranges: {
+          amplitude: { min: 512, max: 1536 },
+          frequency: { min: 0, max: 40 },
+          phase: { min: 0, max: 2 * Math.PI },
+        },
+        epochs: 6,
+        batchSize: 32,
+      };
+      const norm = (v, r) => (v - r.min) / (r.max - r.min);
+      const expectedRows = archive.map((r) => [
+        norm(r.amplitude, recalibrated.ranges.amplitude),
+        norm(r.frequency, recalibrated.ranges.frequency),
+        norm(r.phase, recalibrated.ranges.phase),
+      ]);
+      // CI hands this candidate over warm: a one-batch smoke fit already
+      // ran on it and the optimizer kept that update.
+      const warmXs = tf.tensor2d(expectedRows.slice(0, 32));
+      const warmYs = tf.tensor2d(archive.slice(0, 32).map((r) => [r.label]));
+      await model.fit(warmXs, warmYs, { epochs: 1, batchSize: 32, shuffle: false });
+      warmXs.dispose();
+      warmYs.dispose();
+
+      const calls = [];
+      const realFit = model.fit.bind(model);
+      model.fit = (xs, ys, options) => {
+        const call = { rows: xs.arraySync(), options: options || {} };
+        calls.push(call);
+        return realFit(xs, ys, options).then((history) => {
+          call.loss = history.history.loss;
+          return history;
+        });
+      };
+      const v = await runLaunchRehearsal(model, archive, canary, recalibrated);
+      expect(
+        v,
+        'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        calls,
+        'One fit call per rehearsal, handed the whole archive at once.',
+      ).toHaveLength(1);
+      expect(
+        calls[0].options.epochs,
+        'The fit runs the schedule the config names, and this rehearsal asked for 6 epochs. A schedule chosen inside the function is a different training run from the one the verdict reports.',
+      ).toBe(6);
+      expect(
+        calls[0].options.batchSize,
+        'The fit runs the schedule the config names, and this rehearsal asked for batches of 32.',
+      ).toBe(32);
+      expect(
+        calls[0].rows,
+        'The fit is handed one row per archive reading.',
+      ).toHaveLength(archive.length);
+      for (let i = 0; i < expectedRows.length; i++) {
+        for (let c = 0; c < 3; c++) {
+          expect(
+            calls[0].rows[i][c],
+            'Row ' + i + ' column ' + c + ' is not the archive value normalized against config.ranges. All three channels are recalibrated on this rehearsal: amplitude offset by 512 counts with 1024 of span, frequency against a 40-crossing ceiling, phase re-zeroed to 0 through 2*PI. A full scale written into the training path instead of read off the config scales the archive wrong and trains the candidate on numbers the scoring path will never see.',
+          ).toBeCloseTo(expectedRows[i][c], 4);
+        }
+      }
+      expect(
+        calls[0].loss,
+        'Await the fit: its history is what the loss trace comes from.',
+      ).toBeDefined();
+      expect(
+        v.losses,
+        'The fit reported one loss per epoch, and this rehearsal ran 6.',
+      ).toHaveLength(calls[0].loss.length);
+      for (let i = 0; i < calls[0].loss.length; i++) {
+        expect(
+          v.losses[i],
+          'Loss ' + i + ' is not the one this fit returned. Report history.history.loss from the call itself rather than a trace assembled beside it: a record the submitting code writes is not evidence that the training happened, which is the whole reason a rehearsal is filed at all.',
+        ).toBeCloseTo(calls[0].loss[i], 6);
+      }
+      expect(
+        v.batchesRun,
+        'This candidate arrived warm, with one update already on the optimizer, and 64 rows in batches of 32 over 6 epochs adds 12 more, so the optimizer reads 13. Batches per epoch times epochs is 12, which is what a count worked out from the schedule reports instead of reading the counter.',
+      ).toBe(13);
+      expect(
+        v.batchesRun,
+        'batchesRun is the optimizer\'s own count, read off model.optimizer.iterations after the fit. A count the rehearsal works out for itself agrees with the optimizer only until someone compares the two, and comparing them is what makes the record checkable.',
+      ).toBe(model.optimizer.iterations);
+      model.dispose();
+    });
+
     it('the loss falls: the candidate is better after the fit than before it', async () => {
       const model = buildCandidate();
       const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(v, 'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.').toBeDefined();
       expect(Number.isFinite(v.losses[0])).toBe(true);
       expect(
         v.losses[v.losses.length - 1],
@@ -331,6 +493,7 @@ testCode: |
       const model = buildCandidate();
       const untrained = scoreReadings(model, canary, ranges);
       const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(v, 'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.').toBeDefined();
       const trained = scoreReadings(model, canary, ranges);
       expect(v.scores, 'One score per canary reading.').toHaveLength(canary.length);
       for (let i = 0; i < trained.length; i++) {
@@ -353,6 +516,7 @@ testCode: |
     it('a clean rehearsal clears the gate and launches', async () => {
       const model = buildCandidate();
       const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(v, 'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.').toBeDefined();
       expect(
         v.canaryAccuracy,
         'A trained candidate separates this archive slice, so every canary verdict should match its label.',
@@ -366,6 +530,7 @@ testCode: |
       const model = buildCandidate();
       const flipped = canary.map((r, i) => (i === 3 ? { ...r, label: r.label === 1 ? 0 : 1 } : r));
       const v = await runLaunchRehearsal(model, archive, flipped, greenConfig);
+      expect(v, 'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.').toBeDefined();
       expect(
         v.canaryAccuracy,
         'Fifteen of sixteen canary verdicts match, which is 0.9375 and under the 0.95 floor.',
@@ -378,12 +543,46 @@ testCode: |
       const model = buildCandidate();
       const drifted = { ...greenConfig, baselineMeanScore: 0.05 };
       const v = await runLaunchRehearsal(model, archive, canary, drifted);
+      expect(v, 'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.').toBeDefined();
       expect(v.canaryAccuracy).toBeGreaterThanOrEqual(0.9);
       expect(
         v.drift,
         'The canary set is half flagged, so the scores average near 0.5. A deployment whose recorded baseline is 0.05 is scoring something else.',
       ).toBe(true);
       expect(v.launch).toBe(false);
+      model.dispose();
+    });
+
+    it('drift is measured on the scores the model produced, not on the canary labels', async () => {
+      // A miscoded canary: the eight flagged readings, every one of them
+      // filed under label 0. It is the one fixture here where the scores
+      // and the labels average to different numbers.
+      const model = buildCandidate();
+      const miscoded = canary
+        .filter((r) => r.label === 1)
+        .map((r) => ({ ...r, label: 0 }));
+      const miscodedConfig = {
+        ...greenConfig,
+        baselineMeanScore: 0.99,
+        driftTolerance: 0.05,
+      };
+      const v = await runLaunchRehearsal(model, archive, miscoded, miscodedConfig);
+      expect(
+        v,
+        'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.',
+      ).toBeDefined();
+      expect(
+        v.canaryAccuracy,
+        'Every reading in this set is flagged and every label says otherwise, so no verdict matches.',
+      ).toBe(0);
+      expect(
+        v.drift,
+        'Drift is the distance between the mean of the scores THIS model produced and the recorded baseline. These readings score near 0.997 against a 0.99 baseline, so the output distribution has not moved. Averaging the labels instead measures the canary set rather than the model, and reports drift on a run where the model is scoring exactly as recorded.',
+      ).toBe(false);
+      expect(
+        v.launch,
+        'Nothing launches on a canary set where no verdict matched its label, whatever the drift check says.',
+      ).toBe(false);
       model.dispose();
     });
 
@@ -418,6 +617,7 @@ testCode: |
     it('a second rehearsal keeps training the same model, it does not start over', async () => {
       const model = buildCandidate();
       const first = await runLaunchRehearsal(model, archive, canary, greenConfig);
+      expect(first, 'runLaunchRehearsal returns the verdict object. The starter returns null until you build it.').toBeDefined();
       const second = await runLaunchRehearsal(model, archive, canary, greenConfig);
       expect(first.batchesRun, 'The first rehearsal ran 48 updates.').toBe(48);
       expect(

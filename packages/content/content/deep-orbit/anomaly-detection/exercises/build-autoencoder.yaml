@@ -6,9 +6,9 @@ instructions: |
 
   `archive` is 72 readings of 8 features each. `flagged[i]` is true where the flag log names a confirmed event. Keep the rows the flag log did NOT name and train on those only.
 
-  Build the stack the lesson describes: encoder (inputShape [8], Dense 4 relu), bottleneck (Dense 2 relu), decoder (Dense 4 relu, Dense 8 linear). Build it either as one Sequential of four Dense layers or the way the lesson recommends, an encoder Sequential and a decoder Sequential stacked into a third; the grader reads the Dense layers either way. Compile with adam and meanSquaredError. Fit the kept rows against themselves with the `FIT_OPTIONS` the starter declares, and return `{ model, history }`.
+  Build the encoder, bottleneck and decoder the lesson builds, one size down so the two fits the grader runs stay inside its time budget: eight features instead of the lesson's eleven, and a two-unit bottleneck instead of its four. Two numbers cannot store eight arbitrary values either, so the squeeze still does its job. encoder (inputShape [8], Dense 4 relu), bottleneck (Dense 2 relu), decoder (Dense 4 relu, Dense 8 linear). Build it either as one Sequential of four Dense layers or the way the lesson recommends, an encoder Sequential and a decoder Sequential stacked into a third; the grader reads the Dense layers either way. Compile with adam and meanSquaredError. Fit the kept rows against themselves with the `FIT_OPTIONS` the starter declares, and return `{ model, history }`.
 
-  Two things the grader reads. It counts your training rows through `model.optimizer.iterations`, which the optimizer increments once per batch and which cannot be assigned, so the history you return and the model you return have to come from the same fit: 48 kept rows at batchSize 16 is 3 batches an epoch. And it calls your function a second time on the SAME 72 rows with a flag log that names nothing, then scores both detectors on one held-out calm reading and one held-out tainted reading. The second detector is the one whose training set the tainted rows leaked into.
+  Two things the grader reads. It counts your training rows through `model.optimizer.iterations`, which the optimizer increments once per batch and which cannot be assigned, so the history you return and the model you return have to come from the same fit: 48 kept rows at batchSize 16 is 3 batches an epoch. And it calls your function a second time on the SAME 72 rows with a flag log that names nothing, then scores both detectors on five held-out calm readings and five held-out tainted ones, none of them an archive row, and compares the two averages. The second detector is the one whose training set the tainted rows leaked into.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -87,7 +87,7 @@ testCode: |
   // ratio below reads high for a reason that has nothing to do with
   // screening. Measured on the reference solution, one held-out row put that
   // ratio at 80 once in 160 runs; averaged over these five it stayed under
-  // 4.4 across 120.
+  // 4.5 across 200.
   const HELD_OUT_DEPTHS = [0.108, 0.138, 0.168, 0.192, 0.222];
   const HELD_OUT_CALM = HELD_OUT_DEPTHS.map(calmRow);
   const HELD_OUT_TAINTED = HELD_OUT_DEPTHS.map(taintedRow);
@@ -238,10 +238,12 @@ testCode: |
           'difference is that 24 tainted rows stayed in, and this detector ' +
           'learned to rebuild them along with everything else, so its two ' +
           'averages sit close together. Measured on the reference solution ' +
-          'over 120 runs, this ratio stayed between 0.9 and 3.8 while the ' +
-          'screened run above never came in under 29. The check asks for ' +
-          'under 10, which sits in the empty band between them. If it fails ' +
-          'high, the second call is not training on all 72 rows.',
+          'over 200 runs, this ratio ran from 0.84 to 4.47 while the ' +
+          'screened run above never came in under 29, and the check asks for ' +
+          'under 10 between them. That is a measurement rather than a ' +
+          'guarantee: now and then an unscreened fit pushes its two averages ' +
+          'further apart than it usually manages, so run it again before you ' +
+          'change any code.',
       ).toBeLessThan(10);
       expect(
         sharpTainted / blindTainted,

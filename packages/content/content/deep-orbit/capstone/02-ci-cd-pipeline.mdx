@@ -61,7 +61,9 @@ Demir is one assumption away from being right. The workflow engine transfers who
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-<CodeBlock language="yaml" title="deploy.yml">
+One file, three jobs. The first is the web CI Demir already knows.
+
+<CodeBlock language="yaml" title="deploy.yml · jobs.test">
 {`name: DEEP SCAN CI/CD
 
 on:
@@ -83,9 +85,13 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm test
+      - run: npm test`}
+</CodeBlock>
 
-  validate-model:
+The second job is the ML half, and it runs only if the first one passed. Same file, same `jobs:` block, one level of indentation in.
+
+<CodeBlock language="yaml" title="deploy.yml · jobs.validate-model">
+{`  validate-model:
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -95,11 +101,12 @@ jobs:
           node-version: 20
       - run: npm ci
 
-      # Model artifacts: the whole DEEP SCAN bundle, 85 MB of weights
-      # once the uint8 pass has run, too big for git. Restored from the
-      # CI cache; the training rig seeds it after every retrain. The
-      # signal classifier is a 3,988-byte shard inside it. The mass is
-      # the report pipeline's pretrained language component.
+      # Model artifacts: the models/ directory, restored from the CI
+      # cache, which the training rig seeds after every retrain. Almost
+      # all of it is the report pipeline's pretrained language component,
+      # 85 MB of weights once the uint8 pass has run and too big for git.
+      # The signal classifier ships beside it in the same directory, its
+      # own 3,988-byte weight file.
       - name: Restore model artifact
         uses: actions/cache@v4
         with:
@@ -129,9 +136,13 @@ jobs:
           node scripts/benchmark.js \\
             --model models/report-lang-v1/model.json \\
             --max-p95-ms 150 \\
-            --max-resident-weights-mb 400
+            --max-resident-weights-mb 400`}
+</CodeBlock>
 
-  deploy:
+The third job is the deploy. It waits on both jobs above and runs only on `main`. Its first half snapshots what is live, builds, records the digest of what is about to go up, and publishes.
+
+<CodeBlock language="yaml" title="deploy.yml · jobs.deploy, publish">
+{`  deploy:
     runs-on: ubuntu-latest
     needs: [test, validate-model]
     if: github.ref == 'refs/heads/main'
@@ -175,9 +186,13 @@ jobs:
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: \${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./dist`}
+</CodeBlock>
 
-      # That action returns once its push to gh-pages lands. Pages builds
+The publish is not the end of the job. The rest of it proves which bytes went live, grades those bytes, and puts the old ones back if either step fails.
+
+<CodeBlock language="yaml" title="deploy.yml · jobs.deploy, verify and roll back">
+{`      # That action returns once its push to gh-pages lands. Pages builds
       # and propagates afterward, so the public URL keeps serving the old
       # weights for a while. Poll until the live bytes are the bytes we
       # published, and fail this step if they never are.
@@ -232,14 +247,19 @@ jobs:
 
 Four steps in that file carry the rollback objective. The snapshot copies the artifact that is live, before the publish overwrites it. The digest step records the sha256 of the bytes about to go up. The wait step then polls the public URL until it serves those exact bytes, and only after that does the smoke test re-run the accuracy gate. On failure the snapshot goes back up and the run stays red, because a rollback that goes green in silence tells nobody a bad model ever shipped. Restore the directory, not one file: `model.json` holds only the topology, and the weights sit in `weights.bin` beside it, so copying the JSON alone would leave the bad weights serving under an older graph.
 
-The order is doing real work there. `peaceiris/actions-gh-pages@v4` finishes when its push to the gh-pages branch returns, and the Pages build that serves those files runs afterward. A curl fired the instant the publish step ends will usually read the previous artifact, score it, and pass. Hang rollback on that pass alone and the new weights stay live, never graded. Comparing digests is what closes the hole. File size will not do it: two builds of one architecture produce weight files of identical length.
+The order is doing real work there. `peaceiris/actions-gh-pages@v4` finishes when its push to the gh-pages branch returns, and the Pages build that serves those files runs afterward. A curl fired the instant the publish step ends will usually read the previous artifact, score it, and pass. Hang rollback on that pass alone and the new weights stay live, never graded. Comparing digests is what closes the hole. File size will not do it: two builds of one architecture at the same precision produce weight files of identical length.
 
 ## Validation Scripts
 
-<CodeBlock language="typescript" title="validate-model.ts">
-{`// Model accuracy gate: blocks deployment if accuracy drops
-import * as tf from '@tensorflow/tfjs';
+<CodeBlock language="typescript" title="validate-model.ts · identify the bytes">
+{`// Model accuracy gate: blocks deployment if accuracy drops.
+// tfjs-node, not @tensorflow/tfjs: the browser build registers the http
+// loader and nothing else, and this file runs under Node against a path
+// on disk. A local path is not a URL, so plain tfjs throws
+// "Failed to parse URL" before it loads anything.
+import * as tf from '@tensorflow/tfjs-node';
 import { createHash } from 'node:crypto';
+import { resolve } from 'node:path';
 
 // The five classes in the order the training labels were encoded, so an
 // index off the score vector reads back as the name the holdout uses.
@@ -253,6 +273,8 @@ interface ValidationResult {
 
 // Hash the weight shards model.json names, in the order it names them.
 // A file name and a URL cannot say which artifact is live. The bytes can.
+// This one runs against the deployed https URL, which is the only spelling
+// fetch() takes; the local gate below has no live artifact to identify.
 async function fetchWeightDigest(modelUrl: string): Promise<string> {
   const manifest = await (await fetch(modelUrl)).json();
   const dir = modelUrl.slice(0, modelUrl.lastIndexOf('/'));
@@ -265,9 +287,13 @@ async function fetchWeightDigest(modelUrl: string): Promise<string> {
     }
   }
   return hash.digest('hex');
-}
+}`}
+</CodeBlock>
 
-async function validateModel(
+Two spellings reach this script and only one of them is a URL. The workflow's validate-model job passes `models/deep-scan-v1/model.json`, a path in the checkout; the smoke test passes the deployed `https://` address. `tf.loadLayersModel` takes a URL and picks a loader by scheme, so the local form has to be widened into a `file://` URL, which is the loader `tfjs-node` adds and the browser build does not have.
+
+<CodeBlock language="typescript" title="validate-model.ts · score it">
+{`async function validateModel(
   modelPath: string,
   testDataPath: string,
   minAccuracy: number,
@@ -285,7 +311,10 @@ async function validateModel(
     }
   }
 
-  const model = await tf.loadLayersModel(modelPath);
+  const modelUrl = /^https?:/.test(modelPath)
+    ? modelPath
+    : \`file://\${resolve(modelPath)}\`;
+  const model = await tf.loadLayersModel(modelUrl);
   const testData = await loadTestData(testDataPath);
 
   let correct = 0;
@@ -315,10 +344,13 @@ async function validateModel(
     passed: accuracy >= minAccuracy,
     details: { total: testData.length, correct, failures: failures.slice(0, 10) },
   };
-}
+}`}
+</CodeBlock>
 
-// Usage in CI
-function flag(name: string): string | undefined {
+And the invocation the workflow's validate-model step runs. `--expect-digest` is absent there and present on the smoke test, which is the whole difference between grading an artifact and grading whichever artifact answered.
+
+<CodeBlock language="typescript" title="validate-model.ts · run it">
+{`function flag(name: string): string | undefined {
   const i = process.argv.indexOf(name);
   return i === -1 ? undefined : process.argv[i + 1];
 }
@@ -363,11 +395,13 @@ Before anyone answers him, scroll the log of the step that mattered:
     Gate: PASSED ✓`}
 </CodeBlock>
 
-Read the restore line against the number the accuracy gate is proudest of. The build this merge request ships is 85 MB on disk and scores 91.8 percent on that same holdout; both figures have been on the engineering board since the pruning review. What the cache handed this run is 340 MB on disk at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk and the numbers in the weights, not the tensor shapes or the parameter count, so the latency and the resident-weights figure read the same on both builds. The size of what came out of the cache is the only line that separates them. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
+Read the restore line against the number the accuracy gate is proudest of. The build this merge request ships is 85 MB on disk and scores 91.8 percent on that same holdout; both figures have been on the engineering board since the pruning review. What the cache handed this run is 340 MB on disk at 94.2: the build from eight days ago, before quantization, before pruning, restored from a cache keyed on a name that never changes. The gate measured a model that no longer exists and called it healthy. Neither of the other two gates could have caught it. Quantization changed the file on disk and the numbers in the weights, not the tensor shapes or the parameter count, so the latency and the resident-weights figure read the same on both builds. Two lines separate them: the size of what came out of the cache, and the accuracy it scored, which moved the wrong way, since the stale build is the one scoring higher. The restore line is the one that says why. The badge is green because the log is telling the truth about the wrong artifact, and the log said so in plain text before anyone senior walked over.
 
 <Dialogue speaker="Chief Nazari">
 Your lockfile pins code. Nothing in this file pins weights. Commit the digest the training rig prints, key the cache on that file, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.
 </Dialogue>
+
+The function that reads a cache key, `hashFiles()`, is what makes her order work and also what rules out the obvious version of it. It hashes files already in the workspace, so it cannot hash the 85 MB bundle the restore step has not fetched yet. The digest file the training rig commits is in the checkout the moment the job starts, which is why the key reads that file and not the weights.
 
 ## Challenge
 
@@ -379,7 +413,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
 
 <Exercise slug="export-model-artifact" />
 
-<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin cannot be a hash of the artifact itself. hashFiles() runs when the step starts, over files already checked out, and the 85 MB bundle is not there until the restore finishes. So pin something the repo carries. Have the training rig commit a small digest file next to the model reference, then key the cache on hashFiles of that file. The other route is to skip the cache and pull a versioned artifact whose version string is the pin." />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="Because the workflow only tests whatever artifact its steps resolve, and a cache keyed by a fixed name or path can resolve to a stale one. A weight file from a previous training run satisfies that cache hit and passes every accuracy gate, measuring a model that no longer exists. The pin has to be something the repo already carries, such as the digest file the training rig commits, because the artifact itself is not there to hash until the restore has finished." />
 
 <RecallPrompt
   question="What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
@@ -393,7 +427,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
     "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on. A post-deploy smoke test also has to prove which artifact it fetched, because the publish step returns before the host serves the new file.",
     "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory as modelTopology, weightSpecs and weightData. The committed digest covers weightData alone, four bytes per float32 parameter, because sha256sum runs over weights.bin and validate-model re-derives that hash from the weight shards. The graph is not in the pin."
   ]}
-  bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed; the workflow shape is identical, but the weight bytes must be hash-pinned the way a `package-lock.json` pins dependencies, since `model.json` names the weight files without fixing their contents."
+  bridge="A `package-lock.json` pins the dependencies a build resolves. `model.json` names its weight files without fixing their contents, so an ML pipeline has to pin the weight bytes by hash the same way."
   youCanNow="Write the model-accuracy gate a CI workflow calls and the export that produces the artifact it grades, and review a deploy workflow for the step whose pin does not hold."
 />
 

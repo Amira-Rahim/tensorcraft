@@ -2,7 +2,7 @@ slug: inference-cache
 lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
-instructions: "Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model. Two inputs belong to the same entry when their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them. Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory."
+instructions: "Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model. What a cache stored is its own: build a second cache over a second model and the same signal is a miss there, because the same values under different weights are a different answer. Two inputs belong to the same entry when their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them. Entries outlast the calls that follow them: a signal that comes back after other signals have gone through still hits what its first call stored, because the repeats this cache is built for arrive with other traffic between them. Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory."
 starterCode: |
   function makeInferenceCache(model, decimals = 2) {
     // A hit and a miss have to hand the caller the same kind of value, and
@@ -151,6 +151,22 @@ testCode: |
       expect(Array.from(first)).toEqual(probe.truth([0.12, 3]));
       expect(Array.from(second)).toEqual(probe.truth([0.1, 23]));
     });
+    it('every value in the signal is in the key, not only the first one', () => {
+      // Every pair above parts at the FIRST value, so a key read off
+      // data[0] alone survives all of them. These two agree there and part
+      // at the second value.
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      const first = cache.predict(tf.tensor2d([[0.5, 0.12]]));
+      const second = cache.predict(tf.tensor2d([[0.5, 0.93]]));
+      expect(
+        probe.counter.calls,
+        'These two signals agree on their first value and disagree on their second, so they are two signals and each needs its own forward pass. A key built from one value ignores every feature after it, and a cache keyed that way answers for signals it has never seen.',
+      ).toBe(2);
+      expect(cache.stats.hits).toBe(0);
+      expect(Array.from(first)).toEqual(probe.truth([0.5, 0.12]));
+      expect(Array.from(second)).toEqual(probe.truth([0.5, 0.93]));
+    });
     it('stores values, not tensor handles', () => {
       const m = makeModel();
       const cache = makeInferenceCache(m);
@@ -204,6 +220,52 @@ testCode: |
       expect(Array.from(second)).toEqual(expectedSecond);
       // Two different signals cannot share one stored verdict.
       expect(expectedFirst).not.toEqual(expectedSecond);
+    });
+    it('an entry is still there after another signal has gone through', () => {
+      // Every sequence above repeats a signal immediately, so a cache that
+      // remembers only the call before this one clears all of them. Real
+      // telemetry interleaves, and the 40 percent of forward passes this
+      // lesson removes are repeats that come back later in the night.
+      const probe = countingModel();
+      const cache = makeInferenceCache(probe.model);
+      cache.predict(tf.tensor2d([[0.21, 0.44]]));
+      cache.predict(tf.tensor2d([[0.77, 0.05]]));
+      cache.predict(tf.tensor2d([[0.33, 0.68]]));
+      cache.predict(tf.tensor2d([[0.06, 0.91]]));
+      const again = cache.predict(tf.tensor2d([[0.21, 0.44]]));
+      expect(
+        probe.counter.calls,
+        'The last call repeats the first signal with three other signals in between, so it has to find what the first call stored. Holding the last call, or the last few, drops an entry as soon as enough other signals arrive, which hits on a run of duplicates and earns almost nothing on a night of mixed traffic.',
+      ).toBe(4);
+      expect(cache.stats.hits).toBe(1);
+      expect(cache.stats.misses).toBe(4);
+      expect(Array.from(again)).toEqual(probe.truth([0.21, 0.44]));
+    });
+    it('each cache answers for its own model', () => {
+      // Every case above builds one cache over one model, so a store shared
+      // by every cache in the process clears all of them. Two models, two
+      // caches, one signal: with a shared store the second call finds an
+      // entry the first cache wrote, runs no forward pass, and hands back a
+      // verdict the second model never computed.
+      const first = countingModel();
+      const second = countingModel();
+      const cacheA = makeInferenceCache(first.model);
+      const cacheB = makeInferenceCache(second.model);
+      const values = [0.42, 0.58];
+      const fromA = cacheA.predict(tf.tensor2d([values]));
+      const fromB = cacheB.predict(tf.tensor2d([values]));
+      expect(
+        second.counter.calls,
+        "The second cache has never seen this signal. It was built over its own model, and an entry stored under another model's weights is not an answer for this one, so this call is a miss and the model runs.",
+      ).toBe(1);
+      expect(cacheB.stats.hits).toBe(0);
+      expect(cacheB.stats.misses).toBe(1);
+      expect(
+        Array.from(fromB),
+        'A cache hands back the verdict its own model computed. These two models hold different weights, so one of them answering for the other is a stale verdict arriving before anyone has even deployed.',
+      ).toEqual(second.truth(values));
+      expect(first.counter.calls).toBe(1);
+      expect(Array.from(fromA)).toEqual(first.truth(values));
     });
   });
 estimatedMinutes: 18

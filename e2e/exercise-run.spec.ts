@@ -8,7 +8,9 @@ import { test, expect } from "@playwright/test";
  *   1. the untouched starter must FAIL (red results panel),
  *   2. the canonical solution must PASS ("All tests passed!").
  *
- * Uses the free-tier lesson foundations/01 (create-a-tensor).
+ * Uses the free-tier lesson foundations/01 (create-a-tensor). SOLUTION is a
+ * copy of that exercise's solutionCode; packages/content/__tests__/
+ * e2e-solution-drift.test.ts fails when the two drift apart.
  * Requires network access for the TFJS CDN script inside the worker.
  */
 const LESSON = "/worlds/deep-orbit/foundations/introduction-to-tensors";
@@ -20,6 +22,7 @@ const SOLUTION = [
   "const reading = tf.tensor(streamValues);",
   "const shape = reading.shape;",
   "const values = Array.from(reading.dataSync());",
+  "const total = tf.tidy(() => reading.sum().dataSync()[0]);",
   "reading.dispose();",
 ].join("\n");
 

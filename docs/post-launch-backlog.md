@@ -3847,6 +3847,79 @@ that two different calls land on (module 10's bundle benchmark and the
 capstone's classify() pipeline) are now stated on their pages rather than left
 for the reader to reconcile.
 
+## Plan item 3 landed (2026-09-13): 18 graders attacked, 18 hardened, and a call spy in both harnesses
+
+One adversary per suspect grader (the six left from the plan plus twelve the
+blind readers named) wrote up to four no-understanding submissions each and
+ran them through the real grader. All eighteen fell to at least one:
+build-layer, gradient-step, export-model-artifact, create-a-tensor,
+ensemble-detector, write-model-card, classify-anomaly, inference-cache,
+prune-weights, pipeline-architecture, retrieve-signals, prompt-template,
+predict-next, create-sequences, launch-rehearsal, simple-attention,
+model-monitor, time-vs-frequency. All eighteen were hardened cheat-first: the
+smallest test that rejects the winning attack, with an authored message that
+names the misunderstanding, fixtures computed at grade time rather than typed
+(gradient-step now assembles a loss from a multiplier drawn on the spot;
+ensemble-detector generates its window by rule and derives both readings
+from it), and the instructions stating any requirement the new test asserts.
+Two registered cheats were rewritten to the strongest beaten submission.
+
+Three residual classes could not be closed from inside a YAML, because a
+grader can only see the number a submission produced, never the call that
+produced it: a finite-difference slope (gradient-step), an artifact assembled
+by hand from `model.toJSON()` and the live weights that reloads byte for byte
+(export-model-artifact), and a second stack built at top level to measure the
+per-width step (build-layer). So the harness gained the affordance: both
+harnesses now hand the submission a spied `tf` whose `tf.__calls` counts the
+entry points a grader can legitimately care about (`variableGrads` and the
+other autograd entry points, `sequential`, `model`, every function under
+`layers`, `io`, `train`, `losses`, and `LayersModel.prototype.save` as
+`model.save`), fresh per run. The three graders assert on it (an autograd call
+inside `step()`, a `save` or `withSaveHandler` call, exactly one stack and
+three dense layers built at top level), the three residual attacks now fail
+on those assertions with authored messages, the runner half is pinned by
+`exercise.test.ts`, the agreement of the two harnesses by the corpus parity
+test, and the design by `scripts/exercise-cheats/README.md`.
+
+**Gates:** exercises 65 of 65 on three consecutive runs, starters 65 with no
+STARTER-CREDIT line, cheats 65 CHEAT-OK on three runs, corpus parity 65 of 65
+before and after the spy assertions, hint and contract gates 285, prettier
+clean, zero em dashes. Still open by design: fixture inputs drawn from a
+per-run seed so no deterministic grader has a stable answer to memorise
+(every grader here is deterministic; the adversaries raised the cost of
+memorisation, they did not remove it), and create-a-tensor's disposed tensor,
+whose contents nothing can recover after step 3 without a runner snapshot.
+
+## Plan item 5 landed (2026-09-13): supervised learning named, and cumulative retrieval
+
+"Supervised learning" is now named once where the course first defines a
+label (`foundations/04`, the feature/label paragraph) with a glossary entry;
+before this the word appeared in 56 lessons exactly once, inside a
+RecallPrompt answer about autoencoders. The retrieval surfaces were all
+local (68 prompts, each about the lesson it sits in), so the last lesson of
+every module now closes with one cumulative RecallPrompt whose answer lives
+in an EARLIER module's body (foundations retrieves from its own lesson 3),
+each author quoting the source sentence and line in its report:
+
+- neural-networks: `05-building-a-network.mdx` retrieves from `foundations/03-tensor-operations.mdx:106`
+- foundations: `05-normalization.mdx` retrieves from `foundations/03-tensor-operations.mdx:100`
+- training-loop: `05-evaluating-deep-scan.mdx` retrieves from `foundations/04-data-loading.mdx:129`
+- browser-runtimes: `06-transformers-js.mdx` retrieves from `training-loop/05-evaluating-deep-scan.mdx:54`
+- signal-processing: `05-windowing-and-overlap.mdx` retrieves from `foundations/04-data-loading.mdx:152`
+- recurrent-networks: `05-sequence-prediction.mdx` retrieves from `browser-runtimes/04-inference-pipeline.mdx`
+- anomaly-detection: `05-the-anomaly.mdx` retrieves from `foundations/05-normalization.mdx:143`
+- advanced-time-series: `05-ensemble-methods.mdx` retrieves from `foundations/05-normalization.mdx:91`
+- llm-integration: `05-multi-model-systems.mdx` retrieves from `anomaly-detection/01-normal-vs-anomalous.mdx:128`
+- optimization-edge: `05-webgpu-acceleration.mdx` retrieves from `browser-runtimes/02-tensorflow-js-setup.mdx`
+- capstone: `05-launch.mdx` retrieves from `anomaly-detection/05-the-anomaly.mdx`
+
+Every one sits immediately before its LessonRecap (the end-of-lesson gate caps
+a lesson at three prompts and requires that order), passes the em-dash, slop,
+metadata, interval and structure-variety gates, and adds no pulse-interval
+string. The pattern to protect: a cumulative prompt names the earlier module
+by number, asks for a mechanism rather than a fact, and ties it to something
+the closing lesson just did.
+
 ### Deferred from item 2 (structural, logged here only)
 
 - Keep type declarations in the delivered starter (make tsToJs preserve
@@ -3865,9 +3938,265 @@ for the reader to reconcile.
   CI-pinned per file (interval canon) and needs an owner ruling on which
   interval the season's clock reads at that point.
 
-### Held for the owner (plan item 4, structural)
+### Plan item 4 landed (2026-09-13): one hint ladder per exercise, and the boss beat stops choosing for you
 
-`apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx:561-563`
-renders one HintPanel from `lesson.hints` regardless of exercise count, and
-`packages/content/velite.config.ts:179-225` gives exercises no hints field,
-so a lesson carrying two exercises can never ladder both. Nine lessons do.
+Exercises may now carry their own ladder (`hints:` in the exercise YAML,
+same nudge/guidance/solution shape, `velite.config.ts` and `schemas.ts`),
+rendered by `packages/ui/src/mdx/exercise.tsx` beneath the exercise's
+instructions with the same `onHintRevealed` analytics hook the lesson panel
+uses. The lesson ladder keeps serving the lesson's primary exercise (the one
+its solution rung is excerpted from), so nothing moved for the 56 primary
+ladders. The nine second exercises that had no ladder at all got one, each
+authored against the gates: incident-baseline-drift, incident-missed-anomaly,
+incident-false-alarm-storm, incident-tensor-leak, ci-cd-gate,
+verify-deployment, launch-rehearsal, rag-pipeline, incident-stale-verdict.
+Guidance coverage on the nine runs 0.00 to 0.14 against the 0.40 limit; every
+solution rung is a whole function or class, verbatim. Gates: the guidance
+dictation gate scores an exercise against its own ladder when it has one
+(`scripts/lib/hint-dictation.mjs`, `hintSource` in the report), and Gate B
+in `metadata-consistency.test.ts` carries a second, separately pinned case
+set for the nine (`EXPECTED_EXERCISE_LADDERS`). The boss beat's 30-second
+timer no longer submits the "random" stance on the learner's behalf: at zero
+it names the stance the bridge takes on silence and stays playable, with a
+test that pins "nothing recorded until a click"
+(`apps/web/app/components/mdx/boss-beat.tsx`, plan item 4's second half).
+Also closed from the same list: "supervised learning" is now named where
+labels are first defined (`foundations/04`) with a glossary entry, and
+`foundations/04` has the bridge it lacked (bridge count single-sourced at 56).
+
+The original note, for the record: `lesson-content.tsx:561-563` rendered one
+HintPanel from `lesson.hints` regardless of exercise count and exercises had
+no hints field, so a lesson carrying two exercises could never ladder both.
+
+## Round 7 (2026-09-13): grade of record, 47 blind readers, every high closed the same day
+
+The round-7 workflow (`round7.js`, run `wf_8872e24c-ec6`) put four lenses on
+each of the 11 modules (lesson body as a zero-ML JS engineer, every claim
+verified by execution, the exercise and its grader attacked with a fresh
+ignorance, the writing and the owner's fourth question) plus three
+cross-cutting readers (continuity, video readiness, completeness critic).
+47 of 47 returned, 0 failed, 1,160 claims measured and confirmed true, 396
+findings: 61 high, 165 medium, 170 low. Readers ran at concurrency 3 and
+each read the tree as it stood when it started, so the grades below are of
+the tree AS READ. Every high was closed by hand within the same day, each
+with the reader's own probe or measurement re-run; the mediums and lows went
+to a module-exclusive fixer pass (next section).
+
+| module | lesson-body | claims | exercise | writing |
+|---|---|---|---|---|
+| foundations | B+ (2H/4M/6L) | A- (1H/2M/2L) | B- (3H/3M/3L) | B+ (1H/5M/5L) |
+| neural-networks | B+ (2H/3M/3L) | A- (0H/2M/2L) | B (2H/3M/2L) | A- (0H/6M/5L) |
+| training-loop | A- (1H/4M/4L) | A- (1H/1M/4L) | B (5H/1M/2L) | B+ (2H/4M/6L) |
+| browser-runtimes | A- (1H/5M/1L) | B+ (1H/7M/1L) | B- (2H/4M/1L) | B+ (0H/6M/4L) |
+| signal-processing | B+ (1H/4M/2L) | A (0H/1M/2L) | B (3H/3M/1L) | B+ (5H/4M/7L) |
+| recurrent-networks | B+ (3H/3M/4L) | A- (0H/2M/4L) | B+ (1H/3M/3L) | A- (0H/3M/5L) |
+| anomaly-detection | B+ (1H/2M/3L) | B+ (1H/1M/1L) | B+ (2H/4M/3L) | B+ (2H/3M/6L) |
+| advanced-time-series | B+ (0H/5M/4L) | A- (0H/3M/4L) | B (2H/2M/6L) | A- (0H/7M/8L) |
+| llm-integration | B+ (1H/5M/4L) | A- (0H/2M/5L) | B- (3H/6M/2L) | A- (1H/2M/6L) |
+| optimization-edge | B+ (1H/4M/2L) | A- (0H/2M/3L) | B (2H/4M/2L) | B+ (1H/5M/6L) |
+| capstone | A- (0H/3M/6L) | A- (0H/2M/3L) | (pending) | B+ (2H/7M/5L) |
+cross-cutting: cross:continuity: A- (1H/3M/2L); cross:video-readiness: A- (1H/3M/2L); cross:completeness-critic: A- (0H/4M/4L)
+median by lens: continuity A- (n=1), video-readiness A- (n=1), completeness-critic A- (n=1), claims A- (n=11), lesson-body B+ (n=11), exercise B (n=10), writing B+ (n=11)
+overall: median B+, mean 3.41, n=46; highs 58, mediums 162, lows 166
+
+The grade of record is unchanged from round 6 at B+, and the shape moved:
+the claims lens now reads A- on 9 of 11 modules and the exercise lens is
+the binding constraint at B, which is where the highs were (13 graders
+beaten by a second ignorance, six lessons printing their exercise's answer).
+
+### The 61 highs, by class
+
+1. **The lesson prints the exercise's answer (6).** browser-runtimes/04
+   `classify`, signal-processing/02 `findDominantFrequency`, /03 `stft`, /05
+   `hannWindow`, llm-integration/02 the prompt template, capstone/01 the
+   `Pipeline` class: a paste with the TypeScript stripped cleared every test.
+   Closed by changing what each lesson shows (the async split, a spectrum
+   table, the built-in STFT with its Hann taper measured, the library Hann
+   with the periodic-versus-symmetric note, Farah's v8, the runner's
+   contract) and never by weakening a grader. Durable gate:
+   `packages/content/__tests__/lesson-answer-leak.test.ts` (no verbatim run of
+   120 or more whitespace-stripped solution characters outside the starter in
+   the parent lesson's code blocks; anomaly-detection/04's `evaluate` was the
+   one further leak it found and it was rewritten in a different idiom).
+2. **Graders a table could hold (13).** build-layer (a stack built lazily
+   inside the answer and cached), simple-network (an unbound untrained
+   sweep), gradient-step (a decoy autograd call beside a hand derivative),
+   training-loop-exercise (a batch size the instructions allowed but the
+   callback could not survive; a whole-run diagnose), deep-scan-eval (a run
+   whose numbers were always a round 1.0), sliding-window (a table keyed on
+   series length), reconstruction-error (a memoised leak check),
+   ensemble-detector (a relative tolerance), incident-baseline-drift (readings
+   the channel cannot produce), quantize-weights (a changed-verdict count read
+   off the bucket width), gpu-backend (a ladder honouring only the first
+   rung), model-pipeline (no stage ever received the capture),
+   export-model-artifact (a decoy save handler), classify-anomaly (a carried
+   centre). Each closed with a fixture drawn at grade time or an assertion on
+   what the submission actually did, the reader's probe registered as a second
+   cheat file, both cheats rejected, no starter credit, parity 65/65.
+3. **Canon holes (4).** See "Canon decisions" below.
+4. **False facts in lessons (11).** The activation-collapse claim asserted
+   three times and demonstrated nowhere (now a measured `collapse.ts`, 3,000
+   draws); lesson 1's neuron "learned on" the tones; a training log opening on
+   the exact ln 2 the module says no run prints, then a five-line drop no run
+   can make (banner and run of record now minted from one measured run out of
+   1,000); backend auto-selection order (webgl and wasm both register at
+   priority 2, verified on the shipped packages); an ONNX prediction of 0.847
+   that the shipped weights answer 0.985; an RNN "break" that was the shared
+   property; LSTM gate equations without their bias; a bridge whose JS side
+   was `model.predict`; the FFT "adds no information, only access" thesis
+   (true of the window, false of a model that saw three summary numbers);
+   "four 95% stages are right 81% together" without the independence
+   condition; quantization's zero-point decode where tfjs runs
+   `v * scale + min`.
+5. **The harness (2).** The sandbox handed the submission the same `Math`
+   object the tests draw from, and tfjs seeds its generator from
+   `Math.random` on every call, so one line at the top of a submission turned
+   every grade-time draw in four graders into a constant. And the ONNX stub
+   lacked the two lifecycle calls lesson 5 tells the reader to make.
+
+### Canon decisions (measured before deciding; in memory and in the fixer rules)
+
+- Module 7's two captures, sample 7741 in the archive and the live capture
+  on the feed, both read normal on every dial. Both verdicts are 2-of-3 with
+  the amplitude gate quiet on purpose, and that quiet dial is why 7741 sat in
+  the archive for eleven days. 7741's normalized amplitude is 0.50 everywhere;
+  the capstone's `classify-anomaly` readout carried 0.61 and is aligned. No
+  surface prints a 3-of-3 verdict, an amplitude of 1.00 or a z-score of 3.2
+  for either capture; the 1.00 / 3.2 sigma figure stays only as a statement
+  of the sensor ceiling.
+- Module 7's reconstruction-error family is on the z-score scale, one
+  hundred times the old numbers with every ratio intact: normal mean about
+  0.10, max about 0.50, 95th percentile about 0.31, 99th about 0.48, sweep
+  candidates 0.2 / 0.3 / 0.4 / 0.5 / 0.8 / 1.0 with the F1 peak at 0.4, locked
+  cutoff 1.0, the anomaly at 6.2 (twelve times the max), per-feature map
+  fft_5 64.12 / fft_6 2.89 / amplitude 0.71. The old 0.001 / 0.005 / 0.062 /
+  0.010 family was `build-autoencoder`'s min-max fixture reproduced, and it
+  is unreachable on the z-scored inputs every lesson says the autoencoder
+  reads; a 1,000-row synthetic z-scored fit reproduced the new scale (held-out
+  mean 0.12, max 0.52, p95 0.34, p99 0.48) and is now lesson 2's printed
+  trace. `ensemble-detector.yaml`, `classify-anomaly.yaml` and capstone/05
+  carry the new scale.
+- tfjs stores a quantized tensor as `{min, scale}` and decodes it as
+  `v * scale + min` (`io_utils.js:196`, verified). Module 10's lesson block,
+  hint rung, exercise and cheat all used the generic zero-point form; all now
+  use the tfjs form, and the two printed gaps are the measured half-steps on
+  `deep-scan-v1` (0.0045 at uint8, 0.000017 at uint16).
+- Sample 7741's amplitude is 0.50 (the settled triple), not 0.61.
+
+### Harness and gate changes (both harnesses; parity 65/65 and the full cheat sweep green after each)
+
+- `Math.random` inside the grader is a sealed per-run stream (a copy of the
+  host `Math` with `random` non-writable, non-configurable, seeded from the
+  host generator the sandbox never sees), and the `tf` namespace is
+  read-only to the submission (`set` / `defineProperty` / `deleteProperty`
+  traps). Unit test in `packages/ui/src/mdx/exercise.test.ts`; rule in
+  `scripts/exercise-cheats/README.md`.
+- `tf.__calls['model.predict']` counts `LayersModel.prototype.predict`, one
+  per call for Sequential and functional models.
+- The validator runs every cheat file for a slug, `<slug>.js` and
+  `<slug>.<n>.js`; 18 second cheat files were registered from reader probes
+  this round, each guarding one specific check.
+- The ONNX stub carries `session.release()` and `tensor.dispose()`.
+- The glossary rail is derived from the compiled body's underlines
+  (`glossaryTermsInCompiledBody`), 694 to 450 entries, gate
+  `glossary-rail-contract.test.ts`; two wrong-sense first occurrences
+  reworded; the style bible says how the rail is built.
+- `courseWorkload` in the Course JSON-LD is computed from the corpus (PT28H
+  today; a hardcoded PT27H had drifted) and the test compares the sum.
+- New gate `lesson-answer-leak.test.ts` (66 tests).
+- The BossBeat silence note names the standing option by its display text,
+  not its stance enum.
+
+### Deferred (logged here only)
+
+- `verifyClaims` (llm-integration/03) has a fixed absolute tolerance of
+  0.05. At the lesson-5 hand-off scale, values inside [-1, 1], it is not a
+  gate: measured, a draft with every number invented came back with nothing
+  fabricated. Lesson 5 now says what holds the line there; a tolerance
+  parameter on lesson 3's checker would need the exercise contract, its
+  ladder and its cheat to move together.
+- The completeness critic's module-order gate for the glossary rail was
+  measured and not adopted: lesson keywords give a home to 89 of 135 terms
+  and the gate would drop 101 legitimate previews (for example "shape" in
+  lesson 1).
+- The 340 MB (memory) versus 85 MB (disk) language bundle figure in
+  llm-integration/01:86 (fixer, canon rule).
+- anomaly-detection/04:88 sweep-table arithmetic against the archive's
+  anomaly share (fixer medium; the calm and validation slices are now
+  separated in prose).
+
+### Owner calls, unchanged
+
+The "no video track" copy (`apps/web/app/components/who-this-is-for.tsx:67`)
+stays until the video exists. TS declarations stay visible in the editor.
+`rag-pipeline`'s pulse interval is CI-pinned. Whether the capstone finale must
+end on a tensor.
+
+### Fixer pass (2026-09-13/14): 22 module-exclusive editors, 283 fixes, 68 skips, every gate green
+
+The 335 mediums and lows went to two workflows (`fix-round7-a.js`,
+`fix-round7-b.js`; the payload is over the 512 KB script limit as one file),
+22 editors at concurrency 3, each owning either a module's lessons plus
+`module.yaml` or its `exercises/*.yaml` plus the cheat files a finding
+names, so no two editors ever wrote the same file. Every editor re-measured
+before writing a number, rebuilt velite before any validator run, and
+reported its gates verbatim. Results: part A 143 fixed / 39 skipped, part B
+140 fixed / 29 skipped, 0 editors failed.
+
+The 68 skips, by reason: 16 already fixed by hand earlier the same day (the
+editors found the defect gone and touched nothing); 31 outside the editor's
+ownership, mostly the second half of a finding that lands in the other
+editor's files, in `glossary.ts`, in the harness, or in a test file (listed
+below where they still need doing); 10 structural (a new graded function
+that needs the lesson's ladder to move with it, a redesign of a gate's
+return shape, a new teaching artifact); 5 blocked by a CI pin or Gate B (a
+pulse-interval string, a solution rung quoted verbatim in a lesson ladder);
+6 judgement calls the editor declined with a reason (a runnable block that
+would add a surface without adding teaching, a re-label the finding itself
+said not to make). One concurrent edit made `module-summary-prelesson`
+red for an hour (the training-loop summary grew to 323 characters against
+the 220 cap while closing "the summary skips lesson 3"); it was shortened to
+211 with the same content.
+
+Left over from the skips, for the next pass (each named by the editor that
+declined it):
+
+- `glossary.ts`: entries for standard deviation, regression, classification
+  and y-hat / sigma-prime, so later modules get the tooltip.
+- neural-networks/02:104: a clause that logistic regression is a classifier
+  despite its name.
+- batch-data and normalize-data: assertions for the ungraded objectives
+  ("split into training and validation sets", "min-max normalization").
+- tfjs-setup: grade the backend ladder instead of three lines copied off the
+  page; load-pretrained-pipeline: reject tasks by input rather than return
+  `{generated_text}` for image-classification.
+- capstone/04 or optimization-edge/02: one clause on the 85 MB bundle
+  overrunning module 4's 50 MB cold-load budget.
+- model-pipeline: a real `tf.LayersModel` first stage (five of the module's
+  six exercises call no TensorFlow.js at all); the three-argument versus
+  two-argument `detectAnomaly` between lesson 5 and the exercise.
+- capstone/04 model card: `recallByClass.anomaly` 0.84 and the two literal
+  assertions still say 84% where the lesson now says 67%; the
+  launch-rehearsal grader comment still calls the deploy candidate what the
+  lesson no longer calls it.
+- recurrent-networks/02: a third graded function `decayFactors` needs the
+  ladder to move with it; a runnable RNN-versus-LSTM comparison on a real
+  long-dependency task is a new artifact, not an edit.
+- optimization-edge: `leakedTensors` as a fifth profile field with the
+  disposal in the solution; the 500/6 training counts in `prune-weights`'
+  comments; the dictation gates scoring `instructions` as well as starters
+  and hints.
+- The training-loop module title "Loss, Gradients & Optimization" skips
+  backprop the same way its summary did, and retitling needs
+  `e2e/worlds.spec.ts`, `docs/prd.md` and `docs/product-plan.md` to move.
+
+Full gate suite on the finished tree: content 646 / 646 (37 files, the two
+new gates included); validator 65 / 65 solutions, 65 / 65 cheats with 90
+cheat files (25 second files), starters 64 / 65 with the one failure a
+load-induced timing flake in `profile-model` ("reports the slow model
+slower than the fast one" compares two mocked delays through real timers,
+and it ran while three other suites held the CPU; five re-runs on a quiet
+machine passed, and the comparison predates this round); ui 408 / 408 with
+the 65-exercise browser parity; web 732 / 732; shared 39 / 39; tsc clean on
+content, ui and web; prettier clean on all 185 changed files; 0 em dashes.
+About 185 files uncommitted.

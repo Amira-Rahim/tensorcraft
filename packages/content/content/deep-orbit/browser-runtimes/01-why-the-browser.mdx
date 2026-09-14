@@ -13,14 +13,14 @@ context:
   narrative: "Nazari demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips: the model must run where the crew can use it."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline. The cost moves to the download: heavy upfront, free after."
+  explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline. The cost moves to the download: the weights arrive once, then every prediction costs device compute instead of a network hop."
   bridge:
     jsTitle: "Client-Side Rendering"
     jsCode: "createRoot(container).render(<App data={data} />)"
     mlTitle: "Client-Side Inference"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: structural
-    breaks: "Client-side rendering is one round-trip per route. Client-side inference downloads model weights once (often 5-50 MB), then every prediction runs locally with no network. The cost shape is inverted: heavy upfront, free after."
+    breaks: "Client-side rendering is one round-trip per route. Client-side inference downloads model weights once (often 5-50 MB), then every prediction runs locally with no network. The cost shape is inverted: one download instead of a round-trip per reading, and the device pays for the compute from then on."
 consequence:
   narrative: "Nazari approves the browser deployment plan. Demir begins setting up the runtime."
 hints:
@@ -138,7 +138,7 @@ Decide whether one use case belongs in the browser or on the server, and watch w
 
 <RecallPrompt question="What is the main tradeoff when moving ML inference from server to browser?" answer="You eliminate per-request network latency: a 50-500ms round-trip becomes local compute, which for this classifier runs under 5ms. Data also stays on the device. What you pay instead is upfront: the weights download once, and after that device CPU/GPU is all you get." />
 
-<LessonRecap whatYouLearned={["In-browser inference replaces a network round-trip on every request with a one-time model download. After that each prediction is local compute alone, under 5ms for this model and longer for bigger ones", "Browser constraints (memory cap, cold start time, device compute) map directly onto the shipping costs you already budget for: bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, and model size"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
+<LessonRecap whatYouLearned={["In-browser inference replaces a network round-trip on every request with a one-time model download. After that each prediction is local compute alone, under 5ms for this model and longer for bigger ones", "Browser constraints (memory cap, cold start time, device compute) map directly onto the shipping costs you already budget for: bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, offline availability, and model size. Here availability decided it: the link that carries 86,400 verdicts a day is a dependency the download removes"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
 
 <Epilogue>
 

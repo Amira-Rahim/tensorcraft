@@ -24,6 +24,23 @@ testCode: |
     // satisfy the grader's own expectations (both measured 2026-09-08).
     const source = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8];
     const filled = (value, what) => expect(value, what).toBeDefined();
+    const isTensor = (value) =>
+      expect(
+        value instanceof tf.Tensor,
+        'shape, dataId and arraySync are ordinary object properties, so an object literal can carry all three. This asks whether tf produced the grid.',
+      ).toBe(true);
+    // Rows are read back THROUGH the tensor, not through whatever arraySync()
+    // the submission supplies. Before this (round 7, 2026-09-13), an object
+    // literal carrying shape, flat's dataId and an arraySync() that returned
+    // three slices of flat.dataSync() cleared all six tests without running a
+    // single tensor op.
+    const rowsOf = () => {
+      isTensor(grid);
+      const parts = tf.unstack(grid);
+      const out = parts.map((row) => Array.from(row.dataSync()));
+      parts.forEach((row) => row.dispose());
+      return out;
+    };
     it('grid has shape [3, 4]', () => {
       filled(grid, 'Step 1 is still empty. Reshape flat into the layout Farah proposes.');
       expect(grid.shape, 'Three time steps, four channels in each.').toEqual([3, 4]);
@@ -38,14 +55,15 @@ testCode: |
       // and that is exactly what lets it hold anything at all: before this
       // check, a hand-typed [3, 4] grid cleared every other test in the file.
       filled(grid, 'Step 1 is still empty.');
+      isTensor(grid);
       expect(
         grid.dataId === flat.dataId,
-        'The numbers may be right, but they were not produced by reshaping flat. A reshape rewraps the same buffer under a new shape, so it cannot say anything the readings do not; a grid you build yourself allocates its own buffer and can say whatever you type. Reshape flat itself.',
+        'The numbers may be right, but they were not produced by reshaping flat. A reshape rewraps the same buffer under a new shape, so it cannot say anything the readings do not; a grid built with tf.tensor2d allocates its own buffer and can say whatever you type. Reshape flat itself.',
       ).toBe(true);
     });
     it('row-major fill: row 0 holds the first readings in order', () => {
       filled(grid, 'Step 1 is still empty.');
-      const rows = grid.arraySync();
+      const rows = rowsOf();
       expect(
         rows[0],
         'A reshape fills the first row before it starts the second, so row 0 is the front of the flat list, in order.',
@@ -53,7 +71,7 @@ testCode: |
     });
     it('middle row lands correctly', () => {
       filled(grid, 'Step 1 is still empty.');
-      const rows = grid.arraySync();
+      const rows = rowsOf();
       expect(
         rows[1],
         'Count four values into the flat list and read the next four. Nothing is rearranged on the way in.',
@@ -61,7 +79,7 @@ testCode: |
     });
     it('last row lands correctly', () => {
       filled(grid, 'Step 1 is still empty.');
-      const rows = grid.arraySync();
+      const rows = rowsOf();
       expect(rows[2], 'The tail of the flat list, in the order it arrived.').toEqual(
         source.slice(8, 12),
       );

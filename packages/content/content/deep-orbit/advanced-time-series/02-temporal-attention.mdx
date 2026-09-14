@@ -20,7 +20,7 @@ concept:
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
-    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the additive scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
+    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the per-step linear scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
 consequence:
   narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The pattern is confirmed."
 hints:
@@ -40,10 +40,10 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
-The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 4 and the frequency shift at step 78. Seventy-four steps apart. The interval, drawn as geometry.
+The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 4 and the frequency shift at step 78. Seventy-four steps apart.
 </Dialogue>
 
-`scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention gives the model the same control over a sequence: score every time step, then concentrate processing on the few that carry the information.
+`scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention gives the model the same control over a sequence: score every time step, then concentrate processing on the few that carry the information. Lesson 1 read its query off the sequence. Here the scorer's learned weights play that part, the same query on every window, and each step is both its own key and its own value.
 
 <LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Read the weights back as one number per time step and name the steps that took the most of the budget", "Use attention weights as a where-it-looked map, and state what they do not prove about why", "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"]} />
 
@@ -138,8 +138,9 @@ function topAttentionSteps(
 //  ceiling, roughly 570 to 1560 counts, so step 4's 1980 is the spike,
 //  high enough to stand out and still short of clipping. The other two
 //  rows sit inside the band. The top weight sits on the frequency row.
-//  Whether the shift is what drove the prediction takes an ablation, not
-//  a heatmap.)`}
+//  Whether the shift is what drove the prediction takes an ablation,
+//  meaning you rerun the prediction with that step's values blanked and
+//  see whether the answer moves, not a heatmap.)`}
 </CodeBlock>
 
 ## Applied: Attention Over a Live Ring Buffer
@@ -172,7 +173,7 @@ Read the two sums together: 1.000 and 1.000. Softmax spends its entire budget on
 
 ## Putting the Position Back
 
-Lesson 1 left a debt. The scorer above reads feature values and nothing else, so two windows holding the same readings in a different order get identical weights. On this crew's data that is the difference between a spike that precedes a frequency shift and one that follows it, and the model cannot see it. The fix production transformers use is a positional encoding, a vector added to each step that says where it sits. The cheapest honest version is one extra feature: the step's position, scaled to [0, 1], concatenated onto the readings before scoring.
+Lesson 1 left a debt. The scorer above reads feature values and nothing else, so two windows holding the same readings in a different order pool to the identical summary: each weight follows its own reading, and the sum does not care what order they arrived in. On this crew's data that is the difference between a spike that precedes a frequency shift and one that follows it, and the model cannot see it. The fix production transformers use is a positional encoding, a vector added to each step that says where it sits. The cheapest honest version is one extra feature: the step's position, scaled to [0, 1], concatenated onto the readings before scoring.
 
 <CodeBlock language="typescript" title="positional-feature.ts">
 {`// [batch, T, 3] -> [batch, T, 4]: the fourth feature is position / (T - 1)
@@ -198,7 +199,7 @@ function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; we
   });
 }
 
-// Before: a window and its reversal scored identically.
+// Before: a window and its reversal pooled to the same summary.
 // After: the scorer can learn "late steps matter more" (or early ones),
 // because lateness is now a number it multiplies by a weight.`}
 </CodeBlock>

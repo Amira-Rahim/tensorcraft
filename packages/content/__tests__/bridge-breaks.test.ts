@@ -57,7 +57,7 @@ for (const world of BUILT_STORY_WORLDS) {
     if (world === "deep-orbit") {
       it("the marketing bridge count matches the corpus (single-sourced constant)", () => {
         expect(bridges.length).toBe(WORLD_CONTENT.lessonBridges);
-        expect(bridges.length).toBe(55);
+        expect(bridges.length).toBe(56);
       });
     } else {
       it("the world ships at least one bridge (empty corpus = mis-wired glob)", () => {

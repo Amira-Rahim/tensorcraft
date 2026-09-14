@@ -60,6 +60,34 @@ export function matchGlossaryTerms(
   return matches.sort((a, b) => a.start - b.start);
 }
 
+const COMPILED_SPAN = /"data-glossary-term":\s*"([^"]+)"/g;
+
+/**
+ * The entries a compiled lesson body actually underlines, in first-appearance
+ * order. rehype-glossary wraps the first prose occurrence of each term in a
+ * <span data-glossary-term="..."> and never sees code, headings, links, or
+ * the children and attributes of JSX elements (Dialogue, BossBeat, drawers),
+ * so this is narrower than a whole-word match over the source: a term named
+ * only inside a BossBeat option never reaches the reader as a chip and must
+ * not reach the rail beside the lesson either (round 7, 2026-09-13).
+ */
+export function glossaryTermsInCompiledBody(
+  body: string,
+  dict: GlossaryEntry[],
+): GlossaryEntry[] {
+  const byTerm = new Map(dict.map((e) => [e.term, e]));
+  const out: GlossaryEntry[] = [];
+  const seen = new Set<string>();
+  for (const m of body.matchAll(COMPILED_SPAN)) {
+    const term = m[1]!;
+    const entry = byTerm.get(term);
+    if (!entry || seen.has(term)) continue;
+    seen.add(term);
+    out.push(entry);
+  }
+  return out;
+}
+
 /** Unique canonical entries that appear at least once in text. */
 export function findGlossaryTermsInText(
   text: string,

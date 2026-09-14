@@ -212,7 +212,12 @@ Two reader affordances are automatic. Do not hand-author markup for either.
   aliases, scope). Define it once. The build underlines the FIRST occurrence of
   that term in each lesson's prose and lists it in the lesson's glossary rail.
   Clicking the underlined term highlights its rail entry. There is no per-lesson
-  markup to add or maintain.
+  markup to add or maintain. Two consequences to write around: the match is
+  lexical, so a lesson whose first "recall" or "attention" is the everyday word
+  gets the ML chip on it (reword that sentence), and text inside Dialogue,
+  BossBeat, drawers and other components is never underlined, so a term that
+  appears only there stays off the rail (the build derives the rail from the
+  rendered underlines, gate `glossary-rail-contract.test.ts`).
 
 Definitions follow the same prose rules as everything else: one or two plain
 sentences, no em dashes (rule 6).

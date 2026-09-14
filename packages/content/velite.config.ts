@@ -2,7 +2,7 @@ import { defineCollection, defineConfig, s } from "velite";
 import ts from "typescript";
 import { rehypeGlossary } from "./src/rehype-glossary";
 import { GLOSSARY } from "./src/glossary";
-import { findGlossaryTermsInText } from "./src/glossary-match";
+import { glossaryTermsInCompiledBody } from "./src/glossary-match";
 import { BUILT_WORLD_GLOB } from "./src/built-worlds";
 
 /**
@@ -161,16 +161,15 @@ const lessons = defineCollection({
       body: s.mdx(),
       metadata: s.metadata(),
     })
-    .transform((data, { meta }) => {
-      const raw = typeof meta.content === "string" ? meta.content : "";
-      const prose = raw
-        .replace(/```[\s\S]*?```/g, " ")
-        .replace(/`[^`]*`/g, " ");
-      return {
-        ...data,
-        glossaryTerms: findGlossaryTermsInText(prose, GLOSSARY),
-      };
-    }),
+    .transform((data) => ({
+      ...data,
+      // The rail beside the Takeaways step lists exactly the terms the
+      // rendered body underlines. Matching the MDX source instead listed
+      // 242 terms across 56 lessons that no reader ever saw as a chip,
+      // several off JSX attributes in the other sense of the word (gate:
+      // __tests__/glossary-rail-contract.test.ts).
+      glossaryTerms: glossaryTermsInCompiledBody(data.body, GLOSSARY),
+    })),
 });
 
 const exercises = defineCollection({
@@ -186,6 +185,26 @@ const exercises = defineCollection({
     testCode: s.string().min(1).transform(tsToJs),
     estimatedMinutes: s.number().int().positive(),
     difficulty: s.enum(["beginner", "intermediate", "advanced"]),
+
+    // A hint ladder of the exercise's own. The lesson's `hints` ladder serves
+    // the lesson's primary exercise (the one whose solutionCode the solution
+    // rung is excerpted from); a lesson carrying a second exercise (the
+    // incident drills, the capstone's rehearsal and verifier, rag-pipeline,
+    // ci-cd-gate) gives that exercise its ladder here, rendered beneath the
+    // exercise's instructions. Same shape and gates as the lesson ladder:
+    // guidance-hint-dictation.test.ts and Gate B in
+    // metadata-consistency.test.ts read this field when present (2026-09-13,
+    // plan item 4).
+    hints: s
+      .array(
+        s.object({
+          level: s.enum(["nudge", "guidance", "solution"]),
+          content: s.string().min(1),
+        }),
+      )
+      .min(2)
+      .max(3)
+      .optional(),
 
     // ML-content axis (independent of cognitive difficulty). Distinguishes
     // exercises that exercise real ML primitives (model/training/...) from

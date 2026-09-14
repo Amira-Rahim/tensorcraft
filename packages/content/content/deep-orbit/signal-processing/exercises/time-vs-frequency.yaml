@@ -1,7 +1,18 @@
 slug: time-vs-frequency
 lessonSlug: time-vs-frequency
 title: "Find the Hidden Tone"
-instructions: "The lesson claims a tone too weak to see in the time view is a clear peak in the frequency view. Make that claim executable on raw samples. compareViews(baseline, suspect, tolerance, threshold) receives two captures, and nothing is precomputed for you: transform BOTH of them yourself with tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync(), which is the call the lesson prints above the challenge (lesson 2 explains what it does). Return { timeTwin, divergentBin }. timeTwin is true when every pair of samples differs by no more than tolerance. divergentBin is the index of the first bin whose two magnitudes differ by MORE than threshold, or -1 when no bin does. Three details the grader holds you to. A gap counts by size, not by direction: a bin that lost energy diverged as much as one that gained it. Every bin is eligible, bin 0 included. And tolerance and threshold are never the same number, because a magnitude grows with the number of samples you transformed while a sample difference does not."
+instructions: |
+  The lesson claims a tone too weak to see in the time view is a clear peak in the frequency view. Make that claim executable on raw samples. compareViews(baseline, suspect, tolerance, threshold) receives two captures, and nothing is precomputed for you: transform BOTH of them yourself with tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync(), which is the call the lesson prints above the challenge (lesson 2 explains what it does).
+
+  Return { timeTwin, divergentBin }. timeTwin is true when every pair of samples differs by no more than tolerance. divergentBin is the index of the first bin whose two magnitudes differ by MORE than threshold, or -1 when no bin does.
+
+  Three details the grader holds you to.
+
+  1. A gap counts by size, not by direction: a bin that lost energy diverged as much as one that gained it.
+  2. Every bin is eligible, bin 0 included.
+  3. tolerance and threshold are never the same number, because a magnitude grows with the number of samples you transformed while a sample difference does not.
+
+  One of the grader's intruders is generated when it runs, so the bin it asks for has to come out of the comparison rather than out of a remembered index.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -107,9 +118,10 @@ testCode: |
       // arriving (b - a > threshold) clears them all and misses this one.
       const dead = generate(catalogued.filter((c) => c.hz !== 47), 512, 256);
       const r = compareViews(background(), dead, 0.05, 5.0);
+      expect(r, 'compareViews returned nothing to read. It has to hand back an object carrying both verdicts, timeTwin and divergentBin, before any check here can look at them.').toBeDefined();
       expect(
         r.divergentBin,
-        'The 47 Hz line is in the baseline and gone from the suspect: bin 94 (47 Hz at 0.5 Hz per bin over 512 samples) reads 51.2 on one side and 0 on the other. A gap counts by size, not by direction, so a hull channel that has gone dead diverges as much as a tone that arrived.',
+        'The 47 Hz line is in the baseline and gone from the suspect: bin 94 (47 Hz at 0.5 Hz per bin over 512 samples) reads 51.2 on one side and 0 on the other. A gap counts by size, not by direction, so a catalogued line that has gone silent diverges as much as a tone that arrived.',
       ).toBe(94);
     });
     it('reports no divergence when the suspect is the same capture', () => {
@@ -160,6 +172,25 @@ testCode: |
         r.divergentBin,
         '40 Hz sits exactly on a bin line here (40 x 512 / 256), so its whole gap of 12.8 lands in bin 80 while every earlier bin agrees to within 0.00001.',
       ).toBe(80);
+    });
+
+    it('is a comparison, not a lookup: the intruder is drawn at grade time', () => {
+      // Bin 100 to 199 of this 512-sample capture, so the tone sits exactly
+      // on a line between 50 and 99.5 Hz and carries its whole gap of 12.8
+      // into that one bin.
+      const bin = 100 + Math.floor(Math.random() * 100);
+      const hz = bin / 2;
+      const loud = views(background(), intruder(hz, 0.05), 0.05, 5.0);
+      expect(
+        loud.divergentBin,
+        'This intruder was drawn at grade time, so no table of remembered inputs and bin indices covers it. The bin it lands in exists only in the comparison between the two spectra this run produced: its gap of 12.8 is the one thing above 5.0, and every other bin agrees to within 0.0001.',
+      ).toBe(bin);
+
+      const quiet = views(background(), intruder(hz, 0.01), 0.05, 5.0);
+      expect(
+        quiet.divergentBin,
+        'The same drawn tone at one fifth the amplitude puts 2.56 into that bin, under the bar of 5.0, so the sentinel is the honest answer. An answer that repeats the bin it just reported, or names the loudest bin it can find, speaks when nothing has cleared the bar.',
+      ).toBe(-1);
     });
 
     it('follows the capture length, because the bin grid does', () => {

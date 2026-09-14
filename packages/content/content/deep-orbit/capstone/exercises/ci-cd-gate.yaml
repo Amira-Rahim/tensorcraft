@@ -14,6 +14,28 @@ instructions: |
       }
 
   A row scores as correct only when the two labels match, so a row that arrived without an actual label is not a correct prediction. Every row still counts in the total, that one included. A score sitting exactly on the floor clears the gate. An empty batch has nothing to report: it fails, and its accuracy reads 0 rather than NaN.
+hints:
+  - level: nudge
+    content: "Two decisions sit ahead of any arithmetic: which rows count as correct, and which rows count at all. Rows that arrived without a label are where those two answers come apart, and an empty batch is where the division has no answer to give."
+  - level: guidance
+    content: "Start with the row test, because it is smaller than it looks. Comparing a prediction against a label that never loaded is a comparison against nothing, and it comes back false on its own. No extra branch is needed to reject an ungraded row; the same equality that scores a real row already refuses one with nothing to score against. The decision that does need making is where those rows go afterward. The reflex is to set them aside before scoring, since they cannot be graded, but that quietly moves the denominator: you would be reporting a score over the rows that survived rather than over the batch CI handed you. Forty rows arriving with five labels is a fact about the batch, and a gate that divides by five reports a perfect run on it. So count the batch as it arrived, before anything is set aside, and let the ungraded rows pull the score down, because a batch that mostly could not be scored is exactly what the merge decision needs to see. The empty batch is the one case where the arithmetic breaks rather than misleads: nothing over nothing is NaN, and every comparison against NaN is false, so the gate would block for an accidental reason while reporting a score no one can read. Guard the count before you divide and report zero instead. That guard is not the whole answer, though, because a floor of zero clears a score of zero, and an empty batch has to fail whatever floor it is handed. So the pass flag carries a condition of its own beyond the comparison: something was actually scored, and it cleared. The comparison itself is inclusive, since a score sitting exactly on the floor passes."
+  - level: solution
+    content: |
+      function validateModelAccuracy(
+        predictions: Prediction[],
+        minAccuracy: number
+      ): GateResult {
+        const correct = predictions.filter(p => p.predicted === p.actual).length;
+        const total = predictions.length;
+        const accuracy = total === 0 ? 0 : correct / total;
+
+        return {
+          accuracy,
+          passed: total > 0 && accuracy >= minAccuracy,
+          total,
+          correct,
+        };
+      }
 starterCode: |
   interface Prediction {
     predicted: string;
@@ -89,11 +111,13 @@ testCode: |
 
     it('passes when accuracy meets threshold', () => {
       const result = validateModelAccuracy(predictions, 0.8);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.passed).toBe(true);
     });
 
     it('fails when accuracy below threshold', () => {
       const result = validateModelAccuracy(predictions, 0.9);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.passed).toBe(false);
     });
 
@@ -103,12 +127,14 @@ testCode: |
         { predicted: 'b', actual: 'b' },
       ];
       const result = validateModelAccuracy(perfect, 1.0);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.accuracy).toBe(1.0);
       expect(result.passed).toBe(true);
     });
 
     it('an empty eval batch fails the gate cleanly, never passes with NaN', () => {
       const result = validateModelAccuracy([], 0.5);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.passed).toBe(false);
       expect(result.accuracy).toBe(0);
       expect(Number.isNaN(result.accuracy)).toBe(false);
@@ -125,6 +151,7 @@ testCode: |
         { predicted: 'anomaly', actual: 'anomaly' },
       ];
       const result = validateModelAccuracy(weaker, 0.5);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.correct).toBe(2);
       expect(result.accuracy).toBe(0.4);
       expect(result.passed).toBe(false);
@@ -144,6 +171,7 @@ testCode: |
         { predicted: 'anomaly' },
       ];
       const result = validateModelAccuracy(unlabeled, 0.5);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(
         result.correct,
         'predicted === actual is false when there is no actual, so none of these five rows scored.',
@@ -192,6 +220,7 @@ testCode: |
         { predicted: 'noise', actual: 'pulsar' },
       ];
       const result = validateModelAccuracy(half, 0.5);
+      expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.correct).toBe(1);
       expect(result.accuracy).toBe(0.5);
       expect(result.passed).toBe(true);
@@ -202,13 +231,18 @@ testCode: |
         { predicted: 'noise', actual: 'pulsar' },
         { predicted: 'noise', actual: 'quasar' },
       ];
-      expect(validateModelAccuracy(allWrong, 0.5).accuracy).toBe(0);
-      expect(validateModelAccuracy(allWrong, 0.5).passed).toBe(false);
+      const gate = (rows, floor) => {
+        const r = validateModelAccuracy(rows, floor);
+        expect(r, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
+        return r;
+      };
+      expect(gate(allWrong, 0.5).accuracy).toBe(0);
+      expect(gate(allWrong, 0.5).passed).toBe(false);
       // Two rows were scored against a floor of zero, so the gate has a
       // measurement to report and it clears.
-      expect(validateModelAccuracy(allWrong, 0).passed).toBe(true);
+      expect(gate(allWrong, 0).passed).toBe(true);
       // Nothing was scored in the empty case, so no floor clears it.
-      expect(validateModelAccuracy([], 0).passed).toBe(false);
+      expect(gate([], 0).passed).toBe(false);
     });
   });
 estimatedMinutes: 10

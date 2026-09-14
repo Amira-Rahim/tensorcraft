@@ -240,4 +240,97 @@ var t = tf.tensor([1, 2, 3]);`;
     expect(errorEntries.length).toBeGreaterThanOrEqual(1);
     expect(errorEntries[0].message).toContain("boom");
   });
+
+  it("counts the submission's tf entry-point calls on tf.__calls, per run", async () => {
+    // The call spy (2026-09-13): graders that exist to teach a call (autograd,
+    // model.save, one model built rather than measured) read the count off
+    // tf.__calls. Same counters in the CI validator; the corpus parity test
+    // keeps them in step.
+    const userCode = [
+      "const w = tf.variable(tf.scalar(2));",
+      "const { grads } = tf.variableGrads(() => w.square().asScalar());",
+      "const m = tf.sequential();",
+      "m.add(tf.layers.dense({ units: 1, inputShape: [1] }));",
+      "const opt = tf.train.sgd(0.1);",
+    ].join("\n");
+    const testCode = [
+      "it('saw the calls', function() {",
+      "  expect(tf.__calls.variableGrads).toBe(1);",
+      "  expect(tf.__calls.sequential).toBe(1);",
+      "  expect(tf.__calls['layers.dense']).toBe(1);",
+      "  expect(tf.__calls['train.sgd']).toBe(1);",
+      "  expect(tf.__calls['tensor.square']).toBe(1);",
+      "  m.predict(tf.zeros([1, 1])); m.predict(tf.zeros([2, 1]));",
+      "  expect(tf.__calls['model.predict']).toBe(2);",
+      "  expect(tf.__calls.matMul).toBe(undefined);",
+      "  expect(tf.__calls.grad).toBe(undefined);",
+      "});",
+    ].join("\n");
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].error).toBeUndefined();
+    expect(results[0].passed).toBe(true);
+    // Fresh per run: a second run starts from zero.
+    const again = await parseAndRunTests(
+      "const x = tf.scalar(1);",
+      "it('fresh counters', function() { expect(tf.__calls.variableGrads).toBe(undefined); });",
+    );
+    expect(again.results[0].passed).toBe(true);
+  });
+
+  it("gives the ONNX stub the lifecycle calls the real library has: session.release() and tensor.dispose()", async () => {
+    // Lesson 5 tells the reader to release the session and dispose the
+    // feed. Until 2026-09-13 (round 7) neither existed on the stub, so the
+    // most careful learner failed every test with a bare TypeError. Same
+    // no-ops in the CI validator's stub.
+    const userCode = [
+      "const session = await ort.InferenceSession.create('/models/x.onnx');",
+      "const feed = new ort.Tensor('float32', new Float32Array([0.5, 0.59, 0.54]), [1, 3]);",
+      "const out = await session.run({ input: feed });",
+      "const score = out.output.data[0];",
+      "feed.dispose();",
+      "await session.release();",
+    ].join("\n");
+    const testCode = [
+      "it('ran, then released', function() {",
+      "  expect(typeof score).toBe('number');",
+      "  expect(typeof feed.dispose).toBe('function');",
+      "  expect(typeof session.release).toBe('function');",
+      "});",
+    ].join("\n");
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].error).toBeUndefined();
+    expect(results[0].passed).toBe(true);
+  });
+
+  it("keeps the grader's draws live against a submission that pins Math.random or tf's generator", async () => {
+    // Round 7 (2026-09-13): `Math.random = () => 0.5` at the top of a
+    // submission turned every run-time fixture in four graders into a
+    // constant, because tf seeds its generator from Math.random on every
+    // call. Math.random is now sealed per run and the tf namespace is
+    // read-only, in both harnesses.
+    const userCode = [
+      "Math.random = () => 0.5;",
+      "try { Object.defineProperty(Math, 'random', { value: () => 0.5 }); } catch (e) {}",
+      "tf.randomUniform = () => tf.tensor1d([0.5]);",
+      "const a = Math.random();",
+      "const b = Math.random();",
+      "const c = tf.randomUniform([1], 0, 1).dataSync()[0];",
+      "const d = tf.randomUniform([1], 0, 1).dataSync()[0];",
+    ].join("\n");
+    const testCode = [
+      "it('draws stay live', function() {",
+      "  expect(a === 0.5 && b === 0.5).toBe(false);",
+      "  expect(a === b).toBe(false);",
+      "  expect(c === 0.5 && d === 0.5).toBe(false);",
+      "  expect(c === d).toBe(false);",
+      "  expect(typeof tf.randomUniform([2]).shape).toBe('object');",
+      "});",
+    ].join("\n");
+    const { results } = await parseAndRunTests(userCode, testCode);
+    expect(results).toHaveLength(1);
+    expect(results[0].error).toBeUndefined();
+    expect(results[0].passed).toBe(true);
+  });
 });

@@ -53,6 +53,23 @@ function launchedLessonFiles(): string[] {
 
 const FRONTMATTER = /^---\n([\s\S]*?)\n---\n?/;
 
+/** Every exercise YAML under the launched worlds, sorted. */
+function launchedExerciseFiles(): string[] {
+  const out: string[] = [];
+  for (const world of LAUNCHED_WORLD_DIRS) {
+    const worldDir = join(CONTENT_ROOT, world);
+    if (!existsSync(worldDir)) continue;
+    for (const mod of readdirSync(worldDir)) {
+      const exDir = join(worldDir, mod, "exercises");
+      if (!existsSync(exDir)) continue;
+      for (const f of readdirSync(exDir)) {
+        if (f.endsWith(".yaml")) out.push(join(exDir, f));
+      }
+    }
+  }
+  return out.sort();
+}
+
 function frontmatter(source: string): string {
   return source.match(FRONTMATTER)?.[1] ?? "";
 }
@@ -337,6 +354,25 @@ function hintStatements(hint: string): string[] {
 const EXPECTED_SOLUTION_HINTS = 56;
 
 /**
+ * The nine exercises that carry their own ladder: every second (or third)
+ * exercise of a multi-exercise lesson, i.e. the ones the lesson ladder's
+ * solution rung is not excerpted from. Add here when a lesson gains an
+ * exercise; a missing block is a ladder nobody is checking.
+ */
+const EXPECTED_EXERCISE_LADDERS = [
+  "deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+  "deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+  "deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+  "deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+  "deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+  "deep-orbit/capstone/exercises/verify-deployment.yaml",
+  "deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+  "deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
+  "deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+];
+const EXPECTED_EXERCISE_SOLUTION_HINTS = EXPECTED_EXERCISE_LADDERS.length;
+
+/**
  * Flattening signatures the parser cannot rule on (see layer 2 above).
  * Calibrated against all 77 hints: zero false positives; present in the 15
  * corrupted hints found on 2026-07-25 before their restoration.
@@ -380,12 +416,43 @@ describe("solution hints are verbatim excerpts of their exercise's solutionCode"
     });
   }
 
+  // Exercise-level ladders (2026-09-13, plan item 4). A lesson carrying a
+  // second exercise gives that exercise its own `hints:` block in its YAML,
+  // and that ladder's solution rung must be a verbatim excerpt of THAT
+  // exercise's solutionCode. Same three layers as the lesson cases below; the
+  // count pin is separate so a malformed exercise block cannot hide inside
+  // the lesson count.
+  const exerciseCases: { id: string; hint: string; solutions: string[] }[] = [];
+  for (const path of launchedExerciseFiles()) {
+    const raw = readFileSync(path, "utf8");
+    const block = raw.match(/^hints:\n([\s\S]*?)(?=^\w|(?![\s\S]))/m)?.[1];
+    if (!block) continue;
+    const hint = solutionHint(block);
+    if (!hint) continue;
+    const solution = exerciseSolution(path);
+    exerciseCases.push({
+      id: `${relative(CONTENT_ROOT, path)}::own-ladder`,
+      hint,
+      solutions: solution.trim() ? [solution] : [],
+    });
+  }
+  cases.push(...exerciseCases);
+
+  it(`discovers exactly ${EXPECTED_EXERCISE_SOLUTION_HINTS} exercise-level solution-hint cases (count pin)`, () => {
+    expect(exerciseCases.map((c) => c.id).sort()).toEqual(
+      EXPECTED_EXERCISE_LADDERS.map((p) => `${p}::own-ladder`).sort(),
+    );
+    expect(exerciseCases.length).toBe(EXPECTED_EXERCISE_SOLUTION_HINTS);
+  });
+
   it(`discovers exactly ${EXPECTED_SOLUTION_HINTS} solution-hint cases (count pin)`, () => {
     // A hint edit that malforms the YAML, or an exercise rename that breaks
     // the slug -> file mapping, silently DROPS a case from this suite - and
     // a dropped case is a hint nobody is checking. Raise the constant only
     // when a lesson legitimately gains or loses a solution ladder.
-    expect(cases.length).toBe(EXPECTED_SOLUTION_HINTS);
+    expect(cases.filter((c) => !c.id.endsWith("::own-ladder")).length).toBe(
+      EXPECTED_SOLUTION_HINTS,
+    );
   });
 
   it("capstone finale hint declares the four identifiers its excerpt references (Run-8 regression)", () => {

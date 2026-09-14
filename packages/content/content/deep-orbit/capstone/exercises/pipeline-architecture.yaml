@@ -6,7 +6,7 @@ instructions: |
 
   1. `addStage(stage)` appends the stage and returns the pipeline, so calls chain.
   2. `run(input)` is async and returns a Promise, because a real stage does async work: loading weights, reading a tensor back off the GPU.
-  3. Validate the data arriving at each stage before that stage sees it. When validate returns false, throw an Error whose message is `Validation failed at: {stage.name}`. Since run is async, the caller receives that as a rejected promise.
+  3. Ask the stage's own `validate` about the data arriving at it, and ask before that stage's `process` sees it. The check belongs to the stage, not to `run`: one stage tests a length, the next tests the values it will accept. When validate returns false, throw an Error whose message is `Validation failed at: {stage.name}` and leave that stage's process uncalled. Since run is async, the caller receives that as a rejected promise.
   4. A stage's process may hand back a value or a Promise, so await what it returns before the next stage sees it.
   5. run hands back whatever the last stage returned.
 
@@ -185,6 +185,46 @@ testCode: |
         refusal.message,
         'The message names the stage that refused the data. Without it the operator has a failed run and no place to look.',
       ).toContain('Validation failed at: normalize');
+    });
+
+    it('asks the stage its own question, and a refused window never reaches process', async () => {
+      // A contract no length test can guess: this stage declares that its
+      // window arrives already scaled into 0..1, so a window can be the right
+      // length and still out of range. Only the stage knows that rule.
+      const validated = [];
+      const processed = [];
+      const scaledWindowGate = {
+        name: 'scaled-window',
+        validate: (w) => {
+          validated.push(w);
+          return (
+            Array.isArray(w) && w.length === 8 && w.every((v) => v >= 0 && v <= 1)
+          );
+        },
+        process: (w) => {
+          processed.push(w);
+          return tf.tidy(() => tf.tensor1d(w).mul(2).arraySync());
+        },
+      };
+      const refusal = await chained(scaledWindowGate)
+        .run([0.4, 0.6, 0.4, 1.9, 0.4, 0.6, 0.4, 0.6])
+        .then(
+          () => null,
+          (error) => error,
+        );
+      expect(
+        validated.length,
+        "run never called this stage's validate. A length test written inside run fits the fixtures above and nothing else: this stage declares eight samples already scaled into 0..1, and only the stage's own validate knows that.",
+      ).toBeGreaterThan(0);
+      expect(
+        refusal,
+        'The window is the right length and out of range, so the stage refused it and this run has to reject.',
+      ).toBeInstanceOf(Error);
+      expect(refusal.message).toContain('Validation failed at: scaled-window');
+      expect(
+        processed,
+        "process ran on a window validate had already refused. validate is a precondition, not a note filed afterwards: the stage body never sees data that failed the stage's own check.",
+      ).toHaveLength(0);
     });
 
     it('catches a mid-pipeline contract break (FFT emits 5 bins, next stage demands 8)', async () => {

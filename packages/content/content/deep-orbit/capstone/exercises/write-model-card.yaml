@@ -18,6 +18,10 @@ instructions: |
 
   Percentages carry one decimal place, and every bullet sits under its own heading. The size line carries the weight file in bytes, which is the figure that was measured, not a rounded megabyte total for the whole download.
 
+  Every line above is a line of the returned string, and a section is the run of bullets under its heading: the three performance numbers under `## Performance`, then the weakest class followed by every entry of `limitations` under `## Limitations`, then the two format lines under `## Usage`. The grader reads each section by the lines that follow its heading, so a bullet that carries the right text under the wrong heading does not count, and a card run together into one line has no sections at all.
+
+  The grader renders more than one model, including one whose values it draws when it runs, so every value on the card comes off the argument.
+
   Two lines are computed instead of copied.
 
   1. Accuracy renders with the benchmark it was measured on, because a percentage with no measurement attached says nothing about whether it still holds.
@@ -179,6 +183,26 @@ testCode: |
       expect(card).not.toContain('- Lowest recall: clear');
     });
 
+    it('reports the minimum, not the first class under a bar', () => {
+      // Four of these five sit below 90%, and the first one written is not
+      // the weakest. A card that flags whichever class crosses a fixed bar
+      // names interference and leaves anomaly, which misses nearly half of
+      // what it sees, off the list entirely.
+      const busy = {
+        ...meta,
+        recallByClass: { pulsar: 0.97, interference: 0.71, quasar: 0.88, anomaly: 0.55, noise: 0.86 },
+      };
+      const card = generateModelCard(busy);
+      expect(
+        card,
+        'anomaly at 55.0% is the lowest recall in this object. The line names the minimum of recallByClass, which takes a comparison across all five, not the first class to fall under a bar.',
+      ).toContain('- Lowest recall: anomaly at 55.0%');
+      expect(
+        card,
+        'interference at 71.0% is the first class under 90% here and the second weakest of the five. A card that stops at the first class under a threshold names it.',
+      ).not.toContain('- Lowest recall: interference');
+    });
+
     it('lists all limitations', () => {
       const card = generateModelCard(meta);
       expect(card).toContain('- Only tested on Sector 7-G data');
@@ -200,6 +224,7 @@ testCode: |
 
     it('files every bullet under its own heading', () => {
       const card = generateModelCard(meta);
+      expect(card, 'generateModelCard returns the card as one string. The starter returns null until you render it.').toBeDefined();
       const at = (s) => card.indexOf(s);
       expect(at('## Performance')).toBeGreaterThan(at('# DEEP SCAN v1.0.0'));
       expect(at('- Accuracy: 91.8% (measured at the pruning review)')).toBeGreaterThan(at('## Performance'));
@@ -207,6 +232,47 @@ testCode: |
       expect(at('- Lowest recall: anomaly at 84.0%')).toBeGreaterThan(at('## Limitations'));
       expect(at('## Usage')).toBeGreaterThan(at('- Only tested on Sector 7-G data'));
       expect(at('- Input: Float32Array(64)')).toBeGreaterThan(at('## Usage'));
+    });
+
+    it('files each bullet on its own line under the heading that names it', () => {
+      // Three cards clear a substring search without filing anything: one
+      // that runs every line together into a single string, one that prints
+      // the three headings in a block and lists the bullets after them, and
+      // one that puts the limitations under Performance. A section is the
+      // run of lines beneath its heading, so that is what this reads.
+      const card = generateModelCard(meta);
+      const under = {};
+      let heading = '(before any heading)';
+      for (const raw of String(card).split('\n')) {
+        const line = raw.trim();
+        if (line.indexOf('## ') === 0) heading = line;
+        else if (line) (under[heading] = under[heading] || []).push(line);
+      }
+      const bullets = String(card).split('\n').filter((l) => l.trim().indexOf('- ') === 0);
+      expect(
+        bullets.length,
+        'Each of the eight bullets is its own line of the string. A card joined into one run-on line carries every substring the grader looks for and files none of them, because a heading with no lines after it holds nothing.',
+      ).toBeGreaterThanOrEqual(8);
+      expect(
+        under['## Performance'] || [],
+        'The accuracy line sits under ## Performance. Appearing somewhere in the string is not the same thing: an operator reads the lines beneath a heading, not the whole card.',
+      ).toContain('- Accuracy: 91.8% (measured at the pruning review)');
+      expect(under['## Performance'] || []).toContain('- Size: 3988 bytes');
+      expect(
+        under['## Performance'] || [],
+        'Inference speed is a performance number, so it belongs with the other two rather than further down the card.',
+      ).toContain('- Inference: 0.035ms');
+      expect(
+        under['## Limitations'] || [],
+        'The weakest class and every entry of meta.limitations make up the Limitations section. Filed under Performance they read like results, which is the one reading this card exists to prevent.',
+      ).toContain('- Lowest recall: anomaly at 84.0%');
+      expect(under['## Limitations'] || []).toContain('- Only tested on Sector 7-G data');
+      expect(under['## Limitations'] || []).toContain('- Requires 64-sample capture window');
+      expect(
+        under['## Usage'] || [],
+        'Input and output formats are the usage contract, and both sit under ## Usage.',
+      ).toContain('- Input: Float32Array(64)');
+      expect(under['## Usage'] || []).toContain('- Output: { label, confidence }');
     });
 
     it('renders the metadata it is given, not a memorized card', () => {
@@ -231,6 +297,63 @@ testCode: |
       expect(card).toContain('- Size: 9248 bytes');
       expect(card).toContain('- Lowest recall: storm at 62.0%');
       expect(card).toContain('- Drifts on unseen bands');
+    });
+
+    it('renders metadata the grader draws while it runs', () => {
+      // Every card above is fixed text, so a submission can carry all three
+      // and return whichever one the argument matches. This metadata is
+      // drawn when the test starts and the expected lines are worked out
+      // from the same draws, so there is nothing here to recognize.
+      const pick = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+      const classes = ['carrier', 'burst', 'hum', 'echo', 'whistler'];
+      const recallPct = [];
+      while (recallPct.length < classes.length) {
+        const r = pick(21, 96);
+        if (!recallPct.includes(r)) recallPct.push(r);
+      }
+      const recallByClass = {};
+      classes.forEach((c, i) => { recallByClass[c] = recallPct[i] / 100; });
+      const worstPct = Math.min(...recallPct);
+      const worstClass = classes[recallPct.indexOf(worstPct)];
+      const accTenths = pick(600, 989);
+      const bytes = pick(1024, 99999);
+      const ms = pick(1, 900) / 100;
+      const drawn = {
+        name: `PROBE-${pick(100, 999)}`,
+        version: `${pick(1, 9)}.${pick(0, 9)}.${pick(0, 9)}`,
+        accuracy: accTenths / 1000,
+        benchmarkedOn: `holdout run ${pick(1000, 9999)}`,
+        weightBytes: bytes,
+        inferenceMs: ms,
+        recallByClass,
+        limitations: [`Untested above band ${pick(2, 40)}`],
+        inputFormat: `Float32Array(${pick(16, 512)})`,
+        outputFormat: '{ label, confidence }',
+      };
+      const card = generateModelCard(drawn);
+      expect(
+        card,
+        'The heading is the name and version read off the argument.',
+      ).toContain(`# ${drawn.name} v${drawn.version}`);
+      expect(
+        card,
+        'Every number on the card is rendered from the metadata handed in. These were drawn a moment ago, so a card copied out of an earlier run fits nothing here.',
+      ).toContain(`- Accuracy: ${(accTenths / 10).toFixed(1)}% (measured at ${drawn.benchmarkedOn})`);
+      expect(
+        card,
+        'The size line carries weightBytes as it arrived, a whole number of bytes, not a rounded total.',
+      ).toContain(`- Size: ${bytes} bytes`);
+      expect(
+        card,
+        'Inference speed renders as the metadata carries it. Only the percentages take a fixed decimal place.',
+      ).toContain(`- Inference: ${ms}ms`);
+      expect(
+        card,
+        'The limitation names the minimum of a recallByClass built moments before the call. Comparing the values is the only way to find it.',
+      ).toContain(`- Lowest recall: ${worstClass} at ${worstPct.toFixed(1)}%`);
+      expect(card).toContain(`- ${drawn.limitations[0]}`);
+      expect(card).toContain(`- Input: ${drawn.inputFormat}`);
+      expect(card).toContain(`- Output: ${drawn.outputFormat}`);
     });
   });
 estimatedMinutes: 10

@@ -47,7 +47,7 @@ Run the evaluation suite. I want real numbers on signals the network has never s
 
 ## The Final Test
 
-A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and nothing in the training logs will warn you. That gap is the failure Mirza is ordering you to rule out: the model memorized its homework instead of learning the subject. Evaluation on held-out data exists to catch exactly this, the way E2E tests catch what unit tests can't: code that passes against fixtures and fails against reality.
+A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and if the run held nothing back, nothing in its logs will warn you. Lesson 4's validation curve is the first warning. This lesson adds the second, measured on rows no decision ever touched. That gap is the failure Mirza is ordering you to rule out: the model memorized its homework instead of learning the subject. Evaluation on held-out data exists to catch exactly this, the way E2E tests catch what unit tests can't: code that passes against fixtures and fails against reality.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -56,12 +56,18 @@ A validation set is data the training loop is allowed to read so it can make dec
 <CodeBlock language="typescript" title="evaluation.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Assume model is trained from previous lesson
+// Assume model, the 50-epoch network from lesson 4's first block, is
+// trained. Not rerun: that one was fit on deliberately corrupted labels
+// to give early stopping something to fire on, and it answers the
+// fence-sitting sample below differently.
 
 // Test data: a 50-row held-out slice of the archive, labeled, and NEVER
-// seen during training. It must be real readings with real labels: random
-// tensors cannot measure anything, because random labels contain no
-// pattern to be right about.
+// seen during training. It must carry real structure and real labels.
+// Eleven of the rows are verbatim archive readings (the eight below, plus
+// the three late-confirmed ones at the end); the other 39 are drawn from
+// the archive's own per-channel distributions under seeds training never
+// saw. What it must not be is random LABELS, because a random label
+// contains no pattern to be right about.
 const testX = tf.concat([
   // Eight rows of the slice, annotated, for a feel of the data:
   tf.tensor2d([
@@ -114,8 +120,7 @@ console.log('Test Accuracy:', (testAccuracy.dataSync()[0] * 100).toFixed(1) + '%
 // separate samples of 400 reruns printed 94.0% in 397, 394 and 399 of
 // them, and the only other values that came up across all 1,200 were
 // 88.0, 90.0, 92.0, 96.0 and 98.0. The loss moves further: over the
-// same 1,200 runs it ran from 0.173 to 0.491, median 0.226. The loss
-// moves run to run; the story the numbers tell must not.
+// same 1,200 runs it ran from 0.173 to 0.491, median 0.226.
 
 // Make predictions on new signals
 const newSignals = tf.tensor2d([
@@ -147,11 +152,11 @@ results.forEach((prob, i) => {
 One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Untrained networks of this shape do not do that. Build this same 3-32-16-1 stack 20,000 times without training it and ask each build about a reading that sits mid-scale on all three features. The answers pile onto the fence: the median is 0.500 and nine in ten land inside 0.45 to 0.55. Around one build in four hundred gets past 0.60, and none of the 20,000 reached 0.75, let alone 0.99. Nobody explained 7741 then and nobody explains it now. Trained, the network still will not commit on it, at 51.8 on the one reading the crew cannot label.
 
 **Interpreting results:**
-- **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty or constraint that discourages memorizing.
+- **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty or constraint that discourages memorizing. Two common forms: an L2 penalty, which adds the squared size of the weights to the loss, and dropout, which zeroes a random subset of units on every training batch.
 - **Both accuracies low** → The model can't learn the pattern (underfitting). You need more layers, more units, or more training.
 - **Both accuracies high** → You have ruled out these two failures and nothing else. Slice the eval by class and by cohort before anyone signs a deployment.
 
-While you are still changing the model, read that gap against the validation score. The test slice is scored once, after the settings are frozen.
+While you are still changing the model, measure the gap against the validation score instead of the test score. The test slice is scored once, after the settings are frozen.
 
 Accuracy hides the shape of the error. The crew's 94.0% splits into four counts on that 50-row slice: 23 of the 26 anomalous rows caught, 3 missed, all 24 calm rows left alone, no false alarms. The three misses are exactly the late-confirmed rows, the ones that read almost calm in these three features. Those four counts are the confusion matrix, and the drawer below turns them into precision, recall and F1.
 
@@ -210,7 +215,12 @@ Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it h
 
 <RecallPrompt
   question="A model has 95% training accuracy and 60% test accuracy. What is the diagnosis and what are the fixes?"
-  answer="This is overfitting. The model memorized the training data rather than learning a generalizable pattern. The fixes this world gives you are more training data, early stopping from lesson 4, and less model capacity. Two others are dropout, which zeroes a random subset of units on every training batch, and an L2 penalty on the weight values; both are constraints of the same kind, and dropout returns in later worlds. Underfitting looks different: both training and test accuracy are low."
+  answer="This is overfitting. The model memorized the training data rather than learning a generalizable pattern. The fixes this world gives you are more training data, early stopping from lesson 4, and less model capacity. The L2 penalty and dropout from this lesson are constraints of the same kind. Underfitting looks different: both training and test accuracy are low."
+/>
+
+<RecallPrompt
+  question="Module 1 split train from validation by shuffling indices itself instead of chaining .shuffle().take() and .skip() on a dataset. Why does that chain leak rows, and what would a leak have done to the 94.0% you just read off the held-out slice?"
+  answer="A dataset pipeline reshuffles every time it is iterated, and take() and skip() iterate separately, so the two sides get different decks and some readings land on both. Module 1 shuffled the indices once and sliced them instead. Rows that leak into training turn 94.0% into a score on data the model had already seen."
 />
 
 <LessonRecap

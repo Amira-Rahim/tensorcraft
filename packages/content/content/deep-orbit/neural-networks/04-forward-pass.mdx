@@ -69,11 +69,7 @@ const prediction = model.predict(sensorReading) as tf.Tensor;
 console.log(prediction.shape);     // [1, 1]
 console.log(prediction.dataSync()); // ~0.5 (random, untrained)
 
-// Shape flow through layers:
-// Input:   [1, 3]  → 3 sensor values
-// Layer 1: [1, 32] → 32 features detected
-// Layer 2: [1, 16] → 16 higher-level patterns
-// Output:  [1, 1]  → probability of anomaly
+// Shape flow: [1, 3] → [1, 32] → [1, 16] → [1, 1]. Only the last axis changes.
 
 // The feed hands over one reading at a time, flat. Give it the axis:
 const flat = tf.tensor1d([0.5, 0.8, 0.2]); // shape: [3], which predict() rejects
@@ -86,6 +82,25 @@ Every input carries a batch dimension, even a batch of one: `[1, 3]`, not `[3]`.
 <Dialogue speaker="Ensign Demir">
 Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
 </Dialogue>
+
+## The Same Pass, by Hand
+
+`predict()` runs nothing you have not already written. `getWeights()` hands back the six tensors the three stages hold, in order: a weight matrix and a bias vector for each stage. Multiply, add the bias, bend, hand the result to the next stage.
+
+<CodeBlock language="typescript" title="by-hand.ts">
+{`// Continues forward-pass.ts: same model, same reading.
+const [w1, b1, w2, b2, w3, b3] = model.getWeights();
+
+const h1 = sensorReading.matMul(w1).add(b1).relu();  // [1, 32]
+const h2 = h1.matMul(w2).add(b2).relu();             // [1, 16]
+const out = h2.matMul(w3).add(b3).sigmoid();         // [1, 1]
+
+console.log(h1.shape, h2.shape, out.shape);  // [ 1, 32 ] [ 1, 16 ] [ 1, 1 ]
+console.log(out.dataSync()[0]);              // the number predict() printed above
+console.log(out.sub(prediction).abs().dataSync()[0]);  // 0`}
+</CodeBlock>
+
+The gap is zero, not nearly zero: over 200 freshly initialized models, on this one reading and on a stack of sixteen, every comparison came back exactly 0. Lesson 1 wrote the weighted sum, lesson 2 put the bend between the stages, lesson 3 stacked three of them, and those six lines are what `predict()` runs. What the call adds is housekeeping. It splits a tall stack into batches of 32 rows by default, and it frees what it allocates on the way through: one new tensor after `predict()` returns, the output, against nine left behind by the six lines above.
 
 ## Challenge
 

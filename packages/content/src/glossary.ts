@@ -119,7 +119,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "neuron",
     definition:
-      "A single unit that takes a weighted sum of its inputs, adds a bias, and applies an activation function.",
+      "A single unit that takes a weighted sum of its inputs and adds a bias. In a built layer, an activation function usually follows that sum.",
     aliases: ["neurons"],
     scope: "global",
   },
@@ -692,6 +692,13 @@ export const GLOSSARY: GlossaryEntry[] = [
       "How far an autoencoder's rebuilt output is from the original input, used as an anomaly score.",
     aliases: ["reconstruction error"],
     scope: "deep-orbit",
+  },
+  {
+    term: "supervised learning",
+    definition:
+      "Learning from examples that come with their labels attached: the model makes a prediction, the label says what the answer was, and the gap between the two is what training reduces. Every model in this course before module 7 learns this way; module 7's autoencoder takes its own input as the target instead.",
+    aliases: ["supervised"],
+    scope: "global",
   },
   {
     term: "semi-supervised",

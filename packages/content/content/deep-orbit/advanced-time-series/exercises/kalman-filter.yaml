@@ -1,7 +1,7 @@
 slug: kalman-filter
 lessonSlug: kalman-filters
 title: "Implement a Kalman Filter"
-instructions: "Implement a simple 1D Kalman filter. The constructor is written for you, including the starting variance of 1. Write `update(measurement)`: one predict-correct step, returning the new estimate. Two fields carry state between calls and the tests read both, `this.estimate` and `this.variance`. Predicting widens the variance by the process noise. The weight on the new measurement is that widened variance as a share of itself plus the measurement noise. Correcting moves the estimate that fraction of the way to the measurement, then multiplies the widened variance by one minus that fraction. Because the weight is rebuilt from the variance on every call it changes step to step, so an EMA with one fixed alpha fails the arithmetic tests. One test runs your filter across the falling pulse-interval log from the lesson and reads the gap between the final estimate and the final reading. A filter whose state is one number, with no term for change, trails a drifting signal instead of tracking it, and the test checks that your estimate lands on the trailing side."
+instructions: "Implement a simple 1D Kalman filter. The constructor is written for you, including the starting variance of 1. Write `update(measurement)`: one predict-correct step, returning the new estimate. Two fields carry state between calls and the tests read both, `this.estimate` and `this.variance`, so a correction has to write both. The weight the correction puts on the new measurement is not a constant you pick: it is built from the variance the filter is carrying when that measurement arrives, along with the two noise parameters, and the lesson's derivation drawer works out which value it has to be. Because it is rebuilt on every call it changes step to step, so an EMA with one fixed alpha fails the arithmetic tests. One test runs your filter across the falling pulse-interval log from the lesson and reads the gap between the final estimate and the final reading. A filter whose state is one number, with no term for change, trails a drifting signal instead of tracking it, and the test checks that your estimate lands on the trailing side."
 starterCode: |
   class SimpleKalman {
     estimate: number;
@@ -159,8 +159,13 @@ estimatedMinutes: 15
 # arithmetic). The published taxonomy rule (blog: audit-exercise-mlcontent)
 # bans an advanced badge on arithmetic content; pinned by
 # packages/content/__tests__/mlcontent-taxonomy.test.ts. The starter no longer
-# spells those four lines out (de-recipe pass 2026-09-12): the instructions
-# state the arithmetic in words and the lesson derives the weight.
+# spells those four lines out (de-recipe pass 2026-09-12), and as of round 7
+# (2026-09-14) the instructions no longer restate them either: they state the
+# contract (both fields written every call, the weight rebuilt from the
+# carried variance) and the lesson's drawer derives the gain. Note for the
+# next pass: scripts/lib/starter-dictation.mjs and scripts/lib/hint-dictation.mjs
+# score starterCode and hints, so neither gate can see a recipe that moves
+# into `instructions`.
 difficulty: intermediate
 mlContent: arithmetic
 skillAxis: model_arch

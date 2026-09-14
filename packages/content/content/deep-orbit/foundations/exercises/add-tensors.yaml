@@ -2,7 +2,7 @@ slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
 instructions: |
-  Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a [2] row of per-channel offsets, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves.
+  Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.
 
   Then write `mixChannels(block, mix)`. `block` is [readings, channels]; `mix` is [banks, channels], one row per output bank and one weight per channel inside it. Hand back every reading scored against every bank, shaped [readings, banks], where each score is one reading's channels weighted by one bank's row and summed. The two tensors arrive with their axes in the wrong order for that, and the error at the top of the lesson is what ignoring it prints.
 starterCode: |
@@ -34,8 +34,8 @@ testCode: |
     // RETURNED values can settle is which execution model produced them,
     // since a JS loop that implements broadcast semantics by hand arrives at
     // the same numbers and the same shape (measured 2026-09-08). That
-    // submission has learned the broadcasting rule the hard way, so it is not
-    // what this grader is hunting for.
+    // submission reproduces every number here; what it never does is run the
+    // op on the tensor, which the tf.__calls counters below now catch.
     //
     // mixChannels is the lesson's headline op made load-bearing (added
     // 2026-09-12). Before it, three of the lesson's five objectives, matMul
@@ -66,12 +66,28 @@ testCode: |
       ).toBe(true);
       return out;
     };
+    // The harness counts tensor ops on tf.__calls. Every objective of this
+    // lesson is a tensor op, and a submission that loops over dataSync()
+    // output in plain JavaScript and re-wraps the answer reproduces every
+    // number here; what it never does is run the op on the tensor.
+    const elementWiseOps = () =>
+      ['tensor.add', 'tensor.sub', 'tensor.mul', 'tensor.div', 'add', 'sub', 'mul', 'div'].reduce(
+        (n, k) => n + (tf.__calls[k] || 0),
+        0,
+      );
+    const matMulOps = () =>
+      ['tensor.matMul', 'tensor.dot', 'matMul'].reduce((n, k) => n + (tf.__calls[k] || 0), 0);
     it('merged is the element-wise average', () => {
+      const opsBefore = elementWiseOps();
       const { merged } = merge(
         tf.tensor([0.2, 0.6, 0.4, 0.8]),
         tf.tensor([0.4, 0.2, 0.6, 0.6]),
         2.5,
       );
+      expect(
+        elementWiseOps() - opsBefore,
+        'mergePasses ran no tensor op. The average and the gain are element-wise operations on the tensors you were handed (add, div, mul, or their tf.* forms); a loop over dataSync() output that re-wraps the answer computes the same numbers on the CPU and skips the thing this lesson teaches.',
+      ).toBeGreaterThan(0);
       const v = Array.from(merged.dataSync());
       const why = 'Averaging pairs each position with the matching position in the other pass, then halves it.';
       expect(v[0], why).toBeCloseTo(0.3, 5);
@@ -101,7 +117,7 @@ testCode: |
         'And the gain is whatever the caller passed, not the 2.5 from the case above.',
       ).toEqual([20, 40]);
     });
-    it('broadcasts a [3, 2] block against a [2] row of offsets and keeps the shape', () => {
+    it('broadcasts a [3, 2] block against a pass that arrived as a single row and keeps the shape', () => {
       // The shapes differ, so this pair only merges if the op broadcasts.
       // dataSync() plus Array.map reads past the end of the shorter pass and
       // returns a flat [6] of NaN (measured on tfjs 4.22.0).
@@ -115,11 +131,11 @@ testCode: |
         3,
       );
       const shapeWhy =
-        'A block of readings merged with one row of per-channel offsets keeps the block shape: the row is reused down every row of the block. A flat result means the two passes were zipped as flat lists instead.';
+        'A block of readings merged with a pass that arrived as a single row keeps the block shape: that one row is reused down every row of the block. A flat result means the two passes were zipped as flat lists instead.';
       expect(merged.shape, shapeWhy).toEqual([3, 2]);
       expect(
         merged.arraySync(),
-        'Each offset lines up with its own channel, which is the column it sits in.',
+        'Each value in the single row lines up with its own channel, which is the column it sits in.',
       ).toEqual([
         [1, 3],
         [3, 5],
@@ -141,6 +157,7 @@ testCode: |
       // of the two tensors is turned, which is the rule the error at the top
       // of the lesson was enforcing. Element-wise ops cannot reach this
       // result without a sum across an axis.
+      const matMulBefore = matMulOps();
       const out = scored(
         tf.tensor2d([
           [1, 2],
@@ -154,12 +171,16 @@ testCode: |
         ]),
       );
       expect(
+        matMulOps() - matMulBefore,
+        'mixChannels ran no matMul. Scoring every reading against every bank is the multiply-and-sum-across-an-axis that matMul (or dot) fuses into one op; element-wise ops and JavaScript loops cannot reach it, which is the point of the lesson.',
+      ).toBeGreaterThan(0);
+      expect(
         out.shape,
-        'One row per reading and one column per bank. A [3, 3] holding the banks down the rows instead is the same multiply run the other way round.',
+        'One row per reading and one column per bank: the readings stay on the rows and the banks become the columns.',
       ).toEqual([3, 3]);
       expect(
         out.arraySync(),
-        'Each score is one reading weighted by one bank: multiply each channel by that bank weight and sum the results. Bank 0 keeps channel 0, bank 1 keeps channel 1, bank 2 adds the two.',
+        'Both arrangements come out [3, 3] in this case, so the shape alone does not settle it. Each score is one reading weighted by one bank: multiply each channel by that bank weight and sum the results. Bank 0 keeps channel 0, bank 1 keeps channel 1, bank 2 adds the two.',
       ).toEqual([
         [1, 2, 3],
         [3, 4, 7],

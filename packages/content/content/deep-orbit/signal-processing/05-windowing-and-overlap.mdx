@@ -52,9 +52,9 @@ Your decoder did not file anything overnight. The dashboard did: two anomaly rep
 Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.0, and every other magnitude shrinks with it. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
 </Dialogue>
 
-Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and a discontinuity is frequency content that was never in the sky. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. `StringDecoder` returns the held-back bytes with the next chunk and the decoded text is what a single read would have produced. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
+Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and a discontinuity is frequency content that was never in the sky. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
 
-<LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
+<LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Read why overlapping windows (50% hop) let the tapers interlock, so no sample stays discounted", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
 ## The Spectral Leakage Problem
 
@@ -93,15 +93,17 @@ console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from
 <CodeBlock language="typescript" title="window-functions.ts">
 {`// A window function smoothly tapers the signal down at the edges, so the
 // slice ends near the level it started at and the cut is never a cliff.
-// Hann reaches exactly zero at both ends. Hamming stops at 0.08, and that
-// leftover step is why its far sidelobes fall off more slowly (see below).
-
-// Hann window: the most common choice (good all-around)
-function hannWindow(n: number): number[] {
-  return Array.from({ length: n }, (_, i) =>
-    0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
-  );
-}
+// Hann is the all-round default: one raised cosine spread over the slice,
+// w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))), reaching exactly zero at both
+// ends. tfjs ships it:
+const hann = Array.from(tf.signal.hannWindow(128).dataSync());
+// One convention note. For an even n the built-in uses the periodic form,
+// 2*pi*i / n, so at n = 128 its last weight is 0.0006 rather than 0, and it
+// never differs from the n - 1 form by more than 0.019 per sample (0.038 at
+// n = 64). The n - 1 form is the one the challenge asks you to write, and
+// every number below moves by less than 0.2 between the two.
+// Hamming stops at 0.08 instead of zero, and that leftover step is why its
+// far sidelobes fall off more slowly (see below).
 
 // Terms for the comparison below. The main lobe is the cluster of bins the
 // tone itself occupies. The sidelobes are the smaller ripples further out.
@@ -125,7 +127,6 @@ function applyWindow(signal: number[], window: number[]): number[] {
 }
 
 // Compare: raw FFT vs windowed FFT
-const hann = hannWindow(128);
 const windowedSignal = applyWindow(signal, hann);
 
 const windowedFFT = tf.tidy(() => {
@@ -139,21 +140,21 @@ console.log('Bin 20:', rawFFT[20].toFixed(1));  // ~1.6
 console.log('Bin 30:', rawFFT[30].toFixed(1));  // ~0.6, leakage all the way out
 
 console.log('--- With Hann window ---');
-console.log('Bin 9:', windowedFFT[9].toFixed(1));    // ~5.6, down from ~14.5
+console.log('Bin 9:', windowedFFT[9].toFixed(1));    // ~5.4, down from ~14.5
 console.log('Bin 20:', windowedFFT[20].toFixed(1));  // ~0.0
 console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
-// The first cost is not spreading. Every one of the 65 bins got smaller,
-// so nothing moved outward here. A 128-point Hann's values average
-// 0.4961, and multiplying by it scales the whole spectrum by about that
+// The first cost is scale, not spreading. Every one of the 65 bins got smaller,
+// so nothing moved outward here. This 128-point Hann's values average
+// exactly 0.5, and multiplying by it scales the whole spectrum by that
 // factor. On a 10 Hz tone that fits the window exactly, the peak goes
-// 64.00 to 31.75, a ratio of 0.4961: the window mean itself. Windowed and
+// 64.00 to 32.00, a ratio of 0.5: the window mean itself. Windowed and
 // unwindowed magnitudes are therefore never comparable. Lesson 4 extracts
 // its fixed-bin features with no window at all.
 //
 // The second cost is the wider main lobe, and that same 10 Hz tone is
-// where you see it: bins 9 and 11 read 0.00 raw and 16.06 windowed. Here
-// at 10.5 Hz the two peak bins read ~27.0 instead of ~41.7, both costs
+// where you see it: bins 9 and 11 read 0.00 raw and 16.00 windowed. Here
+// at 10.5 Hz the two peak bins read ~27.2 instead of ~41.7, both costs
 // at once.`}
 </CodeBlock>
 
@@ -163,8 +164,7 @@ Windowing tapers the signal down at the edges, which means you lose information 
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
-// With 50% overlap: the tapers interlock, so the weights a sample picks up
-// across the windows containing it add up to a near-constant total
+// With 50% overlap the tapers interlock
 
 function stftWithWindowing(
   signal: number[],
@@ -194,7 +194,7 @@ function stftWithWindowing(
 
 // 50% overlap is the standard: good balance of coverage and computation.
 // Our demo signal is 128 samples, so use a 64-sample window with hop 32
-const spec = stftWithWindowing(signal, 64, 32, hannWindow);
+const spec = stftWithWindowing(signal, 64, 32, (n) => Array.from(tf.signal.hannWindow(n).dataSync()));
 console.log('Windows:', spec.length);          // 3
 console.log('Frequency bins:', spec[0].length); // 33`}
 </CodeBlock>
@@ -226,6 +226,11 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
   answer="The FFT treats the input as one period of an infinitely repeating signal. When a real signal slice does not end at the same amplitude it started, the abrupt edge looks like a sharp discontinuity, which produces spurious high-frequency energy (spectral leakage) across many bins. A Hann window tapers both ends of the slice to zero so the edge is smooth, suppressing leakage at the cost of a slight reduction in frequency resolution."
 />
 
+<RecallPrompt
+  question="Your spectrogram rows now come from windows with 50% overlap, so each sample appears in two of them. Which condition from the module 1 train/validation split decides whether rows like these can be split at random, and what does the overlap do to it?"
+  answer="Only independent rows can be split at random. A 50% overlap makes neighboring windows share half their samples, so validation rows arrive half seen and the score measures memory rather than learning. Split by time instead: divide the signal first, then window inside each side."
+/>
+
 <LessonRecap
   whatYouLearned={[
     "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
@@ -236,7 +241,7 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, measure what the taper does to the leakage, and say what it costs in resolution and magnitude."
 />
 
-> **DISPATCH archive · field intercept #09-F:** Jin's speech cell spent nine days chasing a phantom tone that appeared in every capture. It was their own rectangular window: the instrument, not the sky. Window first. Then believe your peaks.
+> **DISPATCH archive · field intercept #09-F:** Jin's speech cell spent nine days chasing a phantom tone that appeared in every capture. It was their own rectangular window.
 
 <Epilogue>
 

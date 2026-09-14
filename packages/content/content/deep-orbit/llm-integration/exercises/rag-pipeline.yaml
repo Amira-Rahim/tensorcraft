@@ -10,9 +10,13 @@ instructions: |
 
   Every number in the generated text is a claim, and the retrieved rows are
   the only evidence you may admit. Read the numbers out of `answerText` in the
-  order they appear there. A claim is verified when some value in some
+  order they appear there, and a minus sign in front of one belongs to it: a
+  band label written `Band-7` reads as a claim of -7, and the rows have to
+  account for it like any other. A claim is verified when some value in some
   retrieved row sits within 0.05 of it, and fabricated when no value does.
-  Return `{ verified, fabricated }`, each list in that same text order.
+  Return `{ verified, fabricated }`, each list in that same text order, and
+  both lists hold the claims as numbers, parsed out of the text, not the
+  strings the match handed back.
 
   Three properties of the rule decide whether the gate is worth having. The
   tolerance is absolute rather than a percentage, because a model reprinting a
@@ -21,6 +25,41 @@ instructions: |
   row holding 29.7. And an empty retrieval is the worst case rather than a
   free pass: no evidence was in hand, so nothing in the answer is supported
   and every number in it is fabricated.
+hints:
+  - level: nudge
+    content: "Every number in the answer is unsupported until a retrieved reading accounts for it, so two decisions carry this: what you admit as evidence, and how near a reading has to sit before it accounts for anything. Settle the retrieval that came back empty first, because it is the case with no evidence at all, and the list you send its numbers to decides whether the gate protects the report or waves it through."
+  - level: guidance
+    content: |
+      Read the answer once, in the order the numbers appear in it, and both
+      lists come back in that order for free. Whoever audits the report reads
+      a flagged number against the sentence it came from, so the first number
+      flagged has to be the first offending number in the text. Score the two
+      lists in separate passes and you have to put the order back afterwards.
+
+      Getting the numbers out of the prose is the step that quietly breaks.
+      The answer is a sentence rather than a data structure, so whatever
+      reads it has to carry a decimal point and a leading minus sign through.
+      A scan that stops at the period turns 73.4 into a 73 and a 4: it invents
+      a claim nobody made and loses the one they did.
+  - level: solution
+    content: |
+      function verifyClaims(
+        answerText: string,
+        retrievedRows: number[][],
+      ): { verified: number[]; fabricated: number[] } {
+        const claims = (answerText.match(/-?\d+(\.\d+)?/g) ?? []).map(parseFloat);
+        const values = retrievedRows.flat();
+        const verified: number[] = [];
+        const fabricated: number[] = [];
+        for (const claim of claims) {
+          if (values.some((v) => Math.abs(v - claim) <= 0.05)) {
+            verified.push(claim);
+          } else {
+            fabricated.push(claim);
+          }
+        }
+        return { verified, fabricated };
+      }
 starterCode: |
   function verifyClaims(
     answerText: string,
@@ -77,12 +116,12 @@ testCode: |
       ).toEqual([17]);
       expect(r.verified).toEqual([73.4]);
     });
-    it('applies the 0.05 tolerance: 0.99 traces to 0.9987, 12.5 traces to nothing', () => {
+    it('applies the tolerance to a rounded reading and refuses a distant one', () => {
       const r = check('Correlation 0.99; drift 12.5.', rows);
       expect(r.verified).toEqual([0.99]);
       expect(r.fabricated).toEqual([12.5]);
     });
-    it('draws the boundary at 0.05: against the row value 0.9987, 0.96 is in and 0.94 is out', () => {
+    it('draws the boundary: one claim inside the tolerance, one just outside', () => {
       const r = check('Correlation 0.96 in one pass, 0.94 in the next.', rows);
       expect(
         r.verified,
@@ -97,6 +136,17 @@ testCode: |
         'Grepping the rows for the digits would call this traced. The rule compares magnitudes.',
       ).toEqual([]);
       expect(r.fabricated).toEqual([9]);
+    });
+    it('reads a minus sign as part of the number it sits against', () => {
+      const r = check('Band-7 phase drifted to -0.23 rad from a logged -0.19.', [[-0.19, 8.7]]);
+      expect(
+        r.verified,
+        'The sign belongs to the reading. A scan that admits digits and drops the minus reads this drift as a positive number that sits near nothing in the rows, and the gate flags a claim the evidence supports.',
+      ).toEqual([-0.23, -0.19]);
+      expect(
+        r.fabricated,
+        'A band label is written with the same character, so the scan reads Band-7 as a claim of -7 and no reading accounts for it. Flagging it is the honest answer: the checker grades the numbers in the sentence, and the human reading the flag has the sentence in front of them.',
+      ).toEqual([-7]);
     });
     it('handles an answer with no numbers at all', () => {
       const r = check('The signal repeats and accelerates.', rows);

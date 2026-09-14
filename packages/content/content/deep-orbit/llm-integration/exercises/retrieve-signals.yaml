@@ -16,12 +16,16 @@ instructions: |
   the three matches the whole database.
 
   Then the cap. The prompt has a token budget, so at most 20 rows travel to
-  the model: the first 20 survivors in database order, nothing reordered.
-  Return `{ rows, matched, truncated }`. `rows` is that capped list. `matched`
-  is how many rows passed the filters, counted before the cap. `truncated` is
-  true when the cap dropped at least one matching row. Only `rows` reaches the
-  prompt, so `matched` and `truncated` are the only way anything downstream
-  can tell a complete context from a trimmed one.
+  the model: the first 20 survivors in database order. Nothing here is
+  ranked, so the survivors are never sorted before the cap, not by recency
+  and not by any reading a row carries (`confidence`, `amplitude`,
+  `frequency`, anomaly score). The 21st survivor is dropped for arriving
+  late, not for scoring low. Return `{ rows, matched, truncated }`. `rows` is
+  that capped list. `matched` is how many rows passed the filters, counted
+  before the cap. `truncated` is true when the cap dropped at least one
+  matching row. Only `rows` reaches the prompt, so `matched` and `truncated`
+  are the only way anything downstream can tell a complete context from a
+  trimmed one.
 starterCode: |
   interface Signal {
     id: string;
@@ -103,6 +107,9 @@ testCode: |
       timestamp: new Date(CLOCK - (opts.hoursAgo ?? 1) * HOUR).toISOString(),
       band: opts.band ?? '7',
       classification: opts.classification ?? 'anomaly',
+      confidence: opts.confidence ?? 0.91,
+      amplitude: opts.amplitude ?? 1024,
+      frequency: opts.frequency ?? 73.4,
       anomalyScore: opts.anomalyScore ?? 0.8,
     });
 
@@ -116,23 +123,50 @@ testCode: |
     };
 
     it('a question carrying no filter matches the whole database', () => {
-      const db = [makeRow('a', {}), makeRow('b', { band: '3' }), makeRow('c', { classification: 'noise' })];
+      // One row here would be rejected by each filter the question never
+      // raised: b by a band, c by anomalies, d by an age window.
+      const db = [
+        makeRow('a', {}),
+        makeRow('b', { band: '3' }),
+        makeRow('c', { classification: 'noise' }),
+        makeRow('d', { hoursAgo: 96 }),
+      ];
       const r = retrieve('what did the array log overnight', db);
       expect(
         r.rows.map((s) => s.id),
-        'No filter in the question is not the same as no rows. Returning an empty context here is the failure the DISPATCH note describes: the model that confabulates is the one that retrieved nothing.',
-      ).toEqual(['a', 'b', 'c']);
+        'No filter in the question is not the same as no rows. Returning an empty context here is the failure the DISPATCH note describes: the model that confabulates is the one that retrieved nothing. Row d is four days old and the question named no age, so a filter the question never raised has to drop out of the pipeline rather than run on a default of its own. Give the window a default and the retrieval answers a narrower question than the one that arrived, without saying so.',
+      ).toEqual(['a', 'b', 'c', 'd']);
+      expect(
+        r.rows[0],
+        'A row travels with its readings. Trim the rows down to their ids and the prompt built from them prints amp=undefined and freq=undefined, so the model is handed a list of names, and the checker in the next challenge has no reading to trace a claim to.',
+      ).toMatchObject({
+        id: db[0].id,
+        band: db[0].band,
+        classification: db[0].classification,
+        confidence: db[0].confidence,
+        amplitude: db[0].amplitude,
+        frequency: db[0].frequency,
+        anomalyScore: db[0].anomalyScore,
+      });
       expect(
         r.matched,
-        'matched counts the rows that passed the filters, before the cap trims anything. Three rows passed here and the cap dropped none of them. Report what the cap left out instead and the caller has no way to tell a full context from a trimmed one.',
-      ).toBe(3);
+        'matched counts the rows that passed the filters, before the cap trims anything. Every row passed here and the cap dropped none of them. Report what the cap left out instead and the caller has no way to tell a full context from a trimmed one.',
+      ).toBe(db.length);
       expect(r.truncated).toBe(false);
     });
 
     it('the band filter folds case on both sides', () => {
-      const db = [makeRow('a', { band: 'K7' }), makeRow('b', { band: 'k3' }), makeRow('c', { band: 'k7' })];
+      const db = [
+        makeRow('a', { band: 'K7' }),
+        makeRow('b', { band: 'k3' }),
+        makeRow('near', { band: 'K70' }),
+        makeRow('c', { band: 'k7' }),
+      ];
       const r = retrieve('signals in Band-K7', db);
-      expect(r.rows.map((s) => s.id)).toEqual(['a', 'c']);
+      expect(
+        r.rows.map((s) => s.id),
+        'Folding case is not the same as matching loosely. The band a row carries either is the one the question named or it is not, and a filter asking whether it contains that word answers a question about K7 with rows off K70. Those readings then reach the model as evidence for a band nobody asked about.',
+      ).toEqual(['a', 'c']);
       expect(r.matched).toBe(2);
     });
 
@@ -171,6 +205,30 @@ testCode: |
       ).toEqual(['hit-0', 'hit-1', 'hit-2', 'hit-3', 'hit-4', 'hit-5']);
       expect(r.matched).toBe(6);
       expect(r.truncated).toBe(false);
+    });
+
+    it('the twenty that travel are the first twenty, not the best twenty', () => {
+      const size = 26;
+      const db = [];
+      for (let i = 0; i < size; i += 1) {
+        // Each reading walks its own permutation of the database and none of
+        // them walks it in database order, so a ranking applied before the
+        // cap ships a different twenty whichever reading it ranks on.
+        db.push(
+          makeRow('row-' + i, {
+            hoursAgo: (1 + ((i * 7) % size)) / 4,
+            confidence: (1 + ((i * 11) % size)) / 100,
+            amplitude: 570 + ((i * 3) % size) * 37,
+            frequency: 5 + ((i * 19) % size) * 4,
+            anomalyScore: (1 + ((i * 17) % size)) / 100,
+          }),
+        );
+      }
+      const r = retrieve('anomalous signals in Band-7', db);
+      expect(
+        r.rows.map((s) => s.id),
+        'This retrieval is not ranked. Sorting the survivors before the cap, newest first or strongest reading first, is how a vector store returns its top k, and keyword-and-metadata retrieval is not one: the prompt carries the first twenty survivors in database order. Rank them and a different twenty travels, the row the question was about can be the one left behind, and nothing downstream can see which twenty arrived.',
+      ).toEqual(db.slice(0, 20).map((s) => s.id));
     });
 
     it('counts the survivors, not the database and not what it sent', () => {

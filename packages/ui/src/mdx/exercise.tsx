@@ -15,6 +15,7 @@ import {
 import { useSandpack, type SandpackTheme } from "@codesandbox/sandpack-react";
 import { useScheme } from "../use-scheme";
 import { InstructionText } from "./instruction-text";
+import { HintPanel } from "./hint-panel";
 
 const SandpackProvider = lazy(() =>
   import("@codesandbox/sandpack-react").then((m) => ({
@@ -62,6 +63,17 @@ export interface ExerciseData {
   testCode: string;
   estimatedMinutes: number;
   difficulty: "beginner" | "intermediate" | "advanced";
+  /**
+   * The exercise's own hint ladder, present on a lesson's second exercise.
+   * The lesson-level ladder (rendered by the page in the challenge step's
+   * left column) serves the lesson's primary exercise; this one renders
+   * beneath this exercise's instructions so a learner stuck on the second
+   * exercise of a lesson has a ladder that is about it (2026-09-13).
+   */
+  hints?: Array<{
+    level: "nudge" | "guidance" | "solution";
+    content: string;
+  }>;
   /**
    * ML content axis, orthogonal to cognitive difficulty. Tells learners
    * whether the exercise uses real TFJS primitives or is arithmetic-grade
@@ -114,6 +126,12 @@ interface ExerciseProps {
   onSubmit?: (result: ExerciseSubmitResult) => void;
   /** Optional JS-to-ML bridge hint shown below the editor. */
   bridge?: ExerciseBridge;
+  /**
+   * Fires when the learner reveals a rung of this exercise's own ladder
+   * (`ExerciseData.hints`). The page wires it to the same analytics hook
+   * as the lesson-level HintPanel.
+   */
+  onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
 }
 
 import {
@@ -731,7 +749,12 @@ function ExerciseLoadingSkeleton() {
 /*  Main Exercise component                                            */
 /* ------------------------------------------------------------------ */
 
-export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
+export function Exercise({
+  slug,
+  onSubmit,
+  bridge,
+  onHintRevealed,
+}: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
   const scheme = useScheme();
@@ -879,6 +902,11 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
         text={exercise.instructions}
         className="text-sm leading-relaxed mb-4 text-text-primary/65"
       />
+      {exercise.hints && exercise.hints.length > 0 && (
+        <div data-testid="exercise-hints">
+          <HintPanel hints={exercise.hints} onHintRevealed={onHintRevealed} />
+        </div>
+      )}
 
       {/* Sandpack Editor */}
       <Suspense fallback={<ExerciseLoadingSkeleton />}>

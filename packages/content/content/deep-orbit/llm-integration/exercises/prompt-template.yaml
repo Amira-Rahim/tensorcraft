@@ -1,7 +1,7 @@
 slug: prompt-template
 lessonSlug: prompt-engineering
 title: "Build a Prompt Template"
-instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a multi-line prompt with the four parts on separate lines, in order. First the role: one line that names DEEP SCAN and says it classifies signals, in that word. The grader reads the first line for `classif`, so classify, classifying and classifier all pass, while a line saying it labels or sorts signals does not. That line carries no signal values, no reference frequencies and no output instructions. Then the reference context, on a line of its own: 5, 12, 23, 47 Hz, stated to be the natural frequencies rather than left as four bare numbers. Nothing read off the argument belongs on that line. Then the signal data, one line per value, each next to its label (Amplitude, Frequency, Phase) and read off the argument. Then the output request: JSON with classification, confidence, and reasoning fields. The grader checks position as well as presence, and it runs the whole check again on readings it draws at grade time, so every call has to rebuild the prompt from the argument it was handed."
+instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a multi-line prompt with the four parts on separate lines, in order. First the role: one line that names DEEP SCAN and says it classifies signals, in that word. The grader reads the first line for `classif`, so classify, classifying and classifier all pass, while a line saying it labels or sorts signals does not. It reads that line for `signal` too, because a job needs an object: a name with the bare word classifier beside it never says what is being classified. That line carries no signal values, no reference frequencies and no output instructions. Then the reference context, on a line of its own: 5, 12, 23, 47 Hz, stated to be the natural frequencies rather than left as four bare numbers. The grader reads that line for `natural` and for the quantity, so it has to say frequencies or carry the unit Hz. Four numbers under a label that never names what they measure are still four numbers. Nothing read off the argument belongs on that line. Then the signal data, one line per value, each next to its own label (Amplitude, Frequency, Phase) and read off the argument. One label per line: a line that repeats all three beside a single number never says which of the three that number is. Then the output request: JSON with classification, confidence, and reasoning fields. Write that line as a request rather than a prohibition: the grader rejects never, not, don't, omit and without on the line carrying `json`, because a line that rules a format out in the same breath as it asks for one leaves the client nothing to parse. The grader checks position as well as presence, and it runs the whole check again on readings it draws at grade time, so every call has to rebuild the prompt from the argument it was handed. Recognizing a reading and returning a prompt saved for it is not rebuilding it, and the grader moves one value at a time to say so."
 starterCode: |
   interface SignalInput {
     amplitude: number;
@@ -95,6 +95,10 @@ testCode: |
           reference[0].toLowerCase(),
           'Four bare numbers are not context. The line has to say what they are, which is the set of frequencies known to be natural here.',
         ).toContain('natural');
+        expect(
+          reference[0].toLowerCase(),
+          'Four numbers under the word natural are still four numbers. The line has to name the quantity, so write frequencies or carry the unit Hz. Without it nothing tells the model whether 5, 12, 23 and 47 are hertz, counts or hours, and the one line it cannot work out for itself arrives unreadable.',
+        ).toMatch(/frequenc|hz/);
         for (const value of printed(input)) {
           expect(
             reference[0],
@@ -105,7 +109,8 @@ testCode: |
     });
 
     it('requests JSON output and names all three fields', () => {
-      const lower = promptFor(drawSignal()).toLowerCase();
+      const prompt = promptFor(drawSignal());
+      const lower = prompt.toLowerCase();
       expect(lower).toContain('json');
       expect(
         lower,
@@ -113,6 +118,13 @@ testCode: |
       ).toContain('classification');
       expect(lower).toContain('confidence');
       expect(lower).toContain('reasoning');
+      for (const line of lines(prompt)) {
+        if (!line.toLowerCase().includes('json')) continue;
+        expect(
+          line.toLowerCase(),
+          'Ask for the format you want instead of ruling out the ones you do not. A line carrying never, not, omit or without beside the word JSON reads as a prohibition, and the client waiting on the other end has no object to parse.',
+        ).not.toMatch(/\b(never|not|don't|omit|without)\b/);
+      }
     });
 
     it('opens with the role, and the role says what the model is doing', () => {
@@ -123,6 +135,10 @@ testCode: |
           first.toLowerCase(),
           'A name on its own is an address label. The role line has to tell the model what job it is doing here.',
         ).toContain('classif');
+        expect(
+          first.toLowerCase(),
+          'A job needs an object. The role line says what DEEP SCAN classifies, and here that is signals, so a name with the bare word classifier beside it still leaves the model guessing what it is looking at.',
+        ).toContain('signal');
         for (const value of printed(input)) expect(first).not.toContain(value);
         for (const hz of REFERENCE) {
           expect(
@@ -161,6 +177,20 @@ testCode: |
         expect(amp[0].toLowerCase()).toContain('amplitude');
         expect(freq[0].toLowerCase()).toContain('frequency');
         expect(phase[0].toLowerCase()).toContain('phase');
+        const wrongLabels = {
+          amplitude: ['frequency', 'phase'],
+          frequency: ['amplitude', 'phase'],
+          phase: ['amplitude', 'frequency'],
+        };
+        const labelled = [['amplitude', amp[0]], ['frequency', freq[0]], ['phase', phase[0]]];
+        for (const entry of labelled) {
+          for (const wrong of wrongLabels[entry[0]]) {
+            expect(
+              entry[1].toLowerCase(),
+              'Each reading gets the one label that belongs to it. A line that repeats all three labels beside a single number leaves the model no way to say which quantity that number is, which is the whole reason the values are split across lines.',
+            ).not.toContain(wrong);
+          }
+        }
         expect(amp[0]).not.toBe(freq[0]);
         expect(freq[0]).not.toBe(phase[0]);
         expect(amp[0]).not.toBe(phase[0]);
@@ -190,6 +220,28 @@ testCode: |
           expect(two).toContain(value);
           expect(one).not.toContain(value);
         }
+      }
+      // A prompt stored for the reading in the lesson and handed back on
+      // sight survives two fresh draws, because neither draw looks like the
+      // one it memorized. Move ONE dial off that reading instead.
+      const dials = ['amplitude', 'frequency', 'phase'];
+      for (const dial of dials) {
+        const fresh = drawSignal(printed(signal));
+        const input = {
+          amplitude: signal.amplitude,
+          frequency: signal.frequency,
+          phase: signal.phase,
+        };
+        input[dial] = fresh[dial];
+        const prompt = promptFor(input);
+        expect(
+          prompt,
+          'Two familiar values and one fresh reading is still a fresh reading. A prompt recognized and returned from storage reports the dial that moved as whatever it was the last time.',
+        ).toContain(String(fresh[dial]));
+        expect(
+          prompt,
+          'This capture no longer holds that value, so no line of its prompt may carry it. Seeing it means the prompt came from a stored string rather than from the argument.',
+        ).not.toContain(String(signal[dial]));
       }
     });
   });

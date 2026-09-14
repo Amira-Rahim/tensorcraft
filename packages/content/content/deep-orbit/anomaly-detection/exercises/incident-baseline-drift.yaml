@@ -3,7 +3,7 @@ lessonSlug: normal-vs-anomalous
 title: "Incident: Baseline Distribution Drifted"
 mlContent: systems
 instructions: |
-  PAGER, two weeks after DEEP SCAN went live: the detector now flags 30% of inputs as anomalous, where the tuned rate was a fraction of a percent. The readings in front of you were reviewed by hand and every one of them is normal, so every flag the live baseline puts on them is a false alarm. Decide whether to roll the baseline forward.
+  PAGER, two weeks after DEEP SCAN went live: the detector now flags more than one reading in ten as anomalous, where the tuned rate was a fraction of a percent. The readings in front of you were reviewed by hand and every one of them is normal, so every flag the live baseline puts on them is a false alarm. Decide whether to roll the baseline forward.
 
   Write `auditBaseline(recentNormalData, currentBaseline, readingsPerDay)`. The current baseline is `{ mean, std }` and the gate is this lesson's: a reading is flagged when its absolute z-score against that baseline is greater than 3. Return:
 
@@ -19,6 +19,44 @@ instructions: |
   A threshold is a rate promise, and what reaches a human is that rate times the volume. Compare what the live baseline actually costs per day against what the rule promised, then decide:
 
   `hold` when the current baseline is already at or under its promised load, because nothing has drifted. Otherwise the baseline is over-firing on readings known to be normal, and the recomputed one tells you why. `roll-forward` when the spread held steady (spreadRatio at most 1.5), which means the world shifted and the new centre is the honest one. `investigate` when the spread grew past 1.5, because then the world did not move, it got noisier: a baseline that wide would go quiet, and the readings it stops flagging include the ones you are paid to catch.
+hints:
+  - level: nudge
+    content: "The rule promises a rate and the pager receives counts, so put both on the same footing before comparing: what the live baseline costs a day against what the rule allows a day. Only when the live cost is over does the spread get a vote, and then it decides which way you go"
+  - level: guidance
+    content: "These readings were reviewed by hand and every one is normal, so each flag the live gate puts on them is a false alarm, and counting them is the measurement. Take the share of the readings that gate catches, multiply by the day's volume, and you have what the pager sees. The promise is the same arithmetic on the rule's own share, so it moves when the volume does: a figure that survives a change of volume was typed in rather than computed. If the live load is at or under the promise, nothing has drifted and there is nothing to change. When it is over, recompute the mean and the spread from these readings alone, dividing the squared gaps by how many readings you have rather than by one fewer, since this baseline describes the readings in hand instead of estimating a wider population. Then compare the two spreads. A mean that moved while the spread held is a world that shifted, and the recomputed baseline is the honest one. A spread that grew by more than half again is a world that got noisier, and a gate stretched that wide goes quiet on the events you are paid to catch"
+  - level: solution
+    content: |
+      function auditBaseline(recentNormalData, currentBaseline, readingsPerDay) {
+        const flagged = (values, mean, std) =>
+          values.filter((v) => Math.abs(v - mean) / std > 3).length;
+
+        const n = recentNormalData.length;
+        const mean = recentNormalData.reduce((a, b) => a + b, 0) / n;
+        const variance = recentNormalData.reduce((a, v) => a + (v - mean) ** 2, 0) / n;
+        const std = Math.sqrt(variance);
+
+        const oldRate = flagged(recentNormalData, currentBaseline.mean, currentBaseline.std) / n;
+        const newRate = flagged(recentNormalData, mean, std) / n;
+
+        const oldAlertsPerDay = Math.round(oldRate * readingsPerDay);
+        const newAlertsPerDay = Math.round(newRate * readingsPerDay);
+        const promisedPerDay = Math.round(0.0027 * readingsPerDay);
+        const spreadRatio = std / currentBaseline.std;
+
+        let action;
+        if (oldAlertsPerDay <= promisedPerDay) action = 'hold';
+        else if (spreadRatio > 1.5) action = 'investigate';
+        else action = 'roll-forward';
+
+        return {
+          oldAlertsPerDay,
+          newAlertsPerDay,
+          promisedPerDay,
+          newBaseline: { mean, std },
+          spreadRatio,
+          action,
+        };
+      }
 starterCode: |
   function auditBaseline(recentNormalData, currentBaseline, readingsPerDay) {
     // Two numbers decide this: what the live baseline costs a day, and how
@@ -61,7 +99,13 @@ solutionCode: |
 testCode: |
   describe('auditBaseline', () => {
     // Deterministic normal-ish samples: Box-Muller over a seeded LCG, so the
-    // fixtures are the same on every run and on both harnesses.
+    // fixtures are the same on every run and on both harnesses. Clipped to
+    // [0, 1] because this is the normalized amplitude channel: the sensor
+    // saturates at its full scale and cannot read below zero, so a draw past
+    // either end lands ON the end, the way the sensor reports it. Before the
+    // clip (round 7, 2026-09-13) the wider fixtures carried readings the
+    // channel cannot produce, and lesson 1 tells the learner to call those a
+    // units bug.
     const sample = (n, m, s, seed) => {
       let x = seed;
       const rnd = () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648;
@@ -69,22 +113,27 @@ testCode: |
       for (let i = 0; i < n; i++) {
         const u = Math.max(rnd(), 1e-9);
         const v = rnd();
-        out.push(m + s * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v));
+        const draw = m + s * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+        out.push(Math.min(1, Math.max(0, draw)));
       }
       return out;
     };
     const LIVE = { mean: 0.52, std: 0.15 };
     const PER_DAY = 2618;
+    const RETURNED =
+      'auditBaseline returned nothing, so there is no result to read. It has ' +
+      'to return the six-field object the instructions list, and every field ' +
+      'below is read off that object.';
     // The rule, applied independently in the test, so newAlertsPerDay is
     // graded against what a recomputed baseline REALLY flags on this data
     // rather than against a loose bound. A verifier on 2026-09-12 passed
     // this file with newAlertsPerDay hard-wired to 0, because the only
     // assertion on it was "less than oldAlertsPerDay".
-    const expectedNewLoad = (data) => {
+    const expectedNewLoad = (data, perDay = PER_DAY) => {
       const mean = data.reduce((s, x) => s + x, 0) / data.length;
       const std = Math.sqrt(data.reduce((s, x) => s + (x - mean) ** 2, 0) / data.length);
       const flags = data.filter((v) => Math.abs(v - mean) / std > 3).length;
-      return Math.round((flags / data.length) * PER_DAY);
+      return Math.round((flags / data.length) * perDay);
     };
 
     it('turns the promised false-alarm RATE into a daily alert count', () => {
@@ -106,8 +155,9 @@ testCode: |
     });
 
     it('rolls forward when the world SHIFTED: over-firing, spread steady', () => {
-      // Measured: the live baseline flags 4.0% of these, 105 a day against a
-      // promise of 7, while the recomputed spread is 1.01x the old one.
+      // Measured: the live baseline flags 4.0% of these (ten of them pegged
+      // at the 1.00 ceiling), 105 a day against a promise of 7, while the
+      // recomputed spread is 0.99x the old one.
       const shifted = sample(400, 0.72, 0.15, 7);
       const r = auditBaseline(shifted, LIVE, PER_DAY);
       expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
@@ -123,10 +173,11 @@ testCode: |
 
     it('investigates when the world got NOISIER: rolling forward would go blind', () => {
       // The case the alert count alone cannot decide. Measured: the live
-      // baseline flags 19.75% of these, 517 a day, which is 74x its promise,
-      // so the count screams roll-forward. But the recomputed spread is 2.25x
-      // wider, and a gate that wide stops flagging the events worth catching.
-      const noisier = sample(400, 0.52, 0.34, 23);
+      // baseline flags 11% of these (18 pegged at 1.00, 14 dead at 0.00), 288
+      // a day, which is 41x its promise, so the count screams roll-forward.
+      // But the recomputed spread is 1.75x wider, and a gate that wide stops
+      // flagging the events worth catching.
+      const noisier = sample(400, 0.52, 0.28, 23);
       const r = auditBaseline(noisier, LIVE, PER_DAY);
       expect(r, 'auditBaseline returned nothing, so there is no result to read. It has to return the six-field object the instructions list, and every field below is read off that object.').toBeDefined();
       expect(r.oldAlertsPerDay, 'A distribution this much wider than the baseline should push far past the promised load.').toBeGreaterThan(100);
@@ -136,6 +187,42 @@ testCode: |
         r.action,
         'This is the case the alert count gets wrong on its own. The load says roll forward, and rolling forward would widen the gate by more than half, which quiets the detector by making more of the world count as normal. Growth in spread is the signal to investigate rather than absorb.',
       ).toBe('investigate');
+    });
+
+    // Every fixture above runs at 2,618 readings a day, where the promise is
+    // 7 and the live load is either 0 or in the hundreds. A submission that
+    // computes promisedPerDay because the contract asks for it and then
+    // decides on a memorised "under about ten alerts a day" clears all of
+    // them (round 7, 2026-09-13). The two fixtures below run the same rule at
+    // other volumes, where the promise and that remembered ten point in
+    // opposite directions.
+    it('over-fires at a quiet volume where the promise is smaller than the load', () => {
+      // 1,000 readings a day puts the 3-sigma promise at 3. The live gate
+      // flags 2 of these 400 hand-reviewed readings, which is 5 a day: a
+      // number nobody would call a storm, and still nearly twice what the
+      // rule allows at this volume.
+      const quietBus = sample(400, 0.55, 0.15, 3);
+      const r = auditBaseline(quietBus, LIVE, 1000);
+      expect(r, RETURNED).toBeDefined();
+      const why = 'At 1,000 readings a day the rule promises 3 alerts and this baseline is costing 5, on readings a person reviewed and called normal. Five alerts a day is quiet in absolute terms, which is the trap: the load is judged against the promise for this volume, not against a count you remember from the last incident.';
+      expect(r.promisedPerDay, why).toBe(3);
+      expect(r.oldAlertsPerDay, why).toBe(5);
+      expect(r.newAlertsPerDay, why).toBe(expectedNewLoad(quietBus, 1000));
+      expect(r.spreadRatio, why).toBeLessThan(1.5);
+      expect(r.action, why).toBe('roll-forward');
+    });
+
+    it('holds at a busy volume where the promise is larger than the load', () => {
+      // The mirror case. 20,000 readings a day puts the promise at 54, and
+      // the live gate flags 1 of these 400, which is 50 a day. Fifty alerts
+      // reads like a storm and sits inside what the rule allows here.
+      const busyBus = sample(400, 0.52, 0.15, 3);
+      const r = auditBaseline(busyBus, LIVE, 20000);
+      expect(r, RETURNED).toBeDefined();
+      const why = 'Same rule, same readings, twenty times the volume. The promise scales with the volume to 54 a day and the live baseline costs 50, so it is inside what it promised and nothing has drifted. A baseline rolled forward here would be churn: the load only looks large because the bus is busy.';
+      expect(r.promisedPerDay, why).toBe(54);
+      expect(r.oldAlertsPerDay, why).toBe(50);
+      expect(r.action, why).toBe('hold');
     });
 
     it('recomputes the spread over n, not n minus 1', () => {

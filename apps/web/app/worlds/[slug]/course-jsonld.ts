@@ -10,7 +10,14 @@ import type { WorldManifest } from "@tensorcraft/worlds";
  * pricing/pricing-jsonld.ts: the object needs regression tests, and the
  * async server component around it does not render under vitest.
  */
-export function buildCourseJsonLd(world: WorldManifest) {
+export function buildCourseJsonLd(
+  world: WorldManifest,
+  opts: {
+    /** Lesson + exercise estimatedMinutes for the whole world, summed by the
+     *  caller on the same basis as the on-page module map. */
+    totalMinutes: number;
+  },
+) {
   return {
     "@context": "https://schema.org",
     "@type": "Course",
@@ -53,11 +60,12 @@ export function buildCourseJsonLd(world: WorldManifest) {
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      // Sum of lesson + exercise estimatedMinutes frontmatter (1,590 min
-      // as of 2026-09-05: 812 lesson + 778 exercise, after the content
-      // quality audit re-paced modules 9-11). Recompute when minutes
-      // change: sum lesson+exercise estimatedMinutes / 60, round.
-      courseWorkload: "PT27H",
+      // Whole hours, ISO 8601 duration form, from the corpus at build time.
+      // A hardcoded "PT27H" sat here from 2026-09-05 and drifted (the corpus
+      // measured 1,654 minutes, 28 hours, by 2026-09-13) because the test
+      // only checked the format; the value now follows the same sum the
+      // module map shows and the test compares it against that sum.
+      courseWorkload: `PT${Math.round(opts.totalMinutes / 60)}H`,
     },
   };
 }

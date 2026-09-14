@@ -105,6 +105,53 @@ testCode: |
         'The evaluation labels come out of the same log the training labels do, read at each window\'s own last reading. Labels invented for that side, or read at an offset, make the eval set unscoreable while every count still looks right.',
       ).toEqual(evalYs);
     });
+    it('follows the parameters on three settings drawn at grade time', () => {
+      // Every fixture above is fixed and printed here, so a table keyed on
+      // series.length held both answers and never read splitAt at all: it
+      // windowed the whole stream first, the exact leak this lesson exists to
+      // stop, and cleared all five tests (round 7, 2026-09-13). These three
+      // settings are drawn now, and every expectation is computed from the
+      // drawn values, so nothing written against this file can hold them.
+      for (let trial = 0; trial < 3; trial++) {
+        const windowSize = 2 + Math.floor(Math.random() * 5);
+        const length = 3 * windowSize + Math.floor(Math.random() * 10);
+        const splitAt = windowSize + Math.floor(Math.random() * (length - 2 * windowSize + 1));
+        const s = Array.from({ length }, (_, i) => [i, i * 10]);
+        const l = s.map(([i]) => (i % 3 === 1 ? 1 : 0));
+        const setting = length + ' readings, window ' + windowSize + ', split at ' + splitAt;
+        const { train, eval: ev } = split(s, l, windowSize, splitAt);
+        const trainXs = [];
+        const trainYs = [];
+        const evalXs = [];
+        const evalYs = [];
+        for (let i = 0; i + windowSize <= length; i++) {
+          const end = i + windowSize;
+          if (end <= splitAt) {
+            trainXs.push(s.slice(i, end));
+            trainYs.push(l[end - 1]);
+          } else if (i >= splitAt) {
+            evalXs.push(s.slice(i, end));
+            evalYs.push(l[end - 1]);
+          }
+        }
+        expect(
+          train.xs,
+          'The training windows for a setting drawn at grade time (' + setting + ') are wrong. A training window is every span of windowSize readings that ends at or before splitAt, in order; the count follows from the three arguments, not from the length of the series.',
+        ).toEqual(trainXs);
+        expect(
+          train.ys,
+          'The training labels for (' + setting + ') are wrong: each one is the label of its window\'s last reading.',
+        ).toEqual(trainYs);
+        expect(
+          ev.xs,
+          'The evaluation windows for (' + setting + ') are wrong. An evaluation window starts at or after splitAt and fits inside the series; a span that starts before the cut and ends after it belongs to neither side.',
+        ).toEqual(evalXs);
+        expect(
+          ev.ys,
+          'The evaluation labels for (' + setting + ') are wrong: read from the same log, at each window\'s own last reading.',
+        ).toEqual(evalYs);
+      }
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate

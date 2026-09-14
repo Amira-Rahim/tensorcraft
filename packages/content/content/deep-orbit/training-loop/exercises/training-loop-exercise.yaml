@@ -1,7 +1,7 @@
 slug: training-loop-exercise
 lessonSlug: training-loop
 title: "Stop the Loop When It Stops Learning"
-instructions: "Demir set epochs to 500 because he had no way to know better, and forty minutes of compute bought a gain nobody was watching for. Replace the guess with a callback that reads the held-out curve. Fit the fresh model on the flipped-label data with an upper bound of 500 epochs, hold back 20% for validation, and attach tf.callbacks.earlyStopping watching val_loss with a patience of 5. Any batch size is fine; the grader reads yours off the history. Store the result in `history`. Then write `diagnose(trainLosses, valLosses)`, which reads the two curves the run produced and returns one of three strings. Compare the mean of the last 10 entries of the VALIDATION curve against the mean of the 10 before them: 'still-learning' when the recent window improved by more than 5%, 'overfitting' when it got worse by more than 5%, and 'plateau' when it moved less than that either way. The window is short on purpose. Averaged over a third of the run, this curve still reads as falling by 10% to 65% at the moment the callback fires, because the steep early drop is inside the average. A plateau at the END of a run is only visible in a recent window. The callback halts on both a plateau and overfitting, and only the gap between the two curves says which one you are looking at."
+instructions: "Demir set epochs to 500 because he had no way to know better, and forty minutes of compute bought a gain nobody was watching for. Replace the guess with a callback that reads the held-out curve. Fit the fresh model on the flipped-label data with an upper bound of 500 epochs, hold back 20% for validation, and attach tf.callbacks.earlyStopping watching val_loss with a patience of 5. Leave the batch size at its default of 32, or set anything from 8 to 64; the grader reads yours off the history. Larger batches mean fewer weight updates per epoch, and measured at 80 or more per batch the callback fails to fire inside the 500-epoch bound in about half of all runs. Store the result in `history`. Then write `diagnose(trainLosses, valLosses)`, which reads the two curves the run produced and returns one of three strings. Compare the mean of the last 10 entries of the VALIDATION curve against the mean of the 10 before them: 'still-learning' when the recent window improved by more than 5%, 'overfitting' when it got worse by more than 5%, and 'plateau' when it moved less than that either way. Two windows of 10 need a curve of at least 20 entries, and a run inside the batch sizes above always has them: measured over 65 runs at 8, 16 and 64 rows per batch, the earliest halt was epoch 41, and the grader rejects a run that stops inside 20 epochs as one that halted on something other than a settled curve. The window is short on purpose. Averaged over a third of the run, this curve still reads as falling by 10% to 65% at the moment the callback fires, because the steep early drop is inside the average. A plateau at the END of a run is only visible in a recent window. The callback halts on both a plateau and overfitting, and the recent window of the validation curve is what says which one you are looking at."
 starterCode: |
   // Given: the archive's two clusters, then six labels flipped to match the
   // flag log, which is where the bad rows in the real archive come from.
@@ -136,6 +136,11 @@ testCode: |
       // divisor. Tying that to the epoch count the trace CLAIMS is what makes
       // the two numbers have to come from the same run.
       const params = history.params || {};
+      const batchSize = params.batchSize || 32;
+      expect(
+        batchSize >= 8 && batchSize <= 64,
+        'The run used a batch size of ' + batchSize + '. Measured on this data, 80 or more rows per batch leaves too few weight updates per epoch for the callback to fire inside the 500-epoch bound in about half of all runs, and 2 per batch sometimes halts inside 20 epochs. Leave batchSize at its default of 32 or set it between 8 and 64.',
+      ).toBe(true);
       expect(
         params.samples,
         'history.params.samples has to read 80: the 100 flipped-label rows minus the 20% the instructions hold back for validation.',
@@ -160,6 +165,14 @@ testCode: |
         cases.push([ramp(n, 1.0, 0.1), ramp(n, 0.4, 0.9), 'overfitting']);
         cases.push([ramp(n, 0.5, 0.4), flat(n, 0.30), 'plateau']);
       }
+      // The window has to be RECENT. Every case above is a single straight
+      // line, which any threshold anywhere in 0 to 50 percent reads the same
+      // way whether the comparison uses the last two windows or the whole
+      // run. These two curves fall steeply for 40 epochs and then flatten or
+      // turn: first-versus-last calls both of them still-learning, and the
+      // rule the instructions give calls them plateau and overfitting.
+      cases.push([ramp(60, 1.0, 0.2), [...ramp(40, 1.0, 0.3), ...flat(20, 0.3)], 'plateau']);
+      cases.push([ramp(60, 1.0, 0.1), [...ramp(40, 1.0, 0.3), ...ramp(20, 0.3, 0.45)], 'overfitting']);
       for (const [tr, va, want] of cases) {
         expect(
           diagnose(tr, va),

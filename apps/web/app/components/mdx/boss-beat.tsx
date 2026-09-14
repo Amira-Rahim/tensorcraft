@@ -78,6 +78,11 @@ export function BossBeat({
   const [priorChoice, setPriorChoice] = useState<BossBeatChoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [secondsLeft, setSecondsLeft] = useState(timeoutSeconds);
+  // The clock ran out before the learner chose. Nothing is recorded on
+  // their behalf: the beat stays playable and names the stance the bridge
+  // takes on silence, so a slow reader is never credited with a choice they
+  // did not make (2026-09-13, plan item 4: the old timer auto-selected).
+  const [timedOut, setTimedOut] = useState(false);
   const [submittedIndex, setSubmittedIndex] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const startedAtRef = useRef<number | null>(null);
@@ -116,7 +121,7 @@ export function BossBeat({
   useEffect(() => {
     if (loading || priorChoice || submittedIndex !== null) return;
     if (secondsLeft <= 0) {
-      handleTimeout();
+      if (!timedOut) setTimedOut(true);
       return;
     }
     const t = window.setTimeout(
@@ -161,14 +166,13 @@ export function BossBeat({
     }
   }
 
-  async function handleTimeout() {
-    if (submittedIndex !== null || priorChoice) return;
-    // Treat timeout as "random" stance, the explicit non-choice IS a
-    // strategy in game-theoretic terms.
+  // The stance the bridge takes when nobody answers: the explicit non-choice
+  // IS a strategy in game-theoretic terms, so the beat names it once the
+  // clock is out. It is shown, never submitted for the learner.
+  const silenceIndex = (() => {
     const idx = options.findIndex((o) => o.label === TIMEOUT_LABEL);
-    const fallback = idx >= 0 ? idx : 2;
-    await handleChoice(fallback);
-  }
+    return idx >= 0 ? idx : Math.min(2, options.length - 1);
+  })();
 
   if (loading) {
     return (
@@ -230,7 +234,7 @@ export function BossBeat({
     >
       <div className="flex items-center justify-between mb-4">
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary">
-          Boss beat · {secondsLeft}s
+          Boss beat · {timedOut ? "clock out" : `${secondsLeft}s`}
         </p>
         <div
           className="h-1 w-32 bg-border"
@@ -250,6 +254,16 @@ export function BossBeat({
       <p className="text-base text-text-primary leading-relaxed mb-5">
         {prompt}
       </p>
+      {timedOut && (
+        <p
+          className="text-sm font-mono text-text-muted mb-4"
+          data-testid="boss-beat-silence"
+        >
+          Clock out. On silence the bridge goes with{" "}
+          {options[silenceIndex].display}. Choose, or let it stand: nothing is
+          recorded until you do.
+        </p>
+      )}
       <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {displayOrder(beatId).map((i, displayIdx) => {
           const opt = options[i];

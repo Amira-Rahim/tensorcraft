@@ -21,7 +21,7 @@ concept:
     mlTitle: "Forecasting"
     mlCode: "future = model.predict(pastWindow) // predict what comes next"
     tier: intuition
-    breaks: "Prefetching loads known assets you can name in advance. Forecasting predicts future values from a learned distribution; predictions widen in uncertainty with horizon (the prediction interval grows roughly with √horizon for many models) and may diverge entirely past a few steps. There is no cache hit, only a probability cone whose width is itself a forecast."
+    breaks: "Prefetching loads known assets you can name in advance. Forecasting predicts future values from a learned distribution, and its error widens with the horizon. √horizon is the growth to expect when one-step errors only pile up. The series measured in this lesson amplifies them instead, so its rollout error grows about half again per step until it saturates. There is no cache hit, only a probability cone whose width is itself a forecast, and this lesson measures that width rather than reading it off a formula."
 consequence:
   narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The signal's timing is changing, and not randomly."
 hints:
@@ -90,13 +90,14 @@ async function forecast(
   model: tf.LayersModel,
   seed: number[][],
   horizon: number,
+  windowSize: number,
 ): Promise<number[][]> {
   const window = [...seed];
   const predictions: number[][] = [];
 
   for (let step = 0; step < horizon; step++) {
     const nextValue = tf.tidy(() => {
-      const input = tf.tensor3d([window.slice(-80)]);
+      const input = tf.tensor3d([window.slice(-windowSize)]);
       const pred = model.predict(input) as tf.Tensor;
       return Array.from(pred.dataSync());
     });
@@ -116,7 +117,7 @@ async function forecast(
 // trust number in this function because the model does not have one. A
 // real interval comes from replaying old forecasts and measuring, at each
 // horizon separately, how far they landed from what actually arrived.
-const predictions = await forecast(model, recentWindow, 100);`}
+const predictions = await forecast(model, recentWindow, 100, 80);`}
 </CodeBlock>
 
 ## Non-Stationarity: When Predictions Fail
@@ -177,6 +178,12 @@ function detectDrift(
   // This period's errors against the earlier ones
   const recent = errors.slice(-recentPeriod);
   const historical = errors.slice(0, -recentPeriod);
+  // No baseline, no comparison. Without this the mean of an empty slice is
+  // NaN, driftMagnitude comes back NaN, and the function answers "no drift"
+  // on a stream where drift cannot be measured at all.
+  if (historical.length === 0) {
+    throw new Error('drift needs a baseline: give it more readings than recentPeriod');
+  }
   const recentMean = recent.reduce((a, b) => a + b, 0) / recent.length;
   const histMean = historical.reduce((a, b) => a + b, 0) / historical.length;
 
@@ -197,13 +204,15 @@ const drift = detectDrift(oneStep, observedReadings.slice(80), 200);`}
 Compounding needs two things: a model whose output moves, and a series where a small error now makes a larger one next step. Put the same two arms on a series like that and the columns separate.
 
 <CodeBlock language="typescript" title="error-by-horizon.ts">
-{`// The same two functions, one channel, window set to 10, on a feedback
-// series instead of a sine: 900 readings of x -> 3.9 * x * (1 - x) with
-// noise of 0.002 added at every step. Two runs of that loop starting a hair
-// apart end up nowhere near each other, which is the property a rollout has
-// to survive. A 32-unit LSTM, 250 epochs on the first 300 readings, the
-// other 600 held back.
-const rollout = await forecast(model, past, 16);
+{`// The same two functions on a feedback series instead of a sine: 900
+// readings of x -> 3.9 * x * (1 - x) with noise of 0.002 added at every
+// step. One channel, so LIMITS is the single row this series needs,
+// { min: 0, max: 1 }. The window is 10 rather than 80, and both functions
+// read that width from their arguments rather than holding one.
+// Two runs of that loop starting a hair apart end up nowhere near each
+// other, which is the property a rollout has to survive. A 32-unit LSTM,
+// 250 epochs on the first 300 readings, the other 600 held back.
+const rollout = await forecast(model, past, 16, 10);
 const replay = predictOneStepAhead(model, [...past.slice(-10), ...arrived], 10);
 
 // Mean absolute error at each horizon, over 16-step forecasts started from
@@ -221,7 +230,9 @@ const replay = predictOneStepAhead(model, [...past.slice(-10), ...arrived], 10);
 //   16       0.270     0.013`}
 </CodeBlock>
 
-The replay column has no trend. Every prediction in it starts from readings that arrived, so what it reports at horizon 16 is still a one-step error, the same kind of number it reported at horizon 1. The rollout column starts on that same number and then grows by about half again per step, because the model is reading its own output back in and this series pulls small differences apart. It levels off near 0.3, since 0.336 is the average distance between any two unrelated readings here and a rollout that has lost the signal cannot be more wrong than that. Nothing about the model changed between the two columns, only what it read before each prediction.
+The replay column has no trend. Every prediction in it starts from readings that arrived, so what it reports at horizon 16 is still a one-step error, the same kind of number it reported at horizon 1. The rollout column starts on that same number and then grows by about half again per step, because the model is reading its own output back in and this series pulls small differences apart. It levels off near 0.3 because 0.336 is the average distance between any two unrelated readings here, which is about what a rollout scores once it has stopped tracking and is only wandering inside the same range. That is not a ceiling. A rollout that settles on a constant near the edge of the range does worse: a flat forecast at 0 scores 0.594 on this series. Nothing about the model changed between the two columns, only what it read before each prediction.
+
+That rollout column is the probability cone the bridge panel promised, measured at each horizon separately instead of assumed. The model hands you a point. The replay tells you how wide to draw around it.
 
 ## Challenge
 

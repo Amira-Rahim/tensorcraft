@@ -46,8 +46,11 @@ Parameter 500 of 673, twenty seconds into a single training step, and the engine
 
 One weight, one question: if I move this a little, does the loss go down? Nothing stops you from asking it 673 times.
 
-<CodeBlock language="typescript" title="gradient-by-nudging.ts">
+<CodeBlock language="typescript" title="gradient-by-nudging.ts (sketch)">
 {`// Numeric gradient: nudge one weight, rerun, compare. No calculus.
+// A sketch rather than a runnable block: computeLoss() stands in for
+// your own forward pass over the batch and returns a plain number, and
+// w1 is the layer-1 weight variable it reads.
 const EPS = 1e-3;
 
 function nudgedLoss(w: tf.Variable, index: number): number {

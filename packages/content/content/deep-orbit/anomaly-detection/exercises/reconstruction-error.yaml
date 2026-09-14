@@ -1,7 +1,7 @@
 slug: reconstruction-error
 lessonSlug: reconstruction-error
 title: "Compute Reconstruction Error"
-instructions: "Write a function that takes an autoencoder model and an input array, runs the input through the model, and returns the mean squared error between the input and the reconstruction. The model takes a batch, so one reading goes in as a single row and comes back as a single row. Release the tensors you allocate: the last test calls your function twice and checks that the live tensor count did not grow."
+instructions: "Write a function that takes an autoencoder model and an input array, runs the input through the model, and returns the mean squared error between the input and the reconstruction. The model takes a batch, so one reading goes in as a single row and comes back as a single row. Release the tensors you allocate: the last test warms your function up, then calls it on a reading it has not scored before and checks that the live tensor count did not grow."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -79,14 +79,18 @@ testCode: |
     });
     it('releases the tensors it allocates', () => {
       // The first call is a warm-up: a model allocates bookkeeping the first
-      // time it runs. The count is compared across the second call only.
+      // time it runs. The count is compared across the second call only, and
+      // that call scores a reading nothing in this suite has scored before:
+      // a submission that memoised its answers and disposed nothing cleared
+      // a repeat of the same pair (round 7, 2026-09-13), and a fresh reading
+      // is what makes its three allocations show up.
       const warmUp = reconstructionError(zeroModel, sample);
       expect(
         Number.isFinite(warmUp),
         'There is no allocation to check until the function returns a number.',
       ).toBe(true);
       const before = tf.memory().numTensors;
-      reconstructionError(zeroModel, sample);
+      reconstructionError(zeroModel, [0.11, 0.22, 0.33, 0.44, 0.55, 0.66, 0.77, 0.88]);
       const after = tf.memory().numTensors;
       expect(
         after - before,

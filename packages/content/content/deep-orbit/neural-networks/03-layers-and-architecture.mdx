@@ -93,6 +93,8 @@ Demir's first stack ran 96, then 32, then 1: 3,521 parameters, on a 96-unit firs
 
 The stack costs 673 parameters. The lesson-1 neuron, three weights and a bias, costs 4. Here is the smallest case where that difference decides the answer rather than the speed. A reading carries two normalized inputs, so there are four cases to label: 0 and 0, 0 and 1, 1 and 0, 1 and 1. The label fires when exactly one of the two reads high, which makes the middle two 1 and the outer two 0. Plot the four on a square, one axis per input. One weighted sum plus a threshold draws a single straight line on that square. No straight line puts the two cases labeled 1 on one side and the two labeled 0 on the other.
 
+Two calls in the block below are not yours to worry about yet. `compile()` picks how the weights get adjusted and how error is measured, and `fit()` runs the adjusting; lesson 5 wires the first one, and module 3 takes both apart. Read the two console lines, not the setup.
+
 <CodeBlock language="typescript" title="one-stage-vs-two.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
@@ -104,8 +106,8 @@ const flat = tf.sequential();
 flat.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
 flat.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
 await flat.fit(xs, ys, { epochs: 3000 });
-console.log(Array.from(flat.predict(xs).dataSync()));
-// all four at 0.50 to two decimals, every run
+console.log(Array.from((flat.predict(xs) as tf.Tensor).dataSync()));
+// all four within a hundredth of 0.50, every run
 
 // One 16-unit relu stage in front of the same output unit: 65 parameters.
 const staged = tf.sequential();
@@ -113,11 +115,15 @@ staged.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [2] }));
 staged.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 staged.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
 await staged.fit(xs, ys, { epochs: 3000 });
-console.log(Array.from(staged.predict(xs).dataSync()));
+console.log(Array.from((staged.predict(xs) as tf.Tensor).dataSync()));
 // all four within 0.0003 of 0, 1, 1, 0`}
 </CodeBlock>
 
-Sixty runs of each. The one-unit version answered 0.50 on every point every run, which is as close as a single straight line gets. The staged version got all four right every run, within 0.0003, on 62 more parameters. An 8-unit stage would be cheaper and it is not enough: one run in eight, a relu unit dies during training and the stage answers 0.5 on two of the four points, which is the flat model's answer. The three features this ship extracts do not need that yet; module 5 widens a reading to eleven features, and stages are what read combinations of them.
+A hundred runs of the flat model, sixty of the staged one. The one-unit version answered 0.50 on every point, every run, to within a hundredth, which is as close as a single straight line gets. The staged version got all four right every run, within 0.0003, on 62 more parameters.
+
+An 8-unit stage would be cheaper and it is not enough: in a hundred runs of it, eight came back answering 0.5 on two of the four points, which is the flat model's answer, because too many of its eight relu units died during training. Dead units on their own are not the exception. 98 of those hundred runs ended with at least one, and 92 of the hundred got all four points right anyway: a working 8-unit run carries 3 dead units at the median, and the 16-unit stage above carries 7 dead of its 16 and missed nothing in 60 runs. What decides a run is how many units die against the width of the stage.
+
+No reading this ship extracts needs a boundary that shape yet; module 5 widens a reading to eleven features, and stages are what read combinations of them.
 
 ## Challenge
 
@@ -134,7 +140,7 @@ Build a three-stage stack, then quote its price at a width the grader picks.
   whatYouLearned={[
     "Neural networks are composed layers, each transforming its input and passing the result forward, the way a middleware chain hands a request from one stage to the next.",
     "tf.sequential() builds a linear stack of layers; each model.add() call appends one transformation stage.",
-    "units sets the number of learnable features in a layer; inputShape is only required on the first layer, and subsequent shapes are inferred automatically.",
+    "units sets the number of neurons in a layer, which is how many values it outputs; inputShape is only required on the first layer, and subsequent shapes are inferred automatically.",
     "model.summary() prints every layer's output shape and parameter count. Each unit charges for itself in parameters, so quote the count before you grow the stack."
   ]}
   bridge="A middleware chain (`app.use(parseBody); app.use(authenticate)`) maps directly to layer composition in TFJS (`model.add(tf.layers.dense({...}))`): each stage transforms what it receives and passes the result to the next."

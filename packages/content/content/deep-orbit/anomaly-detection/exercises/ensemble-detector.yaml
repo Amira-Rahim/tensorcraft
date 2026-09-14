@@ -2,7 +2,7 @@ slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
 instructions: |
-  Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. The reading that scored 3.2 sigma against eleven days of archive scores 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's scores for the latest reading come in beside it. Compute all three verdicts yourself.
+  Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. A reading pegged at the sensor's 1.00 ceiling scores 3.2 sigma against eleven days of archive and 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's scores for the latest reading come in beside it. Compute all three verdicts yourself.
 
   1. Statistical. Take the z-score of `actual` against the window, using `tf.moments` for the window's center and spread. Report it signed, so a reading below the center comes back negative, and flag when |z| > 3.
   2. Autoencoder. Flag when `reconstructionError` > `reconThreshold`.
@@ -81,7 +81,7 @@ testCode: |
 
   describe('detectAnomalyEnsemble', () => {
     it('stays quiet on a calm reading', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.001, 0.010, 0.53, 0.10);
+      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.1, 1.0, 0.53, 0.10);
       expect(r, SHAPE).toBeDefined();
       const why = 'This reading sits at the window center, the rebuild is clean and the forecast is close, so no detector has anything to flag.';
       expect(r.votes, why).toBe(0);
@@ -90,7 +90,7 @@ testCode: |
     });
 
     it('computes the z-score from the window it was handed, not from a memorised stretch', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.001, 0.010, 0.98, 0.10);
+      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.1, 1.0, 0.98, 0.10);
       expect(r, SHAPE).toBeDefined();
       const why = 'This window is narrow, so a reading at the sensor full scale is a long way out of it in units of its spread. The count has to be derived from this window, not from the archive-wide baseline lesson 1 uses.';
       expect(r.zScore, why).toBeCloseTo(32, 0);
@@ -105,7 +105,7 @@ testCode: |
     // you were handed.
     it('reads the window it is given: one reading, two spreads, two verdicts', () => {
       const driftedWindow = [0.25, 0.35, 0.25, 0.35, 0.25, 0.35, 0.25, 0.35];
-      const r = detectAnomalyEnsemble(driftedWindow, 0.52, 0.001, 0.010, 0.53, 0.10);
+      const r = detectAnomalyEnsemble(driftedWindow, 0.52, 0.1, 1.0, 0.53, 0.10);
       expect(r, SHAPE).toBeDefined();
       const why = 'The reading here is the one the calm window called dead normal, and this window is a quieter stretch that drifted low. Same reading, wider count, because the count belongs to the spread you divide by.';
       expect(r.zScore, why).toBeCloseTo(4.4, 2);
@@ -116,6 +116,37 @@ testCode: |
       expect(r.isAnomaly, why).toBe(false);
     });
 
+    // A third stretch, built from a rule instead of typed out, so the center
+    // and the spread below come from measuring it and the two readings are
+    // placed a chosen number of spreads away from that center. Every other
+    // window here sits at the center or far outside it, so a gate set
+    // anywhere below 3, or no gate at all, answers them the same way the
+    // real one does. These two readings sit either side of 3.
+    it('holds the statistical gate at three spreads: 2.4 out stays quiet, 3.6 out flags', () => {
+      const ramp = Array.from({ length: 8 }, (_, i) => 0.36 + i * 0.008);
+      const center = ramp.reduce((s, v) => s + v, 0) / ramp.length;
+      const spread = Math.sqrt(
+        ramp.reduce((s, v) => s + (v - center) * (v - center), 0) / ramp.length,
+      );
+
+      const near = center + 2.4 * spread;
+      const inside = detectAnomalyEnsemble(ramp, near, 0.1, 1.0, near, 0.10);
+      expect(inside, SHAPE).toBeDefined();
+      const why = 'This reading is 2.4 spreads off the center of the window it was handed, so the z-score has to report that distance. It is still inside the gate of 3, so the statistical detector stays quiet. A detector that flags every reading which is not dead center has no gate at all.';
+      expect(inside.zScore, why).toBeCloseTo(2.4, 3);
+      expect(inside.verdicts.statistical, why).toBe(false);
+      expect(inside.votes, why).toBe(0);
+      expect(inside.isAnomaly, why).toBe(false);
+
+      const far = center + 3.6 * spread;
+      const outside = detectAnomalyEnsemble(ramp, far, 0.1, 1.0, far, 0.10);
+      const why2 = 'Same window, a reading 3.6 spreads off its center. That one is past the gate and flags. The gate sits at 3, between these two readings, and both of them were derived from this window rather than read off a fixture.';
+      expect(outside.zScore, why2).toBeCloseTo(3.6, 3);
+      expect(outside.verdicts.statistical, why2).toBe(true);
+      expect(outside.votes, why2).toBe(1);
+      expect(outside.isAnomaly, why2).toBe(false);
+    });
+
     // The signal can fail low. A stuck sensor, a lost carrier and a dropped
     // channel all read BELOW the window center, and 0.445 against this window
     // is exactly five spreads down. Every other fixture here deviates upward
@@ -123,7 +154,7 @@ testCode: |
     // z-score instead of its size passes all of them and goes silent on the
     // whole low half of the scale, which is where a dead sensor lives.
     it('flags a reading that sits five spreads below the window center', () => {
-      const low = detectAnomalyEnsemble(calmWindow, 0.445, 0.001, 0.010, 0.45, 0.10);
+      const low = detectAnomalyEnsemble(calmWindow, 0.445, 0.1, 1.0, 0.45, 0.10);
       expect(low, SHAPE).toBeDefined();
       const why = 'This reading is five spreads BELOW the window center. A dip that deep sits outside the window by the same count a spike of the same size would, so the statistical detector has to flag it. Compare the size of the z-score, not its signed value.';
       expect(low.zScore, why).toBeCloseTo(-5, 4);
@@ -133,7 +164,7 @@ testCode: |
 
       // And the low-side verdict has to be able to carry a vote, not just be
       // reported: here it is the second one.
-      const withRecon = detectAnomalyEnsemble(calmWindow, 0.445, 0.062, 0.010, 0.45, 0.10);
+      const withRecon = detectAnomalyEnsemble(calmWindow, 0.445, 6.2, 1.0, 0.45, 0.10);
       const why2 = 'Same reading five spreads low, and now the autoencoder agrees. Two verdicts out of three fire the alarm whichever two they are.';
       expect(withRecon.verdicts.statistical, why2).toBe(true);
       expect(withRecon.verdicts.autoencoder, why2).toBe(true);
@@ -148,21 +179,54 @@ testCode: |
     // smaller than 1 shrinks it, so a squared comparison against an
     // unsquared tolerance answers correctly only by accident.
     it('compares the forecast miss in the units the tolerance is quoted in', () => {
-      const over = detectAnomalyEnsemble(calmWindow, 0.52, 0.001, 0.010, 0.67, 0.10);
+      const over = detectAnomalyEnsemble(calmWindow, 0.52, 0.1, 1.0, 0.67, 0.10);
       expect(over, SHAPE).toBeDefined();
       const why = 'The forecast missed by half again the tolerance, so the LSTM verdict fires. If it does not, check whether the deviation you compared is in the same units the tolerance is: squaring a number below 1 makes it smaller.';
       expect(over.verdicts.lstm, why).toBe(true);
       expect(over.votes, why).toBe(1);
       expect(over.isAnomaly, why).toBe(false);
 
-      const under = detectAnomalyEnsemble(calmWindow, 0.52, 0.001, 0.010, 0.37, 0.10);
+      const under = detectAnomalyEnsemble(calmWindow, 0.52, 0.1, 1.0, 0.37, 0.10);
       const why2 = 'Same miss in the other direction: a forecast that undershoots by this much is wrong by the same amount one that overshoots is.';
       expect(under.verdicts.lstm, why2).toBe(true);
       expect(under.votes, why2).toBe(1);
+
+      // The tolerance is an amplitude, not a percentage of the reading. On a
+      // quiet stretch near 0.10 a miss of 0.03 is inside a tolerance of 0.10,
+      // and dividing the miss by the reading turns it into 30% and fires. A
+      // submission that did exactly that cleared every fixture above, because
+      // none of them sat low enough for the division to matter (round 7,
+      // 2026-09-13).
+      const quietLow = detectAnomalyEnsemble([0.09, 0.11, 0.10, 0.10, 0.09, 0.11, 0.10, 0.10], 0.10, 0.4, 1.0, 0.13, 0.10);
+      const why3 = 'This forecast missed by 0.03 on a reading of 0.10, and the tolerance is 0.10 on the same amplitude scale, so the LSTM verdict stays quiet. If it fired, the miss was divided by the reading first: the tolerance is an amplitude, not a share of the reading.';
+      expect(quietLow.verdicts.lstm, why3).toBe(false);
+      expect(quietLow.votes, why3).toBe(0);
+      expect(quietLow.isAnomaly, why3).toBe(false);
+    });
+
+    // Both cutoffs arrive as arguments. Lesson 4 locked the rebuild cutoff at
+    // 1.0 and every fixture above quotes the forecast tolerance at 0.10, so
+    // a submission that types those two numbers in place of the parameters
+    // answers every one of them correctly. Here the caller moves both.
+    it('compares each score against the cutoff it was handed', () => {
+      const loosened = detectAnomalyEnsemble(calmWindow, 0.52, 6.2, 20, 0.67, 0.30);
+      expect(loosened, SHAPE).toBeDefined();
+      const why = 'This run widened both cutoffs. A rebuild error of 6.2 is under a threshold of 20 and a forecast miss of 0.15 is under a tolerance of 0.30, so neither detector fires. If either one fired, it is comparing against a number written into the function rather than the one passed in.';
+      expect(loosened.verdicts.autoencoder, why).toBe(false);
+      expect(loosened.verdicts.lstm, why).toBe(false);
+      expect(loosened.votes, why).toBe(0);
+      expect(loosened.isAnomaly, why).toBe(false);
+
+      const tightened = detectAnomalyEnsemble(calmWindow, 0.52, 0.4, 0.1, 0.55, 0.02);
+      const why2 = 'This run tightened both instead. A rebuild error of 0.4 is over a threshold of 0.1 and a forecast miss of 0.03 is over a tolerance of 0.02, so both fire and two votes raise the alarm. reconThreshold and predTolerance are the cutoffs for the run, and the operator can move them between runs.';
+      expect(tightened.verdicts.autoencoder, why2).toBe(true);
+      expect(tightened.verdicts.lstm, why2).toBe(true);
+      expect(tightened.votes, why2).toBe(2);
+      expect(tightened.isAnomaly, why2).toBe(true);
     });
 
     it('one detector alone does not fire the alarm (autoencoder-only)', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.062, 0.010, 0.53, 0.10);
+      const r = detectAnomalyEnsemble(calmWindow, 0.52, 6.2, 1.0, 0.53, 0.10);
       expect(r, SHAPE).toBeDefined();
       const why = 'The rebuild missed, and nothing else did. One vote is a note in the log, not an alarm: that is what the majority rule buys.';
       expect(r.verdicts.autoencoder, why).toBe(true);
@@ -172,10 +236,10 @@ testCode: |
       expect(r.isAnomaly, why).toBe(false);
     });
 
-    it('two of three agreeing fires the alarm (reconstruction + prediction error)', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 0.52, 0.062, 0.010, 0.20, 0.10);
+    it('sample 7741: the z gate clears it and the other two carry the vote', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 0.50, 6.2, 1.0, 0.20, 0.10);
       expect(r, SHAPE).toBeDefined();
-      const why = 'The rebuild missed and the forecast missed, on a reading the window itself calls ordinary. Two independent detectors agreeing is the alarm condition.';
+      const why = '7741 reads normal on the amplitude dial, so the z-score gate clears it here exactly as it did in the archive. The rebuild missed and the forecast missed, and two verdicts out of three are all the ensemble needs.';
       expect(r.verdicts.autoencoder, why).toBe(true);
       expect(r.verdicts.lstm, why).toBe(true);
       expect(r.verdicts.statistical, why).toBe(false);
@@ -184,7 +248,7 @@ testCode: |
     });
 
     it('any two detectors are enough: statistical + prediction, autoencoder quiet', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.001, 0.010, 0.52, 0.10);
+      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.1, 1.0, 0.52, 0.10);
       expect(r, SHAPE).toBeDefined();
       const why = 'The autoencoder rebuilt this one fine and the other two disagree with it. The vote does not care which two fire.';
       expect(r.verdicts.statistical, why).toBe(true);
@@ -194,10 +258,10 @@ testCode: |
       expect(r.isAnomaly, why).toBe(true);
     });
 
-    it('the 73.4 Hz signature trips all three detectors', () => {
-      const r = detectAnomalyEnsemble(calmWindow, 1.00, 0.062, 0.010, 0.52, 0.10);
+    it('a reading pegged at the sensor ceiling trips all three detectors', () => {
+      const r = detectAnomalyEnsemble(calmWindow, 1.00, 6.2, 1.0, 0.52, 0.10);
       expect(r, SHAPE).toBeDefined();
-      const why = 'This is the reading the module has been chasing: out of the window, badly rebuilt, and nothing like the forecast.';
+      const why = 'Out of the window, badly rebuilt, and nothing like the forecast: three failed checks. The captures the module chased never pegged the dial; this fixture does, so every detector fires.';
       expect(r.votes, why).toBe(3);
       expect(r.isAnomaly, why).toBe(true);
     });

@@ -133,12 +133,19 @@ testCode: |
     });
 
     it('follows the order it was given, not the one in the lesson', async () => {
-      const { runtime, calls } = makeRuntime({ webgpu: true, webgl: true, wasm: true });
+      // The first name in the caller's order fails, on purpose. When every
+      // backend in the order starts, a ladder that honours only the first
+      // entry and then falls through the lesson's own list looks identical
+      // to one that honours the whole order (round 7, 2026-09-13).
+      const { runtime, calls } = makeRuntime({ wasm: false, webgl: true, webgpu: true });
       expect(
-        await chosen(['wasm', 'webgl', 'webgpu'], runtime),
-        'A caller who asks for wasm first has a reason, usually a device where the GPU path is the one that breaks. The preference order is an argument.'
-      ).toBe('wasm');
-      expect(calls).toEqual(['wasm', 'ready']);
+        await chosen(['wasm', 'webgpu', 'webgl'], runtime),
+        'A caller who asks for wasm first has a reason, usually a device where the GPU path is the one that breaks, and when wasm fails the next name in THEIR order is the one to try. The preference order is an argument, every rung of it.'
+      ).toBe('webgpu');
+      expect(
+        calls,
+        'The trace has to follow the caller\'s order: wasm, then webgpu, then ready. A ladder that fell back to the lesson\'s own list would have tried webgl next and recorded a different trace.'
+      ).toEqual(['wasm', 'webgpu', 'ready']);
     });
 
     it('reports what the engine settled on when the whole ladder fails', async () => {

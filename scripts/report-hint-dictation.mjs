@@ -51,6 +51,9 @@ if (slug) {
   console.log(`\n${one.id}`);
   console.log(`  verdict        ${one.score.dictates ? "DICTATES" : "ok"}`);
   console.log(
+    `  ladder         ${one.hintSource === "exercise" ? "the exercise's own hints block" : "the lesson frontmatter"}`,
+  );
+  console.log(
     `  coverage       ${one.score.namedAnswers.length}/${one.score.answerCount}` +
       ` = ${one.score.coverage.toFixed(3)} (limit ${COVERAGE_LIMIT})`,
   );

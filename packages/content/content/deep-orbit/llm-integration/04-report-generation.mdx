@@ -14,7 +14,7 @@ context:
   narrative: "Farah needs a full scientific report for Earth Command: structured, cited, and professionally formatted. She builds a report generation pipeline using the LLM."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Report generation pipes computed results through fixed sections. The data does the arguing; the template only does the formatting."
+  explanation: "Report generation runs one prompt per section, each with its own data and its own check, and assembles only what passed."
   bridge:
     jsTitle: "Template Rendering"
     jsCode: "const html = template.render({ title, sections, data })"
@@ -113,7 +113,7 @@ Write the "\${section.heading}" section of a scientific signal analysis report.
     section.generated = content;
     // This is where section.validated comes from: lesson 3's checker, run over
     // the numbers in THIS section's own data. Strip the thousands separators
-    // on both sides first. Leave them in and "12,001" tokenizes as 12 and 001.
+    // on both sides first. Leave them in and the scan reads "12,001" as 12 and 001.
     // The evidence set then reads 12, 1, 11, 847, 153, 1. Neither total the
     // report stated survives that split, and three of the numbers standing in
     // for them (12, 11 and 847) were never in the report at all. A section
@@ -150,7 +150,7 @@ The pipeline passes `temperature: 0.2` on every section call. Temperature divide
 
 ## Challenge
 
-The model has written the sections and the validator has marked each one. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld.
+The model has written the sections and the validator has marked each one. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld. The challenge hands each section over as `{ heading, content, validated }`, so what this pipeline stored in `generated` arrives there under the name `content`.
 
 <Exercise slug="generate-report" />
 
@@ -173,5 +173,7 @@ The transmission window opens at 0410. At 0348 the validator flags the Hypothese
 <Dialogue speaker="Dr. Farah">
 Earth gets our data and our uncertainty. A guess wearing the report's letterhead is neither, and the call to cut it was never going to be delegated to the thing that wrote the guess.
 </Dialogue>
+
+Nazari rules a line under the ledger once the transmission closes. Nine fabricated claims caught, ninety-one minutes of the six hours spent catching them, against the two hours she set. The tool stays. Beside the last entry, the one the validator raised at 0348, she writes the cost in the other column: one section.
 
 </Epilogue>

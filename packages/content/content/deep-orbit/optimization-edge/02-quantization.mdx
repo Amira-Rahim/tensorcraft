@@ -27,7 +27,29 @@ hints:
   - level: nudge
     content: "Two prediction passes with the quantizing in between. Ask the model what it makes of every capture, squeeze each kernel onto the 256 integer buckets 0 to 255, put the decoded floats back on the model, then ask it again. The difference between the two answers is what the pass cost."
   - level: guidance
-    content: "There is no tf.quantize() in TFJS, so the mapping is arithmetic you write yourself, and three decisions decide whether the report is a measurement or a story. The first is which tensors are in scope. A weight list holds kernels and biases, the biases here keep full precision, and the thing that tells the two apart is how many dimensions the tensor has. The second is where the price shows up. Squeezing a weight onto one of 256 buckets is what saves the byte, and coming back out of the bucket is what the runtime does for you at load, so the floats that come back out have to go onto the model before you ask it anything. Leave them off and both prediction passes read the same trained weights, and the pass reports that it cost nothing, which is the one answer that is always wrong. The third is the grid. Every tensor gets its own, measured from its own smallest and largest value, because a single tensor carrying one value far out from the rest would otherwise widen the buckets of every other tensor in the model. That widening is the failure mode this exercise is built around: a bucket wide enough to swallow a small weight turns it into a zero, and whatever that weight was carrying goes with it."
+    content: |
+      There is no tf.quantize() in TFJS, so the mapping is arithmetic you
+      write yourself. Three decisions decide whether the report is a
+      measurement or a story.
+
+      The first is which tensors are in scope. A weight list holds kernels
+      and biases, the biases here keep full precision, and what tells the two
+      apart is how many dimensions the tensor has.
+
+      The second is where the price shows up. Squeezing a weight onto one of
+      256 buckets is what saves the byte, and coming back out of the bucket
+      is what the runtime does for you at load. So the floats that come back
+      out have to go onto the model before you ask it anything. Leave them
+      off and both prediction passes read the same trained weights, and the
+      pass reports that it cost nothing, which is the one answer that is
+      always wrong.
+
+      The third is the grid. Every tensor gets its own, measured from its own
+      smallest and largest value. One tensor carrying a value far out from
+      the rest would otherwise widen the buckets of every other tensor in the
+      model. That widening is the failure mode this exercise is built around.
+      A bucket wide enough to swallow a small weight turns it into a zero,
+      and whatever that weight was carrying goes with it.
   - level: solution
     content: |
       const before = Array.from(await model.predict(input).argMax(1).data());
@@ -36,9 +58,8 @@ hints:
       const min = values.reduce((a, b) => Math.min(a, b));
       const max = values.reduce((a, b) => Math.max(a, b));
       const scale = (max - min) / 255;
-      const zeroPoint = Math.round(-min / scale);
       const quantized = values.map(v => Math.round((v - min) / scale));
-      const restored = quantized.map(q => (q - zeroPoint) * scale);
+      const restored = quantized.map(q => q * scale + min);
       const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
       model.setWeights(rebuilt);
       const after = Array.from(await model.predict(input).argMax(1).data());
@@ -56,7 +77,7 @@ skillAxes: [deployment]
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
 
-The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The uint8 pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier, at 94.2 after this week's retrain (78 after the spectrogram re-annotation, 87 with the FFT features, 94.2 with five modules of sequence features).
+The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The uint8 pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier, at 94.2 after this week's retrain. It read 78 on the re-annotated archive and 87 once the FFT bins joined the three raw features; this week's retrain changed the head, not the inputs, so 94.2 is a five-way sort scored on the same eleven features, and it is not one number up from the 87.
 
 That retrain also changed the classifier's shape, and the change deserves a paragraph rather than a footnote. Farah's catalog labels finally landed, and the binary anomaly-or-noise gate became a five-way sort: pulsar, quasar, noise, interference, anomaly. Two things move when a classifier grows past two classes. The output layer becomes five units under a softmax, module 8's arithmetic, so the five scores become five probabilities that sum to 1 and the verdict is whichever is largest. And the loss becomes categorical cross-entropy: module 3's negative log of the probability the model gave the right answer, read from whichever of the five columns holds the true label, with labels one-hot encoded so each reading's target is four zeros and a one. The minus sign is what makes it a loss rather than a score. A true-class probability of 0.01 costs 4.605. Get that probability to 0.99 and the cost falls to 0.010.
 
@@ -79,9 +100,9 @@ const ys = tf.oneHot(tf.tensor1d(labelIndices, 'int32'), 5);  // [0, 0, 0, 0, 1]
 // 94.0 in module 3.`}
 </CodeBlock>
 
-Quantize the whole bundle, and the scoreboard reports what the knife took in the one place the loss can be measured.
+The pass covers every weight in the bundle, and only one part of the bundle has an accuracy score, so the classifier is where the cost shows up.
 
-The converter does not force that. `--quantize_uint8` takes an optional value, a comma-separated list of weight-name patterns, with wildcards for a family of names such as `conv/*/weights`. With no value it covers every weight, which is how the command below is written. Narrow the pattern and the language weights go to uint8 while the whole classifier stays at float32. The classifier is under a megabyte, so holding it out costs under a megabyte of the 255 MB the pass takes off the bundle. The crew did not narrow it. The classifier was mid-retrain that week, with its layer names still moving, so any pattern they wrote would have gone stale by the next build.
+The converter does not force a whole-bundle pass. `--quantize_uint8` takes an optional value, a comma-separated list of weight-name patterns, with wildcards for a family of names such as `conv/*/weights`. With no value it covers every weight, which is how the command below is written. Narrow the pattern and the language weights go to uint8 while the whole classifier stays at float32. The classifier is under a megabyte, so holding it out costs under a megabyte of the 255 MB the pass takes off the bundle. The crew did not narrow it. The classifier was mid-retrain that week, with its layer names still moving, so any pattern they wrote would have gone stale by the next build.
 
 The technique runs exactly as deep as Nazari's arithmetic. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB. The rule of thumb people quote for the accuracy cost is about a point. Nazari does not take rules of thumb, and neither does this lesson: the figure that goes on the board is the one the holdout prints. The dashboard that died at 0249 has 512 MB of RAM and went down parsing a 340 MB weight file, so cutting that file to 85 MB is the first and largest payment on the debt.
 
@@ -110,7 +131,7 @@ The WebP comparison stops at the file size, Ensign. Tell me where the accuracy g
 // File size: 85M params × 1 byte = 85 MB
 
 // Simulate quantization effect
-function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: number[]; scale: number; zeroPoint: number } {
+function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: number[]; scale: number; min: number } {
   // (teaching scale: on a real model's millions of weights, spread
   // arguments overflow the stack; use a loop or tf.min()/tf.max())
   const min = Math.min(...weights);
@@ -118,22 +139,24 @@ function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: numb
   const range = max - min;
   const levels = (1 << bits) - 1;  // 255 steps between 256 levels for 8-bit
   const scale = range / levels;
-  const zeroPoint = Math.round(-min / scale);
 
   const quantized = Array.from(weights).map(w =>
     Math.round((w - min) / scale)
   );
 
-  return { quantized, scale, zeroPoint };
+  // scale and min are the two numbers a TensorFlow.js weight manifest
+  // stores for a quantized tensor. There is no zero point in this scheme.
+  return { quantized, scale, min };
 }
 
-// Dequantize back to float
-function dequantize(quantized: number[], scale: number, zeroPoint: number): number[] {
-  return quantized.map(q => (q - zeroPoint) * scale);
+// Dequantize back to float: the exact arithmetic tfjs runs at load time
+// (io_utils: value * scale + min), so the floats the model runs are these.
+function dequantize(quantized: number[], scale: number, min: number): number[] {
+  return quantized.map(q => q * scale + min);
 }
 
 // What this costs is one measurement away, and nothing here can tell you:
-// the error on any single weight is at most one bucket, but whether that
+// the error on any single weight is at most half a bucket, but whether that
 // moves a verdict depends on how close that verdict was. Score the decoded
 // build against the trained one and read the difference.`}
 </CodeBlock>
@@ -165,13 +188,13 @@ tensorflowjs_converter \\
 # uint8   (--quantize_uint8):   85 MB, accuracy: 94.2%`}
 </CodeBlock>
 
-Read that accuracy column twice, because it is a measurement and not a rounding. The score sits at 94.2 before the pass and 94.2 after it, at both precisions. The width of one bucket is why. The widest weight tensor in this classifier spans 2.29, so uint8 lays 255 steps across that and one step comes out 0.0090 wide; the largest gap between a trained weight and the float the runtime decodes back measured 0.0069. uint16 puts the step at 0.000035 and that largest gap at 0.000026. Nothing this classifier decides turns on a difference that small. Score 10,000 held-out captures instead of the usual slice and uint16 still moves no verdict at all, while uint8 moves three.
+Read that accuracy column twice, because it is a measurement and not a rounding. The score sits at 94.2 before the pass and 94.2 after it, at both precisions. The width of one bucket is why. The widest weight tensor in this classifier spans 2.29, so uint8 lays 255 steps across that and one step comes out 0.0090 wide; the largest gap between a trained weight and the float the runtime decodes back is half a step, measured 0.0045 on this classifier. uint16 puts the step at 0.000035 and that largest gap at 0.000017. Nothing this classifier decides turns on a difference that small. Score 10,000 held-out captures instead of the usual slice and uint16 still moves no verdict at all, while uint8 moves three.
 
 <Dialogue speaker="Dr. Farah">
 Then write it the narrow way. Quantization cost this classifier nothing on this holdout. That is not a property of quantization, and the sentence stops being true the week the model changes.
 </Dialogue>
 
-One thing to be clear about before Nazari makes you be clear about it: TensorFlow.js decodes quantized weights back to float32 when the model loads. Loading is where the size shows up: the runtime holds the downloaded file buffer and the decoded float32 tensors at the same time, so a 340 MB file peaks near 680 MB, over the dashboard's 512 MB budget, while an 85 MB file peaks near 425 MB and survives. Once the load finishes, the resident weights are 340 MB either way, so nothing about the running model got smaller. The math of inference runs at the same speed as before; nothing in the browser executes on integer hardware. What you bought is a 4x smaller download, a smaller disk cache, and a load spike the dashboard can survive. Runtimes like TFLite do run int8 compute kernels on integer silicon; in the browser, quantization is a storage format, not an execution mode. Two different things go by kernel here: a compute kernel is the routine that runs an operation on a backend, and a dense layer's kernel is its weight matrix, which is the one the exercise below quantizes.
+One thing to be clear about before Nazari makes you be clear about it: TensorFlow.js decodes quantized weights back to float32 when the model loads. Loading is where the size shows up: the runtime holds the downloaded file buffer and the decoded float32 tensors at the same time, so a 340 MB file peaks near 680 MB, over the dashboard's 512 MB budget, while an 85 MB file peaks near 425 MB and survives. Once the load finishes, the resident weights are 340 MB either way, so nothing about the running model got smaller. The math of inference runs at the same speed as before, because nothing in TensorFlow.js runs integer kernels: by the time any op sees a weight, the loader has already decoded it to float32. What you bought is a 4x smaller download, a smaller disk cache, and a load spike the dashboard can survive. Runtimes like TFLite do run int8 compute kernels on integer silicon; in the browser, quantization is a storage format, not an execution mode. Two different things go by kernel here: a compute kernel is the routine that runs an operation on a backend, and a dense layer's kernel is its weight matrix, which is the one the exercise below quantizes.
 
 ## Challenge
 

@@ -153,4 +153,42 @@ describe("BossBeat failure paths", () => {
       expect(screen.queryByTestId("boss-beat-loading")).toBeNull(),
     );
   });
+  it("records nothing when the clock runs out, and stays playable", async () => {
+    // The timer used to auto-submit the "random" stance at zero, which
+    // credited a slow reader with a choice they never made. Now the beat
+    // names the stance the bridge takes on silence and waits.
+    vi.mocked(recordBossBeatChoice).mockClear();
+    render(
+      <BossBeat
+        beatId="timeout-beat"
+        worldId="deep-orbit"
+        lessonId="l"
+        prompt="Your call, operator?"
+        options={[...OPTIONS] as never}
+        timeoutSeconds={1}
+      />,
+    );
+    await screen.findByText("Boss beat · 1s");
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("boss-beat-silence")).toBeInTheDocument();
+      },
+      { timeout: 4000 },
+    );
+    expect(screen.getByText("Boss beat · clock out")).toBeInTheDocument();
+    expect(recordBossBeatChoice).not.toHaveBeenCalled();
+    // The note names the standing option by its display text, not by its
+    // stance enum: "goes with random" read as a coin flip (round 7).
+    expect(screen.getByTestId("boss-beat-silence").textContent).toContain(
+      "Flip a coin",
+    );
+    expect(screen.getByTestId("boss-beat-silence").textContent).not.toContain(
+      "with random",
+    );
+    // Still playable: a click after the clock records exactly one choice.
+    screen.getByText("Run the canary").click();
+    await waitFor(() => {
+      expect(recordBossBeatChoice).toHaveBeenCalledTimes(1);
+    });
+  });
 });

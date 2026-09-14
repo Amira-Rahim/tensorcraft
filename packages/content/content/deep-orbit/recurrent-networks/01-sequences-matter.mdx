@@ -25,7 +25,7 @@ consequence:
   narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
-    content: "Forecasting from a stream means pairing each window of past readings with the single reading that comes immediately after it."
+    content: "Most failures here sit at the edges rather than in the middle of the loop. Two of them: the final position, which may have no answer to train against, and a call so short that no position works at all. Decide what each of those hands back before you write the body."
   - level: guidance
     content: "Both moving parts sit in the loop header. The window's first index advances by the stride rather than by a single reading, so consecutive windows overlap by windowSize minus stride, and stop overlapping once the stride is as wide as the window. The stop condition is where the drop rule lives: the loop has to end while the archive still holds the reading each window is paired with, which means the last window you keep is not the last one that fits. The pair of tensors is that same data with one axis made explicit: a window is a sample, and inside it time comes before features. Build them out of the two lists you just filled, and when nothing survived the drop rule there is nothing to stack."
   - level: solution
@@ -55,13 +55,14 @@ Memory in a network is the next lesson's answer. Today's problem comes first, an
 
 // Feedforward network: each input is independent
 // It sees: [0.5, 0.3, 0.7] → classify
-// Then:    [0.8, 0.2, 0.9] → classify (no memory of previous)
+// Then:    [0.8, 0.5, 0.9] → classify (no memory of previous)
 
-// But the signal has TEMPORAL patterns:
-// t=0: [0.5, 0.3, 0.7]  (rising)
-// t=1: [0.8, 0.2, 0.9]  (still rising)
-// t=2: [0.3, 0.1, 0.4]  (falling)
-// t=3: [0.5, 0.3, 0.7]  (rising again) ← THE PATTERN REPEATS
+// But the signal has TEMPORAL patterns, and they live in the moves
+// between rows rather than in any one row:
+// t=0: [0.5, 0.3, 0.7]
+// t=1: [0.8, 0.5, 0.9]  every feature up from t=0
+// t=2: [0.3, 0.1, 0.4]  every feature down from t=1
+// t=3: [0.5, 0.3, 0.7]  back to the t=0 reading exactly ← THE PATTERN REPEATS
 
 // Hand the model one reading at a time and each row is scored alone
 // It cannot detect: "the signal rises, falls, then rises again"
@@ -84,7 +85,7 @@ function createSequences(data: number[][], windowSize: number): number[][][] {
 // amplitude runs to 2048 and the zero-crossing count to 63.
 const readings = [
   [0.5, 0.3, 0.7],
-  [0.8, 0.2, 0.9],
+  [0.8, 0.5, 0.9],
   [0.3, 0.1, 0.4],
   [0.5, 0.3, 0.7],
   [0.9, 0.4, 0.8],
@@ -94,8 +95,9 @@ const readings = [
 const sequences = createSequences(readings, 3);
 console.log(sequences.length);  // 3 sequences
 console.log(sequences[0]);
-// [[0.5, 0.3, 0.7], [0.8, 0.2, 0.9], [0.3, 0.1, 0.4]]
-// ^ This IS the pattern: rise-rise-fall`}
+// [[0.5, 0.3, 0.7], [0.8, 0.5, 0.9], [0.3, 0.1, 0.4]]
+// ^ This IS the pattern: up, then down. The series is back at the
+//   t=0 reading by t=3 and climbs again from there`}
 </CodeBlock>
 
 Flatten that window into one long vector and a dense layer does see the order, which makes it the baseline worth beating. What it learns is a separate weight for every (time step, feature) slot, so the same shape arriving two steps later lands on weights that never saw it, and one window length is baked into the layer. A recurrent cell applies the same transition rule at every step, so a shape that shifts in time is still the same shape to it, and lengthening the window does not add parameters.

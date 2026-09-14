@@ -1,7 +1,7 @@
 slug: fft-features
 lessonSlug: fft-as-features
 title: "Extract Fixed-Bin FFT Features"
-instructions: "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns the peak amplitude (the largest sample size in the capture, whichever side of zero it falls on), then the zero-crossing count (how many times consecutive samples land on opposite sides of zero), then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row."
+instructions: "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -88,7 +88,10 @@ testCode: |
       const features = featuresOf(signal, 256, 50, 82);
       // The first magnitude is the lowest bin in the band, and the two tones
       // sit at known offsets from it.
-      expect(features[2]).toBeCloseTo(32, 0);
+      expect(
+        features[2],
+        'A 1.0 tone sitting on a bin center puts 64 / 2 = 32 into that bin, and this row reports magnitudes as the transform gives them. A value near 1.0 here is that 32 divided by the window length, which is the normalization the lesson fits across a training set after extraction, not inside this function.',
+      ).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
     });
 
@@ -104,14 +107,20 @@ testCode: |
       const features = featuresOf(signal, 256, 68, 76);
       expect(features).toHaveLength(5);
       expect(features[2]).toBeLessThan(1);
-      expect(features[3]).toBeCloseTo(16, 0);
+      expect(
+        features[3],
+        'The 0.5 tone on this bin center puts 0.5 * 64 / 2 = 16 into it. A value near 0.5 is that 16 divided by the window length: magnitudes go into the row unscaled, and the lesson normalizes the whole training set afterwards.',
+      ).toBeCloseTo(16, 0);
       expect(features[4]).toBeLessThan(1);
     });
 
     it('bin width follows the sample rate instead of a constant', () => {
       const features = featuresOf(slower, 128, 20, 24);
       expect(features).toHaveLength(5);
-      expect(features[3]).toBeCloseTo(24, 0);
+      expect(
+        features[3],
+        'This capture is 0.75 loud on a bin center, so the bin holds 0.75 * 64 / 2 = 24. A value near 0.75 is that 24 divided by the window length, and the row carries magnitudes unscaled.',
+      ).toBeCloseTo(24, 0);
       expect(features[2]).toBeLessThan(1);
       expect(features[4]).toBeLessThan(1);
     });
@@ -129,6 +138,27 @@ testCode: |
         features[1],
         'The crossing count is a property of these samples too. This tone repeats at a different rate over the same number of samples.',
       ).toBe(21);
+    });
+
+    it('is an extraction, not a lookup: the band is drawn at grade time', () => {
+      // 64 samples at 256 Hz makes 4 Hz bins. Drawing the tone's bin and both
+      // band edges leaves the row's length, and the tone's place in it, decided
+      // only by this run.
+      const toneBin = 8 + Math.floor(Math.random() * 17);
+      const below = 1 + Math.floor(Math.random() * 3);
+      const above = 1 + Math.floor(Math.random() * 3);
+      const drawn = Array.from({ length: 64 }, (_, i) =>
+        Math.sin(2 * Math.PI * (toneBin * 4) * i / 256 + 0.45)
+      );
+      const features = featuresOf(drawn, 256, (toneBin - below) * 4, (toneBin + above) * 4);
+      expect(
+        features,
+        'This band was drawn when the grader ran, so no table of remembered rows covers it. Its width decides how many magnitudes follow the two raw features: two plus one per bin from the low edge to the high edge, both included.',
+      ).toHaveLength(3 + below + above);
+      expect(
+        features[2 + below],
+        'The tone sits on the center of a bin drawn this run, and a 1.0 tone on a bin center puts 64 / 2 = 32 there. Where that 32 lands in the row depends on which bin the band opened at, so it comes out of the band arithmetic rather than out of a remembered index.',
+      ).toBeCloseTo(32, 0);
     });
   });
 estimatedMinutes: 12

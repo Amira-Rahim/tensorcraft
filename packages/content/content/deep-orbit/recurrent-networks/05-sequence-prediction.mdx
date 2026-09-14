@@ -18,11 +18,11 @@ concept:
   explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
   bridge:
     jsTitle: "Autocomplete"
-    jsCode: "suggestions = model.predict(inputText) // predict next word"
+    jsCode: "const hits = INDEX.filter((s) => s.startsWith(q)).slice(0, 5) // suggest from a list"
     mlTitle: "Sequence Forecast"
     mlCode: "nextValue = model.predict(recentWindow) // predict next signal"
     tier: structural
-    breaks: "Autocomplete picks from a finite list of pre-indexed completions you control. Sequence forecasting generates novel continuations from a learned distribution: predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
+    breaks: "The suggestion list is finite and you control every entry, so nothing outside it can ever be offered. A sequence forecast generates its continuation from a learned distribution: predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
 consequence:
   narrative: "The forecast goes up on the main display with a 47-minute countdown, and nobody on the bridge leaves their station."
 hints:
@@ -55,7 +55,7 @@ The LSTM just predicted the next signal reading to within 3% of the real one. It
 If it can predict the timing, the signal has structure. And if it has structure... it isn't random noise.
 </Dialogue>
 
-Autocomplete is everywhere in JavaScript work: search suggestions, code completion, the email composer finishing your sentence. Each predicts the next token from the sequence so far. Our LSTM does the same: given the last 80 signal readings, predict the next one.
+Autocomplete is everywhere in JavaScript work: search suggestions, code completion, a form recalling what you typed last time. Each proposes what comes next from what came so far, out of a list somebody indexed. Our LSTM does the same job without the list: given the last 80 signal readings, predict the next one.
 
 <LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them"]} />
 
@@ -67,7 +67,8 @@ Autocomplete is everywhere in JavaScript work: search suggestions, code completi
 {`import * as tf from '@tensorflow/tfjs';
 
 // Prediction model: given 80 time steps, predict the next one.
-// trainX and trainY carry per-channel z-scores, not raw counts and radians.
+// trainX and trainY are lesson 4's windows and targets, carrying
+// per-channel z-scores rather than raw counts and radians.
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,
@@ -98,7 +99,7 @@ const history = await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
-Scale the three features before any of this runs. They sit on the tensor's last axis, which is conventionally called the channel axis, so per-channel scaling here means one scaling per feature. The archive's 64 channels are 64 sensors, which is the word's other use. Amplitude is a count that saturates at 2048, the zero-crossing count stops at 63, and phase is an angle in radians. One MSE over all three is a weighted sum whose weights nobody chose: a 100-count amplitude miss adds 10,000 to the squared error, while a full radian of phase adds 1. On raw rows the model barely moves. Ten epochs on 1,120 windows of a three-channel series in those units left the amplitude error near 870 counts, on a channel whose own spread was 284. Guessing that channel's mean every time scores 256. The same run on per-channel z-scores landed near 16 counts. Raw values in the thousands also flatten the gates' sigmoid and the cell's `tanh`, which leaves the weights behind them with almost no gradient.
+Scale the three features before any of this runs. They sit on the tensor's last axis, which is conventionally called the channel axis, so per-channel scaling here means one scaling per feature. The archive's 64 channels are 64 sensors, which is the word's other use. Amplitude is a count that saturates at 2048, the zero-crossing count stops at 63, and phase is an angle in radians. One MSE over all three is a weighted sum whose weights nobody chose: a 100-count amplitude miss adds 10,000 to the squared error, while a full radian of phase adds 1. On raw rows the model barely moves. Ten epochs on 1,120 windows of a three-channel series in those units left the amplitude predictions off by about a thousand counts on average, on a channel whose own standard deviation was 284. Answering that channel's mean every time is off by 256. The same run on per-channel z-scores came back inside a few counts. Raw values in the thousands also flatten the gates' sigmoid and the cell's `tanh`, which leaves the weights behind them with almost no gradient.
 
 Use the tool from module 1, with one change for the extra dimension. Module 1's batch was a reading table, `[rows, features]`, where `tf.moments(batch, 0)` gave one mean per feature. `trainX` is `[windows, 80, 3]`, so axis 0 there returns one mean per (time step, channel) pair: 240 of them, not 3. Reduce over the window axis and the time axis together, `tf.moments(trainX, [0, 1])`, and you get three means and three variances. The standard deviation is `variance.sqrt()`. Nothing warns you if you get this wrong. A `[80, 3]` mean broadcasts against `[N, 80, 3]` without error, so `trainX.sub(mean).div(std)` runs, and every time-step position ends up z-scored against its own statistics. Save the three means and three standard deviations and reuse them at inference.
 
@@ -123,14 +124,23 @@ const LIMITS = [
 ];
 
 // The model reads and writes the z-scores it was trained on, so the
-// limits move into that space with the same saved MEAN and STD.
+// limits move into that space with the same saved MEAN and STD. These
+// two came off the training set and are kept beside the model.
+const MEAN = [1024, 32, 0];
+const STD = [512, 16, 1];
+
 const bounds = LIMITS.map((lim, j) => ({
   min: (lim.min - MEAN[j]) / STD[j],
   max: (lim.max - MEAN[j]) / STD[j],
 }));
+console.log(bounds[0]);  // { min: -2, max: 2 }
+console.log(bounds[1]);  // { min: -2, max: 1.9375 }
 
 const clamp = (reading: number[]) =>
   reading.map((v, j) => Math.min(Math.max(v, bounds[j].min), bounds[j].max));
+
+console.log(clamp([2.4, 0.5, 0.1]));  // [2, 0.5, 0.1]
+// 2.4 in these z-scores is 2,253 counts, past anything the sensors report.
 
 // The rolling loop is the challenge below: predict one reading, clamp
 // it, push it onto the history, predict again. Each step builds a tensor
@@ -142,8 +152,20 @@ const clamp = (reading: number[]) =>
 // Step i + 1 reads this row as history, so an amplitude the sensors
 // cannot produce becomes the model's own input for the rest of the run.
 
-// Forecast 47 steps ahead
-const forecast = await forecastMultiStep(model, recentWindow, 47);
+// A seed of 80 z-scored readings, oldest first. On the live feed these
+// are the last 80 rows, scaled with the same MEAN and STD.
+const recentWindow = Array.from({ length: 80 }, (_, i) => [
+  Math.sin(i / 12),
+  Math.cos(i / 12),
+  0,
+]);
+
+// Forecast 47 steps ahead. The rolling loop is synchronous: predict,
+// read the numbers out, clamp, push, repeat.
+const forecast = forecastMultiStep(model, recentWindow, 80, 47, {
+  mean: MEAN,
+  std: STD,
+});
 // The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
 </CodeBlock>
 
@@ -160,6 +182,11 @@ Then write the rolling loop from `multi-step.ts` yourself, at a smaller scale: a
 <RecallPrompt
   question="The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?"
   answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE measures the distance between the predicted and actual values, which is what matters here. Loss choice follows the output type, not the layer type."
+/>
+
+<RecallPrompt
+  question="The rolling forecast builds a window tensor and gets a prediction tensor back on each of its 47 steps. The module-4 inference loop wrapped that same pair in tf.tidy(). What happens to those two tensors when the callback returns, and what gets out?"
+  answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees every tensor allocated inside it except what the callback returns. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so neither tensor stays on the GPU, where the garbage collector cannot see it."
 />
 
 <LessonRecap

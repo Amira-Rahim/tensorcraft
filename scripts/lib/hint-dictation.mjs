@@ -294,6 +294,24 @@ export function hintAtLevel(fm, level) {
   return null;
 }
 
+/**
+ * The `hints:` block of an exercise YAML, or "" when the exercise carries no
+ * ladder of its own. Exercise ladders (2026-09-13, plan item 4) use the same
+ * `  - level: x` / `    content: ...` shape as lesson frontmatter, so
+ * hintAtLevel reads them unchanged once the block is isolated from the
+ * exercise's other top-level keys.
+ */
+export function exerciseHintsBlock(raw) {
+  const m = raw.match(/^hints:\n([\s\S]*?)(?=^\w|\Z)/m);
+  return m ? m[1] : "";
+}
+
+/** A rung out of an exercise's own ladder, or null when it has none. */
+export function exerciseHintAtLevel(raw, level) {
+  const block = exerciseHintsBlock(raw);
+  return block ? hintAtLevel(block, level) : null;
+}
+
 /** A block or double-quoted scalar field out of an exercise YAML. */
 export function exerciseField(raw, field, nextField) {
   const chunk =
@@ -325,12 +343,14 @@ export function lessonFilesFor(contentRoot, worldDir) {
 }
 
 /**
- * Every (lesson guidance hint, exercise) pair in the given worlds.
+ * Every (guidance hint, exercise) pair in the given worlds.
  *
  * The pair is the unit of judgement, not the lesson: 8 launched lessons carry
- * two or three exercises, and a ladder written for the first one legitimately
- * says nothing about the incident-* drill beside it. Scoring per pair says
- * WHICH exercise a hint hands over, and lets the drill pass on its own merits.
+ * two or three exercises. Since 2026-09-13 a second exercise carries its own
+ * ladder in its YAML (`hints:`), and that ladder is the one scored against it
+ * (`hintSource: "exercise"`); an exercise without one is scored against its
+ * lesson's ladder (`hintSource: "lesson"`), which serves the lesson's primary
+ * exercise. Scoring per pair says WHICH exercise a hint hands over.
  */
 export function collectGuidanceCases(contentRoot, worldDirs) {
   const cases = [];
@@ -351,13 +371,15 @@ export function collectGuidanceCases(contentRoot, worldDirs) {
         const path = join(file, "..", "exercises", `${slug}.yaml`);
         if (!existsSync(path)) continue;
         const raw = readFileSync(path, "utf8");
+        const ownHint = exerciseHintAtLevel(raw, "guidance");
         cases.push({
           id: `${lessonId}::${slug}`,
           lessonFile: file,
           lessonId,
           slug,
           exerciseFile: path,
-          hint,
+          hint: ownHint ?? hint,
+          hintSource: ownHint ? "exercise" : "lesson",
           exercise: {
             starterCode: exerciseField(raw, "starterCode", "solutionCode"),
             solutionCode: exerciseField(raw, "solutionCode", "testCode"),

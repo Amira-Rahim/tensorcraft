@@ -242,14 +242,17 @@ export default async function WorldDetailPage({ params }: Props) {
           (allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10,
         ) / 10
       : null;
+  // Reading + embedded exercises for every lesson in the world: the header
+  // stat and the Course JSON-LD's courseWorkload share this one sum.
+  const totalMinutes = moduleMapItems.reduce(
+    (n, m) => n + m.lessons.reduce((s, l) => s + l.estimatedMinutes, 0),
+    0,
+  );
   const worldStats = resolveWorldStats({
     hasProgress: progress.length > 0,
     moduleCount: moduleMapItems.length,
     lessonCount: moduleMapItems.reduce((n, m) => n + m.totalLessons, 0),
-    totalMinutes: moduleMapItems.reduce(
-      (n, m) => n + m.lessons.reduce((s, l) => s + l.estimatedMinutes, 0),
-      0,
-    ),
+    totalMinutes,
     completedModuleCount,
     currentModuleOrder:
       activeModuleIndex >= 0 ? moduleMapItems[activeModuleIndex]!.order : null,
@@ -269,7 +272,7 @@ export default async function WorldDetailPage({ params }: Props) {
     hasPurchased,
   });
 
-  const courseJsonLd = buildCourseJsonLd(world);
+  const courseJsonLd = buildCourseJsonLd(world, { totalMinutes });
 
   // Trailer band: prospects only, and the server decides, so nothing swaps
   // client-side and purchasers keep today's page byte-for-byte (marketing

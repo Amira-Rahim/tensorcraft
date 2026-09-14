@@ -5,7 +5,7 @@ instructions: |
   Two halves, and the second one checks the first.
 
   1. `runCell(readings, recurrentWeight, inputWeight, bias)` walks the readings in order carrying one number of hidden state. Start every call at `h = 0`, and at each reading set `h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias)`.
-  2. Return the states as a list, one per reading, in the order they were computed. Nothing carries between calls: `h` starts at 0 again the next time the function runs.
+  2. Return the states as a list, one per reading, in the order they were computed. Nothing carries between calls: `h` starts at 0 again the next time the function runs. Write this half in plain JavaScript: the grader counts calls into TensorFlow.js while `runCell` runs and expects none, because a cell built out of library layers carries the state for you.
   3. Run it on the lesson's drill (readings 0.5, 0.9, 0.5 with recurrentWeight 0.8, inputWeight 1 and bias 0) and the reading 0.5 comes back as 0.4621 at step 1 and 0.8284 at step 3. Same reading, two answers, because the state carries what happened in between.
   4. Then build the same cell out of the library. `buildCellLayer(timeSteps)` returns `{ model, inputWeight, recurrentWeight, bias }`, where `model` is a `tf.sequential()` holding one layer: `tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true })`. One unit and one feature, because that is the cell `runCell` describes; give the layer more of either and it mixes the dimensions through matrices no single number stands in for.
   5. `returnSequences: true` makes it report the state after every step instead of only the last, which is the same list `runCell` returns.
@@ -63,10 +63,25 @@ testCode: |
     return states;
   };
 
+  // tf.__calls is the harness's call counter (fresh per run). A delegated
+  // cell has to reach one of these to answer: tf.sequential, layers.simpleRNN,
+  // model.predict, or a tensor readback. A loop written out of arithmetic and
+  // Math.tanh reaches none of them, so the total across a runCell call says
+  // which of the two ran.
+  const tfCalls = () => {
+    const counts = tf.__calls || {};
+    return Object.keys(counts).reduce((total, name) => total + counts[name], 0);
+  };
+
   // One place to say what is missing when nothing comes back, so the first
   // Run on the untouched starter names the task instead of a TypeError.
   const cell = (readings, wHidden, wInput, bias) => {
+    const before = tfCalls();
     const states = runCell(readings, wHidden, wInput, bias);
+    expect(
+      tfCalls() - before,
+      'runCell called into TensorFlow.js. A cell built out of library layers returns this same list of states, and then the carry is the library doing the work this function is here to do. The loop is four arithmetic operations and one Math.tanh per reading, with no tensors in it. The library half of the exercise is buildCellLayer.',
+    ).toBe(0);
     expect(
       states,
       'runCell handed back nothing. Start h at 0, update it once per reading, and return the states you collected.',

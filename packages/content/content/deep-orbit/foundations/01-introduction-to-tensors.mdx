@@ -51,13 +51,13 @@ Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. A
 Then we need someone who doesn't start from rules. Demir, you think in data structures; start there.
 </Dialogue>
 
-You've worked with arrays your entire career: API responses, byte buffers, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage. That list is the gap this lesson closes.
+You've worked with arrays your entire career: API responses, byte buffers, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage.
 
 <LearningObjectives objectives={["Understand what a tensor is and how it relates to JavaScript arrays", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 
 ## What Is a Tensor?
 
-A tensor is a multi-dimensional array with opinions. On the CPU backend its numbers sit in a `Float32Array`, flat and typed. On WebGL the same values live in a GPU texture instead, which is where the memory rules further down come from. Either way, what's new is everything wrapped around them.
+On the CPU backend a tensor's numbers sit in a `Float32Array`. On WebGL the same values live in a GPU texture instead. Neither is released when you drop the last reference to it, which is where the memory rules further down come from.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -80,14 +80,20 @@ console.log(matrix.rank);  // 2
 
 // You can always get the data back as a JavaScript array
 const jsArray = await vector.array();
-console.log(jsArray);  // [1, 2, 3, 4, 5]`}
+console.log(jsArray);  // [1, 2, 3, 4, 5]
+
+// Three tensors are alive at this point, and dropping the variables would
+// not free them. Release them before the next block starts counting.
+scalar.dispose();
+vector.dispose();
+matrix.dispose();`}
 </CodeBlock>
 
 One difference to internalize early: you can iterate a `Float32Array` directly, but a tensor's data lives on the backend. Call `await t.array()` (or `dataSync()`) to pull the values back into JavaScript.
 
 ## The Part Garbage Collection Won't Do For You
 
-Here's the lifecycle promise from the top of the lesson, paid in full. When the WebGL backend is active, a tensor's numbers live in GPU texture memory, and the JavaScript garbage collector cannot see GPU memory. Drop your last reference to a tensor and the JS wrapper gets collected; the texture it owned does not. Create tensors in a loop and you have written a memory leak in a language you thought couldn't leak.
+Here's the lifecycle promise from the top of the lesson, paid in full. TensorFlow.js registers every tensor it creates and holds that tensor's data until you release it, on every backend. Drop your last reference and the JS wrapper gets collected; the numbers it pointed at stay where they are. On the CPU backend that is a `Float32Array` the engine is still holding. On WebGL it is a GPU texture, which the JavaScript garbage collector cannot see at all. Create tensors in a loop and you have written a memory leak in a language you thought couldn't leak.
 
 Two tools fix this:
 

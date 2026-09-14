@@ -4,6 +4,26 @@ title: "Incident: numTensors Climbing at 03:10"
 mlContent: systems
 instructions: |
   PAGER: the dashboard's tensor count has been rising since the 01:00 deploy. Build `diagnoseLeak(snapshots, budgetTensors)`. Snapshots are `{ t, numTensors }` readings (t in hours, ascending). Using the FIRST and LAST snapshots: ratePerHour = tensor growth per hour; leaking = ratePerHour > 0; hoursToBudget = hours from the last reading until the budget is hit at that rate (Infinity when not leaking). The middle readings are noisy; the endpoints are the trend.
+hints:
+  - level: nudge
+    content: "A rising tensor count is not yet a deadline. The pager already named the two readings that carry the trend, so what is left to decide is what the hours between them turn that growth into, and what to report when the count is not climbing at all."
+  - level: guidance
+    content: "Two readings and the hours between them settle this, so be exact about what that pair gives you. The rise from the earlier reading to the newer one is a count, and a count is not yet a rate: the same rise across two hours and across six hours are not the same problem, which is why the hours separating the readings have to divide it. Use the endpoints the pager named and leave the middle readings alone. The spike in the middle is deploy churn, and fitting the trend to it reports a leak far worse than the one on the ship. After that, the sign of the rate is the whole verdict. A rate above zero means something escaped a tidy call. A count that holds steady or falls is tensors being freed, and a count that is not climbing never reaches the budget, so there is no deadline to report and the pager already told you what stands in its place. When it is climbing, the headroom is what the budget has left above the NEWEST reading, not above the earlier one. Those earlier tensors are already allocated, and waiting does not give them back. Divide the headroom by the rate and the count becomes hours."
+  - level: solution
+    content: |
+      function diagnoseLeak(
+        snapshots: { t: number; numTensors: number }[],
+        budgetTensors: number,
+      ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
+        const first = snapshots[0];
+        const last = snapshots[snapshots.length - 1];
+        const ratePerHour = (last.numTensors - first.numTensors) / (last.t - first.t);
+        const leaking = ratePerHour > 0;
+        const hoursToBudget = leaking
+          ? (budgetTensors - last.numTensors) / ratePerHour
+          : Infinity;
+        return { leaking, ratePerHour, hoursToBudget };
+      }
 starterCode: |
   function diagnoseLeak(
     snapshots: { t: number; numTensors: number }[],

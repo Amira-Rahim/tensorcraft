@@ -41,11 +41,43 @@ skillAxes: [model_arch]
 Your neuron scored one reading at minus 0.06 and another at 1.04. Is minus 0.06 a yes or a no, Ensign? The alert board takes yes or no, and a weighted sum has no fixed ends to set a threshold against.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, and read sigmoid and tanh off their ranges", "Choose the right activation for different situations"]} />
+<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, and read sigmoid and tanh off their ranges", "Pick the activation for a slot from the range that slot needs"]} />
 
 ## Breaking the Collapse
 
-Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse. They are the only place the network gets to bend.
+Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse. They are the only place the network gets to bend. Do not take that on faith; it is a claim you can run.
+
+<CodeBlock language="typescript" title="collapse.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Three stages of lesson 1's arithmetic with the activations left out,
+// at the widths module 3's classifier will use: 3 in, 32, 16, 1 out.
+const w1 = tf.randomNormal([3, 32], 0, 0.25), b1 = tf.randomNormal([32], 0, 0.25);
+const w2 = tf.randomNormal([32, 16], 0, 0.25), b2 = tf.randomNormal([16], 0, 0.25);
+const w3 = tf.randomNormal([16, 1], 0, 0.25), b3 = tf.randomNormal([1], 0, 0.25);
+const stack = (x: tf.Tensor) =>
+  x.matMul(w1).add(b1).matMul(w2).add(b2).matMul(w3).add(b3);
+
+// Multiply the three weight matrices into one and fold the biases along.
+const W = w1.matMul(w2).matMul(w3);                                   // [3, 1]
+const b = b1.reshape([1, 32]).matMul(w2).add(b2).matMul(w3).add(b3);  // [1, 1]
+const single = (x: tf.Tensor) => x.matMul(W).add(b);
+
+const xs = tf.randomUniform([200, 3]);
+console.log(stack(xs).sub(single(xs)).abs().max().dataSync()[0]);
+// Under 1e-6 on every one of 3,000 fresh draws, 1.2e-7 on a typical one:
+// float32 rounding, not a difference. 673 numbers, and they answer
+// exactly like 3 weights and 1 bias.
+
+// Bend each hidden stage and the shortcut stops working.
+const bent = (x: tf.Tensor) =>
+  tf.relu(tf.relu(x.matMul(w1).add(b1)).matMul(w2).add(b2)).matMul(w3).add(b3);
+console.log(bent(xs).sub(single(xs)).abs().max().dataSync()[0]);
+// About 0.6 on a typical draw, anywhere from 0.04 to 3 over 3,000 of them,
+// and no single matrix closes it.`}
+</CodeBlock>
+
+The stack holds 673 numbers and answers exactly like 4 of them: three weights and one bias, which is lesson 1's neuron. That is what collapse means, and it is arithmetic, not a training failure. Put relu between the stages and the shortcut breaks, because `Math.max(0, x)` is not a multiplication, so no matrix does what it does. Every stage lesson 3 stacks is worth something only because of that bend.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -92,7 +124,7 @@ tf.sigmoid(tf.tensor([-11, 600])).print();  // [0.0000167, 1]
 // float32 has no digits left to hedge with. A yes.`}
 </CodeBlock>
 
-One word about what "yes" means, because the module has used it two ways. Lesson 1's neuron learned on the calibration tones because they were the only labeled data aboard, so high meant tone A: a two-class warm-up. Nazari's board asks a different question of the same number. From here on, high means anomalous, the reading the crew wants a human to look at, and low means the stream looks like the catalog. Same sigmoid, same threshold, one label.
+One word about what "yes" means, because the module has used it two ways. Lesson 1's neuron was hand-set to split the calibration tones because they were the only labeled data aboard, so high meant tone A: a two-class warm-up. Nazari's board asks a different question of the same number. From here on, high means anomalous, the reading the crew wants a human to look at, and low means the stream looks like the catalog. Same sigmoid, same threshold, one label.
 
 Placement falls out of the ranges. ReLU stays in the hidden layers, where the outputs feed more math. Its slope is exactly 1 for every positive input, so the learning signal you meet in module 3 passes through undiminished, and it is the cheapest of the three to compute. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
 
@@ -116,12 +148,12 @@ Apply ReLU activation to neuron outputs.
 
 <RecallPrompt
   question="Why does a deep network without activation functions collapse to a linear model?"
-  answer="Composing purely linear layers is equivalent to a single linear transformation: no matter how many layers you stack, W_n times ... times W_1 reduces to one matrix. Activation functions like ReLU break this collapse and let the network express nonlinear relationships."
+  answer="A stage without an activation is a matrix multiply plus a bias, and a matrix multiply fed into another matrix multiply is one matrix multiply. collapse.ts multiplied three stages' weights into one [3, 1] matrix and the outputs agreed to float32 rounding; ten stages would fold the same way. ReLU is not a multiplication, so once it sits between the stages no single matrix reproduces the stack."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Activation functions introduce nonlinearity; without them, stacked layers reduce to a single linear transformation and cannot learn complex patterns.",
+    "Without activations, stacked stages multiply out to one matrix and one bias (collapse.ts: 673 numbers agreeing with 4 to float32 rounding, under 1e-6 on 3,000 draws); relu between the stages is the bend no single matrix reproduces.",
     "ReLU is the default in hidden layers: its slope is exactly 1 on every positive input, so the learning signal passes through undiminished, and it is the cheapest of the three to compute.",
     "Sigmoid squashes output to (0, 1) for probabilities; tanh squashes to (-1, 1) for centered outputs."
   ]}
@@ -134,7 +166,7 @@ Apply ReLU activation to neuron outputs.
 Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing running off the ends anymore. The two calibration tones come back at 0.69 and 0.53, both above the 0.5 line, which is what hand-picked weights look like: nobody has moved the boundary to put the quiet tone under it, and nothing will until module 3 trains one. At 0316 the neuron reaches archived reading 7741, the one the crew flagged and kept last module. Its features read 0.50, 0.59 and 0.54, mid-scale on all three at once, and the sigmoid answers 0.62, which lands between the two reference tones and resembles neither. Hand-picked weights, no training, and nothing in that number worth a second look. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
 
 <Dialogue speaker="ARIA">
-I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. The neuron returns 0.62 on this reading, which reads as a yes. I hold nominal. I am still running, and I am noting the disagreement.
+I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. My rules name both reference tones. They do not name this. The neuron puts the reading above its line, and with these weights it puts 99.7 percent of every reading those three features can describe above that line, both tones included. I hold nominal. I am still running, and I am noting the disagreement.
 </Dialogue>
 
 The note files itself between two routine humidity alerts.

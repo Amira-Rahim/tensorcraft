@@ -8,7 +8,7 @@ scene:
   location: "Archimedes, Bridge"
   time: "After hours"
   portraitAlt: "Demir sits alone in the dimmed bridge comms alcove after hours while the holo table runs four models from raw waveform to report."
-estimatedMinutes: 12
+estimatedMinutes: 18
 difficulty: advanced
 context:
   narrative: "Demir orchestrates the full DEEP SCAN system: classifier, autoencoder and LSTM each read the same capture through their own preprocessing, and the LLM reporter reads all three verdicts. Multiple models, one pipeline."
@@ -45,7 +45,7 @@ Each model does one thing well. The classifier knows signal types. The autoencod
 
 Four models, four contracts: a class and a confidence from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together so one weak stage can't silently poison the report.
 
-Four stages that are each right 95% of the time are right 81% of the time together. A stage that is wrong rather than broken raises no exception, so the check has to sit between stages, while you still know what the stage promised.
+Four stages that are each right 95% of the time are right 81% of the time together if their mistakes are independent. They rarely are: module 7 showed that stages reading the same channel fail together, and a shared failure is the one no vote downstream catches. Either way the product is why the check sits between stages. A stage that is wrong rather than broken raises no exception, so the check has to sit between stages, while you still know what the stage promised.
 
 <LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them", "Validate each stage's output against its contract, then decide per stage: substitute a fallback, or stop the run when there is no honest substitute", "Trace one capture through the full DEEP SCAN pipeline, and see why each model needs its own preprocessing rather than one shared array"]} />
 
@@ -156,8 +156,17 @@ Signal anomaly detected:
 Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
     \`);
     // verifyClaims is lesson 3's checker: every number in the draft has to
-    // trace to one we handed it. That works only because the prompt forbids
-    // new ones; even a label like "Band-7" comes back as a claim of -7.
+    // trace to one we handed it, within 0.05. Read that tolerance against
+    // this hand-off before trusting it. Lesson 3's evidence was counts and
+    // hertz, where 0.05 is tight; this hand-off is a confidence, a
+    // reconstruction error and three z-scores, numbers that live inside
+    // about -1 to 1, where 0.05 clears almost any two-decimal number a
+    // model could invent (measured: a draft with every number made up came
+    // back with nothing fabricated). What holds the line at this scale is
+    // the prompt's "only the numbers above" and the three- and four-decimal
+    // printing, not the checker; a tolerance sized to the hand-off would
+    // need lesson 3's function to take one. A label like "Band-7" still
+    // comes back as a claim of -7, exactly as it did in lesson 3.
     const { fabricated } = verifyClaims(draft, [handed]);
     report = validateStage(
       'llm',
@@ -177,7 +186,7 @@ Three arrays describe one capture and none of them substitutes for another. The 
 
 Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place.
 
-For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at its full-scale 1.00 scores 3.20 sigma, the most that feature can reach. The baseline arrives as an argument rather than being recomputed from the last eighty amplitudes, because a rolling baseline makes the sigma count depend on how quiet that stretch happened to be. The same 1.00 reading scores 342.86 sigma against a window whose standard deviation is 0.0014, and 2.29 against one whose standard deviation is 0.21.
+For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at 1.00, the most that feature can reach, scores 3.20 sigma; a dead channel at 0.00 is the only larger deviation, 3.47. The baseline arrives as an argument rather than being recomputed from the last eighty amplitudes, because a rolling baseline makes the sigma count depend on how quiet that stretch happened to be. The same 1.00 reading scores 342.86 sigma against a window whose standard deviation is 0.0014, and 2.29 against one whose standard deviation is 0.21.
 
 <CodeBlock language="typescript" title="resilience.ts">
 {`// Like micro-service circuit breakers: degrade around the stages that have a stand-in
@@ -217,11 +226,13 @@ async function resilientPipeline(
     console.warn('LSTM prediction failed; skipping');
   }
 
-  // Report: optional (skip if LLM is unavailable)
+  // Alert: optional (skip if LLM is unavailable). writeAlert is stage 4 of
+  // the pipeline above, factored out. Lesson 4's generateReport is a
+  // different function: the six-section report pipeline.
   let report = null;
   if (anomaly.isAnomaly) {
     try {
-      report = await generateReport(classification, anomaly, models.llm);
+      report = await writeAlert(classification, anomaly, models.llm);
     } catch {
       report = \`ALERT: Anomaly detected (score: \${anomaly.score.toFixed(4)}). LLM unavailable for detailed report.\`;
     }
@@ -237,11 +248,13 @@ Wire the three stages, and make the two decisions the classifier's verdict force
 
 <Exercise slug="model-pipeline" />
 
-<RecallPrompt question="Why does a pipeline of four models need validation between stages when every model passes its own tests?" answer="Errors compound: four stages at 95% reliability each leave 81% end to end, and a model that is merely wrong raises no exception. The classifier's verdict and the detector's score both become the reporter's evidence, so one bad value reaches the report as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method only where a stand-in is honest." />
+<RecallPrompt question="Why does a pipeline of four models need validation between stages when every model passes its own tests?" answer="Errors compound down a chain: four stages at 95% each leave 81% end to end if their mistakes are independent, and stages that share an input fail together, which no downstream vote catches. A model that is merely wrong raises no exception. The classifier's verdict and the detector's score both become the reporter's evidence, so one bad value reaches the report as a confident one. Check each stage's output shape and range before passing it on, and fall back to a simpler method only where a stand-in is honest." />
+
+<RecallPrompt question="The autoencoder's stand-in here is module 7's 3-sigma gate on the amplitude alone. Why is there a ceiling on the sigma count that feature can produce, and what should you suspect when a reading comes back above it?" answer="Amplitude reaches the gate already min-max normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so nothing arrives above 1.00. Against the baseline of mean 0.52 and std 0.15, a full-scale reading is 3.2 sigma out and a dead channel at 0.00 is 3.47. Anything past 3.47 is a units bug." />
 
 <LessonRecap
   whatYouLearned={[
-    "Combining probabilistic models compounds error: four stages that are each right 95% of the time are right 81% of the time together, so validate every stage's output before passing it on.",
+    "Combining probabilistic models compounds error down the chain: 81% end to end for four independent 95% stages, and stages that share an input fail together, so validate every stage's output before passing it on.",
     "Define clear interfaces between stages in both directions: the classifier's class and confidence become part of the reporter's input contract, and each model's own input has a shape and a scale that only its own preprocessing produces. One capture reaches three models as three different arrays.",
     "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector or a fabricated draft has a usable fallback. A confidence outside 0..1 or a NaN score has no in-place substitute, so that check stops the run."
   ]}
@@ -259,6 +272,6 @@ How long from signal to report? Make it faster.
 
 Fourteen seconds, Demir tells her, already knowing it isn't the right answer. The signal is accelerating; the pipeline will have to.
 
-Before he leaves the bridge, Demir pulls the bundle audit for the morning build. The crew's own models are featherweights: classifier, autoencoder, LSTM, attention head, less than a megabyte of trained weights between them. It is everything around them that has been gaining mass: the pretrained language component behind the report pipeline, its tokenizer tables, its internal embedding matrices. Bottom line of the audit: DEEP SCAN full bundle, 340 MB. He files the number under "later." The bridge dashboard it runs on has 512.
+Before he leaves the bridge, Demir pulls the bundle audit for the morning build. The crew's own models are featherweights: classifier, autoencoder, LSTM, attention head, less than a megabyte of trained weights between them. It is everything around them that has been gaining mass: the pretrained language component behind the report pipeline, the one lesson 1's client reaches through its loopback route, its tokenizer tables, its internal embedding matrices. Bottom line of the audit: DEEP SCAN full bundle, 340 MB. He files the number under "later." The bridge dashboard it runs on has 512.
 
 </Epilogue>

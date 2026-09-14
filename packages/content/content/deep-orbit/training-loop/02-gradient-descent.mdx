@@ -95,12 +95,12 @@ The threshold belongs to the loss rather than to the rate. The descent above min
 
 Each `∂L/∂wᵢ` answers: "if I nudge wᵢ by ε, how much does L change?" The vector of all these answers points in the direction where L grows fastest. **Subtracting it walks you toward where L shrinks fastest.**
 
-**Why the update rule `w := w - η·∇L`?** The Taylor expansion of L around the current point:
+**Why the update rule `w := w - η·∇L`?** The Taylor expansion of L around the current point, which is the straight-line approximation of the loss right where you are standing:
 
 `L(w + Δw) ≈ L(w) + ∇L · Δw`
 
 To minimize the linear approximation, pick Δw opposite to ∇L. The learning rate η scales the step:
-- η too large → Taylor approximation breaks down, you overshoot the minimum
+- η too large → that straight line stops describing the real curve, so the step lands past the minimum
 - η too small → many steps to converge
 - Adaptive optimizers (Adam, RMSprop) tune η per-parameter using gradient history.
 </DerivationDrawer>
@@ -113,14 +113,14 @@ Implement one descent step, written so the grader can hand your step() any loss 
 
 <RecallPrompt
   question="Your training loss explodes after a few steps. What is the most likely cause and fix?"
-  answer="The learning rate is too high, causing the optimizer to overshoot the minimum. Lowering the learning rate (try 10x smaller) is the fix. A rate that is too low causes slow convergence but not divergence."
+  answer="The rate is past this loss's divergence threshold, so each step lands further from the minimum than it started and the error grows. Overshooting on its own is not the problem: at a rate of 0.6 on (x - 3)² the optimizer crosses the minimum on every step and still converges. Cut the rate by 10x. A rate that is too low is slow, never explosive."
 />
 
 <LessonRecap
   whatYouLearned={[
     "A gradient is the slope of the loss with respect to each weight. It points in the direction of steepest ascent, so subtracting it moves weights toward lower loss.",
-    "The learning rate controls step size. Too high causes the optimizer to overshoot and diverge; too low causes painfully slow convergence.",
-    "`tf.variableGrads()` computes gradients for all tracked variables automatically in one call."
+    "The learning rate controls step size. Past the loss's threshold the error grows on every step; a rate that overshoots without passing the threshold still converges; too low is painfully slow.",
+    "`tf.variableGrads()` computes gradients for every trainable variable your loss function touched, in one call, keyed by variable name."
   ]}
   bridge="Lerp smoothing and gradient descent use the same update rule: `position += (target - position) * rate`. The difference is that in ML the target is unknown and the gradient gives only the local slope, not the destination."
   youCanNow="Implement a manual gradient descent step using `tf.variableGrads()` and predict what a rate that is too high does to the loss."

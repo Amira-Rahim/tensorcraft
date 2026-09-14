@@ -13,6 +13,33 @@ instructions: |
     }
 
   Cause logic, checked in this order: if sensorAuditLog.recentChanges.length > 0 → sensor-change; else if baselineAlerts.modelAge > 90 (days) → model-stale; else if ratio is between 5 and 20 (inclusive at both ends) → threshold-drift; else → real-event. The order carries the diagnosis. A logged sensor change and a four-month-old model each name a cause; the ratio only says how loud the storm is. A storm often matches more than one signature, and it is filed under the first one that matches. Each cause carries its remedy: sensor-change → recompute-baseline, model-stale → retrain, threshold-drift → recalibrate-threshold, real-event → escalate. Anything outside the known failure signatures gets escalated to human eyes, that is the point of the default branch. One guard: a baseline of zero alerts an hour still has to produce a ratio someone can read, so keep the divisor off zero.
+hints:
+  - level: nudge
+    content: "Every input here is evidence about something different, and they can all point at once. What decides this exercise is which one you let answer first, and what happens to an hour that matches none of them."
+  - level: guidance
+    content: "Two of the three inputs are evidence about what changed, and the third only measures how loud the hour was. A line in the audit log is something a person did to the hull. A detector that has not been refitted in months learned normal from readings that no longer describe the hull. Either one explains a flood of alerts by itself. The ratio explains nothing: it says this hour ran eighty times the usual count and leaves you to guess why, which is why it is read last. That ordering is the exercise, and an else-if chain implements it, since the first signature that matches wins and a storm that fits two signatures still sends one team rather than two. Give the final branch the same weight as the other three, because it is the path that wakes a person, and it has to take every hour the known signatures fail to explain, however extreme the numbers get. One arithmetic guard sits underneath all of it. A reference hour with no alerts in it leaves you dividing by nothing, and Infinity on a pager tells the reader less than a large number would, so hold the divisor just above nothing before you divide. Keep both reported numbers numeric, since the usual one-decimal formatter hands back a string and a string will not compare."
+  - level: solution
+    content: |
+      function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
+        const rate = Math.round(currentAlerts.alertsPerHour * 10) / 10;
+        const ratio = Math.round((currentAlerts.alertsPerHour / Math.max(baselineAlerts.alertsPerHour, 0.1)) * 10) / 10;
+        let cause;
+        let action;
+        if (sensorAuditLog.recentChanges.length > 0) {
+          cause = 'sensor-change';
+          action = 'recompute-baseline';
+        } else if (baselineAlerts.modelAge > 90) {
+          cause = 'model-stale';
+          action = 'retrain';
+        } else if (ratio >= 5 && ratio <= 20) {
+          cause = 'threshold-drift';
+          action = 'recalibrate-threshold';
+        } else {
+          cause = 'real-event';
+          action = 'escalate';
+        }
+        return { rate, ratio, cause, action };
+      }
 starterCode: |
   function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
     // Concept: match the storm against known failure signatures IN ORDER, and
@@ -101,6 +128,41 @@ testCode: |
         'checked first because it names a cause the ratio cannot.';
       expect(r.cause, why).toBe('model-stale');
       expect(r.action, why).toBe('retrain');
+    });
+
+    it('puts the stale-model line where the runbook puts it: 90 is not stale, 91 is', () => {
+      // The fixtures above run modelAge at 30, 120 and 200, so a line drawn
+      // anywhere between 90 and 120 answers all of them the way the real one
+      // does, and a 100-day-old model filed as threshold-drift sends the
+      // recalibration team instead of the retraining team (round 7,
+      // 2026-09-13). Both calls here carry a ratio of 100, outside the drift
+      // band, so the model age is the only thing that moves between them.
+      const onTheLine = diagnoseStorm(
+        { alertsPerHour: 1000 },
+        { alertsPerHour: 10, modelAge: 90 },
+        { recentChanges: [] },
+      );
+      expect(onTheLine, SHAPE).toBeDefined();
+      const why =
+        'A model exactly 90 days old is not stale yet: the runbook says over ' +
+        '90. Nothing in the audit log, a ratio outside the drift band, and a ' +
+        'model still inside its window means this storm matches no known ' +
+        'signature, so it goes to a person.';
+      expect(onTheLine.cause, why).toBe('real-event');
+      expect(onTheLine.action, why).toBe('escalate');
+
+      const oneDayPast = diagnoseStorm(
+        { alertsPerHour: 1000 },
+        { alertsPerHour: 10, modelAge: 91 },
+        { recentChanges: [] },
+      );
+      const why2 =
+        'One day older and the same storm is a stale model, so the pager ' +
+        'sends the retraining team. The age is the only input that changed ' +
+        'between these two calls, which means a cutoff written anywhere else ' +
+        'gets one of them wrong.';
+      expect(oneDayPast.cause, why2).toBe('model-stale');
+      expect(oneDayPast.action, why2).toBe('retrain');
     });
 
     it('attributes to threshold drift for moderate ratios, rate to 1 decimal', () => {

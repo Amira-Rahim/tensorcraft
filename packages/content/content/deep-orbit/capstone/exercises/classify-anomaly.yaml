@@ -23,6 +23,8 @@ instructions: |
       }
 
   `classification` reads 'confirmed-anomaly' when the vote passes and the interval train is Fibonacci, 'anomaly' when the vote passes without the train, and 'noise' when the vote does not pass.
+
+  `ratios` holds the decomposition and not the pulse gaps that came in, so seven intervals leave six numbers, and a capture in seconds leaves the same six as the abstract count. `fibonacciTrain` is those ratios run through `isFibonacciTrain`. Gaps that double every step grow, and a doubling train is not a Fibonacci train.
 starterCode: |
   // Zero hour. The readout for sample 7741, tonight:
   //
@@ -58,11 +60,11 @@ starterCode: |
       0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
       0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
     ],
-    actual: 0.61,             // 0.6 sigma off that centre: the dial reads normal
-    reconstructionError: 0.062,
-    reconThreshold: 0.01,     // module 7's locked cutoff
+    actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
+    reconstructionError: 6.2,
+    reconThreshold: 1.0,      // module 7's locked cutoff
     predicted: 0.55,
-    actualForecast: 0.61,
+    actualForecast: 0.50,
     predTolerance: 0.02,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
@@ -139,11 +141,11 @@ solutionCode: |
       0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
       0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
     ],
-    actual: 0.61,             // 0.6 sigma off that centre: the dial reads normal
-    reconstructionError: 0.062,
-    reconThreshold: 0.01,     // module 7's locked cutoff
+    actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
+    reconstructionError: 6.2,
+    reconThreshold: 1.0,      // module 7's locked cutoff
     predicted: 0.55,
-    actualForecast: 0.61,
+    actualForecast: 0.50,
     predTolerance: 0.02,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
@@ -222,8 +224,8 @@ testCode: |
 
     it('the z-score gate clears sample 7741, and two votes carry it', () => {
       // Module 7's reading of this sample, unchanged: every dial normal.
-      // 0.61 against the window's measured mean 0.520 and std 0.150 is
-      // 0.6 sigma, so the statistical detector abstains and the
+      // 0.50 against the window's measured mean 0.520 and std 0.150 is
+      // 0.1 sigma under it, so the statistical detector abstains and the
       // autoencoder and the LSTM decide it between them.
       expect(built(result).votes).toBe(2);
       expect(result.isAnomaly).toBe(true);
@@ -232,8 +234,8 @@ testCode: |
       // measured false here, not assumed true.
       const dialsOnly = classifyAnomaly({
         ...zeroHourReading,
-        reconstructionError: 0.001,
-        predicted: 0.61,
+        reconstructionError: 0.1,
+        predicted: 0.50,
       });
       expect(dialsOnly.votes).toBe(0);
       expect(dialsOnly.isAnomaly).toBe(false);
@@ -241,9 +243,9 @@ testCode: |
     });
 
     it('a full-scale amplitude does fire it: 1.00 is 3.2 sigma off this spread', () => {
-      // The live-feed reading module 7 caught: amplitude pegged at the
-      // hull sensor's 1.00 ceiling. Against mean 0.520 and std 0.150 that
-      // is 3.2 sigma, the loudest this feature can ever read.
+      // A reading pegged at the hull sensor's 1.00 ceiling, which neither
+      // of module 7's captures ever was. Against mean 0.520 and std 0.150
+      // that is 3.2 sigma, the loudest this feature can ever read.
       const pegged = classifyAnomaly({ ...zeroHourReading, actual: 1.0 });
       expect(built(pegged).votes).toBe(3);
       expect(pegged.isAnomaly).toBe(true);
@@ -251,8 +253,8 @@ testCode: |
       const peggedAlone = classifyAnomaly({
         ...zeroHourReading,
         actual: 1.0,
-        reconstructionError: 0.001,
-        predicted: 0.61,
+        reconstructionError: 0.1,
+        predicted: 0.50,
       });
       expect(peggedAlone.votes).toBe(1);
       expect(peggedAlone.isAnomaly).toBe(false);
@@ -263,15 +265,15 @@ testCode: |
       const dead = classifyAnomaly({
         ...zeroHourReading,
         actual: 0.0,
-        reconstructionError: 0.001,
-        predicted: 0.61,
+        reconstructionError: 0.1,
+        predicted: 0.50,
       });
       expect(built(dead).votes).toBe(1);
 
       const deadPlusRecon = classifyAnomaly({
         ...zeroHourReading,
         actual: 0.0,
-        predicted: 0.61,
+        predicted: 0.50,
       });
       expect(deadPlusRecon.votes).toBe(2);
       expect(deadPlusRecon.isAnomaly).toBe(true);
@@ -281,7 +283,7 @@ testCode: |
       // Drop one of the two that fired and the alarm goes quiet.
       const oneVote = classifyAnomaly({
         ...zeroHourReading,
-        reconstructionError: 0.001,
+        reconstructionError: 0.1,
       });
       expect(built(oneVote).votes).toBe(1);
       expect(oneVote.isAnomaly).toBe(false);
@@ -291,7 +293,7 @@ testCode: |
       const statPlusLstm = classifyAnomaly({
         ...zeroHourReading,
         actual: 1.0,
-        reconstructionError: 0.001,
+        reconstructionError: 0.1,
       });
       expect(statPlusLstm.votes).toBe(2);
       expect(statPlusLstm.isAnomaly).toBe(true);
@@ -310,7 +312,26 @@ testCode: |
             std: Math.sqrt(m.variance.dataSync()[0]),
           };
         });
-      const quiet = { reconstructionError: 0.001, predicted: 0.61, actualForecast: 0.61 };
+      const quiet = { reconstructionError: 0.1, predicted: 0.50, actualForecast: 0.50 };
+
+      // A drifted channel first: centred near 0.80 with a spread near 0.05,
+      // and the reading sits exactly on this window's own mean. A centre
+      // measured from the window reads 0 sigma; a carried mid-scale 0.5
+      // reads about 6 and fires (round 7, 2026-09-13: a submission that
+      // measured only the spread and carried 0.5 as the centre cleared
+      // every fixture here, because every window was centred at 0.5).
+      const driftedWindow = Array.from({ length: 24 }, (_, i) => 0.8 + 0.07 * Math.sin(i * 2.3));
+      const drifted = moments(driftedWindow);
+      const onDrifted = classifyAnomaly({
+        ...zeroHourReading,
+        ...quiet,
+        window: driftedWindow,
+        actual: drifted.mean,
+      });
+      expect(
+        built(onDrifted).votes,
+        'This reading sits on the centre of its own window, so it is 0 sigma out and nothing fires. If the statistical vote fired, the centre was not measured from reading.window: against a carried mid-scale centre this window reads about 6 sigma. The mean is a property of the window on the console, exactly as the spread is.',
+      ).toBe(0);
 
       // A tight channel: the same mid-scale amplitude, a tenth of the
       // spread. Measured here: mean 0.5007, std 0.0141.
@@ -331,7 +352,7 @@ testCode: |
       // that arrives only from the window.
       const onTightPlusLstm = classifyAnomaly({
         ...zeroHourReading,
-        reconstructionError: 0.001,
+        reconstructionError: 0.1,
         window: tightWindow,
         actual: tight.mean + 4 * tight.std,
       });
@@ -364,8 +385,8 @@ testCode: |
           0.474, 0.556, 0.512, 0.398, 0.601, 0.489, 0.533, 0.462, 0.578, 0.507,
         ],
         actual: 0.55,
-        reconstructionError: 0.003,
-        reconThreshold: 0.01,
+        reconstructionError: 0.3,
+        reconThreshold: 1.0,
         predicted: 0.542,
         actualForecast: 0.55,
         predTolerance: 0.02,
@@ -379,6 +400,41 @@ testCode: |
       expect(calm.fibonacciTrain).toBe(true);
       expect(calm.classification).toBe('noise');
       expect(calm.scoreDelta).toBeCloseTo(0.021, 3);
+    });
+
+    it('the verdict carries the decomposition, and a growing train is not a Fibonacci train', () => {
+      // The same train twice: the capture in seconds, and the sequence
+      // counted abstractly. Both records are computed here, neither is
+      // listed, and the ratios are read off the verdict rather than off a
+      // direct call to decomposeIntervals.
+      const inSeconds = classifyAnomaly(zeroHourReading);
+      const abstract = classifyAnomaly({
+        ...zeroHourReading,
+        intervals: [1, 1, 2, 3, 5, 8, 13],
+      });
+      const expectedRatios = decomposeIntervals(zeroHourReading.intervals);
+      expect(
+        built(inSeconds).ratios,
+        'The verdict reports ratios, so the seven pulse gaps it was handed have to be collapsed into six numbers before they go in the record. Passing the gaps straight through, or leaving the field empty, records something else.',
+      ).toHaveLength(expectedRatios.length);
+      for (let i = 0; i < expectedRatios.length; i++) {
+        expect(inSeconds.ratios[i]).toBeCloseTo(expectedRatios[i], 6);
+        expect(
+          abstract.ratios[i],
+          'A record still carrying seconds reads differently from the same train counted abstractly. Dividing is what removes the units, and it is the reason the calibration overlay lined up at all.',
+        ).toBeCloseTo(inSeconds.ratios[i], 6);
+      }
+
+      // Gaps that grow every step, and not by the succession.
+      const doubling = classifyAnomaly({
+        ...zeroHourReading,
+        intervals: [0.9, 1.8, 3.6, 7.2, 14.4, 28.8, 57.6],
+      });
+      expect(
+        built(doubling).fibonacciTrain,
+        'Every gap here is twice the one before it, so the gaps grow and the ratio train is a flat 2. Growing is not the test. Matching the succession ratios slot by slot is.',
+      ).toBe(false);
+      expect(doubling.classification).toBe('anomaly');
     });
 
     it('settles the season: confirmed anomaly, and the 51.8 -> 99.9 delta', () => {

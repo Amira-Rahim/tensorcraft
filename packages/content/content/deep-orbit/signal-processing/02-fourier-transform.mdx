@@ -40,8 +40,12 @@ keywords:
 skillAxes: [data_prep]
 ---
 
+<Dialogue speaker="Ensign Demir">
+The overnight run finished. Two hundred and fifty-seven numbers per window, and there is a spike at index 10 that dwarfs everything around it. I can read the array. Nobody has told me what index 10 is.
+</Dialogue>
+
 <Dialogue speaker="Dr. Farah">
-Think of a chord on a piano, Demir. You hear one sound, but it's actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and tells you exactly which notes are in it, and how loud each one is.
+A note, Ensign. Think of a chord on a piano: you hear one sound, but it's actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and tells you exactly which notes are in it, and how loud each one is. Index 10 is the loudest note in yours.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -52,7 +56,7 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N of them for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That universality is what lets me trust whatever peak we find.
 </Dialogue>
 
-One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, which is all this course ever uses. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information.
+One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, and the how-much is the only half of the transform's output this course reads. DEEP SCAN's third input feature is also called phase, but that one is a time-domain angle taken off the first two samples of a window, not this one; lesson 4 builds it and says so. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information.
 
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
@@ -125,23 +129,24 @@ function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): 
 const nyquist = sampleRate / 2;  // 64 Hz
 console.log('Nyquist frequency:', nyquist, 'Hz');
 
-// Find the dominant frequency in a signal
-async function findDominantFrequency(signal: number[], sampleRate: number): Promise<number> {
+// Every bin, labeled with the frequency it stands for
+function spectrum(signal: number[], sampleRate: number): { hz: number; magnitude: number }[] {
   return tf.tidy(() => {
-    const fft = tf.spectral.rfft(tf.tensor1d(signal));
-    const mags = tf.abs(fft);
-    const values = mags.arraySync() as number[];
-    // Skip bin 0 (DC offset) and find the peak
-    const peak = values.slice(1).reduce(
-      (best, val, i) => val > best.mag ? { bin: i + 1, mag: val } : best,
-      { bin: 0, mag: 0 }
-    );
-    return binToFrequency(peak.bin, sampleRate, signal.length);
+    const magnitudes = tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync() as number[];
+    return magnitudes.map((magnitude, bin) => ({
+      hz: binToFrequency(bin, sampleRate, signal.length),
+      magnitude,
+    }));
   });
 }
 
-const dominant = await findDominantFrequency(signal, 128);
-console.log('Dominant frequency:', dominant, 'Hz');  // 5`}
+const bins = spectrum(signal, 128);
+console.table(bins.filter((b) => b.magnitude > 1));
+// hz  5   magnitude 64.0   (the 1.0 sine: amplitude times N/2)
+// hz 20   magnitude 19.2   (the 0.3 sine)
+// The other 63 bins, bin 0 included, sit under 2e-6: nothing else is in
+// this signal. The loudest entry after bin 0 is the dominant frequency,
+// and finding it is the challenge below.`}
 </CodeBlock>
 
 ## The FFT for DEEP SCAN

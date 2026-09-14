@@ -143,10 +143,36 @@ testCode: |
       const startCount = readCount;
       let readsAtFirstBatch = -1;
       let bareBatches = 0;
-      await bare.forEachAsync(() => {
+      const rowsSeen = [];
+      // One sample per batch and no shuffle, so every batch here carries one
+      // archive row and its first feature says which row that is. This drain
+      // is also the only place the file looks at what the features and the
+      // label HOLD: before these four assertions (round 7, 2026-09-13), a
+      // generator that called readSample(i) purely to move the counter and
+      // then yielded invented numbers with a label of zero cleared all four
+      // tests, and feature and label are the two words this lesson defines.
+      await bare.forEachAsync((b) => {
         if (readsAtFirstBatch < 0) readsAtFirstBatch = readCount - startCount;
         bareBatches++;
+        const xs = b.xs.arraySync()[0];
+        const ys = b.ys.arraySync()[0];
+        const i = Math.round(xs[0] / 100);
+        rowsSeen.push(i);
+        const featureWhy =
+          'A batch carried three numbers the archive never handed out. xs is the row readSample returned, in the order it returned it: amplitude in counts, frequency as a zero-crossing count, phase in radians.';
+        expect(xs.length, featureWhy).toBe(3);
+        expect(xs[0], featureWhy).toBeCloseTo(i * 100, 3);
+        expect(xs[1], featureWhy).toBeCloseTo(i, 5);
+        expect(xs[2], featureWhy).toBeCloseTo(i / 10, 5);
+        expect(
+          ys,
+          'ys has to carry the label that arrived beside those features, for that same row. A label invented in the generator teaches the model nothing about the reading it sits next to.',
+        ).toEqual([i % 2]);
       });
+      expect(
+        rowsSeen.slice().sort((x, y) => x - y),
+        'Every row the archive holds has to reach the pipeline once, with its own features. A generator that yields the same reading sixteen times reads sixteen rows and passes on none of them.',
+      ).toEqual(Array.from({ length: 16 }, (_, n) => n));
       expect(
         readsAtFirstBatch,
         'One sample was asked for and the generator read more than one row to answer, so it is buying rows in blocks rather than yielding them as they are read. The whole archive is never supposed to be in flight at once, and neither is a block of it.',

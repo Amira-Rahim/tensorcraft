@@ -13,7 +13,7 @@ scene:
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the anomalous signal. Let's find out what we've been chasing across the galaxy.' Demir deploys. The signal is classified."
+  narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the signal.' Demir deploys. The signal is classified."
   speaker: "Commander Mirza"
 concept:
   explanation: "Deploying an ML system to production is the same motion as deploying a web app: build, optimize, ship to a static host, with the model as one more asset in the bundle."
@@ -28,12 +28,10 @@ consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
   - level: nudge
-    content: "This ladder covers classify-anomaly, the finale, and carries a note on launch-rehearsal at the end. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote. verify-deployment states its whole contract in its own instructions. For launch-rehearsal, the one number worth checking before you write anything is the update count: it belongs to the optimizer, not to your own arithmetic."
+    content: "This ladder covers classify-anomaly, the finale. verify-deployment and launch-rehearsal each carry their own. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote."
   - level: guidance
     content: |
       classify-anomaly first. The expected ratios are not a table to memorize, they are the sub-interval train divided through, and the section on the interval train works them out. Two consequences to notice there. A capture can start late and carry no 1:1 opener, so a shorter ratio list is compared against the end of the full list rather than its front. And measured seconds never divide into exact ratios, so a match means a relative band around each expected value, the width the instructions name. In the vote, the part worth getting right is where the sigma comes from. A mean and a spread are properties of the window on the console, not constants you carry from one channel to the next. A reading that is unremarkable against one window is extreme against a tighter one. Then the majority, two of three: any one detector can be blind without silencing the alarm, and no one detector can raise one by itself.
-
-      launch-rehearsal, the other exercise this rung covers. Three decisions carry it. The limits a reading is scaled against belong to the instrument, so they are read off the argument that carries them rather than off the batch in front of you. The candidate arrives compiled, and compiling it again throws away the training state CI handed over. And the update count in the verdict is a property of the optimizer that nothing outside it can assign, which is why it has to agree with the loss trace reported beside it.
   - level: solution
     content: |
       function decomposeIntervals(intervals) {
@@ -140,7 +138,7 @@ Any app that compiles down to a folder of files ships the same way: `npm run bui
     {
       label: "dominant",
       display: "Hot canary: deploy to one console for 30 seconds on the live pulse, then fleet-wide if it holds",
-      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. Mirza: 'You found the third option. That's the work.' A third door is still a bet; this one was priced right."
+      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. Mirza: 'You found the third option. That's the work.'"
     }
   ]}
 />
@@ -303,11 +301,11 @@ Input: anomaly-prx-cen-001, the signal the crew has tracked across eleven module
 
 --- Classification Result ---
 Label: anomaly
-Confidence: 99.9%
-Anomaly score: 0.0620
+Ensemble confidence: 99.9%
+Anomaly score: 6.2000
 
 --- Sequence Analysis ---
-Pattern: Fibonacci ratios (1, 1, 2, 3, 5, 8, 13...)
+Pattern: Fibonacci sub-interval train (gaps 1, 1, 2, 3, 5, 8, 13...)
 Encoded as: pulse-interval proportions
 Match: Archimedes sensor calibration harmonics
 Correlation: 0.9987
@@ -315,7 +313,7 @@ Correlation: 0.9987
 --- Interval Extrapolation ---
 Two forecasters and the hand-fit trend: three curves. Since
 deployment data landed, they agree on the date for the first time.
-Zero-crossing: eleven days, four hours.
+Interval to zero: eleven days, four hours.
 Rate model: nonlinear, and still steepening. The shrink rate held
 near a sixth of a second per day in the week the three curves were
 fit. The last two nightly readings sit 1.9 s apart, and the date
@@ -325,7 +323,6 @@ fit on a slower week, so every one of them read the date late.
 --- Archive Re-score, full pipeline ---
 Sample 7741, the first reading DEEP SCAN ever flagged:
   module-3 classifier: 51.8%. Tonight: 99.9%.
-The system finally knows what Farah suspected first.
 
 --- DEEP SCAN Assessment ---
 This signal contains mathematical structure consistent with the
@@ -333,7 +330,7 @@ Fibonacci sequence. The pulse intervals mirror this vessel's own
 calibration harmonics.
 
 Two hypotheses:
-  1. Natural phenomenon (phyllotaxis, shell spirals)
+  1. Natural phenomenon (shell spirals, sunflower seed heads)
   2. Adapted response to Archimedes transmissions
 
 Recommendation: Transmit all data to Earth for independent verification.
@@ -367,7 +364,7 @@ Write the runner under that verification script: every check in order, each one 
 
 <Exercise slug="verify-deployment" />
 
-Then run the rehearsal Nazari would demand before the relay slot, which starts a step earlier than the verification script does. Take the untrained deploy candidate, normalize the archive rows the way module 4 does, train it, score the canary set, and gate the result. Preprocess, fit, predict, drift check, verdict. If any stage fails the answer is hold, a single leaked tensor counts as a failure, and the update count the optimizer kept has to agree with the loss trace you report, because a rehearsal nobody can check is a rehearsal that did not happen.
+Then run the rehearsal Nazari would demand before the relay slot, which starts a step earlier than the verification script does. Take the rehearsal candidate, the untrained three-feature binary net standing in for the eleven-feature classifier so the whole chain fits one run, normalize the archive rows the way module 4 does, train it, score the canary set, and gate the result. Preprocess, fit, predict, drift check, verdict. If any stage fails the answer is hold, a single leaked tensor counts as a failure, and the update count the optimizer kept has to agree with the loss trace you report, because a rehearsal nobody can check is a rehearsal that did not happen.
 
 <Exercise slug="launch-rehearsal" />
 
@@ -377,6 +374,8 @@ And then the one the whole season was for. The console transcript above is what 
 
 <RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Rolling back a web app restores the prior build artifact and the user gets the previous page: the system state is fully described by those bytes. Rolling back a model restores the prior weights, but drift accumulates from the training cutoff rather than the deploy time. The prior weights were calibrated to a data distribution that may have moved further away since they were trained, so a rollback does not guarantee the model is safe to run again." />
 
+<RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and the LSTM were fitted on the same eleven days, so one bad archive takes two votes out at once. Read a vote of 2 as two checks that failed." />
+
 <LessonRecap
   whatYouLearned={[
     "An ML-powered web app deploys exactly like a static site (`npm run build`, model files in the dist folder as static assets, served from a CDN) because the model runs entirely in the browser.",
@@ -385,7 +384,7 @@ And then the one the whole season was for. The console transcript above is what 
     "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together (batches per epoch times epochs in the trace) and the training record cannot be produced without the training."
   ]}
   bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
-  youCanNow="Configure a production build that includes model weights as static assets, deploy to a static host, run a verification script that confirms load, labeled-probe accuracy and performance in the live environment, and rehearse the full chain end to end: preprocess with the saved ranges, train the candidate with model.fit, score a canary set, and gate the launch on accuracy and drift. Then run the decision layer itself: the 2-of-3 detector vote, the interval decomposition that identifies the Fibonacci train, and the classification record the crew signs."
+  youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose training record cannot be written without the training."
 />
 
 <Epilogue>
@@ -397,7 +396,7 @@ Calibration's clean. I checked it four times. Those are our harmonics, in a sign
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-Then either the universe loves the same math we do, phyllotaxis and shell spirals and Fibonacci everywhere; or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
+Then either the universe loves the same math we do, phyllotaxis, the way a sunflower packs its seeds, and shell spirals and Fibonacci everywhere; or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
@@ -435,6 +434,10 @@ One line sits beneath her entry, appended eleven days later by the automated pip
 `interval_s: 0.0 · classification: SIGNAL · confidence: 1.00 · operator_note: none`
 
 </Epilogue>
+
+Everything the last eleven modules built runs on data that has nothing to do with deep space. The classifier reads an eleven-number vector. It has no idea that column 0 is an amplitude, and eleven columns off a table you already have go in the same slot. The 2-of-3 vote is a decision layer over detectors that disagree, which is what you want any time one model's verdict is too cheap to act on alone. The drift check compares this week's input means against the means the model was trained on, and every deployed model has that pair. The digest pin, the canary, the labeled probe and the model card are all there because a model is a claim about data that keeps moving.
+
+The same chain on a dataset of your own, in one paragraph. Pick a table with a label column and hold out a fifth of the rows. Normalize the feature columns against the training minimum and maximum, and save those two numbers per column, because the deployed path has to apply the same ones. Fit a small dense network with `model.fit`, score the held-out rows, and write down what it got. Then log every live prediction's confidence and input means, so the drift check has something to read a month from now. That is eleven modules with your columns in place of the crew's.
 
 ---
 
