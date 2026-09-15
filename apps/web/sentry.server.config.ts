@@ -8,6 +8,7 @@
  */
 
 import * as Sentry from "@sentry/nextjs";
+import { isServerActionProbe } from "./lib/sentry-filters";
 
 const dsn = process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN;
 
@@ -22,6 +23,12 @@ if (dsn) {
     maxBreadcrumbs: 50,
     maxValueLength: 500,
     beforeSend(event) {
+      // Scanner noise, not a real failure. Next raises E787 for any
+      // multipart POST without a `Next-Action` header, which is what
+      // vulnerability scanners send at `/` constantly. Dropped rather than
+      // rate limited because these requests never came from our own client.
+      if (isServerActionProbe(event)) return null;
+
       if (event.user) {
         delete event.user.email;
         delete event.user.ip_address;

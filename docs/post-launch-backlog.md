@@ -1760,6 +1760,20 @@ flagging exposure, not legal advice).
   5. Retire any Sentry alert built on `payments.geo-backstop`; the source
      no longer exists and the alert can never fire again.
 
+- [ ] (OPERATOR) **Engage a US advisor. Market scope is DECIDED, do not reopen.**
+
+  > **RULING (owner, 2026-09-15): no geo-gating. EU/UK checkout stays open.**
+  > Sub-question (a) below is answered and closed. Rebuilding the gate was
+  > offered with costs stated and declined. What follows is therefore the
+  > compliance path, not a choice between two paths.
+  >
+  > Consequence to hold onto: as a US established seller there is no
+  > threshold in either market, so the FIRST EU or UK consumer sale makes
+  > non-Union OSS, UK VAT and both Art. 27 appointments due at once.
+  > Verified 2026-09-15 with zero purchases on record, so the obligations
+  > are prospective and the registration window is still free. That stops
+  > being true at sale number one.
+
 - [ ] (OPERATOR) **Engage a US advisor, and pick the launch market scope.**
   Rewritten 2026-08-23 now that the entity is decided (US LLC). Two things
   to settle, and they are separable:
