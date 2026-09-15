@@ -334,9 +334,18 @@ export default async function WorldDetailPage({ params }: Props) {
           but a white wash in light, bleaching the plate and stopping dead at
           this border. Opting the header back onto the dark palette keeps the
           veil dark and the type legible in both schemes. */}
+      {/* The space after `pb-9` belongs OUTSIDE the interpolation, not
+          inside the ternary. Tailwind v4 builds utilities by scanning source
+          text, and a class written `pb-9${...}` is read as the candidate
+          `pb-9$` and dropped, so no `.pb-9` rule is emitted. The class still
+          lands in the DOM and still looks right in the element panel, but
+          computed padding-bottom is 0. This header rendered with no bottom
+          padding that way, which is what pushed the stat labels onto the
+          border (found 2026-09-15). `pb-9` appears nowhere else in the repo,
+          so nothing else generated the rule for it. */}
       <header
-        className={`relative z-10 px-12 pt-10 pb-9${
-          heroPlateSrc(world.slug) ? " tc-on-art" : ""
+        className={`relative z-10 px-12 pt-10 pb-9 ${
+          heroPlateSrc(world.slug) ? "tc-on-art" : ""
         }`}
         style={{
           borderBottom: "1px solid var(--tc-border)",
@@ -377,8 +386,12 @@ export default async function WorldDetailPage({ params }: Props) {
               >
                 {value}
               </div>
+              {/* mt-2, not the old mt-0.5: at 2px the label sat inside the
+                  number's descender space and read as one unit with it
+                  (owner, 2026-09-15). 8px separates the pair without
+                  breaking the column. */}
               <div
-                className="font-mono text-xs md:text-sm mt-0.5"
+                className="font-mono text-xs md:text-sm mt-2"
                 style={{ color: "var(--tc-muted)" }}
               >
                 {label}
