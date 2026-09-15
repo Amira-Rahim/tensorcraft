@@ -26,11 +26,24 @@ consequence:
   narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
   - level: nudge
-    content: "Every stage is handed the raw capture and does its own preprocessing, and the classifier's verdict rides along as context. Both of its fields get checked, and the two checks end differently: one broken field has an honest stand-in, the other has none. The expensive last stage is conditional: no anomaly, no alert."
+    content: "Every stage is handed the raw capture and does its own preprocessing, and the classifier's verdict rides along as context. Both of its fields get checked, and the two checks end differently: one broken field has an honest stand-in, the other has none. The expensive last stage is conditional: no anomaly, no alert. Stage 1 is a real model this time: scale the three readings the way module 4 did, hand the model one row, and read the verdict off the sigmoid."
   - level: guidance
-    content: "Wiring three stages is the easy half. The work is deciding what each stage is allowed to hand the next one. Each stage reads the raw capture, so no stage inherits another stage's preprocessing. What does travel between them is the classifier's verdict, and its two fields are not equally repairable. One names a category, the contract lists the categories it may name, and a value outside that list has an obvious stand-in that claims exactly as much as you know. The other is a number every later stage quotes as the model's own certainty, so there is nothing to put in its place: a substituted certainty is a number the classifier never produced, shown to the operator as though it had. That one ends the run, and it ends it before the next stage has done any work. The last stage is the expensive one and only one of the two outcomes calls for it, so the run decides whether to enter it at all, and the result says plainly that nothing was raised."
+    content: "Wiring three stages is the easy half. The work is deciding what each stage is allowed to hand the next one. Each stage reads the raw capture, so no stage inherits another stage's preprocessing. What does travel between them is the classifier's verdict, and its two fields are not equally repairable. One names a category, the contract lists the categories it may name, and a value outside that list has an obvious stand-in that claims exactly as much as you know. The other is a number every later stage quotes as the model's own certainty, so there is nothing to put in its place: a substituted certainty is a number the classifier never produced, shown to the operator as though it had. That one ends the run, and it ends it before the next stage has done any work. The last stage is the expensive one and only one of the two outcomes calls for it, so the run decides whether to enter it at all, and the result says plainly that nothing was raised. For the real stage, two things about what it is handed are not yours to repair: the length, which the model polices by throwing, and the scale, which nothing polices. Module 4's ranges are in the starter; a raw count or a z-score fits the model and comes back as a number between zero and one that means nothing. Past the midpoint the sigmoid speaks for the positive class at that value, and the confidence in the other verdict is what is left."
   - level: solution
-    content: "const verdict = await classify(signal); const confidence = verdict.confidence; if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) { throw new Error('classifier broke its contract'); } const classification = ['noise', 'anomaly'].includes(verdict.class) ? verdict.class : 'unknown'; const isAnomaly = await detectAnomaly(signal, classification); const alert = isAnomaly ? await generateAlert(signal, classification) : null; return { classification, confidence, isAnomaly, alert };"
+    content: |
+      const order = [RANGES.amplitude, RANGES.frequency, RANGES.phase];
+      return async (reading: number[]) => {
+        if (reading.length !== order.length) {
+          throw new Error('the classifier reads ' + order.length + ' features and was handed ' + reading.length);
+        }
+        const features = reading.map((v, i) => (v - order[i].min) / (order[i].max - order[i].min));
+        return tf.tidy(() => {
+          const row = tf.tensor2d([features]);
+          const p = (model.predict(row) as tf.Tensor).dataSync()[0];
+          return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
+        });
+      };
+      const verdict = await classify(signal); const confidence = verdict.confidence; if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) { throw new Error('classifier broke its contract'); } const classification = ['noise', 'anomaly'].includes(verdict.class) ? verdict.class : 'unknown'; const isAnomaly = await detectAnomaly(signal, classification); const alert = isAnomaly ? await generateAlert(signal, classification) : null; return { classification, confidence, isAnomaly, alert };
 keywords:
   - orchestration
   - pipeline
@@ -247,7 +260,7 @@ async function resilientPipeline(
 
 ## Challenge
 
-Wire the three stages, and make the two decisions the classifier's verdict forces: substitute the class you cannot believe, stop the run on the confidence you cannot replace.
+Wire the three stages, and make the two decisions the classifier's verdict forces: substitute the class you cannot believe, stop the run on the confidence you cannot replace. Then build stage 1 on a real model: module 4's classifier, three min-max features in, one sigmoid out, with the shape and the scale contracts above sitting on its input.
 
 <Exercise slug="model-pipeline" />
 

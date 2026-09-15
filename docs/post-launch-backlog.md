@@ -4407,6 +4407,32 @@ Left open, each for a reason:
 - Item 4 territory, untouched: model-pipeline's real `tf.LayersModel`
   first stage.
 
+### model-pipeline runs on a real model (2026-09-15, item 4 of the post-round-7 list)
+
+llm-integration was the one module whose six exercises never touched
+TensorFlow.js, and lesson 5's best idea (three arrays describe one capture,
+the cheap mistake throws on shape, the costly one fits the shape on the wrong
+scale) was taught only as prose. model-pipeline now grades it:
+`classifierStage(model)` takes module 4's classifier as a real seeded
+`tf.LayersModel` with a [null, 3] input and returns the `classify` stage the
+pipeline takes. It scales the three readings with module 4's ranges (given
+in the starter), runs one [1, 3] row inside `tf.tidy`, reads confidence in
+the verdict off the sigmoid, lets an eleven-value capture throw instead of
+trimming it, and is checked against the model's own output so a raw-units or
+z-scored row fails with a message that says which one it was. The pipeline
+still takes injected stages, so every contract test from round 7 stands, and
+the last test wires the real stage in and proves a throwing stage 1 stops the
+run before the detector runs. A new cheat (raw units, trimmed to three) is
+rejected by four tests. The lesson's ladder and Challenge moved with it.
+
+Learned again and written into the grader: tests that count predict calls or
+live tensors take turns through a queue, because the harness starts every
+`it()` at once.
+
+Gates: content 912 / 912, model-pipeline 14 / 14 with three cheats rejected,
+browser parity 65 / 65, prettier and em-dash clean. Uncommitted (with the
+item-3 files).
+
 ## Next 16 bump follow-ups (2026-09-14)
 
 Source: Dependabot PR #38 (next 15.5.24 to 16.3.4) went red on Build, E2E,

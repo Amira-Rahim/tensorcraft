@@ -21,6 +21,21 @@ instructions: |
 
   If the signal is not anomalous, skip the alert stage and leave the alert
   field null rather than empty. Return `{ classification, confidence, isAnomaly, alert }`.
+
+  Stage 1 is a real model here. `classifierStage(model)` takes module 4's
+  classifier, a `tf.LayersModel` whose input is [null, 3], and returns the
+  `classify` function the pipeline takes. It scales the three readings
+  (amplitude in counts, frequency in zero-crossings, phase in radians) with
+  `RANGES`, module 4's contract, hands the model one [1, 3] row inside
+  `tf.tidy`, and turns the sigmoid output into `{ class, confidence }`:
+  above 0.5 is 'anomaly' at that value, otherwise 'noise' at one minus it,
+  because the confidence is confidence in the verdict. Two contracts sit on
+  the input and neither is yours to repair. A capture of the wrong length is
+  a broken contract upstream, and the model's own shape error is the right
+  thing to surface, so do not trim it to fit. Three numbers on the wrong
+  scale fit the shape and come back as a legal-looking confidence that means
+  nothing, so scale them the way the model was trained, not raw and not as
+  z-scores.
 starterCode: |
   interface Verdict {
     class: string;
@@ -32,6 +47,21 @@ starterCode: |
     confidence: number;
     isAnomaly: boolean;
     alert: string | null;
+  }
+
+  // Module 4's contract for the classifier's three features, in physical
+  // units: counts, zero-crossings per window, radians.
+  const RANGES = {
+    amplitude: { min: 0, max: 2048 },
+    frequency: { min: 0, max: 63 },
+    phase: { min: -Math.PI, max: Math.PI },
+  };
+
+  function classifierStage(model: tf.LayersModel): (s: number[]) => Promise<Verdict> {
+    // The reading arrives in module 4's units and the model was trained on
+    // module 4's 0..1 scale. A wrong shape throws on its own; a wrong scale
+    // does not.
+    return null; // your code here
   }
 
   async function pipeline(
@@ -56,6 +86,27 @@ solutionCode: |
     confidence: number;
     isAnomaly: boolean;
     alert: string | null;
+  }
+
+  const RANGES = {
+    amplitude: { min: 0, max: 2048 },
+    frequency: { min: 0, max: 63 },
+    phase: { min: -Math.PI, max: Math.PI },
+  };
+
+  function classifierStage(model: tf.LayersModel): (s: number[]) => Promise<Verdict> {
+    const order = [RANGES.amplitude, RANGES.frequency, RANGES.phase];
+    return async (reading: number[]) => {
+      if (reading.length !== order.length) {
+        throw new Error('the classifier reads ' + order.length + ' features and was handed ' + reading.length);
+      }
+      const features = reading.map((v, i) => (v - order[i].min) / (order[i].max - order[i].min));
+      return tf.tidy(() => {
+        const row = tf.tensor2d([features]);
+        const p = (model.predict(row) as tf.Tensor).dataSync()[0];
+        return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
+      });
+    };
   }
 
   async function pipeline(
@@ -236,7 +287,119 @@ testCode: |
       }
     });
   });
-estimatedMinutes: 12
+  describe('classifierStage', () => {
+    // Module 4's classifier, real: three features in, one sigmoid out. Seeded
+    // so a failure reproduces run to run; the expected verdicts below are
+    // read off the model itself, never off a table.
+    const realClassifier = (seed) => {
+      const m = tf.sequential();
+      m.add(tf.layers.dense({ units: 8, activation: 'relu', inputShape: [3], kernelInitializer: tf.initializers.glorotNormal({ seed }) }));
+      m.add(tf.layers.dense({ units: 1, activation: 'sigmoid', kernelInitializer: tf.initializers.glorotNormal({ seed: seed + 1 }) }));
+      return m;
+    };
+    const RANGE_ORDER = [
+      { min: 0, max: 2048 },
+      { min: 0, max: 63 },
+      { min: -Math.PI, max: Math.PI },
+    ];
+    const minMax = (reading) => reading.map((v, i) => (v - RANGE_ORDER[i].min) / (RANGE_ORDER[i].max - RANGE_ORDER[i].min));
+    const modelSays = (model, features) =>
+      tf.tidy(() => model.predict(tf.tensor2d([features])).dataSync()[0]);
+    const verdictOf = (p) => ({ class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p });
+    // Readings in module 4's units: counts, zero-crossings, radians.
+    const calm = [180, 5, 0.3];
+    const loud = [1650, 41, -2.4];
+    // The harness starts every it() at once, and these tests count predict
+    // calls and live tensors, so they take turns through one queue.
+    let turn = Promise.resolve();
+    const serial = (fn) => {
+      const run = turn.then(fn);
+      turn = run.catch(() => {});
+      return run;
+    };
+    const stageOf = (model) => {
+      const stage = classifierStage(model);
+      expect(stage, 'classifierStage handed back nothing. It returns the classify function the pipeline takes: one that scales a reading, runs the model on one row, and reads the verdict off the sigmoid.').toBeTruthy();
+      expect(typeof stage, 'classifierStage returns a function, the stage itself, not a verdict.').toBe('function');
+      return stage;
+    };
+
+    it('runs the model once, on one [1, 3] row, and leaves no tensors behind', () => serial(async () => {
+      const model = realClassifier(7741);
+      const shapes = [];
+      const realPredict = model.predict.bind(model);
+      Object.defineProperty(model, 'predict', { value: (x) => { shapes.push(x.shape); return realPredict(x); }, configurable: true });
+      const stage = stageOf(model);
+      const before = tf.memory().numTensors;
+      const calls0 = tf.__calls['model.predict'] || 0;
+      const v = await stage(calm);
+      expect(v, 'The stage resolved to nothing. It hands back { class, confidence }.').toBeDefined();
+      expect((tf.__calls['model.predict'] || 0) - calls0, 'One reading is one predict call. This stage ran the model ' + ((tf.__calls['model.predict'] || 0) - calls0) + ' time(s).').toBe(1);
+      expect(shapes, 'The model reads one row of three features, shape [1, 3]: a batch axis of one in front of the features.').toEqual([[1, 3]]);
+      expect(tf.memory().numTensors - before, 'The stage left tensors behind. Run the row and the prediction inside tf.tidy, and hand back plain numbers.').toBe(0);
+    }));
+
+    it("reads the verdict off this model's own output, confidence in the verdict", () => serial(async () => {
+      for (const seed of [11, 23]) {
+        const model = realClassifier(seed);
+        const stage = stageOf(model);
+        for (const reading of [calm, loud]) {
+          const want = verdictOf(modelSays(model, minMax(reading)));
+          const got = await stage(reading);
+          expect(got.class, 'On this model the sigmoid says ' + (want.class === 'anomaly' ? 'above' : 'at or below') + ' 0.5 for this reading, so the class is ' + want.class + '. A verdict that does not follow this model was read off something else.').toBe(want.class);
+          expect(got.confidence, 'Confidence is confidence IN THE VERDICT: the sigmoid output when the class is anomaly, one minus it when the class is noise. A 0.2 output is noise at 0.8, not noise at 0.2.').toBeCloseTo(want.confidence, 4);
+        }
+      }
+    }));
+
+    it("scales the reading the way module 4 trained the model: min-max, not raw units and not z-scores", () => serial(async () => {
+      const model = realClassifier(31);
+      const stage = stageOf(model);
+      const got = await stage(loud);
+      const want = verdictOf(modelSays(model, minMax(loud)));
+      const raw = verdictOf(modelSays(model, loud));
+      expect(
+        got.confidence,
+        'This confidence is the number the model gives for a row on the wrong scale. Amplitude arrives in counts up to 2048 and the model learned it as a fraction of that range; fed raw, the sigmoid pins to its rail and every reading reads the same. Fed z-scores it fits the row too and comes back with a number between 0 and 1 that means nothing. Scale each feature with RANGES: (value - min) / (max - min).' + (Math.abs(got.confidence - raw.confidence) < 1e-4 ? ' The number you returned is exactly the raw-units answer.' : ''),
+      ).toBeCloseTo(want.confidence, 4);
+    }));
+
+    it('lets a capture of the wrong length throw instead of trimming it to fit', () => serial(async () => {
+      const model = realClassifier(43);
+      const stage = stageOf(model);
+      const eleven = [0.4, -1.2, 0.8, 0.1, 2.2, -0.3, 0.9, 1.1, -0.7, 0.2, 0.5];
+      let verdict = null;
+      let threw = false;
+      try {
+        verdict = await stage(eleven);
+      } catch (err) {
+        threw = true;
+      }
+      expect(
+        threw,
+        'Eleven values is module 5\'s array, not module 4\'s reading. Handed to this model whole, tfjs throws its own shape error before the model runs; trimmed to three, it runs on the wrong numbers and returns a verdict nobody should trust. Let the wrong length throw.' + (verdict ? ' This stage returned ' + JSON.stringify(verdict) + ' instead.' : ''),
+      ).toBe(true);
+    }));
+
+    it('wires into the pipeline, and a broken stage 1 stops the run before stage 2', () => serial(async () => {
+      const model = realClassifier(59);
+      const want = verdictOf(modelSays(model, minMax(loud)));
+      let detectorRuns = 0;
+      const r = await pipeline(loud, classifierStage(model), async () => { detectorRuns += 1; return true; }, async () => 'ALERT!');
+      expect(r && r.classification, 'The pipeline carries the real stage\'s class through.').toBe(want.class);
+      expect(r.confidence, 'And its confidence, unchanged.').toBeCloseTo(want.confidence, 4);
+      expect(r.alert).toBe('ALERT!');
+      let stopped = false;
+      try {
+        await pipeline([0.4, -1.2, 0.8, 0.1, 2.2, -0.3, 0.9, 1.1, -0.7, 0.2, 0.5], classifierStage(model), async () => { detectorRuns += 1; return true; }, async () => 'ALERT!');
+      } catch (err) {
+        stopped = true;
+      }
+      expect(stopped, 'A stage 1 that throws ends the run. There is no verdict to carry, so nothing downstream should have run.').toBe(true);
+      expect(detectorRuns, 'The detector ran on the run that had no verdict.').toBe(1);
+    }));
+  });
+estimatedMinutes: 16
 difficulty: intermediate
-mlContent: arithmetic
+mlContent: systems
 skillAxis: js_integration
