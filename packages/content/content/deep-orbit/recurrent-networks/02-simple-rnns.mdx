@@ -26,9 +26,9 @@ consequence:
   narrative: "Demir leaves a run going overnight on the strength of an analogy. The analogy does not survive the log."
 hints:
   - level: nudge
-    content: "A step of an RNN is an ordinary loop iteration with one number carried across it. What arrives now is half of what the cell reads; the other half is what it was already holding. The second half of the exercise is the same cell with its weights chosen for you, so the work there is getting them out and naming them correctly."
+    content: "A step of an RNN is an ordinary loop iteration with one number carried across it. What arrives now is half of what the cell reads; the other half is what it was already holding. The second half of the exercise is the same cell with its weights chosen for you, so the work there is getting them out and naming them correctly. The third function is a running product: one factor per state, multiplied onto the product so far."
   - level: guidance
-    content: "The state has to outlive the loop without outliving the call. Declare it before the loop starts and reassign it at every step, so what it holds at the end depends on the whole window. Declared inside the loop, every step starts from nothing. Declared outside the function, the second call starts where the first one stopped. Two of the arguments meet inside one squashing call: one scales what the cell was already holding, the other scales what just arrived. Collect the state after every step, not only the last one. A layer has no numbers of its own until it belongs to a model, so ask the model rather than the layer, and read the three tensors it returns in the order it returns them rather than the order the formula above is written in."
+    content: "The state has to outlive the loop without outliving the call. Declare it before the loop starts and reassign it at every step, so what it holds at the end depends on the whole window. Declared inside the loop, every step starts from nothing. Declared outside the function, the second call starts where the first one stopped. Two of the arguments meet inside one squashing call: one scales what the cell was already holding, the other scales what just arrived. Collect the state after every step, not only the last one. A layer has no numbers of its own until it belongs to a model, so ask the model rather than the layer, and read the three tensors it returns in the order it returns them rather than the order the formula above is written in. For the factors, the only fact you need is on the page: the slope of tanh at a state is one minus the state squared, so each step contributes the weight times that, and the list you return is the product so far rather than the factor alone."
   - level: solution
     content: |
       const states = []; let h = 0; for (const reading of readings) { h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias); states.push(h); } return states;
@@ -37,6 +37,7 @@ hints:
       model.add(cell);
       const [kernel, recurrentKernel, biasTensor] = model.getWeights();
       return { model, inputWeight: kernel.dataSync()[0], recurrentWeight: recurrentKernel.dataSync()[0], bias: biasTensor.dataSync()[0], };
+      const factors = []; let product = 1; for (const h of states) { product *= recurrentWeight * (1 - h * h); factors.push(product); } return factors;
 keywords:
   - rnn
   - recurrent

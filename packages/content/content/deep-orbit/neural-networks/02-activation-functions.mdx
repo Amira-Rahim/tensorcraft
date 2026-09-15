@@ -133,7 +133,7 @@ Placement falls out of the ranges. ReLU stays in the hidden layers, where the ou
 
 **The curve is symmetric around 0.5.** `sigmoid(-z) = 1 - sigmoid(z)`: write `1 - sigmoid(z)` as `Math.exp(-z) / (1 + Math.exp(-z))`, multiply top and bottom by `Math.exp(z)`, and you are left with `1 / (Math.exp(z) + 1)`, which is `sigmoid(-z)`. Check it against the printed values: `sigmoid(-1)` is 0.27, and `1 - sigmoid(1)` is `1 - 0.73 = 0.27`. A no is exactly as confident as the mirror-image yes.
 
-**A sigmoid on a weighted sum is a complete model by itself.** Take a single neuron's weighted sum (each input times its weight, plus a bias), put sigmoid in the output slot, and you have **logistic regression**: the classical baseline worth beating before you add a single hidden layer.
+**A sigmoid on a weighted sum is a complete model by itself.** Take a single neuron's weighted sum (each input times its weight, plus a bias), put sigmoid in the output slot, and you have **logistic regression**: the classical baseline worth beating before you add a single hidden layer. The name is a trap: despite the word regression, it is a classifier, and module 3 draws the line between the two properly.
 </DerivationDrawer>
 
 ## When Activations Die

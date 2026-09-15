@@ -9,6 +9,7 @@ instructions: |
   3. Build `previewModel` with `tf.sequential` and one `tf.layers.dense` unit reading two features, sigmoid activation, carrying Farah's frozen `KERNEL` and `BIAS`; the grader checks it is the model `tf.sequential` returns, not an object with the same methods. The grader reads the weights back off the model and expects the kernel first, shaped [2, 1], and the bias second.
   4. Score the whole normalized batch in one call into `scores`, one verdict per reading, so `scores` comes out [4, 1].
   5. Write `scoreReading(reading)` for any new 1D reading of two features: normalize it with THE STATISTICS YOU ALREADY FITTED, hand it to the neuron the way the neuron expects its input, and return the verdict: the tensor `predict` hands back, or the number inside it. The grader releases the training batch before its last call, because a model in production has no training rows left to measure.
+  6. Write `minMaxStats(rows)` so it returns `{ min, max }` for any [n, 2] batch, one per FEATURE like step 1 and both as tensors, then scale the batch into `unitRange` with them so each column's lowest reading lands on 0 and its highest on 1. That is the other scaler, and it is the right one for a channel with true bounds (a sensor's full scale, a percentage); z-score stays the default for an open-ended channel like temperature, where one outlier would crush a min-max column into a corner. The grader fits minMaxStats to a batch you have not seen as well.
 starterCode: |
   const batch = tf.tensor2d([
     [20, 0.2],
@@ -36,6 +37,15 @@ starterCode: |
   const previewModel = null;
 
   const scores = null;
+
+  // The other scaler. One min and one max per feature, then each column
+  // stretched so its lowest value sits on 0 and its highest on 1.
+  function minMaxStats(rows) {
+    // your code here
+    return { min: null, max: null };
+  }
+
+  const unitRange = null;
 
   // Nothing is measured again in here. A deployed model has no training
   // rows to measure from, and the neuron still expects a batch for one
@@ -73,6 +83,14 @@ solutionCode: |
     const z = reading.sub(mean).div(std);
     return previewModel.predict(z.reshape([1, 2]));
   }
+
+  function minMaxStats(rows) {
+    return { min: rows.min(0), max: rows.max(0) };
+  }
+
+  const { min, max } = minMaxStats(batch);
+
+  const unitRange = batch.sub(min).div(max.sub(min));
 testCode: |
   describe('Normalize, Then Ask the Preview Neuron', () => {
     const filled = (value, what) => expect(value, what).toBeDefined();
@@ -237,6 +255,43 @@ testCode: |
         typeof archived === 'number' ? archived : archived.dataSync()[0],
         'Normalized with the SAVED statistics, the archived sample scores just over a half. Statistics refitted from anything else move this number, and so does a std taken over n - 1 rather than n.',
       ).toBeCloseTo(0.51, 3);
+    });
+    it('minMaxStats returns one min and one max per feature, as tensors', () => {
+      // The last test releases `batch` while the others run, so this one
+      // hands minMaxStats the same four readings on a tensor of its own.
+      const stats = minMaxStats(tf.tensor2d([[20, 0.2], [22, 0.8], [24, 0.4], [26, 0.6]]));
+      filled(stats && stats.min, 'Step 6 is still empty: minMaxStats returned no min.');
+      filled(stats && stats.max, 'Step 6 is still empty: minMaxStats returned no max.');
+      const mins = Array.from(stats.min.dataSync ? stats.min.dataSync() : stats.min);
+      const maxs = Array.from(stats.max.dataSync ? stats.max.dataSync() : stats.max);
+      const why = 'One minimum and one maximum per column: the coldest temperature and the weakest signal are two different numbers, and a reduction over the whole batch mixes them.';
+      expect(mins.length, why).toBe(2);
+      expect(mins[0], why).toBeCloseTo(20, 5);
+      expect(mins[1], why).toBeCloseTo(0.2, 5);
+      expect(maxs[0], why).toBeCloseTo(26, 5);
+      expect(maxs[1], why).toBeCloseTo(0.8, 5);
+    });
+    it('minMaxStats reads the rows it is handed', () => {
+      const other = minMaxStats(tf.tensor2d([[10, 1], [12, 4], [14, 7]]));
+      const mins = Array.from(other.min.dataSync ? other.min.dataSync() : other.min);
+      const maxs = Array.from(other.max.dataSync ? other.max.dataSync() : other.max);
+      const why = 'These rows are not the batch above. The statistics have to come off the argument.';
+      expect(mins[0], why).toBeCloseTo(10, 5);
+      expect(mins[1], why).toBeCloseTo(1, 5);
+      expect(maxs[0], why).toBeCloseTo(14, 5);
+      expect(maxs[1], why).toBeCloseTo(7, 5);
+    });
+    it('unitRange maps each column onto 0 to 1, lowest reading first', () => {
+      filled(unitRange, 'Step 6 is still empty: unitRange is null.');
+      expect(unitRange.shape, 'Same shape as the batch: four readings, two features.').toEqual([4, 2]);
+      const rows = unitRange.arraySync();
+      const col = (c) => rows.map((r) => r[c]);
+      for (const c of [0, 1]) {
+        expect(Math.min.apply(null, col(c)), 'The lowest reading in each column lands on 0.').toBeCloseTo(0, 5);
+        expect(Math.max.apply(null, col(c)), 'The highest reading in each column lands on 1.').toBeCloseTo(1, 5);
+      }
+      expect(rows[2][0], 'Reading three sits four of the six degrees up the temperature range.').toBeCloseTo(0.6667, 3);
+      expect(rows[2][1], 'And a third of the way up the signal range.').toBeCloseTo(0.3333, 3);
     });
   });
 estimatedMinutes: 15

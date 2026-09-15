@@ -6,7 +6,9 @@ instructions: |
   (returns `{ class, confidence }`), `detectAnomaly` (returns a boolean), and
   `generateAlert` (returns a message string). Every stage is handed the raw
   capture and does its own preprocessing, and the classifier's verdict rides
-  along as context.
+  along as context. The `detectAnomaly` here is the grader's two-argument
+  stand-in, `(signal, class)`; lesson 5's three-argument call carries the
+  autoencoder and the thresholds itself.
 
   Two checks sit on that verdict and they end differently. The class is
   contracted to be 'noise' or 'anomaly', and a class outside the contract has

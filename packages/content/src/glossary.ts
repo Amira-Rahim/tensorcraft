@@ -109,6 +109,47 @@ export const GLOSSARY: GlossaryEntry[] = [
     scope: "global",
   },
   {
+    term: "standard deviation",
+    definition:
+      "The typical distance of a value from the mean, the square root of the variance. Dividing by it measures a feature in units of its own spread, which is what a z-score is.",
+    aliases: ["standard deviations", "std"],
+    scope: "global",
+  },
+  {
+    term: "variance",
+    definition:
+      "The average squared distance of the values from their mean. Its square root is the standard deviation, and tf.moments returns the mean and the variance in one call.",
+    aliases: ["variances"],
+    scope: "global",
+  },
+  {
+    term: "regression",
+    definition:
+      "Predicting a number on a continuous scale, such as the next reading's value, rather than picking a class. Logistic regression is a classifier despite its name.",
+    scope: "global",
+  },
+  {
+    term: "classification",
+    definition:
+      "Picking which class an example belongs to, from a fixed set of labels, rather than predicting a number. Its loss is a cross-entropy; a regression's is a squared error.",
+    aliases: ["classifications"],
+    scope: "global",
+  },
+  {
+    term: "y-hat",
+    definition:
+      "The model's prediction for one example, written with a hat to tell it from y, the true value it is scored against.",
+    aliases: ["ŷ"],
+    scope: "global",
+  },
+  {
+    term: "sigma-prime",
+    definition:
+      "The slope of the sigmoid at a point, sigma(z) times (1 - sigma(z)), never above 0.25. It is the factor a gradient picks up passing back through a sigmoid, and the reason deep sigmoid stacks starve.",
+    aliases: ["σ'"],
+    scope: "global",
+  },
+  {
     term: "smoothing",
     definition:
       "Reducing short-term noise in a signal or series so the underlying trend is easier to see.",

@@ -547,7 +547,7 @@ All 11 modules are fully authored with 55 lessons and 56 exercises.
 |---|---|---|---|
 | 1 | `foundations` | Tensors & Data | Board the Archimedes and master tensors, shapes, and operations - the building blocks of every ML model |
 | 2 | `neural-networks` | Neural Networks: Layers & Architecture | Build your first neural network from scratch - neurons, layers, and activations |
-| 3 | `training-loop` | Training: Loss, Gradients & Optimization | Train the DEEP SCAN classifier - loss functions, gradient descent, and the training loop |
+| 3 | `training-loop` | Training: Loss, Gradients & Optimization | Train the DEEP SCAN classifier - loss functions, gradient descent, backpropagation, and the training loop |
 | 6 | `browser-runtimes` | Browser ML Runtimes | Deploy models in the browser with TensorFlow.js, ONNX Runtime Web, and WebGPU |
 
 #### Specialization Track (Modules 4–5, 7–10)

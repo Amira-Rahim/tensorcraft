@@ -96,8 +96,9 @@ testCode: |
     // A stand-in for DEEP SCAN's five-class classifier: the same eleven
     // features and five classes over a smaller hidden layer, frozen here at
     // three decimals so every number below is reproducible. Class order is
-    // pulsar, quasar, noise, interference, anomaly. The four common classes
-    // had 500 labelled captures each in training; the anomaly class had 6.
+    // pulsar, quasar, noise, interference, anomaly. The natural mix the
+    // lesson's ladder is scored on holds 500 captures of each common class
+    // and 6 anomalies; the slice below deliberately scores 40 of each instead.
     const ANOMALY = 4;
     const COMMON = [0, 1, 2, 3];
 

@@ -9,6 +9,8 @@ instructions: |
   Then build `dataset` from the generator with a shuffle buffer of 10 and batches of 4. Which of those two stages runs first is the decision, and the lesson says what each one can still see.
 
   Finally drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`, and wait for that drain to finish before your code ends, because the grader reads `batchShapes` the moment it does. Keep the generator's name: the grader also drains `sensorGen` through a pipeline of its own, no shuffle buffer and one sample per batch, and counts how many rows were read before the first batch arrived.
+
+  Last, the split, on indices rather than on the dataset: deal `tf.util.createShuffledIndices(16)` once and cut it into `trainIdx` (the first 12) and `valIdx` (the other 4), as plain arrays. The two sides have to be disjoint and cover every reading exactly once, which the lesson's `.shuffle().take()/.skip()` trap cannot promise, because a dataset reshuffles on every pass.
 starterCode: |
   // Provided: lazy archive access (do NOT modify)
   let readCount = 0;
@@ -31,6 +33,11 @@ starterCode: |
   // Fill this from the drain. The tests read it once your code has
   // finished, so the drain has to be finished too.
   const batchShapes = [];
+
+  // The split happens on indices, dealt once, not on the reshuffling
+  // dataset. Twelve readings train, four are held out.
+  const trainIdx = null;
+  const valIdx = null;
 solutionCode: |
   let readCount = 0;
   function readSample(i) {
@@ -51,6 +58,10 @@ solutionCode: |
   await dataset.forEachAsync((b) => {
     batchShapes.push(b.xs.shape);
   });
+
+  const indices = Array.from(tf.util.createShuffledIndices(16));
+  const trainIdx = indices.slice(0, 12);
+  const valIdx = indices.slice(12);
 testCode: |
   describe('Lazy Pipeline', () => {
     const filled = (value, what) => expect(value, what).toBeDefined();
@@ -179,6 +190,19 @@ testCode: |
       ).toBe(1);
       expect(bareBatches, 'Sixteen samples, one per batch.').toBe(16);
       expect(readCount - startCount, 'Every sample read once, none read twice.').toBe(16);
+    });
+    it('splits the 16 readings 12 and 4 on indices, disjoint and complete', () => {
+      filled(trainIdx, 'trainIdx is still null. Deal the indices once and cut off the first twelve.');
+      filled(valIdx, 'valIdx is still null. The other four indices are the held-out set.');
+      const train = Array.from(trainIdx);
+      const val = Array.from(valIdx);
+      expect(train.length, 'Twelve readings train.').toBe(12);
+      expect(val.length, 'Four readings are held out.').toBe(4);
+      const all = train.concat(val).slice().sort((a, b) => a - b);
+      expect(
+        all,
+        'Together the two sides cover every reading exactly once: no index missing, none on both sides. A reading the model trained on has no business in the validation set, and a reading on neither side was thrown away.',
+      ).toEqual(Array.from({ length: 16 }, (_, i) => i));
     });
   });
 estimatedMinutes: 12

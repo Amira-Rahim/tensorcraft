@@ -4326,6 +4326,87 @@ CHEAT-OK lines), 65 / 65 starters; ui exercise.test 22 / 22, browser parity
 65 / 65, ui tsc clean; web 734 / 734, web tsc clean; shared 39 / 39;
 prettier clean on all 76 changed files; 0 em dashes. Uncommitted.
 
+### Fixer leftovers closed by hand (2026-09-14, item 3 of the post-round-7 list)
+
+The list the 22 editors declined for ownership or structural reasons, taken
+one at a time, each closed with its ladder, starter and cheats moved together
+and gated (content 912 / 912; every touched exercise OK in all three
+validator modes with its cheats still rejected; browser parity 65 / 65;
+dictation reports ok; prettier and em-dash clean on 18 files).
+
+- **Glossary**: standard deviation (alias `std`), variance, regression,
+  classification, y-hat (alias `ŷ`) and sigma-prime (alias `σ'`) are
+  entries now. Chips landed for the first four (std in six lessons); y-hat
+  and sigma-prime never chip because their only prose sits inside a
+  DerivationDrawer, which the chip plugin does not walk (see the owner
+  call below).
+- **neural-networks/02**: the logistic-regression sentence names the trap
+  (a classifier despite the word).
+- **batch-data** gains the split the lesson teaches: one shuffled list of
+  the sixteen indices, cut 12 / 4 into `trainIdx` / `valIdx`, graded
+  disjoint and complete. **normalize-data** gains step 6, `minMaxStats`
+  and `unitRange`, graded per feature on the batch and on fresh rows, with
+  the which-scaler-when sentence in the brief. Both lesson ladders moved
+  with them.
+- **tfjs-setup** now takes an optional preferred backend: ask with
+  `tf.setBackend`, tolerate a registered backend that resolves false and a
+  name that throws, report what `ready()` settled on. The cold stub
+  carries both refusals on tfjs 4.22's contract. This is the beginner rung
+  of module 10's `gpu-backend`, not a copy of it.
+- **load-pretrained-pipeline**'s stub answers each non-rankable task the
+  way the library does (summary text, translation, generated text, NER
+  spans, zero-shot scores over labels you would have to supply, feature
+  vectors, a throw for question-answering) and refuses a string outright
+  for the four image and audio jobs.
+- **build-rnn** gains `decayFactors(states, recurrentWeight)`, the running
+  product of the weight times the slope of tanh, graded on the lesson's
+  own numbers (1.530e-6 at step 60 for weight 0.8; a 172.73 peak at step 14
+  and 2.7e-16 by step 60 for weight 1.5, both replicated before writing)
+  and on a random window. The lesson's longest section is now something
+  the learner computes.
+- **profile-model** gains `leakedTensors`: the solution disposes the warmup
+  pair and each run's pair, and the two real-model tests count live tensors
+  on the grader's side. The old non-disposing solution fails exactly those
+  two tests. The mock now carries a no-op `dispose()` on the handle and the
+  input.
+- **capstone/04** says the 85 MB bundle is over module 4's 50 MB cold-load
+  budget and why the crew accepted it. **model-pipeline**'s brief names
+  `detectAnomaly` as the grader's two-argument stand-in. The
+  **launch-rehearsal** grader comment calls the candidate what the lesson
+  calls it. **prune-weights** reads the 500 / 6 counts as the scored mix.
+  **docs/prd.md** names backpropagation in module 3's description.
+
+Two harness facts learned on the way, both now written into the graders
+that need them: the browser and CI harnesses start every `it()` at once, so
+a test that swaps a global or counts live tensors has to serialize through
+a queue (tfjs-setup's cold swaps leaked a sibling test's name; profile-
+model's counts read +4 and -2 before); and a grader that releases a fixture
+tensor in one test cannot let another test read it.
+
+Left open, each for a reason:
+
+- [ ] **OWNER: module 3's title** ("Training: Loss, Gradients &
+  Optimization") still skips backprop. Retitling moves the video title
+  card (`docs/video-scene-prompts-deep-orbit.md:355`), `docs/prd.md:550`,
+  `docs/product-plan.md:704`, the e2e text match (`e2e/worlds.spec.ts:107`)
+  and both world-page visual baselines (`e2e/visual/worlds.spec.ts`,
+  full-page at 0.001). Not done without a ruling; the summary and
+  description already name backpropagation.
+- [ ] **OWNER: the glossary rail.** The chip plugin walks only HTML
+  elements, never the children of a JSX component, and 35 percent of
+  lesson prose (99,116 of 283,204 characters) sits inside Dialogue,
+  DerivationDrawer, Callout and Epilogue. That, more than frontmatter term
+  lists, is why the rail thinned when it moved to the chip contract. Either
+  teach the plugin to walk component children (chips would then appear
+  inside dialogue) or leave the rail as what the reader saw underlined.
+- Declined: teaching the two dictation gates to score `instructions`. A
+  brief legitimately names the functions it asks for, so identifier
+  coverage there would fail every honest brief, and prose-level
+  transcription (the kalman and incident-stale-verdict cases) is invisible
+  to identifier coverage anyway; both instances were cut by hand in round 7.
+- Item 4 territory, untouched: model-pipeline's real `tf.LayersModel`
+  first stage.
+
 ## Next 16 bump follow-ups (2026-09-14)
 
 Source: Dependabot PR #38 (next 15.5.24 to 16.3.4) went red on Build, E2E,

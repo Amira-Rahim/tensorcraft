@@ -27,10 +27,10 @@ consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
-    content: "profileModel is four reports on one model: how many parameters it has, how many megabytes they occupy at 4 bytes per float32, where those parameters sit layer by layer, and how long one predict() call takes on average."
+    content: "profileModel is five reports on one model: how many parameters it has, how many megabytes they occupy at 4 bytes per float32, where those parameters sit layer by layer, how long one predict() call takes on average, and how many tensors the loop left behind, which has to be none."
   - level: guidance
     content: |
-      Four reports, four different sources.
+      Five reports, four different sources.
 
       The parameter count you ask the model for. The megabytes are arithmetic
       on that count, and the only decision in them is which megabyte you mean.
@@ -50,16 +50,29 @@ hints:
       backend the work is still queued, so a clock stopped at that line
       measures how fast you can ask rather than how long the work took. If
       your average comes back near zero, that is the second half biting.
+
+      The fifth report is a subtraction: tf.memory().numTensors read before
+      the warmup and again after the last timed call. Every predict() hands
+      back an output and every createInput() an input, and the loop owns
+      both, so each pair is released once its values are out. On the mock
+      models the count cannot move; on the real ones it climbs two per run
+      until the loop lets go.
   - level: solution
     content: |
       const parameterCount = model.countParams();
       const memorySizeMB = (parameterCount * 4) / 1e6;
       const layerBreakdown = model.layers.map(layer => ({ name: layer.name, params: layer.countParams() }));
-      await model.predict(createInput()).data();
+      const before = tf.memory().numTensors;
+      const warmInput = createInput();
+      const warmOutput = model.predict(warmInput);
+      await warmOutput.data();
+      warmOutput.dispose();
+      warmInput.dispose();
       const times: number[] = [];
-      for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); const output = model.predict(input); await output.data(); times.push(Math.max(0, performance.now() - start)); }
+      for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); const output = model.predict(input); await output.data(); times.push(Math.max(0, performance.now() - start)); output.dispose(); input.dispose(); }
       const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
-      return { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown };
+      const leakedTensors = tf.memory().numTensors - before;
+      return { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown, leakedTensors };
 keywords:
   - profiling
   - performance

@@ -148,7 +148,9 @@ const deepScanCard: ModelCard = {
                          // the classifier and the readback, which is what the monitor times
     weightBytes: 3_988,  // measured off weights.bin, not estimated: 997 float32
     bundleSizeMB: 85,    // the whole download, quantized: this classifier
-                         // plus the pretrained language component
+                         // plus the pretrained language component. Over the
+                         // 50 MB cold-load budget module 4 set for this
+                         // dashboard, and accepted as such (see below).
   },
 
   limitations: [
@@ -172,7 +174,7 @@ weight file, and it is 3,988 bytes: the 997 float32 weights of the eleven-featur
 dashboard downloads before it can classify anything, and almost none of that is
 the classifier. The mass is the pretrained language component behind the report
 pipeline, which is what the optimization sprint in module 10 was actually
-measuring. Write the bundle figure on the classifier's card and the next person
+measuring. That 85 MB is over the 50 MB cold-load budget module 4 set for this dashboard, and the overrun was accepted with a reason: the download is cached after the first load (module 10 lesson 4), and the alternative is the server round-trip Nazari refused in module 4 lesson 1. A budget renegotiated with a reason belongs on the card; a budget silently broken does not. Write the bundle figure on the classifier's card and the next person
 who reads it optimizes the wrong network. The latencies split the same way: `inferenceMs` is the classifier alone, 0.035 ms with the readback inside the clock, the figure module 10's cache ledger was built on. `pipelineMs` is the whole `classify()` call the bridge dashboard makes, feature extraction and readback included, 5 ms on WebGPU and 15 on WebGL, which is what lesson 3's monitor times. Put the 5 on the classifier's line and someone will one day spend a week trying to make a microsecond call faster.
 
 The input contract is worth reading twice, because two different 64s run through

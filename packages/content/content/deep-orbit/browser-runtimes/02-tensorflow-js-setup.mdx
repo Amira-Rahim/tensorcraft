@@ -26,11 +26,20 @@ consequence:
   narrative: "Demir carries the backend check from station to station. One console answers differently, and Nazari wants the difference in the log."
 hints:
   - level: nudge
-    content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization."
+    content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization. A preferred name is a request the runtime can refuse, so read the answer after the wait, never before."
   - level: guidance
-    content: "The one non-routine step is that backend selection is asynchronous. TF.js gives you a promise that resolves once it has picked a backend and initialized it, and until that happens there is no backend name to read: a fresh tab has nothing to answer with. So the await comes first and both reads come after it. The setup block at the top of this lesson has all three calls in it, and neither value belongs in your code as a literal, since the backend depends on the device the page is open on."
+    content: "The one non-routine step is that backend selection is asynchronous. TF.js gives you a promise that resolves once it has picked a backend and initialized it, and until that happens there is no backend name to read: a fresh tab has nothing to answer with. So the await comes first and both reads come after it. The setup block at the top of this lesson has all three calls in it, and neither value belongs in your code as a literal, since the backend depends on the device the page is open on. Asking for a backend by name is the one extra step, and the two refusals differ in shape: a registered backend that cannot start resolves false, while a name no package registered throws, so the request needs a try around it and nothing else, because in both cases the runtime settles on something that works once it is ready."
   - level: solution
-    content: "await tf.ready(); return { backend: tf.getBackend(), version: tf.version.tfjs, };"
+    content: |
+      if (preferred) {
+        // A name nobody registered throws; a registered backend that cannot
+        // start resolves false. Neither is fatal: the runtime settles below.
+        try {
+          await tf.setBackend(preferred);
+        } catch (err) {}
+      }
+      await tf.ready();
+      return { backend: tf.getBackend(), version: tf.version.tfjs, };
 keywords:
   - tensorflow-js
   - setup

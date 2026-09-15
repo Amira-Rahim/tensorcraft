@@ -1,20 +1,28 @@
 slug: tfjs-setup
 lessonSlug: tensorflow-js-setup
 title: "Initialize TensorFlow.js"
-instructions: "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version, shaped `{ backend, version }`. Read both values off the runtime rather than writing them in as literals: the backend depends on the device the page is open on, and the version on the package installed there."
+instructions: "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version, shaped `{ backend, version }`. Read both values off the runtime rather than writing them in as literals: the backend depends on the device the page is open on, and the version on the package installed there. `initTF` also takes an optional preferred backend name. When one is given, ask for it with `tf.setBackend` before you wait; a request is not a fact, so read the backend that is actually running afterwards. The request can fail two ways and neither is fatal: a registered backend that cannot start resolves false, and a name that was never registered throws, because its package was not imported. Either way the runtime settles on whatever works once `ready()` resolves, and that is the name you report."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
-  async function initTF(): Promise<{ backend: string; version: string }> {
+  async function initTF(preferred?: string): Promise<{ backend: string; version: string }> {
     // The backend name and the version both live on the runtime. The backend
     // has nothing to say until the runtime has finished starting up, which a
-    // warm page hides and a fresh tab does not.
+    // warm page hides and a fresh tab does not. A preferred name is a request
+    // the runtime can refuse two different ways.
     return null; // your code here
   }
 solutionCode: |
   import * as tf from '@tensorflow/tfjs';
 
-  async function initTF(): Promise<{ backend: string; version: string }> {
+  async function initTF(preferred?: string): Promise<{ backend: string; version: string }> {
+    if (preferred) {
+      // A name nobody registered throws; a registered backend that cannot
+      // start resolves false. Neither is fatal: the runtime settles below.
+      try {
+        await tf.setBackend(preferred);
+      } catch (err) {}
+    }
     await tf.ready();
     return {
       backend: tf.getBackend(),
@@ -23,40 +31,107 @@ solutionCode: |
   }
 testCode: |
   describe('initTF', () => {
+    // A cold runtime: it behaves like a fresh tab and has no backend name to
+    // give until ready() has resolved. Its ready() takes 25ms, longer than
+    // any stray yield, so calling ready() and then awaiting something else
+    // still reads the backend before there is one. Every name and the
+    // version are randomized per run, so a memorized answer cannot pass.
+    // setBackend keeps tfjs 4.22's contract: a registered backend that cannot
+    // start resolves false and keeps reporting its own name until ready()
+    // settles the engine on one that works; a name no package registered
+    // throws. The grader's runtime is already warm, so tf.getBackend() there
+    // answers even for code that never awaited tf.ready().
+    const makeCold = () => {
+      const tag = 'probe-' + Math.floor(Math.random() * 1e9);
+      const good = 'good-' + Math.floor(Math.random() * 1e9);
+      const bad = 'bad-' + Math.floor(Math.random() * 1e9);
+      const ver = '4.' + Math.floor(Math.random() * 1000) + '.0-probe';
+      let initialized = false;
+      let current = tag;
+      const asked = [];
+      const runtime = {
+        ready: () =>
+          new Promise((resolve) =>
+            setTimeout(() => {
+              initialized = true;
+              if (current === bad) current = tag;
+              resolve();
+            }, 25),
+          ),
+        getBackend: () => (initialized ? current : null),
+        setBackend: (name) => {
+          asked.push(name);
+          if (name === good) {
+            current = good;
+            return Promise.resolve(true);
+          }
+          if (name === bad) {
+            current = bad;
+            return Promise.resolve(false);
+          }
+          throw new Error("Backend name '" + name + "' not found in registry");
+        },
+        version: { tfjs: ver },
+      };
+      return { tag, good, bad, ver, asked, runtime };
+    };
+    // The harness starts every it() at once, and these tests swap the
+    // runtime out from under initTF, so they take turns through one queue.
+    let turn = Promise.resolve();
+    const onCold = (fn) => {
+      const run = turn.then(async () => {
+        const cold = makeCold();
+        const warm = tf;
+        let result = null;
+        try {
+          tf = cold.runtime;
+          result = await fn(cold);
+        } finally {
+          tf = warm;
+        }
+        return { cold, result };
+      });
+      turn = run.catch(() => {});
+      return run;
+    };
+
     it('returns an object', async () => {
       const result = await initTF();
       expect(result, 'initTF has to resolve to an object carrying a backend and a version. The starter returns null until you build it.').toBeDefined();
     });
     it('reads the backend name off the runtime, and only after ready() resolves', async () => {
-      // The grader's runtime is already warm, so tf.getBackend() answers even
-      // for code that never awaited tf.ready(). This test swaps in a cold
-      // runtime instead: it behaves like a fresh tab and has no backend name
-      // to give until ready() has resolved. Its ready() takes 25ms, which is
-      // longer than any stray yield, so calling ready() and then awaiting
-      // something else still reads the backend before there is one. Both
-      // strings are randomized per run, so a memorized pair cannot pass either.
-      const tag = 'probe-' + Math.floor(Math.random() * 1e9);
-      const ver = '4.' + Math.floor(Math.random() * 1000) + '.0-probe';
-      const warm = tf;
-      let initialized = false;
-      const cold = {
-        ready: () => new Promise((resolve) => setTimeout(() => { initialized = true; resolve(); }, 25)),
-        getBackend: () => (initialized ? tag : null),
-        version: { tfjs: ver },
-      };
-      let result = null;
-      try {
-        tf = cold;
-        result = await initTF();
-      } finally {
-        tf = warm;
-      }
-      expect(initialized, 'Nothing awaited the runtime, so it never picked a backend. On a warm page that still answers; on a fresh tab it does not.').toBe(true);
+      const { cold, result } = await onCold(() => initTF());
+      expect(cold.runtime.getBackend() !== null, 'Nothing awaited the runtime, so it never picked a backend. On a warm page that still answers; on a fresh tab it does not.').toBe(true);
       expect(result, 'initTF resolved to nothing, so there is no backend name to check.').toBeDefined();
-      expect(result.backend, 'This runtime reports a name generated for this run. A name that came from anywhere but the runtime cannot match it.').toBe(tag);
-      expect(result.version, 'Same for the version string: read it, do not type it.').toBe(ver);
+      expect(result.backend, 'This runtime reports a name generated for this run. A name that came from anywhere but the runtime cannot match it.').toBe(cold.tag);
+      expect(result.version, 'Same for the version string: read it, do not type it.').toBe(cold.ver);
+      expect(cold.asked.length, 'No preference was given, so nothing should have been requested.').toBe(0);
+    });
+    it('asks for the preferred backend and reports it once it is running', async () => {
+      const { cold, result } = await onCold((c) => initTF(c.good));
+      expect(cold.asked, 'A preferred name is a request: hand it to tf.setBackend before you wait.').toEqual([cold.good]);
+      expect(result && result.backend, 'This one started, so the runtime is running on it and that is the name to report.').toBe(cold.good);
+    });
+    it('a preferred backend that cannot start is not fatal: the runtime settles elsewhere', async () => {
+      const { cold, result } = await onCold((c) => initTF(c.bad));
+      expect(cold.asked, 'Ask for it first; the refusal comes back as false, not as a throw.').toEqual([cold.bad]);
+      expect(result && result.backend, 'This backend is registered and cannot start. Reading its name right after the refusal reports the name that failed; only after ready() has settled the engine does getBackend() name the one actually running.').toBe(cold.tag);
+    });
+    it('a name that was never registered throws, and the call still resolves', async () => {
+      const never = 'never-' + Math.floor(Math.random() * 1e9);
+      let out = null;
+      let failed = null;
+      try {
+        out = await onCold(() => initTF(never));
+      } catch (err) {
+        failed = err;
+      }
+      expect(failed, 'A name no package registered throws inside tf.setBackend. That throw is the runtime saying no, not the page failing: catch it and carry on to ready().').toBeNull();
+      expect(out.cold.asked, 'The request is still made; the runtime is what refuses it.').toEqual([never]);
+      expect(out.result && out.result.backend, 'After a refused request the runtime settles on what works, and that is the name to report.').toBe(out.cold.tag);
     });
   });
+
 estimatedMinutes: 8
 difficulty: beginner
 mlContent: deployment

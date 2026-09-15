@@ -246,9 +246,10 @@ testCode: |
     minAccuracy: 0.95,
   };
 
-  // The deploy candidate, compiled and untrained, exactly as CI hands it
-  // over. Seeded initializers so a rehearsal is reproducible: run it twice
-  // and it trains the same way both times.
+  // The rehearsal candidate: module 4's three-feature gate, compiled and
+  // untrained, standing in for the eleven-feature classifier so the whole
+  // chain fits one run. Seeded initializers so a rehearsal is reproducible:
+  // run it twice and it trains the same way both times.
   const buildCandidate = () => {
     const m = tf.sequential();
     m.add(tf.layers.dense({
