@@ -1,0 +1,26 @@
+apps/web/lib/__tests__/sentry-filters.test.ts
+  s_05a49bab834291::t_ed4025cfc89d77 1-41,45-53,57-67,71-84
+  s_05a49bab834291::t_cead7db84428f5 42-44,54-56,68-70
+apps/web/lib/sentry-filters.ts
+  s_05a49bab834291::t_32e17f0350d7ef 1-34
+docs/post-launch-backlog.md
+  s_05a49bab834291::t_41595e34783ef8 1763-1776
+apps/web/sentry.server.config.ts
+  s_05a49bab834291::t_8db5041da10a40 11,26-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ff55f6aa720a8e1d9b4c9759f53f28c00af766ad",
+  "prompts": {},
+  "sessions": {
+    "s_05a49bab834291": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "54cc5ee3-fe91-45f3-9817-b95f522fa124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
