@@ -48,12 +48,21 @@ test.describe("Pricing Page", () => {
     await expect(page.getByTestId("refund-guarantee-badge")).toBeVisible();
   });
 
-  test("paywall redirect context renders a notice banner", async ({ page }) => {
+  /**
+   * The paywall redirect used to render a notice banner here quoting the
+   * offer. It was removed 2026-09-15 (owner request) and <PaywallNotice> is
+   * now headless, so the redirect lands on an ordinary /pricing page. This
+   * pins that: a returning banner is a regression, not a silent revert.
+   * The funnel events it still fires are covered by the unit test at
+   * apps/web/app/pricing/__tests__/paywall-notice.test.tsx.
+   */
+  test("paywall redirect context renders no notice banner", async ({
+    page,
+  }) => {
     await page.goto("/pricing?locked=deep-orbit");
+    await expect(page.getByTestId("pricing-heading")).toBeVisible();
     // Scoped to main: the nav's SchemeToggle carries its own (empty)
     // role="status" live region, so a bare getByRole("status") is ambiguous.
-    await expect(page.locator("main").getByRole("status")).toContainText(
-      /deep orbit/i,
-    );
+    await expect(page.locator("main").getByRole("status")).toHaveCount(0);
   });
 });

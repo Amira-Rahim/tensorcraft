@@ -8,7 +8,7 @@ import { CONTENT_DIR } from "../../../scripts/audit-structure-variety.mjs";
 /**
  * Scene-art coverage gate (2026-08-09).
  *
- * /pricing prints "Every lesson illustrated" as purchase evidence. That claim
+ * /pricing prints "Illustrated lessons" as purchase evidence. That claim
  * is only safe if it is true by construction, so this asserts plate coverage
  * rather than pinning a count: a pinned `63` would be the exact drift the
  * claim is meant to avoid (see the `21 bonus lessons` literal removed in the
@@ -49,7 +49,7 @@ describe("deep-orbit scene art covers every built lesson", () => {
     expect(
       existsSync(plate),
       `No plate at scenes/deep-orbit/${module}/${slug}.webp. ` +
-        `/pricing claims "Every lesson illustrated" - either generate the ` +
+        `/pricing claims "Illustrated lessons" - either generate the ` +
         `plate (scripts/art/scenes.mjs) or remove the claim.`,
     ).toBe(true);
   });

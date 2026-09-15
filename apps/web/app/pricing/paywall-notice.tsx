@@ -2,33 +2,37 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { worlds } from "@tensorcraft/worlds";
-import { isLaunched, getPaidLessonCount } from "@tensorcraft/shared";
+import { isLaunched } from "@tensorcraft/shared";
 import { EVENTS, track } from "@/lib/analytics-events";
 
 /**
- * Banner shown on /pricing when a user was redirected here from a
- * paywalled lesson (see apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx).
- * The `?locked=<worldSlug>` query param carries the context so we can
- * tell the user *why* they landed here and which world is gated.
+ * Headless funnel instrumentation for the paywall redirect on /pricing.
  *
- * Renders nothing when `locked` is absent or not a LAUNCHED slug - we never
- * want to render a banner for an arbitrary user-supplied value, and a
- * coming-soon world has nothing to unlock. It previously accepted any
- * canonical slug, so /pricing?locked=neon-protocol rendered a purchase
- * banner quoting Deep Orbit's lesson count for a world that ships no
- * lessons at all.
+ * A locked lesson sends the learner here as
+ * `/pricing?locked=<worldSlug>&module=<moduleSlug>` (see
+ * apps/web/app/worlds/[slug]/[module]/[lesson]/page.tsx). This reads that
+ * context and records it.
  *
- * Fires `upgrade_cta_shown` (source=`paywall`) on mount when the banner is
- * rendered. The click-through CTA itself is the plan picker below; that
- * button fires `upgrade_cta_clicked` when the user engages.
+ * It renders nothing. There used to be a visible banner here restating the
+ * offer (lesson count, capstone, certificate, guarantee); that copy was
+ * removed (owner, 2026-09-15) and the plan picker below carries the offer
+ * on its own. Only the events survived the removal, so this component is
+ * now shaped like its neighbour <PricingAnalytics>.
  *
- * Also fires `paywall_hit` (dev-plan §4c). That event was specced but never
+ * The `isLaunched` guard is still load-bearing even with no markup: it
+ * keeps an arbitrary or stale `locked` value, and a coming-soon world that
+ * has nothing to unlock, out of the funnel numbers.
+ *
+ * Fires `paywall_hit` (dev-plan §4c). That event was specced but never
  * actually fired: its only call site was <LessonPaywall>, which the lesson
  * route stopped rendering when it moved to redirect-based enforcement, so
- * the funnel's most important stage recorded nothing. The banner renders at
+ * the funnel's most important stage recorded nothing. This mounts at
  * exactly the paywall-hit moment, which makes it the correct home for it.
  * `?module=` carries the gated module so the event keeps that dimension.
+ *
+ * Also fires `upgrade_cta_shown` (source=`paywall`) on mount. The
+ * click-through CTA is the plan picker below; that button fires
+ * `upgrade_cta_clicked` when the user engages.
  */
 export function PaywallNotice() {
   const searchParams = useSearchParams();
@@ -56,23 +60,5 @@ export function PaywallNotice() {
     );
   }, [isValidLocked, locked, gatedModule]);
 
-  if (!locked) return null;
-  if (!isValidLocked) return null;
-
-  const displayName = worlds[locked as keyof typeof worlds].displayName;
-
-  return (
-    <div
-      role="status"
-      className="flex items-center gap-3.5 relative mx-auto max-w-[720px] px-6 py-4 bg-surface-raised border border-primary/40"
-    >
-      <span className="w-2 h-2 bg-primary shrink-0" aria-hidden="true" />
-      <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
-        Modules 2-11 of <strong>{displayName}</strong> are where the model
-        actually learns: {getPaidLessonCount()} lessons, the capstone you ship,
-        and your certificate. One payment, lifetime access, and a 5-day
-        money-back guarantee.
-      </p>
-    </div>
-  );
+  return null;
 }

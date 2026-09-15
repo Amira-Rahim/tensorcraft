@@ -65,7 +65,7 @@ production release.
 | `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` (read back from the streaks table since 2026-09-04; previously hardcoded 1) |
 | `session_started` | App load / route into any page (fires from `AnalyticsProvider`) | `sessionId` |
 | `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
-| `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `worldId?` |
+| `upgrade_cta_shown` | Land on `/pricing?locked=<launched-slug>` (fires headlessly from `<PaywallNotice>`; the visible banner was removed 2026-09-15), OR `/paywall` mounts | `source="paywall"`, `worldId?` |
 | `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
 | `free_lesson_cta_clicked` | Click any "Start Module 1 free" CTA on `/learn`, or the trailer end card on a world page | `source` (`learn_hero`/`learn_footer`/`world_trailer_endcard`) |
 | `learn_trailer_played` | `/learn` hero loop begins, or "Watch the trailer" opens the full cut (only once trailer assets ship) | `mode` (`loop`/`full`) |

@@ -308,11 +308,11 @@ export function PricingTiers() {
                 // so this stays true as lessons are added; "63 scenes" would
                 // go stale the way the "21 bonus lessons" literal did. Pinned
                 // by packages/content/__tests__/scene-art-coverage.test.ts.
-                "Every lesson illustrated",
+                "Illustrated lessons",
                 "Capstone project",
-                "GitHub push",
-                "Certificate",
-                "Lifetime updates",
+                "GitHub integration",
+                "Certificate of completion",
+                "Access to all updates",
               ].map((f) => (
                 <li
                   key={f}

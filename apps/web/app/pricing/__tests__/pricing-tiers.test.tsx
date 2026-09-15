@@ -195,14 +195,14 @@ describe("PricingTiers (brutalist grid, buyable tiers only)", () => {
 
   // 63 scene plates shipped 2026-08-09 and no buying surface mentioned them.
   // The claim is phrased as coverage, not a count: every briefing has a plate,
-  // so "every lesson" stays true as lessons are added, whereas "63" would go
-  // stale the way the "21 bonus lessons" literal did. Licensed by
+  // so "illustrated lessons" stays true as lessons are added, whereas "63"
+  // would go stale the way the "21 bonus lessons" literal did. Licensed by
   // packages/content/__tests__/scene-art-coverage.test.ts, which fails if any
   // built lesson is missing its plate.
   it("tells the buyer the course is illustrated", () => {
     render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-single")).toHaveTextContent(
-      /every lesson illustrated/i,
+      /illustrated lessons/i,
     );
     expect(screen.getByTestId("tier-card-free")).toHaveTextContent(
       /illustrated/i,

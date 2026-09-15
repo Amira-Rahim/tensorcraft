@@ -77,7 +77,7 @@ This document is the single source of truth for all development work needed to s
 **Landed (code, uncommitted - awaiting user review):**
 
 - §4b Stripe webhook signature verification, purchases upsert race-condition fix (`ON CONFLICT` + UNIQUE index), `GET /api/purchases/access` endpoint, purchase-to-world referential integrity (migration `017_purchases_referential_integrity.sql`)
-- §4c Paywall redirect contract - Module 2+ lesson attempts redirect to `/auth` (unauth) or `/pricing?locked={slug}` (authed-but-locked); `<PaywallNotice>` banner wired on `/pricing`
+- §4c Paywall redirect contract - Module 2+ lesson attempts redirect to `/auth` (unauth) or `/pricing?locked={slug}` (authed-but-locked); `<PaywallNotice>` wired on `/pricing`, headless since 2026-09-15 (the visible banner was removed; it still fires `paywall_hit` and `upgrade_cta_shown`)
 - §5b Dashboard page - server component with parallel Supabase queries, `world-cards.tsx` grid showing owned/locked states, 8 new tests
 - §5f GitHub integration backend - `/connect`, `/callback`, `/disconnect`, `/commit`, `/retroactive-push` endpoints with retry + structured error codes; 35 new tests
 - §6a WCAG 2.1 AA audit report at `docs/audits/accessibility-audit-2026-04-20.md` - 37 findings (6 Critical, 14 Serious)
