@@ -587,6 +587,53 @@ export type Database = {
           },
         ];
       };
+      review_queue: {
+        Row: {
+          created_at: string;
+          last_reviewed_at: string | null;
+          lesson_id: string;
+          module_id: string;
+          next_review_at: string;
+          prompt_index: number;
+          pulls: number;
+          successes: number;
+          user_id: string;
+          world_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          last_reviewed_at?: string | null;
+          lesson_id: string;
+          module_id: string;
+          next_review_at: string;
+          prompt_index?: number;
+          pulls?: number;
+          successes?: number;
+          user_id: string;
+          world_id: string;
+        };
+        Update: {
+          created_at?: string;
+          last_reviewed_at?: string | null;
+          lesson_id?: string;
+          module_id?: string;
+          next_review_at?: string;
+          prompt_index?: number;
+          pulls?: number;
+          successes?: number;
+          user_id?: string;
+          world_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "review_queue_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       schema_migrations: {
         Row: {
           applied_at: string;
