@@ -28,6 +28,13 @@ let mockProfileEmail: string | null = "buyer@example.com";
 // Stored Stripe customer id on the buyer's profile (migration 043). When set,
 // checkout must pass `customer` instead of `customer_email`.
 let mockProfileCustomerId: string | null = null;
+let mockPurchaseLookupError: { message: string } | null = null;
+let mockProfileLookupError: { message: string } | null = null;
+
+beforeEach(() => {
+  mockPurchaseLookupError = null;
+  mockProfileLookupError = null;
+});
 
 vi.mock("stripe", () => ({
   default: class MockStripe {
@@ -143,7 +150,10 @@ vi.mock("@tensorcraft/supabase", () => ({
           select: () => ({
             eq: () => ({
               in: () =>
-                Promise.resolve({ data: mockExistingPurchases, error: null }),
+                Promise.resolve({
+                  data: mockExistingPurchases,
+                  error: mockPurchaseLookupError,
+                }),
             }),
           }),
           // auto-grant insert path
@@ -164,7 +174,7 @@ vi.mock("@tensorcraft/supabase", () => ({
                         stripe_customer_id: mockProfileCustomerId,
                       }
                     : null,
-                  error: null,
+                  error: mockProfileLookupError,
                 }),
             }),
           }),
@@ -1006,7 +1016,7 @@ describe("Upgrade path", () => {
     mockProfileCustomerId = null;
   });
 
-  async function checkout(body: { planId: string; worldIds: string[] }) {
+  async function checkout(body: unknown) {
     return app.request("/api/payments/checkout", {
       method: "POST",
       headers: {
@@ -1016,6 +1026,41 @@ describe("Upgrade path", () => {
       body: JSON.stringify(body),
     });
   }
+
+  it.each([null, [], "single", 5, { planId: 5, worldIds: ["deep-orbit"] }])(
+    "rejects malformed checkout data: %j",
+    async (body) => {
+      expect((await checkout(body)).status).toBe(400);
+      expect(mockSessionCreate).not.toHaveBeenCalled();
+      expect(mockServerInsert).not.toHaveBeenCalled();
+    },
+  );
+
+  it("rejects repeated worlds instead of selling a bundle for one world", async () => {
+    const res = await checkout({
+      planId: "twoBundle",
+      worldIds: ["deep-orbit", "deep-orbit"],
+    });
+    expect(res.status).toBe(400);
+    expect(mockSessionCreate).not.toHaveBeenCalled();
+    expect(mockServerInsert).not.toHaveBeenCalled();
+  });
+
+  it.each(["purchase", "profile"])(
+    "stops checkout when the %s lookup fails",
+    async (lookup) => {
+      if (lookup === "purchase")
+        mockPurchaseLookupError = { message: "database unavailable" };
+      else mockProfileLookupError = { message: "database unavailable" };
+      const res = await checkout({
+        planId: "single",
+        worldIds: ["deep-orbit"],
+      });
+      expect(res.status).toBe(503);
+      expect(mockSessionCreate).not.toHaveBeenCalled();
+      expect(mockServerInsert).not.toHaveBeenCalled();
+    },
+  );
 
   it("allows upgrade when user owns some worlds", async () => {
     // User paid $49 for deep-orbit. Requests twoBundle (deep-orbit + neon-protocol, $79).
@@ -1192,92 +1237,40 @@ describe("Upgrade path", () => {
   });
 });
 
-/**
- * Guest checkout. The authed flow made a cold buyer create an account before
- * paying, which with magic-link auth meant leaving the browser for an inbox
- * mid-purchase. These cover the two halves: a session created without a user,
- * and the webhook resolving identity from the email Stripe collected.
- */
 describe("POST /api/payments/guest-checkout", () => {
   beforeEach(() => {
     mockSessionCreate.mockClear();
-    mockSessionCreate.mockResolvedValue({ url: "https://stripe.test/guest" });
+    mockServerInsert.mockClear();
+    mockResolveUser.mockClear();
+    mockSendAccessLink.mockClear();
   });
 
-  async function guestCheckout(body: unknown) {
-    return app.request("/api/payments/guest-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-  }
-
-  it("creates a session with no auth header at all", async () => {
-    const res = await guestCheckout({
-      planId: "single",
-      worldIds: ["deep-orbit"],
-    });
-    expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(body.url).toBeDefined();
-  });
-
-  it("omits client_reference_id and marks the session as guest", async () => {
-    await guestCheckout({ planId: "single", worldIds: ["deep-orbit"] });
-
-    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
-      client_reference_id?: string;
-      metadata: Record<string, string>;
-    };
-    // There is no user yet, so there is nothing to reference. The webhook
-    // keys off metadata.guest to know it must resolve identity by email.
-    expect(arg.client_reference_id).toBeUndefined();
-    expect(arg.metadata.guest).toBe("true");
-    expect(arg.metadata.worldIds).toBe("deep-orbit");
-  });
-
-  it("charges full price with no upgrade credit applied", async () => {
-    // A guest has no prior purchases by definition, so the credit machinery
-    // is deliberately absent from this route rather than returning 0.
-    // 4900 = the `single` price in this file's PRICING mock, which pins the
-    // pre-2026-06-20 ladder rather than the live one.
-    await guestCheckout({ planId: "single", worldIds: ["deep-orbit"] });
-    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
-      line_items: { price_data: { unit_amount: number } }[];
-    };
-    expect(arg.line_items[0].price_data.unit_amount).toBe(4900);
-  });
-
-  it("enables abandoned-cart recovery like the authed route", async () => {
-    await guestCheckout({ planId: "single", worldIds: ["deep-orbit"] });
-    const arg = mockSessionCreate.mock.calls.at(-1)?.[0] as {
-      after_expiration?: { recovery?: { enabled?: boolean } };
-    };
-    expect(arg.after_expiration?.recovery?.enabled).toBe(true);
-  });
-
-  it("rejects a world count that does not match the plan", async () => {
-    const res = await guestCheckout({
-      planId: "single",
-      worldIds: ["deep-orbit", "neon-protocol"],
-    });
-    expect(res.status).toBe(400);
-  });
-
-  it("rejects an unknown world slug", async () => {
-    const res = await guestCheckout({
-      planId: "single",
-      worldIds: ["not-a-real-world"],
-    });
-    expect(res.status).toBe(400);
-  });
-
-  it("rejects the free plan", async () => {
-    const res = await guestCheckout({ planId: "free", worldIds: [] });
-    expect(res.status).toBe(400);
-  });
+  it.each([undefined, "Bearer test-token"])(
+    "rejects direct requests regardless of authentication (%s)",
+    async (authorization) => {
+      const res = await app.request("/api/payments/guest-checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(authorization ? { Authorization: authorization } : {}),
+        },
+        body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+      });
+      expect(res.status).toBe(403);
+      expect(await res.json()).toEqual({
+        error: "Sign in before purchasing a world.",
+        code: "guest_checkout_disabled",
+      });
+      expect(mockSessionCreate).not.toHaveBeenCalled();
+      expect(mockServerInsert).not.toHaveBeenCalled();
+      expect(mockResolveUser).not.toHaveBeenCalled();
+      expect(mockSendAccessLink).not.toHaveBeenCalled();
+    },
+  );
 });
 
+// Continue accepting signed webhooks for any guest sessions created before
+// the route was disabled. Blocking new sessions must not strand prior buyers.
 describe("webhook: guest session identity resolution", () => {
   beforeEach(() => {
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
@@ -1417,19 +1410,6 @@ describe("checkout collects the billing country with Stripe Tax off", () => {
       expect.objectContaining({ billing_address_collection: "required" }),
     );
   });
-
-  it("requires the billing address on guest checkout", async () => {
-    const res = await app.request("/api/payments/guest-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
-    });
-
-    expect(res.status).toBe(200);
-    expect(mockSessionCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ billing_address_collection: "required" }),
-    );
-  });
 });
 
 /**
@@ -1463,26 +1443,8 @@ describe("EU/UK checkout open", () => {
     });
   }
 
-  function guestCheckout(country?: string) {
-    return app.request("/api/payments/guest-checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(country ? { "CF-IPCountry": country } : {}),
-      },
-      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
-    });
-  }
-
   it("creates a session for authed checkout from an EU country", async () => {
     const res = await checkout("DE");
-
-    expect(res.status).toBe(200);
-    expect(mockSessionCreate).toHaveBeenCalled();
-  });
-
-  it("creates a session for guest checkout from the United Kingdom", async () => {
-    const res = await guestCheckout("GB");
 
     expect(res.status).toBe(200);
     expect(mockSessionCreate).toHaveBeenCalled();
@@ -1507,19 +1469,6 @@ describe("EU/UK checkout open", () => {
   // same problem the receipt already solves (2026-08-31 phrasing audit).
   it("describes the product with world display names, not slugs", async () => {
     await checkout("US");
-
-    const params = mockSessionCreate.mock.calls[0]![0] as {
-      line_items: {
-        price_data: { product_data: { description: string } };
-      }[];
-    };
-    expect(params.line_items[0]!.price_data.product_data.description).toBe(
-      "Access to Deep Orbit",
-    );
-  });
-
-  it("guest checkout also describes the product with display names", async () => {
-    await guestCheckout("US");
 
     const params = mockSessionCreate.mock.calls[0]![0] as {
       line_items: {

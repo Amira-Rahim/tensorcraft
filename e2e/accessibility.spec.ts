@@ -152,3 +152,19 @@ for (const scheme of SCHEMES) {
     });
   });
 }
+
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`due review warm-up is accessible in ${colorScheme}`, async ({
+    page,
+  }) => {
+    const { seedDueReview, REVIEW_LESSON } = await import("./review-fixture");
+    await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+    await seedDueReview(page);
+    await page.goto(REVIEW_LESSON);
+    const warmup = page.getByRole("region", { name: /Warm-up/ });
+    await expect(warmup).toBeVisible();
+    expect((await audit(page)).violations).toEqual([]);
+    await warmup.getByRole("button", { name: "I couldn't recall it" }).click();
+    expect((await audit(page)).violations).toEqual([]);
+  });
+}

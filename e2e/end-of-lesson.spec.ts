@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
  * deep-orbit lesson must render the new RecallPrompt + LessonRecap close.
  *
  * RecallPrompt sits above LessonRecap; revealing the answer exposes the
- * Got it / Review again controls; the recap shows its three sub-labels.
+ * Got it / Needs work controls; the recap shows its three sub-labels.
  *
  * The step index persists in localStorage under the slugified lesson TITLE
  * ("Introduction to Tensors" -> introduction-to-tensors), seeded before the
@@ -39,17 +39,22 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     expect(recallBox!.y).toBeLessThan(recapBox!.y);
 
     // Reveal the answer; the answer text and the result controls appear.
-    const reveal = page.getByRole("button", { name: /reveal answer/i }).first();
+    const reveal = page.getByRole("button", { name: /^check$/i }).first();
     await expect(reveal).toBeVisible();
+    await expect(reveal).toBeDisabled();
+    await page
+      .getByRole("textbox")
+      .first()
+      .fill("A tensor holds numeric data with a shape.");
     await reveal.click();
 
     await expect(
       page.getByRole("button", { name: /got it/i }).first(),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: /review again/i }).first(),
+      page.getByRole("button", { name: /needs work/i }).first(),
     ).toBeVisible();
-    // The Reveal Answer button is replaced by the revealed answer.
+    // The Check button is replaced by the revealed answer.
     await expect(reveal).toBeHidden();
 
     // The recap shows its three sub-labels.

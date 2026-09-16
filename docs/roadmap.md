@@ -78,7 +78,7 @@ Conversion repairs to the current product, most of them trivial. **Several resto
 
 ### P2 - Reduce purchase friction
 
-- [ ] **Guest checkout - WRITTEN, THEN DISABLED THE SAME DAY (2026-07-21).** `POST /api/payments/guest-checkout` exists but **nothing routes to it**; `checkout-button.tsx` sends signed-out buyers through `/auth` as before. An adversarial review found three defects that only surface *after* the card is charged:
+- [ ] **Guest checkout - UI disabled 2026-07-21; API blocked 2026-09-16.** `POST /api/payments/guest-checkout` returns 403 without creating a session; `checkout-button.tsx` sends signed-out buyers through `/auth`. Existing signed guest-payment webhooks still process. An adversarial review found three defects that only surface *after* the card is charged:
   1. Stripe returns to `/dashboard/purchase-success`, which redirects a session-less visitor to `/auth` - pay, then hit a login wall, no receipt, `session_id` discarded.
   2. A returning customer whose session merely expired reads as a guest, and the route carries neither the already-own guard nor the upgrade credit → charged full price a second time.
   3. `checkout.session.async_payment_succeeded` resolves identity from `client_reference_id` only → a guest paying by bank debit stays `pending` forever: money taken, access never granted, nothing logged.

@@ -69,6 +69,7 @@ vi.mock("@/lib/progress-client", () => ({
 }));
 
 vi.mock("@/lib/analytics", () => ({
+  trackRecallAnswered: vi.fn(),
   trackLessonStarted: vi.fn(),
   trackLessonCompleted: vi.fn(),
   trackModuleCompleted: vi.fn(),
@@ -402,4 +403,50 @@ describe("LessonSteps, script telemetry (2026-09-04 instrumentation)", () => {
       expect.anything(),
     );
   });
+});
+
+it("defers playback and emits one remembered skip after a warm-up", async () => {
+  const { track } = await import("@/lib/analytics");
+  vi.mocked(track).mockClear();
+  localStorage.setItem("tc-script-skip", "1");
+  render(
+    <StrictMode>
+      <LessonSteps
+        lesson={lesson}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        prevLesson={null}
+        nextLesson={null}
+        reviewUserId="alice"
+        dueReviews={[
+          {
+            worldId: "deep-orbit",
+            moduleId: "foundations",
+            lessonId: lesson.slug,
+            promptIndex: 0,
+            pulls: 0,
+            successes: 0,
+            lastReviewedAt: null,
+            nextReviewAt: "2020-01-01",
+            question: "Recall?",
+            answer: "Answer.",
+          },
+        ]}
+      />
+    </StrictMode>,
+  );
+  expect(
+    document.querySelector("[data-script-state='idle']"),
+  ).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /skip intro/i })).toBeNull();
+  expect(track).not.toHaveBeenCalledWith("script_skipped", expect.anything());
+  act(() => screen.getByText("I couldn't recall it").click());
+  act(() => screen.getByText("Continue to lesson").click());
+  expect(
+    document.querySelector("[data-script-state='done']"),
+  ).toBeInTheDocument();
+  expect(
+    vi.mocked(track).mock.calls.filter(([event]) => event === "script_skipped"),
+  ).toHaveLength(1);
 });

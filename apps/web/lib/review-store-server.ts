@@ -82,17 +82,22 @@ export async function resolveDueForUser(
   // "warm-up off", off must mean off.
   if (limit <= 0) return [];
 
-  const { data, error } = await supabase
-    .from("review_queue")
-    .select(
-      "module_id, lesson_id, prompt_index, pulls, successes, last_reviewed_at, next_review_at",
-    )
-    .eq("user_id", userId)
-    .eq("world_id", worldId)
-    // Narrows on the (user_id, world_id, next_review_at) index from migration
-    // 061. `selectDue` filters by due date again on the way through: this
-    // clause saves rows over the wire, it is not the authority on what is due.
-    .lte("next_review_at", now.toISOString());
+  const { data, error } = await Promise.resolve(
+    supabase
+      .from("review_queue")
+      .select(
+        "module_id, lesson_id, prompt_index, pulls, successes, last_reviewed_at, next_review_at",
+      )
+      .eq("user_id", userId)
+      .eq("world_id", worldId)
+      // Narrows on the (user_id, world_id, next_review_at) index from migration
+      // 061. `selectDue` filters by due date again on the way through: this
+      // clause saves rows over the wire, it is not the authority on what is due.
+      .lte("next_review_at", now.toISOString()),
+  ).then(
+    (result) => result,
+    () => ({ data: null, error: new Error("Review queue unavailable") }),
+  );
 
   if (error) return [];
 

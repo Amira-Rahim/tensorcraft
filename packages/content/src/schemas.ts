@@ -6,9 +6,9 @@ import { z } from "zod";
  */
 export const lessonSchema = z.object({
   slug: z.string(),
-  title: z.string(),
-  moduleId: z.string(),
-  worldId: z.string(),
+  title: z.string().min(1),
+  moduleId: z.string().min(1),
+  worldId: z.string().min(1),
   order: z.number().int().positive(),
   estimatedMinutes: z.number().int().positive(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
@@ -42,10 +42,12 @@ export const lessonSchema = z.object({
       location: z.string(),
       time: z.string().optional(),
       epilogueLocation: z.string().optional(),
+      portraitAlt: z.string().optional(),
+      epiloguePortraitAlt: z.string().optional(),
     })
     .optional(),
 
-  // Hints (manual 3-level progressive disclosure)
+  // Short exercises can omit the middle guidance rung.
   hints: z
     .array(
       z.object({
@@ -53,7 +55,8 @@ export const lessonSchema = z.object({
         content: z.string().min(1),
       }),
     )
-    .length(3)
+    .min(2)
+    .max(3)
     .optional(),
 
   // Pedagogical pattern. The lesson BODY carries the alternate structure
@@ -97,8 +100,8 @@ export const lessonSchema = z.object({
 
 export const exerciseSchema = z.object({
   slug: z.string(),
-  lessonSlug: z.string(),
-  title: z.string(),
+  lessonSlug: z.string().min(1),
+  title: z.string().min(1),
   instructions: z.string().min(1),
   starterCode: z.string().min(1),
   solutionCode: z.string().min(1),
@@ -148,12 +151,17 @@ export const exerciseSchema = z.object({
 
 export const moduleSchema = z.object({
   slug: z.string(),
-  title: z.string(),
-  worldId: z.string(),
+  title: z.string().min(1),
+  worldId: z.string().min(1),
   order: z.number().int().positive(),
-  description: z.string(),
-  lessonCount: z.literal(5),
+  description: z.string().min(1),
+  summary: z.string().min(1),
+  lessonCount: z.number().int().positive(),
   prerequisites: z.array(z.string()).default([]),
+  track: z
+    .enum(["foundations", "specialization", "companion", "bonus"])
+    .default("foundations"),
+  unlockCondition: z.string().optional(),
 });
 
 export type Lesson = z.infer<typeof lessonSchema>;

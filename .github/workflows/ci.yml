@@ -24,6 +24,20 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  rls:
+    name: PostgreSQL row security
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Test policies in an isolated PostgreSQL cluster
+        run: node scripts/test-rls.mjs
+        env:
+          PG_BIN: /usr/lib/postgresql/16/bin
+
   checks:
     name: Lint, format & typecheck
     runs-on: ubuntu-latest

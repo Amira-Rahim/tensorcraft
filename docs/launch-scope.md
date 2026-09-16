@@ -8,7 +8,7 @@ document is the source of truth.
 ## What ships at V1
 
 - **Deep Orbit only.** Time-Series & Signals world: 11 modules, 56 lessons
-  (incl. the 5-lesson capstone), 59 exercises.
+  (incl. the 5-lesson capstone), 65 exercises.
 - All marketing surfaces (landing, `/worlds`, `/learn`) render Deep Orbit as
   the live hero. The other 4 worlds (Neon Protocol, Signal Ward, Nova
   Canvas, Terra Grid) appear as **muted "Coming soon" cards** that link to
@@ -96,12 +96,13 @@ those files.
 
 ## Reviving an unlaunched world
 
-When a coming-soon world is ready to ship:
+First complete the content and runtime checks in
+[the world launch checklist](world-launch-checklist.md). Then:
 
 1. Add its slug to `LAUNCHED_WORLDS` in `packages/shared/src/constants.ts`.
-2. Add its dir to `LAUNCHED_WORLD_DIRS` in
-   `packages/content/velite.config.ts`.
-3. Re-run `pnpm build:content` and `pnpm build` - sitemap, JSON-LD,
+2. Add its dir to `BUILT_WORLD_DIRS` in
+   `packages/content/src/built-worlds.ts`.
+3. Re-run `pnpm turbo build:content` and `pnpm build` - sitemap, JSON-LD,
    onboarding flow, dashboard, and `/worlds/{slug}` route all flip
    automatically.
 4. Update marketing copy on `/worlds/page.tsx`, `/learn/page.tsx`, and

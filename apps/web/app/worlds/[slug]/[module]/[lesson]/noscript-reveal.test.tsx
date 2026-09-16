@@ -25,7 +25,8 @@ describe("NoscriptReveal", () => {
   });
 
   it("targets the exact state the SSR markup ships in", () => {
-    expect(css()).toContain('[data-script-state="playing"]');
+    expect(css()).toContain('[data-script-state="idle"]');
+    expect(css()).toMatch(/visibility:\s*visible\s*!important/);
   });
 
   it("undoes every hiding mechanism, not just the opacity one", () => {

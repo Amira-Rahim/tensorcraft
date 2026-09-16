@@ -62,3 +62,42 @@ test.describe("Lesson script playback", () => {
     await expect(page.locator("[data-script-state='done']")).toBeAttached();
   });
 });
+
+test("a due warm-up defers the story and its skip control", async ({
+  page,
+}) => {
+  const { seedDueReview, REVIEW_LESSON } = await import("./review-fixture");
+  await seedDueReview(page);
+  await page.goto(REVIEW_LESSON);
+  const warmup = page.getByRole("region", { name: /Warm-up/ });
+  await expect(warmup).toBeVisible();
+  await expect(page.locator("[data-script-state='idle']")).not.toHaveAttribute(
+    "aria-busy",
+    "true",
+  );
+  await expect(page.getByRole("button", { name: /skip intro/i })).toHaveCount(
+    0,
+  );
+  await warmup.getByRole("button", { name: "I couldn't recall it" }).click();
+  await expect(warmup.getByRole("status")).toHaveText("Answer revealed.");
+  await warmup.getByRole("button", { name: "Continue to lesson" }).click();
+  await expect(page.locator("[data-script-state='playing']")).toBeAttached();
+  await page.getByRole("button", { name: /skip intro/i }).click();
+  await expect(page.locator("[data-script-state='done']")).toBeAttached();
+});
+
+test.describe("Lesson without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+  test("server-rendered idle Briefing remains readable", async ({ page }) => {
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+    await expect(
+      page.getByRole("heading", {
+        name: "Introduction to Tensors",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "What Is a Tensor?", exact: true }),
+    ).toBeVisible();
+  });
+});

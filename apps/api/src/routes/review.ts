@@ -110,6 +110,7 @@ review.post("/", async (c) => {
     lessonId: string;
     promptIndex: number;
     outcome: ReviewOutcome;
+    expectedLastReviewedAt?: string | null;
   };
 
   try {
@@ -118,7 +119,7 @@ review.post("/", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.worldId || !body.lessonId) {
+  if (!body || typeof body !== "object" || !body.worldId || !body.lessonId) {
     return c.json({ error: "worldId and lessonId are required" }, 400);
   }
   if (!isValidWorldSlug(body.worldId)) {
@@ -164,6 +165,26 @@ review.post("/", async (c) => {
     return c.json({ error: "No review item for that key" }, 404);
   }
 
+  if (body.expectedLastReviewedAt !== undefined) {
+    if (
+      body.expectedLastReviewedAt !== null &&
+      (typeof body.expectedLastReviewedAt !== "string" ||
+        !Number.isFinite(Date.parse(body.expectedLastReviewedAt)))
+    ) {
+      return c.json({ error: "Invalid expectedLastReviewedAt" }, 400);
+    }
+    const expected =
+      body.expectedLastReviewedAt === null
+        ? null
+        : Date.parse(body.expectedLastReviewedAt);
+    const actual =
+      existing.last_reviewed_at === null
+        ? null
+        : Date.parse(existing.last_reviewed_at);
+    // A lost response or a second tab must not count one answer twice.
+    if (expected !== actual) return c.json({ ok: true, alreadyRecorded: true });
+  }
+
   const item: ReviewItem = {
     worldId: body.worldId,
     moduleId: existing.module_id,
@@ -191,7 +212,8 @@ review.post("/", async (c) => {
     .eq("user_id", userId)
     .eq("world_id", body.worldId)
     .eq("lesson_id", body.lessonId)
-    .eq("prompt_index", body.promptIndex);
+    .eq("prompt_index", body.promptIndex)
+    .eq("pulls", existing.pulls);
 
   if (writeError) {
     return c.json(
@@ -242,7 +264,13 @@ review.post("/enqueue", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.worldId || !body.moduleId || !body.lessonId) {
+  if (
+    !body ||
+    typeof body !== "object" ||
+    !body.worldId ||
+    !body.moduleId ||
+    !body.lessonId
+  ) {
     return c.json(
       { error: "worldId, moduleId, and lessonId are required" },
       400,

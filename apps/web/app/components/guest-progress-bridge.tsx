@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { flushReviewOutbox, mergeGuestReviews } from "@/lib/review-store-api";
+import { getGuestReviews } from "@/lib/review-store-guest";
 import { markLessonCompleted } from "@/lib/progress-client";
 import {
   getGuestCompletions,
@@ -19,24 +21,22 @@ import {
  */
 export function GuestProgressBridge() {
   const router = useRouter();
-  const ran = useRef(false);
 
   useEffect(() => {
-    if (ran.current) return;
-    ran.current = true;
-
-    const pending = getGuestCompletions();
-    if (pending.length === 0) return;
-
     let cancelled = false;
 
     (async () => {
+      await flushReviewOutbox();
+      if (cancelled) return;
+      const pending = getGuestCompletions();
+      if (pending.length === 0 && getGuestReviews().length === 0) return;
       const supabase = getSupabaseBrowserClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user || cancelled) return;
 
+      const reviewsMigrated = await mergeGuestReviews(user.id);
       let migrated = 0;
       // Chronological replay so streak/milestone logic sees the real order.
       const ordered = [...pending].sort((a, b) =>
@@ -56,19 +56,12 @@ export function GuestProgressBridge() {
       if (migrated === ordered.length) {
         clearGuestCompletions();
       }
-      if (migrated > 0 && !cancelled) {
+      if ((migrated > 0 || reviewsMigrated) && !cancelled) {
         // Server components gate on DB progress; refresh so the
         // prerequisite check sees the migrated rows.
         router.refresh();
       }
-      // The catch is what makes the retry-on-next-mount story above true.
-      // Without it a rejection from getUser() or the replay loop was an
-      // unhandled rejection: nothing migrated, no router.refresh(), and
-      // `ran.current` already latched so this mount would not try again. The
-      // guest then hit the module-2 prerequisite gate holding a browser full
-      // of completed lessons - precisely the failure this component exists to
-      // prevent. Swallowing is correct: the localStorage record is untouched,
-      // so the next page load replays it.
+      // Preserve local records after a failed replay so the next load retries.
     })().catch(() => {});
 
     return () => {

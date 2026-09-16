@@ -65,7 +65,16 @@ describe("lessonSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("requires hints to have exactly 3 levels", () => {
+  it("accepts a two-rung lesson without an unnecessary guidance hint", () => {
+    expect(
+      lessonSchema.safeParse({
+        ...validLesson,
+        hints: [validLesson.hints[0], validLesson.hints[2]],
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a hint ladder with only one rung", () => {
     const result = lessonSchema.safeParse({
       ...validLesson,
       hints: [{ level: "nudge", content: "just one" }],
@@ -155,6 +164,7 @@ describe("moduleSchema", () => {
     worldId: "deep-orbit",
     order: 1,
     description: "Learn the fundamentals of tensors and data loading",
+    summary: "Create tensors and prepare data for a model.",
     lessonCount: 5 as const,
     prerequisites: [],
   };
@@ -164,12 +174,28 @@ describe("moduleSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("requires exactly 5 lessons", () => {
-    const result = moduleSchema.safeParse({
-      ...validModule,
-      lessonCount: 4,
-    });
-    expect(result.success).toBe(false);
+  it.each([4, 5, 6])("accepts a module with %i lessons", (lessonCount) => {
+    expect(
+      moduleSchema.safeParse({ ...validModule, lessonCount }).success,
+    ).toBe(true);
+  });
+
+  it.each([0, -1, 1.5])(
+    "rejects an invalid lesson count of %s",
+    (lessonCount) => {
+      expect(
+        moduleSchema.safeParse({ ...validModule, lessonCount }).success,
+      ).toBe(false);
+    },
+  );
+
+  it("requires a summary for the module preview", () => {
+    expect(
+      moduleSchema.safeParse({ ...validModule, summary: undefined }).success,
+    ).toBe(false);
+    expect(
+      moduleSchema.safeParse({ ...validModule, summary: "" }).success,
+    ).toBe(false);
   });
 
   it("defaults prerequisites to empty array", () => {

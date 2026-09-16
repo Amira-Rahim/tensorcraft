@@ -346,3 +346,16 @@ describe("the limit is honoured at its edges", () => {
     ).toEqual([]);
   });
 });
+
+it("silently omits the warm-up when the queue request rejects", async () => {
+  const query = {
+    select: () => query,
+    eq: () => query,
+    lte: () => Promise.reject(new Error("Network unavailable")),
+  };
+  const client = { from: () => query } as unknown as ServerClient;
+  await expect(resolveDueForUser(client, USER, WORLD, 2, NOW)).resolves.toEqual(
+    [],
+  );
+  expect(mockCanAccessWorld).not.toHaveBeenCalled();
+});

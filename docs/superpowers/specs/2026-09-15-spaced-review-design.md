@@ -1,7 +1,8 @@
 # Spaced Review (retention spine: scheduled recall + commit-before-reveal)
 
 **Date:** 2026-09-15
-**Status:** Approved design, pending implementation plan
+**Status:** Both stages implemented locally, 2026-09-16. Hosted rollout and
+signup/checkout verification remain pending; see `docs/launch-verification.md`.
 **Scope:** Sub-project A of a four-part learning-science remediation. Covers
 scheduled cross-lesson recall (gap G1) and commit-before-reveal on the recall
 prompt (gap G3). Restores, in changed form, the review queue deleted by

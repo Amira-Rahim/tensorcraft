@@ -198,7 +198,7 @@ export interface EventProperties {
     worldId?: string;
     lessonId?: string;
     /** What the user did with the prompt. */
-    action: "revealed" | "hidden" | "got-it" | "review";
+    action: "attempted" | "bailed" | "got-it" | "review";
   };
   [EVENTS.MODULE_COMPLETED]: {
     worldId: string;

@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import type { ResolvedReviewItem } from "@tensorcraft/shared";
+import type { FreeRecallPrompt } from "@/lib/free-recall-prompts";
+import { enqueueReviews } from "@/lib/review-store-api";
+import { LessonWarmup } from "@/app/components/lesson-warmup";
 import Link from "next/link";
 import { LessonContent } from "./lesson-content";
 import { SceneClip } from "./scene-clip";
@@ -67,6 +71,9 @@ function terms(worldSlug: string): {
 }
 
 interface LessonStepsProps {
+  reviewUserId?: string | null;
+  dueReviews?: ResolvedReviewItem[];
+  freeRecallPrompts?: FreeRecallPrompt[];
   lesson: {
     /** Velite frontmatter slug - the canonical lesson id used by every
      *  progress read (world map, dashboard, certificates). All writes MUST
@@ -106,6 +113,7 @@ interface LessonStepsProps {
       content: string;
     }>;
     skillAxes?: string[];
+    recallPrompts?: Array<{ index: number }>;
     glossaryTerms?: Array<{ term: string; definition: string }>;
   };
   exercises: ExerciseData[];
@@ -263,8 +271,15 @@ function LessonStepsInner({
   prevLesson,
   nextLesson,
   lessons,
+  reviewUserId = null,
+  dueReviews = [],
+  freeRecallPrompts = [],
 }: LessonStepsProps) {
   const { activeTerm } = useGlossary();
+  const warmupCompletedRef = useRef(false);
+  const handleWarmupDone = useCallback(() => {
+    warmupCompletedRef.current = true;
+  }, []);
   const [currentStep, setCurrentStep] = useState(0);
   const [maxStepReached, setMaxStepReached] = useState(0);
   // A lesson with N exercises requires N passes: one green run per embedded
@@ -660,6 +675,14 @@ function LessonStepsInner({
       // re-add the same runs (re-audit 2026-09-04). Hints keep max
       // semantics, so re-sending the same size is naturally idempotent.
       if (extras) exerciseAttemptsRef.current = 0;
+      // Auth comes from the server page, never from a failed progress write.
+      void enqueueReviews(
+        reviewUserId,
+        worldSlug,
+        moduleSlug,
+        lesson.slug,
+        (lesson.recallPrompts ?? []).map((prompt) => prompt.index),
+      );
       markLessonCompleted(worldSlug, moduleSlug, lesson.slug, avgScore, extras)
         .then((result) => {
           // Null = no signed-in user (or a failed write): keep local
@@ -762,6 +785,9 @@ function LessonStepsInner({
     moduleSlug,
     lesson.slug,
     lesson.order,
+    lesson.recallPrompts,
+    lesson.skillAxes,
+    reviewUserId,
     moduleOrder,
     lessons,
   ]);
@@ -1006,6 +1032,10 @@ function LessonStepsInner({
         exercises={exercises}
         worldSlug={worldSlug}
         lessonSlug={lessonSlug}
+        reviewUserId={reviewUserId}
+        dueReviews={warmupCompletedRef.current ? [] : dueReviews}
+        onWarmupDone={handleWarmupDone}
+        freeRecallPrompts={freeRecallPrompts}
         scriptAutoPlay={!scriptPlayedRef.current}
         onScriptPlayed={handleScriptPlayed}
         scriptStatusRef={scriptStatusRef}
@@ -1553,7 +1583,15 @@ function StepBriefing({
   scriptStatusRef,
   briefingVariant = "text",
   clipUrl = null,
+  reviewUserId,
+  dueReviews,
+  freeRecallPrompts,
+  onWarmupDone,
 }: {
+  onWarmupDone: () => void;
+  reviewUserId: string | null;
+  dueReviews: ResolvedReviewItem[];
+  freeRecallPrompts: FreeRecallPrompt[];
   lesson: LessonStepsProps["lesson"];
   moduleSlug: string;
   exercises: ExerciseData[];
@@ -1581,8 +1619,29 @@ function StepBriefing({
   // Which control launched the current run; script_finished carries it so
   // the skip-rate denominator can exclude replays.
   const runKindRef = useRef<"auto" | "replay">("auto");
-  const [scriptState, setScriptState] = useState<"playing" | "done">(
-    scriptAutoPlay ? "playing" : "done",
+  const [scriptState, setScriptState] = useState<"idle" | "playing" | "done">(
+    "idle",
+  );
+  const beginAutoPlayRef = useRef<(() => void) | null>(null);
+  const warmupReadyRef = useRef(false);
+  const hasBegunRef = useRef(false);
+  const [warmupDone, setWarmupDone] = useState(false);
+  const finishWarmup = useCallback(
+    (hadReviews: boolean) => {
+      setWarmupDone(true);
+      onWarmupDone();
+      if (hadReviews)
+        requestAnimationFrame(() => {
+          const heading = rootRef.current?.querySelector("h1");
+          if (heading) {
+            heading.tabIndex = -1;
+            heading.focus();
+          }
+        });
+      warmupReadyRef.current = true;
+      beginAutoPlayRef.current?.();
+    },
+    [onWarmupDone],
   );
   const [beatsShown, setBeatsShown] = useState(0);
 
@@ -1717,129 +1776,154 @@ function StepBriefing({
   // (owner decision 2026-08-23, keep the story, fix the affordance). The
   // "Replay scene" control below stays, so the scene is never unreachable.
   useEffect(() => {
-    if (scriptAutoPlay && !prefersSkippedScript()) {
-      runKindRef.current = "auto";
-      play();
-    } else if (scriptAutoPlay) {
-      // The remembered preference suppressed playback. Since 2026-08-23
-      // this path was silent, so every skip after the first-ever manual
-      // one vanished from the metric and the skip rate was biased low by
-      // construction (audit 2026-09-04).
-      track(EVENTS.SCRIPT_SKIPPED, {
-        worldId: worldSlug,
-        lessonId: lessonSlug,
-        step: 0,
-        elapsedMs: 0,
-        via: "auto",
-        briefingVariant,
-      });
-      finish(false);
-    }
-    return clearTimeline;
+    let active = true;
+    const beginAutoPlay = () => {
+      if (!active || hasBegunRef.current) return;
+      hasBegunRef.current = true;
+      if (scriptAutoPlay && !prefersSkippedScript()) {
+        runKindRef.current = "auto";
+        play();
+      } else if (scriptAutoPlay) {
+        // The remembered preference suppressed playback. Since 2026-08-23
+        // this path was silent, so every skip after the first-ever manual
+        // one vanished from the metric and the skip rate was biased low by
+        // construction (audit 2026-09-04).
+        track(EVENTS.SCRIPT_SKIPPED, {
+          worldId: worldSlug,
+          lessonId: lessonSlug,
+          step: 0,
+          elapsedMs: 0,
+          via: "auto",
+          briefingVariant,
+        });
+        finish(false);
+      } else {
+        finish(false);
+      }
+    };
+    beginAutoPlayRef.current = beginAutoPlay;
+    if (warmupReadyRef.current) beginAutoPlay();
+    return () => {
+      active = false;
+      beginAutoPlayRef.current = null;
+      hasBegunRef.current = false;
+      clearTimeline();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    // aria-busy: while the scene plays, the instructional content is
+    <>
+      {!warmupDone && (
+        <LessonWarmup
+          userId={reviewUserId}
+          worldId={worldSlug}
+          dueReviews={dueReviews}
+          freePrompts={freeRecallPrompts}
+          onDone={finishWarmup}
+        />
+      )}
+      {/* aria-busy: while the scene plays, the instructional content is
     // display:none and absent from the accessibility tree; flag the region
-    // as loading so screen readers know more content is coming.
-    <div
-      ref={rootRef}
-      data-script-state={scriptState}
-      aria-busy={scriptState === "playing" ? "true" : undefined}
-    >
+    // as loading so screen readers know more content is coming. */}
       <div
-        className="text-xs font-mono uppercase tracking-[3px] mb-6"
-        style={{ color: "var(--tc-primary)" }}
+        ref={rootRef}
+        style={scriptState === "idle" ? { visibility: "hidden" } : undefined}
+        data-script-state={scriptState}
+        aria-busy={scriptState === "playing" ? "true" : undefined}
       >
-        {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
-        {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
-      </div>
+        <div
+          className="text-xs font-mono uppercase tracking-[3px] mb-6"
+          style={{ color: "var(--tc-primary)" }}
+        >
+          {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
+          {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
+        </div>
 
-      <h1
-        className="text-4xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight"
-        style={{ color: "var(--tc-text)" }}
-      >
-        {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
-      </h1>
+        <h1
+          className="text-4xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight"
+          style={{ color: "var(--tc-text)" }}
+        >
+          {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
+        </h1>
 
-      <div
-        className="font-mono text-xs uppercase tracking-wider mb-8 pt-5"
-        style={{
-          color: "var(--tc-muted)",
-          borderTop: "1px solid var(--tc-border)",
-        }}
-      >
-        {/* Reading + embedded exercises: "14 min · 2 exercises" where the
+        <div
+          className="font-mono text-xs uppercase tracking-wider mb-8 pt-5"
+          style={{
+            color: "var(--tc-muted)",
+            borderTop: "1px solid var(--tc-border)",
+          }}
+        >
+          {/* Reading + embedded exercises: "14 min · 2 exercises" where the
             exercises alone are 30 min reads as a lie. One basis everywhere
             (module map, JSON-LD, courseWorkload). */}
-        {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
-      </div>
-
-      {/* Playback controls for the scene */}
-      <div className="flex justify-end mb-3">
-        {scriptState === "playing" ? (
-          <button
-            type="button"
-            onClick={() => {
-              // The scene only plays on the briefing step (step 0).
-              track(EVENTS.SCRIPT_SKIPPED, {
-                worldId: worldSlug,
-                lessonId: lessonSlug,
-                step: 0,
-                elapsedMs: playStartedAtRef.current
-                  ? Date.now() - playStartedAtRef.current
-                  : 0,
-                via: "button",
-                briefingVariant,
-              });
-              rememberScriptSkipped();
-              finish(false);
-            }}
-            // Was text-[10px] on a decorative border: technically a control,
-            // practically invisible, and the only exit from a 15.5s scene at
-            // the product's activation moment. Now readable, with a real
-            // touch target and an interactive border that clears 3:1.
-            className="text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 transition-colors hover:opacity-80"
-            style={{
-              color: "var(--tc-text)",
-              border: "1px solid var(--tc-border-interactive)",
-              background: "transparent",
-            }}
-          >
-            Skip intro <span aria-hidden="true">&#9656;</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              runKindRef.current = "replay";
-              play();
-            }}
-            className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
-            style={{
-              color: "var(--tc-muted)",
-              border: "1px solid var(--tc-border)",
-              background: "transparent",
-            }}
-          >
-            <span aria-hidden="true">&#8635;</span> Replay scene
-          </button>
-        )}
-      </div>
-
-      {/* Scene heading, only if scene frontmatter exists */}
-      {lesson.scene && (
-        <div data-script-beat="">
-          <SceneHeading
-            prefix="Int."
-            location={lesson.scene.location}
-            time={lesson.scene.time}
-          />
+          {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
         </div>
-      )}
 
-      {/* Establishing shot: its own playback beat, slugline then picture
+        {/* Playback controls for the scene */}
+        <div className="flex justify-end mb-3">
+          {scriptState === "playing" ? (
+            <button
+              type="button"
+              onClick={() => {
+                // The scene only plays on the briefing step (step 0).
+                track(EVENTS.SCRIPT_SKIPPED, {
+                  worldId: worldSlug,
+                  lessonId: lessonSlug,
+                  step: 0,
+                  elapsedMs: playStartedAtRef.current
+                    ? Date.now() - playStartedAtRef.current
+                    : 0,
+                  via: "button",
+                  briefingVariant,
+                });
+                rememberScriptSkipped();
+                finish(false);
+              }}
+              // Was text-[10px] on a decorative border: technically a control,
+              // practically invisible, and the only exit from a 15.5s scene at
+              // the product's activation moment. Now readable, with a real
+              // touch target and an interactive border that clears 3:1.
+              className="text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 transition-colors hover:opacity-80"
+              style={{
+                color: "var(--tc-text)",
+                border: "1px solid var(--tc-border-interactive)",
+                background: "transparent",
+              }}
+            >
+              Skip intro <span aria-hidden="true">&#9656;</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                runKindRef.current = "replay";
+                play();
+              }}
+              className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
+              style={{
+                color: "var(--tc-muted)",
+                border: "1px solid var(--tc-border)",
+                background: "transparent",
+              }}
+            >
+              <span aria-hidden="true">&#8635;</span> Replay scene
+            </button>
+          )}
+        </div>
+
+        {/* Scene heading, only if scene frontmatter exists */}
+        {lesson.scene && (
+          <div data-script-beat="">
+            <SceneHeading
+              prefix="Int."
+              location={lesson.scene.location}
+              time={lesson.scene.time}
+            />
+          </div>
+        )}
+
+        {/* Establishing shot: its own playback beat, slugline then picture
           then stage direction, screenplay order. With an approved clip
           and the "clip" variant this is the scene VIDEO (owner ruling
           2026-09-04: launch ships with video), poster = the same still;
@@ -1847,50 +1931,56 @@ function StepBriefing({
           speculative (art ships incrementally per docs/scene-bible.md);
           on 404 the component removes itself and the timeline matches
           today's. */}
-      {lesson.scene && briefingVariant === "clip" && clipUrl ? (
-        <SceneClip
-          clipUrl={clipUrl}
-          posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-          alt={lesson.scene.portraitAlt}
-          autoPlayEligible={
-            scriptAutoPlay && !prefersSkippedScript() && !prefersReducedMotion()
-          }
-          worldId={worldSlug}
-          lessonId={lessonSlug}
-        />
-      ) : lesson.scene ? (
-        <ScenePortrait
-          beat
-          src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-          alt={lesson.scene.portraitAlt}
-        />
-      ) : null}
+        {lesson.scene &&
+        briefingVariant === "clip" &&
+        clipUrl &&
+        scriptState !== "idle" ? (
+          <SceneClip
+            clipUrl={clipUrl}
+            posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+            alt={lesson.scene.portraitAlt}
+            autoPlayEligible={
+              scriptAutoPlay &&
+              !prefersSkippedScript() &&
+              !prefersReducedMotion()
+            }
+            worldId={worldSlug}
+            lessonId={lessonSlug}
+          />
+        ) : lesson.scene ? (
+          <ScenePortrait
+            beat
+            src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+            alt={lesson.scene.portraitAlt}
+          />
+        ) : null}
 
-      {/* Narrative as stage direction */}
-      <p
-        data-script-beat=""
-        className="text-sm italic leading-[1.85] mb-7 pl-6 max-w-[52ch]"
-        style={{ color: "var(--tc-muted)" }}
-      >
-        {lesson.context.narrative}
-      </p>
+        {/* Narrative as stage direction */}
+        <p
+          data-script-beat=""
+          className="text-sm italic leading-[1.85] mb-7 pl-6 max-w-[52ch]"
+          style={{ color: "var(--tc-muted)" }}
+        >
+          {lesson.context.narrative}
+        </p>
 
-      {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
+        {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
           the story zone only since the 2026-09-04 prose partition; the
           teaching body reads once, on the Concept step. */}
-      <LessonContent
-        lesson={lesson}
-        exercises={exercises}
-        worldId={worldSlug}
-        moduleId={moduleSlug}
-        lessonId={lessonSlug}
-        glossaryTerms={lesson.glossaryTerms}
-        visibleComponents={BRIEFING_COMPONENTS}
-        storyRegister
-        hideChallengeOnward
-        hideTeaching
-      />
-    </div>
+        <LessonContent
+          lesson={lesson}
+          exercises={exercises}
+          worldId={worldSlug}
+          moduleId={moduleSlug}
+          lessonId={lessonSlug}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={BRIEFING_COMPONENTS}
+          storyRegister
+          hideChallengeOnward
+          hideTeaching
+        />
+      </div>
+    </>
   );
 }
 

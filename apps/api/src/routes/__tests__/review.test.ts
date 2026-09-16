@@ -539,3 +539,45 @@ describe("POST /api/review", () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe("review retries", () => {
+  it("does not count a lost-response retry twice", async () => {
+    authAs("alice");
+    seed("alice");
+    const app = createApp();
+    const request = () =>
+      app.request("/api/review", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          worldId: SEEDED.worldId,
+          lessonId: SEEDED.lessonId,
+          promptIndex: SEEDED.promptIndex,
+          outcome: "got-it",
+          expectedLastReviewedAt: SEEDED.lastReviewedAt,
+        }),
+      });
+    expect((await request()).status).toBe(200);
+    expect(db.review_queue[0].pulls).toBe(3);
+    expect(await (await request()).json()).toEqual({
+      ok: true,
+      alreadyRecorded: true,
+    });
+    expect(db.review_queue[0].pulls).toBe(3);
+  });
+  it.each(["/api/review", "/api/review/enqueue"])(
+    "rejects null JSON at %s",
+    async (path) => {
+      authAs("alice");
+      expect(
+        (
+          await createApp().request(path, {
+            method: "POST",
+            headers: authHeaders(),
+            body: "null",
+          })
+        ).status,
+      ).toBe(400);
+    },
+  );
+});

@@ -2,8 +2,7 @@
  * Reveal the lesson body when JavaScript never runs.
  *
  * The scene playback rules in globals.css hide instructional content while
- * `[data-script-state="playing"]`, and first-visit SSR HTML ships in exactly
- * that state. So a client without JavaScript, which includes any crawler that
+ * `:is([data-script-state="idle"], [data-script-state="playing"])`, and the warm-up initially holds the Briefing in an idle state. So a client without JavaScript, which includes any crawler that
  * does not execute it, receives the lesson text at `opacity: 0` and
  * `display: none` and never sees it revealed.
  *
@@ -26,15 +25,18 @@ export function NoscriptReveal() {
         // so it stays obvious that this is an override and not new styling.
         dangerouslySetInnerHTML={{
           __html: `
-[data-script-state="playing"] [data-script-beat]:not([data-beat-shown]),
-[data-script-state="playing"] .lesson-step-content[data-story-register="true"] > :not([data-beat-shown]) {
+[data-script-state="idle"] {
+  visibility: visible !important;
+}
+:is([data-script-state="idle"], [data-script-state="playing"]) [data-script-beat]:not([data-beat-shown]),
+:is([data-script-state="idle"], [data-script-state="playing"]) .lesson-step-content[data-story-register="true"] > :not([data-beat-shown]) {
   opacity: 1 !important;
   transform: none !important;
 }
-[data-script-state="playing"] .lesson-step-content[data-story-register="true"] > :where(h2, h3, h2 ~ *, h3 ~ *) {
+:is([data-script-state="idle"], [data-script-state="playing"]) .lesson-step-content[data-story-register="true"] > :where(h2, h3, h2 ~ *, h3 ~ *) {
   display: revert !important;
 }
-[data-script-state="playing"] .tc-cut-to {
+:is([data-script-state="idle"], [data-script-state="playing"]) .tc-cut-to {
   display: revert !important;
 }
 `,

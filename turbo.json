@@ -3,7 +3,7 @@
   "tasks": {
     "build:content": {
       "outputs": [".velite/**"],
-      "inputs": ["content/**", "velite.config.ts"]
+      "inputs": ["content/**", "src/**", "velite.config.ts", "package.json"]
     },
     "build": {
       "dependsOn": ["^build", "build:content"],

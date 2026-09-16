@@ -53,9 +53,17 @@ export function getModule(worldSlug: string, moduleSlug: string) {
 
 /** Get all lessons for a world, sorted by module order then lesson order */
 export function getWorldLessons(worldSlug: string) {
+  const moduleOrder = new Map(
+    getModules(worldSlug).map((mod) => [mod.slug, mod.order]),
+  );
   return lessons
     .filter((l) => l.worldId === worldSlug)
-    .sort((a, b) => a.order - b.order);
+    .sort(
+      (a, b) =>
+        (moduleOrder.get(a.moduleId) ?? Number.MAX_SAFE_INTEGER) -
+          (moduleOrder.get(b.moduleId) ?? Number.MAX_SAFE_INTEGER) ||
+        a.order - b.order,
+    );
 }
 
 /** Get lessons for a specific module */

@@ -232,8 +232,10 @@ test.describe("Lesson reading experience", () => {
     const right = page.getByTestId("lesson-right");
     await expect(right).toHaveAttribute("data-kind", "rail");
 
-    // At least one concept term is underlined in the prose.
-    const term = page.locator(".lesson-prose [data-glossary-term]").first();
+    // The MDX also contains hidden story text; inspect a visible concept term.
+    const term = page
+      .locator(".lesson-prose [data-glossary-term]:visible")
+      .first();
     await expect(term).toBeVisible({ timeout: 15000 });
 
     // The glossary rail lists entries.
@@ -322,7 +324,9 @@ test.describe("Lesson reading experience", () => {
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
     // An inline <code> exists inside the prose that is NOT inside a <pre>.
-    const inlineCode = page.locator(".lesson-prose :not(pre) > code").first();
+    const inlineCode = page
+      .locator(".lesson-prose :not(pre) > code:visible")
+      .first();
     await expect(inlineCode).toBeVisible({ timeout: 15000 });
   });
 

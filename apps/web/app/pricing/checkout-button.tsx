@@ -64,24 +64,8 @@ export function CheckoutButton({
       } = await supabase.auth.getSession();
 
       if (!session) {
-        // GUEST CHECKOUT IS DISABLED (2026-07-21). `POST /guest-checkout`
-        // exists on the API but nothing routes to it, because the flow it
-        // completed was broken in three ways that only surface after the card
-        // is charged:
-        //   1. Stripe returns to /dashboard/purchase-success, which redirects
-        //      a session-less visitor to /auth - pay, then hit a login wall,
-        //      no receipt.
-        //   2. A returning customer whose session merely expired reads as a
-        //      guest here, and /guest-checkout carries neither the
-        //      already-own guard nor the upgrade credit, so they are charged
-        //      full price a second time.
-        //   3. checkout.session.async_payment_succeeded resolves identity from
-        //      client_reference_id only, so a guest paying by bank debit stays
-        //      "pending" forever - money taken, access never granted.
-        // Do not re-point this at /guest-checkout until all three are fixed
-        // and lib/guest-account.ts has real (unmocked) tests. See
-        // docs/roadmap.md Horizon 0.
-        //
+        // Guest checkout is disabled in both the UI and API. Preserve the
+        // selected plan through sign-in before using the authenticated route.
         // Carry the WHOLE selection through the auth roundtrip so the buyer
         // returns to the picker they left (audit run #7).
         const restore = new URLSearchParams({

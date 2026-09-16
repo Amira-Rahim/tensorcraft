@@ -133,40 +133,24 @@ Create a Stripe Checkout session. **Authenticated.**
 }
 ```
 
-**Supported plan IDs:**
+**Plan IDs:** Prices come from `packages/shared/src/constants.ts`.
+Only launched worlds can be selected, and each world must appear once.
+Currently only `single` with `["deep-orbit"]` is purchasable.
 
-| `planId` | `worldIds` | Price |
-|----------|-----------|-------|
-| `single` | Any one world | $50 |
-| `two` | Any two worlds | $90 |
-| `three` | Any three worlds | $225 |
-| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $225 |
+| `planId` | Distinct worlds | Price |
+|----------|-----------------|-------|
+| `single` | 1 | $50 |
+| `twoBundle` | 2 (unavailable at launch) | $90 |
+| `threeBundle` | 3 (unavailable at launch) | $135 |
+| `allFive` | 5 (unavailable at launch) | $225 |
 
-**Example - All 5 Worlds:**
-```json
-{
-  "planId": "allFive",
-  "worldIds": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]
-}
-```
+Checkout returns **503** without creating a session if the purchase-history or
+billing-profile lookup fails. This prevents charging an existing owner again
+or losing their upgrade credit during a database outage.
 
 **Upgrade credit behavior:** If the user already owns worlds that overlap with the requested bundle, the amount paid for those worlds is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created - worlds are granted immediately.
 
 **Abandoned-cart recovery:** the session carries `customer_email` (read from `profiles`) and `after_expiration.recovery`, so Stripe can mail a buyer who drops out. `customer_email` is omitted rather than sent empty when the profile has no address, since Stripe rejects a blank string.
-
-### `POST /api/payments/guest-checkout`
-
-Create a Stripe Checkout session **without an account**. **Unauthenticated.**
-
-Same request body and plan IDs as `/checkout`. Exists because the authenticated flow forced a cold buyer to sign up before paying, and with magic-link auth that meant leaving the browser for an inbox mid-purchase.
-
-Differences from `/checkout`:
-
-- **No `client_reference_id`** - there is no user yet. The session is marked `metadata.guest = "true"` and Stripe collects the email.
-- **No upgrade credit and no auto-grant** - a guest has no prior purchases by definition, so the credit machinery is absent rather than returning zero.
-- **Tighter rate limit** - 10 req/min per IP on its own Redis key prefix, on top of the global 60/min limiter, because the route is unauthenticated.
-
-**Identity resolution (webhook):** on `checkout.session.completed` with no `client_reference_id` and `metadata.guest === "true"`, the webhook reads `customer_details.email` and resolves it via `profiles.email` - attaching the purchase to an existing account, or provisioning a new Supabase user with `email_confirm: true` (payment already proves control of the address). It then emails a magic link. If resolution fails the webhook returns **500 so Stripe retries**: the money has already moved, and a silent 200 would mean a paid purchase that grants nothing.
 
 **Response (normal checkout):**
 ```json
@@ -191,6 +175,21 @@ Differences from `/checkout`:
 | `worldIds` | Comma-separated world slugs |
 | `creditApplied` | Credit amount applied (in dollars) |
 | `originalPrice` | Original plan price before credit (in dollars) |
+
+### `POST /api/payments/guest-checkout`
+
+Disabled. Every request returns **403** without creating a Stripe session:
+
+```json
+{
+  "error": "Sign in before purchasing a world.",
+  "code": "guest_checkout_disabled"
+}
+```
+
+Sign in and use `/api/payments/checkout`. Signed webhooks for previously
+created guest sessions are still processed so disabling new checkout sessions
+does not strand buyers who already paid.
 
 ### `GET /api/payments/purchases`
 
@@ -465,7 +464,7 @@ guaranteed contiguous, because `parseRecallPrompts` advances its counter for a
 tag it drops. Idempotent, and it never resets an existing `next_review_at`, so
 re-completing a lesson cannot cancel a schedule.
 
-- `200` - `{ "enqueued": <number of new rows> }`
+- `201` - `{ "ok": true }`
 - `400` - invalid `worldId`, empty or malformed `promptIndices`
 
 ### `POST /api/review`
@@ -479,7 +478,12 @@ Records one outcome and reschedules that prompt.
 `outcome` is `"got-it"`, `"review"` (attempted, missed) or `"bailed"` (no
 attempt). Takes no `moduleId`: the key is the four primary-key columns.
 
-- `200` - `{ "nextReviewAt": "<ISO 8601>" }`
+The client sends `expectedLastReviewedAt` (the timestamp on the displayed
+item, or `null` for a fresh item). A retry after a successful write returns
+`alreadyRecorded: true` without incrementing the counters again. Concurrent
+writes compare the previous pull count so only one update lands.
+
+- `200` - `{ "review": { "nextReviewAt": "<ISO 8601>", "pulls": 1, "successes": 1 } }`, or `{ "ok": true, "alreadyRecorded": true }` for a stale retry
 - `400` - invalid `worldId` or `outcome`
 - `404` - no such row for this user. Enqueue is the only way into the queue,
   so a missing row means the key did not come from it. Distinguishable from a

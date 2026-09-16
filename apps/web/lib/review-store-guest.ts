@@ -1,199 +1,158 @@
 "use client";
 
-/**
- * Guest review schedule (spaced review stage 1, 2026-09-16).
- *
- * Signed-out learners can complete the free module, but the server never
- * sees a guest, so their review queue lives here instead of
- * `review_queue`. Mirrors `guest-progress.ts`: a flat `tc_*_v1` map keyed
- * by a slash-joined string, and every `localStorage` access wrapped in
- * try/catch that degrades to empty rather than throwing (private browsing
- * and blocked site data both throw on a bare call).
- *
- * All scheduling math comes from `@tensorcraft/shared`, `selectDue` and
- * `nextInterval`, the same functions the Postgres-backed store calls. This
- * file only reads and writes the map; see
- * docs/superpowers/specs/2026-09-15-spaced-review-design.md section A for
- * why the curve must not exist in two languages.
- */
-
 import { nextInterval, selectDue } from "@tensorcraft/shared";
 import type { ReviewItem, ReviewOutcome } from "@tensorcraft/shared";
+import { reportDataError } from "./report-data-error";
 
 const STORAGE_KEY = "tc_guest_reviews_v1";
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-interface StoredEntry {
-  pulls: number;
-  successes: number;
-  lastReviewedAt: string | null;
-  nextReviewAt: string;
-}
-
-// "world/module/lesson/promptIndex" -> entry
+type StoredEntry = Pick<
+  ReviewItem,
+  "pulls" | "successes" | "lastReviewedAt" | "nextReviewAt"
+>;
 type StoredMap = Record<string, StoredEntry>;
 
 function readMap(): StoredMap {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    return parsed && typeof parsed === "object" ? (parsed as StoredMap) : {};
+    const raw: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}");
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+    return Object.fromEntries(
+      Object.entries(raw).filter(([key, entry]) => {
+        const parts = key.split("/");
+        return (
+          parts.length === 4 &&
+          parts.slice(0, 3).every(Boolean) &&
+          /^\d+$/.test(parts[3]) &&
+          entry &&
+          typeof entry === "object" &&
+          Number.isInteger(entry.pulls) &&
+          entry.pulls >= 0 &&
+          Number.isInteger(entry.successes) &&
+          entry.successes >= 0 &&
+          entry.successes <= entry.pulls &&
+          typeof entry.nextReviewAt === "string" &&
+          Number.isFinite(Date.parse(entry.nextReviewAt)) &&
+          (entry.lastReviewedAt === null ||
+            (typeof entry.lastReviewedAt === "string" &&
+              Number.isFinite(Date.parse(entry.lastReviewedAt))))
+        );
+      }),
+    );
   } catch {
     return {};
   }
 }
 
-function writeMap(map: StoredMap): void {
+function writeMap(map: StoredMap): boolean {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+    return true;
   } catch {
-    // localStorage unavailable
+    reportDataError("review.guest.write", {
+      message: "Could not save the local review queue",
+    });
+    return false;
   }
 }
 
 function keyFor(
-  worldId: string,
-  moduleId: string,
-  lessonId: string,
-  promptIndex: number,
+  item: Pick<ReviewItem, "worldId" | "moduleId" | "lessonId" | "promptIndex">,
 ): string {
-  return `${worldId}/${moduleId}/${lessonId}/${promptIndex}`;
+  return `${item.worldId}/${item.moduleId}/${item.lessonId}/${item.promptIndex}`;
 }
 
-function toReviewItem(key: string, entry: StoredEntry): ReviewItem | null {
-  const parts = key.split("/");
-  if (parts.length !== 4) return null;
-  const [worldId, moduleId, lessonId, promptIndexRaw] = parts;
-  const promptIndex = Number(promptIndexRaw);
-  if (!worldId || !moduleId || !lessonId || Number.isNaN(promptIndex)) {
-    return null;
+export function getGuestReviews(): ReviewItem[] {
+  return Object.entries(readMap()).map(([key, entry]) => {
+    const [worldId, moduleId, lessonId, index] = key.split("/");
+    return {
+      ...entry,
+      worldId,
+      moduleId,
+      lessonId,
+      promptIndex: Number(index),
+    };
+  });
+}
+
+/** Remove only the snapshot that landed; preserve reviews added during migration. */
+export function removeGuestReviews(items: ReviewItem[]): boolean {
+  const map = readMap();
+  for (const item of items) {
+    const key = keyFor(item);
+    const current = map[key];
+    if (
+      current &&
+      current.nextReviewAt === item.nextReviewAt &&
+      current.pulls === item.pulls
+    )
+      delete map[key];
   }
-  return {
-    worldId,
-    moduleId,
-    lessonId,
-    promptIndex,
-    pulls: entry.pulls,
-    successes: entry.successes,
-    lastReviewedAt: entry.lastReviewedAt,
-    nextReviewAt: entry.nextReviewAt,
-  };
+  return writeMap(map);
 }
 
-/**
- * Adds one review item per prompt index, first due one day out (spec
- * section G.1, matching the API route's enqueue). Never touches a key that
- * already exists: the localStorage equivalent of `on conflict do nothing`,
- * so re-completing a lesson can never cancel an existing schedule.
- *
- * Takes the indices themselves, not a count, and matches
- * `POST /api/review/enqueue` deliberately. `parseRecallPrompts` increments
- * its counter for every <RecallPrompt> tag including one it fails to parse
- * and drops, so prompt indices are not guaranteed contiguous. They are today
- * (80 of 80 parse, held by recall-prompt-extraction.test.ts), but a count
- * would synthesize 0..n-1, and a future gap would enqueue a key the read path
- * drops while losing the key that actually exists: the learner quietly loses
- * a prompt. The caller holds `lesson.recallPrompts` either way, so passing
- * `p.index` costs it nothing. Both halves of the feature take the same shape.
- */
 export function enqueueGuestReviews(
   worldId: string,
   moduleId: string,
   lessonId: string,
   promptIndices: number[],
-): void {
-  try {
-    const map = readMap();
-    const nextReviewAt = new Date(Date.now() + DAY_MS).toISOString();
-    let changed = false;
-    for (const promptIndex of new Set(promptIndices)) {
-      const key = keyFor(worldId, moduleId, lessonId, promptIndex);
-      if (map[key]) continue;
+  now = new Date(),
+): boolean {
+  const map = readMap();
+  for (const promptIndex of new Set(promptIndices)) {
+    const key = keyFor({ worldId, moduleId, lessonId, promptIndex });
+    if (!map[key])
       map[key] = {
         pulls: 0,
         successes: 0,
         lastReviewedAt: null,
-        nextReviewAt,
+        nextReviewAt: new Date(now.getTime() + 86_400_000).toISOString(),
       };
-      changed = true;
-    }
-    if (changed) writeMap(map);
-  } catch {
-    // localStorage unavailable
   }
+  return writeMap(map);
 }
 
-/**
- * Due items for a world, most overdue first. Rehydrates the stored map into
- * `ReviewItem`s and delegates ordering entirely to `selectDue`.
- */
 export function getGuestDue(
   worldId: string,
   limit: number,
   now: Date,
 ): ReviewItem[] {
-  const map = readMap();
-  const items: ReviewItem[] = [];
-  for (const [key, entry] of Object.entries(map)) {
-    if (!key.startsWith(`${worldId}/`)) continue;
-    const item = toReviewItem(key, entry);
-    if (item) items.push(item);
-  }
-  return selectDue(items, now, limit);
+  return selectDue(
+    getGuestReviews().filter((item) => item.worldId === worldId),
+    now,
+    limit,
+  );
 }
 
-/**
- * Records an outcome for one prompt and writes the resulting schedule back.
- * Delegates the interval to `nextInterval`; this file adds no scheduling
- * math of its own. A prompt recorded without ever being enqueued (should
- * not happen in practice) is treated as a fresh item rather than dropped.
- */
 export function recordGuestReview(
   worldId: string,
   moduleId: string,
   lessonId: string,
   promptIndex: number,
   outcome: ReviewOutcome,
-  now: Date = new Date(),
-): void {
-  try {
-    const map = readMap();
-    const key = keyFor(worldId, moduleId, lessonId, promptIndex);
-    const existing = map[key];
-    const current: ReviewItem = existing
-      ? {
-          worldId,
-          moduleId,
-          lessonId,
-          promptIndex,
-          pulls: existing.pulls,
-          successes: existing.successes,
-          lastReviewedAt: existing.lastReviewedAt,
-          nextReviewAt: existing.nextReviewAt,
-        }
-      : {
-          worldId,
-          moduleId,
-          lessonId,
-          promptIndex,
-          pulls: 0,
-          successes: 0,
-          lastReviewedAt: null,
-          nextReviewAt: now.toISOString(),
-        };
-
-    const result = nextInterval(current, outcome, now);
-
-    map[key] = {
-      pulls: result.pulls,
-      successes: result.successes,
-      lastReviewedAt: now.toISOString(),
-      nextReviewAt: result.nextReviewAt,
-    };
-    writeMap(map);
-  } catch {
-    // localStorage unavailable
-  }
+  now = new Date(),
+): boolean {
+  const map = readMap();
+  const key = keyFor({ worldId, moduleId, lessonId, promptIndex });
+  const current: ReviewItem = {
+    worldId,
+    moduleId,
+    lessonId,
+    promptIndex,
+    ...(map[key] ?? {
+      pulls: 0,
+      successes: 0,
+      lastReviewedAt: null,
+      nextReviewAt: now.toISOString(),
+    }),
+  };
+  // Retrying a saved operation must not count it twice.
+  if (
+    current.lastReviewedAt &&
+    Date.parse(current.lastReviewedAt) >= now.getTime()
+  )
+    return true;
+  map[key] = {
+    ...nextInterval(current, outcome, now),
+    lastReviewedAt: now.toISOString(),
+  };
+  return writeMap(map);
 }

@@ -139,11 +139,15 @@ describe("Content Queries", () => {
       expect(result).toHaveLength(5);
     });
 
-    it("returns lessons sorted by order", () => {
+    it("finishes each module before advancing to the next module", () => {
       const result = getWorldLessons("deep-orbit");
-      for (let i = 1; i < result.length; i++) {
-        expect(result[i].order).toBeGreaterThanOrEqual(result[i - 1].order);
-      }
+      expect(result.map((lesson) => lesson.slug)).toEqual([
+        "intro-tensors",
+        "tensor-shapes",
+        "tensor-ops",
+        "first-neuron",
+        "activation-functions",
+      ]);
     });
 
     it("returns empty for unknown world", () => {

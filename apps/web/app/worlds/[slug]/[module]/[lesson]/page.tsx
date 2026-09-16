@@ -1,4 +1,5 @@
-import { Suspense } from "react";
+import { resolveDueForUser } from "@/lib/review-store-server";
+import { FREE_RECALL_PROMPTS } from "@/lib/free-recall-prompts";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { worlds } from "@tensorcraft/worlds";
@@ -28,10 +29,9 @@ interface Props {
   params: Promise<{ slug: string; module: string; lesson: string }>;
 }
 
-// Pre-render every launched-world lesson at build time. Cold lesson loads
-// previously paid a full SSR + Supabase round-trip; with static params the
-// first paint is served from the edge cache. Coming-soon worlds are
-// intentionally excluded, their routes still 404 via `isLaunched()` below.
+// Enumerate valid launched-world lesson routes for dynamicParams=false.
+// cookies() in the Supabase client keeps lesson rendering request-specific,
+// so authentication and purchase checks still run for each page request.
 export function generateStaticParams() {
   return LAUNCHED_WORLDS.flatMap((slug) =>
     getWorldLessons(slug).map((l) => ({
@@ -156,12 +156,15 @@ export default async function LessonPage({ params }: Props) {
         .then(({ data }) => data?.experience_level ?? null)
     : Promise.resolve(null);
 
-  const [purchased, prevCompleted, progress, experienceLevel] =
+  const [purchased, prevCompleted, progress, experienceLevel, dueReviews] =
     await Promise.all([
       purchasedPromise,
       prevCompletedPromise,
       progressPromise,
       experiencePromise,
+      user
+        ? resolveDueForUser(supabase, user.id, slug, 2, new Date())
+        : Promise.resolve([]),
     ]);
 
   if (mod && mod.order > 1 && !purchased) {
@@ -317,32 +320,35 @@ export default async function LessonPage({ params }: Props) {
           and we&rsquo;ll carry your progress over.
         </div>
       )}
-      <Suspense>
-        <LessonPrefsProvider
-          value={{
-            expandDerivations:
-              experienceLevel === "advanced" || experienceLevel === "expert",
-          }}
-        >
-          <LessonSteps
-            lesson={lesson}
-            exercises={exercises}
-            worldSlug={slug}
-            moduleSlug={moduleSlug}
-            moduleName={mod?.title}
-            moduleOrder={mod?.order}
-            prevLesson={prev}
-            nextLesson={next}
-            lessons={moduleLessons.map((l) => ({
-              slug: l.slug,
-              title: l.title,
-              order: l.order,
-              locked: isLessonLocked(l.order, l.slug),
-              completed: completedLessonSlugs.has(l.slug),
-            }))}
-          />
-        </LessonPrefsProvider>
-      </Suspense>
+      {/* Keep the reader in the initial HTML. A streamed Suspense boundary
+          needs JavaScript to reveal its content, including the no-JS fallback. */}
+      <LessonPrefsProvider
+        value={{
+          expandDerivations:
+            experienceLevel === "advanced" || experienceLevel === "expert",
+        }}
+      >
+        <LessonSteps
+          reviewUserId={user?.id ?? null}
+          dueReviews={dueReviews}
+          freeRecallPrompts={user ? [] : FREE_RECALL_PROMPTS}
+          lesson={lesson}
+          exercises={exercises}
+          worldSlug={slug}
+          moduleSlug={moduleSlug}
+          moduleName={mod?.title}
+          moduleOrder={mod?.order}
+          prevLesson={prev}
+          nextLesson={next}
+          lessons={moduleLessons.map((l) => ({
+            slug: l.slug,
+            title: l.title,
+            order: l.order,
+            locked: isLessonLocked(l.order, l.slug),
+            completed: completedLessonSlugs.has(l.slug),
+          }))}
+        />
+      </LessonPrefsProvider>
     </main>
   );
 }

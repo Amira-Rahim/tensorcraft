@@ -1035,9 +1035,10 @@ post-launch work.
   success page, ownership + upgrade-credit checks (email field, no inbox
   round-trip), guest fallback in both `async_payment_*` webhook handlers,
   unique index on `lower(profiles.email)`, anon (not service-role) client
-  for the OTP send, real unmocked `guest-account.ts` tests. The endpoint
-  exists but nothing routes to it - disabled 2026-07-21 after review found
-  3 post-charge defects (defect record: `roadmap.md` §2 P2). Money-touching:
+  for the OTP send, real unmocked `guest-account.ts` tests. The UI stopped
+  using the route on 2026-07-21 after review found 3 post-charge defects.
+  Since 2026-09-16 the endpoint also returns 403, so direct requests cannot
+  create guest sessions (defect record: `roadmap.md` §2 P2). Money-touching:
   same TDD bar as the subscription work.
 - [ ] Re-evaluate merchant-of-record at subscription launch, or when EU /
   international mix makes OSS VAT filing a real operating cost: compare
@@ -2436,16 +2437,16 @@ left open.
   Tests still opens the gate and still emits full-weight exercise_pass
   skill events with solutionViewed unchecked. Decide whether earned-pass
   filtering stays analytics-only or gates the genome weighting.
-- [ ] **Spaced repetition: STAGE 1 BUILT 2026-09-16, stage 2 not started.**
-  Was "absent, flagged twice by learning-science passes". The data spine now
-  exists: one SM-2 implementation in `packages/shared/src/review-schedule.ts`,
-  a `localStorage` store for guests, an entitlement-filtered server read, an
-  authed write route, and migration 061 (APPLIED). Nothing user-visible ships
-  yet. Spec `docs/superpowers/specs/2026-09-15-spaced-review-design.md`, plan
-  `docs/superpowers/plans/2026-09-16-spaced-review-stage-1-data-spine.md`.
-  Remaining (stage 2, plan not yet written): the shared prompt card with
-  commit-before-reveal, the Briefing warm-up plus playback deferral, the
-  guest-to-account merge, and the write outbox.
+- [ ] **Spaced repetition: both stages built locally 2026-09-16; rollout verification pending.**
+  Shared scheduler, guest storage, entitlement-filtered reads, the authenticated
+  write route, and migration 061 form the data layer. Stage 2 now adds the
+  attempt-before-reveal card, Briefing warm-up and playback deferral, guest
+  merge, and account-scoped retry outbox. Retry/version checks prevent counting
+  a lost-response retry twice. Stage 1 recorded migration 061 as applied; verify
+  it in the target staging environment before deploying these surfaces.
+  No hosted database was changed during stage 2. See
+  `docs/launch-verification.md` and
+  `docs/superpowers/specs/2026-09-15-spaced-review-design.md`.
 - [ ] **SEO: teaching bodies are display:none to crawlers** on the
   free-module lessons the sitemap markets (the partition cemented what
   was previously a 15s timing window). Check GSC indexing of the five

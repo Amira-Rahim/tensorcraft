@@ -17,7 +17,7 @@ Tensorcraft is an interactive, story-driven ML education platform for JavaScript
 ```
 tensorcraft/
 ├── apps/
-│   ├── web/          Next.js 15 frontend (port 3000)
+│   ├── web/          Next.js 16 frontend (port 3000)
 │   └── api/          Hono backend (port 3001)
 ├── packages/
 │   ├── config/       Shared ESLint, TypeScript, Tailwind configs
@@ -26,7 +26,7 @@ tensorcraft/
 │   ├── worlds/       5 world manifests + CSS custom properties
 │   ├── ui/           Shared React component library + MDX components
 │   ├── supabase/     Database types, clients, migrations
-│   └── github/       GitHub integration utilities
+│   └── bridges-public/ Public JavaScript-to-ML bridge package
 ├── docs/             Project documentation
 ├── e2e/              Playwright E2E tests
 ├── turbo.json        Turborepo task configuration
@@ -39,14 +39,14 @@ tensorcraft/
 
 | Layer | Technology | Rationale |
 |-------|-----------|-----------|
-| Frontend | Next.js 15 (App Router) | RSC, Turbopack dev, file-based routing |
+| Frontend | Next.js 16 (App Router) | RSC, Turbopack dev, file-based routing |
 | Backend | Hono | Lightweight, edge-ready, separate from Next.js for independent deployment |
 | Database | Supabase (PostgreSQL) | Auth, RLS, real-time, generous free tier |
-| Styling | Tailwind CSS 4 | CSS-native `@world` directive, zero-JS theming |
+| Styling | Tailwind CSS 4 | CSS-native `@theme` directive, zero-JS theming |
 | Animation | Framer Motion | Declarative, layout animations, gesture support |
 | Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation. 3 collections: lessons, exercises, modules |
 | Code Highlighting | Shiki 4.x (via CodeBlock component) | Custom `tensorcraft-dark` + `tensorcraft-light` worlds (picked via `data-scheme`); lazy-loaded singleton; 11 languages. Code Hike deferred to post-V1 |
-| Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with custom async test runner and TF.js mock (295 exercises) |
+| Code Exercises | Sandpack (CodeSandbox) | Browser editor plus worker-based grading with real TensorFlow.js 4.22; 65 launched exercises, with stubs for external services |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-world segmented lists, nurture sequences |
 | Analytics | PostHog + Vercel Web Analytics | PostHog (product analytics, consent-gated) with user identification on sign-in. Vercel Web Analytics (pageviews, consent-gated via the same `tc-cookie-consent` localStorage key). Plausible was removed 2026-09-02: never wired in prod, redundant with Vercel Analytics. 8 domain events tracked: lesson_started, lesson_completed, exercise_submitted, paywall_shown, checkout_started, checkout_completed, world_selected, streak_achieved. |
@@ -71,7 +71,7 @@ Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box s
 ### How Theming Works
 
 1. **CSS Custom Properties** (`packages/worlds/src/css/worlds.css`): Each world defines `--tc-*` variables under a `[data-world="world-slug"]` selector.
-2. **Tailwind 4 `@world`** (`apps/web/app/globals.css`): Maps Tailwind utility classes to `--tc-*` variables so `bg-surface`, `text-primary`, `border-border` all resolve dynamically. (`packages/config/tailwind/base.css` was a dead duplicate and was deleted 2026-07-22.)
+2. **Tailwind 4 `@theme`** (`apps/web/app/globals.css`): Maps Tailwind utility classes to `--tc-*` variables so `bg-surface`, `text-primary`, `border-border` all resolve dynamically. (`packages/config/tailwind/base.css` was a dead duplicate and was deleted 2026-07-22.)
 3. **Runtime Switching**: Set `data-world` attribute on `<html>` to switch narrative worlds, and `data-scheme="light"` for the light color scheme (absent = dark). No JS bundle cost - pure CSS resolution.
 4. **Brutalist Utilities** (`apps/web/app/globals.css`): `.brutalist-shadow`, `.brutalist-hover`, `.comment-label` - offset box shadows and monospace section labels. All animations respect `prefers-reduced-motion`.
 
@@ -376,7 +376,7 @@ Session errors: `apiFetch` utility (`apps/web/lib/api-fetch.ts`) auto-includes t
 
 1. **Hono as separate backend** - Not embedded in Next.js API routes. Allows independent scaling, deployment, and technology evolution.
 2. **Supabase from day 1** - Full schema with RLS, not deferred. Ensures auth and data patterns are established early.
-3. **CSS-native theming** - No JS runtime cost for world switching. Tailwind 4's `@world` directive resolves utilities to CSS custom properties.
+3. **CSS-native theming** - No JS runtime cost for world switching. Tailwind 4's `@theme` directive resolves utilities to CSS custom properties.
 4. **Dark + brutalist aesthetic** - All worlds are dark with solid backgrounds. Brutalist Terminal style: zero border-radius, offset box shadows, monospace-first typography. No glow or neon effects.
 5. **Framer Motion over CSS animations** - Needed for scroll-triggered reveals, layout animations, and gesture-based interactions that CSS alone can't handle cleanly.
 6. **Document as we build** - This file is maintained alongside code, updated with each significant architectural change.

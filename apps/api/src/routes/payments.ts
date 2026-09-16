@@ -6,7 +6,6 @@ import {
 } from "@tensorcraft/supabase";
 import { PRICING, isValidWorldSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
-import { createRateLimiter } from "../middleware/rate-limit";
 import {
   resolveOrCreateUserByEmail,
   sendPurchaseAccessLink,
@@ -16,7 +15,6 @@ import { sendPurchaseReceipt } from "../lib/email";
 import { worldDisplayName } from "../lib/world-name";
 import { sendOperatorAlert } from "../lib/operator-alert";
 import { logger } from "../lib/logger";
-import { captureException } from "../lib/error-tracking";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 import type { AppEnv } from "../types";
 
@@ -152,13 +150,19 @@ payments.post("/checkout", async (c) => {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.planId || !body.worldIds || !Array.isArray(body.worldIds)) {
+  if (
+    !body ||
+    typeof body !== "object" ||
+    typeof body.planId !== "string" ||
+    !body.planId ||
+    !Array.isArray(body.worldIds)
+  ) {
     return c.json({ error: "planId and worldIds[] are required" }, 400);
   }
 
   // Validate plan
   const plan = PRICING[body.planId as keyof typeof PRICING];
-  if (!plan || body.planId === "free") {
+  if (!Object.hasOwn(PRICING, body.planId) || !plan || body.planId === "free") {
     return c.json({ error: "Invalid planId" }, 400);
   }
 
@@ -176,24 +180,45 @@ payments.post("/checkout", async (c) => {
   if (!validateWorldIds(body.worldIds)) {
     return c.json({ error: "Invalid world ID(s)" }, 400);
   }
+  if (new Set(body.worldIds).size !== body.worldIds.length) {
+    return c.json({ error: "Each world may only be selected once" }, 400);
+  }
 
   // Calculate upgrade credit from prior purchases, and read the buyer's email
   // for Stripe's abandoned-cart recovery. Fanned out together so the email
   // lookup costs no extra round-trip on the checkout path.
   const supabase = getSupabaseServerClient(c.get("accessToken"));
-  const [{ data: existingPurchases }, { data: buyerProfile }] =
-    await Promise.all([
-      supabase
-        .from("purchases")
-        .select("world_ids, amount")
-        .eq("user_id", userId)
-        .in("status", ["completed", "partially_refunded"]),
-      supabase
-        .from("profiles")
-        .select("email, stripe_customer_id")
-        .eq("id", userId)
-        .single(),
-    ]);
+  const [purchaseLookup, profileLookup] = await Promise.all([
+    supabase
+      .from("purchases")
+      .select("world_ids, amount")
+      .eq("user_id", userId)
+      .in("status", ["completed", "partially_refunded"]),
+    supabase
+      .from("profiles")
+      .select("email, stripe_customer_id")
+      .eq("id", userId)
+      .single(),
+  ]);
+  // A failed lookup must never charge an existing owner again or discard
+  // their upgrade credit. Stop before creating a Stripe session or a grant.
+  if (purchaseLookup.error || profileLookup.error) {
+    logger.error(
+      {
+        route: "payments.checkout",
+        userId,
+        purchaseError: purchaseLookup.error,
+        profileError: profileLookup.error,
+      },
+      "Checkout: could not verify purchase history or billing profile",
+    );
+    return c.json(
+      { error: "Unable to verify your purchases. Please try again." },
+      503,
+    );
+  }
+  const existingPurchases = purchaseLookup.data;
+  const buyerProfile = profileLookup.data;
   const buyerEmail = (buyerProfile as { email?: string } | null)?.email;
   // Reuse the Stripe Customer captured by the webhook (migration 043) so a
   // repeat buyer doesn't mint a fresh Customer per purchase - with
@@ -368,102 +393,19 @@ payments.post("/checkout", async (c) => {
   return c.json({ url: session.url });
 });
 
-// ──────────────────────────────────────────────
-// POST /api/payments/guest-checkout, buy without an account
-//
-// The authenticated flow forces a cold buyer through signup before they can
-// pay, and with magic-link auth that means leaving the browser for an inbox
-// mid-purchase. This route lets Stripe collect the email instead; the webhook
-// provisions (or attaches to) the account afterwards.
-//
-// Deliberately narrower than the authed route: no upgrade credit, because a
-// guest by definition has no prior purchases to credit, and no auto-grant
-// path for the same reason.
-//
-// Unauthenticated, so it carries its own tighter IP budget on top of the
-// global 60/min limiter. A separate key prefix gives it an independent
-// budget rather than sharing the general one.
-// ──────────────────────────────────────────────
-
-payments.use(
-  "/guest-checkout",
-  createRateLimiter({ max: 10, keyPrefix: "rl:guest-checkout" }),
+// Guest checkout remains unavailable until account recovery, ownership checks,
+// and delayed-payment fulfillment support it. Enforce the same decision as
+// CheckoutButton at the API boundary; hiding the button cannot stop a direct
+// request. Existing guest payment webhooks still need to be fulfilled.
+payments.post("/guest-checkout", (c) =>
+  c.json(
+    {
+      error: "Sign in before purchasing a world.",
+      code: "guest_checkout_disabled",
+    },
+    403,
+  ),
 );
-
-payments.post("/guest-checkout", async (c) => {
-  let body: { planId: string; worldIds: string[] };
-  try {
-    body = await c.req.json();
-  } catch {
-    return c.json({ error: "Invalid JSON body" }, 400);
-  }
-
-  if (!body.planId || !body.worldIds || !Array.isArray(body.worldIds)) {
-    return c.json({ error: "planId and worldIds[] are required" }, 400);
-  }
-
-  const plan = PRICING[body.planId as keyof typeof PRICING];
-  if (!plan || body.planId === "free") {
-    return c.json({ error: "Invalid planId" }, 400);
-  }
-
-  if (body.worldIds.length !== plan.worlds) {
-    return c.json(
-      {
-        error: `Plan "${body.planId}" requires exactly ${plan.worlds} world(s)`,
-      },
-      400,
-    );
-  }
-
-  if (!validateWorldIds(body.worldIds)) {
-    return c.json({ error: "Invalid world ID(s)" }, 400);
-  }
-
-  const stripe = getStripe();
-  let appUrl = process.env.APP_URL;
-  if (!appUrl) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("APP_URL is required in production");
-    }
-    appUrl = "http://localhost:3000";
-  }
-
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    // See the authed path: country capture must not depend on the tax flag.
-    billing_address_collection: "required",
-    ...taxSessionParams(),
-    // No client_reference_id: there is no user yet. The webhook resolves
-    // identity from customer_details.email instead, and `guest: "true"`
-    // marks which branch a row came from for support and analytics.
-    line_items: [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: `Tensorcraft: ${plan.label}`,
-            description: `Access to ${body.worldIds.map(worldDisplayName).join(", ")}`,
-          },
-          unit_amount: plan.price * 100, // cents
-        },
-        quantity: 1,
-      },
-    ],
-    metadata: {
-      planId: body.planId,
-      worldIds: body.worldIds.join(","),
-      guest: "true",
-    },
-    after_expiration: {
-      recovery: { enabled: true, allow_promotion_codes: false },
-    },
-    success_url: `${appUrl}/dashboard/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${appUrl}/pricing?purchase=cancelled`,
-  });
-
-  return c.json({ url: session.url });
-});
 
 // ──────────────────────────────────────────────
 // GET /api/payments/purchases, Check user's purchases

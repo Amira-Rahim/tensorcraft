@@ -4,6 +4,40 @@ import { WORLD_SLUGS } from "@tensorcraft/shared";
 import sampleModule from "./fixtures/sample-module.json";
 import sampleLessons from "./fixtures/sample-lessons.json";
 import sampleExercises from "./fixtures/sample-exercises.json";
+import { lessons, exercises, modules } from "../.velite";
+
+// Validate the actual build as well as fixtures. Exact equality detects fields
+// that Zod would silently strip when the public schemas lag behind Velite.
+describe("Public schemas preserve compiled content", () => {
+  it("preserves every lesson's authored metadata", () => {
+    expect(lessons.length).toBeGreaterThan(0);
+    for (const lesson of lessons) {
+      const authored = Object.fromEntries(
+        Object.entries(lesson).filter(
+          ([key]) =>
+            !["body", "metadata", "glossaryTerms", "recallPrompts"].includes(
+              key,
+            ),
+        ),
+      );
+      expect(lessonSchema.parse(authored)).toEqual(authored);
+    }
+  });
+
+  it("preserves every exercise", () => {
+    expect(exercises.length).toBeGreaterThan(0);
+    for (const exercise of exercises) {
+      expect(exerciseSchema.parse(exercise)).toEqual(exercise);
+    }
+  });
+
+  it("preserves every module, including six-lesson modules", () => {
+    expect(modules.some((mod) => mod.lessonCount === 6)).toBe(true);
+    for (const mod of modules) {
+      expect(moduleSchema.parse(mod)).toEqual(mod);
+    }
+  });
+});
 
 describe("Content contract: module", () => {
   it("sample module validates against moduleSchema", () => {
