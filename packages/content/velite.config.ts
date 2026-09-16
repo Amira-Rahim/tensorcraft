@@ -3,6 +3,7 @@ import ts from "typescript";
 import { rehypeGlossary } from "./src/rehype-glossary";
 import { GLOSSARY } from "./src/glossary";
 import { glossaryTermsInCompiledBody } from "./src/glossary-match";
+import { parseRecallPrompts } from "./src/parse-recall-prompts";
 import { BUILT_WORLD_GLOB } from "./src/built-worlds";
 
 /**
@@ -159,17 +160,31 @@ const lessons = defineCollection({
 
       // Velite-specific: compiled MDX body and metadata
       body: s.mdx(),
+      // The unmodified MDX source. Declared only so the transform below can
+      // read the <RecallPrompt> tags out of it; it is destructured away
+      // there so the whole source never reaches .velite/lessons.json.
+      rawBody: s.raw(),
       metadata: s.metadata(),
     })
-    .transform((data) => ({
-      ...data,
-      // The rail beside the Takeaways step lists exactly the terms the
-      // rendered body underlines. Matching the MDX source instead listed
-      // 242 terms across 56 lessons that no reader ever saw as a chip,
-      // several off JSX attributes in the other sense of the word (gate:
-      // __tests__/glossary-rail-contract.test.ts).
-      glossaryTerms: glossaryTermsInCompiledBody(data.body, GLOSSARY),
-    })),
+    .transform((data) => {
+      const { rawBody, ...rest } = data;
+      return {
+        ...rest,
+        // The rail beside the Takeaways step lists exactly the terms the
+        // rendered body underlines. Matching the MDX source instead listed
+        // 242 terms across 56 lessons that no reader ever saw as a chip,
+        // several off JSX attributes in the other sense of the word (gate:
+        // __tests__/glossary-rail-contract.test.ts).
+        glossaryTerms: glossaryTermsInCompiledBody(data.body, GLOSSARY),
+        // Prompt text lifted out of the RAW body, unlike glossaryTerms above,
+        // which deliberately matches the compiled one. The raw source is
+        // where the authored `question` and `answer` props still exist as
+        // literal strings. Extracted so a surface can show a prompt from a
+        // lesson other than the one being read (gate:
+        // __tests__/recall-prompt-extraction.test.ts).
+        recallPrompts: parseRecallPrompts(rawBody),
+      };
+    }),
 });
 
 const exercises = defineCollection({

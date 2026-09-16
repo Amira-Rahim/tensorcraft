@@ -136,6 +136,8 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 > Admin routes support two auth methods: (1) Supabase role-based auth (user with admin role) - preferred, and (2) API key via `x-admin-key` header - fallback for CI/scripts.
 - `GET /api/exercise-attempts` - Get user's exercise attempts (authenticated)
 - `POST /api/exercise-attempts` - Submit exercise attempt (authenticated)
+- `POST /api/review/enqueue` - Add a lesson's recall prompts to the review queue (authenticated)
+- `POST /api/review` - Record a recall outcome and reschedule (authenticated)
 - `GET /api/profiles/me` - Get current user profile (authenticated)
 - `PUT /api/profiles/me` - Update current user profile (authenticated)
 

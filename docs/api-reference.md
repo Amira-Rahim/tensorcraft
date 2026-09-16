@@ -441,6 +441,53 @@ Common status codes:
 
 ---
 
+## Review (spaced recall)
+
+Both endpoints require authentication and write only the caller's own rows.
+Scheduling intervals come from `nextInterval` in `@tensorcraft/shared`, the
+single implementation shared with the signed-out `localStorage` path.
+
+Reads are NOT here: a signed-in learner's due queue is read server-side during
+the lesson page render (`apps/web/lib/review-store-server.ts`), where
+entitlement is already computed. See
+`docs/superpowers/specs/2026-09-15-spaced-review-design.md`.
+
+### `POST /api/review/enqueue`
+
+Adds review items for a lesson's recall prompts, first due one day out.
+
+```json
+{ "worldId": "deep-orbit", "moduleId": "foundations", "lessonId": "normalization", "promptIndices": [0, 1] }
+```
+
+Takes the indices themselves rather than a count: prompt indices are not
+guaranteed contiguous, because `parseRecallPrompts` advances its counter for a
+tag it drops. Idempotent, and it never resets an existing `next_review_at`, so
+re-completing a lesson cannot cancel a schedule.
+
+- `200` - `{ "enqueued": <number of new rows> }`
+- `400` - invalid `worldId`, empty or malformed `promptIndices`
+
+### `POST /api/review`
+
+Records one outcome and reschedules that prompt.
+
+```json
+{ "worldId": "deep-orbit", "lessonId": "normalization", "promptIndex": 0, "outcome": "got-it" }
+```
+
+`outcome` is `"got-it"`, `"review"` (attempted, missed) or `"bailed"` (no
+attempt). Takes no `moduleId`: the key is the four primary-key columns.
+
+- `200` - `{ "nextReviewAt": "<ISO 8601>" }`
+- `400` - invalid `worldId` or `outcome`
+- `404` - no such row for this user. Enqueue is the only way into the queue,
+  so a missing row means the key did not come from it. Distinguishable from a
+  `5xx` on purpose, so a retrying client drops a permanently failing write
+  instead of retrying it forever.
+
+---
+
 ## Rate Limiting
 
 All endpoints (except `/api/payments/webhook`) are rate limited to **60 requests per minute per IP**.

@@ -58,3 +58,12 @@ export {
   recommendedNextWorld,
 } from "./journey";
 export type { JourneyNode, Spine, SpineStop } from "./journey";
+
+export { selectDue, nextInterval } from "./review-schedule";
+export type {
+  ReviewItem,
+  ResolvedReviewItem,
+  ReviewOutcome,
+  ScheduleResult,
+  ReviewStore,
+} from "./review-types";

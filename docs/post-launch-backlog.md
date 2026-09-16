@@ -2436,9 +2436,16 @@ left open.
   Tests still opens the gate and still emits full-weight exercise_pass
   skill events with solutionViewed unchecked. Decide whether earned-pass
   filtering stays analytics-only or gates the genome weighting.
-- [ ] **Spaced repetition absent** (flagged twice by learning-science
-  passes): no re-surfacing of RecallPrompts across a 56-lesson course.
-  Big bet; belongs with the habit-mechanics discussion in §6.
+- [ ] **Spaced repetition: STAGE 1 BUILT 2026-09-16, stage 2 not started.**
+  Was "absent, flagged twice by learning-science passes". The data spine now
+  exists: one SM-2 implementation in `packages/shared/src/review-schedule.ts`,
+  a `localStorage` store for guests, an entitlement-filtered server read, an
+  authed write route, and migration 061 (APPLIED). Nothing user-visible ships
+  yet. Spec `docs/superpowers/specs/2026-09-15-spaced-review-design.md`, plan
+  `docs/superpowers/plans/2026-09-16-spaced-review-stage-1-data-spine.md`.
+  Remaining (stage 2, plan not yet written): the shared prompt card with
+  commit-before-reveal, the Briefing warm-up plus playback deferral, the
+  guest-to-account merge, and the write outbox.
 - [ ] **SEO: teaching bodies are display:none to crawlers** on the
   free-module lessons the sitemap markets (the partition cemented what
   was previously a 15s timing window). Check GSC indexing of the five
