@@ -24,7 +24,7 @@ concept:
     tier: structural
     breaks: "localStorage has no built-in expiry; application code can implement a TTL and remove an entry. An LSTM forget gate scales each cell-state dimension with a learned value between zero and one. It does not implement a clock-based expiration policy."
 consequence:
-  narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Nothing carries between windows; the gates learned the shape once."
+  narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Recurrent state resets between windows; trained weights remain."
 hints:
   - level: nudge
     content: "Two things here are not where you would guess, and the instructions name both: which curve the gates run on and how the four are packed. Diagnose by the size of the miss. A curve mismatch moves every gate by hundredths, while a packing mistake swaps whole gates and misses by tenths."
@@ -54,7 +54,7 @@ skillAxes: [model_arch]
 Epoch 200 of 200, and the loss has not moved since the first hour. Demir's overnight run is still on the engineering display when Farah walks in with her tablet already open to the fix.
 
 <Dialogue speaker="Dr. Farah">
-The simple RNN forgets. Its gradients thin out by step twenty and are gone long before step seventy-four, where the pattern lives: the information from the early steps is multiplied through too many small numbers to survive. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
+In last night's run, the gradients thin out by step twenty and are gone long before step seventy-four, where the pattern lives: the information from the early steps is multiplied through too many small numbers to survive. LSTMs can help with this through gates: learned switches that control what flows through and what gets discarded.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -66,12 +66,12 @@ Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in an LSTM anywhere. A forget gate reads the current input together with the previous hidden state. It outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. Within a window it carries the first step most of the way to the last. The simple RNN lost it by step twenty. And once it has learned a shape, it recognizes that shape whenever the stream brings it back, including in windows days past anything it trained on.
+They can learn longer dependencies, but no fixed reach is guaranteed. Budget roughly four times the parameters of a simple RNN with the same width. And there is no clock in an LSTM anywhere. A forget gate reads the current input together with the previous hidden state. It outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. A gate near one can preserve information across a window. Whether ours learns the pulse is a held-out test, including windows from later days.
 </Dialogue>
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
 
-<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell with tf.layers.lstm and read its four gates out of the kernels and bias the library packs them into", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
+<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
 
 ## Three Gates, One Cell
 
@@ -96,7 +96,8 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 // The cell state is only scaled and added to at each step, never pushed
 // through a weight matrix and a tanh the way the simple RNN's hidden
 // state is. Walking backward along that path, the gradient picks up
-// exactly one factor per step: the forget gate. A gate that learns to sit
+// the forget gate factor per step on the direct cell-state path.
+// The full gradient also has paths through the gates. A gate that learns to sit
 // at 0.99 still leaves 0.37 of the signal 100 steps later; at 0.9 only
 // 0.000027 survives, and a gate that learns to close cuts that
 // dimension off on purpose. The decay is learned per dimension here,
@@ -154,7 +155,7 @@ x.dispose();
 y.dispose();`}
 </CodeBlock>
 
-Two things about that layer only turn up when you go looking for its weights. `model.getWeights()` returns three tensors for it, not twelve: an input kernel of shape [features, 4 * units], a recurrent kernel of shape [units, 4 * units], and a bias of length 4 * units. All four gates share those three, packed side by side along the last axis in the order input, forget, candidate, output. That is not the order anyone narrates them in, and building the same layer with `unitForgetBias: true` is the quickest way to see it: the bias comes back with ones in the second quarter and zeros in the other three.
+Two things about that layer only turn up when you go looking for its weights. `model.getWeights()` returns three tensors for it, not twelve: an input kernel of shape [features, 4 * units], a recurrent kernel of shape [units, 4 * units], and a bias of length 4 * units. The three gates and candidate share those tensors, packed side by side along the last axis in the order input, forget, candidate, output. That is not the order anyone narrates them in, and building the same layer with `unitForgetBias: true` is the quickest way to see it: the bias comes back with ones in the second quarter and zeros in the other three.
 
 The second thing is which curve the gates run on. TF.js 4.22 leaves `recurrentActivation` at `hardSigmoid`, the clipped straight line `max(0, min(1, 0.2 * z + 0.5))`, while the candidate and the cell output run on `tanh`. Work a step out by hand with a sigmoid, compare it against a layer left on its default, and the two answers do not match. Pass `recurrentActivation: 'sigmoid'` and they agree to about seven decimal places, as close as a float32 layer and a float64 loop get.
 
@@ -200,29 +201,24 @@ gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 Write one step of the cell yourself: the pre-activations, the three sigmoid gates and the one tanh candidate, then the cell update and the hidden output. One of the tests runs your step a hundred times with the forget gate held at 0.99, so the 0.37 above is something you check rather than something you read.
 
-Then build a one-unit `tf.layers.lstm` and cut its four gates out of the packed kernels. The grader drives your step across a window with the rows you cut and compares it to what the layer reports at every step. Both halves have to be right for that to line up: the gate arithmetic, and which column each gate came from.
+Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out of the packed kernels. The grader drives your step across a window with the rows you cut and compares it to what the layer reports at every step. Both halves have to be right for that to line up: the gate arithmetic, and which column each gate came from.
 
 <Exercise slug="build-lstm" />
 
 <RecallPrompt
   question="What does the LSTM forget gate actually output, and how does that differ from a hard expiry like localStorage TTL?"
-  answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, with no clock anywhere in it. A value near 0 discards that dimension; near 1 keeps it fully. localStorage TTL removes the entire entry after a fixed timeout. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
+  answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, with no clock anywhere in it. A value near 0 discards that dimension; near 1 keeps most of it. Application code can implement a TTL that expires a localStorage entry; localStorage itself has no expiry timer. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
 />
 
 <RecallPrompt
   question="The LSTM flags pulses 72 hours past the last window it trained on, yet no cell state survives between windows. What did the network actually retain?"
-  answer="Nothing persists between windows; the model is stateless across calls. What survived training is the weights: the gates learned which input shapes to route into cell state within any single 80-step window. A window from three days later scores the same way because the shape repeats there, not because anything was held over. That is generalization across time, and it costs one fixed set of parameters instead of three days of stored state."
+  answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A window from three days later scores the same way because the shape repeats there, not because anything was held over. That is generalization across time, and it costs one fixed set of parameters instead of three days of stored state."
 />
 
 <LessonRecap
-  whatYouLearned={[
-    "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that smoothly scale information flow.",
-    "Walking backward along the cell state, the gradient picks up one factor per step: that step's forget gate. A gate that stays near 1 carries it across hundreds of steps; a gate that closes drops that dimension deliberately. The decay is learned per dimension instead of forced by the architecture.",
-    "GRUs carry three weight sets where the LSTM carries four: update, reset and candidate against forget, input, output and candidate. That is exactly 25% fewer parameters for the same units, and which of the two scores better on a given series is something you measure rather than look up.",
-    "The flatline this lesson opens on is lesson 2's: a binary loss pinned at 0.693, which is ln 2, the score of a coin flip. On long sequences with a simple RNN, vanishing gradients are the first suspect."
-  ]}
+  whatYouLearned={["An LSTM has three gates and a candidate update. Gates control how much information is kept, added and exposed.", "On the direct cell-state gradient path, forget-gate factors near one reduce decay. Other gradient paths also run through the gates, and learning is not guaranteed.", "A GRU uses fewer parameter blocks than an LSTM. Compare parameter counts for the actual configurations and measure quality on the same evaluation data.", "A stateless recurrent model resets state between windows while retaining its trained weights."]}
   bridge="Application code can add a TTL to localStorage. An LSTM gate instead learns a per-dimension keep ratio from the current input and hidden state."
-  youCanNow="Build a one-unit `tf.layers.lstm`, cut its four gates out of the kernels the library packs them into, and run the forget, input and output gates by hand closely enough to reproduce the layer's own output."
+  youCanNow="Build a one-unit `tf.layers.lstm`, cut its three gates and candidate out of the kernels the library packs them into, and run the forget, input and output gates by hand closely enough to reproduce the layer's own output."
 />
 
 <Epilogue>

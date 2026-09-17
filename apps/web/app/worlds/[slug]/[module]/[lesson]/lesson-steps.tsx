@@ -198,7 +198,11 @@ const CODE_RIGHT = new Set(["CodeBlock", "InteractiveDemo"]);
 
 // Challenge: challenge zone + hints on the left; the Exercise editor in the
 // right pane. The hint ladder no longer sits below a full prose re-copy.
-const CHALLENGE_LEFT = new Set(["challenge", "HintPanel"]);
+const CHALLENGE_LEFT = new Set([
+  "challenge",
+  "HintPanel",
+  "TransferAssignment",
+]);
 const CHALLENGE_RIGHT = new Set(["Exercise"]);
 
 // Takeaways: the lesson close on the left (RecallPrompt + LessonRecap +

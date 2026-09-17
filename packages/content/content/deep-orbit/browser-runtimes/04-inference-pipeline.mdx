@@ -50,7 +50,7 @@ And what happens to the tensors you create every second? If you don't dispose th
 
 One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the count climbs by 7,200 an hour. The bytes barely move: the escaped pair at this model's size is a [1, 3] input and a [1, 1] output, 16 bytes together, so a gigabyte of leaked tensor data is more than a year away at one reading a second. What you run out of first is the count. The incident exercise later in this lesson puts the dashboard's budget at 10,000 tensors, which this leak reaches in eighty-three minutes.
 
-<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Read a climbing tf.memory() tensor count as a leak: turn the slope between two snapshots into hours of headroom"]} />
+<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Investigate tensor growth and estimate headroom when that growth continues"]} />
 
 ## The Real-Time Inference Loop
 
@@ -89,9 +89,9 @@ function preprocess(raw: { amplitude: number; frequency: number; phase: number }
   ];
 }
 
-// Run inference: the core predict call. tf.tidy() frees every tensor made
-// inside its callback when the callback returns and keeps only what you
-// return; an object of plain numbers is not a tensor, so nothing survives.
+// This callback creates temporary tensors and returns plain numbers.
+// It creates no variables and calls no tf.keep(), so tidy disposes all
+// tensors created here. The model owns its existing weights.
 // The return type pins the verdict to its two allowed words.
 function classify(
   model: tf.LayersModel,
@@ -112,13 +112,13 @@ function classify(
 }`}
 </CodeBlock>
 
-Min-max fixes the range at both ends. 2048 counts is the ceiling FEATURE_RANGES declares and also the reading where the hull sensors stop responding, so a normalized amplitude reaches 1.00 and never passes it. Frequency has the same ceiling for a different reason: 63 sign flips is the most a 64-sample window can hold. A normalized feature above 1.00 further down the pipeline is a units bug, not a strong reading.
+Min-max fixes the range at both ends. 2048 counts is the ceiling FEATURE_RANGES declares and also the reading where the hull sensors stop responding, so a normalized amplitude reaches 1.00 and never passes it. Frequency has the same ceiling for a different reason: 63 sign flips is the most a 64-sample window can hold. For this declared sensor contract, a normalized feature above 1.00 needs investigation: check units, preprocessing and invalid sensor input. Min-max scaling in general can produce values outside [0, 1] when new readings exceed the fitted range.
 
 Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the same angle and min-max tears that seam, sending near-identical readings to 0 and 1. The clean encoding is two features, `sin(phase)` and `cos(phase)`. This model was trained on the 3-input min-max contract, so inference has to match training, seam included.
 
 ## Memory Management with tf.tidy()
 
-Module 1 told you `tf.tidy()` is the same contract as a `useEffect` cleanup, and that still holds: you acquired a resource the runtime will not reclaim for you. What has no JS parallel is the *stakes*. A leaked event listener costs you a closure; a leaked GPU tensor is invisible to the garbage collector and stays allocated until the tab dies, and there is no devtools panel that will point at it.
+`tf.tidy()` manages synchronous tensor allocations. It disposes tensors created in its callback except returned tensors, variables and tensors explicitly retained with `tf.keep()`. Those survivors need an owner that disposes them later. JavaScript has similar ownership problems: an event listener can retain a large object graph until removed. Use `tf.memory()` to inspect tensors, alongside browser and backend diagnostics.
 
 <CodeBlock language="typescript" title="memory-management.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -130,7 +130,7 @@ function leakyPredict(model: tf.LayersModel, data: number[]) {
   return (output as tf.Tensor).dataSync()[0];   // input and output NEVER freed
 }
 
-// GOOD: tf.tidy() cleans up all tensors created inside it
+// GOOD: tidy cleans up the temporary input and prediction tensors here
 function cleanPredict(model: tf.LayersModel, data: number[]) {
   return tf.tidy(() => {
     const input = tf.tensor2d([data]);
@@ -145,7 +145,7 @@ console.log(tf.memory());
 // { numTensors: 47, numDataBuffers: 47, numBytes: 12800, unreliable: false }`}
 </CodeBlock>
 
-If that `numTensors` figure climbs while the dashboard idles, something escaped a `tidy()`.
+Sustained growth after warmup is a reason to investigate. Lazy initialization or an intentional cache can also increase the count. Track bytes and backend memory as well; a flat tensor count alone does not rule out a leak.
 
 One more dial before the wiring: `dataSync()` blocks the JavaScript thread until the GPU read completes. At this model's scale the stall is invisible, which is why `classify()` reads inside the `tidy()`: nothing escapes it, so there is nothing left to dispose by hand, and that is the form the challenge grades. The other read is `await tensor.data()`, which returns a Promise and yields to the event loop while the transfer happens. `tf.tidy()` cannot wrap async code, so that form splits in two: the tensor math sits inside `tidy()` and returns ONE tensor, the read happens outside with `await`, and that one tensor is disposed by hand.
 
@@ -218,15 +218,15 @@ Build a complete inference pipeline with preprocessing and memory management.
 
 <Exercise slug="inference-pipeline" />
 
-PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deploy. Somebody's allocation escaped a `tidy()`. Read the snapshots, name the rate, and tell the bridge how long they have.
+PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deploy. Estimate growth and remaining capacity while the crew checks whether allocations are escaping cleanup. State the assumption that the observed rate continues.
 
 <Exercise slug="incident-tensor-leak" />
 
-<RecallPrompt question="Every prediction in the loop allocates tensors the JavaScript garbage collector cannot see. What keeps 86,400 readings a day from leaving 172,800 tensors behind, and what do you watch to prove it is working?" answer="tf.tidy() frees every tensor allocated inside its callback when the callback returns, except what you return. Read inside the tidy and return the verdict object, as classify() and the exercise do (an object of plain numbers is not a tensor, so nothing survives); return the output tensor for an async read, as classifyAsync() does, and exactly one survives until you dispose it. Either way tf.memory().numTensors is the proof: a count that stays flat while the feed runs means nothing escaped." />
+<RecallPrompt question="How do you keep repeated inference from accumulating tensors, and how do you check it?" answer="Use a synchronous tf.tidy() for temporary tensors. Dispose returned tensors, variables and explicitly kept tensors when their owner is finished. Check tensor counts and bytes over repeated runs after warmup; stable counts are useful evidence, not proof that every kind of memory is stable." />
 
-<RecallPrompt question="numTensors reads 400 at 03:00 and 1,000 at 05:00, and the tab's budget is 10,000 tensors. Is that a leak, and how long does the bridge have?" answer="It is a leak, because the count is climbing: 600 tensors over two hours is 300 an hour. The headroom is the budget minus the LATEST count, 10,000 - 1,000 = 9,000, which at 300 an hour is 30 hours. A count that is flat between the two readings has no rate and no deadline to report." />
+<RecallPrompt question="numTensors rises from 400 at 03:00 to 1,000 at 05:00. With a budget of 10,000, what can you conclude?" answer="Growth is 300 tensors per hour. If it continues, the remaining 9,000 tensors give 30 hours of headroom. These snapshots do not identify the cause. Check whether the growth is expected caching, initialization or a leak, and whether it levels off." />
 
-<LessonRecap whatYouLearned={["Raw input must be normalized with the exact same feature ranges used during training before calling model.predict(); mismatched preprocessing silently corrupts accuracy without throwing any error", "tf.tidy() automatically disposes all intermediate tensors created inside its callback, preventing GPU memory leaks in loops that allocate thousands of tensors per day", "tf.memory() reports live tensor count and byte usage, giving you the same visibility as the DevTools memory tab for diagnosing leaks", "Two tensor counts and the hours between them give a growth rate, and the rate turns a count into a deadline: the headroom left is the budget minus the LATEST count, divided by that rate"]} bridge="Just as a UI event handler follows the pattern `event -> process -> render`, a browser inference pipeline follows `input -> predict -> display`, with one additional obligation: every tensor allocated inside the loop must be freed." youCanNow="Build a browser inference loop that normalizes with the training ranges, runs model.predict() on a [1, 3] tensor, reports the verdict and its confidence, and leaves no tensors behind. Read a climbing numTensors count as a leak and price how long you have." />
+<LessonRecap whatYouLearned={["Inference must use the feature order and preprocessing fitted during training.", "tf.tidy() cleans up synchronous temporary tensors. Returned tensors, variables and tf.keep() tensors need separate disposal.", "Watch tensor counts and bytes after warmup. Growth needs investigation; a flat count is not a complete memory check.", "For sustained growth, headroom equals the remaining budget divided by the growth rate."]} bridge="Just as a UI event handler follows the pattern `event -> process -> render`, a browser inference pipeline follows `input -> predict -> display`, with one additional obligation: every tensor allocated inside the loop must be freed." youCanNow="Build a browser inference loop that normalizes with the training ranges, runs model.predict() on a [1, 3] tensor, reports the verdict and its confidence, and leaves no tensors behind. Investigate sustained tensor growth and estimate headroom if its rate continues." />
 
 <Epilogue>
 

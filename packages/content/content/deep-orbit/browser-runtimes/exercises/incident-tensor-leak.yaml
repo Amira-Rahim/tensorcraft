@@ -3,70 +3,71 @@ lessonSlug: inference-pipeline
 title: "Incident: numTensors Climbing at 03:10"
 mlContent: systems
 instructions: |
-  PAGER: the dashboard's tensor count has been rising since the 01:00 deploy. Build `diagnoseLeak(snapshots, budgetTensors)`. Snapshots are `{ t, numTensors }` readings (t in hours, ascending). Using the FIRST and LAST snapshots: ratePerHour = tensor growth per hour; leaking = ratePerHour > 0; hoursToBudget = hours from the last reading until the budget is hit at that rate (Infinity when not leaking). The middle readings are noisy; the endpoints are the trend.
+  PAGER: the dashboard's tensor count has risen since the 01:00 deploy. Estimate capacity while the crew investigates the cause. Growth may come from initialization, caching or a leak; these snapshots do not identify which.
+
+  Build `estimateTensorHeadroom(snapshots, budgetTensors)`. Snapshots contain `{ t, numTensors }`, with time in hours. Use the first and last readings to return `{ growing, ratePerHour, hoursToBudget }`. The rate is their count difference divided by elapsed hours. `growing` is true for a positive rate. Project the hours from the last reading to the budget if that rate continues; use Infinity for a flat or falling count.
+
+  Inputs contain at least two readings at distinct, ascending times, nonnegative counts and a budget above the latest count. This drill uses endpoint growth as a simple estimate. It does not prove a steady trend or diagnose a leak.
 hints:
   - level: nudge
     content: "A rising tensor count is not yet a deadline. The pager already named the two readings that carry the trend, so what is left to decide is what the hours between them turn that growth into, and what to report when the count is not climbing at all."
   - level: guidance
-    content: "Two readings and the hours between them settle this, so be exact about what that pair gives you. The rise from the earlier reading to the newer one is a count, and a count is not yet a rate: the same rise across two hours and across six hours are not the same problem, which is why the hours separating the readings have to divide it. Use the endpoints the pager named and leave the middle readings alone. The spike in the middle is deploy churn, and fitting the trend to it reports a leak far worse than the one on the ship. After that, the sign of the rate is the whole verdict. A rate above zero means something escaped a tidy call. A count that holds steady or falls is tensors being freed, and a count that is not climbing never reaches the budget, so there is no deadline to report and the pager already told you what stands in its place. When it is climbing, the headroom is what the budget has left above the NEWEST reading, not above the earlier one. Those earlier tensors are already allocated, and waiting does not give them back. Divide the headroom by the rate and the count becomes hours."
+    content: "Divide the change in count by elapsed hours. For positive growth, divide the capacity remaining after the latest snapshot by that rate. For a flat or falling count, this projection gives no time limit. The sign describes growth; the cause still needs investigation."
   - level: solution
     content: |
-      function diagnoseLeak(
+      function estimateTensorHeadroom(
         snapshots: { t: number; numTensors: number }[],
         budgetTensors: number,
-      ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
+      ): { growing: boolean; ratePerHour: number; hoursToBudget: number } {
         const first = snapshots[0];
         const last = snapshots[snapshots.length - 1];
         const ratePerHour = (last.numTensors - first.numTensors) / (last.t - first.t);
-        const leaking = ratePerHour > 0;
-        const hoursToBudget = leaking
+        const growing = ratePerHour > 0;
+        const hoursToBudget = growing
           ? (budgetTensors - last.numTensors) / ratePerHour
           : Infinity;
-        return { leaking, ratePerHour, hoursToBudget };
+        return { growing, ratePerHour, hoursToBudget };
       }
 starterCode: |
-  function diagnoseLeak(
+  function estimateTensorHeadroom(
     snapshots: { t: number; numTensors: number }[],
     budgetTensors: number,
-  ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
-    // CONCEPT: a steadily climbing tf.memory().numTensors means tensors are
-    // being created without dispose(). Two readings and the hours between
-    // them give you the slope, and the slope is what turns a count into a
-    // deadline. The pager already says which two readings to trust, and what
-    // to report when there is no deadline at all.
+  ): { growing: boolean; ratePerHour: number; hoursToBudget: number } {
+    // Estimate growth and remaining capacity from the stated snapshots.
+    // Do not infer why the count changed.
     return null; // your code here
   }
 solutionCode: |
-  function diagnoseLeak(
+  function estimateTensorHeadroom(
     snapshots: { t: number; numTensors: number }[],
     budgetTensors: number,
-  ): { leaking: boolean; ratePerHour: number; hoursToBudget: number } {
+  ): { growing: boolean; ratePerHour: number; hoursToBudget: number } {
     const first = snapshots[0];
     const last = snapshots[snapshots.length - 1];
     const ratePerHour = (last.numTensors - first.numTensors) / (last.t - first.t);
-    const leaking = ratePerHour > 0;
-    const hoursToBudget = leaking
+    const growing = ratePerHour > 0;
+    const hoursToBudget = growing
       ? (budgetTensors - last.numTensors) / ratePerHour
       : Infinity;
-    return { leaking, ratePerHour, hoursToBudget };
+    return { growing, ratePerHour, hoursToBudget };
   }
 testCode: |
-  describe('diagnoseLeak', () => {
-    // The starter returns null, and reading .leaking off null reports a
+  describe('estimateTensorHeadroom', () => {
+    // The starter returns null, and reading .growing off null reports a
     // property name instead of the task. Every test comes through here, so
     // the first Run says what is missing.
     function diagnose(snapshots, budgetTensors) {
-      const r = diagnoseLeak(snapshots, budgetTensors);
-      expect(r, 'diagnoseLeak has to return an object with leaking, ratePerHour and hoursToBudget. The starter returns null until you build it from the first and last snapshots.').toBeDefined();
+      const r = estimateTensorHeadroom(snapshots, budgetTensors);
+      expect(r, 'estimateTensorHeadroom has to return an object with growing, ratePerHour and hoursToBudget. The starter returns null until you build it from the first and last snapshots.').toBeDefined();
       return r;
     }
 
-    it('a climbing count is a leak, at the rate the endpoints imply', () => {
+    it('reports positive endpoint growth without diagnosing its cause', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 47 }, { t: 2, numTensors: 287 }, { t: 4, numTensors: 527 }],
         10000,
       );
-      expect(r.leaking).toBe(true);
+      expect(r.growing).toBe(true);
       expect(r.ratePerHour, 'A rate is tensors per HOUR, so the growth has to be divided by the hours between the two readings.').toBeCloseTo(120, 5);
     });
     it('computes hours until the budget is hit', () => {
@@ -76,27 +77,27 @@ testCode: |
       );
       expect(r.hoursToBudget, 'The headroom left is the budget minus the LAST reading, not minus the first: the earlier tensors are already allocated.').toBeCloseTo(79, 1);
     });
-    it('a flat count is not a leak', () => {
+    it('a flat count has no projected growth deadline', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 47 }, { t: 6, numTensors: 47 }],
         10000,
       );
-      expect(r.leaking).toBe(false);
-      expect(r.hoursToBudget, 'A count that is not climbing never reaches the budget, so there is no deadline to report.').toBe(Infinity);
+      expect(r.growing).toBe(false);
+      expect(r.hoursToBudget, 'At this nonpositive rate there is no projected growth deadline; future behavior can change.').toBe(Infinity);
     });
     it('ignores noisy middle readings (endpoints define the trend)', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 100 }, { t: 1, numTensors: 900 }, { t: 5, numTensors: 200 }],
         1000,
       );
-      expect(r.ratePerHour, 'The spike in the middle is deploy churn. Fitting the rate to it reports a leak an order of magnitude worse than the one that is there.').toBeCloseTo(20, 5);
+      expect(r.ratePerHour, 'This task defines the estimate from the endpoints. The middle spike needs its own investigation; it does not replace the stated interval.').toBeCloseTo(20, 5);
     });
-    it('a falling count is recovery, not a leak', () => {
+    it('a falling count has negative endpoint growth', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 500 }, { t: 2, numTensors: 300 }],
         1000,
       );
-      expect(r.leaking, 'A negative rate means tensors are being freed.').toBe(false);
+      expect(r.growing, 'The final count is lower than the first. These snapshots report net change, not every allocation and disposal.').toBe(false);
     });
   });
 estimatedMinutes: 12

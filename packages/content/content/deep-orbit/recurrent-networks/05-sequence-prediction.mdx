@@ -52,10 +52,10 @@ The LSTM just predicted the next signal reading to within 3% of the real one. It
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-If it can predict the timing, the signal has structure. And if it has structure... it isn't random noise.
+Check that timing on later captures, against a simple baseline. A predictable component would be useful evidence. It would not tell us what caused it.
 </Dialogue>
 
-Autocomplete is everywhere in JavaScript work: search suggestions, code completion, a form recalling what you typed last time. Each proposes what comes next from what came so far, out of a list somebody indexed. Our LSTM does the same job without the list: given the last 80 signal readings, predict the next one.
+A list-based autocomplete filters known entries from what you typed. Our forecaster instead computes the next sensor values from a window of previous readings. Both propose what comes next, but the forecast is not selected from a fixed list. Its errors need measurement on later observations.
 
 <LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them"]} />
 
@@ -103,7 +103,7 @@ Scale the three features before any of this runs. They sit on the tensor's last 
 
 Use the tool from module 1, with one change for the extra dimension. Module 1's batch was a reading table, `[rows, features]`, where `tf.moments(batch, 0)` gave one mean per feature. `trainX` is `[windows, 80, 3]`, so axis 0 there returns one mean per (time step, channel) pair: 240 of them, not 3. Reduce over the window axis and the time axis together, `tf.moments(trainX, [0, 1])`, and you get three means and three variances. The standard deviation is `variance.sqrt()`. Nothing warns you if you get this wrong. A `[80, 3]` mean broadcasts against `[N, 80, 3]` without error, so `trainX.sub(mean).div(std)` runs, and every time-step position ends up z-scored against its own statistics. Save the three means and three standard deviations and reuse them at inference.
 
-MAE is mean absolute error: the average of `Math.abs(predicted - actual)` across the batch, in the same units as the reading. MSE squares each error first, so one large miss moves it more than several small ones do, while MAE weights every miss the same. Train on MSE, because the squaring pushes the optimizer at the worst misses first. Report MAE, because it reads in the units on the instrument. With three outputs on one head, `metrics: ['mae']` averages the error over all three channels, so it only reads as a signal error once those channels share a scale.
+MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes twice as much. MSE squares errors, so doubling a miss makes its contribution four times larger. This example trains on MSE and reports MAE; that is a choice, not a requirement for every regression task. For multiple outputs, scale features deliberately and also report per-channel errors converted back to their original units.
 
 ## Multi-Step Forecasting
 
@@ -173,7 +173,7 @@ One unit check before anyone trusts a display. The demo above walks 47 one-secon
 
 ## Challenge
 
-Two pieces, in the order you would build them. First train the forecaster: the LSTM above over the window shape you are handed, a dense head with one output per channel, MSE for the loss and MAE riding along as the metric. The grader reads the optimizer's own update counter and checks it against the number of epochs your history reports, so a training trace has to come from a run that happened rather than from an object that looks like one.
+First train a forecaster with one output per channel. Return its training history so you can inspect how loss changed. Then use the trained model in the rolling forecast below.
 
 Then write the rolling loop from `multi-step.ts` yourself, at a smaller scale: a stand-in model, a short window, a handful of steps. The two things it grades are the two that are easy to get wrong here. The limits are in counts and the model answers in z-scores, so the bounds have to be converted before anything is compared against them. And the clamp belongs on the reading that goes back into the history, not only on the copy you hand back. The last check runs the loop on the model you trained in the first half.
 
@@ -186,16 +186,11 @@ Then write the rolling loop from `multi-step.ts` yourself, at a smaller scale: a
 
 <RecallPrompt
   question="The rolling forecast builds a window tensor and gets a prediction tensor back on each of its 47 steps. The module-4 inference loop wrapped that same pair in tf.tidy(). What happens to those two tensors when the callback returns, and what gets out?"
-  answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees every tensor allocated inside it except what the callback returns. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so neither tensor stays on the GPU, where the garbage collector cannot see it."
+  answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees temporary tensors created inside it, except returned tensors, variables and tensors retained with tf.keep(). This loop creates no variables or kept tensors. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so neither tensor stays on the GPU, where the garbage collector cannot see it."
 />
 
 <LessonRecap
-  whatYouLearned={[
-    "Next-value prediction is regression: the output is a continuous vector of signal values, so the loss is `meanSquaredError` and the diagnostic metric is MAE; accuracy has no meaning for continuous outputs.",
-    "Scale every feature before training a multi-output regressor. An MSE summed over mixed units is dominated by whichever feature has the largest numbers, and an MAE averaged over them has no unit at all.",
-    "Multi-step forecasting feeds each prediction back as the next input, extending the horizon one step at a time; error compounds with each step, so confidence degrades with distance.",
-    "A forecast horizon is measured in steps, not minutes: 47 steps means 47 seconds on a 1 Hz stream and 47 pulses on the interval series, so check what one step means before you read a prediction off a display."
-  ]}
+  whatYouLearned={["Next-value forecasting is regression. MSE and MAE measure error magnitude; ordinary classification accuracy does not fit continuous outputs.", "Fit per-feature preprocessing on training data and reuse it. Report errors in units the reader understands.", "Rolling forecasts feed predictions back into later inputs. Measure error at each horizon rather than assuming a fixed rate of deterioration.", "Check what one step means before converting a forecast horizon into seconds or minutes."]}
   bridge="The shown autocomplete filters a known list. A forecast computes a value from learned parameters; check output bounds, physical constraints, and errors at each horizon."
   youCanNow="Train an LSTM for next-value regression using MSE loss, evaluate it with MAE, and generate multi-step forecasts by feeding predictions back as input."
 />

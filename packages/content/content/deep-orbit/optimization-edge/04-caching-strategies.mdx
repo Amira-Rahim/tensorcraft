@@ -190,9 +190,9 @@ console.log(effectiveMs.toFixed(4));  // 0.0215
 // wrong here; the call it was pointed at was.`}
 </CodeBlock>
 
-Notice what `InferenceCache<string>` holds: the verdict, not the tensor it came out of. Cache the tensor instead and 50 cached predictions leave 50 tensors resident with nothing to release them, in the module that opened on a dashboard running out of memory. Sharing the handle is the other half of it. Whoever disposes the returned tensor first turns every later hit on that key into `Tensor is disposed.`
+This cache stores plain verdicts, so evicting an entry does not require tensor disposal. Caching tensors is possible but needs explicit ownership: dispose them on eviction and prevent callers from disposing shared handles. Otherwise later hits can fail with `Tensor is disposed.`
 
-Keep the ledger honest on both sides while you read that. On the credit side this cache removes 40 percent of the classifier's forward passes, worth 55 milliseconds a night. On the debit side it creates a second copy of every verdict the model has ever given, with its own expiry rules and its own ways of being wrong, and the next page you get will be about that copy. A cache earns its place when the call behind it costs enough to pay for the invalidation you just signed up for. Time the call first.
+Keep the ledger honest on both sides while you read that. On the credit side this cache removes 40 percent of the classifier's forward passes, worth 55 milliseconds a night. On the debit side it retains a bounded set of earlier verdicts, with its own expiry rules and its own ways of being wrong, and the next page you get will be about that copy. A cache earns its place when the call behind it costs enough to pay for the invalidation you just signed up for. Time the call first.
 
 ## Challenge
 
@@ -204,15 +204,10 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Exercise slug="incident-stale-verdict" />
 
-<RecallPrompt question="Before you build an inference cache, what has to be measured, and what can make a cached verdict wrong even when it is fresh?" answer="Measure the call you are about to wrap. Demir's ticket priced 213 repeats at the bundle's 45 ms when the call being cached runs 0.035, which overstated the saving by a factor over a thousand: a cache removes calls rather than making one faster, so what it is worth is the hit rate times what that one call costs. What makes a fresh entry wrong is the model behind it. A deploy replaces the weights, every stored verdict was written by the old ones, and no TTL can see that. Key width is the third decision: round the inputs too hard and two signals that should have stayed apart are served one verdict." />
+<RecallPrompt question="What should you measure before adding an inference cache, and why can a fresh entry be wrong?" answer="Measure the actual inference call, lookup overhead and expected hit rate. A fresh entry can use an old model or preprocessing version. Rounding can also map different inputs to one key, so test prediction changes near bucket boundaries and invalidate entries when the pipeline changes." />
 
 <LessonRecap
-  whatYouLearned={[
-    "A cache-first predict hashes the input, returns a stored result on a hit, and runs the model and stores the result on a miss. Bounding the cache is a second decision on top of that: the delete + re-set trick in get() is what makes eviction true LRU instead of FIFO.",
-    "Quantizing inputs before hashing means near-identical inputs land on the same key, raising hit rate by trading away exactness: everything inside one quantization bucket is served the same stored verdict, so bucket width is a precision decision, not a free win.",
-    "TTL length is bounded from both sides. Too short and the repeats expire before they come back: a 30-second TTL on traffic whose repeats arrive about a hundred seconds apart throws away most of a 40 percent hit rate. Too long and stale classifications stay in service. Neither setting catches a deploy, which invalidates every entry regardless of age.",
-    "A cache removes calls rather than making one faster, so what it is worth is the hit rate times what that call costs. Look the cost up on the call you are wrapping, not on the bundle it ships inside: a five-class signal classifier runs 0.035 ms per call, where the 85-million-parameter language component it ships beside runs 45 ms. At a 40 percent hit rate the classifier cache takes the mean served call from 0.035 ms to 0.0215, which came to 55 milliseconds across a night of 4,110 lookups."
-  ]}
+  whatYouLearned={["A cache avoids inference on a hit. Measure whether saved work exceeds lookup and maintenance costs.", "Rounded keys deliberately reuse predictions for different inputs. Test the resulting errors.", "Bound the cache and expire entries. Model and preprocessing changes need versioned keys or invalidation.", "Store plain results when possible; cached tensors need explicit ownership and disposal."]}
   bridge="Query and inference caches can both use exact keys. This exercise rounds inference inputs deliberately; validate that approximation and invalidate entries when model or preprocessing versions change."
   youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."
 />

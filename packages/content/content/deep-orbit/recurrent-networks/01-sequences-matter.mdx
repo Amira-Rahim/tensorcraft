@@ -100,13 +100,13 @@ console.log(sequences[0]);
 //   t=0 reading by t=3 and climbs again from there`}
 </CodeBlock>
 
-Flatten that window into one long vector and a dense layer does see the order, which makes it the baseline worth beating. What it learns is a separate weight for every (time step, feature) slot, so the same shape arriving two steps later lands on weights that never saw it, and one window length is baked into the layer. A recurrent cell applies the same transition rule at every step, so a shape that shifts in time is still the same shape to it, and lengthening the window does not add parameters.
+Flattening a window into a dense input preserves order, making it a useful baseline. It assigns separate weights to each position and fixes the input length. An RNN reuses one transition rule at every step, so longer sequences do not require more recurrent parameters. That reuse can help with patterns at different positions, but does not guarantee identical responses after a time shift: the incoming state and surrounding context still matter.
 
 <Dialogue speaker="Dr. Farah">
 Look at what the slicing bought you. Row for row, nothing changed. The pattern only exists across rows, in the order they arrive: [rising, falling, rising] and [falling, rising, rising] are the same three values telling two different stories. Order carries information, and the model we have throws it away at the door.
 </Dialogue>
 
-Piping a stream is the closest everyday version, and it stops one step short. Chunks arrive in the order they were written, and buffering them back together in the wrong order corrupts the file even though every byte survived. Order matters there because reassembly does; nothing in the pipe ever reads it. Here the order IS the information, and a model that reads one row at a time never receives it in the first place.
+Consider a byte-forwarding stream with no transform: reassembling its chunks out of order corrupts the file. That example preserves order without learning from it. A sequence model uses ordered values as input to a learned computation. Other JavaScript streams can inspect or transform their contents too; buffering alone is the limited comparison here.
 
 ## Sequence Shape: [batch, timeSteps, features]
 
@@ -151,11 +151,7 @@ Then stack what survives. The arrays are nested lists to JavaScript and nothing 
 />
 
 <LessonRecap
-  whatYouLearned={[
-    "Fed one reading at a time, the deployed classifier scores each reading in isolation, so shuffling the order of the readings changes none of its scores. Flattening a whole window into a dense layer does see the order, but it learns a separate weight per position and fixes the window length. A recurrent cell reuses one rule at every step, which fixes both.",
-    "Sequential data requires a third tensor dimension for time, giving inputs shape [batch, timeSteps, features] instead of [batch, features].",
-    "Sliding windows convert a continuous signal stream into discrete fixed-size sequences suitable for model input."
-  ]}
+  whatYouLearned={["A stateless classifier given one reading at a time cannot use relationships across readings.", "Flattened windows give a dense model ordered inputs. RNNs reuse transition weights across steps, without guaranteeing time-shift invariance.", "The TF.js recurrent layers here take [batch, timeSteps, features] tensors.", "Build windows within each time split so overlapping samples do not leak into evaluation."]}
   bridge="A stream preserves chunk order because reassembling the bytes out of order corrupts the file; a sequence model goes one step further and reads the order as meaning, so the same values in a different arrangement are a different signal to `model.predict`."
   youCanNow="Prepare sequential data by slicing a continuous signal into sliding windows and representing it as a [batch, timeSteps, features] tensor."
 />

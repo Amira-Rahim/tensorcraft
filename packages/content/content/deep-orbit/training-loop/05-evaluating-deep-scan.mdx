@@ -43,15 +43,17 @@ skillAxes: [training, evaluation]
 Run the evaluation suite. I want real numbers on signals the network has never seen.
 </Dialogue>
 
-<LearningObjectives objectives={["Evaluate on held-out test data and read the train-vs-test gap", "Interpret accuracy, loss, and confusion matrix metrics", "Tell a validation set from a test set and know which one your decisions may touch", "Turn the gap into a verdict: overfitting, underfitting, or healthy"]} />
+<LearningObjectives objectives={["Evaluate on held-out test data and read the train-vs-test gap", "Interpret accuracy, loss, and confusion matrix metrics", "Compare a trained classifier with a simple baseline", "Tell a validation set from a test set and know which one your decisions may touch", "Use the train/validation gap as a clue, then investigate possible causes"]} />
 
 ## The Final Test
 
-A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and if the run held nothing back, nothing in its logs will warn you. Lesson 4's validation curve is the first warning. This lesson adds the second, measured on rows no decision ever touched. That gap is the failure Mirza is ordering you to rule out: the model memorized its homework instead of learning the subject. Evaluation on held-out data exists to catch exactly this, the way E2E tests catch what unit tests can't: code that passes against fixtures and fails against reality.
+A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and if the run held nothing back, nothing in its logs will warn you. Lesson 4's validation curve is the first warning. This lesson adds the second, measured on rows no decision ever touched. Mirza wants that gap investigated. Overfitting is one possible cause; changed data, poor labels or mismatched preprocessing can also lower the held-out score. Like an E2E test, an evaluation checks selected cases. The cases must represent the conditions you intend to deploy into.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 A validation set is data the training loop is allowed to read so it can make decisions. Those decisions include when to stop in lesson 4, where to put a threshold later, and which settings to keep. Because those decisions were made to look good on it, its score is slightly flattered and is no longer a clean estimate. A test set is data no decision ever touched, scored once and reported. Lesson 4's val_loss of 0.081 was spent on the stopping decision, which is exactly why this lesson holds out a fresh slice the loop never saw. That run split coarsely: `validationSplit: 0.2` carved one twenty percent slice and no test slice at all. The capstone's model card records the three-way version, an 80/10/10 split of the archive.
+
+Before scoring the network, choose a **baseline**: a simple method it needs to improve on. For a classifier, start by predicting the training set's most common class for every held-out row. Compute that class from training labels only, then evaluate the baseline and network on the same rows. If 90% of test builds succeed, always predicting success scores 90% accuracy while catching no failures. The confusion matrix below makes that limitation visible. A more complex model earns its place through a useful improvement, not simply because it trained.
 
 <CodeBlock language="typescript" title="evaluation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -152,9 +154,9 @@ results.forEach((prob, i) => {
 One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Untrained networks of this shape do not do that. Build this same 3-32-16-1 stack 20,000 times without training it and ask each build about a reading that sits mid-scale on all three features. The answers pile onto the fence: the median is 0.500 and nine in ten land inside 0.45 to 0.55. Around one build in four hundred gets past 0.60, and none of the 20,000 reached 0.75, let alone 0.99. Nobody explained 7741 then and nobody explains it now. Trained, the network still will not commit on it, at 51.8 on the one reading the crew cannot label.
 
 **Interpreting results:**
-- **Training accuracy far above test accuracy** → The model is memorizing (overfitting). A small gap is normal, since the model saw those rows; this course draws the line at a gap of 0.15. You need more data, less complexity, or regularization: a training-time penalty or constraint that discourages memorizing. Two common forms: an L2 penalty, which adds the squared size of the weights to the loss, and dropout, which zeroes a random subset of units on every training batch.
-- **Both accuracies low** → The model can't learn the pattern (underfitting). You need more layers, more units, or more training.
-- **Both accuracies high** → You have ruled out these two failures and nothing else. Slice the eval by class and by cohort before anyone signs a deployment.
+- Training accuracy far above validation accuracy can suggest overfitting. Check distribution changes, labels and preprocessing too. If overfitting is the cause, compare early stopping, simpler models or regularization on validation data.
+- Low scores on both sets can reflect underfitting, poor inputs, label noise or a training problem. Compare a baseline and inspect errors before adding layers.
+- High aggregate scores still need inspection by class and operating condition. The exercise's gap rule is a simplified diagnostic convention, not proof of model health.
 
 While you are still changing the model, measure the gap against the validation score instead of the test score. The test slice is scored once, after the settings are frozen.
 
@@ -212,6 +214,8 @@ A cheaper filter can reduce the number of readings reaching an expensive model. 
 Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it has never seen. This time you read the train-versus-test gap. The grader reruns the evaluation, calls your gap rule on eleven pairs of its own, and checks that the held-out rows stayed out of the training call.
 
 <Exercise slug="deep-scan-eval" />
+
+<TransferAssignment />
 
 <RecallPrompt
   question="A model has 95% training accuracy and 60% test accuracy. What should you investigate before choosing a fix?"

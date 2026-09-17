@@ -1,0 +1,15 @@
+{
+  "name": "tensorcraft-build-triage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node starter.mjs"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "4.22.0"
+  }
+}

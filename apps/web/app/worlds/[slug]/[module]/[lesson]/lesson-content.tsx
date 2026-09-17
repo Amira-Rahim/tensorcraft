@@ -45,6 +45,7 @@ import {
   NextLesson,
   RecallPrompt,
   StrategyThread,
+  TransferAssignment,
 } from "@/app/components/mdx";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
@@ -158,6 +159,7 @@ const mdxComponents = {
   Quiz,
   RecallPrompt,
   StrategyThread,
+  TransferAssignment,
 };
 
 /**
@@ -367,6 +369,10 @@ export function LessonContent({
         ) : null,
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
       DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
+      TransferAssignment: wrapVisibility(
+        "TransferAssignment",
+        TransferAssignment,
+      ),
       DerivationDrawer: wrapVisibility("DerivationDrawer", DerivationDrawer),
       KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
       // LessonRecap leaves a marker when hidden: it is the structural

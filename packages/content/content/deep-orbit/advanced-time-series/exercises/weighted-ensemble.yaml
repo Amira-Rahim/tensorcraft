@@ -5,11 +5,11 @@ mlContent: evaluation
 instructions: |
   Write `ensembleGain(members, actual)` and report whether the ensemble was worth running.
 
-  What you are given. `members` is an array of `{ name, predictions, heldOutError }`, where `heldOutError` is that member's error on LAST week's held-out readings. It is a fraction of that channel's range rather than a raw figure, so it is not on the same scale as the errors you compute here, and it is only ever used to build the weights. `actual` holds the true values at the same positions as `predictions`.
+  What you are given. `members` is an array of `{ name, predictions, heldOutError }`, where `heldOutError` is that member's strictly positive mean absolute error on LAST week's held-out readings. It is a fraction of that channel's range rather than a raw figure, so it is not on the same scale as the errors you compute here, and it is only ever used to build the weights. `actual` holds the true values at the same positions as `predictions`.
 
-  What to return. `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-variance weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the three weights on a scale that totals 1. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win.
+  What to return. `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-squared-error weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the weights on a scale that totals 1. This is a heuristic: squared MAE is not error variance. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win.
 
-  What the windows are built to catch. One test hands you three members that are all wrong by the same amount in the same direction. Another hands you a strong member with two weak ones. A third hands you members whose errors partly cancel, so the blend beats the average member and still loses to the best one. A fourth lists the worst member first. Two more are about the weights. On one window last week's ranking still holds, and the weighted blend scores better than the plain average. On the next the ranking has flipped, last week's best member is this week's worst, and weighting by a stale score makes the blend worse than the plain average. A last window is drawn fresh on every run, so every number it checks has to be computed rather than recognised.
+  Use the prior week's errors only for the weights. Use the current window to compare the resulting predictions with every member. Shared errors may survive averaging, a weak member may worsen the blend, and an old ranking may no longer hold. Find the best member by score rather than array position.
 starterCode: |
   function ensembleGain(members, actual) {
     // The verdict is a comparison, so every member and both blends have to
@@ -33,13 +33,13 @@ solutionCode: |
     );
     const ensemble = mae(blended);
 
-    const inverseVariance = members.map(
+    const inverseSquaredError = members.map(
       (member) => 1 / (member.heldOutError * member.heldOutError),
     );
-    const total = inverseVariance.reduce((sum, v) => sum + v, 0);
+    const total = inverseSquaredError.reduce((sum, v) => sum + v, 0);
     const weights = {};
     members.forEach((member, i) => {
-      weights[member.name] = inverseVariance[i] / total;
+      weights[member.name] = inverseSquaredError[i] / total;
     });
 
     const weightedBlend = actual.map((_, i) =>
@@ -111,11 +111,11 @@ testCode: |
       ).toBeCloseTo(1, 6);
       expect(
         result.weights.Attention,
-        'This member had the smallest held-out error, so inverse variance gives it the largest share. A share equal to the others means the errors were never squared, or never used at all.',
+        'This member had the smallest held-out error, so inverse squared error gives it the largest share. Equal shares would ignore the different supplied errors.',
       ).toBeCloseTo(0.46678, 4);
       expect(
         result.weights.LSTM,
-        'Inverse variance, not inverse error: squaring first is what spreads these three shares as far apart as they are.',
+        'Inverse squared error, not inverse error: squaring first is what spreads these three shares as far apart as they are.',
       ).toBeCloseTo(0.332854, 4);
       expect(
         result.weights.Kalman,
@@ -274,7 +274,7 @@ testCode: |
       ).toBeCloseTo(5.342809, 4);
       expect(
         result.weighted > result.ensemble,
-        'Confidence is a measurement from another week. When the ranking flips, leaning on it costs you, and the fix is to rescore rather than to stop weighting.',
+        'Confidence is a measurement from another week. When the ranking flips, leaning on it costs you, and compare updated weights with equal weighting on new validation data.',
       ).toBe(true);
     });
     // Provenance check, added 2026-09-08 and extended 2026-09-12 to the

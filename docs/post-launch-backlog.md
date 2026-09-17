@@ -29,8 +29,12 @@ data-gated deferrals. The world-2 release gate remains separate.
   additional F15-F17 findings are corrected locally, with specialist and
   release reviews still required. See the
   [implementation evidence](audits/content-quality-implementation-2026-09-17.md).
-- [ ] **After factual repairs, Q2-Q3:** map objectives to practice, add early
-  transfer work, and review all 56 lessons and 65 exercises for clarity.
+- [~] **Q2-Q3 in progress:** the module/lesson map and early build-triage
+  assignment are implemented locally. The 18 previously unread lessons have
+  a prose pass, corrected claims and shorter recaps. All 56 lessons and 65
+  exercises still need whole-artifact and objective-level assessment review;
+  independent scores and learner evidence remain open. See
+  [patch 2 evidence](audits/content-quality-patch-2-2026-09-17.md).
 - [ ] **After objective/canon alignment, Q4:** make existing story choices
   affect later scenes; pilot two additional decisions before a larger wave.
 - [ ] **After teaching alignment, Q5:** deliver an independent project that

@@ -152,16 +152,12 @@ The model has written the sections and a reviewer has marked each one. The boole
 
 <Exercise slug="generate-report" />
 
-<RecallPrompt question="Why generate a report section by section rather than all at once?" answer="Generating a full report in one prompt gives you output you cannot verify in isolation; errors in one area infect the whole. Treating each section as an independent unit means each gets its own data, its own prompt, and its own validation step before assembly. You can catch and fix problems per section rather than discarding the whole." />
+<RecallPrompt question="What does section-by-section generation make easier to review?" answer="Each section can be checked against a smaller evidence set and revised on its own. You can review a full draft too, and splitting it does not guarantee accuracy. Check consistency and missing context again after assembly." />
 
 <LessonRecap
-  whatYouLearned={[
-    "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature reduces sampling variation; it does not establish truth. Review numerical claims, interpretations, and omissions against each section's evidence.",
-    "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
-  ]}
+  whatYouLearned={["Generating smaller sections lets reviewers check and revise each claim set separately.", "Low temperature reduces sampling variation; it does not establish truth.", "Assemble approved sections, name omissions and check consistency across the final report."]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."
-  youCanNow="Assemble a generated report from the validator's per-section verdicts: ship the sections that passed, name the ones that did not, and leave nothing in the document the data does not support."
+  youCanNow="Assemble the sections a reviewer approved, list withheld sections, and send the complete report for a final consistency check."
 />
 
 <Epilogue>

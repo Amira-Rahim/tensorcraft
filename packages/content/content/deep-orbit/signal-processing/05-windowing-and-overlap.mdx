@@ -49,12 +49,12 @@ Your decoder did not file anything overnight. The dashboard did: two anomaly rep
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2, and every other magnitude shrinks with it. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
+Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2, but some nearby bins gain magnitude as the peak broadens. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
 </Dialogue>
 
-Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and a discontinuity is frequency content that was never in the sky. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
+Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and that artificial boundary spreads the tone across frequency bins. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
 
-<LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Read why overlapping windows (50% hop) let the tapers interlock, so no sample stays discounted", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
+<LearningObjectives objectives={["Explain how cutting a finite signal spreads a tone across FFT bins", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Explain how overlapping windows improve coverage of samples near frame edges", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
 ## The Spectral Leakage Problem
 
@@ -161,7 +161,7 @@ console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
 ## Overlapping Windows
 
-Windowing tapers the signal down at the edges, which means you lose information there. Overlap the windows and the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight. The weights it picks up across the windows containing it add up to a near-constant total, so no sample stays discounted overall. Keeping that total constant is what the constant-overlap-add condition asks for. The periodic Hann used here, the one tfjs ships, satisfies it exactly, and the drawer below shows what the symmetric form costs.
+A sample near one frame edge can sit near the center of an overlapping frame. This gives it a stronger contribution somewhere in the spectrogram. For an even window length, periodic Hann windows shifted by half a window sum to one in the fully covered interior. Capture boundaries still need handling. The exercise uses the symmetric Hann, whose sum varies slightly; the drawer explains why that does not by itself prevent reconstruction.
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
@@ -207,11 +207,11 @@ console.log('Frequency bins:', spec[0].length); // 33`}
 
 `w[n] = 0.5 · (1 - cos(2π · n / (W - 1)))`
 
-**Overlap:** consecutive FFT windows share data. With 50% overlap (hop = W/2), each sample appears in 2 windows. With 75% overlap (hop = W/4), each sample appears in 4. More overlap = smoother spectrogram, more compute.
+**Overlap:** consecutive FFT windows share data. Away from capture boundaries, 50% overlap (hop = W/2) gives each sample 2 windows and 75% overlap (hop = W/4) gives it 4. The beginning and end need padding or separate boundary handling. More overlap = smoother spectrogram, more compute.
 
-**Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the shifted windows must sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: the periodic Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
+**Constant-overlap-add (COLA):** a convenient condition for overlap-add reconstruction is that shifted windows sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: the periodic Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
 
-One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what the challenge asks you to write; this lesson's code uses the periodic form tfjs ships. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. For feature extraction the ripple is harmless; for resynthesis, use the periodic form.
+One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what the challenge asks you to write; this lesson's code uses the periodic form tfjs ships. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. This ripple can affect feature scales. It does not make reconstruction impossible: normalized inverse STFT can use the weaker nonzero-overlap-add (NOLA) condition, where the sum of squared window weights is nonzero at every reconstructed sample. That normalization and complete boundary coverage matter.
 
 For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
 </DerivationDrawer>
@@ -224,7 +224,7 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
 
 <RecallPrompt
   question="Why apply a Hann window before computing the FFT?"
-  answer="The FFT treats the input as one period of an infinitely repeating signal. When a real signal slice does not end at the same amplitude it started, the abrupt edge looks like a sharp discontinuity, which produces spurious high-frequency energy (spectral leakage) across many bins. A Hann window tapers both ends of the slice to zero so the edge is smooth, suppressing leakage at the cost of a slight reduction in frequency resolution."
+  answer="The FFT treats the input as one period of an infinitely repeating signal. When a real signal slice does not end at the same amplitude it started, the abrupt edge looks like a sharp discontinuity, which produces spurious high-frequency energy (spectral leakage) across many bins. A Hann window tapers the slice toward zero near its edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
 />
 
 <RecallPrompt
@@ -233,11 +233,7 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
 />
 
 <LessonRecap
-  whatYouLearned={[
-    "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
-    "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. One cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. The other is that every magnitude shrinks by roughly the window's average value (0.5 for the 128-point Hann tfjs ships), so windowed and unwindowed magnitudes are not comparable. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
-    "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the periodic Hann here, the one tfjs ships, meets it exactly at a 50% hop; the symmetric form ripples by about 2.5%."
-  ]}
+  whatYouLearned={["A finite slice can spread a tone over many FFT bins. This is spectral leakage.", "Hann tapering reduces distant leakage but broadens peaks and changes their heights. Some bins can increase, so a single scale factor does not undo every spectral change.", "Overlap improves coverage near frame edges. Window form, hop and boundary handling matter for reconstruction.", "Split the original capture by time before making overlapping training and evaluation windows."]}
   bridge="StringDecoder preserves incomplete encoded characters across chunks. A signal taper reduces spectral leakage by changing amplitudes, trading narrower peaks for lower sidelobes."
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, measure what the taper does to the leakage, and say what it costs in resolution and magnitude."
 />
@@ -249,7 +245,7 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
 With the Hann window applied, the spectrum goes quiet everywhere it should: the sidelobe smear collapses to near zero, and what remains is a single slender line at 73.4 Hz, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform.
 
 <Dialogue speaker="Dr. Farah">
-We have proven the peak is real. Nobody has asked the better question, so I will: a signal this clean, at this distance, is meant to be found. Found by whom?
+The peak survives the taper. That rules out one explanation, not every instrument fault. If it also survives a second sensor chain, I want to know who expected us to find it.
 </Dialogue>
 
 Down the hall, ARIA starts re-indexing all eleven days of archive against the new spectral pipeline. She does not announce why.

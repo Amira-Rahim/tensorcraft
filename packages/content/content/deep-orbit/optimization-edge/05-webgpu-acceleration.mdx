@@ -55,14 +55,14 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is the real thing: direct GPU compute access. Set it up.
+The bridge has another backend available. Time the same model on it, and show me the fallback cost.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
 So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
 </Dialogue>
 
-Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it through a graphics pipeline: data as textures, math as fragment shaders, overhead on every op. WebGPU's compute shaders run matrix multiplications and parallel reductions directly, which is most of what inference is.
+WebGL exposes a graphics API. WebGL runs tensor math by smuggling it through a graphics pipeline: data as textures, math as fragment shaders, overhead on every op. WebGPU's compute shaders run matrix multiplications and parallel reductions directly, which is most of what inference is.
 
 <LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
 
@@ -131,7 +131,7 @@ console.log('Using backend:', backend);
 The `if` around `setBackend` is the part people leave out, and leaving it out is how a fallback chain lies to you. `setBackend` resolves to a boolean. A backend that is registered but fails to initialize logs `Initialization of backend webgl failed` and resolves `false`; nothing is thrown, so a bare `try`/`catch` never fires. Only an unregistered name throws, which is what you get when you forgot the import at the top of the file. Skip the return value and this function reports `webgl` on the 0249 dashboard, the one with no working WebGL context. `tf.ready()` then settles the engine on the next registered backend that does initialize. The imports at the top of this file leave wasm registered, so the function says `webgl` while every inference runs at 45 ms. Drop the wasm import and there is nothing left but cpu, at 120 ms.
 
 <Dialogue speaker="Dr. Farah">
-Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both: new shader language, new memory semantics, drivers you don't control. The win is real. What the API hides is what it costs to get there.
+A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here; we still have to measure device support, transfer costs and completed inference.
 </Dialogue>
 
 ## Measure the Claim
@@ -218,16 +218,12 @@ Walk a preference order and return the backend that is actually running, reading
 
 <Exercise slug="gpu-backend" />
 
-<RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 3x faster at the bridge console, and another GPU will give another ratio." />
+<RecallPrompt question="Why can WebGPU help compute-heavy inference, and why should you still benchmark it?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 3x faster at the bridge console, and another GPU will give another ratio." />
 
 <RecallPrompt question="Demir's first WebGPU timing run printed 0.4 ms and was wrong. Which rule from module 4's backend benchmark does that run break, and would disposing the output tensor before stopping the clock have fixed it?" answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms." />
 
 <LessonRecap
-  whatYouLearned={[
-    "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders. On DEEP SCAN's matmul-heavy inference workload that measured 3x faster at the bridge console; another GPU will give another ratio.",
-    "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection. `tf.setBackend` resolves `false` when a registered backend fails to initialize and throws only on an unregistered name, so the chain has to read the return value rather than only catch.",
-    "The optimization stack works on separate axes: quantization cuts stored bytes, pruning cuts only the compressed download because TF.js writes dense weights, caching cuts the number of calls, and the backend cuts per-call time. Nothing about a smaller file makes one call faster, so each axis has to be measured on its own. The axes still couple through the hardware. Shrinking DEEP SCAN dropped the load peak enough that the dashboard's WebGL context came back, and that swap is where 45 ms became 15."
-  ]}
+  whatYouLearned={["WebGPU exposes compute pipelines. Whether it beats WebGL depends on the workload and device.", "Check backend initialization and verify the active backend after fallback.", "Include output readback when timing completed inference.", "Measure download size, runtime memory, call count, latency and prediction quality separately after each optimization."]}
   bridge="WebGL and WebGPU expose different GPU APIs; WebGPU adds compute pipelines. That choice is separate from moving JavaScript work into a Worker."
   youCanNow="Walk a TensorFlow.js backend preference order so the name you report is the one actually running, falling back from WebGPU to WebGL to WASM when a backend refuses, and time inference on whichever backend you land on with the readback inside the clock."
 />

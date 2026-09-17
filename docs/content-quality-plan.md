@@ -8,6 +8,12 @@ F01-F09 and the named F11-F14 draft claims are corrected locally. All 56
 Deep Orbit bridge summaries received a focused review for F10; full
 in-context review, external approval, and learner validation remain open.
 
+Patch 2 adds a [learning progression map](audits/deep-orbit-learning-progression.md),
+corrects additional claims in the 18 previously unread lessons, shortens their
+recaps and adds the early build-triage assignment. See its
+[evidence and limits](audits/content-quality-patch-2-2026-09-17.md).
+Q2-Q3 remain in progress; full assessment review and learner validation are open.
+
 Owner direction: target at least 9/10 in every audit category, retain $50 as
 the launch price, and prepare a course worth $70 before raising the price
 after learning from customers.

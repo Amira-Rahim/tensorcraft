@@ -1,14 +1,14 @@
 {
   "version": 2,
   "recordedOn": "2026-09-17",
-  "baseRevision": "e5ff39b4f2e19649e94ad392af48c28e909d238f",
+  "baseRevision": "e773240bccbaa53d0b0475e104cce4aed485a184",
   "scope": "Deep Orbit, 56 lessons and 65 exercises",
   "policy": "Hashes refer to the current working tree. Targeted corrections do not complete whole-artifact checks. Each pending check requires evidence; source changes invalidate affected review. No independent review is claimed.",
   "artifacts": [
     {
       "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
       "kind": "lesson",
-      "sourceSha256": "54b7468bb9b9a6daef36efef24ebb1ba6e9d858ea7a8a6fc6e6f6b4fbf14a520",
+      "sourceSha256": "943fa325b1bf3a1877932c810e04074cfa8b8f8473a1408e4c8c2150ee490dcb",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -21,10 +21,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F20"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -39,7 +41,7 @@
       "authoredObjectives": [
         "Understand attention as dynamic relevance scoring: focusing on what matters",
         "Learn the Query-Key-Value framework for computing attention weights",
-        "Compare attention with LSTM: parallel vs sequential, global vs local context",
+        "Compare direct access to earlier states with the sequential updates of an LSTM",
         "Implement a simple attention mechanism in TensorFlow.js"
       ],
       "focusedReviews": [
@@ -49,6 +51,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -196,7 +205,7 @@
     {
       "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
       "kind": "lesson",
-      "sourceSha256": "32c59f1753ad757c15b26818c7d62d87003b69b4a17d28746c2044676222b10e",
+      "sourceSha256": "ae7e3a275cf885c0dd6b37e45f11b2e170776bf00234c0c71764311e199797c0",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -209,10 +218,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F18"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -225,7 +236,7 @@
       ],
       "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
       "authoredObjectives": [
-        "Blend members two ways: equal shares, and shares weighted by each member's measured confidence",
+        "Blend members two ways: equal shares, and shares weighted by each member's validation score",
         "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places",
         "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them",
         "Score an ensemble against its best single member, not against the average member"
@@ -237,6 +248,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -367,8 +385,8 @@
     {
       "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
       "kind": "exercise",
-      "sourceSha256": "d903fa28abdd8b9a8b4faa945c7c0836ec499cdeb121a51cbf077f9e70d88100",
-      "status": "pending",
+      "sourceSha256": "2de53defd694c958ef091f87ea5480ce767f462181e5e379146788653c0d6132",
+      "status": "partial",
       "checks": {
         "objectives": "pending",
         "prerequisites": "pending",
@@ -379,8 +397,12 @@
         "hints": "pending",
         "browser_execution": "pending"
       },
-      "targetedCorrections": [],
-      "evidence": [],
+      "targetedCorrections": [
+        "F18"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
       "declaredModulePrerequisites": [
         "foundations",
         "neural-networks",
@@ -919,7 +941,7 @@
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
       "kind": "lesson",
-      "sourceSha256": "1295775959fb2c6bef94b6ffc9992917ccc7d1d6b92bbe59ffc5fa7b80023bfd",
+      "sourceSha256": "56aa3a92c100488e4bb067c2355f71f0e761900245f37819cb78e5eeffae544b",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -932,10 +954,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F24"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -955,13 +979,20 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
       "kind": "lesson",
-      "sourceSha256": "0b0763374ce8e7c057b983a9245759b2c3fcc2b6815e1b1fcc7a5932baae3ab4",
+      "sourceSha256": "3e8e00e33b73a1acb67eb359954e57fc710198f3a4b9a10620c29579cfb9e4f3",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -974,10 +1005,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F24"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -999,13 +1032,20 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
       "kind": "lesson",
-      "sourceSha256": "2e9528b266897b8782f81538fe4d9af9b1b4b0443ab5069b5be6fd7305f09d68",
+      "sourceSha256": "e37b28a64b176b2acfd826a82bd0e311474dbc16a3f6e99c324db4d34a6114c4",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -1018,10 +1058,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F19"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1034,7 +1076,7 @@
         "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks",
         "Preprocess raw input data to match model training format",
         "Measure and optimize inference latency for real-time requirements",
-        "Read a climbing tf.memory() tensor count as a leak: turn the slope between two snapshots into hours of headroom"
+        "Investigate tensor growth and estimate headroom when that growth continues"
       ],
       "focusedReviews": [
         {
@@ -1043,6 +1085,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -1162,8 +1211,8 @@
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
       "kind": "exercise",
-      "sourceSha256": "f2748645da0ad1f07300459ae999967bfc1b4bc146a677a25640af9850c3a824",
-      "status": "pending",
+      "sourceSha256": "8ea100164d37c92fcb5746efed48879a2ca546e17f5c48d01ad56262f19284d9",
+      "status": "partial",
       "checks": {
         "objectives": "pending",
         "prerequisites": "pending",
@@ -1174,8 +1223,12 @@
         "hints": "pending",
         "browser_execution": "pending"
       },
-      "targetedCorrections": [],
-      "evidence": [],
+      "targetedCorrections": [
+        "F19"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
       "declaredModulePrerequisites": [
         "foundations",
         "neural-networks",
@@ -2218,7 +2271,7 @@
     {
       "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
       "kind": "lesson",
-      "sourceSha256": "2e4681b49eceef57a1ef89c2902355fce1014af06425549cb7aa1565eb451788",
+      "sourceSha256": "d4d1a99f6e551535a60b4640e1f781215647559faa9e7ad268bc4bb56c043a9b",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -2231,10 +2284,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F23"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2260,6 +2315,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -2316,7 +2378,7 @@
     {
       "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
       "kind": "lesson",
-      "sourceSha256": "cfe98a602945929016fe081df58914f1766bd0b2dbd4a2b2962fbca7aeac0ae5",
+      "sourceSha256": "cb45d1f895eb406e5b2bfae0274fe2d54ec62b6a989e7af14a9578e1f22fbf2a",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -2330,10 +2392,12 @@
       },
       "targetedCorrections": [
         "F04",
-        "F10"
+        "F10",
+        "F23"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2359,13 +2423,20 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
       "kind": "lesson",
-      "sourceSha256": "43316c8673aeba6faa0878aa76354dd4f2bef5ef73d08f7c132580327f59ff7e",
+      "sourceSha256": "0c80f49f2da4cc6b4fd524295b3477fff3ff0e3248ff8f51afd16d4245cba012",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -2379,10 +2450,12 @@
       },
       "targetedCorrections": [
         "F04",
-        "F10"
+        "F10",
+        "F23"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2408,6 +2481,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -2940,7 +3020,7 @@
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
       "kind": "lesson",
-      "sourceSha256": "e6b3873ea4ff2ab6e6bbbe364b4cb343f5bcf8c12b2a98a7d818c168347ecf0d",
+      "sourceSha256": "72e6d49f9a5c5cb9aac01c715bde0ccb16cd093c3f98a9cc89d803d298fd983c",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -2953,10 +3033,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F19"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2983,6 +3065,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -3089,7 +3178,7 @@
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
       "kind": "lesson",
-      "sourceSha256": "e6c963d9b8ced1a9eb5b194283afec6414045357ad27b887232dbf53404f7d98",
+      "sourceSha256": "0e7903270a3c3d13d0025209c0de2ef1d176137083daf82febe0babbaab5497f",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3102,10 +3191,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F24"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3132,13 +3223,20 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
       "kind": "lesson",
-      "sourceSha256": "b44a51b730dec1e7d1886786cb08bf9dbb20a84899cc6c74c7c14265b0c12e32",
+      "sourceSha256": "915d67a0ba96f9bdba4b13d05b69d8f9b71440b46b373fe82f5aeeb1207686f0",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3151,10 +3249,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F24"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3181,6 +3281,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -3286,8 +3393,8 @@
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
       "kind": "exercise",
-      "sourceSha256": "341b0454c236e332c216130a5173dd3b98d9f0b294ec8d57f138660644574da1",
-      "status": "pending",
+      "sourceSha256": "048a20c8ed25c278dedfa896c04a4e7ee77b045736304b833541af1fd2855315",
+      "status": "partial",
       "checks": {
         "objectives": "pending",
         "prerequisites": "pending",
@@ -3298,8 +3405,12 @@
         "hints": "pending",
         "browser_execution": "pending"
       },
-      "targetedCorrections": [],
-      "evidence": [],
+      "targetedCorrections": [
+        "F19"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
       "declaredModulePrerequisites": [
         "foundations",
         "neural-networks",
@@ -3385,7 +3496,7 @@
     {
       "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
       "kind": "lesson",
-      "sourceSha256": "2bd9b97de2c238183aa70d736eb184f2e5a4c8576fb58534767b8eccee152d81",
+      "sourceSha256": "508be8c686436d9d3e6a94f6b0423bf66689975d4d197e4b3d57c40ba6a36c4f",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3398,10 +3509,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F22"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3423,13 +3536,20 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
       "kind": "lesson",
-      "sourceSha256": "5742e10b7756f85ccb34d9b3eb8c611a23701723efa33971f00a4ee2f67cb598",
+      "sourceSha256": "4aa4170021b59274d25923b526f238a5a6006ac5fc6ed8b3227d5f901c6cc7e5",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3442,10 +3562,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F22"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3468,13 +3590,20 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
       "kind": "lesson",
-      "sourceSha256": "ce90b07f57d3aeb841d9336f00130ae3266fd5a0c7d34865efd7853a9aa4c953",
+      "sourceSha256": "cc7b51e899e609bf511f8542b475e7ed73b079bebc62e1e81d67d6db851f8979",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3487,10 +3616,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F22"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3502,7 +3633,7 @@
       "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
       "authoredObjectives": [
         "Understand the three LSTM gates: forget (discard), input (add), output (expose)",
-        "Build an LSTM cell with tf.layers.lstm and read its four gates out of the kernels and bias the library packs them into",
+        "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into",
         "Compare LSTM and GRU architectures: tradeoffs between complexity and performance",
         "Trace the gradient backward along the cell state and say what the forget gate does to it"
       ],
@@ -3513,6 +3644,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -3565,7 +3703,7 @@
     {
       "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
       "kind": "lesson",
-      "sourceSha256": "2f974c8b94fe0ffa0c016126a17eb7720a50d7b7d826f0e42645262fa5aa6584",
+      "sourceSha256": "bd0bf25ff566ecd5362f33fd89f036d7b473e227f22be92a06afa178fa2c1fe7",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3578,10 +3716,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F24"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3604,6 +3744,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -3755,7 +3902,7 @@
     {
       "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
       "kind": "lesson",
-      "sourceSha256": "b3ba291f97d698c596b305876f4e2e3f3e3778a26df596e2a9a621d5dc0a4f04",
+      "sourceSha256": "4121b78c94e248374cbd82c5ff34e1e37bd8fddeca2be90aab7294f551c28177",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3768,10 +3915,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F21"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3792,6 +3941,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -3841,7 +3997,7 @@
     {
       "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
       "kind": "lesson",
-      "sourceSha256": "6d25571c967c3c3ab5bb92c692cecff36991a21d6144c84764ed8daef1d2a8fc",
+      "sourceSha256": "c9d08057dc667b7f7528c81a46b8655e8ab5a1113f98c59baaeb487adfa46f5a",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3854,10 +4010,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F21"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3879,6 +4037,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -3929,7 +4094,7 @@
     {
       "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
       "kind": "lesson",
-      "sourceSha256": "17d4fc7e2c51893cbd2ea8e362be8075b235291988488118012f3af1210b0f6a",
+      "sourceSha256": "fb5d7fae6859831323cb73c4b45e9efca43d30c43c86cba5ecc54372524737c2",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -3942,10 +4107,12 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "F21"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3955,9 +4122,9 @@
       ],
       "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
       "authoredObjectives": [
-        "Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT",
+        "Explain how cutting a finite signal spreads a tone across FFT bins",
         "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT",
-        "Read why overlapping windows (50% hop) let the tapers interlock, so no sample stays discounted",
+        "Explain how overlapping windows improve coverage of samples near frame edges",
         "Choose the right window function based on the frequency resolution vs leakage tradeoff"
       ],
       "focusedReviews": [
@@ -3967,6 +4134,13 @@
           "reviewer": "Codex",
           "date": "2026-09-17",
           "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        },
+        {
+          "surface": "Teaching prose, dialogue, recall and recap; targeted factual edits and two new executable counterexamples",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Prose read without full execution of every CodeBlock or reproduction of historic benchmarks. Source changes invalidate whole-artifact checks. Independent review and learner comprehension remain pending."
         }
       ]
     },
@@ -4280,7 +4454,7 @@
     {
       "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
       "kind": "lesson",
-      "sourceSha256": "2c3dbb5e5865ead2c09129dc413ebca990b96dd02fae5cf528e6663d8d3099cc",
+      "sourceSha256": "b34387615f7a2b35cd9b3170d3b63c601fe68f91c0552db27f47cd2f58800ccf",
       "status": "partial",
       "checks": {
         "objectives": "pending",
@@ -4296,10 +4470,12 @@
         "F01",
         "F08",
         "F10",
-        "F17"
+        "F17",
+        "Q2-early-transfer"
       ],
       "evidence": [
-        "docs/audits/content-quality-implementation-2026-09-17.md"
+        "docs/audits/content-quality-implementation-2026-09-17.md",
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4309,8 +4485,9 @@
       "authoredObjectives": [
         "Evaluate on held-out test data and read the train-vs-test gap",
         "Interpret accuracy, loss, and confusion matrix metrics",
+        "Compare a trained classifier with a simple baseline",
         "Tell a validation set from a test set and know which one your decisions may touch",
-        "Turn the gap into a verdict: overfitting, underfitting, or healthy"
+        "Use the train/validation gap as a clue, then investigate possible causes"
       ],
       "focusedReviews": [
         {
@@ -4570,6 +4747,110 @@
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md"
       ]
+    },
+    {
+      "path": "apps/web/app/components/mdx/transfer-assignment.tsx",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "c5ddf4182994572d0da6ca941e75255ed8b004584289bc3df0da1f8c9c267593",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/app/components/mdx/transfer-assignment-state.ts",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "bdbf0fdc743248b10c0c8298800fb234f897461d496ee86a213814797c367248",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/public/assignments/build-triage-v1/README.md",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "7bd7c8e866069d56d8f6e72785346384d7fb1d05f7f799253dfc1e8f7507f148",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/public/assignments/build-triage-v1/data.json",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "ba7214ad8980b399825880d4e43f879b8da57e03f88bd8fb78cae47e03dd8f6c",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/public/assignments/build-triage-v1/starter.mjs",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "6ba330815af338471cab576fb2e104a22c7b349ac65fa24e870c523ee9315a57",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/public/assignments/build-triage-v1/package.json",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "37c40821d50022810105efdf1016d85c65dc9b78fcd6582bdbbde1c65eefd8a1",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/public/assignments/build-triage-v1/LICENSE.txt",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "13e8a47e5db6cd3e3bec16a7a1adf51bc94246a83fffc29d95109c2171807f60",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
+    },
+    {
+      "path": "apps/web/public/assignments/build-triage-v1.zip",
+      "kind": "early-transfer-assignment",
+      "sourceSha256": "6bee048d068597663974114f6739087f66c9b9fb0839326199a1143edede5cdf",
+      "status": "partial",
+      "targetedCorrections": [
+        "Q2-early-transfer"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-patch-2-2026-09-17.md"
+      ],
+      "limitations": "Local implementation and feasibility checks; independent assessment and learner validation pending."
     }
   ]
 }

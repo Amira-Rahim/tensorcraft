@@ -90,6 +90,8 @@ for (const slug of [
   "normalize-data",
   "rag-pipeline",
   "find-threshold",
+  "weighted-ensemble",
+  "incident-tensor-leak",
 ]) {
   test(`${slug}: browser accepts the solution and rejects the starter and misconception`, async ({
     page,

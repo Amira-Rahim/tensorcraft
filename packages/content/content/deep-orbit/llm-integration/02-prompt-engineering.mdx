@@ -46,10 +46,10 @@ skillAxes: [deployment, js_integration]
 Do the review before reading on. What would the model have needed to produce something a scientist could sign? Who is it supposed to be, what situation is it in, which data is it looking at, what shape should the answer take? Every gap you can name is a line the prompt failed to include.
 
 <Dialogue speaker="Dr. Farah">
-My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report. Your review probably found three of the four. Format is the one people skip, because output without it still reads like English right up until you try to parse it.
+My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the draft became specific enough to review against the readings. I still checked its claims before using them. Format matters when code needs to parse the reply; asking for JSON does not guarantee valid JSON.
 </Dialogue>
 
-Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. A search for `error` returns the whole index; a search for the exact string `Error when checking : expected dense_Dense1_input to have shape [null,3]` returns the one answer. Specificity and structure decide what you get back, and a prompt is a query.
+A more specific search query can narrow retrieved results. A prompt instead asks a model to generate an answer. Both benefit from a clear task and relevant context, but precise wording guarantees neither a useful result nor a true claim.
 
 One word does double duty across these two lessons. Lesson 1's client set a `role` on every message it sent, which is the API's label for whose turn it is: the system message that stands behind the whole call, then the user's. The role in Farah's four parts is a line of English inside that user message, naming who the model should answer as. It is the same word at two different layers.
 
@@ -90,7 +90,9 @@ Classify this signal. Respond with:
 
 None of those three signal lines quotes a model input. The classifier reads amplitude, frequency and phase after module 4 min-max normalizes all three to 0 to 1, and the prompt reports what the instruments logged instead. Amplitude is the hull sensor's own count against its 2048-count full scale, so the 0.50 the classifier saw goes into the prompt as 1024. Frequency is the line the transform found, in hertz, rather than the model's zero-crossing count. That count is taken over a 64-sample window, which is a quarter second of tape at the array's 256 Hz rate. Phase is radians rather than the normalized angle. Those are the numbers a scientist reading the draft can check against an instrument, and this prompt is written for that reader.
 
-The band in the prompt is the one module 7 measured, converted into the counts a scientist can check against an instrument. Its normal-period readings, in normalized units, give mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Against the sensor's 2048-count full scale that p5 to p95 span is roughly 570 to 1560 counts, and the hull sensors saturate at 2048, so no capture reads above it. 1024 counts normalizes to 0.50, inside the normal band and 0.13 standard deviations below the mean, which is why the z-score gate cleared it. The other two dials sit near mid-scale rather than on it. 73.4 Hz is 37 zero crossings in that quarter-second window, 0.59 of the 63-crossing ceiling. 0.23 rad is 0.54 of the way across the minus-pi-to-pi span. Module 3's trained network scored this reading 51.8 percent, unwilling to commit either way. Every dial reads normal on its own. That leaves the model one thing to notice: 73.4 Hz is not in the natural set the context line hands it.
+<DerivationDrawer summary="Checking the instrument units in this example">
+The band in the prompt is the one module 7 measured, converted into the counts a scientist can check against an instrument. Its normal-period readings, in normalized units, give mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Against the sensor's 2048-count full scale that p5 to p95 span is roughly 570 to 1560 counts, and the hull sensors saturate at 2048, so no capture reads above it. 1024 counts normalizes to 0.50, inside the normal band and 0.13 standard deviations below the mean, which is why the z-score gate cleared it. The other two dials sit near mid-scale rather than on it. 73.4 Hz is 37 zero crossings in that quarter-second window, 0.59 of the 63-crossing ceiling. 0.23 rad is 0.54 of the way across the minus-pi-to-pi span. Module 3's trained network scored this reading 51.8 percent, unwilling to commit either way. Every dial reads normal on its own. One mismatch for the reviewer to investigate is that 73.4 Hz is not in the natural set the context line hands it.
+</DerivationDrawer>
 
 ## Prompt Templates
 
@@ -143,14 +145,10 @@ Write v9: the template above with the line it is still missing, the reference th
 
 <Exercise slug="prompt-template" />
 
-<RecallPrompt question="What are the four parts of a well-structured prompt, and why does each matter?" answer="Role sets the model's perspective; context supplies domain-specific constraints the model cannot infer; data provides the actual values to reason over; format (e.g. JSON) controls output shape so it can be parsed programmatically. Missing any part is where vague output comes from." />
+<RecallPrompt question="How do role, context, data and format help this prompt?" answer="Role suggests a perspective, context supplies relevant constraints, data supplies the reading, and format requests a useful output shape. They are a checklist for this task, not four mandatory ingredients for every prompt. Parse the reply and check its claims even when the prompt is clear." />
 
 <LessonRecap
-  whatYouLearned={[
-    "Effective prompts have four parts: role, context, data, and format. Each missing part is a source of vague or unparseable output.",
-    "Requesting structured output (JSON) makes a reply parseable, not true: parse it, then check every field your caller depends on before anything downstream sees it.",
-    "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
-  ]}
+  whatYouLearned={["Role, context, data and format are a useful checklist for this reporting task.", "Requesting JSON does not guarantee valid JSON. Parse it, validate required fields and review claims against the evidence.", "Test prompt revisions on varied examples. Keep cases that expose errors instead of tuning only to one successful reply."]}
   bridge="Specific queries help retrieval; specific prompts help define a generation task. Neither precise wording nor a structured response guarantees the answer is correct."
   youCanNow="Write a prompt template that rebuilds role, context, data and format from the reading it was handed, and asks for the JSON your parser will read."
 />

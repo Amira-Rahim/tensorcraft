@@ -33,6 +33,34 @@ function javascript(source: string) {
 }
 
 describe("educational counterexamples and evidence boundaries", () => {
+  it("distinguishes squared MAE from error variance using the lesson example", () => {
+    const code = snippet(
+      "advanced-time-series/05-ensemble-methods.mdx",
+      "mae-is-not-variance.js",
+    );
+    const { biased, varying } = new Function(
+      `${code}\nreturn { biased, varying };`,
+    )();
+    expect(biased).toEqual({ mae: 1, variance: 0 });
+    expect(varying).toEqual({ mae: 1, variance: 1 });
+  });
+
+  it("shows an off-bin tone spreading beyond its two nearest bins without leaking tensors", () => {
+    const before = tf.memory().numTensors;
+    const code = snippet(
+      "signal-processing/01-time-vs-frequency.mdx",
+      "between-bins.js",
+    );
+    const { onBin, betweenBins, visibleBins } = new Function(
+      "tf",
+      "console",
+      `${code}\nreturn { onBin, betweenBins, visibleBins };`,
+    )(tf, { log: vi.fn() });
+    expect(visibleBins(onBin)).toBe(1);
+    expect(visibleBins(betweenBins)).toBe(33);
+    expect(tf.memory().numTensors).toBe(before);
+  });
+
   it("uses different output dimensions for a classifier and image generator", () => {
     const code = snippet(
       "generative-basics/01-what-is-generative-ai.mdx",

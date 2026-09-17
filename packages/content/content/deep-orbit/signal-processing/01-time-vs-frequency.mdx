@@ -45,7 +45,7 @@ skillAxes: [data_prep]
 Farah has kept that frame pinned to the corner of her display since the day she found it: 450 readings down, one column for each of the 64 hull channels. The swell has never gotten a name. Today she drags the old capture to the center of the screen and puts the live plot beside it.
 
 <Dialogue speaker="Dr. Farah">
-Same swell, Demir. The day I found the shape, and now, live. Amplitude over time: you see noise with occasional spikes, and this slow breathing nobody has explained. I suspect there's hidden structure: periodic components buried in the noise that only reveal themselves in the frequency domain.
+Same swell, Demir. The day I found the shape, and now, live. Amplitude over time: you see noise with occasional spikes, and this slow breathing nobody has explained. I suspect there's hidden structure: periodic components that may be easier to see in the frequency domain.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -53,7 +53,7 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-As a first sketch, and it breaks where it matters. You cannot compute the CSSOM from the DOM, or the DOM from the CSSOM. They describe different things. Time and frequency are one thing described twice, and the transform runs both ways: hand me a spectrum and I hand you back the samples it came from. What costs us happens earlier. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
+As a first sketch, and it breaks where it matters. You cannot compute the CSSOM from the DOM, or the DOM from the CSSOM. They describe different things. Time and frequency are one thing described twice, and the transform runs both ways: keep the full complex spectrum, including phase, and we can reconstruct the samples within numerical precision. A magnitude-only plot drops phase and cannot do that. What costs us happens earlier. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
@@ -110,7 +110,7 @@ console.log(complex.slice(0, 10));
 
 ## Why Frequency Matters for DEEP SCAN
 
-In the time domain, the Sector 7-G capture reads as noise. The frequency domain turns Farah's suspicion into a test you can run: list every frequency present, and any one with no natural source is an anomaly you can point to.
+The capture is difficult to inspect by eye. Its magnitude spectrum lets Farah look for peaks outside the known background frequencies. An unexpected peak is a candidate for investigation, not proof of an unknown physical source: interference and instrument faults can produce peaks too.
 
 <CodeBlock language="typescript" title="why-frequency.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -142,6 +142,25 @@ console.log(mags[94].toFixed(1), mags[146].toFixed(1), mags[147].toFixed(1));
 // (bins 146-147 at this run's 0.5 Hz resolution) that no catalog explains.`}
 </CodeBlock>
 
+<DerivationDrawer summary="Try a tone between FFT bins">
+At 64 samples per second, a 64-sample frame has bins one hertz apart. Compare a 5 Hz tone with a 5.5 Hz tone. The latter spreads beyond just its two nearest bins.
+
+<CodeBlock language="javascript" title="between-bins.js">
+{`// tf is TensorFlow.js, as in the example above.
+function toneMagnitudes(hz) {
+  return tf.tidy(() => {
+    const samples = Array.from({ length: 64 }, (_, i) =>
+      Math.sin(2 * Math.PI * hz * i / 64));
+    return Array.from(tf.spectral.rfft(tf.tensor1d(samples)).abs().dataSync());
+  });
+}
+const onBin = toneMagnitudes(5);
+const betweenBins = toneMagnitudes(5.5);
+const visibleBins = magnitudes => magnitudes.filter(value => value > 0.01).length;
+console.log(visibleBins(onBin), visibleBins(betweenBins)); // 1, 33`}
+</CodeBlock>
+</DerivationDrawer>
+
 ## Challenge
 
 Transform both captures yourself, then say whether they are twins in time and name the first bin where they part company.
@@ -150,16 +169,12 @@ Transform both captures yourself, then say whether they are twins in time and na
 
 <RecallPrompt
   question="A capture holds a tiny periodic component underneath four louder tones. Why does looking at the frequency domain reveal it when the time domain does not?"
-  answer="The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. Every cycle of the weak component adds into the same bin or two, where it stands clear of components that are louder in time but sit somewhere else in frequency."
+  answer="The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
 />
 
 <LessonRecap
-  whatYouLearned={[
-    "Every signal has two representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
-    "Both views of one capture carry the same information, because the transform loses nothing the samples hold. Each view still hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
-    "The frequency domain is useful for detection tasks because a periodic component accumulates into one bin, or two when its frequency falls between bin centers, rather than being spread across many time samples."
-  ]}
-  bridge="`document.querySelector` and `getComputedStyle` read different things, and neither answer can be derived from the other. `fft(signal)` is not that kind of pair: it returns the same content the time-domain array already holds, which is why `irfft` can turn it straight back into that array."
+  whatYouLearned={["A time plot shows sampled values in order; a magnitude spectrum highlights periodic components.", "The full complex transform retains the sampled information within numerical precision. Magnitudes alone discard phase.", "A tone between bin centers leaks across many bins. Windowing and noise affect whether a weak component is visible."]}
+  bridge="`document.querySelector` and `getComputedStyle` read different things, and neither answer can be derived from the other. `rfft(signal)` is not that kind of pair: it returns the same content the time-domain array already holds, which is why `irfft` can turn it straight back into that array."
   youCanNow="Explain why switching from the time domain to the frequency domain makes a buried periodic signal detectable, and show it on a pair of captures by transforming both and naming the bin where they diverge."
 />
 

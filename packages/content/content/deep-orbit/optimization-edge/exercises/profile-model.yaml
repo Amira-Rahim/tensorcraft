@@ -8,13 +8,13 @@ instructions: |
 
   (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went.
 
-  (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because a model's first call pays a one-off compilation cost. The warmup only spends that cost if its result comes back the way rule (4) brings the timed ones back: enqueue a call and drop it and the compilation is still sitting in front of your first timed call.
+  (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because initial calls can include compilation and initialization costs. Await the warmup result before timing, as rule (4) does for each measured call. A single warmup is this exercise's contract; real workloads may need more before timings stabilize.
 
   (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output.
 
   (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile.
 
-  (6) leakedTensors is tf.memory().numTensors read after the last timed call minus the same count read before the warmup, and the loop has to leave it at 0: every input createInput() hands you and every output predict() hands back is disposed once its values are out, the warmup pair included. This module opened on a dashboard that died of tensors nobody released. The mock models hand back handles with a no-op dispose, so one loop serves them and the real models alike, and the real ones have real tensors to leak.
+  (6) leakedTensors is tf.memory().numTensors read after the last timed call minus the same count read before the warmup, and the loop has to leave it at 0: every input createInput() hands you and every output predict() hands back is disposed once its values are out, the warmup pair included. The field measures net tensor-count change in this controlled loop. In a general application, count growth alone does not establish a leak. The mock models hand back handles with a no-op dispose, so one loop serves them and the real models alike, and the real ones have real tensors to leak.
 starterCode: |
   interface LayerProfile {
     name: string;

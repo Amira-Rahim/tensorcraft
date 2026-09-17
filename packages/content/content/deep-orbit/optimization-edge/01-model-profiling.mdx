@@ -98,7 +98,7 @@ I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabyte
 Profiling first. Same discipline as a slow React app: measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
-The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight; the numbers decide where the knife goes.
+The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Start with weight size, inference latency and parameters per layer. Weight bytes are only part of runtime memory: activations, temporary tensors, backend buffers and the application also occupy space. Measure the load peak before deciding what fits.
 
 <LearningObjectives objectives={["Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates", "Benchmark inference latency with high-resolution timing, mean and tail", "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time", "Establish baseline metrics before optimization"]} />
 
@@ -142,8 +142,8 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
   }));
 
   // Inference timing (warm up + 100 iterations). The warmup call pays the
-  // one-off compilation cost, and it runs outside the loop below, so that
-  // cost does not land in the average. Read its result back the same way
+  // initial compilation cost outside the timed loop. Some backends need
+  // more warmup; inspect timing stability rather than assuming one pass is enough. Read its result back the same way
   // the timed calls do, then throw the result away.
   const warmupInput = createInput();
   const warmupOutput = model.predict(warmupInput) as tf.Tensor;
@@ -242,16 +242,12 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
 
 <Exercise slug="profile-model" />
 
-<RecallPrompt question="Why should you profile a model before optimizing it?" answer="Profiling identifies which layers hold the most parameters, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped. Note what this profile does not give you: parameter share is not time share. A layer holding 80% of the weights is where the memory went, and it is a good first guess for where the milliseconds went, but confirming that takes an op-level profiler." />
+<RecallPrompt question="Why should you profile a model before optimizing it?" answer="Profiling identifies which layers hold the most parameters, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped. Note what this profile does not give you: parameter share is not time share. A layer holding 80% of the weights dominates parameter storage. It need not dominate execution time or peak runtime memory; those require separate measurements." />
 
 <LessonRecap
-  whatYouLearned={[
-    "Three metrics define a model's performance baseline: memory footprint (MB), inference latency (mean and P95), and per-layer parameter concentration.",
-    "Layer breakdown pinpoints where the parameters concentrate, so optimization effort goes to the right place. It does not measure per-layer time; that needs a profiler that instruments each op.",
-    "A warmup pass before timing removes JIT and compilation noise from measurements."
-  ]}
+  whatYouLearned={["Parameter count estimates weight storage, not peak runtime memory.", "Time completed inference over repeated runs and report both typical and slow calls.", "Warmup reduces startup effects. It does not remove all timing noise.", "Parameter share is not execution-time share. Profile operations before claiming a layer is the latency bottleneck."]}
   bridge="Use JavaScript timing APIs for inference too. Include output readback when measuring completion on a GPU, and track memory across repeated calls."
-  youCanNow="Profile a TensorFlow.js model to measure its memory footprint, inference latency, and per-layer parameter distribution before making any optimization decisions."
+  youCanNow="Estimate weight storage, measure inference latency and inspect parameter distribution, then measure runtime memory separately."
 />
 
 <Epilogue>

@@ -62,6 +62,7 @@ vi.mock("@/app/components/mdx", () => ({
   NextLesson: () => null,
   RecallPrompt: () => null,
   StrategyThread: () => null,
+  TransferAssignment: () => <div>Independent assignment</div>,
 }));
 vi.mock("@/lib/analytics", () => ({
   trackCheckpointSubmitted: vi.fn(),
@@ -346,5 +347,29 @@ describe("LessonContent, re-audit fixes (2026-09-04)", () => {
     expect(
       container.querySelector("[data-show-postrecap='true']"),
     ).toBeInTheDocument();
+  });
+});
+
+describe("LessonContent, independent assignment placement", () => {
+  const body = `const {jsx} = arguments[0]; return {default: (props) => jsx(props.components.TransferAssignment, {})};`;
+  it("renders the journal only in its selected partition", () => {
+    const { rerender } = render(
+      <LessonContent
+        lesson={{ body, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["TransferAssignment"])}
+      />,
+    );
+    expect(screen.getByText("Independent assignment")).toBeInTheDocument();
+    for (const part of ["prose", "Exercise", "LessonRecap", "Epilogue"]) {
+      rerender(
+        <LessonContent
+          lesson={{ body, concept: { explanation: "x" } }}
+          visibleComponents={new Set([part])}
+        />,
+      );
+      expect(
+        screen.queryByText("Independent assignment"),
+      ).not.toBeInTheDocument();
+    }
   });
 });

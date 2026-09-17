@@ -25,9 +25,9 @@ consequence:
   narrative: "The blend beats its best single member on the held-out week, 0.036 against 0.038. Demir keeps all three models and still fits the compression line by hand."
 hints:
   - level: nudge
-    content: "There is no new formula here. Mean absolute error, computed once per member, once for the averaged predictions, and once more for the blend that leans on the confidences. What is left are two judgement calls: which number the ensemble is compared against, and which errors the confidences are built from."
+    content: "Score each member and each blend with MAE. Which member sets the strongest comparison? Keep prior-week scores separate from this window's evaluation errors."
   - level: guidance
-    content: "One scoring function, used three times: once per member, once on the equal-share blend, once on the blend the confidences produce. The first judgement is which number the ensemble gets compared against. Three are lying around, the error of the member listed first, the mean of the member errors, and the smallest of them, and the windows are built so those three disagree. The second judgement is which errors the confidences come from. Every member carries a score from another week, and the window in front of you carries errors of its own, and only one of the two is a measurement of confidence. Read the definitions again before you pick either one."
+    content: "First compute predictions for each blend, then measure their MAE. Compare the equal blend with the lowest member MAE. For weighted predictions, normalize the inverse squared prior-week errors so the weights sum to one. Do not build weights from the window you are evaluating."
   - level: solution
     content: |
       const mae = (values) =>
@@ -42,13 +42,13 @@ hints:
           members.reduce((sum, m) => sum + m.predictions[i], 0) / members.length,
       );
       const ensemble = mae(blended);
-      const inverseVariance = members.map(
+      const inverseSquaredError = members.map(
         (member) => 1 / (member.heldOutError * member.heldOutError),
       );
-      const total = inverseVariance.reduce((sum, v) => sum + v, 0);
+      const total = inverseSquaredError.reduce((sum, v) => sum + v, 0);
       const weights = {};
       members.forEach((member, i) => {
-        weights[member.name] = inverseVariance[i] / total;
+        weights[member.name] = inverseSquaredError[i] / total;
       });
       const weightedBlend = actual.map((_, i) =>
         members.reduce((sum, m) => sum + m.predictions[i] * weights[m.name], 0),
@@ -70,12 +70,12 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model fires every time, and you pay the sum of their inference costs. If the compute budget covers that, then yes: each model has blind spots, and the ensemble covers them.
+Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model runs, so total computation grows. Elapsed time also depends on whether the hardware can run them concurrently. Different errors may partly cancel, but a shared mistake survives the blend.
 </Dialogue>
 
 `Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Three services hand back three different pieces of an answer. Three models hand back three answers to the same question, and the only thing that makes the third one worth paying for is that it is wrong in places the other two are right.
 
-<LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's measured confidence", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them", "Score an ensemble against its best single member, not against the average member"]} />
+<LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them", "Score an ensemble against its best single member, not against the average member"]} />
 
 ## Combining Models
 
@@ -128,7 +128,7 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
 // count, so it lands between whole numbers, which is why the frequency
 // column below reads 37.4 rather than 37.
 // Confidences are measured, not self-reported: each one is the
-// inverse-variance weight of that member's error on last week's held-out
+// inverse-squared-MAE weight from that member's error on last week's held-out
 // readings, by the formula below this block.
 // Lesson 4's filter tracks one number, so the Kalman member here is three
 // of them, one per channel, each smoothing its own reading.
@@ -163,16 +163,33 @@ await metaModel.fit(metaX, metaY, { epochs: 20 });
 // report its score on a further slice neither it nor the members have seen.`}
 </CodeBlock>
 
-A forecaster has no trust number of its own, as lesson 3 said, so the `confidence` field is not something the member reports. You measure it: score each member on a week of held-out readings it never trained on, then weight by inverse variance. Every error below is a fraction of its channel's range rather than a raw figure, so a miss in counts and a miss in radians can go into one score. For a member whose held-out error is `e_i`, `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. When member errors are independent, that is the weighting with the lowest blend variance, and it falls out of the same algebra as the drawer below. Held-out errors of 0.045, 0.038 and 0.058 give `1 / e^2` values of 494, 693 and 297, so the three confidences above are 0.333, 0.467 and 0.200. Rescore them after the signal drifts, or you are weighting today's blend by who was right last month.
+The `confidence` field is a weight we choose from validation results, not a probability the model reports. Here `e_i` is MAE on a prior held-out week, with each channel's errors divided by its range. We use `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. This is an inverse-squared-error heuristic. Squared MAE is not error variance, so the rule has no minimum-variance guarantee. The example errors 0.045, 0.038 and 0.058 produce weights near 0.333, 0.467 and 0.200. Compare that blend with equal weighting on a separate evaluation week. The exercise supplies strictly positive errors; a real implementation must define what to do with zero or invalid scores.
+
+<DerivationDrawer summary="Why squared MAE is not variance">
+Both error arrays below have MAE 1. The first is consistently biased; the second varies around zero. Squaring their MAEs gives the same number, but their variances differ.
+
+<CodeBlock language="javascript" title="mae-is-not-variance.js">
+{`const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
+function describeErrors(errors) {
+  const bias = mean(errors);
+  return {
+    mae: mean(errors.map(Math.abs)),
+    variance: mean(errors.map(error => (error - bias) ** 2)),
+  };
+}
+const biased = describeErrors([1, 1]);    // { mae: 1, variance: 0 }
+const varying = describeErrors([-1, 1]);  // { mae: 1, variance: 1 }`}
+</CodeBlock>
+</DerivationDrawer>
 
 ## Why Ensembles Work
 
-Each member fails in its own place. The LSTM reads short patterns and misses long-range drift. The attention model reads long range and can overfit a small archive. The Kalman filter smooths noise off the level and assumes the level holds still between readings. Average three answers whose mistakes land in different places and the mistakes partly cancel. Training each member on a different random resample of the archive is the classic way to buy that difference, and it has a name, bagging. With fully uncorrelated errors the typical ensemble error shrinks by a factor of sqrt(N), and the drawer below shows how far short of that a realistic correlation falls. On that same held-out week the plain average of the three scored MAE 0.036. Uncorrelated errors would have bought 0.027, the mean member error of 0.047 divided by sqrt(3). The attention member runs on an LSTM encoder of its own, so part of its error is the LSTM's error.
+Averaging helps when members make errors that partly cancel. Different architectures, seeds or training samples may create that diversity, but do not guarantee it. Bagging trains members on random resamples of the training data. For this time series, any resampling must preserve the temporal structure needed by the model. In the story's held-out week, the equal blend scores MAE 0.036. We cannot predict that MAE by dividing the mean member MAE by sqrt(3); the variance calculation below describes a different quantity.
 
-That 0.036 counts as a win because it beats 0.038, the best single member. It would not count for beating 0.047, which is the mean of the three member scores. Scoring an ensemble against that mean proves nothing: the error of the averaged prediction can never exceed the mean of the members' errors, so every ensemble clears that bar. An ensemble that lands between its members did worse than one member would have done alone, at three times the inference cost. You only see that if you score every member on the same held-out week. That is the challenge below.
+Compare the blend's 0.036 with 0.038, the best member on the same week. For equal-weight averaging under MAE, the blend's error cannot exceed the arithmetic mean of the members' MAEs, and it can tie it. That bound does not promise a win over the best member. Choose members and weights on validation data, then report the selected system on a final untouched period.
 
 <DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor">
-**The sqrt(N) claim above has fine print, and the fine print is one formula.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
+**A variance calculation with explicit assumptions.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
 
 **Variance of a sum runs through covariance.** For two variables, `Var(x + y) = Var(x) + Var(y) + 2·Cov(x, y)`; the covariance term measures how the two move together. Write each pairwise covariance through the correlation `ρ = Cov(eᵢ, eⱼ) / σ²`. Summing the N member errors picks up one `σ²` per member plus one `ρσ²` per ordered pair, and there are `N(N-1)` ordered pairs:
 
@@ -182,7 +199,7 @@ That 0.036 counts as a win because it beats 0.038, the best single member. It wo
 
 `Var(ensemble error) = σ²/N + ((N-1)/N)·ρσ² = ρσ² + (1-ρ)·σ²/N`
 
-**Read the two terms.** `(1-ρ)·σ²/N` is the part averaging can cancel; it dies as members are added. `ρσ²` does not contain N: it is a floor that no ensemble size removes. At `ρ = 0` the formula collapses to `σ²/N`, the sqrt(N) cut in typical error. At `ρ = 0.5`, three members give `0.5σ² + 0.5σ²/3 ≈ 0.667σ²`: a variance cut of one third, where independent members would have delivered two thirds. And the formula is about variance only; shared bias, like every member training on the same mislabeled batch, passes through the average untouched.
+**Read the two terms.** `(1-ρ)·σ²/N` is the part averaging can cancel; it dies as members are added. For a fixed nonnegative correlation, `ρσ²` is the variance floor as N grows. At `ρ = 0` the formula collapses to `σ²/N`: the standard deviation falls by sqrt(N). This does not give a general formula for MAE. At `ρ = 0.5`, three members give `0.5σ² + 0.5σ²/3 ≈ 0.667σ²`: a variance cut of one third, where independent members would have delivered two thirds. And the formula is about variance only; shared bias, like every member training on the same mislabeled batch, passes through the average untouched.
 </DerivationDrawer>
 
 ## Challenge
@@ -191,21 +208,16 @@ Score each member, score both blends (equal shares, then confidence shares), and
 
 <Exercise slug="weighted-ensemble" />
 
-<RecallPrompt question="Why do model ensembles often outperform any single model?" answer="When ensemble members are trained independently (different architectures, random seeds, or subsets of data), their errors are partially uncorrelated, and averaging cancels part of them. The factor-N variance cut (typical error shrinking by sqrt(N)) holds only for fully uncorrelated errors. With average pairwise correlation rho between member errors of variance sigma^2, ensemble variance is rho*sigma^2 + (1 - rho)*sigma^2/N: it floors at rho*sigma^2 no matter how many members you add." />
+<RecallPrompt question="When can averaging models help, and what does it fail to fix?" answer="It can reduce errors that cancel across members. A shared bias survives averaging. Different architectures do not guarantee different errors, so compare the blend with the best member on the same held-out examples." />
 
-<RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="No. The best member scored 0.036, so the ensemble is worse than the model you already had, and the two other members are what dragged it there. Beating 0.046, the mean of the member scores, means nothing, because averaging clears that bar every time. The comparison worth making is against the best single member." />
+<RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit." />
 
 <RecallPrompt question="Why are the member errors here fractions of each channel's range instead of raw counts and radians?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and the louder channel dominated. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the confidences computed from it, would track amplitude alone." />
 
 <LessonRecap
-  whatYouLearned={[
-    "An ensemble runs all member models on every input and combines their predictions; errors partially cancel when the members make uncorrelated mistakes.",
-    "Weighted averaging gives each member influence proportional to its confidence. That confidence is a number you measure, not one the model reports. Weight by inverse variance: w_i proportional to 1 / e_i^2, from each member's error on recent held-out data. Rescore after the series drifts, because weights built on last month's ranking can leave the blend worse than an equal-share average.",
-    "Uncorrelated errors come from different architectures, different random seeds, or different subsets of the training data. Architecture on its own is not enough: the attention member here sits on an LSTM encoder, so part of its error is the LSTM's.",
-    "An ensemble is judged against its best single member. Beating the mean of the member scores is automatic, so it proves nothing."
-  ]}
+  whatYouLearned={["Averaging can cancel some member errors. Shared bias survives.", "The inverse-squared-MAE weights here are a heuristic, not inverse-variance weights or calibrated probabilities.", "Different seeds, architectures or samples do not guarantee uncorrelated errors.", "Compare blends with the best member, select on validation data, and keep a final evaluation period untouched."]}
   bridge="`Promise.all([svcA(x), svcB(x), svcC(x)])` runs every call on the same input and hands back all three results; `prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))` runs the same fan-out and then collapses the three into one, so a weak member is not a failed call, it is a worse average."
-  youCanNow="Score every member on one window, blend them by equal shares and by inverse-variance confidence, and say whether the blend beat the best single member."
+  youCanNow="Score every member on one window, blend them by equal shares and by inverse-squared-error weights, and say whether the blend beat the best single member."
 />
 
 > **DISPATCH archive · field intercept #16-C:** Hassan's edge cell averaged three models and celebrated the agreement. All three had trained on the same mislabeled batch; the ensemble was three copies of one mistake voting unanimously. The fix was not a fourth model. It was a second dataset.
