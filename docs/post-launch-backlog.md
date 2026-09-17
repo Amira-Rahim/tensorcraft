@@ -117,9 +117,11 @@ takes precedence, so that path is now correct regardless.
 Production credentials, callback, credentialed OAuth requests, CORS headers,
 and the return URL are corrected. The owner authorized the App with access
 limited to the exercise repository. Both Settings backfill and automatic
-exercise saving created verified GitHub commits. Automatic creation of a
-missing repository still needs a separate test account with appropriate App
-access. See [launch verification](./launch-verification.md).
+exercise saving created verified GitHub commits. A subsequent check created
+a private test repository with the existing App user token, committed a file,
+and verified safe reuse on retry. Selected-repository access was preserved;
+a separate account was not required. See
+[launch verification](./launch-verification.md).
 
 Historical finding from 2026-08-24:
 `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` and `GITHUB_CALLBACK_URL` are unset

@@ -6,8 +6,9 @@ Stripe test checkout. GitHub callback and permission configuration, production
 alert delivery, the managed snapshot restore drill, production email sign-in,
 and GitHub authorization are complete. Manual and automatic GitHub exercise
 saves are verified with App access restricted to the exercise repository.
-Real Stripe test refunds and support mailbox settings also pass. Automatic
-repository creation still needs a separate test account and App installation.
+Real Stripe test refunds and support mailbox settings also pass. Private
+repository creation is verified using the existing account and restricted App
+installation; a separate account was not required.
 Stripe Tax and business registration are deferred at the owner's request.
 The recorded CI run for `840a1d05` passed all ten jobs.
 
@@ -332,7 +333,8 @@ integration". Account authorization had succeeded, but the App was not
 installed. The owner approved access only to `tensorcraft-deep-orbit`. An
 initial public repository was created through the owner's GitHub CLI, then
 App installation `162451914` was completed with only that repository selected.
-Automatic repository creation was not exercised under this restricted setup.
+Automatic repository creation was not exercised in that initial check; the
+later restricted-installation test below verifies it.
 
 Settings' **Push solved exercises** then reported
 `Pushed 1 · skipped 0 · failed 0`. The
@@ -349,10 +351,33 @@ the passing solution was changed to use
 all eight checks and automatically created
 [commit cbca8764](https://github.com/amirasalah/tensorcraft-deep-orbit/commit/cbca8764aab47c00f3f08d0b6b7c351148c9cc0c).
 GitHub's API confirmed the exact change in `foundations/create-a-tensor.ts`.
-The Settings backfill action was not used in this check. Automatic creation
-of a missing repository remains unverified; it requires a separate test
-account with an appropriate App installation. The owner's restricted
-installation was preserved.
+The Settings backfill action was not used in this check. The owner's
+restricted installation was preserved.
+
+Repository creation was verified separately on 2026-09-17 using the existing
+App user token and the actual `createOrGetRepo`, `pushFile`, and `getFile`
+helpers. Source hashes matched the deployed helpers before the test. The
+checks ran locally because one-off diagnostic processes on Fly timed out
+reaching Supabase and GitHub. The credential was decrypted on Fly, passed to
+the local verification process in memory, and never saved as plaintext.
+
+- GitHub returned HTTP 201 for the new private repository
+  [`amirasalah/tensorcraft-verification-20260917`](https://github.com/amirasalah/tensorcraft-verification-20260917),
+  ID `1374429729`.
+- The App remained on `repository_selection: selected`. GitHub automatically
+  added the new repository; the selected list contained only it and the
+  existing exercise repository. No all-repository access was granted.
+- The file helper committed harmless text to `verification.txt`, and read-back
+  matched its contents exactly:
+  [commit a9a4c426](https://github.com/amirasalah/tensorcraft-verification-20260917/commit/a9a4c4267344b15cb9793cac641895adf599f57c).
+- Repeating creation returned HTTP 422 from GitHub, and the helper correctly
+  fetched the same repository ID. No second repository or commit was created.
+- The existing exercise repository's branch head stayed unchanged.
+
+The private test repository is retained for inspection. This closes the real
+repository-creation check without a separate account. It does not claim a
+fresh-account browser onboarding test was performed. The earlier statement
+that a separate account was required was incorrect.
 
 Settings now explains the separate App installation, links to its installation
 screen, and describes the single-repository setup. The API access error points
