@@ -1,0 +1,36 @@
+apps/api/src/routes/payments.ts
+  s_8fedc26d4c2889::t_6f75fec6222c45 931,934-945,961-976,998
+  s_8fedc26d4c2889::t_c11422c674e990 70-74,78-79,993-997
+  s_8fedc26d4c2889::t_1fec877e96fe84 999
+docs/launch-verification.md
+  s_8fedc26d4c2889::t_cbe902ca1bf294 7-10,12,19-21,133-163,204-210,306,346-356,378-393,437-441
+docs/post-launch-backlog.md
+  s_8fedc26d4c2889::t_cbe902ca1bf294 68-77,116-124
+apps/api/src/routes/__tests__/stripe-flow-integration.test.ts
+  s_8fedc26d4c2889::t_2595addd9ddd2a 366-369,375-381,389-394,415-416,418-419,422-430,433-435
+  s_8fedc26d4c2889::t_6f75fec6222c45 401-402
+  s_8fedc26d4c2889::t_0f53b3af2d62c7 48,114-115,118-122,157-160,190,357-365,370-374,382-388,395-400,403-414,417,420-421,431-432,436-442
+apps/api/src/routes/payments.test.ts
+  s_8fedc26d4c2889::t_f9f2a3ea686285 17,67-70,229-233,275,624-657
+  s_8fedc26d4c2889::t_6f75fec6222c45 89-90,590
+  s_8fedc26d4c2889::t_8f785c133e3ab9 658-659
+docs/pre-launch-checklist.md
+  s_8fedc26d4c2889::t_cbe902ca1bf294 191,195-200,206,209-213,714
+  s_8fedc26d4c2889::t_e5626b9a9d20bc 13,800
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b53e8fc649f807d9ba1d8973dc2202670ad154b7",
+  "prompts": {},
+  "sessions": {
+    "s_8fedc26d4c2889": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ab7a-9d2d-7400-865a-62cf3897149e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
