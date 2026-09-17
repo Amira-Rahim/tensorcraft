@@ -1,0 +1,30 @@
+docs/launch-verification.md
+  s_8fedc26d4c2889::t_1bae9d55232f73 150-155,192,244-248,273-277
+apps/api/src/routes/github.ts
+  s_8fedc26d4c2889::t_de350eb3fc53d6 160,279-289
+apps/api/src/routes/__tests__/github-flow-integration.test.ts
+  s_8fedc26d4c2889::t_5694642b7ad300 156,240-249,254,261-308
+  s_8fedc26d4c2889::t_5c9011cab8330c 258-260
+  s_8fedc26d4c2889::t_1bae9d55232f73 24,163,250-253,255-257
+  s_8fedc26d4c2889::t_256ef99702eecc 309-310
+apps/web/app/settings/settings-form.tsx
+  s_8fedc26d4c2889::t_de350eb3fc53d6 327-328
+apps/web/app/settings/settings-form.test.tsx
+  s_8fedc26d4c2889::t_5694642b7ad300 220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9590b02eb8350436ac2a6c46c78f084c5f1b57eb",
+  "prompts": {},
+  "sessions": {
+    "s_8fedc26d4c2889": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ab7a-9d2d-7400-865a-62cf3897149e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
