@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
+import { backendConnectSources } from "./lib/backend-connect-sources";
 
 // Not named __dirname: Next evaluates this file through the CommonJS wrapper,
 // whose parameters include __dirname. See app/next-config.test.ts.
@@ -202,7 +203,15 @@ const nextConfig: NextConfig = {
             // the suffix differs. Omitting the region host does not degrade
             // reporting, it blocks it outright and silently, in the browser,
             // where no server side tooling can see the failure.
-            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://*.posthog.com https://*.ingest.de.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+            [
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://*.posthog.com https://*.ingest.de.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+              // A production build can run against local or staging backends.
+              // Keep these exact origins, including their configured ports.
+              ...backendConnectSources(
+                process.env.NEXT_PUBLIC_API_URL,
+                process.env.NEXT_PUBLIC_SUPABASE_URL,
+              ),
+            ].join(" "),
             "frame-src https://js.stripe.com https://checkout.stripe.com",
             "img-src 'self' data: blob: https:",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",

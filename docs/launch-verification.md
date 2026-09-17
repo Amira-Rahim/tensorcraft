@@ -1,27 +1,30 @@
 # Launch verification
 
-Local implementation and verification pass, 2026-09-16. Changes are not deployed.
+Verified on 2026-09-16. The four requested implementation checks pass:
+spaced review, PostgreSQL row security, browser E2E, and real signup plus
+Stripe test checkout. GitHub callback configuration and Stripe Tax setup
+still need owner input. Working-tree fixes remain uncommitted.
 
 ## Recorded results
 
 Validation used a clean installation of the locked dependencies, including
-Next.js 16.3.5 and React 19.3.0. The existing workspace dependency directory was
-not used to certify the production build.
+Next.js 16.3.5 and React 19.3.0.
 
-- Full unit suite: 2,648 passed, 65 skipped. Two final regression cases were
-  added afterward; their complete suites also passed (9 outbox cases and 14
-  server resolution cases).
-- Final full Playwright run: 137 passed, 34 skipped. Includes desktop, iPhone,
-  Pixel, iPad, dual-scheme accessibility, guest review scheduling, scene
-  playback, and reading with JavaScript disabled.
+- Final full unit suite: 2,666 passed, 65 skipped.
+- Full Playwright pass from the preceding implementation work: 137 passed,
+  34 skipped. Includes desktop, iPhone, Pixel, iPad, accessibility, guest
+  review scheduling, scene playback, and reading without JavaScript.
 - Seeded warm-up visual comparisons: 2 passed against inspected light/dark
   baselines. The broader opt-in visual suite was not run.
-- Real PostgreSQL RLS assertions passed; CI now runs the same isolated harness.
-- Production build, lint, typecheck, formatting, and diff whitespace checks
-  passed. Existing lint/deprecation warnings remain.
+- Real PostgreSQL RLS assertions passed again after these fixes.
+- Lint, typecheck, formatting of changed code, and diff whitespace checks
+  passed. Existing lint warnings remain.
+- Local production web build and production API Docker build passed.
+- The built API container passed health, database readiness, account export,
+  and signed dispute/replay checks against real local Supabase.
 
-Actual hosted signup and Stripe test checkout are not included in these passes;
-see the pending external checks below.
+The real browser integration described below ran separately from the mocked
+Playwright suite. No live payment was made.
 
 ## Spaced review
 
@@ -37,10 +40,9 @@ Sentry. Review retries compare the displayed schedule version to avoid counting
 an answer twice after a lost response. Paid prompt resolution retains the
 entitlement check, including on free lesson pages after a refund.
 
-Verify migration 061 in the target environment before enabling these surfaces.
-Stage 1 records it as applied; that hosted state was not re-verified here.
-Deploy the updated review API before the web reader so retry version checks are
-available when outbox writes begin. No hosted migration was applied during this pass.
+Production migration status was checked on 2026-09-16: all 61 migrations,
+including the review queue, are applied. The updated API was deployed before
+the web changes. No hosted migration was applied during this pass.
 
 ## PostgreSQL policy tests
 
@@ -81,13 +83,132 @@ reader is rendered outside a streamed Suspense boundary, and the no-JavaScript
 fallback reveals both the Briefing and teaching prose. A browser test exercises
 that fallback with JavaScript disabled.
 
-## External signup and checkout
+## Real signup and Stripe test checkout
 
-Pending staging identification and Stripe test credentials. The existing API
-environment contains a live Stripe key; it was not used for checkout testing.
+An isolated local Supabase stack ran Auth, PostgREST, PostgreSQL, and Mailpit.
+Application migrations were applied with the same retired-migration exclusions
+as the RLS tests. The custom access-token hook was enabled to match production.
+The web app ran as a production build on localhost:3100 and the API on :3101.
+External email, analytics, and Sentry delivery were disabled in this test setup.
+The local servers, Stripe listener, Supabase stack, and test VM were stopped
+after verification. Local Supabase test data is retained for a later restart;
+one unused test Checkout Session was expired.
 
-The remaining end-to-end check must use a staging Supabase project, a test
-mailbox, and Stripe test mode. Verify the magic-link return, migrated guest
-progress and reviews, checkout amount, signed webhook delivery, world access,
-and idempotent webhook replay. A local passing form test or SQL signup trigger
-assertion does not substitute for those external checks.
+The browser completed these checks against real services:
+
+1. Request a magic link and receive it in Mailpit.
+2. Follow the email link through the PKCE callback into onboarding.
+3. Save experience level, years, JavaScript background, and learning goal.
+4. Migrate guest lesson completion and the existing review schedule into
+   PostgreSQL. Confirm the refreshed JWT includes completed onboarding.
+5. Export account data through the authenticated API, including review history.
+6. Start checkout through the application and reach hosted Stripe Checkout.
+7. Pay USD 50 with Stripe's 4242 test card and return to the purchase-success
+   page. Stripe confirmed `livemode: false` and `payment_status: paid`.
+8. Receive Stripe's signed completion event through the CLI, record the
+   purchase, grant Deep Orbit, and show ownership in the browser.
+9. Replay the completion event twice. Exactly one purchase and one completion
+   event record remained. An invalid signature returned HTTP 400.
+
+Two Stripe test payments completed during the run, including one with the
+production-equivalent access-token hook enabled. No real money moved. Local
+signed dispute fixtures separately checked access removal, restoration after
+winning, and replay of the same won event against the real database.
+An authenticated review attempt also persisted its next schedule through the
+built API container; retrying the same request did not increment it twice.
+
+The ignored `apps/api/.env.checkout-test.local` contains local Supabase and
+Stripe test settings. CLI test credentials may expire. Do not use production
+Supabase or a live Stripe key for these browser tests. The test mailbox captures
+email locally; this does not certify production email delivery.
+
+## Fixes found by verification
+
+- Local signup failed because CSP excluded configured backend ports. The web
+  CSP now includes exact configured API and Supabase origins, validates their
+  schemes, and adds the matching Supabase WebSocket origin.
+- Account exports omitted review schedules. `review_queue` is now included.
+- Replaying a won dispute returned HTTP 500 after access was already restored.
+  Already-settled purchases now acknowledge that replay with HTTP 200; missing
+  or unresolved purchases still return a retryable error.
+- The production API Docker build called Corepack, which Node 26 does not
+  include. It now installs the exact repository pnpm version and includes the
+  required config workspace manifest. Recursive Docker exclusions keep host
+  dependencies, build output, and local environment files out of the image.
+  CI now builds the production API image as a separate check.
+- Handled API errors could return HTTP 500 without reaching Sentry. They now
+  report an error and include the `source` tag used by payment/GitHub alerts.
+  Exceptions already captured by the error handler are not reported twice.
+- The live Stripe webhook omitted `charge.dispute.closed`. That subscription
+  was added and read back. Existing endpoint URL, API version, and events were
+  preserved.
+- Fly lacked GitHub client credentials and its API callback URL. The existing
+  App credentials were verified and installed. Registration of the callback
+  still needs correction in GitHub, as described below.
+
+## Deployment
+
+Production database migration status is 61/61 in sync. Fly's required-secret
+preflight passed before deployment. The previous API image was from August;
+both machines now run release 25 and pass health checks. Database readiness
+also returns HTTP 200. Authentication and CORS smoke checks use public routes
+without creating production users or purchases.
+
+- API image: `registry.fly.io/tensorcraft-api:deployment-01M2NZNJHQ4PV10FNBFJ40SF8B`.
+- Previous image, retained for rollback:
+  `registry.fly.io/tensorcraft-api:deployment-01M0R0NYQW92Z6EZWRVGS4G4CT`.
+- The attempted GitHub Actions deployment failed before rollout because of
+  the Dockerfile issue. The corrected working tree was deployed directly
+  through Fly after local checks, without committing or pushing.
+- Web: [deployment dpl_2NshahgKULt713q9ZmPhdu1tJ4i3](https://vercel.com/amira-salahs-projects/tensorcraft/2NshahgKULt713q9ZmPhdu1tJ4i3)
+  built successfully and was promoted to `tensorcraft.app`. Home, pricing,
+  and auth return HTTP 200. The deployed pricing page renders its free and
+  paid controls in the browser. The deployed CSP contains production backends
+  and excludes the local test ports.
+
+## Monitoring and recovery
+
+UptimeRobot shows six active monitors, all up: API root, health, database
+readiness, web root, blog, and pricing. Sentry has web/API error monitors and
+scheduled-job checks. The enabled payment alert filters `source` for payments
+and notifies project members. The new handled-error tests verify that failures
+carry that tag. A new external alert email was not sent during verification.
+
+Supabase shows daily managed backups, including the 2026-09-16 snapshot.
+PITR is not enabled. A fresh read-only logical export of `public`, `auth`, and
+`storage` was restored into an isolated local database. All 69 tables matched
+source row counts and sorted-content fingerprints; 34 public RLS policies
+were present. The temporary database and export were removed afterward.
+
+This drill verifies logical database recovery. It does not restore Storage
+file bytes or a managed physical snapshot. The dashboard's separate snapshot
+restore requires a new project quoted at USD 0.50/month; that action remains
+unapproved and was not performed. It is additional recovery coverage beyond
+the completed logical restore drill.
+
+## Remaining external configuration
+
+### GitHub connection
+
+The App identity and existing client credentials were checked with GitHub.
+Fly now has `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`,
+`GITHUB_CALLBACK_URL`, and the existing `GITHUB_TOKEN_ENC_KEY`.
+However, GitHub rejects this required callback as unregistered:
+
+`https://api.tensorcraft.app/api/github/callback`
+
+[App settings](https://github.com/settings/apps/tensorcraft-exercises) require
+the owner's passkey confirmation. Add the callback without removing any
+existing required URLs, then complete a connection and exercise save with an
+authorized test account. The OAuth round trip is not yet verified.
+
+### Stripe Tax and invoices
+
+Read-only Stripe checks show live Tax settings pending because the business
+origin address (`head_office`) is missing, with no tax registrations listed.
+`STRIPE_TAX_ENABLED` is not set in Fly. The owner must supply the actual business
+origin and applicable registration details in Stripe. Then enable the flag and
+verify tax calculation plus invoice creation in test mode before sign-off.
+No business address or tax registration was invented, and no live charge was
+used for verification. The successful USD 50 checkout test above ran with
+Stripe Tax disabled.

@@ -24,9 +24,25 @@ export async function sentryMiddleware(c: Context, next: Next) {
     }
     scope.setTag("route", c.req.path);
     scope.setTag("method", c.req.method);
+    // Existing payment and GitHub alert rules filter the source tag.
+    scope.setTag("source", c.req.path);
 
     try {
       await next();
+      // Handlers often return a retryable 5xx after a database error without
+      // throwing. Those failures must reach alerts too. Hono sets c.error for
+      // exceptions already reported by app.onError, so skip a second event.
+      if (c.res.status >= 500 && !c.error) {
+        Sentry.captureMessage("API returned a server error", {
+          level: "error",
+          tags: { status: String(c.res.status) },
+          fingerprint: [
+            "handled-api-error",
+            c.req.routePath,
+            String(c.res.status),
+          ],
+        });
+      }
     } catch (err) {
       Sentry.captureException(err, {
         tags: {

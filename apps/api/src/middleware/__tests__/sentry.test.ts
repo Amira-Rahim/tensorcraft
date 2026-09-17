@@ -7,11 +7,13 @@ const scopeMock = {
 };
 
 const captureExceptionMock = vi.fn();
+const captureMessageMock = vi.fn();
 
 vi.mock("@sentry/node", () => {
   return {
     withScope: (fn: (scope: typeof scopeMock) => unknown) => fn(scopeMock),
     captureException: (...args: unknown[]) => captureExceptionMock(...args),
+    captureMessage: (...args: unknown[]) => captureMessageMock(...args),
   };
 });
 
@@ -21,6 +23,7 @@ describe("sentryMiddleware", () => {
   beforeEach(() => {
     scopeMock.setTag.mockReset();
     captureExceptionMock.mockReset();
+    captureMessageMock.mockReset();
   });
 
   it("tags the scope with requestId, route, and method", async () => {
@@ -74,6 +77,7 @@ describe("sentryMiddleware", () => {
     expect(scopeMock.setTag).toHaveBeenCalledWith("requestId", "req_boom");
     expect(scopeMock.setTag).toHaveBeenCalledWith("route", "/boom");
     expect(captureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(captureMessageMock).not.toHaveBeenCalled();
     const [err, context] = captureExceptionMock.mock.calls[0];
     expect(err).toBeInstanceOf(Error);
     expect((err as Error).message).toBe("kaboom");
@@ -97,4 +101,37 @@ describe("sentryMiddleware", () => {
     expect(tagKeys).toContain("route");
     expect(tagKeys).toContain("method");
   });
+
+  it("reports a handled payment failure with the tag used by alert rules", async () => {
+    const app = new Hono();
+    app.use("*", sentryMiddleware);
+    app.post("/api/payments/webhook", (c) =>
+      c.json({ error: "Database error" }, 500),
+    );
+    const res = await app.request("/api/payments/webhook", { method: "POST" });
+    expect(res.status).toBe(500);
+    expect(scopeMock.setTag).toHaveBeenCalledWith(
+      "source",
+      "/api/payments/webhook",
+    );
+    expect(captureMessageMock).toHaveBeenCalledExactlyOnceWith(
+      "API returned a server error",
+      {
+        level: "error",
+        tags: { status: "500" },
+        fingerprint: ["handled-api-error", "/api/payments/webhook", "500"],
+      },
+    );
+  });
+
+  it.each([200, 400, 401, 403, 429] as const)(
+    "does not send a server-error alert for HTTP %s",
+    async (status) => {
+      const app = new Hono();
+      app.use("*", sentryMiddleware);
+      app.post("/api/payments/webhook", (c) => c.json({}, status));
+      await app.request("/api/payments/webhook", { method: "POST" });
+      expect(captureMessageMock).not.toHaveBeenCalled();
+    },
+  );
 });

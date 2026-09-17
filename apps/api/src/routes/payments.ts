@@ -1099,6 +1099,28 @@ payments.post("/webhook", async (c) => {
         }
 
         if (!restoredCount) {
+          // A replay after a successful restoration updates zero rows.
+          // A later refund must also remain terminal without endless retries.
+          const { data: settledPurchase, error: lookupError } = await supabase
+            .from("purchases")
+            .select("status")
+            .eq("stripe_payment_intent", closedPaymentIntent)
+            .maybeSingle();
+          if (lookupError) {
+            logger.error(
+              { err: lookupError, route: "payments.webhook" },
+              "Webhook: could not verify dispute restoration state",
+            );
+            return c.json({ error: "Database error" }, 500);
+          }
+          if (
+            settledPurchase &&
+            ["completed", "refunded", "partially_refunded", "failed"].includes(
+              settledPurchase.status,
+            )
+          ) {
+            break;
+          }
           // No disputed row matched: either the intent is missing on the
           // row or ordering raced. Same retry contract as refund/dispute
           // zero-row handling.

@@ -1,5 +1,8 @@
 FROM node:26-alpine AS base
-RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY package.json ./
+# Node 25+ no longer bundles Corepack. Use the repository's exact pnpm version.
+RUN npm install --global "$(node -p 'require("./package.json").packageManager')"
 
 FROM base AS deps
 WORKDIR /app
@@ -7,6 +10,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json apps/api/
 COPY packages/supabase/package.json packages/supabase/
 COPY packages/shared/package.json packages/shared/
+COPY packages/config/package.json packages/config/
 RUN pnpm install --frozen-lockfile --filter @tensorcraft/api...
 
 FROM base AS build
@@ -23,7 +27,7 @@ RUN pnpm --filter @tensorcraft/api deploy /app/deployed --prod --legacy
 
 FROM node:26-alpine AS runner
 WORKDIR /app
-RUN npm install -g tsx
+RUN npm install -g tsx@4.23.13
 ENV NODE_ENV=production
 # Cap V8 heap at 200MB (80% of 256MB container) to prevent OOM kills
 ENV NODE_OPTIONS="--max-old-space-size=200"

@@ -24,6 +24,15 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  api-image:
+    name: API deployment image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the production API image
+        run: docker build --file apps/api/Dockerfile --tag tensorcraft-api:ci .
+
   rls:
     name: PostgreSQL row security
     runs-on: ubuntu-latest

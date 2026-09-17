@@ -140,6 +140,7 @@ describe("GET /api/profiles/export", () => {
     expect(Object.keys(body.tables)).toContain("world_progress");
     // Learner-authored code is user data too.
     expect(Object.keys(body.tables)).toContain("arena_submissions");
+    expect(Object.keys(body.tables)).toContain("review_queue");
     expect(Array.isArray(body.waitlist)).toBe(true);
   });
 

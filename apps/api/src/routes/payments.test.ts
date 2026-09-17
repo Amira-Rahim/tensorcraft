@@ -955,6 +955,35 @@ describe("POST /api/payments/webhook", () => {
     expect(res.status).toBe(500);
   });
 
+  it.each(["completed", "refunded", "partially_refunded", "failed"])(
+    "acknowledges a won-dispute replay after the purchase is %s",
+    async (status) => {
+      mockRpc.mockResolvedValue({ data: 0, error: null });
+      mockAdminExistingRow = { status };
+      const event = {
+        type: "charge.dispute.closed",
+        data: {
+          object: {
+            id: "dp_replay",
+            status: "won",
+            payment_intent: "pi_replay",
+          },
+        },
+      };
+      mockConstructEvent.mockReturnValue(event);
+      const res = await app.request("/api/payments/webhook", {
+        method: "POST",
+        headers: {
+          "stripe-signature": "sig_test",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
+      });
+      expect(res.status).toBe(200);
+      expect(mockUpdate).not.toHaveBeenCalled();
+    },
+  );
+
   it("leaves a LOST dispute terminally disputed (F2)", async () => {
     mockRpc.mockReset();
 

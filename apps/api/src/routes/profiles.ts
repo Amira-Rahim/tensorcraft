@@ -202,6 +202,8 @@ const USER_DATA_TABLES = [
   // Holds submitted_code - the learner's own writing. Self-read RLS
   // policy exists (048), so the user-scoped client can fetch it.
   "arena_submissions",
+  // Recall schedules and ratings are learner data (migration 061).
+  "review_queue",
 ] as const;
 
 // Bug reports are service-role-only (020: no user SELECT policy) and

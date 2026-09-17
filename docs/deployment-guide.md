@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - pnpm 10+
 - Supabase project (with Auth enabled)
 - Stripe account (with webhook endpoint configured)
@@ -55,6 +55,8 @@ Set these in Fly.io secrets or `.env` for local dev:
 |----------|----------|-------------|
 | `GITHUB_CLIENT_ID` | No | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET` | No | GitHub OAuth client secret |
+| `GITHUB_CALLBACK_URL` | Integration | Registered callback URL. Production uses `https://api.tensorcraft.app/api/github/callback`. |
+| `GITHUB_TOKEN_ENC_KEY` | Integration | Encryption key for stored GitHub tokens. Preserve the existing key when deploying. |
 
 #### Kit (ConvertKit) Email
 
@@ -163,7 +165,14 @@ Supabase is managed via their dashboard:
 4. Configure Auth providers (GitHub OAuth, Google OAuth, Magic Link)
 5. Set up OAuth redirect URLs for your domain
 
-**Database Backup Strategy:** Supabase Pro plans include daily automated backups with point-in-time recovery (PITR). For additional safety, schedule weekly `pg_dump` exports via a cron job or GitHub Action and store them in a separate cloud storage bucket (e.g., S3 or GCS). Test restore procedures quarterly.
+**Database Backup Strategy:** The production project has daily managed backups.
+PITR is a separate option and is not enabled. On 2026-09-16, a fresh read-only
+logical export of the `public`, `auth`, and `storage` schemas was restored into
+an isolated local database. All 69 table counts and content fingerprints matched;
+the temporary database and export were then removed. This checks logical
+database recovery, not restoration of a managed snapshot or Storage file bytes.
+See [`launch-verification.md`](./launch-verification.md) for the remaining
+managed-snapshot restore check. Repeat recovery drills quarterly.
 
 ---
 
@@ -222,8 +231,10 @@ no-op.
 - **API (`apps/api`)** - `@sentry/node` initialized at the top of
   `src/index.ts` (before Hono). DSN: `SENTRY_DSN`.
   - A `sentryMiddleware` tags each request's Sentry scope with
-    `requestId`, `route`, and `method` so every captured error is
+    `requestId`, `route`, `method`, and `source` so every captured error is
     correlated to a Hono request ID.
+  - Handled HTTP 5xx responses also report an error. The `source` tag lets
+    payment and GitHub failures match their configured alert rules.
   - `unhandledRejection` and `uncaughtException` are forwarded.
   - `app.onError` calls `Sentry.captureException` with the same tags.
 
