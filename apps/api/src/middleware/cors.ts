@@ -23,7 +23,14 @@ const origins = Array.from(
 export const corsMiddleware = cors({
   origin: origins,
   allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowHeaders: ["Content-Type", "Authorization"],
+  allowHeaders: [
+    "Content-Type",
+    "Authorization",
+    // The consent-gated web SDK adds these to requests to this API.
+    "X-POSTHOG-SESSION-ID",
+    "X-POSTHOG-WINDOW-ID",
+    "X-POSTHOG-DISTINCT-ID",
+  ],
   credentials: true,
   maxAge: 86400,
 });

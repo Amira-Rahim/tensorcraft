@@ -57,4 +57,50 @@ describe("corsMiddleware", () => {
     const allowOrigin = res.headers.get("Access-Control-Allow-Origin");
     expect(allowOrigin).toBeNull();
   });
+
+  it("allows authenticated requests after analytics adds tracing headers", async () => {
+    // initPostHog enables tracing_headers for the API hostname after consent.
+    const requestedHeaders = [
+      "authorization",
+      "content-type",
+      "x-posthog-session-id",
+      "x-posthog-window-id",
+      "x-posthog-distinct-id",
+    ];
+    const res = await app.request("/api/github/connect", {
+      method: "OPTIONS",
+      headers: {
+        Origin: "https://tensorcraft.app",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": requestedHeaders.join(","),
+      },
+    });
+
+    expect(res.status).toBe(204);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe(
+      "https://tensorcraft.app",
+    );
+    expect(res.headers.get("Access-Control-Allow-Credentials")).toBe("true");
+    const allowedHeaders = res.headers
+      .get("Access-Control-Allow-Headers")
+      ?.toLowerCase()
+      .split(",")
+      .map((header) => header.trim());
+    for (const header of requestedHeaders) {
+      expect(allowedHeaders).toContain(header);
+    }
+  });
+
+  it("rejects tracing preflights from an untrusted origin", async () => {
+    const res = await app.request("/api/github/connect", {
+      method: "OPTIONS",
+      headers: {
+        Origin: "https://evil.com",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization,x-posthog-session-id",
+      },
+    });
+
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  });
 });

@@ -2,10 +2,11 @@
 
 Updated on 2026-09-17. The four requested implementation checks pass:
 spaced review, PostgreSQL row security, browser E2E, and real signup plus
-Stripe test checkout. GitHub callback and permission configuration, a production
-signup inbox check, and the paid snapshot drill still need owner input. Stripe Tax
-and business registration are deferred at the owner's request. The earlier
-fixes were committed and pushed as `7acc978b`; all CI jobs passed.
+Stripe test checkout. GitHub callback and permission configuration, production
+alert delivery, the managed snapshot restore drill, and production email sign-in
+are complete. A real GitHub connection plus exercise save remain unverified.
+Stripe Tax and business registration are deferred at the owner's request.
+The recorded CI run for `33c0fa7a` passed all jobs.
 
 ## Recorded results
 
@@ -145,14 +146,20 @@ email locally; this does not certify production email delivery.
   was added and read back. Existing endpoint URL, API version, and events were
   preserved.
 - Fly lacked GitHub client credentials and its API callback URL. The existing
-  App credentials were verified and installed. Registration of the callback
-  still needs correction in GitHub, as described below.
+  App credentials were verified and installed. The owner subsequently saved
+  the required callback and repository Administration permission in GitHub.
 - GitHub connect omitted `credentials: "include"`, preventing the browser
   from storing the API's OAuth state cookie across origins. The request now
   includes credentials. Successful browser callbacks return to Settings;
   programmatic callers retain the JSON response. Regression checks reproduced
   both defects before the fix and pass afterward, including cookie validation,
   credentialed CORS, token persistence, and the final redirect.
+- After analytics consent, PostHog adds session, window, and distinct-ID tracing
+  headers to API requests. The API's CORS allowlist omitted all three, preventing
+  browsers from sending those requests. The allowlist now includes those exact
+  headers. A regression test failed before the change and passes afterward;
+  another test confirms untrusted origins remain denied. The production
+  preflight response reproduced the missing headers before deployment.
 
 ## Deployment
 
@@ -210,12 +217,15 @@ PITR is not enabled. A fresh read-only logical export of `public`, `auth`, and
 source row counts and sorted-content fingerprints; 34 public RLS policies
 were present. The temporary database and export were removed afterward.
 
-The logical drill does not restore a managed physical snapshot. The latest
-managed backup was completed on 2026-09-17 at 05:55:15 UTC. Restoring it to a
-separate project is prepared in the dashboard, which quotes USD 0.50/month.
-Approval to create and remove that test project is pending. Production has no
-`pg_cron`, `pg_net`, or `wrappers` extension installed, so no copied external
-jobs were found in the pre-restore check.
+A separate managed physical snapshot drill passed on 2026-09-17. After owner
+approval, the 05:55:15 UTC backup was restored into a temporary project. The
+restored project reached Active Healthy. All 69 tables matched production row
+counts and sorted-content fingerprints. Column definitions, RLS settings,
+34 public policies, and the 61 applied migrations also matched. The temporary
+project was deleted after verification; the project list confirmed its removal
+and production remained Active Healthy. Production has no `pg_cron`, `pg_net`,
+or `wrappers` extension installed, so no copied external jobs were found in the
+pre-restore check.
 
 Storage byte recovery was tested separately on 2026-09-17. Both production
 buckets were inventoried; the two avatar objects total 21,144 bytes. Each was
@@ -245,23 +255,34 @@ include Storage file bytes; see the
 The App identity and existing client credentials were checked with GitHub.
 Fly now has `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`,
 `GITHUB_CALLBACK_URL`, and the existing `GITHUB_TOKEN_ENC_KEY`.
-However, GitHub rejects this required callback as unregistered:
+The owner saved this exact production callback on 2026-09-17:
 
 `https://api.tensorcraft.app/api/github/callback`
 
-[App settings](https://github.com/settings/apps/tensorcraft-exercises) are now
-accessible after the owner's passkey check. The exact callback is entered with
-wildcard matching disabled, ready to save after the required confirmation.
-Existing URLs are preserved. A real connection and exercise save still need an
-authorized test account. The live OAuth round trip is not yet verified.
+[App settings](https://github.com/settings/apps/tensorcraft-exercises) confirm
+the saved callback with wildcard matching disabled. Existing callback URLs
+were preserved. A signed-in production test account is available. Clicking
+Connect GitHub returned `Failed to fetch`; direct API navigation showed Chrome's
+`ERR_BLOCKED_BY_CLIENT`, while external health and CORS checks reached the API.
+The owner must resolve this browser block before the live OAuth round trip and
+exercise save can be verified. Separately, the tracing-header CORS defect above
+was reproduced and fixed in code.
 
-The App currently has `contents: write` and `metadata: read`, but no repository
-Administration permission. GitHub requires `administration: write` for the
+The App now has `administration: write`, `contents: write`, and `metadata: read`,
+confirmed after the owner's approval. GitHub requires `administration: write` for the
 [`POST /user/repos` endpoint](https://docs.github.com/en/rest/repos/repos#create-a-repository-for-the-authenticated-user)
-used to create exercise repositories. The permission form is prepared but
-unsaved pending confirmation. This permission also covers repository settings
-and deletion within the App's authorized access. Existing installations must
-accept the added permission before it takes effect for them.
+used to create exercise repositories. This permission also covers repository
+settings and deletion within the App's authorized access. Existing installations
+must accept the added permission before it takes effect for them.
+
+### Production email sign-in
+
+The owner completed magic-link sign-in using the supplied test mailbox on
+2026-09-17. The mailbox tab displayed the received "Your Magic Link" message;
+the authenticated dashboard and Settings both showed the expected email
+identity. The owner handled the email-link step after browser-control
+interruptions. This verifies production email sign-in, without claiming a new
+account was created during this check.
 
 ### Stripe Tax and invoices (deferred)
 
@@ -293,5 +314,8 @@ passed all ten jobs, and visual regression passed. Subsequent GitHub browser
 flow fixes add a regression test to the existing route and settings checks.
 The three targeted GitHub/settings suites passed 51 tests, and the pre-push
 full suite passed 2,667 tests with 65 skipped. Both new regressions failed
-before the implementation change and passed afterward. CI for the code fix is
-[run 35196881623](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35196881623).
+before the implementation change and passed afterward. CI for the code fix,
+[run 35196881623](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35196881623),
+passed. The latest pushed record, `33c0fa7a`, also passed all ten jobs in
+[run 35197315060](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35197315060)
+and [visual regression](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35197315075).
