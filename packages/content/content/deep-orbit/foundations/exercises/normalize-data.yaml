@@ -2,14 +2,36 @@ slug: normalize-data
 lessonSlug: normalization
 title: "Normalize, Then Ask the Preview Neuron"
 instructions: |
-  Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. This time the pipeline ends where every pipeline should, at a model. You are handed a [4, 2] batch (4 readings × 2 features: temperature, signal strength) and Farah's frozen neuron weights.
+  Normalize a batch of four readings, then score them with Farah's fixed preview
+  neuron. Each row has two features: temperature and signal strength. Save the
+  training statistics so a later reading receives the same transformation.
 
-  1. Write `fitStats(rows)` so it returns `{ mean, std }` for any [n, 2] batch: one mean and one std per FEATURE, not one pair for the whole batch, both measured over the rows the function was handed, `std` taken over n (population), and both returned as tensors, the way `tf.moments` hands them to you, so steps 2 and 5 can broadcast them across a batch. The grader fits it to two batches you have never seen, one of three rows and one of five, so a statistic typed in by hand or a divisor pinned to four rows lands wrong. Fit it to `batch`.
-  2. Z-score the batch into `normalized` with those statistics: every column centred on its own mean and measured in its own standard deviations.
-  3. Build `previewModel` with `tf.sequential` and one `tf.layers.dense` unit reading two features, sigmoid activation, carrying Farah's frozen `KERNEL` and `BIAS`; the grader checks it is the model `tf.sequential` returns, not an object with the same methods. The grader reads the weights back off the model and expects the kernel first, shaped [2, 1], and the bias second.
-  4. Score the whole normalized batch in one call into `scores`, one verdict per reading, so `scores` comes out [4, 1].
-  5. Write `scoreReading(reading)` for any new 1D reading of two features: normalize it with THE STATISTICS YOU ALREADY FITTED, hand it to the neuron the way the neuron expects its input, and return the verdict: the tensor `predict` hands back, or the number inside it. The grader releases the training batch before its last call, because a model in production has no training rows left to measure.
-  6. Write `minMaxStats(rows)` so it returns `{ min, max }` for any [n, 2] batch, one per FEATURE like step 1 and both as tensors, then scale the batch into `unitRange` with them so each column's lowest reading lands on 0 and its highest on 1. That is the other scaler, and it is the right one for a channel with true bounds (a sensor's full scale, a percentage); z-score stays the default for an open-ended channel like temperature, where one outlier would crush a min-max column into a corner. The grader fits minMaxStats to a batch you have not seen as well.
+  1. Implement `fitStats(rows)` for any `[n, 2]` tensor. Return `{ mean, std }`
+     as two per-feature tensors. Reduce over axis 0 and use population standard
+     deviation (divide squared deviations by n). `tf.moments` returns variance;
+     take its square root for std. Apply the function to `batch`, saving `mean`
+     and `std`.
+  2. Implement `scaleFeatures(rows, offset, scale)` for a 1D reading or 2D batch.
+     Subtract the per-feature offset and divide by scale. When scale is zero,
+     use divisor 1 without changing the saved statistics. The lesson shows
+     `tf.where` for this choice. Set `normalized` using the saved mean and std.
+  3. Build `previewModel` as a real `tf.sequential()` model with one dense sigmoid
+     unit and input shape `[2]`. Set its weights from `KERNEL` and `BIAS`: the
+     kernel is a `[2, 1]` tensor and the bias is a `[1]` tensor, in that order.
+  4. Predict on `normalized` in one batch. Save the `[4, 1]` output as `scores`.
+  5. Implement `scoreReading(reading)` for a new `[2]` tensor. Reuse the saved
+     mean and std, add a batch axis, and predict with `previewModel`. Return the
+     prediction tensor or its single number. This must work after the original
+     training batch is disposed; do not fit statistics again.
+  6. Implement `minMaxStats(rows)` returning per-feature `{ min, max }` tensors
+     for any `[n, 2]` batch. Use `scaleFeatures` with the minimum and range to
+     produce `unitRange` for the original batch. Its nonconstant columns span
+     0 to 1; constant columns become zero.
+
+  Both statistics functions must work on new batches of different lengths,
+  including a constant feature. With the zero-scale rule, a changed future
+  value becomes its difference from the saved offset. That is a numerical
+  policy, not evidence that the model learned how to handle the new variation.
 starterCode: |
   const batch = tf.tensor2d([
     [20, 0.2],
@@ -31,6 +53,11 @@ starterCode: |
   }
 
   const { mean, std } = fitStats(batch);
+
+  function scaleFeatures(rows, offset, scale) {
+    // Reuse the supplied statistics, including the documented zero-scale rule.
+    return null; // your code here
+  }
 
   const normalized = null;
 
@@ -71,7 +98,14 @@ solutionCode: |
 
   const { mean, std } = fitStats(batch);
 
-  const normalized = batch.sub(mean).div(std);
+  function scaleFeatures(rows, offset, scale) {
+    return tf.tidy(() => {
+      const divisor = tf.where(scale.equal(0), tf.onesLike(scale), scale);
+      return rows.sub(offset).div(divisor);
+    });
+  }
+
+  const normalized = scaleFeatures(batch, mean, std);
 
   const previewModel = tf.sequential();
   previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
@@ -80,7 +114,7 @@ solutionCode: |
   const scores = previewModel.predict(normalized);
 
   function scoreReading(reading) {
-    const z = reading.sub(mean).div(std);
+    const z = scaleFeatures(reading, mean, std);
     return previewModel.predict(z.reshape([1, 2]));
   }
 
@@ -90,7 +124,7 @@ solutionCode: |
 
   const { min, max } = minMaxStats(batch);
 
-  const unitRange = batch.sub(min).div(max.sub(min));
+  const unitRange = scaleFeatures(batch, min, max.sub(min));
 testCode: |
   describe('Normalize, Then Ask the Preview Neuron', () => {
     const filled = (value, what) => expect(value, what).toBeDefined();
@@ -292,6 +326,21 @@ testCode: |
       }
       expect(rows[2][0], 'Reading three sits four of the six degrees up the temperature range.').toBeCloseTo(0.6667, 3);
       expect(rows[2][1], 'And a third of the way up the signal range.').toBeCloseTo(0.3333, 3);
+    });
+    it('keeps true zero statistics and handles a constant feature without NaN', () => {
+      const rows = tf.tensor2d([[7, 10], [7, 14]]);
+      const stats = fitStats(rows);
+      filled(stats && stats.std, 'Return the measured standard deviation, including zero.');
+      expect(Array.from(stats.std.dataSync())).toEqual([0, 2]);
+      const normalized = scaleFeatures(rows, stats.mean, stats.std);
+      filled(normalized, 'scaleFeatures must return the scaled tensor.');
+      expect(normalized.arraySync()).toEqual([[0, -1], [0, 1]]);
+      const future = scaleFeatures(tf.tensor1d([9, 16]), stats.mean, stats.std);
+      expect(future.arraySync(), 'Reuse the saved scale; a zero scale uses divisor 1.').toEqual([2, 2]);
+      expect(Array.from(stats.std.dataSync()), 'Do not replace the measured zero in the saved statistics.').toEqual([0, 2]);
+      const bounds = minMaxStats(rows);
+      const unit = scaleFeatures(rows, bounds.min, bounds.max.sub(bounds.min));
+      expect(unit.arraySync()).toEqual([[0, 0], [0, 1]]);
     });
   });
 estimatedMinutes: 15

@@ -4,29 +4,29 @@ title: "Privacy Preservation"
 moduleId: federated-learning
 worldId: terra-grid
 order: 3
-estimatedMinutes: 25
+estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Elif raises a concern: even weight updates can leak information about the training data. They need differential privacy to add mathematical guarantees."
+  narrative: "Elif finds that shared gradients can reveal training information. She asks what protection the proposed noise mechanism actually provides."
   speaker: "Elif Yilmaz"
 concept:
-  explanation: "Differential privacy adds calibrated noise to model updates, so no individual training example can be reconstructed from anything that leaves the silo."
+  explanation: "Differential privacy bounds how much the distribution of released outputs can change when one protected contribution changes. The guarantee depends on that contribution's definition, the mechanism, and all releases together."
   bridge:
-    jsTitle: "Cookie Isolation"
-    jsCode: "SameSite=Strict // prevent cross-site data leakage"
+    jsTitle: "Same-site Cookies"
+    jsCode: "// SameSite=Strict restricts when the browser sends a cookie"
     mlTitle: "Differential Privacy"
-    mlCode: "addNoise(gradients, epsilon) // prevent data leakage from updates"
-    tier: structural
-    breaks: "Cookie isolation enforces same-origin scope. Differential privacy adds calibrated noise to outputs. There is a quantified privacy budget (epsilon) that depletes with each query and noise materially reduces utility, especially for small subgroups."
+    mlCode: "// Bound a contribution, then randomize a released result"
+    tier: intuition
+    breaks: "SameSite is a browser request policy, and a site is not the same as an origin. Differential privacy is a bound on output probabilities. Neither mechanism promises that all private information becomes unknowable."
 consequence:
-  narrative: "With differential privacy enabled, Elif's security audit confirms: no individual sensor reading can be reconstructed from the shared weight updates."
+  narrative: "Elif accepts the clipping demonstration. She keeps the release gate closed until the team defines the protected unit and accounts for repeated updates."
 hints:
   - level: nudge
-    content: "SameSite=Strict limits what a cookie can reveal across sites. Here the limit is mathematical: noise added to gradients before they leave the silo"
+    content: "Compute the vector's L2 norm before adding noise. Clipping scales the whole vector, preserving its direction."
   - level: guidance
-    content: "Add Gaussian noise to gradients before sharing: more noise means more privacy but less accuracy"
+    content: "Use Math.min(1, clipNorm / norm), with factor 1 for a zero vector. Add one supplied standard-normal draw times noiseSigma per coordinate."
   - level: solution
-    content: "Clip gradients to a max norm, then add noise calibrated to the clip bound and privacy budget (epsilon)"
+    content: "Map each coordinate to gradient * factor + noiseSigma * standardNormal(). This tests the clipping and addition steps, not a complete private training system."
 keywords:
   - differential-privacy
   - gradient-noise
@@ -35,118 +35,77 @@ keywords:
 ---
 
 <Dialogue speaker="Elif Yilmaz">
-Weight updates aren't data. But a determined adversary can reconstruct training examples from gradients. It's called a gradient inversion attack. We need stronger guarantees.
+The silo keeps its readings, but its updates still depend on them. Someone receiving gradients may recover information about the training examples. What does adding noise let us promise?
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-Differential privacy. We add calibrated noise to the gradients before sharing. Enough noise that no individual data point can be recovered, but not so much that the model stops learning.
+A bound on how much one contribution changes the released output distribution. We still have to say whether a contribution means one reading, one farm, or one participant's full history.
 </Dialogue>
 
-`SameSite=Strict` does not encrypt a cookie or shrink it. It narrows the set of requests the cookie is allowed to ride along with, and that narrowing is the entire protection. Differential privacy narrows one level down: clipping caps how far any single training example can move the update, and noise hides whatever is left.
+<LearningObjectives objectives={["Explain differential privacy without promising impossible reconstruction", "Distinguish record-level and participant-level protection", "Clip a vector and add supplied Gaussian noise", "Explain why repeated releases need privacy accounting"]} />
 
-<LearningObjectives objectives={["Understand why raw gradient sharing can leak training data", "Implement differential privacy with gradient clipping and noise addition", "Reason about the privacy-accuracy tradeoff controlled by epsilon", "Map cookie isolation concepts to differential privacy mechanisms"]} />
+## Define the protected contribution
 
-## The Privacy Risk
+Two datasets are **adjacent** when they differ by the contribution we promise to protect. Adding or removing one reading gives record-level protection. Adding or removing a farm's entire history is a stronger, different requirement. Record-level accounting does not automatically protect the whole farm.
+
+A randomized mechanism M is (epsilon, delta)-differentially private if, for every adjacent pair D and D', and every set of possible outputs S:
+
+`P(M(D) in S) <= exp(epsilon) * P(M(D') in S) + delta`
+
+Epsilon controls the multiplicative bound. Delta is an additive allowance in this inequality, not a per-record probability of being reconstructed. Smaller values give a tighter bound. The guarantee limits the extra information from participation; it does not erase knowledge an observer already has. See [NIST's introduction](https://www.nist.gov/blogs/cybersecurity-insights/differential-privacy-privacy-preserving-data-analysis-introduction-our) and [Dwork and Roth, chapter 2](https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf).
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-<CodeBlock language="typescript" title="privacy-risk.ts">
-{`// Without privacy protection, gradients can leak data:
-// A gradient inversion attack reconstructs inputs from weight updates
-// Like a third-party cookie tracking users across sites
+## Bound the effect before adding noise
 
-// Solution: add noise before sharing, like SameSite=Strict blocks leakage
+Clipping a vector to L2 norm C limits its length. For a sum of separately clipped contributions, adding or removing one contribution changes the sum by at most C. Replacing one contribution by another can change it by as much as 2C. This maximum change is the query's **sensitivity**.
 
-interface PrivacyConfig {
-  epsilon: number;       // privacy budget: lower = more private
-  delta: number;         // failure probability
-  clipNorm: number;      // max gradient norm
-  noiseSigma: number;    // computed from epsilon, delta, clipNorm
+These are different contracts. Clipping an already averaged batch is not the same operation as clipping each example before aggregation.
+
+<CodeBlock language="typescript" title="clipping.ts">
+{`function clipVector(values: number[], bound: number): number[] {
+  const norm = Math.sqrt(values.reduce((sum, value) => sum + value * value, 0));
+  const factor = norm === 0 ? 1 : Math.min(1, bound / norm);
+  return values.map(value => value * factor);
 }
 
-function computeNoiseSigma(config: PrivacyConfig): number {
-  // Gaussian mechanism: sigma = clipNorm * sqrt(2 * ln(1.25/delta)) / epsilon
-  return config.clipNorm * Math.sqrt(2 * Math.log(1.25 / config.delta)) / config.epsilon;
-}
-
-// Privacy levels (like cookie policies):
-const privacyLevels: Record<string, PrivacyConfig> = {
-  low:    { epsilon: 10.0, delta: 1e-5, clipNorm: 1.0, noiseSigma: 0 },  // Like SameSite=None
-  medium: { epsilon: 1.0,  delta: 1e-5, clipNorm: 1.0, noiseSigma: 0 },  // Like SameSite=Lax
-  high:   { epsilon: 0.1,  delta: 1e-5, clipNorm: 1.0, noiseSigma: 0 },  // Like SameSite=Strict
-};
-
-// Compute noise for each level
-for (const [level, config] of Object.entries(privacyLevels)) {
-  config.noiseSigma = computeNoiseSigma(config);
-  console.log(\`\${level}: epsilon=\${config.epsilon}, noise sigma=\${config.noiseSigma.toFixed(3)}\`);
-}`}
+const clipped = clipVector([3, 4], 1);
+console.log(clipped); // [0.6, 0.8], up to floating-point rounding
+// A replacement can move from [1, 0] to [-1, 0]: distance 2.`}
 </CodeBlock>
 
-## Applying Differential Privacy
+For one Gaussian release, a textbook sufficient noise scale is `c * sensitivity / epsilon`, with `c` strictly greater than `sqrt(2 * ln(1.25 / delta))`. This bound assumes `0 < epsilon < 1` and `0 < delta < 1`; it is not a general-purpose training accountant. [Dwork and Roth, appendix A](https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf).
 
-<CodeBlock language="typescript" title="private-training.ts">
-{`function clipGradients(gradients: Float32Array, clipNorm: number): Float32Array {
-  // Limit how much any single example can influence the update
-  let norm = 0;
-  for (let i = 0; i < gradients.length; i++) {
-    norm += gradients[i] * gradients[i];
+<CodeBlock language="typescript" title="one-release-noise.ts">
+{`function oneReleaseSigma(sensitivity: number, epsilon: number, delta: number): number {
+  if (!Number.isFinite(sensitivity) || sensitivity < 0 ||
+      !(epsilon > 0 && epsilon < 1) || !(delta > 0 && delta < 1)) {
+    throw new Error('Use finite sensitivity >= 0, 0 < epsilon < 1, 0 < delta < 1');
   }
-  norm = Math.sqrt(norm);
-
-  if (norm > clipNorm) {
-    const scale = clipNorm / norm;
-    const clipped = new Float32Array(gradients.length);
-    for (let i = 0; i < gradients.length; i++) {
-      clipped[i] = gradients[i] * scale;
-    }
-    return clipped;
-  }
-  return gradients;
+  const c = 1.01 * Math.sqrt(2 * Math.log(1.25 / delta));
+  return c * sensitivity / epsilon;
 }
 
-function addGaussianNoise(gradients: Float32Array, sigma: number): Float32Array {
-  const noisy = new Float32Array(gradients.length);
-  for (let i = 0; i < gradients.length; i++) {
-    // Box-Muller transform for Gaussian noise
-    const u1 = Math.random();
-    const u2 = Math.random();
-    const noise = sigma * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-    noisy[i] = gradients[i] + noise;
-  }
-  return noisy;
-}
-
-function privateGradientUpdate(
-  gradients: Float32Array,
-  config: PrivacyConfig,
-): Float32Array {
-  // Step 1: Clip, bound the sensitivity
-  const clipped = clipGradients(gradients, config.clipNorm);
-  // Step 2: Add noise, calibrated to the bound
-  return addGaussianNoise(clipped, config.noiseSigma);
-}
-
-// The tradeoff:
-// epsilon=10.0 → almost no noise, low privacy, high accuracy
-// epsilon=1.0  → moderate noise, good privacy, slight accuracy loss
-// epsilon=0.1  → heavy noise, strong privacy, noticeable accuracy loss`}
+const sigma = oneReleaseSigma(1, 0.5, 1e-5);
+// Assumes sensitivity 1 for this one release. No training run is certified here.`}
 </CodeBlock>
 
-## Challenge
+## Practice the numerical operations
 
-Implement private training with gradient clipping and noise addition.
+The exercise supplies a function that returns independent standard-normal draws, with mean zero and variance one. Multiply each draw by sigma to set its standard deviation. Uniform draws from `Math.random() - 0.5` do not implement this Gaussian mechanism.
 
 <Exercise slug="private-training" />
 
-## Knowledge check
+These operations alone do not establish differential privacy. Private training also needs a validated sampling scheme, a suitable random-number implementation, and accounting for every release. In DP-SGD, clipping happens per example before aggregation. The sampling rate, noise multiplier, and number of steps affect the final privacy bound. [TensorFlow Privacy's tutorial](https://www.tensorflow.org/responsible_ai/privacy/tutorials/classification_privacy) shows those dependencies; [Abadi and colleagues](https://arxiv.org/abs/1607.00133) describe the training method.
+
+Repeated releases consume privacy budget together. Basic composition sums their epsilon and delta bounds; tighter accountants can improve that bound under their assumptions. A per-step epsilon is not the budget for the whole run. Use a reviewed implementation and record the protected unit, accounting method, total budget, and utility measurements before sharing real updates.
 
 <Quiz
-  question="Differential privacy adds Gaussian noise to gradient updates. With privacy budget ε=10 vs ε=0.1, which has STRONGER privacy?"
-  options={[{"text":"ε=10: larger value means more privacy"},{"text":"ε=0.1: smaller ε means tighter privacy guarantee (more noise added relative to the gradient)"},{"text":"They're equivalent: ε is just a normalization constant"},{"text":"It depends on δ, not ε"}]}
+  question="Two mechanisms protect the same contribution and use the same delta. Which guarantee is tighter: epsilon 0.5 or epsilon 0.1?"
+  options={[{"text":"Epsilon 0.5"},{"text":"Epsilon 0.1"},{"text":"They are equivalent"}]}
   correct={1}
-  explanation="ε is the privacy LOSS bound: smaller ε = stronger privacy. The Gaussian mechanism's noise σ is inversely proportional to ε (σ = clipNorm · √(2·ln(1.25/δ)) / ε), so ε=0.1 adds 100× more noise than ε=10. Option A inverts the convention. Option C is wrong: ε is the privacy budget. Option D is incomplete; both ε and δ matter, but the question asked about ε."
+  explanation="The smaller epsilon gives the smaller multiplicative bound in the definition. Compare the same protected unit and total release history; changing those assumptions changes what is protected."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Raw gradient sharing can leak training data; differential privacy prevents this with calibrated noise", "Gradient clipping bounds sensitivity; Gaussian noise provides mathematical privacy guarantees", "Epsilon controls the privacy-accuracy tradeoff: lower epsilon means more privacy but less learning signal", "The privacy budget is finite: every shared update spends epsilon, and the guarantee weakens as updates accumulate"]} />
+<KeyTakeaways takeaways={["Differential privacy bounds output probabilities for adjacent datasets; it does not make reconstruction impossible", "Define the protected unit before choosing clipping and noise", "A Gaussian mechanism needs Gaussian noise calibrated to the query's sensitivity", "Account for the complete release history, then measure the resulting model's utility"]} />

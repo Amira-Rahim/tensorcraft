@@ -1,37 +1,37 @@
 slug: apply-convolution
 lessonSlug: convolution-operations
 title: "Apply a 2D Convolution"
-instructions: "Apply a 2D convolution to a grayscale image using TensorFlow.js. Build `convolve2D(image, kernel)` that takes a `[H, W]` image tensor and a `[kH, kW]` kernel tensor. Reshape both to the shapes `tf.conv2d` requires: `[batch, H, W, channels]` for the image and `[kH, kW, in, out]` for the kernel. Run `tf.conv2d` with valid padding and stride 1, then return the `[outH, outW]` 2D result tensor."
+instructions: "Apply a 2D convolution to a grayscale image using TensorFlow.js. Build `convolve2D(image, kernel, stride = 1, padding = 'valid')` that takes a `[H, W]` image tensor and a `[kH, kW]` kernel tensor. Reshape both to the shapes `tf.conv2d` requires: `[batch, H, W, channels]` for the image and `[kH, kW, in, out]` for the kernel. Use stride 1 or 2 and valid or same padding as requested. Defaults are stride 1 and valid padding. Return a rank-2 `[outH, outW]` tensor even when a spatial dimension is 1. Same padding gives `ceil(inputSize / stride)`."
 starterCode: |
-  function convolve2D(image, kernel) {
+  function convolve2D(image, kernel, stride = 1, padding = 'valid') {
     // 1. Reshape image [H, W] → [1, H, W, 1]
     // 2. Reshape kernel [kH, kW] → [kH, kW, 1, 1]
-    // 3. Run tf.conv2d(input, filter, strides=1, padding='valid')
-    // 4. Squeeze back to [outH, outW]
+    // 3. Run tf.conv2d with the requested stride and padding
+    // 4. Remove only the batch and channel axes
     return null;
   }
 solutionCode: |
-  function convolve2D(image, kernel) {
+  function convolve2D(image, kernel, stride = 1, padding = 'valid') {
     const [iH, iW] = image.shape;
     const [kH, kW] = kernel.shape;
     const input = image.reshape([1, iH, iW, 1]);
     const filter = kernel.reshape([kH, kW, 1, 1]);
-    const result = tf.conv2d(input, filter, 1, 'valid');
-    return result.squeeze();
+    const result = tf.conv2d(input, filter, stride, padding);
+    return result.squeeze([0, 3]);
   }
 testCode: |
   describe('convolve2D (real tf.conv2d)', () => {
     it('returns correct output dimensions', () => {
       const image = tf.tensor2d([[1,2,3],[4,5,6],[7,8,9]]);
       const kernel = tf.tensor2d([[1,0],[0,1]]);
-      const result = convolve2D(image, kernel);
+      const result = convolve2D(image, kernel, stride = 1, padding = 'valid');
       expect(result.shape).toEqual([2, 2]);
     });
 
     it('identity 1x1 kernel preserves the image', () => {
       const image = tf.tensor2d([[1,2,3],[4,5,6],[7,8,9]]);
       const kernel = tf.tensor2d([[1]]);
-      const result = convolve2D(image, kernel);
+      const result = convolve2D(image, kernel, stride = 1, padding = 'valid');
       const arr = result.arraySync();
       expect(arr).toEqual([[1,2,3],[4,5,6],[7,8,9]]);
     });
@@ -39,10 +39,18 @@ testCode: |
     it('sum kernel computes window sum', () => {
       const image = tf.tensor2d([[1,1],[1,1]]);
       const kernel = tf.tensor2d([[1,1],[1,1]]);
-      const result = convolve2D(image, kernel);
-      // Result is 1x1; squeeze collapses to scalar; read via dataSync.
+      const result = convolve2D(image, kernel, stride = 1, padding = 'valid');
+      expect(result.shape).toEqual([1, 1]);
       const value = result.dataSync()[0];
       expect(value).toBeCloseTo(4, 4);
+    });
+
+    it('same padding preserves size only at stride one', () => {
+      const image = tf.ones([5, 5]);
+      const kernel = tf.ones([3, 3]);
+      expect(convolve2D(image, kernel, 1, 'same').shape).toEqual([5, 5]);
+      expect(convolve2D(image, kernel, 2, 'same').shape).toEqual([3, 3]);
+      expect(convolve2D(image, kernel, 2, 'valid').shape).toEqual([2, 2]);
     });
 
     it('edge-detection kernel zero on uniform inner region', () => {
@@ -54,7 +62,7 @@ testCode: |
         [0,0,0,0,0]
       ]);
       const kernel = tf.tensor2d([[-1,-1,-1],[-1,8,-1],[-1,-1,-1]]);
-      const result = convolve2D(image, kernel);
+      const result = convolve2D(image, kernel, stride = 1, padding = 'valid');
       const arr = result.arraySync();
       expect(arr[1][1]).toBeCloseTo(0, 4);
     });

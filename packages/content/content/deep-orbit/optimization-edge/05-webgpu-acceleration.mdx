@@ -20,7 +20,7 @@ concept:
     mlTitle: "WebGPU Compute"
     mlCode: "const adapter = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
     tier: structural
-    breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference: different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
+    breaks: "WebGL is a graphics API that can also implement tensor operations through shaders. WebGPU exposes compute pipelines as well as graphics. Backend availability and speed depend on the browser, device, and operators, so detect support and measure the actual workload."
 consequence:
   narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the crew signs off on the 2.4 points it cost."
 hints:
@@ -228,7 +228,7 @@ Walk a preference order and return the backend that is actually running, reading
     "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in browser feature detection. `tf.setBackend` resolves `false` when a registered backend fails to initialize and throws only on an unregistered name, so the chain has to read the return value rather than only catch.",
     "The optimization stack works on separate axes: quantization cuts stored bytes, pruning cuts only the compressed download because TF.js writes dense weights, caching cuts the number of calls, and the backend cuts per-call time. Nothing about a smaller file makes one call faster, so each axis has to be measured on its own. The axes still couple through the hardware. Shrinking DEEP SCAN dropped the load peak enough that the dashboard's WebGL context came back, and that swap is where 45 ms became 15."
   ]}
-  bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."
+  bridge="WebGL and WebGPU expose different GPU APIs; WebGPU adds compute pipelines. That choice is separate from moving JavaScript work into a Worker."
   youCanNow="Walk a TensorFlow.js backend preference order so the name you report is the one actually running, falling back from WebGPU to WebGL to WASM when a backend refuses, and time inference on whichever backend you land on with the readback inside the clock."
 />
 

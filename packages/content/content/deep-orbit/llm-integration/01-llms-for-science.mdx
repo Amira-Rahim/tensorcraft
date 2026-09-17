@@ -21,7 +21,7 @@ concept:
     mlTitle: "LLM Analysis"
     mlCode: "// Prompt: 'summarize anomalies in Band-7' → generates report section"
     tier: structural
-    breaks: "Both are the same next-token machine and both invent. What differs is the check. An invented API call fails the first time you run it, in front of you. An invented anomaly cluster reads perfectly and is caught only by the one person aboard who knows the data, so the cost to verify is the number worth budgeting."
+    breaks: "Both generated code and generated scientific prose can contain convincing errors. Running code catches some failures, but plausible wrong logic can pass limited tests. Check scientific statements against their cited measurements; fluent wording and familiar numbers do not establish accuracy."
 consequence:
   narrative: "Minutes to a full preliminary draft. Farah reviews and corrects: faster than writing from scratch, but only because she knows the data cold."
 hints:
@@ -159,38 +159,36 @@ interface AnalysisWorkflow {
 // Always verify claims against actual data
 // Like reviewing Copilot suggestions: accept what's correct, fix what's not
 
-function validateClaims(
+function screenNumbers(
   draft: string,
   actualData: Record<string, number>,
-): { valid: string[]; invalid: string[] } {
-  // Every number in the draft is a claim. Extract them in reading
-  // order (commas stripped so "12,001" parses), then ask whether SOME
-  // value in the data sits within tolerance. A claim does not care
-  // which field it came from; a fabricated one matches none.
+): { matched: number[]; unmatched: number[] } {
+  // A limited numeric screen, not factual verification. It finds numbers
+  // absent from the data but ignores source fields, units and meaning.
+  // Even a matched value can support a false sentence.
   const claims = draft.replace(/(\\d),(?=\\d)/g, '$1').match(/-?\\d+(?:\\.\\d+)?/g) ?? [];
   const values = Object.values(actualData);
-  const valid: number[] = [];
-  const invalid: number[] = [];
+  const matched: number[] = [];
+  const unmatched: number[] = [];
 
   for (const claim of claims) {
     const n = parseFloat(claim);   // keep the number, not the matched text
-    if (values.some((v) => Math.abs(v - n) <= 0.05)) valid.push(n);
-    else invalid.push(n);
+    if (values.some((v) => Math.abs(v - n) <= 0.05)) matched.push(n);
+    else unmatched.push(n);
   }
-  return { valid, invalid };
+  return { matched, unmatched };
 }
 
 // Run it on a draft with one invented figure:
-const check = validateClaims(
+const check = screenNumbers(
   'Across 12,001 catalogued events, 153 were anomalous and 1 resists ' +
   'classification. A cluster of 9 anomalies repeats hourly.',
   { totalEvents: 12001, anomalous: 153, unclassified: 1 },
 );
-console.log(check.valid);    // [12001, 153, 1]
-console.log(check.invalid);  // [9]  ← no such cluster in the data
-// Lesson 3 of this module rebuilds this checker as verifyClaims, against
-// retrieved RAG rows rather than a flat record; the contract is already
-// here: extract, compare, refuse to trust prose.`}
+console.log(check.matched);    // [12001, 153, 1]
+console.log(check.unmatched);  // [9]  ← no such cluster in the data
+// Lesson 3 checks structured claims against named source fields.
+// Neither this numeric screen nor those field checks can approve free text.`}
 </CodeBlock>
 
 ## Challenge

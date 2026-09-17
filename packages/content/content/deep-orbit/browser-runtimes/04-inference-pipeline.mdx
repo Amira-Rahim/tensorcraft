@@ -21,7 +21,7 @@ concept:
     mlTitle: "Input → Predict → Display"
     mlCode: "const prediction = model.predict(tensor); updateUI(prediction);"
     tier: structural
-    breaks: "Event → Process → Render runs code you wrote, with a breakpoint available on every line, and hands its intermediates to the garbage collector. Input → Predict → Display puts a learned function in the middle, with no line to break on, and allocates tensors the collector cannot see. A wrong verdict is debugged from the input ranges and the training data instead of a stack frame, and the handler that fires 86,400 times a day has to free what it made."
+    breaks: "Both handlers can be debugged as programs. A model also needs checks on features, weights, and evaluation data to explain a wrong prediction. TensorFlow.js tensors require explicit disposal or tf.tidy; ordinary JavaScript garbage collection is not the complete resource policy."
 consequence:
   narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:

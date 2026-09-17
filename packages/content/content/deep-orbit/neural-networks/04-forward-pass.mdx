@@ -21,7 +21,7 @@ concept:
     mlTitle: "Forward Pass"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: intuition
-    breaks: "DOM events bubble up; data flows down through layers. Event handlers run independently and can stop propagation; layer outputs are summed and multiplied through learned weights and cannot be stopped. The 'propagation' word matches; the direction of flow and the way results combine do not."
+    breaks: "DOM events have capture, target, and bubbling phases; handlers may stop propagation. A forward pass follows a model's computation graph to produce outputs. The useful overlap is staged processing, not a shared direction or event-routing mechanism."
 consequence:
   narrative: "Rough, untrained numbers, but they emerge: the pipeline works end to end. Now the network needs training."
 hints:
@@ -119,7 +119,7 @@ Run a forward pass, then give one flat reading the batch axis the layer wants.
     "Every input requires a batch dimension even for a single sample: shape [1, features] instead of [features].",
     "A shape mismatch fails loudly, and the message names both the shape the layer wanted and the shape it got. expandDims(0) gives a flat reading the batch axis the layer asked for."
   ]}
-  bridge="DOM event propagation and the forward pass both carry the word 'propagation,' but event handlers run independently and can stop bubbling, while layer outputs feed directly into the next layer's weights and cannot be interrupted."
+  bridge="Event propagation routes events through DOM phases. A forward pass evaluates a model graph; the shared idea is staged processing, not identical control flow."
   youCanNow="Run a forward pass with model.predict(), read the shapes it produces, and give a single flat reading the batch axis the layer expects."
 />
 

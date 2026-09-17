@@ -11,6 +11,39 @@ a link to the detail spec if one exists). Detail specs stay in their own files;
 this doc is the index of record. Deferred mentions surviving elsewhere
 (`dev-plan.md`, audit ledgers) are historical and non-authoritative.
 
+## Current content priority: the $70 course standard (2026-09-17)
+
+Owner request: address the new educational audit, target at least 9/10 in
+each category, keep $50 as the launch price, and prepare for $70 after
+learning from customers. Implementation and evidence gates are in the
+[content quality plan](content-quality-plan.md); findings are in the
+[independent audit](audits/education-product-audit-2026-09-17.md).
+Implementation is in progress; the full plan is not complete. This request brings confirmed
+teaching errors and course improvement planning forward from older
+data-gated deferrals. The world-2 release gate remains separate.
+
+- [~] **Now, Q0-Q1:** establish complete review coverage and fix F01-F10 in
+  Deep Orbit. Manifest coverage and F01-F09 repairs are implemented locally.
+  All 56 bridge summaries received a focused F10 review; in-context checks
+  and whole-artifact review remain open. Known draft claims F11-F14 and the
+  additional F15-F17 findings are corrected locally, with specialist and
+  release reviews still required. See the
+  [implementation evidence](audits/content-quality-implementation-2026-09-17.md).
+- [ ] **After factual repairs, Q2-Q3:** map objectives to practice, add early
+  transfer work, and review all 56 lessons and 65 exercises for clarity.
+- [ ] **After objective/canon alignment, Q4:** make existing story choices
+  affect later scenes; pilot two additional decisions before a larger wave.
+- [ ] **After teaching alignment, Q5:** deliver an independent project that
+  builds, evaluates, and runs outside Tensorcraft, with download/GitHub export.
+- [ ] **After the revised course, Q6:** arrange independent subject/editorial
+  review and a 12-20 learner pilot, including delayed and transfer checks.
+- [ ] **After quality and learner gates, Q7:** validate the $70 offer using
+  actual purchase/refund evidence. Keep the live price at $50 during repairs.
+- [ ] **Start measurement review now, Q8:** verify learning and acquisition
+  funnels; use cohort evidence to assess the 150,000-user ambition.
+- [ ] **Before each future world release, Q9:** complete full subject, prose,
+  story, exercise, and project review, plus a world-specific learner pilot.
+
 ---
 
 ## Benchmarks: when each item becomes real
@@ -301,13 +334,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
 
 ## 3. Data-gated content work
 
-- [ ] **Re-test `PRICING.single` at $79** (gate: 200 paying users, the same
-  threshold as the world-2 gate). Deliberately NOT raised on 2026-08-09 when
-  63 scene plates and 16 portraits shipped: art is a quality signal, not a
-  scope signal, marginal cost was ~$5, and nobody had paid anything yet, so a
-  raise would have stacked a second unvalidated guess on the 2026-06-20 raise
-  from $49. Distribution is the binding constraint; a raise tightens it.
-  Revisit only on real conversion data. Reasoning:
+- **Superseded pricing experiment (2026-09-17):** the older proposed $79
+  retest is replaced by the owner's $50 launch / $70 later direction.
+  The current task and evidence gate are Q7 in the
+  [content quality plan](content-quality-plan.md). It is separate from the
+  world-2 user-count gate. The previous rationale remains historical in
   `docs/superpowers/specs/2026-08-09-pricing-reevaluation-design.md`.
 - [ ] **Restore the bundle surfaces when world 2 launches.** Scope grew on
   2026-08-14 (owner directive, screenshot feedback on /pricing): future
@@ -334,7 +365,10 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] **BossBeat expansion** (6 ranked beats, one per dormant module).
   Gate: ~100 real lesson completions so placement follows observed drop-off.
   Detail spec + non-negotiable quality gates:
-  `docs/v2-beat-expansion-plan.md`.
+  `docs/v2-beat-expansion-plan.md`. The newer
+  [Q4 plan](content-quality-plan.md#q4-improve-story-and-consequential-choices)
+  first improves existing consequences and pilots two candidates. Count
+  any shipped candidates toward this wave rather than duplicating the work.
 - **GT LATER cohort** (gate: 1000 users; designs preserved in
   `~/.claude/plans/do-you-think-game-reactive-hennessy.md`):
   - [ ] #2 Team layer (opt-in): teams/team_members/leadership_log + invite

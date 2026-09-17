@@ -15,14 +15,14 @@ context:
   narrative: "Before the ship's loudest alert, a replay of its quietest moment: sample 7741, logged in the calm period, back when nothing aboard could see it. Then the live feed does the same thing at twelve times the highest error any normal signal produced."
   speaker: "Chief Nazari"
 concept:
-  explanation: "When a throw reaches the last handler in the process, something genuinely new happened: the system hit a case nobody wrote a branch for."
+  explanation: "An ensemble alert counts failed checks. Agreement can support investigation, but it does not prove novelty or identify the cause."
   bridge:
     jsTitle: "uncaughtException"
     jsCode: "process.on('uncaughtException', (err) => { report(err); process.exit(1) })"
     mlTitle: "Anomaly Alert"
     mlCode: "const votes = [statistical, autoencoder, lstm].filter(Boolean).length;\nif (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')"
     tier: intuition
-    breaks: "The uncaughtException handler fires on a real throw: deterministic, after the fact, always right that something broke. An anomaly alert fires on statistical thresholds over inputs that are all perfectly valid. Nothing threw, nothing is corrupt, and you chose where weird begins, so the alert can fire on healthy data and stay silent through a real failure."
+    breaks: "Node's uncaughtException event reports a thrown error that escaped ordinary handling. An anomaly alert instead applies a statistical rule to readings. That rule can flag healthy data or miss a real fault; detector agreement does not prove a reading is new."
 consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
@@ -51,7 +51,7 @@ I've checked the sensor calibration twice. This is not instrument noise. The mod
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM did not see this reading coming: its forecast for the next reading's three signal features missed by 0.041, four times its gate. Two of three detectors agree, and the one that stayed quiet is the one that reads amplitude alone. Every dial on this capture sits inside its band, exactly as 7741's did. This is not loud. It is new.
+The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM did not see this reading coming: its forecast for the next reading's three signal features missed by 0.041, four times its gate. Two of three detectors agree, and the one that stayed quiet is the one that reads amplitude alone. Every dial on this capture sits inside its band, exactly as 7741's did. The amplitude is ordinary. The other checks need an explanation.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
@@ -59,10 +59,10 @@ What am I looking at, Dr. Farah?
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Something the training data has never contained, Commander. That is the one claim two agreeing detectors can actually make. What it is comes later. What it is not, we can sign tonight: not noise, not calibration, not anything this ship has watched before.
+Two detectors crossed their thresholds, Commander. That does not prove the pattern is new. The archive search and calibration checks give us separate reasons to investigate. We still do not know what caused it.
 </Dialogue>
 
-In JavaScript terms, the bridge just watched a throw reach `process.on('uncaughtException')`, the last handler in the system: a case nobody had written a branch for. DEEP SCAN's loudest alert says the same thing about its training data: this signal is unlike anything the model was taught on, and two detectors said so by different routes while the third, which reads one dial, saw nothing. That quiet dial is why sample 7741 sat in the archive for eight days. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 1.0, and this reading came back at 6.2, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
+In Node, `process.on('uncaughtException')` handles a throw that escaped earlier handlers. It can be a familiar bug. The ensemble is also an escalation point, but its triggers are statistical checks that can be wrong. Two fired here while the amplitude check stayed quiet; that tells us which checks failed, not whether the signal is new. That quiet dial is why sample 7741 sat in the archive for eight days. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 1.0, and this reading came back at 6.2, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
 
 <LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
 
@@ -208,7 +208,7 @@ Write the verdict layer: derive the z-score yourself from the eight recent ampli
 
 <RecallPrompt
   question="How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?"
-  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Training needs no anomaly labels at all, only clean normal data. The cutoff is where labels come back. Lesson 4's F1 sweep scored candidates against a labeled validation slice and peaked at 0.4. The label-free alternative is the percentile route, which put the 99th percentile at 0.48. The two routes give different numbers, and the cutoff Demir locked, 1.0, came from the cost of a false alarm rather than from either. That split is why the technique is usually called semi-supervised rather than unsupervised."
+  answer="It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
 />
 
 <RecallPrompt
@@ -223,7 +223,7 @@ Write the verdict layer: derive the z-score yourself from the eight recent ampli
     "The three detectors are separately computed, not independent: they score the same capture, and two of them were fitted on the same archive, so one contaminated training set can silence two votes at once. The statistical gate and the autoencoder also share the amplitude channel, each reading it through its own normalization.",
     "A model's job is detection and quantification; ensemble agreement tells you how many checks fired, and interpretation of what was detected remains a human decision."
   ]}
-  bridge="Like `process.on('uncaughtException')` firing on a throw nobody wrote a branch for, the ensemble alert (`if (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')`) fires when two of the three detectors agree the input falls outside anything the system was trained to handle."
+  bridge="Both an uncaughtException handler and an ensemble alert escalate a problem. The handler observes an actual throw; detector votes are fallible checks that need investigation."
   youCanNow="Build the verdict layer of an ensemble detector: compute the statistical check, combine it with the autoencoder's and the LSTM's scores, and read the majority vote as a count of failed checks rather than a probability."
 />
 

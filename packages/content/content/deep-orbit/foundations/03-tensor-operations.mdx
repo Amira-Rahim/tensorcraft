@@ -22,7 +22,7 @@ concept:
     mlTitle: "tf.add()"
     mlCode: "tf.add(tensor1, tensor2)"
     tier: structural
-    breaks: "Array.map runs JavaScript per element on the CPU. tf.add operates on whole tensors with hardware-accelerated kernels (WebGL, WASM, WebGPU) and a single op covers millions of elements. Same elementwise idea; different execution model and orders-of-magnitude different cost profile."
+    breaks: "Array.map calls JavaScript for each element. tf.add dispatches a tensor operation to the selected backend, which may be CPU or accelerated. Performance depends on tensor size, backend, and data transfers; small operations need not be faster."
 consequence:
   narrative: "An hour of merged signal scrolls past Nazari's console before she stops it, and what she stops it on is not noise."
 hints:
@@ -153,7 +153,7 @@ Repair Demir's amplifier: average the two passes, amplify the average, and let b
     "Matrix multiplication (matMul) follows the [m,n] x [n,p] = [m,p] shape rule: inner dimensions must match. Use transpose() to fix mismatches.",
     "Every dense layer computes matMul(input, weights) + bias, making the matMul shape rule the most common source of dimension errors in ML code."
   ]}
-  bridge="Where `Array.map()` applies a function element by element on the CPU, `tf.add()` and friends operate on entire tensors in parallel using hardware-accelerated kernels, covering millions of elements in a single op."
+  bridge="Array.map calls a JavaScript function per element. tf.add dispatches a tensor operation to a selected backend; measure whether that backend helps your workload."
   youCanNow="Perform element-wise and matrix operations on tensors, combine mismatched shapes with broadcasting, chain operations with method syntax, and diagnose inner-dimension mismatches using transpose()."
 />
 

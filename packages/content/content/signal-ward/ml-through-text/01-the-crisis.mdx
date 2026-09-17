@@ -10,7 +10,7 @@ context:
   narrative: "The hospital's vendor NLP system misclassified a drug allergy note, nearly causing a fatal interaction. Dr. Karimi cancels the vendor contract and assembles an in-house team."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Machine learning finds patterns in data that rule-based systems miss. For clinical text, ML models learn to classify, extract, and interpret medical language, turning unstructured notes into structured data a system can act on."
+  explanation: "Rules, learned models, and hybrids can turn clinical text into structured data. Compare them on labeled examples, including negation and abbreviations, before choosing what supports human review."
   bridge:
     jsTitle: "App Architecture"
     jsCode: "const app = { ui: 'React', state: 'Redux', api: 'REST' }"
@@ -53,13 +53,15 @@ We're building our own. Khalil, you built the patient portal frontend. I need yo
 
 Nobody at the table disputes that the vendor's rules were wrong. The argument that follows is about what replaces them.
 
-<LearningObjectives objectives={["Understand why ML outperforms rule-based systems for clinical text", "Identify the three stages of an ML pipeline: input, model, output", "Create a simple numerical representation of text features using TensorFlow.js"]} />
+<LearningObjectives objectives={["Compare rules, ML, and hybrids for a clinical text task", "Identify the three stages of an ML pipeline: input, model, output", "Create a simple numerical representation of text features using TensorFlow.js"]} />
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-## Why Rules Break Down
+## Choose a Baseline Before a Model
 
-The vendor system had rules like `if note.includes('no known allergies')`. But clinical text is messy, abbreviated, and context-dependent. ML models learn from thousands of examples, discovering patterns no rule author could anticipate.
+A phrase check such as `note.includes('no known allergies')` can miss negation or an abbreviation. A model can miss those too, particularly when a hospital writes notes differently from its training data.
+
+Start with an abbreviation dictionary and explicit rules as a baseline. Compare their errors with a trained model on the same held-out notes. A hybrid may use ML to extract possible medication mentions, then consult a maintained interaction database. The choice depends on measured errors and the review workflow; clinical text does not automatically require ML.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -78,14 +80,14 @@ An ML pipeline has stages the way any request path does, in the browser or on th
 // Each position = a feature (e.g., contains "allergy", contains "penicillin", etc.)
 const noteFeatures = tf.tensor([1, 1, 0, 1, 0]);
 
-// Step 2: A model applies learned weights to these features
+// Step 2: Hand-chosen demo weights, not fitted to clinical data
 const weights = tf.tensor([0.8, 0.9, 0.1, 0.7, 0.2]);
 
-// Step 3: Produce a prediction (dot product + activation)
+// Step 3: Compute a weighted sum; no activation or training occurs here
 const score = noteFeatures.mul(weights).sum();
-console.log('Allergy risk score:', score.dataSync()[0]);
-// Output: ~2.4. The five weights sum to 2.7, so this note lands
-// near the top of the range and gets flagged for review.`}
+console.log('Demo weighted sum:', score.dataSync()[0]);
+// Approximately 2.4. This is arithmetic, not a calibrated risk or
+// a validated alert threshold. Training comes in later lessons.`}
 </CodeBlock>
 
 ## The Architecture of Diagnostic One
@@ -113,4 +115,4 @@ Create a simple feature vector representing a clinical note's characteristics.
 
 <Exercise slug="text-to-numbers" />
 
-<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "A dot product of binary features and learned weights (multiply each pair, sum the results) already yields a usable risk score; the lesson's five-feature allergy note scores ~2.4 and gets flagged for review", "Clinical text requires ML because abbreviations and context make rules brittle", "The first step is always converting text into numerical representations"]} />
+<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "A dot product multiplies corresponding features and weights, then sums them; these demo weights are hand-chosen", "Compare rules, learned models, and hybrids on held-out examples before choosing a system", "This neural model needs numerical features before it can process text"]} />

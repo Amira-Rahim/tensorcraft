@@ -20,12 +20,12 @@ concept:
     mlTitle: "Inference Cache"
     mlCode: "cache.get(inputHash) ?? model.predict(input) // cache-first, predict is sync"
     tier: structural
-    breaks: "A query cache keys on the exact statement and arguments, so two requests that differ by one character stay two entries. That is correct there, because the two answers differ. An inference cache wants the opposite: near-identical inputs have to collide on purpose, so the key is a rounded hash, and how hard you round is a tuning knob that trades hit rate against serving a close-but-wrong verdict. Model version and runtime settings belong in the key too, because the same input under new weights is a different answer."
+    breaks: "Both query and inference caches can use exact keys. This lesson chooses approximate inference keys by rounding inputs, which can trade accuracy for more hits. Include model and preprocessing versions, and test whether collisions change decisions before using that policy."
 consequence:
   narrative: "Caching removes 40% of the classifier's forward passes, and the patterns repeat often enough that the stored verdicts hold. The saving is 55 milliseconds a night, which is not the number on Demir's ticket."
 hints:
   - level: nudge
-    content: "A cache only earns hits if similar inputs produce the same key: round the tensor's values to a fixed number of decimals before building the key, so near-identical signals collide on purpose. For the audit drill beside it, two questions decide each entry and only one of them is about the clock."
+    content: "An exact cache hits on repeated inputs. This exercise instead rounds values so nearby inputs can share a key; that approximation needs an accuracy check. For the audit drill beside it, two questions decide each entry and only one of them is about the clock."
   - level: guidance
     content: |
       Two decisions and one habit.
@@ -213,7 +213,7 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
     "TTL length is bounded from both sides. Too short and the repeats expire before they come back: a 30-second TTL on traffic whose repeats arrive about a hundred seconds apart throws away most of a 40 percent hit rate. Too long and stale classifications stay in service. Neither setting catches a deploy, which invalidates every entry regardless of age.",
     "A cache removes calls rather than making one faster, so what it is worth is the hit rate times what that call costs. Look the cost up on the call you are wrapping, not on the bundle it ships inside: a five-class signal classifier runs 0.035 ms per call, where the 85-million-parameter language component it ships beside runs 45 ms. At a 40 percent hit rate the classifier cache takes the mean served call from 0.035 ms to 0.0215, which came to 55 milliseconds across a night of 4,110 lookups."
   ]}
-  bridge="A query cache keys on the exact statement so near-identical requests stay separate entries; an inference cache keys on a rounded input hash so near-identical signals collide on purpose. The cache-first pattern is identical, and the key design is the opposite."
+  bridge="Query and inference caches can both use exact keys. This exercise rounds inference inputs deliberately; validate that approximation and invalidate entries when model or preprocessing versions change."
   youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."
 />
 

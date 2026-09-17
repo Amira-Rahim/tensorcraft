@@ -126,11 +126,12 @@ console.log(featureMap);`}
 
 Two parameters control how the kernel slides:
 
-- **Padding**: "valid" means no padding (output shrinks). "same" pads the input so the output stays the same size.
-- **Stride**: how many pixels the kernel moves per step. Stride 1 moves one pixel at a time. Stride 2 skips every other position, halving the output size.
+- **Padding**: "valid" means no padding (output shrinks). "same" gives `ceil(inputSize / stride)` along each spatial dimension. It preserves size at stride 1.
+- **Stride**: how many pixels the kernel moves per step. Stride 1 moves one pixel at a time. Stride 2 advances two pixels. With same padding, it roughly halves the size, rounding up for odd inputs.
 
 <CodeBlock language="typescript" title="padding-and-strides.ts">
 {`// Output size formula:
+// With dilation 1 and equal padding on both sides:
 // outputSize = Math.floor((inputSize - kernelSize + 2 * padding) / stride) + 1
 
 function calculateOutputSize(
@@ -149,7 +150,8 @@ function calculateOutputSize(
 // 224x224 image, 3x3 kernel:
 console.log(calculateOutputSize(224, 3, 1, 'valid')); // 222, shrinks by 2
 console.log(calculateOutputSize(224, 3, 1, 'same'));  // 224, stays the same
-console.log(calculateOutputSize(224, 3, 2, 'valid')); // 111, halved (stride 2)`}
+console.log(calculateOutputSize(224, 3, 2, 'valid')); // 111
+console.log(calculateOutputSize(225, 3, 2, 'same'));  // 113, rounded up`}
 </CodeBlock>
 
 ## Challenge
@@ -159,7 +161,7 @@ Implement a 2D convolution function that applies a kernel to a grayscale image.
 <Exercise slug="apply-convolution" />
 
 <DerivationDrawer summary="Convolution output size and stride math">
-For input width W, kernel size K, padding P, stride S, the output width is:
+For dilation 1, input width W, kernel size K, equal padding P on each side, and stride S, the output width is:
 
 `W_out = floor((W - K + 2P) / S) + 1`
 
@@ -185,4 +187,4 @@ For a 3×3 conv with 32 filters on RGB input: `(9 · 3 + 1) · 32 = 896` learnab
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A convolution slides a kernel across an image, computing a weighted sum at each position to produce a feature map", "Different kernels detect different features: edges, textures, gradients", "Padding controls whether the output shrinks (valid) or stays the same size (same)", "In a CNN, the kernel weights are learned during training instead of being hardcoded"]} />
+<KeyTakeaways takeaways={["A convolution slides a kernel across an image, computing a weighted sum at each position to produce a feature map", "Different kernels detect different features: edges, textures, gradients", "Same padding preserves spatial size at stride 1; at stride 2 it gives ceil(inputSize / 2)", "In a CNN, the kernel weights are learned during training instead of being hardcoded"]} />

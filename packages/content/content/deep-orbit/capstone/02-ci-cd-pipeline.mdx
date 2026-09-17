@@ -22,7 +22,7 @@ concept:
     mlTitle: "ML CI/CD"
     mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
     tier: structural
-    breaks: "GitHub Actions ships immutable build artifacts; rollback restores prior bytes exactly. The model-validation step runs in CI but the model itself is non-deterministic: the same training pipeline produces a different model each run. Pinning a CI workflow does not pin the model; you must version weights separately and treat 'model passing CI' as one signal among several, not a green-light to ship."
+    breaks: "Pin the application and model artifacts separately. Training can vary with seeds, data order, and backend operations; a fixed workflow does not identify its output weights. Test the exact exported artifact that will ship and record its preprocessing version."
 consequence:
   narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
@@ -423,7 +423,7 @@ The gate checks the artifact. Now produce one. Nazari's hash-pin order has a qui
 <LessonRecap
   whatYouLearned={[
     "Standard CI/CD pipelines extend naturally to ML by adding model-specific gate steps (accuracy thresholds and inference benchmarks) that block the merge the same way failing unit tests do.",
-    "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately. A cache key cannot hash the artifact it is about to restore, because hashFiles() only sees files already in the workspace. Commit the digest the training run produced and key the cache on that file instead.",
+    "A green workflow badge does not pin a model: training outputs can vary, so version the exact weight artifact separately. A cache key cannot hash the artifact it is about to restore, because hashFiles() only sees files already in the workspace. Commit the digest the training run produced and key the cache on that file instead.",
     "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on. A post-deploy smoke test also has to prove which artifact it fetched, because the publish step returns before the host serves the new file.",
     "model.save() serializes to whatever save handler it is given: tf.io.withSaveHandler captures the artifacts in memory as modelTopology, weightSpecs and weightData. The committed digest covers weightData alone, four bytes per float32 parameter, because sha256sum runs over weights.bin and validate-model re-derives that hash from the weight shards. The graph is not in the pin."
   ]}

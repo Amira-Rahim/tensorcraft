@@ -22,7 +22,7 @@ concept:
     mlTitle: "Prompt Design"
     mlCode: "// Bad: 'analyze signal' → vague, unfocused output"
     tier: structural
-    breaks: "Search queries match against an index with deterministic ranking. Prompts steer a probabilistic generator, and tiny wording changes can swing the output drastically (prompt sensitivity). There is no result page to inspect, only one generated answer per call."
+    breaks: "Search asks a system to retrieve ranked items; a prompt asks a generator to produce a response. Either system can use learned or changing behavior. Clear instructions help define the task, but generated claims still need evidence and output checks."
 consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
 hints:
@@ -151,7 +151,7 @@ Write v9: the template above with the line it is still missing, the reference th
     "Requesting structured output (JSON) makes a reply parseable, not true: parse it, then check every field your caller depends on before anything downstream sees it.",
     "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
   ]}
-  bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`error`) returns thousands of results; a precise one (the exact error string) returns the answer. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."
+  bridge="Specific queries help retrieval; specific prompts help define a generation task. Neither precise wording nor a structured response guarantees the answer is correct."
   youCanNow="Write a prompt template that rebuilds role, context, data and format from the reading it was handed, and asks for the JSON your parser will read."
 />
 

@@ -21,7 +21,7 @@ concept:
     mlTitle: "Model Orchestration"
     mlCode: "// Pipeline: classifier + autoencoder + LSTM → LLM reporter"
     tier: structural
-    breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models; errors compound silently and one weak model degrades the entire chain without raising an exception."
+    breaks: "Services and models both need input contracts, error handling, and monitoring. In a model chain, plausible but wrong outputs can pass ordinary type checks and affect later stages. Keep provenance and evaluate each stage as well as the combined result."
 consequence:
   narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
@@ -68,13 +68,13 @@ Four stages that are each right 95% of the time are right 81% of the time togeth
 
 <CodeBlock language="typescript" title="pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
-import { verifyClaims } from './verify-claims';  // the checker from lesson 3
 
 interface PipelineResult {
   classification: { class: string; confidence: number };
   anomaly: { isAnomaly: boolean; score: number };
   prediction: { nextValues: number[] };
   report: string | null;
+  draftForReview: string | null; // generated prose, never automatically published
 }
 
 // A stage that is merely wrong throws nothing. Check what it promised before
@@ -151,48 +151,23 @@ async function processSignal(
     { nextValues: [] },
   );
 
-  // Stage 4: Generate report if anomaly detected (LLM)
+  // Stage 4: Publish a template from checked values. Keep generated prose
+  // separate for review; matching its numbers would not establish truth.
   let report: string | null = null;
+  let draftForReview: string | null = null;
   if (anomaly.isAnomaly) {
-    const handed = [
-      classification.confidence,
-      anomaly.score,
-      thresholds.anomaly,
-      ...prediction.nextValues,
-    ];
-    const draft = await models.llm.complete(\`
-Signal anomaly detected:
-- Classification: \${classification.class} (confidence: \${classification.confidence.toFixed(3)})
-- Anomaly score: \${anomaly.score.toFixed(4)} (threshold: \${thresholds.anomaly})
-- Predicted next values: \${prediction.nextValues.map(v => v.toFixed(3)).join(', ')}
-
-Generate a brief alert summary in 2-3 sentences. Use only the numbers above.
-    \`);
-    // verifyClaims is lesson 3's checker: every number in the draft has to
-    // trace to one we handed it, within 0.05. Read that tolerance against
-    // this hand-off before trusting it. One absolute tolerance serves a
-    // mixed-scale evidence set unevenly, and lesson 3's set already mixed
-    // an amplitude in counts with a confidence in 0..1. Here four of the
-    // six handed numbers sit inside -1 to 1 (the reconstruction error does
-    // not: it starts above module 7's cutoff of 1.0 and reads 6.2 on this
-    // capture). At that scale 0.05 forgives a reprint, 0.918 as 0.92 or
-    // 6.2000 as 6.20, which is what it is for, and a two-decimal number a
-    // model invents still lands inside 0.05 of one of the six by luck about
-    // one time in six (measured: a draft with six invented numbers came
-    // back six fabricated; one that only rounded the six it was handed came
-    // back clean). The prompt's "only the numbers above" and the three- and
-    // four-decimal printing carry the rest. A label like "Band-7" still
-    // comes back as a claim of -7, exactly as it did in lesson 3.
-    const { fabricated } = verifyClaims(draft, [handed]);
-    report = validateStage(
-      'llm',
-      draft,
-      () => fabricated.length === 0,
-      \`ALERT: anomaly score \${anomaly.score.toFixed(4)} over threshold \${thresholds.anomaly}. Draft held: \${fabricated.length} number(s) traced to nothing.\`,
-    );
+    report = \`ALERT: anomaly score \${anomaly.score.toFixed(4)} exceeds threshold \${thresholds.anomaly}.\`;
+    try {
+      draftForReview = await models.llm.complete(JSON.stringify({
+        task: 'Draft an alert explanation for human review. Do not infer a cause.',
+        classification, anomaly, threshold: thresholds.anomaly, prediction,
+      }));
+    } catch {
+      console.warn('Draft unavailable; the measured alert still ships.');
+    }
   }
 
-  return { classification, anomaly, prediction, report };
+  return { classification, anomaly, prediction, report, draftForReview };
 }`}
 </CodeBlock>
 
@@ -200,7 +175,7 @@ Three arrays describe one capture and none of them substitutes for another. The 
 
 ## Error Handling and Fallbacks
 
-Two of those four checks stop the run: processSignal has no in-place substitute for a confidence outside 0..1 or a NaN reconstruction error. The other two log a warning and return a stand-in, so the run continues. resilience.ts runs the same four stages one level up. Its classifier call has no catch, so a throw there still ends the run. The other three sit in try blocks, where a throw is caught and a stand-in takes its place.
+The classifier and anomaly-score checks stop the run when their values are invalid. A failed forecast can be omitted. The alert itself uses a fixed template; generated prose stays in draftForReview until a reviewer checks it. If drafting fails, the alert still ships. The resilience sketch below also shows a weaker detector fallback when the autoencoder is unavailable.
 
 For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at 1.00, the most that feature can reach, scores 3.20 sigma; a dead channel at 0.00 is the only larger deviation, 3.47. The baseline arrives as an argument rather than being recomputed from the last eighty amplitudes, because a rolling baseline makes the sigma count depend on how quiet that stretch happened to be. The same 1.00 reading scores 342.86 sigma against a window whose standard deviation is 0.0014, and 2.29 against one whose standard deviation is 0.21.
 
@@ -242,19 +217,22 @@ async function resilientPipeline(
     console.warn('LSTM prediction failed; skipping');
   }
 
-  // Alert: optional (skip if LLM is unavailable). writeAlert stands in for
-  // stage 4's LLM call. Lesson 4's generateReport is a different
-  // function: the six-section report pipeline.
+  // A measured alert remains available without the language model.
   let report = null;
+  let draftForReview = null;
   if (anomaly.isAnomaly) {
+    report = \`ALERT: Anomaly detected (score: \${anomaly.score.toFixed(4)}).\`;
     try {
-      report = await writeAlert(classification, anomaly, models.llm);
+      draftForReview = await models.llm.complete(JSON.stringify({
+        task: 'Draft an explanation for review, without claiming a cause.',
+        classification, anomaly,
+      }));
     } catch {
-      report = \`ALERT: Anomaly detected (score: \${anomaly.score.toFixed(4)}). LLM unavailable for detailed report.\`;
+      console.warn('LLM unavailable; keep the template alert.');
     }
   }
 
-  return { classification, anomaly, prediction, report };
+  return { classification, anomaly, prediction, report, draftForReview };
 }`}
 </CodeBlock>
 
@@ -272,15 +250,15 @@ Wire the three stages, and make the two decisions the classifier's verdict force
   whatYouLearned={[
     "Combining probabilistic models compounds error down the chain: 81% end to end for four independent 95% stages, and stages that share an input fail together, so validate every stage's output before passing it on.",
     "Define clear interfaces between stages in both directions: the classifier's class and confidence become part of the reporter's input contract, and each model's own input has a shape and a scale that only its own preprocessing produces. One capture reaches three models as three different arrays.",
-    "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector or a fabricated draft has a usable fallback. A confidence outside 0..1 or a NaN score has no in-place substitute, so that check stops the run."
+    "Degrade where a stand-in is honest, and stop the run where it is not. A short prediction vector can be omitted, and a template can replace a generated draft awaiting review. A confidence outside 0..1 or a NaN score has no in-place substitute, so that check stops the run."
   ]}
-  bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and returns a typed result the orchestrator checks before passing it on. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
+  bridge="Services and models both need checked contracts. Model stages also need evaluation against real outcomes because a plausible, correctly typed result can still be wrong."
   youCanNow="Wire a multi-model pipeline whose stages check what the stage before them promised, substituting a stand-in where one is honest and stopping the run where there is none."
 />
 
 <Epilogue>
 
-The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. Classifier, autoencoder, LSTM, language model: signal to finished summary with no human awake, Demir's checker signing off on every number in between. The alert's footer notes the pulse interval: 62.0 seconds, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
+The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. The published alert names the measured score and its threshold. The language model's explanation waits in a review queue; it cannot sign its own release. The alert's footer notes the pulse interval: 62.0 seconds, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 How long from signal to report? Make it faster.

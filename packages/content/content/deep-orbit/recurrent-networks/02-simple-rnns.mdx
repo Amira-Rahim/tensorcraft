@@ -21,7 +21,7 @@ concept:
     mlTitle: "RNN Cell"
     mlCode: "newHidden = tanh(W_h * prevHidden + W_x * input + bias)"
     tier: structural
-    breaks: "Replay is reproducible on purpose: `apply` is a function you wrote, and you can read the rule that produced the state. An RNN cell learns its `apply` from data: nobody authors it, the weights are the function, and the rule cannot be read off them. What the two share is the fold itself. In both, the same input arriving at two points produces two different outputs, because the carried state it meets is different."
+    breaks: "Both carry state through repeated updates. A replay reducer usually has authored transition rules; an RNN learns parameters for its transition. Fixed weights and inputs can give reproducible inference. Different prior states may change the output for the same new input."
 consequence:
   narrative: "Demir leaves a run going overnight on the strength of an analogy. The analogy does not survive the log."
 hints:
@@ -72,7 +72,7 @@ h.dispose();
 </CodeBlock>
 
 <Dialogue speaker="Dr. Farah">
-There is your answer, in the last line. The shape is right, and so is the part that surprised you: your reducer would also hand the same event two different results at two points in the log, because the state it is handed differs. That is the fold, and both of them have it. Same state, same input, same result holds for both as well. What your reducer has and this does not is a rule you can read: you wrote apply. The 0.8 and 1.0 were hand-picked for the demo; in a real cell they are learned from data. Nobody authors the transition function. The weights are the function, and the hidden state is the network's memory.
+There is your answer, in the last line. The shape is right, and so is the part that surprised you: your reducer can also give the same event different results when the incoming state differs. That is the fold, and both of them have it. Same state, same input, same result holds for both as well. You can inspect both computations. In your reducer, you authored the transition rules; interpreting what the RNN learned also requires examining its behavior on examples. The 0.8 and 1.0 were hand-picked for the demo; in a real cell they are learned from data. We choose the cell's formula, and training fits its parameters. The hidden state carries information from earlier inputs.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes"]} />
@@ -179,7 +179,7 @@ Then build the library's version of the same cell, a one-unit `tf.layers.simpleR
     "Setting `returnSequences: true` yields hidden state at every time step (shape [batch, timeSteps, units]); the default false yields only the final hidden state (shape [batch, units]).",
     "Backpropagation through time multiplies the gradient by the recurrent weight times the tanh slope at every step. Below 1, that product shrinks the error signal exponentially and patterns beyond ~10-20 steps stop being learnable. Above 1 the same product explodes the gradient instead, in bursts that end once the cell saturates and the slope collapses, and gradient clipping is the cap on those bursts."
   ]}
-  bridge="Replaying an event log runs a reducer you wrote: same log, same final state, every time, and you can read the rule that produced it. An RNN cell learns that reducer from data: nobody authors it, the weights are the function, and the rule cannot be read off them. Both fold each input into a carried state, so in both the same input arriving at two points produces two different outputs."
+  bridge="A replay reducer and an RNN both update carried state. The RNN learns transition parameters; identical fixed state and input can still produce reproducible inference."
   youCanNow="Run an RNN cell's hidden state forward by hand, build the same cell with `tf.layers.simpleRNN`, and explain why vanishing gradients prevent it from learning long-range dependencies."
 />
 

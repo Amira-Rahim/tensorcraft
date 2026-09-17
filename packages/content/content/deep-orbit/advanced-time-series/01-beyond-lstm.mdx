@@ -20,7 +20,7 @@ concept:
     mlTitle: "Attention"
     mlCode: "weights = softmax(Q * K^T); output = weights * V // focus on relevant steps"
     tier: intuition
-    breaks: ":focus is binary and exclusive: one element has it, everything else has nothing. Attention is a softmax distribution where every timestep gets a nonzero weight and separate heads hold several such distributions at once. Expect a single winner and you will misread every attention map you plot."
+    breaks: "CSS :focus selects elements according to browser focus state; styling does not learn relevance. Attention computes weights over inputs and combines their values. Masks can give positions zero weight, and several heads can learn different combinations."
 consequence:
   narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The distance problem is gone."
 hints:
@@ -187,7 +187,7 @@ Implement attention over a sequence, with the keys and the values handed in sepa
     "Attention weights are inspectable: they show where the model put its weight, which is far more diagnostic than an LSTM's hidden state and still not proof of what drove the prediction.",
     "Attention is order-blind on its own: shuffle a window and each weight travels with its own step, so the pooled output comes back unchanged, about 1e-7 across 80 steps. Order comes from a recurrent encoder in front of it, or from a positional encoding added to every step."
   ]}
-  bridge="Where CSS `:focus` lands on exactly one element, attention spreads a `softmax(Q * K^T)` budget across every `timeStep` and spends model capacity where the scores are highest."
+  bridge="CSS focus styling highlights browser focus state. Attention instead computes a weighted combination of inputs; it need not select a single winning time step."
   youCanNow="Implement attention over a sequence in TensorFlow.js: score every key against the query, turn the scores into softmax weights, and blend the values under them."
 />
 

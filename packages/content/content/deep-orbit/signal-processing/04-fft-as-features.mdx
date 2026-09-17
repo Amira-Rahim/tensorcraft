@@ -20,7 +20,7 @@ concept:
     mlTitle: "Feature Engineering"
     mlCode: "const features = tf.concat([rawSignal, fftMagnitudes], 1)"
     tier: structural
-    breaks: "A map written for rendering does not care that one output column comes back roughly twenty-two times larger than another, because the component reads each field on its own. On the capture the challenge grades, the tallest FFT column is 32.0 and the amplitude column is 1.47. A model adds all eleven columns into one pre-activation, so an unnormalized column votes in proportion to its units rather than its usefulness. Writing the transform is the easy half."
+    breaks: "Both transforms derive fields from raw data. A model can combine those fields through learned weights, so their units affect the numerical conditioning of training. Large raw values do not establish feature importance. Fit any scaling on training data and reuse it at inference."
 consequence:
   narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added nothing the samples did not already hold, but the network was never shown the samples, only three numbers squeezed out of each window. Eight bins are eight more measurements of that window, and no size of network could have recovered them from three."
 hints:

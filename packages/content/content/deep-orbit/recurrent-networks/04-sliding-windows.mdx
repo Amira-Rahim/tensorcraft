@@ -21,7 +21,7 @@ concept:
     mlTitle: "Sliding Window"
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
-    breaks: "A framer consumes what it emits: every byte lands in exactly one frame, and the buffer advances by the full frame length. A sliding window advances by a stride smaller than the window, so one reading turns up in windowSize / stride different samples and the pipeline emits far more data than the stream handed it. Frames are self-contained too. A forecasting window's label sits outside it, in the reading immediately after, which is the one place an off-by-one lets the model read its own answer."
+    breaks: "The shown framer emits disjoint blocks. Sliding windows can overlap when stride is smaller than window size; boundary readings appear in fewer windows. For next-step forecasting, keep the label outside the input window and keep overlapping captures on one side of the train/validation split."
 consequence:
   narrative: "The honest split scores 60.6 where the leaked one scored 97.4, and the first 80-reading window goes live on the dashboard."
 hints:
@@ -195,7 +195,7 @@ The mirror scored 97.4 because the stream was windowed before it was split. Buil
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."
   ]}
-  bridge="Framing a byte stream consumes each byte into exactly one fixed-size chunk; a sliding window advances by a stride smaller than the window, so each reading turns up in many samples and the pipeline emits far more windows than a framer would emit chunks."
+  bridge="The shown stream framer emits disjoint blocks. Overlapping windows reuse readings when stride is smaller than the window; next-step labels stay outside each input window."
   youCanNow="Split a stream by time before you window it, so no reading lands on both sides of the boundary, and take each window's label from the task: the next reading when forecasting, the window's last reading when classifying."
 />
 

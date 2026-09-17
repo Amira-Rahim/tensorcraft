@@ -21,7 +21,7 @@ concept:
     mlTitle: "Model Evaluation"
     mlCode: "const results = model.evaluate(testX, testY)"
     tier: structural
-    breaks: "E2E tests assert exact behaviors that pass or fail: green build means safe to ship. Model evaluation reports continuous metrics (accuracy, precision, recall) over a held-out set, and good aggregate metrics routinely hide failure modes in subgroups of your production data. Sliced eval (per-class, per-cohort, per-feature-bin) is required before production."
+    breaks: "E2E tests and model evaluations both check selected cases; neither alone guarantees a safe release. Model metrics summarize a held-out sample. Inspect important classes and operating conditions, account for label quality, and verify that the evaluation matches the deployment question."
 consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
 hints:
@@ -178,7 +178,7 @@ Accuracy hides the shape of the error. The crew's 94.0% splits into four counts 
 
 Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26 = 0.885. One aggregate number became three, and the three disagree: perfect precision, and a recall hole exactly where the late-confirmed, disguised anomalies live. That is what "aggregate accuracy hides failure modes" looks like in practice.
 
-**Tradeoff:** lowering the decision threshold (default 0.5) increases recall (catch more anomalies) but lowers precision (more false alarms). Raising it does the opposite. Pick based on the cost asymmetry of false positives vs false negatives in your domain.
+**Tradeoff:** on a fixed dataset, lowering the threshold cannot reduce recall or the false-positive rate. Precision can rise or fall because the newly flagged rows can contain both true and false positives. Measure the tradeoff, then choose a cutoff for the error costs in your domain.
 
 **F1 score** = `2 · (precision · recall) / (precision + recall)`: harmonic mean. Use when you need a single number that punishes either extreme. For DEEP SCAN, missing a true anomaly might cost a ship. False alarms cost crew time. The right metric depends on which cost you're willing to absorb.
 
@@ -188,7 +188,7 @@ Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26
 One of those four counts deserves suspicion before anyone celebrates: the empty false-alarm cell (precision 1.000, in the drawer above) was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature.
 
 <DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates">
-**Precision belongs to the detector plus the world it runs in.** Sensitivity and false-positive rate are properties of the model alone. Precision also depends on how common anomalies are in the data you run it on, and the held-out slice (26 anomalous, 24 calm) was assembled to be near balanced. Live hull telemetry is overwhelmingly calm.
+**Precision depends on how common anomalies are.** Sensitivity and false-positive rate also depend on the decision threshold and the distribution of examples within each class. The calculation below assumes those stay fixed while only the anomaly frequency changes. If sensors, class patterns, or the threshold change, remeasure those rates. The held-out slice (26 anomalous, 24 calm) was assembled to be near balanced; live hull telemetry is overwhelmingly calm.
 
 **Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), read as: the probability an anomaly is really there, given that the alarm fired. The bar means "given that", not "or". An alarm can happen two ways, a caught anomaly or a false positive:
 
@@ -202,9 +202,9 @@ Here sens is the sensitivity (the recall from the drawer above), FPR is the fals
 
 `(0.885 × 0.001) / (0.885 × 0.001 + 0.02 × 0.999) = 0.000885 / 0.020865 ≈ 0.042`
 
-An alarm on the live stream is about a 4% bet that something is really there, from the same detector whose test-slice precision printed 1.000. Nothing about the model changed; the base rate did. Every percentage point of FPR is 10 false alarms per 1,000 calm readings, and each one costs crew time.
+Under those assumed rates, about 4% of live alarms would be true positives. This is a projection using an assumed 2% FPR, not an estimate established by the small test slice. Every percentage point of FPR is 10 false alarms per 1,000 calm readings, and each one costs crew time.
 
-**Raising P(anomaly | alarm), the posterior in Bayes' terms, means changing one of the three inputs:** a lower FPR (better detector), a higher prior (alarm only on readings that already passed a cheaper filter), or better sensitivity. Production monitoring stacks detectors in exactly that order: cheap filter first, expensive model on the survivors.
+A cheaper filter can reduce the number of readings reaching an expensive model. It also changes which examples that model sees. Remeasure sensitivity and FPR on the filtered population; raising its anomaly prevalence does not by itself establish the combined system's performance.
 </DerivationDrawer>
 
 ## Challenge
@@ -214,24 +214,29 @@ Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it h
 <Exercise slug="deep-scan-eval" />
 
 <RecallPrompt
-  question="A model has 95% training accuracy and 60% test accuracy. What is the diagnosis and what are the fixes?"
-  answer="This is overfitting. The model memorized the training data rather than learning a generalizable pattern. The fixes this world gives you are more training data, early stopping from lesson 4, and less model capacity. The L2 penalty and dropout from this lesson are constraints of the same kind. Underfitting looks different: both training and test accuracy are low."
+  question="A model has 95% training accuracy and 60% test accuracy. What should you investigate before choosing a fix?"
+  answer="The gap is consistent with overfitting, but a changed data distribution, label errors, or inconsistent preprocessing can also cause it. Check those first. If overfitting is the cause, compare more representative training data, early stopping, and suitable capacity or regularization changes using validation data."
 />
 
 <RecallPrompt
-  question="Module 1 split train from validation by shuffling indices itself instead of chaining .shuffle().take() and .skip() on a dataset. Why does that chain leak rows, and what would a leak have done to the 94.0% you just read off the held-out slice?"
-  answer="A dataset pipeline reshuffles every time it is iterated, and take() and skip() iterate separately, so the two sides get different decks and some readings land on both. Module 1 shuffled the indices once and sliced them instead. Rows that leak into training turn 94.0% into a score on data the model had already seen."
+  question="Why did module 1 assign earlier rows to training and later rows to validation before shuffling, and why are separately shuffled take() and skip() pipelines risky?"
+  answer="The time split tests prediction on later readings and reduces leakage from neighboring observations. Training indices may then be shuffled without changing membership. Separate shuffled iterations can place the same row in both sets; such overlap makes a held-out score misleading."
+/>
+
+<RecallPrompt
+  question="Can you reuse a detector's sensitivity and false-positive rate when anomalies become rarer, when the threshold changes, or when a new sensor changes normal readings?"
+  answer="A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "`model.evaluate()` measures performance on held-out data the model has never seen. Training accuracy reflects memorization potential; held-out accuracy is the number that predicts behavior on new signals.",
-    "A large gap between training accuracy and test accuracy signals overfitting. When both are low, the model is underfitting. When both are high, you have ruled out those two failures and nothing else: an aggregate number cannot see the slice the model is failing on, which is why sliced evaluation comes before deployment rather than after it.",
+    "`model.evaluate()` measures performance on held-out data the model has never seen. Held-out accuracy estimates performance on examples represented by that test set; it does not guarantee performance after deployment.",
+    "Train/test gaps help diagnose failures, but do not identify the cause by themselves. Check data shift, labels, preprocessing, and performance against a baseline.",
     "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production.",
     "Validation data pays for the decisions you make during training, so its score is flattered. The test slice is scored once, after the settings are frozen, and that is the number you report."
   ]}
-  bridge="E2E tests assert exact behaviors against real browser or API conditions, catching what unit tests miss. `model.evaluate()` tests against real held-out data, catching what training metrics miss. Both exist because fixtures lie."
-  youCanNow="Train a classifier, run `model.evaluate()` on a held-out slice, and read the train-vs-test gap into a verdict (overfitting, underfitting, or healthy) before anyone signs a deployment."
+  bridge="E2E tests check workflows; held-out evaluation checks model performance beyond training examples. Both need representative cases and clear limits on what passing establishes."
+  youCanNow="Train a classifier, run `model.evaluate()` on a held-out slice, and use the train/test gap as an investigation signal alongside data checks and sliced evaluation."
 />
 
 <Epilogue>

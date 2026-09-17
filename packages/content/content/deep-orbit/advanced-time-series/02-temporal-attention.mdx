@@ -20,7 +20,7 @@ concept:
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
-    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the per-step linear scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
+    breaks: "scrollIntoView requests scrolling toward an element chosen by application code. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the per-step linear scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
 consequence:
   narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The pattern is confirmed."
 hints:
@@ -222,7 +222,7 @@ Build the temporal attention path with position as a scored feature, then read t
     "Softmax renormalizes over whatever window it is handed. A capture that lost its onset still produces weights summing to 1 and an output of the same shape, so nothing downstream can tell it from a full window.",
     "Attention is order-blind until position is handed to it as a feature. One extra column holding the step's position, scaled to [0, 1], is enough for the scorer to prefer late steps over early ones."
   ]}
-  bridge="Like `scrollIntoView()` jumping the viewport to the element that matters, temporal `attentionWeights = softmax(scores)` concentrate processing on the highest-scoring time steps."
+  bridge="scrollIntoView targets a chosen element. Temporal attention learns weights over time steps and uses them to combine their representations."
   youCanNow="Score a window's time steps with position included, pool it under the resulting weights, and read those weights as where the model looked."
 />
 

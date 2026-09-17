@@ -22,7 +22,7 @@ concept:
     mlTitle: "Neuron"
     mlCode: "const output = tf.dot(inputs, weights).add(bias)"
     tier: structural
-    breaks: "reduce() walks elements one at a time and hands back a plain number you can log and forget. A neuron's weighted sum is one vectorized dot product over a tensor, and its weights and bias are not constants you wrote: they are parameters training will rewrite. The reduce() mental model stops at 'compute once'; a neuron exists to be adjusted."
+    breaks: "The reduce expression and dot product compute the same weighted sum. Either can use parameters that change. TensorFlow.js adds tensor operations and automatic differentiation; training is the procedure that adjusts those parameters from examples."
 consequence:
   narrative: "One neuron separates the two calibration tones. Nazari watches it hold, then asks what sixty-four channels would cost."
 hints:
@@ -102,7 +102,7 @@ Build your first neuron: the weighted sum behind every verdict this ship will ev
     "A weight scales its own input, so what an input contributes is weight times input; bias shifts the output threshold.",
     "Array.reduce() over inputs is the JavaScript equivalent of tf.dot()."
   ]}
-  bridge="The JS pattern `inputs.reduce((sum, x, i) => sum + x * weights[i], bias)` maps directly to the ML operation `tf.dot(inputs, weights).add(bias)`, so every neuron is just a reduce you've written before."
+  bridge="reduce and tf.dot compute the same weighted sum plus bias. A neuron may then apply an activation; training determines its parameter values."
   youCanNow="Implement a single neuron as a weighted dot product plus bias using tf.dot() and add()."
 />
 

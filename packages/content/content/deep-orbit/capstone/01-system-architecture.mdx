@@ -21,7 +21,7 @@ concept:
     mlTitle: "Pipeline Dependencies"
     mlCode: "// pipeline: preprocess → featureExtract → classify → report: declare, connect, validate"
     tier: structural
-    breaks: "Package dependencies are resolved deterministically by a manifest and lockfile. ML pipeline dependencies include data shapes, schema contracts, model versions, and feature freshness; schema breaks are silent (predictions become wrong, not errors) and surface days later as accuracy regressions, not stack traces."
+    breaks: "Both software and ML pipelines need versioned interfaces and dependencies. Models add feature order, units, preprocessing, and evaluation assumptions. Some shape errors throw immediately; a valid-shaped input with swapped units may silently change predictions. Test both kinds of contract."
 consequence:
   narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Behind them the ticker reads 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready, and says nothing at all."
 hints:
@@ -203,7 +203,7 @@ Build the chain runner: stage contracts checked before each stage, `addStage` ch
     "A component manifest with declared dependencies lets you prove every stage's inputs exist before any inference runs; catching a cycle takes a second walk over the same manifest.",
     "A loop that carries one value per stage runs a chain, not a graph. A stage with two declared dependencies needs a scheduler instead. It walks the manifest in dependency order and keeps every stage's output addressable by name. Check which of the two your runner is."
   ]}
-  bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages; but unlike npm, a contract violation in ML is silent and shows up as accuracy drift instead of a resolution error."
+  bridge="Package manifests and pipeline configs both declare dependencies. ML contracts also include feature order, units, and preprocessing; some violations throw while others silently change predictions."
   youCanNow="Build a multi-stage ML inference pipeline whose stages declare their input and output types, and whose runner refuses bad data at the stage that received it instead of letting a shape break travel downstream, and read a component manifest closely enough to see where a chain runner stops being enough."
 />
 

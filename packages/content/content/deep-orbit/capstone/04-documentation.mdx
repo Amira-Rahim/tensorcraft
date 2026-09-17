@@ -20,7 +20,7 @@ concept:
     mlTitle: "Model Card"
     mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Weights: 3988 bytes */ // model docs"
     tier: structural
-    breaks: "JSDoc comments describe deterministic functions whose behavior is verifiable from the source. A model card describes statistical performance over a held-out distribution that the production data may not match. Reading the docs tells you how the function behaves; reading the model card tells you how the model performed yesterday on a benchmark that may already be stale. Documentation discipline transfers; verifiability does not."
+    breaks: "JSDoc describes a software contract, which still needs verification. A model card adds the data, evaluation conditions, and observed limitations of a model. Both kinds of documentation can become stale; empirical model performance is not a promise for every future input."
 consequence:
   narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook. It goes to exactly one reviewer, and she does not have intuitions."
 hints:
@@ -256,7 +256,7 @@ Write a Model Card for the DEEP SCAN classifier.
     "Runbooks turn documentation into step-by-step procedures: replace each judgment call with a number, so anyone can operate the system without the original author.",
     "That number has to be derived, not chosen. Read it off a high percentile of the metric measured on known-calm data. Record the window size you measured at, because the same threshold means something different on a longer window."
   ]}
-  bridge="JSDoc comments describe a TypeScript function's inputs, outputs, and exceptions; a Model Card describes a model's training data, accuracy metrics, and known failure modes. The format is the same, but the model card's accuracy numbers describe a past benchmark, not a verifiable contract."
+  bridge="JSDoc records a function contract. A model card also records training data, evaluation conditions, and limitations, so readers can judge where measured performance applies."
   youCanNow="Render a Model Card from a model's own metadata, with the accuracy dated to the benchmark that produced it and the weakest class found rather than assumed, and turn a runbook entry with a judgment call in it into one with a threshold and a window size."
 />
 

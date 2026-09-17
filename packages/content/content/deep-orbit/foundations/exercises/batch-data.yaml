@@ -10,7 +10,7 @@ instructions: |
 
   Finally drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`, and wait for that drain to finish before your code ends, because the grader reads `batchShapes` the moment it does. Keep the generator's name: the grader also drains `sensorGen` through a pipeline of its own, no shuffle buffer and one sample per batch, and counts how many rows were read before the first batch arrived.
 
-  Last, the split, on indices rather than on the dataset: deal `tf.util.createShuffledIndices(16)` once and cut it into `trainIdx` (the first 12) and `valIdx` (the other 4), as plain arrays. The two sides have to be disjoint and cover every reading exactly once, which the lesson's `.shuffle().take()/.skip()` trap cannot promise, because a dataset reshuffles on every pass.
+  Last, split the time-ordered indices into plain arrays: `trainIdx` holds the earlier 12 readings and `valIdx` holds the later 4. Both sets must be disjoint and cover all 16 readings. You may shuffle the training indices, using `tf.util.createShuffledIndices(12)`, but membership must not change. The full-fixture dataset above demonstrates batching; a training run would read only `trainIdx`.
 starterCode: |
   // Provided: lazy archive access (do NOT modify)
   let readCount = 0;
@@ -34,8 +34,8 @@ starterCode: |
   // finished, so the drain has to be finished too.
   const batchShapes = [];
 
-  // The split happens on indices, dealt once, not on the reshuffling
-  // dataset. Twelve readings train, four are held out.
+  // IDs follow recording time. Keep the later readings out of training.
+  // Return plain arrays; training order may vary within its assigned set.
   const trainIdx = null;
   const valIdx = null;
 solutionCode: |
@@ -59,9 +59,8 @@ solutionCode: |
     batchShapes.push(b.xs.shape);
   });
 
-  const indices = Array.from(tf.util.createShuffledIndices(16));
-  const trainIdx = indices.slice(0, 12);
-  const valIdx = indices.slice(12);
+  const trainIdx = Array.from(tf.util.createShuffledIndices(12));
+  const valIdx = Array.from({ length: 4 }, (_, i) => i + 12);
 testCode: |
   describe('Lazy Pipeline', () => {
     const filled = (value, what) => expect(value, what).toBeDefined();
@@ -203,6 +202,8 @@ testCode: |
         all,
         'Together the two sides cover every reading exactly once: no index missing, none on both sides. A reading the model trained on has no business in the validation set, and a reading on neither side was thrown away.',
       ).toEqual(Array.from({ length: 16 }, (_, i) => i));
+      expect(train.slice().sort((a, b) => a - b), 'Training uses the earlier readings, even when their order is shuffled.').toEqual(Array.from({ length: 12 }, (_, i) => i));
+      expect(val, 'Validation must represent later readings. Mixing future rows into training defeats this split.').toEqual([12, 13, 14, 15]);
     });
   });
 estimatedMinutes: 12

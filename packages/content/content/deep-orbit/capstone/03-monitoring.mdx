@@ -314,7 +314,7 @@ Build the monitor: confidence average, latency percentiles off the recorded infe
     "The prediction side has a distribution too: the share of verdicts per class and the histogram of confidence scores both move when model behavior changes, and neither needs labels to compute.",
     "Latency percentiles (P50/P95/P99) apply directly to inference monitoring just as they do to API response time tracking."
   ]}
-  bridge="Sentry captures exceptions and response times for a web app; `monitor.trackPrediction({ confidence, latency, drift })` adds the ML-specific layer. Confidence decay and input distribution shift are failures that never throw, so they require dedicated instrumentation."
+  bridge="Application monitoring tracks operation and errors. Model monitoring adds data distributions and delayed outcome labels; a shift is a signal to investigate, not proof of failure."
   youCanNow="Implement a model health monitor that averages prediction confidence, reads a latency percentile off the recorded inference times, and scores data drift as the distance between the recent feature means and a training-time baseline."
 />
 

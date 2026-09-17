@@ -20,7 +20,7 @@ concept:
     mlTitle: "Gradient descent step"
     mlCode: "weights = weights.sub(grad.mul(0.1))  // ease toward minimum"
     tier: structural
-    breaks: "These are literally the same update: lerp IS gradient descent on loss = ½(target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown; the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only move you have."
+    breaks: "The shown lerp step is gradient descent on half the squared distance to a fixed target. In model fitting, target labels may be known while the best parameters are not. A local gradient supplies an update direction; it is one optimization method, not the only possible one."
 consequence:
   narrative: "Down is computable for one weight: the slope says which way to move it and how far. The other 672 are still waiting."
 hints:
@@ -122,7 +122,7 @@ Implement one descent step, written so the grader can hand your step() any loss 
     "The learning rate controls step size. Past the loss's threshold the error grows on every step; a rate that overshoots without passing the threshold still converges; too low is painfully slow.",
     "`tf.variableGrads()` computes gradients for every trainable variable your loss function touched, in one call, keyed by variable name."
   ]}
-  bridge="Lerp smoothing and gradient descent use the same update rule: `position += (target - position) * rate`. The difference is that in ML the target is unknown and the gradient gives only the local slope, not the destination."
+  bridge="Lerp is gradient descent for a simple squared-distance loss. In model fitting, labels may be known while the best parameters remain unknown."
   youCanNow="Implement a manual gradient descent step using `tf.variableGrads()` and predict what a rate that is too high does to the loss."
 />
 

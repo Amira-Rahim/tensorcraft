@@ -1,0 +1,4575 @@
+{
+  "version": 2,
+  "recordedOn": "2026-09-17",
+  "baseRevision": "e5ff39b4f2e19649e94ad392af48c28e909d238f",
+  "scope": "Deep Orbit, 56 lessons and 65 exercises",
+  "policy": "Hashes refer to the current working tree. Targeted corrections do not complete whole-artifact checks. Each pending check requires evidence; source changes invalidate affected review. No independent review is claimed.",
+  "artifacts": [
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "kind": "lesson",
+      "sourceSha256": "54b7468bb9b9a6daef36efef24ebb1ba6e9d858ea7a8a6fc6e6f6b4fbf14a520",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand attention as dynamic relevance scoring: focusing on what matters",
+        "Learn the Query-Key-Value framework for computing attention weights",
+        "Compare attention with LSTM: parallel vs sequential, global vs local context",
+        "Implement a simple attention mechanism in TensorFlow.js"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "kind": "lesson",
+      "sourceSha256": "3dbd191b0d46605ae2e10549841e551878bf3e829f3db51c642ea271c7235a7f",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Apply attention specifically to the temporal dimension of sequential data",
+        "Read the weights back as one number per time step and name the steps that took the most of the budget",
+        "Use attention weights as a where-it-looked map, and state what they do not prove about why",
+        "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "kind": "lesson",
+      "sourceSha256": "112703c834049132c5acf3dad860f34c4c1de949e9bddb3660a032f7fda5c08c",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10",
+        "F16"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Train a one-step model and roll it forward into a multi-step forecast",
+        "Understand non-stationarity, when past patterns stop predicting the future",
+        "Build the two runs a drift check has to tell apart: a rollout that feeds itself, and a one-step replay re-seeded from the readings that arrived"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "kind": "lesson",
+      "sourceSha256": "9af6b4896430ef6905e71a4bddcd6d817e6fcdcade924447766150cea89cd16d",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the Kalman filter as a predict-correct loop for state estimation",
+        "Implement a 1D Kalman filter that smooths a noisy timing signal",
+        "Connect Kalman filtering to the exponential moving average pattern",
+        "Smooth a drifting interval and read the lag that motivates a velocity state"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+      "kind": "lesson",
+      "sourceSha256": "32c59f1753ad757c15b26818c7d62d87003b69b4a17d28746c2044676222b10e",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Blend members two ways: equal shares, and shares weighted by each member's measured confidence",
+        "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places",
+        "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them",
+        "Score an ensemble against its best single member, not against the average member"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "kind": "exercise",
+      "sourceSha256": "ffcc546fb6600f4afdb407a5f93f445f7b0fa3b1a10682d4230db35d138375e3",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Roll Forward, Then Replay One Step at a Time",
+      "lessonSlug": "forecasting",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "kind": "exercise",
+      "sourceSha256": "fefcf4185c1c80eb104cdfa1a48d7139a719f6960abea96fb4d43dd9123d7a5e",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Implement a Kalman Filter",
+      "lessonSlug": "kalman-filters",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "kind": "exercise",
+      "sourceSha256": "719f36edfefd7da17d63b6571fea0c1e37f713240fd660a7557dcf6d258dfdb1",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Simple Attention Over RNN Hidden States",
+      "lessonSlug": "beyond-lstm",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "kind": "exercise",
+      "sourceSha256": "21d11ad91d3abedb229b6edc9cbf08b516c5ddc5568ebb75900e69a0ac43a624",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Temporal Attention Over a Window",
+      "lessonSlug": "temporal-attention",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+      "kind": "exercise",
+      "sourceSha256": "d903fa28abdd8b9a8b4faa945c7c0836ec499cdeb121a51cbf077f9e70d88100",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Ensemble Gain Over the Best Member",
+      "lessonSlug": "time-series-ensemble-methods",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "kind": "lesson",
+      "sourceSha256": "f4e4a9f1863c3bd1a191338c27e87eebedf486bdfdceba94fdfd63c336ed1523",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand anomaly detection as modeling normality rather than cataloging every possible anomaly",
+        "Compute a baseline mean and standard deviation from known-good readings",
+        "Flag readings with a z-score gate, and recompute the baseline when the world underneath it moves",
+        "Recognize the precision and recall tradeoff a threshold sets, and why no single cutoff satisfies both"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "kind": "lesson",
+      "sourceSha256": "10e0097dbffdd018b815fe2c546039baa0b6fdd9bc33998cb70f0a5fc54c9a24",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F03",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the autoencoder architecture: encoder → bottleneck → decoder",
+        "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself",
+        "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side",
+        "Explain why reconstruction error can miss an anomaly or flag a normal input"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "kind": "lesson",
+      "sourceSha256": "5115100b5cd4ebad23ec67fd59a596157a98f2bd19ed233963e4a46be2b824e5",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F03",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Compute reconstruction error as the difference between input and autoencoder output",
+        "Use MSE (mean squared error) as the anomaly score for each sample",
+        "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak",
+        "Rank each feature's error against that feature's own normal error to find which dimension carries the anomaly"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2a0fbcba4ef1fd51dd3c77db006efcf0d012b7a924afd3ec90d75016070a3eaf",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F05",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees",
+        "Understand the precision-recall tradeoff and how threshold affects each",
+        "Compare F1 maximization with an explicit false-alarm and miss cost",
+        "Diagnose an alert storm against the known failure signatures before touching the cutoff"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "kind": "lesson",
+      "sourceSha256": "f262ac3c7365392f69c134328dd10b0d0a3d32d083dbcf11cab0d2b2da85e2b3",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F03",
+        "F10",
+        "F15"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict",
+        "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it",
+        "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check",
+        "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "kind": "exercise",
+      "sourceSha256": "95be0b16036dd33ad485366768145abaaa09f4c97d1e66cc50c7fd35cdd70cfb",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Train an Autoencoder on Normal Data Only",
+      "lessonSlug": "autoencoders",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "kind": "exercise",
+      "sourceSha256": "89ce98c16f5675d6880c65e7a8a34ef073a7b48a7447d02df246019855d9e004",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Detect Anomalies with Z-Score",
+      "lessonSlug": "normal-vs-anomalous",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+      "kind": "exercise",
+      "sourceSha256": "426747773041393ee1b9a4f2a01d96394f9170b9d1f014844066b3cb35749ccb",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build the DEEP SCAN Ensemble",
+      "lessonSlug": "the-anomaly",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "kind": "exercise",
+      "sourceSha256": "4073a9f15b58254749963763ba58cf8f239be86b310891f9f6590a51fdd6dce8",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [
+        "F05"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Sweep Candidate Thresholds for the Best F1",
+      "lessonSlug": "threshold-tuning",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "kind": "exercise",
+      "sourceSha256": "91220f15845b7adc5dbf382d8d737f6065874a7efc63d873a8976eb529f89f23",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Incident: Baseline Distribution Drifted",
+      "lessonSlug": "normal-vs-anomalous",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+      "kind": "exercise",
+      "sourceSha256": "e3ec06546281e430a6ef2082c251b0dc5031f79a311388f4dc0e22f0f482ce04",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Incident: False Alarm Storm",
+      "lessonSlug": "threshold-tuning",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "kind": "exercise",
+      "sourceSha256": "25458bfec6e83b0b5eb75c227a0dbd8d85124f491c8b329237b24948e777e18a",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Incident: True Anomaly Slipped Through",
+      "lessonSlug": "reconstruction-error",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "kind": "exercise",
+      "sourceSha256": "4419d0a3c5047360a72cfed15869dad1a44b9b53fd6ceb93ec59fbbdad809305",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Compute Reconstruction Error",
+      "lessonSlug": "reconstruction-error",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "kind": "lesson",
+      "sourceSha256": "a2b6e4ec150fd0c7498dd5697f97955d0baf156a02a43c271e5f672364afab2e",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the advantages of browser-based ML inference (privacy, latency, offline)",
+        "Identify the constraints of running models in the browser (memory, compute, cold start)",
+        "Decide between browser and server inference using the CSR-vs-SSR mental model"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "kind": "lesson",
+      "sourceSha256": "1295775959fb2c6bef94b6ffc9992917ccc7d1d6b92bbe59ffc5fa7b80023bfd",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Install and import TensorFlow.js in a web project",
+        "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics",
+        "Initialize TF.js, verify the active backend, and configure the right one for your target"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "kind": "lesson",
+      "sourceSha256": "0b0763374ce8e7c057b983a9245759b2c3fcc2b6815e1b1fcc7a5932baae3ab4",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Load a pre-trained TensorFlow.js model from a URL",
+        "Understand the model format: model.json manifest + weight .bin shards",
+        "Export a trained model to that pair with model.save(), in Node and in the browser",
+        "Cache models in IndexedDB for offline access and faster subsequent loads",
+        "Handle loading states and errors gracefully in the UI"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2e9528b266897b8782f81538fe4d9af9b1b4b0443ab5069b5be6fd7305f09d68",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Build a real-time inference pipeline: input → preprocess → predict → display",
+        "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks",
+        "Preprocess raw input data to match model training format",
+        "Measure and optimize inference latency for real-time requirements",
+        "Read a climbing tf.memory() tensor count as a leak: turn the slope between two snapshots into hours of headroom"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "kind": "lesson",
+      "sourceSha256": "de072082343573e5b709ae078454a7d9bda92cbf8d6039bde32e9846ada95296",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand ONNX as a universal model interchange format",
+        "Load and run ONNX models in the browser with onnxruntime-web",
+        "Benchmark TF.js against ONNX Runtime Web on one shared backend, so the result is about the runtimes",
+        "Pick a backend from model size: where per-call overhead outweighs the arithmetic, and where it stops"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "kind": "lesson",
+      "sourceSha256": "572a314155e6f269c19d998e7bc156529f6f709ae490061d118d1c205e5b5cc5",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand when to reach for Transformers.js vs TFJS or ONNX Runtime",
+        "Use `pipeline()` to run pretrained models in the browser",
+        "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)",
+        "Reason about the bandwidth + latency cost of shipping pretrained models client-side"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "kind": "exercise",
+      "sourceSha256": "46a36db71b90a2a3323556387d8c3d5135278effa81cc0604c723c87d0f46d85",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Evaluate Browser ML Tradeoffs",
+      "lessonSlug": "why-the-browser",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+      "kind": "exercise",
+      "sourceSha256": "f2748645da0ad1f07300459ae999967bfc1b4bc146a677a25640af9850c3a824",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Incident: numTensors Climbing at 03:10",
+      "lessonSlug": "inference-pipeline",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "kind": "exercise",
+      "sourceSha256": "d7077bdf709f57e1a4aad1bc7e61cc4323609896b072c14d156bcb4d66b97230",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build an Inference Pipeline",
+      "lessonSlug": "inference-pipeline",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+      "kind": "exercise",
+      "sourceSha256": "474fff0b4d4b9311bad31c049ae1f9107d665fb2153e93d0fc6eb080e24005b3",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Load and Inspect a Model",
+      "lessonSlug": "model-loading",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+      "kind": "exercise",
+      "sourceSha256": "5abaffb7dc3e9cc3c646df6ec6aa9fe712a5d818e9af276040cb7871c765bc83",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Sentiment Classifier via Transformers.js",
+      "lessonSlug": "transformers-js",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+      "kind": "exercise",
+      "sourceSha256": "ab4ed0b871202c914b8b15971b802df5530bdbf75a78c85adfcac622b94311ae",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Benchmark TF.js Against ONNX Runtime",
+      "lessonSlug": "onnx-runtime-web",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+      "kind": "exercise",
+      "sourceSha256": "d098c33cfaf2b3f348d0e7ce9f59fe4a9b1414d09ae24dc501cc1fb8a5c401df",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Initialize TensorFlow.js",
+      "lessonSlug": "tensorflow-js-setup",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "kind": "lesson",
+      "sourceSha256": "0dfe6dfee836fb07ee6a5147b72a238c1895f70d1d70c37ef93b7bf21efc969e",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Design a production ML pipeline as a dependency graph of typed components",
+        "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter",
+        "Implement a pipeline runner that validates data flow between stages",
+        "Map the complete DEEP SCAN architecture from raw signal to final report"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "kind": "lesson",
+      "sourceSha256": "ae4c809525eaf4f9d86cc57f3950115213f7d8f81c314dc1657c925d4fe8dd20",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Extend a standard CI/CD pipeline with ML-specific validation steps",
+        "Implement model accuracy gates that block deployment on regression",
+        "Add inference performance benchmarks as CI checks",
+        "Configure automated deployment with rollback on failure",
+        "Export a model with model.save() and an in-memory save handler, and read its topology, weight specs, and byte count"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2a7e56cc2560372314c4c4185fefaa7592f061c66767acfc82b8489e0986493a",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Implement prediction quality monitoring: confidence tracking and the prediction-side class mix",
+        "Build latency monitoring with P50/P95/P99 percentile tracking",
+        "Detect data drift by comparing input feature distributions over time",
+        "Configure alerts that trigger when model health metrics cross thresholds"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "kind": "lesson",
+      "sourceSha256": "c8117ee2746180881da6b7e158e0da5efe11226093ef8f5cb5c5820d6c9bbce5",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Write a Model Card documenting model purpose, training data, and performance",
+        "Document the pipeline API and write runbooks for common operational scenarios",
+        "List known limitations and failure modes: what the model cannot do"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2b278a761c6066b34ba6661e91c59316ebd61beb65584dd54f5d2c73eb904d19",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Configure a production build that includes model assets alongside web assets",
+        "Deploy an ML-powered web app to GitHub Pages as a static site",
+        "Verify the deployed system loads and runs inference correctly",
+        "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch",
+        "Complete the DEEP SCAN mission: classify the anomalous signal"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+      "kind": "exercise",
+      "sourceSha256": "018e4a966cfde50acb8c8fddf0048b660c28923d0962f759f3ac9f68e046b445",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build a CI/CD Validation Gate",
+      "lessonSlug": "ci-cd-pipeline",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
+      "kind": "exercise",
+      "sourceSha256": "824432259605460c5e2faf1f498b339740106007460a5904dd7fe60364cf1b09",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Zero Hour: Classify the Anomaly",
+      "lessonSlug": "launch",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
+      "kind": "exercise",
+      "sourceSha256": "5ded26af5bdc795a627564e2dafa1841d621f66d5e738c1d778283dccfb1f356",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Export the Artifact CI Pins",
+      "lessonSlug": "ci-cd-pipeline",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+      "kind": "exercise",
+      "sourceSha256": "94737bbc96f004e042e40e080f2cf944de4121f4e4334970b2eaf44bdc14265c",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Launch Rehearsal: Train the Candidate, Then Gate It",
+      "lessonSlug": "launch",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+      "kind": "exercise",
+      "sourceSha256": "1f8255b1cb64b40abc857d3fc9a433e50d77f607f4925a6e76442b8e148c763c",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build a Model Monitor",
+      "lessonSlug": "monitoring",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "kind": "exercise",
+      "sourceSha256": "383a6adda7b9c541a89dc7f12a5e587228c913a22f95c023b64c90a879e36e79",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build a Typed Pipeline",
+      "lessonSlug": "system-architecture",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+      "kind": "exercise",
+      "sourceSha256": "de359bc054302f33cb6d3eb891e9e228e34ed784e0cf2ff4c30ac4e6c8b00b36",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Verify a Deployment",
+      "lessonSlug": "launch",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+      "kind": "exercise",
+      "sourceSha256": "6362283f4682f7e671aed7cae1644e6be01126de09dd7b5f5047d70ced0435ef",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Write a Model Card",
+      "lessonSlug": "documentation",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+      "kind": "lesson",
+      "sourceSha256": "30a613feac430d18a3497dcc55350565d9ee9a1076d57019190eb20b25da4fff",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand what a tensor is and how it relates to JavaScript arrays",
+        "Create tensors from regular arrays using TensorFlow.js",
+        "Identify the rank (number of dimensions) of a tensor",
+        "Manage tensor memory with dispose() and tf.tidy()"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "kind": "lesson",
+      "sourceSha256": "9c6173e3514c8ed4f5ff8b0858b5291e3fd5e8cd1e2a2951da2413ff439dda37",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Read and interpret tensor shapes",
+        "Predict where each value lands after a reshape (row-major order)",
+        "Recognize common shapes in ML (batches, sequences, images)"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "kind": "lesson",
+      "sourceSha256": "39d1d774c01e4eeae81a0c505137843e95dcd8aab0498450dec8938dc626e3b2",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Read a shape-mismatch error and identify which op it comes from",
+        "Perform element-wise tensor operations (add, multiply, subtract)",
+        "Combine tensors of different shapes using broadcasting",
+        "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]",
+        "Use transpose to make shapes compatible"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "kind": "lesson",
+      "sourceSha256": "1b8787ac9016f6e40bbf90db33c5e1d2a0751a4bc5fa8340d4e10ce5a5f45caa",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F01",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Create data pipelines using tf.data",
+        "Batch data into fixed-size chunks for processing",
+        "Shuffle data to prevent ordering bias",
+        "Split data into training and validation sets"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "kind": "lesson",
+      "sourceSha256": "1450b96a96657df07927fae0aac6d66d868c72f1a49ce024643878ba45864b84",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F02",
+        "F06",
+        "F06-partial",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Explain how feature scaling affects neural-network training",
+        "Apply z-score normalization (zero mean, unit variance)",
+        "Apply min-max normalization (scale to 0-1 range)",
+        "Recognize when to use each normalization strategy",
+        "Feed normalized readings through a real dense neuron and read its verdict"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
+      "kind": "exercise",
+      "sourceSha256": "7518f17d8d98cd1134378dace0001cb64cabef9f444bddefe0335c22ad6b63f4",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Merge the Sensor Passes",
+      "lessonSlug": "tensor-operations",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "kind": "exercise",
+      "sourceSha256": "a3d04f6f965954b7f932bf62787ac37934c159e3e6e1bb0458656cb46d11f974",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [
+        "F01"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build the Lazy Pipeline",
+      "lessonSlug": "data-loading",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+      "kind": "exercise",
+      "sourceSha256": "656204988673ad0c305efed0bc646853489a9b35252fbf681951dd7770b497ca",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "First Contact: Tensor In, Memory Clean",
+      "lessonSlug": "introduction-to-tensors",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "kind": "exercise",
+      "sourceSha256": "7578240e6f5067fcc9558e4db998610a292091bf8ca48662383d520c89334a31",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [
+        "F06"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Normalize, Then Ask the Preview Neuron",
+      "lessonSlug": "normalization",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
+      "kind": "exercise",
+      "sourceSha256": "7d07338d72ddf7dca6180940455e7d1fcb46cf7fb2cfedf56866d545dce55336",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Find the Signal's Layout",
+      "lessonSlug": "tensor-shapes",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "kind": "lesson",
+      "sourceSha256": "974caffb058a32573ba057eef1672433965ee9d8c4fe4763665a58fe55ebc9c8",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F04",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand LLMs as augmentation tools for structured analysis",
+        "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on",
+        "Define the human-AI workflow: generate → review → correct → approve"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2e4681b49eceef57a1ef89c2902355fce1014af06425549cb7aa1565eb451788",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Structure prompts with role, context, data, and format instructions",
+        "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review",
+        "Request structured output (JSON) for programmatic processing",
+        "Diagnose a vague prompt by naming which of the four parts is missing"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "kind": "lesson",
+      "sourceSha256": "996d4739f4d2251892aa04fcd71527f8cb1d61d3f4eb72acfd4cc1dd20dde9b4",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F04",
+        "F10",
+        "F10-partial"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response",
+        "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any",
+        "Check structured claims against cited fields and units, and explain why free-text answers still need review",
+        "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "kind": "lesson",
+      "sourceSha256": "cfe98a602945929016fe081df58914f1766bd0b2dbd4a2b2962fbca7aeac0ae5",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F04",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Structure report generation as section-by-section assembly rather than monolithic generation",
+        "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships",
+        "Cut a section that fails its check, and record the gap instead of shipping the guess",
+        "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "kind": "lesson",
+      "sourceSha256": "43316c8673aeba6faa0878aa76354dd4f2bef5ef73d08f7c132580327f59ff7e",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F04",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Design a multi-model pipeline with clear interfaces between stages",
+        "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them",
+        "Validate each stage's output against its contract, then decide per stage: substitute a fallback, or stop the run when there is no honest substitute",
+        "Trace one capture through the full DEEP SCAN pipeline, and see why each model needs its own preprocessing rather than one shared array"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/generate-report.yaml",
+      "kind": "exercise",
+      "sourceSha256": "7ea47f3d0699ca6fd02b26ce93a452519f3bf9964482fe13e5b1da2e02984596",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Assemble a Report, Cut What Failed",
+      "lessonSlug": "report-generation",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "kind": "exercise",
+      "sourceSha256": "53936ef3acd0121fbb66220be003ce1275c664b24883c89f8e3a4998fa8b02c5",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Read the Model's Reply",
+      "lessonSlug": "llms-for-science",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml",
+      "kind": "exercise",
+      "sourceSha256": "bea0cd04969c31d5c6a5904c8f1df96bc5cd35c5534f4329036f38fc019d612c",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Wire a Model Pipeline",
+      "lessonSlug": "multi-model-systems",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
+      "kind": "exercise",
+      "sourceSha256": "6d7b41e9011c3353d20b9e432a87d8dad1eb857645b59b3b21afaa834327c213",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build a Prompt Template",
+      "lessonSlug": "prompt-engineering",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
+      "kind": "exercise",
+      "sourceSha256": "60482499af2a7be949fc4832f9b3169fbc5f89aa91a3e4cc8fe791926c889d80",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [
+        "F04"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Check Claims Against Their Sources",
+      "lessonSlug": "rag-for-signals",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
+      "kind": "exercise",
+      "sourceSha256": "a20af5fa9f5145e66d93f89af17e47d423ba614a4a8bd7fe99faa29f9a58ca0d",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Retrieve the Rows the Prompt Will Carry",
+      "lessonSlug": "rag-for-signals",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+      "kind": "lesson",
+      "sourceSha256": "8d1ea98cdb04e6e85b756654623952f909db0259afb6d183a8ac5b575ec1a492",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the anatomy of a single neuron (inputs, weights, bias)",
+        "Implement a neuron as a weighted sum plus bias",
+        "See how Array.reduce() maps to the dot product operation",
+        "Read a weight: sign for direction, magnitude for sensitivity per unit of input"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+      "kind": "lesson",
+      "sourceSha256": "54dfa2a0953e9796d3477caab8d93c1de367cc4be52936af8e6ec92a617398e9",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand why activation functions are necessary",
+        "Implement ReLU, and read sigmoid and tanh off their ranges",
+        "Pick the activation for a slot from the range that slot needs"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+      "kind": "lesson",
+      "sourceSha256": "8a14a2cd88662528e5e3b01ec4252949812d6048d81996ae562c4b743633da4c",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F07",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Build multi-layer neural networks using tf.sequential()",
+        "Understand how layers compose like a middleware chain",
+        "Configure layer sizes (units) and activations",
+        "Count a network's parameters before you build it"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "kind": "lesson",
+      "sourceSha256": "ce5250f8f48587fa562b4ef1cb29e85b73eb429d0959ed682441903b98680cf9",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Trace data flow through a neural network layer by layer",
+        "Use model.predict() to run inference",
+        "Understand input and output tensor shapes at each layer",
+        "Give a flat reading the batch axis the layer expects, which is the mismatch that killed the demo"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+      "kind": "lesson",
+      "sourceSha256": "cbc6e4f52a5053b33ea9e78980a7a545186746e4d0cb699f6499a7103189c545",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Build and compile a complete neural network from scratch",
+        "Understand what each compilation option controls",
+        "Verify the network by its parameter count, and read its predictions before and after training",
+        "Explain why a new layer starts with random weights and zero biases"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+      "kind": "exercise",
+      "sourceSha256": "3b5a106b6b775f68de902719307f01d661231e63999b685b836a33dc42d479e3",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build a 3-Layer Sequential Model",
+      "lessonSlug": "layers-and-architecture",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+      "kind": "exercise",
+      "sourceSha256": "a4bd74c204bde6e3c134d8ab4d4ad16e42a8c1b48ffaeaf8566c2ccb604a269e",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Run a Forward Pass",
+      "lessonSlug": "forward-pass",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
+      "kind": "exercise",
+      "sourceSha256": "86a1f98b9f87a2996573479f8e3be4b48f5cec8e6f78232e6f2533e88f2f29ec",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Implement a Neuron",
+      "lessonSlug": "first-neuron",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml",
+      "kind": "exercise",
+      "sourceSha256": "56417b92ae7b724fd495e18cbda1d0a559f2575067fcca983292f986a06f0001",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Apply ReLU Activation",
+      "lessonSlug": "activation-functions",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml",
+      "kind": "exercise",
+      "sourceSha256": "d09aa0f72bd7fdd747c66661aedc2b22a0b958306efd5e9e35d7c5a68344f9a3",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "What a Compiled Network Knows",
+      "lessonSlug": "building-a-network",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "kind": "lesson",
+      "sourceSha256": "e6b3873ea4ff2ab6e6bbbe364b4cb343f5bcf8c12b2a98a7d818c168347ecf0d",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates",
+        "Benchmark inference latency with high-resolution timing, mean and tail",
+        "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time",
+        "Establish baseline metrics before optimization"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "kind": "lesson",
+      "sourceSha256": "5ac54bcc93b0199f6db3c9ccd81930d4b10209f7a6bb061c0a0ab653843eee5c",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand quantization as byte reduction: float32 storage cut to uint16 or uint8",
+        "Quantize a model using TensorFlow.js conversion tools",
+        "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it",
+        "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)",
+        "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "kind": "lesson",
+      "sourceSha256": "aff4a64e2b3d4b124ee8378cfd03683b56928ebf31299f78ebf71fff060eafff",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F09",
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand pruning as tree-shaking for neural networks: zero the near-zero weights",
+        "Implement magnitude-based pruning with a configurable sparsity level",
+        "Measure what each pruning level costs, one class at a time",
+        "Separate what pruning changes on disk from what it changes on the wire"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "kind": "lesson",
+      "sourceSha256": "e6c963d9b8ced1a9eb5b194283afec6414045357ad27b887232dbf53404f7d98",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Wrap a model in a cache-first predict that skips inference on a hit",
+        "Hash model inputs for cache key generation",
+        "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes",
+        "Measure cache hit rate and its impact on effective inference latency"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "kind": "lesson",
+      "sourceSha256": "b44a51b730dec1e7d1886786cb08bf9dbb20a84899cc6c74c7c14265b0c12e32",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)",
+        "Configure TensorFlow.js to use the WebGPU backend",
+        "Benchmark WebGPU vs WebGL vs WASM for inference workloads",
+        "Handle WebGPU availability with graceful fallback to WebGL"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+      "kind": "exercise",
+      "sourceSha256": "142c768b5cb2f9e4ab3b546e97a2c14221ce23f9bb86c98d3af0a006ea9fb6da",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Fall Back Through the Backend Ladder",
+      "lessonSlug": "webgpu-acceleration",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+      "kind": "exercise",
+      "sourceSha256": "209372c492e54e58e45051b1eb0a39520d35d93d4b0f3ae7fe9e24dc5f9fadd4",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Incident: Cache Served a Verdict From the Old Model",
+      "lessonSlug": "caching-strategies",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+      "kind": "exercise",
+      "sourceSha256": "67de852318250a0dedca4b7a9d26b0ec52d74b76e6e19f25ee03a4c8a8553d2c",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Inference Result Cache (Quantized Input Hash)",
+      "lessonSlug": "caching-strategies",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+      "kind": "exercise",
+      "sourceSha256": "341b0454c236e332c216130a5173dd3b98d9f0b294ec8d57f138660644574da1",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Profile a Model",
+      "lessonSlug": "model-profiling",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "kind": "exercise",
+      "sourceSha256": "0f2ecefd2c132612834ce75510f6b35949ca2d439a274f43bbd3264444a5b52e",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Measure What Pruning Costs",
+      "lessonSlug": "pruning",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+      "kind": "exercise",
+      "sourceSha256": "d94c07a98d8b400822cb2b2373ce4bda3c74d246cc4559fd7ef5e1a58c25d316",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Quantize a Model and Measure What It Cost",
+      "lessonSlug": "quantization",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2bd9b97de2c238183aa70d736eb184f2e5a4c8576fb58534767b8eccee152d81",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand why order matters in sequential data: shuffling destroys information",
+        "Recognize why scoring one reading at a time hides temporal patterns",
+        "Prepare sequential input by creating time-step windows from a stream of readings"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "kind": "lesson",
+      "sourceSha256": "5742e10b7756f85ccb34d9b3eb8c611a23701723efa33971f00a4ee2f67cb598",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the RNN as a learned reducer: (prevState, input) → newState",
+        "Build a simple RNN using TensorFlow.js layers API",
+        "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences",
+        "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "kind": "lesson",
+      "sourceSha256": "ce90b07f57d3aeb841d9336f00130ae3266fd5a0c7d34865efd7853a9aa4c953",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the three LSTM gates: forget (discard), input (add), output (expose)",
+        "Build an LSTM cell with tf.layers.lstm and read its four gates out of the kernels and bias the library packs them into",
+        "Compare LSTM and GRU architectures: tradeoffs between complexity and performance",
+        "Trace the gradient backward along the cell state and say what the forget gate does to it"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "kind": "lesson",
+      "sourceSha256": "825006fe8f3c2756188595fc900deba7adf1da903690ce793460364e5b8723f4",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Convert continuous signal streams into fixed-size overlapping windows",
+        "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces",
+        "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying",
+        "Choose a window size longer than the dependency you need to detect, and read the overlap a stride-1 window produces",
+        "Recognize the fixed-length buffer that turns a live feed into one model-ready window per reading"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2f974c8b94fe0ffa0c016126a17eb7720a50d7b7d826f0e42645262fa5aa6584",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Train an LSTM for next-value prediction on time-series data",
+        "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric",
+        "Generate multi-step forecasts by feeding predictions back as input",
+        "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "kind": "exercise",
+      "sourceSha256": "08fdb6115c85a60d5c0054698ff7bbc70ef55d8ac325dbda32c6731eb4db7acc",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "One LSTM Step by Hand",
+      "lessonSlug": "lstm-gates",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+      "kind": "exercise",
+      "sourceSha256": "22aea09a967d1867acbe82274aa0fdcf37192445165ea9a9505a261379e41d41",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Carry the Hidden State",
+      "lessonSlug": "simple-rnns",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "kind": "exercise",
+      "sourceSha256": "be2ff61de9e5e13dc78bfafbdf65d9b00edfa750fc8508a021d9f4adba38fbd7",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Window a Stream for Prediction",
+      "lessonSlug": "sequences-matter",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "kind": "exercise",
+      "sourceSha256": "192b57990c4441728fa8842540398621bde8ade057c5fae94b3493cf2d2a230d",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Train It, Then Roll It Forward",
+      "lessonSlug": "sequence-prediction",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "kind": "exercise",
+      "sourceSha256": "2dfac80e523c6ab577a58a68cb82ef39cd48161e867157d6411c90082a183d05",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Split First, Then Window",
+      "lessonSlug": "sliding-windows",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "kind": "lesson",
+      "sourceSha256": "b3ba291f97d698c596b305876f4e2e3f3e3778a26df596e2a9a621d5dc0a4f04",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious",
+        "Identify what each domain reveals: time shows when things happen, frequency shows what repeats",
+        "Recognize why some patterns are invisible in time but obvious in frequency"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "kind": "lesson",
+      "sourceSha256": "4cfced529137ca8257d26eeead138cd8f8e80c80602fef8973e52568e0dce281",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand the Fourier Transform as signal decomposition into frequency components",
+        "Compute the FFT of a signal using TensorFlow.js spectral operations",
+        "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "kind": "lesson",
+      "sourceSha256": "6d25571c967c3c3ab5bb92c692cecff36991a21d6144c84764ed8daef1d2a8fc",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand spectrograms as time-frequency representations of signals",
+        "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)",
+        "Read spectrogram output: what the axes and values mean",
+        "Connect spectrogram visualization to the DevTools waterfall mental model"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "kind": "lesson",
+      "sourceSha256": "aba319698d1910510d7258d43ce08f9948f969f5f9470808dfaacb1789158118",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand feature engineering as deriving useful model inputs from raw data",
+        "Convert a hertz band into fixed FFT bins and use their magnitudes as model features",
+        "Combine raw features with frequency-domain features into one vector a model can train on, and know why the FFT columns have to be normalized before training",
+        "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "kind": "lesson",
+      "sourceSha256": "17d4fc7e2c51893cbd2ea8e362be8075b235291988488118012f3af1210b0f6a",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT",
+        "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT",
+        "Read why overlapping windows (50% hop) let the tapers interlock, so no sample stays discounted",
+        "Choose the right window function based on the frequency resolution vs leakage tradeoff"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+      "kind": "exercise",
+      "sourceSha256": "5df213b2b810a7df11481d407eb351a13d8bc76228275618b6de0c20529f0327",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build and Apply a Hann Window",
+      "lessonSlug": "windowing-and-overlap",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+      "kind": "exercise",
+      "sourceSha256": "8c45e70beea09d290697320e2d2a460458d42dadf186a5f33e4e5abd1c799dcb",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Build a Spectrogram",
+      "lessonSlug": "spectrograms",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+      "kind": "exercise",
+      "sourceSha256": "dd9b919891b4c0af0159af17ca2782bf97cb9b99fd2aa3ab52f3e9068af38556",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Compute FFT and Find Dominant Frequency",
+      "lessonSlug": "fourier-transform",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+      "kind": "exercise",
+      "sourceSha256": "4d01a27b55fb7dca21b47430c4f8cb3f61e8961beaa75520cc0dd31d7b5d2bb7",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Extract Fixed-Bin FFT Features",
+      "lessonSlug": "fft-as-features",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+      "kind": "exercise",
+      "sourceSha256": "e78d7780d4eaa31ce6488856415b028705fe879297ede9a140fd59e5b53f5a49",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Find the Hidden Tone",
+      "lessonSlug": "time-vs-frequency",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+      "kind": "lesson",
+      "sourceSha256": "c543bfa2a70e16505a9526bdd4ce3110c89739dad84524bb0be421622dc769dd",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand what loss functions measure and why they're essential",
+        "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)",
+        "Interpret loss values: lower is better, zero is perfect"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "kind": "lesson",
+      "sourceSha256": "4287dcfe1a6dc7fd09ddfc356bdcc0fc81fa517037fa17cd28968174abdfdbb6",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Understand gradients as the direction of steepest ascent",
+        "Implement a single gradient descent step",
+        "Predict what a learning rate that is too high does to the loss",
+        "Read a descent trace and say why the step shrinks near the minimum"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "kind": "lesson",
+      "sourceSha256": "e7681ba8683dc539c7f442bcf44f2cdb416436574070c51c41ea79c6c00dcf05",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Estimate a gradient numerically and count what that costs at network scale",
+        "Understand how backpropagation works at a high level",
+        "See the connection to an error travelling back up the call stack",
+        "Use tf.variableGrads() for automatic gradient computation"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+      "kind": "lesson",
+      "sourceSha256": "6965f6cd188c7155c07415cd9a513ca4e025225c3659c0d43d2a71ad58eeb77d",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F10"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Implement the complete training loop with model.fit()",
+        "Configure epochs, batch size, and validation split",
+        "Monitor training progress with callbacks",
+        "Read the training and validation curves together to tell a plateau from overfitting"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "kind": "lesson",
+      "sourceSha256": "2c3dbb5e5865ead2c09129dc413ebca990b96dd02fae5cf528e6663d8d3099cc",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "facts": "pending",
+        "code_examples": "pending",
+        "assessment_alignment": "pending",
+        "editorial": "pending",
+        "story_continuity": "pending",
+        "rendered_experience": "pending"
+      },
+      "targetedCorrections": [
+        "F01",
+        "F08",
+        "F10",
+        "F17"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredObjectives": [
+        "Evaluate on held-out test data and read the train-vs-test gap",
+        "Interpret accuracy, loss, and confusion matrix metrics",
+        "Tell a validation set from a test set and know which one your decisions may touch",
+        "Turn the gap into a verdict: overfitting, underfitting, or healthy"
+      ],
+      "focusedReviews": [
+        {
+          "surface": "frontmatter.concept.bridge and LessonRecap.bridge",
+          "status": "reviewed_locally",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "limitations": "Focused analogy review; full body, source benchmarks, rendered experience, and independent approval remain pending."
+        }
+      ]
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
+      "kind": "exercise",
+      "sourceSha256": "f866e0c8fef43f62535ca1e145975aa3b3ebb0e7e3332612fe1278f101004b1a",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Automatic Backpropagation",
+      "lessonSlug": "backpropagation",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
+      "kind": "exercise",
+      "sourceSha256": "f6f989f61eaaaa3dc98b35285216f23cc5e170e6fbf33a91f12810a8cd8dcce1",
+      "status": "partial",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [
+        "F17"
+      ],
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Train DEEP SCAN, Then Read the Gap",
+      "lessonSlug": "evaluating-deep-scan",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+      "kind": "exercise",
+      "sourceSha256": "6aca2a0de692923b08648e822502300cdcef86562ccb283fa6e30d6c84e2f038",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Perform a Gradient Descent Step",
+      "lessonSlug": "gradient-descent",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+      "kind": "exercise",
+      "sourceSha256": "48c53184a00ddbf1ec5ab99dabddc56b2cec8a475d8531905792b9e94fcd01e8",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Two Losses, and Cross-Entropy's Two Forms",
+      "lessonSlug": "loss-functions",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    },
+    {
+      "path": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+      "kind": "exercise",
+      "sourceSha256": "06218b5a2a758b692be55ffc49f261b7c620f1c6a32e9c20aca79239957067d7",
+      "status": "pending",
+      "checks": {
+        "objectives": "pending",
+        "prerequisites": "pending",
+        "instructions": "pending",
+        "starter": "pending",
+        "solution": "pending",
+        "grader": "pending",
+        "hints": "pending",
+        "browser_execution": "pending"
+      },
+      "targetedCorrections": [],
+      "evidence": [],
+      "declaredModulePrerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "pending; module declarations are not a verified lesson-level prerequisite map",
+      "authoredTitle": "Stop the Loop When It Stops Learning",
+      "lessonSlug": "training-loop",
+      "objectiveSource": "Instructions in this file; alignment with lesson objectives is pending."
+    }
+  ],
+  "supportingScope": "Only the seven draft artifacts and shared glossary changed in this batch. This is not full review coverage of the four draft worlds.",
+  "supportingArtifacts": [
+    {
+      "path": "packages/content/content/nova-canvas/generative-basics/01-what-is-generative-ai.mdx",
+      "kind": "draft_lesson",
+      "sourceSha256": "764479e16b69f642907ad548147497ae41229d3ccf95cc77f3290cf47414b2b4",
+      "status": "partial",
+      "targetedCorrections": [
+        "F11"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/content/neon-protocol/convolutional-neural-networks/01-convolution-operations.mdx",
+      "kind": "draft_lesson",
+      "sourceSha256": "d2945da09ff44c0bae66782b3d2b0b1e88260684d05ea6f43085621520521e87",
+      "status": "partial",
+      "targetedCorrections": [
+        "F12"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/content/neon-protocol/convolutional-neural-networks/exercises/apply-convolution.yaml",
+      "kind": "draft_exercise",
+      "sourceSha256": "1835aca610fdc42ec047a24cdce9ea1d4956c14670577fedf763f634f1c79a0b",
+      "status": "partial",
+      "targetedCorrections": [
+        "F12"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/content/signal-ward/ml-through-text/01-the-crisis.mdx",
+      "kind": "draft_lesson",
+      "sourceSha256": "916eae03f20a67649c6eebb22b1f4362fd82738a930d80394382a0f4e7f0f890",
+      "status": "partial",
+      "targetedCorrections": [
+        "F13"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/content/signal-ward/capstone/05-launch-day.mdx",
+      "kind": "draft_lesson",
+      "sourceSha256": "ae171e2e3ac2281aa82730ea1b41eb5f76853af002d31d70d81aee714d304b83",
+      "status": "partial",
+      "targetedCorrections": [
+        "F13"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/content/terra-grid/federated-learning/03-privacy-preservation.mdx",
+      "kind": "draft_lesson",
+      "sourceSha256": "3e5e049ce3fa0249f720d2df28f891c0ac8d9e47d37f7b6c095e84847b8ffee5",
+      "status": "partial",
+      "targetedCorrections": [
+        "F14"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/content/terra-grid/federated-learning/exercises/private-training.yaml",
+      "kind": "draft_exercise",
+      "sourceSha256": "eddb2488697f2c4a1013bb2d510c35e07ddf3f7a198f5f19a2e90ec6e49f5d8c",
+      "status": "partial",
+      "targetedCorrections": [
+        "F14"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    },
+    {
+      "path": "packages/content/src/glossary.ts",
+      "kind": "shared_glossary",
+      "sourceSha256": "47ef6fd777112a3daf7c7472c93422272b1441cd927327ae2470489edf829e3d",
+      "status": "partial",
+      "targetedCorrections": [
+        "F15"
+      ],
+      "wholeArtifactReview": "pending",
+      "independentReview": "pending",
+      "evidence": [
+        "docs/audits/content-quality-implementation-2026-09-17.md"
+      ]
+    }
+  ]
+}

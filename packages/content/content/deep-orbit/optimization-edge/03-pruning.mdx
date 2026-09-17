@@ -14,14 +14,14 @@ context:
   narrative: "Nazari's directive is five sentences long and lands on Demir's queue flagged FOR REVIEW. Three of them hide an assumption, and signing off without finding them is how models break quietly."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Pruning zeros the weights that contribute almost nothing, and 'almost' is the word this lesson teaches you to measure."
+  explanation: "Magnitude pruning zeros the smallest weights. Their effect on predictions must be measured; a small weight is not necessarily unimportant."
   bridge:
     jsTitle: "Tree-Shaking"
     jsCode: "// Webpack removes unused exports → smaller bundle"
     mlTitle: "Pruning"
     mlCode: "// Zero near-zero weights → same file, smaller download"
     tier: structural
-    breaks: "Tree-shaking deletes code, so the bundle really does get smaller and the output is byte-identical. Magnitude pruning deletes nothing. A TensorFlow.js weights manifest stores dense arrays with no sparse or index encoding, so the file keeps every slot and the zeros are written at full width; what changes is how well the file compresses. The output moves too, because the zeroed weights were contributing a little."
+    breaks: "Tree-shaking removes unused code while aiming to preserve behavior. Magnitude pruning changes numerical parameters and may change predictions. Dense weight storage keeps the zeroed slots; compression can reduce transfer size without reducing tensor shapes."
 consequence:
   narrative: "Pruning zeros 60% of weights and holds accuracy at 91.8%, which is the whole 2.4 points this module spends. The 85 MB quantized bundle stays 85 MB; what drops is the download, to 42 MB gzipped. Demir's 80% experiment costs three hours."
 hints:
@@ -108,7 +108,7 @@ console.log(dot(pruned).toFixed(3));    // 1.000
 // 90% pruned: 71.2% accuracy, model is broken`}
 </CodeBlock>
 
-0.994 against 1.000. A tree-shaken bundle would print the same number both times; that is what "provably unreachable" buys, and it is the exact clause the console just struck from Demir's sign-off. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. Pruning zeros weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight moves the output a little. The craft is in measuring how much all those littles add up to, which is what the sparsity ladder at the bottom of the block does at model scale. The rule the block runs is magnitude pruning, the unstructured kind: order the weights by absolute value, zero the smallest, and leave every shape exactly as it was.
+0.994 against 1.000. A tree-shaken bundle would print the same number both times; that is what "provably unreachable" buys, and it is the exact clause the console just struck from Demir's sign-off. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. The small change on this probe does not bound the change on other inputs. A small weight can multiply a large activation, and several removals can interact. Measure the effect on representative data, as the sparsity ladder below does at model scale. The rule the block runs is magnitude pruning, the unstructured kind: order the weights by absolute value, zero the smallest, and leave every shape exactly as it was.
 
 Two things change when that rule runs on a model instead of on an array. The ranking covers every kernel in the model at once rather than one layer at a time, so a layer whose weights are all small can lose most of them while a layer carrying larger ones keeps nearly all of its own. And the biases sit out of it. A dense layer holds one bias per unit against hundreds of kernel weights, so keeping them costs almost nothing, and zeroing one shifts everything that unit says instead of trimming a single connection.
 
@@ -182,6 +182,20 @@ Singular Value Decomposition makes it precise. Any matrix factors as `W = U · �
 Why this works at all is the fact pruning exploits from a different angle: trained weight matrices concentrate their useful transformation in far fewer directions than their shape advertises. Magnitude pruning removes the smallest coordinates; SVD removes the smallest directions, which is more directly aligned with the transformation the matrix performs, though the two bets pay off on different matrices. That alignment is part of why low-rank factorization (LoRA and friends) became the default way to fine-tune large models on small hardware.
 </DerivationDrawer>
 
+## Weight Size Is Not Importance
+
+A weight's effect also depends on the activation it multiplies and the rest of the network. For example, a ReLU unit and its outgoing weight can be rescaled together without changing the function:
+
+<CodeBlock language="javascript" title="weight-rescaling.js">
+{`const relu = (x) => Math.max(0, x);
+const originalOutput = (x) => 2 * relu(x);
+const rescaledOutput = (x) => 2000 * relu(0.001 * x);
+// Same output for every x, despite a much smaller incoming weight.
+// Removing that 0.001 weight would remove the entire unit's contribution.`}
+</CodeBlock>
+
+Small magnitude is a practical ranking rule, not proof that a connection is dispensable. The rare-class failures above justify measuring each class; they do not show where rare patterns must be stored.
+
 ## Challenge
 
 Prune the classifier at each sparsity level you are handed, where a level of zero has to leave the model untouched, and report what each one costs, one class at a time.
@@ -190,16 +204,16 @@ Prune the classifier at each sparsity level you are handed, where a level of zer
 
 <RecallPrompt question="You zero 60% of a model's weights with magnitude pruning and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?" answer="Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. The zeros do make the bytes highly repetitive, so the win arrives after compression: DEEP SCAN's 85 MB uint8 file gzips to 70 MB unpruned and 42 MB at 60% sparsity. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller." />
 
-<RecallPrompt question="Why does aggressive pruning hurt rare-class accuracy more than common-class accuracy?" answer="Near-zero weights often encode the model's memory of infrequent patterns. Common classes reinforce many weights during training; rare classes leave only a few small-magnitude weights. Pruning by magnitude removes those small weights first, erasing the rare-class signal while the common classes barely move." />
+<RecallPrompt question="Pruning hurt the rare class in this experiment. Does that prove rare patterns are stored in small weights?" answer="No. The experiment shows a loss of rare-class performance under this pruning rule. It does not identify a universal storage mechanism. Weight magnitude is a proxy for importance; measure per-class errors and compare predictions before and after pruning." />
 
 <LessonRecap
   whatYouLearned={[
     "Magnitude-based pruning zeros out the smallest-absolute-value weights first, and sparsity gives a cliff rather than a slope. Which cliff you see depends on what you score. The rare class falls off between 60 and 80 percent, where the aggregate gives up two tenths of a point. The aggregate's own cliff comes a level later, between 80 and 90.",
-    "Rare and anomalous classes are disproportionately harmed by aggressive pruning because their learned signal concentrates in low-magnitude weights.",
+    "Pruning can harm classes unequally. Inspect per-class results; aggregate accuracy can hide a large loss on a rare class.",
     "Quantization is what shrinks a TensorFlow.js weight file: 340 MB to 85 MB. Magnitude pruning leaves that file exactly as large, because it changes no shapes and the weights manifest has no sparse encoding, so every zero is stored at full width. The 60% zeros pay on the wire instead. gzip takes the 85 MB file to 42 MB served, against 70 MB unpruned. The two passes together cost 2.4 accuracy points (94.2% to 91.8%), and the pruning pass is where all 2.4 came from.",
     "A compression pass does not have to cover every layer: quantize flags take weight-name patterns, and a pruning pass takes whatever weight list you hand it. When the accuracy number comes from one small classifier, exempting that classifier from both passes is a real option, so part of a measured cost reflects what you chose to include."
   ]}
-  bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning zeros the weights that contribute least. The analogy breaks twice: pruned weights were still contributing a little, and the file keeps every slot they sat in, so what you gain is a smaller download rather than a smaller model."
+  bridge="Tree-shaking aims to preserve behavior while removing unused code. Magnitude pruning changes weights and can change predictions; dense storage keeps zeroed slots unless another format removes them."
   youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and say which of the two compression passes changes the file and which changes only the download."
 />
 

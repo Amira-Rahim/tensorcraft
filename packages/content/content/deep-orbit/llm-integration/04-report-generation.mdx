@@ -21,7 +21,7 @@ concept:
     mlTitle: "Report Generation"
     mlCode: "const report = await llm.generate({ sections, signalData, format })"
     tier: structural
-    breaks: "Template rendering substitutes known values into known slots; the schema is enforced. Generated reports invent facts, omit caveats, and flatten uncertainty into confident prose. Human review is required for any report shown to a user, regardless of model quality."
+    breaks: "A template places supplied values into chosen slots; its data and schema still need validation. A generated report can introduce unsupported statements. This course keeps generated prose pending review and uses validated measured fields for automated alerts."
 consequence:
   narrative: "One section fails its own validator with twenty-two minutes left before the window."
 hints:
@@ -43,7 +43,7 @@ skillAxes: [deployment, js_integration]
 Six sections, one prompt, one draft: eleven hundred words back in twenty seconds, and the Methodology section cites an instrument this ship does not carry. I'm not reading the other five to find out what else it invented. We generate them one at a time, each with its own data and its own check.
 </Dialogue>
 
-Generating a full report in one shot is the monolithic-component mistake: mediocre output and nothing you can verify in isolation. Sections are components: each gets its own data, its own prompt, and its own review.
+Smaller sections let a reviewer check one claim set against its evidence before moving on. Each section gets its own data and prompt. The assembled report still needs a consistency check across sections.
 
 <LearningObjectives objectives={["Structure report generation as section-by-section assembly rather than monolithic generation", "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships", "Cut a section that fails its check, and record the gap instead of shipping the guess", "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing"]} />
 
@@ -79,7 +79,8 @@ Generating a full report in one shot is the monolithic-component mistake: medioc
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="report-pipeline.ts">
-{`import { verifyClaims } from './verify-claims';  // the checker from lesson 3
+{`// reviewSection is supplied by the application: it shows the draft and
+// evidence to a reviewer and waits for an explicit decision.
 
 interface ReportSection {
   heading: string;
@@ -92,6 +93,7 @@ interface ReportSection {
 async function generateReport(
   sections: ReportSection[],
   llm: LLMClient,
+  reviewSection: (input: { heading: string; draft: string; evidence: string }) => Promise<boolean>,
 ): Promise<ReportSection[]> {
   for (const section of sections) {
     const prompt = \`## Task
@@ -111,17 +113,13 @@ Write the "\${section.heading}" section of a scientific signal analysis report.
 
     const content = await llm.complete(prompt, { temperature: 0.2 });
     section.generated = content;
-    // This is where section.validated comes from: lesson 3's checker, run over
-    // the numbers in THIS section's own data. Strip the thousands separators
-    // on both sides first. Leave them in and the scan reads "12,001" as 12 and 001.
-    // The evidence set then reads 12, 1, 11, 847, 153, 1. Neither total the
-    // report stated survives that split, and three of the numbers standing in
-    // for them (12, 11 and 847) were never in the report at all. A section
-    // claiming 847 anomalies would validate. One quoting the real 12001
-    // would not.
-    const plain = (text: string) => text.replace(/(\\d),(?=\\d)/g, '$1');
-    const rows = [(plain(section.data).match(/-?\\d+(\\.\\d+)?/g) ?? []).map(parseFloat)];
-    section.validated = verifyClaims(plain(content), rows).fabricated.length === 0;
+    // Lesson 3's structured checks can assist review. They cannot approve
+    // free prose, whose claims may have no corresponding numeric field.
+    section.validated = await reviewSection({
+      heading: section.heading,
+      draft: content,
+      evidence: section.data,
+    });
   }
 
   return sections;
@@ -142,15 +140,15 @@ const reportSections: ReportSection[] = [
   // ... additional sections
 ];
 
-const marked = await generateReport(reportSections, llm);
+const marked = await generateReport(reportSections, llm, reviewSection);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
-The pipeline passes `temperature: 0.2` on every section call. Temperature divides the scores before the last softmax, the one that picks the next token, so a low value sharpens that distribution toward the likeliest token and the same prompt returns close to the same draft twice. A sharpened distribution is a more repeatable one, not a more truthful one: at temperature zero the model takes its likeliest token every time, and an instrument it invented once is the likeliest token again on the next run. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. What catches a claim like that is the validation line under the generate call. Temperature has no part in it.
+The pipeline passes `temperature: 0.2` on every section call. Temperature divides the scores before the last softmax, the one that picks the next token, so a low value sharpens that distribution toward the likeliest token and the same prompt returns close to the same draft twice. A sharpened distribution is a more repeatable one, not a more truthful one: greedy token selection can still invent an instrument, and serving details can prevent exact repeatability. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. The review step checks claims against the evidence. A number scan alone would miss an invented instrument or a false causal explanation.
 
 ## Challenge
 
-The model has written the sections and the validator has marked each one. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld. The challenge hands each section over as `{ heading, content, validated }`, so what this pipeline stored in `generated` arrives there under the name `content`.
+The model has written the sections and a reviewer has marked each one. The boolean records that decision; it is not evidence that a numeric matcher proved the prose true. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld. The challenge hands each section over as `{ heading, content, validated }`, so what this pipeline stored in `generated` arrives there under the name `content`.
 
 <Exercise slug="generate-report" />
 
@@ -159,7 +157,7 @@ The model has written the sections and the validator has marked each one. Assemb
 <LessonRecap
   whatYouLearned={[
     "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
-    "Low temperature (0.1-0.3) buys repeatable output rather than truthful output: at temperature zero the model invents just as confidently, word for word on every run. Validating each section against its own data is what catches a fabricated claim.",
+    "Low temperature reduces sampling variation; it does not establish truth. Review numerical claims, interpretations, and omissions against each section's evidence.",
     "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
   ]}
   bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."
@@ -168,12 +166,12 @@ The model has written the sections and the validator has marked each one. Assemb
 
 <Epilogue>
 
-The transmission window opens at 0410. At 0348 the validator flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. Regenerating takes fifteen minutes; reviewing the regeneration takes more than the twenty-two they have. Farah doesn't take the fifteen. She cuts the section whole, and the report leaves at 0411, one minute into the window, five sections instead of six. Somewhere in the cut section one hypothesis might even be right; the next two relay windows will come and go before anyone could find out which.
+The transmission window opens at 0410. At 0348 the reviewer flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. Regenerating takes fifteen minutes; reviewing the regeneration takes more than the twenty-two they have. Farah doesn't take the fifteen. She cuts the section whole, and the report leaves at 0411, one minute into the window, five sections instead of six. Somewhere in the cut section one hypothesis might even be right; the next two relay windows will come and go before anyone could find out which.
 
 <Dialogue speaker="Dr. Farah">
 Earth gets our data and our uncertainty. A guess wearing the report's letterhead is neither, and the call to cut it was never going to be delegated to the thing that wrote the guess.
 </Dialogue>
 
-Nazari rules a line under the ledger once the transmission closes. Nine fabricated claims caught, ninety-one minutes of the six hours spent catching them, against the two hours she set. The tool stays. Beside the last entry, the one the validator raised at 0348, she writes the cost in the other column: one section.
+Nazari rules a line under the ledger once the transmission closes. Nine fabricated claims caught, ninety-one minutes of the six hours spent catching them, against the two hours she set. The tool stays. Beside the last entry, the one the reviewer raised at 0348, she writes the cost in the other column: one section.
 
 </Epilogue>

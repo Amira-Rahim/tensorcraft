@@ -21,7 +21,7 @@ concept:
     mlTitle: "Tensor"
     mlCode: "const t = tf.tensor([1, 2, 3])"
     tier: structural
-    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not: you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
+    breaks: "Float32Array provides iterable flat numeric storage. A tensor adds shape and backend operations, with its own disposal lifecycle. Read its values with await tensor.data(), dataSync(), or the array equivalents before ordinary JavaScript iteration."
 consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
@@ -138,7 +138,7 @@ Now it's your turn. Create your first tensor from a JavaScript array.
     "A tensor's data lives on the backend, outside JavaScript. You cannot iterate it directly; call await t.array() or dataSync() to pull the values back across.",
     "The JavaScript GC cannot see GPU memory: dispose() tensors you keep explicitly, and use tf.tidy() for everything intermediate. tf.memory().numTensors is your leak detector."
   ]}
-  bridge="Just as a `Float32Array` holds numbers in flat contiguous memory, a `tf.tensor` wraps that same layout with shape metadata, GPU dispatch, and a manual disposal contract."
+  bridge="Float32Array provides flat numeric storage. A tensor adds shape, numerical backend operations, and an explicit disposal lifecycle."
   youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and release their GPU memory with dispose() instead of waiting for a collector that cannot see it."
 />
 

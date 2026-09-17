@@ -10,19 +10,19 @@ scene:
 estimatedMinutes: 13
 difficulty: advanced
 context:
-  narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder: a network that learns to compress and reconstruct normal signals. High reconstruction error means the signal is unlike anything the model has learned."
+  narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder: a network that learns to compress and reconstruct normal signals. High reconstruction error is a reason to investigate, not proof that a signal is new."
   speaker: "Dr. Farah"
 concept:
-  explanation: "An autoencoder learns to compress and rebuild normal data, so anything it can't rebuild cleanly falls outside normal by definition."
+  explanation: "An autoencoder learns to compress and rebuild its training data. Reconstruction error can help flag unusual inputs, but it can also miss anomalies or flag normal inputs."
   bridge:
     jsTitle: "Compression"
     jsCode: "compressed = gzip(data); restored = gunzip(compressed)"
     mlTitle: "Autoencoder"
     mlCode: "encoded = encoder(signal); decoded = decoder(encoded)"
     tier: structural
-    breaks: "Compression algorithms (gzip) decode losslessly back to the input. Autoencoders are lossy and reconstruct only what they learned to reconstruct well; inputs unlike training data come back distorted, which is the entire point of using them for anomaly detection."
+    breaks: "Gzip is lossless: decompression restores the encoded bytes. An autoencoder usually approximates its input. Reconstruction error can flag unusual patterns, but an anomaly may reconstruct well and a normal input may reconstruct poorly."
 consequence:
-  narrative: "Normal signals come back clean. The anomalous signal comes back at 1.4x baseline, close enough to walk straight past any threshold. The leak is in the training set, not the model."
+  narrative: "Normal signals come back clean. The anomalous signal comes back at 1.4x baseline, below the cutoff used in this run. The leak is in the training set, not the model."
 hints:
   - level: nudge
     content: "Two jobs, and only one of them is the network: squeeze the input through a narrow bottleneck and rebuild it, and decide first which archive rows the model is allowed to learn from"
@@ -43,9 +43,11 @@ skillAxes: [model_arch, evaluation]
 The z-score gate cleared a reading this morning that I flagged by eye an hour later. Amplitude normal, frequency normal, phase normal, and the three have never once occurred together in eleven days of archive. A threshold reads one dial at a time. Whatever replaces it has to learn what normal looks like across every dial at once.
 </Dialogue>
 
-Think of gzip: it finds repeated patterns in your data and exploits them to compress. Decompress and you get the original back byte for byte, and if the stream is not what the decompressor expects, it throws rather than guess. An autoencoder takes the same bet on patterns and settles it the other way: it learns what "normal" looks like and rebuilds anything you hand it, so "abnormal" comes back mangled instead of refused. The bottleneck is what makes that bet honest. Four numbers cannot store eleven arbitrary values, so the only way through the squeeze is to learn the regularities normal readings share and rebuild from those. A reading that follows the regularities survives the trip; one that breaks them comes out as the nearest normal-looking thing, and the gap between the two is the signal.
+Gzip reconstructs the original bytes exactly. An autoencoder learns a compressed representation and tries to rebuild the input from it. A narrow bottleneck encourages it to use regularities in the training examples. We measure the difference between input and reconstruction as an anomaly score.
 
-<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side", "Recognize that high reconstruction error indicates anomalous input"]} />
+That score is a heuristic, a rule we must test on data. The bottleneck does not guarantee that unfamiliar inputs reconstruct badly. Normal inputs can also reconstruct poorly if the model has not learned their variation. Evaluate both misses and false alarms before using the score to wake anyone.
+
+<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
 
 ## Encoder → Bottleneck → Decoder
 
@@ -91,7 +93,7 @@ Those eleven numbers describe one extraction window, not a whole archive capture
 
 // KEY INSIGHT: train ONLY on normal signals
 // The autoencoder learns to compress and reconstruct normal patterns
-// It has never seen anomalies, so it cannot reconstruct them
+// Some anomalies may still reconstruct well; test for those misses
 
 // normalSignals: shape [1000, 11]: 1000 normal signal readings. A reduced
 // demo slice: the epoch lines below are its numbers, not the ship's own fit
@@ -145,23 +147,23 @@ Screen the archive against the flag log, then train the autoencoder on what surv
 <Exercise slug="build-autoencoder" />
 
 <RecallPrompt
-  question="Why does an autoencoder trained only on normal data produce high reconstruction error for anomalous inputs?"
-  answer="The encoder compresses inputs into a compact bottleneck representation by learning patterns present in normal data. Because it has never seen anomalous patterns, it cannot encode them accurately, and the decoder reconstructs something that reflects normal structure instead. The mismatch between the original anomalous input and the reconstruction is what produces high error."
+  question="Can an autoencoder trained only on normal data reconstruct an anomaly well?"
+  answer="Yes. Its learned mapping may also reconstruct unfamiliar inputs. A high error is an investigation signal, and a low error does not prove normality. Evaluate the score on held-out normal examples and known anomalies, then inspect the misses."
 />
 
 <LessonRecap
   whatYouLearned={[
     "An autoencoder has two parts: an encoder that compresses input through a bottleneck, and a decoder that rebuilds the original from that compressed form.",
-    "Training exclusively on normal data teaches the model the structure of normality; it learns nothing about anomalies. Leave the anomalous rows in and the same code produces a detector that rebuilds them as readily as the calm ones.",
-    "Anomalous inputs cannot be accurately encoded or decoded, so they produce high reconstruction error, which becomes the anomaly signal."
+    "Screen training data for contamination. Training on anomalies can teach the model to reconstruct patterns you wanted it to flag.",
+    "Reconstruction error is an empirical anomaly score. Anomalies can have low error, and normal inputs can have high error."
   ]}
-  bridge="Like `gzip` exploiting repeated patterns to compress and restore data losslessly, an autoencoder compresses by learning patterns in normal data; but unlike gzip, it is lossy: inputs unlike anything it was trained on come back distorted, and that distortion is the detection mechanism."
+  bridge="Both gzip and an autoencoder compress data. Gzip restores exact bytes; an autoencoder learns an approximate reconstruction whose error can be tested as an anomaly score."
   youCanNow="Build an autoencoder with a bottleneck, screen a training set and fit the model on it, and produce the pair of detectors that shows what a contaminated training set costs."
 />
 
 <Epilogue>
 
-First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but that log only holds what ARIA's rules tripped on, so rows carrying the 73.4 Hz component stayed in the training set. The model learned the component like everything else it was shown, and now rebuilds the anomalous signal at 1.4x baseline, close enough to walk straight past any threshold. Farah finds the leak with an FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
+First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but that log only holds what ARIA's rules tripped on, so rows carrying the 73.4 Hz component stayed in the training set. The model learned the component like everything else it was shown, and now rebuilds the anomalous signal at 1.4x baseline, below the cutoff used in this run. Farah finds the leak with an FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
 
 Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows out of 28,800, and an order to screen every training row on the 73.4 Hz bin itself instead of trusting the flag log.
 

@@ -10,7 +10,7 @@ context:
   narrative: "Samir arrives at The Grid (a converted warehouse district) to join the Nova Collective for the Global Biennale exhibition."
   speaker: "Yara"
 concept:
-  explanation: "Generative AI creates new data that resembles training data, rather than classifying or labeling existing data. It learns the underlying distribution and samples from it."
+  explanation: "Generative AI creates new data that resembles training data, rather than classifying or labeling existing data. It approximates a data distribution and samples from that approximation."
   bridge:
     jsTitle: "Math.random()"
     jsCode: "const color = `hsl(${Math.random() * 360}, 70%, 50%)`"
@@ -18,7 +18,7 @@ concept:
     mlCode: "const sample = model.predict(tf.randomNormal([1, 100]))"
     tier: intuition
 consequence:
-  narrative: "Samir sees the difference: not sorting art into categories, but conjuring entirely new pieces from learned patterns."
+  narrative: "Samir sees the difference: generating candidate images from learned patterns, then checking them for quality and copying."
 hints:
   - level: nudge
     content: "Compare model.predict(tf.randomNormal([1, 100])) with classifier.predict(imageData): one consumes noise and emits new data, the other consumes existing data and emits a label"
@@ -42,20 +42,20 @@ In the browser, on hardware we don't control. The venue has 40 kiosk machines: m
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Before Yara retrained me, I answered one question per image: landscape or not, a single number out. Now I emit 784 pixels nobody has seen before. Same layers. The only thing she changed was my loss function.
+Before Yara rebuilt me, I answered one question per image: landscape or not. Now I take 100 random values and emit 784 pixel values. She changed my input, my output layer, and my training objective. Whether the picture is original still needs checking.
 </Dialogue>
 
-Every interface Samir has ever shipped consumed data that already existed: API responses rendered, lists sorted, search results filtered. The thing humming in MUSE's training logs runs in the opposite direction. It emits data that has never existed, 784 pixels at a time, and the only architectural difference is the loss function.
+Samir knows how to generate a particle field with JavaScript. He chooses the rules himself. MUSE instead learns patterns from example images and uses them to produce candidates. The output has 784 values because each image is a 28 by 28 grayscale grid.
 
 <LearningObjectives objectives={["Understand the difference between generative and discriminative models", "Identify the input and output of a generative model", "Set up TensorFlow.js for generative experiments"]} />
 
 ## Discriminative vs. Generative
 
-Every ML model you have heard about falls into one of two camps. A **discriminative** model takes input and produces a label: "Is this image a cat or a dog?" A **generative** model takes noise and produces new data: "Here is an image that looks like a cat."
+For this lesson, compare two tasks. A **discriminative** classifier estimates a label from an input image. A **generative** image model produces samples from a learned distribution. Our generator starts with noise. Other generators also use a prompt, earlier tokens, or another input; not every ML method fits this two-task comparison.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You already use controlled randomness in JavaScript. Every time you call `Math.random()` to pick a procedural color, jitter a retry delay, or seed a test fixture, you are doing the conceptual equivalent of what a generative model does: producing something new from a source of randomness. The difference is that a generative model has *learned* what "good" output looks like.
+You already use controlled randomness in JavaScript. Every time you call `Math.random()` to pick a procedural color, jitter a retry delay, or seed a test fixture, you are doing the conceptual equivalent of what a generative model does: producing something new from a source of randomness. The generator learns statistical patterns from examples. Those patterns can include mistakes, bias, and repeated images; the training objective does not define artistic quality.
 
 <CodeBlock language="typescript" title="generative-vs-discriminative.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -83,9 +83,28 @@ function generateParticle() {
 // LEARNED the distribution of "good particles" from data`}
 </CodeBlock>
 
+## Input and output contracts
+
+Changing a loss function changes the training objective. It does not change the number of output values a layer produces. These untrained models demonstrate the two shapes; neither produces useful predictions yet.
+
+<CodeBlock language="typescript" title="model-shapes.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const classifier = tf.sequential();
+classifier.add(tf.layers.dense({ inputShape: [784], units: 1, activation: 'sigmoid' }));
+
+const generator = tf.sequential();
+generator.add(tf.layers.dense({ inputShape: [100], units: 64, activation: 'relu' }));
+generator.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+
+// Batch dimension first; 784 pixels can be reshaped to 28 by 28.
+console.log(classifier.outputShape); // [null, 1]
+console.log(generator.outputShape);  // [null, 784]`}
+</CodeBlock>
+
 ## The Core Idea
 
-A generative model learns a probability distribution from training data. Once trained, you sample from that distribution to create new instances. The model does not memorize and replay. It captures the *structure* and *statistics* of the data, then produces novel outputs that share those properties.
+A generative model learns a probability distribution from training data. Once trained, you sample from that distribution to create new instances. It aims to capture patterns that generalize beyond those examples. It can also memorize them and produce close copies. New random input does not guarantee an original output. [Carlini and colleagues demonstrated training-image extraction from diffusion models](https://arxiv.org/abs/2301.13188).
 
 <CodeBlock language="typescript" title="simple-generation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -101,7 +120,7 @@ const std = variance.sqrt();
 // Generate new samples that look like the training data
 const newSamples = tf.randomNormal([10]).mul(std).add(mean);
 console.log(await newSamples.array());
-// Values clustered around 2.0: new data, same distribution`}
+// Values near the fitted mean, sampled from our normal approximation`}
 </CodeBlock>
 
 ## Challenge
@@ -109,21 +128,22 @@ console.log(await newSamples.array());
 <Exercise slug="generative-vs-discriminative" />
 
 <DerivationDrawer summary="Discriminative vs generative: model what?">
-**Discriminative model:** learns p(label | data). Cheap, accurate for classification. Examples: logistic regression, BERT for classification, CNN classifier.
+**Discriminative classifier:** models p(label | data). Examples include logistic regression and a neural network trained to classify images.
 
-**Generative model:** learns p(data) or p(data | label). Expensive but enables generation, anomaly detection, semi-supervised learning. Examples: VAE, GAN, diffusion, autoregressive language models.
+**Generative model:** models a data distribution, possibly conditioned on a label or prompt. Some models expose a likelihood; others generate samples without directly evaluating it. Examples include VAEs, GANs, diffusion models, and autoregressive language models.
 
 **Bayes connection:**
 
 `p(label | data) = p(data | label) · p(label) / p(data)`
 
-A full generative model (p(data | label) + p(label)) lets you compute both directions. Discriminative models skip this and learn p(label | data) directly: cheaper, more accurate when you only need classification.
+If you can evaluate p(data | label) and p(label), Bayes' rule gives p(label | data). A discriminative classifier models the latter directly. Cost and accuracy depend on the task, data, and implementation.
 
 **When generative is the right tool:**
 - You need new samples (image generation, music, text)
-- You have unlabeled data (self-supervised pretraining)
-- You need uncertainty calibration (anomaly detection: low p(data) = anomaly)
-- You need to handle missing data (impute by conditional sampling)
+- You want to model data without class labels
+- You want candidate values for missing data, with uncertainty checked against held-out examples
+
+Low likelihood can be one anomaly score, but it is not a guarantee that an input is anomalous or that uncertainty is calibrated.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Generative models create new data; discriminative models classify existing data", "Generation starts from randomness and shapes it into structured output", "The simplest generative model is learned statistics: sample tf.randomNormal, multiply by the data's std, add the mean", "TensorFlow.js lets you build generative models that run in the browser"]} />
+<KeyTakeaways takeaways={["Generative models produce samples; discriminative classifiers estimate labels from inputs", "Our generator starts from noise, but generated output can copy training examples", "The simplest generative model is learned statistics: sample tf.randomNormal, multiply by the data's std, add the mean", "TensorFlow.js lets you build generative models that run in the browser"]} />

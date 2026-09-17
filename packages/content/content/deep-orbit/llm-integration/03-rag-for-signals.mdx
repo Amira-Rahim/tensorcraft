@@ -23,7 +23,7 @@ concept:
     mlTitle: "RAG Pipeline"
     mlCode: "const context = await db.search(query); const answer = await llm.complete(prompt + context);"
     tier: structural
-    breaks: "Server Components render server-side and ship deterministic HTML. RAG retrieves passages then conditions an LLM on them; the answer is generated, not extracted. Models routinely contradict the retrieved passages while citing them. Confidence in RAG output requires verifying the answer matches the cited chunks, not just trusting the citation exists."
+    breaks: "Server Components run on the server and can still render misleading data. RAG adds generated text conditioned on retrieved material. A model can contradict a passage while citing it. Check the claim against the identified source, field, and scope rather than trusting the presence of a citation."
 consequence:
   narrative: "The pipeline retrieves fourteen Band-7 rows and the model reports seventeen, so the audit hour buys a checker."
 hints:
@@ -73,9 +73,9 @@ The LLM has no knowledge of our specific signals. If I ask about Band-7 anomalie
 That's Server Components! Fetch data on the server, then render with it. RAG fetches data from the signal database, then generates a response with it.
 </Dialogue>
 
-Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: a component can't contradict its props. A generator can.
+Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: component code can mislabel data too, but you can inspect how it maps each field to the output. Generated wording has no such fixed mapping; it needs its own evidence checks.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any", "Ground LLM responses in retrieved rows, then check every claim against those rows, since grounding narrows fabrication without preventing it", "Name what this retrieval really is, keyword-and-metadata matching over structured rows, and the point where a corpus without fields forces embedding search instead"]} />
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"]} />
 
 ## The RAG Pipeline
 
@@ -116,92 +116,88 @@ interface Retrieval {
 // fields you can match on. What production RAG reaches for when the corpus
 // has no fields is the paragraph right under this block.
 
-// Step 2: AUGMENT: inject retrieved data into prompt
-function buildRAGPrompt(query: string, signals: Signal[]): string {
-  const signalContext = signals.map(s =>
-    \`[\${s.timestamp}] Band \${s.band}: \${s.classification} (conf=\${s.confidence}, amp=\${s.amplitude}, freq=\${s.frequency}Hz, anomalyScore=\${s.anomalyScore})\`
-  ).join('\\n');
-
-  return \`You are DEEP SCAN's analysis assistant. Answer based ONLY on the provided signal data.
-If the data doesn't contain the answer, say "insufficient data."
-
-## Retrieved Signal Data
-\${signalContext}
-
-## Question
-\${query}
-
-## Instructions
-- Cite each signal by copying its bracketed timestamp from the rows above
-- Every number you write has to be one of the readings in those rows: a confidence, an amplitude, a frequency or an anomaly score. Do not add them up, average them, or count them
-- Write a band name in words rather than digits: Band seven, not Band-7
-- Say plainly when the rows do not answer the question\`;
+// Step 2: AUGMENT. Keep record IDs and field names with the values.
+// One retrieved signal contributes one event, so sums count cited signals.
+function evidenceRows(signals: Signal[]) {
+  return signals.map((s) => ({ id: s.id, eventCount: 1, frequencyHz: s.frequency }));
 }
 
-// Step 3: GENERATE, then check what came back. An answer can lie twice, so it
-// gets checked twice: once for citing a row nobody retrieved, once for writing
-// a number no row holds. verifyClaims is the second challenge below.
-const CITATION = /\\[([^\\]]+)\\]/g;
-const readingsOf = (s: Signal) => [s.confidence, s.amplitude, s.frequency, s.anomalyScore];
+function buildRAGPrompt(query: string, signals: Signal[]): string {
+  return JSON.stringify({
+    question: query,
+    evidence: evidenceRows(signals),
+    task: 'Return a JSON array of claims. Each has a unique id, kind, rowIds, field, value and unit.',
+    rules: [
+      'kind reading: cite one row and copy its named field.',
+      'kind sum: add eventCount from distinct cited rows only.',
+      'Use events for eventCount and Hz for frequencyHz.',
+      'Do not infer causes or safety. Return [] if there is no supported answer.',
+    ],
+  });
+}
 
+// Step 3: GENERATE, parse, and check. The prompt is a request, not a guarantee.
+// verifyClaims is the second challenge below. It checks allowed fields,
+// units, sources, operations and numeric tolerances.
 async function querySignals(query: string, db: Signal[], llm: LLMClient) {
   const { rows, matched, truncated } = retrieveSignals(query, db, Date.now());
-  if (truncated) {
-    // The operator's log, not the prompt. A count written into the prompt is
-    // a number the model can repeat, and the checker below admits only
-    // numbers that appear in the retrieved rows.
-    console.warn(\`Context capped: \${rows.length} of \${matched} matching rows.\`);
+  const raw = await llm.complete(buildRAGPrompt(query, rows));
+  const claims = JSON.parse(raw);
+  if (!Array.isArray(claims) || claims.some((c) =>
+    c === null || typeof c !== 'object' || typeof c.id !== 'string'
+  ) || new Set(claims.map((c) => c.id)).size !== claims.length) {
+    throw new Error('Expected claims with unique string IDs');
   }
-  const answer = await llm.complete(buildRAGPrompt(query, rows));
-
-  // Citations first, because verifyClaims compares numbers and a regex reading
-  // 2149-05-28T04:12:09Z finds six of them, none of them a reading. Check each
-  // bracket against the timestamps that were actually retrieved, then score
-  // what is left of the sentence.
-  const retrieved = new Set(rows.map((s) => s.timestamp));
-  const cited = [...answer.matchAll(CITATION)].map((m) => m[1]);
-  const unsourced = cited.filter((stamp) => !retrieved.has(stamp));
-  const { fabricated } = verifyClaims(answer.replace(CITATION, ''), rows.map(readingsOf));
-
-  return { answer, unsourced, fabricated };
+  // The checker treats missing or unsupported claim fields as unverified.
+  const checked = verifyClaims(claims, evidenceRows(rows));
+  return { claims, ...checked, matched, truncated };
 }
 
-// Usage:
-const { answer, unsourced, fabricated } = await querySignals(
-  "Show me all anomalous signals in Band-7 from the last 72 hours",
-  signalDatabase,
-  llm,
+// The caller must handle malformed output or an unavailable model.
+// Render checked fields directly; do not attach an unchecked prose answer.
+const result = await querySignals(
+  'Show anomalous signals in Band-7 from the last 72 hours', signalDatabase, llm,
 );
-if (unsourced.length > 0 || fabricated.length > 0) {
-  // Nothing ships. Either the answer cited a row nobody retrieved, or it wrote
-  // a number that is in no retrieved row.
-}`}
+for (const claim of result.claims) {
+  if (result.verified.includes(claim.id)) {
+    console.log(claim.field, claim.value, claim.unit, claim.rowIds);
+  }
+}
+console.log('Matching signals:', result.matched, 'Context truncated:', result.truncated);
+// A sum describes its cited rows only, not every match or the whole archive.
+// An empty verified list supplies no checked numerical answer.`}
 </CodeBlock>
 
-That retrieval is a keyword-and-metadata match, and it works only because every row has fields. A corpus of prose has none, and that is where production RAG stops looking like a database query. Each document goes through a model that turns it into an embedding, an array of a few hundred floats positioned so that documents about similar things land near each other, and the question goes through the same model to get an array of its own. Retrieval is then a nearest-neighbor lookup over those arrays, scored by cosine similarity, which measures how closely two of them point the same way and ignores how long they are. A keyword index answers which rows contain this word. An embedding index answers which rows mean something like this. The machinery changes and the contract does not: retrieve, ground, verify.
+Metadata filters work here because signals have named fields. For prose, keyword search can still retrieve relevant passages. Embedding search is another option: a model maps documents and queries to vectors, and retrieval compares those vectors, often with cosine similarity. Some systems combine both. Relevant-looking passages can still omit the evidence needed to answer a question.
 
-Three of those four instructions exist to keep the answer inside what the checker can admit. The checker compares numbers, and the only numbers it admits are the readings in the retrieved rows. The band and the timestamp are labels rather than readings, so the checker admits neither, and each one is kept out of the answer's way by a different mechanism. The timestamp gets a fix in code: the citation strip runs before the number check, because a bracketed timestamp has a shape we control and can lift out of the sentence. The band gets no strip, since a band name is whatever the catalogue calls it. What stands in for one is the prompt line asking for band names in words, because a sentence quoting Band-7 reaches the checker as a claim of -7, and that answer is held even when every reading in it is right. A sum, an average or a count is a number the model worked out rather than read, so the checker calls it fabricated unless it happens to land within the tolerance of some reading. When the report needs a count of matching rows, `matched` already holds it and JavaScript can print it exactly. Ask the model for that count instead and you have bought a number somebody now has to verify.
+## Check Meaning, Not Just Digits
 
+Suppose a record says 14 events at 73.4 Hz. A number scan accepts “73.4 events at 14 Hz” because both values exist. It also finds nothing to object to in “the signal is safe,” which contains no numbers. Neither answer has been verified.
+
+The second challenge uses structured claims instead. Each names its source rows, field, value, and unit. A reading must match one cited field; an event-count sum must equal the sum of its distinct cited rows. Unsupported operations and qualitative interpretations stay unverified. The checker permits only the operations described in its contract.
+
+This still has limits. Retrieved records may be wrong, a cap may omit important records, and a model may leave a relevant claim out. A checked structured value cannot approve a separate paragraph. Render the verified fields with their labels and citations, or have a reviewer check the complete prose against the evidence.
 ## Challenge
 
 Retrieval runs first. Build the step that decides which rows reach the model, and have it report how many matched before the cap trimmed the list.
 
 <Exercise slug="retrieve-signals" />
 
-Now the half that reads what comes back: the checker that holds every number in a generated answer against the rows it was supposed to come from.
+Now check the structured claims against their cited records, including the field, unit, and any allowed calculation.
 
 <Exercise slug="rag-pipeline" />
 
-<RecallPrompt question="Why does a RAG pipeline still require you to verify the generated answer against retrieved records?" answer="A generator conditions on retrieved passages but can contradict them while still citing them. The citation exists but the number or claim may not match the source. Verification is two checks: every citation has to name a row that was actually retrieved, and every quantitative claim has to appear in those rows within tolerance. Confirming that a citation is present proves neither." />
+<RecallPrompt question="A generated answer contains only numbers found in retrieved records. Has it been verified?" answer="No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it." />
 
 <LessonRecap
   whatYouLearned={[
-    "RAG follows a retrieve-then-generate contract: query your data store for relevant records, inject them into the prompt, then generate a response grounded in those records rather than the model's memory.",
-    "The filters narrow the candidate set and a hard cap of 20 rows keeps the prompt inside the token limit. Nothing is ranked, so the 21st matching row is dropped for being late rather than for being irrelevant. Count the survivors before the cap, or nobody downstream can tell a complete context from a trimmed one.",
-    "Generated answers can contradict the retrieved passages they cite, so check both halves before trusting one: that each citation names a row that was actually retrieved, and that every number in the answer appears in those rows. Ask the model only for numbers it can copy out of them, since a total or an average it works out for itself traces to nothing."
+    "RAG retrieves evidence before generation. The answer can still misrepresent that evidence or omit important facts.",
+    "Report how many records matched and whether the context was truncated. A total over cited rows is not automatically a total over all matches.",
+    "Verify a structured claim's source, field, unit, and calculation. Matching a number anywhere in the evidence is insufficient.",
+    "Render verified fields with their labels and citations. Free-text interpretations still need review, and checked values do not establish that the source data is correct."
   ]}
-  bridge="RAG mirrors the Server Component pattern (`async function Page() { const data = await db.query(...); return <View data={data} />; }`); data access happens before rendering. The key difference: a component cannot contradict its props, but a generator can contradict its context."
-  youCanNow="Build a retrieval step that caps what the prompt carries and reports what the cap dropped, then check every number in the generated answer against those same rows."
+  bridge="RAG and Server Components both fetch data before producing output. Component code maps fields explicitly; generated wording can misrepresent its context and needs evidence checks."
+  youCanNow="Build capped retrieval that reports omissions, then check structured numerical claims against the exact records and fields they cite."
 />
 
 > **DISPATCH archive · field intercept #17-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "the model that confabulates is the one that retrieved nothing and didn't say so." Different domain, identical failure mode.
@@ -214,6 +210,6 @@ Three hours to the window. Demir demos the pipeline on the bridge: data in, rend
 Fourteen. I logged them myself. Your pipeline retrieved fourteen and reported seventeen with citations, which means I now audit every answer it has produced today. That's an hour, Ensign, out of three.
 </Dialogue>
 
-Demir spends the audit hour writing a checker that compares every number in an answer against the retrieved rows; it catches two more before the report is even drafted. One of the two sits in a summary Nazari signed off by hand this morning. She initials the correction without comment. The checker does not care whose signature is on the page. Nazari asks him to run it back over everything the pipeline has produced this week.
+Demir spends the audit hour making the generator name a record and field for each numerical claim; the new checker catches two more mismatches before the report is drafted. One of the two sits in a summary Nazari signed off by hand this morning. She initials the correction without comment. Nazari asks him to run it back over the week's reports, then opens the first paragraph to review the claims no field can settle.
 
 </Epilogue>

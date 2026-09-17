@@ -2,7 +2,12 @@
 
 Sets the bar every artifact must meet. Derived from exemplar templates already shipped (Tensors as Linear Algebra, Feature Vectors, Loss bridge, apply-convolution exercise).
 
-**No artifact ships below P0. P1 violations queue for next pass. P2 are stylistic, batch later.**
+**Known consequential teaching errors block release of the affected material.**
+Do not average them away or defer them solely because a category scored well.
+The [content quality plan](content-quality-plan.md) defines the current 9/10
+target and the independent evidence needed to claim it. Severity labels in
+individual audits describe those audits; a factual error is not stylistic
+because an older rubric used the same label for style.
 
 ## Lesson rubric (8 criteria)
 
@@ -14,7 +19,7 @@ Sets the bar every artifact must meet. Derived from exemplar templates already s
 | L4 | Bridge honesty | `BridgeCallout` tier matches reality. Identity = literally same. Structural = same shape. Intuition = same mental model. | `useState ↔ model parameters` claimed identity. |
 | L5 | Breaks specificity | When breaks present, names a concrete failure mode in <30 words | "They differ in implementation" |
 | L6 | Pacing | Concept → code → derivation, OR derivation → code (NOT code → derivation that contradicts the code) | Code at L60 contradicted by math at L150 |
-| L7 | Dialogue economy | <3 dialogue blocks per lesson. Each adds insight, not mood. | Opens with 5 dialogue blocks before teaching |
+| L7 | Dialogue purpose | Dialogue advances understanding, a decision, character, or stakes; pacing fits the scene and story bible | Repeated analogy-and-correction exchanges that add no new understanding or consequence |
 | L8 | Quiz / drawer quality | Quiz has plausible distractors (not "X" "Y" "Z" "right answer"). Drawer math is correct + motivated. | Identity check ("what is rank?" → "rank") |
 
 ## Exercise rubric (9 criteria)
@@ -72,11 +77,12 @@ Reject anywhere these appear:
 - Listicle bullets that just rephrase the prose above
 - Conclusion paragraphs that summarize what was just said in 3 paragraphs ("So, to recap, we covered...")
 - Filler praise ("Great question!", "This is a fascinating topic")
-- Em-dash overuse (>2 per paragraph)
+- Any literal em dash, prohibited repo-wide by `CLAUDE.md`
 
 ## Approval gates
 
 For every artifact:
 - **All P0 must pass** before counted as quality.
-- **<10% P1 violations per category** to ship.
+- **No unresolved consequential misconception, misleading guarantee, or materially incorrect accepted solution.** Review the lesson, hints, recap, and exercise together.
 - **No AI-slop markers.**
+- **Human readability review is required.** Passing a vocabulary test does not establish clarity, voice, or comprehension. The binding [writing rubric](writing-quality-rubric.md) governs prose.

@@ -20,7 +20,7 @@ concept:
     mlTitle: "Layer Composition"
     mlCode: "model.add(tf.layers.dense({ units: 64 }))"
     tier: structural
-    breaks: "Middleware passes one shared request object down the chain, mutating it in place, and any handler may skip the rest or answer outright. A sequential model is a straight pipe. Every layer returns a new tensor whose shape the next layer's weights already expect, and no stage opts out. During training the data moves both ways: activations forward, gradients backward. Middleware does get a return trip: code after next() runs once the downstream handlers finish. What that trip carries is the same request object, not gradients that rewrite the stage's own weights."
+    breaks: "Middleware can mutate shared state, stop a request, or schedule later work. A Sequential model connects layers with compatible tensor shapes. Training differentiates the numerical computation to update parameters. Middleware control flow does not supply that gradient calculation."
 consequence:
   narrative: "Nazari reads the parameter quote twice: 673. Nothing is trained, so the stack knows nothing yet. What the count buys is room for patterns a single neuron could never hold."
 hints:
@@ -121,7 +121,20 @@ console.log(Array.from((staged.predict(xs) as tf.Tensor).dataSync()));
 
 A hundred runs of the flat model, three hundred of the staged one. The one-unit version answered 0.50 on every point, every run, to within a hundredth, which is as close as a single straight line gets. The staged version got all four right, within 0.0003, on 295 of its 300 runs, on 62 more parameters; the other five answered 0.5 on two of the points, which is the failure the next paragraph is about.
 
-An 8-unit stage would be cheaper and it is not enough: in a hundred runs of it, eight came back answering 0.5 on two of the four points, which is the flat model's answer, because too many of its eight relu units died during training. Dead units on their own are not the exception. 98 of those hundred runs ended with at least one, and 92 of the hundred got all four points right anyway: a working 8-unit run carries 3 dead units at the median, and the 16-unit stage above carries 6 dead of its 16 at the median and still missed only five times in 300 runs. What decides a run is how many units die against the width of the stage.
+An 8-unit stage also represented the task successfully: 92 of the hundred recorded runs got all four cases right. The eight failed runs show an optimization problem, not insufficient capacity. Inactive ReLU units can contribute to that failure; the number of units alone does not determine whether training finds a solution.
+
+Here is a smaller construction you can check without training. ReLU is `Math.max(0, x)`. Two such units, followed by a sum, already represent XOR on binary inputs:
+
+<CodeBlock language="javascript" title="xor-capacity.js">
+{`const relu = (x) => Math.max(0, x);
+const xor = (a, b) => relu(a - b) + relu(b - a);
+const cases = [[0, 0], [0, 1], [1, 0], [1, 1]];
+const outputs = cases.map(([a, b]) => xor(a, b)); // [0, 1, 1, 0]
+// For a sigmoid output, sigmoid(20 * (xor(a, b) - 0.5)) gives
+// the same classes at threshold 0.5. These weights are chosen by hand.`}
+</CodeBlock>
+
+Representing a function and learning its weights are different questions. This construction answers the first. The training runs above investigate the second.
 
 No reading this ship extracts needs a boundary that shape yet; module 5 widens a reading to eleven features, and stages are what read combinations of them.
 
@@ -143,7 +156,7 @@ Build a three-stage stack, then quote its price at a width the grader picks.
     "units sets the number of neurons in a layer, which is how many values it outputs; inputShape is only required on the first layer, and subsequent shapes are inferred automatically.",
     "model.summary() prints every layer's output shape and parameter count. Each unit charges for itself in parameters, so quote the count before you grow the stack."
   ]}
-  bridge="A middleware chain (`app.use(parseBody); app.use(authenticate)`) maps directly to layer composition in TFJS (`model.add(tf.layers.dense({...}))`): each stage transforms what it receives and passes the result to the next."
+  bridge="Middleware and sequential layers compose stages. A neural layer has tensor shape and gradient requirements that an ordinary request handler does not."
   youCanNow="Design and build a multi-layer sequential neural network, configuring layer sizes, activations, and input shape, and quote its parameter count at any input width before you build it."
 />
 

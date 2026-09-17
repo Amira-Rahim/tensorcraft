@@ -34,6 +34,13 @@ function fitStats(rows) {
 
 const { mean, std } = fitStats(batch);
 
+function scaleFeatures(rows, offset, scale) {
+  return tf.tidy(() => {
+    const divisor = tf.where(scale.equal(0), tf.onesLike(scale), scale);
+    return rows.sub(offset).div(divisor);
+  });
+}
+
 const normalized = batch.sub(mean).div(std);
 
 const previewModel = tf.sequential();

@@ -20,7 +20,7 @@ concept:
     mlTitle: "Backpropagation"
     mlCode: "// Gradient flows from loss → output → hidden → input"
     tier: intuition
-    breaks: "A stack trace names one path, stops at the first catch, and tells you where the failure surfaced rather than how much each frame contributed to it. The backward pass stops nowhere: it touches every weight on every run and hands each one a number, how far the loss moves if that weight moves. Nothing is thrown and nothing is caught."
+    breaks: "Exception propagation transfers control through handlers. Backpropagation applies the chain rule through differentiable operations to compute requested gradients. Frozen or disconnected parameters need not be updated, and a connected parameter can still have zero gradient."
 consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
 hints:
@@ -157,7 +157,7 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
     "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which is what keeps the product from collapsing."
   ]}
-  bridge="A throw deep in a call chain travels back the way the calls came, frame by frame, and the stack trace records the path. Backpropagation runs those same two directions: forward from input to output for the loss, backward from output to input for every gradient."
+  bridge="Exceptions transfer control through handlers. Backpropagation instead applies the chain rule through a computation graph to calculate requested parameter gradients."
   youCanNow="Use `tf.variableGrads()` to compute gradients for a multi-layer network in a single backward pass and read the gradient shapes for each variable."
 />
 

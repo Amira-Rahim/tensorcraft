@@ -114,9 +114,9 @@ rubric wins.
    em dashes. Use a comma, colon, semicolon, period, or parentheses
    instead. Same for decorative `//` prefixes on UI labels: dead. Real
    code comments keep their `//` marker; only the text gets repunctuated.
-   Two deliberate exceptions survive: the quiz-option sanitizer regex in
-   `packages/ui/src/mdx/quiz.tsx` and the `&mdash;`-decoding example in
-   signal-ward's text-cleaning lesson (both are behavior, not prose).
+   The repo-wide rule in `CLAUDE.md` permits no literal-character exceptions.
+   Code that detects or decodes the character must spell it as `\u2014`
+   or an entity string; it must not contain the literal character.
 7. **No tidy bows.** A lesson body may NOT end on a summary sentence that
    re-states the takeaways. Takeaways component does that job.
 

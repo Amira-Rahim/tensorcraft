@@ -41,7 +41,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Feed the anomalous signal through. The autoencoder was trained on normal data. If this signal is truly anomalous, the reconstruction will be poor, like trying to compress an image format the codec has never seen.
+Feed the signal through. We trained on screened normal data, but that does not guarantee a miss on this pattern. Measure the error before you call it an anomaly.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
@@ -93,8 +93,26 @@ console.log('Normal, max error:', Math.max(...normalScores).toFixed(6));  // ~0.
 // Anomalous signal: high reconstruction error
 const anomalyScores = computeAnomalyScores(autoencoder, anomalousData);
 console.log('Anomaly, error:', anomalyScores[0].toFixed(6));  // ~6.2
-// 12x the normal maximum: this is clearly anomalous`}
+// About 12x this normal test set's maximum: investigate this reading`}
 </CodeBlock>
+
+## A Detector Can Miss
+
+Consider an encoder that keeps only the first coordinate and a decoder that puts zero back in the second. Even if normal training inputs had their first coordinate between -1 and 1, this mapping also reconstructs a distant input exactly.
+
+<CodeBlock language="javascript" title="reconstruction-counterexample.js">
+{`const encode = ([x, y]) => x;
+const decode = (x) => [x, 0];
+const mse = (input) => {
+  const rebuilt = decode(encode(input));
+  return input.reduce((sum, value, i) => sum + (value - rebuilt[i]) ** 2, 0) / input.length;
+};
+const distantAnomalyError = mse([1000, 0]); // 0: missed despite its distance
+const ordinaryNoisyError = mse([0, 0.2]);  // 0.02: an ordinary sensor variation
+// A cutoff of 0.01 misses the anomaly and flags the ordinary variation.`}
+</CodeBlock>
+
+This is a constructed mapping, not a trained benchmark. It disproves the guarantee that an unseen input must reconstruct badly. The incident exercise below asks you to inspect a detector that missed a confirmed anomaly.
 
 ## Feature-Level Error Analysis
 
@@ -179,16 +197,16 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 
 <RecallPrompt
   question="MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
-  answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means the sample does not fit the learned normal patterns. It does not tell you which feature, dimension, or channel caused the deviation. Identifying the source requires computing per-feature squared error separately and inspecting which dimensions contribute most."
+  answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means this model reconstructed it poorly, which may indicate an anomaly or a model failure. It does not tell you which feature, dimension, or channel caused the deviation. Identifying the source requires computing per-feature squared error separately and inspecting which dimensions contribute most."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Reconstruction error is computed as the MSE between an input and the autoencoder's reconstruction of it; one scalar per sample serves as the anomaly score.",
-    "Normal samples cluster at low error; anomalous samples stand out at 10-100x the normal baseline because the model cannot faithfully reproduce patterns it was never trained on.",
+    "Error distributions depend on the model and data. This fixture separates the shown examples; low error still does not rule out an anomaly.",
     "Diagnosing which part of a signal is anomalous requires per-feature error analysis; the aggregate MSE collapses all dimensions into a single number that shows magnitude but not location."
   ]}
-  bridge="Like `git diff` showing that something changed from baseline, reconstruction error (`error = MSE(original, autoencoder.predict(original))`) flags deviation from learned normal patterns; but unlike a diff, it gives one distance scalar rather than naming the exact lines that changed."
+  bridge="git diff reports edits; reconstruction error measures a numerical gap between an input and its reconstruction. A high gap alone does not identify its cause."
   youCanNow="Compute per-sample reconstruction error as an anomaly score and run feature-level error analysis to identify which signal dimensions drive the deviation."
 />
 

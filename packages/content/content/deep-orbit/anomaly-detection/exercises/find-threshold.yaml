@@ -1,7 +1,19 @@
 slug: find-threshold
 lessonSlug: threshold-tuning
 title: "Sweep Candidate Thresholds for the Best F1"
-instructions: "Given parallel arrays of reconstruction errors and ground-truth boolean labels (true = anomaly) from the validation slice, score every candidate threshold and return `{ threshold, f1 }`: the candidate with the highest F1 on that slice, and the F1 it scored. A reading counts as flagged when its error is strictly above the candidate, not when it equals it: readings sit exactly on a candidate in every fixture here, and in two of them `>=` picks a different winner. Accuracy is not the target and one of the tests will catch you if you use it, because anomalies are rare enough that a cutoff which flags nothing looks accurate and catches nothing. The sweep never reads the test slice; the winning cutoff is scored there once, afterwards."
+instructions: |
+  Given equally sized arrays of finite reconstruction errors and boolean labels
+  (true = anomaly), choose from a non-empty array of candidate thresholds.
+  Return `{ threshold, f1 }` for a candidate with the highest F1 on this
+  validation slice. Any maximizing candidate is acceptable when scores tie.
+  If no candidate has a positive F1, return one of the supplied candidates
+  with an F1 of zero.
+
+  A reading is flagged only when its error is strictly greater than the
+  threshold. Use zero for F1 when no true positive is found. Optimize F1 for
+  this exercise, not accuracy, recall alone, or the sum of FP and FN. Those
+  are different objectives, even when both error types cost the same.
+  The final test slice stays out of this sweep.
 starterCode: |
   function findBestThreshold(
     errors: number[],
@@ -18,7 +30,7 @@ solutionCode: |
     labels: boolean[],
     candidates: number[],
   ): { threshold: number; f1: number } {
-    let best = { threshold: 0, f1: 0 };
+    let best = { threshold: candidates[0], f1: 0 };
 
     for (const t of candidates) {
       let tp = 0, fp = 0, fn = 0;
@@ -126,13 +138,27 @@ testCode: |
       const why =
         'The low cutoff here catches every anomaly and five normal readings ' +
         'with them; the high one catches three of the four and raises no ' +
-        'false alarm. F1 counts a false alarm and a missed anomaly the same ' +
-        'way, so it picks the high cutoff. A sweep that comes back with 0.5 ' +
+        'false alarm. Their F1 scores are 0.615 and 0.857. A sweep returning 0.5 ' +
         'and an f1 of 0.615 ranked by something that weights recall above ' +
         'precision, which is a cost decision lesson 4 asks you to make out ' +
         'loud rather than hide under the name f1.';
       expect(r.threshold, why).toBeCloseTo(2, 5);
       expect(r.f1, why).toBeCloseTo(0.857, 3);
+    });
+    it('can prefer more equally costly mistakes because F1 is a different objective', () => {
+      const scores = [...Array(8).fill(0.9), ...Array(7).fill(0.6), ...Array(5).fill(0.1), ...Array(10).fill(0.6), ...Array(70).fill(0.1)];
+      const labels = scores.map((_, i) => i < 20);
+      const result = findBestThreshold(scores, labels, [0.8, 0.5]);
+      expect(result, 'Return the highest-F1 candidate.').toBeDefined();
+      expect(result.threshold, '0.8 makes 12 mistakes, but 0.5 has the higher F1 despite 15 mistakes.').toBeCloseTo(0.5, 6);
+      expect(result.f1).toBeCloseTo(2 / 3, 6);
+    });
+    it('returns a supplied candidate when every F1 is zero', () => {
+      const candidates = [2, 3];
+      const result = findBestThreshold([0.1, 0.2], [true, false], candidates);
+      expect(result, 'A zero score still needs a candidate from the supplied list.').toBeDefined();
+      expect(candidates.includes(result.threshold)).toBe(true);
+      expect(result.f1).toBe(0);
     });
   });
 estimatedMinutes: 12

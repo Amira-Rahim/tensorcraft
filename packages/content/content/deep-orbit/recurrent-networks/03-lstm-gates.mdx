@@ -22,7 +22,7 @@ concept:
     mlTitle: "LSTM Forget Gate"
     mlCode: "forgetGate = sigmoid(W_f * [hidden, input] + b_f) // learn what to discard"
     tier: structural
-    breaks: "localStorage TTL is a hard expiry: value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state: partial forgetting, learned per-input, with no fixed timeout."
+    breaks: "localStorage has no built-in expiry; application code can implement a TTL and remove an entry. An LSTM forget gate scales each cell-state dimension with a learned value between zero and one. It does not implement a clock-based expiration policy."
 consequence:
   narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Nothing carries between windows; the gates learned the shape once."
 hints:
@@ -221,7 +221,7 @@ Then build a one-unit `tf.layers.lstm` and cut its four gates out of the packed 
     "GRUs carry three weight sets where the LSTM carries four: update, reset and candidate against forget, input, output and candidate. That is exactly 25% fewer parameters for the same units, and which of the two scores better on a given series is something you measure rather than look up.",
     "The flatline this lesson opens on is lesson 2's: a binary loss pinned at 0.693, which is ln 2, the score of a coin flip. On long sequences with a simple RNN, vanishing gradients are the first suspect."
   ]}
-  bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and previous hidden state and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context instead of a timer."
+  bridge="Application code can add a TTL to localStorage. An LSTM gate instead learns a per-dimension keep ratio from the current input and hidden state."
   youCanNow="Build a one-unit `tf.layers.lstm`, cut its four gates out of the kernels the library packs them into, and run the forget, input and output gates by hand closely enough to reproduce the layer's own output."
 />
 

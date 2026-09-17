@@ -20,7 +20,7 @@ concept:
     mlTitle: "Spectrogram"
     mlCode: "// Time on x-axis, frequency on y-axis, magnitude as color"
     tier: intuition
-    breaks: "DevTools waterfall shows discrete network events on a timeline. Spectrograms are continuous heatmaps of frequency over time computed via overlapping windowed FFTs; every pixel carries energy, not an event marker."
+    breaks: "A waterfall draws events on a timeline. A spectrogram displays discrete windowed frequency measurements as colored cells. Depending on the convention, color represents magnitude or power. Window length, overlap, and scale affect what the plot reveals."
 consequence:
   narrative: "Bursts, not a constant tone. The anomalous frequency pulses, and the gap between pulses measures roughly 73.4 seconds."
 hints:
@@ -218,7 +218,7 @@ Build the STFT itself: slide a window across a capture, transform each window on
     "Window size trades the two resolutions against each other: larger windows give finer frequency resolution but coarser time resolution; smaller windows give finer time resolution but coarser frequency resolution.",
     "To track how a signal's frequency content changes over time, a spectrogram is necessary because a single FFT shows only which frequencies exist somewhere in the signal; it cannot say when they appear."
   ]}
-  bridge="A spectrogram shares the layout of a DevTools performance waterfall: time on the x-axis, frequency (or event type) on the y-axis, and intensity (or duration) as color. The difference is that every pixel in the spectrogram carries computed energy, while the waterfall marks discrete events."
+  bridge="A waterfall places events on a timeline. A spectrogram places frequency measurements over time, using color for magnitude or power rather than event duration."
   youCanNow="Implement an STFT by sliding a window across a signal and stacking FFTs, then read the resulting spectrogram to identify when a specific frequency is active."
 />
 

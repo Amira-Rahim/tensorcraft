@@ -7,22 +7,22 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Day 9 of the pilot. Imran watches the monitoring dashboard. MEDI processes clinical notes in real time: tokenizing, embedding, classifying, checking interactions. Then the alert fires. 'Drug interaction detected: methotrexate and trimethoprim. Severity: high. Confidence: 0.91.' Dr. Karimi reviews the case. The patient has rheumatoid arthritis, is on weekly methotrexate, and was just prescribed trimethoprim for a urinary tract infection. She checks the drug reference. 'It is a real interaction; trimethoprim can increase methotrexate toxicity. But in this case, the methotrexate dose is low and the trimethoprim course is short. I would prescribe it with monitoring.' She marks it: confirmed interaction, clinical override with monitoring. 'Better a false alarm than a missed one.'"
+  narrative: "Day 9 of the fictional pilot. Diagnostic One flags a methotrexate-trimethoprim interaction. Dr. Karimi and the pharmacist review the source record and send the proposed order back for a prescribing decision. The team records whether extraction, alert routing, and review each worked."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Deploying Diagnostic One to production is the same as deploying any web application: build, ship, monitor, and have a rollback plan. The model is a static asset in the bundle. The monitoring dashboard is an observability layer. The rollback plan is a feature flag."
+  explanation: "Clinical ML reuses web deployment tools, but infrastructure checks do not establish clinical performance. Version the model and preprocessing together, monitor confirmed errors and missed alerts, and define how humans review affected records after an incident."
   bridge:
     jsTitle: "Production Deployment"
     jsCode: "// npm run build && deploy --monitor --rollback-on-error"
     mlTitle: "Clinical Deployment"
-    mlCode: "// npm run build && deploy --monitor --rollback-on-error // same command, model is a static asset"
+    mlCode: "// Version model + preprocessing; track review outcomes"
     tier: structural
-    breaks: "The deploy command is identical; the recovery semantics are not. Web app rollback restores the prior bundle and the next request renders correctly. Model rollback restores the prior weights but if the new model already wrote predictions to the EHR, those records persist. ML rollback in clinical settings requires both weight rollback AND a forward-correction process for predictions issued during the bad window."
+    breaks: "Both web and model rollback restore selected artifacts; neither reverses database writes or earlier decisions automatically. Clinical incidents also require review and correction of affected records, with responsibility assigned to qualified staff."
 consequence:
-  narrative: "Day 30. Diagnostic One has processed 2,847 clinical notes. 12 confirmed drug interactions caught. 3 false positives investigated and dismissed. Zero missed interactions in the validation set. Dr. Karimi presents the pilot results to the hospital board. 'Diagnostic One is not replacing clinicians. It reads every chart, including the ones we are too tired to read twice. The flag on Day 9, methotrexate and trimethoprim, was a real interaction. I overrode it because the dose was low and the course was short, and I documented why. That is the system doing its job: it flags, we decide.' Imran closes her laptop. Eleven modules ago this was a regex over a clinical note. Now it is a model with a rollback plan, and a clinician who knows when to overrule it."
+  narrative: "Day 30. The team reports 2,847 processed notes, 12 confirmed interaction alerts, and 3 dismissed alerts. Karimi asks for the reviewed denominator and a sample of unflagged notes. Without those, the report cannot estimate missed interactions. Imran adds both to the next pilot review."
 hints:
   - level: nudge
-    content: "The model is a static asset; deploy it the same way you deploy images and fonts"
+    content: "Model files can use ordinary asset delivery. Pair them with the correct preprocessing and separately verify clinical performance."
   - level: guidance
     content: "Set up health checks, monitoring dashboards, and feature flags for safe rollback"
   - level: solution
@@ -37,16 +37,16 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-Build is green. Tests pass. Model card approved. FHIR adapter validated. Monitoring dashboard live. Feature flag set to 10% rollout. I've deployed hundreds of web apps. This one just happens to include a trained NLP model.
+Build is green. Tests pass. Model card approved. FHIR adapter validated. Monitoring dashboard live. Feature flag set to 10% rollout. I've deployed hundreds of web apps. Those checks cover delivery. The clinical evaluation is a separate report.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-The model file is 28 MB, smaller than some hero images I've shipped. It's a static asset. It loads in the browser. The inference runs client-side. The deployment is identical to every Next.js app you've ever shipped.
+The model file is 28 MB, smaller than some hero images I've shipped. It's a static asset. It loads in the browser. The inference runs client-side. The asset delivery is familiar. We still need a way to find incorrect predictions after deployment.
 </Dialogue>
 
-Khalil is almost right. The TensorFlow.js model is a static asset: a JSON topology file and a binary weights file that ship in the build output next to your bundles and images. The pipeline, monitoring, and rollback plan are all standard web practice. Here is the part that isn't: rolling back the weights does not roll back the predictions the bad model already wrote into the EHR. A web rollback fixes the next request. A clinical rollback also needs a forward-correction pass over every prediction issued during the bad window.
+TensorFlow.js can load model topology and weight files through ordinary asset delivery. Pair those files with the preprocessing version they expect. A feature flag can stop new requests from reaching a model. It cannot undo earlier predictions, database writes, or clinical decisions. Ordinary web applications have the same side-effect problem; here, qualified staff must review affected clinical records.
 
-<LearningObjectives objectives={["Deploy Diagnostic One as a production web application with model assets", "Implement health checks and monitoring for a live clinical NLP system", "Set up feature flags for gradual rollout and instant rollback", "Handle the first real alert: the methotrexate-trimethoprim interaction"]} />
+<LearningObjectives objectives={["Deploy Diagnostic One as a production web application with model assets", "Implement health checks and monitoring for a live clinical NLP system", "Set up feature flags for gradual rollout and stopping new model requests", "Separate one reviewed alert from evidence of overall clinical performance"]} />
 
 ## Production Deployment
 
@@ -55,7 +55,7 @@ Khalil is almost right. The TensorFlow.js model is a static asset: a JSON topolo
 <CodeBlock language="typescript" title="deploy-diagnostic-one.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Deployment configuration, same as any web app deployment
+// Infrastructure thresholds are illustrative, not clinical acceptance criteria
 interface DeploymentConfig {
   modelPath: string;
   version: string;
@@ -100,7 +100,7 @@ class FeatureFlag {
     return hash < flag.percentage;
   }
 
-  // Instant rollback: flip the flag
+  // Stop new requests; this does not reverse prior side effects
   rollback(name: string): void {
     this.setFlag(name, false, 0);
     console.log(\`ROLLBACK: \${name} disabled\`);
@@ -153,6 +153,10 @@ class DiagnosticOneMonitor {
     if (!success) this.metrics.errorCount++;
     this.latencies.push(latencyMs);
     this.updateLatencyMetrics();
+  }
+
+  recordMemory(memoryMB: number): void {
+    this.metrics.memoryUsageMB = memoryMB;
   }
 
   recordAlert(isTrue: boolean): void {
@@ -214,7 +218,8 @@ class DiagnosticOneMonitor {
     const errorRate = this.metrics.errorCount / (this.metrics.totalPredictions || 1);
     return (
       errorRate > config.rollbackThreshold.errorRate ||
-      this.metrics.p95LatencyMs > config.rollbackThreshold.latencyP95
+      this.metrics.p95LatencyMs > config.rollbackThreshold.latencyP95 ||
+      this.metrics.memoryUsageMB > config.rollbackThreshold.memoryMB
     );
   }
 
@@ -224,31 +229,33 @@ class DiagnosticOneMonitor {
 }`}
 </CodeBlock>
 
-## The First Real Alert
+## One Alert and Its Limits
+
+The fictional system has found a known interaction. A model score cannot establish that a drug combination is safe. The [NHS Specialist Pharmacy Service](https://www.sps.nhs.uk/articles/managing-interactions-with-methotrexate/) warns against combining trimethoprim with methotrexate because of severe bone marrow suppression risk. This exercise concerns routing evidence for qualified review, not making a prescribing decision.
 
 <BossBeat
   beatId="signal-ward-launch-confidence-call"
-  prompt="Dr. Amara is on the phone. The model just flagged a methotrexate-trimethoprim interaction on a real patient chart with confidence 0.71. Threshold for clinical alert is 0.80. The clinician on duty is asking whether to surface it. The pharmacology textbook says: rare interaction, real risk. The model says: under-confident. Your call."
+  prompt="The extraction model scored a medication pair at 0.71, below its usual review threshold. A maintained interaction rule also matched the pair. The pilot protocol requires clinician review of rule matches. How do you route the case?"
   options={[
     {
       label: "cooperate",
-      display: "Hold the alert below threshold, log for post-launch review",
-      consequence: "The alert is suppressed. The clinician is unaware. Five days later, audit catches the interaction in a chart review: patient is fine, no harm done, but the case becomes the lead exhibit in a calibration retraining sprint. Cooperative play with the threshold contract; the threshold itself was wrong."
+      display: "Suppress the case because the model score is below threshold",
+      consequence: "The model threshold overrides a separate review requirement. The audit marks this as a routing failure; it does not establish that the patient was safe."
     },
     {
       label: "defect",
-      display: "Override the threshold; surface the alert anyway",
-      consequence: "Alert fires. Clinician reviews. Confirms the interaction is plausible, switches the prescription, documents the override. Patient outcome: fine. Audit later: 'operator override produced a positive intervention but bypassed contract.' Dr. Amara files the case as why the threshold was wrong. Defection paid; the next override is harder to justify."
+      display: "Mark the model prediction as certain and raise an alert",
+      consequence: "The case reaches review, but the record misstates the evidence. The team must correct the score and explain which rule triggered the alert."
     },
     {
       label: "random",
-      display: "Page the clinician for a manual call",
-      consequence: "Clinician makes the call without the alert structure. They surface the interaction. Same outcome as defect, but no audit trail of why your model didn't surface it. Mixed strategy at the clinical edge means you pushed the decision off your model and onto a human who didn't have your full evidence."
+      display: "Call the clinician and record the source, score, and rule match",
+      consequence: "The clinician receives the evidence through the escalation channel. Imran records the handoff so later reviewers can follow the decision. The call takes staff time."
     },
     {
       label: "dominant",
-      display: "Surface the alert with explicit 'low-confidence flag' tag",
-      consequence: "Alert fires with a banner: 'model confidence 0.71, below alert threshold; surfaced because pharmacology context suggests rare-but-serious interaction.' Clinician sees the calibration. Reviews. Switches the prescription, documents the override, and Dr. Amara now has a labeled training example for the next calibration pass. Dominant strategy = surface the signal with the metadata that lets the next recipient calibrate."
+      display: "Use the required review queue with the rule match and model score",
+      consequence: "The review queue receives both sources of evidence without upgrading the model's confidence. Staff review the case under the pilot protocol, and the team records the turnaround time."
     }
   ]}
 />
@@ -262,9 +269,8 @@ async function dayNine(): Promise<void> {
 
   // MEDI processes a clinical note
   const clinicalNote = {
-    text: 'Patient with rheumatoid arthritis on methotrexate 15mg weekly. ' +
-          'Presenting with urinary tract infection. ' +
-          'Plan: prescribe trimethoprim 200mg twice daily for 3 days.',
+    text: 'Fictional note: current medication methotrexate. ' +
+          'A proposed order mentions trimethoprim; send for clinical review.',
     metadata: {
       source: 'ehr' as const,
       patientId: 'PT-4471',
@@ -282,25 +288,22 @@ async function dayNine(): Promise<void> {
   console.log('  Drug 2: trimethoprim');
   console.log('  Severity: high');
   console.log(\`  Confidence: \${(result.confidence * 100).toFixed(1)}%\`);
-  console.log('  Evidence: Trimethoprim inhibits renal clearance of methotrexate,');
-  console.log('           potentially increasing methotrexate toxicity');
+  console.log('  Evidence: interaction record retrieved for clinician review');
   console.log(\`  Review tier: \${result.reviewStatus}\`);
   console.log('');
 
   // Dr. Karimi reviews
   console.log('--- Clinician Review ---');
   console.log('Reviewer: Dr. Karimi');
-  console.log('Decision: Confirmed interaction, clinical override with monitoring');
-  console.log('Reasoning: Low methotrexate dose (15mg weekly) and short trimethoprim');
-  console.log('           course (3 days), acceptable risk with monitoring');
+  console.log('Decision: interaction confirmed; prescribing decision referred');
+  console.log('to the responsible clinician and pharmacist under local policy');
   console.log('');
-  console.log('"Better a false alarm than a missed one."');
+  console.log('One confirmed alert does not measure how many were missed.');
   console.log('');
 
-  // The system learns from the feedback
+  // Record the review; this does not automatically retrain the model
   monitor.recordAlert(true); // It was a real interaction
-  console.log('Feedback recorded. Model will learn that this interaction is real');
-  console.log('but clinical context can make it acceptable.');
+  console.log('Feedback queued for reviewed evaluation and possible retraining.');
   console.log('');
   console.log('=== Diagnostic One: working as designed ===');
 }`}
@@ -312,7 +315,7 @@ Write a deployment verification function that checks model health, latency, and 
 
 <Exercise slug="deploy-diagnostic-one" />
 
-<KeyTakeaways takeaways={["Rollback triggers are explicit numbers: error rate above 5%, p95 latency above 500ms, or memory above 512MB flips the flag off", "Feature flags enable gradual rollout (10% to 50% to 100%) and instant rollback if something breaks", "The methotrexate-trimethoprim alert proved Diagnostic One works: it flagged a real interaction, the clinician reviewed it, and made an informed override", "The trained model ships as a 28 MB static asset; what makes the deploy clinical is the rollback plan and the clinician who can overrule the flag"]} />
+<KeyTakeaways takeaways={["Rollback triggers are explicit numbers: error rate above 5%, p95 latency above 500ms, or recorded memory above 512MB makes shouldRollback() return true. The caller must act on that result", "A feature flag stops new model requests; it does not undo earlier writes or clinical decisions", "One correct alert checks a case, not overall performance. Review unflagged cases to estimate misses", "Release decisions need clinical evaluation, human responsibility, and model/preprocessing version control"]} />
 
 <DispatchTease
   toWorldId="nova-canvas"

@@ -21,7 +21,7 @@ concept:
     mlTitle: "Training Loop"
     mlCode: "await model.fit(trainX, trainY, { epochs: 50 })"
     tier: structural
-    breaks: "One setImmediate turn costs microseconds and hands the event loop back between passes, so pending I/O still runs. fit() yields too, but not where you choose: tf.js releases the main thread on a timer, every 125 ms by default (the yieldEvery option, which ships set to 'auto'), and that release lands on whatever batch boundary the timer reaches next, so it falls anywhere inside an epoch and never inside a batch. The exit test differs more: your loop stops when a flag you set flips, and training stops when the validation loss stops improving, which is a judgment call rather than a boolean."
+    breaks: "Node's setImmediate schedules another event-loop turn; the callback's own work determines how long it blocks. model.fit performs batches and can yield according to yieldEvery. It stops at the epoch limit unless callbacks or other conditions stop it sooner; early stopping must be configured."
 consequence:
   narrative: "The loop now decides for itself when to stop, reading the validation curve instead of an epoch count Demir picked in advance."
 hints:
@@ -265,7 +265,7 @@ Replace the epoch guess with a callback that reads the held-out curve, on the hu
     "Training loss falling while validation loss rises is the signature of overfitting: the model is fitting its training rows rather than the pattern. A halt is not proof of it, since early stopping fires on any run that stops improving, plateau included.",
     "Mini-batches balance gradient quality against memory and compute: too large strains memory, too small introduces noise. Shuffling each epoch breaks ordering bias."
   ]}
-  bridge="A `setImmediate(loop)` chain runs because each callback queues the next one: do a pass, check, repeat. `model.fit()` runs the same shape over batches and epochs, with one addition a drain loop never needs: a rule for when to stop."
+  bridge="setImmediate and model.fit both support repeated work with stopping conditions. Configure the training epoch limit and any early-stopping callbacks explicitly."
   youCanNow="Replace a guessed epoch count with `tf.callbacks.earlyStopping`, read the training and validation curves together, and tell a plateau from overfitting before you call a run finished."
 />
 

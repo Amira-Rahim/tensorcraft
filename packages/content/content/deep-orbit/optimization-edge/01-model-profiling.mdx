@@ -22,7 +22,7 @@ concept:
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); const y = model.predict(x); await y.data(); const ms = performance.now() - t0;"
     tier: structural
-    breaks: "The performance.mark API is identical for both, and identical again in Node, where the same pair ships in `node:perf_hooks`. What moves is where the clock can stop. On a GPU backend `predict()` schedules the work and returns, so a clock closed at that line times how fast you can enqueue rather than how long the work took, and the readback has to sit inside the timed region. Past that, profiling a model means per-op latency, kernel launch overhead, memory bandwidth and tensor-disposal cost, none of which appear in a browser perf budget."
+    breaks: "Both use elapsed-time measurements, but asynchronous work needs an explicit completion boundary. On GPU backends, include tensor readback when timing end-to-end inference. Also inspect memory, operation costs, and disposal; browser applications can have those costs too."
 consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
@@ -250,7 +250,7 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
     "Layer breakdown pinpoints where the parameters concentrate, so optimization effort goes to the right place. It does not measure per-layer time; that needs a profiler that instruments each op.",
     "A warmup pass before timing removes JIT and compilation noise from measurements."
   ]}
-  bridge="Just as `performance.mark`/`performance.measure` locates slow code in a JS app, `performance.now()` around `model.predict()` locates the latency, the parameter count sizes the weights, and `tf.memory()` read on both sides of the loop shows whether the measurement leaked."
+  bridge="Use JavaScript timing APIs for inference too. Include output readback when measuring completion on a GPU, and track memory across repeated calls."
   youCanNow="Profile a TensorFlow.js model to measure its memory footprint, inference latency, and per-layer parameter distribution before making any optimization decisions."
 />
 

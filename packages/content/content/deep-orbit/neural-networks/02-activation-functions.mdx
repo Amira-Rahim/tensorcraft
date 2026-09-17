@@ -19,7 +19,7 @@ concept:
     mlTitle: "ReLU Activation"
     mlCode: "const activated = tf.relu(rawOutput)"
     tier: identity
-    breaks: "At inference these are literally the same arithmetic. Training is where they part: tf.relu applies elementwise across whole tensors and carries a gradient definition, and a neuron whose input stays negative stops learning entirely (the dying ReLU). Math.max has no story about any of that."
+    breaks: "At inference these are literally the same arithmetic. Training is where they part: tf.relu applies elementwise across whole tensors and carries a gradient definition, and the ReLU derivative is zero for a negative pre-activation. A unit that stays inactive across training examples can stop receiving useful gradient updates (the dying ReLU). Math.max has no story about any of that."
 consequence:
   narrative: "Every score now lands between 0 and 1 whatever the sum behind it, which is what Nazari's board wanted. The night shift ends with the neuron and ARIA disagreeing about one archived reading."
 hints:

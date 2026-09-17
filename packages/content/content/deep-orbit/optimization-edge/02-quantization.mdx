@@ -211,7 +211,7 @@ Quantize a model's kernels to uint8, load the decoded floats back onto it, and c
     "Quantization is applied at export time by the tensorflowjs_converter's --quantize_uint8/--quantize_uint16 flags; model.save() itself always writes float32. TFJS decodes the weights back to float32 at load, so what shrinks is the download, the disk cache, and the load-time memory peak. The resident weights and the inference speed do not change.",
     "The quantize flags take weight-name patterns, so a pass can cover some layers and skip others. A small high-stakes classifier can stay at float32 while the bulk of the weights go to uint8; for DEEP SCAN that would have cost under a megabyte of the 255 MB saved."
   ]}
-  bridge="Just as converting a PNG to WebP trades lossless fidelity for a smaller file, quantizing from `float32` to `uint8` trades weight precision for a 4x smaller file."
+  bridge="A lossy WebP can trade image fidelity for file size. Uint8 weight storage trades numerical precision for smaller payloads; measure prediction changes after loading."
   youCanNow="Quantize a TensorFlow.js model's kernels to uint8, load the decoded weights back onto the model, measure what the quantized build gets wrong, and run a pass that covers some of a model's tensors while leaving the rest at full precision."
 />
 

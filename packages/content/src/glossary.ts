@@ -737,14 +737,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "supervised learning",
     definition:
-      "Learning from examples that come with their labels attached: the model makes a prediction, the label says what the answer was, and the gap between the two is what training reduces. Every model in this course before module 7 learns this way; module 7's autoencoder takes its own input as the target instead.",
+      "Learning from examples with target labels. Training adjusts the model to reduce a loss that compares its predictions with those labels.",
     aliases: ["supervised"],
     scope: "global",
   },
   {
     term: "semi-supervised",
     definition:
-      "Training that needs no labels, plus one decision that does. An autoencoder learns from clean normal data alone, but choosing its error cutoff needs either a labeled slice to score candidates on or an assumed false-alarm rate.",
+      "Learning from a mixture of labeled and unlabeled training examples. Some anomaly-detection literature also uses this term for training on examples known to be normal; that narrower usage should be stated explicitly.",
     aliases: ["semi-supervised learning"],
     scope: "global",
   },

@@ -21,7 +21,7 @@ concept:
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
-    breaks: "A JS alert threshold is quoted in a quantity you already understand, so you can argue about the number before you see the data: a 5% error rate is five requests in a hundred. A reconstruction error of 0.4 means nothing outside the model that produced it. You can only place it by measuring the distribution of normal errors first, and every retrain moves that scale underneath the cutoff."
+    breaks: "Both thresholds need a purpose and observed data. An error rate has direct units; reconstruction error also depends on feature scaling, model, and loss reduction. Recheck the cutoff after changing any of them. A retrain can change the useful cutoff, but does not necessarily do so."
 consequence:
   narrative: "Demir does the volume arithmetic before he locks anything: one percent of calm readings is 26 flags a day on this archive. The cutoff goes to 1.0 instead, above every normal error in the calm slice, and the recall it costs goes in the log."
 hints:
@@ -30,7 +30,7 @@ hints:
   - level: guidance
     content: "Accuracy is the trap here. Anomalies are rare, so a cutoff that flags nothing scores well on accuracy and catches nothing, which is why the sweep is scored on F1 instead. F1 combines two rates that pull against each other: of the alarms you raised, how many were real, and of the real anomalies, how many you caught. Both come from counting hits, false alarms and misses at each candidate cutoff, so walk the candidates, score each one, and keep the winner. Watch the empty cases: a cutoff that raises no alarm divides zero by zero, and that is not a number until you make it one"
   - level: solution
-    content: "let best = { threshold: 0, f1: 0 }; for (const t of candidates) { let tp = 0, fp = 0, fn = 0; for (let i = 0; i < errors.length; i++) { const predicted = errors[i] > t; if (predicted && labels[i]) tp++; else if (predicted && !labels[i]) fp++; else if (!predicted && labels[i]) fn++; } const precision = tp / (tp + fp) || 0; const recall = tp / (tp + fn) || 0; const f1 = 2 * precision * recall / (precision + recall) || 0; if (f1 > best.f1) best = { threshold: t, f1 }; } return best;"
+    content: "let best = { threshold: candidates[0], f1: 0 }; for (const t of candidates) { let tp = 0, fp = 0, fn = 0; for (let i = 0; i < errors.length; i++) { const predicted = errors[i] > t; if (predicted && labels[i]) tp++; else if (predicted && !labels[i]) fp++; else if (!predicted && labels[i]) fn++; } const precision = tp / (tp + fp) || 0; const recall = tp / (tp + fn) || 0; const f1 = 2 * precision * recall / (precision + recall) || 0; if (f1 > best.f1) best = { threshold: t, f1 }; } return best;"
 keywords:
   - threshold
   - false-positive
@@ -50,7 +50,7 @@ But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Naz
 
 Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
 
-<LearningObjectives objectives={["Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the best balance point on the slice you swept", "Diagnose an alert storm against the known failure signatures before touching the cutoff"]} />
+<LearningObjectives objectives={["Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees", "Understand the precision-recall tradeoff and how threshold affects each", "Compare F1 maximization with an explicit false-alarm and miss cost", "Diagnose an alert storm against the known failure signatures before touching the cutoff"]} />
 
 ## Setting the Threshold
 
@@ -67,14 +67,14 @@ function percentile(values: number[], p: number): number {
 // Normal reconstruction errors from validation set
 const normalErrors = computeAnomalyScores(autoencoder, validationData);
 
-// 99th percentile: 1% of normal signals get flagged. That is a RATE,
-// not an alert count. This archive records one reading per 33-second
+// 99th percentile: about 1% flagged on this normal sample, allowing for ties.
+// Future rates can change. This archive records one reading per 33-second
 // window, so 1% of it is 26 flags a day.
 const threshold99 = percentile(normalErrors, 99);
 console.log('99th percentile threshold:', threshold99);  // ~0.48
 
 // Aggressive threshold: 95th percentile
-// 5% of normal signals flagged, but catches more subtle anomalies
+// About 5% flagged on this sample; the lower cutoff can catch more anomalies
 const threshold95 = percentile(normalErrors, 95);
 console.log('95th percentile threshold:', threshold95);  // ~0.31
 
@@ -83,7 +83,7 @@ function classifySignal(error: number, threshold: number): 'normal' | 'anomaly' 
 }`}
 </CodeBlock>
 
-A percentile fixes a false-alarm rate, and what reaches a human is that rate times the volume. The archive records one reading per 33-second window: 2,618 a day, 18,327 a week. A cutoff at the 99th percentile flags one percent of the calm ones, so 26 a day and 183 a week. The week Nazari is angry about had 14. The live dashboard reads faster still, one snapshot a second from module 4, where the same percentile is 864 flags a day.
+A percentile estimates a false-alarm rate on the sampled normal data, and what reaches a human is that rate times the volume. If that rate holds in deployment, expected flags are rate times volume. The archive records one reading per 33-second window: 2,618 a day, 18,327 a week. A cutoff at the 99th percentile flags one percent of the calm ones, so 26 a day and 183 a week. The week Nazari is angry about had 14. The live dashboard reads faster still, one snapshot a second from module 4, where the same percentile is 864 flags a day.
 
 Read it backwards and the cutoff she is asking for is not in this data. Two false alarms a week out of 18,327 readings is one in nine thousand, past the 99.98th percentile. The percentiles above come off 2,880 calm readings, and the highest error among them sits near the 99.97th. There is nothing above that to measure. A percentile is where you start reading the error distribution. The sweep below is where the cutoff gets chosen.
 
@@ -128,27 +128,48 @@ for (const t of thresholds) {
 // (three of the six rows shown; 0.3, 0.5 and 0.8 each score between
 // their neighbours, which is what makes 0.4 the single peak)
 
-// Lock the cutoff, then score it once on the held-out test slice. That
-// second number is the one the report carries, and it tends to land a
-// little under the validation number, because the validation score paid
-// for this choice. Here that is the F1 winner; the next section is why
-// this deployment does not stop at the F1 winner.
-const chosen = 0.4;
-const held = evaluate(testErrors, testLabels, chosen);
-console.log(\`t=\${chosen} held out: P=\${held.precision.toFixed(2)} R=\${held.recall.toFixed(2)} F1=\${held.f1.toFixed(2)}\`);`}
+// Do not read the test slice yet. Set the deployment objective and
+// choose the cutoff on validation data in the next section.`}
 </CodeBlock>
 
 One more slice to keep straight. The percentile above was read off calm rows, a tenth of the archive with nothing in it to score recall against. The sweep reads a labelled validation set built for the job: 2,880 rows in which anomalies are about one in twelve, five or six times their share of the archive, because a recall column needs enough of them to count. Module 3 named the cost of building a slice that way, and it applies here: a precision measured on it does not transfer to the live stream, which the next section works through. The sweep and the report read different slices on purpose as well. Six candidates scored on the validation slice are six decisions charged to it, and module 3's rule holds: the test slice stays out of reach until the cutoff is locked. Sweep on the test slice instead and the winning F1 is part measurement, part luck about which candidate suited those particular rows.
 
 ## When the Cost Asymmetry Moves the Cutoff
 
-The table above has one F1 peak, at t=0.4, and it is tempting to read that row as the answer. It is the answer only when a false alarm and a missed anomaly cost the same. They almost never do. Run the same curve through two deployments and watch the threshold move in opposite directions.
+The F1 peak at t=0.4 answers one question: which candidate maximizes F1 on this validation slice? F1 treats precision and recall symmetrically. That does not make it an equal-cost error objective.
+
+<CodeBlock language="javascript" title="f1-and-cost.js">
+{`// Two candidate cutoffs on the same 100 labeled examples: 20 anomalies.
+const candidates = [
+  { name: 'A', tp: 8, fp: 0, fn: 12, tn: 80 },
+  { name: 'B', tp: 15, fp: 10, fn: 5, tn: 70 },
+];
+const comparisons = candidates.map((c) => ({
+  name: c.name,
+  f1: 2 * c.tp / (2 * c.tp + c.fp + c.fn),
+  equalCost: c.fp + c.fn,
+}));
+// A: F1 0.571, 12 errors. B: F1 0.667, 15 errors.
+// F1 prefers B; an equal cost per error prefers A.`}
+</CodeBlock>
+
+For a cost-based decision, define `cost = falseAlarmCost * FP + missCost * FN` and choose the validation cutoff with the lowest cost. Use data representative of deployment, or adjust estimates for its expected class frequencies. An alert-budget or minimum-recall constraint is another explicit objective. Decide it before comparing candidates, then check the chosen rule on the held-out test.
+
+The crew's two deployments have different costs and constraints.
 
 In the first deployment the detector gates the capture pipeline, so a miss costs the mission: every real event it sleeps through is data the ship never records again. Take t=0.2, recall 1.00 at precision 0.34. Read that precision carefully, because it was measured on a slice holding enough anomalies to score against. Live telemetry is far calmer, so the week's false-alarm count is the false-positive rate times 18,327 readings, and it runs well above what the slice suggests. The capture pipeline can absorb that. A machine reads every flag, and no crew is being taught to ignore anything, so the threshold belongs low here.
 
 Nazari's week is the second deployment, the one where a false alarm costs the detector its standing with the crew. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=1.0 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). For the capture pipeline that trade is malpractice; for an alert channel whose one failure mode is being tuned out, it can be exactly right. Demir locks that one. Zero false alarms across the 2,640 calm rows of the labelled sweep slice is a measured result, not a promise about next week.
 
 Both deployments run the same model on the same errors, and the F1 peak sits in the same place. The threshold went down in the first and up in the second. The F1 table cannot tell you which way to move it, because what decides is the cost of a miss against the cost of a false alarm, and neither number is in the error data.
+
+The crew alert has now selected its cutoff using validation data and its alert budget. Evaluate that rule on the test slice once. If the result is inadequate, report the failure; tuning against this test would turn it into another validation set.
+
+<CodeBlock language="typescript" title="locked-threshold.ts">
+{`const chosen = 1.0; // selected before inspecting the test results
+const held = evaluate(testErrors, testLabels, chosen);
+console.log({ threshold: chosen, ...held });`}
+</CodeBlock>
 
 ## Challenge
 
@@ -162,7 +183,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 <RecallPrompt
   question="What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?"
-  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the threshold with the highest F1 represents the best balance on the validation slice you swept. The right balance still ultimately depends on the relative cost of each error type."
+  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because moving the threshold shifts precision and recall in opposite directions; F1 captures both effects together, so the highest F1 is the winner for that metric on that slice. It need not minimize FP plus FN, even when the errors cost the same. Use an explicit cost or operational constraint when that is the deployment objective."
 />
 
 <RecallPrompt
@@ -172,18 +193,18 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 <RecallPrompt
   question="The archive records one reading per 33-second window. How many flags a week does a cutoff at the 99th percentile of normal error produce, and what does that say about percentile thresholds?"
-  answer="One reading per 33-second window is 2,618 a day and 18,327 a week, so one percent of the calm readings is about 26 flags a day and 183 a week. A percentile fixes a false-alarm rate, and the alert count is that rate times the reading volume. Two alerts a week would need a cutoff past the 99.98th percentile, which the 2,880 calm readings the percentile was read off cannot locate, because their own highest error sits near the 99.97th. That is why the cutoff comes out of the sweep instead of off the percentile."
+  answer="One reading per 33-second window is 2,618 a day and 18,327 a week, so one percent of the calm readings is about 26 flags a day and 183 a week. A percentile estimates a false-alarm rate on the sampled normal data, and the alert count is that rate times the reading volume. Two alerts a week would need a cutoff past the 99.98th percentile, which the 2,880 calm readings the percentile was read off cannot locate, because their own highest error sits near the 99.97th. That is why the cutoff comes out of the sweep instead of off the percentile."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Threshold tuning sets the boundary between normal and anomalous by choosing a cutoff on the reconstruction error distribution; setting it too low causes alert fatigue, too high causes missed detections.",
-    "A percentile of the normal error distribution ties the cutoff to known-good data, but it fixes a false-alarm rate: the alert count is that rate times the reading volume, so 1% of 2,618 readings a day is 26 flags a day.",
+    "A percentile estimates a false-alarm rate on sampled normal data. Expected alert volume also depends on traffic and whether that rate holds after deployment.",
     "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system.",
     "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and the chosen cutoff is scored once on the held-out test slice.",
     "An alert storm gets triaged before the cutoff is touched: read the sensor audit log first, then the model's age, then the ratio, and file the storm under the first signature that matches. A storm that matches none of them goes to a human."
   ]}
-  bridge="A JS alert threshold (`if (errorRate > 0.05) page('oncall')`) is quoted in a unit you already know, so the number can be argued about before the data arrives. An anomaly threshold (`if (reconstructionError > threshold) flag('anomaly')`) is quoted in the model's own units, which mean nothing until you measure the normal errors, and the scale moves every time the model is retrained."
+  bridge="Both alert cutoffs need observed data and an error-cost objective. Reconstruction-error thresholds also depend on feature scaling and the model, so recheck them after changes."
   youCanNow="Sweep candidate cutoffs against a labeled slice, score each one with precision, recall and F1, say why a deployment may ship a cutoff away from the F1 peak, and triage an alert storm against the known signatures before touching the cutoff, escalating to a human when it matches none of them."
 />
 

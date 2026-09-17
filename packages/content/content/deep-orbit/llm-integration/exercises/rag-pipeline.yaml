@@ -1,187 +1,208 @@
 slug: rag-pipeline
 lessonSlug: rag-for-signals
-title: "Build the Claim Checker"
+title: "Check Claims Against Their Sources"
 instructions: |
-  Retrieval does not make the answer true. It makes the answer checkable, and
-  this is the step that checks it: Demir's audit-hour checker, for real.
-  `verifyClaims(answerText, retrievedRows)` is the deterministic gate that
-  lets a generated report ship. Every number in it traces to a retrieved row,
-  or the report does not go.
+  Check structured claims against the exact records they cite. Matching a
+  number anywhere in the evidence does not establish its meaning.
 
-  Every number in the generated text is a claim, and the retrieved rows are
-  the only evidence you may admit. Read the numbers out of `answerText` in the
-  order they appear there, and a minus sign in front of one belongs to it: a
-  band label written `Band-7` reads as a claim of -7, and the rows have to
-  account for it like any other. A claim is verified when some value in some
-  retrieved row sits within 0.05 of it, and fabricated when no value does.
-  Return `{ verified, fabricated }`, each list in that same text order, and
-  both lists hold the claims as numbers, parsed out of the text, not the
-  strings the match handed back.
+  Implement `verifyClaims(claims, records)`. Return `{ verified, unverified }`:
+  arrays of claim IDs in input order. Each claim appears in exactly one list.
+  Claim IDs and record IDs are unique strings. Records are trusted numeric
+  observations for this exercise; the other claim fields may be wrong or absent.
 
-  Three properties of the rule decide whether the gate is worth having. The
-  tolerance is absolute rather than a percentage, because a model reprinting a
-  logged reading rounds it and a model inventing one does not. The comparison
-  is between magnitudes rather than text, so a claimed 9 does not trace to a
-  row holding 29.7. And an empty retrieval is the worst case rather than a
-  free pass: no evidence was in hand, so nothing in the answer is supported
-  and every number in it is fabricated.
+  A claim has `{ id, kind, rowIds, field, value, unit }`. A record has `id`
+  and any available numeric fields. Only these field/unit pairs are supported:
+
+  - `eventCount`, `events`: exact integer count (allow 1e-10 for arithmetic).
+  - `frequencyHz`, `Hz`: absolute tolerance 0.05, plus 1e-10 for arithmetic.
+  - `intervalSeconds`, `s`: the same tolerance as frequency, in seconds.
+
+  `kind: 'reading'` cites exactly one record in `rowIds`; compare the claimed
+  value with that record's named field. `kind: 'sum'` may sum `eventCount`
+  across one or more distinct cited records. No other calculation is supported.
+  A sum covers only its cited records; it says nothing about omitted data.
+
+  A missing record, missing field, wrong unit, repeated citation, non-finite
+  value, or unsupported kind/field makes the claim unverified. A qualitative
+  claim such as `{ id: 'safe', kind: 'text', text: 'The signal is safe' }` also
+  stays unverified. Empty retrieval supports nothing; empty claims return two
+  empty lists and establish nothing about a report.
+
+  For example, evidence `{ id: 'a', eventCount: 14, frequencyHz: 73.4 }`
+  supports a reading of 14 events from `a`, but not 73.4 events or 14 Hz.
+  These checks establish agreement with evidence, not that the evidence is
+  correct or that generated prose includes every claim. Free-text reports
+  still need review. A display made from verified fields must keep their
+  field names, units, and citations. Do not publish a separate unreviewed draft.
 hints:
   - level: nudge
-    content: "Every number in the answer is unsupported until a retrieved reading accounts for it, so two decisions carry this: what you admit as evidence, and how near a reading has to sit before it accounts for anything. Settle the retrieval that came back empty first, because it is the case with no evidence at all, and the list you send its numbers to decides whether the gate protects the report or waves it through."
+    content: |
+      Start with the citation. Which record and field does this claim actually name? A correct number from the wrong place is still unsupported.
   - level: guidance
     content: |
-      Read the answer once, in the order the numbers appear in it, and both
-      lists come back in that order for free. Whoever audits the report reads
-      a flagged number against the sentence it came from, so the first number
-      flagged has to be the first offending number in the text. Score the two
-      lists in separate passes and you have to put the order back afterwards.
-
-      Getting the numbers out of the prose is the step that quietly breaks.
-      The answer is a sentence rather than a data structure, so whatever
-      reads it has to carry a decimal point and a leading minus sign through.
-      A scan that stops at the period turns 73.4 into a 73 and a 4: it invents
-      a claim nobody made and loses the one they did.
+      Separate the supported operations. A reading refers to one row; a count sum refers to distinct rows. Check the field and its unit before comparing values. Missing evidence and unsupported text belong in the unverified list, even when the sentence sounds plausible.
   - level: solution
     content: |
-      function verifyClaims(
-        answerText: string,
-        retrievedRows: number[][],
-      ): { verified: number[]; fabricated: number[] } {
-        const claims = (answerText.match(/-?\d+(\.\d+)?/g) ?? []).map(parseFloat);
-        const values = retrievedRows.flat();
-        const verified: number[] = [];
-        const fabricated: number[] = [];
+      function verifyClaims(claims, records) {
+        const rules = {
+          eventCount: { unit: 'events', tolerance: 0 },
+          frequencyHz: { unit: 'Hz', tolerance: 0.05 },
+          intervalSeconds: { unit: 's', tolerance: 0.05 },
+        };
+        const verified = [];
+        const unverified = [];
         for (const claim of claims) {
-          if (values.some((v) => Math.abs(v - claim) <= 0.05)) {
-            verified.push(claim);
-          } else {
-            fabricated.push(claim);
+          const rule = Object.hasOwn(rules, claim.field) ? rules[claim.field] : null;
+          const ids = claim.rowIds;
+          let supported = rule !== null && claim.unit === rule.unit &&
+            Number.isFinite(claim.value) && Array.isArray(ids) && ids.length > 0;
+          if (supported) {
+            supported = new Set(ids).size === ids.length &&
+              ((claim.kind === 'reading' && ids.length === 1) ||
+               (claim.kind === 'sum' && claim.field === 'eventCount'));
           }
+          if (supported) {
+            const cited = ids.map((id) => records.find((row) => row.id === id));
+            supported = cited.every((row) => row && Number.isFinite(row[claim.field]));
+            if (supported) {
+              const expected = cited.reduce((total, row) => total + row[claim.field], 0);
+              supported = Math.abs(claim.value - expected) <= rule.tolerance + 1e-10;
+            }
+          }
+          (supported ? verified : unverified).push(claim.id);
         }
-        return { verified, fabricated };
+        return { verified, unverified };
       }
 starterCode: |
-  function verifyClaims(
-    answerText: string,
-    retrievedRows: number[][],
-  ): { verified: number[]; fabricated: number[] } {
-    // Two lists come back, and every number in the text lands in one of
-    // them. Settle the empty retrieval before writing the comparison: it
-    // decides which list those numbers go to.
+  function verifyClaims(claims, records) {
+    // Return claim IDs in their original order, split by evidence support.
+    // The exercise instructions define the allowed fields and operations.
     return null; // your code here
   }
 solutionCode: |
-  function verifyClaims(
-    answerText: string,
-    retrievedRows: number[][],
-  ): { verified: number[]; fabricated: number[] } {
-    const claims = (answerText.match(/-?\d+(\.\d+)?/g) ?? []).map(parseFloat);
-    const values = retrievedRows.flat();
-    const verified: number[] = [];
-    const fabricated: number[] = [];
+  function verifyClaims(claims, records) {
+    const rules = {
+      eventCount: { unit: 'events', tolerance: 0 },
+      frequencyHz: { unit: 'Hz', tolerance: 0.05 },
+      intervalSeconds: { unit: 's', tolerance: 0.05 },
+    };
+    const verified = [];
+    const unverified = [];
     for (const claim of claims) {
-      if (values.some((v) => Math.abs(v - claim) <= 0.05)) {
-        verified.push(claim);
-      } else {
-        fabricated.push(claim);
+      const rule = Object.hasOwn(rules, claim.field) ? rules[claim.field] : null;
+      const ids = claim.rowIds;
+      let supported = rule !== null && claim.unit === rule.unit &&
+        Number.isFinite(claim.value) && Array.isArray(ids) && ids.length > 0;
+      if (supported) {
+        supported = new Set(ids).size === ids.length &&
+          ((claim.kind === 'reading' && ids.length === 1) ||
+           (claim.kind === 'sum' && claim.field === 'eventCount'));
       }
+      if (supported) {
+        const cited = ids.map((id) => records.find((row) => row.id === id));
+        supported = cited.every((row) => row && Number.isFinite(row[claim.field]));
+        if (supported) {
+          const expected = cited.reduce((total, row) => total + row[claim.field], 0);
+          supported = Math.abs(claim.value - expected) <= rule.tolerance + 1e-10;
+        }
+      }
+      (supported ? verified : unverified).push(claim.id);
     }
-    return { verified, fabricated };
+    return { verified, unverified };
   }
 testCode: |
-  describe('verifyClaims', () => {
-    const rows = [
-      [14, 73.4, 0.9987],
-      [29.7, 73.4, 8.7],
+  describe('Structured claim verification', () => {
+    const records = [
+      { id: 'a', eventCount: 14, frequencyHz: 73.4, intervalSeconds: 61.2 },
+      { id: 'b', eventCount: 3, frequencyHz: 14, intervalSeconds: 29.7 },
     ];
-    const check = (text, retrieved) => {
-      const r = verifyClaims(text, retrieved);
-      expect(
-        r,
-        'verifyClaims has to return the split: a verified list and a fabricated list. While it returns null the gate cannot answer whether the report ships.',
-      ).toBeDefined();
-      return r;
+    // The synthetic interval fixture is 61.2 seconds; it is not a live clock.
+    const reading = (id, patch = {}) => ({
+      id, kind: 'reading', rowIds: ['a'], field: 'frequencyHz', value: 73.4, unit: 'Hz', ...patch,
+    });
+    const check = (claims, rows = records) => {
+      const result = verifyClaims(claims, rows);
+      expect(result, 'Return verified and unverified lists of claim IDs.').toBeDefined();
+      return result;
     };
-
-    it('verifies numbers that trace to retrieved rows', () => {
-      const r = check('We recorded 14 events at 73.4 Hz.', rows);
-      expect(r.verified).toEqual([14, 73.4]);
-      expect(r.fabricated).toEqual([]);
+    it('matches a field in the cited row and keeps claim order', () => {
+      const result = check([
+        reading('frequency'), reading('wrong', { value: 80 }),
+        reading('count', { field: 'eventCount', value: 14, unit: 'events' }),
+        reading('missing', { rowIds: ['absent'] }),
+      ]);
+      expect(result).toEqual({ verified: ['frequency', 'count'], unverified: ['wrong', 'missing'] });
     });
-    it('catches the fabricated 17 the night the checker was born', () => {
-      const r = check('Analysis of 17 events at 73.4 Hz.', rows);
-      expect(
-        r.fabricated,
-        'One number in that sentence is in no retrieved row. Retrieval narrows fabrication; it does not stop it, which is why this gate exists.',
-      ).toEqual([17]);
-      expect(r.verified).toEqual([73.4]);
+    it('rejects swapped fields even when both numbers appear in the evidence', () => {
+      const result = check([
+        reading('swapped-count', { field: 'eventCount', value: 73.4, unit: 'events' }),
+        reading('swapped-frequency', { value: 14 }),
+      ]);
+      expect(result).toEqual({ verified: [], unverified: ['swapped-count', 'swapped-frequency'] });
     });
-    it('applies the tolerance to a rounded reading and refuses a distant one', () => {
-      const r = check('Correlation 0.99; drift 12.5.', rows);
-      expect(r.verified).toEqual([0.99]);
-      expect(r.fabricated).toEqual([12.5]);
+    it('does not borrow a value from a different row', () => {
+      expect(check([reading('wrong-source', { rowIds: ['b'] })])).toEqual({
+        verified: [], unverified: ['wrong-source'],
+      });
     });
-    it('draws the boundary: one claim inside the tolerance, one just outside', () => {
-      const r = check('Correlation 0.96 in one pass, 0.94 in the next.', rows);
-      expect(
-        r.verified,
-        'The tolerance is absolute, not a percentage. A model rounding a logged value stays inside it; a model inventing one does not.',
-      ).toEqual([0.96]);
-      expect(r.fabricated).toEqual([0.94]);
+    it('requires the declared unit without implicit conversion', () => {
+      expect(check([reading('unit', { unit: 'kHz' })])).toEqual({ verified: [], unverified: ['unit'] });
     });
-    it('compares numbers, not text: a claimed 9 does not trace to a row holding 29.7', () => {
-      const r = check('The cluster repeats 9 times.', [[29.7]]);
-      expect(
-        r.verified,
-        'Grepping the rows for the digits would call this traced. The rule compares magnitudes.',
-      ).toEqual([]);
-      expect(r.fabricated).toEqual([9]);
+    it('uses each fields tolerance and includes its boundary', () => {
+      const result = check([
+        reading('rounded', { value: 73.44 }), reading('boundary', { value: 73.45 }),
+        reading('too-far', { value: 73.451 }),
+        reading('count-exact', { field: 'eventCount', value: 14, unit: 'events' }),
+        reading('count-rounded', { field: 'eventCount', value: 14.04, unit: 'events' }),
+        reading('interval', { field: 'intervalSeconds', value: 61.24, unit: 's' }),
+      ]);
+      expect(result).toEqual({
+        verified: ['rounded', 'boundary', 'count-exact', 'interval'],
+        unverified: ['too-far', 'count-rounded'],
+      });
     });
-    it('reads a minus sign as part of the number it sits against', () => {
-      const r = check('Band-7 phase drifted to -0.23 rad from a logged -0.19.', [[-0.19, 8.7]]);
-      expect(
-        r.verified,
-        'The sign belongs to the reading. A scan that admits digits and drops the minus reads this drift as a positive number that sits near nothing in the rows, and the gate flags a claim the evidence supports.',
-      ).toEqual([-0.23, -0.19]);
-      expect(
-        r.fabricated,
-        'A band label is written with the same character, so the scan reads Band-7 as a claim of -7 and no reading accounts for it. Flagging it is the honest answer: the checker grades the numbers in the sentence, and the human reading the flag has the sentence in front of them.',
-      ).toEqual([-7]);
+    it('allows a sum of cited event counts, not a guessed total or other operation', () => {
+      const sum = reading('sum', { kind: 'sum', rowIds: ['a', 'b'], field: 'eventCount', value: 17, unit: 'events' });
+      expect(check([
+        sum, { ...sum, id: 'wrong-total', value: 14 },
+        { ...sum, id: 'double-count', rowIds: ['a', 'a'], value: 28 },
+        { ...sum, id: 'missing-source', rowIds: ['a', 'absent'] },
+        reading('unsupported-sum', { kind: 'sum', rowIds: ['a', 'b'], value: 87.4 }),
+        { ...sum, id: 'mean', kind: 'mean', value: 8.5 },
+      ])).toEqual({ verified: ['sum'], unverified: ['wrong-total', 'double-count', 'missing-source', 'unsupported-sum', 'mean'] });
     });
-    it('handles an answer with no numbers at all', () => {
-      const r = check('The signal repeats and accelerates.', rows);
-      expect(r.verified).toEqual([]);
-      expect(r.fabricated).toEqual([]);
+    it('does not approve unsupported prose or a missing citation', () => {
+      expect(check([
+        { id: 'safe', kind: 'text', text: 'The signal is definitely safe' },
+        reading('no-source', { rowIds: [] }), reading('missing-list', { rowIds: undefined }),
+        reading('two-sources', { rowIds: ['a', 'b'] }),
+      ])).toEqual({ verified: [], unverified: ['safe', 'no-source', 'missing-list', 'two-sources'] });
     });
-    it('with nothing retrieved, nothing traces', () => {
-      const none = check('Peak at 73.4 Hz across 14 events.', []);
-      expect(
-        none.fabricated,
-        'An empty retrieval is not a free pass, it is the worst case: no evidence was in hand, so no claim in the answer is supported. A checker that ships the report anyway has inverted the rule it exists for.',
-      ).toEqual([73.4, 14]);
-      expect(none.verified).toEqual([]);
-      const empty = check('Correlation 0.9987.', [[], []]);
-      expect(empty.fabricated).toEqual([0.9987]);
-      expect(empty.verified).toEqual([]);
+    it('supports nothing when retrieval is empty', () => {
+      expect(check([reading('a'), { id: 'safe', kind: 'text' }], [])).toEqual({ verified: [], unverified: ['a', 'safe'] });
+      expect(check([])).toEqual({ verified: [], unverified: [] });
     });
-    it('works against a different retrieval set', () => {
-      const r = check('Detected 3 pulses of 61.2 seconds.', [[61.2], [3, 5]]);
-      expect(r.verified).toEqual([3, 61.2]);
-      expect(r.fabricated).toEqual([]);
+    it('requires a finite number in a supported field on both sides', () => {
+      const claims = [
+        reading('nan', { value: NaN }), reading('infinite', { value: Infinity }),
+        reading('string', { value: '73.4' }), reading('field', { field: 'amplitude' }),
+        reading('prototype', { field: 'toString' }), reading('absent-field', { rowIds: ['c'] }),
+      ];
+      expect(check(claims, [...records, { id: 'c', eventCount: 1 }])).toEqual({ verified: [], unverified: claims.map(c => c.id) });
+      expect(check([reading('bad-data')], [{ id: 'a', frequencyHz: NaN }])).toEqual({ verified: [], unverified: ['bad-data'] });
     });
-    it('runs the rule on a row drawn at grade time, so a memorised table fails', () => {
-      const row = 1 + Math.round(Math.random() * 9000) / 100;
-      const inside = Math.round((row + 0.04) * 100) / 100;
-      const outside = Math.round((row + 0.09) * 100) / 100;
-      const r = check(`Peak ${inside} Hz, sideband ${outside} Hz.`, [[row, row * 3]]);
-      expect(
-        r.verified,
-        'The row this ran against was drawn a moment ago, so nothing about it can be memorised. Only the rule survives.',
-      ).toEqual([inside]);
-      expect(r.fabricated).toEqual([outside]);
+    it('compares fresh values rather than memorized fixtures', () => {
+      const n = 100 + Math.floor(Math.random() * 1000);
+      const id = 'fresh-' + n;
+      const rows = [{ id, eventCount: n, frequencyHz: n / 10 }];
+      expect(check([
+        reading('fresh', { rowIds: [id], value: n / 10 }),
+        reading('nearby', { rowIds: [id], value: n / 10 + 0.04 }),
+        reading('wrong', { rowIds: [id], value: n / 10 + 0.09 }),
+      ], rows)).toEqual({ verified: ['fresh', 'nearby'], unverified: ['wrong'] });
     });
   });
-estimatedMinutes: 15
+estimatedMinutes: 25
 difficulty: advanced
 mlContent: systems
 skillAxis: evaluation

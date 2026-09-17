@@ -20,14 +20,14 @@ concept:
     mlTitle: "tf.data pipeline"
     mlCode: "tf.data.generator(readRows).shuffle(100).batch(32)"
     tier: structural
-    breaks: "A paged fetch keeps the server's order and hands you whatever size the API chose. The pipeline is the consumer AND the shuffler: it decides the batch size, and it has to reorder rows inside its buffer before it batches them, because a batch that keeps arrival order is a block of neighbours the model learns as a group."
+    breaks: "Both APIs can stream data without loading everything at once. tf.data additionally composes transforms, optional shuffling, and batching. Choose those steps for the task: split the archive by time first, then shuffle training rows only when their ordering is not part of the example."
 consequence:
   narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
 hints:
   - level: nudge
     content: "Keep it lazy: the generator yields one sample per loop turn, and the tf.data pipeline does the shuffling and batching for you"
   - level: guidance
-    content: "The whole thing turns on the generator: one record per turn of the loop, with nothing collected into a list first. Two details decide the rest. The first is the label. It is a single number, and it still yields with an axis of its own, the way the split generator in the lesson body yields it, because the batcher stacks whatever it is handed and training reads a column of labels. The second is order. The stages after the generator run left to right, in the order records pass through them, which is why shuffling before batching and batching before shuffling are different pipelines. The split is a third stage and it does not run on the dataset at all: one shuffled list of the sixteen indices, cut once, so the two sides cannot overlap and cannot change between passes."
+    content: "The whole thing turns on the generator: one record per turn of the loop, with nothing collected into a list first. Two details decide the rest. The first is the label. It is a single number, and it still yields with an axis of its own, the way the split generator in the lesson body yields it, because the batcher stacks whatever it is handed and training reads a column of labels. The second is order. The stages after the generator run left to right, in the order records pass through them, which is why shuffling before batching and batching before shuffling are different pipelines. The split is a third stage and it does not run on the dataset at all: the first twelve time-ordered readings train and the last four validate. Shuffle only the training indices after assigning the two sets."
   - level: solution
     content: |
       for (let i = 0; i < 16; i++) {
@@ -38,9 +38,8 @@ hints:
       await dataset.forEachAsync((b) => {
         batchShapes.push(b.xs.shape);
       });
-      const indices = Array.from(tf.util.createShuffledIndices(16));
-      const trainIdx = indices.slice(0, 12);
-      const valIdx = indices.slice(12);
+      const trainIdx = Array.from(tf.util.createShuffledIndices(12));
+      const valIdx = Array.from({ length: 4 }, (_, i) => i + 12);
 keywords:
   - data-loading
   - batching
@@ -127,18 +126,16 @@ Memory is only half the reason 32 is the number. The other half is training. The
 Batching decides what the model sees on each step. The split decides what it never sees while training. Get the second one wrong and your validation score is measuring what the model already memorized, not what it learned.
 
 <CodeBlock language="typescript" title="train-test-split.ts">
-{`// Split data into training (80%) and validation (20%)
+{`// Hold out the latest 20% of this time-ordered archive for validation
 const TOTAL = 28_800;  // the whole archive, the same count the generator walks
 const TRAIN_SIZE = Math.floor(TOTAL * 0.8);
 
-// The trap everyone falls into: .shuffle().take()/.skip(). Dataset
-// pipelines reshuffle every time they are iterated, and take()/skip()
-// each iterate separately, so that pattern deals a DIFFERENT deck to
-// each side: readings leak between train and validation. The fix is to
-// deal the deck once, in your own hands, and split the indices:
-const indices = tf.util.createShuffledIndices(TOTAL);
-const trainIdx = indices.slice(0, TRAIN_SIZE);
-const valIdx = indices.slice(TRAIN_SIZE);
+// IDs increase with recording time. Assign membership before shuffling.
+// Shuffle only the earlier training IDs; validation stays in time order.
+const trainIdx = tf.util.createShuffledIndices(TRAIN_SIZE);
+const valIdx = Uint32Array.from(
+  { length: TOTAL - TRAIN_SIZE }, (_, i) => TRAIN_SIZE + i,
+);
 
 function* splitGenerator(idx: Uint32Array) {
   for (const i of idx) {
@@ -149,16 +146,17 @@ function* splitGenerator(idx: Uint32Array) {
 
 const trainData = tf.data.generator(() => splitGenerator(trainIdx)).batch(32);
 const valData = tf.data.generator(() => splitGenerator(valIdx)).batch(32);
-// Disjoint by construction, the same split every time you train over the data,
-// and no tensor is built for a reading this side skips. The index shuffle
-// above is a full shuffle, so neither pipeline needs a shuffle buffer.`}
+// Validation contains only later readings. Training order can change
+// without moving a reading across the split.`}
 </CodeBlock>
 
-One condition rides under all of this. A random split is the right split when the rows are independent. These 28,800 readings are recorded in time order, so a reading is not independent of the one before it. It still works here, because the classifier you build in module 2 reads one reading at a time and nothing about its neighbors. Module 6 makes each sample a window of consecutive readings, and there a random split leaks: neighboring windows overlap, so validation rows arrive half seen. That module splits by time instead.
+Choose the split for the job the model will do. We want to predict future readings, so validation uses a later period. A classifier that reads one row at a time can still exploit similarities between neighboring rows. Randomly mixing those rows across both sets can make the score too optimistic.
+
+Time order is a starting point. If examples share a capture or overlap in time, keep those groups together and leave a gap at the boundary where needed. Module 6 applies this to overlapping windows. A random split can suit independent examples drawn from the same population as deployment. Whichever rule you choose, assign membership once: separate `.shuffle().take()` and `.shuffle().skip()` passes can reshuffle differently and overlap. Fit preprocessing on training rows only; module 3 adds a final test set that stays out of model selection.
 
 ## Challenge
 
-Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generator, shuffle, batch, without ever holding it in memory. The stand-in can be read by id, so a production pipeline would shuffle its indices instead. Build the buffer version here, because it is the one that puts the shuffle-before-batch rule in your hands. The grader counts your reads, and it drains your generator a second time asking for one sample at a time.
+Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This first pipeline demonstrates batching over the whole fixture; it does not train a model. Separately, assign the earlier readings to training and the later ones to validation. Training can shuffle its own rows after that assignment.
 
 <Exercise slug="batch-data" />
 
@@ -167,14 +165,19 @@ Build the lazy pipeline yourself, on a 16-row stand-in for the archive: generato
   answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
 />
 
+<RecallPrompt
+  question="A classifier reads one sensor row at a time. Does that make a random split safe for predicting future readings?"
+  answer="No. Neighboring rows can share patterns even when the model reads them separately. Hold out later periods, keep shared captures together, and add a gap when windows overlap. Fit preprocessing on training rows only."
+/>
+
 <LessonRecap
   whatYouLearned={[
     "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
     "Shuffle before you batch, never after: batching first freezes each batch's membership, so every batch stays a block of consecutive readings. A shuffle buffer mixes only inside its own window, which is all you get when records arrive as a stream you cannot index. When you can read a record by id, shuffle the indices up front for a full shuffle.",
-    "Split train/validation by dealing the deck once: shuffle the indices yourself and read only the ones this side owns, rather than chaining .shuffle().take()/.skip(), which reshuffles on every iteration and leaks readings between the two sets.",
+    "For future telemetry, hold out later readings. Shuffle only within training after the split; account for overlapping windows and shared captures at the boundary.",
     "One word, two sizes. In this module a capture is the archive row: 33 seconds of 64 channels at 256 Hz, about two megabytes. The quarter second the three features come off is the extraction window: module 4 calls it that, module 5 just says window, and modules 8 and 11 sometimes call that 64-sample window a capture too. Same word, different object; the number beside it tells you which."
   ]}
-  bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it. Node streams call that backpressure: the consumer sets the pace."
+  bridge="Paged fetching and tf.data can both process data incrementally. Dataset transforms add optional shuffling and batching; prefetching and buffers determine how far the producer reads ahead."
   youCanNow="Build a tf.data pipeline that reads lazily with a generator and shuffles records before it batches them, and recognize a train/validation split that does not leak."
 />
 

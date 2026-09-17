@@ -20,7 +20,7 @@ concept:
     mlTitle: "Model Compilation"
     mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
     tier: structural
-    breaks: "createServer() holds a handler that already knows how to answer; one listen() call later it is doing the job it was written for. A compiled model knows nothing yet. Its connection weights are random, and the thing that makes it useful is not a switch you flip but hours of fit() rewriting every one of those numbers."
+    breaks: "Creating a server wires up a handler; compiling a model configures its training objective, optimizer, and metrics. Compilation does not train or reset its weights. A newly initialized model still needs fitting; an already trained model may already make useful predictions."
 consequence:
   narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. The answers they give are not all as random."
 hints:
@@ -124,7 +124,7 @@ One difference from the bridge build above, and it is deliberate: the demo wired
     "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for a yes/no output, MSE for continuous values.",
     "A new layer starts with random connection weights and zero biases. The random draw stops every unit in the layer from computing the same thing, and Glorot scaling keeps the signal from growing or shrinking as it moves through."
   ]}
-  bridge="`http.createServer(handler)` wires a server that has not served a request yet; `model.compile()` wires optimizer and loss onto a model that has not learned anything yet. In both cases the real work happens after assembly."
+  bridge="createServer wires a request handler. model.compile configures training without changing existing weights; fitting performs the parameter updates."
   youCanNow="Assemble, compile, and verify a complete sequential neural network, run an initial prediction to confirm the pipeline is wired correctly, and say where its starting weights come from."
 />
 

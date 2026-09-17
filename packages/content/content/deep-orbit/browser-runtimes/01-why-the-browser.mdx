@@ -20,7 +20,7 @@ concept:
     mlTitle: "Client-Side Inference"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: structural
-    breaks: "Client-side rendering is one round-trip per route. Client-side inference downloads model weights once (often 5-50 MB), then every prediction runs locally with no network. The cost shape is inverted: one download instead of a round-trip per reading, and the device pays for the compute from then on."
+    breaks: "Client rendering and client inference can both run after their code and data are available locally. Neither inherently needs a round-trip for every operation. Browser inference adds model download, compute, and memory costs; offline operation also depends on caching every required asset."
 consequence:
   narrative: "Nazari approves the browser deployment plan. Demir begins setting up the runtime."
 hints:

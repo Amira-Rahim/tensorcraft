@@ -22,16 +22,16 @@ concept:
     mlTitle: "Min-Max Normalization"
     mlCode: "const normalized = data.sub(min).div(max.sub(min))"
     tier: structural
-    breaks: "Scroll progress has bounds you can at least measure: `scrollHeight` moves when content lazy-loads, but you can read it again. Sensor data gives you no such read. The min and max you normalize with come from training data, and tomorrow's reading can land outside them. That's why z-score, which has no scroll equivalent, often wins for live streams: it assumes nothing about where the data ends."
+    breaks: "Scroll progress uses page dimensions; sensor scaling uses chosen physical bounds or statistics fitted on training data. New observations can exceed fitted min/max values. Z-score uses a mean and standard deviation instead, but it is not automatically better or immune to drift and outliers."
 consequence:
   narrative: "The normalized feed goes live. Four sensors, one scale, and one archived sample that refuses to look like the others."
 hints:
   - level: nudge
     content: "Stats first, verdict second. Per COLUMN: each feature gets its own mean and std. Then one dense neuron with sigmoid activation reads each normalized row. Last, the other scaler: a min and a max per column, and the column stretched between them."
   - level: guidance
-    content: "Start with the axis. tf.moments takes one, and leaving it off gives a single statistic for the whole batch, 11.75 here, which averages temperature together with signal strength. There is no .std() on a tensor either, so the second statistic comes out of the variance that same call returned. Then fitStats has to read its argument rather than the rows printed above it: the grader fits it to two batches you have never seen. The neuron itself is written out in full in the lesson body, weights and all, so building it is copying rather than designing. At inference the model still wants a batch, so a lone reading needs a leading axis of one. The statistics it gets normalized with are the ones you fitted earlier, never new ones measured from the reading itself. The axis rule holds for the min-max pair too, and a tensor has min and max methods that take one, so minMaxStats is the same shape as fitStats with different statistics."
+    content: "Use axis 0 to compute one statistic per column. Take the square root of variance for std. scaleFeatures should replace a zero divisor with 1 while keeping the saved statistic at zero. Build the fixed neuron shown in the lesson. A single reading needs a leading batch axis before predict(), and it must reuse the training statistics. For min-max scaling, compute each column's minimum and maximum, then reuse scaleFeatures with the minimum and range."
   - level: solution
-    content: "function fitStats(rows) { const { mean, variance } = tf.moments(rows, 0); return { mean, std: variance.sqrt() }; } const { mean, std } = fitStats(batch); const normalized = batch.sub(mean).div(std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = reading.sub(mean).div(std); return previewModel.predict(z.reshape([1, 2])); } function minMaxStats(rows) { return { min: rows.min(0), max: rows.max(0) }; } const { min, max } = minMaxStats(batch); const unitRange = batch.sub(min).div(max.sub(min));"
+    content: "function fitStats(rows) { const { mean, variance } = tf.moments(rows, 0); return { mean, std: variance.sqrt() }; } const { mean, std } = fitStats(batch); function scaleFeatures(rows, offset, scale) { return tf.tidy(() => { const divisor = tf.where(scale.equal(0), tf.onesLike(scale), scale); return rows.sub(offset).div(divisor); }); } const normalized = scaleFeatures(batch, mean, std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = scaleFeatures(reading, mean, std); return previewModel.predict(z.reshape([1, 2])); } function minMaxStats(rows) { return { min: rows.min(0), max: rows.max(0) }; } const { min, max } = minMaxStats(batch); const unitRange = scaleFeatures(batch, min, max.sub(min));"
 keywords:
   - normalization
   - z-score
@@ -49,10 +49,10 @@ The thermal channel reads in the thirties, signal strength lives under one. If w
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Not think. Compute. That pull isn't an opinion the model forms; it's arithmetic it can't avoid. Fix the scales and the pull never exists.
+With comparable starting weights, temperature has the larger numerical contribution. Scaling helps us fit the model; it does not tell us which sensor matters.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why normalization is critical for ML", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
+<LearningObjectives objectives={["Explain how feature scaling affects neural-network training", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
 
 <BossBeat
   beatId="deep-orbit-foundations-7741-first-flag"
@@ -88,7 +88,7 @@ Not think. Compute. That pull isn't an opinion the model forms; it's arithmetic 
 
 Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
 
-Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. The louder feature dominates what the model learns; the quiet one barely registers, even when it carries the signal you actually care about.
+Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. With comparable weights, temperature contributes more to the weighted sum and can produce larger gradients. Scaling can make optimization easier; it does not decide which feature is informative. A trained model can still assign different weights to the features.
 
 Two names in the code below. The standard deviation is the typical distance between a value and its column's mean, so dividing by it measures a feature in its own units of spread: a z-score of 1 sits one typical distance above the mean, whatever the raw units were. `tf.moments` hands back the variance instead, that distance squared and averaged, so the standard deviation is `variance.sqrt()`. The averaging divides by the number of rows, n, which makes both statistics the population version. The sample version divides by n minus 1 instead and comes out slightly larger.
 
@@ -103,7 +103,11 @@ const signal = tf.tensor([0.1, 0.8, 0.3, 0.9, 0.5]);  // range: 0.1-0.9
 // TFJS has no tensor.std(); moments() gives mean and variance together.
 function zNormalize(tensor: tf.Tensor) {
   const { mean, variance } = tf.moments(tensor);
-  return tensor.sub(mean).div(variance.sqrt());
+  const std = variance.sqrt();
+  // where(condition, yes, no) selects per feature. A constant feature
+  // has std 0: use a divisor of 1, so its training values become 0.
+  const divisor = tf.where(std.equal(0), tf.onesLike(std), std);
+  return tensor.sub(mean).div(divisor);
 }
 
 // One argument you'll need the moment features live side by side in a
@@ -127,12 +131,16 @@ const signalNorm = zNormalize(signal);
 function minMaxNormalize(tensor: tf.Tensor) {
   const min = tensor.min();
   const max = tensor.max();
-  return tensor.sub(min).div(max.sub(min));
+  const range = max.sub(min);
+  const divisor = tf.where(range.equal(0), tf.onesLike(range), range);
+  return tensor.sub(min).div(divisor);
 }
 
 const tempMinMax = minMaxNormalize(temperature);
 // [0.06, 0.19, 0.0, 1.0, 0.56]: all between 0 and 1`}
 </CodeBlock>
+
+A constant training feature has zero variance and zero range, so ordinary division produces invalid values. The examples use a divisor of 1 only for those zero scales. Constant training values then map to 0. Reuse that rule at inference: a changed value becomes its difference from the saved mean or minimum. That change needs investigation because training showed no variation in that feature.
 
 One practical wrinkle that bites in production: whatever mean and std you compute here, you must save. Inference data has to be normalized with the *training* statistics, not its own; otherwise the same reading maps to different numbers on different days, and your model quietly answers a different question each time.
 
@@ -140,9 +148,9 @@ Which rows you compute them from matters too. Lesson 4 kept the validation rows 
 
 ## When to Use Which
 
-Z-score, which centers a feature at mean 0 and spreads it to std 1, is the default for neural network inputs. Outliers distort it far less than they distort min-max, and it assumes nothing about where the data ends.
+Z-score is a common choice for neural network inputs. It centers each nonconstant training feature at mean 0 and standard deviation 1. Extreme values still affect both statistics; check outliers rather than assuming this scaler removes their influence.
 
-Min-max maps to the 0-1 range and suits data with true, known bounds: pixel values, percentages, probabilities. One extreme outlier crushes everything else into a corner, so keep it off open-ended streams.
+Min-max maps the fitted minimum and maximum to 0 and 1. Known physical bounds can supply those limits, as with pixel values. Fitted bounds are also usable, but later values can fall outside 0-1. One extreme value can compress the rest into a narrow range.
 
 
 ## What the Preview Neuron Computes
@@ -171,7 +179,7 @@ The numbers below come from the exercise's four-reading batch, not the five read
 
 Now run those same four readings through the same neuron raw, without normalizing, and every verdict comes back 1.000000. The temperature term alone gets there: `0.9 * 20` is 18, and sigmoid is flat at the top long before signal strength contributes its `-1.4 * 0.2`. Normalized, the same neuron answers 0.59, 0.07, 0.67 and 0.57, and the lowest of the four belongs to `[22, 0.8]`, the reading with the strongest signal. Same weights, same bias, both times. Only the scales changed.
 
-Module 2 builds these layers and module 3 trains their weights. Tonight the layer is a fixed function you feed.
+Module 2 builds these layers and module 3 trains their weights. Tonight the layer is a fixed function you feed. Its score is not a calibrated probability. A familiar reading near the decision boundary can score near 0.5, while an unfamiliar reading can receive a confident score. Neither value tells you whether the model has seen that pattern before.
 
 ## Challenge
 
@@ -183,7 +191,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <RecallPrompt
   question="Why normalize features before training?"
-  answer="On different scales, the louder feature dominates what the model learns: a typical temperature value near 25 arrives about fifty times larger than a typical signal strength near 0.5. Normalization (z-score or min-max) brings every feature to a comparable scale, so the quiet one still registers."
+  answer="Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
 />
 
 <RecallPrompt
@@ -193,13 +201,13 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <LessonRecap
   whatYouLearned={[
-    "Unnormalized scales let whichever feature has the largest raw numbers dominate what the model learns. Normalization gives every feature comparable numerical influence during training.",
-    "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call.",
-    "Min-max (subtract min, divide by range) maps values to 0-1 and suits data with true, known bounds. One outlier crushes everything else into a corner, so keep it off open-ended streams. A stream whose sensors saturate is not open-ended, which is why module 4's classifier min-max normalizes this one.",
+    "Comparable input scales can make optimization easier. Scaling does not establish feature importance or replace learning the weights.",
+    "Z-score subtracts the training mean and divides by the training standard deviation. tf.moments() returns mean and variance; take the variance's square root for standard deviation.",
+    "Min-max maps fitted bounds to 0 and 1; later values can exceed them. For a constant training feature, use a divisor of 1.",
     "Save the training-time mean and standard deviation, computed on the training rows only. Inference data must be normalized with those same statistics; never recompute them from the new batch.",
     "A normalization pipeline is proven at a model's front door: a single dense sigmoid neuron (tf.sequential, tf.layers.dense, setWeights) turns normalized readings into verdicts via predict()."
   ]}
-  bridge="Min-max normalization is the same formula as scroll-progress: `scrollY / (docHeight - viewportHeight)` maps pixels to 0-1, and `data.sub(min).div(max.sub(min))` maps sensor readings to 0-1 the same way."
+  bridge="Scroll progress and min-max scaling use an offset and range. Handle a zero range explicitly; sensor readings outside fitted bounds can normalize below zero or above one."
   youCanNow="Apply z-score normalization with tf.moments, preserve the training statistics for inference, and run normalized readings through a real dense layer to get a prediction."
 />
 
@@ -212,7 +220,7 @@ Farah pulls up a preview build of the classifier the crew will spend the next te
 <DeepScanDemo />
 
 <Dialogue speaker="Dr. Farah">
-Five clean verdicts and one shrug. A model that says "fifty-one percent" is a model that's never seen anything like this. Tag it. We have a classifier to build. A real one.
+Five firm scores and one near the boundary. That score does not tell us whether the reading is new or why the classifier is unsure. Keep the tag. We need more evidence.
 </Dialogue>
 
 She doesn't delete sample 7741, though.

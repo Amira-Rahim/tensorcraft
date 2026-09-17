@@ -21,7 +21,7 @@ concept:
     mlTitle: "Windowing"
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
-    breaks: "The decoder's fix is lossless: the bytes it holds back arrive intact with the next chunk, and the decoded text is what a single read would have produced. A taper cannot promise that. It attenuates real samples at both edges, trading false frequencies for a wider, blurrier peak. Recover the discarded edge energy by overlapping the windows (50-75%). A sample the taper weakens in one window is weighted more in the next, and the weights sum to a near-constant total. Chunk size costs a decoder nothing either; window length is what sets your frequency resolution."
+    breaks: "StringDecoder carries incomplete encoded characters across chunks. A window function instead changes sample amplitudes to reduce spectral leakage, widening peaks in return. Overlap gives more coverage of boundary samples; exact signal reconstruction requires compatible analysis and synthesis windows and hop size."
 consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
 hints:
@@ -238,7 +238,7 @@ Build the Hann taper and apply it to a slice. The grader takes the FFT of both t
     "Windowing functions such as Hann and Hamming taper signal edges down before the FFT, suppressing leakage. One cost is that the tone now spreads over a few more bins, its main lobe, which is a loss of frequency resolution. The other is that every magnitude shrinks by roughly the window's average value (0.5 for the 128-point Hann tfjs ships), so windowed and unwindowed magnitudes are not comparable. Hann reaches zero at both ends, while Hamming stops at 0.08, so Hamming leaks more into distant bins.",
     "Overlapping windows (typically 50% hop) let the tapers interlock: a sample near one window's edge sits near the middle of the next. No single window gives an edge sample full weight, but the weights it receives across the windows containing it sum to a near-constant total. Keeping that total constant is what the constant-overlap-add condition asks for, and the periodic Hann here, the one tfjs ships, meets it exactly at a 50% hop; the symmetric form ripples by about 2.5%."
   ]}
-  bridge="Cutting a byte stream mid-character decodes to a replacement character that was never in the data, which is why `StringDecoder` holds the split bytes back. Cutting a signal mid-cycle produces frequencies that were never in the signal, and the fix is a taper: the decoder's boundary fix is lossless, the taper's is a trade."
+  bridge="StringDecoder preserves incomplete encoded characters across chunks. A signal taper reduces spectral leakage by changing amplitudes, trading narrower peaks for lower sidelobes."
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, measure what the taper does to the leakage, and say what it costs in resolution and magnitude."
 />
 

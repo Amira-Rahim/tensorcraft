@@ -20,7 +20,7 @@ concept:
     mlTitle: "Sequence Order"
     mlCode: "model.predict(tf.tensor3d([[[t1], [t2], [t3], [t4], [t5]]])) // [batch, steps, features]"
     tier: structural
-    breaks: "A stream only has to preserve order; nothing inside the pipe reads it. Reassemble the chunks in the wrong order and the file is corrupt, and a checksum catches it. A sequence model has to use the order instead of preserving it: it learns which arrangements mean what, so a shuffled window is not corrupt, it is a valid sample that means something else, and no checksum will ever flag it."
+    breaks: "Streams may preserve, inspect, or transform ordered data. A sequence model learns a function of that order. A shuffled window can still satisfy its shape contract while changing the prediction. Validate timestamps and sequence construction; file integrity alone does not establish a valid example."
 consequence:
   narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
 hints:

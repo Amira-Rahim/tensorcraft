@@ -23,7 +23,7 @@ concept:
     mlTitle: "ML App Deploy"
     mlCode: "npm run build && gh-pages -d dist // same; model is a static asset"
     tier: structural
-    breaks: "The file copy is identical; the operational contract is not. Static deploys roll back by reverting the artifact and the user gets the prior page. Model rollback restores the weights but not the world the model was trained on; drift accumulates from the training cutoff, not from the deploy time. CDN cache eviction is bounded by TTL; model staleness is unbounded until you retrain."
+    breaks: "Both rollbacks restore versioned artifacts, not every external effect. Web rollback may leave database writes and migrations in place. Model rollback also needs matching preprocessing and evaluation on current data; old weights may no longer fit that data."
 consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
@@ -372,7 +372,7 @@ And then the one the whole season was for. The console transcript above is what 
 
 <Exercise slug="classify-anomaly" />
 
-<RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Rolling back a web app restores the prior build artifact and the user gets the previous page: the system state is fully described by those bytes. Rolling back a model restores the prior weights, but drift accumulates from the training cutoff rather than the deploy time. The prior weights were calibrated to a data distribution that may have moved further away since they were trained, so a rollback does not guarantee the model is safe to run again." />
+<RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights." />
 
 <RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and the LSTM were fitted on the same eleven days, so one bad archive takes two votes out at once. Read a vote of 2 as two checks that failed." />
 
@@ -380,10 +380,10 @@ And then the one the whole season was for. The console transcript above is what 
   whatYouLearned={[
     "An ML-powered web app deploys exactly like a static site (`npm run build`, model files in the dist folder as static assets, served from a CDN) because the model runs entirely in the browser.",
     "Deployment verification must confirm three things independently: the model file loads from the deployed URL, a labeled probe still scores above its floor, and latency meets the performance budget. Random input can only prove the file parses; it cannot see a mangled preprocessing path.",
-    "Model rollback restores weights but not the training distribution; drift accumulates from the training cutoff, so a rolled-back model may perform worse on current data than it did when first deployed.",
+    "Rollback restores artifacts, not external state. Restore compatible model and preprocessing versions, then check performance on current data.",
     "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together, reading the counter after the fit rather than working it out (a candidate can arrive warm, and then the schedule and the counter disagree) and reporting the trace fit() handed back, and the training record cannot be produced without the training."
   ]}
-  bridge="Deploying a web app is `npm run build && gh-pages -d dist`; deploying an ML app is the same command (the model is just another static asset in `dist/models/`), but unlike a JS bundle, the model's staleness clock starts at training time and no deploy ever resets it."
+  bridge="Both applications and models can ship as versioned assets. Rollback restores selected artifacts; it does not reverse earlier side effects or establish accuracy on current data."
   youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose training record cannot be written without the training, then sign the verdict with the decision layer: a 2-of-3 detector vote and an interval decomposition that survives a change of units."
 />
 

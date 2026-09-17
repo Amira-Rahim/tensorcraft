@@ -20,7 +20,7 @@ concept:
     mlTitle: "Model Ensemble"
     mlCode: "prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))"
     tier: structural
-    breaks: "A fan-out gives you three different answers to three different questions, and one rejection fails the whole batch. An ensemble asks every member the same question, keeps no member's answer on its own, and has nothing to reject: a wrong member still returns a number, and it drags the average instead of throwing. The payoff is conditional too. Three services are worth their bill because they do different work; three models are worth theirs only when their mistakes land in different places."
+    breaks: "Promise.all gathers results from several calls and rejects if one rejects. Those calls may answer the same or different questions. An ensemble combines predictions about the same target; its members can fail at runtime or return plausible but inaccurate values. Measure whether their combined errors improve on the best member."
 consequence:
   narrative: "The blend beats its best single member on the held-out week, 0.036 against 0.038. Demir keeps all three models and still fits the compression line by hand."
 hints:
