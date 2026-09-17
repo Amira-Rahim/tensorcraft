@@ -147,6 +147,12 @@ email locally; this does not certify production email delivery.
 - Fly lacked GitHub client credentials and its API callback URL. The existing
   App credentials were verified and installed. Registration of the callback
   still needs correction in GitHub, as described below.
+- GitHub connect omitted `credentials: "include"`, preventing the browser
+  from storing the API's OAuth state cookie across origins. The request now
+  includes credentials. Successful browser callbacks return to Settings;
+  programmatic callers retain the JSON response. Regression checks reproduced
+  both defects before the fix and pass afterward, including cookie validation,
+  credentialed CORS, token persistence, and the final redirect.
 
 ## Deployment
 
@@ -183,6 +189,7 @@ carry that tag. On 2026-09-17, both production alert delivery paths passed:
   the enabled payment alert at 07:38 UTC. Its notification appeared in the
   configured Sentry owner's Gmail inbox. The event contains no customer data:
   [test issue TENSORCRAFT-API-2](https://amira-salah.sentry.io/issues/147594211/).
+  The synthetic issue was marked resolved after delivery verification.
 
 The SDK delivery checks ran locally with protected temporary copies of the
 production alert settings. An earlier diagnostic process stalled on a Fly
@@ -234,10 +241,11 @@ However, GitHub rejects this required callback as unregistered:
 
 `https://api.tensorcraft.app/api/github/callback`
 
-[App settings](https://github.com/settings/apps/tensorcraft-exercises) require
-the owner's passkey confirmation. Add the callback without removing any
-existing required URLs, then complete a connection and exercise save with an
-authorized test account. The OAuth round trip is not yet verified.
+[App settings](https://github.com/settings/apps/tensorcraft-exercises) are now
+accessible after the owner's passkey check. The exact callback is entered with
+wildcard matching disabled, ready to save after the required confirmation.
+Existing URLs are preserved. A real connection and exercise save still need an
+authorized test account. The live OAuth round trip is not yet verified.
 
 ### Stripe Tax and invoices (deferred)
 
@@ -262,3 +270,8 @@ The previous fixes are in commit `7acc978b05f1ebb44614006bf3c7dddb8a7f4398`.
 passed all ten jobs, including the new API image build, database row security,
 full browser suite, unit tests, dependency audit, and migration ledger check.
 Visual regression also passed.
+
+Storage recovery and alert delivery evidence were pushed in `9317c950`.
+[CI run 35196051553](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35196051553)
+passed all ten jobs, and visual regression passed. Subsequent GitHub browser
+flow fixes add a regression test to the existing route and settings checks.

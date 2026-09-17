@@ -21,6 +21,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { Hono } from "hono";
 import type { AppEnv } from "../../types";
+import { corsMiddleware } from "../../middleware/cors";
 
 // ─────────────────────────────────────────────────────────────
 // Supabase mock, profiles read/write only.
@@ -152,12 +153,14 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 
 const { github } = await import("../github");
 
 function createApp() {
   const app = new Hono<AppEnv>();
+  app.use("*", corsMiddleware);
   app.route("/api/github", github);
   return app;
 }
@@ -232,6 +235,77 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
     );
     // Profile row now carries the token for the commit flow.
     expect(db.profiles[0]?.github_token).toBe("ghu_acquired_token");
+  });
+
+  it("returns a browser to settings after the cookie-bound OAuth round trip", async () => {
+    vi.stubEnv("APP_URL", "https://tensorcraft.app");
+    vi.stubEnv(
+      "GITHUB_CALLBACK_URL",
+      "https://api.tensorcraft.app/api/github/callback",
+    );
+    authed("user-A");
+    const app = createApp();
+    const connect = await app.request("/api/github/connect", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer v",
+        Origin: "https://tensorcraft.app",
+      },
+    });
+    expect(connect.headers.get("access-control-allow-origin")).toBe(
+      "https://tensorcraft.app",
+    );
+    expect(connect.headers.get("access-control-allow-credentials")).toBe(
+      "true",
+    );
+    const { url, state } = (await connect.json()) as {
+      url: string;
+      state: string;
+    };
+    expect(new URL(url).searchParams.get("redirect_uri")).toBe(
+      "https://api.tensorcraft.app/api/github/callback",
+    );
+    const cookie = connect.headers.get("set-cookie");
+    expect(cookie).toContain("HttpOnly");
+    expect(cookie).toContain("SameSite=Lax");
+
+    fetchHandler = async (target) => {
+      if (target === "https://github.com/login/oauth/access_token") {
+        return jsonResponse({
+          access_token: "ghu_browser_token",
+          token_type: "bearer",
+        });
+      }
+      if (target === "https://api.github.com/user") {
+        return jsonResponse({ login: "amira-handle" });
+      }
+      throw new Error(`unexpected ${target}`);
+    };
+
+    const callback = `/api/github/callback?code=ghcode&state=${encodeURIComponent(state)}`;
+    const missingCookie = await app.request(callback, {
+      headers: { Accept: "text/html" },
+    });
+    expect(missingCookie.status).toBe(400);
+    expect(fetchCalls).toHaveLength(0);
+
+    const response = await app.request(callback, {
+      headers: {
+        Accept: "text/html,application/xhtml+xml",
+        Cookie: cookie!.split(";")[0]!,
+      },
+    });
+    expect(response.status).toBe(302);
+    expect(response.headers.get("location")).toBe(
+      "https://tensorcraft.app/settings",
+    );
+    expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
+    expect(db.profiles[0]).toMatchObject({
+      id: "user-A",
+      github_connected: true,
+      github_username: "amira-handle",
+      github_token: "ghu_browser_token",
+    });
   });
 
   it("commit happy path: repo auto-create → README seed → lesson PUT → commit SHA", async () => {

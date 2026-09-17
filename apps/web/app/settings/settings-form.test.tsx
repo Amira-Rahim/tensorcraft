@@ -217,6 +217,7 @@ describe("SettingsForm", () => {
         "http://api.test/api/github/connect",
         expect.objectContaining({
           method: "POST",
+          credentials: "include",
           headers: expect.objectContaining({
             Authorization: "Bearer TOKEN",
           }),

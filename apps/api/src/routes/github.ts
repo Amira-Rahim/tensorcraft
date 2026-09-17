@@ -157,8 +157,7 @@ github.post("/connect", async (c) => {
 //
 // This endpoint is called by GitHub after the user authorizes the App.
 // It does NOT require our own auth middleware, identity is encoded in
-// `state` (userId.{uuid}). In production, `state` should be additionally
-// validated against a signed cookie set by /connect.
+// `state` (userId.{uuid}), validated against the HttpOnly cookie from /connect.
 
 github.get("/callback", async (c) => {
   const code = c.req.query("code");
@@ -277,6 +276,17 @@ github.get("/callback", async (c) => {
       );
     }
 
+    // OAuth navigation should return the learner to the web app. Keep JSON
+    // responses for programmatic clients that do not request an HTML page.
+    if (c.req.header("Accept")?.includes("text/html")) {
+      return c.redirect(
+        new URL(
+          "/settings",
+          process.env.APP_URL ?? "http://localhost:3000",
+        ).toString(),
+        302,
+      );
+    }
     return c.json({ connected: true, username });
   } catch (err) {
     const mapped = mapGitHubError(err);

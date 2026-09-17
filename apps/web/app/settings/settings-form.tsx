@@ -324,6 +324,8 @@ export function SettingsForm({
 
       const res = await fetch(`${getApiUrl()}/api/github/connect`, {
         method: "POST",
+        // The API sets the state cookie needed on the OAuth callback.
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
