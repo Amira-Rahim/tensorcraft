@@ -8,12 +8,12 @@ import { BUILT_WORLD_DIRS } from "../src/built-worlds";
  * built `recallPrompts` array (2026-09-16).
  *
  * Scoped to BUILT_WORLD_DIRS on purpose. terra-grid/ab-testing/05 carries 3
- * prompts and is not in the velite build, so an unscoped scan compares 83
- * raw tags against 80 built entries and is red on day one.
+ * prompts and is not in the velite build, so an unscoped scan compares 85
+ * raw tags against 82 built entries and is red on day one.
  *
  * The count is the whole point of the gate: parseRecallPrompts drops a tag
  * it cannot read both attributes off (a JSX-children answer, a single-quoted
- * value), and a parser that silently matches 79 of 80 is otherwise
+ * value), and a parser that silently matches 81 of 82 is otherwise
  * invisible, since the lesson that lost its prompt still renders fine.
  */
 interface BuiltLesson {

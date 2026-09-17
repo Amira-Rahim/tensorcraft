@@ -6,8 +6,8 @@
  * down as props. `review-store-guest.ts` is the signed-out counterpart, and
  * `free-recall-prompts.ts` is the table that path matches against.
  *
- * THIS MODULE IS A SECURITY BOUNDARY. 74 of Deep Orbit's 80 recall prompts are
- * paid content; only the 6 in the free `foundations` module are not. A
+ * THIS MODULE IS A SECURITY BOUNDARY. 75 of Deep Orbit's 82 recall prompts are
+ * paid content; only the 7 in the free `foundations` module are not. A
  * `review_queue` row is a KEY, never text, so this file is the only place a
  * key becomes readable prose for a signed-in learner. Four rules keep that
  * safe, and all four exist for a reason that is easy to undo by accident.

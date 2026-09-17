@@ -7,8 +7,8 @@
  * guest's due keys into prompt text. Instead the server ships this table and
  * the client joins its own queue keys against it.
  *
- * THIS TABLE IS A SECURITY BOUNDARY. 74 of Deep Orbit's 80 recall prompts are
- * paid content behind the paywall; only the 6 in the free `foundations`
+ * THIS TABLE IS A SECURITY BOUNDARY. 75 of Deep Orbit's 82 recall prompts are
+ * paid content behind the paywall; only the 7 in the free `foundations`
  * module are not. A guest's queue keys sit in `localStorage`, where anyone can
  * hand-edit them, so the safety property is that this table simply does not
  * contain paid text: a forged key matches nothing. If a paid module ever leaks
@@ -17,15 +17,15 @@
  *
  * THIS FILE IS SERVER-ONLY. It must never carry "use client". Velite's
  * `index.js` re-exports `lessons.json` as a single JSON default, and that file
- * is about 1.2 MB (1,197,661 bytes once this change's 80 prompts land), so a
+ * is about 1.2 MB (1,189,142 bytes with 82 prompts built, 2026-09-17), so a
  * "use client" module importing it ships all of that to
  * the browser. No client component in apps/web imports `@tensorcraft/content`
  * today, and this must not be the first. The stage-2 consumer receives the
  * table as serialized props. Stage 1 ships no consumer, so nothing here can
  * regress yet, which is exactly why the reasoning is written down now: the
  * stage-2 reviewer will not be reading the stage-1 plan. Note also that the
- * payload budget check in that plan measures the 6 prompts (about 2.5 KB), not
- * what a bundler would ship, so it would still read 2.5 KB on the day this
+ * payload budget check in that plan measures the 7 prompts (about 3 KB), not
+ * what a bundler would ship, so it would still read 3 KB on the day this
  * file grows a "use client" and the browser receives 1.1 MB. The comment is
  * the guard, not the number.
  */

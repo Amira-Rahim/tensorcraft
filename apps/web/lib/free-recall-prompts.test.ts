@@ -5,7 +5,7 @@ import { FREE_RECALL_PROMPTS, lookupFreePrompt } from "./free-recall-prompts";
 
 describe("FREE_RECALL_PROMPTS", () => {
   it("contains exactly the free module's prompts", () => {
-    expect(FREE_RECALL_PROMPTS).toHaveLength(6);
+    expect(FREE_RECALL_PROMPTS).toHaveLength(7);
   });
 
   it("contains nothing outside the free module", () => {
@@ -36,7 +36,7 @@ describe("free-recall-prompts is server-only", () => {
     re-exports as one 1.1 MB JSON default. A "use client" directive on this
     module would therefore ship all 56 lessons to every browser to display at
     most two prompts, and the byte-budget check in the plan would not notice:
-    it measures the 6 extracted prompts, not what a bundler emits.
+    it measures the 7 extracted prompts, not what a bundler emits.
 
     Stage 1 ships no consumer, so nothing catches this today except this test.
     Matching the DIRECTIVE and not the string matters, because the file's own

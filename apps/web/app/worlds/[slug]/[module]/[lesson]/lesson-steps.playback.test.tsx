@@ -111,6 +111,9 @@ vi.mock("@/app/components/mdx", () => ({
   NextLesson: () => null,
   RecallPrompt: () => null,
   StrategyThread: () => null,
+  TransferAssignment: () => null,
+  DecisionTask: () => null,
+  IndependentProject: () => null,
 }));
 
 // Velite-style compiled MDX: two opening dialogues, a story paragraph

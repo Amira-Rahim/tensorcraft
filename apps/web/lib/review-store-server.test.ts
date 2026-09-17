@@ -5,8 +5,8 @@ import { lessons, modules } from "@tensorcraft/content";
 import { DEFAULT_WORLD } from "@tensorcraft/shared";
 
 /*
-  THE SECURITY BOUNDARY of spaced review, signed-in half. 74 of Deep Orbit's
-  80 recall prompts are paid content, so these tests are the only thing
+  THE SECURITY BOUNDARY of spaced review, signed-in half. 75 of Deep Orbit's
+  82 recall prompts are paid content, so these tests are the only thing
   between a stale or forged `review_queue` row and paid prompt text on a
   learner's screen. Spec:
   docs/superpowers/specs/2026-09-15-spaced-review-design.md section D.
@@ -276,7 +276,7 @@ describe("resolveDueForUser", () => {
 
 describe("the quota is applied after the entitlement gate", () => {
   /*
-    A refunded learner keeps up to 74 paid rows and 6 free ones, and their
+    A refunded learner keeps up to 75 paid rows and 7 free ones, and their
     paid rows are the oldest, so the most overdue. Applying `limit` BEFORE
     the gate hands selectDue two paid keys, drops both, and shows them an
     empty warm-up forever while free items sit due. No leak, they see less
