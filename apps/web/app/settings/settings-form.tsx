@@ -697,11 +697,37 @@ export function SettingsForm({
                 lineHeight: 1.6,
               }}
             >
-              Connect GitHub and each lesson you complete lands as a commit in
-              your own repository. Solution repos are created public on your
-              GitHub account. Tensorcraft stores only a personal OAuth token, no
-              passwords, no private code mirroring.
+              Connect your GitHub account, then install the Tensorcraft
+              Exercises App to allow repository access. Passed exercises are
+              saved to public solution repositories on your account. Tensorcraft
+              stores an encrypted GitHub access token.
             </p>
+
+            {githubConnected && (
+              <p
+                className="mb-5"
+                style={{
+                  fontSize: 12,
+                  color: "var(--tc-muted)",
+                  lineHeight: 1.6,
+                }}
+              >
+                Account authorization is complete. Repository access requires a
+                separate App installation.{" "}
+                <a
+                  href="https://github.com/apps/tensorcraft-exercises/installations/new"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                >
+                  Install or configure the GitHub App
+                </a>
+                . After granting access, return here and push your solved
+                exercises. To limit access, create a public
+                tensorcraft-deep-orbit repository and select only that
+                repository during installation.
+              </p>
+            )}
 
             <div className="flex flex-wrap items-center gap-3">
               {githubConnected ? (

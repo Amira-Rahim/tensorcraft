@@ -67,7 +67,7 @@ function mapGitHubError(err: unknown): {
         status: err.status,
         body: structuredError(
           "github_repo_access_revoked",
-          "GitHub can no longer reach your repository. Your connection is intact. Reinstall the GitHub App on your account, then retry.",
+          "GitHub repository access is missing. In Settings, install or configure the GitHub App and grant access to your solution repository, then retry.",
         ),
       };
     }

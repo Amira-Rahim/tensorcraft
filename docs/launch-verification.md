@@ -3,10 +3,11 @@
 Updated on 2026-09-17. The four requested implementation checks pass:
 spaced review, PostgreSQL row security, browser E2E, and real signup plus
 Stripe test checkout. GitHub callback and permission configuration, production
-alert delivery, the managed snapshot restore drill, and production email sign-in
-are complete. A real GitHub connection plus exercise save remain unverified.
+alert delivery, the managed snapshot restore drill, production email sign-in,
+and GitHub authorization are complete. A real GitHub exercise save is verified
+with App access restricted to the exercise repository.
 Stripe Tax and business registration are deferred at the owner's request.
-The recorded CI run for `33c0fa7a` passed all jobs.
+The recorded CI run for `5a68da4b` passed all ten jobs.
 
 ## Recorded results
 
@@ -160,6 +161,11 @@ email locally; this does not certify production email delivery.
   headers. A regression test failed before the change and passes afterward;
   another test confirms untrusted origins remain denied. The production
   preflight response reproduced the missing headers before deployment.
+- Fly's `APP_URL` still pointed to the retired `https://tensorcraft.dev` domain.
+  A successful GitHub authorization saved the connection but redirected to that
+  unreachable host. The runtime value was corrected to `https://tensorcraft.app`
+  and read back after rollout. Checkout return URLs and transactional-email
+  links use the same setting.
 
 ## Deployment
 
@@ -188,6 +194,13 @@ machines. Both report passing health checks and the expected commit SHA.
 Public health and database readiness checks returned HTTP 200 afterward.
 The [Vercel deployment](https://vercel.com/amira-salahs-projects/tensorcraft/E44biWs9MNcgobg1G8NCtw9BwiJ9)
 is Ready and serves `tensorcraft.app`.
+
+The analytics-header CORS fix is commit `5a68da4b`.
+[API deployment 35207573733](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35207573733)
+passed and deployed release 27. The production preflight then allowed all three
+PostHog headers, along with Authorization and Content-Type. Correcting `APP_URL`
+rolled both machines to release 28 using the same image. Both health checks
+passed, and public health plus database readiness returned HTTP 200.
 
 ## Monitoring and recovery
 
@@ -261,12 +274,37 @@ The owner saved this exact production callback on 2026-09-17:
 
 [App settings](https://github.com/settings/apps/tensorcraft-exercises) confirm
 the saved callback with wildcard matching disabled. Existing callback URLs
-were preserved. A signed-in production test account is available. Clicking
-Connect GitHub returned `Failed to fetch`; direct API navigation showed Chrome's
-`ERR_BLOCKED_BY_CLIENT`, while external health and CORS checks reached the API.
-The owner must resolve this browser block before the live OAuth round trip and
-exercise save can be verified. Separately, the tracing-header CORS defect above
-was reproduced and fixed in code.
+were preserved. The initial browser block and tracing-header CORS defect were
+resolved. The owner completed GitHub authorization, and Settings showed
+`CONNECTED` as `amirasalah`. A read-only database check confirmed the saved
+connection. The stale `APP_URL` found during that round trip was corrected as
+described above.
+
+The production Introduction to Tensors exercise passed all eight tests, and
+the lesson reached its final step. A read-only database check confirmed two
+passing attempts and one completed lesson. The earlier TensorFlow.js loading
+failure did not recur in this run; its original cause remains unconfirmed.
+
+The first automatic GitHub save returned 403, "Resource not accessible by
+integration". Account authorization had succeeded, but the App was not
+installed. The owner approved access only to `tensorcraft-deep-orbit`. An
+initial public repository was created through the owner's GitHub CLI, then
+App installation `162451914` was completed with only that repository selected.
+Automatic repository creation was not exercised under this restricted setup.
+
+Settings' **Push solved exercises** then reported
+`Pushed 1 · skipped 0 · failed 0`. The
+[exercise commit](https://github.com/amirasalah/tensorcraft-deep-orbit/commit/80dc7fa6b86d15ff733c1006b2d76fff8c7b5c0d)
+contains the exact passing solution at `foundations/create-a-tensor.ts`; the
+[progress commit](https://github.com/amirasalah/tensorcraft-deep-orbit/commit/9d06dbb4a930eb0fcfd02676ab9ca8c6b1d15d57)
+records the lesson. The exercise file was written by Tensorcraft's real push
+flow. Settings became responsive after releasing a stalled browser debugger
+and reloading; no browser security settings were changed.
+
+Settings now explains the separate App installation, links to its installation
+screen, and describes the single-repository setup. The API access error points
+to that recovery path. The three focused suites pass all 51 tests, and both
+web and API type checks pass.
 
 The App now has `administration: write`, `contents: write`, and `metadata: read`,
 confirmed after the owner's approval. GitHub requires `administration: write` for the
@@ -319,3 +357,11 @@ before the implementation change and passed afterward. CI for the code fix,
 passed. The latest pushed record, `33c0fa7a`, also passed all ten jobs in
 [run 35197315060](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35197315060)
 and [visual regression](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35197315075).
+
+The CORS fix added two policy regression tests. All 56 targeted CORS, GitHub,
+and Settings tests passed; the full pre-push suite passed 2,669 tests with 65
+skipped. API lint and typecheck passed with existing lint warnings.
+[CI run 35207560199](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35207560199)
+passed all ten jobs, and
+[visual regression 35207560245](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35207560245)
+passed.
