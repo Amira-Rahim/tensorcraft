@@ -10,7 +10,7 @@
 > set is **1 world / 55 lessons / 1 capstone / ~65 exercises**. Validator,
 > bridge counts, and content metrics measured against the launched subset
 > only. Pricing-related items (§A3 Stripe price IDs, §A5 Stripe products,
-> §A6 real-money smoke) are owned by a parallel pricing session - confirm
+> §A6 Stripe test checkout) are owned by a parallel pricing session - confirm
 > with that session before flipping live mode.
 
 > **Doc map (2026-07-22):** the current definitive pre-launch list is
@@ -188,19 +188,29 @@ Five services need projects created + DSN/keys captured:
    - Configure bounce/complaint Automation → webhook to `https://api.tensorcraft.app/api/webhooks/kit-bounce` with `KIT_WEBHOOK_SECRET` header
 5. **Stripe** - flip to live mode. (No Products/Prices needed in the dashboard - checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`: $50/$90/$135/$225. Stripe still records each charge as a line item for receipts + refunds.) Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `charge.refunded`, `charge.dispute.created` (the handler processes all five; omitting async_payment_succeeded would leave bank-debit buyers charged but never fulfilled, and omitting dispute.created would skip auto-revocation).
 
-### A6. Real-money Stripe smoke test
+### A6. Stripe test checkout and refunds
 
 After §A2–§A5 complete:
 
-1. Use a personal card to buy the $50 Single World tier on production.
+Use an isolated local/staging database and Stripe test mode. Stripe prohibits
+using real payment details for live-mode testing; see its
+[testing documentation](https://docs.stripe.com/testing). The current results
+are recorded in [launch verification](./launch-verification.md).
+
+1. Use Stripe's 4242 test card to buy the $50 Single World tier in the test environment.
 2. Verify: redirect to `/dashboard/purchase-success?session_id=...` renders correct receipt.
 3. Query DB: new row in `purchases` with `status='completed'` + `world_ids: ['<chosen-world>']`.
 4. Check PostHog dashboard: `payment_completed` event fired with user_id.
 5. Check Kit: subscriber tagged with `purchased`.
 6. Check email inbox: purchase-confirmation email arrives with unsubscribe link + receipt.
-7. Refund the charge via Stripe dashboard.
+7. Partially refund the test charge and verify paid access remains, then refund the remainder.
 8. Verify: `purchases.status='refunded'` in DB within 30s (webhook fire).
 9. Load paid module → paywall reappears (access revoked).
+10. Replay the full refund and then the earlier partial refund. Access must stay revoked and duplicate notifications must not fire.
+
+Check live account capability and webhook configuration read-only. Observe
+the first genuine customer purchase during normal operation; do not create
+a live purchase solely to test the integration.
 
 If any step fails, **stop and fix before inviting any user**.
 
@@ -701,7 +711,7 @@ Run these in order the day of launch:
 - [ ] §B4 email flow e2e done
 - [ ] §B5 DPAs signed
 - [ ] §B8 test suite green on `main`
-- [ ] One-time real-money test charge refunded and DB state clean (no lingering test purchases)
+- [ ] Stripe test checkout and partial/full refunds verified, including delayed and duplicate events
 - [ ] Monitoring: Sentry + PostHog dashboards open in a tab during first 48 hrs
 - [ ] On-call for support email - check twice daily first week
 
@@ -787,7 +797,7 @@ Third round audit covering both internal (code) and external (services/ops) laun
 Round 3 internal-vs-external split:
 
 - **Internal (code/repo):** §A1 (commit), §A2 (apply migrations), §A12/§A13 (fixed this round), §B8 (test suite), §A11 (CSP smoke).
-- **External (dashboards/services/ops):** §A3 (Fly secrets), §A4 (Vercel env), §A5 (service accounts), §A6 (Stripe live charge), §A7 (cookie consent), §A9 (Supabase Pro), §A10 (deletion protection), §B5 (DPAs), §B9 (DNS docs), §B10 (Sentry alerts), §B4 (email e2e), §B3 (GitHub e2e), §B2 (cross-browser), §B1 (Lighthouse).
+- **External (dashboards/services/ops):** §A3 (Fly secrets), §A4 (Vercel env), §A5 (service accounts), §A6 (Stripe test checkout and refunds), §A7 (cookie consent), §A9 (Supabase Pro), §A10 (deletion protection), §B5 (DPAs), §B9 (DNS docs), §B10 (Sentry alerts), §B4 (email e2e), §B3 (GitHub e2e), §B2 (cross-browser), §B1 (Lighthouse).
 
 Engineering side after Round 3: code is launch-ready (pending commit). All remaining gates require user dashboard work.
 

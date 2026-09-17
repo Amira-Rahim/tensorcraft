@@ -67,17 +67,16 @@ function validateWorldIds(ids: string[]): boolean {
 }
 
 /**
- * Claim this delivery's right to fire ONE-SHOT side effects (revenue event,
- * confirmation email) for a Stripe event, via the payment_events ledger
- * (migration 053). The row-status guards already suppress SEQUENTIAL
- * re-deliveries; this closes the CONCURRENT window where two deliveries of
- * the same event both read a stale row and both fire (run-2 diff review's
- * accepted TOCTOU; fresh-eyes rerun irreversible list #6).
+ * Claim this delivery's right to fire analytics, confirmation emails, and
+ * refund alerts for a Stripe event, via the payment_events ledger
+ * (migration 053). Purchase row-status guards suppress sequential completion
+ * re-deliveries; the ledger also covers concurrent deliveries and repeated
+ * refund notifications.
  *
  * Returns true when this delivery won the insert (or when the ledger is
  * unavailable - 053 not yet applied - where blocking payments over a
- * missing observability table would be the worse failure; the sequential
- * guards still hold in that window).
+ * missing observability table would be the worse failure; purchase status
+ * updates remain guarded in that window).
  */
 async function claimEventSideEffects(
   supabase: ReturnType<typeof getSupabaseAdminClient>,
@@ -929,11 +928,21 @@ payments.post("/webhook", async (c) => {
         const isFullRefund = charge.amount_refunded >= charge.amount;
         const newStatus = isFullRefund ? "refunded" : "partially_refunded";
 
-        const { data: refundedRows, error: refundError } = await supabase
+        let refundUpdate = supabase
           .from("purchases")
           .update({ status: newStatus })
-          .eq("stripe_payment_intent", refundPaymentIntent)
-          .select("id");
+          .eq("stripe_payment_intent", refundPaymentIntent);
+        if (!isFullRefund) {
+          // Apply the guard in PostgreSQL so a concurrent full refund or
+          // dispute cannot be overwritten by a stale partial-refund event.
+          refundUpdate = refundUpdate.in("status", [
+            "pending",
+            "completed",
+            "partially_refunded",
+          ]);
+        }
+        const { data: refundedRows, error: refundError } =
+          await refundUpdate.select("id");
 
         if (refundError) {
           logger.error(
@@ -949,6 +958,22 @@ payments.post("/webhook", async (c) => {
         }
 
         if (!refundedRows || refundedRows.length === 0) {
+          if (!isFullRefund) {
+            const { data: existingRefund, error: lookupError } = await supabase
+              .from("purchases")
+              .select("status")
+              .eq("stripe_payment_intent", refundPaymentIntent)
+              .maybeSingle();
+            if (
+              !lookupError &&
+              existingRefund &&
+              ["refunded", "disputed", "failed"].includes(existingRefund.status)
+            ) {
+              // The purchase exists, but a later event already revoked access.
+              // Acknowledge this old event without sending a misleading alert.
+              break;
+            }
+          }
           // No purchase row carries this payment_intent yet - the refund
           // event outran the purchase row (webhook ordering) or the row is
           // missing its intent. Returning 200 here made the refund
@@ -963,6 +988,13 @@ payments.post("/webhook", async (c) => {
             "Webhook: refund matched no purchase row; requesting retry",
           );
           return c.json({ error: "No purchase row for refund yet" }, 500);
+        }
+
+        // Access updates must succeed before claiming notifications. Repeated
+        // refund deliveries can safely update the row, but must not send the
+        // same alert or analytics event again.
+        if (!(await claimEventSideEffects(supabase, event.id, event.type))) {
+          break;
         }
 
         // Look up owning user to correctly attribute the event.

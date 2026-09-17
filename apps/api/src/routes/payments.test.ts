@@ -14,7 +14,7 @@ const mockSessionCreate = vi.fn();
  * used by the webhook's race-condition no-regression logic (§338).
  * Default null means "row does not exist".
  */
-let mockAdminExistingRow: { status: string } | null = null;
+let mockAdminExistingRow: { status: string; user_id?: string } | null = null;
 // When set, controls what update().eq()[.select()] resolves to.
 let mockEqResult: { data: unknown; error: unknown } | null = null;
 
@@ -64,8 +64,10 @@ vi.mock("@tensorcraft/supabase", () => ({
       if (table === "payment_events") {
         return {
           insert: (...args: unknown[]) => {
-            mockEventLedgerInsert(...args);
-            return Promise.resolve({ data: null, error: null });
+            return (
+              mockEventLedgerInsert(...args) ??
+              Promise.resolve({ data: null, error: null })
+            );
           },
         };
       }
@@ -84,7 +86,8 @@ vi.mock("@tensorcraft/supabase", () => ({
                 // zero-rows case; async_payment_failed awaits .eq directly.
                 const result = Promise.resolve(
                   mockEqResult ?? { data: null, error: null },
-                ) as Promise<unknown> & { select?: unknown };
+                ) as Promise<unknown> & { select?: unknown; in?: unknown };
+                result.in = () => result;
                 result.select = () =>
                   Promise.resolve(
                     mockEqResult ?? { data: [{ id: "p_1" }], error: null },
@@ -223,6 +226,11 @@ vi.mock("../lib/email", () => ({
   sendPurchaseReceipt: (...args: unknown[]) => mockSendReceipt(...args),
 }));
 
+const mockSendOperatorAlert = vi.fn().mockResolvedValue(undefined);
+vi.mock("../lib/operator-alert", () => ({
+  sendOperatorAlert: (...args: unknown[]) => mockSendOperatorAlert(...args),
+}));
+
 vi.mock("@tensorcraft/shared", async (importOriginal) => ({
   // Spread the real module so genuinely shared logic (slug validation,
   // launch flags) is exercised rather than re-implemented in a stub.
@@ -264,6 +272,7 @@ describe("POST /api/payments/webhook", () => {
     mockUpdate.mockReset();
     mockEq.mockReset();
     mockConstructEvent.mockReset();
+    mockEventLedgerInsert.mockReset();
     mockServerInsert.mockReset();
     mockExistingPurchases = null;
     mockAdminExistingRow = null;
@@ -578,6 +587,7 @@ describe("POST /api/payments/webhook", () => {
     });
 
     expect(res.status).toBe(500);
+    expect(mockEventLedgerInsert).not.toHaveBeenCalled();
   });
 
   it("handles charge.refunded event", async () => {
@@ -609,6 +619,42 @@ describe("POST /api/payments/webhook", () => {
     expect(res.status).toBe(200);
     expect(mockUpdate).toHaveBeenCalledWith({ status: "refunded" });
     expect(mockEq).toHaveBeenCalledWith("stripe_payment_intent", "pi_789");
+  });
+
+  it("sends refund analytics and alerts once for concurrent duplicate deliveries", async () => {
+    mockCaptureServer.mockClear();
+    mockSendOperatorAlert.mockClear();
+    mockAdminExistingRow = { status: "refunded", user_id: "user-test-123" };
+    mockEventLedgerInsert
+      .mockResolvedValueOnce({ data: null, error: null })
+      .mockResolvedValueOnce({ data: null, error: { code: "23505" } });
+    const event = {
+      id: "evt_refund_duplicate",
+      type: "charge.refunded",
+      data: {
+        object: {
+          payment_intent: "pi_789",
+          amount: 4900,
+          amount_refunded: 4900,
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    const deliver = () =>
+      app.request("/api/payments/webhook", {
+        method: "POST",
+        headers: { "stripe-signature": "sig_test" },
+        body: JSON.stringify(event),
+      });
+    const responses = await Promise.all([deliver(), deliver()]);
+    expect(responses.map((res) => res.status)).toEqual([200, 200]);
+    expect(mockUpdate).toHaveBeenCalledTimes(2);
+    expect(mockCaptureServer).toHaveBeenCalledTimes(1);
+    expect(mockSendOperatorAlert).toHaveBeenCalledTimes(1);
+    expect(mockEventLedgerInsert).toHaveBeenCalledWith({
+      stripe_event_id: event.id,
+      event_type: event.type,
+    });
   });
 
   it("rejects webhook with empty world_ids metadata (§6h)", async () => {

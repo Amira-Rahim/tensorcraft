@@ -4,17 +4,21 @@ Updated on 2026-09-17. The four requested implementation checks pass:
 spaced review, PostgreSQL row security, browser E2E, and real signup plus
 Stripe test checkout. GitHub callback and permission configuration, production
 alert delivery, the managed snapshot restore drill, production email sign-in,
-and GitHub authorization are complete. A real GitHub exercise save is verified
-with App access restricted to the exercise repository.
+and GitHub authorization are complete. Manual and automatic GitHub exercise
+saves are verified with App access restricted to the exercise repository.
+Real Stripe test refunds and support mailbox settings also pass. Automatic
+repository creation still needs a separate test account and App installation.
 Stripe Tax and business registration are deferred at the owner's request.
-The recorded CI run for `5a68da4b` passed all ten jobs.
+The recorded CI run for `840a1d05` passed all ten jobs.
 
 ## Recorded results
 
 Validation used a clean installation of the locked dependencies, including
 Next.js 16.3.5 and React 19.3.0.
 
-- Final full unit suite: 2,667 passed, 65 skipped.
+- Prior full unit suite: 2,669 passed, 65 skipped.
+- Refund fixes: 76 focused payment, signed-webhook integration, and operator
+  alert tests passed. API typecheck and lint passed with seven existing warnings.
 - Full Playwright pass from the preceding implementation work: 137 passed,
   34 skipped. Includes desktop, iPhone, Pixel, iPad, accessibility, guest
   review scheduling, scene playback, and reading without JavaScript.
@@ -126,6 +130,37 @@ Stripe test settings. CLI test credentials may expire. Do not use production
 Supabase or a live Stripe key for these browser tests. The test mailbox captures
 email locally; this does not certify production email delivery.
 
+### Real Stripe test refunds, 2026-09-17
+
+The retained local stack was restarted for refund verification. Stripe test
+payment `pi_3UGPZSAbX1OG1Kid00GjxLWD` had a completed USD 50 purchase and
+Deep Orbit access before the check. Actual Stripe test refunds then passed:
+
+- USD 10 partial refund `re_3UGPZSAbX1OG1Kid0ncoH9I0`: the Stripe CLI
+  delivered the signed event, the purchase became `partially_refunded`, and
+  authenticated access still included Deep Orbit.
+- Remaining USD 40 refund `re_3UGPZSAbX1OG1Kid03LQ7gsi`: the signed event
+  changed the purchase to `refunded`, and authenticated access became empty.
+- Replaying full-refund event `evt_3UGPZSAbX1OG1Kid00TCatsb` twice kept
+  one event-ledger row and left access revoked.
+- Replaying the earlier real partial-refund event after the full refund
+  returned HTTP 200 without restoring access or changing `refunded` status.
+
+The last two checks used the actual Stripe event payloads with locally signed
+test headers against the current API and real local PostgreSQL. External
+notifications were disabled locally; the concurrent-delivery regression test
+separately verifies one analytics event and one operator alert per event ID.
+No live charge or refund was made.
+
+Read-only production checks found charges and payouts enabled and an active
+webhook at `https://api.tensorcraft.app/api/payments/webhook`. Its event list
+includes checkout completion, delayed payment success/failure, refunds, and
+both dispute events. This verifies configuration, not a live transaction.
+[Stripe's testing documentation](https://docs.stripe.com/testing) prohibits
+using real payment details for live-mode testing. Observe the first genuine
+customer purchase during normal operation rather than making a test purchase
+with a personal card.
+
 ## Fixes found by verification
 
 - Local signup failed because CSP excluded configured backend ports. The web
@@ -166,6 +201,13 @@ email locally; this does not certify production email delivery.
   unreachable host. The runtime value was corrected to `https://tensorcraft.app`
   and read back after rollout. Checkout return URLs and transactional-email
   links use the same setting.
+- Duplicate refund deliveries repeated analytics and operator alerts. Refund
+  notifications now use the existing unique event ledger after the purchase
+  update succeeds. Missing purchases still return a retryable error.
+- A delayed partial-refund event could overwrite a full refund, dispute, or
+  failed purchase and restore paid access. An atomic database status filter
+  now prevents that update. Three signed-webhook regression cases reproduced
+  the defect before the fix; a real Stripe event replay also passed afterward.
 
 ## Deployment
 
@@ -261,7 +303,7 @@ restored bytes, and cleans up. Supabase's managed database backups do not
 include Storage file bytes; see the
 [backup documentation](https://supabase.com/docs/guides/platform/backups).
 
-## Remaining external configuration
+## External configuration and remaining verification
 
 ### GitHub connection
 
@@ -301,6 +343,17 @@ records the lesson. The exercise file was written by Tensorcraft's real push
 flow. Settings became responsive after releasing a stalled browser debugger
 and reloading; no browser security settings were changed.
 
+Automatic saving was then verified independently. On the production exercise,
+the passing solution was changed to use
+`tf.tensor(streamValues, [streamValues.length])`. Clicking **Run tests** passed
+all eight checks and automatically created
+[commit cbca8764](https://github.com/amirasalah/tensorcraft-deep-orbit/commit/cbca8764aab47c00f3f08d0b6b7c351148c9cc0c).
+GitHub's API confirmed the exact change in `foundations/create-a-tensor.ts`.
+The Settings backfill action was not used in this check. Automatic creation
+of a missing repository remains unverified; it requires a separate test
+account with an appropriate App installation. The owner's restricted
+installation was preserved.
+
 Settings now explains the separate App installation, links to its installation
 screen, and describes the single-repository setup. The API access error points
 to that recovery path. The three focused suites pass all 51 tests, and both
@@ -321,6 +374,22 @@ the authenticated dashboard and Settings both showed the expected email
 identity. The owner handled the email-link step after browser-control
 interruptions. This verifies production email sign-in, without claiming a new
 account was created during this check.
+
+### Support mailbox
+
+The receiving Gmail account's settings were inspected on 2026-09-17. They
+already contain all three previously open items, so no settings were changed:
+
+- A `to:(support@tensorcraft.app)` filter applies the `Tensorcraft` label and
+  **Never send it to Spam**.
+- `support@tensorcraft.app` is the default send-as address, with **Always reply
+  from default address** selected.
+- The sender name is `Tensorcraft`; Gmail sends through `smtp.resend.com`
+  using TLS on port 587.
+
+The personal receiving address is intentionally omitted from this public
+record. Prior inbound and outgoing delivery evidence remains recorded in
+the post-launch backlog; no new support email was sent during this check.
 
 ### Stripe Tax and invoices (deferred)
 
@@ -365,3 +434,8 @@ skipped. API lint and typecheck passed with existing lint warnings.
 passed all ten jobs, and
 [visual regression 35207560245](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35207560245)
 passed.
+
+The GitHub installation guidance in `840a1d05` passed all ten jobs in
+[CI run 35213709940](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35213709940),
+[visual regression 35213709950](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35213709950),
+and [API deployment 35213719374](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35213719374).

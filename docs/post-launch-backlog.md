@@ -65,19 +65,16 @@ is what the identity-privacy directive requires. Verified by headers on a test
 message: `mailed-by: send.tensorcraft.app`, `signed-by: tensorcraft.app`, so
 DKIM aligns to the domain. Both directions of the mailbox now work.
 
-**Still open, small:**
+**Verified complete in Gmail settings, 2026-09-17:**
 
-1. **Spam filing.** Forwarded mail from a new domain lands in Spam by default.
-   A support address that silently files itself away is the same failure as no
-   support address. Needs a mail rule pinning `support@tensorcraft.app` out of
-   Spam, plus a label.
-2. **Set send-as as the DEFAULT reply address.** A per-message switch that has
-   to be remembered is a personal address in a customer's inbox on the first
-   day it is forgotten.
-3. **Brand casing in the send-as display name.** Set it to `Tensorcraft`. The
-   repo uses that spelling 147 times and `TensorCraft` zero times, and all four
-   transactional `from` names are `Tensorcraft <...>`. A receipt from one
-   spelling and a support reply from another reads as two senders.
+- [x] The `to:(support@tensorcraft.app)` filter applies the `Tensorcraft`
+  label and never sends matching mail to Spam.
+- [x] `support@tensorcraft.app` is the default send-as address, with
+  **Always reply from default address** selected.
+- [x] The send-as display name is `Tensorcraft`, using Resend SMTP over TLS.
+
+All settings were already saved when inspected. No changes or new outgoing
+messages were needed. See [launch verification](./launch-verification.md).
 
 **Gotcha for whoever tests this next:** the domain is `tensorcraft.app`.
 `tensorcraft.com` is a DIFFERENT owner's parked domain on Google nameservers
@@ -116,7 +113,15 @@ write only). If it also points at an address that cannot receive, operator mail
 was silently going nowhere too. `OPERATOR_ALERT_EMAIL` was set 2026-08-25 and
 takes precedence, so that path is now correct regardless.
 
-**B0, found 2026-08-24: "Connect GitHub" is a dead button in production.**
+**Resolved 2026-09-17: "Connect GitHub" was a dead button in production.**
+Production credentials, callback, credentialed OAuth requests, CORS headers,
+and the return URL are corrected. The owner authorized the App with access
+limited to the exercise repository. Both Settings backfill and automatic
+exercise saving created verified GitHub commits. Automatic creation of a
+missing repository still needs a separate test account with appropriate App
+access. See [launch verification](./launch-verification.md).
+
+Historical finding from 2026-08-24:
 `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` and `GITHUB_CALLBACK_URL` are unset
 on Fly, so `POST /api/github/connect` returns a 500 with "GitHub App is not
 configured on this server" (`apps/api/src/routes/github.ts:121`). The route

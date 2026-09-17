@@ -45,6 +45,7 @@ const mockAuthGetUser = vi.fn();
 function makeFrom(table: string) {
   const filters: Array<{ field: string; value: unknown }> = [];
   const api: Record<string, unknown> = {};
+  let update: Row | undefined;
 
   function applyFilters(rows: Row[]): Row[] {
     return rows.filter((row) =>
@@ -110,19 +111,15 @@ function makeFrom(table: string) {
   };
 
   api.update = (patch: Row) => {
-    return {
-      eq: (field: string, value: unknown) => {
-        const targets = db[table].filter((r) => r[field] === value);
-        for (const row of targets) Object.assign(row, patch);
-        return Promise.resolve({ error: null });
-      },
-    };
+    update = patch;
+    return api;
   };
 
-  api.then = (onFulfilled: (v: unknown) => unknown) =>
-    Promise.resolve({ data: applyFilters(db[table]), error: null }).then(
-      onFulfilled,
-    );
+  api.then = (onFulfilled: (v: unknown) => unknown) => {
+    const rows = applyFilters(db[table]);
+    if (update) for (const row of rows) Object.assign(row, update);
+    return Promise.resolve({ data: rows, error: null }).then(onFulfilled);
+  };
 
   return api;
 }
@@ -157,6 +154,10 @@ vi.mock("../../lib/kit", () => ({
 
 // PostHog, assert server event fires
 const captureServerMock = vi.fn();
+const operatorAlertMock = vi.fn().mockResolvedValue(undefined);
+vi.mock("../../lib/operator-alert", () => ({
+  sendOperatorAlert: (...args: unknown[]) => operatorAlertMock(...args),
+}));
 vi.mock("../../lib/posthog", () => ({
   captureServer: (...args: unknown[]) => captureServerMock(...args),
   withPostHogUserContext: (_distinctId: string, fn: () => unknown) => fn(),
@@ -186,6 +187,7 @@ beforeEach(() => {
   db.payment_events = [];
   mockAuthGetUser.mockReset();
   captureServerMock.mockReset();
+  operatorAlertMock.mockClear();
   kitAddSubscriber.mockClear();
   kitTagSubscriber.mockClear();
   kitRemoveTag.mockClear();
@@ -352,4 +354,90 @@ describe("Stripe webhook → purchase → access integration flow", () => {
     );
     expect(matching).toHaveLength(1);
   });
+
+  it("keeps access revoked when a partial refund arrives after a full refund", async () => {
+    db.purchases.push({
+      id: "purchase-1",
+      user_id: USER_ID,
+      stripe_payment_intent: PAYMENT_INTENT_ID,
+      status: "completed",
+      world_ids: ["deep-orbit"],
+    });
+    mockAuthGetUser.mockResolvedValue({
+      data: { user: { id: USER_ID } },
+      error: null,
+    });
+    const app = createApp();
+    const refund = async (amount: number) => {
+      const payload = JSON.stringify({
+        id: `evt_refund_${amount}`,
+        type: "charge.refunded",
+        data: {
+          object: {
+            payment_intent: PAYMENT_INTENT_ID,
+            amount: 5000,
+            amount_refunded: amount,
+          },
+        },
+      });
+      return app.request("/api/payments/webhook", {
+        method: "POST",
+        headers: { "stripe-signature": signPayload(payload) },
+        body: payload,
+      });
+    };
+    const access = async () =>
+      (
+        await app.request("/api/purchases/access", {
+          headers: { Authorization: "Bearer valid-token" },
+        })
+      ).json();
+
+    expect((await refund(1000)).status).toBe(200);
+    expect((await access()).worldIds).toEqual(["deep-orbit"]);
+    expect((await refund(5000)).status).toBe(200);
+    expect((await access()).worldIds).toEqual([]);
+    expect((await refund(1000)).status).toBe(200);
+    expect(db.purchases[0].status).toBe("refunded");
+    expect((await access()).worldIds).toEqual([]);
+    expect((await refund(5000)).status).toBe(200);
+    expect(db.purchases[0].status).toBe("refunded");
+    expect((await access()).worldIds).toEqual([]);
+    expect(captureServerMock).toHaveBeenCalledTimes(2);
+    expect(operatorAlertMock).toHaveBeenCalledTimes(2);
+    expect(db.payment_events).toHaveLength(2);
+  });
+
+  it.each(["refunded", "disputed", "failed"])(
+    "does not restore %s purchases on a delayed partial refund",
+    async (status) => {
+      db.purchases.push({
+        id: "purchase-1",
+        user_id: USER_ID,
+        stripe_payment_intent: PAYMENT_INTENT_ID,
+        status,
+        world_ids: ["deep-orbit"],
+      });
+      const payload = JSON.stringify({
+        id: "evt_delayed_partial_refund",
+        type: "charge.refunded",
+        data: {
+          object: {
+            payment_intent: PAYMENT_INTENT_ID,
+            amount: 5000,
+            amount_refunded: 1000,
+          },
+        },
+      });
+      const res = await createApp().request("/api/payments/webhook", {
+        method: "POST",
+        headers: { "stripe-signature": signPayload(payload) },
+        body: payload,
+      });
+      expect(res.status).toBe(200);
+      expect(db.purchases[0].status).toBe(status);
+      expect(db.payment_events).toHaveLength(0);
+      expect(operatorAlertMock).not.toHaveBeenCalled();
+    },
+  );
 });
