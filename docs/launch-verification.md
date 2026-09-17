@@ -1,9 +1,11 @@
 # Launch verification
 
-Verified on 2026-09-16. The four requested implementation checks pass:
+Updated on 2026-09-17. The four requested implementation checks pass:
 spaced review, PostgreSQL row security, browser E2E, and real signup plus
-Stripe test checkout. GitHub callback configuration and Stripe Tax setup
-still need owner input. Working-tree fixes remain uncommitted.
+Stripe test checkout. GitHub callback configuration, a production signup
+inbox check, and the paid snapshot drill still need owner input. Stripe Tax
+and business registration are deferred at the owner's request. The earlier
+fixes were committed and pushed as `7acc978b`; all CI jobs passed.
 
 ## Recorded results
 
@@ -171,8 +173,21 @@ without creating production users or purchases.
 UptimeRobot shows six active monitors, all up: API root, health, database
 readiness, web root, blog, and pricing. Sentry has web/API error monitors and
 scheduled-job checks. The enabled payment alert filters `source` for payments
-and notifies project members. The new handled-error tests verify that failures
-carry that tag. A new external alert email was not sent during verification.
+and notifies project members. The handled-error tests verify that failures
+carry that tag. On 2026-09-17, both production alert delivery paths passed:
+
+- `sendOperatorAlert` sent a clearly labeled test through the configured
+  production Resend account to the existing operator recipient. Resend
+  recorded delivery, and the message appeared in the recipient's Gmail inbox.
+- A synthetic Sentry event with `source=payments.launch_verification` fired
+  the enabled payment alert at 07:38 UTC. Its notification appeared in the
+  configured Sentry owner's Gmail inbox. The event contains no customer data:
+  [test issue TENSORCRAFT-API-2](https://amira-salah.sentry.io/issues/147594211/).
+
+The SDK delivery checks ran locally with protected temporary copies of the
+production alert settings. An earlier diagnostic process stalled on a Fly
+machine and was stopped. API health and database readiness then returned 200.
+No production transaction was failed to create the test event.
 
 Supabase shows daily managed backups, including the 2026-09-16 snapshot.
 PITR is not enabled. A fresh read-only logical export of `public`, `auth`, and
@@ -180,11 +195,33 @@ PITR is not enabled. A fresh read-only logical export of `public`, `auth`, and
 source row counts and sorted-content fingerprints; 34 public RLS policies
 were present. The temporary database and export were removed afterward.
 
-This drill verifies logical database recovery. It does not restore Storage
-file bytes or a managed physical snapshot. The dashboard's separate snapshot
-restore requires a new project quoted at USD 0.50/month; that action remains
-unapproved and was not performed. It is additional recovery coverage beyond
-the completed logical restore drill.
+The logical drill does not restore a managed physical snapshot. The latest
+managed backup was completed on 2026-09-17 at 05:55:15 UTC. Restoring it to a
+separate project is prepared in the dashboard, which quotes USD 0.50/month.
+Approval to create and remove that test project is pending. Production has no
+`pg_cron`, `pg_net`, or `wrappers` extension installed, so no copied external
+jobs were found in the pre-restore check.
+
+Storage byte recovery was tested separately on 2026-09-17. Both production
+buckets were inventoried; the two avatar objects total 21,144 bytes. Each was
+downloaded to a private temporary backup, restored into a new private local
+bucket, and downloaded again. SHA-256 hashes and content types matched. The
+source object inventory stayed unchanged, and all local drill buckets and
+temporary files were removed. This is a recovery drill, not a retained
+off-site Storage backup.
+
+Repeat the Storage drill with local Supabase running:
+
+```sh
+node --env-file=apps/api/.env scripts/verify-storage-restore.mjs \
+  --local-env-file apps/api/.env.checkout-test.local
+```
+
+The script rejects hosted restore destinations before any network or disk
+writes. It reads the source, creates unique private local buckets, verifies
+restored bytes, and cleans up. Supabase's managed database backups do not
+include Storage file bytes; see the
+[backup documentation](https://supabase.com/docs/guides/platform/backups).
 
 ## Remaining external configuration
 
@@ -202,13 +239,26 @@ the owner's passkey confirmation. Add the callback without removing any
 existing required URLs, then complete a connection and exercise save with an
 authorized test account. The OAuth round trip is not yet verified.
 
-### Stripe Tax and invoices
+### Stripe Tax and invoices (deferred)
+
+The owner excluded Stripe Tax and business registration from this work on
+2026-09-17. Their configuration remains unchanged, and tax/invoice verification
+is not claimed as complete.
 
 Read-only Stripe checks show live Tax settings pending because the business
 origin address (`head_office`) is missing, with no tax registrations listed.
-`STRIPE_TAX_ENABLED` is not set in Fly. The owner must supply the actual business
-origin and applicable registration details in Stripe. Then enable the flag and
-verify tax calculation plus invoice creation in test mode before sign-off.
+`STRIPE_TAX_ENABLED` is not set in Fly. When this work resumes, supply the
+actual business origin and applicable registration details in Stripe. Enable
+the flag and
+verify tax calculation plus invoice creation in test mode.
 No business address or tax registration was invented, and no live charge was
 used for verification. The successful USD 50 checkout test above ran with
 Stripe Tax disabled.
+
+## Repository checks on 2026-09-17
+
+The previous fixes are in commit `7acc978b05f1ebb44614006bf3c7dddb8a7f4398`.
+[CI run 35194298998](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35194298998)
+passed all ten jobs, including the new API image build, database row security,
+full browser suite, unit tests, dependency audit, and migration ledger check.
+Visual regression also passed.
