@@ -14,23 +14,34 @@ instructions: |
       }
 
   A row scores as correct only when the two labels match, so a row that arrived without an actual label is not a correct prediction. Every row still counts in the total, that one included. A score sitting exactly on the floor clears the gate. An empty batch has nothing to report: it fails, and its accuracy reads 0 rather than NaN.
+
+  Labels must both be non-empty strings. Missing, null or empty labels never count as correct, including when both sides are missing. This conservative gate keeps every row in the denominator. It does not measure accuracy on a fully labeled evaluation set.
 hints:
   - level: nudge
-    content: "Two decisions sit ahead of any arithmetic: which rows count as correct, and which rows count at all. Rows that arrived without a label are where those two answers come apart, and an empty batch is where the division has no answer to give."
+    content: |
+      Check that both labels exist before comparing them. What does JavaScript return for undefined === undefined?
   - level: guidance
     content: |
-      Start with the row test, because it is smaller than it looks. Comparing a prediction against a label that never loaded is a comparison against nothing, and it comes back false on its own. No extra branch is needed to reject an ungraded row; the same equality that scores a real row already refuses one with nothing to score against.
-
-      The decision that does need making is where those rows go afterward. The reflex is to set them aside before scoring, but that quietly moves the denominator: you would be reporting a score over the rows that survived rather than over the batch CI handed you. Forty rows arriving with five labels is a fact about the batch, and a gate that divides by five reports a perfect run on it. So count the batch as it arrived, and let the ungraded rows pull the score down, because a batch that mostly could not be scored is exactly what the merge decision needs to see.
-
-      The empty batch is the one case where the arithmetic breaks rather than misleads: nothing over nothing is NaN, and every comparison against NaN is false, so the gate would block for an accidental reason while reporting a score no one can read. Guard the count before you divide and report zero instead. A floor of zero still clears a score of zero, so the pass flag carries one more condition: something was actually scored, and it cleared. The comparison itself is inclusive, since a score sitting exactly on the floor passes.
+      Count a match only when both labels are non-empty strings. Keep all rows in the total, including those without usable labels. Guard the empty batch before dividing, and require a non-empty batch as well as the accuracy floor.
   - level: solution
     content: |
+      interface Prediction {
+        predicted?: unknown;
+        actual?: unknown;
+      }
+
+      interface GateResult {
+        accuracy: number;
+        passed: boolean;
+        total: number;
+        correct: number;
+      }
+
       function validateModelAccuracy(
         predictions: Prediction[],
         minAccuracy: number
       ): GateResult {
-        const correct = predictions.filter(p => p.predicted === p.actual).length;
+        const correct = predictions.filter(p => typeof p.predicted === 'string' && p.predicted.trim().length > 0 && typeof p.actual === 'string' && p.actual.trim().length > 0 && p.predicted === p.actual).length;
         const total = predictions.length;
         const accuracy = total === 0 ? 0 : correct / total;
 
@@ -43,8 +54,8 @@ hints:
       }
 starterCode: |
   interface Prediction {
-    predicted: string;
-    actual: string;
+    predicted?: unknown;
+    actual?: unknown;
   }
 
   interface GateResult {
@@ -64,8 +75,8 @@ starterCode: |
   }
 solutionCode: |
   interface Prediction {
-    predicted: string;
-    actual: string;
+    predicted?: unknown;
+    actual?: unknown;
   }
 
   interface GateResult {
@@ -79,7 +90,7 @@ solutionCode: |
     predictions: Prediction[],
     minAccuracy: number
   ): GateResult {
-    const correct = predictions.filter(p => p.predicted === p.actual).length;
+    const correct = predictions.filter(p => typeof p.predicted === 'string' && p.predicted.trim().length > 0 && typeof p.actual === 'string' && p.actual.trim().length > 0 && p.predicted === p.actual).length;
     const total = predictions.length;
     const accuracy = total === 0 ? 0 : correct / total;
 
@@ -250,6 +261,8 @@ testCode: |
       expect(gate([], 0).passed).toBe(false);
     });
   });
+
+  it('missing labels cannot count as correct',()=>{const r=validateModelAccuracy([{}, {predicted:null,actual:null}],1);expect(r.correct).toBe(0);expect(r.passed).toBe(false);});
 estimatedMinutes: 10
 difficulty: intermediate
 mlContent: arithmetic

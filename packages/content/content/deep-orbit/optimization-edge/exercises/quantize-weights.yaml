@@ -9,6 +9,8 @@ instructions: |
   Then do what TensorFlow.js does at load time: restore each weight as stored * scale + min, the two numbers a TensorFlow.js weight manifest carries for a quantized tensor, and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost.
 
   Return { kernels, maxWeightError, predictionsChanged }. kernels carries one entry per kernel, in model order, each { quantized, scale, min, shape }, with quantized in the tensor's own flat order. maxWeightError is the largest gap between any original weight and its restored value. predictionsChanged is how many of the captures the model now files under a different class, comparing the largest output before your pass against the largest output after.
+
+  A constant kernel has no spread: use scale 0 and stored values of 0, which restore to min exactly. Quantization can leave weights and predictions unchanged.
 starterCode: |
   interface QuantizedKernel {
     quantized: number[];
@@ -62,7 +64,7 @@ solutionCode: |
       const min = values.reduce((a, b) => Math.min(a, b));
       const max = values.reduce((a, b) => Math.max(a, b));
       const scale = (max - min) / 255;
-      const quantized = values.map(v => Math.round((v - min) / scale));
+      const quantized = values.map(v => scale === 0 ? 0 : Math.round((v - min) / scale));
       const restored = quantized.map(q => q * scale + min);
       const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
       maxWeightError = Math.max(maxWeightError, error);
@@ -212,7 +214,7 @@ testCode: |
       ).toEqual([0.10000000149011612, -0.10000000149011612]);
     });
 
-    it('reports the largest weight error, and it is never zero', async () => {
+    it('reports weight error on kernels whose grid changes values', async () => {
       const crafted = await reportOf(stretchedGrid(), STRETCHED);
       expect(
         crafted.maxWeightError,
@@ -273,6 +275,14 @@ testCode: |
         'On a model and captures drawn for this run, ' + expected + ' verdict(s) moved between the trained weights and the restored ones, read off the model\'s own outputs. The report says ' + report.predictionsChanged + '. A number computed from the bucket width, or carried over from another model, cannot track a draw.'
       ).toBe(expected);
     });
+  });
+
+  it('constant kernels quantize without NaN', async () => {
+    const m = tf.sequential();
+    m.add(tf.layers.dense({ units: 2, inputShape: [2], kernelInitializer: 'zeros' }));
+    const r = await quantizeModel(m, [[1, 2]]);
+    expect(r.kernels[0].quantized.every(Number.isFinite)).toBe(true);
+    expect(r.maxWeightError).toBe(0);
   });
 estimatedMinutes: 15
 difficulty: advanced

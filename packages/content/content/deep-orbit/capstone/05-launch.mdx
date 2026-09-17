@@ -28,7 +28,8 @@ consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
   - level: nudge
-    content: "This ladder covers classify-anomaly, the finale. verify-deployment and launch-rehearsal each carry their own. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote."
+    content: |
+      This ladder covers classify-anomaly, the finale. verify-deployment and launch-rehearsal each carry their own. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote.
   - level: guidance
     content: |
       classify-anomaly first. The expected ratios are not a table to memorize, they are the sub-interval train divided through, and the section on the interval train works them out. Two consequences to notice there. A capture can start late and carry no 1:1 opener, so a shorter ratio list is compared against the end of the full list rather than its front. And measured seconds never divide into exact ratios, so a match means a relative band around each expected value, the width the instructions name. In the vote, the part worth getting right is where the sigma comes from. A mean and a spread are properties of the window on the console, not constants you carry from one channel to the next. A reading that is unremarkable against one window is extreme against a tighter one. Then the majority, two of three: any one detector can be blind without silencing the alarm, and no one detector can raise one by itself.
@@ -43,6 +44,7 @@ hints:
       }
 
       function isFibonacciTrain(ratios) {
+        if (ratios.length === 0) return false;
         const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
         // The reading's first ratio may be the 1:1 opener or start at the 2;
         // align on length from the tail, where the train converges on phi.
@@ -95,6 +97,25 @@ hints:
             1000,
         };
       }
+
+      const zeroHourReading = {
+        // Twenty normalized amplitudes from the archive's calm slice. Their
+        // spread is the one lesson 1 measured over eleven days: this window
+        // averages 0.520 and its standard deviation is 0.150.
+        window: [
+          0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
+          0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
+        ],
+        actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
+        reconstructionError: 6.2,
+        reconThreshold: 1.0,      // module 7's locked cutoff
+        predicted: 0.541,         // module 7's forecast miss: 0.041 against a 0.01 gate
+        actualForecast: 0.50,
+        predTolerance: 0.01,
+        intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
+        ensembleScore: 0.999,
+        module3Score: 0.518,
+      };
 keywords:
   - deployment
   - github-pages

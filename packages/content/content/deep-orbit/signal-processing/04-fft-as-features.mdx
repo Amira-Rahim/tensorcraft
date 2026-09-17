@@ -25,20 +25,34 @@ consequence:
   narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added nothing the samples did not already hold, but the network was never shown the samples, only three numbers squeezed out of each window. Eight bins are eight more measurements of that window, and no size of network could have recovered them from three."
 hints:
   - level: nudge
-    content: "Every bin has a fixed center, at bin index times bin width, and bin width is the sample rate over the number of samples. Work out which bin indices the band covers, then read those bins out of the magnitude array without reordering them."
+    content: |
+      Every bin has a fixed center, at bin index times bin width, and bin width is the sample rate over the number of samples. Work out which bin indices the band covers, then read those bins out of the magnitude array without reordering them.
   - level: guidance
-    content: "The feature vector has to mean the same thing in every row, and that constraint decides the rest. Bin k sits at a fixed place in hertz, so a band in hertz picks out a fixed run of k, and the two ends of the band round in opposite directions, because a bin belongs only if its own center falls inside. Work that pair of indices out of the arguments rather than off the numbers the lesson happens to use: the grader moves both the band and the sample rate. Keep the run in the order the transform produced it, and put it after the two time-domain features."
+    content: |
+      The feature vector has to mean the same thing in every row, and that constraint decides the rest. Bin k sits at a fixed place in hertz, so a band in hertz picks out a fixed run of k, and the two ends of the band round in opposite directions, because a bin belongs only if its own center falls inside. Work that pair of indices out of the arguments rather than off the numbers the lesson happens to use: the grader moves both the band and the sample rate. Keep the run in the order the transform produced it, and put it after the two time-domain features.
   - level: solution
     content: |
-      const amplitude = Math.max(...signal.map(Math.abs));
-      const zeroCrossings = signal.reduce((sum, v, i) =>
-        i > 0 && Math.sign(v) !== Math.sign(signal[i - 1]) ? sum + 1 : sum, 0
-      );
-      const binWidth = sampleRate / signal.length;
-      const loBin = Math.ceil(loHz / binWidth);
-      const hiBin = Math.floor(hiHz / binWidth);
-      const magnitudes = tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync() as number[];
-      return [amplitude, zeroCrossings, ...magnitudes.slice(loBin, hiBin + 1)];
+      import * as tf from '@tensorflow/tfjs';
+
+      function extractFeatures(signal: number[], sampleRate: number, loHz: number, hiHz: number): number[] {
+        return tf.tidy(() => {
+          // Raw features, unchanged by the FFT work.
+          const amplitude = Math.max(...signal.map(Math.abs));
+          const zeroCrossings = signal.reduce((sum, v, i) =>
+            i > 0 && v * signal[i - 1] < 0 ? sum + 1 : sum, 0
+          );
+
+          // Bin k has its center at k * binWidth hertz. Keep every bin whose
+          // center lands inside the band, which fixes the same bin indices for
+          // every signal of this length at this sample rate.
+          const binWidth = sampleRate / signal.length;
+          const loBin = Math.ceil(loHz / binWidth);
+          const hiBin = Math.floor(hiHz / binWidth);
+
+          const magnitudes = tf.abs(tf.spectral.rfft(tf.tensor1d(signal))).arraySync() as number[];
+          return [amplitude, zeroCrossings, ...magnitudes.slice(loBin, hiBin + 1)];
+        });
+      }
 keywords:
   - feature-engineering
   - derived-features
@@ -100,7 +114,7 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     // classifier's normalizer assumes.
     const amplitude = Math.max(...windowSlice.map(Math.abs));
     const zeroCrossings = windowSlice.reduce((sum, v, i) =>
-      i > 0 && Math.sign(v) !== Math.sign(windowSlice[i - 1]) ? sum + 1 : sum, 0
+      i > 0 && v * windowSlice[i - 1] < 0 ? sum + 1 : sum, 0
     );
     // "phase" is the angle of the first two samples, atan2(s1, s0): a crude
     // stand-in for where the waveform sits in its cycle when the window

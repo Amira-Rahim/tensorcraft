@@ -2,7 +2,9 @@ slug: temporal-attention
 lessonSlug: temporal-attention
 title: "Temporal Attention Over a Window"
 mlContent: model
-instructions: "Build `temporalAttention(sequence, scorerWeights)`. `sequence` is a [T, d] tensor of readings; `scorerWeights` is a [d + 1, 1] linear scorer whose last row weights position. Concatenate a position column onto the readings, evenly spaced from 0 at the first step to 1 at the last. Score every step with one matMul, then softmax those scores into `weights`, a [T] tensor holding one weight per step. Pool the ORIGINAL readings under those weights into a [d] `summary`, and return `{ summary, weights }` with both still tensors. Skip the position column and the scorer's shape will not line up."
+instructions: |
+  Build `temporalAttention(sequence, scorerWeights)`. `sequence` is a [T, d] tensor of readings; `scorerWeights` is a [d + 1, 1] linear scorer whose last row weights position. Concatenate a position column onto the readings, evenly spaced from 0 at the first step to 1 at the last. Score every step with one matMul, then softmax those scores into `weights`, a [T] tensor holding one weight per step. Pool the ORIGINAL readings under those weights into a [d] `summary`, and return `{ summary, weights }` with both still tensors. Skip the position column and the scorer's shape will not line up.
+  Remove only the batch axis. A value width of one must still return shape [1], not a scalar. The sequence is non-empty; for a single time step its position is 0.
 starterCode: |
   function temporalAttention(sequence, scorerWeights) {
     // The window you score is wider than the window you pool.
@@ -15,7 +17,7 @@ solutionCode: |
     const withPos = tf.concat([sequence, pos], 1);
     const scores = tf.matMul(withPos, scorerWeights).reshape([T]);
     const weights = tf.softmax(scores);
-    const summary = tf.matMul(weights.reshape([1, T]), sequence).squeeze();
+    const summary = tf.matMul(weights.reshape([1, T]), sequence).squeeze([0]);
     return { summary, weights };
   }
 testCode: |
@@ -216,6 +218,8 @@ testCode: |
       }
     });
   });
+
+  it('keeps a one-feature summary axis',()=>{const r=temporalAttention(tf.tensor2d([[2],[4]]),tf.zeros([2,1]));expect(r.summary.shape).toEqual([1]);});
 estimatedMinutes: 15
 difficulty: intermediate
 skillAxis: model_arch

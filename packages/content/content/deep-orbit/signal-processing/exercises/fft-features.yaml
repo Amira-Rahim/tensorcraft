@@ -1,7 +1,9 @@
 slug: fft-features
 lessonSlug: fft-as-features
 title: "Extract Fixed-Bin FFT Features"
-instructions: "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function."
+instructions: |
+  Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function.
+  Here a crossing means strictly opposite signs on adjacent samples: one positive and one negative. A pair containing an exact zero contributes nothing. Other conventions exist; this exercise uses that one consistently.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -19,7 +21,7 @@ solutionCode: |
       // Raw features, unchanged by the FFT work.
       const amplitude = Math.max(...signal.map(Math.abs));
       const zeroCrossings = signal.reduce((sum, v, i) =>
-        i > 0 && Math.sign(v) !== Math.sign(signal[i - 1]) ? sum + 1 : sum, 0
+        i > 0 && v * signal[i - 1] < 0 ? sum + 1 : sum, 0
       );
 
       // Bin k has its center at k * binWidth hertz. Keep every bin whose
@@ -161,6 +163,8 @@ testCode: |
       ).toBeCloseTo(32, 0);
     });
   });
+
+  it('touching zero does not cross to the opposite side',()=>{expect(extractFeatures([1,0,1,0,-1,0,-1,0],8,1,3)[1]).toBe(0);});
 estimatedMinutes: 12
 difficulty: intermediate
 mlContent: data

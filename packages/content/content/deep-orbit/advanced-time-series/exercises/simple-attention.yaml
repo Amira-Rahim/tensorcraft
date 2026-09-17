@@ -2,7 +2,9 @@ slug: simple-attention
 lessonSlug: beyond-lstm
 title: "Simple Attention Over RNN Hidden States"
 mlContent: model
-instructions: "Build `simpleAttention(query, keys, values)`. `query` is a rank-1 [d] vector: what this step is looking for. `keys` is [T, d], one key per time step, and a key exists only to be scored against the query. `values` is [T, dv], what a step hands over once it is selected, and dv does not have to equal d. Score every key against the query, softmax the scores into weights over the steps, then return the weighted sum of the VALUES as a rank-1 [dv] vector. Score with the raw dot product: no scaling. A production head divides the scores by the square root of the key width before the softmax, and this one does not, so the tests are pinned to the unscaled scores. Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze() the [1, dv] result back to [dv] on the way out. Second trap: scoring a [1, d] query against [T, d] keys needs the keys transposed, because d has to face d. tf.matMul takes two booleans after the two tensors, transposeA and transposeB, and each transposes its own tensor before the multiply, so tf.matMul(q, k, false, true) does the same job as tf.matMul(q, k.transpose()) without building the transposed copy."
+instructions: |
+  Build `simpleAttention(query, keys, values)`. `query` is a rank-1 [d] vector: what this step is looking for. `keys` is [T, d], one key per time step, and a key exists only to be scored against the query. `values` is [T, dv], what a step hands over once it is selected, and dv does not have to equal d. Score every key against the query, softmax the scores into weights over the steps, then return the weighted sum of the VALUES as a rank-1 [dv] vector. Score with the raw dot product: no scaling. A production head divides the scores by the square root of the key width before the softmax, and this one does not, so the tests are pinned to the unscaled scores. Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze([0]) the [1, dv] result back to [dv] on the way out. Second trap: scoring a [1, d] query against [T, d] keys needs the keys transposed, because d has to face d. tf.matMul takes two booleans after the two tensors, transposeA and transposeB, and each transposes its own tensor before the multiply, so tf.matMul(q, k, false, true) does the same job as tf.matMul(q, k.transpose()) without building the transposed copy.
+  Remove only the batch axis. A value width of one must still return shape [1], not a scalar. The sequence is non-empty; for a single time step its position is 0.
 starterCode: |
   function simpleAttention(query, keys, values) {
     // One tensor gets scored and a different one gets summed, and neither
@@ -15,7 +17,7 @@ solutionCode: |
     const scores = tf.matMul(queryRow, keys, false, true);
     const weights = tf.softmax(scores);
     const blended = tf.matMul(weights, values);
-    return blended.squeeze();
+    return blended.squeeze([0]);
   }
 testCode: |
   describe('simpleAttention (real tf.matMul + softmax)', () => {
@@ -214,6 +216,12 @@ testCode: |
         ).toBeCloseTo(expected, 3);
       }
     });
+  });
+
+  it('keeps a one-feature value axis', () => {
+    const r = simpleAttention(tf.tensor1d([0]), tf.tensor2d([[1], [2]]), tf.tensor2d([[2], [4]]));
+    expect(r.shape).toEqual([1]);
+    expect(r.dataSync()[0]).toBeCloseTo(3, 5);
   });
 estimatedMinutes: 15
 difficulty: intermediate

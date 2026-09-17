@@ -3,16 +3,22 @@ lessonSlug: reconstruction-error
 title: "Incident: True Anomaly Slipped Through"
 mlContent: systems
 instructions: |
-  PAGER: signal at 14:33 was confirmed anomalous post-hoc, but the autoencoder did not flag it (reconstruction error below threshold). Implement `auditReconstruction(input, reconstruction, perFeatureBaseline)`, which returns four fields. `perFeatureError` is the absolute gap |input - reconstruction| for every feature, one entry each, in input order. `rankedByRatio` holds every feature index ordered by that feature's error divided by that feature's own baseline error, highest ratio first. `suspiciouslyLowFeatures` holds the index of each feature whose error came in under half that feature's baseline error, in ascending index order. `requiresRetrain` is true when that list is not empty.
+  **Contract revision 2026-09-17:** Rename suspiciouslyLowFeatures to lowErrorFeatures and remove requiresRetrain. The function reports measurements; they do not determine a retraining decision.
 
-  Both rankings exist and they are not the same one. Raw error ranks the features by how hard each is to rebuild; the ratio ranks them by how far each sits from its own normal, which is the one that says where the anomaly is. The fixtures put those two orders in different places on purpose.
+  A human confirmed that a missed reading was anomalous. Compare its reconstruction with per-feature normal errors to prepare an investigation.
 
-  The training set was normal-only, so genuinely anomalous structure should be hard to reconstruct. When error on a feature that should be hard comes in far below that feature's baseline, the model is leaning on memorized sensor quirks instead of learned structure. That is a retraining problem, not a threshold problem.
+  Implement auditReconstruction(input, reconstruction, perFeatureBaseline). These equally sized, non-empty arrays contain finite numbers; every baseline error is strictly positive. Return { perFeatureError, rankedByRatio, lowErrorFeatures }.
+
+  perFeatureError contains absolute reconstruction gaps, in input order. rankedByRatio contains all feature indices, ordered by error / baseline from highest to lowest; break ties by ascending index. lowErrorFeatures contains indices whose error is strictly below half their baseline, in ascending index order.
+
+  A ratio ranks reconstruction discrepancies relative to normal errors. It does not locate the physical cause. Low reconstruction error can occur on an anomaly even after normal-only training. These numbers cannot establish memorization or choose retraining over a threshold, data or architecture change. Review labeled misses and representative normal examples before changing the detector.
 hints:
   - level: nudge
-    content: "Both rankings judge a feature's error against that feature's own normal error, so a single cutoff shared across all features cannot serve either one. The tell also points the other way from an alarm: the feature to worry about is the one the model rebuilt better than it usually manages."
+    content: |
+      Compute each absolute gap, then compare it with that feature's normal error. A small raw gap can still be a large relative gap.
   - level: guidance
-    content: "Start with the gaps, because the other three fields all read off them. For each feature, how far the rebuild landed from the reading, size only: a rebuild that came in high missed by as much as one that came in low. Then the ordering, and the order you want is not the order of those gaps. A feature the model always rebuilds badly tops the raw list on a calm reading too, so divide each gap by what that feature normally misses by and rank the features on that ratio. Sort indices rather than the gaps themselves, or you hand back values where the caller asked for positions. The flag list runs the same per-feature comparison in the other direction: an error under half of what the feature normally carries is the one to keep, since the model trained on normal readings only and should have struggled with anomalous structure. A feature with no normal error at all has nothing to be judged against, so leave it out of that comparison instead of letting a division by zero decide the audit. The last field is only whether that list ended up with anything in it."
+    content: |
+      Sort feature indices by error divided by baseline. Build the low-error list separately in input order. Neither list explains why the detector missed the event.
   - level: solution
     content: |
       function auditReconstruction(input, reconstruction, perFeatureBaseline) {
@@ -21,25 +27,22 @@ hints:
         const rankedByRatio = perFeatureError
           .map((_, i) => i)
           .sort((a, b) => ratio(b) - ratio(a));
-        const suspiciouslyLowFeatures = [];
+        const lowErrorFeatures = [];
         for (let i = 0; i < perFeatureError.length; i++) {
           const baseline = perFeatureBaseline[i];
           if (baseline > 0 && perFeatureError[i] < baseline * 0.5) {
-            suspiciouslyLowFeatures.push(i);
+            lowErrorFeatures.push(i);
           }
         }
         return {
           perFeatureError,
           rankedByRatio,
-          suspiciouslyLowFeatures,
-          requiresRetrain: suspiciouslyLowFeatures.length > 0,
+          lowErrorFeatures,
         };
       }
 starterCode: |
   function auditReconstruction(input, reconstruction, perFeatureBaseline) {
-    // Trained on normal readings only, the model should find anomalous
-    // structure hard to rebuild. So a feature it rebuilt unusually well is
-    // the tell here, and "unusually" is judged per feature.
+    // Compare reconstruction gaps with each feature's baseline.
     return null; // your code here
   }
 solutionCode: |
@@ -49,27 +52,26 @@ solutionCode: |
     const rankedByRatio = perFeatureError
       .map((_, i) => i)
       .sort((a, b) => ratio(b) - ratio(a));
-    const suspiciouslyLowFeatures = [];
+    const lowErrorFeatures = [];
     for (let i = 0; i < perFeatureError.length; i++) {
       const baseline = perFeatureBaseline[i];
       if (baseline > 0 && perFeatureError[i] < baseline * 0.5) {
-        suspiciouslyLowFeatures.push(i);
+        lowErrorFeatures.push(i);
       }
     }
     return {
       perFeatureError,
       rankedByRatio,
-      suspiciouslyLowFeatures,
-      requiresRetrain: suspiciouslyLowFeatures.length > 0,
+      lowErrorFeatures,
     };
   }
 testCode: |
   const SHAPE =
     'auditReconstruction has to return the audit object: ' +
-    '{ perFeatureError, rankedByRatio, suspiciouslyLowFeatures, requiresRetrain }.';
+    '{ perFeatureError, rankedByRatio, lowErrorFeatures }.';
 
   describe('auditReconstruction', () => {
-    it('flags features where reconstruction is suspiciously good', () => {
+    it('flags features where reconstruction is below its usual error', () => {
       const input = [1, 2, 3, 4];
       const recon = [1.001, 2.001, 3.001, 4.001];   // tiny errors
       const baseline = [0.1, 0.1, 0.1, 0.1];        // expected error
@@ -79,12 +81,7 @@ testCode: |
         'Every feature here was rebuilt to within a thousandth while its ' +
         'normal error is 0.1, so all four came in under half their own ' +
         'baseline and all four belong in the list.';
-      expect(r.suspiciouslyLowFeatures, why).toEqual([0, 1, 2, 3]);
-      expect(
-        r.requiresRetrain,
-        'requiresRetrain follows the list: a model rebuilding anomalous ' +
-          'structure this well is a retraining problem, not a threshold one.',
-      ).toBe(true);
+      expect(r.lowErrorFeatures, why).toEqual([0, 1, 2, 3]);
     });
 
     it('does not flag normal reconstruction error', () => {
@@ -97,11 +94,7 @@ testCode: |
         'Each feature missed by exactly the error that feature normally ' +
         'carries, which is twice the half-baseline line, so nothing here is ' +
         'suspicious and the list comes back empty.';
-      expect(r.suspiciouslyLowFeatures, why).toEqual([]);
-      expect(
-        r.requiresRetrain,
-        'An empty list is a clean audit, so requiresRetrain is false.',
-      ).toBe(false);
+      expect(r.lowErrorFeatures, why).toEqual([]);
     });
 
     it('judges each feature against its own baseline, not one absolute cutoff', () => {
@@ -120,17 +113,12 @@ testCode: |
           'Rank the ratios, not the raw errors.',
       ).toEqual([3, 1, 2, 0]);
       expect(
-        r.suspiciouslyLowFeatures,
+        r.lowErrorFeatures,
         'One absolute cutoff cannot separate these. An error of 0.5 is small ' +
           'against feature 2, whose normal error is 2.0, and large against ' +
           'feature 1, whose normal error is 0.5. Only features 0 and 2 came ' +
           'in under half their own baseline.',
       ).toEqual([0, 2]);
-      expect(
-        r.requiresRetrain,
-        'Two features were rebuilt better than they should have been, so ' +
-          'this audit ends in a retrain.',
-      ).toBe(true);
     });
 
     it('reports per-feature errors', () => {
@@ -146,6 +134,8 @@ testCode: |
       ).toEqual([2, 2]);
     });
   });
+
+  it('breaks equal ratios by ascending feature index',()=>{expect(auditReconstruction([2,4,6],[1,2,3],[1,2,3]).rankedByRatio).toEqual([0,1,2]);});
 estimatedMinutes: 15
 difficulty: intermediate
 skillAxis: evaluation

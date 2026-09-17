@@ -12,7 +12,11 @@ Patch 2 adds a [learning progression map](audits/deep-orbit-learning-progression
 corrects additional claims in the 18 previously unread lessons, shortens their
 recaps and adds the early build-triage assignment. See its
 [evidence and limits](audits/content-quality-patch-2-2026-09-17.md).
-Q2-Q3 remain in progress; full assessment review and learner validation are open.
+The [assessment review](audits/deep-orbit-assessment-review-2026-09-17.md)
+now covers all 65 exercises and maps the 222 objectives across 56 lessons.
+It includes 14 correction groups affecting 15 exercises. Q2-Q3 remain in
+progress: unresolved grading and coverage gaps, complete feedback editing,
+independent review and learner validation still block acceptance.
 
 Owner direction: target at least 9/10 in every audit category, retain $50 as
 the launch price, and prepare a course worth $70 before raising the price

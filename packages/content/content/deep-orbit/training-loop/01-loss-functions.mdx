@@ -26,19 +26,25 @@ consequence:
   narrative: "Now we can quantify exactly how wrong the network is. The rest of training exists to make that number smaller."
 hints:
   - level: nudge
-    content: "TFJS ships both losses. MSE is the mean of the squared differences between the true labels and the model's predictions. Binary cross-entropy over logits is tf.losses.sigmoidCrossEntropy, which applies the sigmoid for you. The third function is this lesson's form rule, written out. It picks between cross-entropy's two spellings, not between the two losses."
+    content: |
+      TFJS ships both losses. MSE is the mean of the squared differences between the true labels and the model's predictions. Binary cross-entropy over logits is tf.losses.sigmoidCrossEntropy, which applies the sigmoid for you. The third function is this lesson's form rule, written out. It picks between cross-entropy's two spellings, not between the two losses.
   - level: guidance
-    content: "Both of the TFJS calls the instructions name already reduce to one number for the whole batch, so nothing is left for you to average. Spend the time on the second function instead. A logit is the raw score a last layer emits before anything squashes it, which means it can sit anywhere on the number line, negative included. The logit form of cross-entropy applies the sigmoid itself, so handing it probabilities squashes them twice and the number it reports is no longer the loss. For the third function, ask what the last layer emits rather than what the task is. Only one kind of last layer hands you probabilities, and every other one, recognized or not, hands you raw scores."
+    content: |
+      Both TFJS loss calls return one scalar for the batch with their default reduction. A logit is the raw score before sigmoid and can be negative. The logits form applies sigmoid internally, so passing probabilities applies it twice and changes the loss. For the third function, require the caller to declare probabilities or logits; an activation name alone is insufficient.
   - level: solution
     content: |
       function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
         return tf.losses.meanSquaredError(labels, predictions);
       }
+
       function bceLoss(labels: tf.Tensor, logits: tf.Tensor): tf.Tensor {
         return tf.losses.sigmoidCrossEntropy(labels, logits);
       }
-      function pickBceForm(lastLayerActivation: string): string {
-        return lastLayerActivation === 'sigmoid' ? 'binaryCrossentropy' : 'sigmoidCrossEntropy';
+
+      function pickBceForm(outputKind: string): string {
+        if (outputKind === 'probabilities') return 'binaryCrossentropy';
+        if (outputKind === 'logits') return 'sigmoidCrossEntropy';
+        throw new Error('Expected probabilities or logits');
       }
 keywords:
   - loss
@@ -85,7 +91,7 @@ const perfectLoss = tf.losses.meanSquaredError(labels, perfect);
 console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
 </CodeBlock>
 
-One naming trap before the rest of the module builds on this. A **logit** is the number a neuron emits before any sigmoid touches it: unbounded, positive or negative, the raw weighted sum from module 2. `tf.losses.sigmoidCrossEntropy` takes logits and applies the sigmoid itself. The compile option you will use in lesson 4, `loss: 'binaryCrossentropy'`, takes probabilities, the numbers a sigmoid output layer has already produced. They are the same loss reached from two ends. Your task already picked cross-entropy, so what is left to pick is the form, and the last layer decides that. A sigmoid output layer hands you probabilities, so you call `binaryCrossentropy`. A last layer with no sigmoid hands you logits, so you call `sigmoidCrossEntropy`. Mix them up and nothing throws; the network learns the wrong thing quietly, which is the category of bug this course hunts hardest.
+One naming trap before the rest of the module builds on this. A **logit** is the number a neuron emits before any sigmoid touches it: unbounded, positive or negative, the raw weighted sum from module 2. `tf.losses.sigmoidCrossEntropy` takes logits and applies the sigmoid itself. The compile option you will use in lesson 4, `loss: 'binaryCrossentropy'`, takes probabilities, the numbers a sigmoid output layer has already produced. They are the same loss reached from two ends. Your task already picked cross-entropy, so what is left to pick is the form, and the last layer decides that. A sigmoid output layer hands you probabilities, so you call `binaryCrossentropy`. A linear output trained as a logit goes to `sigmoidCrossEntropy`. An unfamiliar activation tells you too little to choose: first establish what the output represents. Mix them up and nothing throws; the network learns the wrong thing quietly, which is the category of bug this course hunts hardest.
 
 The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 

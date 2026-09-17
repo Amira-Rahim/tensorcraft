@@ -16,7 +16,7 @@ const result = {
   version: 1,
   scope: "Deep Orbit learning inventory",
   interpretation:
-    "Source inventory and declared progression. Objective-level assessment validity, feedback quality and learner readiness still require review. A linked exercise is not proof that every objective is assessed.",
+    "Source inventory and declared progression. See deep-orbit-assessment-review.json for the dated manual assessment review and its source hashes. A linked exercise is not proof that every objective is assessed; learner readiness remains unvalidated.",
   modules: modules.map((module) => ({
     slug: module.slug,
     title: module.title,
@@ -64,7 +64,7 @@ const result = {
               sourcePath: `${dir}/exercises/${slug}.yaml`,
               taskOpening: exercise.instructions.split("\n\n")[0],
               feedback:
-                "Executable assertions and lesson hints; semantic feedback review pending",
+                "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
               declaredDifficulty: exercise.difficulty,
             };
           }),
@@ -72,7 +72,8 @@ const result = {
           transferAssignment: source.includes("<TransferAssignment")
             ? "build-triage-v1: separate self-review, assistance recorded, no automatic pass"
             : null,
-          assessmentAlignment: "pending objective-by-objective review",
+          assessmentAlignment:
+            "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review",
         };
       }),
   })),

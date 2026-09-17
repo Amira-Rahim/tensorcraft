@@ -1,7 +1,14 @@
 slug: llm-client
 lessonSlug: llms-for-science
 title: "Read the Model's Reply"
-instructions: "Write a function that takes a prompt string, sends it to the LLM API, and returns a structured analysis object. What comes back is text, so find the JSON object inside it before parsing. Then check the parsed object for the three fields an analysis carries, `classification`, `confidence` and `reasoning`, and throw when the reply carries no JSON or leaves a field out. A reply the parser refuses carries no JSON, whatever field names are legible in the text. Three rules the tests hold you to. A number that reads zero is a real reading rather than a missing field. A reply that volunteers fields you did not ask for is still valid. And the check reads the parsed object, never the raw text: a model that writes the word `reasoning` in a sentence and leaves the field out of its JSON has not sent you a reasoning. Two of the tests build their replies at grade time, so no answer that recognises the fixtures can clear the suite."
+instructions: |
+  **Contract revision 2026-09-17:** Saved code must validate the allowed classes, a finite numeric confidence in [0, 1], and non-empty reasoning. Presence alone is insufficient.
+
+  Write analyzeSignal(prompt, apiCall). Call the API once with the supplied prompt. Extract and parse its JSON object, then validate the parsed fields before returning it. Throw on invalid JSON or an invalid field.
+
+  The reply contains one JSON object, optionally surrounded by prose without other braces. classification must be 'noise', 'anomaly' or 'unknown'. confidence must be a finite number from 0 to 1 inclusive. reasoning must be a non-empty string after trimming whitespace. Zero is a valid confidence, and additional fields are allowed. Do not coerce strings or null into numbers.
+
+  These checks establish the response shape. They do not establish factual accuracy or calibrate the model's self-reported confidence.
 starterCode: |
   interface Analysis {
     classification: string;
@@ -26,8 +33,8 @@ solutionCode: |
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('No JSON in response');
     const parsed = JSON.parse(jsonMatch[0]);
-    if (!parsed.classification || parsed.confidence === undefined || !parsed.reasoning) {
-      throw new Error('Missing required fields');
+    if (!['noise', 'anomaly', 'unknown'].includes(parsed.classification) || !Number.isFinite(parsed.confidence) || parsed.confidence < 0 || parsed.confidence > 1 || typeof parsed.reasoning !== 'string' || parsed.reasoning.trim().length === 0) {
+      throw new Error('Invalid analysis fields');
     }
     return parsed as Analysis;
   }
@@ -204,6 +211,29 @@ testCode: |
         }
       }
     });
+  });
+
+  it('rejects invalid confidence types and range', async () => {
+    for (const confidence of [null, '0.7', -0.1, 1.1])
+      await expect(
+        analyzeSignal('x', async () =>
+          JSON.stringify({ classification: 'noise', confidence, reasoning: 'x' }),
+        ),
+      ).rejects.toThrow();
+  });
+  it('rejects invalid classes and explanations', async () => {
+    for (const patch of [
+      { classification: 'alien' },
+      { classification: 1 },
+      { reasoning: 1 },
+      { reasoning: '  ' },
+      { reasoning: [] },
+    ])
+      await expect(
+        analyzeSignal('x', async () =>
+          JSON.stringify({ classification: 'noise', confidence: 0.4, reasoning: 'x', ...patch }),
+        ),
+      ).rejects.toThrow();
   });
 estimatedMinutes: 10
 difficulty: intermediate

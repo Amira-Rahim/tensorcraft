@@ -25,6 +25,8 @@ instructions: |
   `classification` reads 'confirmed-anomaly' when the vote passes and the interval train is Fibonacci, 'anomaly' when the vote passes without the train, and 'noise' when the vote does not pass.
 
   `ratios` holds the decomposition and not the pulse gaps that came in, so seven intervals leave six numbers, and a capture in seconds leaves the same six as the abstract count. `fibonacciTrain` is those ratios run through `isFibonacciTrain`. Gaps that double every step grow, and a doubling train is not a Fibonacci train.
+
+  An empty ratio list is insufficient evidence and returns false. The label confirmed-anomaly is a mission rule combining the vote and this pattern check; it does not establish the signal's origin.
 starterCode: |
   // Zero hour. The readout for sample 7741, tonight:
   //
@@ -80,6 +82,7 @@ solutionCode: |
   }
 
   function isFibonacciTrain(ratios) {
+    if (ratios.length === 0) return false;
     const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
     // The reading's first ratio may be the 1:1 opener or start at the 2;
     // align on length from the tail, where the train converges on phi.
@@ -452,5 +455,7 @@ testCode: |
       expect(uniform.classification).toBe('anomaly');
     });
   });
+
+  it('an empty interval pattern is no evidence',()=>{expect(isFibonacciTrain([])).toBe(false);expect(isFibonacciTrain([1,2,1.5,5/3,1.6,1.625])).toBe(true);});
 estimatedMinutes: 15
 difficulty: advanced

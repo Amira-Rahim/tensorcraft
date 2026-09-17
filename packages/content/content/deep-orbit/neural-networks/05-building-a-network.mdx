@@ -25,11 +25,39 @@ consequence:
   narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. The answers they give are not all as random."
 hints:
   - level: nudge
-    content: "Compiling attaches the optimizer and the loss. It leaves the weights exactly as the initializer drew them, so predict() answers the moment the stack is assembled."
+    content: |
+      Compiling attaches the optimizer and the loss. It leaves the weights exactly as the initializer drew them, so predict() answers the moment the stack is assembled.
   - level: guidance
-    content: "The stack and the compile settings are both spelled out in the instructions, and copying them across is not the part worth thinking about. The order is. Both networks have to be read while both are still untrained, because once the first one has trained there is no way to ask it what it used to think. The second one stays out of the training call on purpose. It is the control: a fresh draw of the same architecture, as undecided as the first one was, sitting next to the trained network for comparison."
+    content: |
+      Save the initial weights and predictions before training the first network. Leave the second network untrained so you can compare it with the trained one. Its predictions may still be confident: confidence alone cannot tell you whether training happened.
   - level: solution
-    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 16, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] }); const initialWeights = model.getWeights().map((w) => Array.from(w.dataSync())); const sweepOne = Array.from(model.predict(readings).dataSync()); const sweepTwo = Array.from(second.predict(readings).dataSync()); await model.fit(readings, labels, { epochs: 50, batchSize: 16 }); const trainedSweep = Array.from(model.predict(readings).dataSync());"
+    content: |
+      const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
+      const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
+      const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
+      const readings = tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1);
+      const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
+
+      function buildClassifier() {
+        const model = tf.sequential();
+        model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));
+        model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+        model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+        model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+        return model;
+      }
+
+      const model = buildClassifier();
+      const second = buildClassifier();
+
+      const initialWeights = model.getWeights().map((w) => Array.from(w.dataSync()));
+
+      const sweepOne = Array.from(model.predict(readings).dataSync());
+      const sweepTwo = Array.from(second.predict(readings).dataSync());
+
+      await model.fit(readings, labels, { epochs: 50, batchSize: 16 });
+
+      const trainedSweep = Array.from(model.predict(readings).dataSync());
 keywords:
   - compile
   - optimizer

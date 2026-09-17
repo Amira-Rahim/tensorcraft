@@ -1,7 +1,14 @@
 slug: mse-loss
 lessonSlug: loss-functions
 title: "Two Losses, and Cross-Entropy's Two Forms"
-instructions: "Three functions. (1) `mseLoss(labels, predictions)` returns the mean squared error as a scalar tensor: use tf.losses.meanSquaredError(). (2) `bceLoss(labels, logits)` returns binary cross-entropy as a scalar tensor, reading its second argument as raw logits: use tf.losses.sigmoidCrossEntropy(), which applies the sigmoid itself. (3) `pickBceForm(lastLayerActivation)` starts from a loss you have already chosen, binary cross-entropy, and picks which of its two forms to call. A sigmoid last layer hands you probabilities, so return 'binaryCrossentropy'. Any other last layer hands you logits, so return 'sigmoidCrossEntropy', and that stays true for activation names this lesson never shows you. The task type picks the loss; the last layer only picks the form. The grader calls all three on inputs of its own."
+instructions: |
+  **Contract revision 2026-09-17:** pickBceForm now takes an output kind (probabilities or logits), not an activation name. Update that argument in saved code.
+
+  Implement three functions. mseLoss(labels, predictions) returns a scalar mean squared error tensor using tf.losses.meanSquaredError. bceLoss(labels, logits) returns scalar binary cross-entropy using tf.losses.sigmoidCrossEntropy, which applies sigmoid to raw logits itself.
+
+  pickBceForm(outputKind) chooses a BCE form after the task has already established that binary cross-entropy is appropriate. For 'probabilities', return 'binaryCrossentropy'. For 'logits', return 'sigmoidCrossEntropy'. Throw for any other or missing value.
+
+  The caller must know what the model output represents. An unfamiliar activation name does not establish that its output is a logit. For this binary classifier, sigmoid outputs probabilities; a linear output trained as a logit goes to the logits form.
 starterCode: |
   function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
     return null; // your code here
@@ -11,9 +18,9 @@ starterCode: |
     return null; // your code here
   }
 
-  function pickBceForm(lastLayerActivation: string): string {
+  function pickBceForm(outputKind: string): string {
     // The loss is already settled. What is left to pick is which of its two
-    // forms reads the numbers this last layer emits.
+    // forms reads the numbers this model emits.
     return null; // your code here
   }
 solutionCode: |
@@ -25,8 +32,10 @@ solutionCode: |
     return tf.losses.sigmoidCrossEntropy(labels, logits);
   }
 
-  function pickBceForm(lastLayerActivation: string): string {
-    return lastLayerActivation === 'sigmoid' ? 'binaryCrossentropy' : 'sigmoidCrossEntropy';
+  function pickBceForm(outputKind: string): string {
+    if (outputKind === 'probabilities') return 'binaryCrossentropy';
+    if (outputKind === 'logits') return 'sigmoidCrossEntropy';
+    throw new Error('Expected probabilities or logits');
   }
 testCode: |
   describe('two losses and the form rule', () => {
@@ -74,24 +83,24 @@ testCode: |
       expect(bce, 'Cross-entropy reads the same five numbers through a sigmoid first, so it scores them on a different scale.').toBeCloseTo(0.7177, 3);
       expect(Math.abs(mse - bce), 'The two have to disagree here. Getting one number twice means both functions are running the same calculation.').toBeGreaterThan(0.1);
     });
-    it('pickBceForm reads the last layer it is given, not a memorized string and not the length of one', () => {
-      expect(pickBceForm('sigmoid'), 'A sigmoid last layer emits probabilities, so the probability form is the one to name.').toBe('binaryCrossentropy');
-      expect(pickBceForm('linear'), 'A linear last layer emits raw scores, so the logit form is the one to name.').toBe('sigmoidCrossEntropy');
-      expect(pickBceForm('none'), 'No activation means raw scores leave the layer untouched.').toBe('sigmoidCrossEntropy');
-      expect(pickBceForm('relu'), 'ReLU clips negatives and leaves the rest raw, so its output is still not a probability.').toBe('sigmoidCrossEntropy');
-      // 'unknown' is also seven characters long, so a rule that sorts on
-      // string length instead of reading it gets this one wrong. A last layer
-      // you cannot identify is not a sigmoid, and its outputs have to be
-      // treated like logits.
-      expect(pickBceForm('unknown'), 'This string runs seven characters, the same length sigmoid runs, so a rule built on length answers it backwards. A last layer you cannot identify is not a sigmoid.').toBe('sigmoidCrossEntropy');
+    it('selects a BCE form from the declared output contract', () => {
+      expect(pickBceForm('probabilities')).toBe('binaryCrossentropy');
+      expect(pickBceForm('logits')).toBe('sigmoidCrossEntropy');
     });
-    it('pickBceForm answers for a last layer it has never seen', () => {
-      // Generated per run: no table of activation names can enumerate this,
-      // so the only thing that answers it is the rule. The five-string lookup
-      // that beat this grader on 2026-09-08 fails here (audit round 5).
-      const unseen = 'act' + Math.floor(Math.random() * 1e9).toString(36);
-      expect(pickBceForm(unseen), 'This activation name is made up fresh on every run, so a lookup table of the names in the lesson cannot cover it. Only one last layer emits probabilities. Everything else, recognized or not, emits raw scores and needs the logit form.').toBe('sigmoidCrossEntropy');
-      expect(pickBceForm('sigmoid'), 'The recognized case still has to return the probability form. A rule that answers everything with the logit form is not reading its argument.').toBe('binaryCrossentropy');
+    it('refuses to infer output semantics from an activation name', () => {
+      for (const kind of [
+        'sigmoid',
+        'softmax',
+        'relu',
+        'unknown',
+        undefined,
+        null,
+        'act' + Math.random(),
+      ])
+        expect(
+          () => pickBceForm(kind),
+          'Declare probabilities or logits explicitly; an activation name alone is not the declared contract.',
+        ).toThrow();
     });
   });
 estimatedMinutes: 12

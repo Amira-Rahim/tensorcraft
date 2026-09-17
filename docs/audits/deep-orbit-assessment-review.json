@@ -1,0 +1,3105 @@
+{
+  "version": 1,
+  "reviewedOn": "2026-09-17",
+  "baseRevision": "9ab981bd",
+  "reviewer": "Codex, local author-side review",
+  "scope": "All 56 Deep Orbit lessons and 65 exercises; objective mapping, task contracts, hints, reference solutions and grader logic. Diagnostic wording reviewed selectively, not a complete copyedit.",
+  "limitations": [
+    "No independent reviewer or learner study.",
+    "No exhaustive proof that every valid implementation passes.",
+    "Reference-solution runs and misconception rejection measure grader behavior, not transferable learning.",
+    "Lesson prerequisites were checked against module order and explicit exercise API scaffolding; whole-course first-use terminology and rendered accessibility remain open."
+  ],
+  "legend": {
+    "C": "guided_code_evidence",
+    "P": "partial_evidence",
+    "R": "self_checked_recall",
+    "E": "explanation_only"
+  },
+  "lessons": [
+    {
+      "slug": "introduction-to-tensors",
+      "module": "foundations",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+      "sourceSha256": "30a613feac430d18a3497dcc55350565d9ee9a1076d57019190eb20b25da4fff",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand what a tensor is and how it relates to JavaScript arrays",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Create tensors from regular arrays using TensorFlow.js",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Identify the rank (number of dimensions) of a tensor",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Manage tensor memory with dispose() and tf.tidy()",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "create-a-tensor"
+      ],
+      "recallQuestions": [
+        "What is the rank of `tf.tensor2d([[1, 2, 3], [4, 5, 6]])`?"
+      ],
+      "judgment": "Creation, rank, float32 readback and disposal are tested. tf.tidy is introduced; general resource ownership needs later repeated-inference work.",
+      "prerequisites": [],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "tensor-shapes",
+      "module": "foundations",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+      "sourceSha256": "9c6173e3514c8ed4f5ff8b0858b5291e3fd5e8cd1e2a2951da2413ff439dda37",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Read and interpret tensor shapes",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Predict where each value lands after a reshape (row-major order)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Recognize common shapes in ML (batches, sequences, images)",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "reshape-tensor"
+      ],
+      "recallQuestions": [
+        "If a tensor has shape `[8, 224, 224, 3]`, what does each dimension represent for a typical image batch?"
+      ],
+      "judgment": "Reshape order and shape values are checked. Recognition of image/sequence conventions relies on self-check recall.",
+      "prerequisites": [],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "tensor-operations",
+      "module": "foundations",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+      "sourceSha256": "39d1d774c01e4eeae81a0c505137843e95dcd8aab0498450dec8938dc626e3b2",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Read a shape-mismatch error and identify which op it comes from",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 2,
+          "text": "Perform element-wise tensor operations (add, multiply, subtract)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Combine tensors of different shapes using broadcasting",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 5,
+          "text": "Use transpose to make shapes compatible",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "add-tensors"
+      ],
+      "recallQuestions": [
+        "What is the shape rule for matrix multiplication, and what do you use to fix a shape mismatch?"
+      ],
+      "judgment": "Arithmetic, broadcasting and matrix mixing are tested. Learners do not diagnose a supplied shape-error trace. Compatible multiplication does not prove they can explain a transpose.",
+      "prerequisites": [],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "data-loading",
+      "module": "foundations",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+      "sourceSha256": "1b8787ac9016f6e40bbf90db33c5e1d2a0751a4bc5fa8340d4e10ce5a5f45caa",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Create data pipelines using tf.data",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Batch data into fixed-size chunks for processing",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Shuffle data to prevent ordering bias",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Split data into training and validation sets",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "batch-data"
+      ],
+      "recallQuestions": [
+        "What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?",
+        "A classifier reads one sensor row at a time. Does that make a random split safe for predicting future readings?"
+      ],
+      "judgment": "Lazy reads, shapes, temporal membership and repeated iteration are checked. Shuffle correctness still depends on two random batch memberships differing (A15).",
+      "prerequisites": [],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "normalization",
+      "module": "foundations",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+      "sourceSha256": "1450b96a96657df07927fae0aac6d66d868c72f1a49ce024643878ba45864b84",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Explain how feature scaling affects neural-network training",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Apply z-score normalization (zero mean, unit variance)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Apply min-max normalization (scale to 0-1 range)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Recognize when to use each normalization strategy",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 5,
+          "text": "Feed normalized readings through a real dense neuron and read its verdict",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "normalize-data"
+      ],
+      "recallQuestions": [
+        "Why normalize features before training?",
+        "The challenge's z-score step subtracts a [2] tensor of column means from its [4, 2] batch of readings, and nothing throws. Which rule from lesson 3 allows that, and how does it line the two shapes up?"
+      ],
+      "judgment": "Both scalers and their application are checked. Choosing a scaler for a new data distribution is not graded. The preview neuron is supplied before the model-building module.",
+      "prerequisites": [],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "first-neuron",
+      "module": "neural-networks",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+      "sourceSha256": "8d1ea98cdb04e6e85b756654623952f909db0259afb6d183a8ac5b575ec1a492",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the anatomy of a single neuron (inputs, weights, bias)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement a neuron as a weighted sum plus bias",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "See how Array.reduce() maps to the dot product operation",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Read a weight: sign for direction, magnitude for sensitivity per unit of input",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "implement-neuron"
+      ],
+      "recallQuestions": [
+        "What does a neuron compute, and what role do weights and bias each play?"
+      ],
+      "judgment": "Varying inputs, widths, bias and individual weights exercise the weighted sum. Hand calculation explains the reduction; no explanation is collected.",
+      "prerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "activation-functions",
+      "module": "neural-networks",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+      "sourceSha256": "54dfa2a0953e9796d3477caab8d93c1de367cc4be52936af8e6ec92a617398e9",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand why activation functions are necessary",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Implement ReLU, and read sigmoid and tanh off their ranges",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Pick the activation for a slot from the range that slot needs",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "relu-activation"
+      ],
+      "recallQuestions": [
+        "Why does a deep network without activation functions collapse to a linear model?"
+      ],
+      "judgment": "ReLU is implemented across signs and shapes. Sigmoid/tanh range selection needs a separate decision task.",
+      "prerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "layers-and-architecture",
+      "module": "neural-networks",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+      "sourceSha256": "8a14a2cd88662528e5e3b01ec4252949812d6048d81996ae562c4b743633da4c",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Build multi-layer neural networks using tf.sequential()",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Understand how layers compose like a middleware chain",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Configure layer sizes (units) and activations",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Count a network's parameters before you build it",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "build-layer"
+      ],
+      "recallQuestions": [
+        "A dense layer's parameter count comes from two numbers. Which two, and why does only the first layer need an inputShape?"
+      ],
+      "judgment": "Model structure and parameter arithmetic are checked. The middleware analogy is exposition rather than assessed explanation.",
+      "prerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "forward-pass",
+      "module": "neural-networks",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+      "sourceSha256": "ce5250f8f48587fa562b4ef1cb29e85b73eb429d0959ed682441903b98680cf9",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Trace data flow through a neural network layer by layer",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Use model.predict() to run inference",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Understand input and output tensor shapes at each layer",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Give a flat reading the batch axis the layer expects, which is the mismatch that killed the demo",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "forward-pass"
+      ],
+      "recallQuestions": [
+        "Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens, and how do you fix it?"
+      ],
+      "judgment": "The grader checks batching, predict calls and returned tensors, but not a learner trace through every intermediate layer.",
+      "prerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "building-a-network",
+      "module": "neural-networks",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+      "sourceSha256": "9b5eea08f54f025f00fd14e2853ef743062b9b7ea51cf8dd9245a22a71805f4a",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Build and compile a complete neural network from scratch",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Understand what each compilation option controls",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Verify the network by its parameter count, and read its predictions before and after training",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Explain why a new layer starts with random weights and zero biases",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "simple-network"
+      ],
+      "recallQuestions": [
+        "What does model.compile() actually do, and what does it NOT do?",
+        "Foundations lesson 3 gave matMul one inflexible shape rule. Apply it to the 32-unit stage printed in the summary above: what shape must its kernel be, and how does that give the 128 parameters on that row?"
+      ],
+      "judgment": "Compilation, snapshots and before/after prediction provenance are checked. Initialization and compile semantics still require explanations; random confidence is no longer used as proof of training (A10).",
+      "prerequisites": [
+        "foundations"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "loss-functions",
+      "module": "training-loop",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+      "sourceSha256": "9db2aad244901d5ef1ae3ae7175ade198f631ccac07e9320b65e9bf832fe573f",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand what loss functions measure and why they're essential",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Interpret loss values: lower is better, zero is perfect",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "mse-loss"
+      ],
+      "recallQuestions": [
+        "For binary classification, why is binary cross-entropy preferred over mean squared error?"
+      ],
+      "judgment": "MSE, BCE logits and explicit output contracts are checked (A01). Selecting an appropriate loss for an unfamiliar task is not independently assessed.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "gradient-descent",
+      "module": "training-loop",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+      "sourceSha256": "4287dcfe1a6dc7fd09ddfc356bdcc0fc81fa517037fa17cd28968174abdfdbb6",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand gradients as the direction of steepest ascent",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement a single gradient descent step",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Predict what a learning rate that is too high does to the loss",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Read a descent trace and say why the step shrinks near the minimum",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "gradient-step"
+      ],
+      "recallQuestions": [
+        "Your training loss explodes after a few steps. What is the most likely cause and fix?"
+      ],
+      "judgment": "The update and dynamic loss gradients are exercised. Exploding loss has a recall question; competing causes are not diagnosed.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "backpropagation",
+      "module": "training-loop",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+      "sourceSha256": "e7681ba8683dc539c7f442bcf44f2cdb416436574070c51c41ea79c6c00dcf05",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Estimate a gradient numerically and count what that costs at network scale",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Understand how backpropagation works at a high level",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "See the connection to an error travelling back up the call stack",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Use tf.variableGrads() for automatic gradient computation",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "backprop-chain"
+      ],
+      "recallQuestions": [
+        "What does tf.variableGrads() return, and what do you do with the result?",
+        "Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it's correct?"
+      ],
+      "judgment": "Numerical and automatic derivatives are compared with variable-specific checks. The call-stack analogy and conceptual chain-rule explanation are not elicited.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "training-loop",
+      "module": "training-loop",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+      "sourceSha256": "6965f6cd188c7155c07415cd9a513ca4e025225c3659c0d43d2a71ad58eeb77d",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Implement the complete training loop with model.fit()",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Configure epochs, batch size, and validation split",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Monitor training progress with callbacks",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Read the training and validation curves together to tell a plateau from overfitting",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "training-loop-exercise"
+      ],
+      "recallQuestions": [
+        "Why use mini-batches of 32 to 512 samples rather than processing the full dataset at once or one sample at a time?"
+      ],
+      "judgment": "A real fit and patience offset are checked. diagnose ignores training loss yet calls rising validation loss overfitting; stopping length is stochastic (A16).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "evaluating-deep-scan",
+      "module": "training-loop",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+      "sourceSha256": "b34387615f7a2b35cd9b3170d3b63c601fe68f91c0552db27f47cd2f58800ccf",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Evaluate on held-out test data and read the train-vs-test gap",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Interpret accuracy, loss, and confusion matrix metrics",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Compare a trained classifier with a simple baseline",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Tell a validation set from a test set and know which one your decisions may touch",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 5,
+          "text": "Use the train/validation gap as a clue, then investigate possible causes",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "deep-scan-eval"
+      ],
+      "recallQuestions": [
+        "A model has 95% training accuracy and 60% test accuracy. What should you investigate before choosing a fix?",
+        "Why did module 1 assign earlier rows to training and later rows to validation before shuffling, and why are separately shuffled take() and skip() pipelines risky?",
+        "Can you reuse a detector's sensitivity and false-positive rate when anomalies become rarer, when the threshold changes, or when a new sensor changes normal readings?"
+      ],
+      "judgment": "Held-out evaluation and score provenance are checked. Confusion matrices, baseline choice and investigation are partly covered by the ungraded build-triage transfer report, not by this grader (A17/A24).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "why-the-browser",
+      "module": "browser-runtimes",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "sourceSha256": "d907458ab87497cc4bb6f5acefa69f8daa4369bc56022847d12bbc3d38076bdf",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the advantages of browser-based ML inference (privacy, latency, offline)",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Identify the constraints of running models in the browser (memory, compute, cold start)",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Decide between browser and server inference using the CSR-vs-SSR mental model",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "browser-ml-tradeoffs"
+      ],
+      "recallQuestions": [
+        "What is the main tradeoff when moving ML inference from server to browser?"
+      ],
+      "judgment": "The decision function now preserves hard requirements (A02). It applies a stated policy; it does not measure hardware or network performance.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "tensorflow-js-setup",
+      "module": "browser-runtimes",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "sourceSha256": "56aa3a92c100488e4bb067c2355f71f0e761900245f37819cb78e5eeffae544b",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Install and import TensorFlow.js in a web project",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 3,
+          "text": "Initialize TF.js, verify the active backend, and configure the right one for your target",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "tfjs-setup"
+      ],
+      "recallQuestions": [
+        "Why does the selected backend matter, and how do you check it?"
+      ],
+      "judgment": "Awaiting initialization and reporting the active runtime are tested. Package installation and backend performance comparisons are not performed by the grader.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "model-loading",
+      "module": "browser-runtimes",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "sourceSha256": "3e8e00e33b73a1acb67eb359954e57fc710198f3a4b9a10620c29579cfb9e4f3",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Load a pre-trained TensorFlow.js model from a URL",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Understand the model format: model.json manifest + weight .bin shards",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 3,
+          "text": "Export a trained model to that pair with model.save(), in Node and in the browser",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Cache models in IndexedDB for offline access and faster subsequent loads",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 5,
+          "text": "Handle loading states and errors gracefully in the UI",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "load-model"
+      ],
+      "recallQuestions": [
+        "What does tf.loadLayersModel() return compared with fetch(url).then(r => r.json())?"
+      ],
+      "judgment": "One loader call and returned architecture are checked. The loader is a harness stand-in; offline cache, UI errors and real manifests are not verified here (A23). Export is practised later in export-model-artifact.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "inference-pipeline",
+      "module": "browser-runtimes",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "sourceSha256": "e37b28a64b176b2acfd826a82bd0e311474dbc16a3f6e99c324db4d34a6114c4",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Build a real-time inference pipeline: input → preprocess → predict → display",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Preprocess raw input data to match model training format",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Measure and optimize inference latency for real-time requirements",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 5,
+          "text": "Investigate tensor growth and estimate headroom when that growth continues",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "inference-pipeline",
+        "incident-tensor-leak"
+      ],
+      "recallQuestions": [
+        "How do you keep repeated inference from accumulating tensors, and how do you check it?",
+        "numTensors rises from 400 at 03:00 to 1,000 at 05:00. With a budget of 10,000, what can you conclude?"
+      ],
+      "judgment": "Preprocessing, threshold boundaries, repeated cleanup and endpoint headroom are exercised. Latency optimization itself is deferred to profiling; the first broad objective is only partly represented by classify, which has no display UI.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "onnx-runtime-web",
+      "module": "browser-runtimes",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "sourceSha256": "de072082343573e5b709ae078454a7d9bda92cbf8d6039bde32e9846ada95296",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand ONNX as a universal model interchange format",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Load and run ONNX models in the browser with onnxruntime-web",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Benchmark TF.js against ONNX Runtime Web on one shared backend, so the result is about the runtimes",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Pick a backend from model size: where per-call overhead outweighs the arithmetic, and where it stops",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "onnx-comparison"
+      ],
+      "recallQuestions": [
+        "The 673-parameter classifier runs faster on WASM than on WebGL. Does that make WASM the faster backend?",
+        "ONNX is marketed as 'train anywhere, run anywhere'. What is the real constraint that limits that guarantee?"
+      ],
+      "judgment": "Real TFJS and a stand-in ONNX session test feed parity and timing placement. A device benchmark and the operator-support decision are not graded (A23).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "transformers-js",
+      "module": "browser-runtimes",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "sourceSha256": "572a314155e6f269c19d998e7bc156529f6f709ae490061d118d1c205e5b5cc5",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand when to reach for Transformers.js vs TFJS or ONNX Runtime",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Use `pipeline()` to run pretrained models in the browser",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Reason about the bandwidth + latency cost of shipping pretrained models client-side",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "load-pretrained-pipeline"
+      ],
+      "recallQuestions": [
+        "When should you reach for Transformers.js instead of training your own model with TF.js?",
+        "Module 3 scored DEEP SCAN on a held-out slice. This pipeline arrived pretrained, with no accuracy number for the crew's reports. What has to be true of the twenty reports you label by hand before Mirza sees any of this?"
+      ],
+      "judgment": "Task choice, positional pairing, sorting and one load/batch are tested with an injected factory. No actual pretrained download or labeled-report evaluation runs (A23).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "time-vs-frequency",
+      "module": "signal-processing",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "sourceSha256": "4121b78c94e248374cbd82c5ff34e1e37bd8fddeca2be90aab7294f551c28177",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Identify what each domain reveals: time shows when things happen, frequency shows what repeats",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Recognize why some patterns are invisible in time but obvious in frequency",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "time-vs-frequency"
+      ],
+      "recallQuestions": [
+        "A capture holds a tiny periodic component underneath four louder tones. Why does looking at the frequency domain reveal it when the time domain does not?"
+      ],
+      "judgment": "Two actual transforms and changing captures test time similarity versus spectral differences. An explanation of why one view reveals the tone is not collected.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "fourier-transform",
+      "module": "signal-processing",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "sourceSha256": "4cfced529137ca8257d26eeead138cd8f8e80c80602fef8973e52568e0dce281",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the Fourier Transform as signal decomposition into frequency components",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Compute the FFT of a signal using TensorFlow.js spectral operations",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "compute-fft"
+      ],
+      "recallQuestions": [
+        "Given an FFT of 128 samples taken at 128 Hz, what frequency does bin 20 correspond to, and what does a 73.4 Hz tone in that same capture read as?"
+      ],
+      "judgment": "Dominant bins, DC exclusion, sample rate and resolution are exercised. Nyquist/aliasing is recall only, and the nearest-bin wording overgeneralizes (A22).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "spectrograms",
+      "module": "signal-processing",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "sourceSha256": "c9d08057dc667b7f7528c81a46b8655e8ab5a1113f98c59baaeb487adfa46f5a",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand spectrograms as time-frequency representations of signals",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Read spectrogram output: what the axes and values mean",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Connect spectrogram visualization to the DevTools waterfall mental model",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "build-spectrogram"
+      ],
+      "recallQuestions": [
+        "If you increase the STFT window size, what happens to frequency resolution and time resolution, and why can't you improve both at once?"
+      ],
+      "judgment": "Multiple frames, hop, burst and changing tones are tested. Reading plot axes and the waterfall analogy are not independently assessed.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "fft-as-features",
+      "module": "signal-processing",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "sourceSha256": "92a085b48d6b6434f417b04142c37ff1ecbfef9a48ff1214e548b773bbe70e38",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand feature engineering as deriving useful model inputs from raw data",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Convert a hertz band into fixed FFT bins and use their magnitudes as model features",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Combine raw features with frequency-domain features into one vector a model can train on, and know why the FFT columns have to be normalized before training",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "fft-features"
+      ],
+      "recallQuestions": [
+        "The FFT computes nothing the samples did not already hold. Why does feeding its magnitudes to the model still raise accuracy?"
+      ],
+      "judgment": "Feature positions and frequency bands are exercised, with a corrected exact-zero convention (A09). Set-wide scaling and explanations of score/label changes are not graded here.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "windowing-and-overlap",
+      "module": "signal-processing",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "sourceSha256": "fb5d7fae6859831323cb73c4b45e9efca43d30c43c86cba5ecc54372524737c2",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Explain how cutting a finite signal spreads a tone across FFT bins",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Explain how overlapping windows improve coverage of samples near frame edges",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 4,
+          "text": "Choose the right window function based on the frequency resolution vs leakage tradeoff",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "apply-window"
+      ],
+      "recallQuestions": [
+        "Why apply a Hann window before computing the FFT?",
+        "Your spectrogram rows now come from windows with 50% overlap, so each sample appears in two of them. Which condition from the module 1 train/validation split decides whether rows like these can be split at random, and what does the overlap do to it?"
+      ],
+      "judgment": "Hann weights and application are checked. Hamming selection and overlap coverage are explained; the leakage probe sums magnitudes while calling them energy (A22).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "sequences-matter",
+      "module": "recurrent-networks",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "sourceSha256": "508be8c686436d9d3e6a94f6b0423bf66689975d4d197e4b3d57c40ba6a36c4f",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand why order matters in sequential data: shuffling destroys information",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Recognize why scoring one reading at a time hides temporal patterns",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Prepare sequential input by creating time-step windows from a stream of readings",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "create-sequences"
+      ],
+      "recallQuestions": [
+        "You feed a feedforward network three readings one at a time: [0.5, 0.3, 0.7], then [0.8, 0.5, 0.9], then [0.4, 0.6, 0.1]. You run them again in reverse order. What changes about the three scores, and what does not?"
+      ],
+      "judgment": "Window/target alignment and rank-3 stacking are exercised. The reason single-reading inference hides temporal structure is mainly recall.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "simple-rnns",
+      "module": "recurrent-networks",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "sourceSha256": "4aa4170021b59274d25923b526f238a5a6006ac5fc6ed8b3227d5f901c6cc7e5",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the RNN as a learned reducer: (prevState, input) → newState",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Build a simple RNN using TensorFlow.js layers API",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "build-rnn"
+      ],
+      "recallQuestions": [
+        "A simple RNN trains on long windows, but the dependency it must learn spans dozens of time steps. After many epochs the loss is stuck at 0.693. What is happening, and what fixes it?"
+      ],
+      "judgment": "Manual recurrence, real layer weights, state reset, order effects and gradient products are compared. API and packed weights are explained in the task.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "lstm-gates",
+      "module": "recurrent-networks",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "sourceSha256": "cc7b51e899e609bf511f8542b475e7ed73b079bebc62e1e81d67d6db851f8979",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the three LSTM gates: forget (discard), input (add), output (expose)",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Compare LSTM and GRU architectures: tradeoffs between complexity and performance",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Trace the gradient backward along the cell state and say what the forget gate does to it",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "build-lstm"
+      ],
+      "recallQuestions": [
+        "What does the LSTM forget gate actually output, and how does that differ from a hard expiry like localStorage TTL?",
+        "The LSTM flags pulses 72 hours past the last window it trained on, yet no cell state survives between windows. What did the network actually retain?"
+      ],
+      "judgment": "Manual gates match a real sigmoid-gated one-unit LSTM. GRU comparison is exposition; gradient retention is explained/recalled rather than tested as a derivative.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "sliding-windows",
+      "module": "recurrent-networks",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "sourceSha256": "825006fe8f3c2756188595fc900deba7adf1da903690ce793460364e5b8723f4",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Convert continuous signal streams into fixed-size overlapping windows",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Choose a window size longer than the dependency you need to detect, and read the overlap a stride-1 window produces",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 5,
+          "text": "Recognize the fixed-length buffer that turns a live feed into one model-ready window per reading",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "sliding-window"
+      ],
+      "recallQuestions": [
+        "The stride-1 pipeline scored 97.4 on a held-out fifth of the windows and 60.6 after the stream was split by time. Which score is wrong, and what produced it?",
+        "You set windowSize to 30 but the pattern you need to detect spans 50 time steps. What happens, and what should you change?"
+      ],
+      "judgment": "Boundary exclusion and last-reading labels are graded. Choosing a dependency-length window is recall; a live buffer is demonstrated only.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "sequence-prediction",
+      "module": "recurrent-networks",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "sourceSha256": "bd0bf25ff566ecd5362f33fd89f036d7b473e227f22be92a06afa178fa2c1fe7",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Train an LSTM for next-value prediction on time-series data",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Generate multi-step forecasts by feeding predictions back as input",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "predict-next"
+      ],
+      "recallQuestions": [
+        "The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?",
+        "The rolling forecast builds a window tensor and gets a prediction tensor back on each of its 47 steps. The module-4 inference loop wrapped that same pair in tf.tidy(). What happens to those two tensors when the callback returns, and what gets out?"
+      ],
+      "judgment": "Real training, model/history agreement, rolling inputs, unit conversion and disposal are exercised. MAE is logged but its interpretation and held-out forecast quality are not graded (A18).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "normal-vs-anomalous",
+      "module": "anomaly-detection",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "sourceSha256": "ac57f7f565afe7df36fd435bc3afa31ff2c83d405debeca66d69865fb048c9e0",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand anomaly detection as modeling normality rather than cataloging every possible anomaly",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Compute a baseline mean and standard deviation from known-good readings",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Flag readings with a z-score gate, and recompute the baseline when the world underneath it moves",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Recognize the precision and recall tradeoff a threshold sets, and why no single cutoff satisfies both",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "detect-anomaly",
+        "incident-baseline-drift"
+      ],
+      "recallQuestions": [
+        "A z-score threshold of |z| > 3 flags 0.27% of samples in normal Gaussian data. If a monitor processes 100,000 readings per hour and the data is normal, roughly how many false-alarm flags does it generate per hour?"
+      ],
+      "judgment": "Z-score arithmetic, baseline statistics and volume projections are exercised. The incident now recommends investigation rather than declaring drift (A03). Precision/recall tradeoffs appear later.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "autoencoders",
+      "module": "anomaly-detection",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "sourceSha256": "10e0097dbffdd018b815fe2c546039baa0b6fdd9bc33998cb70f0a5fc54c9a24",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the autoencoder architecture: encoder → bottleneck → decoder",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Explain why reconstruction error can miss an anomaly or flag a normal input",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "build-autoencoder"
+      ],
+      "recallQuestions": [
+        "Can an autoencoder trained only on normal data reconstruct an anomaly well?"
+      ],
+      "judgment": "Architecture and screened fitting are exercised; contamination comparison uses two separately initialized models and hard outcome ratios (A18). Tests also wrongly say a linear autoencoder is not an autoencoder (A18).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "reconstruction-error",
+      "module": "anomaly-detection",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "sourceSha256": "c3b9f09adf2d03465069344fd3a88e153a9b5597c93e71012824ad0e4608996d",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Compute reconstruction error as the difference between input and autoencoder output",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Use MSE (mean squared error) as the anomaly score for each sample",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Rank each feature's error against that feature's own normal error to find which dimension carries the anomaly",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "reconstruction-error",
+        "incident-missed-anomaly"
+      ],
+      "recallQuestions": [
+        "MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
+      ],
+      "judgment": "MSE, input/output pairing and cleanup are checked; feature ratios now describe discrepancies without prescribing retraining (A04).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "threshold-tuning",
+      "module": "anomaly-detection",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "sourceSha256": "8d6f5657569d6498fe89ed0d2f6075e416dcf5af1ad189411b8ebc7cabb0edf2",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Understand the precision-recall tradeoff and how threshold affects each",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Compare F1 maximization with an explicit false-alarm and miss cost",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Choose an investigation priority from an alert-storm runbook without treating it as a confirmed cause",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "find-threshold",
+        "incident-false-alarm-storm"
+      ],
+      "recallQuestions": [
+        "What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?",
+        "Two deployments run the same detector on the same errors: one gates the capture pipeline, the other pages the bridge crew. Why should their thresholds differ when F1 peaks at the same cutoff?",
+        "The archive records one reading per 33-second window. How many flags a week does a cutoff at the 99th percentile of normal error produce, and what does that say about percentile thresholds?"
+      ],
+      "judgment": "F1 candidate ranking is graded; the cost contrast is checked with a counterexample and recall, not a learner cost-minimization function. Incident triage is now explicit about uncertainty (A05).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "the-anomaly",
+      "module": "anomaly-detection",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "sourceSha256": "f262ac3c7365392f69c134328dd10b0d0a3d32d083dbcf11cab0d2b2da85e2b3",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 4,
+          "text": "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "ensemble-detector"
+      ],
+      "recallQuestions": [
+        "How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?",
+        "Module 1's normalization lesson says to keep min-max off open-ended streams, yet this lesson's statistical gate reads the amplitude min-max normalized. What makes that channel safe for min-max, and what does the same fact cost the gate at the top of its range?"
+      ],
+      "judgment": "Independent verdicts, tolerances and all two-vote combinations are checked. Agreement interpretation is recall. A zero-spread window still incorrectly silences the statistical vote (A20).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "beyond-lstm",
+      "module": "advanced-time-series",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
+      "sourceSha256": "84ac34a3f90d01c0e24deedc829fd5e04ae78184bcb6c98b9b28a568b2700d6b",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand attention as dynamic relevance scoring: focusing on what matters",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Learn the Query-Key-Value framework for computing attention weights",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Compare direct access to earlier states with the sequential updates of an LSTM",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 4,
+          "text": "Implement a simple attention mechanism in TensorFlow.js",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "simple-attention"
+      ],
+      "recallQuestions": [
+        "What are the three components of the Query-Key-Value framework in attention, and what does each do?"
+      ],
+      "judgment": "QKV arithmetic, unequal key/value widths and soft weighting are checked, including a single output feature (A07). Comparing recurrence with attention is primarily recall/exposition.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "temporal-attention",
+      "module": "advanced-time-series",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
+      "sourceSha256": "9204b1c1f63398451dd15d0e48c67facf7d8efe8cbb8a4d505999c3fdd83eeb0",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Apply attention specifically to the temporal dimension of sequential data",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Read the weights back as one number per time step and name the steps that took the most of the budget",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Use attention weights as a where-it-looked map, and state what they do not prove about why",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 4,
+          "text": "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "temporal-attention"
+      ],
+      "recallQuestions": [
+        "Why are temporal attention weights useful beyond improving prediction accuracy?"
+      ],
+      "judgment": "Position, weights, pooling and reversal are graded. Attention-as-explanation limits are recalled rather than judged in a new case. Single-feature output rank is fixed (A07).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "forecasting",
+      "module": "advanced-time-series",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
+      "sourceSha256": "112703c834049132c5acf3dad860f34c4c1de949e9bddb3660a032f7fda5c08c",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Train a one-step model and roll it forward into a multi-step forecast",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Understand non-stationarity, when past patterns stop predicting the future",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 3,
+          "text": "Build the two runs a drift check has to tell apart: a rollout that feeds itself, and a one-step replay re-seeded from the readings that arrived",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "forecast-signal"
+      ],
+      "recallQuestions": [
+        "Why does multi-step forecasting become less reliable the further ahead you predict?",
+        "You run the drift check on a 100-step rollout and it reports that error has tripled. What did you actually measure?"
+      ],
+      "judgment": "Real fit plus two replay histories are checked. History provenance and mandatory loss/separation thresholds need deterministic probes (A18). Drift attribution remains recall.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "kalman-filters",
+      "module": "advanced-time-series",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
+      "sourceSha256": "9af6b4896430ef6905e71a4bddcd6d817e6fcdcade924447766150cea89cd16d",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand the Kalman filter as a predict-correct loop for state estimation",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement a 1D Kalman filter that smooths a noisy timing signal",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Connect Kalman filtering to the exponential moving average pattern",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Smooth a drifting interval and read the lag that motivates a velocity state",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "kalman-filter"
+      ],
+      "recallQuestions": [
+        "What does the Kalman gain control, and what happens when it is near 0 versus near 1?",
+        "You run this filter over eight readings that fall steadily, and its estimate ends up 0.44 above the last one. What in the filter's design put it there?"
+      ],
+      "judgment": "Exact gain/state updates and lag on a drifting fixture are tested. EMA connection is explained; model selection for a new motion pattern is not assessed.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "time-series-ensemble-methods",
+      "module": "advanced-time-series",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
+      "sourceSha256": "ae7e3a275cf885c0dd6b37e45f11b2e170776bf00234c0c71764311e199797c0",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Blend members two ways: equal shares, and shares weighted by each member's validation score",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Score an ensemble against its best single member, not against the average member",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "weighted-ensemble"
+      ],
+      "recallQuestions": [
+        "When can averaging models help, and what does it fail to fix?",
+        "Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?",
+        "Why are the member errors here fractions of each channel's range instead of raw counts and radians?"
+      ],
+      "judgment": "Equal and weighted predictions, validation-derived weights and best-member comparison are checked. Stacking is explained without a trained meta-model task.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "llms-for-science",
+      "module": "llm-integration",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
+      "sourceSha256": "15cc97ce786a5b1009312c50d29155258c9bc51f17d8531a54206a9684a51d6b",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand LLMs as augmentation tools for structured analysis",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Define the human-AI workflow: generate → review → correct → approve",
+          "evidenceLevel": "self_checked_recall"
+        }
+      ],
+      "practice": [
+        "llm-client"
+      ],
+      "recallQuestions": [
+        "What workflow makes LLM-assisted analysis safe for factual output?"
+      ],
+      "judgment": "Parsing now checks types, allowed classes, confidence range and non-empty reasoning (A06). Human review of factual output is still a workflow explanation/recall task.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "prompt-engineering",
+      "module": "llm-integration",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
+      "sourceSha256": "d4d1a99f6e551535a60b4640e1f781215647559faa9e7ad268bc4bb56c043a9b",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Structure prompts with role, context, data, and format instructions",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Request structured output (JSON) for programmatic processing",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Diagnose a vague prompt by naming which of the four parts is missing",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "prompt-template"
+      ],
+      "recallQuestions": [
+        "How do role, context, data and format help this prompt?"
+      ],
+      "judgment": "Prompt structure and fresh input interpolation are checked; sensible alternative role wording and prose restrictions now pass (A14). Diagnosing a vague prompt is not tested.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "rag-for-signals",
+      "module": "llm-integration",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
+      "sourceSha256": "996d4739f4d2251892aa04fcd71527f8cb1d61d3f4eb72acfd4cc1dd20dde9b4",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Check structured claims against cited fields and units, and explain why free-text answers still need review",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "retrieve-signals",
+        "rag-pipeline"
+      ],
+      "recallQuestions": [
+        "A generated answer contains only numbers found in retrieved records. Has it been verified?"
+      ],
+      "judgment": "Retrieval filters/cap and structured claim provenance are tested. Search-method choice is explanation plus retrieval limitations, not an embedding implementation; count-integrality contract remains incomplete (A21).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "report-generation",
+      "module": "llm-integration",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
+      "sourceSha256": "cb45d1f895eb406e5b2bfae0274fe2d54ec62b6a989e7af14a9578e1f22fbf2a",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Structure report generation as section-by-section assembly rather than monolithic generation",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Cut a section that fails its check, and record the gap instead of shipping the guess",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "generate-report"
+      ],
+      "recallQuestions": [
+        "What does section-by-section generation make easier to review?"
+      ],
+      "judgment": "The assembly stage preserves validated order and lists withheld headings. Validation arrives as a boolean; reviewing generated sections is outside this grader.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "multi-model-systems",
+      "module": "llm-integration",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
+      "sourceSha256": "5328317bdc8f65b1d84313ed0952be189f18e5699748f4e5a4c062aba007a56e",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Design a multi-model pipeline with clear interfaces between stages",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Validate each stage's output against its contract, then decide per stage: substitute a fallback, or stop the run when there is no honest substitute",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Trace one capture through the full DEEP SCAN pipeline, and see why each model needs its own preprocessing rather than one shared array",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "model-pipeline"
+      ],
+      "recallQuestions": [
+        "What can checks between model stages catch, and what requires end-to-end evaluation?",
+        "The autoencoder's stand-in here is module 7's 3-sigma gate on the amplitude alone. Why is there a ceiling on the sigma count that feature can produce, and what should you suspect when a reading comes back above it?"
+      ],
+      "judgment": "Actual classifier preprocessing and injected-stage orchestration are checked; detector and alert contracts now reject invalid types (A08). Architecture design is still prescribed.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "model-profiling",
+      "module": "optimization-edge",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
+      "sourceSha256": "72e6d49f9a5c5cb9aac01c715bde0ccb16cd093c3f98a9cc89d803d298fd983c",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Benchmark inference latency with high-resolution timing, mean and tail",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Establish baseline metrics before optimization",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "profile-model"
+      ],
+      "recallQuestions": [
+        "Why should you profile a model before optimizing it?"
+      ],
+      "judgment": "Measured mean, parameter rows, weight bytes and cleanup are checked. Tail latency is not returned by this task; wall-clock tests can fail on a busy runner (A19).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "quantization",
+      "module": "optimization-edge",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
+      "sourceSha256": "82893cb3f5b8eee675aca0a37b177c963d989385398a2e6838d95c9088b553ff",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand quantization as byte reduction: float32 storage cut to uint16 or uint8",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Quantize a model using TensorFlow.js conversion tools",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 3,
+          "text": "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 5,
+          "text": "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "quantize-weights"
+      ],
+      "recallQuestions": [
+        "What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?"
+      ],
+      "judgment": "A simulated affine kernel pass, restored predictions and constant kernels are tested (A11). Converter CLI/package output is not exercised (A23).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "pruning",
+      "module": "optimization-edge",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
+      "sourceSha256": "aff4a64e2b3d4b124ee8378cfd03683b56928ebf31299f78ebf71fff060eafff",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand pruning as tree-shaking for neural networks: zero the near-zero weights",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement magnitude-based pruning with a configurable sparsity level",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Measure what each pruning level costs, one class at a time",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Separate what pruning changes on disk from what it changes on the wire",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "prune-weights"
+      ],
+      "recallQuestions": [
+        "You zero 60% of a model's weights with magnitude pruning and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?",
+        "Pruning hurt the rare class in this experiment. Does that prove rare patterns are stored in small weights?"
+      ],
+      "judgment": "Global ranking, per-class effects and weight restoration are checked. Disk/wire behavior is recall. Exact sparsity 1 and unrepresented classes need an explicit contract (A21).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "caching-strategies",
+      "module": "optimization-edge",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
+      "sourceSha256": "0e7903270a3c3d13d0025209c0de2ef1d176137083daf82febe0babbaab5497f",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Wrap a model in a cache-first predict that skips inference on a hit",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Hash model inputs for cache key generation",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Measure cache hit rate and its impact on effective inference latency",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "inference-cache",
+        "incident-stale-verdict"
+      ],
+      "recallQuestions": [
+        "What should you measure before adding an inference cache, and why can a fresh entry be wrong?"
+      ],
+      "judgment": "Value keys, hits, tensor disposal and separate model caches are tested. TTL/version is covered by the incident, but an integrated bounded cache and latency tradeoff are not (A21).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "webgpu-acceleration",
+      "module": "optimization-edge",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
+      "sourceSha256": "915d67a0ba96f9bdba4b13d05b69d8f9b71440b46b373fe82f5aeeb1207686f0",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)",
+          "evidenceLevel": "self_checked_recall"
+        },
+        {
+          "number": 2,
+          "text": "Configure TensorFlow.js to use the WebGPU backend",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Benchmark WebGPU vs WebGL vs WASM for inference workloads",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Handle WebGPU availability with graceful fallback to WebGL",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "gpu-backend"
+      ],
+      "recallQuestions": [
+        "Why can WebGPU help compute-heavy inference, and why should you still benchmark it?",
+        "Demir's first WebGPU timing run printed 0.4 ms and was wrong. Which rule from module 4's backend benchmark does that run break, and would disposing the output tensor before stopping the clock have fixed it?"
+      ],
+      "judgment": "Preference order, false/throw failures and fallback are checked with a runtime stand-in. Device performance is not measured (A23).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "system-architecture",
+      "module": "capstone",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
+      "sourceSha256": "0dfe6dfee836fb07ee6a5147b72a238c1895f70d1d70c37ef93b7bf21efc969e",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Design a production ML pipeline as a dependency graph of typed components",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Implement a pipeline runner that validates data flow between stages",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Map the complete DEEP SCAN architecture from raw signal to final report",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "pipeline-architecture"
+      ],
+      "recallQuestions": [
+        "Why do ML pipeline stage dependencies differ from npm package dependencies?"
+      ],
+      "judgment": "A supplied linear chain tests stage validation and async sequencing with real FFT/tensors. Learners do not design a dependency graph.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "ci-cd-pipeline",
+      "module": "capstone",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
+      "sourceSha256": "ae4c809525eaf4f9d86cc57f3950115213f7d8f81c314dc1657c925d4fe8dd20",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Extend a standard CI/CD pipeline with ML-specific validation steps",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Implement model accuracy gates that block deployment on regression",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Add inference performance benchmarks as CI checks",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 4,
+          "text": "Configure automated deployment with rollback on failure",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 5,
+          "text": "Export a model with model.save() and an in-memory save handler, and read its topology, weight specs, and byte count",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "ci-cd-gate",
+        "export-model-artifact"
+      ],
+      "recallQuestions": [
+        "Why does a passing CI workflow not guarantee you tested the model you are about to ship?",
+        "What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
+      ],
+      "judgment": "Accuracy gating and actual in-memory export/reload are checked (A12). A runnable CI workflow, performance gate and deployed rollback are not assessed by these tasks (A23).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "monitoring",
+      "module": "capstone",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
+      "sourceSha256": "2a7e56cc2560372314c4c4185fefaa7592f061c66767acfc82b8489e0986493a",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Implement prediction quality monitoring: confidence tracking and the prediction-side class mix",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Build latency monitoring with P50/P95/P99 percentile tracking",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 3,
+          "text": "Detect data drift by comparing input feature distributions over time",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Configure alerts that trigger when model health metrics cross thresholds",
+          "evidenceLevel": "explanation_only"
+        }
+      ],
+      "practice": [
+        "model-monitor"
+      ],
+      "recallQuestions": [
+        "What category of model failure does standard app monitoring miss entirely?",
+        "A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?"
+      ],
+      "judgment": "Confidence mean, latency order statistics and feature-mean distance are graded. Class mix, higher-moment drift, alerts and the no-traffic state remain outside or simplified (A21).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "documentation",
+      "module": "capstone",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
+      "sourceSha256": "c8117ee2746180881da6b7e158e0da5efe11226093ef8f5cb5c5820d6c9bbce5",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Write a Model Card documenting model purpose, training data, and performance",
+          "evidenceLevel": "partial_evidence"
+        },
+        {
+          "number": 2,
+          "text": "Document the pipeline API and write runbooks for common operational scenarios",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 3,
+          "text": "List known limitations and failure modes: what the model cannot do",
+          "evidenceLevel": "partial_evidence"
+        }
+      ],
+      "practice": [
+        "write-model-card"
+      ],
+      "recallQuestions": [
+        "Why does documentation discipline transfer from software to ML, but verifiability does not?"
+      ],
+      "judgment": "Metadata is rendered and weakest recall is derived. The learner does not author the data provenance, intended use, API docs or operational runbook.",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    },
+    {
+      "slug": "launch",
+      "module": "capstone",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
+      "sourceSha256": "a235efe94fb363c0ff879b67d7709a78586cc8302c4ddf83a9707ad98ab3384e",
+      "objectives": [
+        {
+          "number": 1,
+          "text": "Configure a production build that includes model assets alongside web assets",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 2,
+          "text": "Deploy an ML-powered web app to GitHub Pages as a static site",
+          "evidenceLevel": "explanation_only"
+        },
+        {
+          "number": 3,
+          "text": "Verify the deployed system loads and runs inference correctly",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 4,
+          "text": "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch",
+          "evidenceLevel": "guided_code_evidence"
+        },
+        {
+          "number": 5,
+          "text": "Complete the DEEP SCAN mission: classify the anomalous signal",
+          "evidenceLevel": "guided_code_evidence"
+        }
+      ],
+      "practice": [
+        "verify-deployment",
+        "launch-rehearsal",
+        "classify-anomaly"
+      ],
+      "recallQuestions": [
+        "How does rolling back a deployed model differ from rolling back a deployed web app?",
+        "DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?"
+      ],
+      "judgment": "Training, canary scores, cleanup, verifier sequence and finale voting are exercised. There is no learner-owned deployed project under this grader (A23/A24); the empty-pattern check is fixed (A13).",
+      "prerequisites": [
+        "foundations",
+        "neural-networks",
+        "training-loop",
+        "browser-runtimes",
+        "signal-processing",
+        "recurrent-networks",
+        "anomaly-detection",
+        "advanced-time-series",
+        "llm-integration",
+        "optimization-edge"
+      ],
+      "prerequisiteReview": "Read with the module sequence and explicit task scaffolding; learner readiness unvalidated."
+    }
+  ],
+  "exercises": [
+    {
+      "slug": "create-a-tensor",
+      "lesson": "introduction-to-tensors",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
+      "sourceSha256": "656204988673ad0c305efed0bc646853489a9b35252fbf681951dd7770b497ca",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Actual float32 tensor values, rank, backend sum and disposal; supports array/tensor factory alternatives.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "reshape-tensor",
+      "lesson": "tensor-shapes",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
+      "sourceSha256": "7d07338d72ddf7dca6180940455e7d1fcb46cf7fb2cfedf56866d545dce55336",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks rank, shape, row-major values and a shared underlying buffer; view sharing is explicitly part of the task.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "add-tensors",
+      "lesson": "tensor-operations",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
+      "sourceSha256": "7518f17d8d98cd1134378dace0001cb64cabef9f444bddefe0335c22ad6b63f4",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Varies gains, broadcast inputs and matrix banks; meaningful shape/arithmetic evidence.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "batch-data",
+      "lesson": "data-loading",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
+      "sourceSha256": "a3d04f6f965954b7f932bf62787ac37934c159e3e6e1bb0458656cb46d11f974",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks lazy generator values, batch axes and temporal membership. Random membership comparison remains a risk; a fixed-seed/false probe passed on TFJS 4.22.0, so that proposed rejection was not reproduced.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "normalize-data",
+      "lesson": "normalization",
+      "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
+      "sourceSha256": "7578240e6f5067fcc9558e4db998610a292091bf8ca48662383d520c89334a31",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks training statistics, constant-column handling, min-max and frozen inference statistics. Dense preview is supplied before the neural-network module.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "implement-neuron",
+      "lesson": "first-neuron",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
+      "sourceSha256": "86a1f98b9f87a2996573479f8e3be4b48f5cec8e6f78232e6f2533e88f2f29ec",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Varies width, sign and bias; forbids readback inside the tensor calculation as an explicit objective.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "relu-activation",
+      "lesson": "activation-functions",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml",
+      "sourceSha256": "56417b92ae7b724fd495e18cbda1d0a559f2575067fcca983292f986a06f0001",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Accepts tensor arithmetic and checks negative/zero/large positive values. Does not assess choosing sigmoid/tanh.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "build-layer",
+      "lesson": "layers-and-architecture",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
+      "sourceSha256": "3b5a106b6b775f68de902719307f01d661231e63999b685b836a33dc42d479e3",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Counts dynamic widths without allocating quote-sized models; model architecture is prescribed.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "forward-pass",
+      "lesson": "forward-pass",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
+      "sourceSha256": "a4bd74c204bde6e3c134d8ab4d4ad16e42a8c1b48ffaeaf8566c2ccb604a269e",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks one batched call and returned tensor identity, plus shape repair. Identity is an explicit task contract.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "simple-network",
+      "lesson": "building-a-network",
+      "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml",
+      "sourceSha256": "76304b5cbc30abcf138692b6da3aba96e9572cbcdfa0fecae417355cd20fd1ab",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks real weight snapshots, model replay and untrained optimizer count. Removed confidence-based inference of training state; trained-outcome threshold remains stochastic.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "mse-loss",
+      "lesson": "loss-functions",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
+      "sourceSha256": "0c166ca161fde0c2863c356799b69b615e25efddb9c6aee4d004b4752f22cf34",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Corrected the unsupported activation fallback; BCE now requires declared probabilities or logits and rejects unknown semantics.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "gradient-step",
+      "lesson": "gradient-descent",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
+      "sourceSha256": "6aca2a0de692923b08648e822502300cdcef86562ccb283fa6e30d6c84e2f038",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Dynamic losses exercise gradient calculation and subtraction. The supplied single-variable scope does not test multi-variable gradient selection.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "backprop-chain",
+      "lesson": "backpropagation",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
+      "sourceSha256": "f866e0c8fef43f62535ca1e145975aa3b3ebb0e7e3332612fe1278f101004b1a",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Numerical and automatic gradient agreement plus call counts; explicit finite-difference contract is narrow but coherent.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "training-loop-exercise",
+      "lesson": "training-loop",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
+      "sourceSha256": "06218b5a2a758b692be55ffc49f261b7c620f1c6a32e9c20aca79239957067d7",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Real fit and iteration counts are useful, but overfitting diagnosis ignores the training curve and stopping-time assertions assume a random outcome.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "deep-scan-eval",
+      "lesson": "evaluating-deep-scan",
+      "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
+      "sourceSha256": "f6f989f61eaaaa3dc98b35285216f23cc5e170e6fbf33a91f12810a8cd8dcce1",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Uses real held-out rows and score provenance; healthy is required from an unseeded fit. No graded baseline or confusion-matrix implementation.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "browser-ml-tradeoffs",
+      "lesson": "why-the-browser",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
+      "sourceSha256": "419671ac2affe583c1a69a01cec8f585272061d64f527cfe080f4708be33d5de",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Rewritten to preserve hard privacy/offline requirements and report conflicting size constraints; latency is an exercise preference.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "tfjs-setup",
+      "lesson": "tensorflow-js-setup",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
+      "sourceSha256": "d098c33cfaf2b3f348d0e7ce9f59fe4a9b1414d09ae24dc501cc1fb8a5c401df",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Cold-runtime doubles exercise await/order and both refusal forms. It does not prove package installation or device availability.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "load-model",
+      "lesson": "model-loading",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
+      "sourceSha256": "474fff0b4d4b9311bad31c049ae1f9107d665fb2153e93d0fc6eb080e24005b3",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Architecture follows a single awaited load, including an injected changed model. Actual network and IndexedDB behavior are not exercised.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "inference-pipeline",
+      "lesson": "inference-pipeline",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
+      "sourceSha256": "d7077bdf709f57e1a4aad1bc7e61cc4323609896b072c14d156bcb4d66b97230",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Actual shape, feature order, scaling, threshold and tensor cleanup are checked with controlled model outputs.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "incident-tensor-leak",
+      "lesson": "inference-pipeline",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
+      "sourceSha256": "8ea100164d37c92fcb5746efed48879a2ca546e17f5c48d01ad56262f19284d9",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Endpoint rate and conditional headroom are checked without diagnosing growth as a leak. Negative-rate magnitude/deadline checks can be strengthened.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "onnx-comparison",
+      "lesson": "onnx-runtime-web",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
+      "sourceSha256": "ab4ed0b871202c914b8b15971b802df5530bdbf75a78c85adfcac622b94311ae",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks input parity, await/readback timing and disagreement; ONNX is a stand-in and parameter-count backend choice is a heuristic.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "load-pretrained-pipeline",
+      "lesson": "transformers-js",
+      "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
+      "sourceSha256": "5abaffb7dc3e9cc3c646df6ec6aa9fe712a5d818e9af276040cb7871c765bc83",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks task choice, one load, positional pairing and score ordering. Pipeline output is injected; sentiment validity for incident reports is unassessed.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "time-vs-frequency",
+      "lesson": "time-vs-frequency",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
+      "sourceSha256": "e78d7780d4eaa31ce6488856415b028705fe879297ede9a140fd59e5b53f5a49",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Transforms both raw captures and varies phase, offset, length, amplitude and the added tone; strong counterexamples.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "compute-fft",
+      "lesson": "fourier-transform",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
+      "sourceSha256": "dd9b919891b4c0af0159af17ca2782bf97cb9b99fd2aa3ab52f3e9068af38556",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests magnitude, DC exclusion and bin-to-Hz conversion. Nearest-bin wording needs qualification for general signals.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "build-spectrogram",
+      "lesson": "spectrograms",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
+      "sourceSha256": "8c45e70beea09d290697320e2d2a460458d42dadf186a5f33e4e5abd1c799dcb",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests whole frames, hops, silence, changing tones and leakage across neighboring bins; taper exclusion is explicit.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "fft-features",
+      "lesson": "fft-as-features",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
+      "sourceSha256": "5e6cbe10ca0061f7b957fabce610a43999e7c9b94e53572ede932d5e148184f1",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests fixed frequency columns and varying sample rate; repaired the adjacent-zero crossing inconsistency.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "apply-window",
+      "lesson": "windowing-and-overlap",
+      "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
+      "sourceSha256": "5df213b2b810a7df11481d407eb351a13d8bc76228275618b6de0c20529f0327",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests a symmetric Hann interior and elementwise application. Leakage probe currently measures summed magnitude while calling it energy.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "create-sequences",
+      "lesson": "sequences-matter",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
+      "sourceSha256": "be2ff61de9e5e13dc78bfafbdf65d9b00edfa750fc8508a021d9f4adba38fbd7",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests target alignment, stride, empty output, feature preservation and tensor shapes.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "build-rnn",
+      "lesson": "simple-rnns",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
+      "sourceSha256": "22aea09a967d1867acbe82274aa0fdcf37192445165ea9a9505a261379e41d41",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Manual recurrence and gradient products match a real one-unit layer; useful reset/order and exploding/vanishing counterexamples.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "build-lstm",
+      "lesson": "lstm-gates",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
+      "sourceSha256": "08fdb6115c85a60d5c0054698ff7bbc70ef55d8ac325dbda32c6731eb4db7acc",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Manual gates match packed weights in the real one-unit layer; sigmoid override and gate order are explicitly taught.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "sliding-window",
+      "lesson": "sliding-windows",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
+      "sourceSha256": "2dfac80e523c6ab577a58a68cb82ef39cd48161e867157d6411c90082a183d05",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests all retained rows and labels against temporal boundaries, including parameter variations.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "predict-next",
+      "lesson": "sequence-prediction",
+      "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
+      "sourceSha256": "192b57990c4441728fa8842540398621bde8ade057c5fae94b3493cf2d2a230d",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Real fit and rollout use shapes, clamps, model reads and disposal. Contract is long; loss-drop thresholds and z-score MAE wording need attention.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "detect-anomaly",
+      "lesson": "normal-vs-anomalous",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
+      "sourceSha256": "89ce98c16f5675d6880c65e7a8a34ef073a7b48a7447d02df246019855d9e004",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests sign, strict boundary and changing scales; positive std should be explicitly declared or zero handled.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "incident-baseline-drift",
+      "lesson": "normal-vs-anomalous",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
+      "sourceSha256": "49721d4b499d0de24bbd5a00a86790599ac793176c184c018da53c1fd17741fc",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Now reports a Gaussian reference and candidate diagnostics, with independent validation required before deployment. Uses unrounded rates for triage.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "build-autoencoder",
+      "lesson": "autoencoders",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
+      "sourceSha256": "95be0b16036dd33ad485366768145abaaa09f4c97d1e66cc50c7fd35cdd70cfb",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Exercises screening and reconstruction fitting, but two independent initializations confound the contamination comparison; strong outcome guarantees remain.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "reconstruction-error",
+      "lesson": "reconstruction-error",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
+      "sourceSha256": "4419d0a3c5047360a72cfed15869dad1a44b9b53fd6ceb93ec59fbbdad809305",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Uses zero, identity and offset models plus live tensor counts; measures reconstruction rather than input energy.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "incident-missed-anomaly",
+      "lesson": "reconstruction-error",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
+      "sourceSha256": "2c7c291e8bd291b56c03288c85647555ca7e33c555d5b64dfb06686866a55f29",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Now ranks measured discrepancies without claiming memorization or prescribing retraining. Baseline is explicitly positive.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "find-threshold",
+      "lesson": "threshold-tuning",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
+      "sourceSha256": "4073a9f15b58254749963763ba58cf8f239be86b310891f9f6590a51fdd6dce8",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests F1 against accuracy, recall and equal-cost error traps; any maximizing supplied candidate is allowed. A new general tie/membership probe would strengthen it.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "incident-false-alarm-storm",
+      "lesson": "threshold-tuning",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
+      "sourceSha256": "b072da223bdd2bc06e078cd6df66203149b46d3ec0a1875d43954fb2a86c7bfe",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Now returns next-check priorities, keeps cause undetermined and reports null for a zero-baseline ratio.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "ensemble-detector",
+      "lesson": "the-anomaly",
+      "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
+      "sourceSha256": "426747773041393ee1b9a4f2a01d96394f9170b9d1f014844066b3cb35749ccb",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests all vote combinations and changing units/cutoffs. Zero spread currently maps every reading to z=0 and needs repair.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "simple-attention",
+      "lesson": "beyond-lstm",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
+      "sourceSha256": "8953cd20e5478ecf24aa1ca46e4284fe896e3bd8e3d32ccd198c3445e80e2ae1",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests QKV distinction and soft weighting against independent arithmetic; repaired scalar collapse for one value feature.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "temporal-attention",
+      "lesson": "temporal-attention",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
+      "sourceSha256": "a06feadb389a2b8a067e7976189a4a376abd433d78cd7024955fedf041238d76",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests positional scoring, pooling and reversal; repaired one-feature summary rank.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "forecast-signal",
+      "lesson": "forecasting",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
+      "sourceSha256": "ffcc546fb6600f4afdb407a5f93f445f7b0fa3b1a10682d4230db35d138375e3",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks both histories against the returned model. Random training and minimum divergence are still used as correctness requirements.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "kalman-filter",
+      "lesson": "kalman-filters",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
+      "sourceSha256": "fefcf4185c1c80eb104cdfa1a48d7139a719f6960abea96fb4d43dd9123d7a5e",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks gain/state with known and varying parameters, plus lag; this is a specified 1D random-walk model.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "weighted-ensemble",
+      "lesson": "time-series-ensemble-methods",
+      "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
+      "sourceSha256": "2de53defd694c958ef091f87ea5480ce767f462181e5e379146788653c0d6132",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks validation-only weights, best-member comparison and both benefit/harm cases; formula is labeled a heuristic.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "llm-client",
+      "lesson": "llms-for-science",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
+      "sourceSha256": "c789f2e2d47d3a8e450d641baf87798307cf43be49abf597b1cf6e811235c36b",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Now validates allowed classes, finite bounded numeric confidence and non-empty text. JSON extraction is deliberately limited to one object.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "prompt-template",
+      "lesson": "prompt-engineering",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
+      "sourceSha256": "eea7985c039636eef3c415fc5c5359bf9d086ca2ea5e9ecf5b1d0f880ac21aaa",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Relaxed wording tests after reproducing two sensible rejected prompts; checks structure, not actual LLM obedience.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "retrieve-signals",
+      "lesson": "rag-for-signals",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
+      "sourceSha256": "a20af5fa9f5145e66d93f89af17e47d423ba614a4a8bd7fe99faa29f9a58ca0d",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Varies filters, case, clock, cap and database order. It is a declared regex query parser, not semantic retrieval.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "rag-pipeline",
+      "lesson": "rag-for-signals",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
+      "sourceSha256": "60482499af2a7be949fc4832f9b3169fbc5f89aa91a3e4cc8fe791926c889d80",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks record/field/unit/operation provenance and unsupported prose; count-integrality and valid tie/boundary breadth can improve.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "generate-report",
+      "lesson": "report-generation",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/generate-report.yaml",
+      "sourceSha256": "7ea47f3d0699ca6fd02b26ce93a452519f3bf9964482fe13e5b1da2e02984596",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests assembly/withholding order with changed headings and bodies. Boolean verdicts are supplied, not independently verified.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "model-pipeline",
+      "lesson": "multi-model-systems",
+      "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml",
+      "sourceSha256": "f102eb8e87a48bf82565f3fc9981acc1e6606b59ac7c314a54e7364df9c713d3",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Now validates detector and alert outputs as well as classifier confidence; real classifier preprocessing is tested.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "profile-model",
+      "lesson": "model-profiling",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
+      "sourceSha256": "048a20c8ed25c278dedfa896c04a4e7ee77b045736304b833541af1fd2855315",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks resource cleanup and mean readback timings; real timer cutoffs can reject correct code under contention.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "quantize-weights",
+      "lesson": "quantization",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
+      "sourceSha256": "d2962d944772f1cc6960407aa9059a864c49827fc4c5dd204d843ce99f91a878",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Repaired constant kernels; tests restore weights and compare actual class decisions. Does not exercise converter output or quantify accuracy from labels.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "prune-weights",
+      "lesson": "pruning",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
+      "sourceSha256": "0f2ecefd2c132612834ce75510f6b35949ca2d439a274f43bbd3264444a5b52e",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks global cutoff, fresh originals per level, per-class counts and final restore. Endpoint sparsity and missing-class behavior are underspecified.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "inference-cache",
+      "lesson": "caching-strategies",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
+      "sourceSha256": "67de852318250a0dedca4b7a9d26b0ec52d74b76e6e19f25ee03a4c8a8553d2c",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests ordered values, decimal precision, persistence and tensor release. Shape/dtype and returned-value mutation protection are missing.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "incident-stale-verdict",
+      "lesson": "caching-strategies",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
+      "sourceSha256": "209372c492e54e58e45051b1eb0a39520d35d93d4b0f3ae7fe9e24dc5f9fadd4",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests inclusive age boundary, version mismatch and rollback; a fresh entry can still be approximate or wrong for reasons outside this exercise.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "gpu-backend",
+      "lesson": "webgpu-acceleration",
+      "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
+      "sourceSha256": "142c768b5cb2f9e4ab3b546e97a2c14221ce23f9bb86c98d3af0a006ea9fb6da",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests caller preference, false/throw refusals, first success and final ready; actual hardware remains unverified here.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "pipeline-architecture",
+      "lesson": "system-architecture",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
+      "sourceSha256": "383a6adda7b9c541a89dc7f12a5e587228c913a22f95c023b64c90a879e36e79",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Uses real normalization/FFT with async middle and final stages; validates before processing. Architecture is a given chain, not designed by the learner.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "ci-cd-gate",
+      "lesson": "ci-cd-pipeline",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
+      "sourceSha256": "30783c450f1d29d4c077e93597f000c84a80d960a29f6a6f162302c16f9c507b",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Repaired missing/null/empty labels counting as matches. Conservative batch score keeps missing labels in the denominator.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "export-model-artifact",
+      "lesson": "ci-cd-pipeline",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
+      "sourceSha256": "5ded26af5bdc795a627564e2dafa1841d621f66d5e738c1d778283dccfb1f356",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Actual save handler, artifact byte count, mixed precision sizes and reload prediction agreement; strong integration exercise.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "model-monitor",
+      "lesson": "monitoring",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
+      "sourceSha256": "1f8255b1cb64b40abc857d3fc9a433e50d77f607f4925a6e76442b8e148c763c",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Tests numeric order statistics and mean-vector distance. Empty-data zeros are sentinels, not evidence of model health; shape/scale assumptions need clearer bounds.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "write-model-card",
+      "lesson": "documentation",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
+      "sourceSha256": "6362283f4682f7e671aed7cae1644e6be01126de09dd7b5f5047d70ced0435ef",
+      "declaredDifficulty": "beginner",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks metadata rendering, benchmark attribution and weakest recall across varied classes. Does not assess authorship of an adequate model card.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "verify-deployment",
+      "lesson": "launch",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
+      "sourceSha256": "de359bc054302f33cb6d3eb891e9e228e34ed784e0cf2ff4c30ac4e6c8b00b36",
+      "declaredDifficulty": "intermediate",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks ordered awaiting, rejection reporting and empty runs with real inference probes. A promise that never settles is not handled despite the instruction claim.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "launch-rehearsal",
+      "lesson": "launch",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
+      "sourceSha256": "94737bbc96f004e042e40e080f2cf944de4121f4e4334970b2eaf44bdc14265c",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Checks the actual training rows/schedule/trace, warm optimizer state, canary score provenance, gate decisions and cleanup. The project and policy are supplied.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    },
+    {
+      "slug": "classify-anomaly",
+      "lesson": "launch",
+      "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
+      "sourceSha256": "fdaa2e00a99052a42be83e99acd2e6dd533c221a95f7c3b7bb32a9e6c20602f9",
+      "declaredDifficulty": "advanced",
+      "reviewStatus": "reviewed_with_limits",
+      "judgment": "Repaired empty-pattern evidence; real votes and ratio tolerance are checked. Zero-spread handling and the fictional confirmation label still need careful scope.",
+      "difficultyValidation": "Author estimate only; no observed completion time or unaided success evidence."
+    }
+  ],
+  "objectiveEvidenceCounts": {
+    "partial_evidence": 52,
+    "guided_code_evidence": 118,
+    "self_checked_recall": 23,
+    "explanation_only": 29
+  }
+}

@@ -25,11 +25,20 @@ consequence:
   narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The distance problem is gone."
 hints:
   - level: nudge
-    content: "Attention scores every time step against the query, softmaxes the scores into weights, then blends the hidden states in proportion to those weights."
+    content: |
+      Attention scores every time step against the query, softmaxes the scores into weights, then blends the hidden states in proportion to those weights.
   - level: guidance
-    content: "The query only ever meets the keys. That product gives one score per time step, and softmax turns the scores into weights over the steps. Two booleans follow the pair of tensors in the multiply, transposeA and transposeB, and the keys are the side that needs flipping before the inner sizes meet. The values are touched once, at the end, under those weights. Three of the tests hand you keys and values of different widths, so code that pools the keys instead of the values comes back the wrong width."
+    content: |
+      The query only ever meets the keys. That product gives one score per time step, and softmax turns the scores into weights over the steps. Two booleans follow the pair of tensors in the multiply, transposeA and transposeB, and the keys are the side that needs flipping before the inner sizes meet. The values are touched once, at the end, under those weights. Three of the tests hand you keys and values of different widths, so code that pools the keys instead of the values comes back the wrong width.
   - level: solution
-    content: "const queryRow = query.reshape([1, query.shape[0]]); const scores = tf.matMul(queryRow, keys, false, true); const weights = tf.softmax(scores); const blended = tf.matMul(weights, values); return blended.squeeze();"
+    content: |
+      function simpleAttention(query, keys, values) {
+        const queryRow = query.reshape([1, query.shape[0]]);
+        const scores = tf.matMul(queryRow, keys, false, true);
+        const weights = tf.softmax(scores);
+        const blended = tf.matMul(weights, values);
+        return blended.squeeze([0]);
+      }
 keywords:
   - attention
   - self-attention

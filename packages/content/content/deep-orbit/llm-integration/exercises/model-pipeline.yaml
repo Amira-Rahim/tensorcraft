@@ -2,6 +2,8 @@ slug: model-pipeline
 lessonSlug: multi-model-systems
 title: "Wire a Model Pipeline"
 instructions: |
+  **Contract revision 2026-09-17:** Saved code must reject a non-boolean detector result and an empty or non-string alert.
+
   Write a pipeline function that runs three stages over one signal: `classify`
   (returns `{ class, confidence }`), `detectAnomaly` (returns a boolean), and
   `generateAlert` (returns a message string). Every stage is handed the raw
@@ -36,6 +38,8 @@ instructions: |
   scale fit the shape and come back as a legal-looking confidence that means
   nothing, so scale them the way the model was trained, not raw and not as
   z-scores.
+
+  Validate the other stages too. detectAnomaly must return a boolean; throw before calling generateAlert if it returns anything else. An alert must be a non-empty string after trimming. Reject an invalid alert instead of returning it.
 starterCode: |
   interface Verdict {
     class: string;
@@ -124,7 +128,9 @@ solutionCode: |
       ? verdict.class
       : 'unknown';
     const isAnomaly = await detectAnomaly(signal, classification);
+    if (typeof isAnomaly !== 'boolean') throw new Error('detector must return a boolean');
     const alert = isAnomaly ? await generateAlert(signal, classification) : null;
+    if (isAnomaly && (typeof alert !== 'string' || alert.trim().length === 0)) throw new Error('alert must be a non-empty string');
     return { classification, confidence, isAnomaly, alert };
   }
 testCode: |
@@ -398,6 +404,45 @@ testCode: |
       expect(stopped, 'A stage 1 that throws ends the run. There is no verdict to carry, so nothing downstream should have run.').toBe(true);
       expect(detectorRuns, 'The detector ran on the run that had no verdict.').toBe(1);
     }));
+  });
+
+  it('rejects a detector string instead of treating it as a boolean', async () => {
+    await expect(
+      pipeline(
+        [],
+        async () => ({ class: 'noise', confidence: 0.5 }),
+        async () => 'false',
+        async () => 'alert',
+      ),
+    ).rejects.toThrow();
+  });
+  it('stops before alerting on invalid detector output', async () => {
+    for (const bad of [null, undefined, 0, 1, {}, 'false']) {
+      let calls = 0;
+      await expect(
+        pipeline(
+          [],
+          async () => ({ class: 'noise', confidence: 0.5 }),
+          async () => bad,
+          async () => {
+            calls++;
+            return 'alert';
+          },
+        ),
+      ).rejects.toThrow();
+      expect(calls).toBe(0);
+    }
+  });
+  it('rejects invalid alert messages', async () => {
+    for (const bad of [null, undefined, 42, {}, '', '  '])
+      await expect(
+        pipeline(
+          [],
+          async () => ({ class: 'noise', confidence: 0.5 }),
+          async () => true,
+          async () => bad,
+        ),
+      ).rejects.toThrow();
   });
 estimatedMinutes: 16
 difficulty: intermediate

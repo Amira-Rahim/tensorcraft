@@ -50,7 +50,7 @@ But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Naz
 
 Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
 
-<LearningObjectives objectives={["Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees", "Understand the precision-recall tradeoff and how threshold affects each", "Compare F1 maximization with an explicit false-alarm and miss cost", "Diagnose an alert storm against the known failure signatures before touching the cutoff"]} />
+<LearningObjectives objectives={["Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees", "Understand the precision-recall tradeoff and how threshold affects each", "Compare F1 maximization with an explicit false-alarm and miss cost", "Choose an investigation priority from an alert-storm runbook without treating it as a confirmed cause"]} />
 
 ## Setting the Threshold
 
@@ -177,7 +177,7 @@ Sweep the candidate cutoffs against a labeled validation slice and return the on
 
 <Exercise slug="find-threshold" />
 
-PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Before anyone silences anything, run the triage: sensor change, threshold drift, stale model. If the storm fits none of those signatures, it goes to a human, loud.
+PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Keep reviewing the alerts while checking sensor changes, model performance and thresholds. The runbook selects where to investigate first; none of these clues proves the cause. Escalate unexplained cases.
 
 <Exercise slug="incident-false-alarm-storm" />
 

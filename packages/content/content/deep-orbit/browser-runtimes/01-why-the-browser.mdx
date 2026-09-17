@@ -25,11 +25,18 @@ consequence:
   narrative: "Nazari approves the browser deployment plan. Demir begins setting up the runtime."
 hints:
   - level: nudge
-    content: "recommendDeployment must return 'client' or 'server': the browser wins on tight latency, sensitive data, and offline needs, but a model too big to ship overrides all of that."
+    content: |
+      Which inputs are requirements, and which are performance preferences? Check whether the size budget conflicts with a requirement first.
   - level: guidance
-    content: "Three of the four fields are reasons to stay in the browser. modelSizeMB is the one reason to leave, and it outranks the other three, so the order your checks run in is the whole exercise. The instructions carry both numbers the tests grade, and a case with no reason to stay still needs a verdict."
+    content: |
+      A server cannot provide disconnected inference or keep all input on the device. Report the conflicting requirements explicitly. Once those cases are handled, apply the exercise's size and latency preferences.
   - level: solution
-    content: "if (useCase.modelSizeMB > 50) { return 'server'; } if (useCase.latencyBudgetMs < 50 || useCase.dataSensitive || useCase.needsOffline) { return 'client'; } return 'server';"
+    content: |
+      function recommendDeployment(useCase) {
+        const mustStayLocal = useCase.dataSensitive || useCase.needsOffline;
+        if (useCase.modelSizeMB > 50) return mustStayLocal ? 'reconsider' : 'server';
+        return mustStayLocal || useCase.latencyBudgetMs < 50 ? 'client' : 'server';
+      }
 keywords:
   - browser-ml
   - client-side

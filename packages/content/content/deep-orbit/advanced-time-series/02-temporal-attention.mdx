@@ -25,11 +25,22 @@ consequence:
   narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The pattern is confirmed."
 hints:
   - level: nudge
-    content: "Two halves. Score every step first (position concatenated onto the readings, then softmax), then collapse [T, d] down to [d] with every timestep contributing in proportion to its weight."
+    content: |
+      Two halves. Score every step first (position concatenated onto the readings, then softmax), then collapse [T, d] down to [d] with every timestep contributing in proportion to its weight.
   - level: guidance
-    content: "The scorer carries one more row than the readings have columns, and that spare row is what position is worth to it. Two things to keep straight. The scores come out one per step, and softmax needs them flat before it can spread weight over the steps. And what you pool is the readings you were handed, not the widened copy you scored: a summary one number too wide is that mistake."
+    content: |
+      The scorer carries one more row than the readings have columns, and that spare row is what position is worth to it. Two things to keep straight. The scores come out one per step, and softmax needs them flat before it can spread weight over the steps. And what you pool is the readings you were handed, not the widened copy you scored: a summary one number too wide is that mistake.
   - level: solution
-    content: "const [T] = sequence.shape; const pos = tf.linspace(0, 1, T).reshape([T, 1]); const withPos = tf.concat([sequence, pos], 1); const scores = tf.matMul(withPos, scorerWeights).reshape([T]); const weights = tf.softmax(scores); const summary = tf.matMul(weights.reshape([1, T]), sequence).squeeze(); return { summary, weights };"
+    content: |
+      function temporalAttention(sequence, scorerWeights) {
+        const [T] = sequence.shape;
+        const pos = tf.linspace(0, 1, T).reshape([T, 1]);
+        const withPos = tf.concat([sequence, pos], 1);
+        const scores = tf.matMul(withPos, scorerWeights).reshape([T]);
+        const weights = tf.softmax(scores);
+        const summary = tf.matMul(weights.reshape([1, T]), sequence).squeeze([0]);
+        return { summary, weights };
+      }
 keywords:
   - temporal-attention
   - time-step-focus

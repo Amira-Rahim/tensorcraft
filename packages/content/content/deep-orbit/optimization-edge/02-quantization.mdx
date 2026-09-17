@@ -25,7 +25,8 @@ consequence:
   narrative: "Quantization shrinks the DEEP SCAN bundle's weight files from 340 MB to 85 MB. The classifier scores 94.2 before the pass and 94.2 after it. Nazari puts the date beside that second number."
 hints:
   - level: nudge
-    content: "Two prediction passes with the quantizing in between. Ask the model what it makes of every capture, squeeze each kernel onto the 256 integer buckets 0 to 255, put the decoded floats back on the model, then ask it again. The difference between the two answers is what the pass cost."
+    content: |
+      Two prediction passes with the quantizing in between. Ask the model what it makes of every capture, squeeze each kernel onto the 256 integer buckets 0 to 255, put the decoded floats back on the model, then ask it again. The difference between the two answers is what the pass cost.
   - level: guidance
     content: |
       There is no tf.quantize() in TFJS, so the mapping is arithmetic you
@@ -39,31 +40,63 @@ hints:
       The second is where the price shows up. Squeezing a weight onto one of
       256 buckets is what saves the byte, and coming back out of the bucket
       is what the runtime does for you at load. So the floats that come back
-      out have to go onto the model before you ask it anything. Leave them
-      off and both prediction passes read the same trained weights, and the
-      pass reports that it cost nothing, which is the one answer that is
-      always wrong.
+      out have to go onto the model before the second prediction pass.
+      Otherwise you have measured the original model twice. Zero changed
+      predictions is a valid result, but only after testing the decoded weights.
 
       The third is the grid. Every tensor gets its own, measured from its own
       smallest and largest value. One tensor carrying a value far out from
       the rest would otherwise widen the buckets of every other tensor in the
       model. That widening is the failure mode this exercise is built around.
-      A bucket wide enough to swallow a small weight turns it into a zero,
-      and whatever that weight was carrying goes with it.
+      A wider bucket permits a larger rounding error. The decoded value is
+      q * scale + min, so a small weight does not necessarily round to zero.
   - level: solution
     content: |
-      const before = Array.from(await model.predict(input).argMax(1).data());
-      const isKernel = (w: any) => w.shape.length === 2;
-      const values = Array.from(w.dataSync()) as number[];
-      const min = values.reduce((a, b) => Math.min(a, b));
-      const max = values.reduce((a, b) => Math.max(a, b));
-      const scale = (max - min) / 255;
-      const quantized = values.map(v => Math.round((v - min) / scale));
-      const restored = quantized.map(q => q * scale + min);
-      const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
-      model.setWeights(rebuilt);
-      const after = Array.from(await model.predict(input).argMax(1).data());
-      const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
+      interface QuantizedKernel {
+        quantized: number[];
+        scale: number;
+        min: number;
+        shape: number[];
+      }
+
+      interface QuantizationReport {
+        kernels: QuantizedKernel[];
+        maxWeightError: number;
+        predictionsChanged: number;
+      }
+
+      async function quantizeModel(
+        model: any,
+        captures: number[][]
+      ): Promise<QuantizationReport> {
+        const input = tf.tensor2d(captures);
+        const before = Array.from(await model.predict(input).argMax(1).data());
+
+        const isKernel = (w: any) => w.shape.length === 2;
+        const kernels: QuantizedKernel[] = [];
+        let maxWeightError = 0;
+
+        const rebuilt = model.getWeights().map((w: any) => {
+          if (!isKernel(w)) return w;
+          const values = Array.from(w.dataSync()) as number[];
+          const min = values.reduce((a, b) => Math.min(a, b));
+          const max = values.reduce((a, b) => Math.max(a, b));
+          const scale = (max - min) / 255;
+          const quantized = values.map(v => scale === 0 ? 0 : Math.round((v - min) / scale));
+          const restored = quantized.map(q => q * scale + min);
+          const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
+          maxWeightError = Math.max(maxWeightError, error);
+          kernels.push({ quantized, scale, min, shape: w.shape });
+          return tf.tensor(restored, w.shape);
+        });
+
+        model.setWeights(rebuilt);
+
+        const after = Array.from(await model.predict(input).argMax(1).data());
+        const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
+
+        return { kernels, maxWeightError, predictionsChanged };
+      }
 keywords:
   - quantization
   - uint16
@@ -141,7 +174,7 @@ function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: numb
   const scale = range / levels;
 
   const quantized = Array.from(weights).map(w =>
-    Math.round((w - min) / scale)
+    scale === 0 ? 0 : Math.round((w - min) / scale)
   );
 
   // scale and min are the two numbers a TensorFlow.js weight manifest

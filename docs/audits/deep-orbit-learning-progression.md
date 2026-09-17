@@ -9,7 +9,9 @@ openings, recall questions and source hashes. Regenerate it with
 `pnpm --filter @tensorcraft/content build:content` followed by
 `node scripts/build-learning-map.mjs`. The source paths identify where to
 inspect actual assertions and hints. Their presence does not establish that
-every objective has suitable assessment.
+every objective has suitable assessment. The subsequent
+[assessment review](deep-orbit-assessment-review-2026-09-17.md) maps every
+authored objective to evidence and records a finding for each exercise.
 
 | Module | Needed on entry | Explain and practise | Feedback and later use |
 | --- | --- | --- | --- |
@@ -55,9 +57,10 @@ Choosing the baseline over the model is a valid conclusion.
 
 ## Work still needed before Q2 can pass
 
-- Review all 65 exercise assertions and feedback against each objective,
-  including alternative valid implementations and untaught APIs. The
-  generated inventory intentionally leaves this review pending.
+- Resolve the [assessment review's](deep-orbit-assessment-review-2026-09-17.md)
+  open findings A15-A24. All 65 task contracts, hint ladders and grader logic
+  have now been read against the objectives. Complete diagnostic editing,
+  broader valid-alternative testing and learner readiness checks remain open.
 - Check first-use terminology and rendered glossary coverage, including
   dialogue and optional drawers. Sampling, matrix dimensions, sigmoid,
   gradients and normalization need particular attention for a JS-only reader.

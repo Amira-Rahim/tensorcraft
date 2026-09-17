@@ -1,7 +1,14 @@
 slug: browser-ml-tradeoffs
 lessonSlug: why-the-browser
 title: "Evaluate Browser ML Tradeoffs"
-instructions: "Complete the function that decides whether an ML use case runs inference in the browser or on the server. Any one of three conditions sends it to the browser: a latency budget under 50ms (a server round-trip starts at 50ms, so a tighter budget cannot be met remotely), data that has to stay on the device, or a need to keep working offline. A model over 50MB goes to the server even when one of those three holds, so the size check runs first. With none of the three, the answer is the server. `useCase` carries four fields: `latencyBudgetMs`, `dataSensitive`, `modelSizeMB` and `needsOffline`. Return the string `client` when the case runs in the browser and `server` when it goes to the server. The 50MB figure is this dashboard's cold-load budget, not a browser ceiling: lesson 6 ships larger models on purpose."
+instructions: |
+  **Contract revision 2026-09-17:** recommendDeployment can now return reconsider for conflicting requirements. Add it to the Recommendation type in saved code.
+
+  Implement recommendDeployment(useCase), returning 'client', 'server' or 'reconsider'. useCase contains latencyBudgetMs, dataSensitive, modelSizeMB and needsOffline.
+
+  For this exercise, dataSensitive means data must stay on the device, and needsOffline means inference must work without a connection. Both are hard requirements. This dashboard also has a 50 MB cold-load budget. If a model exceeds that budget while either hard requirement holds, return 'reconsider': reduce or replace the model, revise the download plan, or revisit the requirements. Sending the data to a server would not meet them.
+
+  Otherwise, models above 50 MB go to 'server'. Within the budget, use 'client' if a hard requirement holds or latencyBudgetMs is below 50; use 'server' otherwise. The latency rule is a starting preference for this exercise. Real network and device timings must be measured; neither route guarantees the latency budget.
 starterCode: |
   interface UseCase {
     latencyBudgetMs: number;
@@ -10,88 +17,55 @@ starterCode: |
     needsOffline: boolean;
   }
 
-  type Recommendation = 'client' | 'server';
+  type Recommendation = 'client' | 'server' | 'reconsider';
 
   function recommendDeployment(useCase: UseCase): Recommendation {
-    // latencyBudgetMs, dataSensitive, modelSizeMB, needsOffline: one of the
-    // four can overrule the other three, so the order your checks run in is
-    // the whole decision. A case with nothing arguing either way still needs
-    // a verdict.
+    // Check for conflicting hard requirements before applying preferences.
     return null; // your code here
   }
 solutionCode: |
-  interface UseCase {
-    latencyBudgetMs: number;
-    dataSensitive: boolean;
-    modelSizeMB: number;
-    needsOffline: boolean;
-  }
-
-  type Recommendation = 'client' | 'server';
-
-  function recommendDeployment(useCase: UseCase): Recommendation {
-    if (useCase.modelSizeMB > 50) {
-      return 'server';
-    }
-    if (useCase.latencyBudgetMs < 50 || useCase.dataSensitive || useCase.needsOffline) {
-      return 'client';
-    }
-    return 'server';
+  function recommendDeployment(useCase) {
+    const mustStayLocal = useCase.dataSensitive || useCase.needsOffline;
+    if (useCase.modelSizeMB > 50) return mustStayLocal ? 'reconsider' : 'server';
+    return mustStayLocal || useCase.latencyBudgetMs < 50 ? 'client' : 'server';
   }
 testCode: |
-  describe('recommendDeployment', () => {
-    it('sends a model over the cold-load budget to the server even when latency is tight', () => {
-      const verdict = recommendDeployment({ latencyBudgetMs: 10, dataSensitive: false, modelSizeMB: 100, needsOffline: false });
-      expect(verdict, 'recommendDeployment has to return the string client or server. The starter returns null until you read the four fields of useCase (latencyBudgetMs, dataSensitive, modelSizeMB, needsOffline) and decide.').toBeDefined();
-      expect(verdict).toBe('server');
+  describe('deployment requirements',()=>{
+    const useCase=(patch)=>({latencyBudgetMs:500,dataSensitive:false,modelSizeMB:10,needsOffline:false,...patch});
+    it('keeps privacy and offline requirements when the model exceeds the budget', () => {
+      for (const patch of [
+        { dataSensitive: true },
+        { needsOffline: true },
+        { dataSensitive: true, needsOffline: true },
+      ])
+        expect(
+          recommendDeployment(useCase({ modelSizeMB: 51, ...patch })),
+          'A server violates this requirement. Reconsider the model or download plan.',
+        ).toBe('reconsider');
     });
-    it('recommends client for low latency', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 20, dataSensitive: false, modelSizeMB: 10, needsOffline: false })).toBe('client');
+    it('sends a large model without hard local requirements to the server', () => {
+      for (const latencyBudgetMs of [20, 500])
+        expect(recommendDeployment(useCase({ modelSizeMB: 100, latencyBudgetMs }))).toBe('server');
     });
-    it('recommends client for sensitive data', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 5, needsOffline: false })).toBe('client');
+    it('prefers the client within budget for each local advantage', () => {
+      for (const patch of [{ latencyBudgetMs: 49 }, { dataSensitive: true }, { needsOffline: true }])
+        expect(recommendDeployment(useCase({ modelSizeMB: 50, ...patch }))).toBe('client');
     });
-    it('recommends client for offline needs', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 20, needsOffline: true })).toBe('client');
+    it('uses the stated inclusive size budget and strict latency preference', () => {
+      expect(recommendDeployment(useCase({ modelSizeMB: 50, latencyBudgetMs: 49 }))).toBe('client');
+      expect(recommendDeployment(useCase({ modelSizeMB: 50, latencyBudgetMs: 50 }))).toBe('server');
     });
-    it('keeps a model just under the budget on the client when data is sensitive', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 40, needsOffline: false })).toBe('client');
-    });
-    it('recommends server when no client advantages', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 30, needsOffline: false })).toBe('server');
-    });
-    it('privacy and offline each flip the verdict on their own', () => {
-      // Held against the case above: same relaxed budget, same 30MB model,
-      // one flag moved at a time. The suite already catches a rule that
-      // ignores both flags; these two lines hold the budget and the size
-      // still, which also closes a lookup keyed on modelSizeMB === 30.
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 30, needsOffline: false }), 'Only the sensitivity flag moved. Data that has to stay on the device is a reason of its own, whatever the budget allows.').toBe('client');
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 30, needsOffline: true }), 'Only the offline flag moved. A feature that has to keep working without a network cannot depend on a round-trip.').toBe('client');
-    });
-    it('reads the other three fields, not just the size: the same 10MB model goes both ways', () => {
-      // The 10MB model above went to the client on its latency budget. This
-      // one is the same size with a relaxed budget and no flags, so a rule
-      // that reads modelSizeMB alone has to get one of the two wrong.
-      const size = 10;
-      expect(recommendDeployment({ latencyBudgetMs: 20, dataSensitive: false, modelSizeMB: size, needsOffline: false }), 'A tight budget is a reason to stay on the device.').toBe('client');
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: size, needsOffline: false }), 'Nothing here argues for the browser, so the model belongs on the server.').toBe('server');
-    });
-    it('sensitive data does not keep an oversize model on the client', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 120, needsOffline: false }), 'Privacy is a reason to prefer the device, and it cannot make a 120MB download fit the cold-load budget. The size check has to be settled before the three client advantages are weighed.').toBe('server');
-    });
-    it('an offline requirement does not keep an oversize model on the client either', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 120, needsOffline: true }), 'A model the dashboard cannot download is not available offline.').toBe('server');
-    });
-    it('the size ceiling is 50MB exactly: at 50 the client advantage still wins, past it nothing does', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 50, needsOffline: false }), '50MB is the budget, not past it.').toBe('client');
-      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 51, needsOffline: false }), 'One megabyte over the budget is over the budget.').toBe('server');
-    });
-    it('the latency line is 50ms exactly: a 49ms budget cannot be served remotely, a 50ms budget can', () => {
-      expect(recommendDeployment({ latencyBudgetMs: 49, dataSensitive: false, modelSizeMB: 10, needsOffline: false }), 'A round-trip starts at 50ms, so a 49ms budget rules the server out.').toBe('client');
-      expect(recommendDeployment({ latencyBudgetMs: 50, dataSensitive: false, modelSizeMB: 10, needsOffline: false }), 'A 50ms budget is met by a 50ms round-trip, so this case has no client advantage left.').toBe('server');
-    });
+    it('has no client preference without any of those reasons',()=>{for(const modelSizeMB of [5,10,30,40])expect(recommendDeployment(useCase({modelSizeMB}))).toBe('server');});
   });
 estimatedMinutes: 10
 difficulty: beginner
 mlContent: arithmetic
 skillAxis: deployment
+
+hints:
+  - level: nudge
+    content: |
+      Which inputs are requirements, and which are performance preferences? Check whether the size budget conflicts with a requirement first.
+  - level: guidance
+    content: |
+      A server cannot provide disconnected inference or keep all input on the device. Report the conflicting requirements explicitly. Once those cases are handled, apply the exercise's size and latency preferences.

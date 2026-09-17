@@ -26,11 +26,29 @@ consequence:
   narrative: "Minutes to a full preliminary draft. Farah reviews and corrects: faster than writing from scratch, but only because she knows the data cold."
 hints:
   - level: nudge
-    content: "An LLM response is untrusted text: the client's job is to parse it and validate every required field before anything downstream sees it."
+    content: |
+      An LLM response is untrusted text: the client's job is to parse it and validate every required field before anything downstream sees it.
   - level: guidance
-    content: "Nothing here is a parsing problem until you decide what to parse. The model was asked for JSON and models answer in sentences, so what arrives is text with the object somewhere inside it. That is the first failure to handle. The second is a reply that parses cleanly and is still not an analysis, which is why the client checks the three fields an analysis carries before it hands anything downstream. Check the object, not the reply: a model that mentions a field in a sentence has not sent you that field. One decision is left after that, which is what it means for a field to be there. Two replies in the task settle it. One reports a confidence of zero, so a truthiness test throws out a real reading. One volunteers fields nobody asked for, so a key count throws out a valid reply. Test for absence, field by field."
+    content: |
+      Nothing here is a parsing problem until you decide what to parse. The model was asked for JSON and models answer in sentences, so what arrives is text with the object somewhere inside it. That is the first failure to handle. The second is a reply that parses cleanly and is still not an analysis, which is why the client checks the three fields an analysis carries before it hands anything downstream. Check the object, not the reply: a model that mentions a field in a sentence has not sent you that field. One decision is left after that, which is what it means for a field to be there. Two replies in the task settle it. One reports a confidence of zero, so a truthiness test throws out a real reading. One volunteers fields nobody asked for, so a key count throws out a valid reply. Test for absence, field by field.
   - level: solution
-    content: "const response = await apiCall(prompt); const jsonMatch = response.match(/\\{[\\s\\S]*\\}/); if (!jsonMatch) throw new Error('No JSON in response'); const parsed = JSON.parse(jsonMatch[0]); if (!parsed.classification || parsed.confidence === undefined || !parsed.reasoning) { throw new Error('Missing required fields'); } return parsed as Analysis;"
+    content: |
+      interface Analysis {
+        classification: string;
+        confidence: number;
+        reasoning: string;
+      }
+
+      async function analyzeSignal(prompt: string, apiCall: (p: string) => Promise<string>): Promise<Analysis> {
+        const response = await apiCall(prompt);
+        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('No JSON in response');
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (!['noise', 'anomaly', 'unknown'].includes(parsed.classification) || !Number.isFinite(parsed.confidence) || parsed.confidence < 0 || parsed.confidence > 1 || typeof parsed.reasoning !== 'string' || parsed.reasoning.trim().length === 0) {
+          throw new Error('Invalid analysis fields');
+        }
+        return parsed as Analysis;
+      }
 keywords:
   - llm
   - language-model
