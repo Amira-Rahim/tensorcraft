@@ -33,7 +33,9 @@ solutionCode: |
     let best = { threshold: candidates[0], f1: 0 };
 
     for (const t of candidates) {
-      let tp = 0, fp = 0, fn = 0;
+      let tp = 0,
+        fp = 0,
+        fn = 0;
       for (let i = 0; i < errors.length; i++) {
         const predicted = errors[i] > t;
         if (predicted && labels[i]) tp++;
@@ -42,7 +44,7 @@ solutionCode: |
       }
       const precision = tp / (tp + fp) || 0;
       const recall = tp / (tp + fn) || 0;
-      const f1 = 2 * precision * recall / (precision + recall) || 0;
+      const f1 = (2 * precision * recall) / (precision + recall) || 0;
       if (f1 > best.f1) best = { threshold: t, f1 };
     }
 
@@ -68,8 +70,37 @@ testCode: |
     // ranks by the wrong quantity lands on the wrong candidate whichever way
     // it breaks ties. This is the fixture that separates knowing WHY F1 from
     // reproducing the formula.
-    const skewedErrors = [0.25, 0.28, 0.3, 0.32, 0.4, 0.35, 0.38, 0.4, 0.42, 0.9, 0.45, 0.48, 0.5, 0.52, 1.2, 0.55, 0.58, 0.6, 0.6, 1.8, 0.7, 0.8, 1, 1.3, 2.2];
-    const skewedLabels = [false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true];
+    const skewedErrors = [
+      0.25, 0.28, 0.3, 0.32, 0.4, 0.35, 0.38, 0.4, 0.42, 0.9, 0.45, 0.48, 0.5, 0.52, 1.2, 0.55, 0.58,
+      0.6, 0.6, 1.8, 0.7, 0.8, 1, 1.3, 2.2,
+    ];
+    const skewedLabels = [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+    ];
 
     it('returns an object with threshold and f1', () => {
       const result = findBestThreshold(errors, labels, [0.3, 0.5, 0.7]);
@@ -146,11 +177,20 @@ testCode: |
       expect(r.f1, why).toBeCloseTo(0.857, 3);
     });
     it('can prefer more equally costly mistakes because F1 is a different objective', () => {
-      const scores = [...Array(8).fill(0.9), ...Array(7).fill(0.6), ...Array(5).fill(0.1), ...Array(10).fill(0.6), ...Array(70).fill(0.1)];
+      const scores = [
+        ...Array(8).fill(0.9),
+        ...Array(7).fill(0.6),
+        ...Array(5).fill(0.1),
+        ...Array(10).fill(0.6),
+        ...Array(70).fill(0.1),
+      ];
       const labels = scores.map((_, i) => i < 20);
       const result = findBestThreshold(scores, labels, [0.8, 0.5]);
       expect(result, 'Return the highest-F1 candidate.').toBeDefined();
-      expect(result.threshold, '0.8 makes 12 mistakes, but 0.5 has the higher F1 despite 15 mistakes.').toBeCloseTo(0.5, 6);
+      expect(
+        result.threshold,
+        '0.8 makes 12 mistakes, but 0.5 has the higher F1 despite 15 mistakes.',
+      ).toBeCloseTo(0.5, 6);
       expect(result.f1).toBeCloseTo(2 / 3, 6);
     });
     it('returns a supplied candidate when every F1 is zero', () => {
@@ -160,6 +200,44 @@ testCode: |
       expect(candidates.includes(result.threshold)).toBe(true);
       expect(result.f1).toBe(0);
     });
+  });
+
+  it('returns a supplied maximizing candidate, including ties and exact boundaries', () => {
+    for (const [errors, labels, candidates] of [
+      [
+        [1, 2],
+        [true, true],
+        [0, -2],
+      ],
+      [
+        [1, 2],
+        [false, false],
+        [0, 3],
+      ],
+      [[], [], [4, 8]],
+      [
+        [1, 2, 3],
+        [false, true, true],
+        [1, 2, 3],
+      ],
+    ]) {
+      const result = findBestThreshold(errors, labels, candidates);
+      const score = (t) => {
+        let tp = 0,
+          fp = 0,
+          fn = 0;
+        errors.forEach((v, i) => {
+          if (v > t) {
+            if (labels[i]) tp++;
+            else fp++;
+          } else if (labels[i]) fn++;
+        });
+        return (2 * tp) / (2 * tp + fp + fn) || 0;
+      };
+      expect(candidates.includes(result.threshold)).toBe(true);
+      expect(result.f1).toBeCloseTo(score(result.threshold), 8);
+      expect(result.f1).toBeCloseTo(Math.max(...candidates.map(score)), 8);
+    }
   });
 estimatedMinutes: 12
 difficulty: intermediate

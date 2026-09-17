@@ -2,17 +2,23 @@ slug: prune-weights
 lessonSlug: pruning
 title: "Measure What Pruning Costs"
 instructions: |
+  **Contract revision 2026-09-17b:** Sparsity 1 zeros all kernel weights. perClass uses null for a class without examples.
+
   Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels).
 
   Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is the fraction of the captures labelled c that the model still puts in class c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function.
 
   Four rules decide whether your numbers mean anything. (1) Pruning is global across the model: pool every weight from the 2-D kernel tensors in model.getWeights() into one ranking of absolute values, and never prune the 1-D bias tensors.
 
-  (2) The cutoff is the lesson's: take the value at index floor(count * sparsity) in the sorted absolute values and zero every kernel weight strictly below it, so a level of 0 leaves the model untouched.
+  (2) The cutoff is the lesson's: take the value at index floor(count * sparsity) in the sorted absolute values and zero every kernel weight strictly below it, so a level of 0 leaves the model untouched. At level 1, zero every kernel weight. Ties at an interior cutoff stay, so the level is a target rather than a guaranteed fraction removed.
 
   (3) Every level is measured against the ORIGINAL trained weights, not against the level before it.
 
   (4) The model goes back to its original weights before you return, because the caller keeps using it, and model.getWeights() hands back tensors that share the model's live storage, so clone them before you put any pruned weights on the model, or your copy follows the model down the ladder. Levels are between 0 and 1.
+
+  Inputs contain a non-empty sample set with one nonnegative integer label per sample. Levels are finite and in [0, 1]; reject invalid levels. Report classes 0 through max(labels), using null where a class has no examples. Restore the original weights even if scoring throws. Dispose tensors created for pruning and scoring; the caller owns the model.
+
+  Call model.predict(input) for each level; the largest output chooses the predicted class.
 starterCode: |
   interface Classifier {
     getWeights: () => any[];
@@ -22,14 +28,14 @@ starterCode: |
 
   interface LevelReport {
     sparsity: number;
-    perClass: number[];
+    perClass: (number | null)[];
   }
 
   async function pruneAndScore(
     model: Classifier,
     samples: number[][],
     labels: number[],
-    levels: number[]
+    levels: number[],
   ): Promise<LevelReport[]> {
     // The model holds one set of weights at a time, and every level needs
     // the trained ones. Decide where those live before you zero anything.
@@ -44,54 +50,81 @@ solutionCode: |
 
   interface LevelReport {
     sparsity: number;
-    perClass: number[];
+    perClass: (number | null)[];
   }
 
   async function pruneAndScore(
     model: Classifier,
     samples: number[][],
     labels: number[],
-    levels: number[]
+    levels: number[],
   ): Promise<LevelReport[]> {
-    const original = model.getWeights().map(w => w.clone());
+    if (levels.some((level) => !Number.isFinite(level) || level < 0 || level > 1))
+      throw new Error('Invalid sparsity');
+    const original = model.getWeights().map((w) => w.clone());
     const isKernel = (w: any) => w.shape.length === 2;
     const ranked = original
       .filter(isKernel)
-      .flatMap(w => Array.from(w.dataSync()).map(Math.abs))
+      .flatMap((w) => Array.from(w.dataSync()).map(Math.abs))
       .sort((a, b) => a - b);
 
     const classCount = Math.max(...labels) + 1;
     const input = tf.tensor2d(samples);
     const report: LevelReport[] = [];
 
-    for (const sparsity of levels) {
-      const threshold = ranked[Math.floor(ranked.length * sparsity)];
-      model.setWeights(
-        original.map(w =>
+    try {
+      for (const sparsity of levels) {
+        const threshold = sparsity === 1 ? Infinity : ranked[Math.floor(ranked.length * sparsity)];
+        const pruned = original.map((w) =>
           isKernel(w)
             ? tf.tensor(
-                Array.from(w.dataSync()).map(v => (Math.abs(v) < threshold ? 0 : v)),
-                w.shape
+                Array.from(w.dataSync()).map((v) => (Math.abs(v) < threshold ? 0 : v)),
+                w.shape,
               )
-            : w
-        )
-      );
+            : w,
+        );
+        try {
+          model.setWeights(pruned);
+        } finally {
+          pruned.forEach((w, i) => {
+            if (w !== original[i]) w.dispose();
+          });
+        }
 
-      const predicted = await model.predict(input).argMax(1).data();
-      const correct = new Array(classCount).fill(0);
-      const total = new Array(classCount).fill(0);
-      labels.forEach((label, i) => {
-        total[label] += 1;
-        if (predicted[i] === label) correct[label] += 1;
-      });
+        const prediction = tf.tidy(() => model.predict(input).argMax(1));
+        let predicted;
+        try {
+          predicted = await prediction.data();
+        } finally {
+          prediction.dispose();
+        }
+        const correct = new Array(classCount).fill(0);
+        const total = new Array(classCount).fill(0);
+        labels.forEach((label, i) => {
+          total[label] += 1;
+          if (predicted[i] === label) correct[label] += 1;
+        });
 
-      report.push({ sparsity, perClass: correct.map((hits, c) => hits / total[c]) });
+        report.push({
+          sparsity,
+          perClass: correct.map((hits, c) => (total[c] === 0 ? null : hits / total[c])),
+        });
+      }
+
+      return report;
+    } finally {
+      model.setWeights(original);
+      original.forEach((w) => w.dispose());
+      input.dispose();
     }
-
-    model.setWeights(original);
-    return report;
   }
 testCode: |
+  let pruneQueue = Promise.resolve();
+  const serialPrune = (fn) => {
+    const result = pruneQueue.then(fn);
+    pruneQueue = result.catch(() => {});
+    return result;
+  };
   describe('pruneAndScore', () => {
     // A stand-in for DEEP SCAN's five-class classifier: the same eleven
     // features and five classes over a smaller hidden layer, frozen here at
@@ -113,9 +146,11 @@ testCode: |
       [0.051, -0.358, -0.032, 0.1, -0.016, 0.369, -0.738, -0.025, 0.337, -0.756, 0.288, 0.424],
       [0.284, 0.325, 0.044, 0.049, 0.446, 0.42, -0.213, 0.017, -0.02, -0.253, -0.116, 0.517],
       [-0.33, 0.331, -0.144, -0.116, -0.322, 0.159, 0.829, 0.139, -0.373, 0.729, 0.347, -0.345],
-      [-0.54, -1.014, -0.216, 0.683, 0.222, -0.33, 0.782, 0.296, 0.21, 0.018, -0.389, 0.332]
+      [-0.54, -1.014, -0.216, 0.683, 0.222, -0.33, 0.782, 0.296, 0.21, 0.018, -0.389, 0.332],
     ];
-    const HIDDEN_BIAS = [0.104, 0.524, 0.375, 0.012, 0.488, -0.013, 0.245, 0.308, 0.291, 0.657, 0.19, -0.029];
+    const HIDDEN_BIAS = [
+      0.104, 0.524, 0.375, 0.012, 0.488, -0.013, 0.245, 0.308, 0.291, 0.657, 0.19, -0.029,
+    ];
     const OUTPUT_KERNEL = [
       [-0.142, -0.562, 0.125, -0.1, -0.289],
       [-0.337, -0.701, 1.741, -0.128, -0.455],
@@ -128,7 +163,7 @@ testCode: |
       [-0.121, 0.092, -0.169, -0.303, 1.036],
       [-1.148, 1.779, 0.103, 0.437, 0],
       [-0.245, -0.161, 0.356, -0.246, 0.516],
-      [0.247, -0.484, 0.06, -0.469, 0.039]
+      [0.247, -0.484, 0.06, -0.469, 0.039],
     ];
     const OUTPUT_BIAS = [0.098, -0.081, -0.138, -0.066, 0.188];
 
@@ -140,7 +175,7 @@ testCode: |
         tf.tensor2d(HIDDEN_KERNEL),
         tf.tensor1d(HIDDEN_BIAS),
         tf.tensor2d(OUTPUT_KERNEL),
-        tf.tensor1d(OUTPUT_BIAS)
+        tf.tensor1d(OUTPUT_BIAS),
       ]);
       return model;
     }
@@ -183,111 +218,130 @@ testCode: |
       const report = await pruneAndScore(model, slice.samples, slice.labels, levels);
       expect(
         report,
-        'Nothing came back from this call, so there is no ladder to read. pruneAndScore returns null until you build it.'
+        'Nothing came back from this call, so there is no ladder to read. pruneAndScore returns null until you build it.',
       ).toBeDefined();
       return report;
     }
 
-    it('reports one row per level, in the order it was asked for', async () => {
-      const report = await ladderOf(classifier(), evalSlice(), LEVELS);
-      expect(report.length).toBe(LEVELS.length);
-      expect(report.map((row: any) => row.sparsity)).toEqual(LEVELS);
-      for (const row of report) {
-        expect(row.perClass.length).toBe(5);
-      }
-    });
-
-    it('reports accuracies that are counts out of the forty captures in each class', async () => {
-      const report = await ladderOf(classifier(), evalSlice(), LEVELS);
-      for (const row of report) {
-        for (const accuracy of row.perClass) {
-          expect(accuracy).toBeGreaterThanOrEqual(0);
-          expect(accuracy).toBeLessThanOrEqual(1);
-          expect(
-            Math.abs(accuracy * 40 - Math.round(accuracy * 40)),
-            'Each class has exactly 40 captures in this slice, so every accuracy is some whole number of them over 40. A figure that is not cannot have come from counting these predictions.'
-          ).toBeLessThan(1e-9);
+    it('reports one row per level, in the order it was asked for', () =>
+      serialPrune(async () => {
+        const report = await ladderOf(classifier(), evalSlice(), LEVELS);
+        expect(report.length).toBe(LEVELS.length);
+        expect(report.map((row: any) => row.sparsity)).toEqual(LEVELS);
+        for (const row of report) {
+          expect(row.perClass.length).toBe(5);
         }
-      }
-    });
+      }));
 
-    it('scores the unpruned model at the top of the ladder', async () => {
-      const report = await ladderOf(classifier(), evalSlice(), LEVELS);
-      const base = report[0].perClass;
-      for (const c of COMMON) {
-        expect(base[c]).toBeGreaterThanOrEqual(0.95);
-      }
-      expect(
-        base[ANOMALY],
-        'A sparsity of 0 zeros nothing, so this row is the trained model. The cutoff index is floor(count * 0), which puts the threshold at the smallest magnitude in the model, and no weight is strictly below that.'
-      ).toBeGreaterThanOrEqual(0.9);
-    });
+    it('reports accuracies that are counts out of the forty captures in each class', () =>
+      serialPrune(async () => {
+        const report = await ladderOf(classifier(), evalSlice(), LEVELS);
+        for (const row of report) {
+          for (const accuracy of row.perClass) {
+            expect(accuracy).toBeGreaterThanOrEqual(0);
+            expect(accuracy).toBeLessThanOrEqual(1);
+            expect(
+              Math.abs(accuracy * 40 - Math.round(accuracy * 40)),
+              'Each class has exactly 40 captures in this slice, so every accuracy is some whole number of them over 40. A figure that is not cannot have come from counting these predictions.',
+            ).toBeLessThan(1e-9);
+          }
+        }
+      }));
 
-    it('holds the four common classes flat all the way down the ladder', async () => {
-      const report = await ladderOf(classifier(), evalSlice(), LEVELS);
-      for (const row of report) {
+    it('scores the unpruned model at the top of the ladder', () =>
+      serialPrune(async () => {
+        const report = await ladderOf(classifier(), evalSlice(), LEVELS);
+        const base = report[0].perClass;
         for (const c of COMMON) {
-          expect(
-            row.perClass[c],
-            'Through 80 percent sparsity the common classes barely notice. That is what makes the aggregate number so easy to sign off on.'
-          ).toBeGreaterThanOrEqual(0.95);
+          expect(base[c]).toBeGreaterThanOrEqual(0.95);
         }
-      }
-    });
+        expect(
+          base[ANOMALY],
+          'A sparsity of 0 zeros nothing, so this row is the trained model. The cutoff index is floor(count * 0), which puts the threshold at the smallest magnitude in the model, and no weight is strictly below that.',
+        ).toBeGreaterThanOrEqual(0.9);
+      }));
 
-    it('bills the whole cost to the rare class', async () => {
-      const report = await ladderOf(classifier(), evalSlice(), LEVELS);
-      const anomaly = report.map((row: any) => row.perClass[ANOMALY]);
-      const commonMean = (row: any) =>
-        COMMON.reduce((sum, c) => sum + row.perClass[c], 0) / COMMON.length;
+    it('holds the four common classes flat all the way down the ladder', () =>
+      serialPrune(async () => {
+        const report = await ladderOf(classifier(), evalSlice(), LEVELS);
+        for (const row of report) {
+          for (const c of COMMON) {
+            expect(
+              row.perClass[c],
+              'Through 80 percent sparsity the common classes barely notice. That is what makes the aggregate number so easy to sign off on.',
+            ).toBeGreaterThanOrEqual(0.95);
+          }
+        }
+      }));
 
-      expect(anomaly[1]).toBeGreaterThanOrEqual(0.85);
-      expect(anomaly[2]).toBeLessThanOrEqual(0.85);
-      expect(anomaly[2]).toBeGreaterThanOrEqual(0.5);
-      expect(anomaly[3]).toBeLessThanOrEqual(0.2);
+    it('bills the whole cost to the rare class', () =>
+      serialPrune(async () => {
+        const report = await ladderOf(classifier(), evalSlice(), LEVELS);
+        const anomaly = report.map((row: any) => row.perClass[ANOMALY]);
+        const commonMean = (row: any) =>
+          COMMON.reduce((sum, c) => sum + row.perClass[c], 0) / COMMON.length;
 
-      const anomalyLoss = anomaly[0] - anomaly[3];
-      const commonLoss = commonMean(report[0]) - commonMean(report[3]);
-      expect(
-        anomalyLoss - commonLoss,
-        'At 80 percent the two lines have to separate: the rare class loses most of what it had while the common classes are still where they started. An aggregate accuracy averages that gap away, which is why this exercise asks for the breakdown.'
-      ).toBeGreaterThanOrEqual(0.6);
-    });
+        expect(anomaly[1]).toBeGreaterThanOrEqual(0.85);
+        expect(anomaly[2]).toBeLessThanOrEqual(0.85);
+        expect(anomaly[2]).toBeGreaterThanOrEqual(0.5);
+        expect(anomaly[3]).toBeLessThanOrEqual(0.2);
 
-    it('crosses a cliff between 60 and 80 percent rather than sloping', async () => {
-      const report = await ladderOf(classifier(), evalSlice(), LEVELS);
-      const anomaly = report.map((row: any) => row.perClass[ANOMALY]);
-      const earlyRun = anomaly[0] - anomaly[2];
-      const lastStep = anomaly[2] - anomaly[3];
-      expect(
-        lastStep - earlyRun,
-        'The first 60 percent of the weights cost the rare class a little; the next 20 cost it the rest. A sparsity ladder is read for where that step sits, not for its average slope.'
-      ).toBeGreaterThanOrEqual(0.2);
-    });
+        const anomalyLoss = anomaly[0] - anomaly[3];
+        const commonLoss = commonMean(report[0]) - commonMean(report[3]);
+        expect(
+          anomalyLoss - commonLoss,
+          'At 80 percent the two lines have to separate: the rare class loses most of what it had while the common classes are still where they started. An aggregate accuracy averages that gap away, which is why this exercise asks for the breakdown.',
+        ).toBeGreaterThanOrEqual(0.6);
+      }));
 
-    it('ranks kernels only, and cuts strictly below the threshold', async () => {
-      // A two-class probe small enough to work out by hand. The kernel holds
-      // 4 weights: 3, 0, 0 and 0.5. A sample of [1, 0] belongs to class 0 and
-      // [0, 1] to class 1, and class 1 rides entirely on that 0.5.
-      //   level 0.5  -> cutoff index 2 of [0, 0, 0.5, 3], threshold 0.5, and
-      //                 0.5 is not strictly below 0.5, so nothing changes.
-      //   level 0.75 -> cutoff index 3, threshold 3, the 0.5 goes, and class 1
-      //                 is gone with it while class 0 is untouched.
-      // Pool the biases into the ranking and the thresholds land elsewhere;
-      // cut at <= instead of < and class 1 dies one level early.
-      const probe = tf.sequential();
-      probe.add(tf.layers.dense({ units: 2, activation: 'softmax', inputShape: [2] }));
-      probe.setWeights([tf.tensor2d([[3, 0], [0, 0.5]]), tf.tensor1d([0.1, 0])]);
+    it('crosses a cliff between 60 and 80 percent rather than sloping', () =>
+      serialPrune(async () => {
+        const report = await ladderOf(classifier(), evalSlice(), LEVELS);
+        const anomaly = report.map((row: any) => row.perClass[ANOMALY]);
+        const earlyRun = anomaly[0] - anomaly[2];
+        const lastStep = anomaly[2] - anomaly[3];
+        expect(
+          lastStep - earlyRun,
+          'The first 60 percent of the weights cost the rare class a little; the next 20 cost it the rest. A sparsity ladder is read for where that step sits, not for its average slope.',
+        ).toBeGreaterThanOrEqual(0.2);
+      }));
 
-      const slice = { samples: [[1, 0], [0, 1]], labels: [0, 1] };
-      const report = await ladderOf(probe, slice, [0, 0.5, 0.75]);
+    it('ranks kernels only, and cuts strictly below the threshold', () =>
+      serialPrune(async () => {
+        // A two-class probe small enough to work out by hand. The kernel holds
+        // 4 weights: 3, 0, 0 and 0.5. A sample of [1, 0] belongs to class 0 and
+        // [0, 1] to class 1, and class 1 rides entirely on that 0.5.
+        //   level 0.5  -> cutoff index 2 of [0, 0, 0.5, 3], threshold 0.5, and
+        //                 0.5 is not strictly below 0.5, so nothing changes.
+        //   level 0.75 -> cutoff index 3, threshold 3, the 0.5 goes, and class 1
+        //                 is gone with it while class 0 is untouched.
+        // Pool the biases into the ranking and the thresholds land elsewhere;
+        // cut at <= instead of < and class 1 dies one level early.
+        const probe = tf.sequential();
+        probe.add(tf.layers.dense({ units: 2, activation: 'softmax', inputShape: [2] }));
+        probe.setWeights([
+          tf.tensor2d([
+            [3, 0],
+            [0, 0.5],
+          ]),
+          tf.tensor1d([0.1, 0]),
+        ]);
 
-      expect(report.map((row: any) => row.perClass)).toEqual([
-        [1, 1],
-        [1, 1],
-        [1, 0]
-      ]);
-    });
+        const slice = {
+          samples: [
+            [1, 0],
+            [0, 1],
+          ],
+          labels: [0, 1],
+        };
+        const report = await ladderOf(probe, slice, [0, 0.5, 0.75]);
+
+        expect(report.map((row: any) => row.perClass)).toEqual([
+          [1, 1],
+          [1, 1],
+          [1, 0],
+        ]);
+      }));
 
     // Nothing in this probe is fixed. The two weights each of the rare
     // classes rides on, the captures in the slice, and how many of each it
@@ -299,84 +353,125 @@ testCode: |
     //   level 0.8 -> cutoff index 12, threshold the smaller robust weight, so
     //                both fragile weights go and every capture riding one of
     //                them falls to class 0 on the bias alone.
-    it('counts predictions on the captures it was handed', async () => {
-      const spread = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
-      const fragile = [spread(0.5, 0.9), spread(0.5, 0.9)];
-      const robust = [spread(2, 3), spread(2, 3)];
-      const anchor = spread(4, 5);
+    it('counts predictions on the captures it was handed', () =>
+      serialPrune(async () => {
+        const spread = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
+        const fragile = [spread(0.5, 0.9), spread(0.5, 0.9)];
+        const robust = [spread(2, 3), spread(2, 3)];
+        const anchor = spread(4, 5);
 
-      const probe = tf.sequential();
-      probe.add(tf.layers.dense({ units: 3, activation: 'softmax', inputShape: [5] }));
-      probe.setWeights([
-        tf.tensor2d([
-          [anchor, 0, 0],
-          [0, robust[0], 0],
-          [0, fragile[0], 0],
-          [0, 0, robust[1]],
-          [0, 0, fragile[1]]
-        ]),
-        tf.tensor1d([0.1, 0, 0])
-      ]);
+        const probe = tf.sequential();
+        probe.add(tf.layers.dense({ units: 3, activation: 'softmax', inputShape: [5] }));
+        probe.setWeights([
+          tf.tensor2d([
+            [anchor, 0, 0],
+            [0, robust[0], 0],
+            [0, fragile[0], 0],
+            [0, 0, robust[1]],
+            [0, 0, fragile[1]],
+          ]),
+          tf.tensor1d([0.1, 0, 0]),
+        ]);
 
-      const onFeature = (i: number) => [0, 1, 2, 3, 4].map(f => (f === i ? 1 : 0));
-      const someCaptures = () => 2 + Math.floor(Math.random() * 8);
-      const held = [someCaptures(), someCaptures()];
-      const lost = [someCaptures(), someCaptures()];
-      const samples: number[][] = [];
-      const labels: number[] = [];
-      for (let n = 0; n < someCaptures(); n++) {
-        samples.push(onFeature(0));
-        labels.push(0);
-      }
-      for (const klass of [1, 2]) {
-        for (let n = 0; n < held[klass - 1]; n++) {
-          samples.push(onFeature(klass * 2 - 1));
-          labels.push(klass);
+        const onFeature = (i: number) => [0, 1, 2, 3, 4].map((f) => (f === i ? 1 : 0));
+        const someCaptures = () => 2 + Math.floor(Math.random() * 8);
+        const held = [someCaptures(), someCaptures()];
+        const lost = [someCaptures(), someCaptures()];
+        const samples: number[][] = [];
+        const labels: number[] = [];
+        for (let n = 0; n < someCaptures(); n++) {
+          samples.push(onFeature(0));
+          labels.push(0);
         }
-        for (let n = 0; n < lost[klass - 1]; n++) {
-          samples.push(onFeature(klass * 2));
-          labels.push(klass);
+        for (const klass of [1, 2]) {
+          for (let n = 0; n < held[klass - 1]; n++) {
+            samples.push(onFeature(klass * 2 - 1));
+            labels.push(klass);
+          }
+          for (let n = 0; n < lost[klass - 1]; n++) {
+            samples.push(onFeature(klass * 2));
+            labels.push(klass);
+          }
         }
-      }
 
-      const report = await ladderOf(probe, { samples, labels }, [0, 0.7, 0.8]);
-      const survived = [0, 1].map(k => held[k] / (held[k] + lost[k]));
+        const report = await ladderOf(probe, { samples, labels }, [0, 0.7, 0.8]);
+        const survived = [0, 1].map((k) => held[k] / (held[k] + lost[k]));
 
-      expect(
-        report.map((row: any) => row.perClass),
-        'The weights in this probe, the captures, and how many of each the slice holds are drawn fresh on every run. The first two levels leave the model intact and the third takes both of the small weights, so each rare class keeps the captures riding the weight that survived and loses the rest. A ladder that reads the same whatever it was handed was not counted off these predictions.'
-      ).toEqual([
-        [1, 1, 1],
-        [1, 1, 1],
-        [1, survived[0], survived[1]]
-      ]);
-    });
+        expect(
+          report.map((row: any) => row.perClass),
+          'The weights in this probe, the captures, and how many of each the slice holds are drawn fresh on every run. The first two levels leave the model intact and the third takes both of the small weights, so each rare class keeps the captures riding the weight that survived and loses the rest. A ladder that reads the same whatever it was handed was not counted off these predictions.',
+        ).toEqual([
+          [1, 1, 1],
+          [1, 1, 1],
+          [1, survived[0], survived[1]],
+        ]);
+      }));
 
-    it('measures every level against the trained weights, not the level before it', async () => {
-      // The same two levels, walked up and walked down. Prune the ORIGINAL
-      // weights at every level and 0.3 means 0.3 in both calls. Prune
-      // whatever the model is currently holding and the descending 0.3 row
-      // is a report on the 0.8 model, because the weights 0.8 zeroed are
-      // still zero when 0.3 ranks them.
-      const ascending = await ladderOf(classifier(), evalSlice(), [0.3, 0.8]);
-      const descending = await ladderOf(classifier(), evalSlice(), [0.8, 0.3]);
-      expect(
-        descending[1].perClass,
-        'A row has to describe the level it names. Measure each level against the trained weights, or this row carries the damage 0.8 already did and no row in the ladder is one an operator can act on.'
-      ).toEqual(ascending[0].perClass);
-    });
+    it('measures every level against the trained weights, not the level before it', () =>
+      serialPrune(async () => {
+        // The same two levels, walked up and walked down. Prune the ORIGINAL
+        // weights at every level and 0.3 means 0.3 in both calls. Prune
+        // whatever the model is currently holding and the descending 0.3 row
+        // is a report on the 0.8 model, because the weights 0.8 zeroed are
+        // still zero when 0.3 ranks them.
+        const ascending = await ladderOf(classifier(), evalSlice(), [0.3, 0.8]);
+        const descending = await ladderOf(classifier(), evalSlice(), [0.8, 0.3]);
+        expect(
+          descending[1].perClass,
+          'A row has to describe the level it names. Measure each level against the trained weights, or this row carries the damage 0.8 already did and no row in the ladder is one an operator can act on.',
+        ).toEqual(ascending[0].perClass);
+      }));
 
-    it('hands the model back on its original weights', async () => {
-      const model = classifier();
-      const before = model.getWeights().map((w: any) => Array.from(w.dataSync()));
-      await ladderOf(model, evalSlice(), LEVELS);
-      const after = model.getWeights().map((w: any) => Array.from(w.dataSync()));
-      expect(
-        after,
-        'The caller goes on using this model after the measurement, so it cannot be left holding the last level you tried. Measure copies, then put the trained weights back.'
-      ).toEqual(before);
-    });
+    it('hands the model back on its original weights', () =>
+      serialPrune(async () => {
+        const model = classifier();
+        const before = model.getWeights().map((w: any) => Array.from(w.dataSync()));
+        await ladderOf(model, evalSlice(), LEVELS);
+        const after = model.getWeights().map((w: any) => Array.from(w.dataSync()));
+        expect(
+          after,
+          'The caller goes on using this model after the measurement, so it cannot be left holding the last level you tried. Measure copies, then put the trained weights back.',
+        ).toEqual(before);
+      }));
   });
+
+  it('handles full pruning, absent classes and restoration', () =>
+    serialPrune(async () => {
+      const m = tf.sequential();
+      m.add(tf.layers.dense({ units: 3, inputShape: [2] }));
+      m.setWeights([
+        tf.tensor2d([
+          [4, 0, 0],
+          [0, 0, 4],
+        ]),
+        tf.tensor1d([0, 0, 0.1]),
+      ]);
+      const before = m.getWeights().map((w) => Array.from(w.dataSync()));
+      const count = tf.memory().numTensors;
+      const r = await pruneAndScore(
+        m,
+        [
+          [1, 0],
+          [0, 1],
+        ],
+        [0, 2],
+        [0, 1],
+      );
+      expect(r.map((row) => row.perClass)).toEqual([
+        [1, null, 1],
+        [0, null, 1],
+      ]);
+      expect(m.getWeights().map((w) => Array.from(w.dataSync()))).toEqual(before);
+      expect(tf.memory().numTensors).toBe(count);
+      const real = m.predict.bind(m);
+      m.predict = () => {
+        throw new Error('probe failed');
+      };
+      await expect(pruneAndScore(m, [[1, 0]], [0], [1])).rejects.toThrow();
+      expect(m.getWeights().map((w) => Array.from(w.dataSync()))).toEqual(before);
+      m.predict = real;
+      await expect(pruneAndScore(m, [[1, 0]], [0], [-1])).rejects.toThrow();
+    }));
 estimatedMinutes: 15
 difficulty: advanced
 mlContent: evaluation

@@ -27,52 +27,74 @@ consequence:
   narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
-    content: "profileModel is five reports on one model: how many parameters it has, how many megabytes they occupy at 4 bytes per float32, where those parameters sit layer by layer, how long one predict() call takes on average, and how many tensors the loop left behind, which has to be none."
+    content: |
+      Warm up before starting the measured calls, and wait for data readback before stopping the clock.
   - level: guidance
     content: |
-      Five reports, four different sources.
-
-      The parameter count you ask the model for. The megabytes are arithmetic
-      on that count, and the only decision in them is which megabyte you mean.
-      At 4 bytes per float32, dividing by a million and dividing by 1024
-      squared give answers 5 percent apart, and the report Nazari is holding
-      is in MB, not MiB.
-
-      The per-layer rows you ask each layer for. The decision there is which
-      layers get a row. A model's list of layers is not the same as its list
-      of weighted layers. A row reading zero tells a reader that layer owns
-      nothing, instead of leaving them to wonder where it went.
-
-      The milliseconds have to be measured, and both halves of that trap are
-      in the CodeBlock above. A model's first call pays a one-off compilation
-      cost, so it cannot sit inside an average of steady-state calls. And a
-      prediction is not finished when predict() hands back a tensor. On a GPU
-      backend the work is still queued, so a clock stopped at that line
-      measures how fast you can ask rather than how long the work took. If
-      your average comes back near zero, that is the second half biting.
-
-      The fifth report is a subtraction: tf.memory().numTensors read before
-      the warmup and again after the last timed call. Every predict() hands
-      back an output and every createInput() an input, and the loop owns
-      both, so each pair is released once its values are out. On the mock
-      models the count cannot move; on the real ones it climbs two per run
-      until the loop lets go.
+      Call the supplied now function around each predict and awaited data call. Average all measured durations. Dispose every input and output, including the warmup pair, and report every layer even when it owns zero parameters.
   - level: solution
     content: |
-      const parameterCount = model.countParams();
-      const memorySizeMB = (parameterCount * 4) / 1e6;
-      const layerBreakdown = model.layers.map(layer => ({ name: layer.name, params: layer.countParams() }));
-      const before = tf.memory().numTensors;
-      const warmInput = createInput();
-      const warmOutput = model.predict(warmInput);
-      await warmOutput.data();
-      warmOutput.dispose();
-      warmInput.dispose();
-      const times: number[] = [];
-      for (let i = 0; i < runs; i++) { const input = createInput(); const start = performance.now(); const output = model.predict(input); await output.data(); times.push(Math.max(0, performance.now() - start)); output.dispose(); input.dispose(); }
-      const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
-      const leakedTensors = tf.memory().numTensors - before;
-      return { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown, leakedTensors };
+      interface LayerProfile {
+        name: string;
+        params: number;
+      }
+
+      interface ModelProfile {
+        parameterCount: number;
+        memorySizeMB: number;
+        avgInferenceMs: number;
+        layerBreakdown: LayerProfile[];
+        leakedTensors: number;
+      }
+
+      async function profileModel(
+        model: {
+          countParams: () => number;
+          layers: { name: string; countParams: () => number }[];
+          predict: (x: any) => { data: () => Promise<unknown>; dispose: () => void };
+        },
+        createInput: () => { dispose: () => void },
+        runs: number,
+        now: () => number = () => performance.now(),
+      ): Promise<ModelProfile> {
+        if (!Number.isInteger(runs) || runs < 1) throw new Error('Invalid run count');
+        const parameterCount = model.countParams();
+        const memorySizeMB = (parameterCount * 4) / 1e6;
+
+        // Every layer, not only the ones holding weights: a row reading 0 is
+        // how the report shows a reshape owns nothing.
+        const layerBreakdown = model.layers.map((layer) => ({
+          name: layer.name,
+          params: layer.countParams(),
+        }));
+
+        const before = tf.memory().numTensors;
+
+        // The warmup call pays the one-off compilation cost. It is not timed,
+        // so that cost does not land in the average below, and its pair is
+        // released like every other.
+        const warmInput = createInput();
+        const warmOutput = model.predict(warmInput);
+        await warmOutput.data();
+        warmOutput.dispose();
+        warmInput.dispose();
+
+        const times: number[] = [];
+        for (let i = 0; i < runs; i++) {
+          const input = createInput();
+          const start = now();
+          const output = model.predict(input);
+          await output.data();
+          times.push(Math.max(0, now() - start));
+          output.dispose();
+          input.dispose();
+        }
+
+        const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
+        const leakedTensors = tf.memory().numTensors - before;
+
+        return { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown, leakedTensors };
+      }
 keywords:
   - profiling
   - performance

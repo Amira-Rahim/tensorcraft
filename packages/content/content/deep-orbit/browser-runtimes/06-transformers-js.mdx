@@ -49,7 +49,7 @@ No. I spent last night reading the Transformers.js docs so you don't spend three
 
 The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads all of them before her watch starts. She wants them sorted by how sure the classifier is, whichever way it leans: the confident calls at the top and the hedged ones at the bottom, where her own read is the one that counts.
 
-<LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Use `pipeline()` to run pretrained models in the browser", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
+<LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Implement the task, loading and output contract around `pipeline()`", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
 
 ## Three Browser ML Runtimes, Three Jobs
 
@@ -134,6 +134,8 @@ Aboard the Archimedes the download comes from the ship's mirrored model archive,
 - **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The runs above already show the cost. `Signal classification: anomalous.` came back NEGATIVE at 0.9987, and `Starboard array cleared diagnostics ahead of schedule.` came back NEGATIVE at 0.9759. One neutral line, one report of good news, both NEGATIVE above 0.97, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
 
 ## Challenge
+
+The exercise injects pipeline output. It checks task selection and result handling without downloading pretrained weights. Actual download size, browser operator support and whether the model suits your text still require a real-model evaluation.
 
 Sort the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score. The names it takes, spelled the way the library spells them: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, `automatic-speech-recognition`. These reports are text, which rules out the image and audio jobs. Of the text jobs, one takes nothing but the text and answers with a label and a confidence; the others answer with generated text, spans, vectors, or scores over candidate labels you have to supply yourself.
 

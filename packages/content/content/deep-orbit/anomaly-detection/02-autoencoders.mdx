@@ -25,11 +25,36 @@ consequence:
   narrative: "Normal signals come back clean. The anomalous signal comes back at 1.4x baseline, below the cutoff used in this run. The leak is in the training set, not the model."
 hints:
   - level: nudge
-    content: "Two jobs, and only one of them is the network: squeeze the input through a narrow bottleneck and rebuild it, and decide first which archive rows the model is allowed to learn from"
+    content: |
+      The autoencoder learns to reconstruct the rows you select. Inspect that selection before interpreting its errors.
   - level: guidance
-    content: "Start with the rows. The flag log is a list of verdicts sitting parallel to the archive, one per reading, so keep the readings it did not name and leave the rest out of the training set. Nothing downstream recovers from that choice, which is why it is yours to make. The stack itself is a funnel and its mirror: each stage narrows toward the middle, then widens back. The last stage has to be as wide as the input, or there is nothing to compare a reconstruction against. The narrowing and widening stages need a nonlinearity between them, since an all-linear stack multiplies out into one projection. The output stage is the exception and stays linear, so a reconstruction can reach any value the input can. Only the first stage is told the input width; the rest read theirs from the stage before. Score it as regression, because the target is the rows themselves. Then hand those rows over as one rank-2 batch, since a nested array is not a tensor, and release that tensor when the run is done"
+    content: |
+      Filter by the supplied flag log, then fit the kept tensor against itself. Use providedModel when supplied; otherwise build and compile the required stack. Return the exact history from fit. A contamination experiment needs matched initial weights and a measured comparison; no error ratio is guaranteed.
   - level: solution
-    content: "const trainingRows = archive.filter((_, i) => !flagged[i]); const model = tf.sequential(); model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] })); model.add(tf.layers.dense({ units: 2, activation: 'relu' })); model.add(tf.layers.dense({ units: 4, activation: 'relu' })); model.add(tf.layers.dense({ units: 8 })); model.compile({ optimizer: 'adam', loss: 'meanSquaredError' }); const xs = tf.tensor2d(trainingRows); const history = await model.fit(xs, xs, FIT_OPTIONS); xs.dispose(); return { model, history };"
+    content: |
+      import * as tf from '@tensorflow/tfjs';
+
+      const FIT_OPTIONS = { epochs: 400, batchSize: 16, verbose: 0 };
+
+      async function trainNormalityModel(
+        archive: number[][],
+        flagged: boolean[],
+        providedModel?: tf.Sequential,
+      ): Promise<{ model: tf.Sequential; history: tf.History }> {
+        const trainingRows = archive.filter((_, i) => !flagged[i]);
+        const model = providedModel || tf.sequential();
+        if (!providedModel) {
+          model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] }));
+          model.add(tf.layers.dense({ units: 2, activation: 'relu' }));
+          model.add(tf.layers.dense({ units: 4, activation: 'relu' }));
+          model.add(tf.layers.dense({ units: 8 }));
+          model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+        }
+        const xs = tf.tensor2d(trainingRows);
+        const history = await model.fit(xs, xs, FIT_OPTIONS);
+        xs.dispose();
+        return { model, history };
+      }
 keywords:
   - autoencoder
   - encoder
@@ -133,16 +158,15 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 // these readings and the model never fits them, so val_loss is the only
 // number here that says anything about readings it has not seen. Above,
 // val_loss runs 5% to 13% above loss from epoch 20 on, which is
-// what a model that learned the structure looks like. Loss falling while
-// val_loss stalls several times higher is the other outcome: the model
-// memorized the 800 rows it trained on. That autoencoder scores its own
-// training normals low and every unseen calm reading high, so it
-// manufactures false alarms instead of finding anomalies.`}
+// one observed generalization gap looks like. If validation loss stays
+// much higher while training loss falls, investigate overfitting, data
+// shift and preprocessing differences. The gap alone cannot establish
+// memorization or predict the error on every unseen reading.`}
 </CodeBlock>
 
 ## Challenge
 
-Screen the archive against the flag log, then train the autoencoder on what survives. The grader trains a second detector from the same 72 readings with a flag log that names nothing, and puts the two side by side.
+Screen the archive against the flag log, then train the autoencoder on what survives. The grader checks which rows reach fitting and measures held-out reconstruction errors. A contaminated model may reconstruct anomalies well, but no fixed error ratio proves contamination. For a comparison experiment, start both runs from identical weights and keep the fitting schedule fixed.
 
 <Exercise slug="build-autoencoder" />
 
@@ -158,7 +182,7 @@ Screen the archive against the flag log, then train the autoencoder on what surv
     "Reconstruction error is an empirical anomaly score. Anomalies can have low error, and normal inputs can have high error."
   ]}
   bridge="Both gzip and an autoencoder compress data. Gzip restores exact bytes; an autoencoder learns an approximate reconstruction whose error can be tested as an anomaly score."
-  youCanNow="Build an autoencoder with a bottleneck, screen a training set and fit the model on it, and produce the pair of detectors that shows what a contaminated training set costs."
+  youCanNow="Build an autoencoder with a bottleneck, screen its training rows and measure reconstruction errors without assuming a fixed anomaly ratio."
 />
 
 <Epilogue>

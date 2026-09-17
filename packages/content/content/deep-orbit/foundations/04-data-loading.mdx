@@ -25,19 +25,36 @@ consequence:
   narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
 hints:
   - level: nudge
-    content: "Keep it lazy: the generator yields one sample per loop turn, and the tf.data pipeline does the shuffling and batching for you"
+    content: |
+      A shuffle can only rearrange the items it receives. Decide whether those items should be samples or already formed batches.
   - level: guidance
-    content: "The whole thing turns on the generator: one record per turn of the loop, with nothing collected into a list first. Two details decide the rest. The first is the label. It is a single number, and it still yields with an axis of its own, the way the split generator in the lesson body yields it, because the batcher stacks whatever it is handed and training reads a column of labels. The second is order. The stages after the generator run left to right, in the order records pass through them, which is why shuffling before batching and batching before shuffling are different pipelines. The split is a third stage and it does not run on the dataset at all: the first twelve time-ordered readings train and the last four validate. Shuffle only the training indices after assigning the two sets."
+    content: |
+      Keep sensorGen lazy and pass its dataset into makeDataset. Apply shuffle before batch. Give each label a one-element axis so batching produces a column. Repeated passes need to read all rows again, but random batch memberships need not differ every time.
   - level: solution
     content: |
-      for (let i = 0; i < 16; i++) {
-        const row = readSample(i);
-        yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };
+      let readCount = 0;
+      function readSample(i) {
+        readCount++;
+        return { features: [i * 100, i, i / 10], label: i % 2 };
       }
-      const dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);
+
+      function* sensorGen() {
+        for (let i = 0; i < 16; i++) {
+          const row = readSample(i);
+          yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };
+        }
+      }
+
+      function makeDataset(source) {
+        return source.shuffle(10).batch(4);
+      }
+      const dataset = makeDataset(tf.data.generator(sensorGen));
+
+      const batchShapes = [];
       await dataset.forEachAsync((b) => {
         batchShapes.push(b.xs.shape);
       });
+
       const trainIdx = Array.from(tf.util.createShuffledIndices(12));
       const valIdx = Array.from({ length: 4 }, (_, i) => i + 12);
 keywords:
@@ -159,6 +176,8 @@ Time order is a starting point. If examples share a capture or overlap in time, 
 Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This first pipeline demonstrates batching over the whole fixture; it does not train a model. Separately, assign the earlier readings to training and the later ones to validation. Training can shuffle its own rows after that assignment.
 
 <Exercise slug="batch-data" />
+
+<DecisionTask id="future-builds" />
 
 <RecallPrompt
   question="What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?"

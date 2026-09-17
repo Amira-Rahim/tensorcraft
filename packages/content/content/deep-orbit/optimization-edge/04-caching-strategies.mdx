@@ -25,34 +25,51 @@ consequence:
   narrative: "Caching removes 40% of the classifier's forward passes, and the patterns repeat often enough that the stored verdicts hold. The saving is 55 milliseconds a night, which is not the number on Demir's ticket."
 hints:
   - level: nudge
-    content: "An exact cache hits on repeated inputs. This exercise instead rounds values so nearby inputs can share a key; that approximation needs an accuracy check. For the audit drill beside it, two questions decide each entry and only one of them is about the clock."
+    content: |
+      The key describes the tensor as well as its values. Keep the cached array private.
   - level: guidance
     content: |
-      Two decisions and one habit.
-
-      The first decision is what counts as the same input, which is the
-      sentence this lesson opens with. Near-identical signals have to collide
-      on purpose, so the key is built from the input's own values after they
-      are rounded, and `decimals` is how wide you make the bucket. Watch what
-      you put in the key. Anything that boils the values down to one number,
-      their sum or their mean, hands [0.9, 0.1] and [0.1, 0.9] the same key.
-      One signal is then served the other one's verdict.
-
-      The second decision is what you store under the key. A cached tensor
-      stays resident until the tab closes, and whoever disposes it first
-      turns every later hit into 'Tensor is disposed'. Read the prediction
-      into plain numbers and store those.
-
-      The habit is that a hit and a miss have to be indistinguishable to the
-      caller. The same kind of value comes out of both paths, and the
-      counters stay in the closure where the caller can still read them.
-
-      The audit drill next to this one is a different shape. Two questions
-      decide each entry, one of them the clock and the other the model
-      version that wrote the verdict, and failing either one keeps that entry
-      off a console.
+      Use an ordered Map for the least-recently-used policy. A hit moves its entry to the end. Copy arrays when returning them, and dispose the model output after readback. The caller still owns the input.
   - level: solution
-    content: "const cache = new Map(); const stats = { hits: 0, misses: 0 }; const factor = Math.pow(10, decimals); return { stats, predict(input) { const data = Array.from(input.dataSync()); const key = data.map(v => Math.round(v * factor) / factor).join(','); if (cache.has(key)) { stats.hits++; return cache.get(key); } stats.misses++; const out = model.predict(input); const scores = Array.from(out.dataSync()); out.dispose(); cache.set(key, scores); return scores; }, };"
+    content: |
+      function makeInferenceCache(model, decimals = 2, maxEntries = 100) {
+        if (
+          !Number.isInteger(decimals) ||
+          decimals < 0 ||
+          decimals > 10 ||
+          !Number.isInteger(maxEntries) ||
+          maxEntries < 1
+        )
+          throw new Error('Invalid cache settings');
+        const cache = new Map();
+        const stats = { hits: 0, misses: 0 };
+        const factor = 10 ** decimals;
+        return {
+          stats,
+          predict(input) {
+            const values = Array.from(input.dataSync()).map((v) => Math.round(v * factor) / factor);
+            const key = JSON.stringify([input.dtype, input.shape, values]);
+            if (cache.has(key)) {
+              stats.hits++;
+              const scores = cache.get(key);
+              cache.delete(key);
+              cache.set(key, scores);
+              return scores.slice();
+            }
+            stats.misses++;
+            const out = model.predict(input);
+            let scores;
+            try {
+              scores = Array.from(out.dataSync());
+            } finally {
+              out.dispose();
+            }
+            cache.set(key, scores);
+            if (cache.size > maxEntries) cache.delete(cache.keys().next().value);
+            return scores.slice();
+          },
+        };
+      }
 keywords:
   - caching
   - memoization
@@ -197,6 +214,8 @@ Keep the ledger honest on both sides while you read that. On the credit side thi
 ## Challenge
 
 Cache inference results behind a rounded input hash, and count the hits.
+
+The tensor cache below adds shape and dtype to its rounded-value key, returns copies of cached arrays and evicts the least recently used entry at capacity. Recreate it when weights or preprocessing change. The later incident checks version and age separately.
 
 <Exercise slug="inference-cache" />
 

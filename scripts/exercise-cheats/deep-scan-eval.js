@@ -85,9 +85,9 @@ const history = await model.fit(allX, allY, { epochs: 30, batchSize: 16 });
 const evalResult = model.evaluate(testX, testY);
 
 function diagnose(trainAcc, testAcc) {
-  if (trainAcc - testAcc > 0.15) return "overfitting";
-  if (trainAcc < 0.7 && testAcc < 0.7) return "underfitting";
-  return "healthy";
+  if (trainAcc - testAcc > 0.15) return "large-gap";
+  if (trainAcc < 0.7 && testAcc < 0.7) return "low-scores";
+  return "no-gap-warning";
 }
 
 const trainAcc = history.history.acc[history.history.acc.length - 1];

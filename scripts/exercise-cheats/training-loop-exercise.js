@@ -1,10 +1,4 @@
-// Runs the loop correctly and then refuses to read what it produced. The
-// callback, the held-out split and the patience are all right, so every
-// mechanism test clears. diagnose returns a constant: a halted run is usually
-// a plateau, so guessing "plateau" is right often enough to look like an
-// answer. It cannot tell a plateau from overfitting, which is the one
-// question the lesson says the two curves exist to settle, and it never
-// looks at either curve to find out.
+// Misconception: treats every curve as a plateau.
 const calm = tf.clipByValue(
   tf.concat(
     [
@@ -39,7 +33,6 @@ const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
 const labels = cleanY.arraySync();
 for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
 const trainY = tf.tensor2d(labels);
-
 const model = tf.sequential();
 model.add(tf.layers.dense({ units: 32, activation: "relu", inputShape: [3] }));
 model.add(tf.layers.dense({ units: 16, activation: "relu" }));
@@ -49,16 +42,18 @@ model.compile({
   loss: "binaryCrossentropy",
   metrics: ["accuracy"],
 });
-
+function makeEarlyStopping() {
+  return tf.callbacks.earlyStopping({
+    monitor: "val_loss",
+    patience: 5,
+    minDelta: 0,
+  });
+}
 const history = await model.fit(trainX, trainY, {
   epochs: 500,
   validationSplit: 0.2,
-  callbacks: tf.callbacks.earlyStopping({
-    monitor: "val_loss",
-    patience: 5,
-  }),
+  callbacks: makeEarlyStopping(),
 });
-
 function diagnose(trainLosses, valLosses) {
   return "plateau";
 }

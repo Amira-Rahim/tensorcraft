@@ -38,3 +38,7 @@ const batchShapes = [];
 await dataset.forEachAsync((b) => {
   batchShapes.push(b.xs.shape);
 });
+
+function makeDataset(source) {
+  return source.shuffle(10).batch(4);
+}

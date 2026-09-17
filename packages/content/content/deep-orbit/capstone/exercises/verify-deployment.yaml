@@ -2,13 +2,15 @@ slug: verify-deployment
 lessonSlug: launch
 title: "Verify a Deployment"
 instructions: |
+  **Contract revision 2026-09-17b:** verifyDeployment accepts timeoutMs (default 1000). A timed-out check fails, receives an abort signal and prevents later checks from starting.
+
   Write the runner under the launch script. It takes an array of checks and answers with one verdict for the whole deployment.
 
-  A check is an async function returning `{ name, passed, message }`.
+  A check is an async function receiving an AbortSignal and returning `{ name, passed, message }`. It may ignore the argument when it has no cancellable work. timeoutMs must be a finite positive number.
 
   1. Run the checks one at a time, awaiting each before the next one starts. A later check can depend on work an earlier one finished: load the model, then probe it.
   2. Collect every result in call order under `checks`.
-  3. A check that throws is a failed check, not a lost run. Catch it, record a check named `check N` for its 1-based position with `passed: false` and the error's message as `message`, then carry on. The commonest real failure of a deploy verifier is the probe that never answers, and an operator still has to be told which one it was.
+  3. A check that throws is a failed check, not a lost run. Catch it, record a check named `check N` for its 1-based position with `passed: false` and the error's message as `message`, then carry on. A rejection has settled; a never-settling promise needs a timeout.
   4. The deployment passes only when every check passed. A verification with no checks in it measured nothing, so it fails, and its summary reads `0/0 checks passed`.
 
   Return:
@@ -20,36 +22,69 @@ instructions: |
       }
 
   The grader runs real TFJS inference probes through your runner: an output-range contract, an anomaly-probe gate, and a calm-probe gate against a live scoring function.
+
+  Give each check timeoutMs to settle. On timeout, record a failed check named check N with a message containing "Timed out", signal cancellation and record all remaining checks as failed with "Skipped after timeout". Do not start them: Promise.race does not stop underlying work, and a check may ignore cancellation. Clear each timer after settlement. Ordinary rejections still allow later checks to run. This is a reporting timeout, not a guarantee that external work stopped.
 hints:
   - level: nudge
-    content: "Two decisions carry this one: when each gate runs, since one of them probes a model a previous gate loaded, and what the verdict says when some gates cleared and some did not. A third decides whether the operator learns anything at all, because a gate that rejects can take the whole report down with it."
+    content: |
+      Await each check in order, but bound the wait so a hung probe can be reported.
   - level: guidance
     content: |
-      Sequencing first, since the grader times it. An await inside an ordinary loop suspends that loop, so the next gate starts only once the previous one has settled. Hand the whole list to a mapping call instead and every gate starts at the same moment and finishes fastest-first, which the load-then-probe pair cannot survive.
-
-      Put the try inside the loop rather than around it, or the first rejection ends the run and the operator never hears about the gates that came after. A gate that threw returns nothing to read a name off, so file it by its 1-based position (check 1 is index 0) and carry the thrown message onto the record, so the report says which failure this was.
-
-      The verdict at the end is unanimous rather than a majority. Count the records that cleared, compare that against how many ran, and let those two numbers build the summary line the instructions spell out. Unanimity over an empty list is not a pass, so the verdict has to know that something actually ran.
+      Race each check against a timer and clear the timer after settlement. A timeout only stops waiting: signal cancellation, then skip dependent checks. A settled rejection can be recorded while the ordinary sequence continues.
   - level: solution
     content: |
+      interface CheckResult {
+        name: string;
+        passed: boolean;
+        message: string;
+      }
+
+      interface DeploymentResult {
+        passed: boolean;
+        checks: CheckResult[];
+        summary: string;
+      }
+
       async function verifyDeployment(
-        checks: (() => Promise<CheckResult>)[]
+        checks: ((signal: AbortSignal) => Promise<CheckResult>)[],
+        timeoutMs = 1000,
       ): Promise<DeploymentResult> {
+        if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error('Invalid timeout');
         const results: CheckResult[] = [];
 
         for (let i = 0; i < checks.length; i++) {
+          const controller = new AbortController();
+          let timer;
+          let timedOut = false;
           try {
-            results.push(await checks[i]());
+            const result = await Promise.race([
+              Promise.resolve().then(() => checks[i](controller.signal)),
+              new Promise<CheckResult>((_, reject) => {
+                timer = setTimeout(() => {
+                  timedOut = true;
+                  reject(new Error('Timed out'));
+                  controller.abort();
+                }, timeoutMs);
+              }),
+            ]);
+            results.push(result);
           } catch (error) {
             results.push({
-              name: `check ${i + 1}`,
+              name: 'check ' + (i + 1),
               passed: false,
-              message: (error as Error).message,
+              message: error instanceof Error ? error.message : String(error),
             });
+          } finally {
+            clearTimeout(timer);
+          }
+          if (timedOut) {
+            for (let j = i + 1; j < checks.length; j++)
+              results.push({ name: 'check ' + (j + 1), passed: false, message: 'Skipped after timeout' });
+            break;
           }
         }
 
-        const passedCount = results.filter(r => r.passed).length;
+        const passedCount = results.filter((r) => r.passed).length;
         const total = results.length;
 
         return {
@@ -72,7 +107,8 @@ starterCode: |
   }
 
   async function verifyDeployment(
-    checks: (() => Promise<CheckResult>)[]
+    checks: ((signal: AbortSignal) => Promise<CheckResult>)[],
+    timeoutMs = 1000,
   ): Promise<DeploymentResult> {
     // The two shapes above, since the editor shows this file with its types
     // already stripped:
@@ -97,23 +133,45 @@ solutionCode: |
   }
 
   async function verifyDeployment(
-    checks: (() => Promise<CheckResult>)[]
+    checks: ((signal: AbortSignal) => Promise<CheckResult>)[],
+    timeoutMs = 1000,
   ): Promise<DeploymentResult> {
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error('Invalid timeout');
     const results: CheckResult[] = [];
 
     for (let i = 0; i < checks.length; i++) {
+      const controller = new AbortController();
+      let timer;
+      let timedOut = false;
       try {
-        results.push(await checks[i]());
+        const result = await Promise.race([
+          Promise.resolve().then(() => checks[i](controller.signal)),
+          new Promise<CheckResult>((_, reject) => {
+            timer = setTimeout(() => {
+              timedOut = true;
+              reject(new Error('Timed out'));
+              controller.abort();
+            }, timeoutMs);
+          }),
+        ]);
+        results.push(result);
       } catch (error) {
         results.push({
-          name: `check ${i + 1}`,
+          name: 'check ' + (i + 1),
           passed: false,
-          message: (error as Error).message,
+          message: error instanceof Error ? error.message : String(error),
         });
+      } finally {
+        clearTimeout(timer);
+      }
+      if (timedOut) {
+        for (let j = i + 1; j < checks.length; j++)
+          results.push({ name: 'check ' + (j + 1), passed: false, message: 'Skipped after timeout' });
+        break;
       }
     }
 
-    const passedCount = results.filter(r => r.passed).length;
+    const passedCount = results.filter((r) => r.passed).length;
     const total = results.length;
 
     return {
@@ -143,7 +201,11 @@ testCode: |
       const checks = [
         async () => {
           const p = score([0.5, 0.8, 0.2]);
-          return { name: 'output-contract', passed: p >= 0 && p <= 1, message: 'score ' + p.toFixed(3) };
+          return {
+            name: 'output-contract',
+            passed: p >= 0 && p <= 1,
+            message: 'score ' + p.toFixed(3),
+          };
         },
         async () => {
           const p = score([3, 0, 3]); // strong anomaly probe, sigmoid(3.1) ≈ 0.957
@@ -181,9 +243,21 @@ testCode: |
       // in here, an async body finishes synchronously and parallel and
       // sequential are indistinguishable.
       const checks = [
-        async () => { await sleep(30); order.push('shape'); return { name: 'shape', passed: true, message: '' }; },
-        async () => { await sleep(20); order.push('latency'); return { name: 'latency', passed: true, message: '' }; },
-        async () => { await sleep(10); order.push('accuracy'); return { name: 'accuracy', passed: false, message: 'below gate' }; },
+        async () => {
+          await sleep(30);
+          order.push('shape');
+          return { name: 'shape', passed: true, message: '' };
+        },
+        async () => {
+          await sleep(20);
+          order.push('latency');
+          return { name: 'latency', passed: true, message: '' };
+        },
+        async () => {
+          await sleep(10);
+          order.push('accuracy');
+          return { name: 'accuracy', passed: false, message: 'below gate' };
+        },
       ];
       const result = verdict(await verifyDeployment(checks));
       expect(order).toEqual(['shape', 'latency', 'accuracy']);
@@ -204,12 +278,28 @@ testCode: |
       // floor. The failure is first and the run ends on two passes, so a
       // runner that reports the majority verdict, or the last one it saw,
       // calls this deployment healthy.
-      const probes = [[3, 0, 3], [0.5, 0.8, 0.2], [0, 3, 0]];
+      const probes = [
+        [3, 0, 3],
+        [0.5, 0.8, 0.2],
+        [0, 3, 0],
+      ];
       const scored = probes.map(score);
       const checks = [
-        async () => ({ name: 'strict-gate', passed: scored[0] > 0.999, message: 'anomaly probe ' + scored[0].toFixed(3) }),
-        async () => ({ name: 'output-contract', passed: scored[1] >= 0 && scored[1] <= 1, message: 'score ' + scored[1].toFixed(3) }),
-        async () => ({ name: 'calm-gate', passed: scored[2] < 0.5, message: 'calm probe ' + scored[2].toFixed(3) }),
+        async () => ({
+          name: 'strict-gate',
+          passed: scored[0] > 0.999,
+          message: 'anomaly probe ' + scored[0].toFixed(3),
+        }),
+        async () => ({
+          name: 'output-contract',
+          passed: scored[1] >= 0 && scored[1] <= 1,
+          message: 'score ' + scored[1].toFixed(3),
+        }),
+        async () => ({
+          name: 'calm-gate',
+          passed: scored[2] < 0.5,
+          message: 'calm probe ' + scored[2].toFixed(3),
+        }),
       ];
       const result = verdict(await verifyDeployment(checks));
       expect(result.checks.filter((c) => c.passed)).toHaveLength(2);
@@ -298,6 +388,48 @@ testCode: |
         'The summary still reports what happened: nothing passed out of nothing run.',
       ).toBe('0/0 checks passed');
     });
+  });
+
+  it('reports a hung check and does not start its dependents', async () => {
+    let aborted = false,
+      started = false;
+    const r = await verifyDeployment(
+      [
+        async (signal) => {
+          signal.addEventListener('abort', () => {
+            aborted = true;
+          });
+          return new Promise(() => {});
+        },
+        async () => {
+          started = true;
+          return { name: 'dependent', passed: true, message: '' };
+        },
+      ],
+      5,
+    );
+    expect(aborted).toBe(true);
+    expect(started).toBe(false);
+    expect(r.passed).toBe(false);
+    expect(r.summary).toBe('0/2 checks passed');
+    expect(r.checks[0].name).toBe('check 1');
+    expect(r.checks[0].message).toContain('Timed out');
+    expect(r.checks[1].message).toContain('Skipped after timeout');
+  });
+  it('accepts a settled check before its timeout and validates the budget', async () => {
+    let signal;
+    const r = await verifyDeployment(
+      [
+        async (s) => {
+          signal = s;
+          return { name: 'ready', passed: true, message: '' };
+        },
+      ],
+      100,
+    );
+    expect(r.passed).toBe(true);
+    expect(signal.aborted).toBe(false);
+    await expect(verifyDeployment([], 0)).rejects.toThrow();
   });
 estimatedMinutes: 10
 difficulty: intermediate

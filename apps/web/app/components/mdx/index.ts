@@ -8,3 +8,5 @@ export { DispatchTease } from "./dispatch-tease";
 export { BossBeat } from "./boss-beat";
 export { DeepScanDemo } from "./deep-scan-demo";
 export { TransferAssignment } from "./transfer-assignment";
+export { DecisionTask } from "./decision-task";
+export { IndependentProject } from "./independent-project";

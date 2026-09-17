@@ -26,11 +26,30 @@ consequence:
   narrative: "A sharp peak at 73.4 Hz, and nothing in the catalog to explain it. 'That is not stellar background,' Farah says quietly."
 hints:
   - level: nudge
-    content: "rfft turns N time samples into N/2+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone."
+    content: |
+      rfft turns N time samples into N/2+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone.
   - level: guidance
-    content: "The transform hands back a complex coefficient per bin, so reduce each one to its size before you compare anything. Two decisions are left. Bin 0 holds the constant offset of the slice rather than a tone, and the hull channels sit on a large offset, so decide whether bin 0 is eligible to win a search for the loudest tone. Then decide what a winning bin index is worth in hertz. That conversion needs the sample rate and the number of samples that went in, and the lesson works it out above the challenge."
+    content: |
+      The transform hands back a complex coefficient per bin, so reduce each one to its size before you compare anything. Two decisions are left. Bin 0 holds the constant offset of the slice rather than a tone, and the hull channels sit on a large offset, so decide whether bin 0 is eligible to win a search for the loudest tone. Then decide what a winning bin index is worth in hertz. That conversion needs the sample rate and the number of samples that went in, and the lesson works it out above the challenge.
   - level: solution
-    content: "const fft = tf.spectral.rfft(tf.tensor1d(signal)); const magnitudes = tf.abs(fft).arraySync() as number[]; let maxBin = 1; let maxMag = magnitudes[1]; for (let i = 2; i < magnitudes.length; i++) { if (magnitudes[i] > maxMag) { maxMag = magnitudes[i]; maxBin = i; } } return maxBin * sampleRate / signal.length;"
+    content: |
+      import * as tf from '@tensorflow/tfjs';
+
+      function findDominantFrequency(signal: number[], sampleRate: number): number {
+        return tf.tidy(() => {
+          const fft = tf.spectral.rfft(tf.tensor1d(signal));
+          const magnitudes = tf.abs(fft).arraySync() as number[];
+          let maxBin = 1;
+          let maxMag = magnitudes[1];
+          for (let i = 2; i < magnitudes.length; i++) {
+            if (magnitudes[i] > maxMag) {
+              maxMag = magnitudes[i];
+              maxBin = i;
+            }
+          }
+          return (maxBin * sampleRate) / signal.length;
+        });
+      }
 keywords:
   - fourier-transform
   - fft
@@ -228,6 +247,8 @@ A signal is fully reconstructible from its DFT: no information is lost.
 ## Challenge
 
 Compute the FFT of a signal and find its dominant frequency.
+
+Return the largest measured non-DC bin. For an isolated tone it often lies near the tone's frequency, but phase, neighboring components and leakage can change the winner. Nearest-frequency rounding cannot replace the FFT comparison.
 
 <Exercise slug="compute-fft" />
 

@@ -26,29 +26,89 @@ consequence:
   narrative: "Pruning zeros 60% of weights and holds accuracy at 91.8%, which is the whole 2.4 points this module spends. The 85 MB quantized bundle stays 85 MB; what drops is the download, to 42 MB gzipped. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
-    content: "Prune a copy of the weights at each level, score the slice, and keep the five classes apart while you count. One accuracy for the whole slice cannot show you what the pass cost."
+    content: |
+      Save independent copies of the original weights. Each level starts from that same set.
   - level: guidance
     content: |
-      Three decisions decide whether this ladder is worth reading.
-
-      The first is where the cutoff comes from. A fraction of the weights is
-      a position in the ranked magnitudes, not a value on the number line. At
-      model scale that one ranking covers every kernel in the model at once. The biases stay out of it: there are few of them and each one
-      shifts a whole unit, so cutting one is a different operation with a
-      different cost.
-
-      The second is what each level is measured against. Prune the level
-      before it and your ladder describes accumulated damage. Prune the
-      trained weights every time and each row describes the level it names,
-      which is the row an operator can act on.
-
-      The third is the count. An accuracy over the whole slice averages the
-      rare class away, which is the failure this lesson opens with. Carry a
-      hit count and a total for each class, and divide at the end. Then put
-      the trained weights back, because the caller is not finished with that
-      model.
+      Use the pooled kernel ranking for interior levels and handle full pruning separately. Count correct predictions per class; report null where no class examples exist. Restore weights and release temporary tensors in finally blocks so scoring errors do not leave the model modified.
   - level: solution
-    content: "async function pruneAndScore( model: Classifier, samples: number[][], labels: number[], levels: number[] ): Promise<LevelReport[]> { const original = model.getWeights().map(w => w.clone()); const isKernel = (w: any) => w.shape.length === 2; const ranked = original .filter(isKernel) .flatMap(w => Array.from(w.dataSync()).map(Math.abs)) .sort((a, b) => a - b); const classCount = Math.max(...labels) + 1; const input = tf.tensor2d(samples); const report: LevelReport[] = []; for (const sparsity of levels) { const threshold = ranked[Math.floor(ranked.length * sparsity)]; model.setWeights( original.map(w => isKernel(w) ? tf.tensor( Array.from(w.dataSync()).map(v => (Math.abs(v) < threshold ? 0 : v)), w.shape ) : w ) ); const predicted = await model.predict(input).argMax(1).data(); const correct = new Array(classCount).fill(0); const total = new Array(classCount).fill(0); labels.forEach((label, i) => { total[label] += 1; if (predicted[i] === label) correct[label] += 1; }); report.push({ sparsity, perClass: correct.map((hits, c) => hits / total[c]) }); } model.setWeights(original); return report; }"
+    content: |
+      interface Classifier {
+        getWeights: () => any[];
+        setWeights: (weights: any[]) => void;
+        predict: (input: any) => any;
+      }
+
+      interface LevelReport {
+        sparsity: number;
+        perClass: (number | null)[];
+      }
+
+      async function pruneAndScore(
+        model: Classifier,
+        samples: number[][],
+        labels: number[],
+        levels: number[],
+      ): Promise<LevelReport[]> {
+        if (levels.some((level) => !Number.isFinite(level) || level < 0 || level > 1))
+          throw new Error('Invalid sparsity');
+        const original = model.getWeights().map((w) => w.clone());
+        const isKernel = (w: any) => w.shape.length === 2;
+        const ranked = original
+          .filter(isKernel)
+          .flatMap((w) => Array.from(w.dataSync()).map(Math.abs))
+          .sort((a, b) => a - b);
+
+        const classCount = Math.max(...labels) + 1;
+        const input = tf.tensor2d(samples);
+        const report: LevelReport[] = [];
+
+        try {
+          for (const sparsity of levels) {
+            const threshold = sparsity === 1 ? Infinity : ranked[Math.floor(ranked.length * sparsity)];
+            const pruned = original.map((w) =>
+              isKernel(w)
+                ? tf.tensor(
+                    Array.from(w.dataSync()).map((v) => (Math.abs(v) < threshold ? 0 : v)),
+                    w.shape,
+                  )
+                : w,
+            );
+            try {
+              model.setWeights(pruned);
+            } finally {
+              pruned.forEach((w, i) => {
+                if (w !== original[i]) w.dispose();
+              });
+            }
+
+            const prediction = tf.tidy(() => model.predict(input).argMax(1));
+            let predicted;
+            try {
+              predicted = await prediction.data();
+            } finally {
+              prediction.dispose();
+            }
+            const correct = new Array(classCount).fill(0);
+            const total = new Array(classCount).fill(0);
+            labels.forEach((label, i) => {
+              total[label] += 1;
+              if (predicted[i] === label) correct[label] += 1;
+            });
+
+            report.push({
+              sparsity,
+              perClass: correct.map((hits, c) => (total[c] === 0 ? null : hits / total[c])),
+            });
+          }
+
+          return report;
+        } finally {
+          model.setWeights(original);
+          original.forEach((w) => w.dispose());
+          input.dispose();
+        }
+      }
 keywords:
   - pruning
   - tree-shaking
@@ -199,6 +259,8 @@ Small magnitude is a practical ranking rule, not proof that a connection is disp
 ## Challenge
 
 Prune the classifier at each sparsity level you are handed, where a level of zero has to leave the model untouched, and report what each one costs, one class at a time.
+
+At sparsity 1, this exercise removes every kernel weight. An interior cutoff can retain ties, so the requested sparsity is not always the achieved fraction. A class without evaluation examples gets null rather than an accuracy; weights are restored even if scoring fails.
 
 <Exercise slug="prune-weights" />
 

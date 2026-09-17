@@ -131,7 +131,7 @@
     {
       "path": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
       "kind": "lesson",
-      "sourceSha256": "112703c834049132c5acf3dad860f34c4c1de949e9bddb3660a032f7fda5c08c",
+      "sourceSha256": "56127b5f4488d3d2f01925506c41b9b6a0db7a1d901158fbae35ea008f74221a",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -145,11 +145,13 @@
       },
       "targetedCorrections": [
         "F10",
-        "F16"
+        "F16",
+        "A18"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -181,6 +183,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -308,21 +318,24 @@
     {
       "path": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
       "kind": "exercise",
-      "sourceSha256": "ffcc546fb6600f4afdb407a5f93f445f7b0fa3b1a10682d4230db35d138375e3",
+      "sourceSha256": "471637c05591b2a7bfd0b86a51b4ef9622182cd6d6b957af9075441e0010f3c3",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A18"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -345,6 +358,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -530,7 +551,7 @@
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
       "kind": "lesson",
-      "sourceSha256": "ac57f7f565afe7df36fd435bc3afa31ff2c83d405debeca66d69865fb048c9e0",
+      "sourceSha256": "9a6ce1d675288052f8ade136974aa3cc94d699a057265c46023f6b974cff05ec",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -544,11 +565,13 @@
       },
       "targetedCorrections": [
         "F10",
-        "A03"
+        "A03",
+        "A20"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -580,13 +603,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
       "kind": "lesson",
-      "sourceSha256": "10e0097dbffdd018b815fe2c546039baa0b6fdd9bc33998cb70f0a5fc54c9a24",
+      "sourceSha256": "cf74b26c32df3c1fb90f4ec80623e97649f8068e0649fca65a26cf204f13f300",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -600,11 +631,13 @@
       },
       "targetedCorrections": [
         "F03",
-        "F10"
+        "F10",
+        "A18"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -636,6 +669,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -699,7 +740,7 @@
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
       "kind": "lesson",
-      "sourceSha256": "8d6f5657569d6498fe89ed0d2f6075e416dcf5af1ad189411b8ebc7cabb0edf2",
+      "sourceSha256": "17a2867af40e2695d42da4ee5703cb316f667b60613bc3bc354cfad053a77fd2",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -714,11 +755,16 @@
       "targetedCorrections": [
         "F05",
         "F10",
-        "A05"
+        "A05",
+        "A21",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -750,13 +796,29 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
       "kind": "lesson",
-      "sourceSha256": "f262ac3c7365392f69c134328dd10b0d0a3d32d083dbcf11cab0d2b2da85e2b3",
+      "sourceSha256": "a5aaafe05dcfcc022d1a4ddd7978d74f10369e696a1a36b1bdd0607e2b0d3fd8",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -771,11 +833,13 @@
       "targetedCorrections": [
         "F03",
         "F10",
-        "F15"
+        "F15",
+        "A20"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -807,27 +871,38 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
       "kind": "exercise",
-      "sourceSha256": "95be0b16036dd33ad485366768145abaaa09f4c97d1e66cc50c7fd35cdd70cfb",
+      "sourceSha256": "32be4c04fc06a7a4b28e1e5b7768ee1796bf0975cbcf1d565a4a8fc8d95456ac",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A18"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -849,27 +924,38 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
       "kind": "exercise",
-      "sourceSha256": "89ce98c16f5675d6880c65e7a8a34ef073a7b48a7447d02df246019855d9e004",
+      "sourceSha256": "61a992c46a4aafcc6c7686ad551f159dbd3e79ebac29b522c48ac8c927ab9695",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A20"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -891,27 +977,38 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
       "kind": "exercise",
-      "sourceSha256": "426747773041393ee1b9a4f2a01d96394f9170b9d1f014844066b3cb35749ccb",
+      "sourceSha256": "e86a917e7ddd3cab758205ae7b0faa0ab03f023a6526e18ee8de8a00a9217e34",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A20"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -933,30 +1030,40 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
       "kind": "exercise",
-      "sourceSha256": "4073a9f15b58254749963763ba58cf8f239be86b310891f9f6590a51fdd6dce8",
+      "sourceSha256": "9136cab2b7ac90b515bcd266e8f53d43816b8b0f8a6a2922c0e90300d5c58c01",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "F05"
+        "F05",
+        "A21"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -978,6 +1085,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -1210,7 +1325,7 @@
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
       "kind": "lesson",
-      "sourceSha256": "56aa3a92c100488e4bb067c2355f71f0e761900245f37819cb78e5eeffae544b",
+      "sourceSha256": "448b617ac5d7c0e44dbcea675ccca0d90591903e4cb09c4498e7a41a54b08138",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1224,12 +1339,15 @@
       },
       "targetedCorrections": [
         "F10",
-        "F24"
+        "F24",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1238,7 +1356,7 @@
       ],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
-        "Install and import TensorFlow.js in a web project",
+        "Read the setup steps and initialize the supplied TensorFlow.js runtime",
         "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics",
         "Initialize TF.js, verify the active backend, and configure the right one for your target"
       ],
@@ -1264,13 +1382,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
       "kind": "lesson",
-      "sourceSha256": "3e8e00e33b73a1acb67eb359954e57fc710198f3a4b9a10620c29579cfb9e4f3",
+      "sourceSha256": "dcbda0c33cc247fb6de45f5d7f17db58cbb1cb825fb4e6be38bcad393261466c",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1284,12 +1410,15 @@
       },
       "targetedCorrections": [
         "F10",
-        "F24"
+        "F24",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1298,10 +1427,10 @@
       ],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
-        "Load a pre-trained TensorFlow.js model from a URL",
+        "Implement and inspect a TensorFlow.js model-loading call",
         "Understand the model format: model.json manifest + weight .bin shards",
         "Export a trained model to that pair with model.save(), in Node and in the browser",
-        "Cache models in IndexedDB for offline access and faster subsequent loads",
+        "Explain how an IndexedDB cache changes the model-loading path",
         "Handle loading states and errors gracefully in the UI"
       ],
       "focusedReviews": [
@@ -1326,6 +1455,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
@@ -1394,7 +1531,7 @@
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
       "kind": "lesson",
-      "sourceSha256": "de072082343573e5b709ae078454a7d9bda92cbf8d6039bde32e9846ada95296",
+      "sourceSha256": "4d077365375a547af7a4587728291cd0e188cd5e2fc9394c34d680032dd4488f",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1407,11 +1544,14 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1420,10 +1560,10 @@
       ],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
-        "Understand ONNX as a universal model interchange format",
-        "Load and run ONNX models in the browser with onnxruntime-web",
-        "Benchmark TF.js against ONNX Runtime Web on one shared backend, so the result is about the runtimes",
-        "Pick a backend from model size: where per-call overhead outweighs the arithmetic, and where it stops"
+        "Explain ONNX model interchange and runtime compatibility limits",
+        "Implement the input and awaited-output contract for an ONNX session",
+        "Compare timing and output agreement in a controlled runtime exercise",
+        "Explain why backend selection requires measurements on the target device"
       ],
       "focusedReviews": [
         {
@@ -1440,13 +1580,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
       "kind": "lesson",
-      "sourceSha256": "572a314155e6f269c19d998e7bc156529f6f709ae490061d118d1c205e5b5cc5",
+      "sourceSha256": "72d25dd6921017e328ff6785c47e4c614d0a7d62ce67b35100aadf909c5ab66f",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1459,11 +1607,14 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1473,7 +1624,7 @@
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
         "Understand when to reach for Transformers.js vs TFJS or ONNX Runtime",
-        "Use `pipeline()` to run pretrained models in the browser",
+        "Implement the task, loading and output contract around `pipeline()`",
         "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)",
         "Reason about the bandwidth + latency cost of shipping pretrained models client-side"
       ],
@@ -1492,6 +1643,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
@@ -1776,7 +1935,7 @@
     {
       "path": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
       "kind": "lesson",
-      "sourceSha256": "0dfe6dfee836fb07ee6a5147b72a238c1895f70d1d70c37ef93b7bf21efc969e",
+      "sourceSha256": "24a224f9299e8e11d1777174550bbba5cde6c5a667840eedf67183e946927ec7",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1789,11 +1948,14 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1809,7 +1971,7 @@
       ],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
-        "Design a production ML pipeline as a dependency graph of typed components",
+        "Assemble the supplied ML pipeline as typed components with explicit dependencies",
         "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter",
         "Implement a pipeline runner that validates data flow between stages",
         "Map the complete DEEP SCAN architecture from raw signal to final report"
@@ -1829,13 +1991,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
       "kind": "lesson",
-      "sourceSha256": "ae4c809525eaf4f9d86cc57f3950115213f7d8f81c314dc1657c925d4fe8dd20",
+      "sourceSha256": "2cd416ed31270139bb62e35239789350bd817a5f7084e71fe264b66100a037c6",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1849,11 +2019,14 @@
       },
       "targetedCorrections": [
         "F10",
-        "A12"
+        "A12",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1869,10 +2042,10 @@
       ],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
-        "Extend a standard CI/CD pipeline with ML-specific validation steps",
+        "Identify ML validation steps in an example CI/CD workflow",
         "Implement model accuracy gates that block deployment on regression",
-        "Add inference performance benchmarks as CI checks",
-        "Configure automated deployment with rollback on failure",
+        "Explain what a device-specific inference benchmark must record",
+        "Trace the deployment and rollback conditions in the example workflow",
         "Export a model with model.save() and an in-memory save handler, and read its topology, weight specs, and byte count"
       ],
       "focusedReviews": [
@@ -1890,13 +2063,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
       "kind": "lesson",
-      "sourceSha256": "2a7e56cc2560372314c4c4185fefaa7592f061c66767acfc82b8489e0986493a",
+      "sourceSha256": "5861e72b2b04286a92133ce5ef1a421f0a2d511d308ab5f34c196687da231075",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -1909,11 +2090,13 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "A21"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -1949,6 +2132,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -2013,7 +2204,7 @@
     {
       "path": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
       "kind": "lesson",
-      "sourceSha256": "a235efe94fb363c0ff879b67d7709a78586cc8302c4ddf83a9707ad98ab3384e",
+      "sourceSha256": "a1bd067116b06cffe7705e4493ef0f0900dd82caa4e2f7802bac9768a8b671ce",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -2027,11 +2218,17 @@
       },
       "targetedCorrections": [
         "F10",
-        "A13"
+        "A13",
+        "A21",
+        "A20",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2047,9 +2244,9 @@
       ],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
       "authoredObjectives": [
-        "Configure a production build that includes model assets alongside web assets",
-        "Deploy an ML-powered web app to GitHub Pages as a static site",
-        "Verify the deployed system loads and runs inference correctly",
+        "Package model assets and preprocessing with a standalone JavaScript app",
+        "Follow the static-hosting setup for an ML-powered app",
+        "Verify saved-model inference locally and distinguish it from a hosted deployment check",
         "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch",
         "Complete the DEEP SCAN mission: classify the anomalous signal"
       ],
@@ -2068,6 +2265,22 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
@@ -2122,23 +2335,25 @@
     {
       "path": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
       "kind": "exercise",
-      "sourceSha256": "fdaa2e00a99052a42be83e99acd2e6dd533c221a95f7c3b7bb32a9e6c20602f9",
+      "sourceSha256": "02d4571dd482b2eb3fea411bf80718a3082ea12360ec8074c8712dabab467a46",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "reference_passes; starter_and_registered_misconception_rejected_in_chromium"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "A13"
+        "A13",
+        "A20"
       ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2164,6 +2379,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -2262,21 +2485,24 @@
     {
       "path": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
       "kind": "exercise",
-      "sourceSha256": "1f8255b1cb64b40abc857d3fc9a433e50d77f607f4925a6e76442b8e148c763c",
+      "sourceSha256": "c22e34283d9349a14557a7f76f03031167d827e571d356d0f057ee838dc5957f",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A21"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2302,6 +2528,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -2354,21 +2588,24 @@
     {
       "path": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
       "kind": "exercise",
-      "sourceSha256": "de359bc054302f33cb6d3eb891e9e228e34ed784e0cf2ff4c30ac4e6c8b00b36",
+      "sourceSha256": "7d76481b4aafa9e7d9f73fc1eb726b117cb0328fd65fa8a71fefb4b71aee68d0",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A21"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2394,6 +2631,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -2590,7 +2835,7 @@
     {
       "path": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
       "kind": "lesson",
-      "sourceSha256": "1b8787ac9016f6e40bbf90db33c5e1d2a0751a4bc5fa8340d4e10ce5a5f45caa",
+      "sourceSha256": "03c6df88077a884fae4113ff2ea00b30c5994549c3ac64b2fd22b29b838d0fe2",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -2604,11 +2849,16 @@
       },
       "targetedCorrections": [
         "F01",
-        "F10"
+        "F10",
+        "A15",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
@@ -2633,6 +2883,22 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
@@ -2726,24 +2992,26 @@
     {
       "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
       "kind": "exercise",
-      "sourceSha256": "a3d04f6f965954b7f932bf62787ac37934c159e3e6e1bb0458656cb46d11f974",
+      "sourceSha256": "ce35065b0b889efdd5aa799aae32d89f4af8f50aa4dc7e073f5ba86c01f4bf8f",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "F01"
+        "F01",
+        "A15"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [],
       "prerequisiteReview": "Task scaffolding and declared sequence reviewed locally; whole-course first-use terminology and observed learner readiness remain open.",
@@ -2758,6 +3026,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -3373,24 +3649,26 @@
     {
       "path": "packages/content/content/deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
       "kind": "exercise",
-      "sourceSha256": "60482499af2a7be949fc4832f9b3169fbc5f89aa91a3e4cc8fe791926c889d80",
+      "sourceSha256": "b73501380d3d1f4223c34f8183185613d70d155085a1b1145cdaeaa4ff8a9f38",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "F04"
+        "F04",
+        "A21"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3414,6 +3692,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -3863,23 +4149,25 @@
     {
       "path": "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml",
       "kind": "exercise",
-      "sourceSha256": "76304b5cbc30abcf138692b6da3aba96e9572cbcdfa0fecae417355cd20fd1ab",
+      "sourceSha256": "a04924d01096e016a09b52ba9182b9c7d72b8482b9bb26f952d71e0478191804",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "reference_passes; starter_and_registered_misconception_rejected_in_chromium"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "A10"
+        "A10",
+        "A18"
       ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations"
@@ -3896,13 +4184,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
       "kind": "lesson",
-      "sourceSha256": "72e6d49f9a5c5cb9aac01c715bde0ccb16cd093c3f98a9cc89d803d298fd983c",
+      "sourceSha256": "52972f1196729aea175a59b0dea26f4fb8c0ceda1ee485dd92e7bdfbb740335a",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -3916,12 +4212,14 @@
       },
       "targetedCorrections": [
         "F10",
-        "F19"
+        "F19",
+        "A19"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -3963,6 +4261,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -4029,7 +4335,7 @@
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
       "kind": "lesson",
-      "sourceSha256": "aff4a64e2b3d4b124ee8378cfd03683b56928ebf31299f78ebf71fff060eafff",
+      "sourceSha256": "2910c2a8c5b582ce9dea4fd523ea569b760707c0e20762f4e948d87baa6a8e05",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -4043,11 +4349,13 @@
       },
       "targetedCorrections": [
         "F09",
-        "F10"
+        "F10",
+        "A21"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4082,13 +4390,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
       "kind": "lesson",
-      "sourceSha256": "0e7903270a3c3d13d0025209c0de2ef1d176137083daf82febe0babbaab5497f",
+      "sourceSha256": "0fd0e40c645f61e29b61bca38d7c49728312950c7b0247b1c521473efcb22fbe",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -4102,12 +4418,14 @@
       },
       "targetedCorrections": [
         "F10",
-        "F24"
+        "F24",
+        "A21"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4149,6 +4467,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -4312,21 +4638,24 @@
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
       "kind": "exercise",
-      "sourceSha256": "67de852318250a0dedca4b7a9d26b0ec52d74b76e6e19f25ee03a4c8a8553d2c",
+      "sourceSha256": "746e3cfeface8a2886a98704867fcce6e34664f5b03a096831ff33d7a43b9cb4",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A21"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4351,30 +4680,40 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
       "kind": "exercise",
-      "sourceSha256": "048a20c8ed25c278dedfa896c04a4e7ee77b045736304b833541af1fd2855315",
+      "sourceSha256": "16b01d2542553bf7285bcab1f90f07795525e96a91552acc705db27bb030150d",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "F19"
+        "F19",
+        "A19"
       ],
       "evidence": [
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4399,27 +4738,38 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
       "kind": "exercise",
-      "sourceSha256": "0f2ecefd2c132612834ce75510f6b35949ca2d439a274f43bbd3264444a5b52e",
+      "sourceSha256": "f0ef3cff0fcaa35f0e4719e5234c616bf359066ea530fa6121e913c8d81aee91",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A21"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4444,6 +4794,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -4740,7 +5098,7 @@
     {
       "path": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
       "kind": "lesson",
-      "sourceSha256": "bd0bf25ff566ecd5362f33fd89f036d7b473e227f22be92a06afa178fa2c1fe7",
+      "sourceSha256": "88981e218821c756666510dc9a4dd079f6ac241d19683154a5a1a136b216a547",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -4754,12 +5112,14 @@
       },
       "targetedCorrections": [
         "F10",
-        "F24"
+        "F24",
+        "A18"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4797,6 +5157,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -4926,21 +5294,24 @@
     {
       "path": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
       "kind": "exercise",
-      "sourceSha256": "192b57990c4441728fa8842540398621bde8ade057c5fae94b3493cf2d2a230d",
+      "sourceSha256": "4273f4de0dc605b99c1ab553c795727f67fae8f45d8805b46c95ed28bb0bf003",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A18"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -4961,6 +5332,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -5069,7 +5448,7 @@
     {
       "path": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
       "kind": "lesson",
-      "sourceSha256": "4cfced529137ca8257d26eeead138cd8f8e80c80602fef8973e52568e0dce281",
+      "sourceSha256": "3621e3efc5c36e152f816486cb37b145755756fbf28ade6351af2edc862c0d02",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -5082,11 +5461,13 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "A22"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5115,6 +5496,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -5237,7 +5626,7 @@
     {
       "path": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
       "kind": "lesson",
-      "sourceSha256": "fb5d7fae6859831323cb73c4b45e9efca43d30c43c86cba5ecc54372524737c2",
+      "sourceSha256": "68677bd78d5e0b4a0460789260d4016fb834e9533df70ea95b88dbf5d9c69728",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -5251,12 +5640,14 @@
       },
       "targetedCorrections": [
         "F10",
-        "F21"
+        "F21",
+        "A22"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5293,27 +5684,38 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
       "kind": "exercise",
-      "sourceSha256": "5df213b2b810a7df11481d407eb351a13d8bc76228275618b6de0c20529f0327",
+      "sourceSha256": "6aef8d6d7fcfa17880c7acc3c5176be2e8b2f76d50c42cf381e7fe85bbdd1e0f",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A22"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5333,6 +5735,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -5379,21 +5789,24 @@
     {
       "path": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
       "kind": "exercise",
-      "sourceSha256": "dd9b919891b4c0af0159af17ca2782bf97cb9b99fd2aa3ab52f3e9068af38556",
+      "sourceSha256": "6513c3eb54ea9980a926d3751cd8cbb20f969bafd631eca18e8434d3ba0d9d13",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A22"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5413,6 +5826,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -5654,7 +6075,7 @@
     {
       "path": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
       "kind": "lesson",
-      "sourceSha256": "6965f6cd188c7155c07415cd9a513ca4e025225c3659c0d43d2a71ad58eeb77d",
+      "sourceSha256": "e2247f43581d8ecc7bb884b1a44f0978c52c227556a0db78221ceba8deb138ec",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -5667,11 +6088,13 @@
         "rendered_experience": "pending"
       },
       "targetedCorrections": [
-        "F10"
+        "F10",
+        "A16"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5682,7 +6105,7 @@
         "Implement the complete training loop with model.fit()",
         "Configure epochs, batch size, and validation split",
         "Monitor training progress with callbacks",
-        "Read the training and validation curves together to tell a plateau from overfitting"
+        "Describe recent training and validation trends and identify questions to investigate"
       ],
       "focusedReviews": [
         {
@@ -5699,13 +6122,21 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
       "kind": "lesson",
-      "sourceSha256": "b34387615f7a2b35cd9b3170d3b63c601fe68f91c0552db27f47cd2f58800ccf",
+      "sourceSha256": "5788c99038294e78fb354b5b0751b2a2fd4bf78f7466d70ae3380fce13a367e3",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
@@ -5722,12 +6153,17 @@
         "F08",
         "F10",
         "F17",
-        "Q2-early-transfer"
+        "Q2-early-transfer",
+        "A17",
+        "A23",
+        "A24"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/content-quality-patch-2-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5756,6 +6192,22 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
+        },
+        {
+          "surface": "Narrowed objectives, explicit integration scope, decision-task or project placement",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/independent-assessment-patch-2026-09-17.md",
+          "limitations": "Targeted scope review. Real standalone TFJS path tested; full lesson rendering, independent scoring and learner/transfer outcomes remain open."
         }
       ]
     },
@@ -5800,24 +6252,26 @@
     {
       "path": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
       "kind": "exercise",
-      "sourceSha256": "f6f989f61eaaaa3dc98b35285216f23cc5e170e6fbf33a91f12810a8cd8dcce1",
+      "sourceSha256": "98747fcc361945914e196420f15a00feacb3c4b23262bc5a493d56420b6daef8",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
       "targetedCorrections": [
-        "F17"
+        "F17",
+        "A17"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5835,6 +6289,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     },
@@ -5919,21 +6381,24 @@
     {
       "path": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
       "kind": "exercise",
-      "sourceSha256": "06218b5a2a758b692be55ffc49f261b7c620f1c6a32e9c20aca79239957067d7",
+      "sourceSha256": "5fde274aadb3e6d6e70d08a7c6a06d19a47e99c73957b52bb60bd3c225a90e63",
       "status": "partial",
       "checks": {
         "objectives": "reviewed_locally_with_coverage_gaps",
         "prerequisites": "reviewed_against_sequence; learner_readiness_pending",
         "instructions": "reviewed_locally_with_limits",
         "starter": "reviewed_locally_with_limits",
-        "solution": "reference_passes_node_validator; acceptance_limits_in_review",
-        "grader": "reviewed_locally_with_limits",
+        "solution": "reference_passes_node_validator; targeted_limits_in_reliability_patch",
+        "grader": "targeted_reliability_review; independent_assessment_pending",
         "hints": "reviewed_locally_with_limits",
-        "browser_execution": "pending"
+        "browser_execution": "reference_starter_and_primary_misconception_checked_in_chromium_worker"
       },
-      "targetedCorrections": [],
+      "targetedCorrections": [
+        "A16"
+      ],
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -5951,6 +6416,14 @@
           "date": "2026-09-17",
           "evidence": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
           "limitations": "Local assessment review only. Open findings A15-A24, full diagnostic copyedit, independent review and learner transfer evidence remain unresolved. See per-artifact judgments in deep-orbit-assessment-review.json."
+        },
+        {
+          "surface": "Reliability contracts, associated hints and diagnostic wording; controlled grader cases",
+          "status": "reviewed_locally_with_limits",
+          "reviewer": "Codex",
+          "date": "2026-09-17",
+          "evidence": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+          "limitations": "Targeted grading fixes only. A17 decision evidence, historical benchmarks, A23-A24 independent application, full editorial review and learner validation remain open. Browser checks are scoped to worker execution, not full lesson rendering."
         }
       ]
     }
@@ -6182,50 +6655,59 @@
     {
       "path": "docs/audits/deep-orbit-learning-map.json",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "a59f2dcd3dd994c78be656b0fba3c16adca4603bcd6bb8c4587d64d514982a57",
+      "sourceSha256": "a1c4b95335d3013536cf217c50240fef8d64524ce13344bee4c9f36ad8c865f4",
       "status": "partial",
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
     },
     {
       "path": "docs/audits/deep-orbit-learning-progression.md",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "50867a258e2bd8bdfe2e798fea3a000edbd92b215e0918a2fcd150c94a4990e4",
+      "sourceSha256": "077e2d33e68b58e7755b8ebcae721bd3c57f7c87379f6e22ad591b6417582270",
       "status": "partial",
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
     },
     {
       "path": "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "2cdc71ccf86f79a95373d465ced25d4895bb23ba19aa609d25baae089f747efe",
+      "sourceSha256": "ffe5816033b18f04b789b03e7626b5b905984f8bacb1286933cc7cd1cb45afd6",
       "status": "partial",
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
     },
     {
       "path": "docs/audits/deep-orbit-assessment-review.json",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "9eca0f783a317491b2fa4e63b412316ed76c1a6a34e8319f613b8d1a34b947ea",
+      "sourceSha256": "02943e9580ca2591314f91b3ac1970188547ced07d94774fe4b317258695e200",
       "status": "partial",
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
     },
     {
       "path": "scripts/build-learning-map.mjs",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "f49517411007306edb058ca3b9394d970456828f900e9c687ecaa87e446c8cc1",
+      "sourceSha256": "c5a5598ae70a7565b81caeea71ffd7192f1da8b19e52dd52a3b600e5a0e7f434",
       "status": "partial",
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
     },
@@ -6242,10 +6724,11 @@
     {
       "path": "e2e/education-exercises.spec.ts",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "8bb1094053e812c363de3848c95a63c31791631f5f355296abd8c12f948635f6",
+      "sourceSha256": "43196c57612087e61e1f7497121c71304f2eed2c71e2c8af3c15bf51f1edc51c",
       "status": "partial",
       "evidence": [
-        "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
+        "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
     },
@@ -6288,6 +6771,486 @@
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md"
       ],
       "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
+    },
+    {
+      "path": "scripts/exercise-cheats/batch-data.2.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "48616b092e15d1a20750ab68bdb4d4476d1b22e9c4482befba23d99c9ef964a4",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/batch-data.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "aaec9f126fcb3f902046fde5e5935ea59db9d4597fc0681ec0da06482c34b0ec",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/build-autoencoder.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "eab11edd35a3c0652cdd25dc58b9f6fbd3dc2af38d9dea9cd07cb4d6568bbe13",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/deep-scan-eval.2.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "15f9a9d281620213e4523156b0952717b6803c1ba570b1166caed935a24d0eb7",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/deep-scan-eval.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "09a161804544cc7cfa9c3c421dde63782b71cbecd17c43db502261b2a4d83bb9",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/forecast-signal.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "895517c085a78451814fd7cbb87d49710929c307ebf3635b5fba2cdfa107bb21",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/model-monitor.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "f00824756d50580965519b5eeda60de387a4fcdbd9cd59f11f531e0a82d5a5cf",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/profile-model.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "b67ac902e04f14f03447ff5c5b2c5833b2e525a7bd075baabaa13d528d52e857",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/training-loop-exercise.2.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "e7de33355f2f001a229e295ffaca4421bdda0041a32bf0bc381f7f41f6b84627",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/exercise-cheats/training-loop-exercise.js",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "bddfa499c9aa35886847bfd4f24b80d2b1a7dd4761ab2429ed9512a30bc118e0",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "scripts/validate-exercises.mjs",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "13e6b1d0a6022e1e110e1ffa62ad1ed438a177b2997952365f25d1b57d17bac3",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "27db4093fc86cc4b89c7aeb6bfac07a3873be5389272748ac231c46d500d6576",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "packages/ui/src/mdx/assessment-reliability.test.ts",
+      "kind": "assessment_reliability_support",
+      "sourceSha256": "e9a314bf9f9b7dc6026481b19334acad9e3901bb43d7a31539eb5eed82ca65de",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/assessment-reliability-patch-2026-09-17.md"
+      ],
+      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/.gitignore",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "6c7d15d2ab1a0b51ebcae7e88b9ad01f0713d0833bc2dbe8f3bcc7a81b66b344",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/CODE-LICENSE.txt",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "747f61f09ff487ec7a7ee973d9bf0927ef57e641c8664d7fd5905e43042c8de3",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/DATA-LICENSE.md",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "c0623b2a39db98b4e4ce82cd62142d45074b6da85c5dce446ed4b1168821d6c6",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/README.md",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "9eab4ecb3c4aeff29145ae9bc4a67026b061e20f407f346ca114cf3799b0495f",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/RUBRIC.md",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "0aabb2c93e970d4cfc9ccc811f1c64965dbc3c214f1789ac4e211322a7c810cd",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/app.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "0679341833bfd0442814d4f3b191ec0c0b8228883f3ee416333bfe89a63753d0",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/artifact.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "355bd54c7e5b516ff2928efd0d4dc775ff5b4dc03215a66b33f56beba0b31e7a",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/check.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "d40bd72f12bbac513e7dc868d7af406539fe8962fd57a7be154474aa11c1218f",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/data.json",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "f1651684b4e3ecb424235d015de344005a5d0e9b4905fe2533ea5e9440dd65cb",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/evaluate.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "3246b46d823b8b40d5e2375dcb0b19b420907e0396486695236fa3d0b6567584",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/evaluation.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "78e4ff54d3699879637f628f885e44b19007b0662900e3ceb56451f4ff80f65a",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/index.html",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "6189ecc1f79618a1cdecc489db6e769f9851c97b4a66621473ad6c0266f19c5e",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/package-lock.json",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "9a3459869d2ea23c503832b9546dd6cb124cb7fb0ada1c5c9fa8b6c60ccff2c0",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/package.json",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "4110c5c770d2b772b2840fed8aaf4f64a7cbbe694467e5af653c51f5039f42b4",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/plan.json",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "c5c018906eb85787b35215b5ef9f35d32d2357c453257e4004c61888b84202af",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/preprocessing.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "5e8ee45d1d7620dca7cf6e863687c6d0ac88d96c26c3cad997acd3b4e77aa11a",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/report.md",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "62d688d492d1677dd6fc939bfb6558eeb5952c67a4eb7441755fa266c1130296",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/serve.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "9e8d5d2d353641f73b3dd3e5a78ecbd30a92452901b2107f1a59ec411e3f25bb",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1/train.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "08008c003aa4fcfd6d560428991dd5373917c86d0ef8b0a9a0f82961a021a432",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/public/assignments/room-occupancy-v1.zip",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "1ef0ff74b3b737a5273aedde25eeae2a40717c9498ee69fa6fa9488dd3dbb8a5",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "docs/audits/independent-assessment-patch-2026-09-17.md",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "d7e6a06e70edcf98a0566f7e2de02034ef7d1df567a75b63c6a146ae3b2795f7",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/components/mdx/decision-task-data.ts",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "5493f7bbabcdc7c63e3d73de7ea0b84ba2274960fc045dcfdfa1e893b939be61",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/components/mdx/decision-task.tsx",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "e76601804970b2ee82435213d5b923e73250588fcdb45b0e40e350ca4bdf2aa9",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/components/mdx/decision-task.test.tsx",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "aa79c726a2ed1d96d246527517f3a40aed7332718ac769d95c15eb5f82b462c5",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/components/mdx/independent-project.tsx",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "808143024a9294315f0600fca2541bbd2dd0badb5c816a607bf91d885dcf23d0",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/components/mdx/index.ts",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "87b5c65eecf203020f042c8c20e0ef4ad0f1098d75fada6f2efaa1daac3cbe3a",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "537bcdfd35b691dea9e3ed1e74c36dd3cdcc9a704236cb85c0706b37bceef268",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.test.tsx",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "9f812234cab48e95413ff42c78edcf3feb72fc6e67154b66318d62d87daf4668",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "aa781468ecf223157e3ef262fa825f5b11a856403fe8f5da8697a1ea8f931c37",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "packages/content/__tests__/independent-project.test.ts",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "91f0d91411efb71d1baac7e62140312e8fdba883e6650a96e1f1a2a831803f58",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "scripts/build-occupancy-dataset.py",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "42effc21661852f89b77ae6f5b12c0fdbbc93fbf37b4b5dbcc01fcc5374602c8",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "scripts/package-room-project.py",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "eba1f73eea573061da3e53cbead75140930ca158f4164c8c843c8019d5080268",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "scripts/fixtures/room-project/train.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "726c75aae1e8bc2ce5661ddb8d8de4938c1fb6471eeab5a189820a209fcc2a48",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "scripts/check-room-project.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "90dd53c0aa87fe5de3b1785655a3759a871f91e4821fb821f92eddb759e709af",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+    },
+    {
+      "path": "scripts/check-decisions-browser.mjs",
+      "kind": "independent_assessment_support",
+      "sourceSha256": "e38c0a496fcf0828a1ce70ea11c0e549f570fc91456e0d5168202d144647fb03",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/independent-assessment-patch-2026-09-17.md"
+      ],
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
     }
   ],
   "assessmentReview": {
@@ -6297,5 +7260,19 @@
     "status": "local_coverage_complete_with_open_findings",
     "independentReview": "pending",
     "learnerValidation": "pending"
-  }
+  },
+  "followupReviews": [
+    {
+      "date": "2026-09-17",
+      "baseRevision": "92cf8f27",
+      "report": "docs/audits/assessment-reliability-patch-2026-09-17.md",
+      "scope": "19 exercise reliability revisions and associated lesson changes; whole-artifact pending checks retained."
+    },
+    {
+      "date": "2026-09-17",
+      "baseRevision": "92cf8f27 plus local reliability patch",
+      "report": "docs/audits/independent-assessment-patch-2026-09-17.md",
+      "scope": "Independent decision evidence and real standalone project scaffold; whole-artifact and learner reviews remain partial."
+    }
+  ]
 }

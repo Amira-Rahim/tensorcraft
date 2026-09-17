@@ -14,9 +14,17 @@ recaps and adds the early build-triage assignment. See its
 [evidence and limits](audits/content-quality-patch-2-2026-09-17.md).
 The [assessment review](audits/deep-orbit-assessment-review-2026-09-17.md)
 now covers all 65 exercises and maps the 222 objectives across 56 lessons.
-It includes 14 correction groups affecting 15 exercises. Q2-Q3 remain in
-progress: unresolved grading and coverage gaps, complete feedback editing,
-independent review and learner validation still block acceptance.
+Its first patch includes 14 correction groups affecting 15 exercises. The
+[subsequent reliability patch](audits/assessment-reliability-patch-2026-09-17.md)
+addresses grading and contract defects in another 19 exercise revisions.
+Q2-Q3 remain in progress: decision assessment, real external application,
+complete feedback editing, independent review and learner validation still
+block acceptance.
+
+The [independent assessment patch](audits/independent-assessment-patch-2026-09-17.md)
+adds three decision tasks and a downloadable final project with a real local
+TFJS application and public rubric. Maintainer integration checks pass;
+independent reviewer scores, learner difficulty and transfer remain open.
 
 Owner direction: target at least 9/10 in every audit category, retain $50 as
 the launch price, and prepare a course worth $70 before raising the price

@@ -46,6 +46,8 @@ import {
   RecallPrompt,
   StrategyThread,
   TransferAssignment,
+  DecisionTask,
+  IndependentProject,
 } from "@/app/components/mdx";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
@@ -142,6 +144,8 @@ const EpilogueContext = createContext(false);
 
 /** MDX components available in lesson content */
 const mdxComponents = {
+  DecisionTask,
+  IndependentProject,
   BossBeat,
   Concept,
   Dialogue,
@@ -369,6 +373,11 @@ export function LessonContent({
         ) : null,
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
       DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
+      DecisionTask: wrapVisibility("DecisionTask", DecisionTask),
+      IndependentProject: wrapVisibility(
+        "IndependentProject",
+        IndependentProject,
+      ),
       TransferAssignment: wrapVisibility(
         "TransferAssignment",
         TransferAssignment,

@@ -2187,6 +2187,8 @@ async function runSolutionTests(userCode, testCode) {
     Date,
     setTimeout,
     clearTimeout,
+    AbortController,
+    AbortSignal,
     setInterval,
     clearInterval,
     queueMicrotask,

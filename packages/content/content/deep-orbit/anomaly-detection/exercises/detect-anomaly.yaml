@@ -2,15 +2,18 @@ slug: detect-anomaly
 lessonSlug: normal-vs-anomalous
 title: "Detect Anomalies with Z-Score"
 mlContent: arithmetic
-instructions: "Write `isAnomaly(value, mean, std)` that returns true when the reading sits more than 3 standard deviations from the mean, in either direction. The baseline is not fixed: `mean` and `std` arrive as arguments and change from one call to the next, so the allowed distance has to be computed from them on every call. Both routes are graded the same, the tensor one (`tf.scalar`, then `.dataSync()[0]` to read the number back out) and plain arithmetic."
+instructions: |
+  Write `isAnomaly(value, mean, std)` that returns true when the reading sits more than 3 standard deviations from the mean, in either direction. The baseline is not fixed: `mean` and `std` arrive as arguments and change from one call to the next, so the allowed distance has to be computed from them on every call. Both routes are graded the same, the tensor one (`tf.scalar`, then `.dataSync()[0]` to read the number back out) and plain arithmetic. Inputs must be finite and std must be nonnegative; reject invalid inputs. If std is zero, compare value with mean directly: equality is normal and any difference is flagged under this exercise's exact-reading policy. No z-score exists in that case. Real sensors need an explicitly chosen measurement tolerance.
 starterCode: |
   function isAnomaly(value, mean, std) {
     return null;
   }
 solutionCode: |
   function isAnomaly(value, mean, std) {
-    const z = tf.scalar(value).sub(tf.scalar(mean)).div(tf.scalar(std)).abs();
-    return z.dataSync()[0] > 3;
+    if (![value, mean, std].every(Number.isFinite) || std < 0)
+      throw new Error('Invalid baseline or reading');
+    if (std === 0) return value !== mean;
+    return Math.abs(value - mean) / std > 3;
   }
 testCode: |
   // Deterministic pseudo-random baselines for the last test. A verdict is a
@@ -67,8 +70,14 @@ testCode: |
       ).toBe(false);
     });
     it('works on a tenth-scale baseline', () => {
-      expect(isAnomaly(0.55, 0.5, 0.1), 'Half a spread out on a tenth-scale baseline is normal.').toBe(false);
-      expect(isAnomaly(0.9, 0.5, 0.1), 'Four spreads out on a tenth-scale baseline is anomalous.').toBe(true);
+      expect(
+        isAnomaly(0.55, 0.5, 0.1),
+        'Half a spread out on a tenth-scale baseline is normal.',
+      ).toBe(false);
+      expect(
+        isAnomaly(0.9, 0.5, 0.1),
+        'Four spreads out on a tenth-scale baseline is anomalous.',
+      ).toBe(true);
     });
     it('derives the verdict from the baseline it is handed, not from a memorised one', () => {
       for (let i = 0; i < 12; i++) {
@@ -86,6 +95,16 @@ testCode: |
         expect(isAnomaly(mean - 2.6 * std, mean, std), why).toBe(false);
       }
     });
+  });
+
+  it('handles a constant baseline explicitly', () => {
+    for (const mean of [0, 0.1, -4]) {
+      expect(isAnomaly(mean, mean, 0)).toBe(false);
+      expect(isAnomaly(mean + 0.01, mean, 0)).toBe(true);
+      expect(isAnomaly(mean - 0.01, mean, 0)).toBe(true);
+    }
+    expect(() => isAnomaly(1, 0, -1)).toThrow();
+    expect(() => isAnomaly(NaN, 0, 1)).toThrow();
   });
 estimatedMinutes: 8
 difficulty: beginner

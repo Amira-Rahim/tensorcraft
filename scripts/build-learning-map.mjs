@@ -69,6 +69,25 @@ const result = {
             };
           }),
           recallQuestions: (lesson.recallPrompts ?? []).map((p) => p.question),
+          decisionTasks: [
+            ...source.matchAll(/<DecisionTask\s+id="([^"]+)"/g),
+          ].map((m) => ({
+            id: m[1],
+            evidence:
+              "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; explanation review pending",
+            sourcePath: "apps/web/app/components/mdx/decision-task-data.ts",
+          })),
+          independentProject: source.includes("<IndependentProject")
+            ? {
+                id: "room-occupancy-v1",
+                briefPath:
+                  "apps/web/public/assignments/room-occupancy-v1/README.md",
+                rubricPath:
+                  "apps/web/public/assignments/room-occupancy-v1/RUBRIC.md",
+                evidence:
+                  "Standalone artifact path verified with a maintainer fixture; learner work and independent review unobserved",
+              }
+            : null,
           transferAssignment: source.includes("<TransferAssignment")
             ? "build-triage-v1: separate self-review, assistance recorded, no automatic pass"
             : null,

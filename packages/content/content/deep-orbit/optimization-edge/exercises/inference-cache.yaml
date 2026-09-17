@@ -3,44 +3,66 @@ lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
 instructions: |
-  Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model.
+  **Contract revision 2026-09-17b:** makeInferenceCache now accepts maxEntries (default 100), uses shape and dtype in its key, and returns a fresh array on every call.
+
+  Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2, maxEntries = 100)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model.
 
   What a cache stored is its own: build a second cache over a second model and the same signal is a miss there, because the same values under different weights are a different answer.
 
-  Two inputs belong to the same entry when their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them.
+  Two inputs belong to the same entry only when their shapes and dtypes match and their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them.
 
-  Entries outlast the calls that follow them: a signal that comes back after other signals have gone through still hits what its first call stored, because the repeats this cache is built for arrive with other traffic between them.
+  Keep at most maxEntries entries. Use least-recently-used eviction: a hit makes an entry newest; inserting beyond capacity removes the oldest. maxEntries must be a positive integer. decimals must be an integer from 0 to 10. Reject invalid settings.
 
   Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory.
+
+  Return a fresh plain array on both hits and misses so callers cannot edit the cached result. The caller owns input tensors. The cache owns and disposes prediction tensors. Assume finite numeric inputs and unchanged model weights/preprocessing during a cache's lifetime; create a new cache after either changes. Rounding is approximate reuse and needs an application-specific error budget.
 starterCode: |
-  function makeInferenceCache(model, decimals = 2) {
+  function makeInferenceCache(model, decimals = 2, maxEntries = 100) {
     // A hit and a miss have to hand the caller the same kind of value, and
     // nothing the cache keeps can be a handle someone else can dispose.
-    return { predict(input) { return model.predict(input); }, stats: { hits: 0, misses: 0 } };
+    return {
+      predict(input) {
+        return model.predict(input);
+      },
+      stats: { hits: 0, misses: 0 },
+    };
   }
 solutionCode: |
-  function makeInferenceCache(model, decimals = 2) {
+  function makeInferenceCache(model, decimals = 2, maxEntries = 100) {
+    if (
+      !Number.isInteger(decimals) ||
+      decimals < 0 ||
+      decimals > 10 ||
+      !Number.isInteger(maxEntries) ||
+      maxEntries < 1
+    )
+      throw new Error('Invalid cache settings');
     const cache = new Map();
     const stats = { hits: 0, misses: 0 };
-    const factor = Math.pow(10, decimals);
-    // predict returns numbers on both paths, so a hit and a miss are
-    // interchangeable to the caller, and nothing the cache holds is a
-    // tensor anyone else can dispose.
+    const factor = 10 ** decimals;
     return {
       stats,
       predict(input) {
-        const data = Array.from(input.dataSync());
-        const key = data.map(v => Math.round(v * factor) / factor).join(',');
+        const values = Array.from(input.dataSync()).map((v) => Math.round(v * factor) / factor);
+        const key = JSON.stringify([input.dtype, input.shape, values]);
         if (cache.has(key)) {
           stats.hits++;
-          return cache.get(key);
+          const scores = cache.get(key);
+          cache.delete(key);
+          cache.set(key, scores);
+          return scores.slice();
         }
         stats.misses++;
         const out = model.predict(input);
-        const scores = Array.from(out.dataSync());
-        out.dispose();
+        let scores;
+        try {
+          scores = Array.from(out.dataSync());
+        } finally {
+          out.dispose();
+        }
         cache.set(key, scores);
-        return scores;
+        if (cache.size > maxEntries) cache.delete(cache.keys().next().value);
+        return scores.slice();
       },
     };
   }
@@ -59,7 +81,10 @@ testCode: |
       const m = makeModel();
       const real = m.predict.bind(m);
       const counter = { calls: 0 };
-      m.predict = function (x) { counter.calls++; return real(x); };
+      m.predict = function (x) {
+        counter.calls++;
+        return real(x);
+      };
       const truth = function (values) {
         const out = real(tf.tensor2d([values]));
         const scores = Array.from(out.dataSync());
@@ -82,9 +107,9 @@ testCode: |
     });
     it('caches near-identical inputs (post-rounding)', () => {
       const m = makeModel();
-      const cache = makeInferenceCache(m, 1);  // 1 decimal place
+      const cache = makeInferenceCache(m, 1); // 1 decimal place
       cache.predict(tf.tensor2d([[0.51, 0.5]]));
-      cache.predict(tf.tensor2d([[0.49, 0.5]]));   // both round to 0.5
+      cache.predict(tf.tensor2d([[0.49, 0.5]])); // both round to 0.5
       expect(
         cache.stats.hits,
         'At one decimal place these two signals are the same signal. A key built from the raw values keeps them apart and the cache earns no hits on real telemetry, where no two readings are ever bit-identical.',
@@ -276,6 +301,37 @@ testCode: |
       expect(first.counter.calls).toBe(1);
       expect(Array.from(fromA)).toEqual(first.truth(values));
     });
+  });
+
+  it('keys shape and dtype and protects stored values from callers', () => {
+    let calls = 0;
+    const cache = makeInferenceCache({ predict: () => tf.tensor1d([++calls]) });
+    const x = tf.tensor1d([1, 2]);
+    const first = cache.predict(x);
+    first[0] = 999;
+    const hit = cache.predict(x);
+    expect(hit).toEqual([1]);
+    hit[0] = 888;
+    expect(cache.predict(x)).toEqual([1]);
+    expect(cache.predict(tf.tensor2d([[1, 2]]))).toEqual([2]);
+    expect(cache.predict(tf.tensor1d([1, 2], 'int32'))).toEqual([3]);
+    expect(x.isDisposedInternal).toBe(false);
+  });
+  it('evicts the least recently used key at the requested capacity', () => {
+    let calls = 0;
+    const cache = makeInferenceCache({ predict: () => tf.tensor1d([++calls]) }, 2, 2);
+    const a = tf.tensor1d([1]),
+      b = tf.tensor1d([2]),
+      c = tf.tensor1d([3]);
+    cache.predict(a);
+    cache.predict(b);
+    expect(cache.predict(a)).toEqual([1]);
+    cache.predict(c);
+    expect(cache.predict(a)).toEqual([1]);
+    expect(cache.predict(b)).toEqual([4]);
+    expect(cache.stats).toEqual({ hits: 2, misses: 4 });
+    expect(() => makeInferenceCache({}, 2, 0)).toThrow();
+    expect(() => makeInferenceCache({}, -1)).toThrow();
   });
 estimatedMinutes: 18
 difficulty: intermediate

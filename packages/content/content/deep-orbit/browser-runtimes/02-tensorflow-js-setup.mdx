@@ -60,7 +60,7 @@ Then explain the benchmark on your screen. Check the backend at every station an
 
 These example timings belong to the story console, not a speed guarantee for your device. The new concept is a backend: the engine that executes TF.js operations. Browser options include WebGL and WebGPU on the GPU, WebAssembly on the CPU, and plain JavaScript on the CPU. Their relative speed depends on the model, device and transfer overhead. Node can also use native TensorFlow through the separate `@tensorflow/tfjs-node` package.
 
-<LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
+<LearningObjectives objectives={["Read the setup steps and initialize the supplied TensorFlow.js runtime", "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
 
 ## Install and Import
 
@@ -191,6 +191,8 @@ async function benchmarkBackend(backendName: string) {
 </CodeBlock>
 
 ## Challenge
+
+The editor supplies TensorFlow.js. This task checks initialization and backend selection with controlled runtime responses. Install and run the real dependency in the independent project before treating setup as verified on your own machine.
 
 Set up TensorFlow.js and verify the active backend.
 

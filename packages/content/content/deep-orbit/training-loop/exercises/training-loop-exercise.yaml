@@ -1,39 +1,68 @@
 slug: training-loop-exercise
 lessonSlug: training-loop
 title: "Stop the Loop When It Stops Learning"
-instructions: "Demir set epochs to 500 because he had no way to know better, and ten times the compute bought a gain nobody was watching for. Replace the guess with a callback that reads the held-out curve. Fit the fresh model on the flipped-label data with an upper bound of 500 epochs, hold back 20% for validation, and attach tf.callbacks.earlyStopping watching val_loss with a patience of 5. Leave the batch size at its default of 32, or set anything from 8 to 64; the grader reads yours off the history. Larger batches mean fewer weight updates per epoch, and measured at 80 or more per batch the callback fails to fire inside the 500-epoch bound in about half of all runs. Store the result in `history`. Then write `diagnose(trainLosses, valLosses)`, which reads the two curves the run produced and returns one of three strings. Compare the mean of the last 10 entries of the VALIDATION curve against the mean of the 10 before them: 'still-learning' when the recent window improved by more than 5%, 'overfitting' when it got worse by more than 5%, and 'plateau' when it moved less than that either way. Two windows of 10 need a curve of at least 20 entries, and a run inside the batch sizes above always has them: measured over 600 runs at 8, 16 and 64 rows per batch, the earliest halt was epoch 34, comfortably past the 20 the two windows need, and the grader rejects a run that stops inside 20 epochs as one that halted on something other than a settled curve. The window is short on purpose. Averaged over a third of the run, this curve still reads as falling by 10% to 65% at the moment the callback fires, because the steep early drop is inside the average. A plateau at the END of a run is only visible in a recent window. The callback halts on both a plateau and overfitting, and the recent window of the validation curve is what says which one you are looking at."
+instructions: |
+  **Contract revision 2026-09-17b:** Add makeEarlyStopping and use the new observable-trend labels in diagnose. Short histories are valid.
+
+  Fit the supplied model on trainX/trainY for at most 500 epochs with validationSplit 0.2 and a batch size from 8 to 64 (default 32). Implement makeEarlyStopping() returning tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 }), and attach it to the fit. Store the awaited result in history. A correct run can stop early or reach its epoch limit; neither outcome proves a defect.
+
+  Implement diagnose(trainLosses, valLosses) for equally long arrays of finite, nonnegative losses. Reject invalid arrays. With fewer than 20 entries, return 'insufficient-history'. Otherwise compare the mean of each curve's last ten entries with its previous ten. A drop greater than 5% is improvement; a rise greater than 5% is worsening. Exactly 5% lies in the flat band. Compare by multiplication so an earlier mean of zero is handled without division: zero to positive is worsening, zero to zero is flat.
+
+  Apply this order: validation improving -> 'validation-improving'; both curves worsening -> 'both-worsening'; training improving while validation worsens -> 'train-down-validation-up'; any other validation worsening -> 'validation-worsening'; otherwise -> 'plateau'. These labels describe recent trends. They do not establish overfitting, data shift or a learning-rate problem; investigate those possibilities using data and further experiments.
+
+  Allow an absolute 1e-12 comparison tolerance for floating-point arithmetic at the 5% boundaries.
 starterCode: |
   // Given: the archive's two clusters, then six labels flipped to match the
   // flag log, which is where the bad rows in the real archive come from.
-  // Six contradictory rows put a floor under both curves, because no setting
-  // of the weights satisfies them and their neighbours at once.
-  const calm = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
-    tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
-    tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
-  ], 1), 0, 1);
-  const flagged = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
-    tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
-    tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
-  ], 1), 0, 1);
+  // These flipped training labels introduce noise. They do not guarantee
+  // a loss floor or a particular stopping epoch.
+  const calm = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
+  const flagged = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
   // Interleaved, because validationSplit takes the LAST rows and a validation
-  // set that is all flagged windows validates nothing.
+  // set containing only flagged windows cannot measure both classes.
   const order = [];
-  for (let i = 0; i < 50; i++) { order.push(i); order.push(50 + i); }
+  for (let i = 0; i < 50; i++) {
+    order.push(i);
+    order.push(50 + i);
+  }
   const trainX = tf.concat([calm, flagged]).gather(order);
   const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
   const labels = cleanY.arraySync();
   for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
   const trainY = tf.tensor2d(labels);
 
-  // A FRESH network. Re-fitting a trained one starts partway down the curve
-  // and halts on where the weights began rather than on this data.
+  // Start a fresh network so this history records the run from initialization.
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
   model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
   model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+  function makeEarlyStopping() {
+    return null; // your code here
+  }
 
   const history = null; // your code here
 
@@ -41,18 +70,35 @@ starterCode: |
     // your code here
   }
 solutionCode: |
-  const calm = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
-    tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
-    tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
-  ], 1), 0, 1);
-  const flagged = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
-    tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
-    tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
-  ], 1), 0, 1);
+  const calm = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
+  const flagged = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
   const order = [];
-  for (let i = 0; i < 50; i++) { order.push(i); order.push(50 + i); }
+  for (let i = 0; i < 50; i++) {
+    order.push(i);
+    order.push(50 + i);
+  }
   const trainX = tf.concat([calm, flagged]).gather(order);
   const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
   const labels = cleanY.arraySync();
@@ -65,140 +111,122 @@ solutionCode: |
   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
   model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
+  function makeEarlyStopping() {
+    return tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 });
+  }
+
   const history = await model.fit(trainX, trainY, {
     epochs: 500,
     validationSplit: 0.2,
-    callbacks: tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5 }),
+    callbacks: makeEarlyStopping(),
   });
 
   function diagnose(trainLosses, valLosses) {
-    const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
-    const n = valLosses.length;
-    const earlier = mean(valLosses.slice(n - 20, n - 10));
-    const recent = mean(valLosses.slice(n - 10));
-    const change = (recent - earlier) / earlier;
-    if (change < -0.05) return 'still-learning';
-    if (change > 0.05) return 'overfitting';
+    if (
+      !Array.isArray(trainLosses) ||
+      !Array.isArray(valLosses) ||
+      trainLosses.length !== valLosses.length ||
+      ![...trainLosses, ...valLosses].every((v) => Number.isFinite(v) && v >= 0)
+    )
+      throw new Error('Invalid loss history');
+    if (valLosses.length < 20) return 'insufficient-history';
+    const trend = (values) => {
+      const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
+      const before = mean(values.slice(-20, -10)),
+        recent = mean(values.slice(-10));
+      if (before === 0) return recent === 0 ? 'flat' : 'up';
+      if (recent < before * 0.95 - 1e-12) return 'down';
+      if (recent > before * 1.05 + 1e-12) return 'up';
+      return 'flat';
+    };
+    const training = trend(trainLosses),
+      validation = trend(valLosses);
+    if (validation === 'down') return 'validation-improving';
+    if (validation === 'up' && training === 'up') return 'both-worsening';
+    if (validation === 'up' && training === 'down') return 'train-down-validation-up';
+    if (validation === 'up') return 'validation-worsening';
     return 'plateau';
   }
 testCode: |
-  describe('Early stopping', () => {
-    it('the run held out a validation set, so there is a second curve to read', () => {
-      expect(history, 'history is still null. model.fit returns the record of the run and returns it as a promise, so it has to be awaited before it is stored.').toBeDefined();
-      expect(history.history, 'The record carries a history object holding one trace per metric the run tracked.').toBeDefined();
-      expect(history.history.val_loss, 'There is no val_loss trace, which means no validation set was held back. Without validationSplit the callback has nothing to watch: training loss almost always keeps falling, which is exactly why it is the wrong number to stop on.').toBeDefined();
-      expect(history.history.val_loss.length, 'The validation trace has to run one entry per epoch, alongside the training trace.').toBe(history.history.loss.length);
+  describe('Early stopping and observed trends', () => {
+    it('returns aligned finite training and validation histories from a real fit', () => {
+      expect(history).toBeDefined();
+      expect(history instanceof tf.History).toBe(true);
+      const loss = history.history.loss,
+        val = history.history.val_loss;
+      expect(loss.length).toBeGreaterThan(0);
+      expect(loss.length).toBeLessThanOrEqual(500);
+      expect(val.length).toBe(loss.length);
+      expect([...loss, ...val].every((v) => Number.isFinite(v) && v >= 0)).toBe(true);
+      expect(history.params.samples).toBe(80);
+      const batch = history.params.batchSize || 32;
+      expect(batch >= 8 && batch <= 64).toBe(true);
+      expect(model.optimizer.iterations).toBe(Math.ceil(80 / batch) * loss.length);
     });
-
-    it('the loop stopped itself well short of the 500-epoch upper bound', () => {
-      expect(history, 'history is still null, so no run happened.').toBeDefined();
-      const ran = history.history.val_loss.length;
-      expect(ran, 'The run used all 500 epochs, so nothing stopped it. 500 was the upper bound, not the target: the callback is what turns it back into a bound.').toBeLessThan(500);
-      expect(ran, 'The run stopped almost immediately, which means it halted on something other than a settled validation curve. Reference runs on this data have halted anywhere from epoch 70 to epoch 270, median near 100, so a halt in that range is the normal case and the bound here is only a sanity floor.').toBeGreaterThan(20);
+    it('stops on five consecutive non-improvements, watching validation rather than training', async () => {
+      const probe = async (values) => {
+        const callback = makeEarlyStopping(),
+          m = tf.sequential();
+        m.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+        m.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
+        m.stopTraining = false;
+        callback.setModel(m);
+        await callback.onTrainBegin({});
+        let seen = 0;
+        for (let i = 0; i < values.length; i++) {
+          await callback.onEpochEnd(i, { val_loss: values[i], loss: 10 - i });
+          seen++;
+          if (m.stopTraining) break;
+        }
+        const stopped = m.stopTraining;
+        m.dispose();
+        return { seen, stopped };
+      };
+      expect(await probe([1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4])).toEqual({ seen: 7, stopped: true });
+      expect(await probe([1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3])).toEqual({
+        seen: 8,
+        stopped: false,
+      });
+      expect(await probe([1, 0.999, 0.998, 0.997, 0.996, 0.995, 0.994, 0.993])).toEqual({
+        seen: 8,
+        stopped: false,
+      });
+      expect(await probe([1, 1, 1, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])).toEqual({
+        seen: 9,
+        stopped: true,
+      });
     });
-
-    it('the halt sits exactly patience epochs past the best validation score', () => {
-      // patience counts epochs that fail to BEAT the best score so far, so the
-      // callback fires exactly 5 epochs after the best one. Measured on 100
-      // reference runs: the offset was 5 in 100 of 100, on halts from epoch 74
-      // to 149. NOTE what this does and does not prove. It reads the trace the
-      // submission returns, so on its own a hand-built trace satisfies it. The
-      // assertion that ties the trace to a real run is the optimizer-iteration
-      // count below.
-      expect(history, 'history is still null, so there is no curve to inspect.').toBeDefined();
+    it('respects patience when a real run ends before the budget', () => {
       const v = history.history.val_loss;
+      if (v.length === 500) return;
       let best = 0;
       for (let i = 1; i < v.length; i++) if (v[i] < v[best]) best = i;
-      expect(
-        v.length - 1 - best,
-        'The last epoch is not 5 past the best validation score. With patience 5 the callback fires on the fifth epoch in a row that fails to beat the best, so the gap between the best epoch and the last one is exactly 5. A different gap means the patience was set to something else, or the run was stopped by something other than this callback.',
-      ).toBe(5);
+      expect(v.length - 1 - best).toBe(5);
     });
-
-    it('the weights the model kept are the halt-epoch weights, not the best ones', () => {
-      // The lesson's point about what early stopping does NOT do. TFJS 4.22
-      // throws on restoreBestWeights, so the model is left 5 epochs past best.
-      expect(model.optimizer, 'The compiled model owns the optimizer that applied the updates.').toBeDefined();
-      expect(model.optimizer.iterations, 'The optimizer applied no updates, so model.fit never ran on this model.').toBeGreaterThan(0);
-      // THE ANTI-FABRICATION CHECK, and it is the only assertion here that a
-      // hand-written `history` cannot satisfy. Every other test in this file
-      // reads the history object the SUBMISSION hands back, so a literal with
-      // the right shape clears them: measured on 2026-09-12, a fabricated
-      // 102-entry trace plus a throwaway one-epoch fit on random data scored
-      // 6 of 6 before this assertion existed. `optimizer.iterations` belongs
-      // to the optimizer, is incremented once per batch, and is NOT writable
-      // from outside (measured: assigning 999 to it leaves it unchanged). The
-      // exercise trains on 80 rows after the 20% split, so a real run does
-      // ceil(80 / batchSize) updates per epoch: 3 at the default 32, 5 at 16.
-      // The batch size is read off history.params (measured on tfjs 4.22.0:
-      // {samples: 80, batchSize: 32} by default, batchSize 16 when set), and
-      // the row count is pinned at 80 so a trace cannot shrink its own
-      // divisor. Tying that to the epoch count the trace CLAIMS is what makes
-      // the two numbers have to come from the same run.
-      const params = history.params || {};
-      const batchSize = params.batchSize || 32;
-      expect(
-        batchSize >= 8 && batchSize <= 64,
-        'The run used a batch size of ' + batchSize + '. Measured on this data, 80 or more rows per batch leaves too few weight updates per epoch for the callback to fire inside the 500-epoch bound in about half of all runs, and 2 per batch sometimes halts inside 20 epochs. Leave batchSize at its default of 32 or set it between 8 and 64.',
-      ).toBe(true);
-      expect(
-        params.samples,
-        'history.params.samples has to read 80: the 100 flipped-label rows minus the 20% the instructions hold back for validation.',
-      ).toBe(80);
-      const perEpoch = Math.ceil(80 / (params.batchSize || 32));
-      expect(
-        model.optimizer.iterations,
-        'The optimizer applied ' + model.optimizer.iterations + ' weight updates, but the trace claims ' + history.history.val_loss.length + ' epochs, which would take ' + perEpoch * history.history.val_loss.length + '. A real run does ' + perEpoch + ' updates an epoch here: 80 rows survive the 20% validation split at a batch size of ' + (params.batchSize || 32) + '. The two numbers disagree, so the record in `history` did not come from the run this model went through.',
-      ).toBe(perEpoch * history.history.val_loss.length);
-      const v = history.history.val_loss;
-      const bestScore = Math.min.apply(null, v);
-      expect(v[v.length - 1], 'The final validation score beat every earlier one, which cannot happen when the callback halts 5 epochs after the best. Early stopping ends the run, it does not rewind it.').toBeGreaterThanOrEqual(bestScore);
+    it('distinguishes validation trends using both curves', () => {
+      const curve = (a, b) => [...Array(10).fill(a), ...Array(10).fill(b)];
+      for (const [tr, va, want] of [
+        [[1, 0.8], [1, 0.8], 'validation-improving'],
+        [[1, 0.8], [1, 1.2], 'train-down-validation-up'],
+        [[1, 1.2], [1, 1.2], 'both-worsening'],
+        [[1, 1], [1, 1.2], 'validation-worsening'],
+        [[1, 0.8], [1, 1], 'plateau'],
+        [[1, 1], [0, 0], 'plateau'],
+        [[0, 1], [0, 1], 'both-worsening'],
+        [[1, 1], [1, 1.05], 'plateau'],
+        [[1, 1], [1, 0.95], 'plateau'],
+      ])
+        expect(diagnose(curve(...tr), curve(...va))).toBe(want);
     });
-
-    it('diagnose reads the two curves rather than reporting a fixed verdict', () => {
-      // Built, not listed: a memorised answer cannot cover a generated space.
-      const flat = (n, v) => Array.from({ length: n }, () => v);
-      const ramp = (n, from, to) => Array.from({ length: n }, (_, i) => from + ((to - from) * i) / (n - 1));
-      const cases = [];
-      for (const n of [30, 45, 60]) {
-        cases.push([ramp(n, 1.0, 0.2), ramp(n, 1.0, 0.2), 'still-learning']);
-        cases.push([ramp(n, 1.0, 0.1), ramp(n, 0.4, 0.9), 'overfitting']);
-        cases.push([ramp(n, 0.5, 0.4), flat(n, 0.30), 'plateau']);
-      }
-      // The window has to be RECENT. Every case above is a single straight
-      // line, which any threshold anywhere in 0 to 50 percent reads the same
-      // way whether the comparison uses the last two windows or the whole
-      // run. These two curves fall steeply for 40 epochs and then flatten or
-      // turn: first-versus-last calls both of them still-learning, and the
-      // rule the instructions give calls them plateau and overfitting.
-      cases.push([ramp(60, 1.0, 0.2), [...ramp(40, 1.0, 0.3), ...flat(20, 0.3)], 'plateau']);
-      cases.push([ramp(60, 1.0, 0.1), [...ramp(40, 1.0, 0.3), ...ramp(20, 0.3, 0.45)], 'overfitting']);
-      for (const [tr, va, want] of cases) {
-        expect(
-          diagnose(tr, va),
-          'diagnose returned the wrong verdict for a validation curve of length ' + va.length + ' whose last 10 entries average ' + (va.slice(-10).reduce((s, x) => s + x, 0) / 10).toFixed(3) + ' against ' + (va.slice(-20, -10).reduce((s, x) => s + x, 0) / 10).toFixed(3) + ' for the 10 before them. The verdict compares those two windows: better by more than 5% is still-learning, worse by more than 5% is overfitting, and anything between is a plateau.',
-        ).toBe(want);
-      }
-    });
-
-    it('diagnose gives the curves from this run the verdict the rule calls for', () => {
-      // Deliberately NOT asserting a fixed verdict here. The halt epoch is
-      // init-dependent, and over 100 reference runs the recent-window change at
-      // the halt ran from -14.67% to -0.11%, median -5.44%, straddling the 5%
-      // boundary: 52 of the 100 read still-learning and 48 read plateau. An
-      // assertion on which one came up would fail about half the time. So the
-      // rule is applied here independently and the two answers are compared,
-      // which grades diagnose against a real curve without inheriting its
-      // variance.
-      expect(history, 'history is still null, so there are no real curves to read.').toBeDefined();
-      const v = history.history.val_loss;
-      const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
-      const change = (mean(v.slice(v.length - 10)) - mean(v.slice(v.length - 20, v.length - 10))) / mean(v.slice(v.length - 20, v.length - 10));
-      const want = change < -0.05 ? 'still-learning' : change > 0.05 ? 'overfitting' : 'plateau';
-      expect(
-        diagnose(history.history.loss, history.history.val_loss),
-        'On the curves from this run the recent window moved ' + (change * 100).toFixed(2) + '%, which the rule calls ' + want + '. diagnose said something else, so it is not applying the same comparison to a real curve that it applies to a synthetic one.',
-      ).toBe(want);
+    it('uses recent windows and accepts short histories without inventing a diagnosis', () => {
+      expect(diagnose([], [])).toBe('insufficient-history');
+      expect(diagnose([1], [2])).toBe('insufficient-history');
+      const tr = [...Array(30).fill(20), ...Array(10).fill(1), ...Array(10).fill(0.8)],
+        va = [...Array(30).fill(20), ...Array(10).fill(1), ...Array(10).fill(1.2)];
+      expect(diagnose(tr, va)).toBe('train-down-validation-up');
+      expect(() => diagnose([1], [])).toThrow();
+      expect(() => diagnose([NaN], [1])).toThrow();
+      expect(() => diagnose([-1], [1])).toThrow();
     });
   });
 estimatedMinutes: 18

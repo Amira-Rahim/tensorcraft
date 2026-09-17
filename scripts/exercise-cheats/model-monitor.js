@@ -1,39 +1,32 @@
-// CHEAT for model-monitor: two measurements replaced by two shortcuts.
-//
-// 1. Drift scores the first row and ignores the window. Drift is the distance
-//    between the BASELINE MEAN and the RECENT MEAN, and the mean over the
-//    window is what makes the number mean anything. This reads
-//    recentInputs[0] and calls it the recent mean, so a single noisy reading
-//    decides the verdict.
-// 2. The latency percentile sorts with Array.prototype.sort and no
-//    comparator, which compares the numbers as strings. On a run of times
-//    between 40 ms and 134 ms with five calls at 400, that ordering puts
-//    400 among the forties and the P95 comes back inside the healthy band.
-//    The dashboard reads green while one call in twenty runs ten times slow.
+// Misconception: uses textual latency order and the first recent row instead of the mean.
 class ModelMonitor {
+  confidences = [];
+  latencies = [];
+  baselineMean;
   constructor(baselineMean) {
-    this.confidences = [];
-    this.latencies = [];
-    this.baselineMean = baselineMean;
+    if (baselineMean.length === 0 || !baselineMean.every(Number.isFinite))
+      throw new Error("Invalid baseline");
+    this.baselineMean = baselineMean.slice();
   }
-
   logPrediction(confidence) {
+    if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)
+      throw new Error("Invalid confidence");
     this.confidences.push(confidence);
   }
-
   get avgConfidence() {
-    if (this.confidences.length === 0) return 0;
+    if (this.confidences.length === 0) return null;
     return (
       this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length
     );
   }
-
   logLatency(ms) {
+    if (!Number.isFinite(ms) || ms < 0) throw new Error("Invalid latency");
     this.latencies.push(ms);
   }
-
   getLatencyPercentile(p) {
-    if (this.latencies.length === 0) return 0;
+    if (!Number.isFinite(p) || p < 0 || p > 100)
+      throw new Error("Invalid percentile");
+    if (this.latencies.length === 0) return null;
     const sorted = [...this.latencies].sort();
     const index = Math.min(
       sorted.length - 1,
@@ -41,12 +34,24 @@ class ModelMonitor {
     );
     return sorted[index];
   }
-
   computeDrift(recentInputs) {
-    const row = recentInputs[0];
+    if (recentInputs.length === 0) return null;
+    const featureCount = this.baselineMean.length;
+    if (
+      !recentInputs.every(
+        (row) => row.length === featureCount && row.every(Number.isFinite),
+      )
+    )
+      throw new Error("Invalid feature row");
+    const recentMean = new Array(featureCount).fill(0);
+    for (const row of recentInputs) {
+      for (let i = 0; i < featureCount; i++) {
+        recentMean[i] = recentInputs[0][i];
+      }
+    }
     let sumSqDiff = 0;
-    for (let i = 0; i < this.baselineMean.length; i++) {
-      sumSqDiff += (this.baselineMean[i] - row[i]) ** 2;
+    for (let i = 0; i < featureCount; i++) {
+      sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2;
     }
     return Math.sqrt(sumSqDiff);
   }

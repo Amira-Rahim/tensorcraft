@@ -36,21 +36,29 @@ data-gated deferrals. The world-2 release gate remains separate.
   groups implemented across 15 exercises. Whole-artifact review, independent
   scores and learner evidence remain open. See
   [patch 2 evidence](audits/content-quality-patch-2-2026-09-17.md).
-- [ ] **Next assessment patch, before Q2 acceptance:** resolve A15-A22 in the
-  [assessment review](audits/deep-orbit-assessment-review-2026-09-17.md).
-  Start with unsupported loss-curve diagnoses, stochastic training grades,
-  zero-spread anomaly votes and wall-clock timing gates. Acceptance requires
-  controlled counterexamples, valid alternative implementations and aligned
-  instructions, hints and feedback; repeated reference passes alone do not pass.
-- [ ] **Assessment coverage, before Q2/Q5 acceptance:** resolve A23-A24 in the
-  same review. Add decisions about baselines, splits, metrics and error
-  investigation; verify a real exported artifact outside the harness. The
-  final project must collect independent work and rationale, with observed
-  difficulty, assistance and delayed transfer evidence.
+- [x] **Assessment reliability patch, local implementation:** corrected the
+  grading and contract defects in A15-A22 across 19 exercises: loss trends,
+  stochastic outcomes, zero spread, profiling, shuffling and boundaries.
+  See the [patch evidence](audits/assessment-reliability-patch-2026-09-17.md).
+- [ ] **Remaining A17-A19 evidence, before Q2 acceptance:** assess baseline
+  selection, confusion matrices, metric rationale and error investigation.
+  Reproduce retained story benchmarks with controlled comparisons and report
+  real device measurements separately from implementation correctness.
+- [x] **Independent assessment implementation, local:** three decision tasks
+  collect choices, calculations, rationale, time and assistance. The separate
+  occupancy project ships real licensed data, a standalone app, export/reload
+  checks and a public rubric. See the
+  [integration evidence](audits/independent-assessment-patch-2026-09-17.md).
+- [ ] **A23-A24 acceptance, before Q2/Q5 sign-off:** obtain independent project
+  scoring and observed difficulty/assistance/transfer results. Verify the
+  remaining actual runtime, caching, converter and hosted-deployment paths
+  where the course claims those outcomes.
 - [ ] **After objective/canon alignment, Q4:** make existing story choices
   affect later scenes; pilot two additional decisions before a larger wave.
-- [ ] **After teaching alignment, Q5:** deliver an independent project that
-  builds, evaluates, and runs outside Tensorcraft, with download/GitHub export.
+- [~] **Q5 independent project:** downloadable scaffold and real local
+  artifact path implemented. Learners can publish their folder to GitHub;
+  automatic integrated-project export through Tensorcraft remains open.
+  Independent clean-export review and learner explanation are still required.
 - [ ] **After the revised course, Q6:** arrange independent subject/editorial
   review and a 12-20 learner pilot, including delayed and transfer checks.
 - [ ] **After quality and learner gates, Q7:** validate the $70 offer using

@@ -50,7 +50,7 @@ So the model is not one file at all. That's... exactly like a web font or a spri
 
 The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the network leg of the trip, and only for that leg.
 
-<LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
+<LearningObjectives objectives={["Implement and inspect a TensorFlow.js model-loading call", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Explain how an IndexedDB cache changes the model-loading path", "Handle loading states and errors gracefully in the UI"]} />
 
 ## The Fetch Pattern You Already Know
 
@@ -212,6 +212,8 @@ async function loadWithProgress(
 </CodeBlock>
 
 ## Challenge
+
+The exercise supplies the loader response. It checks awaiting and model inspection; it does not fetch or cache a real model. The independent project later loads actual saved weights in a separate browser app. IndexedDB and hosted network failures need their own integration checks.
 
 Load a model once and verify its architecture off the model you loaded.
 

@@ -111,7 +111,22 @@ incident feedback now states a measurement or next check instead of repeatedly
 turning a clue into a dramatic certainty. Three-step hints remain available;
 this patch does not replace the full feedback editorial pass.
 
-## Open findings and acceptance conditions
+## Follow-up status
+
+The [reliability patch](assessment-reliability-patch-2026-09-17.md), based on
+`92cf8f27`, corrects the grading and contract defects in A15-A22 across
+19 exercises. Baseline/metric assessment in A17, broader benchmark evidence
+in A18-A19, and independent application in A23-A24 remain open. The findings
+and inventory below describe the earlier reviewed revision; current judgments
+and source hashes are in the manual JSON record.
+
+A subsequent [independent assessment patch](independent-assessment-patch-2026-09-17.md)
+adds bounded decision checks and a real exported-model application with a
+project rubric. A17/A23/A24 remain open for the human and learner evidence
+identified there. The current map retains 118 guided, 53 partial, 23 recall
+and 28 explanation-only objectives; the original table below is historical.
+
+## Findings and acceptance conditions at the original review
 
 ### A15. Shuffle grading uses a random result as evidence
 

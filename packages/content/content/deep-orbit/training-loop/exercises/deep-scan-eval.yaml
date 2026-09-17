@@ -1,7 +1,10 @@
 slug: deep-scan-eval
 lessonSlug: evaluating-deep-scan
 title: "Train DEEP SCAN, Then Read the Gap"
-instructions: "The first training run you grade yourself. `trainX`/`trainY` are 100 seeded archive readings (the calm and flagged clusters from lesson 4); `testX`/`testY` are 43 held-out readings never seen in training: 40 drawn with fresh seeds, then the three late-confirmed windows from this lesson, which a 30-epoch run misses, so the held-out number is a real one rather than a round 1.0. (1) Train `model` with model.fit for 30 epochs at batchSize 16 and store the result in `history`. model.fit returns a promise, so await it. (2) Score the held-out slice with model.evaluate into `evalResult` ([loss, accuracy]). (3) Write `diagnose(trainAcc, testAcc)`, and read the gap first: 'overfitting' when trainAcc - testAcc exceeds 0.15, then 'underfitting' when BOTH numbers sit below 0.7, else 'healthy'. These are provisional labels for this gap exercise, not proof of a cause or a release decision: data shift, labeling, and preprocessing also need investigation. Gap first means a run with two low numbers and a wide gap reads overfitting. (4) Read your own run into two variables, `trainAcc` (the last entry of history.history.acc) and `testAcc` (the accuracy inside evalResult[1]). Both have to be plain numbers. Scoring reports its results as tensors, so the held-out number has to be read out of one. Then set `verdict` to diagnose of those two. The grader reruns the held-out evaluation itself, calls diagnose on eleven pairs of its own, and checks that trainAcc and testAcc are the numbers this run produced rather than numbers you picked. It also reads the training record to confirm the run trained on the 100 archive rows and nothing else."
+instructions: |
+  **Contract revision 2026-09-17b:** diagnose now returns large-gap, low-scores or no-gap-warning. The grader accepts the actual measured score without requiring a healthy model.
+
+  The first training run you grade yourself. `trainX`/`trainY` are 100 seeded archive readings (the calm and flagged clusters from lesson 4); `testX`/`testY` are 43 held-out readings never seen in training: 40 drawn with fresh seeds, then the three late-confirmed windows from this lesson, whose labels must remain in the evaluation regardless of this run's predictions. (1) Train `model` with model.fit for 30 epochs at batchSize 16 and store the result in `history`. model.fit returns a promise, so await it. (2) Score the held-out slice with model.evaluate into `evalResult` ([loss, accuracy]). (3) Write `diagnose(trainAcc, testAcc)`, and read the gap first: 'large-gap' when trainAcc - testAcc exceeds 0.15, then 'low-scores' when BOTH numbers sit below 0.7, else 'no-gap-warning'. These are descriptions of the measured scores, not proof of a cause or a release decision: data shift, labeling, and preprocessing also need investigation. Gap first means a run with two low numbers and a wide gap reads large-gap. (4) Read your own run into two variables, `trainAcc` (the last entry of history.history.acc) and `testAcc` (the accuracy inside evalResult[1]). Both have to be plain numbers. Scoring reports its results as tensors, so the held-out number has to be read out of one. Then set `verdict` to diagnose of those two. The grader reruns the held-out evaluation itself, calls diagnose on eleven pairs of its own, and checks that trainAcc and testAcc are the numbers this run produced rather than numbers you picked. It also reads the training record to confirm the run trained on the 100 archive rows and nothing else.
 starterCode: |
   // Seeded archive readings, one row each: [amplitude, frequency, phase],
   // each min-max normalized against its own sensor's range. Hand-picked
@@ -9,16 +12,30 @@ starterCode: |
   // on amplitude and phase and low on frequency. The clip is not decoration:
   // a normal draw is unbounded, and on these seeds six of the 150 calm
   // values fall outside [0, 1], which no min-max normalized feature can do.
-  const calm = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
-    tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
-    tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
-  ], 1), 0, 1);
-  const flagged = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
-    tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
-    tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
-  ], 1), 0, 1);
+  const calm = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
+  const flagged = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
   const order = Array.from(tf.util.createShuffledIndices(100));
   const trainX = tf.concat([calm, flagged]).gather(order);
   const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
@@ -26,17 +43,35 @@ starterCode: |
   // Held-out slice: fresh seeds, never trained on. 20 calm, 20 flagged, then
   // the three late-confirmed windows from the lesson, flagged on review.
   const testX = tf.concat([
-    tf.clipByValue(tf.concat([
-      tf.randomNormal([20, 1], 0.17, 0.10, 'float32', 204),
-      tf.randomNormal([20, 1], 0.81, 0.10, 'float32', 205),
-      tf.randomNormal([20, 1], 0.23, 0.10, 'float32', 206),
-    ], 1), 0, 1),
-    tf.clipByValue(tf.concat([
-      tf.randomNormal([20, 1], 0.84, 0.10, 'float32', 201),
-      tf.randomNormal([20, 1], 0.18, 0.10, 'float32', 202),
-      tf.randomNormal([20, 1], 0.78, 0.10, 'float32', 203),
-    ], 1), 0, 1),
-    tf.tensor2d([[0.30, 0.68, 0.34], [0.26, 0.75, 0.29], [0.33, 0.71, 0.36]]),
+    tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
+          tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
+          tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+        ],
+        1,
+      ),
+      0,
+      1,
+    ),
+    tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
+          tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
+          tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+        ],
+        1,
+      ),
+      0,
+      1,
+    ),
+    tf.tensor2d([
+      [0.3, 0.68, 0.34],
+      [0.26, 0.75, 0.29],
+      [0.33, 0.71, 0.36],
+    ]),
   ]);
   const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
 
@@ -62,32 +97,64 @@ starterCode: |
   const testAcc = null; // your code here
   const verdict = null; // your code here
 solutionCode: |
-  const calm = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
-    tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
-    tf.randomNormal([50, 1], 0.23, 0.10, 'float32', 9),
-  ], 1), 0, 1);
-  const flagged = tf.clipByValue(tf.concat([
-    tf.randomNormal([50, 1], 0.84, 0.10, 'float32', 41),
-    tf.randomNormal([50, 1], 0.18, 0.10, 'float32', 42),
-    tf.randomNormal([50, 1], 0.78, 0.10, 'float32', 43),
-  ], 1), 0, 1);
+  const calm = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
+  const flagged = tf.clipByValue(
+    tf.concat(
+      [
+        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+      ],
+      1,
+    ),
+    0,
+    1,
+  );
   const order = Array.from(tf.util.createShuffledIndices(100));
   const trainX = tf.concat([calm, flagged]).gather(order);
   const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
 
   const testX = tf.concat([
-    tf.clipByValue(tf.concat([
-      tf.randomNormal([20, 1], 0.17, 0.10, 'float32', 204),
-      tf.randomNormal([20, 1], 0.81, 0.10, 'float32', 205),
-      tf.randomNormal([20, 1], 0.23, 0.10, 'float32', 206),
-    ], 1), 0, 1),
-    tf.clipByValue(tf.concat([
-      tf.randomNormal([20, 1], 0.84, 0.10, 'float32', 201),
-      tf.randomNormal([20, 1], 0.18, 0.10, 'float32', 202),
-      tf.randomNormal([20, 1], 0.78, 0.10, 'float32', 203),
-    ], 1), 0, 1),
-    tf.tensor2d([[0.30, 0.68, 0.34], [0.26, 0.75, 0.29], [0.33, 0.71, 0.36]]),
+    tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
+          tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
+          tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+        ],
+        1,
+      ),
+      0,
+      1,
+    ),
+    tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
+          tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
+          tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+        ],
+        1,
+      ),
+      0,
+      1,
+    ),
+    tf.tensor2d([
+      [0.3, 0.68, 0.34],
+      [0.26, 0.75, 0.29],
+      [0.33, 0.71, 0.36],
+    ]),
   ]);
   const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
 
@@ -102,9 +169,9 @@ solutionCode: |
   const evalResult = model.evaluate(testX, testY);
 
   function diagnose(trainAcc, testAcc) {
-    if (trainAcc - testAcc > 0.15) return 'overfitting';
-    if (trainAcc < 0.7 && testAcc < 0.7) return 'underfitting';
-    return 'healthy';
+    if (trainAcc - testAcc > 0.15) return 'large-gap';
+    if (trainAcc < 0.7 && testAcc < 0.7) return 'low-scores';
+    return 'no-gap-warning';
   }
 
   const trainAcc = history.history.acc[history.history.acc.length - 1];
@@ -113,15 +180,22 @@ solutionCode: |
 testCode: |
   describe('Train DEEP SCAN, Then Read the Gap', () => {
     it('trained for exactly 30 epochs', () => {
-      expect(history, 'history is still null, so nothing about the run can be read. model.fit returns a promise, so the record it resolves to has to be awaited before it is stored.').toBeDefined();
-      expect(history.history, 'The record carries a history object holding one entry per epoch for every metric the run tracked.').toBeDefined();
-      expect(history.history.loss, 'The loss trace holds one entry per epoch, so its length is the epoch count the instructions asked for.').toHaveLength(30);
+      expect(
+        history,
+        'history is still null, so nothing about the run can be read. model.fit returns a promise, so the record it resolves to has to be awaited before it is stored.',
+      ).toBeDefined();
+      expect(
+        history.history,
+        'The record carries a history object holding one entry per epoch for every metric the run tracked.',
+      ).toBeDefined();
+      expect(
+        history.history.loss,
+        'The loss trace holds one entry per epoch, so its length is the epoch count the instructions asked for.',
+      ).toHaveLength(30);
     });
-    it('the loss actually fell across training', () => {
-      expect(history, 'history is still null, so there is no loss trace to compare.').toBeDefined();
-      expect(history.history, 'The record carries its per-epoch traces in a history object.').toBeDefined();
-      const losses = history.history.loss;
-      expect(losses[losses.length - 1], 'The last epoch scored no better than the first. The calm and flagged clusters in this archive sit far apart, so a working run always improves on them.').toBeLessThan(losses[0]);
+    it('records finite losses without imposing a training outcome', () => {
+      expect(history).toBeDefined();
+      expect(history.history.loss.every((v) => Number.isFinite(v) && v >= 0)).toBe(true);
     });
     it('the training call saw the 100 archive rows and none of the 43 held out', () => {
       // The lesson's whole point, and the one thing this grader used to leave
@@ -129,75 +203,165 @@ testCode: |
       // slice cleared all eight tests on 2026-09-08 (audit round 5). Training
       // on the slice makes the held-out accuracy easier, not harder, so no
       // accuracy check anywhere can catch it. These two counters can.
-      expect(history, 'history is still null, so there is nothing recording what the training call was given.').toBeDefined();
-      expect(history.params, 'The record keeps the settings the run used, including how many rows went into it.').toBeDefined();
-      expect(history.params.samples, 'This is the row count model.fit was given. More than the archive holds means the held-out slice went into training, and every number you report afterwards is then measured on rows the gradients already saw. Fewer means part of the archive was held back inside fit (a validationSplit, say), and this exercise scores its held-out slice itself.').toBe(100);
-      expect(model.optimizer.iterations, 'This is how many weight updates the optimizer applied to this model: one per batch, so 30 sweeps over 100 rows in batches of 16. Zero means fit never ran on this model at all.').toBe(210);
+      expect(
+        history,
+        'history is still null, so there is nothing recording what the training call was given.',
+      ).toBeDefined();
+      expect(
+        history.params,
+        'The record keeps the settings the run used, including how many rows went into it.',
+      ).toBeDefined();
+      expect(
+        history.params.samples,
+        'This is the row count model.fit was given. More than the archive holds means the held-out slice went into training, and every number you report afterwards is then measured on rows the gradients already saw. Fewer means part of the archive was held back inside fit (a validationSplit, say), and this exercise scores its held-out slice itself.',
+      ).toBe(100);
+      expect(
+        model.optimizer.iterations,
+        'This is how many weight updates the optimizer applied to this model: one per batch, so 30 sweeps over 100 rows in batches of 16. Zero means fit never ran on this model at all.',
+      ).toBe(210);
     });
-    it('the model learned the archive on the 43-row slice the starter ships: held-out accuracy above 0.85 and a loss that shows it', () => {
+    it('evaluates the original held-out rows and labels', () => {
+
       // The slice is pinned first. Without the three late-confirmed rows
       // every run scored a round 1.0 on both sides, so a typed-in 1 passed as
       // "the number this run produced" (round 7, 2026-09-13). Measured over
       // 60 runs with them in: the run misses all three every time, held-out
       // accuracy lands at 0.9302 and the gap at 0.07. Pinning the slice
       // stops the round number being restored by trimming it.
-      expect(testX.shape, 'testX is not the 43-row slice the exercise ships: 20 calm, 20 flagged, then the three late-confirmed rows from the lesson. The held-out numbers only mean something on that slice.').toEqual([43, 3]);
-      expect(testY.shape, 'testY has to carry one label per held-out row, 43 of them.').toEqual([43, 1]);
+      expect(
+        testX.shape,
+        'testX is not the 43-row slice the exercise ships: 20 calm, 20 flagged, then the three late-confirmed rows from the lesson. The held-out numbers only mean something on that slice.',
+      ).toEqual([43, 3]);
+      expect(testY.shape, 'testY has to carry one label per held-out row, 43 of them.').toEqual([
+        43, 1,
+      ]);
       const tail = testX.slice([40, 0], [3, 3]).arraySync();
-      const want = [[0.30, 0.68, 0.34], [0.26, 0.75, 0.29], [0.33, 0.71, 0.36]];
-      tail.forEach((row, i) => row.forEach((v, j) => {
-        expect(v, 'Row ' + (40 + i) + ' of testX is not the late-confirmed window the starter placed there. Those three rows are the ones a 30-epoch run misses, and they are what keeps the held-out number honest.').toBeCloseTo(want[i][j], 4);
-      }));
-      expect(Array.from(testY.dataSync()).slice(40), 'The three late-confirmed rows are flagged windows, so their labels are 1.').toEqual([1, 1, 1]);
-      // Accuracy alone did not settle this. The clusters are separable enough
-      // that an untrained net clears 0.85 on the held-out slice by luck (38 of
-      // 300 fresh inits on the 43-row slice, measured 2026-09-13; one of the
-      // old 40-row inits scored 1.000), which is how the untouched starter
-      // used to score a green test here. Held-out cross-entropy separates
-      // them cleanly: over those 300 untrained inits it never fell below
-      // 0.60, and over 750 trained runs it ran from 0.18 to 0.50, median 0.20,
-      // so the bar sits at 0.55.
+      const want = [
+        [0.3, 0.68, 0.34],
+        [0.26, 0.75, 0.29],
+        [0.33, 0.71, 0.36],
+      ];
+      tail.forEach((row, i) =>
+        row.forEach((v, j) => {
+          expect(
+            v,
+            'Row ' +
+              (40 + i) +
+              ' of testX is not the late-confirmed window the starter placed there. Those three rows are the ones a 30-epoch run misses, and they are what keeps the held-out number honest.',
+          ).toBeCloseTo(want[i][j], 4);
+        }),
+      );
+      expect(
+        Array.from(testY.dataSync()).slice(40),
+        'The three late-confirmed rows are flagged windows, so their labels are 1.',
+      ).toEqual([1, 1, 1]);
+
+
+      expect(
+        evalResult,
+        'evalResult is still null. model.evaluate returns its scores directly, with no await needed.',
+      ).toBeDefined();
+      expect(
+        Array.isArray(evalResult),
+        'With a metric compiled in, evaluate returns a list: the loss first, then each compiled metric in order.',
+      ).toBe(true);
+      expect(
+        evalResult.length,
+        'This model compiles one metric, so the list holds the loss and that metric.',
+      ).toBe(2);
       const fresh = model.evaluate(testX, testY);
-      expect(fresh[1].dataSync()[0], 'This number comes from the grader scoring the held-out slice itself, not from anything the submission stored. Below the bar means the run never learned the two clusters apart.').toBeGreaterThan(0.85);
-      expect(fresh[0].dataSync()[0], 'The held-out rows land on the right side of the boundary often enough, but the model is not confident about any of them, which is what an untrained net looks like on clusters this far apart. Training is what moves the predicted probabilities out to the ends.').toBeLessThan(0.55);
+      expect(
+        evalResult[0].dataSync()[0],
+        'The loss you stored does not match what the model scores on the held-out slice now.',
+      ).toBeCloseTo(fresh[0].dataSync()[0], 4);
+      expect(
+        evalResult[1].dataSync()[0],
+        'The accuracy you stored does not match what the model scores on the held-out slice now, so evaluate ran on something else.',
+      ).toBeCloseTo(fresh[1].dataSync()[0], 4);
+
+  });
+
+    it('diagnose reports a large gap above the stated boundary', () => {
+      expect(
+        diagnose(0.95, 0.6),
+        'The training score exceeds the held-out score by more than 0.15. Report the gap; its cause needs investigation.',
+      ).toBe('large-gap');
+      expect(
+        diagnose(0.99, 0.83),
+        'The gap decides this one, not how high the training number is.',
+      ).toBe('large-gap');
+      expect(diagnose(0.9, 0.74), 'This spread clears the cutoff the instructions name.').toBe(
+        'large-gap',
+      );
+      expect(
+        diagnose(0.9, 0.76),
+        'The gap is below the stated cutoff, so this rule raises no gap warning. That does not establish generalization.',
+      ).toBe('no-gap-warning');
+      expect(
+        diagnose(0.93, 0.91),
+        'These scores trigger neither condition. Return no-gap-warning; this is not a release decision.',
+      ).toBe('no-gap-warning');
     });
-    it('evalResult is [loss, accuracy] from model.evaluate on the held-out slice', () => {
-      expect(evalResult, 'evalResult is still null. model.evaluate returns its scores directly, with no await needed.').toBeDefined();
-      expect(Array.isArray(evalResult), 'With a metric compiled in, evaluate returns a list: the loss first, then each compiled metric in order.').toBe(true);
-      expect(evalResult.length, 'This model compiles one metric, so the list holds the loss and that metric.').toBe(2);
-      const fresh = model.evaluate(testX, testY);
-      expect(evalResult[0].dataSync()[0], 'The loss you stored does not match what the model scores on the held-out slice now.').toBeCloseTo(fresh[0].dataSync()[0], 4);
-      expect(evalResult[1].dataSync()[0], 'The accuracy you stored does not match what the model scores on the held-out slice now, so evaluate ran on something else.').toBeCloseTo(fresh[1].dataSync()[0], 4);
-    });
-    it('diagnose measures the gap: a spread of 0.16 is overfitting, a spread of 0.14 is not', () => {
-      expect(diagnose(0.95, 0.60), 'A wide gap between training and held-out accuracy is the overfitting signature: the model learned the rows it saw rather than the pattern behind them.').toBe('overfitting');
-      expect(diagnose(0.99, 0.83), 'The gap decides this one, not how high the training number is.').toBe('overfitting');
-      expect(diagnose(0.90, 0.74), 'This spread clears the cutoff the instructions name.').toBe('overfitting');
-      expect(diagnose(0.90, 0.76), 'This spread sits under the cutoff, so the run is not overfitting by this rule. A rule written with a different comparison lands on the wrong side here.').toBe('healthy');
-      expect(diagnose(0.93, 0.91), 'Two high numbers close together is the healthy case.').toBe('healthy');
-    });
-    it('diagnose says underfitting only when BOTH numbers are below 0.7, and it reads the gap first', () => {
-      expect(diagnose(0.55, 0.52), 'Both numbers are low and the gap is small: the model never learned the pattern in the first place.').toBe('underfitting');
-      expect(diagnose(0.69, 0.69), 'Both numbers sit just under the cutoff the instructions name.').toBe('underfitting');
-      expect(diagnose(0.70, 0.70), 'Both numbers sit exactly ON the cutoff, and the rule reads BELOW it. This is the only pair that separates the two comparisons, which is why it is here: a rule written to include the cutoff calls this underfitting and clears every other pair in this file.').toBe('healthy');
-      expect(diagnose(0.71, 0.71), 'Both numbers sit just over it, so this is not underfitting.').toBe('healthy');
-      expect(diagnose(0.71, 0.69), 'Only one of the two is below the cutoff, and the rule needs both.').toBe('healthy');
-      expect(diagnose(0.69, 0.71), 'Only one of the two is below the cutoff in this pair too, with the order flipped.').toBe('healthy');
-      expect(diagnose(0.68, 0.40), 'Both numbers are low AND the gap is wide. Gap first means this reads overfitting: the model memorized enough to pull its training number away from its held-out one, and it is still bad at both.').toBe('overfitting');
+    it('diagnose reports low scores only after checking the gap', () => {
+      expect(
+        diagnose(0.55, 0.52),
+        'Both scores are below 0.7 and the gap is small. Report low-scores without assigning a cause.',
+      ).toBe('low-scores');
+      expect(
+        diagnose(0.69, 0.69),
+        'Both numbers sit just under the cutoff the instructions name.',
+      ).toBe('low-scores');
+      expect(
+        diagnose(0.7, 0.7),
+        'Both scores equal 0.7. The low-scores rule uses a strict comparison, so equality does not trigger it.',
+      ).toBe('no-gap-warning');
+      expect(diagnose(0.71, 0.71), 'Both scores exceed the stated low-score cutoff.').toBe(
+        'no-gap-warning',
+      );
+      expect(
+        diagnose(0.71, 0.69),
+        'Only one of the two is below the cutoff, and the rule needs both.',
+      ).toBe('no-gap-warning');
+      expect(
+        diagnose(0.69, 0.71),
+        'Only one of the two is below the cutoff in this pair too, with the order flipped.',
+      ).toBe('no-gap-warning');
+      expect(
+        diagnose(0.68, 0.4),
+        'Both scores are low, but the gap exceeds 0.15. Check the gap first and return large-gap.',
+      ).toBe('large-gap');
     });
     it('trainAcc and testAcc are the two numbers THIS run produced', () => {
-      expect(history, 'history is still null, so there is no training accuracy to read.').toBeDefined();
-      expect(history.history, 'The record carries its per-epoch traces in a history object.').toBeDefined();
+      expect(
+        history,
+        'history is still null, so there is no training accuracy to read.',
+      ).toBeDefined();
+      expect(
+        history.history,
+        'The record carries its per-epoch traces in a history object.',
+      ).toBeDefined();
       const acc = history.history.acc;
-      expect(acc, 'No accuracy trace came back. TFJS files the accuracy metric under a short key, one entry per epoch.').toBeDefined();
-      expect(acc, 'The accuracy trace holds one entry per epoch, like the loss trace.').toHaveLength(30);
-      expect(trainAcc, 'trainAcc has to be the final training accuracy of this run, which is the last entry of that trace.').toBe(acc[acc.length - 1]);
+      expect(
+        acc,
+        'No accuracy trace came back. TFJS files the accuracy metric under a short key, one entry per epoch.',
+      ).toBeDefined();
+      expect(acc, 'The accuracy trace holds one entry per epoch, like the loss trace.').toHaveLength(
+        30,
+      );
+      expect(
+        trainAcc,
+        'trainAcc has to be the final training accuracy of this run, which is the last entry of that trace.',
+      ).toBe(acc[acc.length - 1]);
       const fresh = model.evaluate(testX, testY);
-      expect(testAcc, 'testAcc has to be the held-out accuracy of this run. evaluate returns tensors, so the number comes out with dataSync or data.').toBeCloseTo(fresh[1].dataSync()[0], 4);
+      expect(
+        testAcc,
+        'testAcc has to be the held-out accuracy of this run. evaluate returns tensors, so the number comes out with dataSync or data.',
+      ).toBeCloseTo(fresh[1].dataSync()[0], 4);
     });
-    it('verdict is diagnose applied to those two numbers, and this run is healthy', () => {
-      expect(verdict, 'verdict has to be what your own rule says about your own two numbers, not a string picked by hand.').toBe(diagnose(trainAcc, testAcc));
-      expect(verdict, 'A run that trains on the archive and scores the held-out slice reads healthy here. Any other verdict means the two numbers being fed to diagnose are not the ones this run produced.').toBe('healthy');
+    it('reports the rule applied to the actual measured scores', () => {
+      expect(typeof trainAcc).toBe('number');
+      expect(typeof testAcc).toBe('number');
+      expect(verdict).toBe(diagnose(trainAcc, testAcc));
     });
   });
 estimatedMinutes: 20

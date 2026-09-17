@@ -26,9 +26,11 @@ consequence:
   narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
 hints:
   - level: nudge
-    content: "A monitor is three running measurements: the average confidence of logged predictions, a percentile read off the sorted inference times, and drift as the distance between recent feature means and the baseline."
+    content: |
+      Distinguish an absent measurement from a measured zero. Validate a reading before recording it.
   - level: guidance
-    content: "Three measurements here, and the traps sit in the last two. Average confidence is the mean of everything logged so far, so the case worth thinking about is the one where nothing has been logged yet, because the mean of an empty list is not a number and a monitor still has to answer. The percentile has two of its own, both about indexing a sorted copy: the ordering has to be numeric, since the default comparison is textual and puts a four-hundred-millisecond call among the forties, and the top of the range lands one place past the last element unless something holds it back. The code block further up this lesson works the index out. Drift is a distance between two points in feature space, and both points are means: the baseline vector the monitor was constructed with, and one vector you collapse the recent window into, column by column. Collapse first, measure once. Reverse the two, measuring each row against the baseline and averaging those distances instead, and deviations that would have cancelled in a mean cannot cancel once each row is already a distance, so a window that is merely noisy reports drift. The note further up this lesson, about a mean vector reading a shift in level and nothing else, is the other half of the same property."
+    content: |
+      Confidence uses an arithmetic mean. Percentiles use a numerically sorted copy. Drift compares column means in matching units; a zero mean distance cannot rule out changes in spread. Return null when there is no data to calculate the requested measurement.
   - level: solution
     content: |
       class ModelMonitor {
@@ -37,35 +39,40 @@ hints:
         private baselineMean: number[];
 
         constructor(baselineMean: number[]) {
-          this.baselineMean = baselineMean;
+          if (baselineMean.length === 0 || !baselineMean.every(Number.isFinite))
+            throw new Error('Invalid baseline');
+          this.baselineMean = baselineMean.slice();
         }
 
         logPrediction(confidence: number): void {
+          if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)
+            throw new Error('Invalid confidence');
           this.confidences.push(confidence);
         }
 
-        get avgConfidence(): number {
-          if (this.confidences.length === 0) return 0;
+        get avgConfidence(): number | null {
+          if (this.confidences.length === 0) return null;
           return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length;
         }
 
         logLatency(ms: number): void {
+          if (!Number.isFinite(ms) || ms < 0) throw new Error('Invalid latency');
           this.latencies.push(ms);
         }
 
-        getLatencyPercentile(p: number): number {
-          if (this.latencies.length === 0) return 0;
+        getLatencyPercentile(p: number): number | null {
+          if (!Number.isFinite(p) || p < 0 || p > 100) throw new Error('Invalid percentile');
+          if (this.latencies.length === 0) return null;
           const sorted = [...this.latencies].sort((a, b) => a - b);
-          const index = Math.min(
-            sorted.length - 1,
-            Math.floor((sorted.length * p) / 100),
-          );
+          const index = Math.min(sorted.length - 1, Math.floor((sorted.length * p) / 100));
           return sorted[index];
         }
 
-        computeDrift(recentInputs: number[][]): number {
-          if (recentInputs.length === 0) return 0;
+        computeDrift(recentInputs: number[][]): number | null {
+          if (recentInputs.length === 0) return null;
           const featureCount = this.baselineMean.length;
+          if (!recentInputs.every((row) => row.length === featureCount && row.every(Number.isFinite)))
+            throw new Error('Invalid feature row');
           const recentMean = new Array(featureCount).fill(0);
 
           for (const row of recentInputs) {
@@ -133,37 +140,37 @@ class ModelMonitor {
   }
 
   // Confidence tracking, like error rate monitoring
-  get avgConfidence(): number {
+  get avgConfidence(): number | null {
     // Every prediction logged so far. A cumulative mean is easy to read and
     // slow to move: once thousands of logs are in, a bad hour barely shifts
     // it. That is why the latency methods below keep a trailing window, and
     // why a real dashboard plots both.
     // Before the first prediction there is nothing to average, and the
-    // mean of an empty list is NaN. A dashboard cannot plot NaN.
-    if (this.logs.length === 0) return 0;
+    // an empty list has no mean. Render null as "No data", not a healthy zero.
+    if (this.logs.length === 0) return null;
     return (
       this.logs.reduce((sum, p) => sum + p.confidence, 0) / this.logs.length
     );
   }
 
   // Latency percentiles, like response time monitoring
-  getLatencyPercentile(p: number): number {
+  getLatencyPercentile(p: number): number | null {
     // Sort numerically. The default comparator is textual, so it puts
     // "400" before "41" and the percentile reads off the wrong row.
     const sorted = this.logs.slice(-1000)
       .map(l => l.latencyMs)
       .sort((a, b) => a - b);
-    if (sorted.length === 0) return 0;
+    if (sorted.length === 0) return null;
     // length * 100 / 100 is the length itself, one index past the end.
     const index = Math.min(sorted.length - 1, Math.floor(sorted.length * p / 100));
     return sorted[index];
   }
 
   // Data drift detection, unique to ML monitoring
-  computeDrift(recentInputs: number[][]): number {
-    // No traffic is not drift. computeMean below reads data[0], and an
+  computeDrift(recentInputs: number[][]): number | null {
+    // No traffic gives no drift measurement. computeMean reads data[0], and an
     // empty window has no row 0 and no recent mean to compare.
-    if (recentInputs.length === 0) return 0;
+    if (recentInputs.length === 0) return null;
     const baselineMean = this.computeMean(this.baselineFeatures);
     const recentMean = this.computeMean(recentInputs);
 
@@ -299,6 +306,8 @@ The other distribution worth watching sits on the output side. `this.logs` alrea
 ## Challenge
 
 Build the monitor: confidence average, latency percentiles off the recorded inference times, and a drift score against the baseline.
+
+Render an absent measurement as "No data". A measured zero distance only says the means match; it does not rule out changes in spread or class mix.
 
 <Exercise slug="model-monitor" />
 

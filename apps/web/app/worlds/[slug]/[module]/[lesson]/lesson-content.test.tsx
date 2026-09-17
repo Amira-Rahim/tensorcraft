@@ -63,6 +63,8 @@ vi.mock("@/app/components/mdx", () => ({
   RecallPrompt: () => null,
   StrategyThread: () => null,
   TransferAssignment: () => <div>Independent assignment</div>,
+  DecisionTask: () => <div>Decision task</div>,
+  IndependentProject: () => <div>Independent project</div>,
 }));
 vi.mock("@/lib/analytics", () => ({
   trackCheckpointSubmitted: vi.fn(),
@@ -373,3 +375,26 @@ describe("LessonContent, independent assignment placement", () => {
     }
   });
 });
+
+for (const [component, label] of [
+  ["DecisionTask", "Decision task"],
+  ["IndependentProject", "Independent project"],
+]) {
+  it(`${component} stays in the challenge partition`, () => {
+    const body = `const {jsx} = arguments[0]; return {default: (props) => jsx(props.components.${component}, {})};`;
+    const { rerender } = render(
+      <LessonContent
+        lesson={{ body, concept: { explanation: "x" } }}
+        visibleComponents={new Set([component])}
+      />,
+    );
+    expect(screen.getByText(label)).toBeInTheDocument();
+    rerender(
+      <LessonContent
+        lesson={{ body, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["Epilogue"])}
+      />,
+    );
+    expect(screen.queryByText(label)).not.toBeInTheDocument();
+  });
+}

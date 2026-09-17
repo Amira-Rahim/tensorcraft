@@ -55,12 +55,23 @@ The task requires a baseline, time-split rationale, training-only preprocessing,
 a chosen metric, a final-period comparison and individual error analysis.
 Choosing the baseline over the model is a valid conclusion.
 
+## Independent assessment extension
+
+Three decision tasks now collect split and policy choices, cost calculations,
+written reasoning, help and reported time. Choice/calculation feedback follows
+submission; first attempts remain in downloadable tab records. The capstone
+links the separate room-occupancy project, with real source data, an external
+app, artifact checks and a public rubric. See
+[implementation and limits](independent-assessment-patch-2026-09-17.md).
+
 ## Work still needed before Q2 can pass
 
-- Resolve the [assessment review's](deep-orbit-assessment-review-2026-09-17.md)
-  open findings A15-A24. All 65 task contracts, hint ladders and grader logic
-  have now been read against the objectives. Complete diagnostic editing,
-  broader valid-alternative testing and learner readiness checks remain open.
+- Complete the [assessment review's](deep-orbit-assessment-review-2026-09-17.md)
+  A17 decision evidence and A23-A24 independent-application tasks. The
+  [reliability patch](assessment-reliability-patch-2026-09-17.md) addresses
+  the grading and contract defects in A15-A22. Benchmark reproduction, full
+  diagnostic editing, broader valid-alternative testing and learner readiness
+  checks remain open.
 - Check first-use terminology and rendered glossary coverage, including
   dialogue and optional drawers. Sampling, matrix dimensions, sigmoid,
   gradients and normalization need particular attention for a JS-only reader.
@@ -69,5 +80,6 @@ Choosing the baseline over the model is a valid conclusion.
   complete current-revision code, numerical or editorial review.
 - Observe unfamiliar JavaScript engineers attempting the assignment without
   author assistance. Record interventions and revisit the time estimate.
-- Add the separate final independent project and a rubric for external
-  assessment. Guided capstone completion is not that evidence.
+- Obtain external assessment of the supplied independent project and rubric.
+  The local scaffold and maintainer fixture now work; guided capstone or
+  infrastructure checks do not establish learner independence.

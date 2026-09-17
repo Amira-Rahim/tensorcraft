@@ -21,3 +21,7 @@ await dataset.forEachAsync((b) => {
 
 const trainIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 15];
 const valIdx = [10, 11, 12, 13];
+
+function makeDataset(source) {
+  return source.shuffle(10).batch(4);
+}

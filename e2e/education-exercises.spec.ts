@@ -6,6 +6,10 @@ import {
   type WorkerReply,
 } from "../packages/ui/src/mdx/exercise-runner";
 
+// Each training fixture uses the learner's 30-second execution budget.
+// Run this file sequentially so competing training jobs do not consume it.
+test.describe.configure({ mode: "default" });
+
 const exercises = JSON.parse(
   readFileSync("packages/content/.velite/exercises.json", "utf8"),
 ) as Array<{
@@ -107,6 +111,20 @@ for (const slug of [
   "incident-false-alarm-storm",
   "simple-network",
   "prompt-template",
+  "training-loop-exercise",
+  "deep-scan-eval",
+  "build-autoencoder",
+  "predict-next",
+  "forecast-signal",
+  "profile-model",
+  "ensemble-detector",
+  "detect-anomaly",
+  "prune-weights",
+  "inference-cache",
+  "model-monitor",
+  "verify-deployment",
+  "compute-fft",
+  "apply-window",
 ]) {
   test(`${slug}: browser accepts the solution and rejects the starter and misconception`, async ({
     page,

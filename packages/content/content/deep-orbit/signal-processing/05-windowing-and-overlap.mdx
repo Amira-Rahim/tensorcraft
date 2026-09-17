@@ -26,11 +26,19 @@ consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
 hints:
   - level: nudge
-    content: "A Hann window tapers both ends of a chunk to zero so the FFT never mistakes your cut for a cliff in the signal."
+    content: |
+      Compute every Hann weight, then multiply corresponding signal and window samples.
   - level: guidance
-    content: "Two functions here, and only one is interesting. hannWindow(n) is the taper itself: one raised cosine spread over the whole slice, so a weight depends on where its index sits between the two ends, and the same index in a longer window gets a different weight. The instruction and the lesson both print the formula; the decision is that it applies to every sample, not just the edges. applyWindow pairs sample i with weight i and hands back plain numbers. Grading is on the effect: the grader transforms a tone that does not fit its window twice, raw and tapered, and measures how much energy is left far from the peak. A flat window with two zeroed end samples looks like a taper on a plot and does nothing to that number."
+    content: |
+      The denominator n - 1 makes this symmetric window zero at both endpoints. Check an interior weight too. The leakage demonstration sums far-bin magnitudes; it does not calculate energy.
   - level: solution
-    content: "function hannWindow(n) { return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)))); } function applyWindow(signal, window) { return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync(); }"
+    content: |
+      function hannWindow(n) {
+        return Array.from({ length: n }, (_, i) => 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1))));
+      }
+      function applyWindow(signal, window) {
+        return signal.map((value, i) => value * window[i]);
+      }
 keywords:
   - windowing
   - hann
@@ -219,6 +227,8 @@ For real-time inference: smaller hop = lower latency between input and STFT avai
 ## Challenge
 
 Build the Hann taper and apply it to a slice. The grader takes the FFT of both the raw and the tapered slice and measures what the taper did to the leakage.
+
+The grader's leakage statistic sums magnitudes outside the central seven-bin band. It is not spectral energy, which would involve squared magnitudes and an explicit normalization. The demonstrated reduction belongs to these fixtures.
 
 <Exercise slug="apply-window" />
 

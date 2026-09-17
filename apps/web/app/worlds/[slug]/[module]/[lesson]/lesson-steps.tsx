@@ -202,6 +202,8 @@ const CHALLENGE_LEFT = new Set([
   "challenge",
   "HintPanel",
   "TransferAssignment",
+  "DecisionTask",
+  "IndependentProject",
 ]);
 const CHALLENGE_RIGHT = new Set(["Exercise"]);
 

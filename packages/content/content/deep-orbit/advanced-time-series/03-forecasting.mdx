@@ -26,11 +26,44 @@ consequence:
   narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The signal's timing is changing, and not randomly."
 hints:
   - level: nudge
-    content: "Two arms, one model. Fit it once, then cover the same stretch twice: in the first arm every prediction is appended to the history the next window is cut from, in the second the history is rebuilt from the readings that actually arrived."
+    content: |
+      Both methods start from past. After the first prediction, decide which value enters each next window.
   - level: guidance
-    content: "The fit is one call, and the number of passes arrives as an argument rather than as a choice, so read it instead of picking it. After that it is one prediction helper called from two loops. What the model reads never changes width, and the two loops differ in one thing only: what the history holds when the window is cut. One of them holds your own output from the step before; the other holds real readings and nothing else. Check step two in both, because step one is the same prediction by construction and everything after it comes apart."
+    content: |
+      The rollout appends its own prediction. One-step replay appends the next observed reading instead. Use providedModel when supplied and return its exact fit history. Agreement between the two series is possible; check how each window was built.
   - level: solution
-    content: "const windowSize = trainX.shape[1]; const model = tf.sequential(); model.add(tf.layers.lstm({ units: 8, inputShape: [windowSize, 1] })); model.add(tf.layers.dense({ units: 1 })); model.compile({ optimizer: 'adam', loss: 'meanSquaredError' }); const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 }); const predictFrom = (readings) => tf.tidy(() => { const window = readings.slice(-windowSize).map((value) => [value]); return model.predict(tf.tensor3d([window])).dataSync()[0]; }); const fedBack = [...past]; const rollout = []; for (let step = 0; step < arrived.length; step++) { const next = predictFrom(fedBack); rollout.push(next); fedBack.push(next); } const oneStep = []; for (let step = 0; step < arrived.length; step++) { oneStep.push(predictFrom([...past, ...arrived.slice(0, step)])); } return { model, history, rollout, oneStep };"
+    content: |
+      async function forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel) {
+        const windowSize = trainX.shape[1];
+        const model = providedModel || tf.sequential();
+        if (!providedModel) {
+          model.add(tf.layers.lstm({ units: 8, inputShape: [windowSize, 1] }));
+          model.add(tf.layers.dense({ units: 1 }));
+          model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+        }
+        const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
+
+        const predictFrom = (readings) =>
+          tf.tidy(() => {
+            const window = readings.slice(-windowSize).map((value) => [value]);
+            return model.predict(tf.tensor3d([window])).dataSync()[0];
+          });
+
+        const fedBack = [...past];
+        const rollout = [];
+        for (let step = 0; step < arrived.length; step++) {
+          const next = predictFrom(fedBack);
+          rollout.push(next);
+          fedBack.push(next);
+        }
+
+        const oneStep = [];
+        for (let step = 0; step < arrived.length; step++) {
+          oneStep.push(predictFrom([...past, ...arrived.slice(0, step)]));
+        }
+
+        return { model, history, rollout, oneStep };
+      }
 keywords:
   - forecasting
   - prediction

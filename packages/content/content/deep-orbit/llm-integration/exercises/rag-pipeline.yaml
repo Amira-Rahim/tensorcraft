@@ -7,13 +7,12 @@ instructions: |
 
   Implement `verifyClaims(claims, records)`. Return `{ verified, unverified }`:
   arrays of claim IDs in input order. Each claim appears in exactly one list.
-  Claim IDs and record IDs are unique strings. Records are trusted numeric
-  observations for this exercise; the other claim fields may be wrong or absent.
+  Claim IDs and record IDs are unique strings. Records supply observations for this exercise; validate their numeric types too. the other claim fields may be wrong or absent.
 
   A claim has `{ id, kind, rowIds, field, value, unit }`. A record has `id`
   and any available numeric fields. Only these field/unit pairs are supported:
 
-  - `eventCount`, `events`: exact integer count (allow 1e-10 for arithmetic).
+  - `eventCount`, `events`: nonnegative safe integer count, compared exactly.
   - `frequencyHz`, `Hz`: absolute tolerance 0.05, plus 1e-10 for arithmetic.
   - `intervalSeconds`, `s`: the same tolerance as frequency, in seconds.
 
@@ -34,13 +33,15 @@ instructions: |
   correct or that generated prose includes every claim. Free-text reports
   still need review. A display made from verified fields must keep their
   field names, units, and citations. Do not publish a separate unreviewed draft.
+
+  For eventCount, both cited values and the claimed value must be nonnegative safe integers. A summed count must also remain a safe integer. Fractions, negative counts and unsafe totals are unverified.
 hints:
   - level: nudge
     content: |
-      Start with the citation. Which record and field does this claim actually name? A correct number from the wrong place is still unsupported.
+      A matching number needs the right record, field, unit and type. Counts cannot be fractional.
   - level: guidance
     content: |
-      Separate the supported operations. A reading refers to one row; a count sum refers to distinct rows. Check the field and its unit before comparing values. Missing evidence and unsupported text belong in the unverified list, even when the sentence sounds plausible.
+      Validate the cited records before computing the expected value. Count readings and sums must be nonnegative safe integers. Keep the absolute tolerance for frequency and interval measurements, and reject unsupported qualitative claims.
   - level: solution
     content: |
       function verifyClaims(claims, records) {
@@ -54,19 +55,35 @@ hints:
         for (const claim of claims) {
           const rule = Object.hasOwn(rules, claim.field) ? rules[claim.field] : null;
           const ids = claim.rowIds;
-          let supported = rule !== null && claim.unit === rule.unit &&
-            Number.isFinite(claim.value) && Array.isArray(ids) && ids.length > 0;
+          let supported =
+            rule !== null &&
+            claim.unit === rule.unit &&
+            Number.isFinite(claim.value) &&
+            Array.isArray(ids) &&
+            ids.length > 0;
           if (supported) {
-            supported = new Set(ids).size === ids.length &&
+            supported =
+              new Set(ids).size === ids.length &&
               ((claim.kind === 'reading' && ids.length === 1) ||
-               (claim.kind === 'sum' && claim.field === 'eventCount'));
+                (claim.kind === 'sum' && claim.field === 'eventCount'));
           }
+          if (supported && claim.field === 'eventCount')
+            supported = Number.isSafeInteger(claim.value) && claim.value >= 0;
           if (supported) {
             const cited = ids.map((id) => records.find((row) => row.id === id));
-            supported = cited.every((row) => row && Number.isFinite(row[claim.field]));
+            supported = cited.every(
+              (row) =>
+                row &&
+                Number.isFinite(row[claim.field]) &&
+                (claim.field !== 'eventCount' ||
+                  (Number.isSafeInteger(row.eventCount) && row.eventCount >= 0)),
+            );
             if (supported) {
               const expected = cited.reduce((total, row) => total + row[claim.field], 0);
-              supported = Math.abs(claim.value - expected) <= rule.tolerance + 1e-10;
+              supported =
+                claim.field === 'eventCount'
+                  ? Number.isSafeInteger(expected) && claim.value === expected
+                  : Math.abs(claim.value - expected) <= rule.tolerance + 1e-10;
             }
           }
           (supported ? verified : unverified).push(claim.id);
@@ -91,19 +108,35 @@ solutionCode: |
     for (const claim of claims) {
       const rule = Object.hasOwn(rules, claim.field) ? rules[claim.field] : null;
       const ids = claim.rowIds;
-      let supported = rule !== null && claim.unit === rule.unit &&
-        Number.isFinite(claim.value) && Array.isArray(ids) && ids.length > 0;
+      let supported =
+        rule !== null &&
+        claim.unit === rule.unit &&
+        Number.isFinite(claim.value) &&
+        Array.isArray(ids) &&
+        ids.length > 0;
       if (supported) {
-        supported = new Set(ids).size === ids.length &&
+        supported =
+          new Set(ids).size === ids.length &&
           ((claim.kind === 'reading' && ids.length === 1) ||
-           (claim.kind === 'sum' && claim.field === 'eventCount'));
+            (claim.kind === 'sum' && claim.field === 'eventCount'));
       }
+      if (supported && claim.field === 'eventCount')
+        supported = Number.isSafeInteger(claim.value) && claim.value >= 0;
       if (supported) {
         const cited = ids.map((id) => records.find((row) => row.id === id));
-        supported = cited.every((row) => row && Number.isFinite(row[claim.field]));
+        supported = cited.every(
+          (row) =>
+            row &&
+            Number.isFinite(row[claim.field]) &&
+            (claim.field !== 'eventCount' ||
+              (Number.isSafeInteger(row.eventCount) && row.eventCount >= 0)),
+        );
         if (supported) {
           const expected = cited.reduce((total, row) => total + row[claim.field], 0);
-          supported = Math.abs(claim.value - expected) <= rule.tolerance + 1e-10;
+          supported =
+            claim.field === 'eventCount'
+              ? Number.isSafeInteger(expected) && claim.value === expected
+              : Math.abs(claim.value - expected) <= rule.tolerance + 1e-10;
         }
       }
       (supported ? verified : unverified).push(claim.id);
@@ -118,7 +151,13 @@ testCode: |
     ];
     // The synthetic interval fixture is 61.2 seconds; it is not a live clock.
     const reading = (id, patch = {}) => ({
-      id, kind: 'reading', rowIds: ['a'], field: 'frequencyHz', value: 73.4, unit: 'Hz', ...patch,
+      id,
+      kind: 'reading',
+      rowIds: ['a'],
+      field: 'frequencyHz',
+      value: 73.4,
+      unit: 'Hz',
+      ...patch,
     });
     const check = (claims, rows = records) => {
       const result = verifyClaims(claims, rows);
@@ -127,7 +166,8 @@ testCode: |
     };
     it('matches a field in the cited row and keeps claim order', () => {
       const result = check([
-        reading('frequency'), reading('wrong', { value: 80 }),
+        reading('frequency'),
+        reading('wrong', { value: 80 }),
         reading('count', { field: 'eventCount', value: 14, unit: 'events' }),
         reading('missing', { rowIds: ['absent'] }),
       ]);
@@ -142,15 +182,20 @@ testCode: |
     });
     it('does not borrow a value from a different row', () => {
       expect(check([reading('wrong-source', { rowIds: ['b'] })])).toEqual({
-        verified: [], unverified: ['wrong-source'],
+        verified: [],
+        unverified: ['wrong-source'],
       });
     });
     it('requires the declared unit without implicit conversion', () => {
-      expect(check([reading('unit', { unit: 'kHz' })])).toEqual({ verified: [], unverified: ['unit'] });
+      expect(check([reading('unit', { unit: 'kHz' })])).toEqual({
+        verified: [],
+        unverified: ['unit'],
+      });
     });
     it('uses each fields tolerance and includes its boundary', () => {
       const result = check([
-        reading('rounded', { value: 73.44 }), reading('boundary', { value: 73.45 }),
+        reading('rounded', { value: 73.44 }),
+        reading('boundary', { value: 73.45 }),
         reading('too-far', { value: 73.451 }),
         reading('count-exact', { field: 'eventCount', value: 14, unit: 'events' }),
         reading('count-rounded', { field: 'eventCount', value: 14.04, unit: 'events' }),
@@ -162,45 +207,104 @@ testCode: |
       });
     });
     it('allows a sum of cited event counts, not a guessed total or other operation', () => {
-      const sum = reading('sum', { kind: 'sum', rowIds: ['a', 'b'], field: 'eventCount', value: 17, unit: 'events' });
-      expect(check([
-        sum, { ...sum, id: 'wrong-total', value: 14 },
-        { ...sum, id: 'double-count', rowIds: ['a', 'a'], value: 28 },
-        { ...sum, id: 'missing-source', rowIds: ['a', 'absent'] },
-        reading('unsupported-sum', { kind: 'sum', rowIds: ['a', 'b'], value: 87.4 }),
-        { ...sum, id: 'mean', kind: 'mean', value: 8.5 },
-      ])).toEqual({ verified: ['sum'], unverified: ['wrong-total', 'double-count', 'missing-source', 'unsupported-sum', 'mean'] });
+      const sum = reading('sum', {
+        kind: 'sum',
+        rowIds: ['a', 'b'],
+        field: 'eventCount',
+        value: 17,
+        unit: 'events',
+      });
+      expect(
+        check([
+          sum,
+          { ...sum, id: 'wrong-total', value: 14 },
+          { ...sum, id: 'double-count', rowIds: ['a', 'a'], value: 28 },
+          { ...sum, id: 'missing-source', rowIds: ['a', 'absent'] },
+          reading('unsupported-sum', { kind: 'sum', rowIds: ['a', 'b'], value: 87.4 }),
+          { ...sum, id: 'mean', kind: 'mean', value: 8.5 },
+        ]),
+      ).toEqual({
+        verified: ['sum'],
+        unverified: ['wrong-total', 'double-count', 'missing-source', 'unsupported-sum', 'mean'],
+      });
     });
     it('does not approve unsupported prose or a missing citation', () => {
-      expect(check([
-        { id: 'safe', kind: 'text', text: 'The signal is definitely safe' },
-        reading('no-source', { rowIds: [] }), reading('missing-list', { rowIds: undefined }),
-        reading('two-sources', { rowIds: ['a', 'b'] }),
-      ])).toEqual({ verified: [], unverified: ['safe', 'no-source', 'missing-list', 'two-sources'] });
+      expect(
+        check([
+          { id: 'safe', kind: 'text', text: 'The signal is definitely safe' },
+          reading('no-source', { rowIds: [] }),
+          reading('missing-list', { rowIds: undefined }),
+          reading('two-sources', { rowIds: ['a', 'b'] }),
+        ]),
+      ).toEqual({ verified: [], unverified: ['safe', 'no-source', 'missing-list', 'two-sources'] });
     });
     it('supports nothing when retrieval is empty', () => {
-      expect(check([reading('a'), { id: 'safe', kind: 'text' }], [])).toEqual({ verified: [], unverified: ['a', 'safe'] });
+      expect(check([reading('a'), { id: 'safe', kind: 'text' }], [])).toEqual({
+        verified: [],
+        unverified: ['a', 'safe'],
+      });
       expect(check([])).toEqual({ verified: [], unverified: [] });
     });
     it('requires a finite number in a supported field on both sides', () => {
       const claims = [
-        reading('nan', { value: NaN }), reading('infinite', { value: Infinity }),
-        reading('string', { value: '73.4' }), reading('field', { field: 'amplitude' }),
-        reading('prototype', { field: 'toString' }), reading('absent-field', { rowIds: ['c'] }),
+        reading('nan', { value: NaN }),
+        reading('infinite', { value: Infinity }),
+        reading('string', { value: '73.4' }),
+        reading('field', { field: 'amplitude' }),
+        reading('prototype', { field: 'toString' }),
+        reading('absent-field', { rowIds: ['c'] }),
       ];
-      expect(check(claims, [...records, { id: 'c', eventCount: 1 }])).toEqual({ verified: [], unverified: claims.map(c => c.id) });
-      expect(check([reading('bad-data')], [{ id: 'a', frequencyHz: NaN }])).toEqual({ verified: [], unverified: ['bad-data'] });
+      expect(check(claims, [...records, { id: 'c', eventCount: 1 }])).toEqual({
+        verified: [],
+        unverified: claims.map((c) => c.id),
+      });
+      expect(check([reading('bad-data')], [{ id: 'a', frequencyHz: NaN }])).toEqual({
+        verified: [],
+        unverified: ['bad-data'],
+      });
     });
     it('compares fresh values rather than memorized fixtures', () => {
       const n = 100 + Math.floor(Math.random() * 1000);
       const id = 'fresh-' + n;
       const rows = [{ id, eventCount: n, frequencyHz: n / 10 }];
-      expect(check([
-        reading('fresh', { rowIds: [id], value: n / 10 }),
-        reading('nearby', { rowIds: [id], value: n / 10 + 0.04 }),
-        reading('wrong', { rowIds: [id], value: n / 10 + 0.09 }),
-      ], rows)).toEqual({ verified: ['fresh', 'nearby'], unverified: ['wrong'] });
+      expect(
+        check(
+          [
+            reading('fresh', { rowIds: [id], value: n / 10 }),
+            reading('nearby', { rowIds: [id], value: n / 10 + 0.04 }),
+            reading('wrong', { rowIds: [id], value: n / 10 + 0.09 }),
+          ],
+          rows,
+        ),
+      ).toEqual({ verified: ['fresh', 'nearby'], unverified: ['wrong'] });
     });
+  });
+
+  it('rejects fractional, negative and unsafe counts even when they match a record', () => {
+    const claim = (value) => ({
+      id: 'c',
+      kind: 'reading',
+      rowIds: ['a'],
+      field: 'eventCount',
+      unit: 'events',
+      value,
+    });
+    for (const value of [1.5, -1, Number.MAX_SAFE_INTEGER + 1])
+      expect(verifyClaims([claim(value)], [{ id: 'a', eventCount: value }])).toEqual({
+        verified: [],
+        unverified: ['c'],
+      });
+    expect(verifyClaims([claim(0)], [{ id: 'a', eventCount: 0 }]).verified).toEqual(['c']);
+    const sum = { ...claim(Number.MAX_SAFE_INTEGER + 1), kind: 'sum', rowIds: ['a', 'b'] };
+    expect(
+      verifyClaims(
+        [sum],
+        [
+          { id: 'a', eventCount: Number.MAX_SAFE_INTEGER },
+          { id: 'b', eventCount: 1 },
+        ],
+      ).unverified,
+    ).toEqual(['c']);
   });
 estimatedMinutes: 25
 difficulty: advanced

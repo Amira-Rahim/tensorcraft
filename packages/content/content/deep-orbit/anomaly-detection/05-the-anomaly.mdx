@@ -27,11 +27,52 @@ consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
   - level: nudge
-    content: "No single detector fires the alarm alone: the ensemble declares an anomaly only when a majority, at least 2 of the 3 detectors, vote yes"
+    content: |
+      Compute each detector separately before counting its vote. A constant window needs a separate policy.
   - level: guidance
-    content: "Each detector answers a different question and they meet only at the vote, so compute the three verdicts independently and then count them. Only the statistical one has anything to derive: the window gives you a center and a spread, and the reading's distance from that center is expressed in units of that spread. tfjs returns the center together with the squared spread in one call, and the square root is the step people skip. Two of the verdicts compare a gap against a tolerance, so keep both gaps in the units the tolerance is quoted in, and let either direction count: a reading below the window's center is as far out as one above it, and a forecast that undershoots misses by as much as one that overshoots"
+    content: |
+      Use moments for a varying window. At zero spread, compare against the original constant reading instead of dividing. A matching value contributes no statistical vote; a different value does. Count all three votes before applying the majority rule.
   - level: solution
-    content: "const { mean, variance } = tf.tidy(() => { const m = tf.moments(tf.tensor1d(window)); return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] }; }); const std = Math.sqrt(variance); const zScore = std === 0 ? 0 : (actual - mean) / std; const verdicts = { statistical: Math.abs(zScore) > 3, autoencoder: reconstructionError > reconThreshold, lstm: Math.abs(predicted - actual) > predTolerance, }; const votes = [verdicts.statistical, verdicts.autoencoder, verdicts.lstm].filter(Boolean).length; return { zScore, verdicts, votes, isAnomaly: votes >= 2 };"
+    content: |
+      interface EnsembleVerdict {
+        zScore: number | null;
+        verdicts: { statistical: boolean; autoencoder: boolean; lstm: boolean };
+        votes: number;
+        isAnomaly: boolean;
+      }
+
+      function detectAnomalyEnsemble(
+        window: number[],
+        actual: number,
+        reconstructionError: number,
+        reconThreshold: number,
+        predicted: number,
+        predTolerance: number,
+      ): EnsembleVerdict {
+        if (
+          !Array.isArray(window) ||
+          window.length === 0 ||
+          !window.every(Number.isFinite) ||
+          !Number.isFinite(actual)
+        )
+          throw new Error('Invalid window or reading');
+        const constant = window.every((value) => value === window[0]);
+        const { mean, variance } = tf.tidy(() => {
+          const m = tf.moments(tf.tensor1d(window));
+          return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] };
+        });
+        const std = Math.sqrt(variance);
+        const zScore = constant || std === 0 ? null : (actual - mean) / std;
+
+        const verdicts = {
+          statistical: zScore === null ? actual !== window[0] : Math.abs(zScore) > 3,
+          autoencoder: reconstructionError > reconThreshold,
+          lstm: Math.abs(predicted - actual) > predTolerance,
+        };
+        const votes = [verdicts.statistical, verdicts.autoencoder, verdicts.lstm].filter(Boolean).length;
+
+        return { zScore, verdicts, votes, isAnomaly: votes >= 2 };
+      }
 keywords:
   - ensemble-detection
   - alert
@@ -77,7 +118,7 @@ interface DetectionResult {
   isAnomaly: boolean;
   agreement: number;   // detectors that fired, out of 3: evidence, not a probability
   detectors: {
-    statistical: { triggered: boolean; zScore: number };
+    statistical: { triggered: boolean; zScore: number | null };
     autoencoder: { triggered: boolean; error: number };
     lstm: { triggered: boolean; predictionError: number };
   };
@@ -104,8 +145,9 @@ function detectAnomaly(
   // The count is reported signed, so a dip reads negative, and the gate
   // compares its size: a reading that far below the mean is as far out as one
   // that far above it.
-  const zScore = (amplitude - baseline.mean) / baseline.std;
-  const statTriggered = Math.abs(zScore) > thresholds.zScore;
+  if (!Number.isFinite(baseline.std) || baseline.std < 0) throw new Error('Invalid baseline spread');
+  const zScore = baseline.std === 0 ? null : (amplitude - baseline.mean) / baseline.std;
+  const statTriggered = zScore === null ? amplitude !== baseline.mean : Math.abs(zScore) > thresholds.zScore;
 
   // Detector 2: Autoencoder reconstruction error
   const reconError = tf.tidy(() => {
@@ -190,7 +232,7 @@ const anomalyResult = detectAnomaly(
 console.log('=== DEEP SCAN ALERT ===');
 console.log('Anomaly detected:', anomalyResult.isAnomaly);      // true
 console.log('Agreement:', anomalyResult.agreement);               // 2: the amplitude gate stayed quiet
-console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // -0.1
+console.log('Z-score:', anomalyResult.detectors.statistical.zScore?.toFixed(1) ?? 'undefined for constant baseline');  // -0.1
 console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)); // 6.2000
 console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
 
@@ -203,6 +245,8 @@ console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(
 ## Challenge
 
 Write the verdict layer: derive the z-score yourself from the eight recent amplitudes you are handed, take the autoencoder's and the LSTM's scores as they arrive, and return the 2-of-3 vote as a count of failed checks. The statistical detector moves off lesson 1's eleven-day baseline onto that window, so the same full-scale reading that scored 3.2 sigma there scores 32 here. The LSTM moves too: there it forecasts one amplitude and its miss is compared in 0-to-1 units, not in this lesson's z-space mean squared error.
+
+A constant window has no standard deviation to divide by. This exercise reports a null z-score and uses an exact equality policy for its statistical vote. Real sensors need a tolerance chosen from their resolution and noise.
 
 <Exercise slug="ensemble-detector" />
 

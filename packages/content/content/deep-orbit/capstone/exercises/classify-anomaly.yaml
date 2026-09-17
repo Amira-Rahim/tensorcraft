@@ -3,6 +3,8 @@ lessonSlug: launch
 title: "Zero Hour: Classify the Anomaly"
 mlContent: systems
 instructions: |
+  **Contract revision 2026-09-17b:** A constant window uses an explicit equality check. A different reading contributes a statistical vote.
+
   The season's final inference, run by you. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Three functions.
 
   1. `decomposeIntervals(intervals)` returns the successive ratios of the pulse sub-intervals, `ratios[i] = intervals[i + 1] / intervals[i]`. Dividing removes the scale, so the same train measured in seconds and counted abstractly decomposes to the same ratios. That property is the whole reason the calibration overlay worked.
@@ -27,6 +29,8 @@ instructions: |
   `ratios` holds the decomposition and not the pulse gaps that came in, so seven intervals leave six numbers, and a capture in seconds leaves the same six as the abstract count. `fibonacciTrain` is those ratios run through `isFibonacciTrain`. Gaps that double every step grow, and a doubling train is not a Fibonacci train.
 
   An empty ratio list is insufficient evidence and returns false. The label confirmed-anomaly is a mission rule combining the vote and this pattern check; it does not establish the signal's origin.
+
+  The window must be non-empty and contain finite readings; actual must be finite. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. An undefined z-score is not a measured zero.
 starterCode: |
   // Zero hour. The readout for sample 7741, tonight:
   //
@@ -59,14 +63,14 @@ starterCode: |
     // spread is the one lesson 1 measured over eleven days: this window
     // averages 0.520 and its standard deviation is 0.150.
     window: [
-      0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
-      0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
+      0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43, 0.633, 0.217, 0.538, 0.66,
+      0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
     ],
-    actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
+    actual: 0.5, // 0.1 sigma under that centre: the dial reads normal
     reconstructionError: 6.2,
-    reconThreshold: 1.0,      // module 7's locked cutoff
-    predicted: 0.541,         // module 7's forecast miss: 0.041 against a 0.01 gate
-    actualForecast: 0.50,
+    reconThreshold: 1.0, // module 7's locked cutoff
+    predicted: 0.541, // module 7's forecast miss: 0.041 against a 0.01 gate
+    actualForecast: 0.5,
     predTolerance: 0.01,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
@@ -86,16 +90,20 @@ solutionCode: |
     const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
     // The reading's first ratio may be the 1:1 opener or start at the 2;
     // align on length from the tail, where the train converges on phi.
-    const expected = fibonacciRatios.slice(
-      fibonacciRatios.length - ratios.length,
-    );
+    const expected = fibonacciRatios.slice(fibonacciRatios.length - ratios.length);
     if (expected.length !== ratios.length) return false;
-    return ratios.every(
-      (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02,
-    );
+    return ratios.every((r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02);
   }
 
   function classifyAnomaly(reading) {
+    if (
+      !Array.isArray(reading.window) ||
+      reading.window.length === 0 ||
+      !reading.window.every(Number.isFinite) ||
+      !Number.isFinite(reading.actual)
+    )
+      throw new Error('Invalid window or reading');
+    const constant = reading.window.every((value) => value === reading.window[0]);
     const { mean, variance } = tf.tidy(() => {
       const m = tf.moments(tf.tensor1d(reading.window));
       return {
@@ -104,14 +112,12 @@ solutionCode: |
       };
     });
     const std = Math.sqrt(variance);
-    const z = std === 0 ? 0 : (reading.actual - mean) / std;
+    const z = constant || std === 0 ? null : (reading.actual - mean) / std;
 
     const verdicts = {
-      statistical: Math.abs(z) > 3,
+      statistical: z === null ? reading.actual !== reading.window[0] : Math.abs(z) > 3,
       autoencoder: reading.reconstructionError > reading.reconThreshold,
-      lstm:
-        Math.abs(reading.predicted - reading.actualForecast) >
-        reading.predTolerance,
+      lstm: Math.abs(reading.predicted - reading.actualForecast) > reading.predTolerance,
     };
     const votes = Object.values(verdicts).filter(Boolean).length;
     const isAnomaly = votes >= 2;
@@ -125,14 +131,8 @@ solutionCode: |
       ratios,
       fibonacciTrain,
       classification:
-        isAnomaly && fibonacciTrain
-          ? "confirmed-anomaly"
-          : isAnomaly
-            ? "anomaly"
-            : "noise",
-      scoreDelta:
-        Math.round((reading.ensembleScore - reading.module3Score) * 1000) /
-        1000,
+        isAnomaly && fibonacciTrain ? 'confirmed-anomaly' : isAnomaly ? 'anomaly' : 'noise',
+      scoreDelta: Math.round((reading.ensembleScore - reading.module3Score) * 1000) / 1000,
     };
   }
 
@@ -141,14 +141,14 @@ solutionCode: |
     // spread is the one lesson 1 measured over eleven days: this window
     // averages 0.520 and its standard deviation is 0.150.
     window: [
-      0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
-      0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
+      0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43, 0.633, 0.217, 0.538, 0.66,
+      0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
     ],
-    actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
+    actual: 0.5, // 0.1 sigma under that centre: the dial reads normal
     reconstructionError: 6.2,
-    reconThreshold: 1.0,      // module 7's locked cutoff
-    predicted: 0.541,         // module 7's forecast miss: 0.041 against a 0.01 gate
-    actualForecast: 0.50,
+    reconThreshold: 1.0, // module 7's locked cutoff
+    predicted: 0.541, // module 7's forecast miss: 0.041 against a 0.01 gate
+    actualForecast: 0.5,
     predTolerance: 0.01,
     intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
     ensembleScore: 0.999,
@@ -238,7 +238,7 @@ testCode: |
       const dialsOnly = classifyAnomaly({
         ...zeroHourReading,
         reconstructionError: 0.1,
-        predicted: 0.50,
+        predicted: 0.5,
       });
       expect(dialsOnly.votes).toBe(0);
       expect(dialsOnly.isAnomaly).toBe(false);
@@ -257,7 +257,7 @@ testCode: |
         ...zeroHourReading,
         actual: 1.0,
         reconstructionError: 0.1,
-        predicted: 0.50,
+        predicted: 0.5,
       });
       expect(peggedAlone.votes).toBe(1);
       expect(peggedAlone.isAnomaly).toBe(false);
@@ -269,14 +269,14 @@ testCode: |
         ...zeroHourReading,
         actual: 0.0,
         reconstructionError: 0.1,
-        predicted: 0.50,
+        predicted: 0.5,
       });
       expect(built(dead).votes).toBe(1);
 
       const deadPlusRecon = classifyAnomaly({
         ...zeroHourReading,
         actual: 0.0,
-        predicted: 0.50,
+        predicted: 0.5,
       });
       expect(deadPlusRecon.votes).toBe(2);
       expect(deadPlusRecon.isAnomaly).toBe(true);
@@ -315,7 +315,7 @@ testCode: |
             std: Math.sqrt(m.variance.dataSync()[0]),
           };
         });
-      const quiet = { reconstructionError: 0.1, predicted: 0.50, actualForecast: 0.50 };
+      const quiet = { reconstructionError: 0.1, predicted: 0.5, actualForecast: 0.5 };
 
       // A drifted channel first: centred near 0.80 with a spread near 0.05,
       // and the reading sits exactly on this window's own mean. A centre
@@ -384,9 +384,7 @@ testCode: |
     it('a calm night with a Fibonacci train is still noise: the vote gates it', () => {
       // A different reading entirely, on its own numbers.
       const calmNight = {
-        window: [
-          0.474, 0.556, 0.512, 0.398, 0.601, 0.489, 0.533, 0.462, 0.578, 0.507,
-        ],
+        window: [0.474, 0.556, 0.512, 0.398, 0.601, 0.489, 0.533, 0.462, 0.578, 0.507],
         actual: 0.55,
         reconstructionError: 0.3,
         reconThreshold: 1.0,
@@ -456,6 +454,26 @@ testCode: |
     });
   });
 
-  it('an empty interval pattern is no evidence',()=>{expect(isFibonacciTrain([])).toBe(false);expect(isFibonacciTrain([1,2,1.5,5/3,1.6,1.625])).toBe(true);});
+  it('an empty interval pattern is no evidence', () => {
+    expect(isFibonacciTrain([])).toBe(false);
+    expect(isFibonacciTrain([1, 2, 1.5, 5 / 3, 1.6, 1.625])).toBe(true);
+  });
+
+  it('a different reading against a constant window keeps its statistical vote', () => {
+    const base = {
+      ...zeroHourReading,
+      window: [0.1, 0.1],
+      actual: 0.1,
+      reconstructionError: 2,
+      reconThreshold: 1,
+      predicted: 0.1,
+      actualForecast: 0.1,
+      predTolerance: 1,
+    };
+    expect(classifyAnomaly(base).votes).toBe(1);
+    expect(classifyAnomaly({ ...base, actual: 0.2 }).votes).toBe(2);
+    expect(classifyAnomaly({ ...base, actual: 0 }).isAnomaly).toBe(true);
+    expect(() => classifyAnomaly({ ...base, window: [] })).toThrow();
+  });
 estimatedMinutes: 15
 difficulty: advanced

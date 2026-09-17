@@ -25,11 +25,19 @@ consequence:
   narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Demir begins building a model of normality."
 hints:
   - level: nudge
-    content: "A reading is anomalous when it sits too many standard deviations from the mean in either direction: the absolute z-score is what matters, so a deep dip counts as much as a spike"
+    content: |
+      Compare the distance with the supplied spread. What happens when that spread is zero?
   - level: guidance
-    content: "A z-score counts spreads rather than measuring distance: divide the reading's deviation from the mean by the spread you were handed, and the same gap counts as a lot on a quiet baseline and almost nothing on a noisy one. Compare the size of that count and ignore its sign, since a dip below the mean is as far out as a spike above it. On the tensor route the result arrives as a tensor rather than a number, so read the value out before you compare it"
+    content: |
+      For positive spread, compare the absolute z-score with 3. At zero spread there is no z-score; use the stated equality policy. Reject non-finite values and negative spread.
   - level: solution
-    content: "const z = tf.scalar(value).sub(tf.scalar(mean)).div(tf.scalar(std)).abs(); return z.dataSync()[0] > 3;"
+    content: |
+      function isAnomaly(value, mean, std) {
+        if (![value, mean, std].every(Number.isFinite) || std < 0)
+          throw new Error('Invalid baseline or reading');
+        if (std === 0) return value !== mean;
+        return Math.abs(value - mean) / std > 3;
+      }
 keywords:
   - anomaly
   - baseline

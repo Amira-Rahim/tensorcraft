@@ -2,11 +2,13 @@ slug: batch-data
 lessonSlug: data-loading
 title: "Build the Lazy Pipeline"
 instructions: |
+  **Contract revision 2026-09-17b:** Add makeDataset(source), which shuffles individual samples before batching. The grader checks stage order directly.
+
   The archive exposes readSample(i): it returns { features: number[3], label: number } for reading i, the same three features the lesson names (amplitude in counts, frequency as a zero-crossing count, phase in radians), faked from the row index here so you can tell rows apart. It also counts how many times it is called.
 
   Build a LAZY generator called `sensorGen` that yields all 16 samples as { xs, ys } tensors: `xs` carries the reading's three features and `ys` carries its one label. The batcher stacks whatever each sample hands it, and the grader reads a column of labels off every batch, so decide what shape one label has to arrive in.
 
-  Then build `dataset` from the generator with a shuffle buffer of 10 and batches of 4. Which of those two stages runs first is the decision, and the lesson says what each one can still see.
+  Implement makeDataset(source): return source shuffled with buffer 10, then batched in groups of 4. Build dataset by passing tf.data.generator(sensorGen) to that function. The grader uses a controlled source to inspect order; repeated random draws are allowed to coincide.
 
   Finally drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`, and wait for that drain to finish before your code ends, because the grader reads `batchShapes` the moment it does. Keep the generator's name: the grader also drains `sensorGen` through a pipeline of its own, no shuffle buffer and one sample per batch, and counts how many rows were read before the first batch arrived.
 
@@ -28,7 +30,10 @@ starterCode: |
 
   // The stages run in the order readings pass through them. Which one goes
   // first changes what the next one can still see.
-  const dataset = null;
+  function makeDataset(source) {
+    return null; // your code here
+  }
+  const dataset = makeDataset(tf.data.generator(sensorGen));
 
   // Fill this from the drain. The tests read it once your code has
   // finished, so the drain has to be finished too.
@@ -52,7 +57,10 @@ solutionCode: |
     }
   }
 
-  const dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);
+  function makeDataset(source) {
+    return source.shuffle(10).batch(4);
+  }
+  const dataset = makeDataset(tf.data.generator(sensorGen));
 
   const batchShapes = [];
   await dataset.forEachAsync((b) => {
@@ -83,10 +91,9 @@ testCode: |
         'There are no shapes to check yet, so this test had nothing to say. Drain the dataset and push each batch xs shape into batchShapes.',
       ).toBeGreaterThan(0);
       for (const s of batchShapes) {
-        expect(
-          s,
-          'Four samples, three features each, on every batch including the last.',
-        ).toEqual([4, 3]);
+        expect(s, 'Four samples, three features each, on every batch including the last.').toEqual([
+          4, 3,
+        ]);
       }
     });
     it('read all 16 samples through the lazy reader', () => {
@@ -96,14 +103,22 @@ testCode: |
       ).toBe(16);
     });
     it('reads lazily and re-drains: batches are not frozen blocks', async () => {
-      filled(dataset, 'The pipeline is still null. Build it from the generator, then shuffle, then batch.');
+      filled(
+        dataset,
+        'The pipeline is still null. Build it from the generator, then shuffle, then batch.',
+      );
       const drain = async () => {
         const shapes = [];
         const groups = [];
         await dataset.forEachAsync((b) => {
           shapes.push({ xs: b.xs.shape, ys: b.ys.shape });
           const ids = b.xs.arraySync().map((row) => row[0]);
-          groups.push(ids.slice().sort((x, y) => x - y).join(','));
+          groups.push(
+            ids
+              .slice()
+              .sort((x, y) => x - y)
+              .join(','),
+          );
         });
         return { shapes, membership: groups.slice().sort().join(' | ') };
       };
@@ -120,14 +135,7 @@ testCode: |
         readCount,
         'A second pass over the dataset reads the archive again. A generator that cached its rows would not.',
       ).toBe(32);
-      // Shuffle BEFORE batch: every drain reshuffles, so a second pass
-      // deals different batch membership. batch().shuffle() and a bare
-      // batch() both hand back the same four frozen blocks every time.
-      const second = await drain();
-      expect(
-        second.membership,
-        'Two drains dealt the same four groups, so the membership is frozen. That is what batching before shuffling gives you: the shuffle can only reorder blocks it can no longer look inside.',
-      ).not.toBe(first.membership);
+      await drain();
       expect(readCount, 'Third pass, sixteen more reads.').toBe(48);
       // Laziness is only visible mid-drain, and inside YOUR pipeline the
       // shuffle buffer hides it. On tfjs 4.22.0 a lazy generator has read 14
@@ -197,14 +205,47 @@ testCode: |
       const val = Array.from(valIdx);
       expect(train.length, 'Twelve readings train.').toBe(12);
       expect(val.length, 'Four readings are held out.').toBe(4);
-      const all = train.concat(val).slice().sort((a, b) => a - b);
+      const all = train
+        .concat(val)
+        .slice()
+        .sort((a, b) => a - b);
       expect(
         all,
         'Together the two sides cover every reading exactly once: no index missing, none on both sides. A reading the model trained on has no business in the validation set, and a reading on neither side was thrown away.',
       ).toEqual(Array.from({ length: 16 }, (_, i) => i));
-      expect(train.slice().sort((a, b) => a - b), 'Training uses the earlier readings, even when their order is shuffled.').toEqual(Array.from({ length: 12 }, (_, i) => i));
-      expect(val, 'Validation must represent later readings. Mixing future rows into training defeats this split.').toEqual([12, 13, 14, 15]);
+      expect(
+        train.slice().sort((a, b) => a - b),
+        'Training uses the earlier readings, even when their order is shuffled.',
+      ).toEqual(Array.from({ length: 12 }, (_, i) => i));
+      expect(
+        val,
+        'Validation must represent later readings. Mixing future rows into training defeats this split.',
+      ).toEqual([12, 13, 14, 15]);
     });
+  });
+
+  it('shuffles individual samples before forming batches', () => {
+    const calls = [];
+    const result = {};
+    const source = {
+      shuffle: (size) => {
+        calls.push(['shuffle', size]);
+        return {
+          batch: (n) => {
+            calls.push(['batch', n]);
+            return result;
+          },
+        };
+      },
+      batch: () => {
+        throw new Error('Shuffle the samples before batching');
+      },
+    };
+    expect(makeDataset(source)).toBe(result);
+    expect(calls).toEqual([
+      ['shuffle', 10],
+      ['batch', 4],
+    ]);
   });
 estimatedMinutes: 12
 difficulty: intermediate

@@ -26,11 +26,38 @@ consequence:
   narrative: "Demir does the volume arithmetic before he locks anything: one percent of calm readings is 26 flags a day on this archive. The cutoff goes to 1.0 instead, above every normal error in the calm slice, and the recall it costs goes in the log."
 hints:
   - level: nudge
-    content: "There is no formula for the cutoff here: score every candidate threshold against the labeled validation slice and keep the one with the highest F1"
+    content: |
+      There is no formula for the cutoff here: score every candidate threshold against the labeled validation slice and keep the one with the highest F1
   - level: guidance
-    content: "Accuracy is the trap here. Anomalies are rare, so a cutoff that flags nothing scores well on accuracy and catches nothing, which is why the sweep is scored on F1 instead. F1 combines two rates that pull against each other: of the alarms you raised, how many were real, and of the real anomalies, how many you caught. Both come from counting hits, false alarms and misses at each candidate cutoff, so walk the candidates, score each one, and keep the winner. Watch the empty cases: a cutoff that raises no alarm divides zero by zero, and that is not a number until you make it one"
+    content: |
+      Accuracy is the trap here. Anomalies are rare, so a cutoff that flags nothing scores well on accuracy and catches nothing, which is why the sweep is scored on F1 instead. F1 combines two rates that pull against each other: of the alarms you raised, how many were real, and of the real anomalies, how many you caught. Both come from counting hits, false alarms and misses at each candidate cutoff, so walk the candidates, score each one, and keep the winner. Watch the empty cases: a cutoff that raises no alarm divides zero by zero, and that is not a number until you make it one
   - level: solution
-    content: "let best = { threshold: candidates[0], f1: 0 }; for (const t of candidates) { let tp = 0, fp = 0, fn = 0; for (let i = 0; i < errors.length; i++) { const predicted = errors[i] > t; if (predicted && labels[i]) tp++; else if (predicted && !labels[i]) fp++; else if (!predicted && labels[i]) fn++; } const precision = tp / (tp + fp) || 0; const recall = tp / (tp + fn) || 0; const f1 = 2 * precision * recall / (precision + recall) || 0; if (f1 > best.f1) best = { threshold: t, f1 }; } return best;"
+    content: |
+      function findBestThreshold(
+        errors: number[],
+        labels: boolean[],
+        candidates: number[],
+      ): { threshold: number; f1: number } {
+        let best = { threshold: candidates[0], f1: 0 };
+
+        for (const t of candidates) {
+          let tp = 0,
+            fp = 0,
+            fn = 0;
+          for (let i = 0; i < errors.length; i++) {
+            const predicted = errors[i] > t;
+            if (predicted && labels[i]) tp++;
+            else if (predicted && !labels[i]) fp++;
+            else if (!predicted && labels[i]) fn++;
+          }
+          const precision = tp / (tp + fp) || 0;
+          const recall = tp / (tp + fn) || 0;
+          const f1 = (2 * precision * recall) / (precision + recall) || 0;
+          if (f1 > best.f1) best = { threshold: t, f1 };
+        }
+
+        return best;
+      }
 keywords:
   - threshold
   - false-positive
@@ -176,6 +203,8 @@ console.log({ threshold: chosen, ...held });`}
 Sweep the candidate cutoffs against a labeled validation slice and return the one with the highest F1, together with the score it earned.
 
 <Exercise slug="find-threshold" />
+
+<DecisionTask id="rule-or-model" />
 
 PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Keep reviewing the alerts while checking sensor changes, model performance and thresholds. The runbook selects where to investigate first; none of these clues proves the cause. Escalate unexplained cases.
 

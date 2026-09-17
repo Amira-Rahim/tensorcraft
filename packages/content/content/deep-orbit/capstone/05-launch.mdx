@@ -29,10 +29,10 @@ consequence:
 hints:
   - level: nudge
     content: |
-      This ladder covers classify-anomaly, the finale. verify-deployment and launch-rehearsal each carry their own. Three pieces, each already taught: successive ratios (interval[i+1] over interval[i]), a tail-aligned comparison against the Fibonacci succession ratios, and module 7's three-detector 2-of-3 vote.
+      Compute each detector separately before counting its vote. A constant window needs a separate policy.
   - level: guidance
     content: |
-      classify-anomaly first. The expected ratios are not a table to memorize, they are the sub-interval train divided through, and the section on the interval train works them out. Two consequences to notice there. A capture can start late and carry no 1:1 opener, so a shorter ratio list is compared against the end of the full list rather than its front. And measured seconds never divide into exact ratios, so a match means a relative band around each expected value, the width the instructions name. In the vote, the part worth getting right is where the sigma comes from. A mean and a spread are properties of the window on the console, not constants you carry from one channel to the next. A reading that is unremarkable against one window is extreme against a tighter one. Then the majority, two of three: any one detector can be blind without silencing the alarm, and no one detector can raise one by itself.
+      Use moments for a varying window. At zero spread, compare against the original constant reading instead of dividing. A matching value contributes no statistical vote; a different value does. Count all three votes before applying the majority rule.
   - level: solution
     content: |
       function decomposeIntervals(intervals) {
@@ -48,16 +48,20 @@ hints:
         const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
         // The reading's first ratio may be the 1:1 opener or start at the 2;
         // align on length from the tail, where the train converges on phi.
-        const expected = fibonacciRatios.slice(
-          fibonacciRatios.length - ratios.length,
-        );
+        const expected = fibonacciRatios.slice(fibonacciRatios.length - ratios.length);
         if (expected.length !== ratios.length) return false;
-        return ratios.every(
-          (r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02,
-        );
+        return ratios.every((r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02);
       }
 
       function classifyAnomaly(reading) {
+        if (
+          !Array.isArray(reading.window) ||
+          reading.window.length === 0 ||
+          !reading.window.every(Number.isFinite) ||
+          !Number.isFinite(reading.actual)
+        )
+          throw new Error('Invalid window or reading');
+        const constant = reading.window.every((value) => value === reading.window[0]);
         const { mean, variance } = tf.tidy(() => {
           const m = tf.moments(tf.tensor1d(reading.window));
           return {
@@ -66,14 +70,12 @@ hints:
           };
         });
         const std = Math.sqrt(variance);
-        const z = std === 0 ? 0 : (reading.actual - mean) / std;
+        const z = constant || std === 0 ? null : (reading.actual - mean) / std;
 
         const verdicts = {
-          statistical: Math.abs(z) > 3,
+          statistical: z === null ? reading.actual !== reading.window[0] : Math.abs(z) > 3,
           autoencoder: reading.reconstructionError > reading.reconThreshold,
-          lstm:
-            Math.abs(reading.predicted - reading.actualForecast) >
-            reading.predTolerance,
+          lstm: Math.abs(reading.predicted - reading.actualForecast) > reading.predTolerance,
         };
         const votes = Object.values(verdicts).filter(Boolean).length;
         const isAnomaly = votes >= 2;
@@ -87,14 +89,8 @@ hints:
           ratios,
           fibonacciTrain,
           classification:
-            isAnomaly && fibonacciTrain
-              ? "confirmed-anomaly"
-              : isAnomaly
-                ? "anomaly"
-                : "noise",
-          scoreDelta:
-            Math.round((reading.ensembleScore - reading.module3Score) * 1000) /
-            1000,
+            isAnomaly && fibonacciTrain ? 'confirmed-anomaly' : isAnomaly ? 'anomaly' : 'noise',
+          scoreDelta: Math.round((reading.ensembleScore - reading.module3Score) * 1000) / 1000,
         };
       }
 
@@ -103,14 +99,14 @@ hints:
         // spread is the one lesson 1 measured over eleven days: this window
         // averages 0.520 and its standard deviation is 0.150.
         window: [
-          0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43,
-          0.633, 0.217, 0.538, 0.66, 0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
+          0.523, 0.607, 0.407, 0.703, 0.462, 0.548, 0.338, 0.823, 0.568, 0.43, 0.633, 0.217, 0.538, 0.66,
+          0.38, 0.588, 0.492, 0.745, 0.443, 0.295,
         ],
-        actual: 0.50,             // 0.1 sigma under that centre: the dial reads normal
+        actual: 0.5, // 0.1 sigma under that centre: the dial reads normal
         reconstructionError: 6.2,
-        reconThreshold: 1.0,      // module 7's locked cutoff
-        predicted: 0.541,         // module 7's forecast miss: 0.041 against a 0.01 gate
-        actualForecast: 0.50,
+        reconThreshold: 1.0, // module 7's locked cutoff
+        predicted: 0.541, // module 7's forecast miss: 0.041 against a 0.01 gate
+        actualForecast: 0.5,
         predTolerance: 0.01,
         intervals: [0.9, 0.9, 1.8, 2.7, 4.5, 7.2, 11.7],
         ensembleScore: 0.999,
@@ -135,7 +131,7 @@ Then deploy DEEP SCAN. Classify the signal.
 
 Any app that compiles down to a folder of files ships the same way: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
 
-<LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
+<LearningObjectives objectives={["Package model assets and preprocessing with a standalone JavaScript app", "Follow the static-hosting setup for an ML-powered app", "Verify saved-model inference locally and distinguish it from a hosted deployment check", "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
 <BossBeat
   beatId="deep-orbit-launch-deploy-call"
@@ -383,6 +379,8 @@ Measured seconds do not divide exactly. Even in the archive's rounded slice, 11.
 
 Write the runner under that verification script: every check in order, each one awaited before the next starts, and a deployment that passes only when all of them do.
 
+A verifier also needs a deadline for each check. On timeout, report the failed check and skip its dependents. An abort signal requests cancellation, but the check must cooperate; a timeout alone cannot stop its work.
+
 <Exercise slug="verify-deployment" />
 
 Then run the rehearsal Nazari would demand before the relay slot, which starts a step earlier than the verification script does. Take the rehearsal candidate, the untrained three-feature binary net standing in for the eleven-feature classifier so the whole chain fits one run, normalize the archive rows the way module 4 does, train it, score the canary set, and gate the result. Preprocess, fit, predict, drift check, verdict. If any stage fails the answer is hold, a single leaked tensor counts as a failure, and the update count the optimizer kept has to agree with the loss trace you report, because a rehearsal nobody can check is a rehearsal that did not happen.
@@ -392,6 +390,8 @@ Then run the rehearsal Nazari would demand before the relay slot, which starts a
 And then the one the whole season was for. The console transcript above is what the bridge SAW at zero hour; this is the decision layer under it, and you write it yourself: the three-detector vote from module 7, the interval decomposition Farah ran the night the anomaly landed, and the final classification record the crew signs their names to. Eleven modules of building. Run the inference.
 
 <Exercise slug="classify-anomaly" />
+
+<IndependentProject />
 
 <RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights." />
 

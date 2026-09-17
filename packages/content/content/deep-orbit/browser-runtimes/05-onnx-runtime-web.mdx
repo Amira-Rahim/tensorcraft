@@ -56,7 +56,7 @@ That set is versioned. Each opset number fixes which ops exist and how they beha
 
 Demir runs the check before he writes a line of benchmark code. DEEP SCAN exports clean: dense layers and a sigmoid, the plain HTML of the operator world, implemented by every runtime that matters. The models that fail Nazari's check carry a researcher's favorite exotic op, one that mapped cleanly on export and landed in the graph. The target runtime never implemented it, so the failure surfaces when that runtime builds the session.
 
-<LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js against ONNX Runtime Web on one shared backend, so the result is about the runtimes", "Pick a backend from model size: where per-call overhead outweighs the arithmetic, and where it stops"]} />
+<LearningObjectives objectives={["Explain ONNX model interchange and runtime compatibility limits", "Implement the input and awaited-output contract for an ONNX session", "Compare timing and output agreement in a controlled runtime exercise", "Explain why backend selection requires measurements on the target device"]} />
 
 ## The Universal Model Format
 
@@ -233,6 +233,8 @@ A bigger workload answers it the other way. The arithmetic grows with the model;
 For a model nobody has benchmarked yet, Nazari's standing rule is a million multiply-adds per call. For a dense stack that is roughly its parameter count; for a convolutional one it is far more, because each filter runs at every position. Below the line, ship WASM. At or above it, benchmark the GPU before ruling it out. The two workloads this course has measured sit on either side of it: DEEP SCAN's 673 parameters are about six hundred multiply-adds, and they cost 1.5ms more per call on WebGL than on WASM; lesson 2's 256x256 matmul is 16,777,216 multiply-adds per call, and it ran six times faster there. The line is where to start on hardware you have no numbers for, not a property of either backend.
 
 ## Challenge
+
+The ONNX session here is a stand-in that checks inputs, waiting and readback. Its timing does not measure an installed ONNX runtime. Verify model operators, backend support and timing with a real exported artifact before choosing a runtime for an application.
 
 Run one signal through both runtimes on the same backend, check that the two answer with the same number, and let the size of the model pick the backend.
 

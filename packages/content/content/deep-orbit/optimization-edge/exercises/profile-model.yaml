@@ -2,6 +2,8 @@ slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
 instructions: |
+  **Contract revision 2026-09-17b:** profileModel accepts an optional fourth argument now, a clock function defaulting to performance.now. Use that clock for timing.
+
   Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown, leakedTensors }`, five things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, where the parameters sit, and how many tensors the profiling loop left behind. Six rules decide whether the report can be read.
 
   (1) Report the megabytes the way the lesson's report does, in MB rather than MiB.
@@ -15,6 +17,8 @@ instructions: |
   (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile.
 
   (6) leakedTensors is tf.memory().numTensors read after the last timed call minus the same count read before the warmup, and the loop has to leave it at 0: every input createInput() hands you and every output predict() hands back is disposed once its values are out, the warmup pair included. The field measures net tensor-count change in this controlled loop. In a general application, count growth alone does not establish a leak. The mock models hand back handles with a no-op dispose, so one loop serves them and the real models alike, and the real ones have real tensors to leak.
+
+  Use the injected now() clock around each measured predict plus awaited data() call. The default is () => performance.now(). runs must be a positive integer. Controlled clocks test timing arithmetic without machine-speed limits; real calls still measure the device running them.
 starterCode: |
   interface LayerProfile {
     name: string;
@@ -36,7 +40,8 @@ starterCode: |
       predict: (x: any) => { data: () => Promise<unknown>; dispose: () => void };
     },
     createInput: () => { dispose: () => void },
-    runs: number
+    runs: number,
+    now: () => number = () => performance.now(),
   ): Promise<ModelProfile> {
     // avgInferenceMs and leakedTensors are measurements. The other three
     // come out of the model's own counts, and which calls belong in that
@@ -64,14 +69,19 @@ solutionCode: |
       predict: (x: any) => { data: () => Promise<unknown>; dispose: () => void };
     },
     createInput: () => { dispose: () => void },
-    runs: number
+    runs: number,
+    now: () => number = () => performance.now(),
   ): Promise<ModelProfile> {
+    if (!Number.isInteger(runs) || runs < 1) throw new Error('Invalid run count');
     const parameterCount = model.countParams();
     const memorySizeMB = (parameterCount * 4) / 1e6;
 
     // Every layer, not only the ones holding weights: a row reading 0 is
     // how the report shows a reshape owns nothing.
-    const layerBreakdown = model.layers.map(layer => ({ name: layer.name, params: layer.countParams() }));
+    const layerBreakdown = model.layers.map((layer) => ({
+      name: layer.name,
+      params: layer.countParams(),
+    }));
 
     const before = tf.memory().numTensors;
 
@@ -87,10 +97,10 @@ solutionCode: |
     const times: number[] = [];
     for (let i = 0; i < runs; i++) {
       const input = createInput();
-      const start = performance.now();
+      const start = now();
       const output = model.predict(input);
       await output.data();
-      times.push(Math.max(0, performance.now() - start));
+      times.push(Math.max(0, now() - start));
       output.dispose();
       input.dispose();
     }
@@ -107,7 +117,6 @@ testCode: |
     const createInput = () => Object.assign([1, 2, 3], { dispose: () => {} });
 
     // predict() hands back a handle immediately; the cost sits in the
-    // readback, exactly where it sits on a GPU backend. costMs is a
     // parameter so the suite can hand out two models of different speed:
     // a returned constant can match one of them, never both. firstCostMs
     // makes the mock a compiling backend, and the compilation is charged on
@@ -124,7 +133,9 @@ testCode: |
       const calls = { predict: 0, readbacks: 0, served: [] };
       const schedule = Array.isArray(costMs) ? costMs : null;
       let warmed = false;
+      let elapsed = 0;
       const model = {
+        clock: () => elapsed,
         countParams: () => parameterCount,
         layers: [{ name: 'dense_Mock1', countParams: () => parameterCount }],
         predict: (_x: any) => {
@@ -133,15 +144,16 @@ testCode: |
             ? schedule[Math.min(calls.predict - 1, schedule.length - 1)]
             : costMs;
           return {
-            dispose: () => {},   // the lesson's loop disposes what it reads
+            dispose: () => {}, // the lesson's loop disposes what it reads
             data: () => {
               calls.readbacks++;
               const cost = !warmed && firstCostMs !== undefined ? firstCostMs : scheduled;
               warmed = true;
               calls.served.push(cost);
-              return new Promise((resolve) =>
-                setTimeout(() => resolve(new Float32Array([0])), cost)
-              );
+              return Promise.resolve().then(() => {
+                elapsed += cost;
+                return new Float32Array([0]);
+              });
             },
           };
         },
@@ -184,7 +196,12 @@ testCode: |
     // One guard, so the first Run of the starter reports the contract it
     // has not met yet instead of a property read on null.
     async function profileOf(model: any, runs: number, inputFactory = createInput) {
-      const profile = await profileModel(model, inputFactory, runs);
+      const profile = await profileModel(
+        model,
+        inputFactory,
+        runs,
+        model.clock || (() => performance.now()),
+      );
       expect(
         profile,
         'Nothing came back from this call, so there is no profile to read a measurement off. profileModel has to hand back { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }; it returns null until you build it.',
@@ -218,7 +235,7 @@ testCode: |
       expect(
         profile.avgInferenceMs,
         'predict() returns before the work is done. A clock that stops there times the enqueue, and the average collapses towards zero.',
-      ).toBeGreaterThanOrEqual(3);
+      ).toBeCloseTo(6, 8);
     });
 
     it('reports the slow model slower than the fast one', async () => {
@@ -227,7 +244,8 @@ testCode: |
       // A measured average tracks the model it was handed; the two mocks
       // are 6x apart, so anything reporting a remembered constant fails
       // here even when the constant is plausible.
-      expect(slow.avgInferenceMs).toBeGreaterThan(fast.avgInferenceMs * 2);
+      expect(fast.avgInferenceMs).toBeCloseTo(4, 8);
+      expect(slow.avgInferenceMs).toBeCloseTo(24, 8);
     });
 
     it('keeps the compilation cost out of the average', async () => {
@@ -240,39 +258,19 @@ testCode: |
       expect(
         profile.avgInferenceMs,
         'The first call a model runs pays a one-off compilation cost. Averaged in with the rest it multiplies the number you report several times over, and the profile stops describing the model anyone will actually serve.',
-      ).toBeLessThan(15);
+      ).toBeCloseTo(4, 8);
     });
 
-    it('reports the mean of the timed calls, not the fastest of them', async () => {
-      // A run whose calls disagree: four cheap ones and a 104 ms call at the
-      // end, which is the shape latency actually has. The mean of those five
-      // sits nowhere near the fastest of them, so a profiler reporting its
-      // best call, its middle call, or its worst call lands outside the band
-      // below while a mean lands inside it. Every bound comes out of what the
-      // mock charged, not out of a number written down here.
-      const { model, calls } = makeModel(100, [4, 4, 4, 4, 4, 104]);
-      const profile = await profileOf(model, 5);
-      const timed = calls.served.slice(-5);
-      const mean = timed.reduce((a: number, b: number) => a + b, 0) / timed.length;
-      const fastest = Math.min.apply(null, timed);
-      const slowest = Math.max.apply(null, timed);
-      expect(
-        slowest - fastest,
-        'The timed window has to include the slow call this schedule ends with, which it does once a warmup has taken the first cheap one. A window of five identical calls cannot tell a mean from a fastest call either way.',
-      ).toBeGreaterThan(50);
-      expect(
-        profile.avgInferenceMs,
-        'avgInferenceMs is the mean of the timed calls. Report the fastest of them, or the middle one, and the figure describes the best moment of the run instead of the run, which is the reading that lets a slow tail through a budget review.',
-      ).toBeGreaterThan(fastest + (mean - fastest) / 2);
-      expect(
-        profile.avgInferenceMs,
-        'The mean of these calls sits well below the slowest of them, so a figure up near the slow call is not an average of this run either.',
-      ).toBeLessThan(slowest - (slowest - mean) / 2);
+    it('reports the arithmetic mean using the injected clock', async () => {
+      const { model, calls } = makeModel(100, [120, 4, 4, 4, 4, 104]);
+      const p = await profileOf(model, 5);
+      expect(p.avgInferenceMs).toBeCloseTo(24, 8);
+      expect(calls.served).toEqual([120, 4, 4, 4, 4, 104]);
     });
 
     it('warms up once, then runs the timed loop exactly `runs` times', async () => {
       const { model, calls } = makeModel(100, 6);
-      await profileModel(model, createInput, 7);
+      await profileModel(model, createInput, 7, model.clock);
       expect(
         calls.predict,
         'The warmup is a call the model makes and the average ignores, so the count is one more than `runs`.',
@@ -283,43 +281,57 @@ testCode: |
       ).toBe(8);
     });
 
-    it('walks every layer of a real model, including the ones that own nothing', () => serial(async () => {
-      const model = realModel();
-      const before = tf.memory().numTensors;
-      const profile = await profileOf(model, 2, () => tf.randomNormal([1, 11]));
-      expect(
-        tf.memory().numTensors - before,
-        'The grader counts live tensors either side of this call, and the loop left some behind: every input createInput() hands you and every output predict() hands back is yours to dispose once its values are out, the warmup pair included.',
-      ).toBe(0);
-      expect(profile.leakedTensors, 'leakedTensors is that same subtraction, taken inside profileModel: numTensors after the last timed call minus numTensors before the warmup.').toBe(0);
-      expect(
-        profile.layerBreakdown.map((row: any) => row.name),
-        'One row per entry in model.layers, in the model order. Two of these four layers hold no weights, and dropping them leaves a reader unable to see that their share is zero.',
-      ).toEqual(model.layers.map((layer: any) => layer.name));
-      expect(profile.layerBreakdown.map((row: any) => row.params)).toEqual([144, 0, 0, 65]);
-      const summed = profile.layerBreakdown.reduce((total: number, row: any) => total + row.params, 0);
-      expect(
-        summed,
-        'The rows are shares of one total, so they add up to the count the model reports. A breakdown that does not is describing some other model.',
-      ).toBe(profile.parameterCount);
-      expect(
-        profile.memorySizeMB,
-        'This model holds 209 parameters, so its weights are 209 * 4 / 1e6 MB. Dividing by 1024 * 1024 gives MiB and misses by about 5 percent.',
-      ).toBeCloseTo(0.000836, 6);
-    }));
+    it('walks every layer of a real model, including the ones that own nothing', () =>
+      serial(async () => {
+        const model = realModel();
+        const before = tf.memory().numTensors;
+        const profile = await profileOf(model, 2, () => tf.randomNormal([1, 11]));
+        expect(
+          tf.memory().numTensors - before,
+          'The grader counts live tensors either side of this call, and the loop left some behind: every input createInput() hands you and every output predict() hands back is yours to dispose once its values are out, the warmup pair included.',
+        ).toBe(0);
+        expect(
+          profile.leakedTensors,
+          'leakedTensors is that same subtraction, taken inside profileModel: numTensors after the last timed call minus numTensors before the warmup.',
+        ).toBe(0);
+        expect(
+          profile.layerBreakdown.map((row: any) => row.name),
+          'One row per entry in model.layers, in the model order. Two of these four layers hold no weights, and dropping them leaves a reader unable to see that their share is zero.',
+        ).toEqual(model.layers.map((layer: any) => layer.name));
+        expect(profile.layerBreakdown.map((row: any) => row.params)).toEqual([144, 0, 0, 65]);
+        const summed = profile.layerBreakdown.reduce(
+          (total: number, row: any) => total + row.params,
+          0,
+        );
+        expect(
+          summed,
+          'The rows are shares of one total, so they add up to the count the model reports. A breakdown that does not is describing some other model.',
+        ).toBe(profile.parameterCount);
+        expect(
+          profile.memorySizeMB,
+          'This model holds 209 parameters, so its weights are 209 * 4 / 1e6 MB. Dividing by 1024 * 1024 gives MiB and misses by about 5 percent.',
+        ).toBeCloseTo(0.000836, 6);
+      }));
 
-    it('reads the breakdown off whichever model it is handed', () => serial(async () => {
-      const model = otherRealModel();
-      const before = tf.memory().numTensors;
-      const profile = await profileOf(model, 2, () => tf.randomNormal([1, 4]));
-      expect(tf.memory().numTensors - before, 'Two tensors per run stay allocated until the loop releases them.').toBe(0);
-      expect(profile.leakedTensors, 'The report has to carry the count the loop measured, and it has to be zero.').toBe(0);
-      expect(
-        profile.layerBreakdown.map((row: any) => row.params),
-        'This model is a different shape from the one above, so a breakdown carried over from that call, or from the lesson, is wrong here.',
-      ).toEqual([30, 21]);
-      expect(profile.parameterCount).toBe(51);
-    }));
+    it('reads the breakdown off whichever model it is handed', () =>
+      serial(async () => {
+        const model = otherRealModel();
+        const before = tf.memory().numTensors;
+        const profile = await profileOf(model, 2, () => tf.randomNormal([1, 4]));
+        expect(
+          tf.memory().numTensors - before,
+          'Two tensors per run stay allocated until the loop releases them.',
+        ).toBe(0);
+        expect(
+          profile.leakedTensors,
+          'The report has to carry the count the loop measured, and it has to be zero.',
+        ).toBe(0);
+        expect(
+          profile.layerBreakdown.map((row: any) => row.params),
+          'This model is a different shape from the one above, so a breakdown carried over from that call, or from the lesson, is wrong here.',
+        ).toEqual([30, 21]);
+        expect(profile.parameterCount).toBe(51);
+      }));
   });
 estimatedMinutes: 12
 difficulty: intermediate

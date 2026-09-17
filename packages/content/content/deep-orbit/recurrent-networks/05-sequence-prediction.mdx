@@ -27,18 +27,57 @@ consequence:
   narrative: "The forecast goes up on the main display with a 47-minute countdown, and nobody on the bridge leaves their station."
 hints:
   - level: nudge
-    content: "Everything past the first prediction runs on the model's own output. Each pass appends one reading to the history and hands the model the tail of it, so what you do to that reading before it goes back in is what the rest of the run reads. Before any of that, the model has to be fitted, and fitting is asynchronous: whatever the training function hands back has to be waited on first."
+    content: |
+      Keep training and rollout separate. The training history records what happened, and the rollout must read its own changing window.
   - level: guidance
-    content: "The training half is four moves in a row: stack the layers, compile with a loss and a metric, wait for the fit, hand back the model together with whatever the fit resolved to. The window length is not yours to choose there; it is already sitting in the shape of the tensor you were handed. For the rolling half, two things live outside the loop: the history you keep appending to, and the bounds, which depend only on the scaler and are the same at every step. Inside the loop there are three decisions. The window handed to the model is the tail of that history, not all of it, and it goes in with a batch axis in front of the time axis. What comes back is a tensor, so read the numbers out of it before doing arithmetic on them. And the reading you append is the clamped one, the same reading you return, because the next pass treats it as though a sensor had produced it."
+    content: |
+      Fit the supplied tensors and return the history from that call. For rollout, convert physical limits using the frozen scaler, clamp each prediction and feed it back. Release temporary tensors while keeping caller-owned training tensors alive. MAE during training is in z-score coordinates.
   - level: solution
     content: |
-      const model = tf.sequential();
-      model.add(tf.layers.lstm({ units: 8, inputShape: [xs.shape[1], xs.shape[2]] }));
-      model.add(tf.layers.dense({ units: 3 }));
-      model.compile({ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError', metrics: ['mae'], });
-      const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
-      return { model, history };
-      const bounds = LIMITS.map((limit, j) => ({ min: (limit.min - scaler.mean[j]) / scaler.std[j], max: (limit.max - scaler.mean[j]) / scaler.std[j], })); const series = [...seed]; const forecast = []; for (let step = 0; step < steps; step++) { const predicted = tf.tidy(() => { const input = tf.tensor3d([series.slice(-windowSize)]); const output = model.predict(input); return Array.from(output.dataSync()); }); const bounded = predicted.map((value, j) => Math.min(Math.max(value, bounds[j].min), bounds[j].max)); forecast.push(bounded); series.push(bounded); } return forecast;
+      import * as tf from '@tensorflow/tfjs';
+
+      const LIMITS = [
+        { min: 0, max: 2048 },
+        { min: 0, max: 63 },
+        { min: -Math.PI, max: Math.PI },
+      ];
+
+      async function trainForecaster(xs, ys, epochs, providedModel) {
+        const model = providedModel || tf.sequential();
+        if (!providedModel) {
+          model.add(tf.layers.lstm({ units: 8, inputShape: [xs.shape[1], xs.shape[2]] }));
+          model.add(tf.layers.dense({ units: 3 }));
+          model.compile({
+            optimizer: tf.train.adam(0.01),
+            loss: 'meanSquaredError',
+            metrics: ['mae'],
+          });
+        }
+        const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
+        return { model, history };
+      }
+
+      function forecastMultiStep(model, seed, windowSize, steps, scaler) {
+        const bounds = LIMITS.map((limit, j) => ({
+          min: (limit.min - scaler.mean[j]) / scaler.std[j],
+          max: (limit.max - scaler.mean[j]) / scaler.std[j],
+        }));
+        const series = [...seed];
+        const forecast = [];
+        for (let step = 0; step < steps; step++) {
+          const predicted = tf.tidy(() => {
+            const input = tf.tensor3d([series.slice(-windowSize)]);
+            const output = model.predict(input);
+            return Array.from(output.dataSync());
+          });
+          const bounded = predicted.map((value, j) =>
+            Math.min(Math.max(value, bounds[j].min), bounds[j].max),
+          );
+          forecast.push(bounded);
+          series.push(bounded);
+        }
+        return forecast;
+      }
 keywords:
   - prediction
   - forecasting

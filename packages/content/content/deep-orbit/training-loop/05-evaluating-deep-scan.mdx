@@ -26,11 +26,93 @@ consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
 hints:
   - level: nudge
-    content: "Four moves: fit on the training tensors, evaluate on the held-out ones, write a three-way rule for the gap, then apply that rule to your own numbers. The diagnose rule is not memorizable: the grader calls it on eleven pairs of its own, two of them straddling the 0.15 gap, and it reruns the held-out evaluation itself."
+    content: |
+      Train on the training tensors and measure the held-out rows without changing them. Report the numbers the run produced.
   - level: guidance
-    content: "Three of the four moves are mechanical, so spend the time on the fourth. Two API details first. Training files its metrics under short keys, so the accuracy trace is `acc` and not `accuracy`, and it is a plain array with one entry per pass over the data, which makes the final training accuracy its last entry. Scoring gives you tensors, not plain numbers, so read the scalar out with dataSync (or data) before you compare it. Now the rule. The order of the two checks is the point of the exercise: a wide gap is the overfitting signal even when both numbers are low, which is why the gap is tested first. Read it the other way round and a run that memorized the archive gets filed as a model that never learned."
+    content: |
+      Training accuracy is the final acc entry in history; evaluation accuracy is the scalar in evalResult[1]. Apply the gap rule to those values. A large gap or two low scores suggests questions to investigate; no-gap-warning is not a release approval.
   - level: solution
-    content: "const history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }); const evalResult = model.evaluate(testX, testY); function diagnose(trainAcc, testAcc) { if (trainAcc - testAcc > 0.15) return 'overfitting'; if (trainAcc < 0.7 && testAcc < 0.7) return 'underfitting'; return 'healthy'; } const trainAcc = history.history.acc[history.history.acc.length - 1]; const testAcc = evalResult[1].dataSync()[0]; const verdict = diagnose(trainAcc, testAcc);"
+    content: |
+      const calm = tf.clipByValue(
+        tf.concat(
+          [
+            tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+            tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+            tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+          ],
+          1,
+        ),
+        0,
+        1,
+      );
+      const flagged = tf.clipByValue(
+        tf.concat(
+          [
+            tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+            tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+            tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+          ],
+          1,
+        ),
+        0,
+        1,
+      );
+      const order = Array.from(tf.util.createShuffledIndices(100));
+      const trainX = tf.concat([calm, flagged]).gather(order);
+      const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+
+      const testX = tf.concat([
+        tf.clipByValue(
+          tf.concat(
+            [
+              tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
+              tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
+              tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+            ],
+            1,
+          ),
+          0,
+          1,
+        ),
+        tf.clipByValue(
+          tf.concat(
+            [
+              tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
+              tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
+              tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+            ],
+            1,
+          ),
+          0,
+          1,
+        ),
+        tf.tensor2d([
+          [0.3, 0.68, 0.34],
+          [0.26, 0.75, 0.29],
+          [0.33, 0.71, 0.36],
+        ]),
+      ]);
+      const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
+      model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+      model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+      const history = await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 });
+
+      const evalResult = model.evaluate(testX, testY);
+
+      function diagnose(trainAcc, testAcc) {
+        if (trainAcc - testAcc > 0.15) return 'large-gap';
+        if (trainAcc < 0.7 && testAcc < 0.7) return 'low-scores';
+        return 'no-gap-warning';
+      }
+
+      const trainAcc = history.history.acc[history.history.acc.length - 1];
+      const testAcc = evalResult[1].dataSync()[0];
+      const verdict = diagnose(trainAcc, testAcc);
 keywords:
   - evaluation
   - accuracy
@@ -156,7 +238,7 @@ One entry for the strangest page in the ship's records: back before this network
 **Interpreting results:**
 - Training accuracy far above validation accuracy can suggest overfitting. Check distribution changes, labels and preprocessing too. If overfitting is the cause, compare early stopping, simpler models or regularization on validation data.
 - Low scores on both sets can reflect underfitting, poor inputs, label noise or a training problem. Compare a baseline and inspect errors before adding layers.
-- High aggregate scores still need inspection by class and operating condition. The exercise's gap rule is a simplified diagnostic convention, not proof of model health.
+- High aggregate scores still need inspection by class and operating condition. The exercise reports a large gap, low scores or no gap warning. None of these labels certifies model health.
 
 While you are still changing the model, measure the gap against the validation score instead of the test score. The test slice is scored once, after the settings are frozen.
 
@@ -213,7 +295,11 @@ A cheaper filter can reduce the number of readings reaching an expensive model. 
 
 Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it has never seen. This time you read the train-versus-test gap. The grader reruns the evaluation, calls your gap rule on eleven pairs of its own, and checks that the held-out rows stayed out of the training call.
 
+Report the scores this run produced, even when they are disappointing. The grader checks the evaluation procedure without demanding a particular accuracy. The transfer assignment below asks whether the model earns its complexity.
+
 <Exercise slug="deep-scan-eval" />
+
+<DecisionTask id="review-costs" />
 
 <TransferAssignment />
 

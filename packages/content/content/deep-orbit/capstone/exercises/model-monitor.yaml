@@ -2,11 +2,15 @@ slug: model-monitor
 lessonSlug: monitoring
 title: "Build a Model Monitor"
 instructions: |
-  Build the model monitor the dashboard reads from. Three measurements.
+  **Contract revision 2026-09-17b:** Empty-data results are now null.
 
-  1. Confidence. `logPrediction(confidence)` records one verdict, and `avgConfidence` is the mean over every prediction logged so far, 0 before anything has been logged.
-  2. Latency percentiles. Record each inference time with `logLatency(ms)`, then `getLatencyPercentile(p)` reads one value off the recorded times. Order a copy of them ascending as numbers first, since the default comparison is textual and puts 400 ahead of 41. The value is the one at index `Math.floor(count * p / 100)`, clamped to the last index so p = 100 lands on the slowest call rather than past the end. With nothing recorded it returns 0.
-  3. Drift. `computeDrift(recentInputs)` collapses the recent window to its column means first, then returns the Euclidean distance from the baseline mean vector. An empty window returns 0. No traffic is not drift, and a window that never averaged anything sits at the origin. The distance from the baseline to the origin is the length of the baseline vector itself, 1.02 on the five-feature baseline the grader uses, which is twice the 0.5 alert threshold. A quiet hour would page someone.
+  Build ModelMonitor with a baseline mean vector in the same feature order and scale as recent inputs.
+
+  1. logPrediction(confidence) records a finite probability in [0, 1]. avgConfidence returns its arithmetic mean, or null before any prediction is logged.
+  2. logLatency(ms) records a finite nonnegative duration. getLatencyPercentile(p) sorts a copy numerically and returns index floor(count * p / 100), clamped to the last index. p must be finite and between 0 and 100 inclusive. Return null when no duration is recorded.
+  3. computeDrift(recentInputs) returns the Euclidean distance between the recent column means and baselineMean. Return null for an empty window. A zero distance means matching means only; a change in spread or shape can still exist.
+
+  Reject invalid probabilities, durations, percentiles or input rows. The baseline must be a non-empty finite vector. Every recent row must have the same width and finite values. Do not mutate caller arrays. Null means no measurement; it must not appear as a healthy zero on a dashboard. The exercise retains logs for its short session; a production monitor needs a bounded retention window.
 starterCode: |
   class ModelMonitor {
     private confidences: number[] = [];
@@ -21,7 +25,7 @@ starterCode: |
       return null; // your code here
     }
 
-    get avgConfidence(): number {
+    get avgConfidence(): number | null {
       return null; // your code here
     }
 
@@ -29,13 +33,13 @@ starterCode: |
       return null; // your code here
     }
 
-    getLatencyPercentile(p: number): number {
+    getLatencyPercentile(p: number): number | null {
       // A percentile is a position in an ordered series, so what has to be
       // settled is how the series is ordered and which position p names.
       return null; // your code here
     }
 
-    computeDrift(recentInputs: number[][]): number {
+    computeDrift(recentInputs: number[][]): number | null {
       // A distance needs two points. The window is not one yet.
       return null; // your code here
     }
@@ -47,35 +51,40 @@ solutionCode: |
     private baselineMean: number[];
 
     constructor(baselineMean: number[]) {
-      this.baselineMean = baselineMean;
+      if (baselineMean.length === 0 || !baselineMean.every(Number.isFinite))
+        throw new Error('Invalid baseline');
+      this.baselineMean = baselineMean.slice();
     }
 
     logPrediction(confidence: number): void {
+      if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)
+        throw new Error('Invalid confidence');
       this.confidences.push(confidence);
     }
 
-    get avgConfidence(): number {
-      if (this.confidences.length === 0) return 0;
+    get avgConfidence(): number | null {
+      if (this.confidences.length === 0) return null;
       return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length;
     }
 
     logLatency(ms: number): void {
+      if (!Number.isFinite(ms) || ms < 0) throw new Error('Invalid latency');
       this.latencies.push(ms);
     }
 
-    getLatencyPercentile(p: number): number {
-      if (this.latencies.length === 0) return 0;
+    getLatencyPercentile(p: number): number | null {
+      if (!Number.isFinite(p) || p < 0 || p > 100) throw new Error('Invalid percentile');
+      if (this.latencies.length === 0) return null;
       const sorted = [...this.latencies].sort((a, b) => a - b);
-      const index = Math.min(
-        sorted.length - 1,
-        Math.floor((sorted.length * p) / 100),
-      );
+      const index = Math.min(sorted.length - 1, Math.floor((sorted.length * p) / 100));
       return sorted[index];
     }
 
-    computeDrift(recentInputs: number[][]): number {
-      if (recentInputs.length === 0) return 0;
+    computeDrift(recentInputs: number[][]): number | null {
+      if (recentInputs.length === 0) return null;
       const featureCount = this.baselineMean.length;
+      if (!recentInputs.every((row) => row.length === featureCount && row.every(Number.isFinite)))
+        throw new Error('Invalid feature row');
       const recentMean = new Array(featureCount).fill(0);
 
       for (const row of recentInputs) {
@@ -119,12 +128,11 @@ testCode: |
       ).toBeCloseTo(0.7, 5);
     });
 
-    it('returns 0 confidence when no predictions logged', () => {
-      const monitor = new ModelMonitor([0, 0]);
-      expect(
-        monitor.avgConfidence,
-        'The mean of an empty list is NaN, and a dashboard cannot plot NaN. Decide what the monitor reports before it has seen a prediction.',
-      ).toBe(0);
+    it('has no average before predictions arrive, then measures a real zero', () => {
+      const m = new ModelMonitor([0]);
+      expect(m.avgConfidence).toBe(null);
+      m.logPrediction(0);
+      expect(m.avgConfidence).toBe(0);
     });
 
     it('divides by the count so far, so the average moves with every prediction', () => {
@@ -151,7 +159,10 @@ testCode: |
 
     it('detects no drift when data matches baseline', () => {
       const monitor = new ModelMonitor([1.0, 2.0]);
-      const drift = monitor.computeDrift([[1.0, 2.0], [1.0, 2.0]]);
+      const drift = monitor.computeDrift([
+        [1.0, 2.0],
+        [1.0, 2.0],
+      ]);
       expect(
         typeof drift,
         'computeDrift returns a number: the distance between the baseline mean vector and the recent one. The starter returns null.',
@@ -159,26 +170,19 @@ testCode: |
       expect(drift).toBeCloseTo(0, 5);
     });
 
-    it('an empty window is not drift: a quiet hour scores 0', () => {
-      // The averaging loop never runs, so a recent mean of all zeros is not
-      // a measurement, it is the absence of one. The distance from this
-      // baseline to the origin is 1.0188, the length of the baseline
-      // vector, against an alert threshold of 0.5. Report that and an hour
-      // with no traffic pages someone.
-      const monitor = new ModelMonitor([0.31, 0.47, 0.52, 0.28, 0.61]);
-      expect(
-        monitor.computeDrift([]),
-        'With nothing in the window there is no recent mean to measure against. Answer 0 and let the dashboard show the gap.',
-      ).toBe(0);
-      // The same monitor still measures a window it does have.
-      expect(
-        monitor.computeDrift([[0.31, 0.47, 0.52, 0.28, 0.61]]),
-      ).toBeCloseTo(0, 6);
+    it('distinguishes no window from a measured mean distance', () => {
+      const m = new ModelMonitor([0, 0]);
+      expect(m.computeDrift([])).toBe(null);
+      expect(m.computeDrift([[0, 0]])).toBe(0);
+      expect(m.computeDrift([[3, 4]])).toBe(5);
     });
 
     it('detects drift when data shifts', () => {
       const monitor = new ModelMonitor([0, 0]);
-      const drift = monitor.computeDrift([[3, 4], [3, 4]]);
+      const drift = monitor.computeDrift([
+        [3, 4],
+        [3, 4],
+      ]);
       expect(Number.isFinite(drift)).toBe(true);
       expect(
         drift,
@@ -202,7 +206,10 @@ testCode: |
       // lesson makes the same point from the other side: a mean vector
       // reads a shift in level and nothing else, so two windows with the
       // same means score 0.0 whatever their spread.
-      const drift = monitor.computeDrift([[1, 0], [-1, 0]]);
+      const drift = monitor.computeDrift([
+        [1, 0],
+        [-1, 0],
+      ]);
       expect(
         typeof drift,
         'computeDrift returns a number. The starter returns null, which is not a drift score.',
@@ -217,7 +224,10 @@ testCode: |
       const monitor = new ModelMonitor([0, 0]);
       // Column means are 1 and 2. Distance from the baseline is sqrt(5).
       // Reading row 0 alone would score 0 and report no drift at all.
-      const drift = monitor.computeDrift([[0, 0], [2, 4]]);
+      const drift = monitor.computeDrift([
+        [0, 0],
+        [2, 4],
+      ]);
       expect(drift).toBeCloseTo(Math.sqrt(5), 5);
     });
 
@@ -266,19 +276,20 @@ testCode: |
       expect(monitor.getLatencyPercentile(25)).toBe(12);
     });
 
-    it('answers 0 before any inference has been timed', () => {
-      const monitor = new ModelMonitor([0, 0]);
-      expect(
-        monitor.getLatencyPercentile(95),
-        'An empty array has no element at any index, and a dashboard cannot plot undefined.',
-      ).toBe(0);
-      monitor.logLatency(9);
-      expect(monitor.getLatencyPercentile(95)).toBe(9);
+    it('has no percentile before any inference is timed', () => {
+      const m = new ModelMonitor([0]);
+      expect(m.getLatencyPercentile(95)).toBe(null);
+      m.logLatency(0);
+      expect(m.getLatencyPercentile(95)).toBe(0);
     });
 
     it('one loud reading moves the mean by its share, not the whole way', () => {
       const monitor = new ModelMonitor([0.5, 0.5, 0.5]);
-      const window = [[0.8, 0.8, 0.8], [0.5, 0.5, 0.5], [0.5, 0.5, 0.5]];
+      const window = [
+        [0.8, 0.8, 0.8],
+        [0.5, 0.5, 0.5],
+        [0.5, 0.5, 0.5],
+      ];
       // Column means are 0.6, so each feature sits 0.1 off baseline and
       // the distance is sqrt(3 * 0.01). Scoring the loud row on its own
       // would treble that.
@@ -289,6 +300,22 @@ testCode: |
       const reordered = monitor.computeDrift([window[1], window[2], window[0]]);
       expect(reordered).toBeCloseTo(drift, 10);
     });
+  });
+
+  it('rejects invalid measurements without recording them', () => {
+    const m = new ModelMonitor([0, 0]);
+    for (const v of [-1, 1.1, NaN, Infinity]) expect(() => m.logPrediction(v)).toThrow();
+    for (const v of [-1, NaN, Infinity]) expect(() => m.logLatency(v)).toThrow();
+    for (const p of [-1, 101, NaN]) expect(() => m.getLatencyPercentile(p)).toThrow();
+    expect(() => m.computeDrift([[1]])).toThrow();
+    expect(() => m.computeDrift([[1, NaN]])).toThrow();
+    expect(m.avgConfidence).toBe(null);
+    expect(m.getLatencyPercentile(50)).toBe(null);
+    expect(() => new ModelMonitor([])).toThrow();
+    const baseline = [0, 0];
+    const copied = new ModelMonitor(baseline);
+    baseline[0] = 99;
+    expect(copied.computeDrift([[0, 0]])).toBe(0);
   });
 estimatedMinutes: 12
 difficulty: intermediate
