@@ -2,8 +2,8 @@
 
 Updated on 2026-09-17. The four requested implementation checks pass:
 spaced review, PostgreSQL row security, browser E2E, and real signup plus
-Stripe test checkout. GitHub callback configuration, a production signup
-inbox check, and the paid snapshot drill still need owner input. Stripe Tax
+Stripe test checkout. GitHub callback and permission configuration, a production
+signup inbox check, and the paid snapshot drill still need owner input. Stripe Tax
 and business registration are deferred at the owner's request. The earlier
 fixes were committed and pushed as `7acc978b`; all CI jobs passed.
 
@@ -12,7 +12,7 @@ fixes were committed and pushed as `7acc978b`; all CI jobs passed.
 Validation used a clean installation of the locked dependencies, including
 Next.js 16.3.5 and React 19.3.0.
 
-- Final full unit suite: 2,666 passed, 65 skipped.
+- Final full unit suite: 2,667 passed, 65 skipped.
 - Full Playwright pass from the preceding implementation work: 137 passed,
   34 skipped. Includes desktop, iPhone, Pixel, iPad, accessibility, guest
   review scheduling, scene playback, and reading without JavaScript.
@@ -158,9 +158,9 @@ email locally; this does not certify production email delivery.
 
 Production database migration status is 61/61 in sync. Fly's required-secret
 preflight passed before deployment. The previous API image was from August;
-both machines now run release 25 and pass health checks. Database readiness
-also returns HTTP 200. Authentication and CORS smoke checks use public routes
-without creating production users or purchases.
+the initial rollout put both machines on release 25 with passing health checks.
+Database readiness also returned HTTP 200. Authentication and CORS smoke checks
+use public routes without creating production users or purchases.
 
 - API image: `registry.fly.io/tensorcraft-api:deployment-01M2NZNJHQ4PV10FNBFJ40SF8B`.
 - Previous image, retained for rollback:
@@ -173,6 +173,14 @@ without creating production users or purchases.
   and auth return HTTP 200. The deployed pricing page renders its free and
   paid controls in the browser. The deployed CSP contains production backends
   and excludes the local test ports.
+
+The later GitHub browser-flow fix is commit `9590b02e`.
+[API deployment 35196890632](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35196890632)
+passed its migration and secret gates, then deployed release 26 to both
+machines. Both report passing health checks and the expected commit SHA.
+Public health and database readiness checks returned HTTP 200 afterward.
+The [Vercel deployment](https://vercel.com/amira-salahs-projects/tensorcraft/E44biWs9MNcgobg1G8NCtw9BwiJ9)
+is Ready and serves `tensorcraft.app`.
 
 ## Monitoring and recovery
 
@@ -247,6 +255,14 @@ wildcard matching disabled, ready to save after the required confirmation.
 Existing URLs are preserved. A real connection and exercise save still need an
 authorized test account. The live OAuth round trip is not yet verified.
 
+The App currently has `contents: write` and `metadata: read`, but no repository
+Administration permission. GitHub requires `administration: write` for the
+[`POST /user/repos` endpoint](https://docs.github.com/en/rest/repos/repos#create-a-repository-for-the-authenticated-user)
+used to create exercise repositories. The permission form is prepared but
+unsaved pending confirmation. This permission also covers repository settings
+and deletion within the App's authorized access. Existing installations must
+accept the added permission before it takes effect for them.
+
 ### Stripe Tax and invoices (deferred)
 
 The owner excluded Stripe Tax and business registration from this work on
@@ -275,3 +291,7 @@ Storage recovery and alert delivery evidence were pushed in `9317c950`.
 [CI run 35196051553](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35196051553)
 passed all ten jobs, and visual regression passed. Subsequent GitHub browser
 flow fixes add a regression test to the existing route and settings checks.
+The three targeted GitHub/settings suites passed 51 tests, and the pre-push
+full suite passed 2,667 tests with 65 skipped. Both new regressions failed
+before the implementation change and passed afterward. CI for the code fix is
+[run 35196881623](https://github.com/Amira-Rahim/tensorcraft/actions/runs/35196881623).
