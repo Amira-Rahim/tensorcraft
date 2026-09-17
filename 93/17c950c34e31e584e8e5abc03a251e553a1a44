@@ -1,0 +1,23 @@
+scripts/verify-storage-restore.mjs
+  s_8fedc26d4c2889::t_4f138821121aba 1-12,20-27,37-56,60-112,115,122-126,131-144,155-160,164-166,171-175,178-179
+  s_8fedc26d4c2889::t_a42fc423b674a9 13-19,28-36,57-59,113-114,116-121,127-130,145-154,161-163,167-170,176-177
+docs/launch-verification.md
+  s_8fedc26d4c2889::t_bb757f5fb8b530 3,5-8,176-190,198-224,242-246,250-253,257-263
+  s_8fedc26d4c2889::t_28433b08ad8351 264
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9317c950c34e31e584e8e5abc03a251e553a1a44",
+  "prompts": {},
+  "sessions": {
+    "s_8fedc26d4c2889": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ab7a-9d2d-7400-865a-62cf3897149e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
