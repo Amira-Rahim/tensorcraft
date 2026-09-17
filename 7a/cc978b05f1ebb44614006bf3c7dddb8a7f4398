@@ -1,0 +1,52 @@
+apps/web/lib/backend-connect-sources.ts
+  s_8fedc26d4c2889::t_96daecb0c19d50 13
+  s_8fedc26d4c2889::t_2b64ee71139fe8 1-12,14-28
+.github/workflows/ci.yml
+  s_8fedc26d4c2889::t_2f93a7050897f8 27-35
+apps/api/Dockerfile
+  s_8fedc26d4c2889::t_2f93a7050897f8 2-5,13,30
+docs/deployment-guide.md
+  s_8fedc26d4c2889::t_a1fad288af8363 5,58-59,168-175,234,236-237
+apps/api/src/middleware/__tests__/sentry.test.ts
+  s_8fedc26d4c2889::t_2e2c0fffdf30ff 10,16,26,80,104-112,117-136
+  s_8fedc26d4c2889::t_9f5949c74952bb 113-116
+apps/web/next.config.ts
+  s_8fedc26d4c2889::t_2b64ee71139fe8 6,206-214
+docs/launch-verification.md
+  s_8fedc26d4c2889::t_06f49d110c209d 93-95,165-166
+  s_8fedc26d4c2889::t_209046e483d059 3-6,11-16,19-24,26-27,43-45,86-92,96-116,119-162,168-214
+  s_8fedc26d4c2889::t_533d88960ebfcc 117-118,163-164,167
+apps/api/src/middleware/sentry.ts
+  s_8fedc26d4c2889::t_9f5949c74952bb 39-43
+  s_8fedc26d4c2889::t_2e2c0fffdf30ff 27-28,32-38,44-45
+.dockerignore
+  s_8fedc26d4c2889::t_8e966640b0ba07 2,5-8
+  s_8fedc26d4c2889::t_2f93a7050897f8 11-13
+apps/api/src/routes/payments.test.ts
+  s_8fedc26d4c2889::t_96daecb0c19d50 966-970
+  s_8fedc26d4c2889::t_8e966640b0ba07 958-965,971-986
+apps/api/src/routes/profiles.ts
+  s_8fedc26d4c2889::t_2b64ee71139fe8 205-206
+apps/api/src/routes/payments.ts
+  s_8fedc26d4c2889::t_8e966640b0ba07 1102-1123
+apps/web/lib/backend-connect-sources.test.ts
+  s_8fedc26d4c2889::t_2b64ee71139fe8 1-37
+apps/api/src/routes/__tests__/profiles-privacy.test.ts
+  s_8fedc26d4c2889::t_2b64ee71139fe8 143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7acc978b05f1ebb44614006bf3c7dddb8a7f4398",
+  "prompts": {},
+  "sessions": {
+    "s_8fedc26d4c2889": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ab7a-9d2d-7400-865a-62cf3897149e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
