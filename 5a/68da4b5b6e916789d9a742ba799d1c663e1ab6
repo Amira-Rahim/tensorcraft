@@ -1,0 +1,24 @@
+docs/launch-verification.md
+  s_8fedc26d4c2889::t_e9d6fe7a32e2d7 5,8,149-150,220-228,258,262-263,270-272,274-279,317-321
+  s_8fedc26d4c2889::t_07a023418e855d 6-7,9,157-162,264-269,280-285
+apps/api/src/middleware/__tests__/cors.test.ts
+  s_8fedc26d4c2889::t_6280603c8f4d8a 60-105
+apps/api/src/middleware/cors.ts
+  s_8fedc26d4c2889::t_99eca5b305209b 26-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5a68da4b5b6e916789d9a742ba799d1c663e1ab6",
+  "prompts": {},
+  "sessions": {
+    "s_8fedc26d4c2889": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ab7a-9d2d-7400-865a-62cf3897149e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
