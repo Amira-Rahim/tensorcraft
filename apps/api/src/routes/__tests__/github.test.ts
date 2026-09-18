@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { Hono } from "hono";
 import type { AppEnv } from "../../types";
+import { decryptToken, encryptToken } from "../../lib/token-crypto";
+import { storeGitHubCredential } from "../../lib/github-credentials";
+import {
+  PROJECT_BODY_LIMIT,
+  ROOM_MODEL_FILES,
+  ROOM_PROJECT_FILES,
+} from "@tensorcraft/shared";
 
 // ─────────────────────────────────────────────────────────────
 // Mocks, must be declared before `import("../github")` below.
@@ -36,9 +43,26 @@ function makeProfilesQuery() {
     }),
     update: (data: unknown) => {
       mockProfileUpdate(data);
-      return {
-        eq: () => Promise.resolve({ error: null }),
+      let expectedToken: unknown;
+      const query = {
+        eq: (field: string, value: unknown) => {
+          if (field === "github_token") expectedToken = value;
+          return query;
+        },
+        select: () => query,
+        maybeSingle: async () => {
+          if (mockProfileRow?.github_token !== expectedToken)
+            return { data: null, error: null };
+          mockProfileRow = {
+            ...mockProfileRow,
+            ...(data as Record<string, unknown>),
+          };
+          return { data: mockProfileRow, error: null };
+        },
+        then: (resolve: (value: { error: null }) => unknown) =>
+          Promise.resolve({ error: null }).then(resolve),
       };
+      return query;
     },
   };
 }
@@ -142,6 +166,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 
 const { github } = await import("../github");
@@ -165,6 +190,292 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
     headers: { "Content-Type": "application/json", ...(init.headers ?? {}) },
   });
 }
+
+describe("rotating GitHub credentials at route boundaries", () => {
+  const pair = () => ({
+    access_token: "ghu_access",
+    refresh_token: "ghr_refresh",
+    token_type: "bearer",
+    expires_in: 28800,
+    refresh_token_expires_in: 15897600,
+  });
+  beforeEach(() => {
+    authedUser();
+    vi.stubEnv("GITHUB_TOKEN_ENC_KEY", "route-test-key");
+  });
+  it("previews the destination with the access token from the encrypted pair", async () => {
+    mockProfileRow = {
+      github_token: storeGitHubCredential(pair()),
+      github_username: "octocat",
+    };
+    fetchHandler = (url, init) => {
+      expect(url).toBe(
+        "https://api.github.com/repos/octocat/tensorcraft-deep-orbit",
+      );
+      expect(new Headers(init?.headers).get("Authorization")).toBe(
+        "Bearer ghu_access",
+      );
+      return jsonResponse({
+        id: 17,
+        full_name: "octocat/tensorcraft-deep-orbit",
+        private: false,
+        default_branch: "main",
+      });
+    };
+    const res = await createApp().request("/api/github/project-export", {
+      headers: { Authorization: "Bearer session" },
+    });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ repositoryId: 17 });
+  });
+  it("renews an expired pair before the real project preview helper runs", async () => {
+    vi.stubEnv("GITHUB_CLIENT_ID", "client");
+    vi.stubEnv("GITHUB_CLIENT_SECRET", "secret");
+    mockProfileRow = {
+      github_token: storeGitHubCredential(pair(), Date.now() - 9 * 3600_000),
+      github_username: "octocat",
+    };
+    let renewals = 0;
+    fetchHandler = (url, init) => {
+      if (url === "https://github.com/login/oauth/access_token") {
+        expect(JSON.parse(init?.body as string)).toMatchObject({
+          grant_type: "refresh_token",
+          refresh_token: "ghr_refresh",
+        });
+        renewals++;
+        return jsonResponse({
+          ...pair(),
+          access_token: "ghu_rotated",
+          refresh_token: "ghr_rotated",
+        });
+      }
+      expect(new Headers(init?.headers).get("Authorization")).toBe(
+        "Bearer ghu_rotated",
+      );
+      return jsonResponse({
+        id: 17,
+        full_name: "octocat/tensorcraft-deep-orbit",
+        private: false,
+        default_branch: "main",
+      });
+    };
+    const res = await createApp().request("/api/github/project-export", {
+      headers: { Authorization: "Bearer session" },
+    });
+    expect(res.status).toBe(200);
+    expect(renewals).toBe(1);
+    expect(
+      JSON.parse(decryptToken(mockProfileRow.github_token as string)!),
+    ).toMatchObject({
+      accessToken: "ghu_rotated",
+      refreshToken: "ghr_rotated",
+    });
+  });
+  it("returns a reconnect error when the refresh authorization has expired", async () => {
+    mockProfileRow = {
+      github_token: storeGitHubCredential(pair(), Date.now() - 200 * 86400_000),
+      github_username: "octocat",
+    };
+    const res = await createApp().request("/api/github/project-export", {
+      headers: { Authorization: "Bearer session" },
+    });
+    expect(res.status).toBe(401);
+    expect(await res.json()).toMatchObject({ code: "github_token_expired" });
+  });
+  it("does not report a rejected legacy token as connected", async () => {
+    mockProfileRow = {
+      github_token: encryptToken("expired-legacy"),
+      github_username: "octocat",
+      github_connected: true,
+    };
+    fetchHandler = () =>
+      jsonResponse({ message: "Bad credentials" }, { status: 401 });
+    const res = await createApp().request("/api/github/status", {
+      headers: { Authorization: "Bearer session" },
+    });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({
+      connected: false,
+      code: "github_token_expired",
+    });
+  });
+  it("disconnect revokes the access token, without sending the encrypted bundle", async () => {
+    vi.stubEnv("GITHUB_CLIENT_ID", "client");
+    vi.stubEnv("GITHUB_CLIENT_SECRET", "secret");
+    mockProfileRow = { github_token: storeGitHubCredential(pair()) };
+    fetchHandler = (_url, init) => {
+      expect(JSON.parse(init?.body as string)).toEqual({
+        access_token: "ghu_access",
+      });
+      return new Response(null, { status: 204 });
+    };
+    const res = await createApp().request("/api/github/disconnect", {
+      method: "POST",
+      headers: { Authorization: "Bearer session" },
+    });
+    expect(res.status).toBe(200);
+    expect(mockProfileUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ github_token: null }),
+    );
+  });
+});
+
+describe("project export boundary", () => {
+  const payload = () => ({
+    repositoryId: 17,
+    private: false,
+    files: [
+      ...ROOM_PROJECT_FILES,
+      ...ROOM_MODEL_FILES,
+      "runs/test-1.json",
+      "runs/validation-1.json",
+    ].map((path) => ({ path, base64: "YQ==" })),
+  });
+  const send = (body: unknown, auth = true) =>
+    createApp().request("/api/github/project-export", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(auth ? { Authorization: "Bearer session" } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+  it("requires a verified session before reading or exporting", async () => {
+    expect((await send(payload(), false)).status).toBe(401);
+    mockGetUser.mockResolvedValue({
+      data: { user: null },
+      error: new Error("expired"),
+    });
+    expect((await send(payload())).status).toBe(401);
+  });
+  it("publishes a multi-file request above the normal 1 MiB cap using the decrypted caller token", async () => {
+    authedUser();
+    vi.stubEnv("GITHUB_TOKEN_ENC_KEY", "unit-test-key-only");
+    mockProfileRow = {
+      github_token: encryptToken("project-test-token"),
+      github_username: "octocat",
+    };
+    const input = payload();
+    input.files.find((file) => file.path === "model/weights.bin")!.base64 =
+      Buffer.alloc(900_000, 123).toString("base64");
+    let published = false;
+    fetchHandler = (url, init) => {
+      expect(url).toContain("/repos/octocat/tensorcraft-deep-orbit");
+      expect(new Headers(init?.headers).get("Authorization")).toBe(
+        "Bearer project-test-token",
+      );
+      if (url.endsWith("/tensorcraft-deep-orbit"))
+        return jsonResponse({
+          id: 17,
+          full_name: "octocat/tensorcraft-deep-orbit",
+          private: false,
+          default_branch: "main",
+        });
+      if (url.endsWith("/git/ref/heads/main"))
+        return jsonResponse({ object: { sha: "head" } });
+      if (url.endsWith("/git/commits/head"))
+        return jsonResponse({ tree: { sha: "base" } });
+      if (url.includes("/git/trees/base"))
+        return jsonResponse({ truncated: false, tree: [] });
+      if (url.endsWith("/git/blobs")) return jsonResponse({ sha: "weights" });
+      if (url.endsWith("/git/trees"))
+        return jsonResponse({ sha: "snapshot-tree" });
+      if (url.endsWith("/git/commits"))
+        return jsonResponse({ sha: "snapshot-commit" });
+      if (init?.method === "PATCH") {
+        expect(JSON.parse(String(init.body))).toEqual({
+          sha: "snapshot-commit",
+          force: false,
+        });
+        published = true;
+        return jsonResponse({ object: { sha: "snapshot-commit" } });
+      }
+      throw new Error("Unexpected export request");
+    };
+    const response = await send(input);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      success: true,
+      commitSha: "snapshot-commit",
+      alreadyPublished: false,
+    });
+    expect(published).toBe(true);
+  });
+  it("validates uploads and limits request size before reading a profile", async () => {
+    authedUser();
+    for (const body of [
+      null,
+      {},
+      { ...payload(), private: "false" },
+      { ...payload(), files: [] },
+    ])
+      expect((await send(body)).status).toBe(400);
+    expect(
+      (await send({ padding: "x".repeat(PROJECT_BODY_LIMIT) })).status,
+    ).toBe(413);
+  });
+  it("reports disconnected accounts and database failures", async () => {
+    authedUser();
+    mockProfileRow = { github_token: null, github_username: null };
+    expect((await (await send(payload())).json()).code).toBe(
+      "github_not_connected",
+    );
+    mockProfileSelectError = new Error("database unavailable");
+    expect((await send(payload())).status).toBe(500);
+  });
+  it("previews only the stored learner repository and reveals no token", async () => {
+    authedUser();
+    mockProfileRow = {
+      github_token: "private-test-token",
+      github_username: "octocat",
+    };
+    fetchHandler = (url, init) => {
+      expect(url).toBe(
+        "https://api.github.com/repos/octocat/tensorcraft-deep-orbit",
+      );
+      expect(new Headers(init?.headers).get("Authorization")).toBe(
+        "Bearer private-test-token",
+      );
+      return jsonResponse({
+        id: 17,
+        full_name: "octocat/tensorcraft-deep-orbit",
+        private: true,
+        default_branch: "main",
+      });
+    };
+    const response = await createApp().request("/api/github/project-export", {
+      headers: { Authorization: "Bearer session" },
+    });
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.private).toBe(true);
+    expect(body.repositoryId).toBe(17);
+    expect(JSON.stringify(body)).not.toContain("private-test-token");
+  });
+  it("maps revoked access without creating another repository", async () => {
+    authedUser();
+    mockProfileRow = { github_token: "test-token", github_username: "octocat" };
+    fetchHandler = (url) => {
+      expect(url).toContain("/repos/octocat/tensorcraft-deep-orbit");
+      return jsonResponse({}, { status: 404 });
+    };
+    const response = await send(payload());
+    expect(response.status).toBe(404);
+    expect((await response.json()).code).toBe("github_repo_access_revoked");
+  });
+  it("requires a fresh preview when repository identity changes", async () => {
+    authedUser();
+    mockProfileRow = { github_token: "test-token", github_username: "octocat" };
+    fetchHandler = () =>
+      jsonResponse({
+        id: 18,
+        full_name: "octocat/tensorcraft-deep-orbit",
+        private: false,
+        default_branch: "main",
+      });
+    expect((await send(payload())).status).toBe(409);
+  });
+});
 
 describe("GitHub routes, connect / callback / disconnect", () => {
   describe("POST /api/github/connect", () => {
@@ -259,6 +570,36 @@ describe("GitHub routes, connect / callback / disconnect", () => {
           github_connected: true,
         }),
       );
+    });
+
+    it("persists the rotating token pair encrypted at callback", async () => {
+      vi.stubEnv("GITHUB_TOKEN_ENC_KEY", "callback-test-key");
+      fetchHandler = async (url) => {
+        if (url === "https://github.com/login/oauth/access_token")
+          return jsonResponse({
+            access_token: "ghu_access",
+            refresh_token: "ghr_refresh",
+            token_type: "bearer",
+            expires_in: 28800,
+            refresh_token_expires_in: 15897600,
+          });
+        if (url === "https://api.github.com/user")
+          return jsonResponse({ login: "amira-test" });
+        throw new Error("Unexpected request");
+      };
+      const response = await createApp().request(
+        "/api/github/callback?code=ghcode&state=user_123.nonce",
+        { headers: { Cookie: "tc_gh_oauth_state=user_123.nonce" } },
+      );
+      expect(response.status).toBe(200);
+      const stored = mockAdminProfileUpdate.mock.calls[0]![0].github_token;
+      expect(stored.startsWith("v1:")).toBe(true);
+      expect(stored).not.toContain("ghr_refresh");
+      expect(JSON.parse(decryptToken(stored)!)).toMatchObject({
+        accessToken: "ghu_access",
+        refreshToken: "ghr_refresh",
+        kind: "github-oauth-v1",
+      });
     });
 
     it("returns the structured GitHub error when exchange fails", async () => {

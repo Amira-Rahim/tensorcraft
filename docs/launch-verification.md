@@ -1,6 +1,6 @@
 # Launch verification
 
-Updated on 2026-09-17. The four requested implementation checks pass:
+Updated on 2026-09-18. The four requested implementation checks pass:
 spaced review, PostgreSQL row security, browser E2E, and real signup plus
 Stripe test checkout. GitHub callback and permission configuration, production
 alert delivery, the managed snapshot restore drill, production email sign-in,
@@ -11,6 +11,25 @@ repository creation is verified using the existing account and restricted App
 installation; a separate account was not required.
 Stripe Tax and business registration are deferred at the owner's request.
 The recorded CI run for `840a1d05` passed all ten jobs.
+
+The later project-export patch is also deployed to Fly and Vercel as of
+2026-09-17 at 21:23 UTC. Health, database readiness, public browser checks,
+authentication rejection and the exact project download pass. Successful
+publication through the new authenticated endpoint and reproduction from a
+clean GitHub clone passed on 2026-09-18 after the owner reconnected GitHub.
+The 2026-09-18 diagnosis found a browser connection failure and a separate
+headless Chrome instance, not evidence that the owner was signed out. The
+subsequent authorized API check reached GitHub but the saved token was rejected.
+The missing token-renewal implementation is repaired and deployed as Fly
+release 32 and Vercel `dpl_3bJw26RAycdLk28JzSv8VekS86cY`; 121 targeted tests
+pass. The live check published 26 files, reused the same commit on retry,
+preserved all three existing files and reproduced validation/test results.
+The cloned app also passed Chromium prediction checks. Production folder-picker
+interaction and a live automatic token-renewal cycle remain unverified.
+See the [live export results](audits/project-export-live-2026-09-18.md) and
+[renewal repair](audits/github-token-renewal-2026-09-18.md). Independent
+reviewer candidates and a frozen handoff are prepared; no reviewer has been
+appointed. See the [deployment record](audits/project-export-deployment-2026-09-17.md).
 
 ## Recorded results
 

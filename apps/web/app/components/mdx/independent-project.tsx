@@ -1,3 +1,5 @@
+import { ProjectExport } from "./project-export";
+
 export function IndependentProject() {
   const linkClass =
     "rounded border border-interactive px-3 py-2 text-sm hover:bg-surface focus-visible:outline focus-visible:outline-2";
@@ -54,6 +56,7 @@ export function IndependentProject() {
         for a first attempt; this is an unvalidated author estimate. Local
         execution is sufficient, and hosting is optional.
       </p>
+      <ProjectExport />
     </section>
   );
 }

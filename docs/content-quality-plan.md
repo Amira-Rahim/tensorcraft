@@ -303,6 +303,15 @@ Advertise this outcome only after the path works.
 
 ## Q6. Validate with independent reviewers and real learners
 
+Implementation update, 2026-09-18: the [study packet](learning-study/README.md)
+provides reviewer instructions, scoring anchors, participant forms and an
+offline record/summary tool. It prepares this phase; recruitment, independent
+scores and learner observations remain open. The project GitHub exporter is
+deployed. Its live publication, identical retry, clean-clone evaluation and
+standalone browser predictions passed using a labeled maintainer fixture.
+See the [live export results](audits/project-export-live-2026-09-18.md).
+This verifies the export infrastructure, not independent learner achievement.
+
 Obtain subject and editorial reviews by people who did not write the revised
 material. Review every module, including exercises and answers. Give reviewers
 the frozen rubric and evidence without asking them to confirm an author's

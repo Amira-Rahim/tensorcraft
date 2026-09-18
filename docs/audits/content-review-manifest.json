@@ -6703,13 +6703,20 @@
     {
       "path": "scripts/build-learning-map.mjs",
       "kind": "assessment-review-evidence",
-      "sourceSha256": "c5a5598ae70a7565b81caeea71ffd7192f1da8b19e52dd52a3b600e5a0e7f434",
-      "status": "partial",
+      "sourceSha256": "080b751d511bc96bc1c45f6858082170f2ea9b357d4c59aadf81888ad481bc53",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Coverage record or targeted regression; does not certify whole-course correctness or learner outcomes."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "c5a5598ae70a7565b81caeea71ffd7192f1da8b19e52dd52a3b600e5a0e7f434",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "packages/ui/src/mdx/assessment-boundaries.test.ts",
@@ -6775,32 +6782,53 @@
     {
       "path": "scripts/exercise-cheats/batch-data.2.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "48616b092e15d1a20750ab68bdb4d4476d1b22e9c4482befba23d99c9ef964a4",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "a1a49d63a56331ffbe4c9cfd64316c230a3db71b480eaa9d864528e2fd5e9421",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "48616b092e15d1a20750ab68bdb4d4476d1b22e9c4482befba23d99c9ef964a4",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/batch-data.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "aaec9f126fcb3f902046fde5e5935ea59db9d4597fc0681ec0da06482c34b0ec",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "e49254c53d88c167ccbe4c16f293d070cd4fecb1af10892f9dc9d4d958fe338e",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "aaec9f126fcb3f902046fde5e5935ea59db9d4597fc0681ec0da06482c34b0ec",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/build-autoencoder.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "eab11edd35a3c0652cdd25dc58b9f6fbd3dc2af38d9dea9cd07cb4d6568bbe13",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "5635a6f679150fb0dec83ab5e648dfed37e08638eb65d43967960290f21ec1d4",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "eab11edd35a3c0652cdd25dc58b9f6fbd3dc2af38d9dea9cd07cb4d6568bbe13",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/deep-scan-eval.2.js",
@@ -6825,52 +6853,87 @@
     {
       "path": "scripts/exercise-cheats/forecast-signal.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "895517c085a78451814fd7cbb87d49710929c307ebf3635b5fba2cdfa107bb21",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "8d7184cb214de6d8b748a67fb9ffd4ecea0f1cc5d18634f5c81ab5894e7979bf",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "895517c085a78451814fd7cbb87d49710929c307ebf3635b5fba2cdfa107bb21",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/model-monitor.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "f00824756d50580965519b5eeda60de387a4fcdbd9cd59f11f531e0a82d5a5cf",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "b6ecb70d6ef3e50d0c351da63269034f77ed300f240c3514d5d447f64b1d76c1",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "f00824756d50580965519b5eeda60de387a4fcdbd9cd59f11f531e0a82d5a5cf",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/profile-model.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "b67ac902e04f14f03447ff5c5b2c5833b2e525a7bd075baabaa13d528d52e857",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "26a0ba11166b59c8df8604980f419b6861abae46556c532687b58000c877d9c4",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "b67ac902e04f14f03447ff5c5b2c5833b2e525a7bd075baabaa13d528d52e857",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/training-loop-exercise.2.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "e7de33355f2f001a229e295ffaca4421bdda0041a32bf0bc381f7f41f6b84627",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "1defe3ad7acef6fc32092f183d697bab9385b5d1bb32dfe57089049853e5eede",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "e7de33355f2f001a229e295ffaca4421bdda0041a32bf0bc381f7f41f6b84627",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/exercise-cheats/training-loop-exercise.js",
       "kind": "assessment_reliability_support",
-      "sourceSha256": "bddfa499c9aa35886847bfd4f24b80d2b1a7dd4761ab2429ed9512a30bc118e0",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "97ae1992616142507a2cdd2402b800078a7e37a31ba2e1ca3eea29ac0e342674",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/assessment-reliability-patch-2026-09-17.md"
       ],
-      "limitations": "Local targeted verification only; no independent review or learner outcome claim."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "bddfa499c9aa35886847bfd4f24b80d2b1a7dd4761ab2429ed9512a30bc118e0",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/validate-exercises.mjs",
@@ -6935,92 +6998,149 @@
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/README.md",
       "kind": "independent_assessment_support",
-      "sourceSha256": "9eab4ecb3c4aeff29145ae9bc4a67026b061e20f407f346ca114cf3799b0495f",
+      "sourceSha256": "13fd0cfc98ce3ae582a0016d45f5d6739e8f593bb861950d2ed0bad8dbf0cac7",
       "status": "reviewed_locally_with_limits",
       "evidence": [
-        "docs/audits/independent-assessment-patch-2026-09-17.md"
+        "docs/audits/independent-assessment-patch-2026-09-17.md",
+        "docs/audits/project-export-and-study-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Focused project export and standalone/browser checks; no independent score or live GitHub publication is claimed."
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/RUBRIC.md",
       "kind": "independent_assessment_support",
-      "sourceSha256": "0aabb2c93e970d4cfc9ccc811f1c64965dbc3c214f1789ac4e211322a7c810cd",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "6940fc7b28d14a74394eccfad0663c0cc14bd779c3525a5323fa4f61626e3e13",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "0aabb2c93e970d4cfc9ccc811f1c64965dbc3c214f1789ac4e211322a7c810cd",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/app.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "0679341833bfd0442814d4f3b191ec0c0b8228883f3ee416333bfe89a63753d0",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "0afabf13852dcc119c29ee8c4d1dae48b5218a080b84886164e96bc79ce85c3e",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "0679341833bfd0442814d4f3b191ec0c0b8228883f3ee416333bfe89a63753d0",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/artifact.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "355bd54c7e5b516ff2928efd0d4dc775ff5b4dc03215a66b33f56beba0b31e7a",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "fb9be722d3cb5302da4aaa971da3a97f2331aa2afb7c0ae08187f80fa087bdc0",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "355bd54c7e5b516ff2928efd0d4dc775ff5b4dc03215a66b33f56beba0b31e7a",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/check.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "d40bd72f12bbac513e7dc868d7af406539fe8962fd57a7be154474aa11c1218f",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "fc70d16bfcc1ee146ea423e8e701b85e79bb7995c5229d5a4289b4aaa3ab165c",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "d40bd72f12bbac513e7dc868d7af406539fe8962fd57a7be154474aa11c1218f",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/data.json",
       "kind": "independent_assessment_support",
-      "sourceSha256": "f1651684b4e3ecb424235d015de344005a5d0e9b4905fe2533ea5e9440dd65cb",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "6c1885aad2b29fceaaad3a509f95290af7b6542901cbd9d2229b1b76df9011f0",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "f1651684b4e3ecb424235d015de344005a5d0e9b4905fe2533ea5e9440dd65cb",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/evaluate.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "3246b46d823b8b40d5e2375dcb0b19b420907e0396486695236fa3d0b6567584",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "5e0c3bbd15b28112e6e552eddde40e1a7e909f15c278108d90b43308ae744a5f",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "3246b46d823b8b40d5e2375dcb0b19b420907e0396486695236fa3d0b6567584",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/evaluation.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "78e4ff54d3699879637f628f885e44b19007b0662900e3ceb56451f4ff80f65a",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "4a36cc49c0d7c843852ec626e08a1f429c8778c1b5ac5511d09710d6d35c5d25",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "78e4ff54d3699879637f628f885e44b19007b0662900e3ceb56451f4ff80f65a",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/index.html",
       "kind": "independent_assessment_support",
-      "sourceSha256": "6189ecc1f79618a1cdecc489db6e769f9851c97b4a66621473ad6c0266f19c5e",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "3a8f0ca0d7ea2530f3b5b6e181dad6ab5d6ac86026e51be268ccbde533e757ec",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "6189ecc1f79618a1cdecc489db6e769f9851c97b4a66621473ad6c0266f19c5e",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/package-lock.json",
@@ -7035,32 +7155,53 @@
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/package.json",
       "kind": "independent_assessment_support",
-      "sourceSha256": "4110c5c770d2b772b2840fed8aaf4f64a7cbbe694467e5af653c51f5039f42b4",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "ac48c8d7e4e7b1f41eaef154be25db40d9c781b5411173359ca7c6d4f1c1de78",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "4110c5c770d2b772b2840fed8aaf4f64a7cbbe694467e5af653c51f5039f42b4",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/plan.json",
       "kind": "independent_assessment_support",
-      "sourceSha256": "c5c018906eb85787b35215b5ef9f35d32d2357c453257e4004c61888b84202af",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "72dc436538b0a9ed4807fb0e86e778cb9a31705c46baa9a703d575cd4f3253a0",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "c5c018906eb85787b35215b5ef9f35d32d2357c453257e4004c61888b84202af",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/preprocessing.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "5e8ee45d1d7620dca7cf6e863687c6d0ac88d96c26c3cad997acd3b4e77aa11a",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "ecd10d7e8c48d9a941089bf0ef34f3320b9a6185d30c6961d724ce2871d3d8ce",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "5e8ee45d1d7620dca7cf6e863687c6d0ac88d96c26c3cad997acd3b4e77aa11a",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/report.md",
@@ -7075,32 +7216,47 @@
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/serve.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "9e8d5d2d353641f73b3dd3e5a78ecbd30a92452901b2107f1a59ec411e3f25bb",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "620138be99c9a265800069cef6d3f3e17089b76c5dfcc77401cb66795fdb2aa1",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "9e8d5d2d353641f73b3dd3e5a78ecbd30a92452901b2107f1a59ec411e3f25bb",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1/train.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "08008c003aa4fcfd6d560428991dd5373917c86d0ef8b0a9a0f82961a021a432",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "9367a67a447fb6b6fcd884f892e5f54b1be9b0d3f020a8dbcd9c4fe302733475",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "08008c003aa4fcfd6d560428991dd5373917c86d0ef8b0a9a0f82961a021a432",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "apps/web/public/assignments/room-occupancy-v1.zip",
       "kind": "independent_assessment_support",
-      "sourceSha256": "1ef0ff74b3b737a5273aedde25eeae2a40717c9498ee69fa6fa9488dd3dbb8a5",
+      "sourceSha256": "2764155a3a1bb36bf6b81ac38cd480e8c5e2164fcfac6f948ea1af8fa979ef00",
       "status": "reviewed_locally_with_limits",
       "evidence": [
-        "docs/audits/independent-assessment-patch-2026-09-17.md"
+        "docs/audits/independent-assessment-patch-2026-09-17.md",
+        "docs/audits/project-export-and-study-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Focused project export and standalone/browser checks; no independent score or live GitHub publication is claimed."
     },
     {
       "path": "docs/audits/independent-assessment-patch-2026-09-17.md",
@@ -7145,12 +7301,13 @@
     {
       "path": "apps/web/app/components/mdx/independent-project.tsx",
       "kind": "independent_assessment_support",
-      "sourceSha256": "808143024a9294315f0600fca2541bbd2dd0badb5c816a607bf91d885dcf23d0",
+      "sourceSha256": "a8aba6d72be12d8ce6b843b05248920dc737af0585e007923b69932ea7853903",
       "status": "reviewed_locally_with_limits",
       "evidence": [
-        "docs/audits/independent-assessment-patch-2026-09-17.md"
+        "docs/audits/independent-assessment-patch-2026-09-17.md",
+        "docs/audits/project-export-and-study-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Focused project export and standalone/browser checks; no independent score or live GitHub publication is claimed."
     },
     {
       "path": "apps/web/app/components/mdx/index.ts",
@@ -7215,22 +7372,30 @@
     {
       "path": "scripts/package-room-project.py",
       "kind": "independent_assessment_support",
-      "sourceSha256": "eba1f73eea573061da3e53cbead75140930ca158f4164c8c843c8019d5080268",
+      "sourceSha256": "60650b613752f13dd768c529c6a0edc35d98021ca43c8fe922da4d4d7c1833d0",
       "status": "reviewed_locally_with_limits",
       "evidence": [
-        "docs/audits/independent-assessment-patch-2026-09-17.md"
+        "docs/audits/independent-assessment-patch-2026-09-17.md",
+        "docs/audits/project-export-and-study-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Focused project export and standalone/browser checks; no independent score or live GitHub publication is claimed."
     },
     {
       "path": "scripts/fixtures/room-project/train.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "726c75aae1e8bc2ce5661ddb8d8de4938c1fb6471eeab5a189820a209fcc2a48",
-      "status": "reviewed_locally_with_limits",
+      "sourceSha256": "7561c5e6ac58d51afb0eba0a862b887a6b9a4d7793b467a577d435cc8d96449c",
+      "status": "pending_recheck_after_source_change",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Pre-existing hash drift recorded during the project export patch. Previous evidence is retained as history, not current approval.",
+      "invalidatedReviews": [
+        {
+          "previousSourceSha256": "726c75aae1e8bc2ce5661ddb8d8de4938c1fb6471eeab5a189820a209fcc2a48",
+          "date": "2026-09-17",
+          "reason": "Source hash was already stale in the starting checkout. Prior evidence cannot approve these current bytes; focused recheck remains pending."
+        }
+      ]
     },
     {
       "path": "scripts/check-room-project.mjs",
@@ -7245,12 +7410,229 @@
     {
       "path": "scripts/check-decisions-browser.mjs",
       "kind": "independent_assessment_support",
-      "sourceSha256": "e38c0a496fcf0828a1ce70ea11c0e549f570fc91456e0d5168202d144647fb03",
+      "sourceSha256": "d6b5b015d647d30fb104af137fb9c7e22ed3e8041d3d503aa9ad0126f90092a7",
       "status": "reviewed_locally_with_limits",
       "evidence": [
-        "docs/audits/independent-assessment-patch-2026-09-17.md"
+        "docs/audits/independent-assessment-patch-2026-09-17.md",
+        "docs/audits/project-export-and-study-2026-09-17.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Focused project export and standalone/browser checks; no independent score or live GitHub publication is claimed."
+    },
+    {
+      "path": "apps/api/src/index.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "587c4eb737fd4f73529be18522e78f8ed317546bac9cc7eb248a6302c46e2eee",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "apps/api/src/routes/github.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "211bd080044b443fcbac5b7e0c2a6ecb877251e94aac41af425f50f1ffa0b76f",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md",
+        "docs/audits/github-token-renewal-2026-09-18.md"
+      ],
+      "limitations": "Focused implementation and automated renewal checks only. Live reauthorization, token renewal, project export and independent human review remain open.",
+      "invalidatedSourceHashes": [
+        {
+          "sha256": "d861c2d5e5343711c414c025fddeb6a9a1f173f7af23ffbdddfaeac592cf6871",
+          "date": "2026-09-18",
+          "reason": "GitHub credential renewal repair; prior evidence does not cover the new token lifecycle."
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/routes/__tests__/github.test.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "250b7eedca4e0c6dbf54d9dc56678412a2082b65e3d38f0274232f45abda7b72",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md",
+        "docs/audits/github-token-renewal-2026-09-18.md"
+      ],
+      "limitations": "Focused implementation and automated renewal checks only. Live reauthorization, token renewal, project export and independent human review remain open.",
+      "invalidatedSourceHashes": [
+        {
+          "sha256": "de5ab2a8b20d78dd1a6624abe427dd052067e98ff7d3a64bd9f74e20977085e3",
+          "date": "2026-09-18",
+          "reason": "GitHub credential renewal repair; prior evidence does not cover the new token lifecycle."
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/lib/github-project.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "09842f5d5a314372eaa5d8277c059cec40b38bb0e5ffa8b55f127e83cd8367aa",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/github-project.test.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "ff572871300fcc53429da4875e425bc4f17d5e9cd24964851ea71e725d49722b",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "apps/web/lib/project-export.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "9a98fbbce929ba89e7126aa3ba5c126f7d6382ba13fa3a8c70c81976ad2bb750",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "apps/web/app/components/mdx/project-export.tsx",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "8dbb5aafd5473ed4eed7471f16bccd1a418b2b90aca56cdd3493d7a6b075cd0a",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "apps/web/app/components/mdx/project-export.test.tsx",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "7795fda939bd9aee9fc3e6b292715ff40554237174ec43208280f729cd531a8e",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "packages/shared/src/project-export.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "a1a08ae48e10273f14f030caffc93142b206b815936492930aa3093edaaedba5",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "scripts/learning-study.mjs",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "494be6be7907c4e91e9500a6e1c4b2af8f97c12367a40be36c2020b45cd7f194",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "scripts/learning-study.test.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "bec5b924b33f1fc7ea4f201d56f5f7d8a57c5154fb72dcbc481fdf753c0e16ad",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "docs/learning-study/README.md",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "56c93d061edb2daeec1961cd299301baeb747310f4deaf2cb19852d645313fd3",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "docs/learning-study/facilitator-scoring.md",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "448472b0aaf69b2491b119670bb20344ac05d8769a7011ad5243b531136b36a7",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "docs/learning-study/pilot-protocol.md",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "83e86f5838268a174c0d90524350b3985dc1c0c3d3fcc0b027ff02c678824036",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "docs/learning-study/reviewer-guide.md",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "5449d16eaab5064d619975382ffb798f112503cb72accd2e15ad507aa2645fda",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "docs/learning-study/task-forms.md",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "a361286c008b558381385ec4c09f4d7e75d399ace92ba2d8fc8f80446b8047c7",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/project-export-and-study-2026-09-17.md"
+      ],
+      "limitations": "Implementation, automated tests or authored study materials only. Live GitHub and independent human evidence remain open."
+    },
+    {
+      "path": "apps/api/src/lib/github.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "f90d647aabffbd06943ff49b51f2ec5d1f2a2995dd5d97ac849e61f84bc2b5c1",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/github-token-renewal-2026-09-18.md"
+      ],
+      "limitations": "Focused implementation and automated renewal checks only. Live reauthorization, token renewal, project export and independent human review remain open."
+    },
+    {
+      "path": "apps/api/src/lib/github-credentials.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "df88db6c0da1ee92af8f4e6699fa6ff4884904c00bef930f7597c5a69c61a4b6",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/github-token-renewal-2026-09-18.md"
+      ],
+      "limitations": "Focused implementation and automated renewal checks only. Live reauthorization, token renewal, project export and independent human review remain open."
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/github.test.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "c13761c765233fd19a7e0e643aabbe1fad8d8225c4b01205b26238fad113c3f7",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/github-token-renewal-2026-09-18.md"
+      ],
+      "limitations": "Focused implementation and automated renewal checks only. Live reauthorization, token renewal, project export and independent human review remain open."
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/github-credentials.test.ts",
+      "kind": "project_export_and_study_support",
+      "sourceSha256": "ed0fd358313942c5482d38896301434f941253d7b9197c6baf0de95b20c47186",
+      "status": "reviewed_locally_with_limits",
+      "evidence": [
+        "docs/audits/github-token-renewal-2026-09-18.md"
+      ],
+      "limitations": "Focused implementation and automated renewal checks only. Live reauthorization, token renewal, project export and independent human review remain open."
     }
   ],
   "assessmentReview": {
@@ -7273,6 +7655,37 @@
       "baseRevision": "92cf8f27 plus local reliability patch",
       "report": "docs/audits/independent-assessment-patch-2026-09-17.md",
       "scope": "Independent decision evidence and real standalone project scaffold; whole-artifact and learner reviews remain partial."
+    },
+    {
+      "date": "2026-09-17",
+      "baseRevision": "95699ae2",
+      "report": "docs/audits/project-export-and-study-2026-09-17.md",
+      "scope": "Integrated project export and independent study preparation; no whole-artifact, live export or human acceptance claimed.",
+      "preExistingInvalidatedSupportingPaths": [
+        "scripts/build-learning-map.mjs",
+        "scripts/exercise-cheats/batch-data.2.js",
+        "scripts/exercise-cheats/batch-data.js",
+        "scripts/exercise-cheats/build-autoencoder.js",
+        "scripts/exercise-cheats/forecast-signal.js",
+        "scripts/exercise-cheats/model-monitor.js",
+        "scripts/exercise-cheats/profile-model.js",
+        "scripts/exercise-cheats/training-loop-exercise.2.js",
+        "scripts/exercise-cheats/training-loop-exercise.js",
+        "apps/web/public/assignments/room-occupancy-v1/RUBRIC.md",
+        "apps/web/public/assignments/room-occupancy-v1/app.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/artifact.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/check.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/data.json",
+        "apps/web/public/assignments/room-occupancy-v1/evaluate.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/evaluation.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/index.html",
+        "apps/web/public/assignments/room-occupancy-v1/package.json",
+        "apps/web/public/assignments/room-occupancy-v1/plan.json",
+        "apps/web/public/assignments/room-occupancy-v1/preprocessing.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/serve.mjs",
+        "apps/web/public/assignments/room-occupancy-v1/train.mjs",
+        "scripts/fixtures/room-project/train.mjs"
+      ]
     }
   ]
 }

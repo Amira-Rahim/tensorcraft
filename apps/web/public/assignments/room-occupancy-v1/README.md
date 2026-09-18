@@ -125,9 +125,26 @@ Keep this folder with your experiment, plan, report, `model/` files and all
 `runs/` records. Exclude `node_modules/`. Zip it for a reviewer, or create your
 own GitHub repository and upload the folder. The supplied `.gitignore` keeps
 installed dependencies out of Git. Do not include credentials or private data.
-Tensorcraft's exercise-sync button does not publish this external folder.
+
+In the course's independent-project panel, choose your completed folder, then
+preview the GitHub destination. Publishing uses your existing
+`tensorcraft-deep-orbit` repository and shows its visibility before you confirm.
+It includes the supplied project files, `model/` artifacts, validation/test
+JSON runs and optional flat `src/*.js`, `src/*.mjs` or `src/*.json` helpers.
+Other files, including dependencies, Git metadata and `.env`, are excluded.
+Inspect the file list and your own code/report before publishing. The limit
+is 100 included files and 4 MiB; use a manual upload if your project needs more.
+
+Each changed selection creates a separate snapshot under
+`projects/room-occupancy-v1/`. Repeating the same export reuses that snapshot.
+Earlier snapshots and exercise files remain available. GitHub permissions or
+branch protection may prevent export; the UI reports failure so you can fix
+access or share a ZIP. Publishing does not assign a rubric score.
+
+Give your reviewer the snapshot link, not just the repository home page.
 A reviewer must be able to extract or clone it, run `npm ci`, reproduce the
 experiment, check the artifact and open the app without your browser session.
+For a clone, enter the snapshot folder before running those commands.
 
 Hosting is optional. For a static host, copy the browser files, model files
 and the installed TFJS bundle, keeping the URL paths used by `app.mjs`.

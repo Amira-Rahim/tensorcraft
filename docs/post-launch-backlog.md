@@ -56,11 +56,34 @@ data-gated deferrals. The world-2 release gate remains separate.
 - [ ] **After objective/canon alignment, Q4:** make existing story choices
   affect later scenes; pilot two additional decisions before a larger wave.
 - [~] **Q5 independent project:** downloadable scaffold and real local
-  artifact path implemented. Learners can publish their folder to GitHub;
-  automatic integrated-project export through Tensorcraft remains open.
+  artifact path implemented. Tensorcraft now previews and publishes the
+  completed project folder as a separate snapshot in the existing Deep Orbit
+  repository. Binary weights, retry/concurrency handling and browser file
+  selection are verified locally. The API and web changes are deployed;
+  health, public browser and download checks pass. After the token-renewal
+  repair and owner reconnection, the production API published all 26 fixture
+  files, reused the same commit on retry and preserved existing files. A clean
+  GitHub clone reproduced validation/test results and standalone browser
+  predictions without retraining or substituting files. See the
+  [live export results](audits/project-export-live-2026-09-18.md) and
+  [renewal repair](audits/github-token-renewal-2026-09-18.md).
   Independent clean-export review and learner explanation are still required.
-- [ ] **After the revised course, Q6:** arrange independent subject/editorial
-  review and a 12-20 learner pilot, including delayed and transfer checks.
+- [ ] **Q5 production follow-up:** verify the actual course folder picker in
+  an authenticated, entitled browser and observe an automatic token-renewal
+  cycle after the reconnected credential reaches its renewal window. Local
+  picker coverage and 121 targeted renewal/export tests pass; fresh-token
+  publication does not establish either remaining live check.
+- [~] **After the revised course, Q6:** the [review and pilot packet](learning-study/README.md)
+  now includes anchored scoring, consent/session instructions, three concept
+  task forms, private record templates and summaries that retain missing
+  responses and enrollment denominators. A frozen handoff, sourced
+  [reviewer shortlist](learning-study/reviewer-candidates-2026-09-17.md) and
+  [inquiry drafts](learning-study/reviewer-outreach-drafts.md) are prepared.
+  The current 2026-09-18 handoff includes 216 artifacts after the renewal
+  repair; the older frozen packet is retained for history.
+  Nobody has been contacted or hired. Recruit independent subject/editorial
+  reviewers and 12-20 learners; collect actual scores, delayed checks and
+  30-day use evidence. No human results have been collected by this patch.
 - [ ] **After quality and learner gates, Q7:** validate the $70 offer using
   actual purchase/refund evidence. Keep the live price at $50 during repairs.
 - [ ] **Start measurement review now, Q8:** verify learning and acquisition

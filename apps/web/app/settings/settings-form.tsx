@@ -700,7 +700,8 @@ export function SettingsForm({
               Connect your GitHub account, then install the Tensorcraft
               Exercises App to allow repository access. Passed exercises are
               saved to public solution repositories on your account. Tensorcraft
-              stores an encrypted GitHub access token.
+              stores encrypted GitHub tokens and renews expiring access when
+              GitHub provides a refresh token.
             </p>
 
             {githubConnected && (
@@ -732,6 +733,15 @@ export function SettingsForm({
             <div className="flex flex-wrap items-center gap-3">
               {githubConnected ? (
                 <>
+                  <button
+                    type="button"
+                    onClick={handleGithubConnect}
+                    disabled={githubBusy}
+                    data-testid="github-reconnect"
+                    className="min-h-11 rounded-none border-2 border-border-interactive bg-transparent px-5 py-3 font-mono text-xs focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {githubBusy ? "Working..." : "Reconnect GitHub"}
+                  </button>
                   <button
                     type="button"
                     onClick={handleGithubDisconnect}

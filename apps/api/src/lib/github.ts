@@ -140,17 +140,21 @@ export function buildOAuthAuthorizeUrl(params: {
  * Exchanges an OAuth code for a user access token.
  * For GitHub Apps this is a short-lived user-to-server token.
  */
+export interface GitHubOAuthTokens {
+  access_token: string;
+  token_type: string;
+  scope?: string;
+  refresh_token?: string;
+  expires_in?: number;
+  refresh_token_expires_in?: number;
+}
+
 export async function exchangeCodeForToken(params: {
   clientId: string;
   clientSecret: string;
   code: string;
   redirectUri: string;
-}): Promise<{
-  access_token: string;
-  token_type: string;
-  scope?: string;
-  refresh_token?: string;
-}> {
+}): Promise<GitHubOAuthTokens> {
   const res = await fetch(GITHUB_OAUTH_TOKEN, {
     method: "POST",
     headers: {
@@ -176,6 +180,8 @@ export async function exchangeCodeForToken(params: {
     token_type?: string;
     scope?: string;
     refresh_token?: string;
+    expires_in?: number;
+    refresh_token_expires_in?: number;
     error?: string;
     error_description?: string;
   };
@@ -195,7 +201,46 @@ export async function exchangeCodeForToken(params: {
     token_type: data.token_type ?? "bearer",
     scope: data.scope,
     refresh_token: data.refresh_token,
+    expires_in: data.expires_in,
+    refresh_token_expires_in: data.refresh_token_expires_in,
   };
+}
+
+/** Refresh tokens rotate on each use. Callers must serialize and persist them. */
+export async function refreshUserToken(params: {
+  clientId: string;
+  clientSecret: string;
+  refreshToken: string;
+}): Promise<GitHubOAuthTokens> {
+  const response = await fetch(GITHUB_OAUTH_TOKEN, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": "Tensorcraft-API",
+    },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    body: JSON.stringify({
+      client_id: params.clientId,
+      client_secret: params.clientSecret,
+      grant_type: "refresh_token",
+      refresh_token: params.refreshToken,
+    }),
+  });
+  const data = (await response.json()) as GitHubOAuthTokens & {
+    error?: string;
+  };
+  if (!response.ok || data.error || !data.access_token || !data.refresh_token) {
+    // The OAuth body can contain credentials. Never attach it to an error.
+    const invalid = ["bad_refresh_token", "expired_refresh_token"].includes(
+      data.error ?? "",
+    );
+    throw new GitHubApiError(
+      invalid || response.status === 401 ? 401 : 502,
+      "GitHub token renewal failed",
+    );
+  }
+  return data;
 }
 
 /**

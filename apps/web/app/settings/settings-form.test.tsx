@@ -231,6 +231,31 @@ describe("SettingsForm", () => {
     });
   });
 
+  it("GitHub reconnect starts authorization without disconnecting first", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        url: "https://github.com/login/oauth/authorize?reconnect",
+      }),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+    await renderForm({ githubConnected: true, githubUsername: "amirasalah" });
+    fireEvent.click(screen.getByTestId("settings-tab-github"));
+    fireEvent.click(screen.getByTestId("github-reconnect"));
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://api.test/api/github/connect",
+        expect.objectContaining({ method: "POST", credentials: "include" }),
+      ),
+    );
+    expect(fetchMock.mock.calls).toHaveLength(1);
+    await waitFor(() =>
+      expect(window.location.href).toBe(
+        "https://github.com/login/oauth/authorize?reconnect",
+      ),
+    );
+  });
+
   it("GitHub disconnect: POSTs to /api/github/disconnect and flips UI", async () => {
     const fetchMock = vi.fn(async () => ({
       ok: true,

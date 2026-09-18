@@ -4,7 +4,16 @@ import { createServer } from "vite";
 import react from "@vitejs/plugin-react";
 import { chromium, expect } from "@playwright/test";
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  mkdtempSync,
+  mkdirSync,
+  readdirSync,
+  copyFileSync,
+  rmSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -32,6 +41,8 @@ const server = await createServer({
       react: path.join(root, "packages/ui/node_modules/react"),
       "react-dom": path.join(root, "packages/ui/node_modules/react-dom"),
       "@tensorcraft/worlds": path.join(root, "packages/worlds/src"),
+      "@tensorcraft/shared": path.join(root, "packages/shared/src"),
+      "@/lib/project-export": path.join(root, "apps/web/lib/project-export.ts"),
     },
   },
   css: { postcss: { plugins: [tailwind()] } },
@@ -39,6 +50,14 @@ const server = await createServer({
     react(),
     {
       name: "transfer-check-page",
+      // Explicit API boundary stub; production component and folder reader run unchanged.
+      resolveId(id) {
+        if (id === "@/lib/api-fetch") return "\0project-api";
+      },
+      load(id) {
+        if (id === "\0project-api")
+          return "export const apiFetch = (path, options) => fetch(path, options);";
+      },
       configureServer(instance) {
         instance.middlewares.use(
           "/__transfer-check",
@@ -58,6 +77,7 @@ const server = await createServer({
   ],
 });
 let browser;
+let uploadFolder;
 try {
   await server.listen();
   const base = `http://127.0.0.1:${server.httpServer.address().port}`;
@@ -112,6 +132,95 @@ try {
       ),
     ),
   ).toBe(true);
+  // If supplied, use a genuinely trained standalone fixture, never learner records.
+  const projectArg = process.argv.indexOf("--project");
+  if (projectArg !== -1) {
+    const source = path.resolve(process.argv[projectArg + 1]);
+    uploadFolder = mkdtempSync(
+      path.join(tmpdir(), "tensorcraft-export-browser-"),
+    );
+    for (const entry of readdirSync(source, { withFileTypes: true })) {
+      if (entry.isFile())
+        copyFileSync(
+          path.join(source, entry.name),
+          path.join(uploadFolder, entry.name),
+        );
+      else if (["model", "runs"].includes(entry.name)) {
+        mkdirSync(path.join(uploadFolder, entry.name));
+        for (const name of readdirSync(path.join(source, entry.name)))
+          copyFileSync(
+            path.join(source, entry.name, name),
+            path.join(uploadFolder, entry.name, name),
+          );
+      }
+    }
+    writeFileSync(
+      path.join(uploadFolder, ".env"),
+      "EXCLUDED_FIXTURE=not-a-secret",
+    );
+    mkdirSync(path.join(uploadFolder, "node_modules"));
+    writeFileSync(
+      path.join(uploadFolder, "node_modules/excluded.js"),
+      "excluded fixture",
+    );
+    const requests = [];
+    await page.route("**/api/github/project-export", (route) => {
+      requests.push(route.request());
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(
+          route.request().method() === "GET"
+            ? {
+                repositoryId: 17,
+                fullName: "fixture/tensorcraft-deep-orbit",
+                private: false,
+                url: "https://github.com/fixture/tensorcraft-deep-orbit",
+              }
+            : {
+                success: true,
+                url: "https://github.com/fixture/tensorcraft-deep-orbit/tree/fixture/projects/snapshot",
+              },
+        ),
+      });
+    });
+    await page
+      .getByLabel("Completed project folder")
+      .setInputFiles(uploadFolder);
+    await expect(page.getByText(/2 other files excluded/)).toBeVisible();
+    expect(requests).toHaveLength(0);
+    await page
+      .getByRole("button", { name: "Preview GitHub destination" })
+      .click();
+    await expect(page.getByText(/public; anyone can read/)).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Publish project snapshot" }),
+    ).toBeDisabled();
+    await page.getByRole("checkbox").check();
+    await page
+      .getByRole("button", { name: "Publish project snapshot" })
+      .click();
+    await expect(page.getByText(/Project saved/)).toBeVisible();
+    expect(requests.map((request) => request.method())).toEqual([
+      "GET",
+      "POST",
+    ]);
+    const payload = requests[1].postDataJSON();
+    expect(
+      payload.files.some(
+        (file) => file.path === ".env" || file.path.startsWith("node_modules/"),
+      ),
+    ).toBe(false);
+    for (const file of payload.files)
+      expect(
+        Buffer.from(file.base64, "base64").equals(
+          readFileSync(path.join(source, file.path)),
+        ),
+      ).toBe(true);
+    console.log(
+      `Project folder browser check: ${payload.files.length} uploaded files match original bytes; preview/consent enforced; .env and dependencies excluded. API responses mocked.`,
+    );
+  }
   for (const width of [1100, 375]) {
     await page.setViewportSize({ width, height: 900 });
     await page.screenshot({
@@ -131,4 +240,5 @@ try {
 } finally {
   await browser?.close();
   await server.close();
+  if (uploadFolder) rmSync(uploadFolder, { recursive: true, force: true });
 }

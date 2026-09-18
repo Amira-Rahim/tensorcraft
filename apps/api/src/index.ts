@@ -6,6 +6,7 @@ initSentry();
 
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
+import { PROJECT_BODY_LIMIT } from "@tensorcraft/shared";
 import { serve } from "@hono/node-server";
 import { corsMiddleware } from "./middleware/cors";
 import { globalRateLimitMiddleware } from "./middleware/rate-limit";
@@ -45,12 +46,17 @@ app.use("*", sentryMiddleware);
 app.use("*", versionMiddleware);
 app.use("*", securityHeadersMiddleware);
 app.use("*", corsMiddleware);
-// Body limit all routes EXCEPT /api/issues (needs 8MB for screenshot uploads)
+// Issues enforce their own limit; project uploads include base64 model weights.
 app.use("*", async (c, next) => {
   if (c.req.path.startsWith("/api/issues")) {
     return next();
   }
-  return bodyLimit({ maxSize: 1024 * 1024 })(c, next);
+  return bodyLimit({
+    maxSize:
+      c.req.path === "/api/github/project-export"
+        ? PROJECT_BODY_LIMIT
+        : 1024 * 1024,
+  })(c, next);
 });
 
 // Rate limit all routes except webhooks and the liveness probe; the exempt

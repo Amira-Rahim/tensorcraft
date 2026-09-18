@@ -1,4 +1,5 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { setCookie, getCookie, deleteCookie } from "hono/cookie";
 import { timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
@@ -18,8 +19,20 @@ import {
   revokeUserToken,
 } from "../lib/github";
 import { logger } from "../lib/logger";
-import { decryptToken, encryptToken } from "../lib/token-crypto";
+import { encryptToken } from "../lib/token-crypto";
+import {
+  GitHubCredentialError,
+  resolveGitHubToken,
+  storedGitHubAccessToken,
+  storeGitHubCredential,
+} from "../lib/github-credentials";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
+import { PROJECT_BODY_LIMIT, validateProjectFiles } from "@tensorcraft/shared";
+import {
+  exportRoomProject,
+  projectTarget,
+  ProjectExportError,
+} from "../lib/github-project";
 
 const github = new Hono<AppEnv>();
 
@@ -49,9 +62,18 @@ function structuredError(
  * Critical for graceful degradation when repo access is revoked (403/404).
  */
 function mapGitHubError(err: unknown): {
-  status: 401 | 403 | 404 | 429 | 500;
+  status: 401 | 403 | 404 | 429 | 500 | 503;
   body: ReturnType<typeof structuredError>;
 } {
+  if (err instanceof GitHubCredentialError) {
+    return {
+      status: err.status,
+      body: structuredError(
+        err.status === 401 ? "github_token_expired" : "github_api_error",
+        err.message,
+      ),
+    };
+  }
   if (err instanceof GitHubApiError) {
     if (err.status === 401) {
       return {
@@ -91,6 +113,19 @@ function mapGitHubError(err: unknown): {
     status: 500,
     body: structuredError("internal_error", "Unexpected error"),
   };
+}
+
+async function routeToken(
+  c: Context<AppEnv>,
+  client: ReturnType<typeof getSupabaseServerClient>,
+  stored: string | null | undefined,
+) {
+  try {
+    return await resolveGitHubToken(client, c.get("userId"), stored);
+  } catch (error) {
+    const mapped = mapGitHubError(error);
+    return c.json(mapped.body, mapped.status);
+  }
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -258,7 +293,7 @@ github.get("/callback", async (c) => {
     const { error: dbError } = await supabase
       .from("profiles")
       .update({
-        github_token: encryptToken(tokens.access_token),
+        github_token: storeGitHubCredential(tokens),
         github_username: username,
         github_connected: true,
         updated_at: new Date().toISOString(),
@@ -319,11 +354,10 @@ github.post("/disconnect", async (c) => {
 
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-  // Stored encrypted since 2026-08-23. decryptToken passes legacy plaintext
-  // rows through unchanged and returns null for anything it cannot open, and
-  // null is already the "not connected" path below.
+  // Read the access token from legacy rows or an encrypted rotating pair.
+  // Disconnect must not create another token by refreshing it first.
   const storedToken = profile?.github_token as string | null | undefined;
-  const token = storedToken ? decryptToken(storedToken) : storedToken;
+  const token = storedGitHubAccessToken(storedToken);
 
   // Best-effort revocation, if env vars are missing or GitHub is down, we
   // still want to clear our DB so the user is locally disconnected.
@@ -443,7 +477,8 @@ github.post("/commit", async (c) => {
   }
 
   const storedToken = profile.github_token as string | null;
-  const token = storedToken ? decryptToken(storedToken) : storedToken;
+  const token = await routeToken(c, supabase, storedToken);
+  if (token instanceof Response) return token;
   const username = profile.github_username as string | null;
 
   if (!token || !username) {
@@ -556,7 +591,8 @@ github.post("/retroactive-push", async (c) => {
   }
 
   const storedToken = profile.github_token as string | null;
-  const token = storedToken ? decryptToken(storedToken) : storedToken;
+  const token = await routeToken(c, supabase, storedToken);
+  if (token instanceof Response) return token;
   const username = profile.github_username as string | null;
   if (!token || !username) {
     return c.json(
@@ -914,7 +950,12 @@ github.post("/push", async (c) => {
     return c.json({ error: "Failed to retrieve user profile" }, 500);
   }
 
-  const providerToken = profile.github_token as string | null;
+  const providerToken = await routeToken(
+    c,
+    supabase,
+    profile.github_token as string | null,
+  );
+  if (providerToken instanceof Response) return providerToken;
   if (!providerToken) {
     return c.json(
       {
@@ -982,8 +1023,34 @@ github.get("/status", async (c) => {
     .eq("id", userId)
     .single();
 
-  if (error || !data) {
+  if (error || !data || !data.github_connected || !data.github_token) {
     return c.json({ connected: false });
+  }
+
+  const token = await routeToken(c, supabase, data.github_token);
+  if (token instanceof Response) {
+    if (token.status === 401)
+      return c.json({
+        connected: false,
+        code: "github_token_expired",
+        username: data.github_username,
+      });
+    return token;
+  }
+  if (!token) return c.json({ connected: false });
+  try {
+    const actual = await getGitHubUsername(token);
+    if (!actual || actual.toLowerCase() !== data.github_username?.toLowerCase())
+      return c.json({ connected: false, code: "github_token_expired" });
+  } catch (error) {
+    if (error instanceof GitHubApiError && error.status === 401)
+      return c.json({
+        connected: false,
+        code: "github_token_expired",
+        username: data.github_username,
+      });
+    const mapped = mapGitHubError(error);
+    return c.json(mapped.body, mapped.status);
   }
 
   return c.json({
@@ -993,6 +1060,86 @@ github.get("/status", async (c) => {
       ? buildRepoName("{world-slug}") // placeholder client can substitute
       : undefined,
   });
+});
+
+// The learner previews the existing repository before uploading a local project.
+// No new repository, installation scope, or visibility change is requested here.
+github.use("/project-export", authMiddleware);
+github.use("/project-export", bodyLimit({ maxSize: PROJECT_BODY_LIMIT }));
+github.on(["GET", "POST"], "/project-export", async (c) => {
+  let input: Parameters<typeof exportRoomProject>[2] | undefined;
+  if (c.req.method === "POST") {
+    try {
+      const body = await c.req.json();
+      if (
+        !body ||
+        !Number.isSafeInteger(body.repositoryId) ||
+        body.repositoryId <= 0 ||
+        typeof body.private !== "boolean"
+      )
+        throw new Error("Preview the destination before publishing.");
+      input = {
+        files: validateProjectFiles(body.files),
+        repositoryId: body.repositoryId,
+        private: body.private,
+      };
+    } catch (error) {
+      return c.json(
+        structuredError(
+          "validation_error",
+          error instanceof Error ? error.message : "Invalid project request",
+        ),
+        400,
+      );
+    }
+  }
+  const supabase = getSupabaseServerClient(c.get("accessToken"));
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("github_token, github_username")
+    .eq("id", c.get("userId"))
+    .single();
+  if (error || !profile)
+    return c.json(
+      structuredError("internal_error", "Failed to read profile"),
+      500,
+    );
+  const token = await routeToken(
+    c,
+    supabase,
+    profile.github_token as string | null,
+  );
+  if (token instanceof Response) return token;
+  const username = profile.github_username as string | null;
+  if (!token || !username)
+    return c.json(
+      structuredError(
+        "github_not_connected",
+        "Connect GitHub in Settings, then preview the destination again.",
+      ),
+      400,
+    );
+  try {
+    if (!input) return c.json(await projectTarget(token, username));
+    return c.json({
+      success: true,
+      ...(await exportRoomProject(token, username, input)),
+    });
+  } catch (error) {
+    if (error instanceof ProjectExportError)
+      return c.json(structuredError("validation_error", error.message), 409);
+    const mapped = mapGitHubError(error);
+    // Never log uploaded code, reports or GitHub response bodies here.
+    logger.warn(
+      {
+        route: "github.project-export",
+        userId: c.get("userId"),
+        status: mapped.status,
+      },
+      "Project export failed",
+    );
+    return c.json(mapped.body, mapped.status);
+  }
 });
 
 export { github };

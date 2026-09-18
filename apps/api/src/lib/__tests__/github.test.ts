@@ -6,7 +6,82 @@ import {
   isTransientStatus,
   withRetry,
   GitHubApiError,
+  exchangeCodeForToken,
+  refreshUserToken,
 } from "../github";
+
+describe("OAuth token lifetime", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  const tokens = {
+    access_token: "ghu_access",
+    refresh_token: "ghr_refresh",
+    token_type: "bearer",
+    expires_in: 28800,
+    refresh_token_expires_in: 15897600,
+  };
+  it("retains expiry and refresh information from the code exchange", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(JSON.stringify(tokens))),
+    );
+    expect(
+      await exchangeCodeForToken({
+        clientId: "id",
+        clientSecret: "secret",
+        code: "code",
+        redirectUri: "https://example.test/callback",
+      }),
+    ).toEqual(tokens);
+  });
+  it("exchanges a refresh token in the body, with a bounded request", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify(tokens)));
+    vi.stubGlobal("fetch", fetch);
+    expect(
+      await refreshUserToken({
+        clientId: "id",
+        clientSecret: "secret",
+        refreshToken: "ghr_previous",
+      }),
+    ).toEqual(tokens);
+    const [url, init] = fetch.mock.calls[0]!;
+    expect(url).toBe("https://github.com/login/oauth/access_token");
+    expect(init.signal).toBeInstanceOf(AbortSignal);
+    expect(JSON.parse(init.body)).toEqual({
+      client_id: "id",
+      client_secret: "secret",
+      grant_type: "refresh_token",
+      refresh_token: "ghr_previous",
+    });
+  });
+  it.each([
+    [200, "bad_refresh_token", 401],
+    [503, "temporarily_unavailable", 502],
+    [200, "incorrect_client_credentials", 502],
+  ])("sanitizes OAuth failure %i/%s", async (status, error, expected) => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(JSON.stringify({ ...tokens, error }), { status }),
+        ),
+    );
+    try {
+      await refreshUserToken({
+        clientId: "id",
+        clientSecret: "secret",
+        refreshToken: "ghr_previous",
+      });
+      expect.unreachable();
+    } catch (failure) {
+      expect(failure).toMatchObject({ status: expected });
+      expect(JSON.stringify(failure)).not.toContain("ghr_");
+      expect(JSON.stringify(failure)).not.toContain("ghu_");
+    }
+  });
+});
 
 describe("buildRepoName", () => {
   it("prefixes world slug", () => {
