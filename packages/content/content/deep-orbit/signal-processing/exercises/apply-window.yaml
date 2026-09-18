@@ -57,7 +57,7 @@ testCode: |
       const w = windowOf(64);
       expect(
         w[63],
-        "This is the symmetric Hann, the one with n - 1 underneath, and it reaches exactly zero at both ends. The periodic form the lesson's own code uses, tf.signal.hannWindow, divides by n instead and leaves a step of 0.0024 at the last sample. That form is for resynthesis, where the shifted windows have to sum to a constant. This taper is for one slice, so use the instruction formula.",
+        "This is the symmetric Hann, the one with n - 1 underneath, and it reaches exactly zero at both ends. The periodic form the lesson's own code uses, tf.signal.hannWindow, divides by n instead and leaves a step of 0.0024 at the last sample. The periodic form is common in spectral analysis and supports useful overlap-add pairs. This exercise explicitly asks for the symmetric form; use the stated formula.",
       ).toBeCloseTo(0, 4);
     });
     it('reaches full weight at the middle sample', () => {

@@ -2,44 +2,25 @@ slug: model-pipeline
 lessonSlug: multi-model-systems
 title: "Wire a Model Pipeline"
 instructions: |
-  **Contract revision 2026-09-17:** Saved code must reject a non-boolean detector result and an empty or non-string alert.
+  Implement `classifierStage(model)` and `pipeline(signal, classify, detectAnomaly, generateAlert)`.
 
-  Write a pipeline function that runs three stages over one signal: `classify`
-  (returns `{ class, confidence }`), `detectAnomaly` (returns a boolean), and
-  `generateAlert` (returns a message string). Every stage is handed the raw
-  capture and does its own preprocessing, and the classifier's verdict rides
-  along as context. The `detectAnomaly` here is the grader's two-argument
-  stand-in, `(signal, class)`; lesson 5's three-argument call carries the
-  autoencoder and the thresholds itself.
+  The classifier receives three finite raw readings: amplitude in counts,
+  zero-crossing count and phase in radians. Apply the supplied min-max RANGES,
+  predict once on shape [1, 3] and dispose temporary tensors. Reject a wrong
+  length or non-finite input. Require one finite sigmoid value p in [0, 1].
+  Return anomaly when p > 0.5, otherwise noise. The `confidence` field stores
+  p for anomaly and 1-p for noise. This is a chosen-class score, not proven calibration.
 
-  Two checks sit on that verdict and they end differently. The class is
-  contracted to be 'noise' or 'anomaly', and a class outside the contract has
-  an honest stand-in: pass 'unknown' to the next stage instead of the value you
-  do not believe. The confidence has no stand-in, because every later stage
-  quotes it, so a confidence that is not a finite number from 0 to 1 inclusive
-  stops the run. NaN is the case to watch: `typeof NaN` reports 'number', and
-  every comparison against NaN is false, so it clears a type check and a range
-  check both. Throw, before `detectAnomaly` is called.
+  The pipeline passes the raw signal to each stage. Accept only noise or
+  anomaly from the classifier; substitute unknown for another class. Reject
+  a non-finite or out-of-range confidence before calling the detector. The
+  detector must return a boolean. For true, call the alert writer and require
+  a non-empty string; for false, skip it and return null for the alert.
+  Return { classification, confidence, isAnomaly, alert }.
 
-  If the signal is not anomalous, skip the alert stage and leave the alert
-  field null rather than empty. Return `{ classification, confidence, isAnomaly, alert }`.
-
-  Stage 1 is a real model here. `classifierStage(model)` takes module 4's
-  classifier, a `tf.LayersModel` whose input is [null, 3], and returns the
-  `classify` function the pipeline takes. It scales the three readings
-  (amplitude in counts, frequency in zero-crossings, phase in radians) with
-  `RANGES`, module 4's contract, hands the model one [1, 3] row inside
-  `tf.tidy`, and turns the sigmoid output into `{ class, confidence }`:
-  above 0.5 is 'anomaly' at that value, otherwise 'noise' at one minus it,
-  because the confidence is confidence in the verdict. Two contracts sit on
-  the input and neither is yours to repair. A capture of the wrong length is
-  a broken contract upstream, and the model's own shape error is the right
-  thing to surface, so do not trim it to fit. Three numbers on the wrong
-  scale fit the shape and come back as a legal-looking confidence that means
-  nothing, so scale them the way the model was trained, not raw and not as
-  z-scores.
-
-  Validate the other stages too. detectAnomaly must return a boolean; throw before calling generateAlert if it returns anything else. An alert must be a non-empty string after trimming. Reject an invalid alert instead of returning it.
+  These exercise stages are supplied callbacks, not the lesson's complete
+  autoencoder and forecast helpers. Input/output checks catch malformed data;
+  they cannot establish that a plausible prediction is correct.
 starterCode: |
   interface Verdict {
     class: string;
@@ -104,10 +85,13 @@ solutionCode: |
       if (reading.length !== order.length) {
         throw new Error('the classifier reads ' + order.length + ' features and was handed ' + reading.length);
       }
+      if (!reading.every(Number.isFinite)) throw new Error('Non-finite reading');
       const features = reading.map((v, i) => (v - order[i].min) / (order[i].max - order[i].min));
       return tf.tidy(() => {
         const row = tf.tensor2d([features]);
-        const p = (model.predict(row) as tf.Tensor).dataSync()[0];
+        const output = (model.predict(row) as tf.Tensor).dataSync();
+        if (output.length !== 1 || !Number.isFinite(output[0]) || output[0] < 0 || output[0] > 1) throw new Error('Invalid sigmoid output');
+        const p = output[0];
         return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
       });
     };
@@ -260,7 +244,7 @@ testCode: |
         const r = await runPipeline([7, 8, 9], verdict('anomaly', confidence), async () => true, async () => 'ALERT!');
         expect(
           r.confidence,
-          'The contract is 0 to 1 inclusive. A gate written with strict inequalities throws away a model that is certain and a model that is certain of the opposite.',
+          'The contract includes both endpoints. Scores of zero and one do not prove certainty; keep the reported value.',
         ).toBe(confidence);
         expect(r.classification).toBe('anomaly');
       }
@@ -294,6 +278,13 @@ testCode: |
     });
   });
   describe('classifierStage', () => {
+    it('rejects non-finite input before predicting', async () => {
+      let calls = 0;
+      const stage = classifierStage({ predict() { calls++; throw new Error('unexpected prediction'); } });
+      for (const bad of [NaN, Infinity, -Infinity]) await expect(stage([bad, 5, 0.3])).rejects.toThrow();
+      expect(calls).toBe(0);
+    });
+
     // Module 4's classifier, real: three features in, one sigmoid out. Seeded
     // so a failure reproduces run to run; the expected verdicts below are
     // read off the model itself, never off a table.
@@ -353,7 +344,7 @@ testCode: |
           const want = verdictOf(modelSays(model, minMax(reading)));
           const got = await stage(reading);
           expect(got.class, 'On this model the sigmoid says ' + (want.class === 'anomaly' ? 'above' : 'at or below') + ' 0.5 for this reading, so the class is ' + want.class + '. A verdict that does not follow this model was read off something else.').toBe(want.class);
-          expect(got.confidence, 'Confidence is confidence IN THE VERDICT: the sigmoid output when the class is anomaly, one minus it when the class is noise. A 0.2 output is noise at 0.8, not noise at 0.2.').toBeCloseTo(want.confidence, 4);
+          expect(got.confidence, 'Confidence is chosen-class score: the sigmoid output when the class is anomaly, one minus it when the class is noise. A 0.2 output is noise at 0.8, not noise at 0.2.').toBeCloseTo(want.confidence, 4);
         }
       }
     }));

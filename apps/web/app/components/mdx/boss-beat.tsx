@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  BOSS_BEAT_CHANGED,
   getBossBeatChoice,
   recordBossBeatChoice,
   type BossBeatChoice,
@@ -77,6 +78,9 @@ export function BossBeat({
 }: BossBeatProps) {
   const [priorChoice, setPriorChoice] = useState<BossBeatChoice | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const [loadError, setLoadError] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(timeoutSeconds);
   // The clock ran out before the learner chose. Nothing is recorded on
   // their behalf: the beat stays playable and names the stance the bridge
@@ -86,11 +90,21 @@ export function BossBeat({
   const [submittedIndex, setSubmittedIndex] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const startedAtRef = useRef<number | null>(null);
+  const generation = useRef(0);
 
   // Load prior choice once on mount; if found, render the consequence inline
   // and skip the timer.
   useEffect(() => {
     let active = true;
+    generation.current += 1;
+    setSubmitting(false);
+    setLoading(true);
+    setLoadError(false);
+    setPriorChoice(null);
+    setSubmittedIndex(null);
+    setSecondsLeft(timeoutSeconds);
+    setTimedOut(false);
+    setSaveError(false);
     getBossBeatChoice(beatId)
       .then((c) => {
         if (active) {
@@ -100,26 +114,21 @@ export function BossBeat({
           }
         }
       })
-      // `setLoading(false)` used to live only inside `.then()`, so any
-      // rejection left the component stuck on "Loading beat…" permanently.
-      // Treat a failed lookup as "no prior choice" and let the learner play
-      // the beat - over-offering is recoverable, a dead component is not.
       .catch(() => {
-        if (active && !startedAtRef.current) {
-          startedAtRef.current = Date.now();
-        }
+        if (active) setLoadError(true);
       })
       .finally(() => {
         if (active) setLoading(false);
       });
     return () => {
       active = false;
+      generation.current += 1;
     };
-  }, [beatId]);
+  }, [beatId, loadAttempt, timeoutSeconds]);
 
   // Countdown, only ticks when no prior choice and not already submitted.
   useEffect(() => {
-    if (loading || priorChoice || submittedIndex !== null) return;
+    if (loading || loadError || priorChoice || submittedIndex !== null) return;
     if (secondsLeft <= 0) {
       if (!timedOut) setTimedOut(true);
       return;
@@ -129,7 +138,7 @@ export function BossBeat({
       1000,
     );
     return () => window.clearTimeout(t);
-  }, [loading, priorChoice, submittedIndex, secondsLeft]);
+  }, [loading, loadError, priorChoice, submittedIndex, secondsLeft, timedOut]);
 
   function reactionMs(): number | null {
     if (!startedAtRef.current) return null;
@@ -139,18 +148,11 @@ export function BossBeat({
   async function handleChoice(idx: number) {
     if (submitting || submittedIndex !== null || priorChoice) return;
     setSubmitting(true);
-    // `setSubmittedIndex(idx)` used to run HERE, before the await. Combined
-    // with the `submittedIndex !== null` guard above, that meant a failed
-    // save was indistinguishable from a successful one: the beat rendered
-    // its consequence, the guard permanently blocked retry, and the choice
-    // was never recorded. It looked saved and never was - the worst failure
-    // shape available, because the learner has no reason to suspect it.
-    //
-    // The state now advances only after the write resolves. A rejection
-    // leaves the beat playable so the learner can choose again.
+    setSaveError(false);
     const opt = options[idx];
+    const startedGeneration = generation.current;
     try {
-      await recordBossBeatChoice({
+      const inserted = await recordBossBeatChoice({
         worldId,
         lessonId,
         beatId,
@@ -158,11 +160,20 @@ export function BossBeat({
         choiceLabel: opt.label,
         reactionMs: reactionMs(),
       });
-      setSubmittedIndex(idx);
+      // First write wins, including a choice submitted from another tab.
+      const saved = inserted ? null : await getBossBeatChoice(beatId);
+      if (!inserted && !saved) throw new Error("Saved choice was not returned");
+      window.dispatchEvent(
+        new CustomEvent(BOSS_BEAT_CHANGED, { detail: beatId }),
+      );
+      if (generation.current === startedGeneration) {
+        if (inserted) setSubmittedIndex(idx);
+        else setPriorChoice(saved);
+      }
     } catch {
-      // Leave submittedIndex null: the beat stays interactive and retryable.
+      if (generation.current === startedGeneration) setSaveError(true);
     } finally {
-      setSubmitting(false);
+      if (generation.current === startedGeneration) setSubmitting(false);
     }
   }
 
@@ -185,6 +196,26 @@ export function BossBeat({
           Loading beat…
         </p>
       </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <aside
+        className="my-8 p-6 bg-surface-raised border border-border"
+        role="alert"
+      >
+        <p>
+          We could not load your saved choice. Retry before making this call.
+        </p>
+        <button
+          type="button"
+          className="border border-border px-4 py-2"
+          onClick={() => setLoadAttempt((n) => n + 1)}
+        >
+          Retry loading choice
+        </button>
+      </aside>
     );
   }
 
@@ -211,12 +242,11 @@ export function BossBeat({
         data-choice-label={resolvedChoice.choiceLabel}
       >
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-2">
-          Boss beat · resolved
+          Decision saved
         </p>
         <p className="text-sm font-mono text-text-muted mb-3">
           Your call:{" "}
-          <strong className="text-text-primary">{opt.display}</strong> (
-          {resolvedChoice.choiceLabel})
+          <strong className="text-text-primary">{opt.display}</strong>
         </p>
         <p className="text-base text-text-primary leading-relaxed">
           {opt.consequence}
@@ -234,11 +264,12 @@ export function BossBeat({
     >
       <div className="flex items-center justify-between mb-4">
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary">
-          Boss beat · {timedOut ? "clock out" : `${secondsLeft}s`}
+          Decision · {timedOut ? "clock out" : `${secondsLeft}s`}
         </p>
         <div
           className="h-1 w-32 bg-border"
           role="progressbar"
+          aria-label="Scene countdown"
           aria-valuenow={secondsLeft}
           aria-valuemin={0}
           aria-valuemax={timeoutSeconds}
@@ -270,9 +301,15 @@ export function BossBeat({
         data-testid="boss-beat-silence"
       >
         {timedOut
-          ? `Clock out. Nothing is recorded. If you walk away, the bridge defaults to ${options[silenceIndex].display}. Choose, or let it stand.`
+          ? `Clock out. Nothing is recorded. The standing proposal is: ${options[silenceIndex].display}. Choose when ready.`
           : ""}
       </p>
+      {saveError && (
+        <p role="alert" className="mb-4 text-sm">
+          We could not confirm that your choice was saved. Check your connection
+          and sign-in, then choose again.
+        </p>
+      )}
       <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {displayOrder(beatId).map((i, displayIdx) => {
           const opt = options[i];

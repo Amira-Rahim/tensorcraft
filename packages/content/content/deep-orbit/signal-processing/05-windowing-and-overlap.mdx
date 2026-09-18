@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "StringDecoder carries incomplete encoded characters across chunks. A window function instead changes sample amplitudes to reduce spectral leakage, widening peaks in return. Overlap gives more coverage of boundary samples; exact signal reconstruction requires compatible analysis and synthesis windows and hop size."
 consequence:
-  narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
+  narrative: "Hann windowing reduces distant leakage while broadening the main peak. The component near 73.4 Hz remains. Farah whispers: 'That is not noise. That is structure.'"
 hints:
   - level: nudge
     content: |
@@ -105,7 +105,7 @@ console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from
 // The challenge asks you for the symmetric form,
 // w[i] = 0.5 * (1 - cos(2*pi*i / (n - 1))), which reaches exactly zero at
 // both ends. tfjs ships the periodic variant:
-const hann = Array.from(tf.signal.hannWindow(128).dataSync());
+const hann = tf.tidy(() => Array.from(tf.signal.hannWindow(128).dataSync()));
 // One convention note. For an even n the built-in uses the periodic form,
 // 2*pi*i / n, so at n = 128 its last weight is 0.0006 rather than 0, and it
 // never differs from the n - 1 form by more than 0.019 per sample (0.038 at
@@ -153,18 +153,12 @@ console.log('Bin 9:', windowedFFT[9].toFixed(1));    // ~5.4, down from ~14.5
 console.log('Bin 20:', windowedFFT[20].toFixed(1));  // ~0.0
 console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
-// The first cost is scale, not spreading. Every one of the 65 bins got smaller,
-// so nothing moved outward here. This 128-point Hann's values average
-// exactly 0.5, and multiplying by it scales the whole spectrum by that
-// factor. On a 10 Hz tone that fits the window exactly, the peak goes
-// 64.00 to 32.00, a ratio of 0.5: the window mean itself. Windowed and
-// unwindowed magnitudes are therefore never comparable. Lesson 4 extracts
-// its fixed-bin features with no window at all.
-//
-// The second cost is the wider main lobe, and that same 10 Hz tone is
-// where you see it: bins 9 and 11 read 0.00 raw and 16.00 windowed. Here
-// at 10.5 Hz the two peak bins read ~27.2 instead of ~41.7, both costs
-// at once.`}
+// An on-bin 10 Hz unit sine has peak 64 before this periodic Hann and
+// 32 after it. Its neighbors gain magnitude, reaching 16 at bins 9/11.
+// At 10.5 Hz the peak is about 27.2 rather than 41.7. A window changes
+// the whole spectral shape; multiplying by its mean does not describe
+// each bin. Compare like windows or apply a task-appropriate correction.
+`}
 </CodeBlock>
 
 ## Overlapping Windows
@@ -203,7 +197,7 @@ function stftWithWindowing(
 
 // 50% overlap is the standard: good balance of coverage and computation.
 // Our demo signal is 128 samples, so use a 64-sample window with hop 32
-const spec = stftWithWindowing(signal, 64, 32, (n) => Array.from(tf.signal.hannWindow(n).dataSync()));
+const spec = stftWithWindowing(signal, 64, 32, (n) => tf.tidy(() => Array.from(tf.signal.hannWindow(n).dataSync())));
 console.log('Windows:', spec.length);          // 3
 console.log('Frequency bins:', spec[0].length); // 33`}
 </CodeBlock>
@@ -221,7 +215,7 @@ console.log('Frequency bins:', spec[0].length); // 33`}
 
 One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what the challenge asks you to write; this lesson's code uses the periodic form tfjs ships. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. This ripple can affect feature scales. It does not make reconstruction impossible: normalized inverse STFT can use the weaker nonzero-overlap-add (NOLA) condition, where the sum of squared window weights is nonzero at every reconstructed sample. That normalization and complete boundary coverage matter.
 
-For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
+For real-time inference: a smaller hop produces updates more frequently, at the cost of more FFTs. Waiting for enough samples to fill the analysis window remains a separate delay.
 </DerivationDrawer>
 
 ## Challenge
@@ -239,7 +233,7 @@ The grader's leakage statistic sums magnitudes outside the central seven-bin ban
 
 <RecallPrompt
   question="Your spectrogram rows now come from windows with 50% overlap, so each sample appears in two of them. Which condition from the module 1 train/validation split decides whether rows like these can be split at random, and what does the overlap do to it?"
-  answer="Only independent rows can be split at random. A 50% overlap makes neighboring windows share half their samples, so validation rows arrive half seen and the score measures memory rather than learning. Split by time instead: divide the signal first, then window inside each side."
+  answer="Random splitting of overlapping windows can leak shared samples across the split and inflate validation results. The severity depends on the task and data. Split by time instead: divide the signal first, then window inside each side."
 />
 
 <LessonRecap
@@ -252,7 +246,7 @@ The grader's leakage statistic sums magnitudes outside the central seven-bin ban
 
 <Epilogue>
 
-With the Hann window applied, the spectrum goes quiet everywhere it should: the sidelobe smear collapses to near zero, and what remains is a single slender line at 73.4 Hz, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform.
+With the Hann window applied, the spectrum goes quiet everywhere it should: the sidelobe smear collapses to near zero, and what remains is a broader peak near 73.4 Hz with much weaker distant sidelobes, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform.
 
 <Dialogue speaker="Dr. Farah">
 The peak survives the taper. That rules out one explanation, not every instrument fault. If it also survives a second sensor chain, I want to know who expected us to find it.

@@ -9,9 +9,8 @@ description: |
   learned rule at every one of them, whatever the window length. You'll
   build RNNs and LSTMs that carry state across time, meet the lighter GRU, and
   forecast the next reading. You already have the instincts: a reducer folds
-  each step into the state it carries, and a cached value expires when it
-  goes stale.
-summary: "Recurrent networks that carry state across time: RNNs and LSTMs mapped onto the reducer and cache-expiry code you already write, plus the split-by-time rule that keeps a windowed stream from scoring itself."
+  each step into the state it carries, while an LSTM learns how much state to retain.
+summary: "Recurrent networks that carry state across time: RNNs and LSTMs mapped onto the state-update code you already write, plus the split-by-time rule that keeps a windowed stream from scoring itself."
 lessonCount: 5
 prerequisites:
   - foundations

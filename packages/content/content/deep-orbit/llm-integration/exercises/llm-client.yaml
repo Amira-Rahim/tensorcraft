@@ -2,8 +2,6 @@ slug: llm-client
 lessonSlug: llms-for-science
 title: "Read the Model's Reply"
 instructions: |
-  **Contract revision 2026-09-17:** Saved code must validate the allowed classes, a finite numeric confidence in [0, 1], and non-empty reasoning. Presence alone is insufficient.
-
   Write analyzeSignal(prompt, apiCall). Call the API once with the supplied prompt. Extract and parse its JSON object, then validate the parsed fields before returning it. Throw on invalid JSON or an invalid field.
 
   The reply contains one JSON object, optionally surrounded by prose without other braces. classification must be 'noise', 'anomaly' or 'unknown'. confidence must be a finite number from 0 to 1 inclusive. reasoning must be a non-empty string after trimming whitespace. Zero is a valid confidence, and additional fields are allowed. Do not coerce strings or null into numbers.

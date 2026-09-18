@@ -3,8 +3,6 @@ lessonSlug: normal-vs-anomalous
 title: "Incident: Baseline Distribution Drifted"
 mlContent: systems
 instructions: |
-  **Contract revision 2026-09-17:** Rename promisedPerDay to expectedPerDay. Replace roll-forward with evaluate-candidate and investigate with investigate-spread. Choose the action from the unrounded flag fraction.
-
   Implement auditBaseline(recentNormalData, currentBaseline, readingsPerDay). The recent readings have been reviewed and labeled normal. The array is non-empty and has positive population standard deviation; currentBaseline has { mean, std } with std > 0. Daily volume is positive.
 
   Return { oldAlertsPerDay, newAlertsPerDay, expectedPerDay, newBaseline: { mean, std }, spreadRatio, action }. Count flags where absolute z-score is strictly greater than 3. Project each observed flag fraction to the daily volume and round to the nearest integer. Compute the new mean and standard deviation over these readings, dividing variance by n. spreadRatio is new std / current std.

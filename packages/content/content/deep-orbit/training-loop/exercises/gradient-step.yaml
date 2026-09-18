@@ -1,9 +1,18 @@
 slug: gradient-step
 lessonSlug: gradient-descent
 title: "Perform a Gradient Descent Step"
-instructions: "Write step(fn): one descent step on the loss function it is handed. First define lossFn, a function of no arguments that returns the weight squared as a scalar. Then fill in step. Use tf.variableGrads(fn) for the slope rather than deriving it by hand: the whole point is that TFJS does the calculus for you. That call hands back an object of gradients keyed by variable name, so this weight's entry has to be pulled out of it and stored in gradient. Store the tensor itself, not a number read off it. Then update the weight by subtracting learningRate × gradient, and apply that with weight.assign so the tf.variable changes in place. Starting at weight = 5.0 with learningRate = 0.1, the first call lands the weight at exactly 4.0. The grader calls step() twice more on your loss, then three times on losses of its own: one of those is not a polynomial, and the last one is assembled while the grader runs, from a multiplier picked on the spot, so the body has to differentiate the function it receives instead of rebuilding the slope out of the loss value or repeating a number that was right on an earlier run. The grader also watches for the autograd call itself, and for what it was called on: a step that never runs the function it received through tf.variableGrads (or tf.grad) fails, whatever number it produced, so a differentiation call on some other function next to a slope worked out by hand does not count."
+instructions: |
+  Define lossFn as a zero-argument function returning weight squared.
+  Implement step(fn) using tf.variableGrads(fn) to differentiate the supplied
+  loss. Save weight's gradient tensor in gradient, then assign
+  weight - learningRate * gradient back to weight with weight.assign().
+  The first call should move weight from 5 to 4.
+
+  The grader calls step again with several loss functions. Differentiate fn
+  each time, rather than hardcoding a derivative. Preserve the latest gradient
+  for inspection and dispose the previous one when replacing it.
 starterCode: |
-  const weight = tf.variable(tf.scalar(5.0));
+  const weight = tf.tidy(() => tf.variable(tf.scalar(5.0)));
   const learningRate = 0.1;
   let gradient;
 
@@ -18,7 +27,24 @@ starterCode: |
   }
 
   step(lossFn);
-solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\nlet gradient;\n\nconst lossFn = () => weight.square().asScalar();\n\nfunction step(fn) {\n  const { grads } = tf.variableGrads(fn);\n  gradient = grads[Object.keys(grads)[0]];\n  weight.assign(weight.sub(gradient.mul(learningRate)));\n}\n\nstep(lossFn);"
+solutionCode: |
+  const weight = tf.tidy(() => tf.variable(tf.scalar(5.0)));
+  const learningRate = 0.1;
+  let gradient;
+
+  const lossFn = () => weight.square().asScalar();
+
+  function step(fn) {
+    if (gradient) gradient.dispose();
+    gradient = tf.tidy(() => {
+      const { grads } = tf.variableGrads(fn, [weight]);
+      const current = grads[weight.name];
+      weight.assign(weight.sub(current.mul(learningRate)));
+      return current;
+    });
+  }
+
+  step(lossFn);
 testCode: |
   describe('Gradient Step', () => {
     it('gradient holds the slope autograd computed for the loss step() was handed', () => {

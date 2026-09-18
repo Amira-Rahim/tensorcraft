@@ -2,8 +2,6 @@ slug: prune-weights
 lessonSlug: pruning
 title: "Measure What Pruning Costs"
 instructions: |
-  **Contract revision 2026-09-17b:** Sparsity 1 zeros all kernel weights. perClass uses null for a class without examples.
-
   Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels).
 
   Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is the fraction of the captures labelled c that the model still puts in class c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function.

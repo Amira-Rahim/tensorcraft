@@ -30,7 +30,18 @@ hints:
   - level: guidance
     content: "Sort the sections into two piles by their own verdict, not by their heading and not by where they sit in the list. One pile goes out as markdown blocks in the order it arrived. The other contributes headings and nothing else, gathered into a single block at the end, and that block exists only when something was actually held back. Then the boring detail that decides whether the document renders: a horizontal rule sits between two blocks, so a document of one block carries none at all, which is a different count from one rule per block."
   - level: solution
-    content: "const shipped = sections.filter(s => s.validated); const withheld = sections.filter(s => !s.validated); const parts = shipped.map(s => `## ${s.heading}\\n\\n${s.content}`); if (withheld.length > 0) { parts.push(`## Withheld\\n\\n${withheld.map(s => `- ${s.heading}`).join('\\n')}`); } return `# ${title}\\n\\n${parts.join('\\n\\n---\\n\\n')}`;"
+    content: |
+      interface Section { heading: string; content: string; validated: boolean; }
+
+      function assembleReport(title: string, sections: Section[]): string {
+        const shipped = sections.filter(s => s.validated);
+        const withheld = sections.filter(s => !s.validated);
+        const parts = shipped.map(s => `## ${s.heading}\n\n${s.content}`);
+        if (withheld.length > 0) {
+          parts.push(`## Withheld\n\n${withheld.map(s => `- ${s.heading}`).join('\n')}`);
+        }
+        return `# ${title}\n\n${parts.join('\n\n---\n\n')}`;
+      }
 keywords:
   - report-generation
   - template
@@ -49,29 +60,29 @@ Smaller sections let a reviewer check one claim set against its evidence before 
 
 <BossBeat
   beatId="deep-orbit-llm-cut-call"
-  prompt="Standing order needed before the window opens. If the validator flags a section late, with the clock at twenty-two minutes: regeneration takes fifteen, reviewing the regeneration takes longer than you have. Ship it flagged, regenerate unreviewed, or cut the section? Decide now, operator, while nothing is on fire."
+  prompt="At 0348, the reviewer rejects two claims in Hypotheses. The relay window opens at 0410. A regeneration takes fifteen minutes and its review takes longer than the seven left. The release gate accepts only reviewed sections. Which standing order should the crew follow?"
   options={[
     {
-      label: "cooperate",
-      display: "Regenerate and review as much as the clock allows",
-      consequence: "Generation costs fifteen minutes; review is the budget you actually ran out of. You end at the window's edge with a section nobody fully read, and 'partially reviewed' is a phrase that means unreviewed. The bottleneck was never the model."
+        "label": "cooperate",
+        "display": "Regenerate, then finish review before releasing the section",
+        "consequence": "Farah starts a new draft. Approved sections can leave in this window; Hypotheses must wait for another window if its review is unfinished."
     },
     {
-      label: "defect",
-      display: "Ship it flagged, with a footnote marking the doubt",
-      consequence: "Earth gets a guess wearing the report's letterhead. Footnotes do not survive forwarding; the claim does. Credibility spends like reaction mass: you can burn it exactly once."
+        "label": "defect",
+        "display": "Request release of the disputed section with a warning",
+        "consequence": "The release gate holds that request for Farah. She must check whether the warning identifies unsupported claims clearly enough; until she approves it, the section stays aboard."
     },
     {
-      label: "random",
-      display: "Regenerate just the flagged section and splice it in",
-      consequence: "The splice fits, and the second validator pass reads the new Hypotheses: it now cites the report's own Executive Summary and Results sections as its sources. Pipeline text vouching for pipeline text: circular provenance, a claim signing its own verification. Worse than the cut, and it spent the fifteen minutes the cut would have kept."
+        "label": "random",
+        "display": "Regenerate and ask to splice the replacement into this report",
+        "consequence": "Demir prepares the splice. The changed text loses its earlier approval and needs a fresh check; a new draft alone cannot satisfy the release gate."
     },
     {
-      label: "dominant",
-      display: "Cut the section; ship the data and the uncertainty",
-      consequence: "Five sections instead of six, one minute into the window. Earth gets everything the crew can stand behind, and an honest gap where the guess was. The cut is the one option on this board whose full cost is visible before you pay it; that is what makes it choosable."
+        "label": "dominant",
+        "display": "Send five approved sections and list the omission",
+        "consequence": "Nazari packages the approved sections with an explicit Hypotheses omission. The report can leave on schedule, but Earth receives no proposed explanation in this window."
     }
-  ]}
+]}
 />
 
 ## Section-by-Section Generation
@@ -95,7 +106,9 @@ async function generateReport(
   llm: LLMClient,
   reviewSection: (input: { heading: string; draft: string; evidence: string }) => Promise<boolean>,
 ): Promise<ReportSection[]> {
-  for (const section of sections) {
+  // A new draft never inherits approval from an older one.
+  const drafts = sections.map(section => ({ ...section, generated: undefined as string | undefined, validated: false }));
+  for (const section of drafts) {
     const prompt = \`## Task
 Write the "\${section.heading}" section of a scientific signal analysis report.
 
@@ -108,23 +121,26 @@ Write the "\${section.heading}" section of a scientific signal analysis report.
 ## Format
 - Use markdown
 - Every number you write has to appear in the Data block above, copied from it exactly
-- Keep to 200-300 words
+- Follow the section length requested above; do not pad missing evidence
 - Be precise and factual\`;
 
     const content = await llm.complete(prompt, { temperature: 0.2 });
+    if (typeof content !== 'string' || !content.trim()) throw new Error('Empty section draft');
     section.generated = content;
     // Lesson 3's structured checks can assist review. They cannot approve
     // free prose, whose claims may have no corresponding numeric field.
-    section.validated = await reviewSection({
+    section.validated = (await reviewSection({
       heading: section.heading,
       draft: content,
       evidence: section.data,
-    });
+    })) === true;
   }
 
-  return sections;
+  return drafts;
 }
 
+// Integration inputs: anomalyDataSummary, llm and reviewSection come
+// from the application. Review the complete report again after assembly.
 // Define the report template
 const reportSections: ReportSection[] = [
   {
@@ -144,7 +160,7 @@ const marked = await generateReport(reportSections, llm, reviewSection);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
-The pipeline passes `temperature: 0.2` on every section call. Temperature divides the scores before the last softmax, the one that picks the next token, so a low value sharpens that distribution toward the likeliest token and the same prompt returns close to the same draft twice. A sharpened distribution is a more repeatable one, not a more truthful one: greedy token selection can still invent an instrument, and serving details can prevent exact repeatability. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. The review step checks claims against the evidence. A number scan alone would miss an invented instrument or a false causal explanation.
+The pipeline passes `temperature: 0.2` on every section call. Temperature divides the scores before the last softmax, the one that picks the next token, so a low value sharpens that distribution toward the likeliest token and can reduce sampling variation. This does not establish truth: greedy token selection can still invent an instrument, and serving details can prevent exact repeatability. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. The review step checks claims against the evidence. A number scan alone would miss an invented instrument or a false causal explanation.
 
 ## Challenge
 
@@ -162,12 +178,12 @@ The model has written the sections and a reviewer has marked each one. The boole
 
 <Epilogue>
 
-The transmission window opens at 0410. At 0348 the reviewer flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. Regenerating takes fifteen minutes; reviewing the regeneration takes more than the twenty-two they have. Farah doesn't take the fifteen. She cuts the section whole, and the report leaves at 0411, one minute into the window, five sections instead of six. Somewhere in the cut section one hypothesis might even be right; the next two relay windows will come and go before anyone could find out which.
+The transmission window opens at 0410. At 0348 the reviewer flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. The standing order determines what the crew works on next. The release gate keeps the unapproved section aboard. At 0411 the five approved sections leave with an omission notice.
 
 <Dialogue speaker="Dr. Farah">
-Earth gets our data and our uncertainty. A guess wearing the report's letterhead is neither, and the call to cut it was never going to be delegated to the thing that wrote the guess.
+The omission notice names the two unsupported claims. Whoever reviews the next draft needs to know why this one stayed aboard.
 </Dialogue>
 
-Nazari rules a line under the ledger once the transmission closes. Nine fabricated claims caught, ninety-one minutes of the six hours spent catching them, against the two hours she set. The tool stays. Beside the last entry, the one the reviewer raised at 0348, she writes the cost in the other column: one section.
+Nazari rules a line under the ledger once the transmission closes. The report cost one section this window. She leaves the next watch's work column open for the follow-up.
 
 </Epilogue>

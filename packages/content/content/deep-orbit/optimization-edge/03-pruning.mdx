@@ -19,7 +19,7 @@ concept:
     jsTitle: "Tree-Shaking"
     jsCode: "// Webpack removes unused exports → smaller bundle"
     mlTitle: "Pruning"
-    mlCode: "// Zero near-zero weights → same file, smaller download"
+    mlCode: "// Zero near-zero weights → same dense slots; measure compressed bytes"
     tier: structural
     breaks: "Tree-shaking removes unused code while aiming to preserve behavior. Magnitude pruning changes numerical parameters and may change predictions. Dense weight storage keeps the zeroed slots; compression can reduce transfer size without reducing tensor shapes."
 consequence:
@@ -117,6 +117,9 @@ keywords:
 skillAxes: [deployment]
 ---
 
+The console readings and evaluation tables in this scene are fictional scenario data. They are not benchmark results for the downloaded course model. Use the [browser runtime lab](/assignments/browser-runtime-lab-v1.zip) to reproduce measurements on the shipped artifact; record the device and model with every result.
+
+
 > **ENGINEERING DIRECTIVE 44-C · NAZARI → DEMIR · FLAGGED: FOR REVIEW** · "Weight histogram attached. Half the values are within 0.001 of zero. They contribute nothing and they take up half of our 85 megabytes. Remove them. Sign off or push back by end of watch."
 
 The directive is your review assignment, and it hides three assumptions in five sentences: that near-zero weights contribute *nothing*, that "remove" is an operation a dense weight matrix even supports, and that whatever is removed costs no accuracy worth measuring. Read the histogram, then decide which of the three you would push back on before scrolling.
@@ -127,7 +130,7 @@ Tree-shaking. Webpack drops the exports nothing imports; we drop the weights not
 
 Before anyone signs that draft, run the operation it proposes and let the console vote first. The block below prunes eight weights, then holds the result to the analogy's central promise: that nobody notices the difference.
 
-<LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: zero the near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Separate what pruning changes on disk from what it changes on the wire"]} />
+<LearningObjectives objectives={["Distinguish magnitude pruning from behavior-preserving dead-code removal", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Separate what pruning changes on disk from what it changes on the wire"]} />
 
 ## Tree-Shaking Weights
 
@@ -137,6 +140,9 @@ Before anyone signs that draft, run the operation it proposes and let the consol
 {`import * as tf from '@tensorflow/tfjs';
 
 function pruneWeights(weights: number[], sparsity: number): number[] {
+  if (!Number.isFinite(sparsity) || sparsity < 0 || sparsity > 1 || !weights.every(Number.isFinite)) throw new Error('Invalid pruning inputs');
+  if (!weights.length) return [];
+  if (sparsity === 1) return weights.map(() => 0);
   // Sort by absolute value to find the threshold
   const sorted = weights.map(Math.abs).sort((a, b) => a - b);
   const threshold = sorted[Math.floor(sorted.length * sparsity)];
@@ -180,30 +186,27 @@ Demir reads that ladder and gets ambitious anyway: at 80 percent sparsity the do
 Staging replay, overnight: 91.6 percent accuracy, the number you signed. Your 80-percent build classified the 0247 salvage fragment as cosmic background. The one fragment we have left from that night, and your model threw it away. Revert to 60. The revalidation costs us three hours, and I'm logging them.
 </Dialogue>
 
-He reverts. The anomaly class was gone at 80 percent and the aggregate never said so: at 0.3 percent of the mix, its collapse from four captures right to none moved the figure two tenths of a point, two steps of the last digit that column prints. The 2.4 points he did read were an earlier cost and a different one: almost all of that fall was the common classes giving up ground between the baseline and 60. Rare signals live in small weights, magnitude pruning takes the small weights first, and no aggregate on this mix can show you that it happened.
+He reverts. The anomaly class was gone at 80 percent and the aggregate never said so: at 0.3 percent of the mix, its collapse from four captures right to none moved the figure two tenths of a point, two steps of the last digit that column prints. The 2.4 points he did read were an earlier cost and a different one: almost all of that fall was the common classes giving up ground between the baseline and 60. This run lost rare-class performance. It does not show that rare signals generally live in small weights. A per-class report reveals the failure that the aggregate obscures.
 
 And the directive's second assumption resolves the unglamorous way: nothing was ever "removed." A dense weight matrix has no delete operation, so magnitude pruning zeroes weights in place and the file keeps every slot. No sparse storage format in TensorFlow.js changes that. A weight entry in the manifest carries a name, a shape, a dtype, and for a quantized weight a scale and a min. There is no index list of nonzero positions anywhere in it, so all 51 million zeros get written out at full width and the file does not shrink by a byte. What this pass buys in this runtime is compressibility, and that shows up on the wire rather than on disk. The structured kind is the one that does shrink a file: drop a whole unit and the layer's shape changes with it, so the weights go and the arithmetic of every call goes with them. It costs more to get there, since the model has to be retrained once the units are gone, and it is not what this lesson does.
 
 <DerivationDrawer summary="Why magnitude is the saliency proxy, and when the proxy lies">
-What pruning actually wants to know is each weight's saliency: how much the loss moves if this weight becomes zero. Taylor-expand the loss around the trained weights:
+A useful importance measure would estimate the change in loss when a weight is zeroed. Near a particular weight vector, a second-order approximation is:
 
 ```
-ΔL ≈ Σᵢ  gᵢ·Δwᵢ  +  ½·Σᵢ hᵢ·Δwᵢ²        (gᵢ = ∂L/∂wᵢ, hᵢ = curvature)
+Delta L ≈ g^T Delta w + 0.5 Delta w^T H Delta w
 ```
 
-Zeroing weight i means Δwᵢ = -wᵢ. At a trained minimum the gradients gᵢ are approximately zero (that is what "trained" means), so the first-order term vanishes and the damage is second-order:
+Here g is the gradient and H is the Hessian, including interactions between weights. If we remove only weight i, the approximation becomes `-g_i*w_i + 0.5*H_ii*w_i^2`. Near a stationary point the first term may be small. Training does not guarantee that condition.
 
-```
-ΔLᵢ ≈ ½·hᵢ·wᵢ²
-```
-
-Magnitude pruning keeps the |wᵢ| factor and quietly assumes the curvature hᵢ is roughly equal across weights. That assumption is the entire method, and it is usually good enough, which is why `sort by |w|, zero the smallest` works at all. It is also exactly where the 80% build failed: the weights encoding rare signals were small AND sat in high-curvature directions, so their true ΔL was large while their magnitude said "safe to cut."
+Ranking only by magnitude ignores both curvature and interactions. It is a practical heuristic to test, not a proof that a small weight is safe to remove. The rare-class failures in the scenario do not establish a measured curvature explanation.
 </DerivationDrawer>
 
 ## Combined Optimization
 
 <CodeBlock language="typescript" title="combined.ts">
-{`// Pruning and quantization, counted on a real TF.js artifact.
+{`// Fictional mission table. Reproduce byte and prediction measurements
+// with an actual artifact before making a deployment decision.
 
 // Quantization changes how wide a slot is: 4 bytes down to 1.
 // Pruning changes what sits in the slots. There are still 85M of them.
@@ -213,7 +216,8 @@ Magnitude pruning keeps the |wᵢ| factor and quietly assumes the curvature hᵢ
 // Pruned to 60% zeros:  85M entries × 1 byte  =  85 MB, unchanged
 
 // The zeros pay on the wire instead, because 51M repeated bytes
-// compress and 34M varied ones do not. gzip -9 over that same file:
+// may compress well. Varied bytes can also compress; measure the artifact.
+// Supplied story values, not the result of a recorded gzip run:
 //   unpruned:      70 MB served
 //   60% pruned:    42 MB served
 // Accuracy: 94.2% → 91.8% (2.4-point drop, all of it charged to the pruning
@@ -230,16 +234,16 @@ console.log('The accuracy column moves on the rows that say pruned and');
 console.log('nowhere else. Quantizing changed no verdict on this');
 console.log('classifier. Pruning changed 2.4 points of them.');
 console.log('');
-console.log('The 85 MB file peaks near 425 MB at load, inside the');
-console.log('512 MB dashboard budget. The 340 MB file peaked near 680.');`}
+console.log('Actual load peaks include backend buffers and the whole page.');
+console.log('Measure peak memory on the dashboard before approving a build.');`}
 </CodeBlock>
 
 <DerivationDrawer summary="The third compression axis: low-rank structure and SVD">
-A third compression axis exists and this module does not use it: rank. A weight matrix of shape [512, 512] holds 262,144 numbers, but if its rank is effectively 40, those numbers are redundant: the matrix is 40 independent directions dressed up as 512.
+A matrix may have an accurate low-rank approximation. For `W = U Sigma V^T`, keeping the largest k singular values gives the best rank-k approximation in Frobenius and spectral norm. The omitted singular values determine matrix approximation error, not task accuracy.
 
-Singular Value Decomposition makes it precise. Any matrix factors as `W = U · Σ · Vᵀ`: rotate, scale along principal directions, rotate again. The scale factors (singular values) come out sorted, and in trained networks they usually decay fast: a few large directions carry the transformation, a long tail contributes noise. Truncate to the top k and the factors `U[:, :k] · Σ[:k] · V[:, :k]ᵀ` store `k · (512 + 512 + 1)` numbers instead of 262,144. At k = 40 that is 41,000 numbers, a 6.4x cut on that layer, with reconstruction error bounded by the singular values you dropped.
+A 512-by-512 matrix stores 262,144 numbers. At k = 40, storing both factors and 40 singular values takes 41,000 numbers, about 6.4 times fewer. This is useful only if the approximation preserves the behavior you need. There is no guarantee that a trained matrix has a small enough rank.
 
-Why this works at all is the fact pruning exploits from a different angle: trained weight matrices concentrate their useful transformation in far fewer directions than their shape advertises. Magnitude pruning removes the smallest coordinates; SVD removes the smallest directions, which is more directly aligned with the transformation the matrix performs, though the two bets pay off on different matrices. That alignment is part of why low-rank factorization (LoRA and friends) became the default way to fine-tune large models on small hardware.
+LoRA uses low-rank matrices for a different purpose: it trains an update while freezing the base weights. It does not replace the base matrix with its truncated SVD or automatically shrink the base model at inference.
 </DerivationDrawer>
 
 ## Weight Size Is Not Importance
@@ -270,10 +274,10 @@ At sparsity 1, this exercise removes every kernel weight. An interior cutoff can
 
 <LessonRecap
   whatYouLearned={[
-    "Magnitude-based pruning zeros out the smallest-absolute-value weights first, and sparsity gives a cliff rather than a slope. Which cliff you see depends on what you score. The rare class falls off between 60 and 80 percent, where the aggregate gives up two tenths of a point. The aggregate's own cliff comes a level later, between 80 and 90.",
+    "Magnitude pruning zeros weights below a cutoff. Quality can degrade gradually or abruptly; requested sparsity also differs from achieved sparsity when weights tie.",
     "Pruning can harm classes unequally. Inspect per-class results; aggregate accuracy can hide a large loss on a rare class.",
-    "Quantization is what shrinks a TensorFlow.js weight file: 340 MB to 85 MB. Magnitude pruning leaves that file exactly as large, because it changes no shapes and the weights manifest has no sparse encoding, so every zero is stored at full width. The 60% zeros pay on the wire instead. gzip takes the 85 MB file to 42 MB served, against 70 MB unpruned. The two passes together cost 2.4 accuracy points (94.2% to 91.8%), and the pruning pass is where all 2.4 came from.",
-    "A compression pass does not have to cover every layer: quantize flags take weight-name patterns, and a pruning pass takes whatever weight list you hand it. When the accuracy number comes from one small classifier, exempting that classifier from both passes is a real option, so part of a measured cost reflects what you chose to include."
+    "Storage quantization reduces bytes per weight. Dense pruning preserves weight slots. Measure compressed size and per-class errors before accepting either change.",
+    "Compression can target selected layers. Protecting a sensitive classifier may preserve quality at the cost of a larger download."
   ]}
   bridge="Tree-shaking aims to preserve behavior while removing unused code. Magnitude pruning changes weights and can change predictions; dense storage keeps zeroed slots unless another format removes them."
   youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and say which of the two compression passes changes the file and which changes only the download."

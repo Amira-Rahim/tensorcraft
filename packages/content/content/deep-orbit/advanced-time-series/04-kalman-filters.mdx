@@ -30,7 +30,28 @@ hints:
   - level: guidance
     content: "A fixed blend factor matches a Kalman filter on the first measurement and drifts off it by the third. The difference is the variance. It has to survive the call, widen before the next measurement arrives, and shrink again once that measurement is folded in. The weight on the measurement is then recomputed from it every call, which is why it changes step to step instead of holding still."
   - level: solution
-    content: "const predictedVariance = this.variance + this.processNoise; const gain = predictedVariance / (predictedVariance + this.measureNoise); this.estimate = this.estimate + gain * (measurement - this.estimate); this.variance = (1 - gain) * predictedVariance; return this.estimate;"
+    content: |
+      class SimpleKalman {
+        estimate: number;
+        variance: number;
+        processNoise: number;
+        measureNoise: number;
+
+        constructor(initial: number, processNoise: number, measureNoise: number) {
+          this.estimate = initial;
+          this.variance = 1;
+          this.processNoise = processNoise;
+          this.measureNoise = measureNoise;
+        }
+
+        update(measurement: number): number {
+          const predictedVariance = this.variance + this.processNoise;
+          const gain = predictedVariance / (predictedVariance + this.measureNoise);
+          this.estimate = this.estimate + gain * (measurement - this.estimate);
+          this.variance = (1 - gain) * predictedVariance;
+          return this.estimate;
+        }
+      }
 keywords:
   - kalman-filter
   - state-estimation
@@ -57,14 +78,14 @@ smooth(0.8); // 72.08: right on the drift, but the estimate now bounces
              // with every noisy reading it was supposed to absorb.`}
 </CodeBlock>
 
-A small alpha trusts history and lags the drift. A large alpha trusts the newest reading and inherits its noise. On a drifting signal no single constant gets both right, and hand-picking alpha per signal, forever, is not an engineering answer.
+A small alpha trusts history and lags the drift. A large alpha trusts the newest reading and inherits its noise. That tradeoff depends on the process and the cost of lag. A tuned EMA can be a useful baseline; a Kalman model makes the uncertainty assumptions explicit.
 
 <Dialogue speaker="Ensign Demir">
 What I actually want is an alpha that adjusts itself. Trust the measurement more when my estimate is shaky. Trust my estimate more when the measurements are noisy.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-You have just specified the Kalman filter. Your self-adjusting alpha has a name, the Kalman gain, and computing it at every step, by weighing measurement noise against estimate uncertainty, is the entire algorithm. It is the optimal estimator for linear systems under Gaussian noise, and you arrived at its job description from a scroll handler.
+You have just specified the Kalman filter. Your self-adjusting alpha has a name, the Kalman gain, and computing it at every step, by weighing measurement noise against estimate uncertainty, is the entire algorithm. Under a correctly specified linear model, Gaussian initial state and independent Gaussian process and measurement noise, it gives the minimum mean-square-error state estimate, and you arrived at its job description from a scroll handler.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter that smooths a noisy timing signal", "Connect Kalman filtering to the exponential moving average pattern", "Smooth a drifting interval and read the lag that motivates a velocity state"]} />
@@ -74,7 +95,8 @@ You have just specified the Kalman filter. Your self-adjusting alpha has a name,
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="kalman-filter.ts">
-{`// 1D Kalman Filter: optimal smoothing under noise
+{`// Scalar random-walk state model: x(t) = x(t-1) + process noise.
+// Measurement z(t) = x(t) + measurement noise. Q and R are VARIANCES.
 
 interface KalmanState {
   estimate: number;      // current best guess
@@ -83,16 +105,18 @@ interface KalmanState {
 
 class KalmanFilter {
   private state: KalmanState;
-  private processNoise: number;      // how much the true value changes between steps
-  private measurementNoise: number;  // how noisy our measurements are
+  private processNoise: number;      // variance of process noise per update
+  private measurementNoise: number;  // variance of measurement noise
 
   constructor(initial: number, processNoise: number, measurementNoise: number) {
+    if (![initial, processNoise, measurementNoise].every(Number.isFinite) || processNoise < 0 || measurementNoise <= 0) throw new Error('Invalid filter parameters');
     this.state = { estimate: initial, variance: 1 };
     this.processNoise = processNoise;
     this.measurementNoise = measurementNoise;
   }
 
   update(measurement: number): KalmanState {
+    if (!Number.isFinite(measurement)) throw new Error('Invalid measurement');
     // PREDICT: where do we think the state is?
     const predicted = this.state.estimate;
     const predictedVariance = this.state.variance + this.processNoise;
@@ -113,21 +137,21 @@ class KalmanFilter {
 }
 
 // Track the anomaly timing interval, sampled once per day: each day's
-// first cycle, eight days of log. Initial estimate = day one's first
-// cycle; the 73.4 s module-5 measurement is already history.
+// first cycle, eight days of log. Initialize from the first reading, then
+// update on subsequent readings. The initial variance is a chosen prior.
 const kf = new KalmanFilter(73.1, 0.1, 1.0);
 
 const measurements = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
-for (const m of measurements) {
+for (const m of measurements.slice(1)) {
   const state = kf.update(m);
   console.log(\`Measurement: \${m.toFixed(1)}, Estimate: \${state.estimate.toFixed(2)}\`);
 }
-// Estimate walks 73.1 → 72.44 while the readings end at 72.0: the
+// Estimate walks 73.1 → 72.43 while the readings end at 72.0: the
 // filter is absorbing the noise and trailing the trend, not following
 // it. The per-day shrink gets read off the raw log, not off this line.`}
 </CodeBlock>
 
-The state here is one number with no term for change, so the gain settles and the estimate behaves like an EMA with a well-chosen alpha. It lags a steady trend for the same reason: the final estimate sits 0.44 behind the final reading. That is worse than the alpha-0.8 line Demir just dismissed, which ends 0.08 behind. What the filter wins back is the bounce, since its estimate moves about half as far per step as the alpha-0.8 line does. And nobody picked the weight it settled on: by the eighth reading the gain has converged to 0.27, and the filter derived that for a state with no term for change in it. Tracking the trend itself takes a second state, the change per cycle. The drawer below derives the gain and works through that limit.
+The state here is one number with no term for change, so the gain settles and the estimate behaves like an EMA with a well-chosen alpha. It lags a steady trend for the same reason: the final estimate sits 0.43 behind the final reading. That is worse than the alpha-0.8 line Demir just dismissed, which ends 0.08 behind. Smoother output is not proof of greater accuracy: we do not know the noise-free state here. We chose process variance 0.1 and measurement variance 1, which determine the gain: by the eighth reading the gain is near its limiting value of 0.27, and the filter derived that for a state with no term for change in it. Tracking the trend itself takes a second state, the change per day. The drawer below derives the gain and works through that limit.
 
 <DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance">
 The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. Why THAT K and not a hand-picked alpha? Because K is the value that minimizes the variance of the blended estimate.
@@ -137,7 +161,7 @@ Prediction uncertainty:   P   (variance of the prediction)
 Measurement uncertainty:  R   (variance of the sensor)
 
 Blend:  x̂ = (1-K)·prediction + K·z
-Since the two sources are independent, the blend's variance is
+For unbiased prediction and measurement errors with zero covariance, the blend's error variance is
         V(K) = (1-K)²·P + K²·R
 ```
 
@@ -149,9 +173,9 @@ dV/dK = -2(1-K)·P + 2K·R = 0
       → K = P / (P + R)
 ```
 
-That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. The EMA's fixed alpha is what you get if you freeze this formula and hope the uncertainties never change.
+That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. A steady-state Kalman gain can be constant when the model and noise statistics are constant; using that fixed gain is a legitimate design choice.
 
-One honesty note the EMA bridge has earned. With a constant-state model like this one, P settles and the gain converges: about 0.27 at process noise 0.1 and measurement noise 1. After a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is a clean burn-in, the gain falling 0.52, 0.38, 0.33 and on down to 0.27 while the estimate finds the level. It buys no immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-cycle]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
+One honesty note the EMA bridge has earned. With a constant-state model like this one, P settles and the gain converges: about 0.27 at process noise 0.1 and measurement noise 1. After a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is a clean burn-in, the gain falling 0.52, 0.38, 0.33 and on down to 0.27 while the estimate finds the level. It buys no immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-day]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
 </DerivationDrawer>
 
 ## Challenge
@@ -160,16 +184,16 @@ Implement a Kalman filter and smooth the anomaly timing.
 
 <Exercise slug="kalman-filter" />
 
-<RecallPrompt question="What does the Kalman gain control, and what happens when it is near 0 versus near 1?" answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means the measurement is very noisy so the filter trusts its prediction; near 1 means the prediction is highly uncertain so the filter defers to the measurement." />
+<RecallPrompt question="What does the Kalman gain control, and what happens when it is near 0 versus near 1?" answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means measurement variance is large relative to prediction variance so the filter trusts its prediction; near 1 means prediction variance is large relative to measurement variance so the filter defers to the measurement." />
 
-<RecallPrompt question="You run this filter over eight readings that fall steadily, and its estimate ends up 0.44 above the last one. What in the filter's design put it there?" answer="The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per cycle, which is the 2-state constant-velocity filter." />
+<RecallPrompt question="You run this filter over eight readings that fall steadily, and its estimate ends up 0.43 above the last one. What in the filter's design put it there?" answer="The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter." />
 
 <LessonRecap
   whatYouLearned={[
     "A Kalman filter runs a predict-then-correct loop: it projects the current estimate forward, then blends in the new measurement weighted by the Kalman gain.",
-    "The gain is computed dynamically from the current estimate variance and measurement noise, so each update is the optimal linear blend of prediction and measurement.",
+    "The gain is computed dynamically from the current estimate variance and measurement noise, so the blend minimizes error variance under the stated unbiased, uncorrelated-error assumptions.",
     "The predict-correct structure generalizes the exponential moving average: EMA uses a fixed alpha, Kalman computes the equivalent weight adaptively.",
-    "With a one-number state the gain settles, to about 0.27 at process noise 0.1 and measurement noise 1. The filter then lags a steady drift the way an EMA does, ending the eight-day log 0.44 behind the last reading. Tracking the drift itself takes a second state, the change per cycle."
+    "A one-state filter can lag a steadily drifting signal even after its gain settles. Modeling both the value and its rate of change requires a second state."
   ]}
   bridge="Like the exponential moving average `smoothed = alpha * newValue + (1 - alpha) * smoothed`, a Kalman update blends `gain * measurement + (1 - gain) * prediction`, but computes `gain` dynamically from current uncertainty rather than holding it fixed."
   youCanNow="Implement a 1D Kalman filter that reports a smoothed estimate of a noisy value at each step, and read how far that estimate trails a drifting one."
@@ -177,7 +201,7 @@ Implement a Kalman filter and smooth the anomaly timing.
 
 <Epilogue>
 
-Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4. The log under it shrinks roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, and the variance is small enough that nobody argues with the level. The slope is the log's own doing, and the log has stopped being flat. Mirza reads the printout twice, writes a time in the margin, and folds it into her jacket without showing anyone.
+Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4. The log under it shrinks roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, with the assumed noise variances printed beside it. Nazari asks which measurements support those assumptions. The slope is the log's own doing, and the log has stopped being flat. Mirza reads the printout twice, writes a time in the margin, and folds it into her jacket without showing anyone.
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.

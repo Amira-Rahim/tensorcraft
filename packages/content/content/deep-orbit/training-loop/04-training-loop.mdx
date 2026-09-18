@@ -33,40 +33,43 @@ hints:
       Return a fresh callback from makeEarlyStopping and attach it to fit. Keep short histories valid. Compare each recent mean with 95% and 105% of its earlier mean, using the stated numerical tolerance. Report the observed trend before considering possible causes.
   - level: solution
     content: |
-      const calm = tf.clipByValue(
-        tf.concat(
-          [
-            tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
-            tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
-            tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
-          ],
+      const { trainX, trainY } = tf.tidy(() => {
+        const calm = tf.clipByValue(
+          tf.concat(
+            [
+              tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+              tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+              tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+            ],
+            1,
+          ),
+          0,
           1,
-        ),
-        0,
-        1,
-      );
-      const flagged = tf.clipByValue(
-        tf.concat(
-          [
-            tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
-            tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
-            tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
-          ],
+        );
+        const flagged = tf.clipByValue(
+          tf.concat(
+            [
+              tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+              tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+              tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+            ],
+            1,
+          ),
+          0,
           1,
-        ),
-        0,
-        1,
-      );
-      const order = [];
-      for (let i = 0; i < 50; i++) {
-        order.push(i);
-        order.push(50 + i);
-      }
-      const trainX = tf.concat([calm, flagged]).gather(order);
-      const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
-      const labels = cleanY.arraySync();
-      for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
-      const trainY = tf.tensor2d(labels);
+        );
+        const order = [];
+        for (let i = 0; i < 50; i++) {
+          order.push(i);
+          order.push(50 + i);
+        }
+        const trainX = tf.concat([calm, flagged]).gather(order);
+        const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+        const labels = cleanY.arraySync();
+        for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
+        const trainY = tf.tensor2d(labels);
+        return { trainX, trainY };
+      });
 
       const model = tf.sequential();
       model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
@@ -118,6 +121,8 @@ keywords:
 skillAxes: [training]
 ---
 
+> The training log and mission results in this scene are fictional. Run the code to obtain your own measurements.
+
 > **TRAINING LOG · DEEP SCAN CLASSIFIER** · epoch 1/50 · loss 0.7402 · epoch 2/50 · loss 0.7256 · epoch 3/50 · loss 0.7113 · epoch 4/50 · loss 0.6989 · epoch 5/50 · loss 0.6861
 
 By its fifth line the run is under the number Farah wrote on the glass wall. Every line of that log is one full pass over the dataset, and the machinery behind each line is everything the last three lessons built.
@@ -144,27 +149,11 @@ model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Training data: 100 labeled readings, three features each:
-// [amplitude, frequency, phase], each min-max normalized against the
-// range its own sensor can produce, so amplitude 1.00 means the hull
-// sensor pegged at its full 2048 counts. These 100 rows are hand-picked
-// clean examples from the flag log, 50 per label, which is why every
-// channel arrives as two tight clusters rather than one spread.
-// Flagged windows run hot on amplitude and phase and LOW on frequency
-// (frequency here is a zero-crossing count, and a clean tone crosses
-// zero far less often than broadband noise); calm periods are the
-// mirror image. The seeds make the DATA reproducible. A net trained on
-// pure noise could still memorize it. Its training loss would fall
-// while the held-out loss sat at 0.693, the coin-flip number. Reading
-// that pair is what this lesson teaches.
-//
-// clipByValue is doing real work here. A normal draw has no bounds, and
-// on these seeds six of the 150 calm values land outside [0, 1]: one
-// negative amplitude, two negative phases, and three frequencies above
-// 1.00, the highest at 1.0387. Read back through the min-max range,
-// 1.0387 means 65 zero crossings in a window that can only hold 63.
-// Clip every column to [0, 1] and the synthetic rows obey the same
-// limits the sensors do.
+// Synthetic practice data, not spacecraft measurements. Each class has
+// three bounded features drawn from different distributions. Clipping
+// enforces this fixture's chosen range; min-max scaling alone does not
+// stop future observations from falling outside a fitted range.
+const { trainX, trainY } = tf.tidy(() => {
 const calm = tf.clipByValue(tf.concat([
   tf.randomNormal([50, 1], 0.17, 0.10, 'float32', 7),
   tf.randomNormal([50, 1], 0.81, 0.10, 'float32', 8),
@@ -179,10 +168,14 @@ const xs = tf.concat([calm, flagged]);
 const ys = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]);
 
 // Shuffle once: validationSplit takes the LAST rows, and a validation
-// set that is all flagged windows validates nothing.
+// set with one class cannot assess both classes. This random split is
+// suitable for this independent synthetic fixture. Real time series need
+// a time/group split before any training-only shuffle.
 const order = Array.from(tf.util.createShuffledIndices(100));
 const trainX = xs.gather(order);
 const trainY = ys.gather(order);
+return { trainX, trainY };
+});
 
 // THE TRAINING LOOP: model.fit() handles everything
 const history = await model.fit(trainX, trainY, {
@@ -198,67 +191,48 @@ const history = await model.fit(trainX, trainY, {
   },
 });
 
-// One real run, the same one the training log at the top of this lesson
-// shows as epochs 1 to 5 (the callback counts from 0). Weight init is
-// random, so reruns differ. Across 500 reruns of this block, epoch-10
-// accuracy landed anywhere from 0.46 to 1.00 and read 1.00 at epoch 30
-// in 468 of them, while epoch-40 loss sat near 0.23, with nineteen runs
-// in twenty between 0.11 and 0.45.
-// Epoch 0:  loss=0.7402, acc=0.4750
-// Epoch 10: loss=0.6231, acc=0.5000
-// Epoch 20: loss=0.5159, acc=1.0000
-// Epoch 30: loss=0.3932, acc=1.0000
-// Epoch 40: loss=0.2689, acc=1.0000
-// Accuracy tops out before loss finishes falling: the net finds the
-// boundary first, then spends the remaining epochs getting confident
-// about it.`}
+// Inspect history.history.loss and history.history.val_loss for YOUR run.
+// Initialization and shuffling are random; exact scores are not promised.
+// Keep model, trainX and trainY for the next two blocks.
+`}
 </CodeBlock>
 
-Two clean ends of the flag log are not a sample of the stream, and the amplitude column is where that shows. No training row lands between 0.38 and 0.65. Module 7 measures the archive's normal amplitude at mean 0.52 with a standard deviation of 0.15, which puts about two thirds of calm readings inside that empty band. Frequency and phase carry the label anyway. Across 200 runs of this block, a reading at amplitude 0.52 with calm frequency and phase came back at a median 0.22 anomalous, and the same amplitude with flagged frequency and phase at 0.85. An amplitude pegged at full scale on an otherwise calm reading came back at a median 0.45, under the 0.5 line, though 72 of the 200 runs put it above. The empty band costs something exactly once, on the reading in lesson 5 that sits mid-scale on all three channels at once.
+These deliberately separated clusters make a small training exercise tractable. They do not represent the full range of a real stream. A high score on another draw from the same generator shows performance on that generator, not on spacecraft telemetry or unknown anomalies.
 
 <DerivationDrawer summary="Why identical code lands on different losses: the loss landscape">
 **Loss is a surface over weight space.** A network with n weights defines `L(w)`: one loss value for every point in n-dimensional weight space. Training is descent on that surface, and the epoch trace above is an altitude log.
 
 **Convex vs non-convex.** On a convex objective, every local minimum is global. Ordinary least-squares and unregularized logistic regression have convex objectives, but stable optimization still depends on step sizes, feature scaling and other assumptions. Convexity alone does not guarantee that any gradient-descent run converges. Neural networks give that up: stacking layers with nonlinear activations folds the bowl into many basins separated by ridges and flats.
 
-**That is why the 500 reruns disagree.** Random initialization drops each run at a different point on the same landscape. Different basin, different descent path, different epoch-10 accuracy (the 0.46 to 1.00 spread above). No code changed between runs; only the starting coordinates did.
+**Why reruns can disagree.** Initialization, row shuffling and backend arithmetic can change the path. Record those settings when comparing experiments. A different result does not, by itself, identify a particular basin or training defect.
 
 **Saddles and flat regions can also slow training.** A saddle curves upward in some directions and downward in others. Small gradients can occur near saddles or in other flat regions, but a stalled loss trace does not identify which geometry caused it. Adam uses running gradient statistics to adjust updates; it does not guarantee escape or convergence.
 </DerivationDrawer>
 
 Three of the four settings in the `fit()` call above are dials. `epochs` is how many passes over the data. `batchSize` is how many rows the optimizer sees before it updates the weights, 32 here and by default, so one weight update per batch. `validationSplit` is the fraction held back so the run is checked against rows it never trained on. `epochs` is the judgment call: more passes mean more learning, up to a point.
 
-"Up to a point" is the whole problem: nothing in the loop tells you where the point is. Demir's first run was not the curve above. Reasoning from drain loops, where another pass always means less backlog, he set `epochs: 500` to be safe and went for coffee. He came back to both curves at about 0.0004, down from a validation loss near 0.17 at epoch 50. That run has lower loss on these slices. Whether it is worth the extra compute still needs evaluation. Ten times the compute bought a gain nobody was watching for, on an epoch count picked before the first epoch ran. A drain loop can run to exhaustion because the queue length is the exit test. Training has no queue to empty, so 500 stays a guess until something reads the curve and decides.
+Demir gives the run 500 epochs because he does not know when to stop. A larger budget buys more updates, but their value has to be measured. Validation monitoring makes the stopping rule explicit rather than treating an epoch count as proof of learning.
 
 The fix is a callback that watches the validation loss and halts when it stops improving, so the loop stops itself instead of trusting your epoch guess:
 
 <CodeBlock language="typescript" title="early-stopping.ts">
-{`// Two setup notes, both load-bearing. First, a FRESH network: \`model\`
-// is already trained, so re-fitting it starts partway down the loss
-// curve and halts sooner. Over 60 runs of each, the re-fit stopped at a
-// median epoch 47 where a fresh network took about a hundred, and 11 of
-// the 60 re-fits stopped inside the first 10 epochs. Roughly half the run.
-// That is enough for the halt epoch to report where the weights
-// started rather than anything about this data.
+{`// Continues training-loop.ts. A new model starts a separate experiment;
+// fitting the existing model would continue from its current weights.
 const rerun = tf.sequential();
 rerun.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
 rerun.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 rerun.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 rerun.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Second, something for the callback to fire ON. On the clean synthetic
-// clusters above, validation loss just keeps creeping down (under 0.001
-// after 500 epochs) and the run never halts. The archive is not that clean:
-// its labels come from the flag log, and a few are wrong. Flip six of
-// the first eighty labels to simulate that. Six contradictory rows put a
-// floor under both curves, since no setting of the weights can satisfy
-// them and their neighbors at once. validationSplit takes the LAST 20
-// rows, which stay clean, so that floor on val_loss is the price of the
-// bad rows rather than a broken split.
+// Corrupt six TRAINING labels to explore noisy supervision. The final
+// 20 rows used for validation remain untouched. Conflicting nearby
+// examples do not impose a hard loss floor: a flexible model can memorize
+// individual rows. A plateau or halt is an observation, not a guarantee.
 const labels = trainY.arraySync();
 for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
 
-await rerun.fit(trainX, tf.tensor2d(labels), {
+const noisyY = tf.tensor2d(labels);
+const stopped = await rerun.fit(trainX, noisyY, {
   epochs: 500,            // an upper bound now, not a target
   validationSplit: 0.2,
   callbacks: tf.callbacks.earlyStopping({
@@ -266,33 +240,21 @@ await rerun.fit(trainX, tf.tensor2d(labels), {
     patience: 5,          // give it 5 epochs of no improvement first
   }),
 });
-// The halt epoch is data- and init-dependent. Across 400 runs of this
-// block the callback usually fired between epoch 70 and epoch 160,
-// median 104, on a val_loss near 0.085, with the middle eight tenths
-// between 0.07 and 0.11. Those ends are not bounds: five of the 400 fell
-// outside that epoch window, and the longest of a further 900 runs went
-// to epoch 202. None of the 1,300 reached the 500-epoch ceiling. One run
-// stopped at epoch 102 on val_loss 0.081, and that is the run the
-// epilogue records. Now
-// read WHAT tripped it. The validation curve here does not climb, it
-// flattens: at the halt, val_loss sat a median 0.0012 above its own
-// best, and 0.0032 above it at the 90th percentile, while the training
-// loss was still a median 0.259, which is nowhere near memorized.
-// patience counts epochs that fail to BEAT the best score so far, and a
-// plateau fails that test the same way a climb does. So the callback
-// only tells you the run stopped improving. Whether that is convergence
-// or overfitting requires more evidence. Read both curves, then check
-// the data, labels and training setup before choosing an explanation.`}
+console.log('Epochs completed:', stopped.epoch.length);
+noisyY.dispose();
+rerun.dispose();
+// Keep the first model and clean tensors for evaluation in lesson 5.
+`}
 </CodeBlock>
 
-Early stopping leaves the final epoch's weights in place. If the callback stops this run, that epoch is five non-improving epochs after the best validation loss. If the epoch budget ends first, the offset can differ. Across 400 runs of this block the halt landed exactly five epochs past the best score every single time, on a val_loss between 0.0000 and 0.0105 above it, median 0.0012. TFJS 4.22 has no undo for that: `tf.callbacks.earlyStopping({ restoreBestWeights: true })` throws `restoreBestWeights = True is not implemented in EarlyStopping yet`. If you want the best weights and not just the halt, clone `model.getWeights()` in `onEpochEnd` whenever val_loss improves and set them back after `fit` resolves.
+Early stopping leaves the final epoch's weights in place in TFJS 4.22.0. With `minDelta: 0` and `patience: 5`, it stops after five epochs that fail to improve the best monitored value, unless the budget ends first. It does not prove convergence or overfitting. This version does not implement `restoreBestWeights: true`. To retain the best checkpoint, clone its weight tensors when validation improves, restore them after fitting, and dispose the snapshots.
 
 <Dialogue speaker="Chief Nazari">
 Ten times the compute and you cannot tell me what it bought. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
 </Dialogue>
 
 <DerivationDrawer summary="The 7-step loop that fit() hides, and what Adam changes in step 4">
-**`model.fit()` is a wrapper around this loop.** Sampling mini-batches instead of the whole dataset is what makes it stochastic gradient descent: each batch is a random sample, so each gradient is only an estimate of the true one. The inner update (steps 1-4) runs `epochs × (datasetSize / batchSize)` times:
+**`model.fit()` is a wrapper around this loop.** Sampling mini-batches instead of the whole dataset is what makes it stochastic gradient descent: each batch is a random sample, so each gradient is only an estimate of the true one. Without early stopping, the inner update runs `epochs × ceil(trainingRows / batchSize)` times, including a partial final batch. Validation rows are excluded:
 
 ```
 for epoch in 1..N:
@@ -320,11 +282,11 @@ for epoch in 1..N:
 
 **Step 4 is the one line `optimizer` swaps out.** Under a plain `optimizer: 'sgd'` that line is exactly the rule above. Under `optimizer: 'adam'`, which both networks in this lesson and the exercise below use, it is not. The learning rate lives on the optimizer, so it belongs to `compile()`, and `fit()` silently ignores a `learningRate` option. Both nets here pass the optimizer as a bare string, so each takes its default rate. That is why lesson 2's most important knob appears nowhere in this lesson's code.
 
-**What Adam puts in step 4 instead.** Adam keeps two running averages per weight: `m` over recent gradients and `v` over recent squared gradients. The step is `m` divided by the square root of `v`, scaled by the learning rate. The `m` term is momentum, so a weight whose gradient keeps pointing one way builds speed and coasts over the flats around saddles. The `sqrt(v)` division sizes each weight's step against that weight's own recent gradients, so a parameter with tiny gradients still moves and one with huge gradients does not bolt. Both averages start at zero and get rescaled early to correct that bias, which leaves the first step roughly one learning rate wide whatever the gradient measures. On `L = w²` at `w = 3` the gradient is 6, and one default Adam step moves `w` by 0.00100; the plain rule at the same rate would move it 0.006. TensorFlow.js defaults Adam to a learning rate of 0.001, and `tf.train.adam(lr)` is how you set your own.
+**What Adam changes.** It tracks moving averages of gradients and squared gradients, corrects their initial bias, and divides the first by the square root of the second plus a small stabilizer. The base learning rate still scales the update. TFJS defaults Adam to 0.001; use `tf.train.adam(lr)` to choose another value. Adaptation does not guarantee stable steps or escape from flat regions.
 
-**Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 32-512 are the empirical sweet spot: enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
+**Why mini-batches?** They trade memory, throughput and gradient variability. Full-batch training uses the full training objective per update; single-example updates use one row. Neither is universally worse. Try batch sizes that fit the model and device, then compare learning and throughput. There is no universal 32-512 range that saturates every GPU.
 
-**Why shuffle each epoch?** Without shuffling, the model sees batches in the same order every epoch, which biases learning toward whatever pattern is in the file order. Shuffle breaks the correlation between adjacent batches.
+**Why shuffle?** For independent examples, it reduces dependence on file ordering. It must preserve features and labels together. Do not shuffle across train/validation boundaries or destroy the temporal order inside a sequence.
 </DerivationDrawer>
 
 ## Challenge
@@ -336,8 +298,8 @@ The exercise labels observable trends. A short run can provide too little histor
 <Exercise slug="training-loop-exercise" />
 
 <RecallPrompt
-  question="Why use mini-batches of 32 to 512 samples rather than processing the full dataset at once or one sample at a time?"
-  answer="Full-batch is exact but slow and memory-heavy (one weight update per epoch). Single-sample is noisy and underuses GPU parallelism. Mini-batches hit the practical sweet spot: low-variance gradient estimates, memory that fits on hardware, and enough parallelism to saturate GPU compute."
+  question="What tradeoffs determine a useful batch size?"
+  answer="Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
 />
 
 <LessonRecap
@@ -354,6 +316,6 @@ The exercise labels observable trends. A short run can provide too little histor
 
 <Epilogue>
 
-The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console, labeled with what each one cost rather than with a verdict: the 500-epoch run spent ten times the compute on a number he guessed, and the rerun stopped itself the moment val_loss quit improving. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, and the hundred clean rows cut from it that are now folded into 673 trained parameters. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
+The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console, labeled with what each one cost rather than with a verdict: the 500-epoch run spent ten times the compute on a number he guessed, and the rerun stopped after five epochs without a new best validation loss. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, and the hundred clean rows cut from it that are now folded into 673 trained parameters. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
 
 </Epilogue>

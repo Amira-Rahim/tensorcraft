@@ -2,17 +2,27 @@ slug: forecast-signal
 lessonSlug: forecasting
 title: "Roll Forward, Then Replay One Step at a Time"
 instructions: |
-  **Contract revision 2026-09-17b:** forecastTwoWays accepts an optional sixth argument providedModel, a compiled model for controlled fitting and rollout checks.
+  Implement forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel?).
+  trainX is [windows, windowSize, 1], trainY is [windows, 1]. past contains at
+  least windowSize finite readings, oldest first. arrived contains the later
+  readings against which both forecasts will be compared.
 
-  Train a one-step model, then run it twice over the same stretch: once as a rollout that feeds itself, once re-seeded from the readings that actually arrived.
+  Use providedModel as compiled when supplied. Otherwise build an 8-unit LSTM
+  with inputShape [windowSize, 1] and a linear Dense output of 1. Compile with
+  'adam' and 'meanSquaredError'. Await fit(trainX, trainY, { epochs, batchSize: 8 }).
 
-  What you are given. `trainX` is a [windows, windowSize, 1] tensor of past readings, and `trainY` is the [windows, 1] tensor holding the reading that followed each window. Both are built for you, and `windowSize` is `trainX.shape[1]`. `past` holds every reading up to now, oldest first, and `arrived` holds the ones that turned up afterwards, so this is a forecast being replayed against what really happened. `epochs` is how many passes to train for. Read it from the arguments, because the grader runs this twice with different values.
+  Build arrived.length predictions in each arm. Each predict call reads the
+  last windowSize readings as [1, windowSize, 1] and returns one finite scalar.
+  rollout starts from past and appends each prediction before the next call.
+  oneStep uses past plus only the arrived readings BEFORE the target step.
+  Never append a prediction to oneStep's input history. Keep both input arrays
+  unchanged. Return { model, history, rollout, oneStep }, with the exact fit
+  history and both series as plain number arrays.
 
-  What to build. Stack `tf.sequential()` with `tf.layers.lstm({ units: 8, inputShape: [windowSize, 1] })` and then `tf.layers.dense({ units: 1 })`. Compile it with the adam optimizer and meanSquaredError loss, then `await model.fit(trainX, trainY, { epochs, batchSize: 8 })` and keep what fit resolves to. Every prediction goes in the same way: the LAST `windowSize` values of a history, handed to `model.predict` as one [1, windowSize, 1] tensor, with the single number read out of the [1, 1] result. `rollout` is `arrived.length` predictions where each one is appended to the history before the next step, so from step 2 on the model is reading its own output. `oneStep` is `arrived.length` predictions where the history is `past` followed by the arrived readings BEFORE that step. Step 1 reads `past` alone, step 2 reads `past` plus the first arrived reading, and no prediction ever re-enters it. Leave `past` and `arrived` as you found them, and return `{ model, history, rollout, oneStep }` with both series plain arrays of numbers, oldest first.
-
-  The grader compares both series against your returned model and checks the fit's data, schedule and history. A correct implementation can have poor forecast quality. The two methods can also agree, for example when a model always predicts the same value. Neither a fixed loss reduction nor a minimum difference between the series is required.
-
-  Use providedModel as-is when supplied; otherwise build and compile the required stack. The supplied model lets the grader test changing-history behavior with predictable outputs.
+  Free prediction tensors, including on failure. Keep caller-owned inputs and
+  a supplied model alive. Dispose a newly created model if fitting or prediction
+  fails; on success the caller owns it. No fixed improvement or difference
+  between the two series is required: correct code can still forecast poorly.
 starterCode: |
   async function forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel) {
     // One training run, then the same stretch covered twice. The two passes
@@ -28,12 +38,15 @@ solutionCode: |
       model.add(tf.layers.dense({ units: 1 }));
       model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
     }
+    try {
     const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
 
     const predictFrom = (readings) =>
       tf.tidy(() => {
         const window = readings.slice(-windowSize).map((value) => [value]);
-        return model.predict(tf.tensor3d([window])).dataSync()[0];
+        const output = model.predict(tf.tensor3d([window])).dataSync();
+        if (output.length !== 1 || !Number.isFinite(output[0])) throw new Error('Invalid prediction');
+        return output[0];
       });
 
     const fedBack = [...past];
@@ -50,6 +63,10 @@ solutionCode: |
     }
 
     return { model, history, rollout, oneStep };
+    } catch (error) {
+      if (!providedModel) model.dispose();
+      throw error;
+    }
   }
 testCode: |
   // A calm stretch of one DEEP SCAN channel: min-max normalized amplitude,
@@ -200,7 +217,7 @@ testCode: |
       ).toBe(2);
       expect(
         out.model.layers[0].getClassName(),
-        'The first layer is the one named in the instructions. A dense layer here would flatten the window into unordered features.',
+        'The first layer is the one named in the instructions. A flattened dense baseline has a different contract; this exercise requires recurrent updates.',
       ).toBe('LSTM');
       expect(
         out.model.layers[0].getConfig().units,

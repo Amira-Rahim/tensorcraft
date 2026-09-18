@@ -30,12 +30,12 @@ testCode: |
       zeroModel.add(tf.layers.dense({ inputShape: [8], units: 8, kernelInitializer: 'zeros', biasInitializer: 'zeros' }));
       identityModel = tf.sequential();
       identityModel.add(tf.layers.dense({ inputShape: [8], units: 8, useBias: false }));
-      identityModel.layers[0].setWeights([tf.eye(8)]);
+      tf.tidy(() => identityModel.layers[0].setWeights([tf.eye(8)]));
       // Copies the input through and adds a fixed 0.1 to every feature, so its
       // reconstruction is always off by the same amount whatever it is handed.
       offsetModel = tf.sequential();
       offsetModel.add(tf.layers.dense({ inputShape: [8], units: 8 }));
-      offsetModel.layers[0].setWeights([tf.eye(8), tf.fill([8], 0.1)]);
+      tf.tidy(() => offsetModel.layers[0].setWeights([tf.eye(8), tf.fill([8], 0.1)]));
     });
     it('scores the gap between input and reconstruction, not the input itself', () => {
       // Same model, two readings with different energy. The offset is fixed, so

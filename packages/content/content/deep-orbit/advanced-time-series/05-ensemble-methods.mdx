@@ -30,32 +30,39 @@ hints:
     content: "First compute predictions for each blend, then measure their MAE. Compare the equal blend with the lowest member MAE. For weighted predictions, normalize the inverse squared prior-week errors so the weights sum to one. Do not build weights from the window you are evaluating."
   - level: solution
     content: |
-      const mae = (values) =>
-        values.reduce((sum, v, i) => sum + Math.abs(v - actual[i]), 0) /
-        actual.length;
-      const perMember = {};
-      for (const member of members) {
-        perMember[member.name] = mae(member.predictions);
+      function ensembleGain(members, actual) {
+        const mae = (values) =>
+          values.reduce((sum, v, i) => sum + Math.abs(v - actual[i]), 0) /
+          actual.length;
+
+        const perMember = {};
+        for (const member of members) {
+          perMember[member.name] = mae(member.predictions);
+        }
+
+        const blended = actual.map(
+          (_, i) =>
+            members.reduce((sum, m) => sum + m.predictions[i], 0) / members.length,
+        );
+        const ensemble = mae(blended);
+
+        const inverseSquaredError = members.map(
+          (member) => 1 / (member.heldOutError * member.heldOutError),
+        );
+        const total = inverseSquaredError.reduce((sum, v) => sum + v, 0);
+        const weights = {};
+        members.forEach((member, i) => {
+          weights[member.name] = inverseSquaredError[i] / total;
+        });
+
+        const weightedBlend = actual.map((_, i) =>
+          members.reduce((sum, m) => sum + m.predictions[i] * weights[m.name], 0),
+        );
+        const weighted = mae(weightedBlend);
+
+        const best = Math.min(...Object.values(perMember));
+        return { perMember, ensemble, weights, weighted, beatsBest: ensemble < best };
       }
-      const blended = actual.map(
-        (_, i) =>
-          members.reduce((sum, m) => sum + m.predictions[i], 0) / members.length,
-      );
-      const ensemble = mae(blended);
-      const inverseSquaredError = members.map(
-        (member) => 1 / (member.heldOutError * member.heldOutError),
-      );
-      const total = inverseSquaredError.reduce((sum, v) => sum + v, 0);
-      const weights = {};
-      members.forEach((member, i) => {
-        weights[member.name] = inverseSquaredError[i] / total;
-      });
-      const weightedBlend = actual.map((_, i) =>
-        members.reduce((sum, m) => sum + m.predictions[i] * weights[m.name], 0),
-      );
-      const weighted = mae(weightedBlend);
-      const best = Math.min(...Object.values(perMember));
-      return { perMember, ensemble, weights, weighted, beatsBest: ensemble < best };
 keywords:
   - ensemble
   - model-averaging
@@ -73,9 +80,9 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model runs, so total computation grows. Elapsed time also depends on whether the hardware can run them concurrently. Different errors may partly cancel, but a shared mistake survives the blend.
 </Dialogue>
 
-`Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Three services hand back three different pieces of an answer. Three models hand back three answers to the same question, and the only thing that makes the third one worth paying for is that it is wrong in places the other two are right.
+`Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Services can answer the same or different questions. An ensemble needs predictions about the same target, time and units. A third model must justify its compute cost through measured accuracy, robustness or another explicit requirement.
 
-<LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them", "Score an ensemble against its best single member, not against the average member"]} />
+<LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Train a stacking model on predictions from rows the base models did not fit, then evaluate on another period", "Score an ensemble against its best single member, not against the average member"]} />
 
 ## Combining Models
 
@@ -87,11 +94,20 @@ Because all three run on every input. An ensemble isn't a router that picks the 
 interface ModelPrediction {
   modelName: string;
   prediction: number[];
-  confidence: number;
+  weight: number; // nonnegative blend weight, not a probability
+}
+
+function validatePredictions(rows: ModelPrediction[]) {
+  if (!rows.length || !rows[0].prediction.length || rows.some(row =>
+      row.prediction.length !== rows[0].prediction.length || !row.prediction.every(Number.isFinite) ||
+      !Number.isFinite(row.weight) || row.weight < 0) || rows.every(row => row.weight === 0)) {
+    throw new Error('Expected finite, matching predictions with positive total weight');
+  }
 }
 
 // Simple averaging: each model gets equal vote
 function averageEnsemble(predictions: ModelPrediction[]): number[] {
+  validatePredictions(predictions);
   const n = predictions.length;
   const dim = predictions[0].prediction.length;
   const result = new Array(dim).fill(0);
@@ -106,12 +122,13 @@ function averageEnsemble(predictions: ModelPrediction[]): number[] {
 
 // Weighted averaging: trust the members that scored better last week
 function weightedEnsemble(predictions: ModelPrediction[]): number[] {
-  const totalConf = predictions.reduce((s, p) => s + p.confidence, 0);
+  validatePredictions(predictions);
+  const totalConf = predictions.reduce((s, p) => s + p.weight, 0);
   const dim = predictions[0].prediction.length;
   const result = new Array(dim).fill(0);
 
   for (const p of predictions) {
-    const weight = p.confidence / totalConf;
+    const weight = p.weight / totalConf;
     for (let i = 0; i < dim; i++) {
       result[i] += p.prediction[i] * weight;
     }
@@ -127,15 +144,18 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
 // of crossings. A forecast of the next capture is an estimate of that
 // count, so it lands between whole numbers, which is why the frequency
 // column below reads 37.4 rather than 37.
-// Confidences are measured, not self-reported: each one is the
+// Illustrative weights, rounded from the
 // inverse-squared-MAE weight from that member's error on last week's held-out
 // readings, by the formula below this block.
-// Lesson 4's filter tracks one number, so the Kalman member here is three
-// of them, one per channel, each smoothing its own reading.
+// This toy blend assumes three scalar Kalman models predict those targets.
+// Update each filter only with observations available BEFORE the target.
+// An estimate corrected with the target itself would leak the answer.
+// Phase values here occupy one small range; across the +/-pi seam, use a
+// circular representation and a matching circular error instead.
 const predictions: ModelPrediction[] = [
-  { modelName: 'LSTM', prediction: [1140, 37.4, 0.45], confidence: 0.333 },
-  { modelName: 'Attention', prediction: [1100, 36.9, 0.51], confidence: 0.467 },
-  { modelName: 'Kalman', prediction: [1120, 37.6, 0.48], confidence: 0.200 },
+  { modelName: 'LSTM', prediction: [1140, 37.4, 0.45], weight: 0.333 },
+  { modelName: 'Attention', prediction: [1100, 36.9, 0.51], weight: 0.467 },
+  { modelName: 'Kalman', prediction: [1120, 37.6, 0.48], weight: 0.200 },
 ];
 
 const avg = averageEnsemble(predictions);
@@ -148,6 +168,9 @@ console.log('Weighted:', weighted); // [ 1117.3200000000002, 37.2065, 0.48402 ]
 // than the plain average does, because Attention carries 0.467 of the
 // weight against 0.333 and 0.200.
 
+// Integration dependency: supply heldOutWindows, heldOutTargets and
+// three members trained only on an earlier period. predictScalar returns
+// plain numbers for the same target and horizon, with no target leakage.
 // Stacking: the third rung. Instead of hand-picking weights, TRAIN a
 // meta-model on the members' outputs: each meta-feature row is the three
 // members' predictions for one window, the label is the true value.
@@ -156,14 +179,19 @@ const metaY = tf.tensor2d(heldOutTargets, [heldOutTargets.length, 1]);
 const metaModel = tf.sequential();
 metaModel.add(tf.layers.dense({ units: 1, inputShape: [3] }));  // learned blend
 metaModel.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
-await metaModel.fit(metaX, metaY, { epochs: 20 });
+try {
+  await metaModel.fit(metaX, metaY, { epochs: 20 });
+  // Evaluate/save the fitted stack before releasing it in this demonstration.
+} finally {
+  tf.dispose([metaX, metaY]); metaModel.dispose();
+}
 // Fit the meta-model on HELD-OUT predictions, never on the members' own
-// training windows, or it learns to trust whichever member memorized them.
+// training windows, because in-sample predictions can make a member look unrealistically strong.
 // Fitting spends that slice: the stack carries weights of its own now, so
 // report its score on a further slice neither it nor the members have seen.`}
 </CodeBlock>
 
-The `confidence` field is a weight we choose from validation results, not a probability the model reports. Here `e_i` is MAE on a prior held-out week, with each channel's errors divided by its range. We use `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. This is an inverse-squared-error heuristic. Squared MAE is not error variance, so the rule has no minimum-variance guarantee. The example errors 0.045, 0.038 and 0.058 produce weights near 0.333, 0.467 and 0.200. Compare that blend with equal weighting on a separate evaluation week. The exercise supplies strictly positive errors; a real implementation must define what to do with zero or invalid scores.
+The `weight` field is a blend coefficient we choose from validation results, not a probability the model reports. Here `e_i` is MAE on a prior held-out week, with each channel's errors divided by its range. We use `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. This is an inverse-squared-error heuristic. Squared MAE is not error variance, so the rule has no minimum-variance guarantee. The example errors 0.045, 0.038 and 0.058 produce weights near 0.333, 0.467 and 0.200. Compare that blend with equal weighting on a separate evaluation week. The exercise supplies strictly positive errors; a real implementation must define what to do with zero or invalid scores.
 
 <DerivationDrawer summary="Why squared MAE is not variance">
 Both error arrays below have MAE 1. The first is consistently biased; the second varies around zero. Squaring their MAEs gives the same number, but their variances differ.
@@ -212,7 +240,7 @@ Score each member, score both blends (equal shares, then confidence shares), and
 
 <RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit." />
 
-<RecallPrompt question="Why are the member errors here fractions of each channel's range instead of raw counts and radians?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and the louder channel dominated. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the confidences computed from it, would track amplitude alone." />
+<RecallPrompt question="Why are the member errors here fractions of each channel's range instead of raw counts and radians?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and unscaled error could favor the larger-unit feature. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the confidences computed from it, could be dominated by amplitude error. It depends on the errors, not just the values." />
 
 <LessonRecap
   whatYouLearned={["Averaging can cancel some member errors. Shared bias survives.", "The inverse-squared-MAE weights here are a heuristic, not inverse-variance weights or calibrated probabilities.", "Different seeds, architectures or samples do not guarantee uncorrelated errors.", "Compare blends with the best member, select on validation data, and keep a final evaluation period untouched."]}
@@ -227,9 +255,9 @@ Score each member, score both blends (equal shares, then confidence shares), and
 Farah leaves the forecasters extrapolating overnight from 72.4 seconds, the level the Kalman filter holds for them: the LSTM on short range, the attention model on long. Demir fits the third line by hand off the interval log, roughly a sixth of a second per day. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
 
 <Dialogue speaker="ARIA" expression="deadpan">
-I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to two significant figures; I can supply eleven. You did not request this precision. I had it available.
+I have recomputed Dr. Farah's compression curve against the ensemble output. The fit supports two significant figures. The display can print eleven. The extra digits do not add evidence.
 </Dialogue>
 
-Two forecasters and a line drawn by hand, laid over the same eight readings and running together across them. The thing in Sector 7-G is not repeating itself. It is counting down. Run them past the end of that log and they part company on the date, and not one of them says what arrives when the count runs out.
+Two forecasters and a line drawn by hand, laid over the same eight readings and running together across them. Demir writes “countdown” beside the plot, then adds “extrapolation” below it. Run them past the end of that log and they part company on the date, and not one of them says what arrives when the count runs out.
 
 </Epilogue>

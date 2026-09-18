@@ -2,9 +2,10 @@ slug: verify-deployment
 lessonSlug: launch
 title: "Verify a Deployment"
 instructions: |
-  **Contract revision 2026-09-17b:** verifyDeployment accepts timeoutMs (default 1000). A timed-out check fails, receives an abort signal and prevents later checks from starting.
-
   Write the runner under the launch script. It takes an array of checks and answers with one verdict for the whole deployment.
+
+  Reject a malformed result as a failed check: require a non-empty string name,
+  a boolean passed and a string message. Truthy strings must not pass a gate.
 
   A check is an async function receiving an AbortSignal and returning `{ name, passed, message }`. It may ignore the argument when it has no cancellable work. timeoutMs must be a finite positive number.
 
@@ -67,6 +68,7 @@ hints:
                 }, timeoutMs);
               }),
             ]);
+            if (!result || typeof result.name !== 'string' || !result.name.trim() || typeof result.passed !== 'boolean' || typeof result.message !== 'string') throw new Error('Invalid check result');
             results.push(result);
           } catch (error) {
             results.push({
@@ -154,6 +156,7 @@ solutionCode: |
             }, timeoutMs);
           }),
         ]);
+        if (!result || typeof result.name !== 'string' || !result.name.trim() || typeof result.passed !== 'boolean' || typeof result.message !== 'string') throw new Error('Invalid check result');
         results.push(result);
       } catch (error) {
         results.push({
@@ -197,6 +200,12 @@ testCode: |
   };
 
   describe('verifyDeployment', () => {
+    it('fails malformed check results', async () => {
+      for (const bad of [null, {name:'gate',passed:'false',message:''}, {name:'',passed:true,message:''}]) {
+        const result = await verifyDeployment([async () => bad]);
+        expect(result.passed).toBe(false); expect(result.checks[0].message).toContain('Invalid');
+      }
+    });
     it('passes a healthy deployment: output contract + anomaly gate + calm gate', async () => {
       const checks = [
         async () => {

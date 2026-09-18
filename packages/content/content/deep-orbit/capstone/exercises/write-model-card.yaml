@@ -18,14 +18,16 @@ instructions: |
 
   Percentages carry one decimal place, and every bullet sits under its own heading. The size line carries the weight file in bytes, which is the figure that was measured, not a rounded megabyte total for the whole download.
 
-  Every line above is a line of the returned string, and a section is the run of bullets under its heading: the three performance numbers under `## Performance`, then the weakest class followed by every entry of `limitations` under `## Limitations`, then the two format lines under `## Usage`. The grader reads each section by the lines that follow its heading, so a bullet that carries the right text under the wrong heading does not count, and a card run together into one line has no sections at all.
+  Keep each bullet under its named heading. Read values from meta. Accuracy
+  is tied to benchmarkedOn; find the minimum of recallByClass rather than
+  relying on key order. Inputs are already validated: metric fractions are
+  finite in [0, 1], sizes and durations are nonnegative, and recallByClass is
+  non-empty. Ties may name the first minimum in insertion order.
 
-  The grader renders more than one model, including one whose values it draws when it runs, so every value on the card comes off the argument.
-
-  Two lines are computed instead of copied.
-
-  1. Accuracy renders with the benchmark it was measured on, because a percentage with no measurement attached says nothing about whether it still holds.
-  2. The first limitation is the class with the lowest recall in `recallByClass`, which maps each class name to its recall as a fraction. Finding it means comparing the values. The order the classes were written in is not a ranking, and the weakest class is not always the one with a worrying name.
+  This exercise renders a subset of a model card. A release card also needs
+  purpose, artifact/data identity, split method, per-class sample counts,
+  metric definitions and timing environment. Supplied mission values are
+  fictional; formatting them does not verify them.
 starterCode: |
   interface ModelMetadata {
     name: string;

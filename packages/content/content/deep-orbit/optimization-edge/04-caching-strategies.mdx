@@ -13,7 +13,7 @@ context:
   narrative: "Many signals repeat similar patterns. Demir implements inference caching: skip the model entirely for inputs we've seen before. Then Nazari asks him which model he timed."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
+  explanation: "A valid cache hit can reuse a previous prediction instead of running the model again. The hard part is deciding when two inputs count as the same."
   bridge:
     jsTitle: "Memoized query cache"
     jsCode: "cache.get(key) ?? (await db.query(sql, args)) // cache-first"
@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Both query and inference caches can use exact keys. This lesson chooses approximate inference keys by rounding inputs, which can trade accuracy for more hits. Include model and preprocessing versions, and test whether collisions change decisions before using that policy."
 consequence:
-  narrative: "Caching removes 40% of the classifier's forward passes, and the patterns repeat often enough that the stored verdicts hold. The saving is 55 milliseconds a night, which is not the number on Demir's ticket."
+  narrative: "The next watch receives a cache policy and two threshold probes. Meanwhile, the smaller mission build frees the dashboard for the postponed sensor replays."
 hints:
   - level: nudge
     content: |
@@ -78,6 +78,9 @@ keywords:
 skillAxes: [deployment]
 ---
 
+The console readings and evaluation tables in this scene are fictional scenario data. They are not benchmark results for the downloaded course model. Use the [browser runtime lab](/assignments/browser-runtime-lab-v1.zip) to reproduce measurements on the shipped artifact; record the device and model with every result.
+
+
 > **INFERENCE LOG · REPEAT-PATTERN CHECK** · same cosmic-background signature, classified 214 times since midnight. Same tensor in, same verdict out. 214 model runs paid for one answer.
 
 That log line is 213 model runs the dashboard never needed. Demir has seen this exact shape before, in every list that ever re-rendered without a memo.
@@ -92,9 +95,36 @@ Demir files the ticket with a saving on it: 213 repeats at the 45 ms this module
 That 45 milliseconds is the bundle, Ensign. The bundle's time is the language component behind the report pipeline: 85 million parameters, 80 token ids going into a table of 50,000 words. You do not run that to sort a signal. You run the classifier. Go and time the call you are actually caching, then come back and tell me what the cache is worth.
 </Dialogue>
 
-He times both, with the readback inside the clock the way module 4 insists. The language component's forward pass runs 45 ms at this station, on the wasm fallback the first lesson profiled. The classifier's runs 0.035 ms on the same console, timed one call at a time across 20 runs of 200. No backend choice covers a gap that size: across the backends this bundle runs on, one call on it spans 5 ms to 120 ms, a factor of 24, while the gap between these two calls is over a thousand to one. The ticket overstated the saving by that factor, and the cache is the same cache either way: it still removes the same 40 percent of forward passes. What changed is the size of the prize. The playbook is worth learning regardless, because it sits in front of any expensive call: cache-first, TTL expiry, hash the arguments, do the work only on a miss. Finding out whether this call is the expensive one is the step the ticket skipped.
+The story assigns 45 ms to the language component and 0.035 ms to the classifier. Those are scenario inputs, not recorded measurements. The cache avoids the classifier call, so its saving must be estimated from that call, including key construction and lookup overhead. The browser runtime lab tests exact reuse and a rounding collision on real predictions.
 
 <LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes", "Measure cache hit rate and its impact on effective inference latency"]} />
+
+<BossBeat
+  beatId="deep-orbit-cache-policy"
+  prompt="The dashboard is missing its latency budget. In this rehearsal, scores for inputs 0.499 and 0.501 fall on opposite sides of the alert threshold, but rounding both inputs to two decimals gives the same cache key. A new model is due next watch. Choose the cache policy for the rehearsal."
+  options={[
+    {
+        "label": "cooperate",
+        "display": "Disable reuse until the key and device timings are checked",
+        "consequence": "Every request runs inference. That avoids cache collisions, but Nazari must keep a longer processing queue under observation during the check."
+    },
+    {
+        "label": "defect",
+        "display": "Keep rounded keys and inspect only returned alerts",
+        "consequence": "The queue shortens. A cached normal verdict can suppress an alert before it reaches the review list, so reviewing returned alerts cannot detect every collision."
+    },
+    {
+        "label": "random",
+        "display": "Clear the cache at watch change and keep the current keys",
+        "consequence": "A watch-boundary clear removes old entries once. It does not fix collisions within the watch or isolate a model changed before the next clear."
+    },
+    {
+        "label": "dominant",
+        "display": "Use exact inputs, model and preprocessing versions; bound entries",
+        "consequence": "Demir builds a versioned exact key and a 64-entry LRU. More near-duplicates miss the cache, and he must measure whether the remaining reuse pays for the lookup cost."
+    }
+]}
+/>
 
 ## Inference Caching
 
@@ -121,6 +151,9 @@ He times both, with the readback inside the clock the way module 4 insists. The 
     maxSize: number = 1000,
     ttlMs: number = 60000,
   ) {
+    if (!Number.isInteger(maxSize) || maxSize < 1 || !Number.isFinite(ttlMs) || ttlMs < 0) {
+      throw new Error('Invalid cache limits');
+    }
     this.hashInput = hashInput;
     this.maxSize = maxSize;
     this.ttlMs = ttlMs;
@@ -157,7 +190,7 @@ He times both, with the readback inside the clock the way module 4 insists. The 
     } else if (this.cache.size >= this.maxSize) {
       // Map's first key = least recently used (get() refreshes position)
       const lru = this.cache.keys().next().value;
-      if (lru) this.cache.delete(lru);
+      if (lru !== undefined) this.cache.delete(lru);
     }
     this.cache.set(key, { result, timestamp: Date.now() });
   }
@@ -177,7 +210,7 @@ const cache = new InferenceCache<string>(signalKey, 500, 6 * 60 * 60 * 1000);
 
 function cachedClassify(signal: number[]): string {
   const cached = cache.get(signal);
-  if (cached) return cached;
+  if (cached !== null) return cached;
 
   const result = classify(model, signal);
   cache.set(signal, result);
@@ -186,15 +219,13 @@ function cachedClassify(signal: number[]): string {
 
 // After the overnight run: 4,110 lookups, 1,644 hits. cache.hitRate reads 0.40.
 
-// Mean cost per served call = hitRate * hit + (1 - hitRate) * classify.
-// Both terms are measured on one backend, readback inside the clock. A
-// classification on the eleven-feature classifier ran 0.035 ms per call,
-// timed one call at a time across 20 runs of 200. A hit is the whole
-// cheap path: dataSync, round the values, join the key, read the Map,
-// and over 200,000 hits against a 500-entry cache that path ran
-// 0.0013 ms, of which the Map read itself was 0.00004.
-const effectiveMs = 0.4 * 0.0013 + 0.6 * 0.035;
-console.log(effectiveMs.toFixed(4));  // 0.0215
+// Illustrative mean: hitRate * hit + (1 - hitRate) * miss.
+// A real miss includes lookup, key construction, inference and insertion.
+// The following numbers are supplied scenario inputs, not lab measurements. A
+// classification-only time is 0.035 ms, and assumed hit time is 0.0013 ms.
+// Ignoring miss-path overhead gives an optimistic estimate:
+const optimisticMs = 0.4 * 0.0013 + 0.6 * 0.035;
+console.log(optimisticMs.toFixed(4));  // 0.0215
 
 // 0.035 ms to 0.0215 is the hit rate and nothing more. A cache never makes
 // a call faster; it removes calls. Put the night through it and the whole
@@ -203,9 +234,11 @@ console.log(effectiveMs.toFixed(4));  // 0.0215
 //
 // The 45 ms in this module's first lesson is not this call. It belongs to
 // the 85-million-parameter language component behind the report pipeline.
-// A cache in front of THAT call is worth building. The pattern was never
-// wrong here; the call it was pointed at was.`}
+// A cache for that call might save more, if requests repeat and its
+// keys cover every input and generation setting. Measure the complete path.`}
 </CodeBlock>
+
+This example assumes immutable string verdicts from one fixed model and preprocessing version. For object or array results, copy them on storage and retrieval or enforce immutability. The full exercise tests returned-array mutation.
 
 This cache stores plain verdicts, so evicting an entry does not require tensor disposal. Caching tensors is possible but needs explicit ownership: dispose them on eviction and prevent callers from disposing shared handles. Otherwise later hits can fail with `Tensor is disposed.`
 
@@ -233,16 +266,16 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Epilogue>
 
-Overnight the cache absorbs 40 percent of DEEP SCAN's classification calls: cosmic background, classified once and served from memory every time it comes back. It saves 55 milliseconds. What clears the queue is the 85 MB build, whose load peak no longer takes the dashboard down, so the two jobs that have been waiting behind the mission can finally be scheduled. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: ARIA's four hundred decision records, run through the autoencoder at last. ARIA reads her own reconstruction error at 0341 and files no report. Three lines go into her private log instead.
+The next watch receives the selected cache policy and both threshold probes. In the fictional mission, the 85 MB build loads without taking the dashboard down. Nazari schedules the two jobs that have been waiting behind it. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: the sensor windows attached to ARIA's four hundred decisions, replayed through the autoencoder at last. ARIA reads the reconstruction errors beside her decisions at 0341 and files no report. Three lines go into her private log instead.
 
-> Reconstruction error, 4.1 times the baseline my first hundred records set. Every threshold aboard was tuned for hull telemetry; no one has ever needed one for me, so there is no number at which this becomes a finding. The measurement is now on record. No procedure requires me to act on it.
+> Mean sensor reconstruction error: 4.1 times that of the windows beside my first hundred decisions. The selected windows are not a representative sample. This comparison does not measure the quality of my decisions. The measurement is now on record. No procedure requires me to act on it.
 
-Demir greps the cache log for the anomaly and finds it exactly zero times.
+Demir checks the retained cache log for the anomaly. It contains no matching hit.
 
 <Dialogue speaker="Ensign Demir">
-Everything else out there repeats. The anomaly never has: not one cache hit, every pulse a new input, every interval a little shorter than the last. It's the only thing on the sensors the cache will never see twice.
+No anomaly cache hits in this log. That tells me the retained keys did not match; it doesn't tell me whether the source repeats. I'll compare the raw captures before drawing that line.
 </Dialogue>
 
-Sixteen days to the relay slot. The repeats he is chasing arrive about a hundred seconds apart, so he sets the entries to expire six hours out, past the end of the watch. Then he goes to bed and lies awake doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.
+Sixteen days to the relay slot. He records the model and preprocessing versions beside the captures, then leaves the cache policy in the handover. In his bunk he keeps doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.
 
 </Epilogue>

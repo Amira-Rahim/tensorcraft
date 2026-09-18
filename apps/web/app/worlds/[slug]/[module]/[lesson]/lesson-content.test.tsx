@@ -54,6 +54,7 @@ vi.mock("@tensorcraft/ui", () => ({
 
 vi.mock("@/app/components/mdx", () => ({
   BossBeat: () => null,
+  StoryConsequence: () => <p>Saved follow-up</p>,
   Concept: () => null,
   DeepScanDemo: () => null,
   DispatchTease: () => null,
@@ -229,6 +230,7 @@ const ALL_COMPONENTS = [
   "InteractiveDemo",
   "DeepScanDemo",
   "BossBeat",
+  "StoryConsequence",
   "DispatchTease",
   "StrategyThread",
   "Concept",

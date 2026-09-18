@@ -31,7 +31,7 @@ hints:
   - level: guidance
     content: "Use axis 0 to compute one statistic per column. Take the square root of variance for std. scaleFeatures should replace a zero divisor with 1 while keeping the saved statistic at zero. Build the fixed neuron shown in the lesson. A single reading needs a leading batch axis before predict(), and it must reuse the training statistics. For min-max scaling, compute each column's minimum and maximum, then reuse scaleFeatures with the minimum and range."
   - level: solution
-    content: "function fitStats(rows) { const { mean, variance } = tf.moments(rows, 0); return { mean, std: variance.sqrt() }; } const { mean, std } = fitStats(batch); function scaleFeatures(rows, offset, scale) { return tf.tidy(() => { const divisor = tf.where(scale.equal(0), tf.onesLike(scale), scale); return rows.sub(offset).div(divisor); }); } const normalized = scaleFeatures(batch, mean, std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]); const scores = previewModel.predict(normalized); function scoreReading(reading) { const z = scaleFeatures(reading, mean, std); return previewModel.predict(z.reshape([1, 2])); } function minMaxStats(rows) { return { min: rows.min(0), max: rows.max(0) }; } const { min, max } = minMaxStats(batch); const unitRange = scaleFeatures(batch, min, max.sub(min));"
+    content: "function fitStats(rows) { return tf.tidy(() => { const { mean, variance } = tf.moments(rows, 0); return { mean, std: variance.sqrt() }; }); } const { mean, std } = fitStats(batch); function scaleFeatures(rows, offset, scale) { return tf.tidy(() => { const divisor = tf.where(scale.equal(0), tf.onesLike(scale), scale); return rows.sub(offset).div(divisor); }); } const normalized = scaleFeatures(batch, mean, std); const previewModel = tf.sequential(); previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })); tf.tidy(() => previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)])); const scores = previewModel.predict(normalized); function scoreReading(reading) { return tf.tidy(() => { const z = scaleFeatures(reading, mean, std); return previewModel.predict(z.reshape([1, 2])); }); } function minMaxStats(rows) { return { min: rows.min(0), max: rows.max(0) }; } const { min, max } = minMaxStats(batch); const unitRange = tf.tidy(() => scaleFeatures(batch, min, max.sub(min)));"
 keywords:
   - normalization
   - z-score
@@ -56,41 +56,41 @@ With comparable starting weights, temperature has the larger numerical contribut
 
 <BossBeat
   beatId="deep-orbit-foundations-7741-first-flag"
-  prompt="While the normalization job runs, the archive scroll stops on sample 7741: logged in the calm period, inside every baseline on every dial, and it still does not sit with the others. Nobody has built a model yet. What happens to the reading, operator?"
+  prompt="The normalization job stops on sample 7741. It was logged in the calm period and sits inside every baseline, but its pattern differs from its neighbors. There is no confirmed event label. The raw archive is read-only; this call changes the working review list. What should the next watch receive?"
   options={[
     {
-      label: "cooperate",
-      display: "File a formal anomaly flag, start an investigation",
-      consequence: "An investigation with no instruments: the crew has normalization and eyeballs, nothing else yet. The flag ages into noise, and by the time real detectors exist, formal-flag fatigue has already taught the bridge to skim past entries like it."
+        "label": "cooperate",
+        "display": "Open a formal investigation now",
+        "consequence": "Nazari assigns the next watch to inspect the capture and calibration log. That preserves a clear owner, but moves a scheduled channel check back one watch."
     },
     {
-      label: "defect",
-      display: "Delete it: one weird reading in 28,800 is sensor lint",
-      consequence: "The archive gets cleaner and the mission gets poorer. Every instrument the crew builds later would have had one less chance to prove itself against the only reading that mattered. Data you delete cannot vindicate you; it can only be gone."
+        "label": "defect",
+        "display": "Remove it from the working list as likely sensor noise",
+        "consequence": "Demir removes the row from the working review list. The raw archive still holds it; recovering its context later will require reopening that archive."
     },
     {
-      label: "random",
-      display: "Leave it to whoever notices it next",
-      consequence: "Somebody will, eventually, with better tools or worse timing. Unowned anomalies do get rediscovered; they just arrive without their history, and the second discoverer starts from zero. The archive remembers data, not attention."
+        "label": "random",
+        "display": "Leave it in the archive without assigning a review",
+        "consequence": "The row stays available, with no owner and no review note. The next watch receives its usual channel checklist."
     },
     {
-      label: "dominant",
-      display: "Keep it, tag it, move on: a question mark is an instrument",
-      consequence: "Farah's actual call, and it has a price she pays every day: the tag just sits there for ten modules, looking like nothing, while the not-knowing wears on whoever filed it. No alarm, no deletion: a named oddity every future instrument gets pointed at, starting with a preview model tonight."
+        "label": "dominant",
+        "display": "Tag it as unresolved and schedule a replay",
+        "consequence": "Farah adds an unresolved tag and a replay task for the first classifier. The channel check stays on schedule; the unexplained capture waits."
     }
-  ]}
+]}
 />
 
 
-## Why Scales Must Match
+## Why Scale Features
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
 
-Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. With comparable weights, temperature contributes more to the weighted sum and can produce larger gradients. Scaling can make optimization easier; it does not decide which feature is informative. A trained model can still assign different weights to the features.
+For this neural network, scaling can help training. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. With comparable weights, temperature contributes more to the weighted sum and can produce larger gradients. Scaling can make optimization easier; it does not decide which feature is informative. A trained model can still assign different weights to the features.
 
-Two names in the code below. The standard deviation is the typical distance between a value and its column's mean, so dividing by it measures a feature in its own units of spread: a z-score of 1 sits one typical distance above the mean, whatever the raw units were. `tf.moments` hands back the variance instead, that distance squared and averaged, so the standard deviation is `variance.sqrt()`. The averaging divides by the number of rows, n, which makes both statistics the population version. The sample version divides by n minus 1 instead and comes out slightly larger.
+Two names in the code below. The standard deviation is the typical distance between a value and its column's mean, so dividing by it measures a feature in its own units of spread: a z-score of 1 sits one typical distance above the mean, whatever the raw units were. `tf.moments` hands back the variance instead, that distance squared and averaged, so the standard deviation is `variance.sqrt()`. The averaging divides by the number of rows, n, which makes both statistics the population version. The usual unbiased sample variance divides by n minus 1. Its square root is larger than the population standard deviation when n > 1 and variance is nonzero; that square root is not itself an unbiased estimator of standard deviation.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -102,12 +102,14 @@ const signal = tf.tensor([0.1, 0.8, 0.3, 0.9, 0.5]);  // range: 0.1-0.9
 // Z-score normalization: center at 0, spread to ~1.
 // TFJS has no tensor.std(); moments() gives mean and variance together.
 function zNormalize(tensor: tf.Tensor) {
+  return tf.tidy(() => {
   const { mean, variance } = tf.moments(tensor);
   const std = variance.sqrt();
   // where(condition, yes, no) selects per feature. A constant feature
   // has std 0: use a divisor of 1, so its training values become 0.
   const divisor = tf.where(std.equal(0), tf.onesLike(std), std);
   return tensor.sub(mean).div(divisor);
+  });
 }
 
 // One argument you'll need the moment features live side by side in a
@@ -117,7 +119,7 @@ function zNormalize(tensor: tf.Tensor) {
 // single global mean over every number in the batch, which stirs
 // temperature and signal strength into one meaningless average.
 const batch = tf.stack([temperature, signal], 1);  // [5, 2]: 5 readings x 2 features
-const { mean: colMeans } = tf.moments(batch, 0);
+const colMeans = tf.tidy(() => tf.moments(batch, 0).mean);
 // colMeans: [24.8, 0.52], one per column, not one for the whole batch
 
 const tempNorm = zNormalize(temperature);
@@ -129,11 +131,13 @@ const signalNorm = zNormalize(signal);
 // Min-max normalization: squeeze to [0, 1] range
 // (the scroll-progress formula, applied to sensors)
 function minMaxNormalize(tensor: tf.Tensor) {
+  return tf.tidy(() => {
   const min = tensor.min();
   const max = tensor.max();
   const range = max.sub(min);
   const divisor = tf.where(range.equal(0), tf.onesLike(range), range);
   return tensor.sub(min).div(divisor);
+  });
 }
 
 const tempMinMax = minMaxNormalize(temperature);
@@ -165,12 +169,16 @@ neuron.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] })
 // setWeights is positional: the kernel first, one weight per input feature
 // arranged as a column, then the bias, one number per unit. Farah's numbers
 // arrive as plain JS arrays, so each becomes a tensor on the way in.
-neuron.setWeights([tf.tensor2d([[0.9], [-1.4]]), tf.tensor1d([-0.3])]);
+tf.tidy(() => neuron.setWeights([tf.tensor2d([[0.9], [-1.4]]), tf.tensor1d([-0.3])]));
 
 // predict reads a batch: [n, 2] rows in, [n, 1] verdicts out. Stack the two
 // z-scored columns from above the same way the raw batch was stacked.
 const normalizedBatch = tf.stack([tempNorm, signalNorm], 1);  // [5, 2]
-const verdicts = neuron.predict(normalizedBatch);`}
+const verdicts = neuron.predict(normalizedBatch) as tf.Tensor;
+console.log(await verdicts.array());
+tf.dispose([temperature, signal, batch, colMeans, tempNorm, signalNorm,
+  tempMinMax, normalizedBatch, verdicts]);
+neuron.dispose();`}
 </CodeBlock>
 
 The neuron multiplies each normalized feature by its weight and adds the bias. It passes the total through sigmoid, `1 / (1 + Math.exp(-x))`, which squashes any number into the range 0 to 1.
@@ -220,9 +228,9 @@ Farah pulls up a preview build of the classifier the crew will spend the next te
 <DeepScanDemo />
 
 <Dialogue speaker="Dr. Farah">
-Five firm scores and one near the boundary. That score does not tell us whether the reading is new or why the classifier is unsure. Keep the tag. We need more evidence.
+Five firm scores and one near the boundary. That score does not tell us whether the reading is new or why the classifier is unsure. We need more evidence.
 </Dialogue>
 
-She doesn't delete sample 7741, though.
+The preview score goes into the raw capture record. It does not settle the review.
 
 </Epilogue>

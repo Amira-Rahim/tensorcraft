@@ -79,7 +79,9 @@ not independent educational approval.
 ## Live GitHub check outstanding at deployment
 
 The steps below subsequently passed through the authorized API path on
-2026-09-18. The production folder-picker interaction remains unverified.
+2026-09-18. The production folder-picker interaction subsequently passed at
+12:52 UTC with owner-approved temporary QA records, all removed afterward.
+See the [browser results](production-picker-and-renewal-2026-09-18.md).
 
 Correction on 2026-09-18: the debugging connection on port 9222 belongs to a
 separate headless Chrome instance. Its sign-in page does not establish the

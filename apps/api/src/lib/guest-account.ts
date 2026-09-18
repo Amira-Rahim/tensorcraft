@@ -1,4 +1,7 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type {
+  getSupabaseAdminClient,
+  getSupabaseServerClient,
+} from "@tensorcraft/supabase";
 import { logger } from "./logger";
 
 /**
@@ -17,7 +20,7 @@ import { logger } from "./logger";
  * would take the buyer's money and grant nothing.
  */
 export async function resolveOrCreateUserByEmail(
-  admin: SupabaseClient,
+  admin: ReturnType<typeof getSupabaseAdminClient>,
   email: string,
 ): Promise<string | null> {
   const normalized = email.trim().toLowerCase();
@@ -70,7 +73,7 @@ export async function resolveOrCreateUserByEmail(
  * can still sign in from the site with the same address.
  */
 export async function sendPurchaseAccessLink(
-  anon: SupabaseClient,
+  anon: ReturnType<typeof getSupabaseServerClient>,
   email: string,
   redirectTo?: string,
 ): Promise<void> {

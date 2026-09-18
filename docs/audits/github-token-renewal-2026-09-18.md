@@ -89,7 +89,9 @@ results and standalone browser predictions. See the
 
 These requests used the newly authorized credential. Automatic renewal still
 needs observation when that credential reaches its renewal window. The
-production course folder-picker interaction also remains a separate check.
+production course folder-picker interaction subsequently passed with all
+temporary QA data removed. See the
+[production follow-up and scheduled expiry observation](production-picker-and-renewal-2026-09-18.md).
 
 The codec change is backward compatible with old stored credentials. A
 rollback to a build without this codec would not understand newly stored

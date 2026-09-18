@@ -1,0 +1,24 @@
+{
+  "name": "tensorcraft-browser-runtime-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "verify": "node scripts/check-runtime-lab.mjs",
+    "verify:full": "node scripts/check-runtime-lab.mjs --pretrained",
+    "verify:deployment": "node scripts/check-model-deployment.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "3.8.1",
+    "@playwright/test": "1.63.0",
+    "@tensorflow/tfjs": "4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "4.22.0",
+    "onnx-proto": "8.0.1",
+    "onnxruntime-web": "1.29.0",
+    "vite": "7.3.6"
+  }
+}

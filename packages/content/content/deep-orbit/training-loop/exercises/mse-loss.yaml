@@ -68,7 +68,7 @@ testCode: |
       const right = rightLoss.dataSync()[0];
       const wrong = wrongLoss.dataSync()[0];
       expect(right, 'Two confident correct calls have to score near nothing.').toBeLessThan(0.1);
-      expect(wrong, 'Two confident wrong calls have to be punished hard. A loss that flattens out here is the reason cross-entropy exists: it keeps a gradient where squared error has almost none.').toBeGreaterThan(3);
+      expect(wrong, 'Two confident wrong calls have to be punished hard. For BCE with raw logits, confident wrong predictions incur a large loss. The lesson compares its output-logit gradient with that of MSE followed by sigmoid.').toBeGreaterThan(3);
     });
     it('the two loss functions score the same tensors differently, so the one you pick decides what counts', () => {
       const labels = tf.tensor([1, 0, 1, 0, 1]);

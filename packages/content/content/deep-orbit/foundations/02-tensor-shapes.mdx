@@ -83,7 +83,10 @@ tall.print();
 // reorders it.
 
 // The total elements must match: 2*3 = 3*2 = 6
-// This would throw: flat.reshape([2, 4]) (2*4=8 ≠ 6)`}
+// This would throw: flat.reshape([2, 4]) (2*4=8 ≠ 6)
+flat.dispose();
+matrix.dispose();
+tall.dispose();`}
 </CodeBlock>
 
 The golden rule: **reshaping never changes the data or its order, only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
@@ -97,7 +100,7 @@ Here is that rule with the stakes attached. Farah's layout hunt has produced a c
 
 // Stand-in for the archive block: each value is its own position in the
 // flat stream, so you can see exactly where every number ends up.
-const block = tf.range(0, 450 * 64).reshape([450, 64]);  // [readings, channels]
+const block = tf.tidy(() => tf.range(0, 450 * 64).reshape([450, 64]));  // [readings, channels]
 
 // WRONG: reshape to [64, 450]. Right shape, garbled data.
 const wrong = block.reshape([64, 450]);
@@ -112,7 +115,8 @@ console.log(right.arraySync()[0].slice(0, 5));  // [0, 64, 128, 192, 256]
 // Channel 0 is every 64th value: one per reading, 450 in all.
 // right.arraySync()[1] starts [1, 65, 129, ...]: channel 1, same story.
 
-// wrong.shape and right.shape are both [64, 450]. Only one is data.`}
+// Both shapes are [64, 450], but only right preserves channel membership.
+tf.dispose([block, wrong, right]);`}
 </CodeBlock>
 
 On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also where a layout instinct serves you, if you read it right. Change `grid-template-columns` on a CSS grid and the browser re-wraps the same items, in source order, at new line breaks: nothing changes places, and that is exactly what `reshape` does to the flat line. What re-columning never does is fill down the columns instead of across the rows. That takes a different property, `grid-auto-flow: column` with the row count pinned by `grid-template-rows`, and its tensor name is `transpose`. When you catch yourself wanting the values rearranged rather than re-wrapped, the tool is `transpose`.
@@ -125,13 +129,13 @@ Reshape a flat tensor into a matrix.
 
 <RecallPrompt
   question="If a tensor has shape `[8, 224, 224, 3]`, what does each dimension represent for a typical image batch?"
-  answer="The dimensions are [batch, height, width, channels]. TensorFlow.js puts the channel last. Some other frameworks put it second, which is why lesson 1's Nova Canvas intercept read `[batch, channels, h, w]` for the same kind of data."
+  answer="The dimensions are [batch, height, width, channels]. The image models in this course use channel-last layout. Some other frameworks put it second, which is why lesson 1's Nova Canvas intercept read `[batch, channels, h, w]` for the same kind of data."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4], and so does a sequence of 3 time steps with 4 channels at each step: the shape alone does not say which one you have.",
-    "Channel does double duty in this course. In modules 1 and 7 a channel is one of the 64 hull sensors, a column of the archive block. In a sequence window later on, a channel is one feature per time step, and there are three of them. A sequence window is written [steps, channels], so its channel count is the last entry; this lesson's challenge reshapes 12 values into [3, 4], three steps of four channels. What a channel holds is never in the shape, only in the text around it.",
+    "Shape gives the size of each axis. A tensor with three rows and four columns has shape [3, 4].",
+    "Record what each axis means. Shape [3, 4] might mean three time steps of four channels, but the numbers alone do not tell you that.",
     "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
     "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
   ]}

@@ -2,20 +2,30 @@ slug: predict-next
 lessonSlug: sequence-prediction
 title: "Train It, Then Roll It Forward"
 instructions: |
-  **Contract revision 2026-09-17b:** trainForecaster accepts an optional fourth argument providedModel, a compiled model used for controlled fit checks.
+  Train a forecaster, then roll its predictions forward.
 
-  Train the forecaster once, then run it past the end of the data. `trainForecaster(xs, ys, epochs)` takes `xs`, a rank-3 tensor of shape [samples, windowSize, 3], and `ys`, a rank-2 tensor of shape [samples, 3] holding the reading that follows each window.
+  trainForecaster(xs, ys, epochs, providedModel) receives input windows shaped
+  [samples, windowSize, 3] and next-reading targets shaped [samples, 3].
+  If no model is supplied, build an 8-unit LSTM with inputShape read from xs,
+  then a linear Dense layer of 3 units. Compile with tf.train.adam(0.01),
+  meanSquaredError and ['mae']. If supplied, use providedModel as compiled.
+  Await model.fit(xs, ys, { epochs, batchSize: 32 }); return { model, history }
+  using that exact history. Keep caller-owned xs and ys alive. The caller
+  owns the returned model and optimizer and disposes both when finished.
+  A particular loss reduction is not required. MAE is in z-score units.
 
-  1. Build a `tf.sequential()` with `tf.layers.lstm({ units: 8, inputShape: [windowSize, 3] })` (read `windowSize` off `xs.shape`) followed by `tf.layers.dense({ units: 3 })`, one output per channel. The grader trains twice, with a different window length and a different epoch count the second time, so neither number can be typed in.
-  2. Compile it with `{ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError', metrics: ['mae'] }`: MSE is the loss because this is regression, and MAE is measured in the per-channel z-score coordinates used by these targets. For physical-unit errors, undo each channel's scaling and report errors separately.
-  3. Then `await model.fit(xs, ys, { epochs, batchSize: 32 })` and return `{ model, history }`, the model and the object `fit` resolved to. That object is a `tf.History`, and the grader treats it as one: it checks that your `history` is an instance of it and carries the epoch indices the run walked through, then reads `model.optimizer.iterations`, the counter the optimizer raises once per batch and nothing can assign to, against the epochs that history reports. A trace assembled by hand is not a History, so it fails even when a real fit happened beside it. The grader checks fitting and recorded measurements without requiring a particular loss reduction. The final model's evaluation can differ from the last epoch's average over changing weights. It still holds `xs` and `ys` when it does that, so neither one belongs to `trainForecaster`: leave both alive. The tensors to release are the ones the rollout makes, in step 7.
-  4. Then `forecastMultiStep(model, seed, windowSize, steps, scaler)`: predict `steps` readings one at a time, feeding each prediction back in as history. Nothing in this second function is asynchronous, so it returns the rows themselves rather than a promise of them: `model.predict` hands back a tensor you read on the spot. `seed` holds at least `windowSize` rows of the per-channel z-scores the model was trained on, each row [amplitude, frequency, phase], and `scaler` holds the `mean` and `std` arrays those z-scores were made with.
-  5. `LIMITS` in the starter is the raw sensor range per channel, so move each one into the model's space first: `(limit - mean[j]) / std[j]`.
-  6. At every step, take the LAST `windowSize` rows of the history, hand them to the model as one rank-3 tensor of shape [1, windowSize, 3] (`model.predict` returns a [1, 3] tensor), clamp the predicted row into the converted bounds, and push the CLAMPED row onto the history and onto the forecast. Clamping only what you return is a different function: step i + 1 reads this row as history, so an amplitude the sensors cannot produce becomes the model's own input for the rest of the run.
-  7. Release the tensors each step makes, the way the lesson's `multi-step.ts` does. The grader counts live tensors across the call and expects the count to come back where it started.
-  8. Return the `steps` clamped rows, oldest first, and leave `seed` as you found it. One of the rollout checks draws its stand-in model, its seed and its scaler fresh on every run, so every number you return has to be computed from the arguments of the call that asked for it.
+  forecastMultiStep(model, seed, windowSize, steps, scaler) is synchronous.
+  Convert the three physical LIMITS into z-scores using scaler.mean/std.
+  At each step, predict from the last windowSize rows, read the three values,
+  clamp them to those converted limits, and append the clamped row to both
+  the forecast and internal history. Return only the forecast, in order.
+  Preserve seed and dispose temporary tensors, including when prediction fails.
 
-  When providedModel is supplied, use that compiled model without rebuilding or recompiling it. Otherwise build the requested stack. Always fit the supplied xs/ys with the requested epochs and batch size, and return the exact history from that call.
+  Assume a positive integer windowSize, a nonnegative integer steps, and at
+  least windowSize finite three-feature seed rows. Reject a scaler unless it
+  has three finite means and three finite, positive standard deviations.
+  Reject non-finite or wrong-width model output. Clamping limits range; it
+  does not establish accuracy. Compare a baseline and errors by horizon.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -58,11 +68,25 @@ solutionCode: |
         metrics: ['mae'],
       });
     }
-    const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
-    return { model, history };
+    try {
+      const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
+      return { model, history };
+    } catch (error) {
+      if (!providedModel) {
+        model.optimizer.dispose();
+        model.dispose();
+      }
+      throw error;
+    }
   }
 
   function forecastMultiStep(model, seed, windowSize, steps, scaler) {
+    if (!scaler || !Array.isArray(scaler.mean) || !Array.isArray(scaler.std) ||
+        scaler.mean.length !== 3 || scaler.std.length !== 3 ||
+        !scaler.mean.every(Number.isFinite) ||
+        !scaler.std.every(value => Number.isFinite(value) && value > 0)) {
+      throw new Error('Invalid scaler');
+    }
     const bounds = LIMITS.map((limit, j) => ({
       min: (limit.min - scaler.mean[j]) / scaler.std[j],
       max: (limit.max - scaler.mean[j]) / scaler.std[j],
@@ -75,6 +99,7 @@ solutionCode: |
         const output = model.predict(input);
         return Array.from(output.dataSync());
       });
+      if (predicted.length !== 3 || !predicted.every(Number.isFinite)) throw new Error('Invalid prediction');
       const bounded = predicted.map((value, j) =>
         Math.min(Math.max(value, bounds[j].min), bounds[j].max),
       );
@@ -597,6 +622,14 @@ testCode: |
     expect(calls[0].opts.batchSize).toBe(32);
     expect(xs.isDisposedInternal).toBe(false);
     expect(ys.isDisposedInternal).toBe(false);
+  });
+  it('rejects invalid scaling and model output, and frees a failed call input', () => {
+    expect(() => forecastMultiStep(spyModel(), seedRows(), 3, 1, { mean: [0, 0, 0], std: [1, 0, 1] })).toThrow();
+    expect(() => forecastMultiStep(spyModel(() => [NaN, 0, 0]), seedRows(), 3, 1, COARSE)).toThrow();
+    let input;
+    const failing = { predict: value => { input = value; throw new Error('prediction fixture failed'); } };
+    expect(() => forecastMultiStep(failing, seedRows(), 3, 1, COARSE)).toThrow();
+    expect(input.isDisposedInternal).toBe(true);
   });
 estimatedMinutes: 20
 difficulty: advanced

@@ -30,7 +30,32 @@ hints:
   - level: guidance
     content: "Start with the stage contract. validate is a precondition on the data arriving at that stage, so it answers before process ever sees that data, and a stage that refuses has to name itself, or a shape break in the middle of a chain is anonymous. The instructions carry the exact message text the grader matches on. Chaining is the second decision: new Pipeline().addStage(a).addStage(b) only parses if addStage hands back something that has an addStage on it. The third is the walk itself, where one value moves through and each stage's output stands in as the next stage's input, so the pipeline returns whatever the last stage returned. The grader wires an 8-sample window through normalize, then FFT, which emits 5 bins rather than 8, then a stage that demands 5. A mid-chain contract break is a real case here, not a hypothetical. That last stage waits before it answers, so what it returns is a promise until something settles it, and a walk that forgets to settle each stage hands the next one a promise instead of data."
   - level: solution
-    content: "this.stages.push(stage); return this; let data = input; for (const stage of this.stages) { if (!stage.validate(data)) { throw new Error(`Validation failed at: ${stage.name}`); } data = await stage.process(data); } return data;"
+    content: |
+      interface PipelineStage<TIn, TOut> {
+        name: string;
+        process: (input: TIn) => TOut | Promise<TOut>;
+        validate: (input: TIn) => boolean;
+      }
+
+      class Pipeline {
+        private stages: PipelineStage<any, any>[] = [];
+
+        addStage(stage: PipelineStage<any, any>): Pipeline {
+          this.stages.push(stage);
+          return this;
+        }
+
+        async run(input: any): Promise<any> {
+          let data = input;
+          for (const stage of this.stages) {
+            if (!stage.validate(data)) {
+              throw new Error(`Validation failed at: ${stage.name}`);
+            }
+            data = await stage.process(data);
+          }
+          return data;
+        }
+      }
 keywords:
   - architecture
   - system-design
@@ -108,7 +133,9 @@ class Pipeline {
   }
 }
 
-// Assemble DEEP SCAN
+// Integration sketch: implement run in the exercise. The application
+// supplies these stages and rawSignal; this is not a complete classifier.
+// Assemble the linear path
 const deepScan = new Pipeline()
   .addStage(preprocessor)     // RawSignal → ProcessedSignal
   .addStage(featureExtractor) // ProcessedSignal → SignalFeatures
@@ -186,7 +213,9 @@ console.log('Graph valid:', validateGraph(manifest)); // true`}
 
 The manifest and the runner do not describe the same shape. `run()` carries one `data` value from stage to stage, which is exactly a chain: preprocessor, extractor, classifier, reporter. The manifest declares something wider. Two stages depend on `fft-extractor`, and `reporter` lists two dependencies of its own, so `reporter` needs two upstream values at the same time. A single carried variable can only ever hand it one, which is why the anomaly detector is missing from the assembled chain above.
 
-Running the declared graph takes a scheduler instead of a loop. It walks the manifest in dependency order and keeps each stage's output in a map keyed by stage name. `reporter` then reads both of the inputs it asked for by name. That map is what the 512 MB dashboard pays for. The chain holds one value at a time and lets the previous one go. The scheduler holds every stage's output until the last stage that asked for it has run, which on this manifest peaks at three stage outputs resident at once instead of one, the extractor's features held while both of its consumers run. The exercise below builds the chain runner, because the chain is what this lesson's `run()` can express. The manifest is the design record, and it is ahead of the runner by one branch.
+Running the declared graph takes a scheduler instead of a loop. It walks the manifest in dependency order and keeps each stage's output in a map keyed by stage name. `reporter` then reads both of the inputs it asked for by name. Retaining branch outputs has a memory cost. Its peak depends on scheduling, output sizes, references and buffer reuse. Neither a chain nor a graph automatically releases a TFJS tensor when a variable changes; define who disposes each output. A dependency-name check also cannot validate schemas or detect cycles. The exercise builds the chain runner; implementing the branched scheduler is outside its scope.
+
+The feature interfaces here are a design sketch. The three-feature binary classifier cannot consume the FFT array directly. Supply the preprocessing and model that match each other, including a separately trained eleven-feature classifier where that is the chosen architecture.
 
 ## Challenge
 
@@ -194,14 +223,14 @@ Build the chain runner: stage contracts checked before each stage, `addStage` ch
 
 <Exercise slug="pipeline-architecture" />
 
-<RecallPrompt question="Why do ML pipeline stage dependencies differ from npm package dependencies?" answer="npm dependencies are resolved from a lockfile and behave deterministically. ML pipeline stage dependencies include data shape contracts, model version compatibility, and feature freshness; a schema mismatch produces wrong predictions, not a build error, and may surface days later as an accuracy regression rather than a stack trace." />
+<RecallPrompt question="Why do ML pipeline stage dependencies differ from npm package dependencies?" answer="Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility." />
 
 <LessonRecap
   whatYouLearned={[
-    "Modeling an ML pipeline as a dependency graph of typed stages documents the contract between stages. Do not mistake that for compile-time safety: the stage list is PipelineStage<any, any>[], so the types erase at exactly the boundary you care about. The check that actually fires is the runtime validate() throw. TypeScript records what you meant; only validate() knows what arrived.",
+    "Stage types document contracts, but PipelineStage<any, any>[] erases them at the boundary. Runtime validation must check the incoming values.",
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
-    "A component manifest with declared dependencies lets you prove every stage's inputs exist before any inference runs; catching a cycle takes a second walk over the same manifest.",
-    "A loop that carries one value per stage runs a chain, not a graph. A stage with two declared dependencies needs a scheduler instead. It walks the manifest in dependency order and keeps every stage's output addressable by name. Check which of the two your runner is."
+    "The manifest check resolves dependency names only. Check cycles, schemas and preprocessing separately.",
+    "A single-value loop runs a chain. Multiple dependencies require a scheduler that retains outputs by stage name and runs consumers after their dependencies."
   ]}
   bridge="Package manifests and pipeline configs both declare dependencies. ML contracts also include feature order, units, and preprocessing; some violations throw while others silently change predictions."
   youCanNow="Build a multi-stage ML inference pipeline whose stages declare their input and output types, and whose runner refuses bad data at the stage that received it instead of letting a shape break travel downstream, and read a component manifest closely enough to see where a chain runner stops being enough."

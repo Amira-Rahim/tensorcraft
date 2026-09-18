@@ -9,7 +9,7 @@ instructions: |
 
   What to return. `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-squared-error weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the weights on a scale that totals 1. This is a heuristic: squared MAE is not error variance. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win.
 
-  Use the prior week's errors only for the weights. Use the current window to compare the resulting predictions with every member. Shared errors may survive averaging, a weak member may worsen the blend, and an old ranking may no longer hold. Find the best member by score rather than array position.
+  Assume non-empty arrays, unique member names, finite predictions aligned with actual, and finite positive heldOutError values. Use the prior week's errors only for the weights. Use the current window to compare the resulting predictions with every member. Shared errors may survive averaging, a weak member may worsen the blend, and an old ranking may no longer hold. Find the best member by score rather than array position.
 starterCode: |
   function ensembleGain(members, actual) {
     // The verdict is a comparison, so every member and both blends have to

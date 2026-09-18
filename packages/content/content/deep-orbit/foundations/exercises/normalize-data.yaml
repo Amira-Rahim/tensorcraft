@@ -6,7 +6,7 @@ instructions: |
   neuron. Each row has two features: temperature and signal strength. Save the
   training statistics so a later reading receives the same transformation.
 
-  1. Implement `fitStats(rows)` for any `[n, 2]` tensor. Return `{ mean, std }`
+  1. Implement `fitStats(rows)` for a non-empty `[n, 2]` tensor with finite values. Return `{ mean, std }`
      as two per-feature tensors. Reduce over axis 0 and use population standard
      deviation (divide squared deviations by n). `tf.moments` returns variance;
      take its square root for std. Apply the function to `batch`, saving `mean`
@@ -24,7 +24,7 @@ instructions: |
      prediction tensor or its single number. This must work after the original
      training batch is disposed; do not fit statistics again.
   6. Implement `minMaxStats(rows)` returning per-feature `{ min, max }` tensors
-     for any `[n, 2]` batch. Use `scaleFeatures` with the minimum and range to
+     for a non-empty `[n, 2]` batch with finite values. Use `scaleFeatures` with the minimum and range to
      produce `unitRange` for the original batch. Its nonconstant columns span
      0 to 1; constant columns become zero.
 
@@ -92,8 +92,10 @@ solutionCode: |
   const BIAS = [-0.3];
 
   function fitStats(rows) {
-    const { mean, variance } = tf.moments(rows, 0);
-    return { mean, std: variance.sqrt() };
+    return tf.tidy(() => {
+      const { mean, variance } = tf.moments(rows, 0);
+      return { mean, std: variance.sqrt() };
+    });
   }
 
   const { mean, std } = fitStats(batch);
@@ -109,13 +111,15 @@ solutionCode: |
 
   const previewModel = tf.sequential();
   previewModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
-  previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]);
+  tf.tidy(() => previewModel.setWeights([tf.tensor2d(KERNEL), tf.tensor1d(BIAS)]));
 
   const scores = previewModel.predict(normalized);
 
   function scoreReading(reading) {
-    const z = scaleFeatures(reading, mean, std);
-    return previewModel.predict(z.reshape([1, 2]));
+    return tf.tidy(() => {
+      const z = scaleFeatures(reading, mean, std);
+      return previewModel.predict(z.reshape([1, 2]));
+    });
   }
 
   function minMaxStats(rows) {
@@ -124,14 +128,15 @@ solutionCode: |
 
   const { min, max } = minMaxStats(batch);
 
-  const unitRange = scaleFeatures(batch, min, max.sub(min));
+  const unitRange = tf.tidy(() => scaleFeatures(batch, min, max.sub(min)));
 testCode: |
   describe('Normalize, Then Ask the Preview Neuron', () => {
     const filled = (value, what) => expect(value, what).toBeDefined();
-    // Statistics come back as tensors (or arrays); anything else is not a
+    // Statistics come back as tensors; anything else is not a
     // statistic the batch can broadcast against.
     const values = (value, what) => {
       filled(value, what);
+      expect(value instanceof tf.Tensor, 'Return each statistic as a tensor.').toBe(true);
       const raw = typeof value.dataSync === 'function' ? value.dataSync() : value;
       expect(
         Array.isArray(raw) || ArrayBuffer.isView(raw),

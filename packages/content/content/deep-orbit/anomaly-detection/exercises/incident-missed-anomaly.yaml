@@ -3,8 +3,6 @@ lessonSlug: reconstruction-error
 title: "Incident: True Anomaly Slipped Through"
 mlContent: systems
 instructions: |
-  **Contract revision 2026-09-17:** Rename suspiciouslyLowFeatures to lowErrorFeatures and remove requiresRetrain. The function reports measurements; they do not determine a retraining decision.
-
   A human confirmed that a missed reading was anomalous. Compare its reconstruction with per-feature normal errors to prepare an investigation.
 
   Implement auditReconstruction(input, reconstruction, perFeatureBaseline). These equally sized, non-empty arrays contain finite numbers; every baseline error is strictly positive. Return { perFeatureError, rankedByRatio, lowErrorFeatures }.
@@ -93,7 +91,7 @@ testCode: |
       const why =
         'Each feature missed by exactly the error that feature normally ' +
         'carries, which is twice the half-baseline line, so nothing here is ' +
-        'suspicious and the list comes back empty.';
+        'below half its baseline and the list comes back empty.';
       expect(r.lowErrorFeatures, why).toEqual([]);
     });
 

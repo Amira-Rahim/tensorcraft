@@ -61,12 +61,12 @@ testCode: |
       // mean 100, std 10: 30 sits 7 sigma below
       expect(
         isAnomaly(30, 100, 10),
-        'Ten times the sigma count of the wider-spread case below, at the same raw distance.',
+        'This reading is 70 units from the mean, or seven standard deviations.',
       ).toBe(true);
       // mean 100, std 50: 150 is only 1 sigma out on that wider spread
       expect(
         isAnomaly(150, 100, 50),
-        'Normal, at the same raw distance the narrow-spread case above flagged, because this spread is five times wider.',
+        'This reading is 50 units from its mean, exactly one standard deviation.',
       ).toBe(false);
     });
     it('works on a tenth-scale baseline', () => {

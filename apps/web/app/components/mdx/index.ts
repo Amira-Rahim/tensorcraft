@@ -6,6 +6,7 @@ export { NextLesson } from "./next-lesson";
 export { StrategyThread } from "./strategy-thread";
 export { DispatchTease } from "./dispatch-tease";
 export { BossBeat } from "./boss-beat";
+export { StoryConsequence } from "./story-consequence";
 export { DeepScanDemo } from "./deep-scan-demo";
 export { TransferAssignment } from "./transfer-assignment";
 export { DecisionTask } from "./decision-task";

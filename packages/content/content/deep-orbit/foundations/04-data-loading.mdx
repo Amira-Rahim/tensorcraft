@@ -13,7 +13,7 @@ scene:
 context:
   narrative: "Ensign Demir sets up the data pipeline for the analysis system."
 concept:
-  explanation: "ML models require properly formatted input data: batched, shuffled, and normalized."
+  explanation: "Prepare input shapes, batches and splits for the task. Shuffle training examples only when their order is not part of the example."
   bridge:
     jsTitle: "Paged fetch behind an infinite scroll"
     jsCode: "for await (const page of fetchPages(cursor)) render(page.items)"
@@ -76,19 +76,21 @@ The post-mortem arithmetic is short. Each reading drags its 33-second raw captur
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
 </Dialogue>
 
-What keeps this pipeline alive on real sensor data is where the readings come from. A lazy source hands over one reading per turn and never assembles the archive, so memory stays flat however long the run is. `.batch(32)` sits after that source and sets the model's step size. The model sees 32 readings at a time and asks for the next group when it finishes this one. Demir picked the right analogy and the wrong version of it. A well-built infinite-scroll list keeps the pages it is showing and drops the rest, and a tf.data pipeline does the same with readings.
+What keeps this pipeline alive on real sensor data is where the readings come from. A lazy source reads records on demand. With bounded buffers and correct disposal, memory need not grow with the archive length. `.batch(32)` sits after that source and sets the model's step size. The model sees 32 readings at a time and asks for the next group when it finishes this one. Demir picked the right analogy and the wrong version of it. A well-built infinite-scroll list keeps the pages it is showing and drops the rest, and a tf.data pipeline does the same with readings.
 
-<LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle data to prevent ordering bias", "Split data into training and validation sets"]} />
+<LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle independent training examples while preserving split membership", "Split data into training and validation sets"]} />
 
 ## From Fetch to Feed
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You already know half of this pattern. A paginated fetch pulls page 1, hands it off, and never touches page 2 until something asks for it. A tf.data pipeline works the same way, except the thing asking is a model: **nothing is loaded until it's asked for.**
+You already know half of this pattern. A paginated fetch pulls page 1, hands it off, and never touches page 2 until something asks for it. A tf.data pipeline works the same way, except the thing asking is a model: a generator produces values when the pipeline requests them. Shuffle buffers and prefetching can request records before the model consumes them.
 
-A **feature** is one number the model reads about a single example. A **label** is what you want predicted about that example, here a 0 or 1 for whether the reading is worth flagging. TensorFlow.js names the pair `xs` and `ys`, features and labels, and every `tf.data` example you meet uses those two keys. Learning from examples that come with their labels attached has a name, supervised learning, and it is what every model in this course does until module 7, where the model's target is its own input and no human has to label an anomaly for it to learn what normal looks like.
+A **feature** is one number the model reads about a single example. A **label** is what you want predicted about that example, here a 0 or 1 for whether the reading is worth flagging. The `fitDataset` training API accepts examples with `xs` and `ys` for features and targets. A general `tf.data` dataset can hold other structures too. Learning from examples that come with their labels attached has a name, supervised learning, and it is what every model in this course does until module 7, where the model's target is its own input and no human has to label an anomaly for it to learn what normal looks like.
 
 Picking which numbers become features is a decision, and on this ship it is already made. A reading's raw capture is 64 channels of samples, about two megabytes per reading, and none of it reaches the model. Three summary values come off each capture instead: amplitude, frequency (a zero-crossing count, not hertz), and phase. The extraction reads a 64-sample window, a quarter second of one channel at 256 Hz, which is a different 64 from the row's 64 channels. Module 5 writes it and then widens the feature set with FFT bins measured over that same window. The classifier you start building in module 2 reads those three, so `row.features` holds three numbers per reading, not 64 channel values, and `xs` is three wide. Reading a record still touches its two-megabyte capture block, which is why the source has to hand them over one at a time.
+
+This integration sketch assumes an async `readArchivedSample(id)` function supplied by your application. It returns one record with `features` and `label`; it must not load the entire archive internally. The exercise uses a synchronous in-memory stand-in.
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -105,11 +107,11 @@ Picking which numbers become features is a decision, and on this ship it is alre
 // the full archive exist in memory. (If you find yourself declaring
 // a giant array inside a generator, you've built eager loading with
 // extra steps.)
-function* sensorDataGenerator() {
+async function* sensorDataGenerator() {
   const TOTAL_READINGS = 28_800;  // 11 days of archive: one reading per 33-second capture
 
   for (let i = 0; i < TOTAL_READINGS; i++) {
-    const row = readArchivedSample(i);  // one record from IndexedDB/fetch
+    const row = await readArchivedSample(i); // your asynchronous archive reader
     yield {
       xs: tf.tensor(row.features),   // [3]: amplitude, frequency, phase
       ys: tf.tensor([row.label]),
@@ -128,7 +130,7 @@ await dataset.forEachAsync((batch) => {
 });`}
 </CodeBlock>
 
-The key difference from paginated fetching: ML shuffles the data before batching. The reason is mechanical. The model adjusts its weights after every batch, and an archive is stored in the order it was recorded. Without a shuffle each batch is one stretch of one day, so consecutive adjustments all pull the same way. A buffer shuffle only reorders inside a sliding window the size of the buffer. `shuffle(100)` then `batch(32)` still draws each batch from roughly 400 consecutive readings, a few hours of one day. 100 is a demo number.
+For independent training examples, shuffle samples before forming batches. The reason is mechanical. The model adjusts its weights after every batch, and an archive is stored in the order it was recorded. Without a shuffle each batch is one stretch of one day, so consecutive adjustments all pull the same way. A buffer shuffle chooses from a limited pool that is refilled as records leave. It does not provide a uniform permutation of the whole archive. Some records can remain in the buffer longer than others, so buffer size is not an exact bound on their age. Here 100 is a demonstration setting.
 
 Sizing the buffer to the whole archive would sample fairly, but a shuffle buffer fills before it yields anything. The first batch would wait for all 28,800 readings, and the pipeline would stop being a stream. So a buffer shuffle is what you are left with when records arrive as a stream you cannot index. This archive can be read by id, so it has a better option: shuffle a list of indices once, up front, and read in that order. That is a full shuffle with no buffer at all, and the split section below builds it.
 
@@ -154,9 +156,9 @@ const valIdx = Uint32Array.from(
   { length: TOTAL - TRAIN_SIZE }, (_, i) => TRAIN_SIZE + i,
 );
 
-function* splitGenerator(idx: Uint32Array) {
+async function* splitGenerator(idx: Uint32Array) {
   for (const i of idx) {
-    const row = readArchivedSample(i);
+    const row = await readArchivedSample(i);
     yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };
   }
 }
@@ -192,9 +194,9 @@ Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This
 <LessonRecap
   whatYouLearned={[
     "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
-    "Shuffle before you batch, never after: batching first freezes each batch's membership, so every batch stays a block of consecutive readings. A shuffle buffer mixes only inside its own window, which is all you get when records arrive as a stream you cannot index. When you can read a record by id, shuffle the indices up front for a full shuffle.",
+    "Shuffle individual training examples before batching when their order is irrelevant. A streaming buffer mixes a limited window; random access lets you shuffle all record indices.",
     "For future telemetry, hold out later readings. Shuffle only within training after the split; account for overlapping windows and shared captures at the boundary.",
-    "One word, two sizes. In this module a capture is the archive row: 33 seconds of 64 channels at 256 Hz, about two megabytes. The quarter second the three features come off is the extraction window: module 4 calls it that, module 5 just says window, and modules 8 and 11 sometimes call that 64-sample window a capture too. Same word, different object; the number beside it tells you which."
+    "Keep raw captures and extracted features distinct. This pipeline passes three features per example; it does not send all raw sensor samples into the model."
   ]}
   bridge="Paged fetching and tf.data can both process data incrementally. Dataset transforms add optional shuffling and batching; prefetching and buffers determine how far the producer reads ahead."
   youCanNow="Build a tf.data pipeline that reads lazily with a generator and shuffles records before it batches them, and recognize a train/validation split that does not leak."
@@ -202,12 +204,12 @@ Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This
 
 <Epilogue>
 
-The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. On the buffered version he wrote first, Demir watches `numTensors` hold steady at 202: the shuffle buffer's hundred readings at two tensors each, plus the batch in flight. The index shuffle he swaps in after that holds two, the batch in flight and nothing behind it. He allows himself exactly one fist pump, four hours later than he'd planned to.
+The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. The tensor count stops growing with the archive. Shuffling indices instead of buffered tensors reduces the retained data further. He allows himself exactly one fist pump, four hours later than he'd planned to.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 Pipeline nominal. For reference: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
 </Dialogue>
 
-Fast and blind, or slower and learning. Demir closes the log and looks at the channel readouts, still stacked at four different scales, the ripple Nazari found buried somewhere under the loudest of them.
+Demir closes the log and looks at the channel readouts, still stacked at four different scales, the ripple Nazari found buried somewhere under the loudest of them.
 
 </Epilogue>

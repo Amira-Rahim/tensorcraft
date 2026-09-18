@@ -2,10 +2,13 @@ slug: export-model-artifact
 lessonSlug: ci-cd-pipeline
 title: "Export the Artifact CI Pins"
 instructions: |
-  Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the real 85 MB build. The export path is the same, and on this bench copy every float32 weight is four bytes.
+  Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the fictional mission build. For a supported TFJS LayersModel, on this bench copy every float32 weight is four bytes.
 
   1. Save the model with `model.save(tf.io.withSaveHandler(...))`. The handler is an async function that receives the serialized artifacts, so stash them in `artifacts` and return `{ modelArtifactsInfo }`.
   2. Write `describeArtifact(a)` returning `{ tensors, totalParams, weightBytes }`: the count of named weight tensors in `a.weightSpecs`, the total parameter count (each spec's shape multiplied out), and `a.weightData.byteLength`. Report the length of that buffer rather than the parameter count times a width. Four bytes a parameter holds on this float32 bench copy, and after module 10's uint8 pass the parameter count is unchanged while the byte count is not. The converter can also quantize part of an export and leave the rest at float32, and that file is neither four bytes a parameter nor one.
+  The exercise uses an uncompiled LayersModel whose handler provides one
+  weightData ArrayBuffer. Other formats may need a different loader.
+
   3. Build `manifest` by describing what you exported.
 
   `describeArtifact` is graded on artifacts other than yours. The grader calls it on a quantized copy of this export and on a second export whose size it picks at random, so the function has to read whatever it is handed instead of reporting the bench copy's numbers.
@@ -126,8 +129,8 @@ testCode: |
       revived.setWeights(artifacts.weightSpecs.map((spec) => named[spec.name]));
 
       const probe = tf.tensor2d([[0.1, 0.2, 0.3], [0.9, 0.8, 0.7], [0.5, 0.5, 0.5]]);
-      const original = Array.from(model.predict(probe).dataSync());
-      const reloaded = Array.from(revived.predict(probe).dataSync());
+      const original = tf.tidy(() => Array.from(model.predict(probe).dataSync()));
+      const reloaded = tf.tidy(() => Array.from(revived.predict(probe).dataSync()));
       let worst = 0;
       for (let i = 0; i < original.length; i++) {
         worst = Math.max(worst, Math.abs(original[i] - reloaded[i]));
@@ -137,6 +140,7 @@ testCode: |
         'The artifact rebuilt the model and it predicts what the original predicts. An artifact that cannot be loaded back is not an export, whatever the manifest says about it.',
       ).toBeLessThan(1e-6);
       probe.dispose();
+      Object.values(named).forEach(t => t.dispose());
       revived.dispose();
     });
     it('weightData holds the weights of the model that was saved, byte for byte', () => {

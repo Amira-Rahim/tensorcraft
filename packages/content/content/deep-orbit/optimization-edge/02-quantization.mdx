@@ -13,16 +13,16 @@ context:
   narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Uint16 uses 2. Uint8 uses 1. Do the math: that's a 4x size reduction.'"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Quantization stores each weight in fewer bytes: a smaller download and a load the dashboard survives. What it costs in accuracy is a measurement on your model, not a constant."
+  explanation: "Quantization stores each weight in fewer bytes: a smaller weight payload. Runtime fit still needs measurement. What it costs in accuracy is a measurement on your model, not a constant."
   bridge:
     jsTitle: "Image Compression"
-    jsCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB): 10x smaller, ~same visual quality"
+    jsCode: "// A lossy image export trades size for changed pixels; inspect the result."
     mlTitle: "Quantization"
     mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, then score it and see"
     tier: structural
     breaks: "Lossy image formats decide what to discard using a model of human eyes, and you judge the damage by looking. Quantization rounds weights onto a coarser grid with no perceptual model protecting anything: one outlier weight can stretch the grid and quietly wreck accuracy. You measure after; you never assume."
 consequence:
-  narrative: "Quantization shrinks the DEEP SCAN bundle's weight files from 340 MB to 85 MB. The classifier scores 94.2 before the pass and 94.2 after it. Nazari puts the date beside that second number."
+  narrative: "The smaller build clears the engineering rig's load test. Nazari records its version beside the result and leaves the bridge-console check open."
 hints:
   - level: nudge
     content: |
@@ -69,33 +69,35 @@ hints:
         model: any,
         captures: number[][]
       ): Promise<QuantizationReport> {
-        const input = tf.tensor2d(captures);
-        const before = Array.from(await model.predict(input).argMax(1).data());
+        return tf.tidy(() => {
+          const input = tf.tensor2d(captures);
+          const before = Array.from(model.predict(input).argMax(1).dataSync());
 
-        const isKernel = (w: any) => w.shape.length === 2;
-        const kernels: QuantizedKernel[] = [];
-        let maxWeightError = 0;
+          const isKernel = (w: any) => w.shape.length === 2;
+          const kernels: QuantizedKernel[] = [];
+          let maxWeightError = 0;
 
-        const rebuilt = model.getWeights().map((w: any) => {
-          if (!isKernel(w)) return w;
-          const values = Array.from(w.dataSync()) as number[];
-          const min = values.reduce((a, b) => Math.min(a, b));
-          const max = values.reduce((a, b) => Math.max(a, b));
-          const scale = (max - min) / 255;
-          const quantized = values.map(v => scale === 0 ? 0 : Math.round((v - min) / scale));
-          const restored = quantized.map(q => q * scale + min);
-          const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
-          maxWeightError = Math.max(maxWeightError, error);
-          kernels.push({ quantized, scale, min, shape: w.shape });
-          return tf.tensor(restored, w.shape);
+          const rebuilt = model.getWeights().map((w: any) => {
+            if (!isKernel(w)) return w;
+            const values = Array.from(w.dataSync()) as number[];
+            const min = values.reduce((a, b) => Math.min(a, b));
+            const max = values.reduce((a, b) => Math.max(a, b));
+            const scale = (max - min) / 255;
+            const quantized = values.map(v => scale === 0 ? 0 : Math.round((v - min) / scale));
+            const restored = quantized.map(q => q * scale + min);
+            const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
+            maxWeightError = Math.max(maxWeightError, error);
+            kernels.push({ quantized, scale, min, shape: w.shape });
+            return tf.tensor(restored, w.shape);
+          });
+
+          model.setWeights(rebuilt);
+
+          const after = Array.from(model.predict(input).argMax(1).dataSync());
+          const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
+
+          return { kernels, maxWeightError, predictionsChanged };
         });
-
-        model.setWeights(rebuilt);
-
-        const after = Array.from(await model.predict(input).argMax(1).data());
-        const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
-
-        return { kernels, maxWeightError, predictionsChanged };
       }
 keywords:
   - quantization
@@ -110,40 +112,15 @@ skillAxes: [deployment]
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
 
-The 85 million weights are the whole DEEP SCAN bundle, and almost all of them belong to the pretrained language component from the report pipeline; the crew's own trained models ride along at under a megabyte. The uint8 pass goes across everything, so the accuracy row tracks the one part of the bundle with a scoreboard: the classifier, at 94.2 after this week's retrain. It read 78 on the re-annotated archive and 87 once the FFT bins joined the three raw features; this week's retrain changed the head, not the inputs, so 94.2 is a five-way sort scored on the same eleven features, and it is not one number up from the 87.
+The 85-million-weight bundle and the 512 MB console are story fixtures. They make the byte arithmetic visible. They are not the model downloaded by this page: the shipped teaching classifier has 673 float32 parameters, or 2,692 weight bytes. Its training data are synthetic, and its scores do not establish performance on real spacecraft signals.
 
-That retrain also changed the classifier's shape, and the change deserves a paragraph rather than a footnote. Farah's catalog labels finally landed, and the binary anomaly-or-noise gate became a five-way sort: pulsar, quasar, noise, interference, anomaly. Two things move when a classifier grows past two classes. The output layer becomes five units under a softmax, module 8's arithmetic, so the five scores become five probabilities that sum to 1 and the verdict is whichever is largest. And the loss becomes categorical cross-entropy: module 3's negative log of the probability the model gave the right answer, read from whichever of the five columns holds the true label, with labels one-hot encoded so each reading's target is four zeros and a one. The minus sign is what makes it a loss rather than a score. A true-class probability of 0.01 costs 4.605. Get that probability to 0.99 and the cost falls to 0.010.
-
-<CodeBlock language="typescript" title="five-class-head.ts">
-{`// The binary head, module 2:
-//   model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-//   model.compile({ loss: 'binaryCrossentropy', ... });
-
-// The five-class head, this week. Same hidden stack; only the door changes.
-model.add(tf.layers.dense({ units: 5, activation: 'softmax' }));
-model.compile({ optimizer: 'adam', loss: 'categoricalCrossentropy', metrics: ['accuracy'] });
-
-// Labels go from a 0/1 column to one-hot rows. Class index 4 (anomaly):
-const ys = tf.oneHot(tf.tensor1d(labelIndices, 'int32'), 5);  // [0, 0, 0, 0, 1]
-
-// Accuracy still means "the largest probability landed on the true column",
-// so the formula carries over. The task does not: five classes put blind
-// guessing at 20%, where the binary gate sat at 50%. Read 94.2 as a harder
-// scoreboard scored the same way, not as 0.2 points past the binary gate's
-// 94.0 in module 3.`}
-</CodeBlock>
-
-The pass covers every weight in the bundle, and only one part of the bundle has an accuracy score, so the classifier is where the cost shows up.
-
-The converter does not force a whole-bundle pass. `--quantize_uint8` takes an optional value, a comma-separated list of weight-name patterns, with wildcards for a family of names such as `conv/*/weights`. With no value it covers every weight, which is how the command below is written. Narrow the pattern and the language weights go to uint8 while the whole classifier stays at float32. The classifier is under a megabyte, so holding it out costs under a megabyte of the 255 MB the pass takes off the bundle. The crew did not narrow it. The classifier was mid-retrain that week, with its layer names still moving, so any pattern they wrote would have gone stale by the next build.
-
-The technique runs exactly as deep as Nazari's arithmetic. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB. The rule of thumb people quote for the accuracy cost is about a point. Nazari does not take rules of thumb, and neither does this lesson: the figure that goes on the board is the one the holdout prints. The dashboard that died at 0249 has 512 MB of RAM and went down parsing a 340 MB weight file, so cutting that file to 85 MB is the first and largest payment on the debt.
+A reduction in stored bytes is straightforward. The effect on predictions needs an experiment. A small weight change can move a score across a decision threshold, particularly when the original score was close to it.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-The WebP comparison stops at the file size, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.
+Give me the byte count and the changed decisions. Break the errors down by class. An average can hide the one signal we came to find.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it", "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)", "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others"]} />
+<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it", "Distinguish smaller stored weights from runtime memory and compute speed", "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others"]} />
 
 ## Precision Reduction
 
@@ -160,15 +137,14 @@ The WebP comparison stops at the file size, Ensign. Tell me where the accuracy g
 // (an affine integer mapping, not IEEE float16)
 // File size: 85M params × 2 bytes = 170 MB
 
-// Uint8 storage: 1 byte per weight, 256 levels (coarse, usually OK)
+// Uint8 storage: 1 byte per weight, 256 levels; validate prediction error
 // File size: 85M params × 1 byte = 85 MB
 
 // Simulate quantization effect
 function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: number[]; scale: number; min: number } {
-  // (teaching scale: on a real model's millions of weights, spread
-  // arguments overflow the stack; use a loop or tf.min()/tf.max())
-  const min = Math.min(...weights);
-  const max = Math.max(...weights);
+  if (!weights.length || !weights.every(Number.isFinite) || (bits !== 8 && bits !== 16)) throw new Error('Invalid weights or bit width');
+  let min = Infinity, max = -Infinity;
+  for (const value of weights) { min = Math.min(min, value); max = Math.max(max, value); }
   const range = max - min;
   const levels = (1 << bits) - 1;  // 255 steps between 256 levels for 8-bit
   const scale = range / levels;
@@ -189,7 +165,8 @@ function dequantize(quantized: number[], scale: number, min: number): number[] {
 }
 
 // What this costs is one measurement away, and nothing here can tell you:
-// the error on any single weight is at most half a bucket, but whether that
+// nearest-grid rounding has error at most half a bucket in exact arithmetic;
+// float32 decoding adds floating-point rounding, but whether that
 // moves a verdict depends on how close that verdict was. Score the decoded
 // build against the trained one and read the difference.`}
 </CodeBlock>
@@ -198,7 +175,7 @@ function dequantize(quantized: number[], scale: number, min: number): number[] {
 
 <CodeBlock language="bash" title="quantize-on-export.sh">
 {`# Quantization happens at EXPORT time, in the converter, not in
-# model.save(). TFJS's save() writes float32, full stop; there is no
+# model.save(). This float32 LayersModel saves float32 weights; there is no
 # quantization option on it. The tensorflowjs_converter (a one-time
 # Python CLI step, alongside the tf2onnx export module 4 mentioned;
 # nothing else in this course leaves JavaScript) rewrites the weight
@@ -207,27 +184,28 @@ function dequantize(quantized: number[], scale: number, min: number): number[] {
 tensorflowjs_converter \\
   --input_format=tfjs_layers_model \\
   --output_format=tfjs_layers_model \\
-  --quantize_uint16 \\
+  '--quantize_uint16=*' \\
   ./model-f32/model.json ./model-q16/
 
 # --quantize_uint8 for the 4x version. At load time in the browser,
 # tf.loadLayersModel() reads the manifest and dequantizes back to
 # float32 automatically; your inference code does not change.
 
-# Size and accuracy for DEEP SCAN. The accuracy column is the classifier's,
-# scored on the same holdout at every precision:
-# float32 (no quantization):  340 MB, accuracy: 94.2%
-# uint16  (--quantize_uint16): 170 MB, accuracy: 94.2%
-# uint8   (--quantize_uint8):   85 MB, accuracy: 94.2%`}
+# Quote the wildcard and supply it explicitly. With a bare optional flag,
+# the CLI can consume the input path as a weight-name pattern.
+# Use '--quantize_uint8=*' for uint8, or a pattern such as
+# '--quantize_uint8=*/kernel' to retain biases at full precision.`}
 </CodeBlock>
 
-Read that accuracy column twice, because it is a measurement and not a rounding. The score sits at 94.2 before the pass and 94.2 after it, at both precisions. The width of one bucket is why. The widest weight tensor in this classifier spans 2.29, so uint8 lays 255 steps across that and one step comes out 0.0090 wide; the largest gap between a trained weight and the float the runtime decodes back is half a step, measured 0.0045 on this classifier. uint16 puts the step at 0.000035 and that largest gap at 0.000017. Nothing this classifier decides turns on a difference that small. Score 10,000 held-out captures instead of the usual slice and uint16 still moves no verdict at all, while uint8 moves three.
+The [TensorFlow.js conversion guide](https://www.tensorflow.org/js/guide/conversion) describes conversion and storage quantization. The pinned setup and runnable checks are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). The lab invokes the real converter, checks the manifest's encoding and reloads both outputs in Chromium. It compares scores on fixed probes. Those probes have no labels, so a changed prediction is a disagreement with the original model, not automatically an error against ground truth.
+
+For 673 float32 parameters, the uncompressed weight payload is 2,692 bytes. Quantizing every weight to uint16 produces 1,346 bytes; uint8 produces 673 bytes. JSON metadata and runtime files are additional. Whole-download savings are therefore not exactly 2x or 4x, and gzip results depend on the bytes.
+
+TFJS decodes this storage encoding into float32 weights. It does not turn this LayersModel into an integer-compute graph. The stored files shrink; the decoded weight element count stays the same. Measure load-time peak memory and inference latency separately. Browser buffers, activations, backend storage and other page work prevent a reliable peak-memory estimate from adding just the downloaded bytes and decoded weights.
 
 <Dialogue speaker="Dr. Farah">
-Then write it the narrow way. Quantization cost this classifier nothing on this holdout. That is not a property of quantization, and the sentence stops being true the week the model changes.
+If the verdicts stay the same, write down the inputs you checked. Tomorrow's input can land closer to a threshold.
 </Dialogue>
-
-One thing to be clear about before Nazari makes you be clear about it: TensorFlow.js decodes quantized weights back to float32 when the model loads. Loading is where the size shows up: the runtime holds the downloaded file buffer and the decoded float32 tensors at the same time, so a 340 MB file peaks near 680 MB, over the dashboard's 512 MB budget, while an 85 MB file peaks near 425 MB and survives. Once the load finishes, the resident weights are 340 MB either way, so nothing about the running model got smaller. The math of inference runs at the same speed as before, because no TensorFlow.js backend runs a model's weights as integers: by the time any op sees a weight, the loader has already decoded it to float32. What you bought is a 4x smaller download, a smaller disk cache, and a load spike the dashboard can survive. Runtimes like TFLite do run int8 compute kernels on integer silicon; in the browser, quantization is a storage format, not an execution mode. Two different things go by kernel here: a compute kernel is the routine that runs an operation on a backend, and a dense layer's kernel is its weight matrix, which is the one the exercise below quantizes.
 
 ## Challenge
 
@@ -235,24 +213,17 @@ Quantize a model's kernels to uint8, load the decoded floats back onto it, and c
 
 <Exercise slug="quantize-weights" />
 
-<RecallPrompt question="What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 stored as uint16 or uint8), shrinking the saved model 2x or 4x. In TFJS the weights decode back to float32 at load, so the win is download, disk, and load spike; inference speed is unchanged. What it costs in accuracy is a measurement on your model rather than a fixed price: score the decoded build against the trained one and read what moved. On DEEP SCAN uint16 moved nothing and uint8 moved three verdicts in ten thousand, which is below what the scoreboard prints: one uint8 step across that classifier is 0.0090 wide, and next to nothing it decides turns on a difference that small. Where a pass does cost something, the cost can sit in one rare class that an aggregate hides, and the quantize flags take weight-name patterns, so you can leave that part of the model at float32 and shrink the rest." />
+<RecallPrompt question="What does this quantization pass change, and what must you measure?" answer="It stores each selected float32 weight using uint16 or uint8 plus scale metadata. TFJS decodes those weights back to float32. Verify byte counts, conversion error and task metrics on labeled evaluation data. Memory peaks and inference speed require their own measurements; file compression does not establish either." />
 
 <LessonRecap
-  whatYouLearned={[
-    "Quantization stores each float32 weight (4 bytes) as uint16 (2 bytes) or uint8 (1 byte), shrinking the saved model by 2x or 4x respectively.",
-    "What quantization costs in accuracy belongs to the model, not to the scheme, so it is measured by scoring the decoded build against the trained one. It can come out at zero: on a classifier whose widest weight tensor puts one uint8 step at 0.0090, neither precision moved a verdict on the usual holdout, and at ten thousand captures uint16 still moved none while uint8 moved three. Where a pass does cost something, the cost can sit in one rare class, so the per-class breakdown matters more than the aggregate.",
-    "Quantization is applied at export time by the tensorflowjs_converter's --quantize_uint8/--quantize_uint16 flags; model.save() itself always writes float32. TFJS decodes the weights back to float32 at load, so what shrinks is the download, the disk cache, and the load-time memory peak. The resident weights and the inference speed do not change.",
-    "The quantize flags take weight-name patterns, so a pass can cover some layers and skip others. A small high-stakes classifier can stay at float32 while the bulk of the weights go to uint8; for DEEP SCAN that would have cost under a megabyte of the 255 MB saved."
-  ]}
-  bridge="A lossy WebP can trade image fidelity for file size. Uint8 weight storage trades numerical precision for smaller payloads; measure prediction changes after loading."
-  youCanNow="Quantize a TensorFlow.js model's kernels to uint8, load the decoded weights back onto the model, measure what the quantized build gets wrong, and run a pass that covers some of a model's tensors while leaving the rest at full precision."
+  whatYouLearned={["Uint16 and uint8 use two and one bytes per stored weight; metadata and other assets still count toward the download.", "Quantization error depends on the tensor's range. A constant tensor needs an explicit zero-spread case.", "Compare the decoded model with the original, then evaluate both on labeled data. Disagreement alone is not accuracy loss.", "Converter patterns can select which weights to quantize. This storage encoding does not provide integer inference kernels."]}
+  bridge="Lossy image compression and weight quantization both trade precision for size. Judge a model by measured prediction behavior."
+  youCanNow="Quantize a model's kernels, reload actual converter output and measure score changes without confusing file size with runtime memory."
 />
-
-> **DISPATCH archive · field intercept #18-Q:** Hassan's edge cell quantizes everything before deploy. They hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That is why we have drift detection." Both true.
 
 <Epilogue>
 
-The uint8 build loads on the engineering rig from an 85 MB file, and for the first time since the crash the load spike clears with white space left on the memory graph. Nazari updates the board: file 85, budget 512, relay slot 18 days. Under it, in smaller writing: 94.2, unchanged, measured Thursday. She dates it because she expects to be asked again after the next retrain, and because an undated figure keeps getting quoted long after the model under it has changed.
+The crew's uint8 build clears the load test on the engineering rig. Nazari records the artifact version beside the memory trace and leaves the bridge-console row unsigned. The relay slot is eighteen days away.
 
 Then, instead of leaving, she does something Demir has never seen her do. She pulls the live feed onto the rig she just certified, raw waveform, no dashboard in between, and stands through a full cycle waiting for the pulse.
 
@@ -262,6 +233,6 @@ Since the anomaly sprint I've been rationing megabytes for this thing, and I'd n
 
 She watches two more pulses arrive before she logs off, and writes nothing down at all.
 
-After the others leave, Farah runs the class-by-class breakdown Nazari asked for. Five classes, five rows, and not one of them moved. She does not post it. She flags it for the pruning review, where she expects the rows to move.
+After the others leave, Farah runs the class-by-class breakdown Nazari asked for. She files the per-class results beside the original model's predictions, ready for the pruning review.
 
 </Epilogue>

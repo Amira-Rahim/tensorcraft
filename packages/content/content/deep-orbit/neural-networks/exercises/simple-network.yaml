@@ -2,7 +2,23 @@ slug: simple-network
 lessonSlug: building-a-network
 title: "What a Compiled Network Knows"
 instructions: |
-  Build and compile the classifier twice, sweep both networks before either one trains, then train one of them and sweep it again. buildClassifier() returns the stack: 32 units with ReLU on an inputShape of [8], then 16 units with ReLU, then a 1-unit sigmoid output, compiled with the Adam optimizer, binaryCrossentropy loss and the accuracy metric. That eight-feature front door is Farah's spec, 833 parameters against the 673 of the three-feature build wired to the bridge feed tonight. Leave the weight initialization at its defaults. Store each sweep as a plain array of numbers: sweepOne from the first network, sweepTwo from the second, and trainedSweep from the first one again after `await model.fit(readings, labels, { epochs: 50, batchSize: 16 })`. Leave the second network untrained. It is the control. Rows 0 to 59 of the batch are calm windows and rows 60 to 119 are flagged, and the grader reads every sweep against that split: record the untrained outputs as they are. Random weights can separate groups by chance; their confidence does not prove training occurred. Measure what the trained sweep actually predicts. A particular class gap is not required for implementation correctness. Before the first network trains, also keep its starting weights as initialWeights: one plain array per tensor that getWeights() hands back, in that order. The grader re-runs predict() on the second network and on the trained one, and rebuilds the first network from initialWeights to re-run its untrained sweep, so each of the three sweeps has to be the output of the network it came from.
+  Implement buildClassifier(): dense layers of 24 ReLU units with inputShape
+  [8], 12 ReLU units, and 1 sigmoid unit. Keep default initialization.
+  Compile with Adam, binaryCrossentropy and the accuracy metric.
+  This practice model has 529 parameters; the bridge model takes 3 features
+  and has 673.
+
+  Build two independent models. Before training, save the first model's
+  weights in initialWeights as one plain number array per weight tensor.
+  Record both models' predictions as number arrays, sweepOne and sweepTwo.
+  Train only the first with await model.fit(readings, labels,
+  { epochs: 50, batchSize: 16 }), then record its trainedSweep.
+  Leave the second model untrained as a control.
+
+  Rows 0-59 are synthetic calm examples and 60-119 are flagged examples.
+  Compare the scores before and after training. The grader verifies their
+  origin and the training schedule, not a required accuracy or score gap.
+  This uses the training rows again, so it cannot measure generalization.
 starterCode: |
   // Given: Farah's rehearsal batch, 120 readings of eight values each. Rows
   // 0-59 are calm windows and rows 60-119 are flagged ones. The first three
@@ -10,11 +26,15 @@ starterCode: |
   // and they differ between the two groups. The last five are the features
   // Farah specced that have no source in the stream yet, so both groups get
   // the same noise there.
-  const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
-  const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
-  const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
-  const readings = tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1);
-  const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
+  const { readings, labels } = tf.tidy(() => {
+    const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
+    const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
+    const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
+    return {
+      readings: tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1),
+      labels: tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]),
+    };
+  });
 
   // Called twice below, so the two networks are independent draws of one
   // architecture.
@@ -42,16 +62,20 @@ starterCode: |
   // Sweep the trained network over the same readings.
   const trainedSweep = null; // your code here
 solutionCode: |
-  const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
-  const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
-  const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
-  const readings = tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1);
-  const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
+  const { readings, labels } = tf.tidy(() => {
+    const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
+    const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
+    const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
+    return {
+      readings: tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1),
+      labels: tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]),
+    };
+  });
 
   function buildClassifier() {
     const model = tf.sequential();
-    model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));
-    model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 24, activation: 'relu', inputShape: [8] }));
+    model.add(tf.layers.dense({ units: 12, activation: 'relu' }));
     model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
     model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
     return model;
@@ -62,12 +86,12 @@ solutionCode: |
 
   const initialWeights = model.getWeights().map((w) => Array.from(w.dataSync()));
 
-  const sweepOne = Array.from(model.predict(readings).dataSync());
-  const sweepTwo = Array.from(second.predict(readings).dataSync());
+  const sweepOne = tf.tidy(() => Array.from(model.predict(readings).dataSync()));
+  const sweepTwo = tf.tidy(() => Array.from(second.predict(readings).dataSync()));
 
   await model.fit(readings, labels, { epochs: 50, batchSize: 16 });
 
-  const trainedSweep = Array.from(model.predict(readings).dataSync());
+  const trainedSweep = tf.tidy(() => Array.from(model.predict(readings).dataSync()));
 testCode: |
   describe('Compiled, then trained', () => {
     const CALM = 60;
@@ -98,7 +122,7 @@ testCode: |
       expect(
         model.layers.map((l) => l.getConfig().units),
         'The stack does not match the spec. Three dense layers, each with the unit count the instructions give it.',
-      ).toEqual([32, 16, 1]);
+      ).toEqual([24, 12, 1]);
       expect(model.layers.map((l) => l.getConfig().activation)).toEqual(['relu', 'relu', 'sigmoid']);
       expect(
         model.outputShape,
@@ -107,7 +131,7 @@ testCode: |
       expect(
         model.countParams(),
         'The parameter total is off, so one of the widths is. The first layer is priced by the eight features Farah specced.',
-      ).toBe(833);
+      ).toBe(529);
     });
 
     it('compiles with Adam, binary crossentropy and the accuracy metric', () => {
@@ -207,8 +231,8 @@ testCode: |
         ).toBe(0);
       });
       const replica = tf.sequential();
-      replica.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));
-      replica.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+      replica.add(tf.layers.dense({ units: 24, activation: 'relu', inputShape: [8] }));
+      replica.add(tf.layers.dense({ units: 12, activation: 'relu' }));
       replica.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
       replica.setWeights(initialWeights.map((values, i) => tf.tensor(values, shapes[i])));
       expect(
@@ -217,7 +241,7 @@ testCode: |
       ).toBeLessThan(1e-6);
     });
 
-    it('records finite probabilities from both untrained networks', () => {
+    it('records finite scores from both untrained networks', () => {
       for (const [name, sweep] of [
         ['sweepOne', sweepOne],
         ['sweepTwo', sweepTwo],
@@ -257,7 +281,7 @@ testCode: |
       ).toBeLessThan(1e-6);
     });
 
-    it('runs the requested training schedule and reports finite trained probabilities', () => {
+    it('runs the requested training schedule and reports finite trained scores', () => {
       expect(model.optimizer.iterations).toBe(50 * Math.ceil(120 / 16));
       for (const value of readSweep('trainedSweep', trainedSweep)) {
         expect(Number.isFinite(value)).toBe(true);

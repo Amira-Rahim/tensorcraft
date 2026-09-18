@@ -74,20 +74,20 @@ hints:
         // so that cost does not land in the average below, and its pair is
         // released like every other.
         const warmInput = createInput();
-        const warmOutput = model.predict(warmInput);
-        await warmOutput.data();
-        warmOutput.dispose();
-        warmInput.dispose();
+        let warmOutput;
+        try { warmOutput = model.predict(warmInput); await warmOutput.data(); }
+        finally { warmOutput?.dispose(); warmInput.dispose(); }
 
         const times: number[] = [];
         for (let i = 0; i < runs; i++) {
           const input = createInput();
-          const start = now();
-          const output = model.predict(input);
-          await output.data();
-          times.push(Math.max(0, now() - start));
-          output.dispose();
-          input.dispose();
+          let output;
+          try {
+            const start = now();
+            output = model.predict(input);
+            await output.data();
+            times.push(Math.max(0, now() - start));
+          } finally { output?.dispose(); input.dispose(); }
         }
 
         const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
@@ -103,6 +103,9 @@ keywords:
   - devtools
 skillAxes: [deployment]
 ---
+
+The console readings and evaluation tables in this scene are fictional scenario data. They are not benchmark results for the downloaded course model. Use the [browser runtime lab](/assignments/browser-runtime-lab-v1.zip) to reproduce measurements on the shipped artifact; record the device and model with every result.
+
 
 Two nights after the report went out, the bridge dashboard died. ARIA's reboot watchdog kept the last three minutes. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
 
@@ -136,13 +139,13 @@ interface ModelProfile {
   parameterCount: number;
   inferenceMeanMs: number;
   inferenceP95Ms: number;
-  layerBreakdown: { name: string; params: number; outputShape: number[] }[];
+  layerBreakdown: { name: string; params: number; outputShape: (number | null)[] | (number | null)[][] }[];
 }
 
 // createInput is a callback, not a shape: a profiler that builds its own
 // tf.randomNormal only works on models whose first layer takes floats.
 async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor): Promise<ModelProfile> {
-  // Live tensor memory the backend is holding right now. Not the same
+  // Logical bytes tracked by TFJS, with backend-specific reliability limits. Not the same
   // number as the weight bytes below: tf.memory() counts every tensor
   // currently allocated, including the ones a sloppy loop forgets to
   // dispose.
@@ -160,7 +163,7 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
   const layerBreakdown = model.layers.map(layer => ({
     name: layer.name,
     params: layer.countParams(),
-    outputShape: layer.outputShape as number[],
+    outputShape: layer.outputShape,
   }));
 
   // Inference timing (warm up + 100 iterations). The warmup call pays the
@@ -168,30 +171,36 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
   // more warmup; inspect timing stability rather than assuming one pass is enough. Read its result back the same way
   // the timed calls do, then throw the result away.
   const warmupInput = createInput();
-  const warmupOutput = model.predict(warmupInput) as tf.Tensor;
-  await warmupOutput.data();
-  warmupOutput.dispose();
-  warmupInput.dispose();
+  let warmupOutput: tf.Tensor | undefined;
+  try {
+    warmupOutput = model.predict(warmupInput) as tf.Tensor;
+    await warmupOutput.data();
+  } finally {
+    warmupOutput?.dispose(); warmupInput.dispose();
+  }
 
   const times: number[] = [];
   for (let i = 0; i < 100; i++) {
     const input = createInput();
+    let output: tf.Tensor | undefined;
+    try {
     const start = performance.now();
-    const output = model.predict(input) as tf.Tensor;
+    output = model.predict(input) as tf.Tensor;
     // Module 4's benchmarking rule applies to profiles too: read the
     // result back INSIDE the timed region, or on GPU backends you are
     // profiling how fast you can enqueue GPU kernels, not run them, and
     // every mean and P95 below is fiction.
     await output.data();
     times.push(performance.now() - start);
-    output.dispose();
-    input.dispose();
+    } finally {
+      output?.dispose(); input.dispose();
+    }
   }
 
   times.sort((a, b) => a - b);
 
-  // If this is not zero the loop leaked, and every number below was
-  // measured on a backend still holding the garbage.
+  // Net growth needs investigation. Warmup caches or other page work can
+  // also affect the count; this is not a process-memory measurement.
   const leakedBytes = tf.memory().numBytes - residentBytesBefore;
   if (leakedBytes !== 0) console.warn('Leaked bytes while profiling:', leakedBytes);
 
@@ -199,7 +208,7 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
     memorySizeMB,
     parameterCount,
     inferenceMeanMs: times.reduce((a, b) => a + b) / times.length,
-    inferenceP95Ms: times[Math.floor(times.length * 0.95)],
+    inferenceP95Ms: times[Math.ceil(times.length * 0.95) - 1], // nearest-rank P95
     layerBreakdown,
   };
 }
@@ -254,8 +263,8 @@ for (const layer of profile.layerBreakdown) {
 // the latency baseline, not an explanation of the crash: the dashboard died
 // with the free-memory line at zero, 340 MB of weights loading into a 512 MB
 // budget. In that baseline the tail is the number to gate on. It is 2.5x the
-// mean, so a budget written against the mean alone misses one call in twenty.
-// Both numbers survive into module 11; neither was a guess.`}
+// mean, but neither statistic alone gives the fraction exceeding an arbitrary latency budget. Count those violations directly.
+// These scenario values carry into the capstone; they are not reproduced device measurements.`}
 </CodeBlock>
 
 ## Challenge

@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 14
 difficulty: advanced
 context:
-  narrative: "ARIA flags a concern: 'Deployment is not the end. Models degrade over time: data drift, distribution shift. We must watch.' Demir builds the monitoring dashboard."
+  narrative: "ARIA flags a concern: 'Deployment is not the end. Model performance can change as inputs and their relationship to labels change. We must watch.' Demir builds the monitoring dashboard."
   speaker: "ARIA"
 concept:
   explanation: "ML monitoring watches the failures that never throw: confidence decay, latency creep, and inputs drifting quietly away from the training distribution."
@@ -19,11 +19,11 @@ concept:
     jsTitle: "App Monitoring"
     jsCode: "Sentry.captureException(error); // track errors, performance, user impact"
     mlTitle: "Model Monitoring"
-    mlCode: "monitor.trackPrediction({ confidence, latency, drift }); // track accuracy, speed, data shift"
+    mlCode: "monitor.trackPrediction({ confidence, latency, drift }); // track scores, speed and data shift"
     tier: structural
     breaks: "App monitoring tracks errors, latency, and throughput: observable system metrics. Model monitoring also tracks input distribution drift, prediction distribution drift, and label feedback delays. Many model failures produce no exception and no latency change."
 consequence:
-  narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
+  narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we have signals to investigate. They do not establish accuracy.'"
 hints:
   - level: nudge
     content: |
@@ -64,7 +64,7 @@ hints:
           if (!Number.isFinite(p) || p < 0 || p > 100) throw new Error('Invalid percentile');
           if (this.latencies.length === 0) return null;
           const sorted = [...this.latencies].sort((a, b) => a - b);
-          const index = Math.min(sorted.length - 1, Math.floor((sorted.length * p) / 100));
+          const index = Math.max(0, Math.ceil((sorted.length * p) / 100) - 1);
           return sorted[index];
         }
 
@@ -100,16 +100,43 @@ skillAxes: [deployment, evaluation]
 Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. The 0249 crash made that argument, and nobody has reopened it.
 
 <Dialogue speaker="ARIA" expression="emphasis">
-Commander, I must flag a concern. The model performs at 91.8% accuracy now. In three weeks, that number will change. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
+Commander, I must flag a concern. The model performs at 91.8% accuracy now. That measurement does not establish future accuracy. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
+Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When a drift alert fires, we check the data and sensors, collect outcome labels where needed, and decide whether to retrain.
 </Dialogue>
 
-So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw. Those failures are confidence decay, latency creep, and drift (production inputs walking quietly away from the training distribution).
+So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw. Score changes, latency increases and input drift are investigation signals. A failing model can remain confident, and a distribution shift need not reduce accuracy.
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and the prediction-side class mix", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
+
+<BossBeat
+  beatId="deep-orbit-drift-response"
+  prompt="A rehearsal drift score crosses the 0.5 review threshold. The shift is concentrated in fft_5; the calibration log has no recorded change. Prediction scores remain high, but recent outcome labels have not arrived. The next watch has one engineer available. What should that engineer do first?"
+  options={[
+    {
+        "label": "cooperate",
+        "display": "Inspect raw captures and calibration before changing the model",
+        "consequence": "Nazari takes the investigation slot. The deployed model stays in place while she checks the instrument chain; retraining must wait."
+    },
+    {
+        "label": "defect",
+        "display": "Retrain on the recent stream and replace the current model",
+        "consequence": "Demir starts a candidate fit. Without recent outcome labels, the drift score cannot establish that it is better. The release gate will require a separate evaluation before any replacement."
+    },
+    {
+        "label": "random",
+        "display": "Silence repeat drift pages for this watch",
+        "consequence": "The engineer finishes scheduled maintenance. Raw measurements continue, but the next watch will have to inspect the unreviewed interval before trusting the alert history."
+    },
+    {
+        "label": "dominant",
+        "display": "Keep current alerts and compare a shadow candidate",
+        "consequence": "Demir reserves the engineer for a parallel comparison. The candidate cannot issue operational verdicts; useful quality evaluation still waits for labels, and both runs consume resources."
+    }
+]}
+/>
 
 ## Model Health Dashboard
 
@@ -118,190 +145,104 @@ So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set,
 <CodeBlock language="typescript" title="monitor.ts">
 {`interface PredictionLog {
   timestamp: number;
-  confidence: number;
-  latencyMs: number;      // the whole classify() call, end to end: on the
-                          // bridge's WebGPU path about 5 ms, 15 on WebGL.
-                          // The classifier inside it answers in microseconds.
+  confidence: number; // model score; calibration must be measured separately
+  latencyMs: number; // awaited end-to-end inference, with readback
   inputFeatures: number[];
   label: string;
 }
 
 class ModelMonitor {
-  readonly logs: PredictionLog[] = [];
-  private baselineFeatures: number[][] = [];
-
+  private entries: PredictionLog[] = [];
+  private baselineMean: number[];
   constructor(baselineData: number[][]) {
-    this.baselineFeatures = baselineData;
+    this.baselineMean = this.mean(baselineData);
   }
-
+  get logs(): PredictionLog[] {
+    return this.entries.map(row => ({ ...row, inputFeatures: [...row.inputFeatures] }));
+  }
   log(prediction: PredictionLog): void {
-    this.logs.push(prediction);
-    this.checkAlerts(prediction);
+    if (!Number.isFinite(prediction.timestamp) || !Number.isFinite(prediction.confidence) ||
+        prediction.confidence < 0 || prediction.confidence > 1 ||
+        !Number.isFinite(prediction.latencyMs) || prediction.latencyMs < 0 ||
+        typeof prediction.label !== 'string' || !prediction.label.trim()) throw new Error('Invalid log');
+    this.mean([prediction.inputFeatures], this.baselineMean.length);
+    this.entries.push({ ...prediction, inputFeatures: [...prediction.inputFeatures] });
+    if (this.entries.length > 1000) this.entries.shift(); // bounded demonstration retention
+    // Illustrative alert budgets. Set them from evaluation and operating cost.
+    if (prediction.confidence < 0.6) console.warn('Low score:', prediction.label);
+    if (prediction.latencyMs > 50) console.warn('Slow inference:', prediction.latencyMs);
   }
-
-  // Confidence tracking, like error rate monitoring
   get avgConfidence(): number | null {
-    // Every prediction logged so far. A cumulative mean is easy to read and
-    // slow to move: once thousands of logs are in, a bad hour barely shifts
-    // it. That is why the latency methods below keep a trailing window, and
-    // why a real dashboard plots both.
-    // Before the first prediction there is nothing to average, and the
-    // an empty list has no mean. Render null as "No data", not a healthy zero.
-    if (this.logs.length === 0) return null;
-    return (
-      this.logs.reduce((sum, p) => sum + p.confidence, 0) / this.logs.length
-    );
+    if (!this.entries.length) return null;
+    return this.entries.reduce((sum, row) => sum + row.confidence, 0) / this.entries.length;
   }
-
-  // Latency percentiles, like response time monitoring
   getLatencyPercentile(p: number): number | null {
-    // Sort numerically. The default comparator is textual, so it puts
-    // "400" before "41" and the percentile reads off the wrong row.
-    const sorted = this.logs.slice(-1000)
-      .map(l => l.latencyMs)
-      .sort((a, b) => a - b);
-    if (sorted.length === 0) return null;
-    // length * 100 / 100 is the length itself, one index past the end.
-    const index = Math.min(sorted.length - 1, Math.floor(sorted.length * p / 100));
-    return sorted[index];
+    if (!Number.isFinite(p) || p < 0 || p > 100) throw new Error('Invalid percentile');
+    const sorted = this.entries.map(row => row.latencyMs).sort((a,b) => a-b);
+    if (!sorted.length) return null;
+    return sorted[Math.max(0, Math.ceil(sorted.length * p / 100) - 1)]; // nearest rank; P0=min
   }
-
-  // Data drift detection, unique to ML monitoring
   computeDrift(recentInputs: number[][]): number | null {
-    // No traffic gives no drift measurement. computeMean reads data[0], and an
-    // empty window has no row 0 and no recent mean to compare.
-    if (recentInputs.length === 0) return null;
-    const baselineMean = this.computeMean(this.baselineFeatures);
-    const recentMean = this.computeMean(recentInputs);
-
-    // Simple drift: Euclidean distance between feature means.
-    // Assumes features are z-scored first (the foundations rule): raw,
-    // the frequency term is a zero-crossing count over the 64-sample
-    // window (37 of them on the 73.4 Hz line) and phase is radians
-    // (0.23 on that same reading), so the count would drown the phase
-    // term and this one number would mean nothing.
-    // A mean vector only sees a shift in level. Two windows with the
-    // same means and twice the spread score 0.0 here, and so does one
-    // that split into two modes at the same average.
-    let sumSqDiff = 0;
-    for (let i = 0; i < baselineMean.length; i++) {
-      sumSqDiff += (baselineMean[i] - recentMean[i]) ** 2;
-    }
-    return Math.sqrt(sumSqDiff);
+    if (!recentInputs.length) return null;
+    const current = this.mean(recentInputs, this.baselineMean.length);
+    return Math.hypot(...current.map((v,i) => v - this.baselineMean[i]));
   }
-
-  private computeMean(data: number[][]): number[] {
-    const featureCount = data[0].length;
-    const means = new Array(featureCount).fill(0);
-    for (const row of data) {
-      for (let i = 0; i < featureCount; i++) {
-        means[i] += row[i] / data.length;
-      }
+  private mean(data: number[][], width = data[0]?.length): number[] {
+    if (!data.length || !width || !data.every(row => row.length === width && row.every(Number.isFinite))) {
+      throw new Error('Invalid feature rows');
     }
-    return means;
-  }
-
-  private checkAlerts(prediction: PredictionLog): void {
-    if (prediction.confidence < 0.5) {
-      console.warn('⚠ Low confidence prediction:', prediction.label);
-    }
-    if (prediction.latencyMs > 50) {  // ten times the pipeline's WebGPU figure
-      console.warn('⚠ Slow inference:', prediction.latencyMs, 'ms');
-    }
+    return Array.from({length:width}, (_,i) => data.reduce((sum,row) => sum + row[i]/data.length, 0));
   }
 }
 
-// Usage
+// Integration inputs: trainingFeatures and signalFeatures use the same
+// feature order and frozen training scaler. Numbers below are illustrative.
 const monitor = new ModelMonitor(trainingFeatures);
-
-// After each prediction
-monitor.log({
-  timestamp: Date.now(),
-  confidence: 0.94,
-  latencyMs: 5.2,
-  inputFeatures: signalFeatures,
-  label: 'pulsar',
-});
-
-console.log('Avg confidence:', monitor.avgConfidence.toFixed(3));
-console.log('P95 latency:', monitor.getLatencyPercentile(95).toFixed(1), 'ms');`}
+monitor.log({ timestamp:Date.now(), confidence:0.94, latencyMs:5.2, inputFeatures:signalFeatures, label:'pulsar' });
+console.log('Average score:', monitor.avgConfidence?.toFixed(3) ?? 'No data');
+console.log('P95 latency:', monitor.getLatencyPercentile(95)?.toFixed(1) ?? 'No data');`}
 </CodeBlock>
 
 ## Drift Detection
 
 <CodeBlock language="typescript" title="drift.ts">
-{`// Data drift: when production data diverges from training data
-// Like monitoring API response shapes: if they change, your app breaks
-
-interface DriftReport {
+{`interface DriftReport {
   driftScore: number;
-  isSignificant: boolean;
+  thresholdExceeded: boolean; // operational cutoff, not a significance test
   features: { name: string; baselineMean: number; currentMean: number; shift: number }[];
 }
 
-function detectDrift(
-  baseline: number[][],
-  current: number[][],
-  // 0.5 is not a universal number. It is the 99th percentile of this
-  // detector's own score over 180 known-calm 100-sample windows. Module 7
-  // computed that percentile too and then walked away from it: it had
-  // labeled anomalies, so its cutoff came from an F1 sweep and the cost of
-  // a false alarm. Drift has no labels to sweep, so here the percentile is
-  // where the number stops.
-  // It is only valid at that window size. On calm data the distance
-  // between two sample means shrinks as the windows grow: the same
-  // detector sits near 0.22 on a 500-sample window. Change the window
-  // and you have to measure the number again.
-  threshold: number = 0.5
-): DriftReport {
-  // The model's REAL input vector (module 5's fixed-bin design): 3 raw
-  // features + 8 fixed FFT bins. Drift checks watch what the model eats.
-  const featureNames = [
-    'amplitude', 'zeroCrossings', 'phase',
-    'fft_0', 'fft_1', 'fft_2', 'fft_3', 'fft_4', 'fft_5', 'fft_6', 'fft_7',
-  ];
-  const features = featureNames.map((name, i) => {
-    const baselineMean = baseline.reduce((s, r) => s + r[i], 0) / baseline.length;
-    const currentMean = current.reduce((s, r) => s + r[i], 0) / current.length;
-    return {
-      name,
-      baselineMean,
-      currentMean,
-      shift: Math.abs(currentMean - baselineMean),
-    };
+function detectDrift(baseline: number[][], current: number[][], threshold: number): DriftReport {
+  const names = ['amplitude', 'zeroCrossings', 'phase', 'fft_0', 'fft_1', 'fft_2', 'fft_3', 'fft_4', 'fft_5', 'fft_6', 'fft_7'];
+  if (!Number.isFinite(threshold) || threshold < 0 || !baseline.length || !current.length ||
+      ![...baseline, ...current].every(row => row.length === names.length && row.every(Number.isFinite))) {
+    throw new Error('Invalid drift inputs');
+  }
+  // Both periods must use the SAME frozen scaler. Per-window normalization
+  // would erase the shifts this check is meant to observe.
+  const features = names.map((name,i) => {
+    const baselineMean = baseline.reduce((s,r) => s + r[i]/baseline.length, 0);
+    const currentMean = current.reduce((s,r) => s + r[i]/current.length, 0);
+    return {name, baselineMean, currentMean, shift:Math.abs(currentMean-baselineMean)};
   });
-
-  // This is a distance between means, not a comparison of distributions.
-  // Production drift monitors score each feature with a
-  // Kolmogorov-Smirnov statistic (the largest gap between the two
-  // cumulative distributions) or a population stability index (both
-  // windows bucketed the same way, then compared bucket by bucket).
-  // Both read a change in spread or shape that the mean vector misses.
-  const driftScore = Math.sqrt(features.reduce((s, f) => s + f.shift ** 2, 0));
-
-  return {
-    driftScore,
-    isSignificant: driftScore > threshold,
-    features,
-  };
+  const driftScore = Math.hypot(...features.map(f => f.shift));
+  return {driftScore, thresholdExceeded:driftScore > threshold, features};
 }
 
-const drift = detectDrift(trainingData, recentSignals);
-if (drift.isSignificant) {
-  console.error('🚨 Data drift detected! Score:', drift.driftScore.toFixed(3));
-  console.log('Drifted features:', drift.features
-    .filter(f => f.shift > 0.1)
-    .map(f => f.name)
-  );
-  // Trigger retraining alert
+// Application supplies the arrays. 0.5 is a fictional mission cutoff for
+// 100-row windows, not a calibrated threshold for another dataset.
+const drift = detectDrift(trainingData, recentSignals, 0.5);
+if (drift.thresholdExceeded) {
+  console.warn('Investigate mean shift:', drift.driftScore);
+  console.table(drift.features);
 }`}
 </CodeBlock>
 
-Accuracy is missing from that dashboard, and it is missing for a reason. A production prediction arrives with no label attached. The monitor records that DEEP SCAN called a window `pulsar` at 0.94 confidence, and nothing in the stream says whether that was right. Confidence and drift are proxies for an accuracy nobody can read live. The lag between a prediction and the label that would grade it is the label feedback delay, and here a label means Nazari at a console working through the capture by hand.
+Accuracy requires trusted outcome labels. In this mission they arrive after manual review, so live scores and drift cannot establish whether a prediction was correct. Track delayed label coverage and compute evaluation metrics when those labels arrive. Some applications receive outcomes quickly; others never obtain reliable labels for every case.
 
-That also bounds what "retrain" can mean. Retraining on drifted inputs needs labels for the drifted inputs, so the first real step after a drift alert is somebody hand-labeling a sample of recent captures. A drift score tells you the training set is out of date. It does not produce the replacement.
+A drift alert calls for investigation. Check sensor calibration, preprocessing versions, missing values and traffic composition before considering retraining. Supervised retraining needs suitable labels and a new evaluation; an unsupervised model has a different training contract. A shifted input mean does not prove that the model has become inaccurate or that its training set must be replaced.
 
-The other distribution worth watching sits on the output side. `this.logs` already holds a label and a confidence for every prediction, so two counts fall out of it for free: the share of verdicts landing in each of the five classes, and the histogram of confidences. When `noise` climbs from 60 percent of verdicts to 85, or the confidence histogram slides down a tenth, the model's behavior has moved even if every input feature mean sat still. Prediction-side drift needs no labels either, which is the reason to keep it next to the input-side check.
+Watch the output distribution too: class proportions and score histograms can change while input means remain stable. Conversely, identical means can hide changes in spread, multimodality or relationships between features. Per-feature distribution comparisons, such as a Kolmogorov-Smirnov statistic, can reveal some of these changes, but their interpretation depends on sample size, dependence and repeated testing. They do not test every kind of joint shift.
 
 ## Challenge
 
@@ -311,17 +252,16 @@ Render an absent measurement as "No data". A measured zero distance only says th
 
 <Exercise slug="model-monitor" />
 
-<RecallPrompt question="What category of model failure does standard app monitoring miss entirely?" answer="Data drift: when production input distributions diverge from the training distribution, predictions quietly become wrong without throwing an exception, changing latency, or triggering any observable system metric. App monitoring tracks errors and throughput; model monitoring must separately track input feature distributions and compare them against training-time baselines." />
+<RecallPrompt question="What category of model failure does standard app monitoring miss entirely?" answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong." />
 
-<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="Because production predictions arrive without labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Confidence and drift are the proxies you get instead. A real accuracy number means somebody labels a sample of recent inputs first, and so does a retrain on the drifted data. The proxies are there because those labels take days to arrive." />
+<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="Because production predictions arrive without labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Scores and drift do not replace labels. Evaluate when trusted outcomes arrive, record their coverage and delays, and investigate changes before choosing an intervention." />
 
 <LessonRecap
   whatYouLearned={[
-    "ML observability extends app monitoring with signals an app has no reason to collect: prediction confidence trends, input distribution drift, prediction distribution drift, and latency percentiles measured on inference. Many model failures produce no exception and no latency spike, so these signals need separate instrumentation.",
-    "Drift detection compares live inputs against a training-time baseline. The version built here is a distance between per-feature means, so it catches a shift in level and nothing else. Two windows with the same means score 0.0 whether the spread doubled or the feature split into two modes. A per-feature Kolmogorov-Smirnov statistic reads those, because it compares the whole distributions instead of their averages.",
-    "A drift score is not an accuracy measurement. Production predictions arrive unlabeled, so confidence and drift stand in for an accuracy nobody can read live. Acting on a drift alert still starts with someone hand-labeling a sample of the drifted inputs.",
-    "The prediction side has a distribution too: the share of verdicts per class and the histogram of confidence scores both move when model behavior changes, and neither needs labels to compute.",
-    "Latency percentiles (P50/P95/P99) apply directly to inference monitoring just as they do to API response time tracking."
+    "Monitor bounded windows of latency, model scores and input/output distributions.",
+    "Compare periods in the same feature order and scale. A mean-distance check misses changes that preserve the means.",
+    "A drift alert requests investigation. Accuracy requires trusted labels, and retraining requires its own evidence and validation.",
+    "Specify the percentile convention and measurement boundary. Render an absent measurement as No data."
   ]}
   bridge="Application monitoring tracks operation and errors. Model monitoring adds data distributions and delayed outcome labels; a shift is a signal to investigate, not proof of failure."
   youCanNow="Implement a model health monitor that averages prediction confidence, reads a latency percentile off the recorded inference times, and scores data drift as the distance between the recent feature means and a training-time baseline."
@@ -331,10 +271,10 @@ Render an absent measurement as "No data". A measured zero distance only says th
 
 <Epilogue>
 
-The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the whole shift in one place: fft_5, the 73.4 Hz line, hotter every hour. Both alerts are that same bin, six hours apart, and the pulse interval stamped on the second one reads 37.0 seconds. Under both alerts, the triangulation job posts its overnight fix, the third in a row to land on the same answer: bearing 127.3, stable for a week now, distance estimate settling toward 4.2 light-years.
+The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the whole shift in one place: fft_5, centered at 72 Hz and receiving energy from the nearby 73.4 Hz component, higher every hour. Both alerts are that same bin, six hours apart, and the pulse interval stamped on the second one reads 37.0 seconds. Under both alerts, the triangulation job posts its overnight fix, the third in a row to land on the same answer: bearing 127.3, stable for a week now, distance estimate settling toward 4.2 light-years.
 
 <Dialogue speaker="Dr. Farah">
-We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed. I no longer trust the model or the signal to stay still.
+The input changed. We still need reviewed outcomes to know whether accuracy changed. Keep the raw captures for the next watch.
 </Dialogue>
 
 </Epilogue>

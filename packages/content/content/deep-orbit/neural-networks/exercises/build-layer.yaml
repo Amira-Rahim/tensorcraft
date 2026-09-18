@@ -1,7 +1,15 @@
 slug: build-layer
 lessonSlug: layers-and-architecture
 title: "Build a 3-Layer Sequential Model"
-instructions: "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. Those are drill widths rather than the build wired to the bridge feed, so the lesson's 673 is not the answer here. Then quote the price the way Nazari asks for it: fill in predictParams(width) so it returns the number of parameters this same 16/8/1 stack holds when a reading of `width` values arrives. The grader builds that stack at widths of its own and compares, so one number cannot be the right quote at two widths. The quote has to be arithmetic: the grader prices widths in the tens of thousands and rejects an answer that builds anything, a stack or a tensor, to get there. Check the formula you write against the lesson before you submit: the same arithmetic on 32 units, then 16, then 1, reading three features, comes back 673."
+instructions: |
+  Build a Sequential model with three dense layers: 16 ReLU units with
+  inputShape [4], then 8 ReLU units, then 1 sigmoid unit.
+  These practice widths differ from the bridge classifier's 32/16/1 stack.
+
+  Implement predictParams(width) to count the parameters in your 16/8/1
+  stack for any positive input width. Use arithmetic, without creating a
+  model or tensor inside the function. Each dense unit owns one weight per
+  incoming feature and one bias. Check your formula against model.countParams().
 starterCode: |
   // Build a 3-layer sequential model
   const model = tf.sequential();
@@ -71,7 +79,7 @@ testCode: |
       const acts = model.layers.map((l) => l.getConfig().activation);
       expect(
         acts,
-        'Read back off the layers, in the order they were added. Both hidden stages bend with relu; the verdict stage uses sigmoid because its output is a probability.',
+        'Read back off the layers, in the order they were added. Both hidden stages bend with relu; the output stage uses sigmoid to bound its score between zero and one.',
       ).toEqual(['relu', 'relu', 'sigmoid']);
     });
     it('your quote for the width the first layer declares matches the stack you built', () => {

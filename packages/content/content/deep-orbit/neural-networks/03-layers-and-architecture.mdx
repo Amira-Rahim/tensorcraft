@@ -79,10 +79,11 @@ model.add(tf.layers.dense({
 // Output layer: binary classification
 model.add(tf.layers.dense({
   units: 1,
-  activation: 'sigmoid', // output 0-1 probability
+  activation: 'sigmoid', // bounded binary score; evaluate before trusting it
 }));
 
-model.summary(); // prints layer shapes and parameter counts`}
+model.summary(); // prints layer shapes and parameter counts
+model.dispose();`}
 </CodeBlock>
 
 Two numbers price a dense layer: how many values arrive, and how many units read them. The layer holds one weight for every incoming value on every unit, plus one bias per unit: `(inputs * units) + units`. Run that down the three stages above and you get Nazari's 673. On the first layer the arriving width is whatever `inputShape` declares, so that setting carries a price too. Every later layer inherits its width from the stage before it, which is why only the first one declares anything. Leave the units at 32/16/1 and change `inputShape` to `[8]`, and the same stack quotes 833.
@@ -93,37 +94,9 @@ Demir's first stack ran 96, then 32, then 1: 3,521 parameters, on a 96-unit firs
 
 The stack costs 673 parameters. The lesson-1 neuron, three weights and a bias, costs 4. Here is the smallest case where that difference decides the answer rather than the speed. A reading carries two normalized inputs, so there are four cases to label: 0 and 0, 0 and 1, 1 and 0, 1 and 1. The label fires when exactly one of the two reads high, which makes the middle two 1 and the outer two 0. Plot the four on a square, one axis per input. One weighted sum plus a threshold draws a single straight line on that square. No straight line puts the two cases labeled 1 on one side and the two labeled 0 on the other.
 
-Two calls in the block below are not yours to worry about yet. `compile()` picks how the weights get adjusted and how error is measured, and `fit()` runs the adjusting; lesson 5 wires the first one, and module 3 takes both apart. Read the two console lines, not the setup.
+That task is XOR: true when exactly one binary input is true. It demonstrates a capacity limit of one affine score with a threshold. More parameters alone do not prove better predictions; the arrangement and nonlinearities matter.
 
-<CodeBlock language="typescript" title="one-stage-vs-two.ts">
-{`import * as tf from '@tensorflow/tfjs';
-
-const xs = tf.tensor2d([[0, 0], [0, 1], [1, 0], [1, 1]]);
-const ys = tf.tensor2d([[0], [1], [1], [0]]);  // 1 when exactly one reads high
-
-// One sigmoid unit, no hidden stage: 3 parameters.
-const flat = tf.sequential();
-flat.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
-flat.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
-await flat.fit(xs, ys, { epochs: 3000 });
-console.log(Array.from((flat.predict(xs) as tf.Tensor).dataSync()));
-// all four within a hundredth of 0.50, every run
-
-// One 16-unit relu stage in front of the same output unit: 65 parameters.
-const staged = tf.sequential();
-staged.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [2] }));
-staged.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-staged.compile({ optimizer: tf.train.adam(0.05), loss: 'binaryCrossentropy' });
-await staged.fit(xs, ys, { epochs: 3000 });
-console.log(Array.from((staged.predict(xs) as tf.Tensor).dataSync()));
-// all four within 0.0003 of 0, 1, 1, 0 on all but about one run in sixty`}
-</CodeBlock>
-
-A hundred runs of the flat model, three hundred of the staged one. The one-unit version answered 0.50 on every point, every run, to within a hundredth, which is as close as a single straight line gets. The staged version got all four right, within 0.0003, on 295 of its 300 runs, on 62 more parameters; the other five answered 0.5 on two of the points, which is the failure the next paragraph is about.
-
-An 8-unit stage also represented the task successfully: 92 of the hundred recorded runs got all four cases right. The eight failed runs show an optimization problem, not insufficient capacity. Inactive ReLU units can contribute to that failure; the number of units alone does not determine whether training finds a solution.
-
-Here is a smaller construction you can check without training. ReLU is `Math.max(0, x)`. Two such units, followed by a sum, already represent XOR on binary inputs:
+Here is a construction you can check without training. ReLU is `Math.max(0, x)`. Two such units, followed by a sum, already represent XOR on binary inputs:
 
 <CodeBlock language="javascript" title="xor-capacity.js">
 {`const relu = (x) => Math.max(0, x);
@@ -134,9 +107,9 @@ const outputs = cases.map(([a, b]) => xor(a, b)); // [0, 1, 1, 0]
 // the same classes at threshold 0.5. These weights are chosen by hand.`}
 </CodeBlock>
 
-Representing a function and learning its weights are different questions. This construction answers the first. The training runs above investigate the second.
+Representing a function and learning its weights are different questions. This construction answers the first. A training experiment must answer the second separately; a model can represent a solution yet fail to learn it with a particular initialization and training schedule.
 
-No reading this ship extracts needs a boundary that shape yet; module 5 widens a reading to eleven features, and stages are what read combinations of them.
+This is a small capacity demonstration, not evidence about the spacecraft data; module 5 widens a reading to eleven features, and stages are what read combinations of them.
 
 ## Challenge
 
@@ -164,7 +137,7 @@ Build a three-stage stack, then quote its price at a width the grader picks.
 
 <Epilogue>
 
-Nazari gets her quote: 673 parameters, printed from `model.summary()` and taped to the engineering board next to the duty roster. Demir does the arithmetic in the margin by hand. 128 parameters into the first stage, 528 into the second, 17 for the verdict. Everything the ship will ever know about Sector 7-G has to fit inside those numbers.
+Nazari gets her quote: 673 parameters, printed from `model.summary()` and taped to the engineering board next to the duty roster. Demir does the arithmetic in the margin by hand. 128 parameters into the first stage, 528 into the second, 17 for the verdict. The current classifier's learned parameters will fit inside those numbers; the archive, feature extraction and interpretation remain separate.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Six hundred seventy-three. I have pumps with more parts. Show me it earns them.

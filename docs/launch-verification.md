@@ -24,8 +24,14 @@ The missing token-renewal implementation is repaired and deployed as Fly
 release 32 and Vercel `dpl_3bJw26RAycdLk28JzSv8VekS86cY`; 121 targeted tests
 pass. The live check published 26 files, reused the same commit on retry,
 preserved all three existing files and reproduced validation/test results.
-The cloned app also passed Chromium prediction checks. Production folder-picker
-interaction and a live automatic token-renewal cycle remain unverified.
+The cloned app also passed Chromium prediction checks. The production course
+folder picker, file exclusions, destination confirmation, publication and retry
+passed using owner-approved temporary QA records, all removed afterward.
+The live automatic token-renewal cycle passed after natural expiry at
+19:28 UTC on 2026-09-18: expired token 401, production API 200 twice, encrypted
+credentials rotated once, and temporary session revoked. The
+[production follow-up](audits/production-picker-and-renewal-2026-09-18.md)
+records the result and links the redacted evidence.
 See the [live export results](audits/project-export-live-2026-09-18.md) and
 [renewal repair](audits/github-token-renewal-2026-09-18.md). Independent
 reviewer candidates and a frozen handoff are prepared; no reviewer has been

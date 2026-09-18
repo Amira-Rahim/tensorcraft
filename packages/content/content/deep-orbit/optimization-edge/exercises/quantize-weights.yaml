@@ -1,8 +1,8 @@
 slug: quantize-weights
 lessonSlug: quantization
-title: "Quantize a Model and Measure What It Cost"
+title: "Quantize a Model and Compare Predictions"
 instructions: |
-  Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures).
+  Quantize a trained model's weights to uint8 and measure how its predictions change. Write quantizeModel(model, captures).
 
   Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255 and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255.
 
@@ -51,34 +51,37 @@ solutionCode: |
     model: any,
     captures: number[][]
   ): Promise<QuantizationReport> {
-    const input = tf.tensor2d(captures);
-    const before = Array.from(await model.predict(input).argMax(1).data());
+    return tf.tidy(() => {
+      const input = tf.tensor2d(captures);
+      const before = Array.from(model.predict(input).argMax(1).dataSync());
 
-    const isKernel = (w: any) => w.shape.length === 2;
-    const kernels: QuantizedKernel[] = [];
-    let maxWeightError = 0;
+      const isKernel = (w: any) => w.shape.length === 2;
+      const kernels: QuantizedKernel[] = [];
+      let maxWeightError = 0;
 
-    const rebuilt = model.getWeights().map((w: any) => {
-      if (!isKernel(w)) return w;
-      const values = Array.from(w.dataSync()) as number[];
-      const min = values.reduce((a, b) => Math.min(a, b));
-      const max = values.reduce((a, b) => Math.max(a, b));
-      const scale = (max - min) / 255;
-      const quantized = values.map(v => scale === 0 ? 0 : Math.round((v - min) / scale));
-      const restored = quantized.map(q => q * scale + min);
-      const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
-      maxWeightError = Math.max(maxWeightError, error);
-      kernels.push({ quantized, scale, min, shape: w.shape });
-      return tf.tensor(restored, w.shape);
+      const rebuilt = model.getWeights().map((w: any) => {
+        if (!isKernel(w)) return w;
+        const values = Array.from(w.dataSync()) as number[];
+        const min = values.reduce((a, b) => Math.min(a, b));
+        const max = values.reduce((a, b) => Math.max(a, b));
+        const scale = (max - min) / 255;
+        const quantized = values.map(v => scale === 0 ? 0 : Math.round((v - min) / scale));
+        const restored = quantized.map(q => q * scale + min);
+        const error = restored.reduce((worst, v, i) => Math.max(worst, Math.abs(v - values[i])), 0);
+        maxWeightError = Math.max(maxWeightError, error);
+        kernels.push({ quantized, scale, min, shape: w.shape });
+        return tf.tensor(restored, w.shape);
+      });
+
+      model.setWeights(rebuilt);
+
+      const after = Array.from(model.predict(input).argMax(1).dataSync());
+      const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
+
+      return { kernels, maxWeightError, predictionsChanged };
     });
-
-    model.setWeights(rebuilt);
-
-    const after = Array.from(await model.predict(input).argMax(1).data());
-    const predictionsChanged = after.filter((v, i) => v !== before[i]).length;
-
-    return { kernels, maxWeightError, predictionsChanged };
   }
+
 testCode: |
   describe('quantizeModel', () => {
     // The five-class classifier, freshly initialized on every call, so the

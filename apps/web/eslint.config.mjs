@@ -3,6 +3,31 @@ import reactHooks from "eslint-plugin-react-hooks";
 
 export default [
   ...baseConfig,
+  {
+    files: ["public/assignments/**/*.mjs"],
+    ignores: ["public/assignments/**/app.mjs"],
+    languageOptions: {
+      globals: {
+        console: "readonly",
+        process: "readonly",
+        Buffer: "readonly",
+        URL: "readonly",
+      },
+    },
+  },
+  {
+    files: ["public/assignments/**/app.mjs"],
+    languageOptions: {
+      globals: {
+        document: "readonly",
+        fetch: "readonly",
+        crypto: "readonly",
+        TextDecoder: "readonly",
+        performance: "readonly",
+        tf: "readonly",
+      },
+    },
+  },
   // Classic two-rule preset. v7's "recommended-latest" adds the React
   // Compiler advisory rules as errors, which is a migration project, not a
   // launch gate; revisit post-V1.

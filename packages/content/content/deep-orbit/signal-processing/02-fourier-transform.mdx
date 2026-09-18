@@ -27,7 +27,7 @@ consequence:
 hints:
   - level: nudge
     content: |
-      rfft turns N time samples into N/2+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone.
+      rfft turns N time samples into floor(N/2)+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone.
   - level: guidance
     content: |
       The transform hands back a complex coefficient per bin, so reduce each one to its size before you compare anything. Two decisions are left. Bin 0 holds the constant offset of the slice rather than a tone, and the hull channels sit on a large offset, so decide whether bin 0 is eligible to win a search for the loudest tone. Then decide what a winning bin index is worth in hertz. That conversion needs the sample rate and the number of samples that went in, and the lesson works it out above the challenge.
@@ -72,10 +72,10 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N of them for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That universality is what lets me trust whatever peak we find.
+Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N complex basis functions for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That gives us a common basis for comparing captures; it does not identify a peak's physical source.
 </Dialogue>
 
-One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, and the how-much is the only half of the transform's output this course reads. DEEP SCAN's third input feature is also called phase, but that one is a time-domain angle taken off the first two samples of a window, not this one; lesson 4 builds it and says so. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the N/2+1 bins that carry unique information.
+One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, and the how-much is the only half of the transform's output this course reads. DEEP SCAN's third input feature is also called phase, but that one is a time-domain angle taken off the first two samples of a window, not this one; lesson 4 builds it and says so. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the floor(N/2)+1 bins that carry unique information.
 
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
@@ -125,7 +125,7 @@ magnitudes.dispose();`}
 
 ## Understanding the Output
 
-For a real-valued signal, `rfft` transforms an array of N time-domain samples into N/2+1 frequency bins. Each bin tells you how much of that frequency is present in the signal.
+For a real-valued signal, `rfft` transforms an array of N time-domain samples into floor(N/2)+1 frequency bins. Each bin tells you how much of that frequency is present in the signal.
 
 <CodeBlock language="typescript" title="fft-interpretation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -136,13 +136,14 @@ function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): 
 }
 
 // For our signal: sampleRate=128, fftSize=128
-// bin 0  → 0 Hz   (DC component: average value)
+// bin 0  → 0 Hz   (DC coefficient: sum of samples, N times their mean)
 // bin 1  → 1 Hz
 // bin 5  → 5 Hz   ← our first sine wave
 // bin 20 → 20 Hz  ← our second sine wave
-// bin 64 → 64 Hz  (Nyquist frequency: the last honest bin)
+// bin 64 → 64 Hz  (Nyquist bin for this even-length input)
 
-// Nyquist frequency: the highest frequency this rate reports truthfully
+// Nyquist frequency: half the sample rate. Unambiguous reconstruction
+// requires the input band to be strictly below it.
 // = sampleRate / 2
 // A faster component still shows up, folded down into a lower bin (aliasing)
 const nyquist = sampleRate / 2;  // 64 Hz
@@ -170,7 +171,7 @@ console.table(bins.filter((b) => b.magnitude > 1));
 
 ## The FFT for DEEP SCAN
 
-One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more. That caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. That is why you pick a sample rate above twice the highest frequency you care about, and why an under-sampled capture can plant a line that was never there.
+One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more. That caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. Use an anti-alias filter before sampling to remove higher-frequency content. Then choose a rate above twice the highest retained frequency, and why an under-sampled capture can plant a line that was never there.
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -181,17 +182,17 @@ function analyzeSignal(signal: number[], sampleRate: number) {
     const fft = tf.spectral.rfft(tf.tensor1d(signal));
     const magnitudes = tf.abs(fft).arraySync() as number[];
 
-    // Known natural frequencies from cosmic background
+    // Background frequencies declared by this synthetic story fixture
     const naturalFrequencies = new Set([5, 12, 23, 47]);
 
-    // Find all significant peaks (above the noise floor). Do not estimate
-    // that floor with the mean over every bin: the four strong lines carry
-    // 93% of this spectrum's mean, so it climbs with the peaks it is meant
-    // to separate out. The median bin is 0.045 here, 48 times lower, and a
-    // handful of loud bins cannot move it.
+    // Toy detector: use the median magnitude as a robust reference level.
+    // In this noiseless fixture it mostly measures leakage, not physical
+    // noise. The factor 100 is chosen for the example, not calibrated to
+    // a false-alarm rate. Real thresholds need representative validation.
     const sorted = [...magnitudes].sort((a, b) => a - b);
-    const noiseFloor = sorted[Math.floor(sorted.length / 2)];  // ~0.045
-    const threshold = noiseFloor * 100;  // ~4.5, above the leakage shoulders
+    const mid = Math.floor(sorted.length / 2);
+    const noiseFloor = sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    const threshold = noiseFloor * 100;
 
     const peaks: { frequency: number; magnitude: number; natural: boolean }[] = [];
     for (let i = 1; i < magnitudes.length; i++) {
@@ -237,9 +238,9 @@ For each frequency index k, this is a sum of input samples weighted by complex s
 
 `x[n] = (1/N) · Σ_{k=0..N-1} X[k] · e^(2π·i·k·n/N)`
 
-A signal is fully reconstructible from its DFT: no information is lost.
+The discrete sample vector is reconstructible from its full DFT in exact arithmetic. This does not undo aliasing or recover data outside the recorded interval.
 
-**Why rfft returns N/2+1 bins:** for real-valued input, `X[N-k]` is the complex conjugate of `X[k]`; the upper half of the spectrum duplicates the lower half. `rfft` keeps only bins 0 through N/2, the unique ones.
+**Why rfft returns floor(N/2)+1 bins:** for real-valued input, `X[N-k]` is the complex conjugate of `X[k]`; the upper half of the spectrum duplicates the lower half. `rfft` keeps only bins 0 through floor(N/2), the unique ones.
 
 **Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT algorithm computes the same result in O(N log N), which is what makes real-time spectrograms (next lesson) possible. This course uses the FFT through `tf.spectral.rfft` and never derives the algorithm itself; if you want the recursion, look up Cooley-Tukey.
 </DerivationDrawer>
@@ -261,8 +262,8 @@ Return the largest measured non-DC bin. For an isolated tone it often lies near 
   whatYouLearned={[
     "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
     "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz.",
-    "The highest frequency a sample rate can report honestly is the Nyquist frequency, sampleRate / 2. A faster component still shows up, folded down into a lower bin at the wrong frequency. That folding is aliasing.",
-    "Peaks are only meaningful relative to a noise floor, and the floor has to be estimated from the quiet bins. A mean over every bin is pulled up by the peaks themselves, so estimate the floor with a median or a low percentile instead."
+    "Nyquist is half the sample rate. Band-limit the input below it before sampling; otherwise higher frequencies can alias into the retained band.",
+    "A median can reduce the influence of a few large bins, but is not automatically a noise estimate. Validate a detector's threshold and false-alarm rate on representative captures."
   ]}
   bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."
   youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and say why a mean over every bin is the wrong way to estimate a noise floor."
@@ -270,7 +271,7 @@ Return the largest measured non-DC bin. For an isolated tone it often lies near 
 
 <Epilogue>
 
-Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what the overnight transform of eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist. There is a fifth peak. It stands at 73.5 on the half-hertz grid, magnitude 12.0, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move. Overnight she reruns the capture through a four-times-longer window, and the finer grid pins the true line at 73.4 Hz.
+Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what the overnight transform of eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist. There is a fifth peak. It stands at 73.5 on the half-hertz grid, magnitude 12.0, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move. Overnight she reruns the capture through a four-times-longer window, and the 0.125 Hz grid places the strongest bin at 73.375 Hz, displayed as 73.4 Hz.
 
 <Dialogue speaker="Dr. Farah">
 That is not stellar background.

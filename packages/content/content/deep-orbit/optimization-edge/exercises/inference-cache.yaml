@@ -3,8 +3,6 @@ lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
 instructions: |
-  **Contract revision 2026-09-17b:** makeInferenceCache now accepts maxEntries (default 100), uses shape and dtype in its key, and returns a fresh array on every call.
-
   Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2, maxEntries = 100)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model.
 
   What a cache stored is its own: build a second cache over a second model and the same signal is a miss there, because the same values under different weights are a different answer.
@@ -112,7 +110,7 @@ testCode: |
       cache.predict(tf.tensor2d([[0.49, 0.5]])); // both round to 0.5
       expect(
         cache.stats.hits,
-        'At one decimal place these two signals are the same signal. A key built from the raw values keeps them apart and the cache earns no hits on real telemetry, where no two readings are ever bit-identical.',
+        'At one decimal place these two signals are the same signal. A key built from the raw values keeps them apart and these two different inputs would not share the approximate cache entry requested here.',
       ).toBe(1);
     });
     it('keys to decimals and no coarser than decimals', () => {

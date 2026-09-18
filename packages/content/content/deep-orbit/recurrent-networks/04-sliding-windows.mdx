@@ -30,7 +30,24 @@ hints:
   - level: guidance
     content: "One pass over the possible window positions is enough; there is no second pass over finished windows. For each position, ask where BOTH edges of the window fall relative to splitAt: wholly on one side and it belongs to that side, one edge on each side and it belongs to neither. That comparison is the whole exercise, so write it from the window's own first and last index, not from its position in the output list."
   - level: solution
-    content: "const train = { xs: [], ys: [] }; const evalSet = { xs: [], ys: [] }; for (let i = 0; i + windowSize <= series.length; i++) { const end = i + windowSize; const window = series.slice(i, end); const label = labels[end - 1]; if (end <= splitAt) { train.xs.push(window); train.ys.push(label); } else if (i >= splitAt) { evalSet.xs.push(window); evalSet.ys.push(label); } } return { train, eval: evalSet };"
+    content: |
+      function splitThenWindow(series, labels, windowSize, splitAt) {
+        const train = { xs: [], ys: [] };
+        const evalSet = { xs: [], ys: [] };
+        for (let i = 0; i + windowSize <= series.length; i++) {
+          const end = i + windowSize;
+          const window = series.slice(i, end);
+          const label = labels[end - 1];
+          if (end <= splitAt) {
+            train.xs.push(window);
+            train.ys.push(label);
+          } else if (i >= splitAt) {
+            evalSet.xs.push(window);
+            evalSet.ys.push(label);
+          }
+        }
+        return { train, eval: evalSet };
+      }
 keywords:
   - sliding-window
   - batching
@@ -63,8 +80,8 @@ const pairs = Array.from({ length: 193 }, (_, i) => ({
   y: inContact(i + 7) ? 1 : 0,
 }));
 
-// The pettiest possible model: answer with the label of the closest
-// training window. Pure lookup. Zero learning.
+// A one-nearest-neighbor classifier: copy the label of the closest
+// training window. It stores examples rather than fitting network weights.
 const predict = (x: number[], train: typeof pairs) =>
   train.reduce(
     (best, p) => {
@@ -90,7 +107,7 @@ const evalB = Array.from({ length: 33 }, (_, i) => ({
 console.log((100 * accuracy(evalB, trainB)).toFixed(1));  // 60.6`}
 </CodeBlock>
 
-A lookup table with no learning in it scores 97.4 on the first split: 38 of 39 held-out windows. The leak is in the windowing arithmetic. With stride 1, window i and window i+1 share seven of their eight readings. Holding out every fifth pair leaves each evaluation window sitting between two training windows that are near-copies of it, labels included. The lookup finds the copy. 97.4 measures the overlap. Split the stream first and the copies vanish: 60.6 is what the lookup actually knows about readings it has never seen, which is nothing at all. Twenty-two of those 33 windows are labeled in contact, so answering yes to every one of them would have scored 66.7. The 36.8-point gap between the two splits is the size of the error Demir almost shipped to the bridge.
+A nearest-neighbor classifier scores 97.4 on the first split: 38 of 39 held-out windows. The leak is in the windowing arithmetic. With stride 1, window i and window i+1 share seven of their eight readings. Holding out every fifth pair leaves each evaluation window sitting between two training windows that are near-copies of it, labels included. The lookup finds the copy. That score is optimistic for the intended task of predicting later, unseen periods. Split the stream first and the copies vanish: The chronological score of 60.6 describes a different, later period. Overlap and distribution differences both change the comparison. Twenty-two of those 33 windows are labeled in contact, so answering yes to every one of them would have scored 66.7. The 36.8-point gap warns Demir that the first evaluation does not answer the deployment question. It does not isolate overlap as the only cause.
 
 <Dialogue speaker="Ensign Demir">
 Every window I held out had a near-copy of itself sitting in the training set. I checked the split. I never checked what was inside it.
@@ -146,11 +163,12 @@ class SignalBuffer {
   private readonly windowSize: number;
 
   constructor(windowSize: number) {
+    if (!Number.isInteger(windowSize) || windowSize < 1) throw new Error('Invalid window size');
     this.windowSize = windowSize;
   }
 
   push(reading: number[]): number[][] | null {
-    this.buffer.push(reading);
+    this.buffer.push([...reading]);
     if (this.buffer.length > this.windowSize) {
       this.buffer.shift();
     }
@@ -160,6 +178,8 @@ class SignalBuffer {
 
 const buffer = new SignalBuffer(80);
 
+// Integration sketch: the app supplies model, signalFeed and updateDashboard.
+// Remove this handler on teardown; reset the buffer after missing/out-of-order data.
 signalFeed.addEventListener('reading', (event: CustomEvent) => {
   const window = buffer.push(event.detail.features);
   if (window) {
@@ -180,17 +200,17 @@ The mirror scored 97.4 because the stream was windowed before it was split. Buil
 
 <RecallPrompt
   question="The stride-1 pipeline scored 97.4 on a held-out fifth of the windows and 60.6 after the stream was split by time. Which score is wrong, and what produced it?"
-  answer="97.4 is wrong, and near-copy neighbors produced it. With stride 1, window i and window i+1 share seven of their eight readings. Every held-out window sits between two training windows that are near-duplicates of it, labels included. The lookup found the copy. That score measures the overlap between the two sets, which is why a model with no learning in it could post it. Split the stream first and the copies are gone: 60.6 is what is left."
+  answer="The arithmetic of 97.4 is correct, but it evaluates heavily overlapping windows instead of future periods. Adjacent 8-step windows share seven readings. A chronological split removes shared observations; its later period can also have a different distribution. Use a split that matches the intended prediction task."
 />
 
 <RecallPrompt
   question="You set windowSize to 30 but the pattern you need to detect spans 50 time steps. What happens, and what should you change?"
-  answer="The model never sees the full pattern in any single window, so it cannot learn the dependency that spans 50 steps. Increase windowSize to at least 50 (and likely a bit larger to give the model enough context around the pattern)."
+  answer="A stateless model cannot directly compare positions 50 steps apart inside a 30-step input. It may still exploit shorter cues, which would be a different basis for its predictions. Increase windowSize to at least 50 (and likely a bit larger to give the model enough context around the pattern)."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "A sliding window converts a continuous stream into fixed-size overlapping samples: each position along the signal yields one input/label pair. Forecasting labels a window with the reading immediately after it, so the target stays outside the input; per-window classification labels it from an external log at the window's last reading.",
+    "A sliding window yields a fixed-size input. Next-step forecasting labels it with the following reading; window classification uses an external event label.",
     "Windowing the whole stream before splitting it leaks: with stride 1, neighboring windows are near-copies, so a random or every-Nth holdout scores the model on data it has already seen. Split the stream by time first, then window each side.",
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
     "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."

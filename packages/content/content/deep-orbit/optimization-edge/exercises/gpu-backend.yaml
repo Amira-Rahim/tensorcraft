@@ -6,7 +6,7 @@ instructions: |
 
   runtime stands in for the three TensorFlow.js calls the lesson uses, and it keeps their real contract. setBackend(name) resolves true when that backend started, resolves FALSE when the backend is registered and fails to start, and throws when the name was never registered, which is what you get when its package was not imported. Both of those are failures you move past; neither is fatal.
 
-  Stop at the first backend that starts, so nothing after the winner is touched. Call runtime.ready() exactly once, after the ladder has settled and before you return. If every name in the ladder fails, call ready() and return runtime.getBackend(), which is the backend the engine settled on by itself.
+  Stop at the first backend that starts, so nothing after the winner is touched. Call runtime.ready() exactly once, after the ladder has settled and before you return. If every name in the ladder fails, call ready() and return runtime.getBackend(), which is the active backend after successful readiness. If ready rejects because none can start, propagate that failure.
 
   Do not read getBackend() as a verdict on a single attempt: right after a failed start it still reports the name that failed, which is what tfjs 4.22 does.
 starterCode: |
@@ -135,7 +135,7 @@ testCode: |
       expect(await chosen(LADDER, runtime)).toBe('webgl');
       expect(
         calls,
-        'wasm would have started too. Starting it anyway costs a context the page may not get back, and it would leave the engine on the slower backend.'
+        'wasm would have started too. Starting it anyway costs a context the page may not get back, and it would ignore the requested preference.'
       ).toEqual(['webgpu', 'webgl', 'ready']);
     });
 
@@ -176,6 +176,13 @@ testCode: |
         'ready() is what finishes the switch. Calling it per attempt makes the engine settle in the middle of the ladder; never calling it leaves the answer ahead of the engine.'
       ).toBe(1);
     });
+  });
+  it('propagates failure when no backend can become ready', async () => {
+    await expect(initBestBackend(['wasm'], {
+      setBackend: async () => false,
+      ready: async () => { throw new Error('No usable backend'); },
+      getBackend: () => 'wasm',
+    })).rejects.toThrow();
   });
 estimatedMinutes: 12
 difficulty: intermediate

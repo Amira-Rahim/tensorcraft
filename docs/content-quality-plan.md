@@ -2,11 +2,24 @@
 
 Date: 2026-09-17. Status: approved; implementation in progress.
 
+Owner update, 2026-09-18: work in order on real runtime/conversion/deployment
+verification, complete internal content review, then persistent story
+consequences and two additional decisions. Independent recruitment and learner
+studies wait until the revised course earns at least A in the internal review.
+The [internal review record](audits/internal-content-review-2026-09-18.md)
+tracks that work. The 2026-09-18 internal pass is complete for Deep Orbit:
+all lessons/exercises and the glossary read, actual runtime lab checked, six
+persisted story branches implemented with two new decision pilots. The record
+assigns an internal A with criterion-level limits. Q6-Q8 still require human
+and market evidence; this does not complete the whole plan. An internal A means at least 9/10 on each content criterion,
+complete review coverage and no unresolved consequential teaching defects.
+It does not establish learner ROI, willingness to pay or acquisition demand;
+those require the later evidence phase. Keep those categories unrated.
+
 Factual-correction changes and evidence are recorded in the
 [implementation log](audits/content-quality-implementation-2026-09-17.md).
-F01-F09 and the named F11-F14 draft claims are corrected locally. All 56
-Deep Orbit bridge summaries received a focused review for F10; full
-in-context review, external approval, and learner validation remain open.
+F01-F09 and the named F11-F14 draft claims are corrected locally. The initial focused F10 bridge pass is superseded by the complete
+2026-09-18 internal read-through. External approval and learner validation remain open.
 
 Patch 2 adds a [learning progression map](audits/deep-orbit-learning-progression.md),
 corrects additional claims in the 18 previously unread lessons, shortens their
@@ -17,9 +30,9 @@ now covers all 65 exercises and maps the 222 objectives across 56 lessons.
 Its first patch includes 14 correction groups affecting 15 exercises. The
 [subsequent reliability patch](audits/assessment-reliability-patch-2026-09-17.md)
 addresses grading and contract defects in another 19 exercise revisions.
-Q2-Q3 remain in progress: decision assessment, real external application,
-complete feedback editing, independent review and learner validation still
-block acceptance.
+The later internal pass completes feedback editing and actual runtime
+verification. Independent review and learner validation still block final
+Q2-Q3 acceptance.
 
 The [independent assessment patch](audits/independent-assessment-patch-2026-09-17.md)
 adds three decision tasks and a downloadable final project with a real local

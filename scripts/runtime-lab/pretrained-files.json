@@ -1,0 +1,36 @@
+{
+  "model": "Xenova/distilbert-base-uncased-finetuned-sst-2-english",
+  "revision": "0b6928efcb76139cae2c6881d49cda67fe119f42",
+  "files": [
+    {
+      "name": "config.json",
+      "bytes": 735,
+      "sha256": "b0e9ec981125ef799f31847b1410053069e7708078bb2236ae05239efdd4d428"
+    },
+    {
+      "name": "tokenizer.json",
+      "bytes": 711396,
+      "sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+    },
+    {
+      "name": "tokenizer_config.json",
+      "bytes": 372,
+      "sha256": "2bbf2ea55c232406706144b907ca020cd7528a78e3e4741115be3b3566542b0b"
+    },
+    {
+      "name": "special_tokens_map.json",
+      "bytes": 125,
+      "sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3"
+    },
+    {
+      "name": "onnx/model_quantized.onnx",
+      "bytes": 67581197,
+      "sha256": "79b45c7fd8c2673aa53615aba07caeb2de798f63a95a2393a365982429c94f7f"
+    },
+    {
+      "name": "onnx/model.onnx",
+      "bytes": 267955711,
+      "sha256": "252cf7048af94a1599019fef35961b2bd3d6db13df0b0a4b032b92baeae31939"
+    }
+  ]
+}

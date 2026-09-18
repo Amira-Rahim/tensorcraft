@@ -3,8 +3,6 @@ lessonSlug: threshold-tuning
 title: "Incident: False Alarm Storm"
 mlContent: systems
 instructions: |
-  **Contract revision 2026-09-17:** Replace cause with nextCheck and use the follow-up actions listed below. Return null for ratio when the baseline rate is zero.
-
   Implement diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) as a triage helper. currentAlerts.alertsPerHour and baselineAlerts.alertsPerHour are nonnegative rates; baselineAlerts.modelAge is days; sensorAuditLog.recentChanges is an array of logged changes.
 
   Return { rate, ratio, nextCheck, action }. Round the reported rate and ratio to one decimal, keeping them numeric. ratio is the current rate divided by baseline rate; use null when baseline is zero because that ratio is undefined. Do not invent a nonzero denominator.

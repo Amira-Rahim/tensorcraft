@@ -8,9 +8,11 @@ instructions: |
 
   Three details the grader holds you to.
 
-  1. A gap counts by size, not by direction: a bin that lost energy diverged as much as one that gained it.
+  1. A gap counts by size, not by direction: a bin whose magnitude fell diverged as much as one whose magnitude rose.
   2. Every bin is eligible, bin 0 included.
-  3. tolerance and threshold are never the same number, because a magnitude grows with the number of samples you transformed while a sample difference does not.
+  3. tolerance measures sample differences; threshold measures unnormalized FFT-magnitude differences. They are separate settings with different scales.
+
+  Assume equal-length, finite captures with at least two samples and nonnegative thresholds.
 
   One of the grader's intruders is generated when it runs, so the bin it asks for has to come out of the comparison rather than out of a remembered index.
 starterCode: |

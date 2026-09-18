@@ -14,7 +14,7 @@ context:
   narrative: "Training is complete. Commander Mirza demands proof that DEEP SCAN works before authorizing deployment on the Archimedes sensor array."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Evaluation tests the model on data it has never seen. The gap between training and test accuracy is the first honest number you get."
+  explanation: "Evaluation tests the model on data it has never seen. Compare held-out performance with a baseline and inspect the kinds of errors it makes."
   bridge:
     jsTitle: "E2E Tests"
     jsCode: "test('user can complete checkout', async () => { ... })"
@@ -33,66 +33,69 @@ hints:
       Training accuracy is the final acc entry in history; evaluation accuracy is the scalar in evalResult[1]. Apply the gap rule to those values. A large gap or two low scores suggests questions to investigate; no-gap-warning is not a release approval.
   - level: solution
     content: |
-      const calm = tf.clipByValue(
-        tf.concat(
-          [
-            tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
-            tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
-            tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
-          ],
+      const { trainX, trainY, testX, testY } = tf.tidy(() => {
+        const calm = tf.clipByValue(
+          tf.concat(
+            [
+              tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+              tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+              tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+            ],
+            1,
+          ),
+          0,
           1,
-        ),
-        0,
-        1,
-      );
-      const flagged = tf.clipByValue(
-        tf.concat(
-          [
-            tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
-            tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
-            tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
-          ],
+        );
+        const flagged = tf.clipByValue(
+          tf.concat(
+            [
+              tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+              tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+              tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+            ],
+            1,
+          ),
+          0,
           1,
-        ),
-        0,
-        1,
-      );
-      const order = Array.from(tf.util.createShuffledIndices(100));
-      const trainX = tf.concat([calm, flagged]).gather(order);
-      const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+        );
+        const order = Array.from(tf.util.createShuffledIndices(100));
+        const trainX = tf.concat([calm, flagged]).gather(order);
+        const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
 
-      const testX = tf.concat([
-        tf.clipByValue(
-          tf.concat(
-            [
-              tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
-              tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
-              tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
-            ],
+        const testX = tf.concat([
+          tf.clipByValue(
+            tf.concat(
+              [
+                tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
+                tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
+                tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+              ],
+              1,
+            ),
+            0,
             1,
           ),
-          0,
-          1,
-        ),
-        tf.clipByValue(
-          tf.concat(
-            [
-              tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
-              tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
-              tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
-            ],
+          tf.clipByValue(
+            tf.concat(
+              [
+                tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
+                tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
+                tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+              ],
+              1,
+            ),
+            0,
             1,
           ),
-          0,
-          1,
-        ),
-        tf.tensor2d([
-          [0.3, 0.68, 0.34],
-          [0.26, 0.75, 0.29],
-          [0.33, 0.71, 0.36],
-        ]),
-      ]);
-      const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+          tf.tensor2d([
+            [0.3, 0.68, 0.34],
+            [0.26, 0.75, 0.29],
+            [0.33, 0.71, 0.36],
+          ]),
+        ]);
+        const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+        return { trainX, trainY, testX, testY };
+      });
 
       const model = tf.sequential();
       model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
@@ -133,7 +136,7 @@ A model can post ninety-five percent training accuracy and sixty percent on sign
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A validation set is data the training loop is allowed to read so it can make decisions. Those decisions include when to stop in lesson 4, where to put a threshold later, and which settings to keep. Because those decisions were made to look good on it, its score is slightly flattered and is no longer a clean estimate. A test set is data no decision ever touched, scored once and reported. Lesson 4's val_loss of 0.081 was spent on the stopping decision, which is exactly why this lesson holds out a fresh slice the loop never saw. That run split coarsely: `validationSplit: 0.2` carved one twenty percent slice and no test slice at all. The capstone's model card records the three-way version, an 80/10/10 split of the archive.
+A validation set is data the training loop is allowed to read so it can make decisions. Those decisions include when to stop in lesson 4, where to put a threshold later, and which settings to keep. Because those decisions were made to look good on it, repeated selection can make its score optimistic; the size of that effect varies. A test set is data no decision ever touched, scored once and reported. Lesson 4's val_loss of 0.081 was spent on the stopping decision, which is exactly why this lesson holds out a fresh slice the loop never saw. That run split coarsely: `validationSplit: 0.2` carved one twenty percent slice and no test slice at all. The capstone's model card records the three-way version, an 80/10/10 split of the archive.
 
 Before scoring the network, choose a **baseline**: a simple method it needs to improve on. For a classifier, start by predicting the training set's most common class for every held-out row. Compute that class from training labels only, then evaluate the baseline and network on the same rows. If 90% of test builds succeed, always predicting success scores 90% accuracy while catching no failures. The confusion matrix below makes that limitation visible. A more complex model earns its place through a useful improvement, not simply because it trained.
 
@@ -145,14 +148,11 @@ Before scoring the network, choose a **baseline**: a simple method it needs to i
 // to give early stopping something to fire on, so its numbers answer a
 // different question.
 
-// Test data: a 50-row held-out slice of the archive, labeled, and NEVER
-// seen during training. It must carry real structure and real labels.
-// Eleven of the rows are verbatim archive readings (the eight below, plus
-// the three late-confirmed ones at the end); the other 39 are drawn from
-// the archive's own per-channel distributions under seeds training never
-// saw. What it must not be is random LABELS, because a random label
-// contains no pattern to be right about.
-const testX = tf.concat([
+// Synthetic evaluation fixture, built separately from the training rows.
+// The hand-written rows are story examples, not measured archive data.
+// Fresh generator seeds avoid reusing the seeded training draws; they do
+// not establish realism or independence in a real time-series archive.
+const testX = tf.tidy(() => tf.concat([
   // Eight rows of the slice, annotated, for a feel of the data:
   tf.tensor2d([
     [0.82, 0.14, 0.77],  // flagged window, confirmed anomalous
@@ -166,8 +166,7 @@ const testX = tf.concat([
   ]),
   // The next 39 rows, drawn from the same archive distributions under
   // FRESH seeds (the model has never seen any of them). Same clip as
-  // lesson 4: a normal draw can leave [0, 1] and a min-max normalized
-  // feature cannot.
+  // lesson 4: clipping enforces this synthetic fixture's chosen range.
   tf.clipByValue(tf.concat([
     tf.randomNormal([19, 1], 0.84, 0.10, 'float32', 201),  // flagged
     tf.randomNormal([19, 1], 0.18, 0.10, 'float32', 202),
@@ -186,25 +185,20 @@ const testX = tf.concat([
     [0.26, 0.75, 0.29],
     [0.33, 0.71, 0.36],
   ]),
-]);
-const testY = tf.concat([
+]));
+const testY = tf.tidy(() => tf.concat([
   tf.tensor2d([[1], [0], [1], [0], [1], [0], [1], [0]]),
   tf.ones([19, 1]),
   tf.zeros([20, 1]),
   tf.ones([3, 1]),
-]);
+]));
 
 // Evaluate: returns [loss, accuracy] (matches compile metrics)
 const [testLoss, testAccuracy] = model.evaluate(testX, testY) as tf.Tensor[];
 console.log('Test Loss:', testLoss.dataSync()[0].toFixed(4));
 console.log('Test Accuracy:', (testAccuracy.dataSync()[0] * 100).toFixed(1) + '%');
-// The crew's run printed 94.0% (test loss 0.2584) on this slice: 47 of
-// 50, and the three misses are exactly the late-confirmed rows
-// above. Training starts from random weights, so reruns differ. Three
-// separate samples of 400 reruns printed 94.0% in 397, 394 and 399 of
-// them, and the only other values that came up across all 1,200 were
-// 88.0, 90.0, 92.0, 96.0 and 98.0. The loss moves further: over the
-// same 1,200 runs it ran from 0.173 to 0.491, median 0.226.
+// Print your measured results. The story's 94% is illustrative, not an
+// expected output or a reproduced benchmark for this unseeded model.
 
 // Make predictions on new signals
 const newSignals = tf.tensor2d([
@@ -216,24 +210,16 @@ const newSignals = tf.tensor2d([
 const predictions = model.predict(newSignals) as tf.Tensor;
 const results = predictions.dataSync();
 results.forEach((prob, i) => {
-  console.log(\`Signal \${i + 1}: \${(prob * 100).toFixed(1)}% anomalous\`);
+  console.log(\`Signal \${i + 1}: score \${prob.toFixed(4)}\`);
 });
-// The bridge run printed:
-//   Signal 1: 86.3% anomalous
-//   Signal 2: 13.2% anomalous
-//   Signal 3: 51.8% anomalous  ← neither normal nor alarm.
-// Same tolerance rule as the evaluate above. Over those 1,200 reruns
-// signal 1 came out above 0.5 in every one and signal 2 below it in
-// every one, at medians 91.8 and 10.6. Signal 3 never settles: it ran
-// from 21.0 to 76.3 percent, median 49.7, and only 517 of the 1,200
-// runs put it inside 45 to 55. A reading that lands mid-scale on
-// every feature gives the boundary nothing to resolve: lesson 4 trained
-// it on the two clean ends of each channel and nothing in between, and
-// no training row carried an amplitude between 0.38 and 0.65. In eleven
-// days of archive, exactly one reading sits mid-scale on all three.`}
+// A sigmoid score is not a calibrated probability without evidence.
+tf.dispose([testX, testY, testLoss, testAccuracy, newSignals, predictions]);
+tf.dispose([trainX, trainY]); // retained from lesson 4
+model.dispose();
+`}
 </CodeBlock>
 
-One entry for the strangest page in the ship's records: back before this network had seen a single label, an untrained build scored sample 7741 at 0.998, and a brand-new reinitialization, fresh random numbers and all, scored it 0.997. Untrained networks of this shape do not do that. Build this same 3-32-16-1 stack 20,000 times without training it and ask each build about a reading that sits mid-scale on all three features. The answers pile onto the fence: the median is 0.500 and nine in ten land inside 0.45 to 0.55. Around one build in four hundred gets past 0.60, and none of the 20,000 reached 0.75, let alone 0.99. Nobody explained 7741 then and nobody explains it now. Trained, the network still will not commit on it, at 51.8 on the one reading the crew cannot label.
+The story keeps sample 7741 at a score of 0.518 in the crew's run. That number is a fictional plot result, not a reproducible property of the fixture. The earlier untrained scores had no earned interpretation, and this trained score does not prove that the reading is alien, unknowable or uniquely ambiguous. It is a reason to inspect the data and the model's coverage.
 
 **Interpreting results:**
 - Training accuracy far above validation accuracy can suggest overfitting. Check distribution changes, labels and preprocessing too. If overfitting is the cause, compare early stopping, simpler models or regularization on validation data.
@@ -242,12 +228,12 @@ One entry for the strangest page in the ship's records: back before this network
 
 While you are still changing the model, measure the gap against the validation score instead of the test score. The test slice is scored once, after the settings are frozen.
 
-Accuracy hides the shape of the error. The crew's 94.0% splits into four counts on that 50-row slice: 23 of the 26 anomalous rows caught, 3 missed, all 24 calm rows left alone, no false alarms. The three misses are exactly the late-confirmed rows, the ones that read almost calm in these three features. Those four counts are the confusion matrix, and the drawer below turns them into precision, recall and F1.
+Accuracy hides the shape of the error. For a worked example, the fictional crew's 94.0% splits into four counts on that 50-row slice: 23 of the 26 anomalous rows caught, 3 missed, all 24 calm rows left alone, no false alarms. The three misses are exactly the late-confirmed rows, the ones that read almost calm in these three features. Those four counts are the confusion matrix, and the drawer below turns them into precision, recall and F1.
 
 <DerivationDrawer summary="Why accuracy alone is not enough: precision, recall, F1">
 **Every prediction lands in one of four buckets:** true positive (TP: real anomaly, flagged), false positive (FP: calm reading, flagged anyway), true negative (TN: calm reading, left alone), false negative (FN: real anomaly, missed). Every metric below is a ratio of these four counts.
 
-**Accuracy** = `(TP + TN) / (TP + TN + FP + FN)`. This breaks under class imbalance: if 99% of signals are normal, predicting "normal" for everything scores 99% accuracy and zero useful detections.
+**Accuracy** = `(TP + TN) / (TP + TN + FP + FN)`. Accuracy remains defined under class imbalance, but can be misleading: if 99% of signals are normal, predicting "normal" for everything scores 99% accuracy and zero useful detections.
 
 **Precision** = `TP / (TP + FP)`: of all signals you flagged as anomalous, what fraction actually were?
 
@@ -263,6 +249,8 @@ Accuracy hides the shape of the error. The crew's 94.0% splits into four counts 
 Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26 = 0.885. One aggregate number became three, and the three disagree: perfect precision, and a recall hole exactly where the late-confirmed, disguised anomalies live. That is what "aggregate accuracy hides failure modes" looks like in practice.
 
 **Tradeoff:** on a fixed dataset, lowering the threshold cannot reduce recall or the false-positive rate. Precision can rise or fall because the newly flagged rows can contain both true and false positives. Measure the tradeoff, then choose a cutoff for the error costs in your domain.
+
+When a denominator is zero, report the metric as undefined or state the convention your tool uses; do not silently present it as evidence of good performance.
 
 **F1 score** = `2 · (precision · recall) / (precision + recall)`: harmonic mean. Use when you need a single number that punishes either extreme. For DEEP SCAN, missing a true anomaly might cost a ship. False alarms cost crew time. The right metric depends on which cost you're willing to absorb.
 
@@ -323,7 +311,7 @@ Report the scores this run produced, even when they are disappointing. The grade
     "`model.evaluate()` measures performance on held-out data the model has never seen. Held-out accuracy estimates performance on examples represented by that test set; it does not guarantee performance after deployment.",
     "Train/test gaps help diagnose failures, but do not identify the cause by themselves. Check data shift, labels, preprocessing, and performance against a baseline.",
     "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production.",
-    "Validation data pays for the decisions you make during training, so its score is flattered. The test slice is scored once, after the settings are frozen, and that is the number you report."
+    "Validation data pays for the decisions you make during training, so repeated selection can make its score optimistic. The test slice is scored once, after the settings are frozen, and that is the number you report."
   ]}
   bridge="E2E tests check workflows; held-out evaluation checks model performance beyond training examples. Both need representative cases and clear limits on what passing establishes."
   youCanNow="Train a classifier, run `model.evaluate()` on a held-out slice, and use the train/test gap as an investigation signal alongside data checks and sliced evaluation."
@@ -331,7 +319,7 @@ Report the scores this run produced, even when they are disappointing. The grade
 
 <Epilogue>
 
-Deployment authorized, the bridge gone quiet, Farah stays behind with the one number that won't leave her alone. Signal 3: 51.8% anomalous. Not normal enough to dismiss, not anomalous enough to alarm: a network that just scored 94% on everything else, refusing to commit. She traces the reading back through the archive index, already half-certain of what she will find, and the index confirms it: sample 7741. The calibration ghost. The one she flagged before they had ever built a network, and told Demir to move on from, and didn't delete. Being right about it lands colder than surprise would have.
+Deployment authorized, the bridge gone quiet, Farah stays behind with the one number that won't leave her alone. Signal 3: score 0.518. Not normal enough to dismiss, not anomalous enough to alarm: a network that scored 94% on the small test slice, now between the crew's review cutoffs. She traces the reading back through the archive index, already half-certain of what she will find, and the index confirms it: sample 7741. The calibration ghost. The one she flagged before they had ever built a network, and told Demir to move on from, and didn't delete. Being right about it lands colder than surprise would have.
 
 <Dialogue speaker="Dr. Farah">
 Ninety-four percent accurate, and the one reading it can't decide on is the one I couldn't explain by hand. What are you?

@@ -77,8 +77,8 @@ export const deepOrbit: WorldManifest = {
   specialization: "Time-Series & Signals",
   modelBuilt: "DEEP SCAN: deep-space signal classifier (sorts signals by kind)",
   careerPaths: [
-    "Signal Processing Engineer ($108K-$258K)",
-    "Time-Series ML Engineer ($120K-$200K)",
-    "IoT ML Engineer ($110K-$180K)",
+    "Signal Processing Engineer",
+    "Time-Series ML Engineer",
+    "IoT ML Engineer",
   ],
 };

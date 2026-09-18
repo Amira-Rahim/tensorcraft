@@ -2,17 +2,25 @@ slug: build-autoencoder
 lessonSlug: autoencoders
 title: "Train an Autoencoder on Normal Data Only"
 instructions: |
-  **Contract revision 2026-09-17b:** trainNormalityModel accepts an optional compiled providedModel for controlled fitting checks.
+  Implement trainNormalityModel(archive, flagged, providedModel?). The archive
+  contains finite eight-feature rows; flagged has one boolean per row. Keep
+  unflagged rows and fit them against themselves as reconstruction targets.
+  Reject an empty selection or mismatched flag count before allocating a model.
 
-  Train an autoencoder on screened examples and measure its reconstruction errors. Anomalies may still reconstruct well; training selection does not guarantee separation. Write `trainNormalityModel(archive, flagged)`.
+  When providedModel is supplied, use it as compiled. Otherwise build Dense
+  layers 8 -> 4 relu -> 2 relu -> 4 relu -> 8 linear, using inputShape [8].
+  One Sequential or nested encoder and decoder models are both accepted.
+  Compile with 'adam' and 'meanSquaredError'. Await fit with FIT_OPTIONS and
+  return { model, history }, using the exact history from fit.
 
-  `archive` is 72 readings of 8 features each. `flagged[i]` is true where the flag log names a confirmed event. Keep the rows the flag log did NOT name and train on those only.
+  Dispose temporary training tensors even if fitting fails. Keep a supplied
+  model alive; the caller owns it. If fitting your newly created model fails,
+  dispose that model. On success the caller owns the returned model.
 
-  Build the encoder, bottleneck and decoder the lesson builds, one size down so the real fit the grader runs stays inside its time budget: eight features instead of the lesson's eleven, and a two-unit bottleneck instead of its four. Two numbers cannot store eight arbitrary values either, so the squeeze still does its job. encoder (inputShape [8], Dense 4 relu), bottleneck (Dense 2 relu), decoder (Dense 4 relu, Dense 8 linear). Build it either as one Sequential of four Dense layers or the way the lesson recommends, an encoder Sequential and a decoder Sequential stacked into a third; the grader reads the Dense layers either way. Compile with adam and meanSquaredError. Fit the kept rows against themselves with the `FIT_OPTIONS` the starter declares, and return `{ model, history }`.
-
-  The grader checks architecture, row selection, reconstruction targets, fit settings and the history returned by fit. It also scores held-out rows without requiring a particular error ratio. Linear autoencoders are valid models; this exercise specifically asks for a nonlinear bottleneck.
-
-  An optional third argument, providedModel, supplies an already compiled model. Use it as-is when supplied; otherwise build and compile the specified model. This lets the grader observe exactly which rows and targets reach fit. For a controlled contamination comparison, start both models from identical weights, keep the optimizer and row order fixed, and report the measured errors without claiming a universal ratio.
+  The checks use a synthetic 72-row archive, inspect row selection and score
+  a small holdout without requiring a particular error ratio. They do not
+  establish real anomaly-detection performance. A controlled contamination
+  experiment also needs matched initial weights and a fixed fitting schedule.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -38,7 +46,9 @@ solutionCode: |
     flagged: boolean[],
     providedModel?: tf.Sequential,
   ): Promise<{ model: tf.Sequential; history: tf.History }> {
+    if (flagged.length !== archive.length) throw new Error('Mismatched flags');
     const trainingRows = archive.filter((_, i) => !flagged[i]);
+    if (!trainingRows.length) throw new Error('No training rows');
     const model = providedModel || tf.sequential();
     if (!providedModel) {
       model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] }));
@@ -48,9 +58,15 @@ solutionCode: |
       model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
     }
     const xs = tf.tensor2d(trainingRows);
-    const history = await model.fit(xs, xs, FIT_OPTIONS);
-    xs.dispose();
-    return { model, history };
+    try {
+      const history = await model.fit(xs, xs, FIT_OPTIONS);
+      return { model, history };
+    } catch (error) {
+      if (!providedModel) model.dispose();
+      throw error;
+    } finally {
+      xs.dispose();
+    }
   }
 testCode: |
   // Synthetic archive: 48 calm rows and 24 flagged rows, with eight features.
@@ -131,8 +147,7 @@ testCode: |
       expect(
         units,
         'The widths have to narrow to the bottleneck and widen back. A stack ' +
-          'that never narrows can copy its input through and learns nothing ' +
-          'about normal.',
+          'without a bottleneck does not match the requested architecture.',
       ).toEqual([4, 2, 4, 8]);
     });
 
@@ -196,6 +211,22 @@ testCode: |
         expect(calls[0].options.batchSize).toBe(16);
       }
     });
+  });
+  it('rejects an empty training selection before fitting', async () => {
+    let called = false;
+    const supplied = { fit: async () => { called = true; } };
+    await expect(trainNormalityModel([[1,2,3,4,5,6,7,8]], [true], supplied)).rejects.toThrow();
+    expect(called).toBe(false);
+  });
+  it('cleans up after failed fitting without disposing the supplied model', async () => {
+    let input, disposed = false;
+    const supplied = {
+      fit: async xs => { input = xs; throw new Error('fixture fit failure'); },
+      dispose: () => { disposed = true; },
+    };
+    await expect(trainNormalityModel([[1,2,3,4,5,6,7,8]], [false], supplied)).rejects.toThrow();
+    expect(input.isDisposedInternal).toBe(true);
+    expect(disposed).toBe(false);
   });
 estimatedMinutes: 14
 difficulty: intermediate

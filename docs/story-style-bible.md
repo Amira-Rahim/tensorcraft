@@ -50,6 +50,21 @@ decode answers back.
   bus inside the 24/7 watch rotation (Nazari, capstone/01); the engineering
   rig is faster but reboots with firmware flashes and has no standing watch.
 
+## Saved decisions (2026-09-18)
+
+Six optional decisions affect later handoffs and crew work. Their option indices
+and existing IDs are stable. Later scenes read the saved choice; skipped choices
+receive a neutral continuation, and a failed lookup must not invent a choice.
+The added cache and drift decisions are internal pilots, not learner-tested.
+See the branch table in [the internal review](audits/internal-content-review-2026-09-18.md).
+
+Removing 7741 from a working list never destroys its raw archived capture. The
+training-set decision changes review and replay work, not its unknown true label.
+Report drafts remain subject to the release gate. Deployment is explicitly a
+rehearsal choice that changes the follow-up checklist; the 0157 canary is fixed.
+Do not change model scores or scientific truth to reward an option. Keep the
+last operator-note row after all conditional scenes.
+
 ## Character registers (hard rules)
 
 **Commander Mirza** - never explains anything. Questions and decisions only.

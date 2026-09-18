@@ -31,13 +31,40 @@ hints:
     content: "The state has to outlive the loop without outliving the call. Declare it before the loop starts and reassign it at every step, so what it holds at the end depends on the whole window. Declared inside the loop, every step starts from nothing. Declared outside the function, the second call starts where the first one stopped. Two of the arguments meet inside one squashing call: one scales what the cell was already holding, the other scales what just arrived. Collect the state after every step, not only the last one. A layer has no numbers of its own until it belongs to a model, so ask the model rather than the layer, and read the three tensors it returns in the order it returns them rather than the order the formula above is written in. For the factors, the only fact you need is on the page: the slope of tanh at a state is one minus the state squared, so each step contributes the weight times that, and the list you return is the product so far rather than the factor alone."
   - level: solution
     content: |
-      const states = []; let h = 0; for (const reading of readings) { h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias); states.push(h); } return states;
-      const model = tf.sequential();
-      const cell = tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true });
-      model.add(cell);
-      const [kernel, recurrentKernel, biasTensor] = model.getWeights();
-      return { model, inputWeight: kernel.dataSync()[0], recurrentWeight: recurrentKernel.dataSync()[0], bias: biasTensor.dataSync()[0], };
-      const factors = []; let product = 1; for (const h of states) { product *= recurrentWeight * (1 - h * h); factors.push(product); } return factors;
+      import * as tf from '@tensorflow/tfjs';
+
+      function runCell(readings, recurrentWeight, inputWeight, bias) {
+        const states = [];
+        let h = 0;
+        for (const reading of readings) {
+          h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias);
+          states.push(h);
+        }
+        return states;
+      }
+
+      function buildCellLayer(timeSteps) {
+        const model = tf.sequential();
+        const cell = tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true });
+        model.add(cell);
+        const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+        return {
+          model,
+          inputWeight: kernel.dataSync()[0],
+          recurrentWeight: recurrentKernel.dataSync()[0],
+          bias: biasTensor.dataSync()[0],
+        };
+      }
+
+      function decayFactors(states, recurrentWeight) {
+        const factors = [];
+        let product = 1;
+        for (const h of states) {
+          product *= recurrentWeight * (1 - h * h);
+          factors.push(product);
+        }
+        return factors;
+      }
 keywords:
   - rnn
   - recurrent
@@ -96,7 +123,7 @@ function signalReducer(state: { count: number; trend: string }, action: { value:
 //
 // W_h and W_x are weight matrices learned during training
 // tanh squashes output to [-1, 1]
-// prevHidden carries memory of all previous time steps
+// prevHidden is a learned summary influenced by earlier steps, not a lossless log.
 
 // Build a simple RNN in TF.js
 const model = tf.sequential();
@@ -110,21 +137,19 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 
 // Input: [batch, timeSteps, features] = [32, 5, 3]
 const x = tf.randomNormal([32, 5, 3]);
-const y = tf.randomUniform([32, 1]).round();
+const y = tf.tidy(() => tf.randomUniform([32, 1]).round());
 
-// Shape drill only: this proves the [5, 3] pipeline runs, nothing more.
-// The labels are random and the loss still falls every epoch, because
-// 1,185 parameters against 32 samples can memorize noise. Run it to 100
-// epochs and training accuracy lands at exactly 1.00 in about half of
-// twenty runs, and within a few rows of the full 32 in the rest. None of
-// that generalizes. The real run is tonight's, in the epilogue.
+// Shape drill only. Random labels do not define a generalizable signal.
+// A flexible model may fit them; a falling training loss would not prove
+// useful forecasting. Compare against held-out data with meaningful labels.
 await model.fit(x, y, { epochs: 10 });
 
 x.dispose();
-y.dispose();`}
+y.dispose();
+model.dispose();`}
 </CodeBlock>
 
-You can read those weights straight off the model. `model.getWeights()` hands back three tensors for that layer: the input kernel, shaped [features, units], then the recurrent kernel, shaped [units, units], then the bias, one number per unit. The order is the library's rather than the formula's, since the lesson writes the recurrent term first and TF.js stores the input kernel first. The layer creates those weights when it is built, either explicitly or as part of a model. Build a one-unit cell over a one-feature sequence and those three tensors hold one number each: the `recurrentWeight`, `inputWeight` and `bias` of the drill at the top of this lesson, drawn at random instead of picked by hand.
+You can read those weights straight off the model. `model.layers[0].getWeights()` returns three tensors for the recurrent layer: the input kernel, shaped [features, units], then the recurrent kernel, shaped [units, units], then the bias, one number per unit. The order is the library's rather than the formula's, since the lesson writes the recurrent term first and TF.js stores the input kernel first. The layer creates those weights when it is built, either explicitly or as part of a model. Build a one-unit cell over a one-feature sequence and those three tensors hold one number each: the `recurrentWeight`, `inputWeight` and `bias` of the drill at the top of this lesson, initialized by the layer. Input and recurrent kernels use their initializers; the default bias is zero.
 
 ## How the RNN Processes a Sequence
 
@@ -137,7 +162,7 @@ You can read those weights straight off the model. `model.getWeights()` hands ba
 // Time step 3: hidden = f(hidden, input[3])  ← remembers steps 0-2
 // Time step 4: hidden = f(hidden, input[4])  ← remembers steps 0-3
 
-// The final hidden state encodes the entire sequence
+// The final hidden state is a fixed-size summary of the sequence
 // We pass it to a Dense layer for classification
 
 // Return sequences: get hidden state at EVERY step (not just the last)
@@ -147,24 +172,25 @@ modelAllSteps.add(tf.layers.simpleRNN({
   inputShape: [5, 3],
   returnSequences: true,  // output shape: [batch, 5, 32] instead of [batch, 32]
 }));
-// Useful when you need the full temporal output (e.g., for stacking RNN layers)`}
+// Useful when you need the full temporal output (e.g., for stacking RNN layers)
+modelAllSteps.dispose();`}
 </CodeBlock>
 
 ## The Vanishing Gradient Problem
 
 Backpropagation through time applies the backward pass across the unrolled sequence. In this one-unit cell, each recurrent step multiplies the gradient by the recurrent weight and the local slope of tanh. Repeated factors below one shrink it. With weight 0.8 and states close to zero, 60 such factors give about 1.5e-6. There is no universal 10- or 20-step limit: learnable distance depends on weights, states, data and optimization. With multiple units the factors are matrices, so the scalar example is an illustration rather than a complete diagnosis.
 
-Nothing bounds the recurrent weight, though, so the product can sit above 1 for a stretch of steps. Raise that 0.8 to 1.5, start the cell at zero and feed it readings near 0.001. The gradient grows on the way back instead of shrinking: at step 14 it is 173 times the one that left the loss. A spike like that is what gradient clipping is for. The norm of a gradient is its length: square every component, add them up, take the square root. Pick a ceiling, and on any step whose norm passes it, scale every component down by the same factor before the optimizer applies them. TF.js 4.22 has no clipping option on its optimizers, so that cap is one you write yourself.
+Nothing bounds the recurrent weight, though, so the product can sit above 1 for a stretch of steps. Raise that 0.8 to 1.5, start the cell at zero and feed it readings near 0.001. The gradient grows on the way back instead of shrinking: the direct derivative of the state at step 14 with respect to the initial state reaches roughly 173 in this example. A spike like that is what gradient clipping is for. The norm of a gradient is its length: square every component, add them up, take the square root. Pick a ceiling, and on any step whose norm passes it, scale every component down by the same factor before the optimizer applies them. TF.js 4.22 has no clipping option on its optimizers, so that cap is one you write yourself.
 
 In this particular constant-input example, tanh eventually saturates. The state approaches 0.8590 and the local factor falls to about 0.393, so the gradient shrinks again. That is not a guarantee for all inputs or weights. For example, an exactly zero state and zero input can remain at zero while a recurrent weight above one amplifies its derivative. Inspect the actual gradient history instead of assuming every explosion will end this way.
 
-The pattern DEEP SCAN needs repeats a little over every 73 seconds, and the dashboard feed carries one sample per second. Reaching back 73 steps comes up just short of one full interval, so the dependency the model has to learn is 74 steps long. The archive's rows come 2.2 to an interval, one every 33 seconds, and each one's three features come from a single quarter-second window inside that capture. They can show that something repeats. What they cannot carry is the shape inside a pulse, and an 80-row window of them spans 44 minutes instead of one interval. The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
+The pattern DEEP SCAN needs repeats a little over every 73 seconds, and the dashboard feed carries one sample per second. Reaching back 73 steps comes up just short of one full interval, so an 80-reading window spans a little more than one interval. The useful context still depends on the task and pulse shape. The archive's rows come 2.2 to an interval, one every 33 seconds, and each one's three features come from a single quarter-second window inside that capture. They can show that something repeats. What they cannot carry is the shape inside a pulse, and an 80-row window of them spans 44 minutes instead of one interval. The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
 
 ## Challenge
 
 The drill at the top of this lesson ran one cell by hand for three readings. Write that loop yourself, for any window and any weights, in plain JavaScript numbers and Math.tanh: the drill's tf.scalar version is for reading, and the graded loop has no tensors in it. One thing it grades is the carry: the same reading has to score one number early in a window and a different number later, and it can only do that if the state you hand from step to step is real.
 
-Then build the library's version of the same cell, a one-unit `tf.layers.simpleRNN`, and read its three weights off the model. The grader runs your loop on those weights and puts it beside what the layer computes for the same readings, step by step. The two agree to about seven decimal places when your recurrence is the one TF.js runs, which is as close as a float32 layer and a float64 loop get. Nothing is memorizable here, because the layer draws its own weights at random every time it is built.
+Then build the library's version of the same cell, a one-unit `tf.layers.simpleRNN`, and read its three weights off the model. The grader runs your loop on those weights and puts it beside what the layer computes for the same readings, step by step. The two agree to about seven decimal places when your recurrence is the one TF.js runs, for this small fixture; use a tolerance appropriate to the sequence and backend. Nothing is memorizable here, because the layer draws its own weights at random every time it is built.
 
 <Exercise slug="build-rnn" />
 

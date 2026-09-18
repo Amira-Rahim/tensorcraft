@@ -4,13 +4,15 @@ title: "Build a Typed Pipeline"
 instructions: |
   Build the Pipeline class the lesson prints. Each stage has a `name`, a `process` function and a `validate` function.
 
-  1. `addStage(stage)` appends the stage and returns the pipeline, so calls chain.
+  1. `addStage(stage)` appends the stage and returns the pipeline, so calls chain. The any-typed array does not enforce adjacent TypeScript types; runtime validators carry that check.
   2. `run(input)` is async and returns a Promise, because a real stage does async work: loading weights, reading a tensor back off the GPU.
   3. Ask the stage's own `validate` about the data arriving at it, and ask before that stage's `process` sees it. The check belongs to the stage, not to `run`: one stage tests a length, the next tests the values it will accept. When validate returns false, throw an Error whose message is `Validation failed at: {stage.name}` and leave that stage's process uncalled. Since run is async, the caller receives that as a rejected promise.
   4. A stage's process may hand back a value or a Promise, so await what it returns before the next stage sees it.
   5. run hands back whatever the last stage returned.
 
-  The grader wires DEEP SCAN's real feature path through your class: raw window -> z-normalize -> FFT magnitudes -> model-input tensor, with a shape contract between every stage. Async stages appear in the middle of a chain and at the end of one.
+  This small eight-sample example normalizes each window to show composition,
+  removing amplitude information. It is not the production classifier scaler.
+  The grader wires an illustrative feature path through your class: raw window -> z-normalize -> FFT magnitudes -> model-input tensor, with a shape contract between every stage. Async stages appear in the middle of a chain and at the end of one.
 starterCode: |
   interface PipelineStage<TIn, TOut> {
     name: string;
@@ -110,7 +112,7 @@ testCode: |
   };
 
   describe('Pipeline', () => {
-    it('runs the real DEEP SCAN feature path: window -> normalize -> FFT -> [1,5] tensor', async () => {
+    it('runs a real TFJS feature chain: window -> normalize -> FFT -> [1,5] tensor', async () => {
       const pipeline = chained(normalizeStage, fftStage, tensorStage);
       const out = await pipeline.run([1.0, 1.4, 0.6, 1.0, 1.0, 1.4, 0.6, 1.0]);
       expect(
@@ -118,6 +120,7 @@ testCode: |
         'run returns whatever the last stage returned, and the last stage here builds a tensor.',
       ).toBeDefined();
       expect(out.shape).toEqual([1, 5]);
+      out.dispose();
     });
 
     it('awaits an async stage instead of passing its promise on', async () => {
@@ -151,6 +154,7 @@ testCode: |
         values.every((v) => Number.isFinite(v)),
         'The five FFT magnitudes reached the tensor as numbers, which only happens if each stage saw a settled value.',
       ).toBe(true);
+      out.dispose();
     });
 
     it('stage output actually feeds the next stage (normalize: mean 0, unit spread)', async () => {

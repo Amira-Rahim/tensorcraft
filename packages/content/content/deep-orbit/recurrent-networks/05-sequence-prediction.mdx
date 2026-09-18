@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. It recognizes the shape it learned from the archive replay."
+  narrative: "Demir trains the LSTM to predict the next signal values. The bridge reports a promising short forecast. Farah asks for the error metric, its units and a baseline before trusting a longer one."
   speaker: "Ensign Demir"
 concept:
   explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
@@ -53,11 +53,25 @@ hints:
             metrics: ['mae'],
           });
         }
-        const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
-        return { model, history };
+        try {
+          const history = await model.fit(xs, ys, { epochs, batchSize: 32 });
+          return { model, history };
+        } catch (error) {
+          if (!providedModel) {
+            model.optimizer.dispose();
+            model.dispose();
+          }
+          throw error;
+        }
       }
 
       function forecastMultiStep(model, seed, windowSize, steps, scaler) {
+        if (!scaler || !Array.isArray(scaler.mean) || !Array.isArray(scaler.std) ||
+            scaler.mean.length !== 3 || scaler.std.length !== 3 ||
+            !scaler.mean.every(Number.isFinite) ||
+            !scaler.std.every(value => Number.isFinite(value) && value > 0)) {
+          throw new Error('Invalid scaler');
+        }
         const bounds = LIMITS.map((limit, j) => ({
           min: (limit.min - scaler.mean[j]) / scaler.std[j],
           max: (limit.max - scaler.mean[j]) / scaler.std[j],
@@ -70,6 +84,7 @@ hints:
             const output = model.predict(input);
             return Array.from(output.dataSync());
           });
+          if (predicted.length !== 3 || !predicted.every(Number.isFinite)) throw new Error('Invalid prediction');
           const bounded = predicted.map((value, j) =>
             Math.min(Math.max(value, bounds[j].min), bounds[j].max),
           );
@@ -87,7 +102,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Ensign Demir">
-The LSTM just predicted the next signal reading to within 3% of the real one. It knows the pattern. And look: it's predicting the anomaly will repeat in... 47 minutes.
+The short forecast landed close to the next reading. I have not compared it with carrying the last value forward yet. And look: it's predicting the anomaly will repeat in... 47 minutes.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -106,8 +121,9 @@ A list-based autocomplete filters known entries from what you typed. Our forecas
 {`import * as tf from '@tensorflow/tfjs';
 
 // Prediction model: given 80 time steps, predict the next one.
-// trainX and trainY are lesson 4's windows and targets, carrying
-// per-channel z-scores rather than raw counts and radians.
+// Integration sketch: split the raw series by time, build windows within
+// each split, fit scaling on training data and supply trainX/trainY plus
+// validationX/validationY in those same per-feature z-score units.
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,
@@ -127,7 +143,7 @@ model.compile({
 const history = await model.fit(trainX, trainY, {
   epochs: 50,
   batchSize: 32,
-  validationSplit: 0.2,
+  validationData: [validationX, validationY],
   callbacks: {
     onEpochEnd: (epoch, logs) => {
       if (epoch % 10 === 0) {
@@ -138,9 +154,10 @@ const history = await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
-Scale the three features before any of this runs. They sit on the tensor's last axis, which is conventionally called the channel axis, so per-channel scaling here means one scaling per feature. The archive's 64 channels are 64 sensors, which is the word's other use. Amplitude is a count that saturates at 2048, the zero-crossing count stops at 63, and phase is an angle in radians. One MSE over all three is a weighted sum whose weights nobody chose: a 100-count amplitude miss adds 10,000 to the squared error, while a full radian of phase adds 1. On raw rows the model barely moves. Ten epochs on 1,120 windows of a three-channel series in those units left the amplitude predictions off by about a thousand counts on average, on a channel whose own standard deviation was 284. Answering that channel's mean every time is off by 256. The same run on per-channel z-scores came back inside a few counts. Raw values in the thousands also flatten the gates' sigmoid and the cell's `tanh`, which leaves the weights behind them with almost no gradient.
+Scale the three features before any of this runs. They sit on the tensor's last axis, which is conventionally called the channel axis, so per-channel scaling here means one scaling per feature. The archive's 64 channels are 64 sensors, which is the word's other use. Amplitude is a count that saturates at 2048, the zero-crossing count stops at 63, and phase is an angle in radians. One MSE over all three is a weighted sum whose weights nobody chose: a 100-count amplitude miss adds 10,000 to the squared error, while a full radian of phase adds 1. Large inputs can also push tanh or sigmoid gates into saturation. Scaling often improves conditioning, but it does not guarantee a particular error or useful forecasts. Compare a last-value or seasonal baseline on the same later periods.
 
-Use the tool from module 1, with one change for the extra dimension. Module 1's batch was a reading table, `[rows, features]`, where `tf.moments(batch, 0)` gave one mean per feature. `trainX` is `[windows, 80, 3]`, so axis 0 there returns one mean per (time step, channel) pair: 240 of them, not 3. Reduce over the window axis and the time axis together, `tf.moments(trainX, [0, 1])`, and you get three means and three variances. The standard deviation is `variance.sqrt()`. Nothing warns you if you get this wrong. A `[80, 3]` mean broadcasts against `[N, 80, 3]` without error, so `trainX.sub(mean).div(std)` runs, and every time-step position ends up z-scored against its own statistics. Save the three means and three standard deviations and reuse them at inference.
+
+Use the tool from module 1, with one change for the extra dimension. Module 1's batch was a reading table, `[rows, features]`, where `tf.moments(batch, 0)` gave one mean per feature. `trainX` is `[windows, 80, 3]`, so axis 0 there returns one mean per (time step, channel) pair: 240 of them, not 3. If you estimate statistics from training windows, reduce over the window axis and time axis together, `tf.moments(trainX, [0, 1])`, and you get three means and three variances. The standard deviation is `variance.sqrt()`. Nothing warns you if you get this wrong. A `[80, 3]` mean broadcasts against `[N, 80, 3]` without error, so `trainX.sub(mean).div(std)` runs, and every time-step position ends up z-scored against its own statistics. Overlapping windows count some observations more often. Prefer fitting on the unique training observations before windowing, or document that weighting. Replace a zero scale with 1. Save the three means and scales and reuse them at inference. Phase is circular: raw-radian MSE penalizes the -pi/+pi seam; a redesigned model can use sine/cosine encoding with matching targets and metrics.
 
 MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes twice as much. MSE squares errors, so doubling a miss makes its contribution four times larger. This example trains on MSE and reports MAE; that is a choice, not a requirement for every regression task. For multiple outputs, scale features deliberately and also report per-channel errors converted back to their original units.
 
@@ -164,7 +181,8 @@ const LIMITS = [
 
 // The model reads and writes the z-scores it was trained on, so the
 // limits move into that space with the same saved MEAN and STD. These
-// two came off the training set and are kept beside the model.
+// arrays below are illustrative. Replace them with the exact statistics
+// fitted for your model and stored beside its weights.
 const MEAN = [1024, 32, 0];
 const STD = [512, 16, 1];
 
@@ -181,7 +199,9 @@ const clamp = (reading: number[]) =>
 console.log(clamp([2.4, 0.5, 0.1]));  // [2, 0.5, 0.1]
 // 2.4 in these z-scores is 2,253 counts, past anything the sensors report.
 
-// The rolling loop is the challenge below: predict one reading, clamp
+// The rolling loop is implemented in the exercise below; supply that
+// forecastMultiStep function before running this integration snippet.
+// The process is: predict one reading, clamp
 // it, push it onto the history, predict again. Each step builds a tensor
 // for the window and gets one back from predict, so the tensor work goes
 // inside tf.tidy.
@@ -205,10 +225,15 @@ const forecast = forecastMultiStep(model, recentWindow, 80, 47, {
   mean: MEAN,
   std: STD,
 });
-// The LSTM predicts a spike at step 47 of this one-second-step demo horizon.`}
+// Inspect this run's output. No spike at a particular step is guaranteed.
+model.optimizer.dispose(); // this example supplied an optimizer instance
+model.dispose();
+// The caller owns train/validation tensors and disposes them separately.`}
 </CodeBlock>
 
 One unit check before anyone trusts a display. The demo above walks 47 one-second steps, under a minute of horizon. The bridge's 47-minute countdown runs on a different series, the pulse intervals, one value per pulse, where 47 minutes is about 38 steps at the current spacing. Read what one step means before you read a forecast, and when a short forecast lands, credit the signal's regularity before you credit the model.
+
+Clamping keeps outputs inside the declared limits; it does not make a forecast accurate. Log how often it activates, reject non-finite outputs and compare errors by horizon. A zero or invalid scaler standard deviation must be handled before rollout.
 
 ## Challenge
 
@@ -225,7 +250,7 @@ Then write the rolling loop from `multi-step.ts` yourself, at a smaller scale: a
 
 <RecallPrompt
   question="The rolling forecast builds a window tensor and gets a prediction tensor back on each of its 47 steps. The module-4 inference loop wrapped that same pair in tf.tidy(). What happens to those two tensors when the callback returns, and what gets out?"
-  answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees temporary tensors created inside it, except returned tensors, variables and tensors retained with tf.keep(). This loop creates no variables or kept tensors. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so neither tensor stays on the GPU, where the garbage collector cannot see it."
+  answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees temporary tensors created inside it, except returned tensors, variables and tensors retained with tf.keep(). This loop creates no variables or kept tensors. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so the example leaves no temporary tensor registered with its backend."
 />
 
 <LessonRecap

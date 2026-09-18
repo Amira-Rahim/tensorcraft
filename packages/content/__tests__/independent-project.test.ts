@@ -12,7 +12,10 @@ import {
 } from "../../../apps/web/public/assignments/room-occupancy-v1/preprocessing.mjs";
 const data = JSON.parse(
   readFileSync(
-    "apps/web/public/assignments/room-occupancy-v1/data.json",
+    new URL(
+      "../../../apps/web/public/assignments/room-occupancy-v1/data.json",
+      import.meta.url,
+    ),
     "utf8",
   ),
 );

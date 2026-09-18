@@ -12,46 +12,47 @@ instructions: |
 
   Allow an absolute 1e-12 comparison tolerance for floating-point arithmetic at the 5% boundaries.
 starterCode: |
-  // Given: the archive's two clusters, then six labels flipped to match the
-  // flag log, which is where the bad rows in the real archive come from.
-  // These flipped training labels introduce noise. They do not guarantee
-  // a loss floor or a particular stopping epoch.
-  const calm = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
-        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
-        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
-      ],
+  // Synthetic practice rows. Clipping enforces this fixture's [0, 1] range.
+  // Labels and distributions illustrate the story, not a real archive.
+  const { trainX, trainY } = tf.tidy(() => {
+    const calm = tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+          tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+          tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+        ],
+        1,
+      ),
+      0,
       1,
-    ),
-    0,
-    1,
-  );
-  const flagged = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
-        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
-        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
-      ],
+    );
+    const flagged = tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+          tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+          tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+        ],
+        1,
+      ),
+      0,
       1,
-    ),
-    0,
-    1,
-  );
-  // Interleaved, because validationSplit takes the LAST rows and a validation
-  // set containing only flagged windows cannot measure both classes.
-  const order = [];
-  for (let i = 0; i < 50; i++) {
-    order.push(i);
-    order.push(50 + i);
-  }
-  const trainX = tf.concat([calm, flagged]).gather(order);
-  const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
-  const labels = cleanY.arraySync();
-  for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
-  const trainY = tf.tensor2d(labels);
+    );
+    // Interleaved, because validationSplit takes the LAST rows and a validation
+    // set containing only flagged windows cannot measure both classes.
+    const order = [];
+    for (let i = 0; i < 50; i++) {
+      order.push(i);
+      order.push(50 + i);
+    }
+    const trainX = tf.concat([calm, flagged]).gather(order);
+    const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+    const labels = cleanY.arraySync();
+    for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
+    const trainY = tf.tensor2d(labels);
+    return { trainX, trainY };
+  });
 
   // Start a fresh network so this history records the run from initialization.
   const model = tf.sequential();
@@ -70,40 +71,43 @@ starterCode: |
     // your code here
   }
 solutionCode: |
-  const calm = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
-        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
-        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
-      ],
+  const { trainX, trainY } = tf.tidy(() => {
+    const calm = tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+          tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+          tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+        ],
+        1,
+      ),
+      0,
       1,
-    ),
-    0,
-    1,
-  );
-  const flagged = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
-        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
-        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
-      ],
+    );
+    const flagged = tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+          tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+          tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+        ],
+        1,
+      ),
+      0,
       1,
-    ),
-    0,
-    1,
-  );
-  const order = [];
-  for (let i = 0; i < 50; i++) {
-    order.push(i);
-    order.push(50 + i);
-  }
-  const trainX = tf.concat([calm, flagged]).gather(order);
-  const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
-  const labels = cleanY.arraySync();
-  for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
-  const trainY = tf.tensor2d(labels);
+    );
+    const order = [];
+    for (let i = 0; i < 50; i++) {
+      order.push(i);
+      order.push(50 + i);
+    }
+    const trainX = tf.concat([calm, flagged]).gather(order);
+    const cleanY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+    const labels = cleanY.arraySync();
+    for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
+    const trainY = tf.tensor2d(labels);
+    return { trainX, trainY };
+  });
 
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));

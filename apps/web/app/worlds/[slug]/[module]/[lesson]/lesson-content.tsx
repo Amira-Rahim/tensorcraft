@@ -37,6 +37,7 @@ const Exercise = dynamic(
 );
 import {
   BossBeat,
+  StoryConsequence,
   Concept,
   DeepScanDemo,
   DispatchTease,
@@ -147,6 +148,7 @@ const mdxComponents = {
   DecisionTask,
   IndependentProject,
   BossBeat,
+  StoryConsequence,
   Concept,
   Dialogue,
   BridgeCallout,
@@ -419,6 +421,7 @@ export function LessonContent({
         ) : null,
       DispatchTease: wrapVisibility("DispatchTease", DispatchTease),
       StrategyThread: wrapVisibility("StrategyThread", StrategyThread),
+      StoryConsequence: wrapVisibility("StoryConsequence", StoryConsequence),
       BossBeat: (
         props: Omit<
           React.ComponentProps<typeof BossBeat>,

@@ -3,7 +3,7 @@ lessonSlug: launch
 title: "Launch Rehearsal: Train the Candidate, Then Gate It"
 mlContent: model
 instructions: |
-  The whole system, once, on your own hands. Two functions.
+  A small synthetic training-and-release rehearsal. It does not deploy the full mission system. Two functions.
 
   `scoreReadings(model, readings, ranges)` is the inference path, and it is synchronous. Every reading is raw instrument output: `amplitude` in ADC counts, `frequency` as a zero-crossing count, `phase` in radians. Turn each one into a row `[amplitude, frequency, phase]` with module 4's min-max rule, `(value - range.min) / (range.max - range.min)`, reading the limits off `ranges.amplitude`, `ranges.frequency` and `ranges.phase`. Build one `tf.tensor2d` of those rows inside `tf.tidy()`, predict, and return plain numbers in reading order. It must leave no tensor behind: the grader counts live tensors either side of the call and the two counts have to match.
 
@@ -11,7 +11,14 @@ instructions: |
 
   1. Train. The model arrives compiled, so do not compile it again. Normalize the archive rows the way `scoreReadings` does, against `config.ranges`, and build one `tf.tensor2d` of those rows and one of their labels. Then `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })` and dispose both tensors.
   2. Score the canary set with `scoreReadings` and the model you just trained.
-  3. Gate the run.
+  3. Gate the run. Validate non-empty archive/canary sets, finite input values,
+     positive range widths, binary labels, positive integer epochs/batchSize,
+     finite [0, 1] baselineMeanScore/minAccuracy and nonnegative driftTolerance.
+     Reject invalid configuration or non-finite predictions/losses. Dispose
+     training tensors even if fit rejects; the caller still owns the model.
+
+  Drift here measures only mean prediction-score change, not input shift or
+  accuracy loss. The fixed synthetic examples demonstrate the policy.
 
   Return:
 
@@ -24,18 +31,42 @@ instructions: |
         launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
       }
 
-  `batchesRun` reads `model.optimizer.iterations`, which the optimizer increments once per batch and nothing outside it can set. The grader checks it against the number of epochs in `losses`, and runs a second schedule with different numbers, so a loss trace and a trained model have to come from the same call. It also watches the fit itself: the schedule you pass, the trace it hands back, which is the trace `losses` reports, and the rows you hand it, on a rehearsal where all three channels have been recalibrated, so every limit has to come off `config.ranges` rather than from the full scale. One candidate arrives warm, with updates already on that counter from an earlier fit, so `batchesRun` is what the optimizer reads after your fit rather than the number your own schedule added to it.
+  `batchesRun` reads `model.optimizer.iterations`, which records the optimizer update count. It is a consistency check, not a tamper-proof training record. The grader checks it against the number of epochs in `losses`, and runs a second schedule with different numbers, so a loss trace and a trained model have to come from the same call. It also watches the fit itself: the schedule you pass, the trace it hands back, which is the trace `losses` reports, and the rows you hand it, on a rehearsal where all three channels have been recalibrated, so every limit has to come off `config.ranges` rather than from the full scale. One candidate arrives warm, with updates already on that counter from an earlier fit, so `batchesRun` is what the optimizer reads after your fit rather than the number your own schedule added to it.
 hints:
   - level: nudge
-    content: "Every number in the verdict has to come from the same training run, so the order of operations is the exercise: train first, then judge what you trained. The one number you cannot write down yourself is the update count, and that is what makes it the number a grader can trust."
+    content: "Every number in the verdict has to come from the same training run, so the order of operations is the exercise: train first, then judge what you trained. Read the optimizer update count and compare it with the fit call, including updates made before this rehearsal."
   - level: guidance
     content: |
       Three decisions carry this rehearsal, and the scoring path holds the first two. Every reading arrives in instrument units, and the limits a value is scaled against belong to the instrument, so read them off the argument that carries them rather than assuming a full scale. Phase is the one that catches people: its lower limit is negative, so subtracting it moves a value up. Then memory. Everything the scoring path allocates has to be gone by the time plain numbers come back, and the grader counts live tensors either side of the call. A scope that frees what it holds covers the synchronous path. It cannot hold an await, so the two big tensors the training call is handed have to be released by hand once that call resolves.
 
-      The third decision is the verdict. The candidate arrives compiled, and compiling it again resets the counter the optimizer keeps and discards the training state CI handed over. A second rehearsal on the same model should therefore report a larger count than the first, not the same one. That counter is the piece of the verdict nothing outside the optimizer can assign, and the grader reads it against the epochs in the trace you report beside it, on two schedules with different numbers. Score the canary set after the training call, with the model that call moved. Then gate twice: the fraction of canary verdicts that matched their labels against the floor the config names, and the average score against the recorded baseline, inside the tolerance the config names. Launch needs both.
+      The third decision is the verdict. The candidate arrives compiled, and compiling it again resets the counter the optimizer keeps and discards the training state CI handed over. A second rehearsal on the same model should therefore report a larger count than the first, not the same one. That counter records the optimizer updates, and the grader reads it against the epochs in the trace you report beside it, on two schedules with different numbers. Score the canary set after the training call, with the model that call moved. Then gate twice: the fraction of canary verdicts that matched their labels against the floor the config names, and the average score against the recorded baseline, inside the tolerance the config names. Launch needs both.
   - level: solution
     content: |
+      import * as tf from '@tensorflow/tfjs';
+
+      interface Reading { amplitude: number; frequency: number; phase: number; label: 0 | 1; }
+      interface Range { min: number; max: number; }
+      interface Ranges { amplitude: Range; frequency: Range; phase: Range }
+      interface RehearsalConfig {
+        ranges: Ranges;
+        epochs: number;
+        batchSize: number;
+        baselineMeanScore: number;
+        driftTolerance: number;
+        minAccuracy: number;
+      }
+      interface RehearsalVerdict {
+        scores: number[];
+        losses: number[];
+        batchesRun: number;
+        canaryAccuracy: number;
+        drift: boolean;
+        launch: boolean;
+      }
+
       function toRows(readings: Reading[], ranges: Ranges): number[][] {
+        if (!readings.length || !readings.every(r => [r.amplitude,r.frequency,r.phase].every(Number.isFinite))) throw new Error('Invalid readings');
+        if (![ranges.amplitude,ranges.frequency,ranges.phase].every(r => Number.isFinite(r.min) && Number.isFinite(r.max) && r.max > r.min && Number.isFinite(r.max-r.min))) throw new Error('Invalid ranges');
         const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
         return readings.map((reading) => [
           norm(reading.amplitude, ranges.amplitude),
@@ -51,7 +82,9 @@ hints:
       ): number[] {
         return tf.tidy(() => {
           const out = model.predict(tf.tensor2d(toRows(readings, ranges))) as tf.Tensor;
-          return Array.from(out.dataSync());
+          const values = Array.from(out.dataSync());
+          if (values.length !== readings.length || !values.every(Number.isFinite)) throw new Error('Invalid predictions');
+          return values;
         });
       }
 
@@ -61,17 +94,24 @@ hints:
         canary: Reading[],
         config: RehearsalConfig,
       ): Promise<RehearsalVerdict> {
+        if (!Number.isInteger(config.epochs) || config.epochs <= 0 || !Number.isInteger(config.batchSize) || config.batchSize <= 0 || ![config.baselineMeanScore,config.minAccuracy].every(v => Number.isFinite(v) && v >= 0 && v <= 1) || !Number.isFinite(config.driftTolerance) || config.driftTolerance < 0) throw new Error('Invalid rehearsal config');
+        if (![...archive,...canary].every(r => r.label === 0 || r.label === 1)) throw new Error('Invalid labels');
+        toRows(canary, config.ranges);
         const xs = tf.tensor2d(toRows(archive, config.ranges));
         const ys = tf.tensor2d(archive.map((r) => [r.label]));
-        const history = await model.fit(xs, ys, {
+        let history;
+        try {
+        history = await model.fit(xs, ys, {
           epochs: config.epochs,
           batchSize: config.batchSize,
           shuffle: false,
         });
-        xs.dispose();
-        ys.dispose();
+        } finally {
+          xs.dispose(); ys.dispose();
+        }
 
         const losses = history.history.loss as number[];
+        if (losses.length !== config.epochs || !losses.every(Number.isFinite)) throw new Error('Invalid loss history');
         const batchesRun = model.optimizer.iterations;
 
         const scores = scoreReadings(model, canary, config.ranges);
@@ -163,6 +203,8 @@ solutionCode: |
   }
 
   function toRows(readings: Reading[], ranges: Ranges): number[][] {
+    if (!readings.length || !readings.every(r => [r.amplitude,r.frequency,r.phase].every(Number.isFinite))) throw new Error('Invalid readings');
+    if (![ranges.amplitude,ranges.frequency,ranges.phase].every(r => Number.isFinite(r.min) && Number.isFinite(r.max) && r.max > r.min && Number.isFinite(r.max-r.min))) throw new Error('Invalid ranges');
     const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
     return readings.map((reading) => [
       norm(reading.amplitude, ranges.amplitude),
@@ -178,7 +220,9 @@ solutionCode: |
   ): number[] {
     return tf.tidy(() => {
       const out = model.predict(tf.tensor2d(toRows(readings, ranges))) as tf.Tensor;
-      return Array.from(out.dataSync());
+      const values = Array.from(out.dataSync());
+      if (values.length !== readings.length || !values.every(Number.isFinite)) throw new Error('Invalid predictions');
+      return values;
     });
   }
 
@@ -188,17 +232,24 @@ solutionCode: |
     canary: Reading[],
     config: RehearsalConfig,
   ): Promise<RehearsalVerdict> {
+    if (!Number.isInteger(config.epochs) || config.epochs <= 0 || !Number.isInteger(config.batchSize) || config.batchSize <= 0 || ![config.baselineMeanScore,config.minAccuracy].every(v => Number.isFinite(v) && v >= 0 && v <= 1) || !Number.isFinite(config.driftTolerance) || config.driftTolerance < 0) throw new Error('Invalid rehearsal config');
+    if (![...archive,...canary].every(r => r.label === 0 || r.label === 1)) throw new Error('Invalid labels');
+    toRows(canary, config.ranges);
     const xs = tf.tensor2d(toRows(archive, config.ranges));
     const ys = tf.tensor2d(archive.map((r) => [r.label]));
-    const history = await model.fit(xs, ys, {
+    let history;
+    try {
+    history = await model.fit(xs, ys, {
       epochs: config.epochs,
       batchSize: config.batchSize,
       shuffle: false,
     });
-    xs.dispose();
-    ys.dispose();
+    } finally {
+      xs.dispose(); ys.dispose();
+    }
 
     const losses = history.history.loss as number[];
+    if (losses.length !== config.epochs || !losses.every(Number.isFinite)) throw new Error('Invalid loss history');
     const batchesRun = model.optimizer.iterations;
 
     const scores = scoreReadings(model, canary, config.ranges);
@@ -340,6 +391,21 @@ testCode: |
   });
 
   describe('runLaunchRehearsal', () => {
+    it('releases training tensors when fitting fails', async () => {
+      const captured = [];
+      const failedModel = { fit: async (x,y) => { captured.push(x,y); throw new Error('fit failed'); } };
+      await expect(runLaunchRehearsal(failedModel, archive, canary, greenConfig)).rejects.toThrow('fit failed');
+      expect(captured.map(t => t.isDisposed)).toEqual([true,true]);
+    });
+    it('rejects empty data and invalid configuration before fitting', async () => {
+      let calls = 0;
+      const model = {fit: async () => {calls++; throw new Error('should not fit');}};
+      await expect(runLaunchRehearsal(model, archive, [], greenConfig)).rejects.toThrow();
+      await expect(runLaunchRehearsal(model, [], canary, greenConfig)).rejects.toThrow();
+      await expect(runLaunchRehearsal(model, archive, canary, {...greenConfig,driftTolerance:NaN})).rejects.toThrow();
+      expect(calls).toBe(0);
+    });
+
     it('trains the candidate: 64 rows at batch 16 is 4 batches an epoch, 12 epochs, 48 updates', async () => {
       const model = buildCandidate();
       const v = await runLaunchRehearsal(model, archive, canary, greenConfig);
@@ -353,7 +419,7 @@ testCode: |
       ).toHaveLength(12);
       expect(
         v.batchesRun,
-        'model.optimizer.iterations counts weight updates. 64 rows in batches of 16 is 4 batches, and 12 epochs of that is 48. The optimizer keeps this number and nothing outside it can assign to it, so it and the loss trace have to come from the same fit.',
+        'model.optimizer.iterations counts weight updates. 64 rows in batches of 16 is 4 batches, and 12 epochs of that is 48. The optimizer keeps this number and includes earlier updates, so it and the loss trace have to come from the same fit.',
       ).toBe(48);
       expect(v.batchesRun).toBe(Math.ceil(archive.length / greenConfig.batchSize) * v.losses.length);
       model.dispose();
@@ -481,7 +547,7 @@ testCode: |
       expect(Number.isFinite(v.losses[0])).toBe(true);
       expect(
         v.losses[v.losses.length - 1],
-        'Twelve epochs on this archive slice takes binary cross-entropy from about 0.70, the ln 2 coin-flip mark, down to about 0.003. A trace that does not fall is a fit that did not happen.',
+        'Twelve epochs on this archive slice takes binary cross-entropy from about 0.70, the ln 2 coin-flip mark, down to about 0.003. This particular seeded fixture should improve; real training can run without reducing loss.',
       ).toBeLessThan(v.losses[0]);
       expect(
         v.losses[v.losses.length - 1],

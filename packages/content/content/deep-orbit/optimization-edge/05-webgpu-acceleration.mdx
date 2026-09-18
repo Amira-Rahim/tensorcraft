@@ -10,10 +10,10 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Nazari wants maximum speed. 'WebGL is good. WebGPU is better: direct GPU compute access without the graphics overhead. Use it.' Demir discovers the next generation of browser GPU compute."
+  narrative: "Nazari asks Demir to test another available backend and measure the fallback on the oldest console."
   speaker: "Chief Nazari"
 concept:
-  explanation: "WebGPU gives inference direct GPU compute access with no graphics pipeline in the way. Most of inference is matrix math, and that is exactly what WebGPU runs."
+  explanation: "WebGPU exposes compute pipelines. TensorFlow.js can use them for supported tensor operations; performance still depends on the workload and device."
   bridge:
     jsTitle: "Canvas WebGL"
     jsCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "WebGL is a graphics API that can also implement tensor operations through shaders. WebGPU exposes compute pipelines as well as graphics. Backend availability and speed depend on the browser, device, and operators, so detect support and measure the actual workload."
 consequence:
-  narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the crew signs off on the 2.4 points it cost."
+  narrative: "The dashboard survives the rehearsal. The crew records separate hit, miss and backend timings before approving the optimization stack."
 hints:
   - level: nudge
     content: "Every name in the ladder gets one attempt. A backend that refuses, whichever way it refuses, is a reason to try the next one rather than a reason to stop."
@@ -45,7 +45,35 @@ hints:
       success, and leave everything under the winner alone, since a GPU
       context you take is one the page may not get back.
   - level: solution
-    content: "async function initBestBackend( preference: BackendName[], runtime: Runtime ): Promise<BackendName> { for (const name of preference) { let started = false; try { started = await runtime.setBackend(name); } catch { started = false; } if (started) { await runtime.ready(); return name; } } await runtime.ready(); return runtime.getBackend(); }"
+    content: |
+      type BackendName = string;
+
+      interface Runtime {
+        setBackend: (name: BackendName) => Promise<boolean>;
+        ready: () => Promise<void>;
+        getBackend: () => BackendName;
+      }
+
+      async function initBestBackend(
+        preference: BackendName[],
+        runtime: Runtime
+      ): Promise<BackendName> {
+        for (const name of preference) {
+          let started = false;
+          try {
+            started = await runtime.setBackend(name);
+          } catch {
+            started = false;
+          }
+          if (started) {
+            await runtime.ready();
+            return name;
+          }
+        }
+
+        await runtime.ready();
+        return runtime.getBackend();
+      }
 keywords:
   - webgpu
   - gpu-compute
@@ -53,6 +81,9 @@ keywords:
   - performance
 skillAxes: [deployment]
 ---
+
+The console readings and evaluation tables in this scene are fictional scenario data. They are not benchmark results for the downloaded course model. Use the [browser runtime lab](/assignments/browser-runtime-lab-v1.zip) to reproduce measurements on the shipped artifact; record the device and model with every result.
+
 
 <Dialogue speaker="Chief Nazari">
 The bridge has another backend available. Time the same model on it, and show me the fallback cost.
@@ -81,34 +112,32 @@ import '@tensorflow/tfjs-backend-webgpu';
 import '@tensorflow/tfjs-backend-wasm';
 
 async function initBestBackend(): Promise<string> {
-  // tf.setBackend RESOLVES FALSE when a registered backend fails to
-  // initialize. It throws only when the name is not registered at all.
+  // tf.setBackend can resolve false for initialization failure and can
+  // throw, for example when the name is unregistered.
   // Read the return value, or this function reports a backend that
   // is not running.
   const tryBackend = async (name: string) => {
     try {
       if (!(await tf.setBackend(name))) return false;
+      await tf.ready();
+      return tf.getBackend() === name;
     } catch {
-      return false;  // name not registered: its package was not imported
+      return false;
     }
-    await tf.ready();
-    return true;
   };
 
   if ('gpu' in navigator && await tryBackend('webgpu')) return 'webgpu';
   if (await tryBackend('webgl')) return 'webgl';
   if (await tryBackend('wasm')) return 'wasm';
-
-  await tf.ready();
-  return tf.getBackend();  // whatever the engine settled on, usually cpu
+  if (await tryBackend('cpu')) return 'cpu';
+  throw new Error('No usable backend');
 }
 
 const backend = await initBestBackend();
 console.log('Using backend:', backend);
 
-// Benchmark results for DEEP SCAN (the 85 MB uint8 build), as measured
-// at the bridge console with the readback pattern below; your hardware
-// will print different absolutes. These time the whole bundle end to end,
+// Fictional mission timings for the 85 MB uint8 build.
+// They are not predictions for your hardware or the downloaded model. These time the whole bundle end to end,
 // the same call lesson 1 profiled, and not the eleven-feature classifier
 // lesson 4 puts a cache in front of. That one runs in microseconds and
 // none of these rows describe it:
@@ -128,7 +157,7 @@ console.log('Using backend:', backend);
 // model card keeps the two on separate lines.`}
 </CodeBlock>
 
-The `if` around `setBackend` is the part people leave out, and leaving it out is how a fallback chain lies to you. `setBackend` resolves to a boolean. A backend that is registered but fails to initialize logs `Initialization of backend webgl failed` and resolves `false`; nothing is thrown, so a bare `try`/`catch` never fires. Only an unregistered name throws, which is what you get when you forgot the import at the top of the file. Skip the return value and this function reports `webgl` on the 0249 dashboard, the one with no working WebGL context. `tf.ready()` then settles the engine on the next registered backend that does initialize. The imports at the top of this file leave wasm registered, so the function says `webgl` while every inference runs at 45 ms. Drop the wasm import and there is nothing left but cpu, at 120 ms.
+Check both resolved values and exceptions. In TFJS 4.22, a registered backend can fail initialization and resolve false; an unregistered name throws. A name reported during a failed transition is not proof that operations work. The function above checks readiness, explicitly tries CPU last and throws if nothing starts. The exercise isolates the selection contract using a controlled runtime; the downloadable lab checks actual backends and predictions.
 
 <Dialogue speaker="Dr. Farah">
 A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here; we still have to measure device support, transfer costs and completed inference.
@@ -136,13 +165,15 @@ A Worker runs JavaScript on a separate thread with its own global context. WebGP
 
 ## Measure the Claim
 
-That table did not come off a spec sheet, and its first draft was wrong. Demir's opening timing run at the bridge console put WebGPU at 0.4 milliseconds, a figure that would make it nearly forty times faster than WebGL's 15, not the 3x the table above reports. The figure survived until he applied module 4's own rule to it:
+The fictional timing table illustrates a measurement error. Demir's opening timing run at the bridge console put WebGPU at 0.4 milliseconds, a figure that would make it nearly forty times faster than WebGL's 15, not the 3x the table above reports. The figure survived until he applied module 4's own rule to it:
 
 <CodeBlock language="typescript" title="measure-inference.ts">
 {`// First attempt: start the clock, call predict, stop the clock.
 const t0 = performance.now();
 const flattering = model.predict(warmInput) as tf.Tensor;
 const naive = performance.now() - t0;
+await flattering.data(); // finish this call before the separate comparison
+flattering.dispose();
 // Bridge console, webgpu backend: 0.4 ms. Too good, and it is: on a
 // GPU backend, predict() SCHEDULES GPU kernels and returns. The clock
 // stopped while the GPU was still working.
@@ -153,16 +184,16 @@ const t1 = performance.now();
 const output = model.predict(warmInput) as tf.Tensor;
 await output.data();  // forces completion before the clock stops
 const honest = performance.now() - t1;
+output.dispose(); // warmInput belongs to the caller
 // Bridge console, webgpu backend: 5 ms. That is the number in the
 // table above and the one every claim in this lesson stands on.
 
-// On the cpu backend the two clocks agree to within a millisecond,
-// because cpu kernels run synchronously. The gap between naive and
-// honest is itself a measurement: it tells you how asynchronous your
-// backend really is.`}
+// CPU kernels run synchronously, but readback, scheduling and measurement
+// noise can still change timings. One pair of calls does not isolate GPU
+// execution time; repeat trials and report distributions.`}
 </CodeBlock>
 
-The millisecond figures in this lesson are what the crew measured at that console, on that GPU, that night. Run the pattern yourself and the absolutes will move; the discipline is the part that transfers. A GPU benchmark without the readback inside the clock is timing how fast you can ask, and the crew has been burned by that number once already.
+The millisecond figures are fictional scene data. The runtime lab records actual backend, device and model measurements. Run the pattern yourself and the absolutes will move; the discipline is the part that transfers. A GPU benchmark without the readback inside the clock is timing how fast you can ask, and the crew has been burned by that number once already.
 
 ## The Complete Optimization Stack
 
@@ -180,13 +211,9 @@ The millisecond figures in this lesson are what the crew measured at that consol
 // arithmetic a call does. Step 4 cuts how many calls happen, not what
 // one call costs.
 //
-// 45 to 15 is 3x, and module 4 measured WebGL at 6x over wasm. Both hold.
-// That 6x came off a bare 256x256 matmul, which is nothing but the kernel
-// a GPU is built for. A real model also marshals inputs, walks layers,
-// applies activations and reads one small result back per call, and none
-// of that runs faster on a GPU, so the end-to-end gain comes in under
-// the kernel gain. A GPU kernel benchmark is an upper bound on what a real
-// model will see.
+// A kernel microbenchmark does not bound whole-model performance.
+// Shapes, supported operations, transfers and synchronization all matter.
+// Measure the deployed pipeline instead of multiplying claimed speedups.
 
 console.log('=== DEEP SCAN Optimization Stack ===');
 console.log('');
@@ -218,7 +245,7 @@ Walk a preference order and return the backend that is actually running, reading
 
 <Exercise slug="gpu-backend" />
 
-<RecallPrompt question="Why can WebGPU help compute-heavy inference, and why should you still benchmark it?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; on DEEP SCAN's matmul-heavy workload WebGPU measured 3x faster at the bridge console, and another GPU will give another ratio." />
+<RecallPrompt question="Why can WebGPU help compute-heavy inference, and why should you still benchmark it?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates; the scene uses a fictional 3x gain. Benchmark your actual model and device; WebGPU can also lose." />
 
 <RecallPrompt question="Demir's first WebGPU timing run printed 0.4 ms and was wrong. Which rule from module 4's backend benchmark does that run break, and would disposing the output tensor before stopping the clock have fixed it?" answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms." />
 
@@ -237,5 +264,16 @@ The relay slot opens in fifteen days. Can you assemble the rest of the system in
 </Dialogue>
 
 On the live feed behind the Commander the pulse arrives, then arrives again, 47.9 seconds apart. Nobody in the room says what they're all thinking, which is that it used to be 73.4.
+
+<StoryConsequence
+  beatId="deep-orbit-cache-policy"
+  fallback="Demir runs the backend comparison without cached outputs, then records cache-hit and cache-miss timings separately."
+  outcomes={{
+    "cooperate": "The uncached rehearsal leaves a longer queue on Nazari's panel. Demir reports those timings separately, then measures an exact-key prototype before proposing any reuse. Nazari keeps the queue watch until both runs finish.",
+    "defect": "The paired threshold probes expose the rounded-key collision: the second input receives the first verdict. Demir disables reuse and repeats the affected captures from the raw log; the earlier cache-hit timings stay out of his backend comparison.",
+    "random": "A model swap between watch boundaries returns an old cached verdict in the rehearsal. Demir repeats the run with model and preprocessing versions in each key. Nazari adds that swap case to the next handover.",
+    "dominant": "The 64-entry versioned cache rejects the collision and old-model probes. Its near-duplicates still miss, so Demir reports hit, miss and uncached timings separately. Nazari signs the latency budget against misses, where inference still has to run."
+}}
+/>
 
 </Epilogue>

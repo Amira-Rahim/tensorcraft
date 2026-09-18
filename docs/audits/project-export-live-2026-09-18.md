@@ -2,8 +2,10 @@
 
 The production project export, identical retry, clean clone and standalone
 browser checks passed on 2026-09-18 at 11:32 UTC. This closes the maintainer
-verification of Q5's live API export path. Independent assessment and the
-production folder-picker interaction remain separate checks.
+verification of Q5's live API export path. The production folder-picker check
+subsequently passed at 12:52 UTC, as recorded in the
+[production follow-up](production-picker-and-renewal-2026-09-18.md).
+Independent assessment remains open.
 
 ## Published snapshot
 
@@ -63,9 +65,12 @@ in `api-rejected-before-renewal.json`.
 
 ## Remaining checks
 
-- The actual production course folder picker still needs an authenticated,
-  entitled browser check. This pass tested the production API and the cloned
-  standalone app; the picker has local component/browser coverage.
+The [production follow-up](production-picker-and-renewal-2026-09-18.md)
+records the later browser access check and scheduled natural-expiry observer.
+
+- The production folder-picker check passed in the later follow-up, including
+  confirmation and real publication/retry. Its approved temporary access and
+  prerequisite fixtures were removed afterward.
 - Live automatic renewal remains unobserved until the new credential reaches
   its renewal window. The 121 targeted tests include simulated rotation and
   concurrency. Successful reconnection and fresh-token export do not test

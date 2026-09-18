@@ -53,7 +53,8 @@ hints:
           !Array.isArray(window) ||
           window.length === 0 ||
           !window.every(Number.isFinite) ||
-          !Number.isFinite(actual)
+          ![actual, reconstructionError, reconThreshold, predicted, predTolerance].every(Number.isFinite) ||
+          reconstructionError < 0 || reconThreshold < 0 || predTolerance < 0
         )
           throw new Error('Invalid window or reading');
         const constant = window.every((value) => value === window[0]);
@@ -88,7 +89,7 @@ Replayed through the crew's three detectors running side by side, sample 7741 st
 By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
-I've checked the sensor calibration twice. This is not instrument noise. The model is right.
+I've checked the sensor calibration twice. No fault found. Keep the raw capture; I want an independent check before we rule the instrument out.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -105,7 +106,7 @@ Two detectors crossed their thresholds, Commander. That does not prove the patte
 
 In Node, `process.on('uncaughtException')` handles a throw that escaped earlier handlers. It can be a familiar bug. The ensemble is also an escalation point, but its triggers are statistical checks that can be wrong. Two fired here while the amplitude check stayed quiet; that tells us which checks failed, not whether the signal is new. That quiet dial is why sample 7741 sat in the archive for eight days. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 1.0, and this reading came back at 6.2, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
 
-<LearningObjectives objectives={["Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
+<LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection
 
@@ -125,7 +126,8 @@ interface DetectionResult {
 }
 
 function detectAnomaly(
-  signal: number[],     // the 11 features module 5 z-scored, for the autoencoder
+  signal: number[],     // 11 features using the AUTOENCODER training scaler
+  actualLstmFeatures: number[], // 3 features using the LSTM training scaler
   amplitude: number,    // the same capture's min-max amplitude, 0 to 1
   baseline: { mean: number; std: number },  // amplitude's normal-period mean/std
   autoencoder: tf.LayersModel,
@@ -133,6 +135,10 @@ function detectAnomaly(
   recentWindow: number[][],
   thresholds: { zScore: number; reconstruction: number; prediction: number },
 ): DetectionResult {
+  if (signal.length !== 11 || actualLstmFeatures.length !== 3 || recentWindow.length === 0 ||
+      recentWindow.some(row => row.length !== 3 || !row.every(Number.isFinite)) ||
+      ![...signal, ...actualLstmFeatures, amplitude, baseline.mean, ...Object.values(thresholds)].every(Number.isFinite) ||
+      Object.values(thresholds).some(value => value < 0)) throw new Error('Invalid detector inputs');
   // Detector 1: Statistical z-score on the capture's amplitude.
   // Two arrays describe this one capture and they are on different scales.
   // amplitude is what module 4's preprocess hands the classifier: the raw
@@ -162,11 +168,11 @@ function detectAnomaly(
     const input = tf.tensor3d([recentWindow]);
     // The LSTM (module 6) forecasts the next reading's three raw features,
     // and it reads and writes the per-feature z-scores it was trained on.
-    // Compare its forecast against those three features on that same
-    // scale, not against all 11; the 8 FFT bins have no forecast to be
-    // wrong about.
+    // Use its OWN frozen training scaler for both recentWindow and
+    // actualLstmFeatures. The autoencoder may have different training
+    // rows and statistics, even for columns with the same names.
     const predicted = (lstm.predict(input) as tf.Tensor).dataSync();
-    const nextFeatures = signal.slice(0, 3);
+    const nextFeatures = actualLstmFeatures;
     return nextFeatures.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / nextFeatures.length;
   });
   const lstmTriggered = predError > thresholds.prediction;
@@ -204,14 +210,18 @@ function detectAnomaly(
 
 Separately computed is not the same as independent. All three detectors score the same capture. The statistical gate reads its amplitude channel min-max normalized, and the autoencoder reads that same channel z-scored, as one of the eleven features it is trying to rebuild. That is one hull sensor read twice through two different scalings. If the sensor drifts, both detectors get the drifted number, and neither can tell that the other got it too. The autoencoder and the LSTM were fitted on the same eleven days of telemetry. The votes can therefore fail together, which is why a majority is not three odds multiplied.
 
-Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The same eleven days sit under the LSTM's training windows. One bad archive takes two votes out at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
+Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The same eleven days sit under the LSTM's training windows. A contaminated archive can weaken two votes at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
 
 ## The Discovery
 
 While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the gaps between them run in Fibonacci proportion: 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
-{`// Two views of the same capture: the z-scored eleven the autoencoder
+{`// Integration sketch: application supplies models, windows and frozen
+// scalers. actualLstmFeatures and recentWindow use the LSTM scaler;
+// anomalousSignal uses the autoencoder scaler. Mission scores below are
+// fictional examples, not output guaranteed by these functions.
+// Two views of the same capture: the z-scored eleven the autoencoder
 // rebuilds, and the min-max amplitude the statistical gate measures.
 // Module 5's extractFeatures turns the 64 raw samples into those eleven
 // in raw units. Module 4's preprocess normalizes the first three of them
@@ -225,7 +235,7 @@ const anomalousAmplitude = preprocess({
 })[0];
 
 const anomalyResult = detectAnomaly(
-  anomalousSignal, anomalousAmplitude, baseline,
+  anomalousSignal, actualLstmFeatures, anomalousAmplitude, baseline,
   autoencoder, lstm, recentWindow, thresholds,
 );
 
@@ -263,8 +273,8 @@ A constant window has no standard deviation to divide by. This exercise reports 
 <LessonRecap
   whatYouLearned={[
     "Ensemble detection combines methods with different assumptions (statistical, learned, and temporal) so that a majority vote, not any single detector, decides; agreement counts how many checks failed and is not a calibrated probability.",
-    "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
-    "The three detectors are separately computed, not independent: they score the same capture, and two of them were fitted on the same archive, so one contaminated training set can silence two votes at once. The statistical gate and the autoencoder also share the amplitude channel, each reading it through its own normalization.",
+    "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error can flag structural deviations, and LSTM prediction error can flag temporal pattern breaks. Each can miss events or flag normal variation.",
+    "The detectors share captures, features and training data. Their errors can be correlated: one contaminated archive may silence more than one vote.",
     "A model's job is detection and quantification; ensemble agreement tells you how many checks fired, and interpretation of what was detected remains a human decision."
   ]}
   bridge="Both an uncaughtException handler and an ensemble alert escalate a problem. The handler observes an actual throw; detector votes are fallible checks that need investigation."
@@ -276,7 +286,7 @@ A constant window has no standard deviation to divide by. This exercise reports 
 Farah reruns the interval decomposition on a cold copy of the data, on a different machine, and the sequence comes back unchanged: 1, 1, 2, 3, 5, 8, 13. Across the bridge, Nazari pulls the ship's own sensor calibration harmonics and lays them over the pulse train, unasked this time. Correlation: 0.9987. The signal out of Sector 7-G is pulsing in the Archimedes' own ratios, the math the ship hums to itself every time it tunes its sensors.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-Two hypotheses. Either the universe simply likes this arithmetic; it builds sunflowers and shell spirals with it, why not pulse trains. Or something out there has been listening to us calibrate.
+Two hypotheses. The calibration path may be leaking into the capture. Or the pattern may be external. We need an independent instrument before we choose between them.
 </Dialogue>
 
 Nobody answers her; on the main display the two traces sit one on top of the other, ratio for ratio. The question hanging over the bridge is one no model can score. Not "what is it" anymore: is it answering us?

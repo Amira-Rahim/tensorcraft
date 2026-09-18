@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "This ladder is for classify, the pipeline challenge. The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it. The leak drill after it is a separate job: two tensor counts, the hours between them, and what that rate leaves of the dashboard's budget."
   - level: guidance
-    content: "Two things have to be true before predict is worth calling. Each feature has to sit on the same 0-to-1 span the model trained on, so rescale it until its RANGES minimum lands on 0 and its maximum lands on 1. And the three have to arrive as one row in the order RANGES declares them, because the network learned that order and a swap throws nothing. After that, what predict gives back is not a plain number, so the value has to be read out of it, and everything allocated on the way belongs inside the tidy callback. That value is the probability of an anomaly, which is why a noise verdict reports the remainder instead."
+    content: "Two things have to be true before predict is worth calling. Each feature has to sit on the same 0-to-1 span the model trained on, so rescale it until its RANGES minimum lands on 0 and its maximum lands on 1. And the three have to arrive as one row in the order RANGES declares them, because the network learned that order and a swap throws nothing. After that, what predict gives back is not a plain number, so the value has to be read out of it, and everything allocated on the way belongs inside the tidy callback. The output is an anomaly score. The existing confidence field reports p for an anomaly verdict or 1-p for noise; neither is a calibrated reliability estimate."
   - level: solution
     content: "return tf.tidy(() => { const normalized = [ (signal.amplitude - RANGES.amplitude.min) / (RANGES.amplitude.max - RANGES.amplitude.min), (signal.frequency - RANGES.frequency.min) / (RANGES.frequency.max - RANGES.frequency.min), (signal.phase - RANGES.phase.min) / (RANGES.phase.max - RANGES.phase.min), ]; const input = tf.tensor2d([normalized]); const output = model.predict(input) as tf.Tensor; const p = output.dataSync()[0]; return { class: p > 0.5 ? 'anomaly' as const : 'noise' as const, confidence: p > 0.5 ? p : 1 - p, }; });"
 keywords:
@@ -48,7 +48,7 @@ Signal feed is connected. Every second, a new reading arrives: three values. I f
 And what happens to the tensors you create every second? If you don't dispose them, you'll leak memory until the tab crashes. This is not a lab experiment anymore.
 </Dialogue>
 
-One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the count climbs by 7,200 an hour. The bytes barely move: the escaped pair at this model's size is a [1, 3] input and a [1, 1] output, 16 bytes together, so a gigabyte of leaked tensor data is more than a year away at one reading a second. What you run out of first is the count. The incident exercise later in this lesson puts the dashboard's budget at 10,000 tensors, which this leak reaches in eighty-three minutes.
+At one prediction per second, two retained tensors per call add 7,200 tensor handles per hour. Their logical float32 values occupy only 16 bytes per pair in this tiny model, but buffers, textures and runtime bookkeeping can cost more. The exercise's 10,000-tensor budget is an operational limit, not a universal browser crash threshold. Investigate both tensor counts and actual resource use.
 
 <LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Investigate tensor growth and estimate headroom when that growth continues"]} />
 
@@ -100,10 +100,10 @@ function classify(
   return tf.tidy(() => {
     const row = tf.tensor2d([preprocess(rawSignal)]);   // shape: [1, 3]
     const verdict = model.predict(row) as tf.Tensor;    // shape: [1, 1]
-    const p = verdict.dataSync()[0];                    // sigmoid: P(anomaly)
+    const p = verdict.dataSync()[0];                    // sigmoid score, not a validated probability
 
-    // Confidence is confidence IN THE VERDICT, not the raw sigmoid:
-    // p = 0.12 is not "12% confident", it is "noise, 88% confident".
+    // The API calls this confidence; it is the chosen class's score.
+    // Calibration must be measured before interpreting it as reliability.
     return {
       class: p > 0.5 ? 'anomaly' : 'noise',
       confidence: p > 0.5 ? p : 1 - p,
@@ -123,10 +123,10 @@ Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the
 <CodeBlock language="typescript" title="memory-management.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// BAD: leaks memory every call; tensors accumulate on the GPU
+// BAD: leaks memory every call; tensors remain registered with the active backend
 function leakyPredict(model: tf.LayersModel, data: number[]) {
-  const input = tf.tensor2d([data]);           // allocated on GPU
-  const output = model.predict(input);          // allocated on GPU
+  const input = tf.tensor2d([data]);           // caller-owned tensor
+  const output = model.predict(input);          // caller-owned tensor
   return (output as tf.Tensor).dataSync()[0];   // input and output NEVER freed
 }
 
@@ -147,7 +147,7 @@ console.log(tf.memory());
 
 Sustained growth after warmup is a reason to investigate. Lazy initialization or an intentional cache can also increase the count. Track bytes and backend memory as well; a flat tensor count alone does not rule out a leak.
 
-One more dial before the wiring: `dataSync()` blocks the JavaScript thread until the GPU read completes. At this model's scale the stall is invisible, which is why `classify()` reads inside the `tidy()`: nothing escapes it, so there is nothing left to dispose by hand, and that is the form the challenge grades. The other read is `await tensor.data()`, which returns a Promise and yields to the event loop while the transfer happens. `tf.tidy()` cannot wrap async code, so that form splits in two: the tensor math sits inside `tidy()` and returns ONE tensor, the read happens outside with `await`, and that one tensor is disposed by hand.
+One more dial before the wiring: `dataSync()` blocks the JavaScript thread until the GPU read completes. Measure its effect on the dashboard; even a small output can wait for queued GPU work. Here `classify()` reads inside the `tidy()`: nothing escapes it, so there is nothing left to dispose by hand, and that is the form the challenge grades. The other read is `await tensor.data()`, which returns a Promise and allows asynchronous readback. It does not move all model computation off the main thread or guarantee that a frame renders during the wait. `tf.tidy()` cannot wrap async code, so that form splits in two: the tensor math sits inside `tidy()` and returns ONE tensor, the read happens outside with `await`, and that one tensor is disposed by hand.
 
 <CodeBlock language="typescript" title="classify-async.ts">
 {`// The async variant: same verdict, one tensor deliberately kept alive
@@ -162,9 +162,12 @@ async function classifyAsync(
     const row = tf.tensor2d([preprocess(rawSignal)]);
     return model.predict(row) as tf.Tensor;   // row freed, output kept
   });
-  const p = (await output.data())[0];         // yields to the event loop here
-  output.dispose();                           // the one tensor tidy kept
-  return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
+  try {
+    const p = (await output.data())[0];
+    return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
+  } finally {
+    output.dispose(); // also runs if readback fails
+  }
 }`}
 </CodeBlock>
 
@@ -198,19 +201,24 @@ function createInferencePipeline(model: tf.LayersModel) {
   };
 }
 
-// Usage: exactly like setting up an event listener
+// Integration sketch: your app supplies model, signalFeed and updateDashboard.
+// Retain and remove the handler during teardown.
 const pipeline = createInferencePipeline(model);
 
 // Process each signal reading as it arrives (1Hz)
-signalFeed.addEventListener('reading', (event: CustomEvent<SignalReading>) => {
+const onReading = (event: CustomEvent<SignalReading>) => {
   const classification = pipeline(event.detail);
   updateDashboard(classification);
-  // Typical: { class: 'noise', confidence: 0.88, latencyMs: 3.4 }
-  // (raw sigmoid 0.12: an anomaly probability, inverted into noise confidence)
-});`}
+  // Illustrative shape: { class: 'noise', confidence: 0.88, latencyMs: 3.4 }
+  // confidence is a class score, not measured probability calibration.
+};
+signalFeed.addEventListener('reading', onReading);
+// On teardown: signalFeed.removeEventListener('reading', onReading);`}
 </CodeBlock>
 
-That 3.4 ms is the whole handler, not the model. `performance.now()` brackets the normalization, the tensor allocation, the `predict` call and the `dataSync()` readback together. Lesson 5 clocks this same model at 2.4 ms per call on WebGL, the backend five of the six bridge consoles reported in lesson 2, and its clock has the readback inside it on purpose, so 2.4 of the 3.4 is predict plus the read. The missing millisecond is not the arithmetic around them: six subtractions, three divisions and one object literal measure in fractions of a microsecond. It is the surroundings. Lesson 5's figure comes from a loop running back to back on a page doing nothing else; this one comes from a handler firing between paints on a dashboard that is drawing.
+The handler timer includes preprocessing, tensor allocation, prediction and readback. Compare it with the runtime lab's isolated measurement, but do not subtract results from different runs and treat the difference as a measured overhead. Dashboard rendering, warmup, backend scheduling and device load can all change timing. The 3.4ms in the story is fictional.
+
+The return field is named `confidence` for this exercise's API. It contains the selected class score, p or 1-p. A sigmoid range alone does not show that a score of 0.88 means 88% of comparable predictions are correct. That requires calibration evidence on representative held-out data.
 
 ## Challenge
 
@@ -230,12 +238,12 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 
 <Epilogue>
 
-For a full hour after the 03:10 page the patched pipeline runs clean: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test. The labeled windows light amber on schedule, a roll call of already-known events, exactly what a 94% model should do to its own history. At 14:31 ship-time one more flag lands where no label exists, in the calmest stretch of the tape. The ID on the screen is sample 7741. Farah's calibration ghost, the one she flagged before there was a network to flag it with, now glowing on the bridge dashboard where the whole crew can see it.
+For a full hour after the 03:10 page the patched pipeline runs clean: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test. The labeled windows light amber on schedule, a roll call of already-known events, a replay check on events the crew already knows. At 14:31 ship-time one more flag lands where no label exists, in the calmest stretch of the tape. The ID on the screen is sample 7741. Farah's calibration ghost, the one she flagged before there was a network to flag it with, now glowing on the bridge dashboard where the whole crew can see it.
 
 <Dialogue speaker="Dr. Farah">
 It looks different on a screen than in a spreadsheet, doesn't it.
 </Dialogue>
 
-Confidence: 0.518. The model cannot make up its mind about that reading either.
+Anomaly score: 0.518. Farah routes the reading for review; the score supplies no explanation.
 
 </Epilogue>

@@ -13,7 +13,7 @@ context:
   narrative: "Demir applies attention specifically to the temporal dimension: the model learns to 'scroll to' the most relevant time steps in each signal window."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Temporal attention scores each time step's importance and concentrates processing on the few that carry the information. The weights double as a map of where the model looked."
+  explanation: "Temporal attention scores each time step and forms a weighted summary. It still computes every score. The weights double as a map of where the model looked."
   bridge:
     jsTitle: "scrollIntoView()"
     jsCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
@@ -22,7 +22,7 @@ concept:
     tier: intuition
     breaks: "scrollIntoView requests scrolling toward an element chosen by application code. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the per-step linear scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
 consequence:
-  narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The pattern is confirmed."
+  narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The crew checks the raw timing separately; weights alone do not confirm a physical pattern."
 hints:
   - level: nudge
     content: |
@@ -33,13 +33,15 @@ hints:
   - level: solution
     content: |
       function temporalAttention(sequence, scorerWeights) {
-        const [T] = sequence.shape;
-        const pos = tf.linspace(0, 1, T).reshape([T, 1]);
-        const withPos = tf.concat([sequence, pos], 1);
-        const scores = tf.matMul(withPos, scorerWeights).reshape([T]);
-        const weights = tf.softmax(scores);
-        const summary = tf.matMul(weights.reshape([1, T]), sequence).squeeze([0]);
-        return { summary, weights };
+        return tf.tidy(() => {
+          const [T] = sequence.shape;
+          const pos = tf.linspace(0, 1, T).reshape([T, 1]);
+          const withPos = tf.concat([sequence, pos], 1);
+          const scores = tf.matMul(withPos, scorerWeights).reshape([T]);
+          const weights = tf.softmax(scores);
+          const summary = tf.matMul(weights.reshape([1, T]), sequence).squeeze([0]);
+          return { summary, weights };
+        });
       }
 keywords:
   - temporal-attention
@@ -54,7 +56,7 @@ skillAxes: [model_arch]
 The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 4 and the frequency shift at step 78. Seventy-four steps apart.
 </Dialogue>
 
-`scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention gives the model the same control over a sequence: score every time step, then concentrate processing on the few that carry the information. Lesson 1 read its query off the sequence. Here the scorer's learned weights play that part, the same query on every window, and each step is both its own key and its own value.
+`scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention scores every step and combines the values under those weights. A high weight does not skip computation on other steps. Lesson 1 read its query off the sequence. Here the scorer's learned weights play that part, the same query on every window, and each step is both its own key and its own value.
 
 <LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Read the weights back as one number per time step and name the steps that took the most of the budget", "Use attention weights as a where-it-looked map, and state what they do not prove about why", "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"]} />
 
@@ -109,12 +111,12 @@ function temporalAttention(
 // 74 steps apart inside the 80-step window`}
 </CodeBlock>
 
-Three counts run through this lesson and two of them carry the same number, so pin all three before reading a heatmap. A step is one reading, and the dashboard's readings land one per second, so the 80-step window covers 80 seconds. The spike and the frequency shift sit 74 steps apart because the interval measured in module 5 is 73.4 s: on a one-per-second grid the shift lands four tenths of a second past reading 77, so reading 78 is the first one that carries it. Module 6 measured the same 74-step dependency and then sized its window at 80 to hold it, six steps to spare. The 64-sample capture in the next block is not a step count. It is 64 samples of one channel at 256 Hz, a quarter of a second, and that is the stretch a single reading's three features are measured over. The 64 channels from module 1 are a different 64 again: that count says how many sensors report, not how long anything lasts.
+Three counts run through this lesson and two of them carry the same number, so pin all three before reading a heatmap. A step is one reading, and the dashboard's readings land one per second, so the first and last timestamps in 80 readings are 79 seconds apart. The spike and the frequency shift sit 74 steps apart because the interval measured in module 5 is 73.4 s: on a one-per-second grid the shift lands four tenths of a second past reading 77, so reading 78 is the first one that carries it. Module 6 measured the same 74-step dependency and then sized its window at 80 to hold it, enough room for both sampled events. The 64-sample capture in the next block is not a step count. It is 64 samples of one channel at 256 Hz, a quarter of a second, and that is the stretch a single reading's three features are measured over. The 64 channels from module 1 are a different 64 again: that count says how many sensors report, not how long anything lasts.
 
 ## Interpreting Attention Weights
 
 <CodeBlock language="typescript" title="interpret-attention.ts">
-{`// Attention weights are inspectable, unlike LSTM hidden state
+{`// Attention weights have an explicit time axis that is convenient to plot
 // You can show the crew exactly WHERE the model put its weight.
 // Why it decided is a separate question the weights do not settle.
 
@@ -135,23 +137,19 @@ function topAttentionSteps(
     .slice(0, topK);
 }
 
-// For the anomalous signal, read off the trained model. Readings are raw
+// Fictional mission readings, not output from the untrained layer above. Readings are raw
 // sensor values, not normalized ones: amplitude in hull counts (0 to
 // 2048), frequency as a zero-crossing count over the 64-sample capture
 // (0 to 63), phase in radians.
 // Step 78: weight=0.15, reading=[635, 40, 1.57]   ← frequency shift
 // Step 4:  weight=0.12, reading=[1980, 37, 0.23]  ← amplitude spike
 // Step 40: weight=0.09, reading=[1065, 37, 0.89]  ← mid-pattern
-// (37 crossings is the 73.4 Hz line: at the array's 256 Hz rate that tone
-//  puts 36.7 crossings in a 64-sample capture, and a count is a whole
-//  number. Step 78's 40 crossings is the shift itself, 80 Hz exactly.
-//  Module 7 baselined normal amplitude between 0.28 and 0.76 of the 2048
-//  ceiling, roughly 570 to 1560 counts, so step 4's 1980 is the spike,
-//  high enough to stand out and still short of clipping. The other two
-//  rows sit inside the band. The top weight sits on the frequency row.
-//  Whether the shift is what drove the prediction takes an ablation,
-//  meaning you rerun the prediction with that step's values blanked and
-//  see whether the answer moves, not a heatmap.)`}
+// A crossing count does not identify a frequency exactly: phase, offset,
+// mixtures, noise and the finite window all matter. Use the FFT and raw
+// waveform to investigate the apparent shift. Blanking a step can measure
+// model sensitivity, but may create unrealistic inputs; it does not prove
+// the physical cause or fully explain a prediction.
+`}
 </CodeBlock>
 
 ## Applied: Attention Over a Live Ring Buffer
@@ -166,7 +164,7 @@ const full = bufferWindow();                       // [1, 80, 3]
 const { attended, weights } = temporalAttention(full);
 console.log(full.shape, weights.shape, attended.shape);
 // [1, 80, 3] [1, 80] [1, 3]
-console.log(weights.sum().dataSync()[0].toFixed(3));
+console.log(tf.tidy(() => weights.sum().dataSync()[0]).toFixed(3));
 // 1.000
 
 // The virtualized buffer: the same cycle, but only the 48 steps around
@@ -176,15 +174,17 @@ const kept = full.slice([0, 32, 0], [1, 48, 3]);   // [1, 48, 3]
 const clipped = temporalAttention(kept);
 console.log(kept.shape, clipped.weights.shape, clipped.attended.shape);
 // [1, 48, 3] [1, 48] [1, 3]
-console.log(clipped.weights.sum().dataSync()[0].toFixed(3));
-// 1.000`}
+console.log(tf.tidy(() => clipped.weights.sum().dataSync()[0]).toFixed(3));
+// 1.000
+tf.dispose([full, attended, weights, kept, clipped.attended, clipped.weights]);
+// Dispose scorer at the end of the workflow.`}
 </CodeBlock>
 
-Read the two sums together: 1.000 and 1.000. Softmax spends its entire budget on whatever the buffer kept, every time, so the truncated window produces a heatmap exactly as normalized and exactly as confident as the full one. The shapes match too. Both windows pool to [1, 3], so nothing downstream can tell an 80-step capture from a 48-step one by shape, and the three numbers inside are not the same: the steps the slice dropped were carrying part of that sum. The weights map where the model looked; a step the buffer virtualized away is simply off the map, with no residual mass, no warning, no NaN. When a capture comes back missing its onset, the model will attend beautifully to what remains and never once complain.
+Both weight sums are 1. That normalization says nothing about confidence or missing observations. The pooled outputs also have the same shape, [1, 3], although their values can differ. An output-shape check alone will not detect a truncated input. Validate window length, timestamps and capture metadata before inference, and preserve the missing-data status for the operator.
 
 ## Putting the Position Back
 
-Lesson 1 left a debt. The scorer above reads feature values and nothing else, so two windows holding the same readings in a different order pool to the identical summary: each weight follows its own reading, and the sum does not care what order they arrived in. On this crew's data that is the difference between a spike that precedes a frequency shift and one that follows it, and the model cannot see it. The fix production transformers use is a positional encoding, a vector added to each step that says where it sits. The cheapest honest version is one extra feature: the step's position, scaled to [0, 1], concatenated onto the readings before scoring.
+Lesson 1 left a debt. The scorer above reads feature values and nothing else, so two windows holding the same readings in a different order pool to the identical summary: each weight follows its own reading, and the sum does not care what order they arrived in. On this crew's data that is the difference between a spike that precedes a frequency shift and one that follows it, and the model cannot see it. Transformers commonly add position information through embeddings, relative scores or rotations. The cheapest honest version is one extra feature: the step's position, scaled to [0, 1], concatenated onto the readings before scoring.
 
 <CodeBlock language="typescript" title="positional-feature.ts">
 {`// [batch, T, 3] -> [batch, T, 4]: the fourth feature is position / (T - 1)
@@ -215,7 +215,7 @@ function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; we
 // because lateness is now a number it multiplies by a weight.`}
 </CodeBlock>
 
-Transformers use sines and cosines at several frequencies instead of one ramp, so that the distance between two steps is readable as well as their absolute positions, but the contract is the same. Attention only knows what you hand it, and position is a feature like any other.
+Sinusoidal encodings are one approach used in the original Transformer. Learned positions and relative or rotary schemes are other choices. Our linear position column only lets the scorer favor earlier or later steps; it is not a full transformer position mechanism. Attention only knows what you hand it, and position is a feature like any other.
 
 ## Challenge
 
@@ -223,14 +223,14 @@ Build the temporal attention path with position as a scored feature, then read t
 
 <Exercise slug="temporal-attention" />
 
-<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions influenced the pooled representation most. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Even so, a where-it-looked map is far more diagnostic than an LSTM's opaque hidden state." />
+<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions influenced the pooled representation most. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Use these plots alongside input checks, ablations and error analysis, not as a substitute for them." />
 
 <LessonRecap
   whatYouLearned={[
     "Temporal attention applies a learned scoring function along the time axis, then softmax-normalizes the scores into a probability distribution over time steps.",
-    "The weighted sum of time-step features concentrates the model's representation on the highest-scoring positions, reducing noise from irrelevant steps.",
+    "The weighted sum of time-step features concentrates the model's representation on the highest-scoring positions, which may help prediction after training and evaluation.",
     "Attention weights are inspectable: one number per time step, which is what a heatmap over the window draws. They show where the model put its weight, and that is a map of where it looked, not a proof of why it decided.",
-    "Softmax renormalizes over whatever window it is handed. A capture that lost its onset still produces weights summing to 1 and an output of the same shape, so nothing downstream can tell it from a full window.",
+    "Softmax renormalizes over whatever window it is handed. A capture that lost its onset still produces weights summing to 1 and an output of the same shape, so output shape and weight sum alone cannot establish that the input was complete.",
     "Attention is order-blind until position is handed to it as a feature. One extra column holding the step's position, scaled to [0, 1], is enough for the scorer to prefer late steps over early ones."
   ]}
   bridge="scrollIntoView targets a chosen element. Temporal attention learns weights over time steps and uses them to combine their representations."

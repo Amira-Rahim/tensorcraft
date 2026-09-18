@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-09-18T15:21:07.924Z",
+  "fingerprint": "3bce0c1743884fe432067b7fe86c01060070fda193eb9f4828033920dafaa9a1",
+  "local": {
+    "changedWeightsRejected": true,
+    "changedGraphRejected": true,
+    "missingShardRejected": true,
+    "rollbackVerified": true,
+    "baselineScore": 0.06260447204113007
+  },
+  "hosted": {
+    "status": "passed",
+    "url": "https://tensorcraft.app/models/deep-scan/model.json",
+    "fingerprint": "3bce0c1743884fe432067b7fe86c01060070fda193eb9f4828033920dafaa9a1",
+    "score": 0.06260447204113007,
+    "scope": "Read-only HTTPS fetch and inference from the exact verified bytes. No production deployment or rollback was performed."
+  },
+  "reviewArchiveSha256": "fe3af204f22bd60166d3355e9fc03538c8deaf3449f8da4c30bc11ce5e4c5dd7",
+  "verificationNote": "Final archive extracted into a new directory; npm ci --ignore-scripts; pinned pretrained asset downloads reused and rehashed. No workspace node_modules or browser profile. Concurrent development work means timings are observations, not a runtime ranking."
+}

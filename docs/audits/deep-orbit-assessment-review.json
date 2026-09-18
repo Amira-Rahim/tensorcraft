@@ -109,7 +109,7 @@
         },
         {
           "number": 4,
-          "text": "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]",
+          "text": "Understand the matmul shape rule: [m,n] \u00d7 [n,p] \u2192 [m,p]",
           "evidenceLevel": "guided_code_evidence"
         },
         {
@@ -747,7 +747,7 @@
       "objectives": [
         {
           "number": 1,
-          "text": "Build a real-time inference pipeline: input → preprocess → predict → display",
+          "text": "Build a real-time inference pipeline: input \u2192 preprocess \u2192 predict \u2192 display",
           "evidenceLevel": "partial_evidence"
         },
         {
@@ -1126,7 +1126,7 @@
       "objectives": [
         {
           "number": 1,
-          "text": "Understand the RNN as a learned reducer: (prevState, input) → newState",
+          "text": "Understand the RNN as a learned reducer: (prevState, input) \u2192 newState",
           "evidenceLevel": "guided_code_evidence"
         },
         {
@@ -1355,7 +1355,7 @@
       "objectives": [
         {
           "number": 1,
-          "text": "Understand the autoencoder architecture: encoder → bottleneck → decoder",
+          "text": "Understand the autoencoder architecture: encoder \u2192 bottleneck \u2192 decoder",
           "evidenceLevel": "guided_code_evidence"
         },
         {
@@ -1782,7 +1782,7 @@
         },
         {
           "number": 3,
-          "text": "Define the human-AI workflow: generate → review → correct → approve",
+          "text": "Define the human-AI workflow: generate \u2192 review \u2192 correct \u2192 approve",
           "evidenceLevel": "self_checked_recall"
         }
       ],
@@ -1859,7 +1859,7 @@
       "objectives": [
         {
           "number": 1,
-          "text": "Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response",
+          "text": "Understand RAG as retrieve \u2192 augment \u2192 generate: query data, inject into prompt, generate response",
           "evidenceLevel": "partial_evidence"
         },
         {
@@ -3195,5 +3195,12 @@
       "report": "docs/audits/independent-assessment-patch-2026-09-17.md",
       "scope": "Three decision tasks, external final-project scaffold, real artifact verification and narrowed integration objectives. One launch packaging objective moves from explanation-only to partial evidence; learner mastery is not inferred."
     }
-  ]
+  ],
+  "currentRevisionReview": {
+    "date": "2026-09-18",
+    "evidence": "docs/audits/internal-content-review-2026-09-18.md",
+    "manifest": "docs/audits/content-review-manifest.json",
+    "inventory": "docs/audits/deep-orbit-learning-map.json",
+    "note": "The original objective-level annotations and hashes are a dated snapshot. Current source, complete feedback review and technical runtime evidence are recorded separately; no automatic promotion of objective attainment."
+  }
 }

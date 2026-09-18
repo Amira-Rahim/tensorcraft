@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Creating a server wires up a handler; compiling a model configures its training objective, optimizer, and metrics. Compilation does not train or reset its weights. A newly initialized model still needs fitting; an already trained model may already make useful predictions."
 consequence:
-  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the connection weights are still random numbers. The answers they give are not all as random."
+  narrative: "The DEEP SCAN network is assembled and compiled. Its starting scores are recorded, ready for comparison after training."
 hints:
   - level: nudge
     content: |
@@ -32,16 +32,20 @@ hints:
       Save the initial weights and predictions before training the first network. Leave the second network untrained so you can compare it with the trained one. Its predictions may still be confident: confidence alone cannot tell you whether training happened.
   - level: solution
     content: |
-      const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
-      const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
-      const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
-      const readings = tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1);
-      const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
+      const { readings, labels } = tf.tidy(() => {
+        const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
+        const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);
+        const spare = tf.clipByValue(tf.randomNormal([120, 5], 0.50, 0.15, 'float32', 37), 0, 1);
+        return {
+          readings: tf.concat([tf.concat([calmReal, flaggedReal]), spare], 1),
+          labels: tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]),
+        };
+      });
 
       function buildClassifier() {
         const model = tf.sequential();
-        model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [8] }));
-        model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+        model.add(tf.layers.dense({ units: 24, activation: 'relu', inputShape: [8] }));
+        model.add(tf.layers.dense({ units: 12, activation: 'relu' }));
         model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
         model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
         return model;
@@ -52,12 +56,12 @@ hints:
 
       const initialWeights = model.getWeights().map((w) => Array.from(w.dataSync()));
 
-      const sweepOne = Array.from(model.predict(readings).dataSync());
-      const sweepTwo = Array.from(second.predict(readings).dataSync());
+      const sweepOne = tf.tidy(() => Array.from(model.predict(readings).dataSync()));
+      const sweepTwo = tf.tidy(() => Array.from(second.predict(readings).dataSync()));
 
       await model.fit(readings, labels, { epochs: 50, batchSize: 16 });
 
-      const trainedSweep = Array.from(model.predict(readings).dataSync());
+      const trainedSweep = tf.tidy(() => Array.from(model.predict(readings).dataSync()));
 keywords:
   - compile
   - optimizer
@@ -74,9 +78,11 @@ Assemble it. I want the classifier compiled and ready for training by end of wat
 
 ## Assembly Required
 
-Compile the network below, then call `model.predict()` immediately. It runs. It returns a probability. And the number is meaningless, because compilation wires up the optimizer and loss without ever touching the connection weights, which are still random. Assembly and training are separate steps, the way `http.createServer(handler)` and the `listen()` call that puts it to work are separate steps.
+Assemble the network and call `model.predict()`. Prediction does not require compilation. `compile()` configures the optimizer, loss and metrics used by training; it does not fit or reset the weights. A newly initialized model can emit confident scores without having learned anything useful.
 
-If every connection weight in a layer started at zero, every unit in that layer would compute the same output and receive the same gradient. They would update in lockstep and never come to represent different features. Random values break that symmetry. TensorFlow.js draws only the connection weights at random and starts every bias at zero, which is safe because the random weights already make the units differ. The scale of the draw matters too. A dense layer defaults to Glorot initialization, which sizes the random draw by the layer's input and output counts together. The signal then neither grows nor shrinks much as it passes through. The sigmoid output unit starts on the sloped middle of its curve rather than the flat tails lesson 2 called saturation, and TensorFlow.js applies the same default to the relu layers. TensorFlow.js calls a layer's weight matrix its kernel, and `kernelInitializer` is the option that controls the choice.
+Hidden units need a way to learn different features. Identical initialization can preserve symmetry: units start with the same computation and can receive identical updates. Random kernel weights are a common way to break that symmetry. In this TFJS dense layer, the defaults are Glorot-normal kernel initialization and zero biases. `kernelInitializer` and `biasInitializer` can change them.
+
+Glorot chooses the draw's scale using the layer's input and output widths. That aims to control signal variance under assumptions about the inputs and activations. It does not guarantee that every signal stays well-scaled or that no unit saturates. Training behavior still needs observation.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -122,10 +128,12 @@ model.summary();
 // 5. Test with a prediction
 const testInput = tf.tensor2d([[0.5, 0.8, 0.2]]);
 const prediction = model.predict(testInput) as tf.Tensor;
-console.log('Initial prediction:', prediction.dataSync());`}
+console.log('Initial prediction:', prediction.dataSync());
+tf.dispose([testInput, prediction]);
+model.dispose();`}
 </CodeBlock>
 
-`optimizer: 'adam'` names the algorithm that adjusts weights during training, and Adam is the usual first pick because it adapts the learning rate as it goes. `loss: 'binaryCrossentropy'` sets how error gets measured. Binary crossentropy fits a yes/no output, and MSE fits continuous values. `metrics: ['accuracy']` only adds a number to the training log, the share of predictions that came out correct. It does not change what the model learns.
+`optimizer: 'adam'` names the algorithm that adjusts weights during training, and Adam uses moving estimates of gradients and their squares to scale parameter updates. You still choose its base learning rate. `loss: 'binaryCrossentropy'` sets how error gets measured. Binary crossentropy is a common loss for a binary probability model. Mean squared error, MSE, is a common regression loss. The task, output format and costs still determine the appropriate objective. `metrics: ['accuracy']` only adds a number to the training log, the share of predictions that came out correct. It does not change what the model learns.
 
 ## Challenge
 
@@ -147,10 +155,10 @@ One difference from the bridge build above, and it is deliberate: the demo wired
 
 <LessonRecap
   whatYouLearned={[
-    "Building a sequential network follows four steps: create the model, add layers, compile with optimizer and loss, then call predict() or fit().",
+    "Create and connect layers to run predict(). Compile before using fit() to train them.",
     "model.compile() is configuration, not training: it wires up the optimizer, loss function, and metrics for the later fit() call.",
-    "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for a yes/no output, MSE for continuous values.",
-    "A new layer starts with random connection weights and zero biases. The random draw stops every unit in the layer from computing the same thing, and Glorot scaling keeps the signal from growing or shrinking as it moves through."
+    "Adam scales updates using gradient statistics; its base learning rate is still a setting. Choose a loss that matches the task and output format.",
+    "Dense layers here default to Glorot-normal kernel weights and zero biases. Random initialization helps break symmetry; it does not guarantee good predictions or stable training."
   ]}
   bridge="createServer wires a request handler. model.compile configures training without changing existing weights; fitting performs the parameter updates."
   youCanNow="Assemble, compile, and verify a complete sequential neural network, run an initial prediction to confirm the pipeline is wired correctly, and say where its starting weights come from."
@@ -158,14 +166,14 @@ One difference from the bridge build above, and it is deliberate: the demo wired
 
 <Epilogue>
 
-End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, a hundred and ninety-nine answers inside a span of five hundredths, every one of them a hair under 0.5 and filed as noise. Which side of 0.5 they all landed on is the draw's doing, not the archive's, and the next initialization can put an entire sweep on the signal side. Sample 7741 comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
+End of watch, as ordered. Farah runs the untrained network over the archive, then initializes a second copy. Sample 7741 changes position in the sorted results. She removes the alert colors from both displays and saves the starting weights beside each run.
 
 <Dialogue speaker="Dr. Farah">
-An untrained network has no opinions. So why does it keep having this one?
+Keep the tag on the reading. These scores have not earned an interpretation yet.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-For the record, Doctor: that question is correct as stated. Two independent initializations are two fresh draws of every connection weight in the network; the probability that both draws push one specific reading past 0.99 is as near zero as anything I am permitted to log. Untrained networks do not hold stable opinions. In any terrestrial system I would report this as a defect in the test harness. I have checked the harness twice. It is not the harness.
+Initial states archived. I can reproduce my own mistakes. I will require the same of this system.
 </Dialogue>
 
 </Epilogue>

@@ -23,14 +23,14 @@ concept:
     tier: structural
     breaks: "Services and models both need input contracts, error handling, and monitoring. In a model chain, plausible but wrong outputs can pass ordinary type checks and affect later stages. Keep provenance and evaluate each stage as well as the combined result."
 consequence:
-  narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
+  narrative: "The pipeline publishes a measured alert overnight. Its generated explanation waits for a human reviewer."
 hints:
   - level: nudge
     content: |
       Every stage is handed the raw capture and does its own preprocessing, and the classifier's verdict rides along as context. Both of its fields get checked, and the two checks end differently: one broken field has an honest stand-in, the other has none. The expensive last stage is conditional: no anomaly, no alert. Stage 1 is a real model this time: scale the three readings the way module 4 did, hand the model one row, and read the verdict off the sigmoid.
   - level: guidance
     content: |
-      Wiring three stages is the easy half. The work is deciding what each stage is allowed to hand the next one. Each stage reads the raw capture, so no stage inherits another stage's preprocessing. What does travel between them is the classifier's verdict, and its two fields are not equally repairable. One names a category, the contract lists the categories it may name, and a value outside that list has an obvious stand-in that claims exactly as much as you know. The other is a number every later stage quotes as the model's own certainty, so there is nothing to put in its place: a substituted certainty is a number the classifier never produced, shown to the operator as though it had. That one ends the run, and it ends it before the next stage has done any work. The last stage is the expensive one and only one of the two outcomes calls for it, so the run decides whether to enter it at all, and the result says plainly that nothing was raised. For the real stage, two things about what it is handed are not yours to repair: the length, which the model polices by throwing, and the scale, which nothing polices. Module 4's ranges are in the starter; a raw count or a z-score fits the model and comes back as a number between zero and one that means nothing. Past the midpoint the sigmoid speaks for the positive class at that value, and the confidence in the other verdict is what is left.
+      Validate before handing data to the next stage. Use the supplied ranges, one prediction inside tf.tidy, and plain returned values. A wrong class becomes unknown; an invalid score stops the run. Only a boolean true detector result triggers the alert writer. The field called confidence is a model score, not a measured probability of correctness.
   - level: solution
     content: |
       interface Verdict {
@@ -57,10 +57,13 @@ hints:
           if (reading.length !== order.length) {
             throw new Error('the classifier reads ' + order.length + ' features and was handed ' + reading.length);
           }
+          if (!reading.every(Number.isFinite)) throw new Error('Non-finite reading');
           const features = reading.map((v, i) => (v - order[i].min) / (order[i].max - order[i].min));
           return tf.tidy(() => {
             const row = tf.tensor2d([features]);
-            const p = (model.predict(row) as tf.Tensor).dataSync()[0];
+            const output = (model.predict(row) as tf.Tensor).dataSync();
+            if (output.length !== 1 || !Number.isFinite(output[0]) || output[0] < 0 || output[0] > 1) throw new Error('Invalid sigmoid output');
+            const p = output[0];
             return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
           });
         };
@@ -98,7 +101,7 @@ skillAxes: [deployment, js_integration]
 Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together, like an API gateway routing to micro-services.
 </Dialogue>
 
-Four models, four contracts: a class and a confidence from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together and making failures visible before they reach the report.
+Four models, four contracts: a class and a chosen-class score from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together and making failures visible before they reach the report.
 
 If four stages each have a 95% chance of being correct and those events are independent, the chance that all four are correct is 0.95^4, about 81%. That is not automatically the final system accuracy: stages may recover from errors, and some outputs may not affect the result. Shared inputs can also make errors dependent. Check contracts between stages, then evaluate the complete pipeline against real outcomes. A plausible value can satisfy every type and range check and still be wrong.
 
@@ -113,168 +116,133 @@ If four stages each have a 95% chance of being correct and those events are inde
 
 interface PipelineResult {
   classification: { class: string; confidence: number };
-  anomaly: { isAnomaly: boolean; score: number };
-  prediction: { nextValues: number[] };
+  anomaly: { isAnomaly: boolean; score: number; method: 'autoencoder-mse' | 'amplitude-z-score'; threshold: number };
+  prediction: { nextValues: number[] }; // empty when unavailable
   report: string | null;
-  draftForReview: string | null; // generated prose, never automatically published
+  draftForReview: string | null;
+}
+type Models = { classifier: tf.LayersModel; autoencoder: tf.LayersModel; lstm: tf.LayersModel; llm: LLMClient };
+
+function requireVector(values: number[], width: number) {
+  if (values.length !== width || !values.every(Number.isFinite)) throw new Error('Invalid feature vector');
 }
 
-// A stage that is merely wrong throws nothing. Check what it promised before
-// the next stage treats it as fact: pass the value on, swap in the fallback,
-// or stop the run.
-function validateStage<T>(
-  stage: string,
-  value: T,
-  ok: (v: T) => boolean,
-  fallback?: T,
-): T {
-  if (ok(value)) return value;
-  if (fallback === undefined) throw new Error(\`\${stage} broke its contract\`);
-  console.warn(\`\${stage} broke its contract; using the fallback\`);
-  return fallback;
+function readClassifier(features: number[], model: tf.LayersModel) {
+  requireVector(features, 3);
+  return tf.tidy(() => {
+    const output = (model.predict(tf.tensor2d([features])) as tf.Tensor).dataSync();
+    if (output.length !== 1 || !Number.isFinite(output[0]) || output[0] < 0 || output[0] > 1) {
+      throw new Error('Invalid classifier output');
+    }
+    const p = output[0];
+    // Chosen-class score, not a demonstrated probability of correctness.
+    return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
+  });
 }
 
-// One capture, three input contracts. Each stage gets its own argument
-// because no one array satisfies two of these models.
-async function processSignal(
-  features: number[],   // module 4's preprocess: [amplitude, frequency, phase], min-max to 0..1
-  signal: number[],     // module 5's 11 features, z-normalized to mean 0, std 1
-  window: number[][],   // module 6's input: 80 steps of 3 per-channel z-scores
-  models: {
-    classifier: tf.LayersModel;
-    autoencoder: tf.LayersModel;
-    lstm: tf.LayersModel;
-    llm: LLMClient;
-  },
-  thresholds: { anomaly: number },
+function readAutoencoder(signal: number[], model: tf.LayersModel, threshold: number): PipelineResult['anomaly'] {
+  requireVector(signal, 11);
+  if (!Number.isFinite(threshold) || threshold < 0) throw new Error('Invalid MSE threshold');
+  return tf.tidy(() => {
+    const input = tf.tensor2d([signal]);
+    const reconstruction = model.predict(input) as tf.Tensor;
+    if (reconstruction.shape.length !== 2 || reconstruction.shape[0] !== 1 || reconstruction.shape[1] !== 11) {
+      throw new Error('Invalid reconstruction shape');
+    }
+    const score = tf.losses.meanSquaredError(input, reconstruction).dataSync()[0];
+    if (!Number.isFinite(score)) throw new Error('Invalid reconstruction error');
+    return { isAnomaly: score > threshold, score, method: 'autoencoder-mse' as const, threshold };
+  });
+}
+
+function optionalForecast(window: number[][], model: tf.LayersModel): PipelineResult['prediction'] {
+  try {
+    if (window.length !== 80) throw new Error('Expected 80 steps');
+    window.forEach(row => requireVector(row, 3));
+    return tf.tidy(() => {
+      const output = (model.predict(tf.tensor3d([window])) as tf.Tensor).dataSync();
+      const nextValues = Array.from(output);
+      requireVector(nextValues, 3);
+      return { nextValues };
+    });
+  } catch {
+    console.warn('Forecast unavailable; alert will identify the omission.');
+    return { nextValues: [] };
+  }
+}
+
+async function finishAlert(
+  classification: PipelineResult['classification'],
+  anomaly: PipelineResult['anomaly'],
+  prediction: PipelineResult['prediction'],
+  llm: LLMClient,
 ): Promise<PipelineResult> {
-  // Stage 1: Classify the signal
-  const classified = tf.tidy(() => {
-    const input = tf.tensor2d([features]);          // shape: [1, 3]
-    const output = (models.classifier.predict(input) as tf.Tensor).dataSync()[0];
-    // Confidence is confidence IN THE VERDICT: a 0.2 sigmoid output means
-    // "noise, 0.8 sure", not "noise, 0.2 sure".
-    return {
-      class: output > 0.5 ? 'anomaly' : 'noise',
-      confidence: output > 0.5 ? output : 1 - output,
-    };
-  });
-  // Every later stage quotes this number, so there is no useful fallback
-  // for a confidence outside 0..1. Stop the run instead.
-  const classification = validateStage('classifier', classified, (c) =>
-    Number.isFinite(c.confidence) && c.confidence >= 0 && c.confidence <= 1);
-
-  // Stage 2: Check for anomalies (autoencoder)
-  const detected = tf.tidy(() => {
-    const input = tf.tensor2d([signal]);            // shape: [1, 11]
-    const reconstructed = models.autoencoder.predict(input) as tf.Tensor;
-    const error = tf.losses.meanSquaredError(input, reconstructed).dataSync()[0];
-    return { isAnomaly: error > thresholds.anomaly, score: error };
-  });
-  // NaN > threshold is false, so a NaN reconstruction error reports "normal"
-  // and no alert ever fires. Nothing throws. This is the check that catches it.
-  const anomaly = validateStage('autoencoder', detected, (a) =>
-    Number.isFinite(a.score));
-
-  // Stage 3: Predict next values (LSTM)
-  const predicted = tf.tidy(() => {
-    const input = tf.tensor3d([window]);            // shape: [1, 80, 3]
-    const pred = (models.lstm.predict(input) as tf.Tensor).dataSync();
-    return { nextValues: Array.from(pred) };
-  });
-  // The model's own output width is the promise: outputShape is
-  // [null, featureCount]. A short vector is a broken contract, not a shorter
-  // forecast; the report reads fine without one, so this stage gets a fallback.
-  const featureCount = (models.lstm.outputShape as number[])[1];  // 3 features of one step, not a horizon
-  const prediction = validateStage(
-    'lstm',
-    predicted,
-    (p) => p.nextValues.length === featureCount && p.nextValues.every(Number.isFinite),
-    { nextValues: [] },
-  );
-
-  // Stage 4: Publish a template from checked values. Keep generated prose
-  // separate for review; matching its numbers would not establish truth.
   let report: string | null = null;
   let draftForReview: string | null = null;
   if (anomaly.isAnomaly) {
-    report = \`ALERT: anomaly score \${anomaly.score.toFixed(4)} exceeds threshold \${thresholds.anomaly}.\`;
+    report = \`ALERT: \${anomaly.method} score \${anomaly.score.toFixed(4)} exceeds \${anomaly.threshold}.\`;
+    if (!prediction.nextValues.length) report += ' Forecast unavailable.';
+    if (anomaly.method === 'amplitude-z-score') report += ' Reduced coverage: amplitude only.';
     try {
-      draftForReview = await models.llm.complete(JSON.stringify({
-        task: 'Draft an alert explanation for human review. Do not infer a cause.',
-        classification, anomaly, threshold: thresholds.anomaly, prediction,
+      const draft = await llm.complete(JSON.stringify({
+        task: 'Draft an explanation for review. Do not infer a cause.', classification, anomaly, prediction,
       }));
+      if (typeof draft !== 'string' || !draft.trim()) throw new Error('Empty draft');
+      draftForReview = draft;
     } catch {
-      console.warn('Draft unavailable; the measured alert still ships.');
+      console.warn('Draft unavailable; retain the measured alert.');
     }
   }
-
   return { classification, anomaly, prediction, report, draftForReview };
+}
+
+async function processSignal(
+  features: number[], // classifier: 3 min-max features, module 4 scaler
+  signal: number[], // autoencoder: 11 z-scores, its training-period scaler
+  window: number[][], // LSTM: 80 x 3 z-scores, its own training-period scaler
+  models: Models,
+  thresholds: { anomaly: number },
+): Promise<PipelineResult> {
+  const classification = readClassifier(features, models.classifier);
+  const anomaly = readAutoencoder(signal, models.autoencoder, thresholds.anomaly);
+  const prediction = optionalForecast(window, models.lstm);
+  return finishAlert(classification, anomaly, prediction, models.llm);
 }`}
 </CodeBlock>
 
-Three arrays describe one capture and none of them substitutes for another. The classifier reads module 4's three min-max features. The autoencoder reads module 5's eleven z-scored ones. The LSTM reads a window of module 6's per-channel z-scores. A length mismatch is the cheap mistake: hand the eleven-feature array to the classifier and tfjs throws `expected dense_Dense1_input to have shape [null,3] but got array with shape [1,11]` before the model runs at all. The costly mistake is an array of the right length on the wrong scale. Three z-scores fit the classifier's input shape, so it runs and returns a verdict with a confidence inside the legal 0..1 range. Stage 1's check finds nothing to object to. The input contract is part of the stage contract, which is why each stage takes its own argument here.
+Three arrays describe one capture and none of them substitutes for another. The classifier reads module 4's three min-max features. The autoencoder reads module 5's eleven z-scored ones. The LSTM reads a window of module 6's per-channel z-scores. A length mismatch is the cheap mistake: hand the eleven-feature array to the classifier and tfjs throws `expected dense_Dense1_input to have shape [null,3] but got array with shape [1,11]` before the model runs at all. The costly mistake is an array of the right length on the wrong scale. Three z-scores fit the classifier's input shape, so it runs and returns a verdict with a confidence inside the legal 0..1 range. The range check alone finds nothing to object to. These guards cannot establish which scaler produced an array; load each model with its versioned preprocessing metadata. The input contract is part of the stage contract, which is why each stage takes its own argument here.
 
 ## Error Handling and Fallbacks
 
 The classifier and anomaly-score checks stop the run when their values are invalid. A failed forecast can be omitted. The alert itself uses a fixed template; generated prose stays in draftForReview until a reviewer checks it. If drafting fails, the alert still ships. The resilience sketch below also shows a weaker detector fallback when the autoencoder is unavailable.
 
-For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at 1.00, the most that feature can reach, scores 3.20 sigma; a dead channel at 0.00 is the only larger deviation, 3.47. The baseline arrives as an argument rather than being recomputed from the last eighty amplitudes, because a rolling baseline makes the sigma count depend on how quiet that stretch happened to be. The same 1.00 reading scores 342.86 sigma against a window whose standard deviation is 0.0014, and 2.29 against one whose standard deviation is 0.21.
+The alert identifies the detector, its score type and its threshold. An MSE and a z-score are different quantities; changing detectors silently would mislead the operator. Even a normal fallback result carries its method so the UI can show reduced coverage. These examples share helpers and require the LLMClient interface from lesson 1.
+
+For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, fictional mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at 1.00, the most that feature can reach, scores 3.20 sigma; a dead channel at 0.00 is the only larger deviation, 3.47. The baseline arrives as an argument rather than being recomputed from the last eighty amplitudes, because a rolling baseline makes the sigma count depend on how quiet that stretch happened to be. The same 1.00 reading scores 342.86 sigma against a window whose standard deviation is 0.0014, and 2.29 against one whose standard deviation is 0.21.
 
 <CodeBlock language="typescript" title="resilience.ts">
-{`// Like micro-service circuit breakers: degrade around the stages that have a stand-in
-
+{`// Continue in the same module: reuse the checked stage helpers above.
 async function resilientPipeline(
-  features: number[],   // module 4's three min-max features
-  signal: number[],     // module 5's eleven z-scored features
-  window: number[][],   // module 6's window of per-channel z-scores
-  models: { classifier: tf.LayersModel; autoencoder: tf.LayersModel; lstm: tf.LayersModel; llm: LLMClient },
-  thresholds: { anomaly: number },
-  baseline: { mean: number; std: number },  // amplitude's normal-period mean and std, in min-max units
+  features: number[], signal: number[], window: number[][],
+  models: Models, thresholds: { anomaly: number },
+  baseline: { mean: number; std: number }, // fixed normal-period amplitude stats, min-max units
 ): Promise<PipelineResult> {
-  // Classification is required: fail if it fails
-  const classification = await classifyWithRetry(features, models.classifier);
-
-  // Anomaly detection: fall back to statistical check
-  let anomaly;
+  const classification = readClassifier(features, models.classifier);
+  // A bad threshold is a configuration error, not a reason to switch models.
+  if (!Number.isFinite(thresholds.anomaly) || thresholds.anomaly < 0) throw new Error('Invalid threshold');
+  let anomaly: PipelineResult['anomaly'];
   try {
-    anomaly = await detectAnomaly(signal, models.autoencoder, thresholds);
+    anomaly = readAutoencoder(signal, models.autoencoder, thresholds.anomaly);
   } catch {
-    // Fallback: module 7's statistical check on the amplitude alone. Reduce
-    // to one number first, or there is nothing to compare against 3. That
-    // number is features[0], the min-max amplitude, measured against the
-    // baseline this ship recorded over the normal period. baseline is an
-    // argument, not something re-derived from the last eighty amplitudes: a
-    // sigma count means one thing only while what it is counting against
-    // holds still.
-    const zScore = Math.abs(features[0] - baseline.mean) / baseline.std;
-    anomaly = { isAnomaly: zScore > 3, score: zScore };
-  }
-
-  // Prediction: optional (skip if LSTM fails)
-  let prediction: PipelineResult['prediction'] = { nextValues: [] };
-  try {
-    prediction = await predictNext(window, models.lstm);
-  } catch {
-    console.warn('LSTM prediction failed; skipping');
-  }
-
-  // A measured alert remains available without the language model.
-  let report = null;
-  let draftForReview = null;
-  if (anomaly.isAnomaly) {
-    report = \`ALERT: Anomaly detected (score: \${anomaly.score.toFixed(4)}).\`;
-    try {
-      draftForReview = await models.llm.complete(JSON.stringify({
-        task: 'Draft an explanation for review, without claiming a cause.',
-        classification, anomaly,
-      }));
-    } catch {
-      console.warn('LLM unavailable; keep the template alert.');
+    if (!Number.isFinite(baseline.mean) || !Number.isFinite(baseline.std) || baseline.std <= 0) {
+      throw new Error('No usable amplitude fallback baseline');
     }
+    const score = Math.abs(features[0] - baseline.mean) / baseline.std;
+    if (!Number.isFinite(score)) throw new Error('Invalid fallback score');
+    anomaly = { isAnomaly: score > 3, score, method: 'amplitude-z-score', threshold: 3 };
   }
-
-  return { classification, anomaly, prediction, report, draftForReview };
+  const prediction = optionalForecast(window, models.lstm);
+  return finishAlert(classification, anomaly, prediction, models.llm);
 }`}
 </CodeBlock>
 
@@ -302,8 +270,19 @@ The bridge is dark and everyone who built the pipeline is asleep when the first 
 How long from signal to report? Make it faster.
 </Dialogue>
 
-Fourteen seconds, Demir tells her, already knowing it isn't the right answer. The signal is accelerating; the pipeline will have to.
+Fourteen seconds in this fictional run, Demir tells her. He opens a profiler to separate detection time from drafting time. The signal is accelerating; the pipeline will have to.
 
-Before he leaves the bridge, Demir pulls the bundle audit for the morning build. The crew's own models are featherweights: classifier, autoencoder, LSTM, attention head, less than a megabyte of trained weights between them. It is everything around them that has been gaining mass: the pretrained language component behind the report pipeline, the one lesson 1's client reaches through its loopback route, its tokenizer tables, its internal embedding matrices. Bottom line of the audit: DEEP SCAN full bundle, 340 MB. He files the number under "later." The bridge dashboard it runs on has 512.
+Before he leaves the bridge, Demir pulls the bundle audit for the morning build. The crew's own models are featherweights: classifier, autoencoder, LSTM, attention head, less than a megabyte of trained weights between them. It is everything around them that has been gaining mass: the pretrained language component behind the report pipeline, the one lesson 1's client reaches through its loopback route, its tokenizer tables, its internal embedding matrices. The fictional mission build totals 340 MB; this is not a measurement of the model shipped with the course. He files the number under "later." The bridge dashboard it runs on has 512.
+
+<StoryConsequence
+  beatId="deep-orbit-llm-cut-call"
+  fallback="Nazari records the missing section in the handover. The new alert and the report draft enter separate review queues."
+  outcomes={{
+    "cooperate": "Farah has a regenerated Hypotheses draft beside the new alert. Finishing that review takes her first watch slot, so Demir records the alert's measurements and leaves its explanation queued for her second slot.",
+    "defect": "The request to release disputed claims is still open. Farah attaches each warning to its source claim and records why release was refused; Demir waits for that handoff before assigning her the new alert.",
+    "random": "Demir compares the regenerated splice with the approved sections and finds a citation to the report's own summary. He removes the circular citation and opens a new review. The first draft remains in the history.",
+    "dominant": "Nazari carries the explicit omission into the morning handover. Farah takes the new alert first; the missing Hypotheses section stays on a separate research queue for a later relay window."
+}}
+/>
 
 </Epilogue>

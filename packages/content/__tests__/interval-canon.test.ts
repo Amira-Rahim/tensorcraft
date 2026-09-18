@@ -83,7 +83,7 @@ const DEEP_ORBIT_CANON: Record<string, number[]> = {
   "capstone/02-ci-cd-pipeline.mdx": [44.0],
   "capstone/03-monitoring.mdx": [37.0],
   "capstone/04-documentation.mdx": [31.6],
-  "capstone/05-launch.mdx": [72.4, 29.7],
+  "capstone/05-launch.mdx": [72.4, 73.4, 29.7],
 };
 
 /**
@@ -98,7 +98,8 @@ const WORLD_INTERVAL_CANON: Record<string, WorldCanon> = {
     // The finale's 72.4 is Nazari's interval-hits-zero question being paid
     // off with the module-8 reading; it is a quotation of the past, not a
     // live reading, so the countdown check skips it.
-    historical: { "capstone/05-launch.mdx": [72.4] },
+    // 73.4 is the explicit callback to the initial pulse interval.
+    historical: { "capstone/05-launch.mdx": [72.4, 73.4] },
   },
 };
 

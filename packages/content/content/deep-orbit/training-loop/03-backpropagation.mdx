@@ -29,7 +29,30 @@ hints:
   - level: guidance
     content: "One call does both halves of the run, and gradOf's job is to hand that call's result straight back. The forward pass produces the loss. The backward pass then walks the recording of that same forward pass and reports, for every variable it touched, how much the loss moves when that variable moves. Both arrive together, the loss under one key and a map of gradients under the other, which is what the starter's last line destructures. Notice what you never write: no derivative appears anywhere in your code. Return the call rather than its numbers, because the grader changes the weight and calls gradOf again, then hands it a loss you never saw. Numbers frozen into an object are right once, for the weight they were copied from."
   - level: solution
-    content: "const w = tf.variable(tf.scalar(3.0)); const lossFn = () => w.square(); function gradOf(fn) { return tf.variableGrads(fn); } const { value: loss, grads } = gradOf(lossFn);"
+    content: |
+      const w = tf.tidy(() => tf.variable(tf.scalar(3.0)));
+
+      const lossFn = () => w.square();
+
+      function gradOf(fn) {
+        return tf.variableGrads(fn);
+      }
+
+      const { value: loss, grads } = gradOf(lossFn);
+
+      function numericGradOf(fn, variable) {
+        return tf.tidy(() => {
+          const saved = variable.dataSync()[0];
+          const base = fn().dataSync()[0];
+          try {
+            variable.assign(tf.scalar(saved + 0.001));
+            const bumped = fn().dataSync()[0];
+            return (bumped - base) / 0.001;
+          } finally {
+            variable.assign(tf.scalar(saved));
+          }
+        });
+      }
 keywords:
   - backpropagation
   - chain-rule
@@ -54,13 +77,15 @@ One weight, one question: if I move this a little, does the loss go down? Nothin
 const EPS = 1e-3;
 
 function nudgedLoss(w: tf.Variable, index: number): number {
-  const values = w.dataSync().slice();
-  values[index] += EPS;
-  w.assign(tf.tensor(values, w.shape));
-  const loss = computeLoss();          // one full forward pass
-  values[index] -= EPS;
-  w.assign(tf.tensor(values, w.shape)); // restore the weight
-  return loss;
+  const original = w.dataSync().slice();
+  const nudged = original.slice();
+  nudged[index] += EPS;
+  try {
+    tf.tidy(() => w.assign(tf.tensor(nudged, w.shape)));
+    return computeLoss();
+  } finally {
+    tf.tidy(() => w.assign(tf.tensor(original, w.shape)));
+  }
 }
 
 const base = computeLoss();             // forward pass 0
@@ -68,10 +93,10 @@ const base = computeLoss();             // forward pass 0
 const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 </CodeBlock>
 
-It works. It is also a forward pass **per parameter, per training step**: 673 extra forward passes to update the network once, thousands of steps per training run. On the engineering rig that's 27 seconds per step; a run that takes minutes with the backward pass stretches past thirty hours. The method is correct at a cost nothing can pay, and removing that cost is the reason this lesson exists.
+This forward finite difference approximates a derivative using 673 extra forward passes for this network. The step size trades truncation error against floating-point cancellation. It can help check gradients on a small problem, but its cost grows with the parameter count. The rig's scene timings are fictional; measure your own implementation before making a speed claim.
 
 <Dialogue speaker="ARIA" expression="deadpan">
-Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 derivatives exactly in one backward sweep, at a total cost of about three forward passes. It has a name.
+Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 gradients in one backward sweep, reusing the forward computation. Actual time depends on the operations and runtime. It has a name.
 </Dialogue>
 
 ## Working Backwards
@@ -84,10 +109,10 @@ The name is **backpropagation**. A call chain already runs in two directions: th
 {`import * as tf from '@tensorflow/tfjs';
 
 // Build a simple network with trackable weights
-const w1 = tf.variable(tf.randomNormal([3, 4]));  // layer 1 weights
-const b1 = tf.variable(tf.zeros([4]));              // layer 1 bias
-const w2 = tf.variable(tf.randomNormal([4, 1]));   // layer 2 weights
-const b2 = tf.variable(tf.zeros([1]));              // layer 2 bias
+const w1 = tf.tidy(() => tf.variable(tf.randomNormal([3, 4])));  // layer 1 weights
+const b1 = tf.tidy(() => tf.variable(tf.zeros([4])));              // layer 1 bias
+const w2 = tf.tidy(() => tf.variable(tf.randomNormal([4, 1])));   // layer 2 weights
+const b2 = tf.tidy(() => tf.variable(tf.zeros([1])));              // layer 2 bias
 
 const input = tf.tensor2d([[0.5, 0.8, 0.2]]);
 const label = tf.tensor2d([[1]]);
@@ -106,13 +131,14 @@ console.log('Loss:', loss.dataSync()[0]);
 console.log('w1 gradient shape:', grads[w1.name].shape); // [3, 4]
 console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 
-// Each gradient tells us: "adjust this weight by this much"`}
+// Gradients are local slopes, not the optimizer update itself.
+tf.dispose([input, label, loss, ...Object.values(grads), w1, b1, w2, b2]);`}
 </CodeBlock>
 
 No magic involved: `tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below walks the exact multiplication chain by hand. You never have to implement it manually, but you can.
 
 <DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand">
-**The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a 2-layer network:
+**The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a two-layer scalar example (one unit per layer):
 
 ```
 z₁ = w₁·x + b₁          ← layer 1 pre-activation
@@ -131,12 +157,12 @@ L  = ½(ŷ - y)²           ← loss
 
 Each factor is local to one layer. `tf.variableGrads()` builds the computational graph during forward pass, then walks it backward multiplying these local derivatives. **That backward walk is the entire algorithm**: there is no other magic. The "1 backward pass" claim above is exactly this multiplication chain.
 
-**Vanishing gradients = the chain product collapsing.** If `σ'(z₂) ≈ 0.1`, `ReLU'(z₁) ∈ {0,1}`, and you have 20 layers, the product can be `0.1²⁰ ≈ 10⁻²⁰`. The early-layer weights stop updating. Residual connections add `+1` to each link in the chain to prevent this collapse.
+**Vanishing gradients = the chain product collapsing.** Twenty successive derivative factors near 0.1 multiply to about 10⁻²⁰. Real vector networks involve Jacobian products and sums over paths, but repeated small factors can still weaken early gradients. A residual block y = x + F(x) has Jacobian I + J_F, adding an identity path. That can help gradient flow; it does not guarantee that gradients never vanish or explode.
 </DerivationDrawer>
 
 ## Challenge
 
-Run backpropagation yourself: one call to `tf.variableGrads()`, behind a function the grader can call again with a loss of its own, the last one over three variables at once. A memorized answer, a derivative you worked out by hand, and a slope estimated by nudging each variable in turn all have nothing to say when the loss changes. The grader counts the forward passes, so the third one is out too.
+Run backpropagation yourself: one call to `tf.variableGrads()`, behind a function the grader can call again with a loss of its own, the last one over three variables at once. The grader supplies different loss functions and checks that each gradient call evaluates its forward function once. This exercise practices automatic differentiation.
 
 <Exercise slug="backprop-chain" />
 
@@ -146,8 +172,8 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
 />
 
 <RecallPrompt
-  question="Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it's correct?"
-  answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation gets all 673 derivatives exactly in one backward sweep, and the forward pass plus that sweep costs about three forward passes in total."
+  question="Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it can approximate a derivative?"
+  answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation applies the chain rule in one backward sweep, subject to floating-point arithmetic and the derivative rules of the operations. Its runtime depends on the graph and backend."
 />
 
 <LessonRecap
@@ -155,7 +181,7 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
     "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the cost backpropagation was invented to remove.",
     "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
-    "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which is what keeps the product from collapsing."
+    "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which can help gradient flow without guaranteeing stable gradients."
   ]}
   bridge="Exceptions transfer control through handlers. Backpropagation instead applies the chain rule through a computation graph to calculate requested parameter gradients."
   youCanNow="Use `tf.variableGrads()` to compute gradients for a multi-layer network in a single backward pass and read the gradient shapes for each variable."

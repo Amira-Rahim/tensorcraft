@@ -9,7 +9,7 @@ instructions: |
   3. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. One test runs your step 100 times with the forget gate near 1 and the input gate shut, to check that a candidate which is not zero still cannot reach the cell.
   4. Then `buildLstmCell(timeSteps)`: a `tf.sequential()` holding one `tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true })`, returned as `{ model, weights }` with `weights` in exactly the shape `lstmStep` reads. One unit and one feature, because a wider layer mixes every dimension through a matrix and a per-dimension step stops describing it.
   5. Pass `recurrentActivation: 'sigmoid'` yourself: TF.js defaults its gates to `hardSigmoid`, a clipped straight line rather than the curve the lesson uses.
-  6. `model.getWeights()` returns three tensors, the input kernel [1, 4], the recurrent kernel [1, 4] and the bias [4]. All four gates share those tensors: each one is 1 column wide and they sit side by side in the order INPUT, FORGET, CANDIDATE, OUTPUT, which is not the order the lesson narrates them in. So column 0 of the recurrent kernel, column 0 of the input kernel and bias[0] are the input gate's `[wHidden, wInput, bias]` row, column 1 is the forget gate's, and so on. Build the four one-row arrays that way.
+  6. `model.getWeights()` returns three tensors, the input kernel [1, 4], the recurrent kernel [1, 4] and the bias [4]. The three gates and candidate share those tensors: each one is 1 column wide and they sit side by side in the order INPUT, FORGET, CANDIDATE, OUTPUT, which is not the order the lesson narrates them in. So column 0 of the recurrent kernel, column 0 of the input kernel and bias[0] are the input gate's `[wHidden, wInput, bias]` row, column 1 is the forget gate's, and so on. Build the four one-row arrays that way.
 
   The grader checks each row against the layer's own columns, then runs your `lstmStep` across a window from `prevHidden` and `prevCell` of [0] and checks its hidden state against what the layer reports at every step.
 starterCode: |
@@ -24,7 +24,7 @@ starterCode: |
   }
 
   function buildLstmCell(timeSteps) {
-    // Four gates share two kernels and one bias, in an order the lesson
+    // Three gates and a candidate share two kernels and one bias, in an order the lesson
     // does not narrate.
     return null; // your code here
   }
@@ -236,7 +236,7 @@ testCode: |
       const weights = model.getWeights();
       expect(
         weights.map((w) => w.shape),
-        'Four gates share three tensors: an input kernel, a recurrent kernel and a bias, each four columns wide for a one-unit cell.',
+        'Three gates and a candidate share three tensors: an input kernel, a recurrent kernel and a bias, each four columns wide for a one-unit cell.',
       ).toEqual([[1, 4], [1, 4], [4]]);
       expect(
         model.predict(tf.tensor3d([[[0.1], [0.2], [0.3], [0.4], [0.5], [0.6]]])).shape,

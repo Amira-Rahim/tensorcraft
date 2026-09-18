@@ -13,7 +13,7 @@ context:
   narrative: "Three modules spent learning to train models from scratch, and all the bridge wants is a sentiment flag on the crew's daily status reports. Demir asks whether he really has to train one for that."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Transformers.js ships pretrained Hugging Face models that run in the browser. Install, import, call: for commodity tasks, nobody trains from scratch."
+  explanation: "Transformers.js ships pretrained Hugging Face models that run in the browser. Use an existing model when its task, license and measured behavior fit your application."
   bridge:
     jsTitle: "npm install component-library"
     jsCode: "import { DatePicker } from 'react-datepicker'"
@@ -53,17 +53,17 @@ The request comes from Mirza, and it is not idle: forty-one crew status reports 
 
 ## Three Browser ML Runtimes, Three Jobs
 
-By now you've seen TFJS and ONNX Runtime Web. Transformers.js is the third tool. They aren't competitors; they solve different problems.
+Transformers.js adds task-specific preprocessing and output handling around pretrained models. Its browser inference uses ONNX Runtime. The tools overlap; choose based on the model and application you need.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-| Runtime | When to use | Cost shape |
+| Tool | Useful when | Check before shipping |
 |---|---|---|
-| **TensorFlow.js** | You trained your own model and want to ship it | Your model size + your domain expertise |
-| **ONNX Runtime Web** | Your team built a PyTorch model; you want it in the browser without Python | Conversion friction + op-set risk |
-| **Transformers.js** | You need a well-known NLP/vision/audio task done well | 50-500MB model download per task |
+| TensorFlow.js | You need its training APIs or a supported TFJS model | Backend support, model behavior and size |
+| ONNX Runtime Web | You have a compatible ONNX graph and can supply preprocessing | Operators, input/output contract and numerical parity |
+| Transformers.js | A supported pipeline fits your NLP, vision or audio task | Model license, domain performance, asset sizes and latency |
 
-The right answer depends on whether the task is **custom** (TFJS) or **commodity** (Transformers.js).
+A custom task does not automatically require training from scratch. Check whether an existing model, adaptation or an ordinary rule meets the need. A convenient pipeline API does not establish that the model is suitable.
 
 ## Pipeline in Ten Lines
 
@@ -72,43 +72,33 @@ The right answer depends on whether the task is **custom** (TFJS) or **commodity
 // '@huggingface/transformers' at v3; old tutorials cite the former.
 import { pipeline } from '@huggingface/transformers';
 
-// First call: downloads the model + tokenizer into the browser's Cache
-// Storage (the Cache API). Size depends on dtype: v3 defaults to a
-// quantized model in the browser (tens of MB), and forcing fp32 means 4
-// bytes per weight, about 268MB for this ~67M-parameter sentiment model.
-// Note the contrast with lesson 3 of this module: TFJS saves models to
-// IndexedDB via the indexeddb:// scheme; Transformers.js uses a different
-// browser store entirely.
-// Subsequent calls: instant from cache.
-const classifier = await pipeline('sentiment-analysis');
-
-const result = await classifier('Starboard array cleared diagnostics ahead of schedule.');
-console.log(result);
-// [{ label: 'NEGATIVE', score: 0.9759 }]
-// Good news, labeled NEGATIVE at high confidence. That is not a bug,
-// and the last section of this lesson says what it is.
-
-// Batch inference: pass an array.
-const reports = [
-  'Sensor array is functioning within tolerance.',
-  'Catastrophic failure on the port-side coupling.',
-  'Signal classification: anomalous.',
-];
-const batched = await classifier(reports);
-// [
-//   { label: 'POSITIVE', score: 0.9592 },
-//   { label: 'NEGATIVE', score: 0.9997 },
-//   { label: 'NEGATIVE', score: 0.9987 },
-// ]
-// Those are the quantized scores. Forcing fp32 gives 0.9117, 0.9997
-// and 0.9984 on the same three lines: the scores move, the labels
-// do not. Every score here was recorded on @huggingface/transformers
-// 3.8.1 with the default model, run at dtype 'q8' (what the browser
-// picks) and at 'fp32'. Read the q8 numbers loosely: int8 arithmetic
-// shifts with the runtime that executes it, and the first batch score
-// lands between 0.93 and 0.96 depending on the build, while the fp32
-// scores match to six decimals across runtimes.`}
+// Pin model, revision, dtype and device when reproducing results.
+const classifier = await pipeline(
+  'sentiment-analysis',
+  'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
+  {
+    revision: '0b6928efcb76139cae2c6881d49cda67fe119f42',
+    dtype: 'q8',
+    device: 'wasm',
+  },
+);
+try {
+  const reports = [
+    'Starboard array cleared diagnostics ahead of schedule.',
+    'Sensor array is functioning within tolerance.',
+    'Catastrophic failure on the port-side coupling.',
+    'Signal classification: anomalous.',
+  ];
+  const predictions = await classifier(reports);
+  console.table(reports.map((text, i) => ({ text, ...predictions[i] })));
+} finally {
+  await classifier.dispose();
+}`}
 </CodeBlock>
+
+The first load may download model weights, tokenizer assets and the runtime. Browser Cache Storage can retain model assets, but quota, eviction and browser settings affect it. A cache hit still needs asset reads, initialization and inference. TFJS's `indexeddb://` model storage uses a different browser API.
+
+The real lab runs this revision with both `q8` and `fp32`, records exact asset sizes and scores, and reloads the q8 pipeline with the network disabled after initialization. Run `node scripts/check-runtime-lab.mjs --pretrained`; setup and measurement limits are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). Do not expect scores from different dtypes or runtimes to match exactly.
 
 ## Tasks the Pipeline Handles Out of the Box
 
@@ -119,19 +109,21 @@ image-classification        image-segmentation          image-to-text (caption)
 zero-shot-classification    feature-extraction          automatic-speech-recognition
 ```
 
-Each pipeline is one line. Each downloads a model file the first time and caches it. The library ships ONNX Runtime Web underneath; TFJS is not involved at all when you use Transformers.js.
+The pipeline supplies task-specific preprocessing, inference and output handling. Not every model supports every pipeline. Inspect the model's supported task and required assets before using it.
 
-That is also the seam between this path and the rest of the ship's work. A Transformers.js model runs as ONNX, so the TFJS tooling does not reach it: no walk over `model.layers`, no quantization flags on `tensorflowjs_converter`. Using those on a pretrained model means re-exporting it to TFJS layers first. DEEP SCAN was trained in TFJS and stays there.
+That is also the seam between this path and the rest of the ship's work. A Transformers.js model runs as ONNX, so the TFJS tooling does not reach it: no walk over `model.layers`, no quantization flags on `tensorflowjs_converter`. Use tooling for that ONNX model. Converting an arbitrary transformer into a TFJS LayersModel is not a general shortcut. DEEP SCAN was trained in TFJS and stays there.
 
-Aboard the Archimedes the download comes from the ship's mirrored model archive, synced at the last relay pass; the live Hub is eleven light-minutes of latency away on a good day. The cache math is the same either way: one download, and every later call reads the copy already in the browser.
+Aboard the Archimedes the download comes from the ship's mirrored model archive, synced at the last relay pass; the live Hub is eleven light-minutes of latency away on a good day. A local mirror changes where the assets come from. It does not remove cache eviction, versioning or cold-start work.
 
-## When NOT to Use Transformers.js
+## Check the Model Against the Task
 
-- **Your task is not in the standard list.** A custom regression on sensor readings has no pretrained pipeline. Train your own with TFJS.
-- **Bandwidth-sensitive users.** A 200MB model on a 3G connection is a UX failure. Inspect model sizes at [huggingface.co/models](https://huggingface.co/models) before committing.
-- **Strict latency budgets on cold start.** First-call latency includes model download. Pre-warm via service worker if you need cold-start guarantees.
-- **You need fine-tuning.** Transformers.js runs models, it doesn't train them. Fine-tune in Python, export to ONNX, ship via Transformers.js.
-- **Your text does not look like the model's training text.** `pipeline('sentiment-analysis')` defaults to `Xenova/distilbert-base-uncased-finetuned-sst-2-english`, fine-tuned on SST-2 review sentences, and the crew's reports are operational logs. The runs above already show the cost. `Signal classification: anomalous.` came back NEGATIVE at 0.9987, and `Starboard array cleared diagnostics ahead of schedule.` came back NEGATIVE at 0.9759. One neutral line, one report of good news, both NEGATIVE above 0.97, and nothing threw. It is the failure mode lesson 4 gave you for mismatched preprocessing, arriving through the text instead. Label twenty real reports by hand and compare before you put the pipeline in front of Mirza.
+The selected sentiment model was fine-tuned on SST-2 movie-review sentences. Crew status reports are operational text. Its labels are POSITIVE and NEGATIVE; it has no neutral or “needs human attention” label. A high softmax score expresses the model's preference among its trained labels, not a calibrated probability that a report has been understood correctly.
+
+Label representative reports before inspecting the model's predictions. Compare mistakes and the current manual process. Keep an untouched evaluation set if you use earlier examples to choose prompts, models or thresholds. Twenty reports can reveal an obvious mismatch; they cannot establish a reliable rare-error rate.
+
+Mirza's confidence ordering is a workflow experiment. Test whether it helps her find reports needing attention. It is not a measure of crew morale, severity or urgency.
+
+Download size can make browser inference impractical for a target connection. Measure the selected files and startup on that connection. Prefetching may reduce waiting later, but cannot guarantee a cold-start deadline when assets are missing or the network is unavailable. Transformers.js provides inference, not a browser training loop; fine-tuning needs separate tooling and a compatible export.
 
 ## Challenge
 
@@ -141,11 +133,11 @@ Sort the crew's status reports by classifier confidence. The harness stands in f
 
 <Exercise slug="load-pretrained-pipeline" />
 
-<RecallPrompt question="When should you reach for Transformers.js instead of training your own model with TF.js?" answer="When the task is a well-known commodity problem that Hugging Face pipelines already cover well, such as sentiment analysis, NER, or translation. If the task is domain-specific (like classifying custom sensor signals), no pretrained pipeline exists and you need to train your own." />
+<RecallPrompt question="When should you reach for Transformers.js instead of training your own model with TF.js?" answer="When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch." />
 
 <RecallPrompt question="Module 3 scored DEEP SCAN on a held-out slice. This pipeline arrived pretrained, with no accuracy number for the crew's reports. What has to be true of the twenty reports you label by hand before Mirza sees any of this?" answer="A test slice is data no decision ever touched, scored once. Label the twenty before you see the pipeline's answers, and draw them the way reports actually arrive. Twenty picked to look balanced repeats the selection bias that lesson flagged, and the score then describes your sampling rather than the model." />
 
-<LessonRecap whatYouLearned={["pipeline(taskName) lazily downloads a pretrained model on first call, then runs inference locally on every subsequent call with no server round-trip. The download is cached in the browser's Cache Storage (the Cache API), a different store from the IndexedDB one TFJS uses for indexeddb:// saves", "Transformers.js is the right tool for commodity NLP and vision tasks; TF.js is the right tool when you have a custom domain model; ONNX Runtime Web is the bridge when a Python-trained model needs to run in the browser", "Model bandwidth (50-500MB per task) is the dominant cost: measure model size and target network conditions before shipping to mobile users"]} bridge="Just as you import a `DatePicker` component from a library instead of building one, `pipeline('sentiment-analysis')` gives you a ready-made ML capability without a training loop, labeled data, or GPU." youCanNow="Use pipeline() from Transformers.js to run pretrained models in the browser, and reason about when that approach fits versus training a custom model." />
+<LessonRecap whatYouLearned={["pipeline() supplies preprocessing and output handling around a supported model", "Pin the model revision, dtype and device for reproducible evaluation", "Measure asset downloads and cached startup separately; cached does not mean instant or permanently available", "Evaluate representative text and inspect errors. Confidence ranking does not establish urgency or task accuracy"]} bridge="A library component saves implementation work. A pretrained model also needs evaluation on the inputs your application will receive." youCanNow="Load a pinned pretrained pipeline, preserve the pairing between inputs and outputs, and investigate whether it suits your text." />
 
 <Epilogue>
 

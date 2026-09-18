@@ -1,7 +1,7 @@
 slug: build-spectrogram
 lessonSlug: spectrograms
 title: "Build a Spectrogram"
-instructions: "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match."
+instructions: "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match. Assume integer windowSize >= 2 and hopSize >= 1. Return an empty array when no complete window fits."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -111,7 +111,7 @@ testCode: |
       result.forEach(row => {
         expect(
           Math.min(row[5], row[6]),
-          'A tone that does not sit on a bin center splits between its two neighbours. A row that puts the whole window into one bin and zero everywhere else is a marker, not a spectrum.',
+          'This off-bin tone has magnitude in both neighboring bins and leaks into farther bins too. A row that puts the whole window into one bin and zero everywhere else is a marker, not a spectrum.',
         ).toBeGreaterThan(15);
         expect(
           Math.max(...row),

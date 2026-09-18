@@ -58,11 +58,11 @@ skillAxes: [training]
 The network predicts 0.52 for a signal that should be 1.0. Demir calls that pretty close. I cannot tune on pretty close; I can only trust a number I can watch go down. So: how far from right is 0.52? Not an adjective. A distance.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)", "Interpret loss values: lower is better, zero is perfect"]} />
+<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)", "Interpret loss on a fixed dataset and distinguish fitting from generalization"]} />
 
 ## How Wrong Are We?
 
-0.52 against a true label of 1.0 means the network is off by 0.48. Square that and you get 0.23, and averaging the squares across every prediction in a batch gives you mean squared error: one number that answers Farah's question. If you've written `expect(actual).toBe(expected)`, you've used the same idea before. A loss function is an assertion that returns a distance instead of a pass/fail.
+0.52 against a true label of 1.0 means the network is off by 0.48. Square that and you get 0.23, and averaging the squares across every prediction in a batch gives you mean squared error: one number that answers Farah's question. If you've written `expect(actual).toBe(expected)`, you've used the same idea before. A loss supplies a numeric objective instead of a pass/fail assertion. Some losses are not distances in the mathematical sense. A lower value on fixed examples means a better fit under that objective, not necessarily better performance on new data.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -79,7 +79,7 @@ const predictions = tf.tensor([0.6, 0.4, 0.3, 0.7, 0.8]);
 const mse = tf.losses.meanSquaredError(labels, predictions);
 console.log('MSE:', mse.dataSync()); // 0.268
 
-// Binary Crossentropy: better for classification (0 or 1).
+// Binary crossentropy: a common objective for binary labels (0 or 1).
 // sigmoidCrossEntropy expects raw logits (pre-sigmoid outputs), not probabilities
 const logits = tf.tensor([0.4, -0.4, -0.8, 0.8, 1.4]);
 const bce = tf.losses.sigmoidCrossEntropy(labels, logits);
@@ -88,7 +88,8 @@ console.log('BCE:', bce.dataSync()); // ~0.718
 // Perfect predictions → loss approaches 0
 const perfect = tf.tensor([1, 0, 1, 0, 1]);
 const perfectLoss = tf.losses.meanSquaredError(labels, perfect);
-console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
+console.log('Perfect MSE:', perfectLoss.dataSync()); // 0
+tf.dispose([labels, predictions, mse, logits, bce, perfect, perfectLoss]);`}
 </CodeBlock>
 
 One naming trap before the rest of the module builds on this. A **logit** is the number a neuron emits before any sigmoid touches it: unbounded, positive or negative, the raw weighted sum from module 2. `tf.losses.sigmoidCrossEntropy` takes logits and applies the sigmoid itself. The compile option you will use in lesson 4, `loss: 'binaryCrossentropy'`, takes probabilities, the numbers a sigmoid output layer has already produced. They are the same loss reached from two ends. Your task already picked cross-entropy, so what is left to pick is the form, and the last layer decides that. A sigmoid output layer hands you probabilities, so you call `binaryCrossentropy`. A linear output trained as a logit goes to `sigmoidCrossEntropy`. An unfamiliar activation tells you too little to choose: first establish what the output represents. Mix them up and nothing throws; the network learns the wrong thing quietly, which is the category of bug this course hunts hardest.
@@ -106,14 +107,14 @@ Three symbols run through this drawer. Σ means add up one term per row in the b
 
 `BCE = -(1/n) Σ [ yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ) ]`
 
-Take the label `y = 1` and a model that confidently predicts `ŷ = 0.01`. MSE's gradient **with respect to the prediction** is `2(ŷ - y) = -1.98`: not flat, and in fact the biggest it ever gets. Nothing is wrong with MSE's own slope.
+Take the label `y = 1` and a model that confidently predicts `ŷ = 0.01`. MSE's gradient **with respect to the prediction** is `2(ŷ - y) = -1.98`: not flat, close to the largest magnitude it reaches for predictions in [0, 1]. Nothing is wrong with MSE's own slope.
 
 What flattens is the sigmoid you put in front of it. Backprop multiplies by `σ'(z) = ŷ(1-ŷ)`, and at `ŷ = 0.01` that factor is `0.0099`. So the gradient that actually reaches the weights is:
 
 - MSE + sigmoid: `2(ŷ - y) · ŷ(1-ŷ) = -1.98 × 0.0099 = -0.0196`
 - BCE + sigmoid: the `log` and the `σ'` cancel exactly, leaving `ŷ - y = -0.99`
 
-Fifty times more signal, for the same wrongness. Cross-entropy's advantage is not that its curve is steeper; it is that its derivative is **built to cancel the sigmoid's**, so a confidently wrong prediction reaches the weights at full strength instead of being multiplied by a number near zero. This factor is the saturation you met by name in `neural-networks/02`: a sigmoid pushed into its tail goes flat, and 0.0099 is what flat costs.
+For this example, BCE gives a derivative about fifty times larger in magnitude with respect to the output logit. The ideal, unclipped calculation cancels the final sigmoid factor. Gradients with respect to weights still include the derivatives of the earlier operations; hidden layers can still have vanishing or zero gradients. Numerically stable logits-based implementations also avoid taking logs of rounded probabilities.
 
 Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`.
 </DerivationDrawer>
@@ -126,13 +127,13 @@ Score the DEEP SCAN classifier's first predictions with both losses, then write 
 
 <RecallPrompt
   question="For binary classification, why is binary cross-entropy preferred over mean squared error?"
-  answer="Not because MSE's own slope goes flat: at a label of 1 and a prediction of 0.01 it is -1.98, the largest it gets. The sigmoid in front of it is the problem, with a slope of 0.0099 there, and backprop multiplies the two. Binary cross-entropy's derivative cancels the sigmoid's exactly, so the weights receive prediction minus label: about fifty times more signal for the same mistake."
+  answer="Not because MSE's own slope goes flat: at a label of 1 and a prediction of 0.01 it is -1.98, close to its largest magnitude for predictions in [0, 1]. The sigmoid in front of it is the problem, with a slope of 0.0099 there, and backprop multiplies the two. Binary cross-entropy's derivative cancels the sigmoid's exactly, so the derivative with respect to the output logit is prediction minus label. Earlier layers still contribute their own derivative factors."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "A loss function converts prediction error into a single number you can minimize. Lower means better; zero is perfect.",
-    "Mean squared error works for regression by penalizing large errors quadratically. Binary cross-entropy is better for classification because its derivative cancels the sigmoid's, so a confidently wrong prediction still reaches the weights at full strength. The advantage is smallest at the decision boundary (a factor of 2) and largest where the model is most confidently wrong (a factor of 50).",
+    "A loss defines the training objective. Compare values on the same data and objective; a low training loss does not establish generalization.",
+    "MSE penalizes large errors quadratically. For binary labels, BCE with an output sigmoid avoids the extra sigmoid factor in the derivative with respect to the output logit.",
     "The choice of loss function shapes how the optimizer learns: the wrong loss can stall training even with a correct architecture."
   ]}
   bridge="`expect().toBe()` tells you whether actual and expected differ; a loss function tells you by how much, returning a number instead of a pass/fail."
@@ -141,10 +142,10 @@ Score the DEEP SCAN classifier's first predictions with both losses, then write 
 
 <Epilogue>
 
-Farah writes a number on the lab's glass wall in marker, dated and initialed: 0.6931. Not the run's opening loss, which came up 0.72 tonight; the mark beside it. Demir asks what the mark is. The coin flip, she tells him. A network that answers 0.5 to everything scores exactly ln(2), the cross-entropy of knowing nothing, and that is where the arithmetic sits. Where any one build opens is the seed: two hundred fresh builds of this exact stack opened between 0.60 and 0.82, thirty of them rounding to 0.69, and not one printed 0.6931. The run has to beat the mark, not match it.
+Farah writes 0.6931 on the lab glass, dated and initialed. A model that returns 0.5 on every row has binary crossentropy ln(2), whatever the binary labels are. She puts a second space beside it for the training-label prevalence baseline; a skewed archive may make a constant other than 0.5 a stronger comparison. Demir leaves room for the held-out score too.
 
 <Dialogue speaker="Dr. Farah">
-That number is our honesty. We don't get to claim the network learned anything until that number moves.
+A falling loss earns another check. It does not earn deployment.
 </Dialogue>
 
 </Epilogue>

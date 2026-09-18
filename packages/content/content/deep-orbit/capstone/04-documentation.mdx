@@ -30,28 +30,43 @@ hints:
     content: "The strings are a contract, and the instructions write it out line by line and space by space. Read it there rather than inventing a format. What a hint can tell you is where the work sits: only two of these lines are computed instead of copied. Accuracy renders with the benchmark it came from, because a percentage with no measurement attached tells an operator nothing about whether it still holds. And the first limitation is the worst class, which means finding a minimum across recallByClass. Insertion order is not a ranking. The grader hands you objects whose worst entry sits somewhere different each time, so reading whichever key happens to come first or last is a card that files a healthy class under Limitations."
   - level: solution
     content: |
-      const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
-      const [worstClass, worstRecall] = Object.entries(meta.recallByClass).sort(
-        (a, b) => a[1] - b[1],
-      )[0];
+      interface ModelMetadata {
+        name: string;
+        version: string;
+        accuracy: number;
+        benchmarkedOn: string;
+        weightBytes: number;
+        inferenceMs: number;
+        recallByClass: Record<string, number>;
+        limitations: string[];
+        inputFormat: string;
+        outputFormat: string;
+      }
 
-      const lines = [
-        `# ${meta.name} v${meta.version}`,
-        '',
-        '## Performance',
-        `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
-        `- Size: ${meta.weightBytes} bytes`,
-        `- Inference: ${meta.inferenceMs}ms`,
-        '',
-        '## Limitations',
-        `- Lowest recall: ${worstClass} at ${pct(worstRecall)}`,
-        ...meta.limitations.map(l => `- ${l}`),
-        '',
-        '## Usage',
-        `- Input: ${meta.inputFormat}`,
-        `- Output: ${meta.outputFormat}`,
-      ];
-      return lines.join('\n');
+      function generateModelCard(meta: ModelMetadata): string {
+        const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+        const [worstClass, worstRecall] = Object.entries(meta.recallByClass).sort(
+          (a, b) => a[1] - b[1],
+        )[0];
+
+        const lines = [
+          `# ${meta.name} v${meta.version}`,
+          '',
+          '## Performance',
+          `- Accuracy: ${pct(meta.accuracy)} (measured at ${meta.benchmarkedOn})`,
+          `- Size: ${meta.weightBytes} bytes`,
+          `- Inference: ${meta.inferenceMs}ms`,
+          '',
+          '## Limitations',
+          `- Lowest recall: ${worstClass} at ${pct(worstRecall)}`,
+          ...meta.limitations.map(l => `- ${l}`),
+          '',
+          '## Usage',
+          `- Input: ${meta.inputFormat}`,
+          `- Output: ${meta.outputFormat}`,
+        ];
+        return lines.join('\n');
+      }
 keywords:
   - documentation
   - model-card
@@ -78,7 +93,9 @@ There is a version of the next two weeks in which Demir is not available to run 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="model-card.ts">
-{`// A Model Card is structured documentation for an ML model
+{`// Fictional mission card. These scores, timings and bundle sizes are
+// supplied story values, not measurements of the downloadable model.
+// A Model Card is structured documentation for an ML model
 // Think of it as package.json + README + CHANGELOG for your model
 
 interface ModelCard {
@@ -146,7 +163,7 @@ const deepScanCard: ModelCard = {
                          // backend, readback inside the clock (module 10)
     pipelineMs: 5,       // the whole classify() call on WebGPU, 15 on WebGL: feature extraction,
                          // the classifier and the readback, which is what the monitor times
-    weightBytes: 3_988,  // measured off weights.bin, not estimated: 997 float32
+    weightBytes: 3_988,  // scenario arithmetic: 997 float32 parameters
     bundleSizeMB: 85,    // the whole download, quantized: this classifier
                          // plus the pretrained language component. Over the
                          // 50 MB cold-load budget module 4 set for this
@@ -158,7 +175,7 @@ const deepScanCard: ModelCard = {
     'Anomaly class has lowest recall: 21 of the 25 labelled anomalies in the holdout, 84%; rare signals may be misclassified as noise',
     'Requires exactly 64 samples per capture (0.25 seconds of one channel at 256 Hz); the 8 FFT bins and the zero-crossing scale are defined at that length, so shorter bursts cannot be classified',
     'WebGPU backend required for the 5 ms end-to-end path; the pipeline falls back to 15 ms on WebGL. The classifier itself was timed in microseconds on one backend, which is not a figure for all of them',
-    'Not validated on signals below -20 dB SNR (signal-to-noise ratio; the signal is one tenth the amplitude of the noise)',
+    'Not validated on signals below -20 dB SNR (signal-to-noise ratio; signal RMS amplitude is one tenth of noise RMS amplitude, with comparable impedance)',
   ],
 
   usage: {
@@ -169,21 +186,18 @@ const deepScanCard: ModelCard = {
 };`}
 </CodeBlock>
 
-Two sizes and two latencies, because each pair answers two questions. `weightBytes` is this model's own
-weight file, and it is 3,988 bytes: the 997 float32 weights of the eleven-feature, five-class network module 10 retrained. `bundleSizeMB` is everything the bridge
-dashboard downloads before it can classify anything, and almost none of that is
-the classifier. The mass is the pretrained language component behind the report
-pipeline, which is what the optimization sprint in module 10 was actually
-measuring. That 85 MB is over the 50 MB cold-load budget module 4 set for this dashboard, and the overrun was accepted with a reason: the download is cached after the first load (module 10 lesson 4), and the alternative is the server round-trip Nazari refused in module 4 lesson 1. A budget renegotiated with a reason belongs on the card; a budget silently broken does not. Write the bundle figure on the classifier's card and the next person
-who reads it optimizes the wrong network. The latencies split the same way: `inferenceMs` is the classifier alone, 0.035 ms with the readback inside the clock, the figure module 10's cache ledger was built on. `pipelineMs` is the whole `classify()` call the bridge dashboard makes, feature extraction and readback included, 5 ms on WebGPU and 15 on WebGL, which is what lesson 3's monitor times. Put the 5 on the classifier's line and someone will one day spend a week trying to make a microsecond call faster.
+Keep weight-file bytes, total download bytes, classifier latency and whole-pipeline latency separate. They describe different scopes. The values on this mission card are fictional: 997 float32 parameters imply 3,988 weight bytes, but the course does not ship that five-class artifact or the fictional 85 MB language component. The downloadable runtime lab records measurements for its own named models and device.
+
+A production card also needs the artifact and preprocessing versions, label map, evaluation data identity and split method, sample counts, per-class metrics and averaging convention. Report uncertainty where the evaluation supports it, plus the device, backend, timing protocol and date. A single accuracy and a date cannot establish fitness for another use.
+
+Caching may reduce repeat downloads; it does not remove the first-load cost or guarantee that storage persists. Accepting a larger bundle needs an explicit cold-start and memory budget, with a usable failure path.
 
 The input contract is worth reading twice, because two different 64s run through
 this course. An archive row is a 33-second capture, 256 Hz across 64 channels:
 540,672 samples, a little over two megabytes at float32. The classifier's input is
 a 64-sample window taken from one of those channels, a quarter of a second at
-256 Hz. That window length sets the rest of the contract: 8 FFT bins 4 Hz wide,
-and a zero-crossing count that cannot exceed 63. Both numbers are real. Neither
-one is the other.
+256 Hz. That window length sets the rest of the contract: 8 selected FFT bins spaced 4 Hz apart,
+and a zero-crossing count that cannot exceed 63. Keep channel count and window length separate in the input schema.
 
 ## Pipeline API Documentation
 
@@ -207,13 +221,14 @@ one is the other.
  * @returns Classification result with label, confidence, and anomaly flag
  * @throws {ValidationError} If signal length !== 64 or any sample is not finite
  */
-async function classify(signal: Float32Array): Promise<Classification> {
+declare function classify(signal: Float32Array): Promise<Classification>;
+/* Implementation belongs to the application:
   // 1. Validate input dimensions and range
   // 2. Extract FFT features (Module 5)
   // 3. Run classifier (Module 3)
   // 4. Check anomaly detector (Module 7)
   // 5. Return combined result
-}
+*/
 
 /**
  * Get current model health metrics.
@@ -232,12 +247,12 @@ function getHealthMetrics(): HealthSnapshot {
 // Review note on the first entry: "if high" is not a threshold, and a
 // retrain needs labels nobody has collected yet. It now reads 'Drift
 // above 0.5 on a 100-sample window → hand-label 100 recent captures
-// → retrain on them'.
+// → investigate and evaluate a candidate before replacement'.
 const runbook = {
-  'Low confidence trend': 'Check drift score → if high, retrain on recent data',
+  'Low score trend': 'Check source data and preprocessing versions; review labeled outcomes before retraining',
   'High latency spike': 'Check backend → WebGPU may have fallen back to WebGL',
   'Memory warning': 'Check inference cache size → reduce maxSize or TTL',
-  'Accuracy drop': 'Run validation against holdout set → check for data drift',
+  'Accuracy drop': 'Check label quality and class mix; evaluate recent labeled cases with the release baseline',
 };`}
 </CodeBlock>
 
@@ -247,14 +262,14 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Exercise slug="write-model-card" />
 
-<RecallPrompt question="Why does documentation discipline transfer from software to ML, but verifiability does not?" answer="JSDoc describes a deterministic function whose behavior you can confirm by reading the source. A model card describes statistical performance measured on a held-out benchmark that may not match production data. You can verify a documented function by running it; you cannot verify a model card's accuracy claim without running a fresh evaluation, and that benchmark may already be stale by the time anyone reads it." />
+<RecallPrompt question="What extra evidence belongs with a model performance claim?" answer="Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs." />
 
 <LessonRecap
   whatYouLearned={[
     "A Model Card is structured documentation for an ML model covering purpose, training data, performance metrics, and known limitations: the same documentation discipline as a README, applied to a statistical artifact rather than deterministic code.",
     "Documenting limitations honestly is load-bearing: what the model cannot do (low recall on rare classes, training distribution boundaries, hardware requirements) is as operationally important as what it can do.",
-    "Runbooks turn documentation into step-by-step procedures: replace each judgment call with a number, so anyone can operate the system without the original author.",
-    "That number has to be derived, not chosen. Read it off a high percentile of the metric measured on known-calm data. Record the window size you measured at, because the same threshold means something different on a longer window."
+    "Runbooks specify checks, thresholds, actions, owners and escalation paths. Some cases require judgment; say who makes the decision.",
+    "Select thresholds using representative measurements and the cost of misses and false alarms. A calm-period percentile is one starting point; validate it on separate periods and record window size."
   ]}
   bridge="JSDoc records a function contract. A model card also records training data, evaluation conditions, and limitations, so readers can judge where measured performance applies."
   youCanNow="Render a Model Card from a model's own metadata, with the accuracy dated to the benchmark that produced it and the weakest class found rather than assumed, and turn a runbook entry with a judgment call in it into one with a threshold and a window size."
@@ -268,6 +283,17 @@ The runbook's first draft comes together in the dead hours of the night watch, a
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-Demir does not pick a number. He goes and measures one: score drift over 180 fixed 100-sample windows from the calm week before deployment, then read the 99th percentile off that distribution. It lands at 0.5. The rewritten procedure carries the window size with it. On calm data the distance between two sample means shrinks as the windows grow, and the same detector sits near 0.22 on a 500-sample window. The entry reads: drift above 0.5 on a 100-sample window, hand-label a hundred recent captures, retrain. The finished document reads less like documentation and more like a will, which he supposes is the point: if he is not here to run DEEP SCAN, this is the part of him that is. He signs it at an interval reading of 31.6 seconds, because ARIA timestamps reviews in pulses now, the way other systems use dates. Tomorrow they deploy.
+Demir adds a calibration record: in this fictional run, 180 calm windows of 100 samples produce a 99th-percentile score of 0.5. That is a starting cutoff, with little evidence about the tail; he schedules a check on a separate period and records the false-alert cost. The runbook now says to inspect calibration and preprocessing, review recent labeled cases, and evaluate any replacement before release. ARIA accepts the named checks and the escalation owner. The pulse interval reads 31.6 seconds when Demir signs the handover. Tomorrow they deploy.
+
+<StoryConsequence
+  beatId="deep-orbit-drift-response"
+  fallback="Nazari assigns the next watch to inspect calibration, retained captures and recent outcome labels before proposing a replacement."
+  outcomes={{
+    "cooperate": "Nazari attaches her calibration check and the raw fft_5 captures to the runbook. The sensors passed the check, so the next watch moves to outcome review. The replacement model remains unscheduled until that evidence arrives.",
+    "defect": "The new candidate is ready before the outcome labels. Demir marks it unreleased and adds an evaluation gate to the runbook; the overnight fit used the engineer's slot without establishing an improvement.",
+    "random": "The muted interval appears as a gap in the alert review log. Nazari restores paging and assigns the next watch to replay the retained captures, postponing its first maintenance task.",
+    "dominant": "The runbook now has separate columns for the active model and the shadow candidate. Demir records their version IDs and disagreements; Nazari adds an owner for reviewing them when labels arrive. The extra comparison stays on the watch budget."
+}}
+/>
 
 </Epilogue>

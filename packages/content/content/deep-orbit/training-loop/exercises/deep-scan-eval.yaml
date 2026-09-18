@@ -4,76 +4,88 @@ title: "Train DEEP SCAN, Then Read the Gap"
 instructions: |
   **Contract revision 2026-09-17b:** diagnose now returns large-gap, low-scores or no-gap-warning. The grader accepts the actual measured score without requiring a healthy model.
 
-  The first training run you grade yourself. `trainX`/`trainY` are 100 seeded archive readings (the calm and flagged clusters from lesson 4); `testX`/`testY` are 43 held-out readings never seen in training: 40 drawn with fresh seeds, then the three late-confirmed windows from this lesson, whose labels must remain in the evaluation regardless of this run's predictions. (1) Train `model` with model.fit for 30 epochs at batchSize 16 and store the result in `history`. model.fit returns a promise, so await it. (2) Score the held-out slice with model.evaluate into `evalResult` ([loss, accuracy]). (3) Write `diagnose(trainAcc, testAcc)`, and read the gap first: 'large-gap' when trainAcc - testAcc exceeds 0.15, then 'low-scores' when BOTH numbers sit below 0.7, else 'no-gap-warning'. These are descriptions of the measured scores, not proof of a cause or a release decision: data shift, labeling, and preprocessing also need investigation. Gap first means a run with two low numbers and a wide gap reads large-gap. (4) Read your own run into two variables, `trainAcc` (the last entry of history.history.acc) and `testAcc` (the accuracy inside evalResult[1]). Both have to be plain numbers. Scoring reports its results as tensors, so the held-out number has to be read out of one. Then set `verdict` to diagnose of those two. The grader reruns the held-out evaluation itself, calls diagnose on eleven pairs of its own, and checks that trainAcc and testAcc are the numbers this run produced rather than numbers you picked. It also reads the training record to confirm the run trained on the 100 archive rows and nothing else.
-starterCode: |
-  // Seeded archive readings, one row each: [amplitude, frequency, phase],
-  // each min-max normalized against its own sensor's range. Hand-picked
-  // clean examples from the flag log, 50 per label: flagged windows run hot
-  // on amplitude and phase and low on frequency. The clip is not decoration:
-  // a normal draw is unbounded, and on these seeds six of the 150 calm
-  // values fall outside [0, 1], which no min-max normalized feature can do.
-  const calm = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
-        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
-        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
-      ],
-      1,
-    ),
-    0,
-    1,
-  );
-  const flagged = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
-        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
-        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
-      ],
-      1,
-    ),
-    0,
-    1,
-  );
-  const order = Array.from(tf.util.createShuffledIndices(100));
-  const trainX = tf.concat([calm, flagged]).gather(order);
-  const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+  The supplied tensors contain 100 synthetic training rows and 43 separate
+  evaluation rows: 40 generated examples and three hand-written story cases.
+  Keep the evaluation rows and their labels out of training.
 
-  // Held-out slice: fresh seeds, never trained on. 20 calm, 20 flagged, then
-  // the three late-confirmed windows from the lesson, flagged on review.
-  const testX = tf.concat([
-    tf.clipByValue(
+  1. Await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }) into history.
+  2. Store model.evaluate(testX, testY) in evalResult, an array [loss, accuracy].
+  3. Implement diagnose(trainAcc, testAcc): return 'large-gap' if trainAcc -
+     testAcc > 0.15; otherwise 'low-scores' if both are below 0.7; otherwise
+     'no-gap-warning'. Check the gap first. These labels do not diagnose a cause.
+  4. Set trainAcc from the final history.history.acc entry and testAcc from
+     evalResult[1].dataSync()[0]. Set verdict = diagnose(trainAcc, testAcc).
+
+  Report the measured scores. Passing verifies the exercise procedure, not
+  whether the classifier is suitable for a real deployment.
+starterCode: |
+  // Synthetic practice rows. Clipping enforces this fixture's [0, 1] range.
+  // Labels and distributions illustrate the story, not a real archive.
+  const { trainX, trainY, testX, testY } = tf.tidy(() => {
+    const calm = tf.clipByValue(
       tf.concat(
         [
-          tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
-          tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
-          tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+          tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+          tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+          tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
         ],
         1,
       ),
       0,
       1,
-    ),
-    tf.clipByValue(
+    );
+    const flagged = tf.clipByValue(
       tf.concat(
         [
-          tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
-          tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
-          tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+          tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+          tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+          tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
         ],
         1,
       ),
       0,
       1,
-    ),
-    tf.tensor2d([
-      [0.3, 0.68, 0.34],
-      [0.26, 0.75, 0.29],
-      [0.33, 0.71, 0.36],
-    ]),
-  ]);
-  const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+    );
+    const order = Array.from(tf.util.createShuffledIndices(100));
+    const trainX = tf.concat([calm, flagged]).gather(order);
+    const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+
+    // Held-out slice: fresh seeds, never trained on. 20 calm, 20 flagged, then
+    // the three late-confirmed windows from the lesson, flagged on review.
+    const testX = tf.concat([
+      tf.clipByValue(
+        tf.concat(
+          [
+            tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
+            tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
+            tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+          ],
+          1,
+        ),
+        0,
+        1,
+      ),
+      tf.clipByValue(
+        tf.concat(
+          [
+            tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
+            tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
+            tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+          ],
+          1,
+        ),
+        0,
+        1,
+      ),
+      tf.tensor2d([
+        [0.3, 0.68, 0.34],
+        [0.26, 0.75, 0.29],
+        [0.33, 0.71, 0.36],
+      ]),
+    ]);
+    const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+    return { trainX, trainY, testX, testY };
+  });
 
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
@@ -97,66 +109,69 @@ starterCode: |
   const testAcc = null; // your code here
   const verdict = null; // your code here
 solutionCode: |
-  const calm = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
-        tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
-        tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
-      ],
+  const { trainX, trainY, testX, testY } = tf.tidy(() => {
+    const calm = tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([50, 1], 0.17, 0.1, 'float32', 7),
+          tf.randomNormal([50, 1], 0.81, 0.1, 'float32', 8),
+          tf.randomNormal([50, 1], 0.23, 0.1, 'float32', 9),
+        ],
+        1,
+      ),
+      0,
       1,
-    ),
-    0,
-    1,
-  );
-  const flagged = tf.clipByValue(
-    tf.concat(
-      [
-        tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
-        tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
-        tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
-      ],
+    );
+    const flagged = tf.clipByValue(
+      tf.concat(
+        [
+          tf.randomNormal([50, 1], 0.84, 0.1, 'float32', 41),
+          tf.randomNormal([50, 1], 0.18, 0.1, 'float32', 42),
+          tf.randomNormal([50, 1], 0.78, 0.1, 'float32', 43),
+        ],
+        1,
+      ),
+      0,
       1,
-    ),
-    0,
-    1,
-  );
-  const order = Array.from(tf.util.createShuffledIndices(100));
-  const trainX = tf.concat([calm, flagged]).gather(order);
-  const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
+    );
+    const order = Array.from(tf.util.createShuffledIndices(100));
+    const trainX = tf.concat([calm, flagged]).gather(order);
+    const trainY = tf.concat([tf.zeros([50, 1]), tf.ones([50, 1])]).gather(order);
 
-  const testX = tf.concat([
-    tf.clipByValue(
-      tf.concat(
-        [
-          tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
-          tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
-          tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
-        ],
+    const testX = tf.concat([
+      tf.clipByValue(
+        tf.concat(
+          [
+            tf.randomNormal([20, 1], 0.17, 0.1, 'float32', 204),
+            tf.randomNormal([20, 1], 0.81, 0.1, 'float32', 205),
+            tf.randomNormal([20, 1], 0.23, 0.1, 'float32', 206),
+          ],
+          1,
+        ),
+        0,
         1,
       ),
-      0,
-      1,
-    ),
-    tf.clipByValue(
-      tf.concat(
-        [
-          tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
-          tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
-          tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
-        ],
+      tf.clipByValue(
+        tf.concat(
+          [
+            tf.randomNormal([20, 1], 0.84, 0.1, 'float32', 201),
+            tf.randomNormal([20, 1], 0.18, 0.1, 'float32', 202),
+            tf.randomNormal([20, 1], 0.78, 0.1, 'float32', 203),
+          ],
+          1,
+        ),
+        0,
         1,
       ),
-      0,
-      1,
-    ),
-    tf.tensor2d([
-      [0.3, 0.68, 0.34],
-      [0.26, 0.75, 0.29],
-      [0.33, 0.71, 0.36],
-    ]),
-  ]);
-  const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+      tf.tensor2d([
+        [0.3, 0.68, 0.34],
+        [0.26, 0.75, 0.29],
+        [0.33, 0.71, 0.36],
+      ]),
+    ]);
+    const testY = tf.concat([tf.zeros([20, 1]), tf.ones([20, 1]), tf.ones([3, 1])]);
+    return { trainX, trainY, testX, testY };
+  });
 
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
@@ -247,7 +262,7 @@ testCode: |
             v,
             'Row ' +
               (40 + i) +
-              ' of testX is not the late-confirmed window the starter placed there. Those three rows are the ones a 30-epoch run misses, and they are what keeps the held-out number honest.',
+              ' of testX is not the late-confirmed window the starter placed there. Keep the supplied rows regardless of whether this run classifies them correctly.',
           ).toBeCloseTo(want[i][j], 4);
         }),
       );

@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: beginner
 context:
-  narrative: "The neuron's raw output came back at minus 0.06 on one reading and 1.04 on another. Nazari's alert board takes yes or no."
+  narrative: "The neuron produces an unbounded score. Nazari wants the score format and the rule that turns it into an alert made explicit."
 concept:
   explanation: "Activation functions bend a network's straight lines. ReLU clips the negative half away, and sigmoid and tanh squash the whole range into fixed bounds."
   bridge:
@@ -21,7 +21,7 @@ concept:
     tier: identity
     breaks: "At inference these are literally the same arithmetic. Training is where they part: tf.relu applies elementwise across whole tensors and carries a gradient definition, and the ReLU derivative is zero for a negative pre-activation. A unit that stays inactive across training examples can stop receiving useful gradient updates (the dying ReLU). Math.max has no story about any of that."
 consequence:
-  narrative: "Every score now lands between 0 and 1 whatever the sum behind it, which is what Nazari's board wanted. The night shift ends with the neuron and ARIA disagreeing about one archived reading."
+  narrative: "The board shows bounded scores and a separate alert threshold. Neither is evidence of accuracy until the crew evaluates the model."
 hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
@@ -38,135 +38,97 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-Your neuron scored one reading at minus 0.06 and another at 1.04. Is minus 0.06 a yes or a no, Ensign? The alert board takes yes or no, and a weighted sum has no fixed ends to set a threshold against.
+One reading is minus 0.06 and another is 1.04. Which one triggers the alert, and where did you choose that rule?
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, and read sigmoid and tanh off their ranges", "Pick the activation for a slot from the range that slot needs"]} />
+Any numeric score can be compared with a threshold. A sigmoid adds a useful range, from 0 to 1, but it does not choose the threshold or make an untrained score trustworthy. Activations also serve another purpose: they let hidden layers represent functions that a single weighted sum cannot.
 
-## Breaking the Collapse
+<LearningObjectives objectives={["Explain why a stack of affine dense layers needs nonlinearity to gain expressive power", "Implement ReLU and describe sigmoid and tanh ranges", "Distinguish an activation's output range from a decision threshold and calibrated probability"]} />
 
-Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse. They are the only place the network gets to bend. Do not take that on faith; it is a claim you can run.
+## What a Linear Stack Cannot Add
+
+A matrix multiply plus a bias is an **affine** transformation: it can scale, mix and offset inputs. Composing affine transformations gives another affine transformation. More such layers add parameters without adding a new class of functions.
 
 <CodeBlock language="typescript" title="collapse.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Three stages of lesson 1's arithmetic with the activations left out,
-// at the widths module 3's classifier will use: 3 in, 32, 16, 1 out.
-const w1 = tf.randomNormal([3, 32], 0, 0.25), b1 = tf.randomNormal([32], 0, 0.25);
-const w2 = tf.randomNormal([32, 16], 0, 0.25), b2 = tf.randomNormal([16], 0, 0.25);
-const w3 = tf.randomNormal([16, 1], 0, 0.25), b3 = tf.randomNormal([1], 0, 0.25);
-const stack = (x: tf.Tensor) =>
-  x.matMul(w1).add(b1).matMul(w2).add(b2).matMul(w3).add(b3);
-
-// Multiply the three weight matrices into one and fold the biases along.
-const W = w1.matMul(w2).matMul(w3);                                   // [3, 1]
-const b = b1.reshape([1, 32]).matMul(w2).add(b2).matMul(w3).add(b3);  // [1, 1]
-const single = (x: tf.Tensor) => x.matMul(W).add(b);
-
-const xs = tf.randomUniform([200, 3]);
-console.log(stack(xs).sub(single(xs)).abs().max().dataSync()[0]);
-// Under 1e-6 on every one of 3,000 fresh draws, 1.2e-7 on a typical one:
-// float32 rounding, not a difference. 673 numbers, and they answer
-// exactly like 3 weights and 1 bias.
-
-// Bend each hidden stage and the shortcut stops working.
-const bent = (x: tf.Tensor) =>
-  tf.relu(tf.relu(x.matMul(w1).add(b1)).matMul(w2).add(b2)).matMul(w3).add(b3);
-console.log(bent(xs).sub(single(xs)).abs().max().dataSync()[0]);
-// About 0.6 on a typical draw, anywhere from 0.04 to 3 over 3,000 of them,
-// and no single matrix closes it.`}
+// Two affine layers, with hand-picked numbers so the check is repeatable.
+tf.tidy(() => {
+  const w1 = tf.tensor2d([[2, -1], [0.5, 3]]);
+  const b1 = tf.tensor1d([0.1, -0.2]);
+  const w2 = tf.tensor2d([[1], [2]]);
+  const b2 = tf.tensor1d([0.3]);
+  const xs = tf.tensor2d([[0, 0], [1, 2], [-1, 0.5]]);
+  const stacked = xs.matMul(w1).add(b1).matMul(w2).add(b2);
+  const W = w1.matMul(w2);
+  const b = b1.reshape([1, 2]).matMul(w2).add(b2);
+  const combined = xs.matMul(W).add(b);
+  console.log(stacked.sub(combined).abs().max().dataSync()[0]);
+  // Near zero, subject to float32 rounding. Same affine computation.
+});`}
 </CodeBlock>
 
-The stack holds 673 numbers and answers exactly like lesson 1's neuron, three weights and one bias, and those four are computed from all 673 rather than picked out of them. That is what collapse means, and it is arithmetic, not a training failure. Put relu between the stages and the shortcut breaks, because `Math.max(0, x)` is not a multiplication, so no matrix does what it does. Every stage lesson 3 stacks is worth something only because of that bend.
+A **nonlinear** activation changes that restriction. ReLU is `Math.max(0, x)`. It keeps positive values and replaces negative values with zero. Two ReLU units can form `relu(x) + relu(-x)`, which equals `Math.abs(x)`. No single affine function matches that V-shaped function across both negative and positive inputs.
+
+Adding ReLU permits nonlinear behavior; it does not guarantee it. If all relevant inputs keep the same units active, the network can act affinely over that region. Other network operations can also introduce nonlinearity. Here we are discussing a stack of dense layers.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="activations.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-const raw = tf.tensor([-2, -1, 0, 1, 2]);
-
-// ReLU: max(0, x), the most popular activation
-const relu = tf.relu(raw);        // [0, 0, 0, 1, 2]
-
-// Sigmoid: squash to (0, 1), good for probabilities
-const sigmoid = tf.sigmoid(raw);   // [0.12, 0.27, 0.5, 0.73, 0.88]
-
-// Tanh: squash to (-1, 1), centered version of sigmoid
-const tanh = tf.tanh(raw);         // [-0.96, -0.76, 0, 0.76, 0.96]
-
-// JS equivalent of ReLU:
-const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
-// [0, 0, 0, 1, 2]: identical!`}
+tf.tidy(() => {
+  const raw = tf.tensor1d([-2, -1, 0, 1, 2]);
+  console.log(tf.relu(raw).arraySync());    // [0, 0, 0, 1, 2]
+  console.log(tf.sigmoid(raw).arraySync()); // about [0.12, 0.27, 0.5, 0.73, 0.88]
+  console.log(tf.tanh(raw).arraySync());    // about [-0.96, -0.76, 0, 0.76, 0.96]
+});`}
 </CodeBlock>
 
-## Answering the Board
+For finite real inputs, sigmoid lies strictly between 0 and 1 and tanh between -1 and 1. Floating-point implementations can round to an endpoint. ReLU has no upper bound.
 
-Her two numbers are not a bug in the neuron. With the lesson-1 weights `[0.4, -0.2, 0.6]` and a bias of 0.1, three features between 0 and 1 can only score between -0.10 and 1.10, so both of her readings sit near the edges of what that neuron can say. The trouble is that those edges belong to those three weights. Change one weight and the edges move, and training in module 3 rewrites every one of them.
+## A Score and an Alert Are Different
 
-Run Nazari's two readings through the sigmoid and her question answers itself:
+For the two scores Nazari read out, sigmoid gives about 0.485 and 0.739. A threshold of 0.5 alerts on the second. Thresholding the original scores at zero gives the same decisions. The sigmoid changes the score scale, not the ordering.
 
-<CodeBlock language="typescript" title="board-verdicts.ts">
-{`import * as tf from '@tensorflow/tfjs';
+A sigmoid output can parameterize a binary probability model during training. Its range alone does not establish calibration. A calibrated 0.8 prediction would be correct about 80% of the time over an appropriate collection of comparable predictions. Check that behavior on representative data before interpreting the score that way.
 
-const board = tf.tensor([-0.06, 1.04]);  // the two scores Nazari read out
-tf.sigmoid(board).print();               // [0.4850045, 0.73885]
+**ReLU** is a common hidden-layer choice. Its derivative, the local rate of change, is 1 for a positive input and 0 for a negative one. That derivative does not shrink a positive branch's gradient by itself; the rest of the network still affects the gradient.
 
-// Both land inside (0, 1), where a 0.5 threshold means something.
-// Minus 0.06 comes back 0.485, a no. 1.04 comes back 0.739, a yes.
-// Those two started near the range on the luck of hand-picked
-// weights. The bound owes nothing to that luck and holds for any
-// score at all:
-tf.sigmoid(tf.tensor([-11, 600])).print();  // [0.0000167, 1]
+**Sigmoid** commonly supplies a binary output score. **Tanh** supplies a bounded signed value, useful when that range fits the model. Range is one consideration; training behavior and the loss function matter too. Module 3 connects those choices to parameter updates.
 
-// -11 squashes to 0.0000167: a no, four zeros deep.
-// 600 comes back as exactly 1: the curve is so flat out there that
-// float32 has no digits left to hedge with. A yes.`}
-</CodeBlock>
+<DerivationDrawer summary="Why sigmoid is bounded, and what logistic regression adds">
+Write the mathematical sigmoid as `1 / (1 + exp(-z))` for a finite real score `z`. The exponential is positive, so the denominator is greater than one. At zero, the output is 0.5. As z increases, the output approaches one; as z decreases, it approaches zero.
 
-One word about what "yes" means, because the module has used it two ways. Lesson 1's neuron was hand-set to split the calibration tones because they were the only labeled data aboard, so high meant tone A: a two-class warm-up. Nazari's board asks a different question of the same number. From here on, high means anomalous, the reading the crew wants a human to look at, and low means the stream looks like the catalog. Same sigmoid, same threshold, one label.
+The symmetry `sigmoid(-z) = 1 - sigmoid(z)` follows by multiplying numerator and denominator by `exp(z)`. This is an arithmetic identity, not a statement about prediction reliability. JavaScript's `Math.exp` has finite precision and can overflow or underflow; use the library operation for tensor work.
 
-Placement falls out of the ranges. ReLU stays in the hidden layers, where the outputs feed more math. Its slope is exactly 1 for every positive input, so the learning signal you meet in module 3 passes through undiminished, and it is the cheapest of the three to compute. Sigmoid takes the output slot when the question is yes/no, because (0, 1) reads as a probability. Tanh takes it when values need to swing negative.
-
-<DerivationDrawer summary="Sigmoid's math, and the classical model built from it">
-**Why sigmoid lands strictly inside (0, 1).** The formula is `sigmoid(z) = 1 / (1 + Math.exp(-z))`, where `z` is the raw pre-activation score. `Math.exp(-z)` is positive for every `z`, so the denominator is always bigger than 1 and the division always lands strictly between 0 and 1. At `z = 0`, `Math.exp(0) = 1` and the output is exactly 0.5, which is why the sigmoid line in the code above shows 0.5 in the middle slot. Push `z` positive and `Math.exp(-z)` shrinks toward zero, pulling the output toward 1; push `z` negative and the denominator blows up, pushing the output toward 0. The endpoints are approached, never reached: 600 printed as exactly 1 above only because float32 ran out of digits, not because the math got there.
-
-**The curve is symmetric around 0.5.** `sigmoid(-z) = 1 - sigmoid(z)`: write `1 - sigmoid(z)` as `Math.exp(-z) / (1 + Math.exp(-z))`, multiply top and bottom by `Math.exp(z)`, and you are left with `1 / (Math.exp(z) + 1)`, which is `sigmoid(-z)`. Check it against the printed values: `sigmoid(-1)` is 0.27, and `1 - sigmoid(1)` is `1 - 0.73 = 0.27`. A no is exactly as confident as the mirror-image yes.
-
-**A sigmoid on a weighted sum is a complete model by itself.** Take a single neuron's weighted sum (each input times its weight, plus a bias), put sigmoid in the output slot, and you have **logistic regression**: the classical baseline worth beating before you add a single hidden layer. The name is a trap: despite the word regression, it is a classifier, and module 3 draws the line between the two properly.
+A learned weighted sum followed by sigmoid is a binary logistic-regression model. It is a useful baseline before adding hidden layers. “Regression” in its name does not mean its output task is predicting an unrestricted continuous quantity.
 </DerivationDrawer>
 
-## When Activations Die
+## When Gradients Become Small
 
-Each choice has a failure mode with a name. A ReLU neuron whose weighted sum stays negative outputs zero forever and stops learning: the dying ReLU. A sigmoid pushed hard into either tail goes flat and stops responding: saturation. Both failures show up the same way, as a gradient near zero. That quantity is what module 3 builds, and it is where the crew catches both of these.
+A ReLU unit that stays negative on the training examples receives zero gradient through that activation. It can remain inactive, a problem called **dying ReLU**. This is not a claim that every currently negative unit is permanently dead.
+
+Sigmoid's derivative becomes small in its tails, called **saturation**. Repeated small factors can weaken gradients through hidden layers. The full gradient also depends on the loss and other operations; a confident wrong sigmoid output does not automatically mean the model cannot learn from it.
 
 ## Challenge
 
-Apply ReLU activation to neuron outputs.
+Apply ReLU to every value of a tensor. Preserve positive values, including large ones; this activation does not clip the upper end.
 
 <Exercise slug="relu-activation" />
 
-<RecallPrompt
-  question="Why does a deep network without activation functions collapse to a linear model?"
-  answer="A stage without an activation is a matrix multiply plus a bias, and a matrix multiply fed into another matrix multiply is one matrix multiply. collapse.ts multiplied three stages' weights into one [3, 1] matrix and the outputs agreed to float32 rounding; ten stages would fold the same way. ReLU is not a multiplication, so once it sits between the stages no single matrix reproduces the stack."
-/>
+<RecallPrompt question="Why does stacking only affine dense layers add no new type of function?" answer="Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it." />
 
-<LessonRecap
-  whatYouLearned={[
-    "Without activations, stacked stages multiply out to one matrix and one bias (collapse.ts: the 673-number stack agreeing with a three-weight, one-bias neuron to float32 rounding, under 1e-6 on 3,000 draws); relu between the stages is the bend no single matrix reproduces.",
-    "ReLU is the default in hidden layers: its slope is exactly 1 on every positive input, so the learning signal passes through undiminished, and it is the cheapest of the three to compute.",
-    "Sigmoid squashes output to (0, 1) for probabilities; tanh squashes to (-1, 1) for centered outputs."
-  ]}
-  bridge="The JS pattern `Math.max(0, rawValue)` is exactly ReLU: `tf.relu(rawOutput)` applies the same clamp element-wise across an entire tensor."
-  youCanNow="Apply ReLU to a whole tensor of pre-activation values, and pick the activation for an output slot from the range that slot needs."
-/>
+<RecallPrompt question="An untrained sigmoid model returns 0.99. Does the range make that a reliable 99% probability?" answer="No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes." />
+
+<LessonRecap whatYouLearned={["Affine dense layers collapse to one affine transformation; nonlinearity permits more expressive functions.", "ReLU keeps positive values and zeroes negatives. Sigmoid and tanh have bounded mathematical ranges, with finite-precision endpoint rounding.", "Activation range, decision threshold and probability calibration are different questions.", "A local activation derivative is only one factor in the full training gradient."]} bridge="Math.max(0, x) and ReLU use the same value-level rule; TensorFlow.js applies it to tensors and defines its training gradient." youCanNow="Apply ReLU, read activation ranges and explain why a bounded score still needs evaluation." />
 
 <Epilogue>
 
-Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing running off the ends anymore. The two calibration tones come back at 0.69 and 0.53, both above the 0.5 line, which is what hand-picked weights look like: nobody has moved the boundary to put the quiet tone under it, and nothing will until module 3 trains one. At 0316 the neuron reaches archived reading 7741, the one the crew flagged and kept last module. Its features read 0.50, 0.59 and 0.54, mid-scale on all three at once, and the sigmoid answers 0.62, which lands between the two reference tones and resembles neither. Hand-picked weights, no training, and nothing in that number worth a second look. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
+Demir adds the alert threshold to the board as a separate setting. Both calibration tones still trigger it with the current hand-picked weights. At 0316, sample 7741 joins the alert list while ARIA's older pipeline calls it nominal.
 
 <Dialogue speaker="ARIA">
-I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. My rules name both reference tones. They do not name this. The neuron puts the reading above its line, and with these weights it puts 99.7 percent of every reading those three features can describe above that line, both tones included. I hold nominal. I am still running, and I am noting the disagreement.
+Disagreement recorded. The new classifier has not been trained. My existing rules have not explained this reading. I have retained both results with their versions.
 </Dialogue>
 
 The note files itself between two routine humidity alerts.

@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Gzip is lossless: decompression restores the encoded bytes. An autoencoder usually approximates its input. Reconstruction error can flag unusual patterns, but an anomaly may reconstruct well and a normal input may reconstruct poorly."
 consequence:
-  narrative: "Normal signals come back clean. The anomalous signal comes back at 1.4x baseline, below the cutoff used in this run. The leak is in the training set, not the model."
+  narrative: "Normal signals come back clean. The anomalous signal comes back at 1.4x baseline, below the cutoff used in this run. The crew finds suspect rows in training and investigates whether they contributed to the miss."
 hints:
   - level: nudge
     content: |
@@ -41,7 +41,9 @@ hints:
         flagged: boolean[],
         providedModel?: tf.Sequential,
       ): Promise<{ model: tf.Sequential; history: tf.History }> {
+        if (flagged.length !== archive.length) throw new Error('Mismatched flags');
         const trainingRows = archive.filter((_, i) => !flagged[i]);
+        if (!trainingRows.length) throw new Error('No training rows');
         const model = providedModel || tf.sequential();
         if (!providedModel) {
           model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] }));
@@ -51,9 +53,15 @@ hints:
           model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
         }
         const xs = tf.tensor2d(trainingRows);
-        const history = await model.fit(xs, xs, FIT_OPTIONS);
-        xs.dispose();
-        return { model, history };
+        try {
+          const history = await model.fit(xs, xs, FIT_OPTIONS);
+          return { model, history };
+        } catch (error) {
+          if (!providedModel) model.dispose();
+          throw error;
+        } finally {
+          xs.dispose();
+        }
       }
 keywords:
   - autoencoder
@@ -72,7 +80,7 @@ Gzip reconstructs the original bytes exactly. An autoencoder learns a compressed
 
 That score is a heuristic, a rule we must test on data. The bottleneck does not guarantee that unfamiliar inputs reconstruct badly. Normal inputs can also reconstruct poorly if the model has not learned their variation. Evaluate both misses and false alarms before using the score to wake anyone.
 
-<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
+<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "Verify which rows reach fitting and measure held-out reconstruction errors without assuming a separation ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
 
 ## Encoder → Bottleneck → Decoder
 
@@ -84,32 +92,23 @@ That score is a heuristic, a rule we must test on data. The bottleneck does not 
 // Build an autoencoder for signal anomaly detection
 const inputDim = 11;  // 3 raw features + 8 FFT features
 
-// ENCODER: compress 11 features → 4 (the bottleneck)
-const encoder = tf.sequential();
-encoder.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [inputDim] }));
-encoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
-encoder.add(tf.layers.dense({ units: 4, activation: 'relu' }));  // bottleneck
-
-// DECODER: reconstruct 4 → 11
-const decoder = tf.sequential();
-decoder.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] }));
-decoder.add(tf.layers.dense({ units: 32, activation: 'relu' }));
-decoder.add(tf.layers.dense({ units: inputDim }));  // reconstruct original
-
-// Full autoencoder: input → encoder → decoder → reconstruction
-// (a model is a layer in TFJS, so the two halves stack directly)
+// Encoder stages: 11 -> 32 -> 16 -> 4. Decoder stages: 4 -> 16 -> 32 -> 11.
+// One Sequential owns all layers and gives this example one model lifetime.
 const autoencoder = tf.sequential();
-autoencoder.add(encoder);  // 11 → 4
-autoencoder.add(decoder);  // 4 → 11
-
-// Keeping the halves as their own models pays off later:
-// encoder.predict(signal) lets you inspect the 4-number bottleneck directly
+autoencoder.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [inputDim] }));
+autoencoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+autoencoder.add(tf.layers.dense({ units: 4, activation: 'relu' })); // bottleneck
+autoencoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+autoencoder.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+autoencoder.add(tf.layers.dense({ units: inputDim })); // linear reconstruction
 
 // Train to reconstruct its own input: input = label
 autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
 </CodeBlock>
 
-Those eleven numbers describe one extraction window, not a whole archive capture. In the archive a capture is the 33-second block, 256 Hz across 64 channels; the window is 64 consecutive samples of one channel, a quarter of a second. Lesson 5 uses the same word for the window whose eleven features the autoencoder rebuilds, and the number beside it says which is meant. Two different 64s: samples here, hull sensors in lesson 1's drawer. The difference decides how much of a training set a recurring event touches. The pulse DEEP SCAN hunts comes back on its 73.4-second clock, so it lands in nearly half the 33-second captures and in about one quarter-second window in seventy, the 412 rows of 28,800 the epilogue below counts.
+Those eleven features describe 64 samples from one channel at 256 Hz: a quarter-second window. An archive capture is a 33-second block from 64 channels. Samples and channels are different axes.
+
+The mission's 412 suspect rows are fictional review findings. A 73.4-second recurrence interval alone cannot tell us how many extraction windows contain a pulse: we also need its duration and the window-selection schedule.
 
 ## Training on Normal Data Only
 
@@ -120,53 +119,35 @@ Those eleven numbers describe one extraction window, not a whole archive capture
 // The autoencoder learns to compress and reconstruct normal patterns
 // Some anomalies may still reconstruct well; test for those misses
 
-// normalSignals: shape [1000, 11]: 1000 normal signal readings. A reduced
-// demo slice: the epoch lines below are its numbers, not the ship's own fit
-// over the eleven days of archive.
+// Integration sketch: supply separate reviewed-normal train and validation
+// tensors with 11 columns. Split raw time blocks before making windows;
+// fit normalization on training rows only and apply it to both sets.
+// The caller owns normalSignals and normalValidation.
 const history = await autoencoder.fit(normalSignals, normalSignals, {
   epochs: 100,
   batchSize: 32,
-  validationSplit: 0.2,
+  validationData: [normalValidation, normalValidation],
   callbacks: {
     onEpochEnd: (epoch, logs) => {
-      if (epoch % 20 === 0) {
-        console.log(
-          \`Epoch \${epoch}: loss=\${logs?.loss.toFixed(6)} \` +
-          \`val_loss=\${logs?.val_loss.toFixed(6)}\`
-        );
-      }
+      if (epoch % 20 === 0) console.log({ epoch, loss: logs?.loss, validation: logs?.val_loss });
     },
   },
 });
-// Epoch 0:  loss=1.002725 val_loss=0.906331
-// Epoch 20: loss=0.132932 val_loss=0.139485
-// Epoch 40: loss=0.116131 val_loss=0.127430
-// Epoch 60: loss=0.110304 val_loss=0.124273
-// Epoch 80: loss=0.107359 val_loss=0.120210
-// (the % 20 callback prints epochs 0 through 80; with epochs: 100 the
-// loop ends after epoch 99, so no line for 100 ever appears)
 
-// Epoch 0 is the no-information baseline, not a first guess that happens
-// to be poor. Module 5 z-normalized all eleven features to mean 0 and
-// std 1, so a model answering zero for every feature scores a squared
-// error near 1.0. The number tfjs prints for epoch 0 is the average
-// across that epoch's 25 batches, and 25 updates do not move an untrained
-// network far off that. Every row below it is the model beating the
-// baseline.
+// Log the actual run. An epoch-0 loss already includes optimizer updates;
+// it is not an untrained baseline. A zero reconstruction has MSE 1 only
+// on a population whose nonconstant features each have mean 0 and std 1.
+// Validation loss measures another sample, so it need not equal training
+// loss. A growing gap calls for investigation, not a memorization verdict.
 
-// Read the val_loss column. validationSplit holds back the last 200 of
-// these readings and the model never fits them, so val_loss is the only
-// number here that says anything about readings it has not seen. Above,
-// val_loss runs 5% to 13% above loss from epoch 20 on, which is
-// one observed generalization gap looks like. If validation loss stays
-// much higher while training loss falls, investigate overfitting, data
-// shift and preprocessing differences. The gap alone cannot establish
-// memorization or predict the error on every unseen reading.`}
+// Keep autoencoder while scoring in the next lesson. At the end of the
+// workflow, autoencoder.dispose() releases its layers and string-created optimizer.
+`}
 </CodeBlock>
 
 ## Challenge
 
-Screen the archive against the flag log, then train the autoencoder on what survives. The grader checks which rows reach fitting and measures held-out reconstruction errors. A contaminated model may reconstruct anomalies well, but no fixed error ratio proves contamination. For a comparison experiment, start both runs from identical weights and keep the fitting schedule fixed.
+Screen the archive against the flag log, then train the autoencoder on what survives. The grader checks row selection and measures errors on a small synthetic holdout. Those checks do not validate a real detector. A contaminated model may reconstruct anomalies well, but no fixed error ratio proves contamination. For a comparison experiment, start both runs from identical weights and keep the fitting schedule fixed.
 
 <Exercise slug="build-autoencoder" />
 
@@ -187,10 +168,21 @@ Screen the archive against the flag log, then train the autoencoder on what surv
 
 <Epilogue>
 
-First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but that log only holds what ARIA's rules tripped on, so rows carrying the 73.4 Hz component stayed in the training set. The model learned the component like everything else it was shown, and now rebuilds the anomalous signal at 1.4x baseline, below the cutoff used in this run. Farah finds the leak with an FFT over the training rows: the 73.4 Hz bin is lit in rows the flag log never names.
+First run: the loss curve is beautiful and the result is useless. Demir stripped every reading the flag log named, but that log only holds what ARIA's rules tripped on, so rows carrying the 73.4 Hz component stayed in the training set. The model learned the component like everything else it was shown, and now rebuilds the anomalous signal at 1.4x baseline, below the cutoff used in this run. Farah finds the suspect rows with an FFT: the band around 73.4 Hz is active where the flag log names no event. The mission numbers illustrate a possible contamination failure, not a reproduced training experiment.
 
-Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows out of 28,800, and an order to screen every training row on the 73.4 Hz bin itself instead of trusting the flag log.
+Nazari's verdict fits in a log line: ninety minutes of training, 412 contaminated rows out of 28,800, and an order to review training rows carrying that band. Screening by this signature defines what the detector is allowed to learn as normal. It does not independently prove the signature's cause.
 
 The second run starts at 0115.
+
+<StoryConsequence
+  beatId="deep-orbit-anomaly-7741-training-set"
+  fallback="Farah keeps 7741 outside the next fit while its label is unresolved, and records that exclusion for review."
+  outcomes={{
+    "cooperate": "Before the second run, Farah catches the confirmed-event label attached to 7741. No instrument confirmed it. Demir corrects the label to unresolved and searches the downstream exports for copies; the run waits for that audit.",
+    "defect": "The exclusion note keeps 7741 out of the second fit. Nazari reviews its stated reason, then asks for a sensitivity run with the row included. The extra run goes on tomorrow's queue.",
+    "random": "The first run included 7741, so its reconstruction score cannot serve as an unseen-case check. Demir prepares a separate fit without it and keeps the original run for comparison; neither run gives the row a ground-truth label.",
+    "dominant": "The probe registry brings up 7741 beside both runs. Farah can compare its reconstruction without searching the archive again, but removes it from the accuracy table: an unresolved, deliberately selected probe cannot supply that estimate."
+}}
+/>
 
 </Epilogue>

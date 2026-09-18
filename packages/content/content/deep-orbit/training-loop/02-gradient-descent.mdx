@@ -13,7 +13,7 @@ context:
   narrative: "Knowing how wrong the network is isn't enough; Chief Nazari wants to know which direction to adjust."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Gradient descent repeatedly steps weights in the direction that reduces loss, the same update rule as the lerp smoothing behind an easing animation."
+  explanation: "Gradient descent uses local gradients to propose steps toward lower loss, the same update rule as the lerp smoothing behind an easing animation."
   bridge:
     jsTitle: "Lerp smoothing"
     jsCode: "pos += (target - pos) * 0.1  // ease toward target"
@@ -29,7 +29,24 @@ hints:
   - level: guidance
     content: "The differentiation call hands back an object rather than a bare tensor: one entry per variable it differentiated, keyed by that variable's own name and not by position, so this weight's gradient has to be pulled out of it before you can use it. Then the update. The gradient points uphill, so a step of learningRate against it walks downhill. Two things bite here. A tf.variable is a container holding a tensor, so it has to be updated in place; rebinding the name leaves the variable itself untouched. And the loss you differentiate has to be the function step() received, because the grader hands step() a loss of its own later."
   - level: solution
-    content: "const weight = tf.variable(tf.scalar(5.0)); const learningRate = 0.1; let gradient; const lossFn = () => weight.square().asScalar(); function step(fn) { const { grads } = tf.variableGrads(fn); gradient = grads[Object.keys(grads)[0]]; weight.assign(weight.sub(gradient.mul(learningRate))); } step(lossFn);"
+    content: |
+      const weight = tf.tidy(() => tf.variable(tf.scalar(5.0)));
+      const learningRate = 0.1;
+      let gradient;
+
+      const lossFn = () => weight.square().asScalar();
+
+      function step(fn) {
+        if (gradient) gradient.dispose();
+        gradient = tf.tidy(() => {
+          const { grads } = tf.variableGrads(fn, [weight]);
+          const current = grads[weight.name];
+          weight.assign(weight.sub(current.mul(learningRate)));
+          return current;
+        });
+      }
+
+      step(lossFn);
 keywords:
   - gradient
   - descent
@@ -54,10 +71,11 @@ An easing loop knows where it is going. This has 673 parameters and no target to
 {`import * as tf from '@tensorflow/tfjs';
 
 // Simple example: find the x that minimizes (x - 3)^2
-let x = tf.variable(tf.scalar(0)); // start at 0
+const x = tf.tidy(() => tf.variable(tf.scalar(0))); // start at 0
 const learningRate = 0.1;
 
 for (let step = 0; step < 20; step++) {
+  tf.tidy(() => {
   // Compute loss and gradient
   const { value: loss, grads } = tf.variableGrads(() => {
     return x.sub(3).square() as tf.Scalar; // loss = (x - 3)^2
@@ -70,21 +88,23 @@ for (let step = 0; step < 20; step++) {
   if (step % 5 === 0) {
     console.log(\`Step \${step}: x=\${x.dataSync()[0].toFixed(3)}, loss=\${loss.dataSync()[0].toFixed(3)}\`);
   }
+  });
 }
 // Step 0:  x=0.600, loss=9.000
 // Step 5:  x=2.214, loss=0.966
 // Step 10: x=2.742, loss=0.104
 // Step 15: x=2.916, loss=0.011
-// (x prints after the update, loss is measured before it)`}
+// (x prints after the update, loss is measured before it)
+x.dispose();`}
 </CodeBlock>
 
 That slope arrives without anyone writing a derivative. `tf.variableGrads` records the operations your loss function runs and replays that recording backwards to get it. The name for the trick is autograd, short for automatic differentiation. The next lesson takes it apart.
 
 Read that trace as distances rather than positions. Each row sits five steps after the one before it, and the distance covered shrinks: 1.614, then 0.528, then 0.174. Nothing in the loop asks it to slow down. The slope of `(x - 3)²` shrinks as x nears 3, and each step is a tenth of the slope, so descent slows near the minimum instead of overshooting it.
 
-**Learning rate** is a hyperparameter: a setting you pick by hand rather than a weight the model learns, and the one that matters most. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so `pos = 2` running toward `target = 10` at 0.001 needs 6,682 frames to close the gap to 0.01.
+**Learning rate** is a hyperparameter: a setting you choose rather than a weight fitted by this optimizer. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so `pos = 2` running toward `target = 10` at 0.001 needs 6,682 frames to close the gap to 0.01.
 
-Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error on every frame after and arrives in ten. Divergence starts at 2.0, which leaves the element bouncing between 18 and 2 forever, and 2.5 grows the error by half again per frame: 22, then -8, then 37.
+Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error on every frame after and arrives in ten. At 2.0 it stops converging and bounces between 18 and 2. Above 2.0 the error grows: at 2.5 the positions are 22, -8 and 37.
 
 The threshold belongs to the loss rather than to the rate. The descent above minimizes `(x - 3)²` instead of half of it, so every slope it reads is twice as steep and its own threshold sits at 1.0. The 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
 
@@ -93,7 +113,7 @@ The threshold belongs to the loss rather than to the rate. The descent above min
 
 `∇L = [ ∂L/∂w₁, ∂L/∂w₂, ..., ∂L/∂wₙ ]`
 
-Each `∂L/∂wᵢ` answers: "if I nudge wᵢ by ε, how much does L change?" The vector of all these answers points in the direction where L grows fastest. **Subtracting it walks you toward where L shrinks fastest.**
+Each partial derivative gives the local rate of loss change per unit change in that weight, holding the others fixed. For a small nudge ε, the loss change is approximately ε times that derivative. For a differentiable loss and fixed Euclidean step length, the gradient gives the steepest local ascent direction. Its negative gives local descent when the gradient is nonzero. A finite step still needs a suitable size.
 
 **Why the update rule `w := w - η·∇L`?** The Taylor expansion of L around the current point, which is the straight-line approximation of the loss right where you are standing:
 
@@ -102,7 +122,7 @@ Each `∂L/∂wᵢ` answers: "if I nudge wᵢ by ε, how much does L change?" Th
 To minimize the linear approximation, pick Δw opposite to ∇L. The learning rate η scales the step:
 - η too large → that straight line stops describing the real curve, so the step lands past the minimum
 - η too small → many steps to converge
-- Adaptive optimizers (Adam, RMSprop) tune η per-parameter using gradient history.
+- Adaptive optimizers such as Adam scale updates using gradient history; their base learning rate remains a setting.
 </DerivationDrawer>
 
 ## Challenge
@@ -113,13 +133,13 @@ Implement one descent step, written so the grader can hand your step() any loss 
 
 <RecallPrompt
   question="Your training loss explodes after a few steps. What is the most likely cause and fix?"
-  answer="The rate is past this loss's divergence threshold, so each step lands further from the minimum than it started and the error grows. Overshooting on its own is not the problem: at a rate of 0.6 on (x - 3)² the optimizer crosses the minimum on every step and still converges. Cut the rate by 10x. A rate that is too low is slow, never explosive."
+  answer="An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "A gradient is the slope of the loss with respect to each weight. It points in the direction of steepest ascent, so subtracting it moves weights toward lower loss.",
-    "The learning rate controls step size. Past the loss's threshold the error grows on every step; a rate that overshoots without passing the threshold still converges; too low is painfully slow.",
+    "A gradient is the slope of the loss with respect to each weight. It points in the direction of steepest ascent, so a sufficiently small step opposite a nonzero gradient lowers a smooth loss locally.",
+    "The learning rate controls step size. The quadratic example has an exact convergence range; a general network does not share that single threshold.",
     "`tf.variableGrads()` computes gradients for every trainable variable your loss function touched, in one call, keyed by variable name."
   ]}
   bridge="Lerp is gradient descent for a simple squared-distance loss. In model fitting, labels may be known while the best parameters remain unknown."

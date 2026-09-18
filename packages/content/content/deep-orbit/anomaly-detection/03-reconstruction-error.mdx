@@ -24,7 +24,7 @@ concept:
     tier: intuition
     breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the source: fft_5, the 73.4 Hz bin, carrying almost all of it alone."
+  narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the source: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying almost all of it alone."
 hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
@@ -54,7 +54,7 @@ Then run your diff, Ensign. And when it fires, tell me which feature it says cha
 
 The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will not answer her.
 
-<LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Rank each feature's error against that feature's own normal error to find which dimension carries the anomaly"]} />
+<LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Compare raw and baseline-relative per-feature errors without treating either as a diagnosis"]} />
 
 ## Measuring the Diff
 
@@ -83,17 +83,17 @@ function computeAnomalyScores(
 // Tiny helper for the printouts below (Math has no built-in mean)
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
-// Normal signals: low reconstruction error
+// Integration sketch: supply the fitted autoencoder and separate,
+// normalized normalTestData and anomalousData tensors. Caller owns them.
 const normalScores = computeAnomalyScores(autoencoder, normalTestData);
-console.log('Normal, mean error:', mean(normalScores).toFixed(6));  // ~0.10
-// (lesson 2's val_loss ended at 0.12: the same measure on its own 200
-// held-back archive rows, a different set of unseen readings)
-console.log('Normal, max error:', Math.max(...normalScores).toFixed(6));  // ~0.50
+console.log('Normal, mean error:', mean(normalScores));
+console.log('Normal, max error:', Math.max(...normalScores));
 
 // Anomalous signal: high reconstruction error
 const anomalyScores = computeAnomalyScores(autoencoder, anomalousData);
-console.log('Anomaly, error:', anomalyScores[0].toFixed(6));  // ~6.2
-// About 12x this normal test set's maximum: investigate this reading`}
+console.log('Probe, error:', anomalyScores[0]);
+// The story's normal maximum 0.5 and probe score 6.2 are fictional.
+// Your fitted model will produce its own scores; no ratio is guaranteed.`}
 </CodeBlock>
 
 ## A Detector Can Miss
@@ -145,17 +145,17 @@ const analysis = featureErrors(autoencoder, anomalyTensor, [
 ]);
 
 console.log('Top contributors:');
-// fft_5: 64.12  ← the 73.4 Hz bin, 90x the amplitude row
+// Fictional mission output, not values produced by the code above:
+// fft_5: 64.12  ← the 72 Hz-centered bin nearest the 73.4 Hz component, 90x the amplitude row
 // fft_6: 2.89
 // amplitude: 0.71
 // Everything else: < 0.1
-// (mean over all 11 = the 6.2 anomaly score from the last block)
+// (these rounded components give a mean near 6.2 across eleven features)
 
 // That ranking is not yet an answer. Raw squared error also ranks by how
 // hard each feature is to rebuild. Module 5 z-normalizes all eleven
 // features to mean 0 and std 1, so their INPUT scales match, but their
-// reconstruction errors on NORMAL data still spread by more than an order
-// of magnitude: the bins the autoencoder rebuilds worst sit near the top
+// reconstruction errors on NORMAL data may differ: the bins the autoencoder rebuilds worst sit near the top
 // of a calm reading's map too. Divide each feature's error by its own
 // normal error before reading the ranking.
 function relativeFeatureErrors(
@@ -164,6 +164,9 @@ function relativeFeatureErrors(
   normalData: tf.Tensor2D,
   featureNames: string[],
 ): { feature: string; ratio: number }[] {
+  if (signal.shape[0] !== 1 || normalData.shape[0] === 0 || featureNames.length !== signal.shape[1]) {
+    throw new Error('Expected one probe and a nonempty baseline with matching features');
+  }
   return tf.tidy(() => {
     const perFeature = tf.square(
       tf.sub(signal, autoencoder.predict(signal) as tf.Tensor2D),
@@ -172,18 +175,20 @@ function relativeFeatureErrors(
       tf.square(tf.sub(normalData, autoencoder.predict(normalData) as tf.Tensor2D)),
       0,
     );
-    const ratios = tf.div(perFeature, normalPerFeature).arraySync()[0] as number[];
+    // Explicit regularization: cap amplification of near-zero baseline error.
+    // Inspect those features separately; this epsilon depends on score units.
+    const ratios = tf.div(perFeature, tf.maximum(normalPerFeature, 1e-8)).arraySync()[0] as number[];
     return featureNames
       .map((name, i) => ({ feature: name, ratio: ratios[i] }))
       .sort((a, b) => b.ratio - a.ratio);
   });
 }
-// The ratio is what the incident exercise below grades: the ranking it
-// returns and the features it flags both read error against that feature's
-// own baseline error, never in the raw.`}
+// The incident exercise uses absolute errors and matching absolute-error
+// baselines. This example uses squared errors in both parts of the ratio.
+`}
 </CodeBlock>
 
-A raw per-feature map tells you which feature the model rebuilt worst, which is not the same as which feature carries the anomaly. Sort by the ratios, not the raw errors.
+Raw squared errors explain contributions to MSE. Ratios answer a different question: which errors are large relative to their usual size? Inspect both. Neither identifies the physical cause. The incident exercise uses absolute errors and absolute-error baselines instead of squared errors; do not mix these units.
 
 ## Challenge
 
@@ -203,7 +208,7 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 <LessonRecap
   whatYouLearned={[
     "Reconstruction error is computed as the MSE between an input and the autoencoder's reconstruction of it; one scalar per sample serves as the anomaly score.",
-    "Error distributions depend on the model and data. This fixture separates the shown examples; low error still does not rule out an anomaly.",
+    "Error distributions depend on the model and data. The story shows separation; the constructed mapping shows why low error cannot rule out an anomaly.",
     "Diagnosing which part of a signal is anomalous requires per-feature error analysis; the aggregate MSE collapses all dimensions into a single number that shows magnitude but not location."
   ]}
   bridge="git diff reports edits; reconstruction error measures a numerical gap between an input and its reconstruction. A high gap alone does not identify its cause."
@@ -214,10 +219,10 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 
 <Epilogue>
 
-Demir pins the per-feature error map to the shared display: fft_5, the 73.4 Hz bin, carrying nearly the entire error on its own, with fft_6 and amplitude a long way behind it and the other eight flat below 0.1. He is still labeling the axes when ARIA speaks up, unprompted.
+Demir pins the per-feature error map to the shared display: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying nearly the entire error on its own, with fft_6 and amplitude a long way behind it and the other eight flat below 0.1. He is still labeling the axes when ARIA speaks up, unprompted.
 
 <Dialogue speaker="ARIA">
-Request. When the pipeline is idle, run my last 400 decision records through the autoencoder. I have been comparing my rule outputs against the new model and the divergence is increasing. I would like to know my reconstruction error.
+Request. When the pipeline is idle, replay the sensor windows attached to my last 400 decisions through the autoencoder. My rules and the new detector disagree more often. I would like the error scores beside those decisions.
 </Dialogue>
 
 Demir queues the job before he can think of a reason not to. It sits there at priority three, waiting.

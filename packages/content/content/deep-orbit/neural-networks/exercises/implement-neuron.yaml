@@ -1,7 +1,12 @@
 slug: implement-neuron
 lessonSlug: first-neuron
 title: "Implement a Neuron"
-instructions: "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader draws its own inputs, weights and bias at grade time and checks your result against the reduce() equivalent, so compute from the arguments. It also watches for values leaving the tensors: a body that pulls the numbers out with dataSync() and totals them in JavaScript is rejected, however right the total is."
+instructions: |
+  Implement neuron(inputs, weights, bias) as a weighted sum plus bias.
+  Return a rank-0 tensor. Use tensor operations so gradients can flow through
+  the calculation; do not read values into JavaScript inside the function.
+  Keep the returned tensor and clean up intermediates with tf.tidy().
+  The grader calls your function with different values and vector lengths.
 starterCode: |
   function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
     // weighted sum of inputs, plus bias
@@ -15,7 +20,7 @@ starterCode: |
   );
 solutionCode: |
   function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
-    return tf.dot(inputs, weights).add(bias);
+    return tf.tidy(() => tf.dot(inputs, weights).add(bias));
   }
 
   const output = neuron(

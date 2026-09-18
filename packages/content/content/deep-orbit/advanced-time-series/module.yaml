@@ -4,10 +4,10 @@ worldId: deep-orbit
 order: 8
 description: |
   The forecast says the anomaly repeats on a fixed interval. It does not.
-  Attention, multi-step forecasts, Kalman filters, and confidence-weighted
+  Attention, multi-step forecasts, Kalman filters, and validation-weighted
   ensembles are what the crew builds to chase that miss, and what finally
   shows that the interval is shrinking.
-summary: "Forecast data that will not keep a schedule: attention (where the model puts its weight), multi-step forecasts, Kalman filters (blending noisy readings with predictions), and ensembles (models averaged by confidence)."
+summary: "Explore attention, forecasting, Kalman filtering and ensembles. Compare their assumptions, inspect errors and decide what each method can support."
 lessonCount: 5
 prerequisites:
   - foundations

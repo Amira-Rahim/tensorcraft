@@ -13,7 +13,7 @@ context:
   narrative: "DEEP SCAN flags a signal that doesn't match any known category. Nazari challenges: is the model broken, or have they found something new?"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Anomaly detection models normality and flags deviation from it. You can't catalog every possible anomaly, but you can know normal cold."
+  explanation: "Anomaly detection models normality and flags deviation from it. You cannot catalog every possible anomaly. A baseline describes the normal examples you have observed and still needs validation."
   bridge:
     jsTitle: "Performance Baseline"
     jsCode: "if (LCP > baseline * 1.5) alert('performance regression')"
@@ -60,31 +60,31 @@ How do we know which? How do we tell a genuine anomaly from a false alarm?
 
 Monitoring works the same way whatever you ship. You pick a baseline for the numbers you care about: Largest Contentful Paint under 2.5s in a browser, p99 response time under 200ms on a Node service. Then you alert when a value drifts past it. Anomaly detection makes the same move: define what "normal" looks like, then flag whatever lands outside it.
 
-<LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score gate, and recompute the baseline when the world underneath it moves", "Recognize the precision and recall tradeoff a threshold sets, and why no single cutoff satisfies both"]} />
+<LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score gate and evaluate a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
-  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every window with a confirmed event label. The filter halts on Sample 7741, which has no event label, so nothing removes it. It sits inside every baseline he has computed, and it is the first thing DEEP SCAN ever flagged. Train on it, or pull it? Your call, operator."
+  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every window with a confirmed event label. The filter halts on Sample 7741, which has no event label, so nothing removes it. It sits inside every baseline he has computed, and its earlier classifier score was ambiguous. Train on it, or pull it? Your call, operator."
   options={[
     {
       label: "cooperate",
       display: "Give it an event label so the filter drops it with the rest",
-      consequence: "The filter removes it and the training set comes out the same as the one Demir builds. The record is what changed: the flag log now reports a confirmed event on a reading nobody confirmed. Every later pass that screens on that log inherits the guess as a fact, and nothing in the file says a human made a call."
+      consequence: "The filter removes it. the flag log now reports a confirmed event on a reading nobody confirmed. Every later pass that screens on that log inherits the guess as a fact, and nothing in the file says a human made a call."
     },
     {
       label: "defect",
       display: "Pull it out and log the exclusion with your reasons",
-      consequence: "The model trains on cleaner normality, at a price you should say out loud: you decided part of the answer before building the thing that is supposed to decide. Honest only because the exclusion list SAYS so. This is what Demir does tonight."
+      consequence: "The reading stays out of this fit, with its uncertain status recorded. Exclusion may help if it is anomalous, or remove useful variation if it is normal. The log lets the next reviewer inspect that choice."
     },
     {
       label: "random",
-      display: "Train on everything, 7741 included: more data is more data",
-      consequence: "The run converges and nothing looks wrong, which is the problem. If 7741 is the anomaly's first visit, you have taught the detector that the thing it exists to find is normal, and contamination like that subtracts sensitivity exactly where you need it. 7741 is inside the weights now, so every score the model ever gives that reading measures memory, not judgment. More data was more data for 28,799 rows; the one exception had a second job as your eval case, and you can never again measure what the model thinks of it."
+      display: "Include the unconfirmed row in this fit",
+      consequence: "The reading enters training. If it is anomalous, fitting it may reduce the error you hoped would flag it. You can still inspect its score, but it is no longer an unseen evaluation example for this model. Evaluate detection on separate, reviewed cases."
     },
     {
       label: "dominant",
-      display: "Pull it from training AND promote it to a named eval case",
-      consequence: "The third door, bought with two admissions: the training set shrinks, and the exclusion list now says out loud that your baselines cannot fully be trusted. Excluded from what the model learns, preserved as a labeled test it must eventually face. When a later module replays 7741 through the finished ensemble, this decision is why the comparison means something. Quarantine is honest; it is not free."
+      display: "Exclude it and register an unlabeled diagnostic probe",
+      consequence: "The reading stays outside training and becomes a named diagnostic probe. Its label remains unknown. Because you selected it after seeing a suspicious score, it is not an unbiased test of generalization. Later replays can compare behavior; accuracy still needs independently labeled examples."
     }
   ]}
 />
@@ -105,6 +105,9 @@ interface SignalStats {
 }
 
 function computeBaseline(normalAmplitudes: number[]): SignalStats {
+  if (!normalAmplitudes.length || !normalAmplitudes.every(Number.isFinite)) {
+    throw new Error('Expected finite, nonempty baseline readings');
+  }
   const sorted = [...normalAmplitudes].sort((a, b) => a - b);
   const n = sorted.length;
   const mean = normalAmplitudes.reduce((s, v) => s + v, 0) / n;
@@ -113,41 +116,45 @@ function computeBaseline(normalAmplitudes: number[]): SignalStats {
   return {
     mean,
     std,
-    p5: sorted[Math.floor(n * 0.05)],
-    p95: sorted[Math.floor(n * 0.95)],
+    p5: sorted[Math.ceil(n * 0.05) - 1], // nearest-rank percentiles
+    p95: sorted[Math.ceil(n * 0.95) - 1],
   };
 }
 
 // Step 2: Flag deviations
 function isAnomaly(value: number, baseline: SignalStats, sigmas: number = 3): boolean {
+  if (![value, baseline.mean, baseline.std, sigmas].every(Number.isFinite) || baseline.std < 0 || sigmas < 0) {
+    throw new Error('Invalid reading or threshold');
+  }
+  if (baseline.std === 0) return value !== baseline.mean; // exact-reading policy
   const zScore = Math.abs(value - baseline.mean) / baseline.std;
   return zScore > sigmas;  // beyond 3 standard deviations = anomaly
 }
 
-const baseline = computeBaseline(normalAmplitudes);
-console.log('Baseline:', baseline);
-// { mean: 0.52, std: 0.15, p5: 0.28, p95: 0.76 }
+// Worked example using the mission's fictional baseline, not measured data.
+// For your own detector, computeBaseline takes reviewed training rows only.
+const baseline = { mean: 0.52, std: 0.15, p5: 0.28, p95: 0.76 };
 
 console.log(isAnomaly(0.55, baseline));  // false: normal
 console.log(isAnomaly(1.00, baseline));  // true: 3.2 sigmas, the most a spike can score
 console.log(isAnomaly(0.00, baseline));  // true: 3.47 sigmas, the far end of the scale`}
 </CodeBlock>
 
-Amplitude arrives here already normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so no reading can come in above 1.00. Against mean 0.52 and std 0.15, a channel pegged at full scale is 3.2 sigma out. A dead channel reading 0.00 is 3.47 sigma, and nothing on this feature reads past those two ends. The gate at 3 sigma therefore fires on amplitudes above 0.97 or below 0.07, the top three and the bottom seven hundredths of the 0-to-1 scale. That is a slice of the scale, not a flag rate: on calm readings the gate fires about a quarter of one percent of the time. The sigma count stays small however loud the event is. If a sigma count above 3.47 turns up on this feature, look for a units bug before you believe the reading.
+Amplitude arrives here already normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so no reading can come in above 1.00. Against mean 0.52 and std 0.15, a channel pegged at full scale is 3.2 sigma out. A dead channel reading 0.00 is 3.47 sigma, and nothing on this feature reads past those two ends. The gate at 3 sigma therefore fires on amplitudes above 0.97 or below 0.07, the top three and the bottom seven hundredths of the 0-to-1 scale. That is a slice of the scale, not a flag rate. Measure the false-alarm rate on separate, reviewed normal readings. A bounded sensor distribution is not exactly Gaussian. The sigma count stays small however loud the event is. If a sigma count above 3.47 turns up on this feature, look for a units bug before you believe the reading.
 
-<DerivationDrawer summary="What the 3-sigma rule assumes, and when it lies">
-**The z-score recipe is a stack of probability claims.** Dividing by the standard deviation and comparing to 3 asserts: readings follow a distribution, that distribution is roughly Gaussian (the bell curve), and its tails put probability 0.0027 beyond 3 sigma. The recipe works exactly as far as those claims hold.
+<DerivationDrawer summary="When does a 3-sigma cutoff imply a probability?">
+A z-score measures distance in units of standard deviation. Computing it does not require a Gaussian distribution. The claim that about 0.27% of normal readings exceed three sigmas does: it uses a Gaussian population and its true mean and standard deviation. Estimates from a small sample add uncertainty.
 
-**Why Gaussian is a reasonable default:** the Central Limit Theorem. A reading that sums many small independent physical effects gets pushed toward the bell curve no matter what shape the individual parts have. Sensor noise usually qualifies.
+The Central Limit Theorem can justify a Gaussian approximation for sums under suitable conditions, such as independent contributions with finite variance. It does not make every sensor's readings Gaussian. Heavy tails, saturation, changing operating conditions and correlated effects can invalidate that approximation.
 
-**Two standard ways production data breaks it.** Heavy tails: when rare large effects dominate, 3-sigma events stop being rare and the detector cries wolf. Correlation: channels mounted on the same hull move together, so their noise does not average away and the effective spread is wider than any per-channel std reports.
+For a Gaussian channel, a two-sigma gate flags about 4.55% of readings. With 64 such channels the expected count is about 2.9 flags per reading, whether or not the channels are independent. Expectation adds. The probability of no flags is different: about 0.9545^64, or 5.1%, only if flags are independent. Shared disturbances can make flags arrive together, changing that distribution without changing its mean.
 
-**Per-channel thresholds also compound.** Loosen the dial to 2 sigma and each channel trips 4.6% of the time on calm data. Across 64 channels, a fully dark board then has probability 0.954⁶⁴ ≈ 0.05: the calm state has a few channels lit. On a calm reading, expect about 3 lit channels (64 × 0.046 = 2.9). Both numbers multiply the per-channel rate as if the channels tripped independently, which the paragraph above says hull-mounted channels do not. Correlation leaves that average alone and wrecks the spread around it. Simulate 64 channels that share half their noise variance and the board goes fully dark about a third of the time instead of about 5%. The median calm reading lights 1 channel rather than 3, and one reading in a hundred lights more than 25. So judge the count of lit channels against the expectation, rather than treating each lit channel as its own alarm, and expect that count to swing far wider than 2.9 suggests.
+Measure both per-channel rates and the distribution of simultaneous flags on representative data before choosing a page policy. A cutoff is a decision rule; it is not a probability attached to an individual alert.
 </DerivationDrawer>
 
 ## Precision vs Recall
 
-The sigma count is a dial between two kinds of error, both of which you met in module 3's evaluation drawer: false positives (calm readings flagged, the wolf cried) and false negatives (real anomalies missed, the watch asleep). Loosen the dial to 2 sigma and you catch more anomalies at the price of more false alarms; tighten it to 4 and the alarms go quiet along with some of the real events. Nazari wants zero false positives, because each one is investigation time. Farah wants zero false negatives, because the signal is the mission. A threshold that satisfies both does not exist. The right one depends on which error costs more, and lesson 4 works that trade through with numbers. The two ratios that score any threshold are module 3's:
+The sigma count is a dial between two kinds of error, both of which you met in module 3's evaluation drawer: false positives (calm readings flagged, the wolf cried) and false negatives (real anomalies missed, the watch asleep). Loosen the dial to 2 sigma and you catch more anomalies at the price of more false alarms; tighten it to 4 and the alarms go quiet along with some of the real events. Nazari wants zero false positives, because each one is investigation time. Farah wants zero false negatives, because the signal is the mission. When the score distributions overlap, no threshold can eliminate both kinds of error. A perfectly separating sample can exist, but does not guarantee perfect future detection. The right one depends on which error costs more, and lesson 4 works that trade through with numbers. The two ratios that score any threshold are module 3's:
 
 <CodeBlock language="typescript" title="precision-recall.ts">
 {`interface DetectionResult {
@@ -157,13 +164,15 @@ The sigma count is a dial between two kinds of error, both of which you met in m
 }
 
 // Of everything flagged, how much was real?
-function precision(r: DetectionResult): number {
-  return r.truePositives / (r.truePositives + r.falsePositives);
+function precision(r: DetectionResult): number | null {
+  const n = r.truePositives + r.falsePositives;
+  return n === 0 ? null : r.truePositives / n;
 }
 
 // Of everything real, how much was flagged?
-function recall(r: DetectionResult): number {
-  return r.truePositives / (r.truePositives + r.falseNegatives);
+function recall(r: DetectionResult): number | null {
+  const n = r.truePositives + r.falseNegatives;
+  return n === 0 ? null : r.truePositives / n;
 }`}
 </CodeBlock>
 
@@ -179,16 +188,16 @@ PAGER, two weeks after go-live: alerts have increased on readings a human review
 
 <RecallPrompt
   question="A z-score threshold of |z| > 3 flags 0.27% of samples in normal Gaussian data. If a monitor processes 100,000 readings per hour and the data is normal, roughly how many false-alarm flags does it generate per hour?"
-  answer="About 270 false alarms per hour. P(|Z| > 3) is approximately 0.0027 for a standard normal distribution; multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. Statistical thresholds are probabilities; they guarantee nothing, and the alert-fatigue cost grows directly with volume."
+  answer="About 270 false alarms per hour. P(|Z| > 3) is approximately 0.0027 for a standard normal distribution; multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. That expected count assumes the stated Gaussian distribution and population parameters. The threshold itself is a rule, not a probability; observed rates may differ."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Anomaly detection works by modeling what is normal, then flagging anything that deviates beyond a learned or computed threshold.",
     "Z-score thresholding is the simplest approach: flag values that fall more than N standard deviations from the mean of normal data.",
-    "Per-channel gates do not add up the way independence suggests. 64 hull sensors that share half their noise leave the board fully dark about a third of the time rather than 5 percent, so read the count of lit channels instead of treating every lit channel as its own alarm.",
-    "When the live baseline starts flagging readings a human has confirmed normal, recompute it and compare the spreads. A shift in level with the spread intact rolls forward. A spread that grew means the world got noisier, and a baseline that wide goes quiet on the events you are paid to catch.",
-    "Precision and recall trade off against each other as you move the threshold; the right balance depends on the relative cost of false alarms versus missed detections."
+    "Expected flag counts add across channels. The probability of simultaneous flags depends on their dependence, so measure shared disturbances before choosing an alert policy.",
+    "A changed baseline is a candidate for evaluation, not an automatic deployment. Investigate changes in level or spread and check misses as well as false alarms on separate examples.",
+    "Raising a fixed-score threshold cannot increase recall, but precision need not improve at every step. Choose the cutoff using measured errors and operational costs."
   ]}
   bridge="Performance and anomaly alerts both compare measurements with a chosen baseline. Either baseline can drift, and crossing a cutoff calls for investigation."
   youCanNow="Compute baseline statistics from normal data, apply z-score thresholding to flag anomalous signals, and decide, when the baseline drifts under you, whether to roll it forward or investigate."
@@ -199,9 +208,9 @@ PAGER, two weeks after go-live: alerts have increased on readings a human review
 The filter takes four seconds to strip eleven days down to a training set, then stops on one row and waits for a human.
 
 <Dialogue speaker="Ensign Demir">
-If I leave it in, the model learns it as normal. If I pull it out, I've decided the answer before I've built the thing that's supposed to decide.
+If I leave it in, I ask the model to reconstruct it. If I pull it out, I need a reason the next watch can check.
 </Dialogue>
 
-He pulls it out. The exclusion list gets its first line that is not a labeled event: one ID, one reason, and a question mark he does not take back out.
+He saves the selected policy beside the run configuration. The raw capture stays unchanged, so the next watch can audit both the row and the decision.
 
 </Epilogue>

@@ -2,15 +2,13 @@ slug: model-monitor
 lessonSlug: monitoring
 title: "Build a Model Monitor"
 instructions: |
-  **Contract revision 2026-09-17b:** Empty-data results are now null.
-
   Build ModelMonitor with a baseline mean vector in the same feature order and scale as recent inputs.
 
-  1. logPrediction(confidence) records a finite probability in [0, 1]. avgConfidence returns its arithmetic mean, or null before any prediction is logged.
-  2. logLatency(ms) records a finite nonnegative duration. getLatencyPercentile(p) sorts a copy numerically and returns index floor(count * p / 100), clamped to the last index. p must be finite and between 0 and 100 inclusive. Return null when no duration is recorded.
+  1. logPrediction(confidence) records a finite model score in [0, 1] (not demonstrated calibration). avgConfidence returns its arithmetic mean, or null before any prediction is logged.
+  2. logLatency(ms) records a finite nonnegative duration. getLatencyPercentile(p) sorts a copy numerically and returns nearest-rank index max(0, ceil(count * p / 100) - 1), so P0 is the minimum. p must be finite and between 0 and 100 inclusive. Return null when no duration is recorded.
   3. computeDrift(recentInputs) returns the Euclidean distance between the recent column means and baselineMean. Return null for an empty window. A zero distance means matching means only; a change in spread or shape can still exist.
 
-  Reject invalid probabilities, durations, percentiles or input rows. The baseline must be a non-empty finite vector. Every recent row must have the same width and finite values. Do not mutate caller arrays. Null means no measurement; it must not appear as a healthy zero on a dashboard. The exercise retains logs for its short session; a production monitor needs a bounded retention window.
+  Reject invalid scores, durations, percentiles or input rows. The baseline must be a non-empty finite vector. Every recent row must have the same width and finite values. Do not mutate caller arrays. Null means no measurement; it must not appear as a healthy zero on a dashboard. The exercise retains logs for its short session; a production monitor needs a bounded retention window.
 starterCode: |
   class ModelMonitor {
     private confidences: number[] = [];
@@ -76,7 +74,7 @@ solutionCode: |
       if (!Number.isFinite(p) || p < 0 || p > 100) throw new Error('Invalid percentile');
       if (this.latencies.length === 0) return null;
       const sorted = [...this.latencies].sort((a, b) => a - b);
-      const index = Math.min(sorted.length - 1, Math.floor((sorted.length * p) / 100));
+      const index = Math.max(0, Math.ceil((sorted.length * p) / 100) - 1);
       return sorted[index];
     }
 
@@ -231,22 +229,22 @@ testCode: |
       expect(drift).toBeCloseTo(Math.sqrt(5), 5);
     });
 
-    it('reports the tail, not the average: P50 is 90 here and the mean is 102.65', () => {
+    it('reports the tail, not the average: nearest-rank P50 is 89 here and the mean is 102.65', () => {
       // 100 inference times off the wasm seat: 95 of them climbing from
       // 40 ms to 134 ms, and five calls at 400. The mean is 102.65 and
-      // reports a system that is mostly fine. The P95 is 400, which is
+      // reports a system that is mostly fine. The nearest-rank P95 is 134, which is
       // what the operator on watch actually sat through.
       const monitor = new ModelMonitor([0, 0]);
       for (let i = 0; i < 95; i++) monitor.logLatency(40 + i);
       for (let i = 0; i < 5; i++) monitor.logLatency(400);
       expect(
         monitor.getLatencyPercentile(50),
-        'Index 50 of the 100 sorted times. A monitor reporting the mean says 102.65 here and a monitor reporting the middle says 90; only one of them is the P50.',
-      ).toBe(90);
+        'Nearest-rank P50 takes the 50th sorted value, index 49. Other percentile conventions can give a different result; use the specified convention.',
+      ).toBe(89);
       expect(
         monitor.getLatencyPercentile(95),
-        'Five calls in a hundred ran at 400 ms. That is exactly what a P95 exists to surface and what the CI benchmark gate reads.',
-      ).toBe(400);
+        'Nearest-rank P95 takes the 95th value, index 94. The five 400 ms values begin after it. Count budget violations separately.',
+      ).toBe(134);
       expect(monitor.getLatencyPercentile(99)).toBe(400);
       expect(monitor.getLatencyPercentile(0)).toBe(40);
     });
@@ -272,8 +270,8 @@ testCode: |
         monitor.getLatencyPercentile(100),
         'count * 100 / 100 is the count itself, which is one index past the last element. Clamp it.',
       ).toBe(48);
-      expect(monitor.getLatencyPercentile(50)).toBe(31);
-      expect(monitor.getLatencyPercentile(25)).toBe(12);
+      expect(monitor.getLatencyPercentile(50)).toBe(12);
+      expect(monitor.getLatencyPercentile(25)).toBe(7);
     });
 
     it('has no percentile before any inference is timed', () => {

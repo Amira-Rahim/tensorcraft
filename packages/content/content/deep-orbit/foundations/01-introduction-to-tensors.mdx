@@ -26,9 +26,9 @@ consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
   - level: nudge
-    content: "Three moves: create the tensor from the plain array, copy out everything the grader asks for while it is still alive, then release the GPU memory yourself"
+    content: "Three moves: create the tensor from the plain array, copy out everything the grader asks for while it is still alive, then dispose the tensor"
   - level: guidance
-    content: "Only one of the three steps is real work. `reading.shape` is already a plain JS array, so capturing it is a property read. The numbers are what has to cross a boundary. They live on the backend, and the synchronous reader from the lesson body hands them back in a Float32Array, which is not the plain JS list asked for here. The total is one more question for the same tensor, and adding the readings up on the backend leaves an intermediate behind, which the second cleanup tool in the lesson body handles for you. Order is the other decision. Release the memory last, because after that the numbers are unreachable, while rank, size and dtype still answer."
+    content: "Separate three jobs: construct the reading, copy the requested information into plain JavaScript values, then release backend resources. A reduction creates a temporary too; the synchronous cleanup scope shown in the lesson handles that lifetime."
   - level: solution
     content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = Array.from(reading.dataSync()); const total = tf.tidy(() => reading.sum().dataSync()[0]); reading.dispose();"
 keywords:
@@ -51,13 +51,13 @@ Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. A
 Then we need someone who doesn't start from rules. Demir, you think in data structures; start there.
 </Dialogue>
 
-You've worked with arrays your entire career: API responses, byte buffers, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage.
+You've worked with arrays your entire career: API responses, byte buffers, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. TensorFlow.js adds shape tracking, numerical operations on a selected backend, and an explicit disposal lifecycle. A backend is the implementation that runs those operations on the CPU or GPU.
 
 <LearningObjectives objectives={["Understand what a tensor is and how it relates to JavaScript arrays", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 
 ## What Is a Tensor?
 
-On the CPU backend a tensor's numbers sit in a `Float32Array`. On WebGL the same values live in a GPU texture instead, which the JavaScript garbage collector cannot see, and that is where the memory rules further down come from.
+For the default float32 dtype, the CPU backend stores values in a `Float32Array`. Other dtypes use different storage. On WebGL the same values live in a GPU texture instead, which the JavaScript garbage collector cannot see, and that is where the memory rules further down come from.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -93,7 +93,9 @@ One difference to internalize early: you can iterate a `Float32Array` directly, 
 
 ## The Part Garbage Collection Won't Do For You
 
-Here's the lifecycle promise from the top of the lesson, paid in full. `tf.memory()` keeps counting a tensor until you release it, whatever the backend, so a climbing `numTensors` is always a real signal. What it costs you depends on where the numbers live. On the CPU backend they sit in a `Float32Array` the collector can still reach, so dropping the last reference eventually frees them. On WebGL, the browser default, they sit in a GPU texture the JavaScript garbage collector cannot see at all, and dropping the reference frees nothing. Create tensors in a loop on that backend and you have written a memory leak in a language you thought couldn't leak.
+Dispose tensors when you finish with them, on every backend. `tf.memory().numTensors` counts tensors that have not been disposed. It is useful for detecting unexpected growth, but it is not a browser-process memory measurement.
+
+GPU resources need explicit cleanup. CPU values use JavaScript-managed storage, but relying on garbage collection leaves TFJS's bookkeeping behind and makes code unsafe when it switches backends. Initialization, intentional caches and retained model weights can also raise the count; growth alone does not identify a leak.
 
 Two tools fix this:
 
@@ -113,12 +115,11 @@ const result = tf.tidy(() => {
   return a.add(b);                     // survives: it's the return value
 });
 
-// tf.memory().numTensors is your leak detector. If that number
-// climbs while your app idles, something is creating tensors
-// outside a tidy() and never disposing them.`}
+console.log(await result.array()); // [5, 7, 9]
+result.dispose(); // a returned tensor outlives tidy, so the caller owns it`}
 </CodeBlock>
 
-If `tf.tidy()` reminds you of a `useEffect` cleanup function, good. Same contract: you acquired a resource the runtime can't track, so you say when it's done. Reach for `tidy()` whenever you create tensors inside a loop, which is where the leak actually shows up.
+`tf.tidy()` runs a synchronous callback and disposes its temporary tensors. Do not pass it an async function. Return a tensor you need to read asynchronously, await its data outside the callback, then dispose it. Unlike a React effect cleanup, tidy finishes as soon as the callback returns.
 
 ## Challenge
 
@@ -133,13 +134,13 @@ Now it's your turn. Create your first tensor from a JavaScript array.
 
 <LessonRecap
   whatYouLearned={[
-    "A tensor adds shape tracking, GPU-backed math, and an explicit memory lifecycle on top of the flat number storage you already know from Float32Array.",
+    "A tensor adds shape and backend operations to numeric storage; dispose it when you finish.",
     "Tensor rank equals the number of dimensions: scalar=0, vector=1, matrix=2.",
-    "A tensor's data lives on the backend, outside JavaScript. You cannot iterate it directly; call await t.array() or dataSync() to pull the values back across.",
-    "The JavaScript GC cannot see GPU memory: dispose() tensors you keep explicitly, and use tf.tidy() for everything intermediate. tf.memory().numTensors is your leak detector."
+    "A tensor is not directly iterable. Read values with await t.array() or dataSync() before ordinary JavaScript iteration.",
+    "Use dispose() for tensors you retain and synchronous tf.tidy() blocks for temporary work. A rising tensor count needs investigation, not an automatic leak diagnosis."
   ]}
   bridge="Float32Array provides flat numeric storage. A tensor adds shape, numerical backend operations, and an explicit disposal lifecycle."
-  youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and release their GPU memory with dispose() instead of waiting for a collector that cannot see it."
+  youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and manage their lifetime with dispose() and tf.tidy()."
 />
 
 One more thing lands in the archive between lessons, starting now: DISPATCH intercepts, relay chatter from other crews working the same band on other missions. This is the first.

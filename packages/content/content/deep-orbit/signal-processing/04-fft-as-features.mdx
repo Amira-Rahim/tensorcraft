@@ -13,7 +13,7 @@ context:
   narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. He calls it more information. Farah tells him he is right, and not for the reason he thinks."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and accuracy follows."
+  explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and may improve performance when those features help the task."
   bridge:
     jsTitle: "Data Transformation"
     jsCode: "const features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));"
@@ -61,11 +61,13 @@ keywords:
 skillAxes: [data_prep]
 ---
 
-> **DEEP SCAN · EVALUATION LOG** · archive re-annotated against spectrogram ground truth · held-out slice: 400 readings · inputs: raw time-domain [3] · accuracy 78.0% (312/400) · rerun with +8 FFT magnitude bins [11] · accuracy 87.0% (348/400) · same slice, same labels, both runs.
+> The mission scores below are fictional examples. The runnable feature transform does not reproduce an accuracy improvement without a labeled dataset and a controlled evaluation.
+
+> **DEEP SCAN · EVALUATION LOG** · archive re-annotated against spectrogram-based review labels · held-out slice: 400 readings · inputs: raw time-domain [3] · accuracy 78.0% (312/400) · rerun with +8 FFT magnitude bins [11] · accuracy 87.0% (348/400) · same slice, same labels, both runs.
 
 Nine points of accuracy, and not one new byte of sensor data. That log line is the whole lesson; the rest is understanding why it isn't a trick.
 
-The 78 and the deployment review's 94 are the same three-feature model. That review scored it 47 of 50 against labels that could not see a 73.4 Hz component, so the old scoreboard flattered it. Re-annotate the archive against spectrogram ground truth, hold out 400 readings instead of 50, and the same model reads 78.0%. Labels are data too, and some of them were wrong.
+The 78 and the deployment review's 94 are the same three-feature model. That review scored it 47 of 50 against labels that could not see a 73.4 Hz component, so the old scoreboard flattered it. Re-annotate the archive against spectrogram-based review labels, hold out 400 readings instead of 50, and the same model reads 78.0%. Labels are data too, and some of them were wrong.
 
 <Dialogue speaker="Ensign Demir">
 What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase, we also give it the spectral decomposition. More information, better decisions.
@@ -92,13 +94,15 @@ He writes 85 on the board and signs it. He's wrong, but in the direction nobody 
 
 // BEFORE: raw signal features only (3 values)
 // The model sees: [amplitude, frequency, phase]
-// Accuracy: 78%
+// Story result, not a benchmark: 78%
 
 // AFTER: raw + FFT features (3 + N frequency bins)
 // The model sees: [amplitude, frequency, phase, fft_bin_0, fft_bin_1, ..., fft_bin_N]
-// Accuracy: 87%
+// Story result, not a benchmark: 87%
 
 function extractFeatures(signal: number[], windowSize: number = 64): number[] {
+  // The fixed bin band below requires exactly 64 samples at 256 Hz.
+  if (windowSize !== 64 || signal.length < 64) throw new Error('Expected a 64-sample window at 256 Hz');
   return tf.tidy(() => {
     // All eleven features read the SAME window, so a row means the same
     // thing no matter how long the capture is. windowSize counts SAMPLES
@@ -108,8 +112,9 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     const windowSlice = signal.slice(0, windowSize);
 
     // Raw features (the original 3). The "frequency" feature is a raw
-    // zero-crossing count over that window: proportional to the dominant
-    // frequency, but a count, not hertz. Name it what it is. 64 samples
+    // zero-crossing count over that window. For a clean zero-centered
+    // sinusoid it relates to frequency; mixtures, offsets and noise change
+    // that relationship. Exact zeros also need a convention. 64 samples
     // can hold at most 63 crossings, which is the top of the range the
     // classifier's normalizer assumes.
     const amplitude = Math.max(...windowSlice.map(Math.abs));
@@ -117,8 +122,8 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
       i > 0 && v * windowSlice[i - 1] < 0 ? sum + 1 : sum, 0
     );
     // "phase" is the angle of the first two samples, atan2(s1, s0): a crude
-    // stand-in for where the waveform sits in its cycle when the window
-    // opens. The trained model expects it, so it stays, and it keeps the
+    // feature derived from two samples, not a general estimate of
+    // sinusoidal phase. The trained model expects it, so it stays, and it keeps the
     // name the contract gave it.
     const phase = Math.atan2(windowSlice[1], windowSlice[0]);
 
@@ -131,7 +136,7 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     // a different frequency in every row, and no downstream model could
     // ever ask "what lives at 72 Hz?". At this window's 4 Hz resolution
     // (256 Hz / 64 samples), bins 13-20 have centers 52-80 Hz and cover
-    // 50-82 Hz, the band that sits just above every catalogued natural
+    // 50-82 Hz, the band that sits just above every catalogued background
     // line; the sixth of the eight (bin 18) is the span that holds the
     // 73.4 Hz line.
     const fixedBins = magnitudes.slice(13, 21);
@@ -148,33 +153,23 @@ console.log('Feature vector:', extractFeatures(signalSamples));`}
 
 ## Normalization Matters
 
-FFT magnitudes can be far larger than raw signal values. Without normalization, the model will overweight frequency features and ignore the raw ones.
+Features can have very different scales. That can affect initial activations and optimization. A large input does not establish feature importance, and normalization does not guarantee that all features become equally useful. Fit scaling on training rows only and reuse it on validation, test and inference rows.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Module 1's rule at eleven features instead of two, plus one correction
-// for the optimizer below. Under plain gradient descent, the step on a
-// weight scales with the input that weight multiplies. A tone that lands
-// on a bin center puts windowSize / 2 times its amplitude in that bin, so
-// 64 samples can leave an FFT feature 32x above the amplitude feature. On
-// the signal the exercise grades against, 52 Hz at 1.0 plus 72 Hz at 0.5,
-// the tallest bin is 32.0 and the amplitude is 1.467. Plain SGD moves that
-// bin's weight 22x further per step. This model compiles with adam, which
-// divides each step by that weight's own gradient history. Both weights
-// then move by the same 1e-3, so the gap never reaches the step size.
-//
-// Scale still costs you. Glorot draws every weight in the layer from one
-// distribution, so a feature's share of the pre-activation is its share of
-// the squared feature values. On that same signal the eight FFT bins hold
-// 67% of it and the zero-crossing count holds 33%. Amplitude and phase are
-// left with 0.2% between them, so they barely move a hidden unit until
-// training has reweighted them. Normalizing gives all eleven the same say
-// from the first step.
+// Integration sketch: trainingFeatures contains only the training split.
+// Each row has the same finite feature columns. No empty or ragged rows.
+// These are population statistics for this training sample. Constant
+// columns use scale 1 and become zero; their standard deviation stays zero.
 
 function normalizeFeatures(features: number[][]): { normalized: number[][]; stats: { mean: number; std: number }[] } {
+  if (!features.length || !features[0].length ||
+      features.some(row => row.length !== features[0].length || row.some(v => !Number.isFinite(v)))) {
+    throw new Error('Expected finite, nonempty rectangular feature rows');
+  }
   // Z-score normalization: (value - mean) / std
-  // After normalization: mean ≈ 0, std ≈ 1 for each feature
+  // Mean ≈ 0; nonconstant columns have population std ≈ 1.
   const stats = features[0].map((_, colIdx) => {
     const column = features.map(row => row[colIdx]);
     const mean = column.reduce((a, b) => a + b, 0) / column.length;
@@ -208,6 +203,9 @@ function normalizeWithStats(features: number[], stats: { mean: number; std: numb
 
 // Original model: 3 inputs → 32 → 16 → 1 (78% accuracy)
 // Enhanced model: 11 inputs → 32 → 16 → 1 (87% accuracy)
+// Integration sketch: split raw captures BEFORE extracting overlapping
+// windows. Supply trainingFeatures, validationFeatures, testFeatures and
+// corresponding label tensors. Fit stats on trainingFeatures only.
 // Same hidden stack, same optimizer, same epoch count. The parameter
 // counts are in the paragraph under this block.
 
@@ -227,9 +225,11 @@ enhancedModel.compile({
 });
 
 // Train on the normalized rows from above, not the raw feature vectors.
-const history = await enhancedModel.fit(tf.tensor2d(trainNorm), trainY, {
+const trainingX = tf.tensor2d(trainNorm);
+const validationX = tf.tensor2d(validationFeatures.map(row => normalizeWithStats(row, stats)));
+const history = await enhancedModel.fit(trainingX, trainY, {
   epochs: 50,
-  validationSplit: 0.2,
+  validationData: [validationX, validationY],
   callbacks: {
     onEpochEnd: (epoch, logs) => {
       if (epoch % 10 === 0) {
@@ -238,28 +238,17 @@ const history = await enhancedModel.fit(tf.tensor2d(trainNorm), trainY, {
     },
   },
 });
-// Epoch 0:  acc=0.579, val_acc=0.533
-// Epoch 10: acc=0.821, val_acc=0.783
-// Epoch 20: acc=0.858, val_acc=0.817
-// Epoch 30: acc=0.875, val_acc=0.833
-// Epoch 40: acc=0.883, val_acc=0.817
-// (epoch 40 is the last line the % 10 callback prints: epochs count
-// from 0, so an epochs: 50 run ends after epoch 49)
-
-// Neither column is the 87.0% in the evaluation log. acc is scored on the
-// rows the model just trained on. val_acc is scored on the 20% that
-// validationSplit held back, which every tuning decision has already
-// seen. The log's number comes from a separate scoring pass, on rows
-// normalized with the stats the training set produced and never their own:
+// Record your own training and validation metrics. Evaluate the untouched
+// test split only after choosing features, scaling and model settings.
 const testX = tf.tensor2d(testFeatures.map(row => normalizeWithStats(row, stats)));
-const [, testAcc] = enhancedModel.evaluate(testX, testY) as tf.Tensor[];
+const [testLoss, testAcc] = enhancedModel.evaluate(testX, testY) as tf.Tensor[];
 console.log('Held-out accuracy:', testAcc.dataSync()[0].toFixed(3));
-// Module 3's evaluation lesson calls that the honest number.`}
+tf.dispose([trainingX, validationX, testX, testLoss, testAcc]);
+enhancedModel.dispose();
+// The caller still owns the supplied label tensors.`}
 </CodeBlock>
 
-Nazari was right that this is a bigger network. `countParams()` reports 673 parameters for the three-input stack and 929 for the eleven-input one, 38% more. All 256 of the added weights sit in the first layer, one for each new input on each of its 32 units. Nothing was added behind that layer, so the nine points come from what the new inputs say rather than from a deeper or wider stack.
-
-The held-out slice scores 87.0% and the last `val_acc` the callback printed reads 81.7%, which looks backwards. The flattered number is supposed to be the higher one. It is not, because of where `validationSplit` cuts: it takes the last twenty percent of the rows in the order you handed them over, so on a time-ordered archive that slice is one stretch of days rather than a fair sample, and a stretch of days can be harder than the archive as a whole. Flattered by contamination and unrepresentative by position are two different problems, and this run has both.
+Nazari was right that this is a bigger network. `countParams()` reports 673 parameters for the three-input stack and 929 for the eleven-input one, 38% more. All 256 of the added weights sit in the first layer, one for each new input on each of its 32 units. Changing the features also changed the parameter count. This comparison cannot isolate those effects. Use the same held-out rows and training budget, repeat appropriate runs and include a simpler baseline before attributing a gain to the new features. A validation score can exceed or trail a test score because of sampling or distribution differences; neither ordering proves contamination.
 
 One thing DEEP SCAN 2.0 is not: the build running on the bridge dashboard. That deployment keeps reading module 4's three min-max normalized features, and it keeps reading them for another five modules. The eleven-feature vector does its work off the dashboard first. Module 7's autoencoder trains on exactly this vector, and module 10 is where the shipped classifier is retrained on it, with a five-way head in place of the binary one.
 
@@ -270,16 +259,16 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
 <Exercise slug="fft-features" />
 
 <RecallPrompt
-  question="The FFT computes nothing the samples did not already hold. Why does feeding its magnitudes to the model still raise accuracy?"
-  answer="Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model improves because its input got richer, not because the archive changed."
+  question="The FFT computes nothing the samples did not already hold. Why might feeding its magnitudes help a model that previously saw only three summary features?"
+  answer="Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Feature engineering derives new model inputs from data you already have: no new recordings, more measurements of each one, so the pattern the model needs is in its input rather than buried under it.",
-    "DEEP SCAN saw three summary numbers per window. Two windows with the same three numbers can carry different spectra, so no size of network could have recovered the bins from them. The eight magnitudes are eight more measurements of the same window, and accuracy follows without a single new recording.",
+    "Identical summary statistics can hide different spectra. Adding FFT magnitudes preserves distinctions those summaries discard; held-out improvement still needs testing.",
     "Features from different sources often differ in scale by more than an order of magnitude. Z-score normalization must be applied using statistics computed from training data, and those same statistics must be reused at inference time.",
-    "A model's score is only as honest as the labels behind it. Re-annotating the archive against spectrogram ground truth turned the deployment review's 94 into 78.0% on 400 corrected readings, before features earned it back to 87.0%."
+    "Evaluation depends on reference labels. In the fictional mission review, correcting those labels lowers the old model score before additional features recover part of the loss."
   ]}
   bridge="Just as `rawData.map(d => ({ normalized: (d.value - min) / (max - min) }))` turns the rows an API returned into the numbers a component can render, `tf.concat([rawSignal, fftMagnitudes], 1)` hands the model measurements of the window it was never shown, so the pattern it needs is in its input instead of lost upstream of it."
   youCanNow="Turn a hertz band into fixed bin indices, read those bins out of a signal's spectrum, and return them behind the raw features as one vector a classifier can train on."
@@ -287,7 +276,7 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
 
 <Epilogue>
 
-Nazari reads the before-and-after the only way she reads anything. Seventy-eight to eighty-seven percent means roughly 2,600 fewer misclassified readings across the eleven-day archive, and about forty fewer hours of somebody chasing them down. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board.
+Nazari reads the before-and-after the only way she reads anything. If the nine-point gain holds across the full archive, it would mean roughly 2,600 fewer mistakes. She marks the projection as provisional; the cost also depends on which mistakes disappear. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board.
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
 Nine points. That is the first idea of yours that has paid for its own investigation time, Ensign. Do not expect applause for the next one.

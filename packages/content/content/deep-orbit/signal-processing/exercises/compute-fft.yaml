@@ -2,7 +2,7 @@ slug: compute-fft
 lessonSlug: fourier-transform
 title: "Compute FFT and Find Dominant Frequency"
 instructions: |
-  Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. For an isolated off-bin tone, the winning bin often lies near the tone. Phase, leakage, neighboring components and boundary bins can change the winner; nearest-bin rounding is not the algorithm. Use the computed magnitudes.
+  Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. For an isolated off-bin tone, the winning bin often lies near the tone. Phase, leakage, neighboring components and boundary bins can change the winner; nearest-bin rounding is not the algorithm. Use the computed magnitudes. Assume finite input with at least two samples and a positive sample rate. Break equal-magnitude ties by keeping the lowest eligible bin.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -58,7 +58,7 @@ testCode: |
       );
       expect(
         findDominantFrequency(signal, 128),
-        'A +5.0 offset puts far more energy in bin 0 than the tone puts anywhere else. Bin 0 counts how much the whole slice sits away from zero, which is not a frequency.',
+        'A +5.0 offset puts far more energy in bin 0 than the tone puts anywhere else. Bin 0 counts how much the whole slice sits away from zero, which is the zero-frequency component excluded by this task.',
       ).toBeCloseTo(7, 1);
     });
     it('tracks the input rather than a memorized answer (a second tone at a second length)', () => {

@@ -12,10 +12,10 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Farah discovers that the quality of LLM output depends entirely on the quality of the prompt. She refines her prompts iteratively, like debugging search queries until they return the right results."
+  narrative: "Farah discovers that a clearer prompt can improve the usefulness of an LLM draft. She refines her prompts iteratively, like debugging search queries until they return the right results."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Specificity, structure, and context decide what a prompt returns. The model never changes between a useless answer and a precise one; only your words do."
+  explanation: "Specific instructions and relevant context help define the task. Output also depends on the model, decoding settings and supplied evidence."
   bridge:
     jsTitle: "Search Queries"
     jsCode: "// Bad: 'error' → thousands of irrelevant results"
@@ -31,7 +31,29 @@ hints:
   - level: guidance
     content: "Each of the four parts does a different job, and the job tells you what to write. The role says who is answering and what kind of answer is wanted. The reference context is the one part the model cannot supply for itself: it has read more physics than anyone aboard, and none of that reading says which tones this sector makes on its own, so the reference set has to arrive as a statement the model can act on rather than a row of digits. The signal section is the only part that reads the argument. The output request has to be specific enough that your parser can rely on it. Rebuild all four on every call: a template that remembers one reading is just a string."
   - level: solution
-    content: "const lines = [ 'You are DEEP SCAN, a signal classifier for deep space signals.', '', 'Known natural frequencies: 5, 12, 23, 47 Hz.', 'Normal amplitude range: 570 to 1560 counts.', '', 'Signal data:', '- Amplitude: ' + signal.amplitude + ' counts', '- Frequency: ' + signal.frequency + ' Hz', '- Phase: ' + signal.phase + ' rad', '', 'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).', ]; return lines.join('\\n');"
+    content: |
+      interface SignalInput {
+        amplitude: number;
+        frequency: number;
+        phase: number;
+      }
+
+      function buildPrompt(signal: SignalInput): string {
+        const lines = [
+          'You are DEEP SCAN, a signal classifier for deep space signals.',
+          '',
+          'Known natural frequencies: 5, 12, 23, 47 Hz.',
+          'Normal amplitude range: 570 to 1560 counts.',
+          '',
+          'Signal data:',
+          '- Amplitude: ' + signal.amplitude + ' counts',
+          '- Frequency: ' + signal.frequency + ' Hz',
+          '- Phase: ' + signal.phase + ' rad',
+          '',
+          'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).',
+        ];
+        return lines.join('\n');
+      }
 keywords:
   - prompt-engineering
   - system-prompt
@@ -68,7 +90,7 @@ const vaguePrompt = "Analyze this signal data.";
 const betterPrompt = \`You are a deep space signal analyst aboard a research vessel.
 Analyze the following signal reading and classify it as noise or anomaly.
 Signal: amplitude=1024 counts, frequency=73.4Hz, phase=0.23rad\`;
-// Output: decent analysis but unstructured
+// Illustrative response in this scene: more specific, still unstructured
 
 // Level 3: Structured with format instructions
 const structuredPrompt = \`You are a deep space signal analyst. Respond in JSON only.
@@ -78,20 +100,26 @@ Signal reading (archive sample 7741):
 - Frequency: 73.4 Hz (known natural: 5, 12, 23, 47 Hz)
 - Phase: 0.23 rad
 
-Classify this signal. Respond with:
+Classify this signal using noise, anomaly or unknown.
+Confidence is a self-reported score from 0 to 1, not a calibrated probability.
+Use this JSON shape:
 {
-  "classification": "noise" | "anomaly",
-  "confidence": 0.0-1.0,
+  "classification": "unknown",
+  "confidence": 0.0,
   "reasoning": "brief explanation",
   "anomalous_features": ["list of unusual features"]
 }\`;
-// Output: parseable JSON with clear reasoning`}
+// Requested shape, not a guaranteed response. Parse and validate it.`}
 </CodeBlock>
 
 None of those three signal lines quotes a model input. The classifier reads amplitude, frequency and phase after module 4 min-max normalizes all three to 0 to 1, and the prompt reports what the instruments logged instead. Amplitude is the hull sensor's own count against its 2048-count full scale, so the 0.50 the classifier saw goes into the prompt as 1024. Frequency is the line the transform found, in hertz, rather than the model's zero-crossing count. That count is taken over a 64-sample window, which is a quarter second of tape at the array's 256 Hz rate. Phase is radians rather than the normalized angle. Those are the numbers a scientist reading the draft can check against an instrument, and this prompt is written for that reader.
 
 <DerivationDrawer summary="Checking the instrument units in this example">
-The band in the prompt is the one module 7 measured, converted into the counts a scientist can check against an instrument. Its normal-period readings, in normalized units, give mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Against the sensor's 2048-count full scale that p5 to p95 span is roughly 570 to 1560 counts, and the hull sensors saturate at 2048, so no capture reads above it. 1024 counts normalizes to 0.50, inside the normal band and 0.13 standard deviations below the mean, which is why the z-score gate cleared it. The other two dials sit near mid-scale rather than on it. 73.4 Hz is 37 zero crossings in that quarter-second window, 0.59 of the 63-crossing ceiling. 0.23 rad is 0.54 of the way across the minus-pi-to-pi span. Module 3's trained network scored this reading 51.8 percent, unwilling to commit either way. Every dial reads normal on its own. One mismatch for the reviewer to investigate is that 73.4 Hz is not in the natural set the context line hands it.
+These are supplied mission measurements, not reproduced experimental results. The fictional normal period has normalized mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Multiplying the percentile endpoints by 2048 gives roughly 570 to 1560 counts. This is the central 90% reference band, not the 3-sigma decision threshold.
+
+1024 counts becomes 0.50, about 0.13 standard deviations below that mean. A clean 73.4 Hz sinusoid spans about 18.35 cycles in a quarter second, so roughly 36 or 37 zero crossings might be observed. The exact count depends on phase, sampling and noise; frequency does not uniquely determine it. A measured count of 37 normalizes to 37/63, about 0.59. Phase 0.23 rad maps to about 0.54 across the minus-pi-to-pi range.
+
+The story's classifier score of 51.8% does not establish a calibrated probability. The listed natural frequencies are a limited local catalogue. Absence from it is a reason to investigate, not proof of an unnatural source.
 </DerivationDrawer>
 
 ## Prompt Templates
@@ -122,20 +150,32 @@ Normal amplitude range: 570 to 1560 counts.
 ## Task
 Classify this signal and explain your reasoning.
 
-## Output Format (JSON)
+Allowed classes: noise, anomaly, unknown. Risk: low, medium, high.
+Confidence is a self-reported score from 0 to 1, not measured calibration.
+## Output Format (example JSON)
 {
-  "classification": "noise" | "anomaly" | "unknown",
-  "confidence": <0.0 to 1.0>,
-  "reasoning": "<2-3 sentences>",
-  "risk_level": "low" | "medium" | "high"
+  "classification": "unknown",
+  "confidence": 0.0,
+  "reasoning": "Evidence is insufficient to classify this reading.",
+  "risk_level": "low"
 }\`;
 }
 
+// Teaching contract: one JSON object, with no other braces in the reply.
+// For general responses, use a strict structured-output contract and schema.
+// Even schema-valid output still needs factual review.
 // Parse the response
 function parseClassification(response: string) {
   const jsonMatch = response.match(/\\{[\\s\\S]*\\}/);
   if (!jsonMatch) throw new Error('No JSON found in response');
-  return JSON.parse(jsonMatch[0]);
+  const value = JSON.parse(jsonMatch[0]);
+  if (!['noise', 'anomaly', 'unknown'].includes(value.classification) ||
+      !Number.isFinite(value.confidence) || value.confidence < 0 || value.confidence > 1 ||
+      typeof value.reasoning !== 'string' || !value.reasoning.trim() ||
+      !['low', 'medium', 'high'].includes(value.risk_level)) {
+    throw new Error('Invalid classification fields');
+  }
+  return value;
 }`}
 </CodeBlock>
 
@@ -155,6 +195,6 @@ Write v9: the template above with the line it is still missing, the reference th
 
 <Epilogue>
 
-Four hours, fifty minutes to the window. Farah's prompt log shows nine versions; version nine is the first one whose output survives her red pen with fewer than three corrections. Demir diffs v8 against v9 looking for the trick. The diff is one added line: the four frequencies this sector produces on its own, 5, 12, 23 and 47 Hz. Farah's commit message does the explaining for her: the model has read more physics than anyone aboard, and none of that reading tells it which tones are ordinary in Sector 7-G. That part is not physics. It is the ship's own record of what Sector 7-G sounds like when nothing is happening, and until she pasted it in, 73.4 Hz was just a number the model had no reason to doubt. One line of context outperformed eight rounds of sharper instructions. She commits the prompt file to the mission repository like any other instrument calibration, then queues the next problem: the model still can't see the signal database it keeps being asked about.
+Four hours, fifty minutes to the window. Demir diffs v8 against v9: one added line lists the frequencies recorded during the sector's normal period. Farah keeps both prompts and tests them on held-out readings; one improved reply is not enough to choose a version. She commits the reference catalogue alongside the prompt, then opens the next problem: neither version can see the signal database.
 
 </Epilogue>

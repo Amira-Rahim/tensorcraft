@@ -37,6 +37,25 @@ interface TraceCase {
   claimed: number[];
 }
 
+function traces(source: string, path: string): TraceCase[] {
+  return source.split(/<CodeBlock/).flatMap((block, i) => {
+    const epochs = block.match(/epochs:\s*(\d+)/)?.[1];
+    const modulo = block.match(/epoch\s*%\s*(\d+)\s*===\s*0/)?.[1];
+    const claimed = [...block.matchAll(/\/\/\s*Epoch\s+(\d+)\s*:/g)].map((m) =>
+      Number(m[1]),
+    );
+    if (!epochs || !modulo || !claimed.length) return [];
+    return [
+      {
+        id: `${path}#block${i}`,
+        epochs: Number(epochs),
+        modulo: Number(modulo),
+        claimed,
+      },
+    ];
+  });
+}
+
 function collectCases(): TraceCase[] {
   const cases: TraceCase[] = [];
   for (const world of LAUNCHED_WORLD_DIRS) {
@@ -44,21 +63,7 @@ function collectCases(): TraceCase[] {
       const source = readFileSync(file, "utf8");
       // Split on CodeBlock boundaries so an epochs: in one block never
       // pairs with a trace in another.
-      const blocks = source.split(/<CodeBlock/);
-      blocks.forEach((block, i) => {
-        const epochs = block.match(/epochs:\s*(\d+)/)?.[1];
-        const modulo = block.match(/epoch\s*%\s*(\d+)\s*===\s*0/)?.[1];
-        const claimed = [...block.matchAll(/\/\/\s*Epoch\s+(\d+)\s*:/g)].map(
-          (m) => Number(m[1]),
-        );
-        if (!epochs || !modulo || claimed.length === 0) return;
-        cases.push({
-          id: `${relative(CONTENT_ROOT, file)}#block${i}`,
-          epochs: Number(epochs),
-          modulo: Number(modulo),
-          claimed,
-        });
-      });
+      cases.push(...traces(source, relative(CONTENT_ROOT, file)));
     }
   }
   return cases;
@@ -67,8 +72,24 @@ function collectCases(): TraceCase[] {
 describe("claimed epoch traces are producible by their own code", () => {
   const cases = collectCases();
 
-  it("finds at least the known trace blocks (sanity)", () => {
-    expect(cases.length).toBeGreaterThanOrEqual(2);
+  it("recognizes an impossible trace without requiring lessons to invent one", () => {
+    // Unsupported historic traces were removed. Keep the detector calibrated
+    // with a fixture, rather than requiring published claims without evidence.
+    const [example] = traces(
+      "<CodeBlock>fit({epochs: 100}); if (epoch % 20 === 0) log(); // Epoch 100:",
+      "fixture",
+    );
+    expect(
+      example.claimed.filter(
+        (k) => k > example.epochs - 1 || k % example.modulo !== 0,
+      ),
+    ).toEqual([100]);
+    expect(
+      traces(
+        "<CodeBlock>fit({epochs: 100}); // no claimed measurements",
+        "fixture",
+      ),
+    ).toEqual([]);
   });
 
   it.each(cases)("$id", ({ id, epochs, modulo, claimed }: TraceCase) => {

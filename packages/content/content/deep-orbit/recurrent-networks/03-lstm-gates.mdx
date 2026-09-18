@@ -32,16 +32,41 @@ hints:
     content: "All four weight groups are read the same way: one row per dimension, three numbers per row, the same arithmetic every time. Write that arithmetic once and call it four times. Three of the four groups are gates, so they saturate; the fourth is the value being proposed for storage, and it needs a range that reaches below zero. The cell update multiplies before it adds: the old value is scaled by its own gate, the proposed value is scaled by its own gate, and only then do the two meet. The hidden state is the new cell value seen through the remaining gate. Cutting the layer up is the same three numbers per gate, taken at one shared column index: one out of each kernel and one out of the bias, and the library's column order is the one this lesson prints, not the one it narrates."
   - level: solution
     content: |
-      const preact = (row, j) => row[0] * prevHidden[j] + row[1] * x[j] + row[2]; const newCell = prevCell.map((c, j) => { const forget = sigmoid(preact(weights.forget[j], j)); const store = sigmoid(preact(weights.input[j], j)); const candidate = Math.tanh(preact(weights.candidate[j], j)); return forget * c + store * candidate; }); const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c)); return { newCell, newHidden };
-      const model = tf.sequential();
-      const cell = tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true });
-      model.add(cell);
-      const [kernel, recurrentKernel, biasTensor] = model.getWeights();
-      const inputColumns = Array.from(kernel.dataSync());
-      const recurrentColumns = Array.from(recurrentKernel.dataSync());
-      const biases = Array.from(biasTensor.dataSync());
-      const gateRow = (column) => [recurrentColumns[column], inputColumns[column], biases[column]];
-      return { model, weights: { input: [gateRow(0)], forget: [gateRow(1)], candidate: [gateRow(2)], output: [gateRow(3)], }, };
+      import * as tf from '@tensorflow/tfjs';
+
+      const sigmoid = (z) => 1 / (1 + Math.exp(-z));
+
+      function lstmStep(prevHidden, prevCell, x, weights) {
+        const preact = (row, j) => row[0] * prevHidden[j] + row[1] * x[j] + row[2];
+        const newCell = prevCell.map((c, j) => {
+          const forget = sigmoid(preact(weights.forget[j], j));
+          const store = sigmoid(preact(weights.input[j], j));
+          const candidate = Math.tanh(preact(weights.candidate[j], j));
+          return forget * c + store * candidate;
+        });
+        const newHidden = newCell.map((c, j) => sigmoid(preact(weights.output[j], j)) * Math.tanh(c));
+        return { newCell, newHidden };
+      }
+
+      function buildLstmCell(timeSteps) {
+        const model = tf.sequential();
+        const cell = tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true });
+        model.add(cell);
+        const [kernel, recurrentKernel, biasTensor] = model.getWeights();
+        const inputColumns = Array.from(kernel.dataSync());
+        const recurrentColumns = Array.from(recurrentKernel.dataSync());
+        const biases = Array.from(biasTensor.dataSync());
+        const gateRow = (column) => [recurrentColumns[column], inputColumns[column], biases[column]];
+        return {
+          model,
+          weights: {
+            input: [gateRow(0)],
+            forget: [gateRow(1)],
+            candidate: [gateRow(2)],
+            output: [gateRow(3)],
+          },
+        };
+      }
 keywords:
   - lstm
   - gates
@@ -109,38 +134,26 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 <CodeBlock language="typescript" title="lstm-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// LSTM: drop-in replacement for SimpleRNN (same API, much better memory)
+// LSTM: a gated recurrent layer; compare its quality and cost on your task.
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,              // hidden state size
   inputShape: [80, 3],    // the SAME 80-step window the SimpleRNN failed on
+  recurrentActivation: 'sigmoid', // match the equations above
   returnSequences: false,  // only need final output for classification
 }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Shape drill with placeholder tensors: prove the [80, 3] pipeline runs
-// end to end. The labels are random, so watch both numbers rather than
-// one. Over 60 epochs the training loss falls in every run, from about
-// 0.69 to somewhere between 0.31 and 0.62 across twenty runs, while the
-// held-out fifth goes nowhere it can trust: twenty held-out rows means
-// one row is worth five points, so its accuracy is noise, moving ten
-// points and more inside a single run and ending wherever the last epoch
-// leaves it. Its loss ends
-// above where it started in most runs, past 1.0 in the worst of them.
-// That is what memorizing looks like: 17,473 parameters against 80
-// training rows. Ten reruns measured; the exact figures move with the
-// seed, the gap does not. Nothing on this page races the two cells
-// against each other, since both of these fits train on random
-// labels. What the module has instead is lesson 2's flatline on this
-// same 80-step window and tonight's archive replay below. On a series
-// of your own the check is cheap: train both cells and compare.
-const x = tf.randomNormal([100, 80, 3]);  // 100 samples, 80 time steps
-const y = tf.randomUniform([100, 1]).round();
+// Small execution drill, not evidence of long-range learning. These
+// independent random labels do not define a useful prediction task.
+// The story's archive result below is fictional, not measured by this fit.
+const x = tf.randomNormal([10, 80, 3]);  // 10 samples, 80 time steps
+const y = tf.tidy(() => tf.randomUniform([10, 1]).round());
 
 const history = await model.fit(x, y, {
-  epochs: 60,
+  epochs: 1,
   validationSplit: 0.2,
   callbacks: {
     onEpochEnd: (epoch, logs) => {
@@ -152,12 +165,13 @@ const history = await model.fit(x, y, {
 });
 
 x.dispose();
-y.dispose();`}
+y.dispose();
+model.dispose();`}
 </CodeBlock>
 
-Two things about that layer only turn up when you go looking for its weights. `model.getWeights()` returns three tensors for it, not twelve: an input kernel of shape [features, 4 * units], a recurrent kernel of shape [units, 4 * units], and a bias of length 4 * units. The three gates and candidate share those tensors, packed side by side along the last axis in the order input, forget, candidate, output. That is not the order anyone narrates them in, and building the same layer with `unitForgetBias: true` is the quickest way to see it: the bias comes back with ones in the second quarter and zeros in the other three.
+Two things about that layer only turn up when you go looking for its weights. `model.layers[0].getWeights()` returns three tensors for it, not twelve: an input kernel of shape [features, 4 * units], a recurrent kernel of shape [units, 4 * units], and a bias of length 4 * units. The three gates and candidate share those tensors, packed side by side along the last axis in the order input, forget, candidate, output. That is not the order anyone narrates them in, and building the same layer with `unitForgetBias: true` is the quickest way to see it: the bias comes back with ones in the second quarter and zeros in the other three.
 
-The second thing is which curve the gates run on. TF.js 4.22 leaves `recurrentActivation` at `hardSigmoid`, the clipped straight line `max(0, min(1, 0.2 * z + 0.5))`, while the candidate and the cell output run on `tanh`. Work a step out by hand with a sigmoid, compare it against a layer left on its default, and the two answers do not match. Pass `recurrentActivation: 'sigmoid'` and they agree to about seven decimal places, as close as a float32 layer and a float64 loop get.
+The second thing is which curve the gates run on. Unless overridden as above, TF.js 4.22 leaves `recurrentActivation` at `hardSigmoid`, the clipped straight line `max(0, min(1, 0.2 * z + 0.5))`, while the candidate and the cell output run on `tanh`. Work a step out by hand with a sigmoid, compare it against a layer left on its default, and the two answers do not match. Pass `recurrentActivation: 'sigmoid'` and they agree to about seven decimal places, within the tolerance of this small fixture.
 
 ## GRU: The Lighter Alternative
 
@@ -194,7 +208,8 @@ gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 // GRU:  3 sets: reset gate, update gate, candidate state, which is exactly
 //       25% fewer weights: 13,056 against the LSTM's 17,408 at these settings
 // Which of the two scores better on a given series is a question you measure,
-// so the usual move is to train both on your own data and compare`}
+// so compare both on the same data and evaluation procedure.
+gruModel.dispose();`}
 </CodeBlock>
 
 ## Challenge
@@ -212,7 +227,7 @@ Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out
 
 <RecallPrompt
   question="The LSTM flags pulses 72 hours past the last window it trained on, yet no cell state survives between windows. What did the network actually retain?"
-  answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A window from three days later scores the same way because the shape repeats there, not because anything was held over. That is generalization across time, and it costs one fixed set of parameters instead of three days of stored state."
+  answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A successful result on later windows would be generalization through those weights, not state carried across the gap. The story reports that outcome; real data still needs evaluation. That is generalization across time, and it costs one fixed set of parameters instead of three days of stored state."
 />
 
 <LessonRecap

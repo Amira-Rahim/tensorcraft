@@ -14,7 +14,7 @@ context:
   narrative: "Mirza needs a report for Earth Command in 6 hours. 47 days of data. Farah suggests using an LLM to draft the report: not to replace analysis, but to accelerate it."
   speaker: "Dr. Farah"
 concept:
-  explanation: "An LLM drafts structured output from instructions in seconds. Whether any of it is true remains your job."
+  explanation: "An LLM generates a draft from instructions and context. Check its structure and claims before using it."
   bridge:
     jsTitle: "AI Code Completion"
     jsCode: "// Copilot: 'create a fetch wrapper' → generates full function"
@@ -30,7 +30,7 @@ hints:
       An LLM response is untrusted text: the client's job is to parse it and validate every required field before anything downstream sees it.
   - level: guidance
     content: |
-      Nothing here is a parsing problem until you decide what to parse. The model was asked for JSON and models answer in sentences, so what arrives is text with the object somewhere inside it. That is the first failure to handle. The second is a reply that parses cleanly and is still not an analysis, which is why the client checks the three fields an analysis carries before it hands anything downstream. Check the object, not the reply: a model that mentions a field in a sentence has not sent you that field. One decision is left after that, which is what it means for a field to be there. Two replies in the task settle it. One reports a confidence of zero, so a truthiness test throws out a real reading. One volunteers fields nobody asked for, so a key count throws out a valid reply. Test for absence, field by field.
+      Under this exercise contract, one JSON object is surrounded by text with no other braces. Extract it, parse it and check each field. Zero is a valid score, so avoid truthiness checks. Additional fields are allowed. This simple extraction rule is not a parser for arbitrary model replies.
   - level: solution
     content: |
       interface Analysis {
@@ -68,14 +68,14 @@ Forty-seven days of logged data and you want to hand the write-up to an autocomp
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-I want to use it as a tool, Nazari, like Copilot for code. It drafts, I verify. It's faster than writing from scratch, and I catch what it gets wrong.
+I want to use it as a tool, Nazari, like Copilot for code. It drafts, I verify. I expect drafting to save time. We need to count the checking time too.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
 Then we run it with a ledger. Every fabricated claim you catch goes on the board, next to the minutes it cost you to catch it. If verification eats more than two of your six hours, the next report gets written by hand.
 </Dialogue>
 
-Nazari's skepticism is the right default. A language model will happily invent a confident paragraph about an anomaly that never happened, and a fabricated number in a report to Earth Command is worse than no report at all. What makes Farah's plan sound is the workflow, not the model: nothing ships until the one person aboard who knows the data has checked every claim against it.
+Nazari's skepticism is the right default. A language model will happily invent a confident paragraph about an anomaly that never happened, and a fabricated number in a report to Earth Command is worse than no report at all. Farah proposes a review gate: check each claim against its evidence before release. Reviewers can miss errors too, so keep sources, corrections and approval with the report.
 
 <LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on", "Define the human-AI workflow: generate → review → correct → approve"]} />
 
@@ -84,76 +84,66 @@ Nazari's skepticism is the right default. A language model will happily invent a
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="llm-client.ts">
-{`// An LLM client is a typed fetch wrapper. Nothing here is new except
-// what comes back: a string with no schema and no guarantees.
-interface LLMClient {
+{`interface LLMClient {
   complete(prompt: string, options?: { system?: string; temperature?: number; maxTokens?: number }): Promise<string>;
 }
 
-// In production, this calls an API (OpenAI, Anthropic, etc.). Most
-// providers expose a messages-shaped chat API, each with its own
-// dialect (Anthropic, for one, takes system as a top-level field,
-// not a message role). Anything in a browser bundle is readable by
-// anyone who opens devtools, so the provider key never ships there:
-// run this client on a server, or point baseUrl at a same-origin
-// route that holds the key and forwards the call. For DEEP SCAN, we
-// point it at the ship's onboard model: the Archimedes is eleven
-// light-minutes from any provider, so the language model runs
-// in-process on the bridge dashboard behind a loopback route, and its
-// weights ride in the dashboard's own bundle. That is the 340 MB
-// module 10 audits and cuts to 85. The key rule above is for a
-// provider you reach over a network; here the key is a formality and
-// the weight is the cost.
-async function createLLMClient(apiKey: string, baseUrl: string): Promise<LLMClient> {
+// Server-side adapter for an endpoint that supports this chat-completions
+// contract. Other APIs need their own adapter. Configure a real model ID.
+// Keep provider credentials on the server. Browser code calls your
+// authenticated server route without receiving the provider key.
+function createLLMClient(apiKey: string, baseUrl: string, modelId: string): LLMClient {
   return {
     async complete(prompt, options = {}) {
-      const response = await fetch(\`\${baseUrl}/v1/chat/completions\`, {
+      const response = await fetch(\`\${baseUrl.replace(/\\/$/, '')}/v1/chat/completions\`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': \`Bearer \${apiKey}\`,
-        },
+        signal: AbortSignal.timeout(30_000),
+        headers: { 'Content-Type': 'application/json', Authorization: \`Bearer \${apiKey}\` },
         body: JSON.stringify({
+          model: modelId,
           messages: [
-            { role: 'system', content: options.system ?? 'You are the Archimedes signal-analysis assistant. Report only what the provided data supports.' },
+            { role: 'system', content: options.system ?? 'Report only what the supplied evidence supports. State missing evidence.' },
             { role: 'user', content: prompt },
           ],
-          temperature: options.temperature ?? 0.3,  // low temp for factual analysis
+          temperature: options.temperature ?? 0.3,
           max_tokens: options.maxTokens ?? 1024,
         }),
       });
+      if (!response.ok) throw new Error(\`LLM request failed: HTTP \${response.status}\`);
       const data = await response.json();
-      return data.choices[0].message.content;
+      const content = data?.choices?.[0]?.message?.content;
+      if (typeof content !== 'string' || !content.trim()) throw new Error('Missing text response');
+      return content; // text validated; claims still unchecked
     },
   };
 }
 
-// Usage: draft a signal analysis report
-const llm = await createLLMClient(API_KEY, BASE_URL);
-const report = await llm.complete(\`
-Summarize the following signal classification results:
-- Total signals analyzed: 12,001
-- Normal signals: 11,847 (98.7%)
-- Anomalous signals: 153 (1.3%)
-- Unclassified: 1 (0.008%)
-
-Focus on the single unclassified signal and its significance.
-\`);`}
+// Integration inputs: server configuration supplies all three constants.
+const llm = createLLMClient(API_KEY, BASE_URL, MODEL_ID);
+const report = await llm.complete(\`Draft a summary of these fictional mission counts:
+Total events: 12,001. Normal: 11,847. Anomalous: 153. Unclassified: 1.
+Do not infer the cause or significance of the unclassified event.\`);`}
 </CodeBlock>
 
 ## What You Are Actually Calling
 
-Strip the HTTP away and a language model is something you have already built the parts of. It is a classifier. Given a sequence of tokens (word pieces, roughly three quarters of a word each), it emits one score per token in its vocabulary, softmax turns the scores into a probability distribution, and one token is sampled from it. Append the sample, run again, repeat until a stop token. Six hundred words of report is about eight hundred forward passes, one per token. Each one is the shape of module 6's next-value prediction, with one difference: the output is a choice among the tens of thousands of tokens in the vocabulary rather than three continuous numbers. That difference is what makes it classification.
+A decoder language model predicts the next token from preceding tokens. Tokens are text pieces; their size depends on the tokenizer and language. The model produces vocabulary logits, and softmax converts them into a distribution. A decoding rule selects a token, appends it and continues until a stop condition.
+
+Inference usually has two phases. **Prefill** processes the supplied prompt. **Decoding** generates new tokens, commonly one at a time while reusing cached attention keys and values. It does not normally recompute the entire prompt for every token. Some serving systems generate candidates in larger groups, then verify them. Token count alone therefore does not tell you the number or duration of runtime calls.
+
+The connection to next-value prediction is the conditional prediction task. Here the output is a token category instead of three continuous sensor values. The model and decoding procedure differ from the LSTM you built.
 
 ## What a Transformer Does With the Prompt
 
-Inside each pass, the mechanism that reads the prompt is attention, stacked dozens of layers deep and run with many heads at once. Module 8's scorer emitted one score per step against a single query, then pooled the whole window into one summary vector. A transformer gives every token its own query, so the scores form a T-by-T matrix: 80 steps means 6,400 scores rather than 80. Double the prompt and that matrix quadruples, 160 steps for 25,600 scores, which is why a long context costs what it does rather than simply holding more.
+In dense self-attention, each token has a query, key and value produced by learned projections. Every query is compared with the allowed keys. A decoder's causal mask blocks access to future tokens. An explicit T-by-T score matrix has 6,400 entries at T = 80 and 25,600 at T = 160. That quadratic scaling matters for dense attention over a full prompt; optimized kernels can avoid storing the entire matrix, and cached decoding has a different cost.
 
-The heads are the second multiplier. Each one runs the same T-by-T calculation over its own slice of every token's vector, so each learns its own question about which tokens matter to which, and their outputs are concatenated before the next layer reads them. Stack that block dozens of times and that is the architecture on the other end of a completions call. That is the self-attention module 8 named and left to the transformers. Softmax still spends the budget, and the weighted sum still becomes the next layer's input. The prompt is the window. The context limit is the sequence length, the same T you windowed at 80.
+Each head uses its own learned projections. Head outputs are combined, then passed through blocks that also contain feed-forward layers, residual connections and normalization. Attention is one component of a transformer, not the whole architecture. A model's supported context length is a limit on the token sequence; keep room for its answer as well as its prompt.
 
-`temperature` is a knob on the last softmax, the one over the whole vocabulary that picks the next token. Divide each token's score by it before the exponentials. A low value sharpens the distribution toward the single likeliest token, and a high value flattens it toward picking any token at random. Zero is not a value you can divide by. As the temperature approaches zero the distribution collapses onto the single likeliest token, which is why providers read a request for zero as an instruction to take that token directly. The attention scores inside the stack are never divided by temperature. That is why the client above sets 0.3 for a factual draft, and why lesson 4 insists that a sharpened distribution is a more repeatable one, not a more truthful one.
+For positive sampling **temperature** T, divide the vocabulary logits by T before softmax. Smaller values concentrate probability on higher-scoring tokens. Larger values flatten it. A zero-temperature API setting commonly requests greedy selection rather than division by zero; ties and serving details can still affect repeatability. This setting does not change the attention softmax inside the model or verify a claim.
 
-What is new is only scale. The weights were trained on more text than any crew could read, which is why the model writes fluent paragraphs about instruments the Archimedes does not carry. Fluency is what next-token prediction optimizes. Truth was never in the loss.
+Next-token training rewards predictions of text in the training distribution. Later training can improve instruction following and factual performance, but neither objective checks a new report against your ship's measurements. A fluent answer still needs evidence.
+
+The onboard language component and its bundle sizes belong to the fictional mission. This adapter demonstrates the HTTP boundary; it does not download or implement that component. The browser runtime lab measures a separate pretrained sentiment model.
 
 ## The Human-AI Workflow
 
@@ -215,13 +205,13 @@ The client above is typed all the way to its edge. What comes back over that edg
 
 <Exercise slug="llm-client" />
 
-<RecallPrompt question="What workflow makes LLM-assisted analysis safe for factual output?" answer="Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. The model drafts; a human who knows the data decides what is true." />
+<RecallPrompt question="What workflow reduces errors in LLM-assisted factual output?" answer="Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. Keep evidence and approval with the draft, and check the assembled report. Human review can still miss errors." />
 
 <LessonRecap
   whatYouLearned={[
-    "LLMs are augmentation tools. The safe workflow is generate, review, correct, approve: the draft arrives faster than writing from scratch, and nothing ships until a human who knows the data has checked every factual claim against it and signed off.",
-    "An LLM is next-token prediction: a stack of attention layers over a window of tokens, every token scoring every other, with a final softmax over the vocabulary choosing the next one. Fluency is the objective; truth is not in the loss.",
-    "Temperature controls how random the next-token pick is: low values (0.1-0.3) make a factual analysis repeatable, higher values suit creative tasks. Repeatable is not the same as true, so temperature is a knob for consistency and never a defense against fabrication."
+    "Treat generated text as a draft. Validate its fields, check claims against sources and record approval before release.",
+    "A decoder language model predicts tokens. Prefill processes the prompt; cached decoding reuses attention state while generating the response.",
+    "Lower temperature reduces sampling variation. It does not establish factual accuracy or guarantee identical output."
   ]}
   bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."
   youCanNow="Write the boundary between a language model and the code that uses it: parse the reply, check every field your caller depends on, and refuse what did not arrive. What survives that goes into a workflow where a human checks the claims before anything ships."
@@ -232,7 +222,7 @@ The client above is typed all the way to its edge. What comes back over that edg
 Five hours, twelve minutes to the transmission window. On the anomaly panel the pulse interval reads 63.1 seconds tonight; it has not stopped shrinking since the ensemble went up. Farah submits the first draft request and the model returns six hundred words in eleven seconds: clean prose, confident structure. The second paragraph describes an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down, and logs one tally mark on Nazari's ledger. ARIA has been parsing the draft from her own console the entire time.
 
 <Dialogue speaker="ARIA">
-Review complete. One fabricated claim; probability 0.97 that Dr. Farah had already identified it. The model generates language without rules. I have 14,202 rules and not one of them describes how.
+One unsupported claim found. Dr. Farah had already marked it. None of my 14,202 rules explains how the draft selected an instrument we do not carry.
 </Dialogue>
 
 Nobody answers her. The cursor blinks at the end of a sentence no one wrote.

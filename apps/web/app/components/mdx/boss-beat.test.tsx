@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { BossBeat } from "./boss-beat";
 
 // First unit coverage for BossBeat, added by the 2026-07-13 P3 round-3
@@ -8,8 +8,9 @@ import { BossBeat } from "./boss-beat";
 // one position for every beat. These tests pin both properties.
 
 vi.mock("@/lib/boss-beat-client", () => ({
+  BOSS_BEAT_CHANGED: "tensorcraft:story-choice-saved",
   getBossBeatChoice: vi.fn().mockResolvedValue(null),
-  recordBossBeatChoice: vi.fn().mockResolvedValue(undefined),
+  recordBossBeatChoice: vi.fn().mockResolvedValue(true),
 }));
 
 import {
@@ -41,6 +42,8 @@ const SHIPPED_BEATS = [
   "deep-orbit-anomaly-7741-training-set",
   "deep-orbit-llm-cut-call",
   "deep-orbit-launch-deploy-call",
+  "deep-orbit-cache-policy",
+  "deep-orbit-drift-response",
 ];
 
 async function optionOrder(beatId: string): Promise<string[]> {
@@ -60,7 +63,7 @@ async function optionOrder(beatId: string): Promise<string[]> {
 
 beforeEach(() => {
   vi.mocked(getBossBeatChoice).mockResolvedValue(null);
-  vi.mocked(recordBossBeatChoice).mockResolvedValue(undefined as never);
+  vi.mocked(recordBossBeatChoice).mockResolvedValue(true);
 });
 
 describe("BossBeat answer-key resistance", () => {
@@ -168,7 +171,7 @@ describe("BossBeat failure paths", () => {
         timeoutSeconds={1}
       />,
     );
-    await screen.findByText("Boss beat · 1s");
+    await screen.findByText("Decision · 1s");
     // The note's node is always mounted (a live region), so wait for its
     // text rather than its presence.
     await waitFor(
@@ -184,9 +187,9 @@ describe("BossBeat failure paths", () => {
       "status",
     );
     expect(screen.getByTestId("boss-beat-silence").textContent).toContain(
-      "defaults to",
+      "standing proposal",
     );
-    expect(screen.getByText("Boss beat · clock out")).toBeInTheDocument();
+    expect(screen.getByText("Decision · clock out")).toBeInTheDocument();
     expect(recordBossBeatChoice).not.toHaveBeenCalled();
     // The note names the standing option by its display text, not by its
     // stance enum: "goes with random" read as a coin flip (round 7).
@@ -201,5 +204,71 @@ describe("BossBeat failure paths", () => {
     await waitFor(() => {
       expect(recordBossBeatChoice).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe("BossBeat confirmed persistence", () => {
+  it("does not display the requested choice when another tab saved first", async () => {
+    vi.mocked(recordBossBeatChoice).mockResolvedValue(false);
+    vi.mocked(getBossBeatChoice).mockResolvedValueOnce(null).mockResolvedValue({
+      beatId: "race",
+      choiceIndex: 0,
+      choiceLabel: "cooperate",
+      reactionMs: 1,
+      chosenAt: "2026-09-18T12:00:00Z",
+    });
+    renderBeat("race");
+    (await screen.findByText("Run the canary")).click();
+    await screen.findByText("C-WAIT");
+    expect(screen.queryByText("C-CANARY")).toBeNull();
+  });
+  it("shows an error when an idempotent save cannot be read back", async () => {
+    vi.mocked(getBossBeatChoice).mockReset().mockResolvedValue(null);
+    vi.mocked(recordBossBeatChoice).mockResolvedValue(false);
+    renderBeat("missing");
+    (await screen.findByText("Run the canary")).click();
+    await screen.findByRole("alert");
+    expect(screen.queryByText("C-CANARY")).toBeNull();
+    expect(screen.getByText("Run the canary")).toBeEnabled();
+  });
+  it("lets the reader retry a failed initial lookup before choosing", async () => {
+    vi.mocked(getBossBeatChoice)
+      .mockReset()
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValue(null);
+    renderBeat("retry-read");
+    (await screen.findByText("Retry loading choice")).click();
+    await screen.findByText("Run the canary");
+  });
+});
+
+describe("BossBeat navigation during a save", () => {
+  it("does not show an old lesson's completed write as the new lesson's choice", async () => {
+    let finish!: (value: boolean) => void;
+    vi.mocked(getBossBeatChoice).mockReset().mockResolvedValue(null);
+    vi.mocked(recordBossBeatChoice).mockReturnValueOnce(
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+    );
+    const { rerender } = renderBeat("first");
+    (await screen.findByText("Run the canary")).click();
+    rerender(
+      <BossBeat
+        beatId="next"
+        worldId="deep-orbit"
+        lessonId="next"
+        prompt="Next call"
+        options={[...OPTIONS] as never}
+      />,
+    );
+    await screen.findByText("Next call");
+    await act(async () => finish(true));
+    expect(screen.queryByTestId("boss-beat-resolved")).toBeNull();
+    expect(screen.getByTestId("boss-beat-active")).toHaveAttribute(
+      "data-beat-id",
+      "next",
+    );
+    expect(screen.getByText("Run the canary")).toBeEnabled();
   });
 });

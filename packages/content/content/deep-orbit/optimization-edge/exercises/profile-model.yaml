@@ -2,23 +2,22 @@ slug: profile-model
 lessonSlug: model-profiling
 title: "Profile a Model"
 instructions: |
-  **Contract revision 2026-09-17b:** profileModel accepts an optional fourth argument now, a clock function defaulting to performance.now. Use that clock for timing.
+  Implement profileModel(model, createInput, runs, now = () => performance.now()).
+  runs must be a positive integer. Return parameterCount from countParams(),
+  memorySizeMB as parameterCount * 4 / 1e6, and one { name, params } row per
+  model.layers entry in layerBreakdown, including zero-parameter layers.
 
-  Write a profiler that returns `{ parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown, leakedTensors }`, five things about a model: how many parameters it holds, how many megabytes those parameters occupy as float32, how long one inference takes on average, where the parameters sit, and how many tensors the profiling loop left behind. Six rules decide whether the report can be read.
+  Run one untimed warmup, awaiting its output.data(). Then measure exactly
+  runs calls with the supplied now clock, starting just before predict and
+  stopping after awaited data(). avgInferenceMs is their arithmetic mean.
+  This measures warm inference plus readback, excluding input creation.
+  Real workloads may need more warmup than this exercise specifies.
 
-  (1) Report the megabytes the way the lesson's report does, in MB rather than MiB.
-
-  (2) layerBreakdown is one row per entry in model.layers, in the model's own order, each { name, params } read off that layer. The rows that own nothing belong in it too: a reshape or a flatten holds no weights and still occupies a line, which is how a reader sees that its share is zero rather than wondering where it went.
-
-  (3) The average has to be a measurement of the model you were handed. `runs` is how many timed calls you average, and one warmup call comes before those and is not timed, because initial calls can include compilation and initialization costs. Await the warmup result before timing, as rule (4) does for each measured call. A single warmup is this exercise's contract; real workloads may need more before timings stabilize.
-
-  (4) On a GPU backend predict() returns while the work is still queued, so a timed call is only finished once you have awaited the values out of its output.
-
-  (5) avgInferenceMs is the mean of those timed calls, not the fastest of them and not the middle one, because the lesson reads a mean beside a tail for a reason: one call is not a profile.
-
-  (6) leakedTensors is tf.memory().numTensors read after the last timed call minus the same count read before the warmup, and the loop has to leave it at 0: every input createInput() hands you and every output predict() hands back is disposed once its values are out, the warmup pair included. The field measures net tensor-count change in this controlled loop. In a general application, count growth alone does not establish a leak. The mock models hand back handles with a no-op dispose, so one loop serves them and the real models alike, and the real ones have real tensors to leak.
-
-  Use the injected now() clock around each measured predict plus awaited data() call. The default is () => performance.now(). runs must be a positive integer. Controlled clocks test timing arithmetic without machine-speed limits; real calls still measure the device running them.
+  Dispose every created input and output, including when predict or readback
+  fails. The caller owns the model. leakedTensors is the net change in
+  tf.memory().numTensors from before warmup to after the final call; it must
+  be zero in this controlled loop. That field is not a process-memory measure
+  or a general proof of leak freedom. Parameter bytes are not peak memory.
 starterCode: |
   interface LayerProfile {
     name: string;
@@ -89,20 +88,20 @@ solutionCode: |
     // so that cost does not land in the average below, and its pair is
     // released like every other.
     const warmInput = createInput();
-    const warmOutput = model.predict(warmInput);
-    await warmOutput.data();
-    warmOutput.dispose();
-    warmInput.dispose();
+    let warmOutput;
+    try { warmOutput = model.predict(warmInput); await warmOutput.data(); }
+    finally { warmOutput?.dispose(); warmInput.dispose(); }
 
     const times: number[] = [];
     for (let i = 0; i < runs; i++) {
       const input = createInput();
-      const start = now();
-      const output = model.predict(input);
-      await output.data();
-      times.push(Math.max(0, now() - start));
-      output.dispose();
-      input.dispose();
+      let output;
+      try {
+        const start = now();
+        output = model.predict(input);
+        await output.data();
+        times.push(Math.max(0, now() - start));
+      } finally { output?.dispose(); input.dispose(); }
     }
 
     const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
@@ -332,6 +331,15 @@ testCode: |
         ).toEqual([30, 21]);
         expect(profile.parameterCount).toBe(51);
       }));
+  });
+  it('disposes handles when warmup readback rejects', async () => {
+    let inputFreed = false, outputFreed = false;
+    const m = { countParams: () => 0, layers: [], predict: () => ({
+      data: async () => { throw new Error('fixture readback failed'); },
+      dispose: () => { outputFreed = true; },
+    }) };
+    await expect(profileModel(m, () => ({ dispose: () => { inputFreed = true; } }), 1)).rejects.toThrow();
+    expect(inputFreed).toBe(true); expect(outputFreed).toBe(true);
   });
 estimatedMinutes: 12
 difficulty: intermediate

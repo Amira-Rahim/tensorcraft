@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "A single FFT shows frequency content at one moment. But the anomalous signal changes over time. Farah needs a spectrogram: frequency content plotted across time."
+  narrative: "A single FFT summarizes frequency content across one sample window. But the anomalous signal changes over time. Farah needs a spectrogram: frequency content plotted across time."
   speaker: "Dr. Farah"
 concept:
   explanation: "A spectrogram plots frequency content against time: stack one FFT per window and the signal's behavior becomes a picture you can read."
@@ -78,9 +78,10 @@ An FFT of one frame gives one row: frequency content across that frame's time in
  */
 function stftMagnitudes(signal: number[], frameLength: number, frameStep: number): number[][] {
   return tf.tidy(() => {
-    const frames = tf.signal.stft(tf.tensor1d(signal), frameLength, frameStep);  // complex64
+    const frames = tf.signal.stft(tf.tensor1d(signal), frameLength, frameStep, frameLength);  // complex64
     return tf.abs(frames).arraySync() as number[][];
-    // Result shape: [numFrames, frameLength/2 + 1]
+    // Explicit FFT length = frameLength; the default may round up.
+    // Result shape: [numFrames, floor(frameLength/2) + 1]
     // Each row = one time step
     // Each column = one frequency bin
     // Values = magnitude (how strong that frequency is at that time)
@@ -209,7 +210,7 @@ Build the STFT itself: slide a window across a capture, transform each window on
 
 <RecallPrompt
   question="If you increase the STFT window size, what happens to frequency resolution and time resolution, and why can't you improve both at once?"
-  answer="A larger window gives better frequency resolution because more samples means finer frequency bins (bin spacing = sampleRate / windowSize). But it also spans more time, so you cannot tell precisely when within that window a frequency appears. You cannot improve both because you are dividing the same samples between two views: more samples per window improves frequency detail but blurs the time location of events."
+  answer="A larger window gives better frequency resolution because more samples means finer frequency bins (bin spacing = sampleRate / windowSize). But it also spans more time, so you cannot tell precisely when within that window a frequency appears. The analysis window averages frequency information across its duration. Shortening it localizes that measurement in time but reduces separation of nearby frequencies. A smaller hop adds overlapping observations; it does not remove that tradeoff."
 />
 
 <LessonRecap

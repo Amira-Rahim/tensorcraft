@@ -10,12 +10,14 @@ instructions: |
   `/band[- ]?(\w+)/i`, keep rows whose `band` equals the captured word, both
   sides lowercased. Age: `/(\d+)\s*hours/i`, keep rows whose
   `Date.parse(timestamp)` is strictly newer than `now - hours * 3600 * 1000`,
-  measured from the `now` you are handed rather than the wall clock.
+  and no later than `now`. Invalid timestamps fail this age filter. Use the supplied clock.
   Anomalies: `/anomal/i`, keep rows whose `classification` is 'anomaly'. Every
   filter the query carries has to hold at once, and a query carrying none of
   the three matches the whole database.
 
-  Then the cap. The prompt has a token budget, so at most 20 rows travel to
+  This parser recognizes only those patterns; it does not interpret negation or "overnight".
+
+  Then the cap. At most 20 rows travel to
   the model: the first 20 survivors in database order. Nothing here is
   ranked, so the survivors are never sorted before the cap, not by recency
   and not by any reading a row carries (`confidence`, `amplitude`,
@@ -24,8 +26,8 @@ instructions: |
   that capped list. `matched` is how many rows passed the filters, counted
   before the cap. `truncated` is true when the cap dropped at least one
   matching row. Only `rows` reaches the prompt, so `matched` and `truncated`
-  are the only way anything downstream can tell a complete context from a
-  trimmed one.
+  tell the caller whether records were omitted. A row cap is not a token cap;
+  the application must also check the final prompt size.
 starterCode: |
   interface Signal {
     id: string;
@@ -84,7 +86,7 @@ solutionCode: |
     }
     if (hoursMatch) {
       const cutoff = now - parseInt(hoursMatch[1], 10) * 3600 * 1000;
-      survivors = survivors.filter((s) => Date.parse(s.timestamp) > cutoff);
+      survivors = survivors.filter((s) => Date.parse(s.timestamp) > cutoff && Date.parse(s.timestamp) <= now);
     }
     if (wantsAnomalies) {
       survivors = survivors.filter((s) => s.classification === 'anomaly');
@@ -136,7 +138,7 @@ testCode: |
       const r = retrieve('what did the array log overnight', db);
       expect(
         r.rows.map((s) => s.id),
-        'No filter in the question is not the same as no rows. Returning an empty context here is the failure the DISPATCH note describes: the model that confabulates is the one that retrieved nothing. Row d is four days old and the question named no age, so a filter the question never raised has to drop out of the pipeline rather than run on a default of its own. Give the window a default and the retrieval answers a narrower question than the one that arrived, without saying so.',
+        'No filter in the question is not the same as no rows. Returning an empty context here is the failure the DISPATCH note describes: missing retrieval must be reported, and retrieved material still needs checking. Row d is four days old and the question named no age, so a filter the question never raised has to drop out of the pipeline rather than run on a default of its own. Give the window a default and the retrieval answers a narrower question than the one that arrived, without saying so.',
       ).toEqual(['a', 'b', 'c', 'd']);
       expect(
         r.rows[0],
@@ -157,6 +159,11 @@ testCode: |
       expect(r.truncated).toBe(false);
     });
 
+    it('an age filter excludes future and invalid timestamps and includes now', () => {
+      const db = [makeRow('future', { hoursAgo: -1 }), makeRow('now', { hoursAgo: 0 }),
+        { ...makeRow('invalid', {}), timestamp: 'invalid' }];
+      expect(retrieve('last 24 hours', db).rows.map(row => row.id)).toEqual(['now']);
+    });
     it('the band filter folds case on both sides', () => {
       const db = [
         makeRow('a', { band: 'K7' }),

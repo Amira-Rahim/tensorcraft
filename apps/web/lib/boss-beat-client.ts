@@ -5,6 +5,8 @@ import { getSupabaseBrowserClient } from "./supabase/client";
 export type BossBeatChoiceLabel =
   "cooperate" | "defect" | "random" | "dominant";
 
+export const BOSS_BEAT_CHANGED = "tensorcraft:story-choice-saved";
+
 export interface BossBeatChoice {
   beatId: string;
   choiceIndex: number;
@@ -20,14 +22,33 @@ export async function getBossBeatChoice(
   const supabase = getSupabaseBrowserClient();
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
+  // Supabase reports an absent guest session as an auth error. It is a
+  // known signed-out state, unlike a network failure while checking a user.
+  if (authError && authError.name !== "AuthSessionMissingError")
+    throw new Error("Could not verify your session");
   if (!user) return null;
 
   const { data, error } = await supabase.rpc("get_boss_beat_choice", {
     p_beat_id: beatId,
   });
-  if (error || !data || data.length === 0) return null;
+  if (error) throw new Error("Could not load your story choice");
+  if (!data || data.length === 0) return null;
   const row = data[0];
+  const labels: BossBeatChoiceLabel[] = [
+    "cooperate",
+    "defect",
+    "random",
+    "dominant",
+  ];
+  if (
+    row.beat_id !== beatId ||
+    !Number.isInteger(row.choice_index) ||
+    labels[row.choice_index] !== row.choice_label
+  ) {
+    throw new Error("Invalid saved story choice");
+  }
   return {
     beatId: row.beat_id,
     choiceIndex: row.choice_index,
@@ -54,8 +75,10 @@ export async function recordBossBeatChoice(args: {
   const supabase = getSupabaseBrowserClient();
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
-  if (!user) return false;
+  if (authError) throw new Error("Could not verify your session");
+  if (!user) throw new Error("Sign in to save your choice");
 
   const { data, error } = await supabase.rpc("record_boss_beat_choice", {
     p_world_id: args.worldId,
@@ -68,6 +91,7 @@ export async function recordBossBeatChoice(args: {
     // RPC arg type no longer accepts.
     p_reaction_ms: args.reactionMs ?? undefined,
   });
-  if (error) return false;
-  return Boolean(data);
+  if (error || typeof data !== "boolean")
+    throw new Error("Could not save your story choice");
+  return data;
 }

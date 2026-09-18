@@ -2,7 +2,7 @@ slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
 instructions: |
-  Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.
+  Nazari ran the scan twice. Averaging can reduce independent zero-mean noise; it does not cancel every kind of error. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.
 
   Then write `mixChannels(block, mix)`. `block` is [readings, channels]; `mix` is [banks, channels], one row per output bank and one weight per channel inside it. Hand back every reading scored against every bank, shaped [readings, banks], where each score is one reading's channels weighted by one bank's row and summed. The two tensors arrive with their axes in the wrong order for that, and the error at the top of the lesson is what ignoring it prints.
 starterCode: |
@@ -18,13 +18,15 @@ starterCode: |
   }
 solutionCode: |
   function mergePasses(pass1, pass2, gain) {
-    const merged = pass1.add(pass2).div(2);
-    const boosted = merged.mul(gain);
-    return { merged, boosted };
+    return tf.tidy(() => {
+      const merged = pass1.add(pass2).div(2);
+      const boosted = merged.mul(gain);
+      return { merged, boosted };
+    });
   }
 
   function mixChannels(block, mix) {
-    return block.matMul(mix.transpose());
+    return tf.tidy(() => block.matMul(mix.transpose()));
   }
 testCode: |
   describe('mergePasses', () => {
@@ -172,7 +174,7 @@ testCode: |
       );
       expect(
         matMulOps() - matMulBefore,
-        'mixChannels ran no matMul. Scoring every reading against every bank is the multiply-and-sum-across-an-axis that matMul (or dot) fuses into one op; element-wise ops and JavaScript loops cannot reach it, which is the point of the lesson.',
+        'mixChannels ran no matMul. Scoring every reading against every bank is the multiply-and-sum-across-an-axis that matMul (or dot) fuses into one op; a JavaScript loop could reproduce the numbers, but this task practices the tensor matrix operation.',
       ).toBeGreaterThan(0);
       expect(
         out.shape,

@@ -30,7 +30,27 @@ hints:
   - level: guidance
     content: "The loader resolves to a LayersModel rather than parsed JSON, and it already knows its own architecture: the input spec, the output spec and the layer list are all properties on it, so there is nothing to fetch twice and nothing to write down by hand. Two things to watch. A shape carries the batch dimension in its first entry and that entry arrives as null, and the tests compare against the real model, so pass the shape along as the model gives it. And one inspection is one load: every field comes off the same resolved model."
   - level: solution
-    content: "const model = await tf.loadLayersModel(url); return { inputShape: model.inputs[0].shape as number[], outputShape: model.outputs[0].shape as number[], layerCount: model.layers.length, };"
+    content: |
+      import * as tf from '@tensorflow/tfjs';
+
+      interface ModelInfo {
+        inputShape: (number | null)[];
+        outputShape: (number | null)[];
+        layerCount: number;
+      }
+
+      async function loadAndInspect(url: string): Promise<ModelInfo> {
+        const model = await tf.loadLayersModel(url);
+        try {
+          return {
+            inputShape: [...model.inputs[0].shape],
+            outputShape: [...model.outputs[0].shape],
+            layerCount: model.layers.length,
+          };
+        } finally {
+          model.dispose();
+        }
+      }
 keywords:
   - model-loading
   - fetch
@@ -42,7 +62,7 @@ skillAxes: [deployment, js_integration]
 
 `Error: Request to /models/deep-scan.json failed with status code 404. Please verify this URL points to the model JSON of the model to load.`
 
-First integration of the trained model into the dashboard, and the console's first word is red. Demir aimed `tf.loadLayersModel()` at a single file, because he assumed a trained model ships as one. It doesn't. What a model actually ships as, and why the loader wants the URL of a *manifest*, is the whole repair.
+First integration of the trained model into the dashboard, and the console's first word is red. Demir used the wrong manifest URL. This TFJS export ships a JSON manifest and weight shards; other formats can package a model differently. What a model actually ships as, and why the loader wants the URL of a *manifest*, is the whole repair.
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
 So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.
@@ -128,11 +148,11 @@ await model.save('downloads://deep-scan');
 // For this classifier, the weight shard holds 673 float32 values: 2,692 bytes.`}
 </CodeBlock>
 
-A model trained in Python arrives by a different route. `tensorflowjs_converter` turns a Keras or SavedModel export into the same model.json plus shard layout, and `tf2onnx` produces the `.onnx` file lesson 5 loads.
+A model trained in Python arrives by a different route. `tensorflowjs_converter` can produce a LayersModel from a supported Keras export or a GraphModel from a supported SavedModel. Both use JSON and weight shards, but load a GraphModel with `tf.loadGraphModel()`, not `tf.loadLayersModel()`. Converters such as `tf2onnx` serve a different route to ONNX; lesson 5 uses a small exporter for this course's exact dense network.
 
 ## Caching with IndexedDB
 
-Large models can cost megabytes per download, which makes caching useful. A URL load requests the manifest and weight shards. HTTP or service-worker caching may satisfy those requests without another full download; IndexedDB gives this application an explicit local model copy. DEEP SCAN is 2,692 bytes, so bandwidth is not what caching saves here. What caching saves here is the network itself. Lesson 1 put the dashboard on a console whose link to the compute bay can go down, and a fetch classifies nothing while it is down; a copy in IndexedDB can keep classifying if the page, runtime and other required assets are also available offline. The bill for that arrives at the end of this lesson, when a cached copy and a retrained one disagree about a reading.
+Large models can cost megabytes per download, which makes caching useful. A URL load requests the manifest and weight shards. HTTP or service-worker caching may satisfy those requests without another full download; IndexedDB gives this application an explicit local model copy. DEEP SCAN's float32 weight shard is 2,692 bytes, excluding its manifest and runtime, so bandwidth is not what caching saves here. What caching saves here is the network itself. Lesson 1 put the dashboard on a console whose link to the compute bay can go down, and a fetch classifies nothing while it is down; a copy in IndexedDB can keep classifying if the page, runtime and other required assets are also available offline. The bill for that arrives at the end of this lesson, when a cached copy and a retrained one disagree about a reading.
 
 <CodeBlock language="typescript" title="model-caching.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -150,8 +170,12 @@ async function loadModelWithCache(): Promise<tf.LayersModel> {
     // Cache miss: fetch from server and save to IndexedDB
     console.log('Cache miss; fetching from server');
     const model = await tf.loadLayersModel(MODEL_URL);
-    await model.save(CACHE_KEY);  // saves to IndexedDB
-    console.log('Saved to cache');
+    try {
+      await model.save(CACHE_KEY);
+    } catch (error) {
+      // A quota or storage-permission failure must not discard a usable model.
+      console.warn('Model ready, but unavailable offline:', error);
+    }
     return model;
   }
 }
@@ -166,11 +190,12 @@ console.log(savedModels);
 
 // Shipping new weights means a new key: CACHE_KEY becomes
 // 'indexeddb://deep-scan-v2', and nothing reads the v1 entry after that.
-// removeModel is the separate step that frees its bytes.
-await tf.io.removeModel('indexeddb://deep-scan-v1');`}
+// After v2 is loaded and verified, removeModel frees the old bytes.
+// Do not delete your current offline copy immediately after saving it.
+// await tf.io.removeModel('indexeddb://deep-scan-v1');`}
 </CodeBlock>
 
-Check cache first, fall back to network, store for next time. When you ship new weights, bump the version in the key, or users keep loading the old weights out of IndexedDB. Removing the old entry is a second job with its own reason: nothing reads that entry once the key has moved, and its bytes stay in the user's storage until you clear them.
+Check cache first, fall back to network, then try to store for next time. A failed download still prevents loading. A failed cache write does not: the model is already usable in memory. Storage may be cleared or evicted, so test both cache hits and misses. When you ship new weights, bump the version in the key, or users keep loading the old weights out of IndexedDB. Removing the old entry is a second job with its own reason: nothing reads that entry once the key has moved, and its bytes stay in the user's storage until you clear them.
 
 ## Loading States in the UI
 
@@ -206,9 +231,18 @@ async function loadWithProgress(
   }
 }
 
-// In your React component:
-// const [state, setState] = useState<ModelState>({ status: 'idle' });
-// useEffect(() => { loadWithProgress(MODEL_URL, setState); }, []);`}
+// React integration sketch, inside a component with state/setState:
+// useEffect(() => {
+//   let cancelled = false;
+//   let loaded: tf.LayersModel | undefined;
+//   loadWithProgress(MODEL_URL, next => {
+//     if (!cancelled) setState(next);
+//   }).then(model => {
+//     if (cancelled) model.dispose();
+//     else loaded = model;
+//   }).catch(() => { /* error state was reported above */ });
+//   return () => { cancelled = true; loaded?.dispose(); };
+// }, []);`}
 </CodeBlock>
 
 ## Challenge

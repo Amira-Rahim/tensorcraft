@@ -3,15 +3,15 @@ lessonSlug: launch
 title: "Zero Hour: Classify the Anomaly"
 mlContent: systems
 instructions: |
-  **Contract revision 2026-09-17b:** A constant window uses an explicit equality check. A different reading contributes a statistical vote.
-
-  The season's final inference, run by you. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Three functions.
+  Apply the final decision rule to supplied fictional scores. This exercise
+  does not run the trained detectors or prove the signal has a particular source. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Three functions.
 
   1. `decomposeIntervals(intervals)` returns the successive ratios of the pulse sub-intervals, `ratios[i] = intervals[i + 1] / intervals[i]`. Dividing removes the scale, so the same train measured in seconds and counted abstractly decomposes to the same ratios. That property is the whole reason the calibration overlay worked.
   2. `isFibonacciTrain(ratios)` is true when every ratio sits within 2% of its own expected value in the Fibonacci-succession ratios [1, 2, 1.5, 1.667, 1.6, 1.625]. The band is a share of the expected value rather than a fixed width, so the slot expecting 2 admits twice the miss the slot expecting 1 does. Align from the tail, because a train may omit the 1:1 opener. A ratio list longer than that succession has nothing to align against, so it is not a Fibonacci train.
   3. `classifyAnomaly(reading)` runs the three-detector vote exactly as module 7 built it and takes the 2-of-3 majority.
 
-  The three detectors, unchanged from module 7. The statistical one fires on `|z| > 3`, where z reads `reading.actual` against the mean and the standard deviation of `reading.window`. The autoencoder fires on `reconstructionError > reconThreshold`. The lstm fires on `|predicted - actualForecast| > predTolerance`. Module 7's canon holds on sample 7741: the amplitude dial reads normal, so the statistical gate clears and two votes carry the verdict.
+  The three rules follow module 7. Here reading.window is an explicitly supplied
+  reference slice; do not silently replace a fixed baseline with a moving window. The statistical one fires on `|z| > 3`, where z reads `reading.actual` against the mean and the standard deviation of `reading.window`. The autoencoder fires on `reconstructionError > reconThreshold`. The lstm fires on `|predicted - actualForecast| > predTolerance`. Module 7's canon holds on sample 7741: the amplitude dial reads normal, so the statistical gate clears and two votes carry the verdict.
 
   classifyAnomaly returns:
 
@@ -26,7 +26,15 @@ instructions: |
 
   `classification` reads 'confirmed-anomaly' when the vote passes and the interval train is Fibonacci, 'anomaly' when the vote passes without the train, and 'noise' when the vote does not pass.
 
+  The template assumes the recording ends at the final gap (13). Tail
+  alignment is not valid for arbitrary recordings, and a short match is weak
+  evidence. scoreDelta is rounded to three decimals; it is not accuracy gain.
+
   `ratios` holds the decomposition and not the pulse gaps that came in, so seven intervals leave six numbers, and a capture in seconds leaves the same six as the abstract count. `fibonacciTrain` is those ratios run through `isFibonacciTrain`. Gaps that double every step grow, and a doubling train is not a Fibonacci train.
+
+  Every interval must be finite and positive; reject invalid intervals. All
+  detector values must be finite, error thresholds nonnegative, and both
+  reported model scores in [0, 1]. Reject invalid values before voting.
 
   An empty ratio list is insufficient evidence and returns false. The label confirmed-anomaly is a mission rule combining the vote and this pattern check; it does not establish the signal's origin.
 
@@ -78,6 +86,7 @@ starterCode: |
   };
 solutionCode: |
   function decomposeIntervals(intervals) {
+    if (!intervals.every(v => Number.isFinite(v) && v > 0)) throw new Error('Invalid intervals');
     const ratios = [];
     for (let i = 0; i < intervals.length - 1; i++) {
       ratios.push(intervals[i + 1] / intervals[i]);
@@ -103,6 +112,7 @@ solutionCode: |
       !Number.isFinite(reading.actual)
     )
       throw new Error('Invalid window or reading');
+    if (![reading.reconstructionError, reading.reconThreshold, reading.predicted, reading.actualForecast, reading.predTolerance, reading.ensembleScore, reading.module3Score].every(Number.isFinite) || reading.reconstructionError < 0 || reading.reconThreshold < 0 || reading.predTolerance < 0 || reading.ensembleScore < 0 || reading.ensembleScore > 1 || reading.module3Score < 0 || reading.module3Score > 1) throw new Error('Invalid detector values');
     const constant = reading.window.every((value) => value === reading.window[0]);
     const { mean, variance } = tf.tidy(() => {
       const m = tf.moments(tf.tensor1d(reading.window));
@@ -111,6 +121,7 @@ solutionCode: |
         variance: m.variance.dataSync()[0],
       };
     });
+    if (!Number.isFinite(mean) || !Number.isFinite(variance)) throw new Error('Invalid moments');
     const std = Math.sqrt(variance);
     const z = constant || std === 0 ? null : (reading.actual - mean) / std;
 
@@ -167,6 +178,13 @@ testCode: |
   };
 
   describe('Zero Hour', () => {
+    it('rejects malformed detector values and intervals before a verdict', () => {
+      for (const key of ['reconstructionError','reconThreshold','predicted','actualForecast','predTolerance','ensembleScore','module3Score']) {
+        expect(() => classifyAnomaly({...zeroHourReading,[key]:NaN})).toThrow();
+      }
+      for (const intervals of [[0,1],[-1,1],[1,Infinity]]) expect(() => decomposeIntervals(intervals)).toThrow();
+    });
+
     const result = classifyAnomaly(zeroHourReading);
 
     it('decomposes the interval train into successive ratios', () => {
@@ -228,7 +246,7 @@ testCode: |
     it('the z-score gate clears sample 7741, and two votes carry it', () => {
       // Module 7's reading of this sample, unchanged: every dial normal.
       // 0.50 against the window's measured mean 0.520 and std 0.150 is
-      // 0.1 sigma under it, so the statistical detector abstains and the
+      // 0.1 sigma under it, so the statistical detector does not flag it and the
       // autoencoder and the LSTM decide it between them.
       expect(built(result).votes).toBe(2);
       expect(result.isAnomaly).toBe(true);
@@ -248,7 +266,7 @@ testCode: |
     it('a full-scale amplitude does fire it: 1.00 is 3.2 sigma off this spread', () => {
       // A reading pegged at the hull sensor's 1.00 ceiling, which neither
       // of module 7's captures ever was. Against mean 0.520 and std 0.150
-      // that is 3.2 sigma, the loudest this feature can ever read.
+      // that is about 3.2 sigma; a zero reading is farther below the mean.
       const pegged = classifyAnomaly({ ...zeroHourReading, actual: 1.0 });
       expect(built(pegged).votes).toBe(3);
       expect(pegged.isAnomaly).toBe(true);

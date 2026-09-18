@@ -1,7 +1,7 @@
 slug: create-sequences
 lessonSlug: sequences-matter
 title: "Window a Stream for Prediction"
-instructions: "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors."
+instructions: "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors. Assume positive integer windowSize and stride and equal-width, finite feature rows. The caller owns any returned tensors and must dispose them."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -129,7 +129,7 @@ testCode: |
         ).toBe(true);
         expect(
           xsTensor.rank,
-          'A window is a sample with time inside it, so the stack of them is rank 3. Flatten each window into one long row and the layer can no longer tell which step a value came from.',
+          'A window is a sample with time inside it, so the stack of them is rank 3. This recurrent layer requires explicit time and feature axes. A flattened dense-model baseline would use a different input contract.',
         ).toBe(3);
         expect(
           xsTensor.shape,

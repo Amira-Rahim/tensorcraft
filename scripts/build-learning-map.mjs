@@ -64,7 +64,7 @@ const result = {
               sourcePath: `${dir}/exercises/${slug}.yaml`,
               taskOpening: exercise.instructions.split("\n\n")[0],
               feedback:
-                "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+                "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               declaredDifficulty: exercise.difficulty,
             };
           }),
@@ -74,7 +74,7 @@ const result = {
           ].map((m) => ({
             id: m[1],
             evidence:
-              "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; explanation review pending",
+              "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; rationale is recorded for review, not automatically graded",
             sourcePath: "apps/web/app/components/mdx/decision-task-data.ts",
           })),
           independentProject: source.includes("<IndependentProject")

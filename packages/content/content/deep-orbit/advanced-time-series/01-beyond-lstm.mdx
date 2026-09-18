@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 16
 difficulty: advanced
 context:
-  narrative: "The LSTM works, but a warning ripple at step 4 is diluted to nothing by step 80. Farah introduces attention: a direct connection between any two time steps, so distance stops erasing the evidence the forecast needed."
+  narrative: "The LSTM works, but a warning ripple at step 4 is diluted to nothing by step 80. Farah introduces attention: a direct connection between any two time steps, so the forecast can read earlier representations directly."
   speaker: "Dr. Farah"
 concept:
   explanation: "Attention scores every time step for relevance at once, then spends the model's capacity where the scores are high."
@@ -22,7 +22,7 @@ concept:
     tier: intuition
     breaks: "CSS :focus selects elements according to browser focus state; styling does not learn relevance. Attention computes weights over inputs and combines their values. Masks can give positions zero weight, and several heads can learn different combinations."
 consequence:
-  narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The distance problem is gone."
+  narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The crew still needs to test its forecasts on unseen sequences."
 hints:
   - level: nudge
     content: |
@@ -33,11 +33,13 @@ hints:
   - level: solution
     content: |
       function simpleAttention(query, keys, values) {
-        const queryRow = query.reshape([1, query.shape[0]]);
-        const scores = tf.matMul(queryRow, keys, false, true);
-        const weights = tf.softmax(scores);
-        const blended = tf.matMul(weights, values);
-        return blended.squeeze([0]);
+        return tf.tidy(() => {
+          const queryRow = query.reshape([1, query.shape[0]]);
+          const scores = tf.matMul(queryRow, keys, false, true);
+          const weights = tf.softmax(scores);
+          const blended = tf.matMul(weights, values);
+          return blended.squeeze([0]);
+        });
       }
 keywords:
   - attention
@@ -48,9 +50,9 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-> **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · post-mortem: precursor ripple at window position 4 of 80, weight in final hidden state: negligible.
+> **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · review finding: precursor ripple at window position 4 of 80. The forecast missed its timing.
 
-The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the post-mortem finds the reason inside the window: a warning ripple at step 4 that the LSTM had all but forgotten by step 80. The ripple was in the input. This trained LSTM did not use it well enough.
+The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the review finds a warning ripple at step 4. That suggests a hypothesis about the model's use of early evidence, not a measured cause of the miss. The ripple was in the input. This trained LSTM did not use it well enough.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 This run missed the early ripple. An LSTM can retain distant information, but ours did not retain enough of this event. Attention can read earlier hidden states directly instead of relying only on the final state. We still have to test whether that improves the forecast.
@@ -84,13 +86,13 @@ So instead of inheriting whatever survived eighty recurrent updates, the model s
 //   softmax([2, 1, 0]) = [e^2, e^1, e^0] / (e^2 + e^1 + e^0)
 //                      = [7.39, 2.72, 1.00] / 11.11
 //                      = [0.665, 0.245, 0.090]
-// Bigger score, bigger share, and no step ever gets exactly 0 or 1:
-// the weight is always shared.
+// With finite unmasked scores, exact-arithmetic weights are positive.
+// Masks or floating-point rounding can produce zero weights in practice.
 
 function simpleAttention(
   query: tf.Tensor2D,   // [1, dim]: what we're looking for
   keys: tf.Tensor2D,    // [seqLen, dim]: candidates at each time step
-  values: tf.Tensor2D,  // [seqLen, dim]: information at each time step
+  values: tf.Tensor2D,  // [seqLen, valueDim]: information at each time step
 ): { output: tf.Tensor; weights: tf.Tensor } {
   return tf.tidy(() => {
     // Score each key against the query. The two booleans after the
@@ -103,7 +105,7 @@ function simpleAttention(
     const weights = tf.softmax(scores, 1);  // [1, seqLen]
 
     // Weighted sum of values
-    const output = tf.matMul(weights, values);  // [1, dim]
+    const output = tf.matMul(weights, values);  // [1, valueDim]
 
     return { output, weights };
   });
@@ -111,11 +113,11 @@ function simpleAttention(
 
 // The weights tell you WHERE the model is "looking"
 // High weight at step 4 and step 78 = the blend leans on those steps
-// Inspectable, unlike LSTM hidden state: it shows where the
-// model put its weight, not why it decided`}
+// These weights are easy to plot by step. They are not a causal explanation;
+// LSTM states can also be inspected, but have a different interpretation.`}
 </CodeBlock>
 
-The worked softmax is the part that vetoes the :focus picture, and it does so with three numbers. Scores of [2, 1, 0] went in; weights of [0.665, 0.245, 0.090] came out. The winner holds two thirds, and the two losers still hold a third between them. No step "has focus" while the rest have nothing; every step owns a share, and the shares always total 1.
+The worked softmax is the part that vetoes the :focus picture, and it does so with three numbers. Scores of [2, 1, 0] went in; weights of [0.665, 0.245, 0.090] came out. The winner holds two thirds, and the two losers still hold a third between them. In this example all three steps contribute and their weights sum to one. That does not make the weights calibrated relevance probabilities.
 
 <Dialogue speaker="Dr. Farah">
 :focus identifies one element. Here all three positions contribute, with different weights. That is a weighted blend, not a selected element. Masked positions can receive zero weight; very small weights can also round to zero.
@@ -126,21 +128,10 @@ One argument in that block has not come up before. `tf.matMul` takes two boolean
 ## LSTM vs Attention
 
 <CodeBlock language="typescript" title="comparison.ts">
-{`// LSTM processes sequentially:
-// step 1 → step 2 → step 3 → ... → step 80
-// Information must pass through EVERY intermediate step
-// Long-range dependencies degrade (even with gates)
-
-// Attention processes in parallel:
-// [step 1, step 2, ..., step 80] → score ALL at once
-// Direct connection between ANY two steps
-// No degradation over distance
-
-// Speed comparison for 80-step sequences:
-// LSTM:      80 sequential operations (can't parallelize)
-// Attention: 2 matrix multiplies, both fully parallelizable on GPU
-// The hybrid below keeps the sequential LSTM encoder, so it buys the
-// DISTANCE fix, not the wall-clock one; pure-attention stacks buy both.
+{`// Recurrent updates depend on earlier states. Attention can connect
+// a query directly to earlier representations. This hybrid still runs
+// its LSTM encoder sequentially. Shorter paths do not guarantee better
+// retention, accuracy or latency. Measure the complete workload.
 
 // Build an attention-enhanced model. tf.layers has no attention layer,
 // so we compose the real mechanism from ops: an LSTM encodes the window
@@ -162,22 +153,27 @@ function predictWithAttention(window: tf.Tensor3D): tf.Tensor {
     const query = steps.slice([79, 0], [1, 32]);          // latest step asks
     const { output, weights } = simpleAttention(query, steps, steps);
     // weights: [1, 80]: read them to see WHERE the model looked.
-    // High weight at step 4 and step 78 = the direct connection the
-    // plain LSTM could not hold across the distance.
+    // A high weight means a larger coefficient in this blend, not proof
+    // that the step caused the prediction.
     return head.apply(output) as tf.Tensor;               // [1, 3]
   });
 }
 
-// Production transformers drop the recurrent encoder entirely and use
-// attention end to end; this hybrid is the honest TFJS version of the
-// same idea, and it is all this module's problem needs.`}
+// Forward-pass demonstration: these weights are untrained.
+const exampleWindow = tf.zeros([1, 80, 3]);
+const exampleOutput = predictWithAttention(exampleWindow);
+console.log(exampleOutput.shape); // [1, 3], not evidence of forecast quality
+tf.dispose([exampleWindow, exampleOutput]);
+encoder.dispose(); head.dispose();
+// Training this composition needs a custom differentiable training loop
+// or a serializable custom Layer; it is not a compiled forecasting model.`}
 </CodeBlock>
 
 Those two multiplies are cheap here because the head asks one question per window: the last step is the only query, so the scores are a single row of 80. Full self-attention makes every step a query, which turns that row into 80 rows of 80. That T-by-T term is why attention's cost grows faster with sequence length than an LSTM's, and it is why models built for very long windows swap full attention for cheaper approximations of it.
 
-A real attention head does not read the hidden states raw. It multiplies its input by three learned matrices, W_Q, W_K and W_V, to build the query, the keys and the values separately. Those matrices are what training adjusts. They are also what separates a key from a value: the key is what a step offers for matching, the value is what that step hands over once matched. Passing `steps` for both keys and values above is the projection-free shortcut this lesson takes. That leaves the LSTM encoder and the dense head as the only parts of this hybrid that learn anything.
+Transformer attention usually projects the hidden states first. It multiplies its input by three learned matrices, W_Q, W_K and W_V, to build the query, the keys and the values separately. Those matrices are what training adjusts. They are also what separates a key from a value: the key is what a step offers for matching, the value is what that step hands over once matched. Passing `steps` for both keys and values above is the projection-free shortcut this lesson takes. That leaves the encoder and dense head as the trainable components. This example only executes their forward pass.
 
-There is a second shortcut in the same function. Scaled dot-product attention divides the scores by the square root of the key width before the softmax, because dot products grow with that width and large scores push softmax toward spending everything on one step. The numbers here stay small enough to read without that division, so this lesson leaves it out and the exercise grades the unscaled split. One more term to carry forward: a head is one complete query-key-value computation like this one, and a transformer runs several of them side by side on the same input, each with its own W_Q, W_K and W_V.
+There is a second shortcut in the same function. Scaled dot-product attention divides the scores by the square root of the key width before the softmax, because dot products grow with that width and large scores push softmax toward spending everything on one step. To isolate the unscaled operation, so this lesson leaves it out and the exercise grades the unscaled split. One more term to carry forward: a head is one complete query-key-value computation like this one, and a transformer runs several of them side by side on the same input, each with its own W_Q, W_K and W_V.
 
 Hold the query fixed and shuffle the keys and values together. Without position information, each weight follows its key and the weighted sum stays the same, apart from floating-point rounding. If you choose a new query after shuffling, that is a different computation. Our hybrid uses the last LSTM state as its query, and those states already contain sequence context. Transformers that omit recurrence need another way to represent order, such as positional encodings or relative positions. Lesson 2 introduces a positional encoding.
 
@@ -187,7 +183,7 @@ Implement attention over a sequence, with the keys and the values handed in sepa
 
 <Exercise slug="simple-attention" />
 
-<RecallPrompt question="What are the three components of the Query-Key-Value framework in attention, and what does each do?" answer="Query asks what to look for, Keys are the candidates at each time step, and Values carry the information. The model scores each Key against the Query, normalizes with softmax, then takes a weighted sum of Values to focus on the most relevant steps. In a real head, three learned matrices (W_Q, W_K and W_V) build all three from the input, and those matrices are the parameters training adjusts. Keys exist to be matched against; values are what the weighted sum blends." />
+<RecallPrompt question="What are the three components of the Query-Key-Value framework in attention, and what does each do?" answer="Query asks what to look for, Keys are the candidates at each time step, and Values carry the information. The model scores each Key against the Query, normalizes with softmax, then takes a weighted sum of Values to focus on the most relevant steps. In a transformer head, three learned matrices (W_Q, W_K and W_V) build all three from the input, and those matrices are the parameters training adjusts. Keys exist to be matched against; values are what the weighted sum blends." />
 
 <LessonRecap
   whatYouLearned={["Attention scores keys against a query and uses softmax weights to blend their values.", "Reading earlier states directly can help with distant dependencies. Validate the benefit on held-out sequences.", "Full self-attention builds a T-by-T score matrix. This example uses one query and keeps the sequential LSTM encoder.", "With a fixed query and no position information, jointly permuting keys and values leaves the pooled output unchanged."]}

@@ -2,17 +2,24 @@ slug: build-rnn
 lessonSlug: simple-rnns
 title: "Carry the Hidden State"
 instructions: |
-  Three functions: the second checks the first, and the third prices what the first carries.
+  Implement three functions:
 
-  1. `runCell(readings, recurrentWeight, inputWeight, bias)` walks the readings in order carrying one number of hidden state. Start every call at `h = 0`, and at each reading set `h = Math.tanh(recurrentWeight * h + inputWeight * reading + bias)`.
-  2. Return the states as a list, one per reading, in the order they were computed. Nothing carries between calls: `h` starts at 0 again the next time the function runs. Write this half in plain JavaScript: the grader counts calls into TensorFlow.js while `runCell` runs and expects none, because a cell built out of library layers carries the state for you.
-  3. Run it on the lesson's drill (readings 0.5, 0.9, 0.5 with recurrentWeight 0.8, inputWeight 1 and bias 0) and the reading 0.5 comes back as 0.4621 at step 1 and 0.8284 at step 3. Same reading, two answers, because the state carries what happened in between.
-  4. Then build the same cell out of the library. `buildCellLayer(timeSteps)` returns `{ model, inputWeight, recurrentWeight, bias }`, where `model` is a `tf.sequential()` holding one layer: `tf.layers.simpleRNN({ units: 1, inputShape: [timeSteps, 1], returnSequences: true })`. One unit and one feature, because that is the cell `runCell` describes; give the layer more of either and it mixes the dimensions through matrices no single number stands in for.
-  5. `returnSequences: true` makes it report the state after every step instead of only the last, which is the same list `runCell` returns.
-  6. A layer that has not been added to a model has no weights yet, so `getWeights()` on the bare layer comes back empty: add it first, then read `model.getWeights()`. That returns three tensors, in this order: the INPUT kernel (shape [1, 1]), the RECURRENT kernel (shape [1, 1]), and the bias (shape [1]). Note the order, because the lesson writes the formula the other way round. Hand the three back as plain numbers under the names above.
-  7. The third function prices the section the lesson spends longest on. `decayFactors(states, recurrentWeight)` takes the states `runCell` handed back and returns a list of the same length where entry t is the product, over steps 1 to t, of `recurrentWeight * (1 - h * h)`: the factor a learning signal shrinks or grows by on its way back through t steps, since `1 - h * h` is the slope of tanh at the state h. Plain JavaScript again, no tensors. On the lesson's own settings it lands where the page says: at weight 0.8 on readings of 0.001 the sixtieth entry is about 1.5e-6, and at weight 1.5 the list peaks near 173 at step 14 and is under 1e-11 by step 60.
+  - runCell(readings, recurrentWeight, inputWeight, bias): start h at zero for
+    each call, update h = Math.tanh(recurrentWeight * h + inputWeight * reading
+    + bias) for each reading, and return all states in order. Use plain JS.
+  - buildCellLayer(timeSteps): build a Sequential model with one SimpleRNN
+    layer, units 1, inputShape [timeSteps, 1], returnSequences true. Read the
+    three tensors from model.getWeights(): input kernel, recurrent kernel,
+    bias. Return { model, inputWeight, recurrentWeight, bias }, with the last
+    three as numbers. The grader compares your JS recurrence with this layer.
+  - decayFactors(states, recurrentWeight): return the running product of
+    recurrentWeight * (1 - h * h), one factor per state. Use plain JS. This
+    is the scalar recurrence's derivative of each state with respect to its
+    initial state, not a full training gradient for every parameter.
 
-  The grader reads the model's own weights, drives your `runCell` with them, and checks every state against what the layer computes for the same readings.
+  All inputs are finite and timeSteps is a positive integer. The caller owns
+  the returned model. Adding the layer builds its weights; an explicit build
+  can also do so, but this task uses the Sequential model.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -324,7 +331,7 @@ testCode: |
         close(out[59], want[59]),
         'Sixty factors just under 0.8 each, multiplied together, land near 1.5e-6, and this list does not. Each entry is the product of every factor so far, not the factor at that step alone.',
       ).toBe(true);
-      expect(out[59] < 1e-5, 'A signal that arrives as a millionth of itself is a signal that never arrives.').toBe(true);
+      expect(out[59] < 1e-5, 'The derivative is very small for this fixture; whether training stalls needs additional evidence.').toBe(true);
     });
     it('explodes then collapses at weight 1.5: a peak near 173 at step 14, under 1e-11 by step 60', () => {
       const readings = Array.from({ length: 60 }, () => 0.001);
@@ -335,7 +342,7 @@ testCode: |
         if (v > out[peak]) peak = i;
       });
       expect(peak + 1, 'The burst is a dozen steps long and it peaks at step 14, while the state is still near zero and the factor still near 1.5.').toBe(14);
-      expect(out[peak], 'About 173 times the signal that left the loss, on the way up.').toBeCloseTo(172.73, 0);
+      expect(out[peak], 'The direct state derivative reaches about 173 on this fixture.').toBeCloseTo(172.73, 0);
       expect(
         out[59] < 1e-11,
         'Past step fifteen the settled state pins the factor at 0.393, and forty-five of those undo the burst many times over.',

@@ -14,7 +14,7 @@ difficulty: intermediate
 context:
   narrative: "The architecture is ready, and its first demo just died on stage with the Commander watching: one missing batch dimension. Farah orders it run again, properly."
 concept:
-  explanation: "The forward pass pushes data through the network layer by layer: each layer transforms its input and hands the result on, no step skippable, no step stoppable."
+  explanation: "The forward pass pushes data through the network layer by layer: each layer in this Sequential model transforms its input and passes the result to the next. Other model graphs can branch or use skip connections."
   bridge:
     jsTitle: "Event Propagation"
     jsCode: "element.addEventListener('click', e => transform(e))"
@@ -39,7 +39,9 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-`Error: Error when checking : expected dense_Dense1_input to have shape [null,3] but got array with shape [3,1].` The orphaned colon is TFJS's own, an empty slot where the layer name should be; the leading `Error:` is the console printing an Error object. This is the string the runtime actually prints. So is the `[3,1]`, which is not the shape Demir passed. The error hit the bridge display at 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values, shape `[3]`. TFJS pads any rank-1 input to rank 2 by adding the new axis on the right, so three features became three samples of one feature, and that is the shape the error quotes back. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
+At 0940, Demir's first network demo stops on a shape error. The model expects batches shaped `[rows, 3]`; he passes a flat `[3]` tensor. In TFJS 4.22.0, the input adapter expands that vector to `[3, 1]`, which still does not match. Three features have become three rows of one feature.
+
+Commander Mirza leaves four minutes into the demo. Demir needs eleven more to find the missing batch axis. He had treated a reading like an event object: one item arrives, one handler receives it. The model's input contract says otherwise.
 
 <Dialogue speaker="Dr. Farah">
 The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
@@ -67,17 +69,17 @@ const sensorReading = tf.tensor2d([[0.5, 0.8, 0.2]]);  // shape: [1, 3]
 // predict() runs the full forward pass
 const prediction = model.predict(sensorReading) as tf.Tensor;
 console.log(prediction.shape);     // [1, 1]
-console.log(prediction.dataSync()); // ~0.5 (random, untrained)
+console.log(prediction.dataSync()); // untrained score; the value depends on initialization
 
 // Shape flow: [1, 3] → [1, 32] → [1, 16] → [1, 1]. Only the last axis changes.
 
 // The feed hands over one reading at a time, flat. Give it the axis:
 const flat = tf.tensor1d([0.5, 0.8, 0.2]); // shape: [3], which predict() rejects
 const batched = flat.expandDims(0);        // shape: [1, 3]: a stack of one
-model.predict(batched);                    // runs`}
+const singlePrediction = model.predict(batched) as tf.Tensor; // runs`}
 </CodeBlock>
 
-Every input carries a batch dimension, even a batch of one: `[1, 3]`, not `[3]`. The network is built to process stacked readings in parallel, and a single reading is a stack of height one. `expandDims(0)` adds that axis to a flat reading, and `reshape([1, 3])` does the same job when you already know the width. Shape mismatches are the error you will hit most while you are learning this. Unlike a wrong prop, they fail loudly and, as Demir can now attest, they wait for an audience.
+Every input carries a batch dimension, even a batch of one: `[1, 3]`, not `[3]`. The network accepts stacked readings, and a single reading is a stack of height one. The runtime controls how that work executes. `expandDims(0)` adds that axis to a flat reading, and `reshape([1, 3])` does the same job when you already know the width. Shape mismatches are the error you will hit most while you are learning this. Unlike a wrong prop, they fail loudly and, as Demir can now attest, they wait for an audience.
 
 <Dialogue speaker="Ensign Demir">
 Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
@@ -89,18 +91,21 @@ Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
 
 <CodeBlock language="typescript" title="by-hand.ts">
 {`// Continues forward-pass.ts: same model, same reading.
-const [w1, b1, w2, b2, w3, b3] = model.getWeights();
-
-const h1 = sensorReading.matMul(w1).add(b1).relu();  // [1, 32]
-const h2 = h1.matMul(w2).add(b2).relu();             // [1, 16]
-const out = h2.matMul(w3).add(b3).sigmoid();         // [1, 1]
-
-console.log(h1.shape, h2.shape, out.shape);  // [ 1, 32 ] [ 1, 16 ] [ 1, 1 ]
-console.log(out.dataSync()[0]);              // the number predict() printed above
-console.log(out.sub(prediction).abs().dataSync()[0]);  // 0`}
+tf.tidy(() => {
+  // Read the model's existing weights; do not change or dispose the model.
+  const [w1, b1, w2, b2, w3, b3] = model.getWeights();
+  const h1 = sensorReading.matMul(w1).add(b1).relu();  // [1, 32]
+  const h2 = h1.matMul(w2).add(b2).relu();             // [1, 16]
+  const out = h2.matMul(w3).add(b3).sigmoid();         // [1, 1]
+  console.log(h1.shape, h2.shape, out.shape);
+  console.log(out.sub(prediction).abs().max().dataSync()[0]);
+  // Check a numerical tolerance; fused kernels/backends may round differently.
+});
+tf.dispose([sensorReading, prediction, flat, batched, singlePrediction]);
+model.dispose();`}
 </CodeBlock>
 
-The gap is zero, not nearly zero: over 200 freshly initialized models, on this one reading and on a stack of sixteen, every comparison came back exactly 0. Lesson 1 wrote the weighted sum, lesson 2 put the bend between the stages, lesson 3 stacked three of them, and those six lines are what `predict()` runs. What the call adds is housekeeping. It splits a tall stack into batches of 32 rows by default, and it frees what it allocates on the way through: one new tensor after `predict()` returns, the output, against nine left behind by the six lines above.
+These operations express the same computation for this dense network. Expect agreement within a suitable floating-point tolerance, not bit-for-bit equality on every backend. `predict()` manages its internal temporaries and returns output tensors that the caller owns. A hand-written chain also needs temporary-tensor cleanup, which the `tf.tidy()` block supplies.
 
 ## Challenge
 

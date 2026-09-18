@@ -2,8 +2,6 @@ slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
 instructions: |
-  **Contract revision 2026-09-17b:** A constant window uses an explicit equality check. A different reading contributes a statistical vote. Return null for zScore when the window is constant.
-
   Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. A reading pegged at the sensor's 1.00 ceiling scores 3.2 sigma against eleven days of archive and 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's scores for the latest reading come in beside it. Compute all three verdicts yourself.
 
   1. Statistical. Take the z-score of `actual` against the window, using `tf.moments` for the window's center and spread. Report it signed, so a reading below the center comes back negative, and flag when |z| > 3.
@@ -12,7 +10,7 @@ instructions: |
 
   `votes` is how many of the three flagged, and a majority (at least 2 of 3) sets `isAnomaly`. Return `{ zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }`.
 
-  The window must be non-empty and contain finite readings; actual must be finite. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. An undefined z-score is not a measured zero.
+  The window must be non-empty and contain finite readings. All other arguments must be finite, and errors and tolerances must be nonnegative. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. An undefined z-score is not a measured zero.
 starterCode: |
   interface EnsembleVerdict {
     zScore: number | null;
@@ -58,7 +56,8 @@ solutionCode: |
       !Array.isArray(window) ||
       window.length === 0 ||
       !window.every(Number.isFinite) ||
-      !Number.isFinite(actual)
+      ![actual, reconstructionError, reconThreshold, predicted, predTolerance].every(Number.isFinite) ||
+      reconstructionError < 0 || reconThreshold < 0 || predTolerance < 0
     )
       throw new Error('Invalid window or reading');
     const constant = window.every((value) => value === window[0]);
@@ -314,6 +313,10 @@ testCode: |
       expect(changed.isAnomaly).toBe(true);
     }
     expect(() => detectAnomalyEnsemble([], 1, 0, 1, 1, 1)).toThrow();
+  });
+  it('rejects invalid detector scores rather than silently voting normal', () => {
+    expect(() => detectAnomalyEnsemble([0.5,0.6], 0.5, NaN, 1, 0.5, 0.1)).toThrow();
+    expect(() => detectAnomalyEnsemble([0.5,0.6], 0.5, 0, 1, 0.5, -1)).toThrow();
   });
 estimatedMinutes: 15
 difficulty: intermediate

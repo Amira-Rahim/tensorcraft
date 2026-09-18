@@ -13,7 +13,7 @@
           "slug": "introduction-to-tensors",
           "title": "Introduction to Tensors",
           "sourcePath": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
-          "sourceSha256": "30a613feac430d18a3497dcc55350565d9ee9a1076d57019190eb20b25da4fff",
+          "sourceSha256": "17ce590fbacc89d9413b52c03153e642a23285e6a73bc93a284bcfc5ffc29a50",
           "objectives": [
             "Understand what a tensor is and how it relates to JavaScript arrays",
             "Create tensors from regular arrays using TensorFlow.js",
@@ -30,7 +30,7 @@
               "title": "First Contact: Tensor In, Memory Clean",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
               "taskOpening": "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape`, its values into `values` (a plain JS array: remember dataSync()) and their total into `total` (one plain number: let the tensor add the readings up with `sum()` and read the result back, rather than typing it in or adding it up in plain JavaScript), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -46,7 +46,7 @@
           "slug": "tensor-shapes",
           "title": "Understanding Tensor Shapes",
           "sourcePath": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
-          "sourceSha256": "9c6173e3514c8ed4f5ff8b0858b5291e3fd5e8cd1e2a2951da2413ff439dda37",
+          "sourceSha256": "511bf8db221f03784c6cc4760d062e04df805c29d44756bd7c0dc7de9742e89e",
           "objectives": [
             "Read and interpret tensor shapes",
             "Predict where each value lands after a reshape (row-major order)",
@@ -63,7 +63,7 @@
               "title": "Find the Signal's Layout",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
               "taskOpening": "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array of four numbers. Careful: row-major fill means you need to know exactly which four values land in that row. All three rows are checked against those twelve readings, so a wrong guess fails. `grid` also has to come out of `flat` itself: the grader checks that the two share one buffer, so a [3, 4] tensor typed out by hand is rejected even when every number in it is right. Release `flat` when you are done with it if you like; `grid` has to still be there for the grader.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -79,7 +79,7 @@
           "slug": "tensor-operations",
           "title": "Basic Tensor Operations",
           "sourcePath": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
-          "sourceSha256": "39d1d774c01e4eeae81a0c505137843e95dcd8aab0498450dec8938dc626e3b2",
+          "sourceSha256": "3e89e1a23c8f1a507abeb0d921a81d92313e4111b65870469f22ed62e31636ef",
           "objectives": [
             "Read a shape-mismatch error and identify which op it comes from",
             "Perform element-wise tensor operations (add, multiply, subtract)",
@@ -97,8 +97,8 @@
               "slug": "add-tensors",
               "title": "Merge the Sensor Passes",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
-              "taskOpening": "Nazari ran the same scan twice to cancel noise. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Nazari ran the scan twice. Averaging can reduce independent zero-mean noise; it does not cancel every kind of error. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -114,11 +114,11 @@
           "slug": "data-loading",
           "title": "Loading and Preparing Data",
           "sourcePath": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
-          "sourceSha256": "03c6df88077a884fae4113ff2ea00b30c5994549c3ac64b2fd22b29b838d0fe2",
+          "sourceSha256": "d0a8a034a065efa9d058db918f127ae1d7a6b7ea795c67a79268f80ecdcd1149",
           "objectives": [
             "Create data pipelines using tf.data",
             "Batch data into fixed-size chunks for processing",
-            "Shuffle data to prevent ordering bias",
+            "Shuffle independent training examples while preserving split membership",
             "Split data into training and validation sets"
           ],
           "explanationSections": [
@@ -132,7 +132,7 @@
               "title": "Build the Lazy Pipeline",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
               "taskOpening": "**Contract revision 2026-09-17b:** Add makeDataset(source), which shuffles individual samples before batching. The grader checks stage order directly.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -143,7 +143,7 @@
           "decisionTasks": [
             {
               "id": "future-builds",
-              "evidence": "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; explanation review pending",
+              "evidence": "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; rationale is recorded for review, not automatically graded",
               "sourcePath": "apps/web/app/components/mdx/decision-task-data.ts"
             }
           ],
@@ -155,7 +155,7 @@
           "slug": "normalization",
           "title": "Data Normalization",
           "sourcePath": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
-          "sourceSha256": "1450b96a96657df07927fae0aac6d66d868c72f1a49ce024643878ba45864b84",
+          "sourceSha256": "c06844eb96d61988852e8911842b4a1c5869fcd7c737a85190df4313f316b4e2",
           "objectives": [
             "Explain how feature scaling affects neural-network training",
             "Apply z-score normalization (zero mean, unit variance)",
@@ -164,7 +164,7 @@
             "Feed normalized readings through a real dense neuron and read its verdict"
           ],
           "explanationSections": [
-            "Why Scales Must Match",
+            "Why Scale Features",
             "When to Use Which",
             "What the Preview Neuron Computes"
           ],
@@ -174,7 +174,7 @@
               "title": "Normalize, Then Ask the Preview Neuron",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/normalize-data.yaml",
               "taskOpening": "Normalize a batch of four readings, then score them with Farah's fixed preview\nneuron. Each row has two features: temperature and signal strength. Save the\ntraining statistics so a later reading receives the same transformation.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -201,7 +201,7 @@
           "slug": "first-neuron",
           "title": "Your First Neuron",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
-          "sourceSha256": "8d1ea98cdb04e6e85b756654623952f909db0259afb6d183a8ac5b575ec1a492",
+          "sourceSha256": "10612e29cffc98d88775ca5666e98b04c3a2ac7fd5109cf9c539325292dbbcd7",
           "objectives": [
             "Understand the anatomy of a single neuron (inputs, weights, bias)",
             "Implement a neuron as a weighted sum plus bias",
@@ -217,8 +217,8 @@
               "slug": "implement-neuron",
               "title": "Implement a Neuron",
               "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/implement-neuron.yaml",
-              "taskOpening": "Implement neuron(inputs, weights, bias): the weighted sum of inputs plus bias, as a scalar tensor. Use tf.dot() for the weighted sum. The grader draws its own inputs, weights and bias at grade time and checks your result against the reduce() equivalent, so compute from the arguments. It also watches for values leaving the tensors: a body that pulls the numbers out with dataSync() and totals them in JavaScript is rejected, however right the total is.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement neuron(inputs, weights, bias) as a weighted sum plus bias.\nReturn a rank-0 tensor. Use tensor operations so gradients can flow through\nthe calculation; do not read values into JavaScript inside the function.\nKeep the returned tensor and clean up intermediates with tf.tidy().\nThe grader calls your function with different values and vector lengths.\n",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -234,16 +234,16 @@
           "slug": "activation-functions",
           "title": "Activation Functions",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
-          "sourceSha256": "54dfa2a0953e9796d3477caab8d93c1de367cc4be52936af8e6ec92a617398e9",
+          "sourceSha256": "8d3ee3467de8e3c6b5bb68b8a2f63cfa8869f91d40c3437975e4ad027f8b84fa",
           "objectives": [
-            "Understand why activation functions are necessary",
-            "Implement ReLU, and read sigmoid and tanh off their ranges",
-            "Pick the activation for a slot from the range that slot needs"
+            "Explain why a stack of affine dense layers needs nonlinearity to gain expressive power",
+            "Implement ReLU and describe sigmoid and tanh ranges",
+            "Distinguish an activation's output range from a decision threshold and calibrated probability"
           ],
           "explanationSections": [
-            "Breaking the Collapse",
-            "Answering the Board",
-            "When Activations Die"
+            "What a Linear Stack Cannot Add",
+            "A Score and an Alert Are Different",
+            "When Gradients Become Small"
           ],
           "practice": [
             {
@@ -251,12 +251,13 @@
               "title": "Apply ReLU Activation",
               "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/relu-activation.yaml",
               "taskOpening": "Write a function `applyRelu(preActivation)` that applies the ReLU activation to any tensor of pre-activation values: negatives become zero, positives pass through unchanged, however large they are. Do it to the tensor rather than to a copy of its numbers: the grader rejects a body that drains the values out with dataSync() and maps them in JavaScript.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
           "recallQuestions": [
-            "Why does a deep network without activation functions collapse to a linear model?"
+            "Why does stacking only affine dense layers add no new type of function?",
+            "An untrained sigmoid model returns 0.99. Does the range make that a reliable 99% probability?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -267,7 +268,7 @@
           "slug": "layers-and-architecture",
           "title": "Layers and Architecture",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
-          "sourceSha256": "8a14a2cd88662528e5e3b01ec4252949812d6048d81996ae562c4b743633da4c",
+          "sourceSha256": "306d3e11c6da65ecfc8c8cacdc3c764072f80f3ebde88d690376c4fda9038b1c",
           "objectives": [
             "Build multi-layer neural networks using tf.sequential()",
             "Understand how layers compose like a middleware chain",
@@ -283,8 +284,8 @@
               "slug": "build-layer",
               "title": "Build a 3-Layer Sequential Model",
               "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/build-layer.yaml",
-              "taskOpening": "Build a sequential model with three dense layers: a first hidden layer with 16 units and ReLU activation (it declares inputShape [4]), a second hidden layer with 8 units and ReLU activation, and an output layer with 1 unit and sigmoid activation. Those are drill widths rather than the build wired to the bridge feed, so the lesson's 673 is not the answer here. Then quote the price the way Nazari asks for it: fill in predictParams(width) so it returns the number of parameters this same 16/8/1 stack holds when a reading of `width` values arrives. The grader builds that stack at widths of its own and compares, so one number cannot be the right quote at two widths. The quote has to be arithmetic: the grader prices widths in the tens of thousands and rejects an answer that builds anything, a stack or a tensor, to get there. Check the formula you write against the lesson before you submit: the same arithmetic on 32 units, then 16, then 1, reading three features, comes back 673.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Build a Sequential model with three dense layers: 16 ReLU units with\ninputShape [4], then 8 ReLU units, then 1 sigmoid unit.\nThese practice widths differ from the bridge classifier's 32/16/1 stack.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -300,7 +301,7 @@
           "slug": "forward-pass",
           "title": "The Forward Pass",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
-          "sourceSha256": "ce5250f8f48587fa562b4ef1cb29e85b73eb429d0959ed682441903b98680cf9",
+          "sourceSha256": "30134aacdea3bd3055c56ce8c19bbd3c7c1ee1d465544420395412a6eda096d8",
           "objectives": [
             "Trace data flow through a neural network layer by layer",
             "Use model.predict() to run inference",
@@ -316,8 +317,8 @@
               "slug": "forward-pass",
               "title": "Run a Forward Pass",
               "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/forward-pass.yaml",
-              "taskOpening": "Create a sequential model with one dense layer (3 units, inputShape [2], activation left at its default, which is linear: the grader recomputes the pass as input times kernel plus bias), then write forward(batch) so a single model.predict() call carries the whole batch, and assign prediction = forward(input). The provided input is a stack of 2 readings with 2 features each. Leave the layer's weight initialization at the default: the grader recomputes the forward pass from the random weights your layer starts with, so the output cannot be written by hand. It also calls forward() with taller stacks of its own, counts the predict calls each one costs, and checks that what comes back is the tensor that call handed over: the model's own answer, not one recomputed beside it from the layer's weights. Then fix the shape that ended Demir's demo: singleReading arrives flat, shape [2] rather than [1, 2]. Write asBatch(reading) so it hands back that same reading with a batch axis in front, and assign batched = asBatch(singleReading). The grader calls asBatch() with readings of its own width, so the axis goes on whatever arrives rather than on a width written into the body.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Add one dense layer with 3 units and inputShape [2]. Keep the default\nlinear activation and random kernel initialization.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -333,7 +334,7 @@
           "slug": "building-a-network",
           "title": "Building a Complete Network",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
-          "sourceSha256": "9b5eea08f54f025f00fd14e2853ef743062b9b7ea51cf8dd9245a22a71805f4a",
+          "sourceSha256": "d1f5003a34a9780d80b746aa04af29a0f55d075cd696698d7f23318cce7a7fd4",
           "objectives": [
             "Build and compile a complete neural network from scratch",
             "Understand what each compilation option controls",
@@ -348,8 +349,8 @@
               "slug": "simple-network",
               "title": "What a Compiled Network Knows",
               "sourcePath": "packages/content/content/deep-orbit/neural-networks/exercises/simple-network.yaml",
-              "taskOpening": "Build and compile the classifier twice, sweep both networks before either one trains, then train one of them and sweep it again. buildClassifier() returns the stack: 32 units with ReLU on an inputShape of [8], then 16 units with ReLU, then a 1-unit sigmoid output, compiled with the Adam optimizer, binaryCrossentropy loss and the accuracy metric. That eight-feature front door is Farah's spec, 833 parameters against the 673 of the three-feature build wired to the bridge feed tonight. Leave the weight initialization at its defaults. Store each sweep as a plain array of numbers: sweepOne from the first network, sweepTwo from the second, and trainedSweep from the first one again after `await model.fit(readings, labels, { epochs: 50, batchSize: 16 })`. Leave the second network untrained. It is the control. Rows 0 to 59 of the batch are calm windows and rows 60 to 119 are flagged, and the grader reads every sweep against that split: record the untrained outputs as they are. Random weights can separate groups by chance; their confidence does not prove training occurred. Measure what the trained sweep actually predicts. A particular class gap is not required for implementation correctness. Before the first network trains, also keep its starting weights as initialWeights: one plain array per tensor that getWeights() hands back, in that order. The grader re-runs predict() on the second network and on the trained one, and rebuilds the first network from initialWeights to re-run its untrained sweep, so each of the three sweeps has to be the output of the network it came from.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement buildClassifier(): dense layers of 24 ReLU units with inputShape\n[8], 12 ReLU units, and 1 sigmoid unit. Keep default initialization.\nCompile with Adam, binaryCrossentropy and the accuracy metric.\nThis practice model has 529 parameters; the bridge model takes 3 features\nand has 673.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -377,11 +378,11 @@
           "slug": "loss-functions",
           "title": "Loss Functions",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
-          "sourceSha256": "9db2aad244901d5ef1ae3ae7175ade198f631ccac07e9320b65e9bf832fe573f",
+          "sourceSha256": "d18ec88806426d8c706fe14df60f409a01396851ac19552d6a87c1e520b96e2b",
           "objectives": [
             "Understand what loss functions measure and why they're essential",
             "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)",
-            "Interpret loss values: lower is better, zero is perfect"
+            "Interpret loss on a fixed dataset and distinguish fitting from generalization"
           ],
           "explanationSections": [
             "How Wrong Are We?"
@@ -392,7 +393,7 @@
               "title": "Two Losses, and Cross-Entropy's Two Forms",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
               "taskOpening": "**Contract revision 2026-09-17:** pickBceForm now takes an output kind (probabilities or logits), not an activation name. Update that argument in saved code.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -408,7 +409,7 @@
           "slug": "gradient-descent",
           "title": "Gradient Descent",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
-          "sourceSha256": "4287dcfe1a6dc7fd09ddfc356bdcc0fc81fa517037fa17cd28968174abdfdbb6",
+          "sourceSha256": "f4fe091252ed7262775e279e5a0d837e030bdae095724e7fd8add67173e3d3e4",
           "objectives": [
             "Understand gradients as the direction of steepest ascent",
             "Implement a single gradient descent step",
@@ -423,8 +424,8 @@
               "slug": "gradient-step",
               "title": "Perform a Gradient Descent Step",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/gradient-step.yaml",
-              "taskOpening": "Write step(fn): one descent step on the loss function it is handed. First define lossFn, a function of no arguments that returns the weight squared as a scalar. Then fill in step. Use tf.variableGrads(fn) for the slope rather than deriving it by hand: the whole point is that TFJS does the calculus for you. That call hands back an object of gradients keyed by variable name, so this weight's entry has to be pulled out of it and stored in gradient. Store the tensor itself, not a number read off it. Then update the weight by subtracting learningRate × gradient, and apply that with weight.assign so the tf.variable changes in place. Starting at weight = 5.0 with learningRate = 0.1, the first call lands the weight at exactly 4.0. The grader calls step() twice more on your loss, then three times on losses of its own: one of those is not a polynomial, and the last one is assembled while the grader runs, from a multiplier picked on the spot, so the body has to differentiate the function it receives instead of rebuilding the slope out of the loss value or repeating a number that was right on an earlier run. The grader also watches for the autograd call itself, and for what it was called on: a step that never runs the function it received through tf.variableGrads (or tf.grad) fails, whatever number it produced, so a differentiation call on some other function next to a slope worked out by hand does not count.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Define lossFn as a zero-argument function returning weight squared.\nImplement step(fn) using tf.variableGrads(fn) to differentiate the supplied\nloss. Save weight's gradient tensor in gradient, then assign\nweight - learningRate * gradient back to weight with weight.assign().\nThe first call should move weight from 5 to 4.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -440,7 +441,7 @@
           "slug": "backpropagation",
           "title": "Backpropagation",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
-          "sourceSha256": "e7681ba8683dc539c7f442bcf44f2cdb416436574070c51c41ea79c6c00dcf05",
+          "sourceSha256": "254da04365b0936c5494a4325aba693c931d72bba48c2e4e2a81f03bb0961cb1",
           "objectives": [
             "Estimate a gradient numerically and count what that costs at network scale",
             "Understand how backpropagation works at a high level",
@@ -456,14 +457,14 @@
               "slug": "backprop-chain",
               "title": "Automatic Backpropagation",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/backprop-chain.yaml",
-              "taskOpening": "Two ways to reach the same slope, and the exercise is the comparison between them. The starter declares the variable w at 3.0. (1) Write lossFn so it returns w squared. (2) Fill in gradOf(fn), which differentiates whatever loss function it is handed. It returns the loss the forward pass produced and, beside it, a gradient for every variable that loss touched, filed under the variable's own name. No derivative you worked out yourself appears anywhere in it. (3) Fill in numericGradOf(fn, variable), the estimate this lesson opens with, for one scalar variable at a time. Run fn at the variable's current value, run it again with that variable 0.001 higher, turn the difference into a slope, put the variable back, and return a plain number. The grader reassigns w and calls gradOf again, hands it two loss functions the exercise never shows you, the second over three variables at once, and checks that your two answers for it land within 0.05 of each other. It also counts how many times each of them runs the loss it was given, because that count is the difference between the two methods: the estimate pays a forward pass per variable, and the recorded pass pays one for all of them.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Compare automatic differentiation with a numerical estimate.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
           "recallQuestions": [
             "What does tf.variableGrads() return, and what do you do with the result?",
-            "Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it's correct?"
+            "Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it can approximate a derivative?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -474,7 +475,7 @@
           "slug": "training-loop",
           "title": "The Training Loop",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
-          "sourceSha256": "e2247f43581d8ecc7bb884b1a44f0978c52c227556a0db78221ceba8deb138ec",
+          "sourceSha256": "92a67f19cfa47b882826d5f043f299002ea694fe23f514c00361af83fe4d20ae",
           "objectives": [
             "Implement the complete training loop with model.fit()",
             "Configure epochs, batch size, and validation split",
@@ -490,12 +491,12 @@
               "title": "Stop the Loop When It Stops Learning",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
               "taskOpening": "**Contract revision 2026-09-17b:** Add makeEarlyStopping and use the new observable-trend labels in diagnose. Short histories are valid.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
           "recallQuestions": [
-            "Why use mini-batches of 32 to 512 samples rather than processing the full dataset at once or one sample at a time?"
+            "What tradeoffs determine a useful batch size?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -506,7 +507,7 @@
           "slug": "evaluating-deep-scan",
           "title": "Evaluating DEEP SCAN",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
-          "sourceSha256": "5788c99038294e78fb354b5b0751b2a2fd4bf78f7466d70ae3380fce13a367e3",
+          "sourceSha256": "707e2bf37a343a597f4c03a5e99d3d2692c9e4707c1e45335af454a3ef09730c",
           "objectives": [
             "Evaluate on held-out test data and read the train-vs-test gap",
             "Interpret accuracy, loss, and confusion matrix metrics",
@@ -523,7 +524,7 @@
               "title": "Train DEEP SCAN, Then Read the Gap",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
               "taskOpening": "**Contract revision 2026-09-17b:** diagnose now returns large-gap, low-scores or no-gap-warning. The grader accepts the actual measured score without requiring a healthy model.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -535,7 +536,7 @@
           "decisionTasks": [
             {
               "id": "review-costs",
-              "evidence": "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; explanation review pending",
+              "evidence": "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; rationale is recorded for review, not automatically graded",
               "sourcePath": "apps/web/app/components/mdx/decision-task-data.ts"
             }
           ],
@@ -559,7 +560,7 @@
           "slug": "why-the-browser",
           "title": "Why the Browser?",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
-          "sourceSha256": "d907458ab87497cc4bb6f5acefa69f8daa4369bc56022847d12bbc3d38076bdf",
+          "sourceSha256": "620bcd2f5404a469e2cfbefee60a535bb0392ee8437044c8371278d11427fa16",
           "objectives": [
             "Understand the advantages of browser-based ML inference (privacy, latency, offline)",
             "Identify the constraints of running models in the browser (memory, compute, cold start)",
@@ -575,7 +576,7 @@
               "title": "Evaluate Browser ML Tradeoffs",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
               "taskOpening": "**Contract revision 2026-09-17:** recommendDeployment can now return reconsider for conflicting requirements. Add it to the Recommendation type in saved code.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -591,7 +592,7 @@
           "slug": "tensorflow-js-setup",
           "title": "TensorFlow.js Setup",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
-          "sourceSha256": "448b617ac5d7c0e44dbcea675ccca0d90591903e4cb09c4498e7a41a54b08138",
+          "sourceSha256": "4408d8d07f37bbb6806b80af1e05b53cff80538eed42c1fecc56a451a020c46b",
           "objectives": [
             "Read the setup steps and initialize the supplied TensorFlow.js runtime",
             "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics",
@@ -608,7 +609,7 @@
               "title": "Initialize TensorFlow.js",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
               "taskOpening": "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version, shaped `{ backend, version }`. Read both values off the runtime rather than writing them in as literals: the backend depends on the device the page is open on, and the version on the package installed there. `initTF` also takes an optional preferred backend name. When one is given, ask for it with `tf.setBackend` before you wait; a request is not a fact, so read the backend that is actually running afterwards. The request can fail two ways and neither is fatal: a registered backend that cannot start resolves false, and a name that was never registered throws, because its package was not imported. Either way the runtime settles on whatever works once `ready()` resolves, and that is the name you report.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -624,7 +625,7 @@
           "slug": "model-loading",
           "title": "Model Loading",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
-          "sourceSha256": "dcbda0c33cc247fb6de45f5d7f17db58cbb1cb825fb4e6be38bcad393261466c",
+          "sourceSha256": "23841e2656bc49cb4e1b36fd49a54e5c4655f74f0656762e28d7fc7c318a8555",
           "objectives": [
             "Implement and inspect a TensorFlow.js model-loading call",
             "Understand the model format: model.json manifest + weight .bin shards",
@@ -643,8 +644,8 @@
               "slug": "load-model",
               "title": "Load and Inspect a Model",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-model.yaml",
-              "taskOpening": "Write a function that loads a TensorFlow.js model from a URL and returns an object with the model's input shape, output shape, and total number of layers, shaped `{ inputShape, outputShape, layerCount }`. Load the URL once and read all three fields off the model that one call resolved to. Each load fetches the manifest and every weight shard, so a second load of the same URL is a second download of the whole model; the tests count the calls.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write a function that loads a TensorFlow.js model from a URL and returns an object with the model's input shape, output shape, and total number of layers, shaped `{ inputShape, outputShape, layerCount }`. Load the URL once and read all three fields off the model that one call resolved to. Repeated loads can repeat work even when HTTP caching saves network traffic. Dispose the inspected model after copying its metadata.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -660,7 +661,7 @@
           "slug": "inference-pipeline",
           "title": "Inference Pipeline",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
-          "sourceSha256": "e37b28a64b176b2acfd826a82bd0e311474dbc16a3f6e99c324db4d34a6114c4",
+          "sourceSha256": "5a96dafa1ced3c7a824bd8efe125a85db0c33328bf9c77c8f685d6a93f1c3e12",
           "objectives": [
             "Build a real-time inference pipeline: input → preprocess → predict → display",
             "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks",
@@ -678,8 +679,8 @@
               "slug": "inference-pipeline",
               "title": "Build an Inference Pipeline",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/inference-pipeline.yaml",
-              "taskOpening": "Write a classify function that takes a model and one raw signal reading (amplitude, frequency, phase). Normalize each feature to [0, 1] using the RANGES constant, then hand the model one row of three features in the order RANGES declares them. Run model.predict() inside tf.tidy(), so the live tensor count is the same after classify returns as it was before it ran. Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. Confidence belongs to the verdict you returned, so report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write a classify function that takes a model and one raw signal reading (amplitude, frequency, phase). Normalize each feature to [0, 1] using the RANGES constant, then hand the model one row of three features in the order RANGES declares them. Run model.predict() inside tf.tidy(), so the live tensor count is the same after classify returns as it was before it ran. Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. The confidence field is the chosen class score, not a calibrated reliability estimate. Report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
@@ -687,7 +688,7 @@
               "title": "Incident: numTensors Climbing at 03:10",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/incident-tensor-leak.yaml",
               "taskOpening": "PAGER: the dashboard's tensor count has risen since the 01:00 deploy. Estimate capacity while the crew investigates the cause. Growth may come from initialization, caching or a leak; these snapshots do not identify which.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -704,7 +705,7 @@
           "slug": "onnx-runtime-web",
           "title": "ONNX Runtime Web",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
-          "sourceSha256": "4d077365375a547af7a4587728291cd0e188cd5e2fc9394c34d680032dd4488f",
+          "sourceSha256": "d836c0ffb0a78c366258747cde3acff0801225910140ad7bb6b7dc54070f6be3",
           "objectives": [
             "Explain ONNX model interchange and runtime compatibility limits",
             "Implement the input and awaited-output contract for an ONNX session",
@@ -712,23 +713,23 @@
             "Explain why backend selection requires measurements on the target device"
           ],
           "explanationSections": [
-            "The Universal Model Format",
-            "TF.js vs ONNX Runtime: Head-to-Head",
-            "When to Choose Which"
+            "Load the Same Weights",
+            "Measure a Defined Workload",
+            "Run the Real Lab"
           ],
           "practice": [
             {
               "slug": "onnx-comparison",
-              "title": "Benchmark TF.js Against ONNX Runtime",
+              "title": "Compare Runtime Outputs and Timing",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/onnx-comparison.yaml",
-              "taskOpening": "Build `compareRuntimes(model, modelPath, signal)`. `model` is the DEEP SCAN classifier already loaded in TF.js, `modelPath` is the same network exported to ONNX, and `signal` is three normalized numbers. Send that one signal through both runtimes as a [1, 3] float32 input, in the order you were handed it, and return `{ tfjsMs, onnxMs, outputsAgree, pick }`. Time the inference call on each side, not the loading. Pin the ONNX session to the WASM execution provider, the way the lesson's benchmark pins both sides: change the runtime and the backend at once and you have measured the backend. `outputsAgree` is true when the two values the runtimes handed back differ by at most 0.0001, and both numbers have to be the ones they returned rather than ones you worked out. `pick` is where to start looking, read off `model.countParams()`: 'wasm' under a million parameters, 'gpu' at a million or more, before any benchmark has been run. Read the clock with `performance.now()` on both sides. The harness clock is too coarse to say how long a call really took, so the tests check that each timing is the gap between two readings rather than grading the duration itself.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Build `compareRuntimes(model, modelPath, signal)`. Return `{ tfjsMs, onnxMs, outputsAgree }` after sending the same three numbers through both runtimes as a [1, 3] float32 input. The TFJS model is already loaded; create the ONNX session with `executionProviders: ['wasm']`. Exclude loading from inference timings. Read `performance.now()` before inference and after awaiting its output. `outputsAgree` is true when the actual returned scores differ by at most 0.0001. Dispose your TFJS input and prediction, and release the ONNX session after use, including on failure. The supplied model belongs to the caller. This exercise uses an ONNX stand-in and a controlled clock: a single timed call does not choose a backend. Use the real lab for repeated measurements on a target device.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
           "recallQuestions": [
-            "The 673-parameter classifier runs faster on WASM than on WebGL. Does that make WASM the faster backend?",
-            "ONNX is marketed as 'train anywhere, run anywhere'. What is the real constraint that limits that guarantee?"
+            "A small classifier runs faster on WASM on your laptop. What can you conclude?",
+            "An ONNX export succeeded. What remains to check before shipping it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -739,7 +740,7 @@
           "slug": "transformers-js",
           "title": "Transformers.js for Pretrained Models",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
-          "sourceSha256": "72d25dd6921017e328ff6785c47e4c614d0a7d62ce67b35100aadf909c5ab66f",
+          "sourceSha256": "7c5aa8d742214c6dfddc164f4debc12d3f6d98a1ca0a7154b8b212dcf85e26fa",
           "objectives": [
             "Understand when to reach for Transformers.js vs TFJS or ONNX Runtime",
             "Implement the task, loading and output contract around `pipeline()`",
@@ -750,7 +751,7 @@
             "Three Browser ML Runtimes, Three Jobs",
             "Pipeline in Ten Lines",
             "Tasks the Pipeline Handles Out of the Box",
-            "When NOT to Use Transformers.js"
+            "Check the Model Against the Task"
           ],
           "practice": [
             {
@@ -758,7 +759,7 @@
               "title": "Sentiment Classifier via Transformers.js",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
               "taskOpening": "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -788,7 +789,7 @@
           "slug": "time-vs-frequency",
           "title": "Time vs Frequency",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
-          "sourceSha256": "4121b78c94e248374cbd82c5ff34e1e37bd8fddeca2be90aab7294f551c28177",
+          "sourceSha256": "87c95eae44476b2e434e449a2de2f0de2172228b06e00f5def878d39275c66bc",
           "objectives": [
             "Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious",
             "Identify what each domain reveals: time shows when things happen, frequency shows what repeats",
@@ -804,7 +805,7 @@
               "title": "Find the Hidden Tone",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
               "taskOpening": "The lesson claims a tone too weak to see in the time view is a clear peak in the frequency view. Make that claim executable on raw samples. compareViews(baseline, suspect, tolerance, threshold) receives two captures, and nothing is precomputed for you: transform BOTH of them yourself with tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync(), which is the call the lesson prints above the challenge (lesson 2 explains what it does).",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -820,7 +821,7 @@
           "slug": "fourier-transform",
           "title": "Fourier Transform",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
-          "sourceSha256": "3621e3efc5c36e152f816486cb37b145755756fbf28ade6351af2edc862c0d02",
+          "sourceSha256": "50ac89b3b200bca9d4a7927553f172406d14c4a609e9a130a82405980e84cc4b",
           "objectives": [
             "Understand the Fourier Transform as signal decomposition into frequency components",
             "Compute the FFT of a signal using TensorFlow.js spectral operations",
@@ -836,8 +837,8 @@
               "slug": "compute-fft",
               "title": "Compute FFT and Find Dominant Frequency",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
-              "taskOpening": "Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. For an isolated off-bin tone, the winning bin often lies near the tone. Phase, leakage, neighboring components and boundary bins can change the winner; nearest-bin rounding is not the algorithm. Use the computed magnitudes.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. For an isolated off-bin tone, the winning bin often lies near the tone. Phase, leakage, neighboring components and boundary bins can change the winner; nearest-bin rounding is not the algorithm. Use the computed magnitudes. Assume finite input with at least two samples and a positive sample rate. Break equal-magnitude ties by keeping the lowest eligible bin.\n",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -853,7 +854,7 @@
           "slug": "spectrograms",
           "title": "Spectrograms",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
-          "sourceSha256": "c9d08057dc667b7f7528c81a46b8655e8ab5a1113f98c59baaeb487adfa46f5a",
+          "sourceSha256": "6d93b6b5111307dbbf3e43ee6a422665b688adeb540218ad9643adcd333eb856",
           "objectives": [
             "Understand spectrograms as time-frequency representations of signals",
             "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)",
@@ -870,8 +871,8 @@
               "slug": "build-spectrogram",
               "title": "Build a Spectrogram",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
-              "taskOpening": "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match. Assume integer windowSize >= 2 and hopSize >= 1. Return an empty array when no complete window fits.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -887,7 +888,7 @@
           "slug": "fft-as-features",
           "title": "FFT as Features",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
-          "sourceSha256": "92a085b48d6b6434f417b04142c37ff1ecbfef9a48ff1214e548b773bbe70e38",
+          "sourceSha256": "36d2a0a8891fa9c93f2d485afd512922a446782e824dad0492e7a95af5efeab8",
           "objectives": [
             "Understand feature engineering as deriving useful model inputs from raw data",
             "Convert a hertz band into fixed FFT bins and use their magnitudes as model features",
@@ -904,13 +905,13 @@
               "slug": "fft-features",
               "title": "Extract Fixed-Bin FFT Features",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
-              "taskOpening": "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function.\nHere a crossing means strictly opposite signs on adjacent samples: one positive and one negative. A pair containing an exact zero contributes nothing. Other conventions exist; this exercise uses that one consistently.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function.\nAssume finite, nonempty captures, a positive sample rate and 0 <= loHz <= hiHz <= sampleRate / 2.\nHere a crossing means strictly opposite signs on adjacent samples: one positive and one negative. A pair containing an exact zero contributes nothing. Other conventions exist; this exercise uses that one consistently.\n",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
           "recallQuestions": [
-            "The FFT computes nothing the samples did not already hold. Why does feeding its magnitudes to the model still raise accuracy?"
+            "The FFT computes nothing the samples did not already hold. Why might feeding its magnitudes help a model that previously saw only three summary features?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -921,7 +922,7 @@
           "slug": "windowing-and-overlap",
           "title": "Windowing & Overlap",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
-          "sourceSha256": "68677bd78d5e0b4a0460789260d4016fb834e9533df70ea95b88dbf5d9c69728",
+          "sourceSha256": "0caf25fa2b16037b0b79ba4bf4519b57a32e26f727ecdfbde9306a7ccb1a64ce",
           "objectives": [
             "Explain how cutting a finite signal spreads a tone across FFT bins",
             "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT",
@@ -939,7 +940,7 @@
               "title": "Build and Apply a Hann Window",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
               "taskOpening": "Build `hannWindow(n)` returning a JS number array of n weights, one per sample of the slice: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))) for i = 0 to n-1. Plain JS (Array.from + Math.cos) or tensors, your choice; the grader checks the returned numbers, not how you produced them. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map). The grader runs your two functions on a tone that does not fit its window. It takes the FFT of both the raw and the windowed slice. For the two fixtures below, the sum of magnitudes more than three bins from the rounded tone bin drops by more than 20x. This statistic measures far-bin magnitude, not energy. The drop is fixture-specific; a taper also broadens the main lobe. Assume integer n >= 2 and signal/window arrays of equal length.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -970,7 +971,7 @@
           "slug": "sequences-matter",
           "title": "Sequences Matter",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
-          "sourceSha256": "508be8c686436d9d3e6a94f6b0423bf66689975d4d197e4b3d57c40ba6a36c4f",
+          "sourceSha256": "a3e2d97d6ca7e6488cf668082d37aa8332f2f70bc3d24744d0a5c38f34b54f6d",
           "objectives": [
             "Understand why order matters in sequential data: shuffling destroys information",
             "Recognize why scoring one reading at a time hides temporal patterns",
@@ -985,8 +986,8 @@
               "slug": "create-sequences",
               "title": "Window a Stream for Prediction",
               "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
-              "taskOpening": "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors. Assume positive integer windowSize and stride and equal-width, finite feature rows. The caller owns any returned tensors and must dispose them.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1002,7 +1003,7 @@
           "slug": "simple-rnns",
           "title": "Simple RNNs",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
-          "sourceSha256": "4aa4170021b59274d25923b526f238a5a6006ac5fc6ed8b3227d5f901c6cc7e5",
+          "sourceSha256": "d05accf6d9e2d382c1afc4b5cdc5c4f7134b13bc33944d2496ea2025b836fc63",
           "objectives": [
             "Understand the RNN as a learned reducer: (prevState, input) → newState",
             "Build a simple RNN using TensorFlow.js layers API",
@@ -1019,8 +1020,8 @@
               "slug": "build-rnn",
               "title": "Carry the Hidden State",
               "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-rnn.yaml",
-              "taskOpening": "Three functions: the second checks the first, and the third prices what the first carries.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement three functions:",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1036,7 +1037,7 @@
           "slug": "lstm-gates",
           "title": "LSTM Gates",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
-          "sourceSha256": "cc7b51e899e609bf511f8542b475e7ed73b079bebc62e1e81d67d6db851f8979",
+          "sourceSha256": "32494a4fb08e558a59ac4de65c96f59e0514b09d2d9b445529b9855f79cc1619",
           "objectives": [
             "Understand the three LSTM gates: forget (discard), input (add), output (expose)",
             "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into",
@@ -1054,7 +1055,7 @@
               "title": "One LSTM Step by Hand",
               "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/build-lstm.yaml",
               "taskOpening": "First the arithmetic, then the layer it belongs to.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1071,7 +1072,7 @@
           "slug": "sliding-windows",
           "title": "Sliding Windows",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
-          "sourceSha256": "825006fe8f3c2756188595fc900deba7adf1da903690ce793460364e5b8723f4",
+          "sourceSha256": "4bac9e0fa599a688aa15672f35d53bf5430daef283386e218944e3d89642dc61",
           "objectives": [
             "Convert continuous signal streams into fixed-size overlapping windows",
             "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces",
@@ -1090,7 +1091,7 @@
               "title": "Split First, Then Window",
               "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/sliding-window.yaml",
               "taskOpening": "The mirror in this lesson scored 97.4 because the stream was windowed before it was split. Build the honest version. `splitThenWindow(series, labels, windowSize, splitAt)` cuts the stream at index splitAt (the first reading that belongs to evaluation), THEN windows each side with stride 1. A window covers readings [i, i + windowSize) and takes the label of its last reading, labels[i + windowSize - 1]. Windows that straddle the boundary belong to neither side and are dropped. Return { train: { xs, ys }, eval: { xs, ys } }. The grader feeds a series whose values are their own indices, so any reading that leaks across the boundary shows up as a number on the wrong side.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1107,7 +1108,7 @@
           "slug": "sequence-prediction",
           "title": "Sequence Prediction",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
-          "sourceSha256": "88981e218821c756666510dc9a4dd079f6ac241d19683154a5a1a136b216a547",
+          "sourceSha256": "4784988c7b41e34d96283d37d55e06d0e4b9e7bbd0ac2328df50157a5557274c",
           "objectives": [
             "Train an LSTM for next-value prediction on time-series data",
             "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric",
@@ -1123,8 +1124,8 @@
               "slug": "predict-next",
               "title": "Train It, Then Roll It Forward",
               "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/predict-next.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** trainForecaster accepts an optional fourth argument providedModel, a compiled model used for controlled fit checks.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Train a forecaster, then roll its predictions forward.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
@@ -1156,12 +1157,12 @@
           "slug": "normal-vs-anomalous",
           "title": "Normal vs Anomalous",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
-          "sourceSha256": "9a6ce1d675288052f8ade136974aa3cc94d699a057265c46023f6b974cff05ec",
+          "sourceSha256": "bcc094e7a50a56bcae2c6ec5178f03132277c1bfdc9766da8460c29b5256926d",
           "objectives": [
             "Understand anomaly detection as modeling normality rather than cataloging every possible anomaly",
             "Compute a baseline mean and standard deviation from known-good readings",
-            "Flag readings with a z-score gate, and recompute the baseline when the world underneath it moves",
-            "Recognize the precision and recall tradeoff a threshold sets, and why no single cutoff satisfies both"
+            "Flag readings with a z-score gate and evaluate a new baseline when conditions change",
+            "Compare false alarms and misses when normal and anomalous scores overlap"
           ],
           "explanationSections": [
             "Modeling Normality",
@@ -1173,15 +1174,15 @@
               "title": "Detect Anomalies with Z-Score",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/detect-anomaly.yaml",
               "taskOpening": "Write `isAnomaly(value, mean, std)` that returns true when the reading sits more than 3 standard deviations from the mean, in either direction. The baseline is not fixed: `mean` and `std` arrive as arguments and change from one call to the next, so the allowed distance has to be computed from them on every call. Both routes are graded the same, the tensor one (`tf.scalar`, then `.dataSync()[0]` to read the number back out) and plain arithmetic. Inputs must be finite and std must be nonnegative; reject invalid inputs. If std is zero, compare value with mean directly: equality is normal and any difference is flagged under this exercise's exact-reading policy. No z-score exists in that case. Real sensors need an explicitly chosen measurement tolerance.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             },
             {
               "slug": "incident-baseline-drift",
               "title": "Incident: Baseline Distribution Drifted",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-baseline-drift.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** Rename promisedPerDay to expectedPerDay. Replace roll-forward with evaluate-candidate and investigate with investigate-spread. Choose the action from the unrounded flag fraction.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement auditBaseline(recentNormalData, currentBaseline, readingsPerDay). The recent readings have been reviewed and labeled normal. The array is non-empty and has positive population standard deviation; currentBaseline has { mean, std } with std > 0. Daily volume is positive.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1197,11 +1198,11 @@
           "slug": "autoencoders",
           "title": "Autoencoders",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
-          "sourceSha256": "cf74b26c32df3c1fb90f4ec80623e97649f8068e0649fca65a26cf204f13f300",
+          "sourceSha256": "986cd930901d4a3310442d043a85ffe68b1ba5149d5a6a6bb02c3faba16e24f0",
           "objectives": [
             "Understand the autoencoder architecture: encoder → bottleneck → decoder",
             "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself",
-            "See what a contaminated training set costs: the grader runs the same code on unscreened rows and puts the two detectors side by side",
+            "Verify which rows reach fitting and measure held-out reconstruction errors without assuming a separation ratio",
             "Explain why reconstruction error can miss an anomaly or flag a normal input"
           ],
           "explanationSections": [
@@ -1213,8 +1214,8 @@
               "slug": "build-autoencoder",
               "title": "Train an Autoencoder on Normal Data Only",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/build-autoencoder.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** trainNormalityModel accepts an optional compiled providedModel for controlled fitting checks.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement trainNormalityModel(archive, flagged, providedModel?). The archive\ncontains finite eight-feature rows; flagged has one boolean per row. Keep\nunflagged rows and fit them against themselves as reconstruction targets.\nReject an empty selection or mismatched flag count before allocating a model.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1230,12 +1231,12 @@
           "slug": "reconstruction-error",
           "title": "Reconstruction Error",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
-          "sourceSha256": "c3b9f09adf2d03465069344fd3a88e153a9b5597c93e71012824ad0e4608996d",
+          "sourceSha256": "7a098895f692c6ca7758b2670c12ea2330419a2b28f5e4686fed3151acb1df30",
           "objectives": [
             "Compute reconstruction error as the difference between input and autoencoder output",
             "Use MSE (mean squared error) as the anomaly score for each sample",
             "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak",
-            "Rank each feature's error against that feature's own normal error to find which dimension carries the anomaly"
+            "Compare raw and baseline-relative per-feature errors without treating either as a diagnosis"
           ],
           "explanationSections": [
             "Measuring the Diff",
@@ -1248,15 +1249,15 @@
               "title": "Compute Reconstruction Error",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/reconstruction-error.yaml",
               "taskOpening": "Write a function that takes an autoencoder model and an input array, runs the input through the model, and returns the mean squared error between the input and the reconstruction. The model takes a batch, so one reading goes in as a single row and comes back as a single row. Release the tensors you allocate: the last test warms your function up, then calls it on a reading it has not scored before and checks that the live tensor count did not grow.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
               "slug": "incident-missed-anomaly",
               "title": "Incident: True Anomaly Slipped Through",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-missed-anomaly.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** Rename suspiciouslyLowFeatures to lowErrorFeatures and remove requiresRetrain. The function reports measurements; they do not determine a retraining decision.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "A human confirmed that a missed reading was anomalous. Compare its reconstruction with per-feature normal errors to prepare an investigation.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1272,9 +1273,9 @@
           "slug": "threshold-tuning",
           "title": "Threshold Tuning",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
-          "sourceSha256": "17a2867af40e2695d42da4ee5703cb316f667b60613bc3bc354cfad053a77fd2",
+          "sourceSha256": "b214139e8fe20d25506b9a188cd069f3f5c0aeddf4919444a6b7daaae6bbd364",
           "objectives": [
-            "Read a percentile as a false-alarm rate, and multiply it by the reading volume to get the alert count a human sees",
+            "Estimate a false-alarm fraction from reviewed normal data and project alert volume under stated assumptions",
             "Understand the precision-recall tradeoff and how threshold affects each",
             "Compare F1 maximization with an explicit false-alarm and miss cost",
             "Choose an investigation priority from an alert-storm runbook without treating it as a confirmed cause"
@@ -1290,15 +1291,15 @@
               "title": "Sweep Candidate Thresholds for the Best F1",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/find-threshold.yaml",
               "taskOpening": "Given equally sized arrays of finite reconstruction errors and boolean labels\n(true = anomaly), choose from a non-empty array of candidate thresholds.\nReturn `{ threshold, f1 }` for a candidate with the highest F1 on this\nvalidation slice. Any maximizing candidate is acceptable when scores tie.\nIf no candidate has a positive F1, return one of the supplied candidates\nwith an F1 of zero.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
               "slug": "incident-false-alarm-storm",
               "title": "Incident: False Alarm Storm",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/incident-false-alarm-storm.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** Replace cause with nextCheck and use the follow-up actions listed below. Return null for ratio when the baseline rate is zero.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) as a triage helper. currentAlerts.alertsPerHour and baselineAlerts.alertsPerHour are nonnegative rates; baselineAlerts.modelAge is days; sensorAuditLog.recentChanges is an array of logged changes.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
@@ -1310,7 +1311,7 @@
           "decisionTasks": [
             {
               "id": "rule-or-model",
-              "evidence": "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; explanation review pending",
+              "evidence": "Choice/calculation checks plus recorded rationale, help, reported time and attempt history; rationale is recorded for review, not automatically graded",
               "sourcePath": "apps/web/app/components/mdx/decision-task-data.ts"
             }
           ],
@@ -1322,9 +1323,9 @@
           "slug": "the-anomaly",
           "title": "The Anomaly",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
-          "sourceSha256": "a5aaafe05dcfcc022d1a4ddd7978d74f10369e696a1a36b1bdd0607e2b0d3fd8",
+          "sourceSha256": "3e852c089002a4e539840a4a2e7a9180cee562bec8b03fe5cc912e28c4635e7c",
           "objectives": [
-            "Combine several detection methods into an ensemble so one detector's blind spot cannot decide the verdict",
+            "Combine detectors with a majority rule and explain how shared blind spots can still cause a miss",
             "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it",
             "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check",
             "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"
@@ -1338,8 +1339,8 @@
               "slug": "ensemble-detector",
               "title": "Build the DEEP SCAN Ensemble",
               "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/exercises/ensemble-detector.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** A constant window uses an explicit equality check. A different reading contributes a statistical vote. Return null for zScore when the window is constant.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. A reading pegged at the sensor's 1.00 ceiling scores 3.2 sigma against eleven days of archive and 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's scores for the latest reading come in beside it. Compute all three verdicts yourself.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1372,7 +1373,7 @@
           "slug": "beyond-lstm",
           "title": "Beyond LSTM",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
-          "sourceSha256": "84ac34a3f90d01c0e24deedc829fd5e04ae78184bcb6c98b9b28a568b2700d6b",
+          "sourceSha256": "eeb60a6848e65263ccaddb61997ed31ab6750d50eab5677464f1aa239a862ba8",
           "objectives": [
             "Understand attention as dynamic relevance scoring: focusing on what matters",
             "Learn the Query-Key-Value framework for computing attention weights",
@@ -1388,8 +1389,8 @@
               "slug": "simple-attention",
               "title": "Simple Attention Over RNN Hidden States",
               "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/simple-attention.yaml",
-              "taskOpening": "Build `simpleAttention(query, keys, values)`. `query` is a rank-1 [d] vector: what this step is looking for. `keys` is [T, d], one key per time step, and a key exists only to be scored against the query. `values` is [T, dv], what a step hands over once it is selected, and dv does not have to equal d. Score every key against the query, softmax the scores into weights over the steps, then return the weighted sum of the VALUES as a rank-1 [dv] vector. Score with the raw dot product: no scaling. A production head divides the scores by the square root of the key width before the softmax, and this one does not, so the tests are pinned to the unscaled scores. Shape trap, called out up front: tf.matMul needs rank-2 inputs, and your query arrives rank-1, so reshape it to [1, d] on the way in and squeeze([0]) the [1, dv] result back to [dv] on the way out. Second trap: scoring a [1, d] query against [T, d] keys needs the keys transposed, because d has to face d. tf.matMul takes two booleans after the two tensors, transposeA and transposeB, and each transposes its own tensor before the multiply, so tf.matMul(q, k, false, true) does the same job as tf.matMul(q, k.transpose()) without building the transposed copy.\nRemove only the batch axis. A value width of one must still return shape [1], not a scalar. The sequence is non-empty; for a single time step its position is 0.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement simpleAttention(query, keys, values). query has shape [d], keys\n[T, d], and values [T, dv]. T, d and dv are positive; inputs are finite.\nScore each key with the raw dot product against the query, apply softmax\nover T, and return the weighted sum of values as a tensor shaped [dv].\nDo not divide scores by sqrt(d) in this unscaled exercise.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1405,7 +1406,7 @@
           "slug": "temporal-attention",
           "title": "Temporal Attention",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
-          "sourceSha256": "9204b1c1f63398451dd15d0e48c67facf7d8efe8cbb8a4d505999c3fdd83eeb0",
+          "sourceSha256": "8c2d63b4a09a01299d36f9a1eabdfed6a09d58cbbf3263ee4ce5c40fc6bf95c4",
           "objectives": [
             "Apply attention specifically to the temporal dimension of sequential data",
             "Read the weights back as one number per time step and name the steps that took the most of the budget",
@@ -1423,8 +1424,8 @@
               "slug": "temporal-attention",
               "title": "Temporal Attention Over a Window",
               "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/temporal-attention.yaml",
-              "taskOpening": "Build `temporalAttention(sequence, scorerWeights)`. `sequence` is a [T, d] tensor of readings; `scorerWeights` is a [d + 1, 1] linear scorer whose last row weights position. Concatenate a position column onto the readings, evenly spaced from 0 at the first step to 1 at the last. Score every step with one matMul, then softmax those scores into `weights`, a [T] tensor holding one weight per step. Pool the ORIGINAL readings under those weights into a [d] `summary`, and return `{ summary, weights }` with both still tensors. Skip the position column and the scorer's shape will not line up.\nRemove only the batch axis. A value width of one must still return shape [1], not a scalar. The sequence is non-empty; for a single time step its position is 0.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Build `temporalAttention(sequence, scorerWeights)`. `sequence` is a [T, d] tensor of readings; `scorerWeights` is a [d + 1, 1] linear scorer whose last row weights position. Concatenate a position column onto the readings, evenly spaced from 0 at the first step to 1 at the last. Score every step with one matMul, then softmax those scores into `weights`, a [T] tensor holding one weight per step. Pool the ORIGINAL readings under those weights into a [d] `summary`, and return `{ summary, weights }` with both still tensors. Skip the position column and the scorer's shape will not line up.\nRemove only the batch axis. A value width of one must still return shape [1], not a scalar. The sequence is non-empty; for a single time step its position is 0. Free intermediates with tf.tidy, preserving caller-owned inputs and both returned tensors.\n",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1440,7 +1441,7 @@
           "slug": "forecasting",
           "title": "Forecasting",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
-          "sourceSha256": "56127b5f4488d3d2f01925506c41b9b6a0db7a1d901158fbae35ea008f74221a",
+          "sourceSha256": "bc3e38356123cf1f170c8d1b40d6be9e164a74eb781195bbc9068ec42ac2e7df",
           "objectives": [
             "Train a one-step model and roll it forward into a multi-step forecast",
             "Understand non-stationarity, when past patterns stop predicting the future",
@@ -1449,15 +1450,15 @@
           "explanationSections": [
             "Multi-Step Forecasting",
             "Non-Stationarity: When Predictions Fail",
-            "What Compounding Looks Like When It Shows"
+            "A Reproducible Feedback Example"
           ],
           "practice": [
             {
               "slug": "forecast-signal",
               "title": "Roll Forward, Then Replay One Step at a Time",
               "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/forecast-signal.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** forecastTwoWays accepts an optional sixth argument providedModel, a compiled model for controlled fitting and rollout checks.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel?).\ntrainX is [windows, windowSize, 1], trainY is [windows, 1]. past contains at\nleast windowSize finite readings, oldest first. arrived contains the later\nreadings against which both forecasts will be compared.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
@@ -1474,7 +1475,7 @@
           "slug": "kalman-filters",
           "title": "Kalman Filters",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
-          "sourceSha256": "9af6b4896430ef6905e71a4bddcd6d817e6fcdcade924447766150cea89cd16d",
+          "sourceSha256": "515fa5f8f48ff4757c1d99aeaef612ddfa6c6c869a3402f27b75b77374a44cb8",
           "objectives": [
             "Understand the Kalman filter as a predict-correct loop for state estimation",
             "Implement a 1D Kalman filter that smooths a noisy timing signal",
@@ -1489,14 +1490,14 @@
               "slug": "kalman-filter",
               "title": "Implement a Kalman Filter",
               "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/kalman-filter.yaml",
-              "taskOpening": "Implement a simple 1D Kalman filter. The constructor is written for you, including the starting variance of 1. Write `update(measurement)`: one predict-correct step, returning the new estimate. Two fields carry state between calls and the tests read both, `this.estimate` and `this.variance`, so a correction has to write both. The weight the correction puts on the new measurement is not a constant you pick: it is built from the variance the filter is carrying when that measurement arrives, along with the two noise parameters, and the lesson's derivation drawer works out which value it has to be. Because it is rebuilt on every call it changes step to step, so an EMA with one fixed alpha fails the arithmetic tests. One test runs your filter across the falling pulse-interval log from the lesson and reads the gap between the final estimate and the final reading. A filter whose state is one number, with no term for change, trails a drifting signal instead of tracking it, and the test checks that your estimate lands on the trailing side.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement update(measurement) in SimpleKalman. Predict with a random-walk\nstate model, compute the Kalman gain, correct this.estimate and this.variance,\nand return the corrected estimate as a number. The constructor starts\nvariance at 1. processNoise and measureNoise are variances, not standard\ndeviations. Assume finite inputs, processNoise >= 0 and measureNoise > 0.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
           "recallQuestions": [
             "What does the Kalman gain control, and what happens when it is near 0 versus near 1?",
-            "You run this filter over eight readings that fall steadily, and its estimate ends up 0.44 above the last one. What in the filter's design put it there?"
+            "You run this filter over eight readings that fall steadily, and its estimate ends up 0.43 above the last one. What in the filter's design put it there?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -1507,11 +1508,11 @@
           "slug": "time-series-ensemble-methods",
           "title": "Ensemble Methods",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
-          "sourceSha256": "ae7e3a275cf885c0dd6b37e45f11b2e170776bf00234c0c71764311e199797c0",
+          "sourceSha256": "d1fd9e8dc01e525d6d177277f35d8e19f1d52a624987f813718d5f928599bd86",
           "objectives": [
             "Blend members two ways: equal shares, and shares weighted by each member's validation score",
             "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places",
-            "Read stacking as the trained version of the same blend, where a meta-model learns the shares instead of a formula setting them",
+            "Train a stacking model on predictions from rows the base models did not fit, then evaluate on another period",
             "Score an ensemble against its best single member, not against the average member"
           ],
           "explanationSections": [
@@ -1524,7 +1525,7 @@
               "title": "Ensemble Gain Over the Best Member",
               "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/exercises/weighted-ensemble.yaml",
               "taskOpening": "Write `ensembleGain(members, actual)` and report whether the ensemble was worth running.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1559,7 +1560,7 @@
           "slug": "llms-for-science",
           "title": "LLMs for Science",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
-          "sourceSha256": "15cc97ce786a5b1009312c50d29155258c9bc51f17d8531a54206a9684a51d6b",
+          "sourceSha256": "27da2956e1524c8f536121982d7885c64c983735a475f5158e42fd487b62b244",
           "objectives": [
             "Understand LLMs as augmentation tools for structured analysis",
             "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on",
@@ -1576,13 +1577,13 @@
               "slug": "llm-client",
               "title": "Read the Model's Reply",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/llm-client.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** Saved code must validate the allowed classes, a finite numeric confidence in [0, 1], and non-empty reasoning. Presence alone is insufficient.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write analyzeSignal(prompt, apiCall). Call the API once with the supplied prompt. Extract and parse its JSON object, then validate the parsed fields before returning it. Throw on invalid JSON or an invalid field.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
           "recallQuestions": [
-            "What workflow makes LLM-assisted analysis safe for factual output?"
+            "What workflow reduces errors in LLM-assisted factual output?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -1593,7 +1594,7 @@
           "slug": "prompt-engineering",
           "title": "Prompt Engineering",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
-          "sourceSha256": "d4d1a99f6e551535a60b4640e1f781215647559faa9e7ad268bc4bb56c043a9b",
+          "sourceSha256": "7326aa029b84fb739a6e0a1de87f9ef90e6d2d4e11a7b4c1e6f5367df3f15a25",
           "objectives": [
             "Structure prompts with role, context, data, and format instructions",
             "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review",
@@ -1606,7 +1607,7 @@
             "Context",
             "Signal Data",
             "Task",
-            "Output Format (JSON)"
+            "Output Format (example JSON)"
           ],
           "practice": [
             {
@@ -1614,7 +1615,7 @@
               "title": "Build a Prompt Template",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/prompt-template.yaml",
               "taskOpening": "Build a multi-line prompt from signal.amplitude, signal.frequency and signal.phase. Keep these four sections in order:",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
@@ -1630,10 +1631,10 @@
           "slug": "rag-for-signals",
           "title": "RAG for Signals",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
-          "sourceSha256": "996d4739f4d2251892aa04fcd71527f8cb1d61d3f4eb72acfd4cc1dd20dde9b4",
+          "sourceSha256": "4394544808e94a607d6030b6aad528dd13b2880b81a1704b8b8b6fbf6bed88b3",
           "objectives": [
             "Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response",
-            "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any",
+            "Build a signal retrieval step from text and metadata matching, with a row cap, that reports how many rows matched before the cap and whether the cap dropped any",
             "Check structured claims against cited fields and units, and explain why free-text answers still need review",
             "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"
           ],
@@ -1647,7 +1648,7 @@
               "title": "Retrieve the Rows the Prompt Will Carry",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
               "taskOpening": "Retrieval decides what the model is allowed to know. Write\n`retrieveSignals(query, db, now)`: the step that picks the rows and counts\nwhat it left behind.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
@@ -1655,7 +1656,7 @@
               "title": "Check Claims Against Their Sources",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/rag-pipeline.yaml",
               "taskOpening": "Check structured claims against the exact records they cite. Matching a\nnumber anywhere in the evidence does not establish its meaning.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
@@ -1671,7 +1672,7 @@
           "slug": "report-generation",
           "title": "Report Generation",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
-          "sourceSha256": "cb45d1f895eb406e5b2bfae0274fe2d54ec62b6a989e7af14a9578e1f22fbf2a",
+          "sourceSha256": "77182bff0984960535db0d538fa17245036666c7df6333bbc5af92edd209ac50",
           "objectives": [
             "Structure report generation as section-by-section assembly rather than monolithic generation",
             "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships",
@@ -1689,8 +1690,8 @@
               "slug": "generate-report",
               "title": "Assemble a Report, Cut What Failed",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/generate-report.yaml",
-              "taskOpening": "Each generated section arrives with the validator's verdict attached: `{ heading, content, validated }`. Write `assembleReport(title, sections)`. Validated sections ship in order as markdown blocks ('## ' heading, blank line, content), joined by a '---' rule padded with blank lines, under '# ' title. Sections that failed validation do not ship their content at all; instead, when at least one was withheld, the document ends with one more block, '## Withheld', listing each withheld heading as a '- ' bullet. A report with nothing withheld carries no Withheld section. This is the cut Farah made at twenty-two minutes, written as a rule: Earth gets what the crew can stand behind, and an honest gap where the guess was.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Each generated section arrives with the reviewer's decision attached: `{ heading, content, validated }`. Write `assembleReport(title, sections)`. Validated sections ship in order as markdown blocks ('## ' heading, blank line, content), joined by a '---' rule padded with blank lines, under '# ' title. Sections that failed validation do not ship their content at all; instead, when at least one was withheld, the document ends with one more block, '## Withheld', listing each withheld heading as a '- ' bullet. A report with nothing withheld carries no Withheld section. The exercise applies the withholding policy: Earth gets what the crew can stand behind, and an honest gap where the guess was.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1706,7 +1707,7 @@
           "slug": "multi-model-systems",
           "title": "Multi-Model Systems",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
-          "sourceSha256": "5328317bdc8f65b1d84313ed0952be189f18e5699748f4e5a4c062aba007a56e",
+          "sourceSha256": "aa3e6bb99c1eabbb8d6cb37651c7b0b3c5ca10cc93e5ff6550ade036603b7b38",
           "objectives": [
             "Design a multi-model pipeline with clear interfaces between stages",
             "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them",
@@ -1722,8 +1723,8 @@
               "slug": "model-pipeline",
               "title": "Wire a Model Pipeline",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/model-pipeline.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** Saved code must reject a non-boolean detector result and an empty or non-string alert.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement `classifierStage(model)` and `pipeline(signal, classify, detectAnomaly, generateAlert)`.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1758,7 +1759,7 @@
           "slug": "model-profiling",
           "title": "Model Profiling",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
-          "sourceSha256": "52972f1196729aea175a59b0dea26f4fb8c0ceda1ee485dd92e7bdfbb740335a",
+          "sourceSha256": "6671bd03ba20ec31ed1129234c1a2226e05257aa8b00951922fb009f4ef92d72",
           "objectives": [
             "Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates",
             "Benchmark inference latency with high-resolution timing, mean and tail",
@@ -1773,8 +1774,8 @@
               "slug": "profile-model",
               "title": "Profile a Model",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/profile-model.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** profileModel accepts an optional fourth argument now, a clock function defaulting to performance.now. Use that clock for timing.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Implement profileModel(model, createInput, runs, now = () => performance.now()).\nruns must be a positive integer. Return parameterCount from countParams(),\nmemorySizeMB as parameterCount * 4 / 1e6, and one { name, params } row per\nmodel.layers entry in layerBreakdown, including zero-parameter layers.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1790,12 +1791,12 @@
           "slug": "quantization",
           "title": "Quantization",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
-          "sourceSha256": "82893cb3f5b8eee675aca0a37b177c963d989385398a2e6838d95c9088b553ff",
+          "sourceSha256": "1f7df0dbe0a262d17436903db23920e1f593a2e47cd384902d30c9a47515650e",
           "objectives": [
             "Understand quantization as byte reduction: float32 storage cut to uint16 or uint8",
             "Quantize a model using TensorFlow.js conversion tools",
             "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it",
-            "Know what quantization buys in the browser (download, disk, load) and what it does not (inference speed)",
+            "Distinguish smaller stored weights from runtime memory and compute speed",
             "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others"
           ],
           "explanationSections": [
@@ -1805,15 +1806,15 @@
           "practice": [
             {
               "slug": "quantize-weights",
-              "title": "Quantize a Model and Measure What It Cost",
+              "title": "Quantize a Model and Compare Predictions",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
-              "taskOpening": "Quantize a trained model's weights to uint8 and measure what the quantized build got wrong. Write quantizeModel(model, captures).",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Quantize a trained model's weights to uint8 and measure how its predictions change. Write quantizeModel(model, captures).",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
           "recallQuestions": [
-            "What trade-off does quantization make in TensorFlow.js, and how do you decide if it is acceptable?"
+            "What does this quantization pass change, and what must you measure?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -1824,9 +1825,9 @@
           "slug": "pruning",
           "title": "Pruning",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
-          "sourceSha256": "2910c2a8c5b582ce9dea4fd523ea569b760707c0e20762f4e948d87baa6a8e05",
+          "sourceSha256": "8548fa54207bb2e5efa813d4d9d916ea105acc84b2b93579e86d191a8246e799",
           "objectives": [
-            "Understand pruning as tree-shaking for neural networks: zero the near-zero weights",
+            "Distinguish magnitude pruning from behavior-preserving dead-code removal",
             "Implement magnitude-based pruning with a configurable sparsity level",
             "Measure what each pruning level costs, one class at a time",
             "Separate what pruning changes on disk from what it changes on the wire"
@@ -1841,8 +1842,8 @@
               "slug": "prune-weights",
               "title": "Measure What Pruning Costs",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/prune-weights.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** Sparsity 1 zeros all kernel weights. perClass uses null for a class without examples.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels).",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
@@ -1859,7 +1860,7 @@
           "slug": "caching-strategies",
           "title": "Caching Strategies",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
-          "sourceSha256": "0fd0e40c645f61e29b61bca38d7c49728312950c7b0247b1c521473efcb22fbe",
+          "sourceSha256": "9b0de128f2d18533351d2d1a49806f16181ce90d6f02e2f9a8c20fba7b0857c7",
           "objectives": [
             "Wrap a model in a cache-first predict that skips inference on a hit",
             "Hash model inputs for cache key generation",
@@ -1874,16 +1875,16 @@
               "slug": "inference-cache",
               "title": "Inference Result Cache (Quantized Input Hash)",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/inference-cache.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** makeInferenceCache now accepts maxEntries (default 100), uses shape and dtype in its key, and returns a fresh array on every call.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2, maxEntries = 100)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
               "slug": "incident-stale-verdict",
               "title": "Incident: Cache Served a Verdict From the Old Model",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/incident-stale-verdict.yaml",
-              "taskOpening": "PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. An age of exactly ttlSeconds has not exceeded it, so that entry is still served. Everything else is safe to serve. Return { serve, refresh } as arrays of keys, preserving input order.\n",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. An age of exactly ttlSeconds has not exceeded it, so that entry is still served. Everything else passes this age/version policy, not a general correctness test. Assume valid timestamps no later than now and nonnegative finite TTL. The version identifies both weights and preprocessing; approximate-key collisions need separate checks. Return { serve, refresh } as arrays of keys, preserving input order.\n",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1899,7 +1900,7 @@
           "slug": "webgpu-acceleration",
           "title": "WebGPU Acceleration",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
-          "sourceSha256": "915d67a0ba96f9bdba4b13d05b69d8f9b71440b46b373fe82f5aeeb1207686f0",
+          "sourceSha256": "cf01d6a22d0b05bc2843cc5c104204dc5031144042412f88d1cfd86865fdd2c6",
           "objectives": [
             "Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)",
             "Configure TensorFlow.js to use the WebGPU backend",
@@ -1917,7 +1918,7 @@
               "title": "Fall Back Through the Backend Ladder",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/gpu-backend.yaml",
               "taskOpening": "Write initBestBackend(preference, runtime) so it returns the name of a backend that is actually running, walking the caller's preference order from the top.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1953,7 +1954,7 @@
           "slug": "system-architecture",
           "title": "System Architecture",
           "sourcePath": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
-          "sourceSha256": "24a224f9299e8e11d1777174550bbba5cde6c5a667840eedf67183e946927ec7",
+          "sourceSha256": "004bbe526787ab371369566863766f595db878399fcc9b8fea5c1e005fea79b1",
           "objectives": [
             "Assemble the supplied ML pipeline as typed components with explicit dependencies",
             "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter",
@@ -1970,7 +1971,7 @@
               "title": "Build a Typed Pipeline",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/pipeline-architecture.yaml",
               "taskOpening": "Build the Pipeline class the lesson prints. Each stage has a `name`, a `process` function and a `validate` function.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -1986,39 +1987,40 @@
           "slug": "ci-cd-pipeline",
           "title": "CI/CD Pipeline",
           "sourcePath": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
-          "sourceSha256": "2cd416ed31270139bb62e35239789350bd817a5f7084e71fe264b66100a037c6",
+          "sourceSha256": "869028ce686df10ccc38cd6a25faff9795584806d137ca3c81045643d87b1bac",
           "objectives": [
-            "Identify ML validation steps in an example CI/CD workflow",
-            "Implement model accuracy gates that block deployment on regression",
+            "Identify model identity and behavior gates in a release workflow",
+            "Implement an accuracy gate that rejects invalid or failing evaluation batches",
             "Explain what a device-specific inference benchmark must record",
-            "Trace the deployment and rollback conditions in the example workflow",
-            "Export a model with model.save() and an in-memory save handler, and read its topology, weight specs, and byte count"
+            "Trace publication, verification and rollback conditions",
+            "Export a model with model.save() and inspect its topology, weight specs and byte count"
           ],
           "explanationSections": [
-            "ML-Aware CI/CD",
-            "Validation Scripts"
+            "Pin the Whole Artifact",
+            "Gate Identity and Behavior Separately",
+            "Verify Publication and Rollback"
           ],
           "practice": [
             {
               "slug": "ci-cd-gate",
               "title": "Build a CI/CD Validation Gate",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/ci-cd-gate.yaml",
-              "taskOpening": "Write the validation gate CI runs before a model ships. It takes an array of predictions, each carrying a `predicted` label and the `actual` label, and a minimum accuracy.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write the validation gate CI runs before a model ships. It takes an array of predictions, each carrying a `predicted` label and the `actual` label, and a minimum accuracy, finite and in [0, 1]; throw for an invalid floor.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
               "slug": "export-model-artifact",
               "title": "Export the Artifact CI Pins",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
-              "taskOpening": "Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the real 85 MB build. The export path is the same, and on this bench copy every float32 weight is four bytes.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the fictional mission build. For a supported TFJS LayersModel, on this bench copy every float32 weight is four bytes.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
           "recallQuestions": [
-            "Why does a passing CI workflow not guarantee you tested the model you are about to ship?",
-            "What do ML model gates add to a standard web CI pipeline, and what do they share with failing unit tests?"
+            "Why can a green CI run test the wrong model?",
+            "What proves a rollback succeeded?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -2029,7 +2031,7 @@
           "slug": "monitoring",
           "title": "Monitoring",
           "sourcePath": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
-          "sourceSha256": "5861e72b2b04286a92133ce5ef1a421f0a2d511d308ab5f34c196687da231075",
+          "sourceSha256": "0ae348aeb0e67e6dbe3f92d276778d75f8e0d045ec8c68721bc65e9224383d9e",
           "objectives": [
             "Implement prediction quality monitoring: confidence tracking and the prediction-side class mix",
             "Build latency monitoring with P50/P95/P99 percentile tracking",
@@ -2045,8 +2047,8 @@
               "slug": "model-monitor",
               "title": "Build a Model Monitor",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/model-monitor.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** Empty-data results are now null.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Build ModelMonitor with a baseline mean vector in the same feature order and scale as recent inputs.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
@@ -2063,7 +2065,7 @@
           "slug": "documentation",
           "title": "Documentation",
           "sourcePath": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
-          "sourceSha256": "c8117ee2746180881da6b7e158e0da5efe11226093ef8f5cb5c5820d6c9bbce5",
+          "sourceSha256": "32366b7d3e7379d6e51514957c3ec0f3f6a5c7efc05e9368e896b3928c4ea45f",
           "objectives": [
             "Write a Model Card documenting model purpose, training data, and performance",
             "Document the pipeline API and write runbooks for common operational scenarios",
@@ -2079,12 +2081,12 @@
               "title": "Write a Model Card",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/write-model-card.yaml",
               "taskOpening": "Render a Model Card from structured model metadata: one string whose lines the grader matches literally, in this order.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
           "recallQuestions": [
-            "Why does documentation discipline transfer from software to ML, but verifiability does not?"
+            "What extra evidence belongs with a model performance claim?"
           ],
           "decisionTasks": [],
           "independentProject": null,
@@ -2095,7 +2097,7 @@
           "slug": "launch",
           "title": "Launch",
           "sourcePath": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
-          "sourceSha256": "a1bd067116b06cffe7705e4493ef0f0900dd82caa4e2f7802bac9768a8b671ce",
+          "sourceSha256": "33758c57fcc7b7c11f5eb2b9946e81a6a25f6f43681b81c068d2db31c404df0c",
           "objectives": [
             "Package model assets and preprocessing with a standalone JavaScript app",
             "Follow the static-hosting setup for an ML-powered app",
@@ -2114,24 +2116,24 @@
               "slug": "verify-deployment",
               "title": "Verify a Deployment",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/verify-deployment.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** verifyDeployment accepts timeoutMs (default 1000). A timed-out check fails, receives an abort signal and prevents later checks from starting.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Write the runner under the launch script. It takes an array of checks and answers with one verdict for the whole deployment.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
             {
               "slug": "launch-rehearsal",
               "title": "Launch Rehearsal: Train the Candidate, Then Gate It",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/launch-rehearsal.yaml",
-              "taskOpening": "The whole system, once, on your own hands. Two functions.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "A small synthetic training-and-release rehearsal. It does not deploy the full mission system. Two functions.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             },
             {
               "slug": "classify-anomaly",
               "title": "Zero Hour: Classify the Anomaly",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/classify-anomaly.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** A constant window uses an explicit equality check. A different reading contributes a statistical vote.",
-              "feedback": "Executable assertions and lesson hints; assessment review covers grader logic and selectively reviews diagnostic wording, not a complete feedback copyedit",
+              "taskOpening": "Apply the final decision rule to supplied fictional scores. This exercise\ndoes not run the trained detectors or prove the signal has a particular source. Sample 7741's zero-hour readout is on the console: the deployed ensemble scores it 0.999 where the module-3 classifier managed 0.518. Your job is the decision layer the bridge crew signs their names to. Three functions.",
+              "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],

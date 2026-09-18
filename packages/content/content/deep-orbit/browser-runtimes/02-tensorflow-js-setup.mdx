@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization. A preferred name is a request the runtime can refuse, so read the answer after the wait, never before."
   - level: guidance
-    content: "The one non-routine step is that backend selection is asynchronous. TF.js gives you a promise that resolves once it has picked a backend and initialized it, and until that happens there is no backend name to read: a fresh tab has nothing to answer with. So the await comes first and both reads come after it. The setup block at the top of this lesson has all three calls in it, and neither value belongs in your code as a literal, since the backend depends on the device the page is open on. Asking for a backend by name is the one extra step, and the two refusals differ in shape: a registered backend that cannot start resolves false, while a name no package registered throws, so the request needs a try around it and nothing else, because in both cases the runtime settles on something that works once it is ready."
+    content: "The one non-routine step is that backend selection is asynchronous. TF.js gives you a promise that resolves once it has picked a backend and initialized it, and until that happens there is no backend name to read: a fresh tab has nothing to answer with. So the await comes first and both reads come after it. The setup block at the top of this lesson has all three calls in it, and neither value belongs in your code as a literal, since the backend depends on the device the page is open on. Asking for a backend by name is the one extra step, and the two refusals differ in shape: a registered backend that cannot start resolves false, while a name no package registered throws, so the request needs a try around it and nothing else, then await ready() and report the actual backend. Initialization can still fail if no registered backend can start."
   - level: solution
     content: |
       if (preferred) {
@@ -90,30 +90,21 @@ Think of backends like rendering engines in browsers. Chrome uses Blink, Firefox
 <CodeBlock language="typescript" title="backends.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// WebGL backend: uses the GPU via WebGL shaders
-// Best for: most models, especially matrix-heavy operations
-// Like using CSS transforms (GPU-accelerated) instead of top/left (CPU)
+// WebGL runs supported tensor operations using GPU shaders.
 import '@tensorflow/tfjs-backend-webgl';
 
-// WASM backend: compiled C++ running in WebAssembly
-// Best for: smaller models, devices without good GPU, SIMD support
-// Like using a Web Worker for heavy computation
-import '@tensorflow/tfjs-backend-wasm';
+// WASM executes compiled kernels on the CPU. A small workload can favor it.
 import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
-setWasmPaths('/wasm/');  // point to your WASM binary files
+setWasmPaths('/wasm/'); // copy binaries from this installed package version
 
-// CPU backend: pure JavaScript, no acceleration
-// Best for: nothing in production (fallback only)
-// Like doing layout calculations in JS instead of CSS
+// The pure JavaScript CPU backend is a useful fallback. Measure whether
+// it meets your application's budget; production use is not forbidden.
 
-// WebGPU backend: the compute-first successor to WebGL, fastest where
-// the browser ships it (Chromium everywhere, Safari 26, and Firefox on
-// Windows with macOS and Linux still behind a flag). Feature-detect with
-// navigator.gpu rather than assuming, the way the ladder below does
-// Like moving from canvas hacks to a purpose-built compute API
+// WebGPU provides a GPU compute API. Availability is not a speed result.
+// Install this separate package if you want this branch of the example.
 import '@tensorflow/tfjs-backend-webgpu';
 
-// Newest first, WASM above the plain CPU kernels (lesson 5 ships on WASM),
+// This is an example fallback order. Choose yours after measuring,
 // and fall through on both ways a rung can fail. A name that was never
 // registered makes tf.setBackend throw; a registered backend that cannot
 // START (a lost GPU context, a blocked WebGPU adapter) makes it resolve
@@ -141,52 +132,34 @@ await tf.ready();
 
 ## Benchmarking Your Setup
 
-Nazari would benchmark everything. You should too.
+This example measures one completed matrix multiplication per call. It does not predict the latency of a whole model. Keep the samples and record the browser, device, input shape and backend alongside them.
 
 <CodeBlock language="typescript" title="benchmark.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
 async function benchmarkBackend(backendName: string) {
-  await tf.setBackend(backendName);
+  if (!await tf.setBackend(backendName)) throw new Error('Backend did not start');
   await tf.ready();
-
-  // Warm up: first operation is always slow (shader compilation for WebGL).
-  // tf.tidy() frees everything the callback allocated, transpose included.
-  // Disposing the matMul result and the input by hand misses that
-  // intermediate: 1 tensor and 40,000 bytes still live afterwards.
-  tf.tidy(() => {
-    const w = tf.randomNormal([100, 100]);
-    tf.matMul(w, w.transpose());
-  });
-
-  // Benchmark: matrix multiply (the core ML operation)
-  const a = tf.randomNormal([256, 256]);
-  const b = tf.randomNormal([256, 256]);
-
-  const start = performance.now();
-  let checksum: tf.Tensor | null = null;
-  for (let i = 0; i < 100; i++) {
+  const a = tf.randomNormal([256, 256], 0, 1, 'float32', 7);
+  const b = tf.randomNormal([256, 256], 0, 1, 'float32', 11);
+  const run = async () => {
     const result = tf.matMul(a, b);
-    if (i === 99) checksum = result;
-    else result.dispose();  // always dispose to prevent memory leaks
+    try { await result.data(); } finally { result.dispose(); }
+  };
+  try {
+    // Warm the SAME shape and readback path that the timed loop will use.
+    for (let i = 0; i < 20; i++) await run();
+    const times: number[] = [];
+    for (let i = 0; i < 100; i++) {
+      const start = performance.now();
+      await run();
+      times.push(performance.now() - start);
+    }
+    return { backend: tf.getBackend(), times };
+  } finally {
+    a.dispose();
+    b.dispose();
   }
-  // CRITICAL: read a result back before stopping the clock. GPU backends
-  // queue kernels asynchronously; dispose() does not flush the queue, so
-  // without this await you are timing how fast you can ENQUEUE work, not
-  // how fast the GPU does it.
-  await checksum!.data();
-  const elapsed = performance.now() - start;
-
-  checksum!.dispose();
-  a.dispose();
-  b.dispose();
-
-  console.log(\`\${backendName}: \${(elapsed / 100).toFixed(2)}ms per matmul\`);
-  // Representative shape (exact numbers vary by machine):
-  // webgpu: fastest where available
-  // webgl:  fast (GPU-accelerated)
-  // wasm:   ~5-10x slower (SIMD-optimized CPU)
-  // cpu:    slowest (pure JS)
 }`}
 </CodeBlock>
 

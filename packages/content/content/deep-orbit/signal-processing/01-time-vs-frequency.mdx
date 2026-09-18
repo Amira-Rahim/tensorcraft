@@ -15,14 +15,14 @@ context:
   narrative: "An archived frame from the first week resurfaces: the slow swell Farah found in the reshaped stream and never explained. Today she names the view that could explain it."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). Both carry the same information, and each one still hides what the other makes obvious."
+  explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). The full complex transform preserves the sampled information; a magnitude-only view drops phase."
   bridge:
     jsTitle: "DOM vs CSSOM"
     jsCode: "document.querySelector('div') // DOM view of the page"
     mlTitle: "Time vs Frequency"
     mlCode: "fft(signal) // frequency view of the signal"
     tier: intuition
-    breaks: "The DOM and the CSSOM describe different things, and neither one can be computed from the other. Time and frequency are one thing described twice: `rfft` turns the samples into the spectrum, `irfft` turns the spectrum back into the samples, and on this lesson's 512-sample capture the round trip comes back within 4e-7 of the array it started from, which is float32 rounding and nothing else. What the pair costs you happens before the transform runs, when a finite sample rate and a finite window decide which samples exist at all."
+    breaks: "The DOM and the CSSOM describe different things, and neither one can be computed from the other. Time and frequency are one thing described twice: `rfft` turns the samples into the spectrum, `irfft` turns the spectrum back into the samples, with the original length specified where required, up to numerical precision. What the pair costs you happens before the transform runs, when a finite sample rate and a finite window decide which samples exist at all."
 consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
@@ -75,7 +75,7 @@ const timeDomain = [0.5, 0.87, 1.0, 0.87, 0.5, 0.0, -0.5, -0.87, -1.0, -0.87, -0
 // The transform hands back an array, and each slot in it is a bin: one
 // frequency's worth of the whole capture. Twelve samples in, seven bins
 // out, and lesson 2 says where the seven comes from.
-const frequencyDomain = tf.abs(tf.spectral.rfft(tf.tensor1d(timeDomain))).arraySync() as number[];
+const frequencyDomain = tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(timeDomain))).arraySync() as number[]);
 console.log(frequencyDomain.map((m) => m.toFixed(1)).join(' '));
 // "0.0 6.0 0.0 0.0 0.0 0.0 0.0": one 1 Hz component and nothing else. The
 // 6.0 is the tone's amplitude times half the sample count, and that is the
@@ -101,7 +101,7 @@ const complex = generateSignal([
   { hz: 12, amplitude: 0.6 },   // 12 Hz component
   { hz: 23, amplitude: 0.4 },   // 23 Hz component
 ], 256, 256);
-// Every one of these lines is in the catalog of known natural frequencies
+// The story catalog treats these synthetic tones as background frequencies
 // (5, 12, 23, 47 Hz), so none of them is anomalous.
 
 console.log(complex.slice(0, 10));
@@ -136,7 +136,7 @@ const anomalousSignal = generateSignal([
 
 // The transform that makes the difference visible. The challenge below
 // runs this exact call on both captures; lesson 2 explains what it does.
-const mags = tf.abs(tf.spectral.rfft(tf.tensor1d(anomalousSignal))).arraySync() as number[];
+const mags = tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(anomalousSignal))).arraySync() as number[]);
 console.log(mags[94].toFixed(1), mags[146].toFixed(1), mags[147].toFixed(1));
 // "51.2 3.0 12.0": the 47 Hz we authored, then energy at 73-73.5 Hz
 // (bins 146-147 at this run's 0.5 Hz resolution) that no catalog explains.`}

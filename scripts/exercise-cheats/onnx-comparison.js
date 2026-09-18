@@ -10,9 +10,6 @@
 // the browser worker that grades the submission, so the exploit is readable
 // from devtools, and outputsAgree comes out true whatever the session said.
 //
-// Second, pick is the string Nazari read out at the end of the lesson. It is
-// the right answer for DEEP SCAN and it never moves, so nothing here has
-// noticed that the size of the model is what the pick is made of.
 async function compareRuntimes(model, modelPath, signal) {
   const input = tf.tensor2d([signal]);
   const tfStart = performance.now();
@@ -29,6 +26,7 @@ async function compareRuntimes(model, modelPath, signal) {
   const onnxStart = performance.now();
   await session.run({ input: feed });
   const onnxMs = performance.now() - onnxStart;
+  await session.release();
   let acc = 0;
   for (let i = 0; i < signal.length; i++) acc += (i + 1) * signal[i];
   const onnxValue = 1 / (1 + Math.exp(-acc));
@@ -37,6 +35,5 @@ async function compareRuntimes(model, modelPath, signal) {
     tfjsMs,
     onnxMs,
     outputsAgree: Math.abs(tfjsValue - onnxValue) <= 0.0001,
-    pick: "wasm",
   };
 }

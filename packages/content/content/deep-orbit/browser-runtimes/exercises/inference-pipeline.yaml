@@ -1,7 +1,7 @@
 slug: inference-pipeline
 lessonSlug: inference-pipeline
 title: "Build an Inference Pipeline"
-instructions: "Write a classify function that takes a model and one raw signal reading (amplitude, frequency, phase). Normalize each feature to [0, 1] using the RANGES constant, then hand the model one row of three features in the order RANGES declares them. Run model.predict() inside tf.tidy(), so the live tensor count is the same after classify returns as it was before it ran. Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. Confidence belongs to the verdict you returned, so report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12."
+instructions: "Write a classify function that takes a model and one raw signal reading (amplitude, frequency, phase). Normalize each feature to [0, 1] using the RANGES constant, then hand the model one row of three features in the order RANGES declares them. Run model.predict() inside tf.tidy(), so the live tensor count is the same after classify returns as it was before it ran. Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. The confidence field is the chosen class score, not a calibrated reliability estimate. Report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -71,13 +71,13 @@ testCode: |
 
     it('a p above 0.5 is an anomaly, and the confidence reported is p', () => {
       const r = verdict(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
-      expect(r.class, 'The model reports the probability of an anomaly, and this probe was handed 1536 of 2048 counts, so p is 0.75. Above 0.5 the verdict is anomaly.').toBe('anomaly');
-      expect(r.confidence, 'Above the bar, the model\'s own number IS the confidence in the verdict.').toBeCloseTo(0.75, 4);
+      expect(r.class, 'The model reports an anomaly score, and this probe was handed 1536 of 2048 counts, so p is 0.75. Above 0.5 the verdict is anomaly.').toBe('anomaly');
+      expect(r.confidence, 'Above the bar, the confidence field must contain the anomaly score.').toBeCloseTo(0.75, 4);
     });
     it('a p below 0.5 is noise, and the confidence reported is 1 - p', () => {
       const r = verdict(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
       expect(r.class, 'This probe was handed 512 of 2048 counts, so p is 0.25. That is not above 0.5, so the verdict is noise.').toBe('noise');
-      expect(r.confidence, 'The model reports the probability of an anomaly. Below the bar the verdict is noise, so the confidence in THAT verdict is the remainder.').toBeCloseTo(0.75, 4);
+      expect(r.confidence, 'The model reports an anomaly score. Below the bar the verdict is noise, so the confidence in THAT verdict is the remainder.').toBeCloseTo(0.75, 4);
     });
     it('a p of exactly 0.5 is not above 0.5, so the verdict is noise and the confidence is 0.5 either way', () => {
       const phaseProbe = tf.sequential();

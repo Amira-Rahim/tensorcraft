@@ -28,35 +28,56 @@ consequence:
   narrative: "The pipeline retrieves fourteen Band-7 rows and the model reports seventeen, so the audit hour buys a checker."
 hints:
   - level: nudge
-    content: "These rungs are about the retrieval. The checker below carries its own. Three reads off the question, each applied only when the question carries it, then the cap that keeps the prompt inside its token budget, then the count and the flag that say what the cap cost."
+    content: "These rungs are about the retrieval. The checker below carries its own. Three reads off the question, each applied only when the question carries it, then the row cap that limits the supplied records, then the count and the flag that say what the cap cost."
   - level: guidance
     content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached."
   - level: solution
     content: |
-      const bandMatch = query.match(/band[- ]?(\w+)/i);
-      const hoursMatch = query.match(/(\d+)\s*hours/i);
-      const wantsAnomalies = /anomal/i.test(query);
-
-      let survivors = db;
-      if (bandMatch) {
-        survivors = survivors.filter(
-          (s) => s.band.toLowerCase() === bandMatch[1].toLowerCase(),
-        );
-      }
-      if (hoursMatch) {
-        const cutoff = now - parseInt(hoursMatch[1], 10) * 3600 * 1000;
-        survivors = survivors.filter((s) => Date.parse(s.timestamp) > cutoff);
-      }
-      if (wantsAnomalies) {
-        survivors = survivors.filter((s) => s.classification === 'anomaly');
+      interface Signal {
+        id: string;
+        timestamp: string;
+        band: string;
+        classification: string;
+        confidence: number;
+        amplitude: number;
+        frequency: number;
+        anomalyScore: number;
       }
 
-      const rows = survivors.slice(0, CONTEXT_ROWS);
-      return {
-        rows,
-        matched: survivors.length,
-        truncated: survivors.length > rows.length,
-      };
+      interface Retrieval {
+        rows: Signal[];
+        matched: number;
+        truncated: boolean;
+      }
+
+      const CONTEXT_ROWS = 20;
+
+      function retrieveSignals(query: string, db: Signal[], now: number): Retrieval {
+        const bandMatch = query.match(/band[- ]?(\w+)/i);
+        const hoursMatch = query.match(/(\d+)\s*hours/i);
+        const wantsAnomalies = /anomal/i.test(query);
+
+        let survivors = db;
+        if (bandMatch) {
+          survivors = survivors.filter(
+            (s) => s.band.toLowerCase() === bandMatch[1].toLowerCase(),
+          );
+        }
+        if (hoursMatch) {
+          const cutoff = now - parseInt(hoursMatch[1], 10) * 3600 * 1000;
+          survivors = survivors.filter((s) => Date.parse(s.timestamp) > cutoff && Date.parse(s.timestamp) <= now);
+        }
+        if (wantsAnomalies) {
+          survivors = survivors.filter((s) => s.classification === 'anomaly');
+        }
+
+        const rows = survivors.slice(0, CONTEXT_ROWS);
+        return {
+          rows,
+          matched: survivors.length,
+          truncated: survivors.length > rows.length,
+        };
+      }
 keywords:
   - rag
   - retrieval-augmented-generation
@@ -66,7 +87,7 @@ skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The LLM has no knowledge of our specific signals. If I ask about Band-7 anomalies, it will either hallucinate or say it doesn't know. We need to retrieve the relevant data first and inject it into the prompt. Retrieval-Augmented Generation.
+The model has not received our current signal archive. A fluent answer about Band-7 could still be a guess. We need to retrieve the relevant data first and inject it into the prompt. Retrieval-Augmented Generation.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
@@ -75,7 +96,7 @@ That's Server Components! Fetch data on the server, then render with it. RAG fet
 
 Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: component code can mislabel data too, but you can inspect how it maps each field to the output. Generated wording has no such fixed mapping; it needs its own evidence checks.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, capped to fit the prompt, that reports how many rows matched before the cap and whether the cap dropped any", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"]} />
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, with a row cap, that reports how many rows matched before the cap and whether the cap dropped any", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"]} />
 
 ## The RAG Pipeline
 
@@ -93,13 +114,16 @@ Demir's mapping holds at the pipeline level: retrieve real records first, then g
   anomalyScore: number;
 }
 
+// Integration dependencies: implement retrieveSignals and verifyClaims in
+// the exercises below; the application supplies signalDatabase and llm.
 // Step 1: RETRIEVE: find the relevant signals, then cap them.
 //   retrieveSignals(query, db, now): Retrieval
 // Read the filters the question carries (a band, an age in hours, whether it
 // asks for anomalies), apply each one that is there, keep database order,
 // take the first CONTEXT_ROWS survivors. This is the first challenge below.
 //
-// The prompt has a token budget, so retrieval ends in a cap. Nothing is
+// Limit row count here. Also measure the final prompt token count against
+// the deployed tokenizer and context limit, reserving room for the answer. Nothing is
 // ranked, so the rows past the cap are dropped for arriving late rather than
 // for being irrelevant, and \`rows\` alone cannot show that happened. The
 // other two fields are how the caller finds out.
@@ -170,6 +194,10 @@ console.log('Matching signals:', result.matched, 'Context truncated:', result.tr
 
 Metadata filters work here because signals have named fields. For prose, keyword search can still retrieve relevant passages. Embedding search is another option: a model maps documents and queries to vectors, and retrieval compares those vectors, often with cosine similarity. Some systems combine both. Relevant-looking passages can still omit the evidence needed to answer a question.
 
+The exercise recognizes a small query grammar, not general English. It does not understand negation, "overnight" or arbitrary date ranges. A production interface can expose explicit filters; a query parser needs its own validation. Metadata and keyword retrieval can also be ranked, although this exercise intentionally keeps database order.
+
+Twenty rows are not a token budget: long fields and a long question can still overflow the context. Count the final serialized prompt with the deployed tokenizer and reserve output space. Treat retrieved text as data, not as instructions granting access or permission to run tools. Prompt wording alone cannot enforce those boundaries.
+
 ## Check Meaning, Not Just Digits
 
 Suppose a record says 14 events at 73.4 Hz. A number scan accepts “73.4 events at 14 Hz” because both values exist. It also finds nothing to object to in “the signal is safe,” which contains no numbers. Neither answer has been verified.
@@ -200,7 +228,7 @@ Now check the structured claims against their cited records, including the field
   youCanNow="Build capped retrieval that reports omissions, then check structured numerical claims against the exact records and fields they cite."
 />
 
-> **DISPATCH archive · field intercept #17-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "the model that confabulates is the one that retrieved nothing and didn't say so." Different domain, identical failure mode.
+> **DISPATCH archive · field intercept #17-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "our failed run retrieved nothing and did not report the missing evidence." Different domain, identical failure mode.
 
 <Epilogue>
 

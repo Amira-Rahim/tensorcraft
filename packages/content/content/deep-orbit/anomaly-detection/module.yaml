@@ -5,8 +5,7 @@ order: 7
 description: |
   DEEP SCAN's anomaly detector fires on a signal that matches no known category.
   The reconstruction error comes back at twelve times the normal maximum.
-  You'll build autoencoders that learn what "normal" looks like, then flag whatever they
-  cannot rebuild: git diff against a baseline the model learned instead of
+  You'll build autoencoders that learn what "normal" looks like, then evaluate errors as fallible anomaly scores: git diff against a baseline the model learned instead of
   one you committed.
 summary: "A baseline that says what normal is, an autoencoder that learns it, reconstruction error scored against a tuned cutoff, and a 2-of-3 vote across three detectors that can still fail together."
 lessonCount: 5

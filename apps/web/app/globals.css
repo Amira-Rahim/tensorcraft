@@ -1,10 +1,10 @@
 @import "tailwindcss";
+@import "@tensorcraft/worlds/css/worlds.css";
 /* Tailwind only auto-scans the app's own source tree; shared UI components
    in packages/ui use utility classes too (incl. arbitrary values like
    max-w-[440px]) and must be scanned explicitly or their utilities are
    silently missing from the build. */
 @source "../../../packages/ui/src";
-@import "@tensorcraft/worlds/css/worlds.css";
 
 ::selection {
   background-color: var(--tc-primary, #6baa8a);
@@ -361,6 +361,8 @@ body {
 
 .lesson-prose pre {
   margin: 1.5em 0;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .lesson-prose strong {
@@ -385,7 +387,8 @@ body {
   color: var(--tc-primary);
   padding: 1px 6px;
   border-radius: 0;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* Fade up animation */

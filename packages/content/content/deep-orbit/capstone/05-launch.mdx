@@ -16,7 +16,7 @@ context:
   narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the signal.' Demir deploys. The signal is classified."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Deploying an ML system to production is the same motion as deploying a web app: build, optimize, ship to a static host, with the model as one more asset in the bundle."
+  explanation: "A browser-only ML application can ship to a static host with its model assets. Verify the served files and behavior, and configure any required server services separately."
   bridge:
     jsTitle: "Static Site Deploy"
     jsCode: "npm run build && gh-pages -d dist // bundle, optimize, ship"
@@ -36,6 +36,7 @@ hints:
   - level: solution
     content: |
       function decomposeIntervals(intervals) {
+        if (!intervals.every(v => Number.isFinite(v) && v > 0)) throw new Error('Invalid intervals');
         const ratios = [];
         for (let i = 0; i < intervals.length - 1; i++) {
           ratios.push(intervals[i + 1] / intervals[i]);
@@ -61,6 +62,7 @@ hints:
           !Number.isFinite(reading.actual)
         )
           throw new Error('Invalid window or reading');
+        if (![reading.reconstructionError, reading.reconThreshold, reading.predicted, reading.actualForecast, reading.predTolerance, reading.ensembleScore, reading.module3Score].every(Number.isFinite) || reading.reconstructionError < 0 || reading.reconThreshold < 0 || reading.predTolerance < 0 || reading.ensembleScore < 0 || reading.ensembleScore > 1 || reading.module3Score < 0 || reading.module3Score > 1) throw new Error('Invalid detector values');
         const constant = reading.window.every((value) => value === reading.window[0]);
         const { mean, variance } = tf.tidy(() => {
           const m = tf.moments(tf.tensor1d(reading.window));
@@ -69,6 +71,7 @@ hints:
             variance: m.variance.dataSync()[0],
           };
         });
+        if (!Number.isFinite(mean) || !Number.isFinite(variance)) throw new Error('Invalid moments');
         const std = Math.sqrt(variance);
         const z = constant || std === 0 ? null : (reading.actual - mean) / std;
 
@@ -125,22 +128,20 @@ skillAxes: [deployment]
 Ten modules, ten weeks of work. Optimized, tested, monitored, documented: nothing left on my list.
 </Dialogue>
 
-<Dialogue speaker="Commander Mirza" expression="resolved">
-Then deploy DEEP SCAN. Classify the signal.
-</Dialogue>
+Mirza authorizes the deployment and waits for the classification.
 
-Any app that compiles down to a folder of files ships the same way: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
+For a browser-only application, the publishing step can be: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The local inference model can be a static asset served alongside the app. A server-side language-model adapter, authentication or secret-bearing API needs a separately deployed service; static hosting does not provide one.
 
 <LearningObjectives objectives={["Package model assets and preprocessing with a standalone JavaScript app", "Follow the static-hosting setup for an ML-powered app", "Verify saved-model inference locally and distinguish it from a hosted deployment check", "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
 <BossBeat
   beatId="deep-orbit-launch-deploy-call"
-  prompt="Mirza is on comms. Demir's finger is on Deploy. Telemetry shows the anomalous signal pulsing every 30 seconds. The next pulse is the cleanest classification window the bridge will get tonight. What's your call, operator?"
+  prompt="ARIA has the 0157 canary record and three alternative deployment simulations. Choose which policy the crew should rehearse and carry into the handover. This choice changes the follow-up work; the recorded canary deployment stays the same."
   options={[
     {
       label: "cooperate",
       display: "Hold and let Demir's verification suite run one more pass",
-      consequence: "Demir reruns. The suite passes; the pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' Tonight the hold bought nothing, and nobody knew that in advance."
+      consequence: "Demir reruns. The suite passes; the pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' In this simulation the extra pass finds no new defect; another run could."
     },
     {
       label: "defect",
@@ -150,24 +151,26 @@ Any app that compiles down to a folder of files ships the same way: `npm run bui
     {
       label: "random",
       display: "Deploy fleet-wide now; keep the old model warm as instant rollback",
-      consequence: "Fleet-wide in one motion, window captured, and the safety net is the part that fails inspection: the rollback build shares the new deploy's preprocessing path, so the bug class a canary would have caught rides both models equally. A rollback is an undo, not a test. It restores yesterday's weights in seconds; it cannot tell you whether tonight's inputs are being mangled on the way in."
+      consequence: "Fleet-wide in one motion, window captured, and the safety net is the part that fails inspection: the rollback build shares the new deploy's preprocessing path, so the bug class a canary would have caught rides both models equally. Restoring weights does not test the shared preprocessing path. It restores yesterday's weights in seconds; it cannot tell you whether tonight's inputs are being mangled on the way in."
     },
     {
       label: "dominant",
       display: "Hot canary: deploy to one console for 30 seconds on the live pulse, then fleet-wide if it holds",
-      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. Mirza: 'You found the third option. That's the work.'"
+      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. The follow-up must define a stop condition before anyone repeats the rollout."
     }
   ]}
 />
 
-The mission record keeps one version of that call. At 0157, DEEP SCAN went to a single bridge console on a live pulse. One console takes the new build first and runs on live data while the rest of the fleet stays on the old one. That is a canary: a bad build reaches one console instead of all of them. The classifier it replaces kept scoring the same captures beside it, its verdicts going to the log and nowhere else; that parallel run is the shadow model. The canary's thirty verdicts all matched it, and fleet-wide followed two minutes later with the window still open. Before the hour closed, ARIA ran the three nights that did not happen and filed the transcripts, unrequested, under `deploy/counterfactuals`. Her index line reads: simulations, three; deploys, one.
+The deployment record is fixed. At 0157, DEEP SCAN went to a single bridge console on a live pulse. One console takes the new build first and runs on live data while the rest of the fleet stays on the old one. That is a canary: a bad build reaches one console instead of all of them. The classifier it replaces kept scoring the same captures beside it, its verdicts going to the log and nowhere else; that parallel run is the shadow model. The canary's thirty verdicts all matched it, and fleet-wide followed two minutes later with the window still open. Before the hour closed, ARIA ran the three alternative deployment policies and filed the transcripts, unrequested, under `deploy/counterfactuals`. Her index line reads: simulations, three; deploys, one.
 
 ## Production Build
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="build-config.ts">
-{`// Production build configuration
+{`// Illustrative mission asset inventory, not a Vite configuration.
+// The sizes below are fictional. These paths do not name downloadable
+// five-class or language artifacts supplied by the course.
 // Model files are static assets; treat them like images or fonts
 
 interface BuildConfig {
@@ -204,7 +207,7 @@ const config: BuildConfig = {
   optimization: {
     minify: true,
     treeshake: true,
-    splitChunks: true,   // Separate model loading from app code
+    splitChunks: true,   // Split JavaScript; schedule model fetches separately
   },
 };
 
@@ -219,85 +222,63 @@ const config: BuildConfig = {
 //     └── validation-sample.json  (~50 KB)`}
 </CodeBlock>
 
-Two model directories ship and only one of them is the classifier. `deep-scan-v1` is the eleven-feature, five-class network module 10 retrained: a topology file and 997 weights, about seven kilobytes together. `report-lang-v1` is the report pipeline's pretrained language component, and it is what the 85 MB counts. The model card in the last lesson keeps those two sizes on separate lines for the same reason this config does. A reader who sees 85 MB beside the classifier goes and optimizes the wrong network.
+The inventory separates the small classifier from the fictional language component. It documents the intended architecture; it does not produce a build. Use the independent project below for a runnable app with its own supplied model and build command. Use the runtime lab for actual model-file identity and hosted-fixture verification.
 
 ## Deploy and Verify
 
-Two deployment shapes appear in this lesson. The verification suite below is the full gate. The other is the hot canary from the decision above: ship to ONE console, watch it against live data for a fixed interval, then roll fleet-wide only if it holds. Canaries trade a slice of your window for a bounded blast radius; the suite trades time for certainty. Production teams run both: the suite first, then the canary.
+Two deployment shapes appear in this lesson. The helper below is one smoke gate after artifact verification. The other is the hot canary from the decision above: ship to ONE console, watch it against live data for a fixed interval, then roll fleet-wide only if it holds. Canaries trade a slice of your window for a bounded blast radius; the suite spends time on specified checks, which can still miss failures. Use pre-release checks before a canary, then define the conditions for wider rollout. Agreement with a shadow model is a regression check, not evidence that both are correct.
 
 <CodeBlock language="typescript" title="deploy.ts">
-{`// Deployment verification: smoke test the live system
+{`interface DeployedPipeline {
+  // Must resolve only after inference and readback have completed.
+  classify(input: Float32Array, signal: AbortSignal): Promise<{ label: string }>;
+  dispose(): void;
+}
+interface Probe { input: number[]; label: string; }
 
-async function verifyDeployment(baseUrl: string): Promise<boolean> {
-  console.log('=== DEEP SCAN Deployment Verification ===');
-  console.log('');
-
-  // 1. Check model loads
-  console.log('1. Loading model...');
-  const modelUrl = \`\${baseUrl}/models/deep-scan-v1/model.json\`;
-  let response: Response;
+async function verifyHostedPipeline(
+  baseUrl: string,
+  // Application adapter: fetch the complete release, verify trusted hashes
+  // as in lesson 2, and build a pipeline from those SAME bytes and scaler.
+  loadVerifiedPipeline: (url: string, signal: AbortSignal) => Promise<DeployedPipeline>,
+  probes: Probe[], // fixed labeled smoke set supplied with the release record
+  budget: { minAccuracy: number; p95Ms: number },
+  signal: AbortSignal,
+): Promise<{ passed: boolean; accuracy: number; p95Ms: number }> {
+  if (!probes.length || !probes.every(p => p.input.length === 64 && p.input.every(Number.isFinite) && typeof p.label === 'string' && p.label.trim()) ||
+      !Number.isFinite(budget.minAccuracy) || budget.minAccuracy < 0 || budget.minAccuracy > 1 ||
+      !Number.isFinite(budget.p95Ms) || budget.p95Ms <= 0) throw new Error('Invalid smoke configuration');
+  const pipeline = await loadVerifiedPipeline(baseUrl, signal);
   try {
-    response = await fetch(modelUrl);
-  } catch (error) {
-    // The failure that has no status to read: DNS does not resolve, the
-    // host never answers, the request is refused. Letting it through
-    // ends the run with no report at all, and the operator is left
-    // guessing which check died.
-    console.error('✗ Model fetch failed:', (error as Error).message);
-    return false;
+    let correct = 0;
+    for (const probe of probes) {
+      signal.throwIfAborted();
+      const result = await pipeline.classify(new Float32Array(probe.input), signal);
+      if (typeof result?.label !== 'string' || !result.label.trim()) throw new Error('Invalid prediction');
+      if (result.label === probe.label) correct++;
+    }
+    // Warmup and repeated timing on the same workload. These repetitions
+    // measure latency; they are not additional independent accuracy cases.
+    for (let i=0; i<10; i++) await pipeline.classify(new Float32Array(probes[i%probes.length].input), signal);
+    const times: number[] = [];
+    for (let i=0; i<100; i++) {
+      signal.throwIfAborted();
+      const input = new Float32Array(probes[i%probes.length].input);
+      const start = performance.now();
+      await pipeline.classify(input, signal);
+      times.push(performance.now()-start);
+    }
+    times.sort((a,b) => a-b);
+    const accuracy = correct/probes.length;
+    const p95Ms = times[Math.ceil(times.length*0.95)-1];
+    return {passed:accuracy >= budget.minAccuracy && p95Ms <= budget.p95Ms, accuracy, p95Ms};
+  } finally {
+    pipeline.dispose();
   }
-  if (!response.ok) {
-    console.error('✗ Model failed to load:', response.status);
-    return false;
-  }
-  console.log('✓ Model loaded successfully');
-
-  // 2. Score the labeled probe that shipped with the build. Random input
-  // would only prove the file parses: a mangled preprocessing path still
-  // returns a label and a confidence for noise. Known inputs with known
-  // answers are the only check that can see the input path is wrong.
-  console.log('2. Scoring the labeled probe...');
-  const probe: { input: number[]; label: string }[] = await (
-    await fetch(\`\${baseUrl}/data/validation-sample.json\`)
-  ).json();
-  let correct = 0;
-  for (const sample of probe) {
-    const { label } = await pipeline.classify(new Float32Array(sample.input));
-    if (label === sample.label) correct++;
-  }
-  // A floor, not the benchmark. The card claims 91.8% and the probe is
-  // 100 rows, so a healthy deploy falls under 80 about five times in a
-  // hundred thousand runs; five-way chance on mangled input lands near 20.
-  const FLOOR = 80;
-  if (correct < FLOOR) {
-    console.error(\`✗ Probe accuracy \${correct}/\${probe.length}, floor \${FLOOR}\`);
-    return false;
-  }
-  console.log(\`✓ Probe accuracy: \${correct}/\${probe.length}\`);
-
-  // 3. Check performance. Nothing reads the labels here, only the clock,
-  // but the samples still have to be raw ADC counts: the extractor takes
-  // amplitude as the largest magnitude in the window and normalizes it
-  // against 0 to 2048. Values in [-1, 1] would time the pipeline on input
-  // that looks already normalized, the same confusion the labeled probe
-  // above is there to catch.
-  console.log('3. Benchmarking...');
-  const times: number[] = [];
-  for (let i = 0; i < 20; i++) {
-    const input = new Float32Array(64)
-      .fill(0)
-      .map(() => Math.random() * 4096 - 2048);
-    const t0 = performance.now();
-    await pipeline.classify(input);
-    times.push(performance.now() - t0);
-  }
-  const avgMs = times.reduce((a, b) => a + b) / times.length;
-  console.log(\`✓ Avg inference: \${avgMs.toFixed(1)}ms\`);
-
-  console.log('');
-  console.log('=== Deployment verified ===');
-  return true;
-}`}
+}
+// Run under a deadline, as in the verify-deployment exercise. The loader and
+// classifier must honor cancellation. Record device/backend and artifact
+// identity beside this result. A rejected check fails the release gate.\`}`}
 </CodeBlock>
 
 Before the final run, Nazari clears her ledger the only way she clears anything: out loud. Nine hours of telemetry reconstruction. Three hours of prune revalidation. Forty minutes of hash-pinned rerun. Then the single credit line, DEEP SCAN, operational, and she wipes the board clean for the first time since the crash. Nobody comments. Everybody notices.
@@ -318,7 +299,7 @@ Input: anomaly-prx-cen-001, the signal the crew has tracked across eleven module
 
 --- Classification Result ---
 Label: anomaly
-Ensemble confidence: 99.9%
+Ensemble score: 0.999 (calibration not established)
 Anomaly score: 6.2000
 
 --- Sequence Analysis ---
@@ -347,15 +328,20 @@ Fibonacci sequence. The pulse intervals mirror this vessel's own
 calibration harmonics.
 
 Two hypotheses:
-  1. Natural phenomenon (shell spirals, sunflower seed heads)
-  2. Adapted response to Archimedes transmissions
+  1. A natural process or instrument/analysis effect
+  2. An artificial source of unknown origin
+These possibilities are incomplete; the classifier cannot choose a cause.
 
 Recommendation: Transmit all data to Earth for independent verification.
 
 DEEP SCAN v1.0: Signal Classified. Mission Continues.`}
 </CodeBlock>
 
-Two lines in that output settle old debts. Nazari asked when the interval hits zero back when the number was 72.4 seconds, and three curves gave three different dates. The curves have converged now that the deployed system feeds them, and the number is eleven days. And sample 7741, the reading that started everything at 51.8 percent, finally gets its verdict from the system it caused to be built. A third debt, the oldest, stays open on purpose. An untrained build once scored that same reading 0.998, a reinitialization on fresh random weights scored it 0.997, and since module 2 nobody aboard has been able to say why. Both landed at the same end of the scale. Random weights have no preferred sign; two fresh draws should have thrown it to opposite ends as readily as the same one, and ARIA said as much the night it happened. Only a trained model ever learned to hesitate about it, and the hesitation is what training bought. Untrained networks know nothing; that lesson stands. Which end those two draws chose goes in the ledger next to the other coincidence nobody aboard resolves.
+Nazari first asked for a date when the interval read 72.4 seconds. The new projection answers her question, with conditions attached.
+
+These are fictional mission outputs. The date is an extrapolation conditional on a changing trend, not a demonstrated deadline. Agreement between forecasters that share data can preserve the same error. The crew keeps recording the interval instead of treating consensus as certainty.
+
+Sample 7741 now triggers the combined rule, but 0.518 and 0.999 come from different systems. Their numerical difference is not an improvement in accuracy or a calibrated probability gain. The earlier untrained scores remain in the log as unexplained outputs of random weights, not advance knowledge of the signal.
 
 ## The Interval Train, in Ratios
 
@@ -371,7 +357,7 @@ Three properties of that list are what the finale exercise grades.
 
 Dividing removes the scale. Farah's capture was in seconds and the sequence is unitless, and both decompose to the same six ratios. That is the reason the calibration overlay lined up at all.
 
-The ratios converge. They land above and below 1.618 by turns and the miss narrows each step, so the tail of the list is the part that identifies the pattern and the front is the part a capture can lose. A recording that starts mid-train has no 1:1 opener in it, which means a short ratio list is compared against the end of the full list rather than the beginning.
+Successive Fibonacci ratios approach the golden ratio, about 1.618. This exercise checks only the displayed finite template. It assumes every recording ends at the same final gap, so a shortened recording is a suffix of that template. General recordings can end elsewhere; they need alignment and a minimum evidence length. One matching ratio is weak evidence, not a unique identification of the Fibonacci sequence.
 
 Measured seconds do not divide exactly. Even in the archive's rounded slice, 11.7 over 7.2 comes back as 1.6249999999999998, and a live capture misses by more than that, so a match is a band around each expected ratio rather than an equality. The width of that band is a false-alarm decision like every other cutoff in module 7: too tight and the real train is rejected by rounding, too loose and a metronome starts qualifying.
 
@@ -395,17 +381,17 @@ And then the one the whole season was for. The console transcript above is what 
 
 <RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights." />
 
-<RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and the LSTM were fitted on the same eleven days, so one bad archive takes two votes out at once. Read a vote of 2 as two checks that failed." />
+<RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and the LSTM were fitted on the same eleven days, so one bad archive takes two votes out at once. Read a vote of 2 as two detector thresholds crossed. It is not two independent proofs or a probability of anomaly." />
 
 <LessonRecap
   whatYouLearned={[
-    "An ML-powered web app deploys exactly like a static site (`npm run build`, model files in the dist folder as static assets, served from a CDN) because the model runs entirely in the browser.",
-    "Deployment verification must confirm three things independently: the model file loads from the deployed URL, a labeled probe still scores above its floor, and latency meets the performance budget. Random input can only prove the file parses; it cannot see a mangled preprocessing path.",
+    "A browser-only inference app can use static hosting. Any required server route must be deployed separately.",
+    "Verify the exact hosted artifacts, labeled-probe results and latency budget separately. Passing known probes does not establish accuracy on all future inputs.",
     "Rollback restores artifacts, not external state. Restore compatible model and preprocessing versions, then check performance on current data.",
-    "A rehearsal is only evidence if its record can be checked. A loss trace is a value the submitting code returns and can be written by hand; model.optimizer.iterations belongs to the optimizer, counts one per batch, and takes no assignment. Tie them together, reading the counter after the fit rather than working it out (a candidate can arrive warm, and then the schedule and the counter disagree) and reporting the trace fit() handed back, and the training record cannot be produced without the training."
+    "Record the actual fit history and optimizer update count, then evaluate the trained candidate. These cross-checks support reproducibility; they are not tamper-proof evidence or proof of generalization."
   ]}
   bridge="Both applications and models can ship as versioned assets. Rollback restores selected artifacts; it does not reverse earlier side effects or establish accuracy on current data."
-  youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose training record cannot be written without the training, then sign the verdict with the decision layer: a 2-of-3 detector vote and an interval decomposition that survives a change of units."
+  youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose reported results are checked against the training call, then sign the verdict with the decision layer: a 2-of-3 detector vote and an interval decomposition that survives a change of units."
 />
 
 <Epilogue>
@@ -417,15 +403,15 @@ Calibration's clean. I checked it four times. Those are our harmonics, in a sign
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-Then either the universe loves the same math we do, phyllotaxis, the way a sunflower packs its seeds, and shell spirals and Fibonacci everywhere; or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
+The ratios match our calibration pattern. That leaves several possibilities, including an error we have not found. The model can flag the match; it cannot explain its source.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Arithmetic, for the record. The source is 4.2 light-years out; anything arriving tonight left it years before this vessel first tuned the harmonics it is mirroring. It cannot have heard us first. The second hypothesis fails the arithmetic. The first fails a correlation of 0.9987. I have no third.
+Arithmetic, for the record. The source is 4.2 light-years out; anything arriving tonight left it years before this vessel first tuned the harmonics it is mirroring. If the distance and dates are correct, this cannot be a reply to those transmissions. A correlation of 0.9987 does not establish origin. The log has a match and no verified explanation.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-One number of my own, while the ledger is open. My reconstruction error was 4.1 times baseline when I measured it, and it has not come down. I am built from the same instrument chain whose ratios this signal is mirroring. And the oldest coincidence aboard is still open, the one Dr. Farah put on a board in module 5 and no one has explained since: the line inside each pulse stands at 73.4 hertz, and the gap between pulses, the first time anyone measured it, came back as the same digits in seconds. A frequency and a period are not the same kind of quantity. They returned the same number anyway. I note both correlations. I resolve neither.
+The sensor windows beside my decisions scored 4.1 times their earlier mean reconstruction error. That selected sample does not measure my decisions. The other open entry is older: 73.4 hertz inside each pulse, initially 73.4 seconds between pulses. Different quantities, the same digits. Both observations remain unexplained.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
@@ -438,6 +424,17 @@ Transmit everything to Earth. All of it.
 
 She stays at the viewport after the bridge empties, watching a point of black sky 4.2 light-years out. The transmission will take years to arrive. The signal, accelerating, does not seem inclined to wait.
 
+<StoryConsequence
+  beatId="deep-orbit-launch-deploy-call"
+  fallback="Before the 0213 log entry, Nazari files the canary and rollback checklists for the next watch."
+  outcomes={{
+    "cooperate": "Before the 0213 log entry, Demir adds a deadline to the verification checklist. The hold rehearsal showed a missed pulse window, so the next operator must record what another pass is expected to resolve before requesting it.",
+    "defect": "Before the 0213 log entry, Demir and Mirza write an override handoff with a named reviewer. The immediate-deploy rehearsal captured the pulse but left the next operator without a completed verification record.",
+    "random": "Before the 0213 log entry, Nazari asks Demir to restore preprocessing with the old weights in a separate rehearsal. The warm-rollback simulation exposed their shared dependency; keeping two models loaded had not isolated it.",
+    "dominant": "Before the 0213 log entry, Nazari adds stop conditions and a rollback owner to the canary checklist. Thirty matching verdicts covered one pulse; the next watch must also inspect cases where both models could agree and be wrong."
+}}
+/>
+
 At 0213, ARIA appends a line to the deploy record, addressed to nobody on the crew manifest.
 
 `operator_of_record: uncredentialed · verdicts reviewed: 30 of 30 · disposition: noted with approval`
@@ -447,7 +444,7 @@ She does not explain the entry. Nobody asks her to.
 Mirza files her own last entry at 0214.
 
 <Dialogue speaker="Commander Mirza">
-Commander's log, final entry: DEEP SCAN has classified the signal it was built for, and the interval reaches zero in eleven days, four hours. Whatever zero brings will find this crew at their stations.
+Commander's log, final entry: DEEP SCAN has classified the signal it was built for, and the current projection reaches zero in eleven days, four hours. Whatever zero brings will find this crew at their stations.
 </Dialogue>
 
 One line sits beneath her entry, appended eleven days later by the automated pipeline, in the routine format the crew taught it. It is the last row the mission record ever accepted.
@@ -456,9 +453,9 @@ One line sits beneath her entry, appended eleven days later by the automated pip
 
 </Epilogue>
 
-Everything the last eleven modules built runs on data that has nothing to do with deep space. The classifier reads an eleven-number vector. It has no idea that column 0 is an amplitude, and eleven columns off a table you already have go in the same slot. The 2-of-3 vote is a decision layer over detectors that disagree, which is what you want any time one model's verdict is too cheap to act on alone. The drift check compares this week's input means against the means the model was trained on, and every deployed model has that pair. The digest pin, the canary, the labeled probe and the model card are all there because a model is a claim about data that keeps moving.
+The transferable work is the engineering: define a prediction target, build features, preserve the preprocessing contract, evaluate errors, release a specific artifact and watch its behavior. Replacing the columns is not enough. A new dataset may need a different model, loss, split, threshold and validation plan.
 
-The same chain on a dataset of your own, in one paragraph. Pick a table with a label column and hold out a fifth of the rows. Normalize the feature columns against the training minimum and maximum, and save those two numbers per column, because the deployed path has to apply the same ones. Fit a small dense network with `model.fit`, score the held-out rows, and write down what it got. Then log every live prediction's confidence and input means, so the drift check has something to read a month from now. That is eleven modules with your columns in place of the crew's.
+For your own project, choose a labeled task and split by time, person or other relevant group before fitting preprocessing. Keep validation data for design choices and a separate final test. Train a small baseline, compare it with a simpler rule, and record error costs as well as aggregate metrics. Package the model with its scaler and label map. After deployment, monitor input validity, latency and output changes, then evaluate against outcomes when labels arrive.
 
 ---
 

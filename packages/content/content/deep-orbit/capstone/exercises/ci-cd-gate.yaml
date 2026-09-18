@@ -2,7 +2,7 @@ slug: ci-cd-gate
 lessonSlug: ci-cd-pipeline
 title: "Build a CI/CD Validation Gate"
 instructions: |
-  Write the validation gate CI runs before a model ships. It takes an array of predictions, each carrying a `predicted` label and the `actual` label, and a minimum accuracy.
+  Write the validation gate CI runs before a model ships. It takes an array of predictions, each carrying a `predicted` label and the `actual` label, and a minimum accuracy, finite and in [0, 1]; throw for an invalid floor.
 
   Return:
 
@@ -41,6 +41,7 @@ hints:
         predictions: Prediction[],
         minAccuracy: number
       ): GateResult {
+        if (!Number.isFinite(minAccuracy) || minAccuracy < 0 || minAccuracy > 1) throw new Error('Invalid accuracy floor');
         const correct = predictions.filter(p => typeof p.predicted === 'string' && p.predicted.trim().length > 0 && typeof p.actual === 'string' && p.actual.trim().length > 0 && p.predicted === p.actual).length;
         const total = predictions.length;
         const accuracy = total === 0 ? 0 : correct / total;
@@ -90,6 +91,7 @@ solutionCode: |
     predictions: Prediction[],
     minAccuracy: number
   ): GateResult {
+    if (!Number.isFinite(minAccuracy) || minAccuracy < 0 || minAccuracy > 1) throw new Error('Invalid accuracy floor');
     const correct = predictions.filter(p => typeof p.predicted === 'string' && p.predicted.trim().length > 0 && typeof p.actual === 'string' && p.actual.trim().length > 0 && p.predicted === p.actual).length;
     const total = predictions.length;
     const accuracy = total === 0 ? 0 : correct / total;
@@ -103,6 +105,9 @@ solutionCode: |
   }
 testCode: |
   describe('validateModelAccuracy', () => {
+    it('rejects an invalid floor', () => {
+      for (const floor of [NaN, Infinity, -0.1, 1.1]) expect(() => validateModelAccuracy([], floor)).toThrow();
+    });
     const predictions = [
       { predicted: 'pulsar', actual: 'pulsar' },
       { predicted: 'noise', actual: 'noise' },

@@ -1,7 +1,7 @@
 slug: generate-report
 lessonSlug: report-generation
 title: "Assemble a Report, Cut What Failed"
-instructions: "Each generated section arrives with the validator's verdict attached: `{ heading, content, validated }`. Write `assembleReport(title, sections)`. Validated sections ship in order as markdown blocks ('## ' heading, blank line, content), joined by a '---' rule padded with blank lines, under '# ' title. Sections that failed validation do not ship their content at all; instead, when at least one was withheld, the document ends with one more block, '## Withheld', listing each withheld heading as a '- ' bullet. A report with nothing withheld carries no Withheld section. This is the cut Farah made at twenty-two minutes, written as a rule: Earth gets what the crew can stand behind, and an honest gap where the guess was."
+instructions: "Each generated section arrives with the reviewer's decision attached: `{ heading, content, validated }`. Write `assembleReport(title, sections)`. Validated sections ship in order as markdown blocks ('## ' heading, blank line, content), joined by a '---' rule padded with blank lines, under '# ' title. Sections that failed validation do not ship their content at all; instead, when at least one was withheld, the document ends with one more block, '## Withheld', listing each withheld heading as a '- ' bullet. A report with nothing withheld carries no Withheld section. The exercise applies the withholding policy: Earth gets what the crew can stand behind, and an honest gap where the guess was."
 starterCode: |
   interface Section { heading: string; content: string; validated: boolean; }
 

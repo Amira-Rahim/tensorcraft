@@ -1,7 +1,11 @@
 # Deep Orbit assessment review
 
 Date: 2026-09-17. Base: `9ab981bd`. Reviewer: Codex, local author-side review.
-Status: coverage pass complete, targeted corrections implemented, acceptance open.
+Status: dated assessment snapshot. The [2026-09-18 internal review](internal-content-review-2026-09-18.md)
+supersedes its remaining source-review/runtime gaps and records the current A
+judgment. The original objective annotations below remain historical; current
+source hashes and objective wording are in the manifest and learning map.
+Independent and learner acceptance remain open.
 
 The course has substantial guided coding practice, including real tensor
 operations, model fitting, parameter inspection, resource checks and export.

@@ -13,6 +13,13 @@ this doc is the index of record. Deferred mentions surviving elsewhere
 
 ## Current content priority: the $70 course standard (2026-09-17)
 
+**Owner sequence, 2026-09-18:** first close technical teaching gaps, then
+complete the internal content review, then add persistent story consequences
+and two decisions. Recruitment and independent evidence wait until internal
+content grades reach A (at least 9/10 with complete coverage and no blocking
+defects). Track the current pass in the
+[internal review record](audits/internal-content-review-2026-09-18.md).
+
 Owner request: address the new educational audit, target at least 9/10 in
 each category, keep $50 as the launch price, and prepare for $70 after
 learning from customers. Implementation and evidence gates are in the
@@ -22,39 +29,28 @@ Implementation is in progress; the full plan is not complete. This request bring
 teaching errors and course improvement planning forward from older
 data-gated deferrals. The world-2 release gate remains separate.
 
-- [~] **Now, Q0-Q1:** establish complete review coverage and fix F01-F10 in
-  Deep Orbit. Manifest coverage and F01-F09 repairs are implemented locally.
-  All 56 bridge summaries received a focused F10 review; in-context checks
-  and whole-artifact review remain open. Known draft claims F11-F14 and the
-  additional F15-F17 findings are corrected locally, with specialist and
-  release reviews still required. See the
-  [implementation evidence](audits/content-quality-implementation-2026-09-17.md).
-- [~] **Q2-Q3 in progress:** the module/lesson map and early build-triage
-  assignment are implemented locally. The 18 previously unread lessons have
-  a prose pass, corrected claims and shorter recaps. The assessment review
-  now maps all 222 objectives and reviews all 65 exercises, with 14 correction
-  groups implemented across 15 exercises. Whole-artifact review, independent
-  scores and learner evidence remain open. See
-  [patch 2 evidence](audits/content-quality-patch-2-2026-09-17.md).
-- [x] **Assessment reliability patch, local implementation:** corrected the
-  grading and contract defects in A15-A22 across 19 exercises: loss trends,
-  stochastic outcomes, zero spread, profiling, shuffling and boundaries.
-  See the [patch evidence](audits/assessment-reliability-patch-2026-09-17.md).
-- [ ] **Remaining A17-A19 evidence, before Q2 acceptance:** assess baseline
-  selection, confusion matrices, metric rationale and error investigation.
-  Reproduce retained story benchmarks with controlled comparisons and report
-  real device measurements separately from implementation correctness.
-- [x] **Independent assessment implementation, local:** three decision tasks
-  collect choices, calculations, rationale, time and assistance. The separate
-  occupancy project ships real licensed data, a standalone app, export/reload
-  checks and a public rubric. See the
-  [integration evidence](audits/independent-assessment-patch-2026-09-17.md).
-- [ ] **A23-A24 acceptance, before Q2/Q5 sign-off:** obtain independent project
-  scoring and observed difficulty/assistance/transfer results. Verify the
-  remaining actual runtime, caching, converter and hosted-deployment paths
-  where the course claims those outcomes.
-- [ ] **After objective/canon alignment, Q4:** make existing story choices
-  affect later scenes; pilot two additional decisions before a larger wave.
+- [x] **Q0-Q3 internal content pass, 2026-09-18:** all 56 Deep Orbit lessons,
+  65 exercises and glossary reviewed in context. Factual/code/feedback repairs,
+  executable examples and desktop/mobile rendering checks complete. The internal
+  review records A (9/10 in each content category), with limits. Independent
+  and learner acceptance remain separate. Draft worlds still need their own pass.
+- [x] **Technical teaching evidence, A18-A19/A23:** actual runtimes, IndexedDB,
+  exact/rounded caching, converter output, pretrained pipelines and hosted model
+  identity checked. Unsupported story benchmarks were removed or explicitly
+  identified as fiction. See [technical evidence](audits/technical-teaching-verification-2026-09-18.md).
+- [x] **Assessment implementation, A17/A23/A24:** three decision tasks record
+  choices, calculations and rationale; the real-data independent project has a
+  runnable export and rubric. The latest pass repairs additional contracts,
+  validation and cleanup; all 65 exercise reference solutions pass.
+- [x] **Q4 internal story pilot:** six saved decisions now affect later scenes,
+  including the new cache-policy and drift-response choices. All 24 branches,
+  revisits and failure paths pass local browser checks. See the
+  [internal review](audits/internal-content-review-2026-09-18.md).
+- [ ] **Deferred human evidence for Q2/Q4/Q5 acceptance:** observe baseline and
+  metric rationale, errors, difficulty, delayed recall and unaided project work;
+  ask learners which choices affected later scenes. Local implementation checks
+  do not establish these outcomes. The prior reviewer packet must be refreshed
+  for the revised source before an external handoff. No recruitment in this pass.
 - [~] **Q5 independent project:** downloadable scaffold and real local
   artifact path implemented. Tensorcraft now previews and publishes the
   completed project folder as a separate snapshot in the existing Deep Orbit
@@ -68,20 +64,27 @@ data-gated deferrals. The world-2 release gate remains separate.
   [live export results](audits/project-export-live-2026-09-18.md) and
   [renewal repair](audits/github-token-renewal-2026-09-18.md).
   Independent clean-export review and learner explanation are still required.
-- [ ] **Q5 production follow-up:** verify the actual course folder picker in
-  an authenticated, entitled browser and observe an automatic token-renewal
-  cycle after the reconnected credential reaches its renewal window. Local
-  picker coverage and 121 targeted renewal/export tests pass; fresh-token
-  publication does not establish either remaining live check.
+- [x] **Q5 production folder picker:** the real course input, file exclusions,
+  destination preview, confirmation, publication and retry passed on 2026-09-18.
+  All 26 uploaded files matched the fixture; the existing snapshot was reused.
+  The owner-approved temporary access and five prerequisite records were
+  removed, and an independent read confirmed the original data was restored.
+  See the [follow-up record](audits/production-picker-and-renewal-2026-09-18.md).
+- [x] **Q5 live token renewal, observed 2026-09-18:** natural expiry produced
+  GitHub 401, then the production API renewed the encrypted credentials and
+  returned 200 twice. The second request reused the refreshed token. No expiry
+  metadata edits or repository writes; the temporary session was revoked.
+  See the [redacted observation](audits/github-token-renewal-observed-2026-09-18.json).
 - [~] **After the revised course, Q6:** the [review and pilot packet](learning-study/README.md)
   now includes anchored scoring, consent/session instructions, three concept
   task forms, private record templates and summaries that retain missing
   responses and enrollment denominators. A frozen handoff, sourced
   [reviewer shortlist](learning-study/reviewer-candidates-2026-09-17.md) and
   [inquiry drafts](learning-study/reviewer-outreach-drafts.md) are prepared.
-  The current 2026-09-18 handoff includes 216 artifacts after the renewal
-  repair; the older frozen packet is retained for history.
-  Nobody has been contacted or hired. Recruit independent subject/editorial
+  A 2026-09-18 handoff captured 216 artifacts after the renewal repair, before
+  this content pass. It must be refreshed before external use; older packets
+  remain historical.
+  Nobody has been contacted or hired. After the internal A gate, recruit independent subject/editorial
   reviewers and 12-20 learners; collect actual scores, delayed checks and
   30-day use evidence. No human results have been collected by this patch.
 - [ ] **After quality and learner gates, Q7:** validate the $70 offer using

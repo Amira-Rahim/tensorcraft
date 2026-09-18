@@ -31,7 +31,7 @@ hints:
   - level: guidance
     content: "The whole vector goes through one tensor operation rather than a loop over its values. The bias reaches the result while it is still a tensor, so nothing has to come out through dataSync(). And the body has to work on arguments it has never seen: the grader calls neuron() again with its own inputs, weights and bias, and it raises a single weight to check that only that weight's own input moves the output."
   - level: solution
-    content: "return tf.dot(inputs, weights).add(bias);"
+    content: "return tf.tidy(() => tf.dot(inputs, weights).add(bias));"
 keywords:
   - neuron
   - weights
@@ -40,10 +40,10 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-The calibration bench holds the ship's two reference tones, the cleanest labeled data aboard: this one is tone A, that one is tone B, a fresh labeled example every time either plays. ARIA's rules name them perfectly, every time, and have since launch. The stream out of Sector 7-G is the problem: it is neither tone, and a rule can only recognize the notes somebody wrote down in advance.
+The calibration bench holds the ship's two reference tones, the cleanest labeled data aboard: this one is tone A, that one is tone B, a fresh labeled example every time either plays. ARIA's rules name them perfectly, every time, and have since launch. The stream out of Sector 7-G is the problem: it is neither tone, and the rules aboard do not classify it usefully. A learned model will still need relevant examples and evaluation; changing the implementation does not supply that evidence.
 
 <Dialogue speaker="Dr. Farah">
-ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron. Think of it as a function that can adjust its own parameters, and we will teach it on the only labeled data we have: the calibration tones.
+ARIA's current rules miss this pattern. Start with a small function whose parameters training can adjust. We can check the arithmetic on the labeled calibration tones before asking it anything about the unknown signal.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
@@ -63,27 +63,28 @@ const weights = tf.tensor([0.4, -0.2, 0.6]);  // hand-picked weights
 const bias = tf.scalar(0.1);                   // threshold offset
 
 // The neuron computation: weighted sum + bias
-const output = tf.dot(inputs, weights).add(bias);
+const output = tf.tidy(() => tf.dot(inputs, weights).add(bias));
 console.log(output.dataSync()); // Float32Array(1) [ 0.2600000202655792 ]
 
 // Compare with the reduce() equivalent:
 const jsInputs = [0.5, 0.8, 0.2];
 const jsWeights = [0.4, -0.2, 0.6];
 const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
-console.log(jsOutput); // 0.26: the same sum, run in float64 and printed short`}
+console.log(jsOutput); // approximately 0.26; JS and float32 rounding may differ
+tf.dispose([inputs, weights, bias, output]);`}
 </CodeBlock>
 
-Each weight scales its own input: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.
+Each weight scales its own input: a positive weight pushes the output up, a negative one pushes against it. The bias adds a constant to the output. If you later compare that output with a threshold, changing the bias moves the decision boundary.
 
 ## Reading the Weights
 
-Those three numbers are hand-picked so the arithmetic stays followable; training will overwrite every one of them in module 3. The reading skill transfers to any trained network, though, so practice it here, on inputs that mean amplitude, frequency, and phase.
+Those three numbers are hand-picked so the arithmetic stays followable; training will overwrite every one of them in module 3. These weights are easy to interpret because this is one affine function. In a deeper network, later weights and activations also affect the final output. Practice the local reading here, on inputs that mean amplitude, frequency, and phase.
 
 Sign is direction. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency says this neuron treats higher frequency as mild evidence AGAINST. Run the flip to feel it: change `-0.2` to `+0.2` in the code above and the same reading scores 0.58 instead of 0.26, identical evidence now arguing for the other side.
 
 Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here. Phase still cast the smallest vote of the three in size, 0.12 against 0.20 and 0.16, because it read low on this sample. Because all three features were mapped onto the same 0-1 scale, the weights are comparable to each other as per-unit sensitivities. What they cannot tell you is which input drove one particular reading; that is the vote, and the vote changes with the sample.
 
-A weight near zero means the network learned to ignore something you thought mattered. When Nazari eventually tapes a parameter count to the engineering board, each of those parameters will be one of these numbers; sign and size are the entire vocabulary.
+A small coefficient gives this unit low sensitivity to that input in its current units. It does not prove that the feature is globally unimportant, unnecessary or causally unrelated to the target.
 
 ## Challenge
 
@@ -93,13 +94,13 @@ Build your first neuron: the weighted sum behind every verdict this ship will ev
 
 <RecallPrompt
   question="What does a neuron compute, and what role do weights and bias each play?"
-  answer="A neuron computes the dot product of its inputs and weights, then adds a bias: output = dot(inputs, weights) + bias. Weights control how much each input contributes; the bias shifts the decision threshold independently of the inputs."
+  answer="A neuron computes the dot product of its inputs and weights, then adds a bias: output = dot(inputs, weights) + bias. Weights control how much each input contributes; the bias adds an input-independent offset. A decision threshold is a separate rule applied to the score."
 />
 
 <LessonRecap
   whatYouLearned={[
     "A neuron computes a weighted sum of its inputs plus a bias, producing a single number.",
-    "A weight scales its own input, so what an input contributes is weight times input; bias shifts the output threshold.",
+    "A weight scales its own input, so what an input contributes is weight times input; bias adds a constant offset.",
     "Array.reduce() over inputs is the JavaScript equivalent of tf.dot()."
   ]}
   bridge="reduce and tf.dot compute the same weighted sum plus bias. A neuron may then apply an activation; training determines its parameter values."
@@ -115,5 +116,16 @@ Three weights and a bias can tell two tones apart. The stream from 7-G is sixty-
 </Dialogue>
 
 She watches one more crossover-free minute, pours a coffee, and takes it with her.
+
+<StoryConsequence
+  beatId="deep-orbit-foundations-7741-first-flag"
+  fallback="Farah opens sample 7741 in the raw archive and checks its timestamp before adding the new score. The cause remains unresolved."
+  outcomes={{
+    "cooperate": "Nazari arrives with the investigation packet from the earlier flag: capture intact, calibration unchanged, cause unresolved. The delayed channel check takes the rest of her watch, so Demir runs the neuron demonstration alone.",
+    "defect": "Demir searches the working list for 7741 and finds the removal note. He restores the row from the raw archive and asks Nazari to verify its timestamp before they can compare it with the new output.",
+    "random": "The shift handover has no note about 7741. Farah finds it again in the archive, then waits while Demir reconstructs which channels were active at its timestamp.",
+    "dominant": "Farah opens the replay task attached to 7741. Its timestamp and channel list are already there; Nazari finishes the scheduled channel check while Demir adds the new score to the unresolved record."
+}}
+/>
 
 </Epilogue>

@@ -1,7 +1,16 @@
 slug: kalman-filter
 lessonSlug: kalman-filters
 title: "Implement a Kalman Filter"
-instructions: "Implement a simple 1D Kalman filter. The constructor is written for you, including the starting variance of 1. Write `update(measurement)`: one predict-correct step, returning the new estimate. Two fields carry state between calls and the tests read both, `this.estimate` and `this.variance`, so a correction has to write both. The weight the correction puts on the new measurement is not a constant you pick: it is built from the variance the filter is carrying when that measurement arrives, along with the two noise parameters, and the lesson's derivation drawer works out which value it has to be. Because it is rebuilt on every call it changes step to step, so an EMA with one fixed alpha fails the arithmetic tests. One test runs your filter across the falling pulse-interval log from the lesson and reads the gap between the final estimate and the final reading. A filter whose state is one number, with no term for change, trails a drifting signal instead of tracking it, and the test checks that your estimate lands on the trailing side."
+instructions: |
+  Implement update(measurement) in SimpleKalman. Predict with a random-walk
+  state model, compute the Kalman gain, correct this.estimate and this.variance,
+  and return the corrected estimate as a number. The constructor starts
+  variance at 1. processNoise and measureNoise are variances, not standard
+  deviations. Assume finite inputs, processNoise >= 0 and measureNoise > 0.
+
+  State persists between calls. The tests compare the update equations and a
+  fictional descending interval series. The one-state model has no velocity;
+  its smooth output can lag the trend. Smoothness alone does not prove accuracy.
 starterCode: |
   class SimpleKalman {
     estimate: number;
@@ -81,7 +90,7 @@ testCode: |
       const inputVariance = noisy.reduce((s, n) => s + (n - 10.5) ** 2, 0) / noisy.length;
       expect(
         variance,
-        'The filtered series has to scatter less than the readings it came from. That is the whole point of running one.',
+        'For this fixture, filtering reduces mean squared distance from the chosen reference. This is not a general accuracy guarantee.',
       ).toBeLessThan(inputVariance);
     });
     it('follows the exact predict-correct arithmetic (a fixed-alpha EMA fails this)', () => {
@@ -112,12 +121,12 @@ testCode: |
       // parameters.
       const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];
       const kf = new SimpleKalman(73.1, 0.1, 1.0);
-      const estimates = log.map((m) => kf.update(m));
+      const estimates = log.slice(1).map((m) => kf.update(m));
       const final = estimates[estimates.length - 1];
       expect(
         final,
         'This is the whole run the lesson prints: eight readings, the lesson\'s noise parameters, and the estimate they leave behind.',
-      ).toBeCloseTo(72.4429, 3);
+      ).toBeCloseTo(72.43168, 3);
       expect(
         final,
         'The readings end at 72.0 and this estimate sits above them. That gap is the lag: the state here is one number with no term for its own change, so a steady drift is something the filter follows late rather than tracks. An estimate that lands on the newest reading means the weight came out at 1 and nothing was smoothed.',

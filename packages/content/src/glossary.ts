@@ -40,7 +40,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "matrix rank",
     definition:
-      "The number of independent directions a matrix preserves, distinct from tensor rank, which counts axes. Full rank means no direction collapses to zero; a rank-deficient matrix collapses some directions and loses information.",
+      "The number of linearly independent columns or rows of a matrix. Full rank means rank equals the smaller matrix dimension; a wide full-rank matrix can still map nonzero inputs to zero.",
     aliases: ["full rank", "full-rank", "rank-deficient"],
     scope: "global",
   },
@@ -97,7 +97,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "normalization",
     definition:
-      "Rescaling values so they share a common range or distribution, which helps a model train faster and more stably.",
+      "Transforming values to a chosen scale, such as a range or number of standard deviations. Fit learned scaling statistics on training data and reuse them at inference.",
     aliases: ["normalize", "normalizing"],
     scope: "global",
   },
@@ -131,7 +131,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "classification",
     definition:
-      "Picking which class an example belongs to, from a fixed set of labels, rather than predicting a number. Its loss is a cross-entropy; a regression's is a squared error.",
+      "Predicting one or more labels from a defined set. Cross-entropy is a common classification loss; the appropriate loss depends on the task and output contract.",
     aliases: ["classifications"],
     scope: "global",
   },
@@ -145,7 +145,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sigma-prime",
     definition:
-      "The slope of the sigmoid at a point, sigma(z) times (1 - sigma(z)), never above 0.25. It is the factor a gradient picks up passing back through a sigmoid, and the reason deep sigmoid stacks starve.",
+      "The derivative of sigmoid at z: sigmoid(z) times (1 - sigmoid(z)), at most 0.25. Repeated small derivative factors can contribute to vanishing gradients.",
     aliases: ["σ'"],
     scope: "global",
   },
@@ -195,7 +195,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "activation",
     definition:
-      "A function applied to a neuron's output that introduces nonlinearity, such as ReLU or sigmoid.",
+      "A function applied to a layer output. Nonlinear activations such as ReLU or sigmoid let a network represent more than an affine transformation; a linear activation leaves values unchanged.",
     aliases: ["activations", "activation function"],
     scope: "global",
   },
@@ -244,7 +244,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gradient",
     definition:
-      "The direction and rate at which the loss changes as a weight changes. It tells training which way to adjust.",
+      "A vector of partial derivatives showing how a scalar function changes with each parameter. Its negative gives a local direction of steepest decrease under the usual Euclidean distance.",
     aliases: ["gradients"],
     scope: "global",
   },
@@ -292,7 +292,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "mae",
     definition:
-      "Mean absolute error, the average size of the gap between predictions and targets, in the same units as the target. MSE squares each gap, so one large miss dominates the number. MAE weights every miss the same.",
+      "Mean absolute error: the average absolute difference between predictions and targets, in target units. Each additional unit of error contributes linearly; MSE instead squares each error.",
     aliases: ["MAE", "mean absolute error"],
     scope: "global",
   },
@@ -313,7 +313,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gradient descent",
     definition:
-      "An optimization method that repeatedly steps the weights in the direction that lowers the loss.",
+      "An optimization method that steps parameters opposite the gradient. The step size matters: a finite step can increase the loss or overshoot.",
     aliases: ["descent"],
     scope: "global",
   },
@@ -341,7 +341,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "batching",
     definition:
-      "Grouping training examples so the model processes several at once, which is faster and steadier than one at a time.",
+      "Grouping examples so a model processes several together. Batch size affects memory, throughput and gradient estimates; larger batches are not always faster or better.",
     aliases: ["batch", "batches"],
     scope: "global",
   },
@@ -408,7 +408,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "overfitting",
     definition:
-      "When a model memorizes its training data and fails to generalize to new examples.",
+      "Fitting patterns specific to the training data that do not generalize well to new examples. It need not mean literal memorization.",
     aliases: ["overfit", "overfits"],
     scope: "global",
   },
@@ -422,21 +422,21 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "hyperparameter",
     definition:
-      "A setting you choose by hand before training rather than a weight the model learns: learning rate, batch size, epoch count, layer width. Training never changes it; you do, between runs.",
+      "A setting governing a model or training procedure, such as layer width or learning rate. It is chosen or scheduled outside ordinary weight updates and may be tuned using validation data.",
     aliases: ["hyperparameters"],
     scope: "global",
   },
   {
     term: "regularization",
     definition:
-      "Any training-time penalty or constraint that discourages a model from memorizing its training data, such as an L2 weight penalty, dropout, or early stopping. It trades a little training accuracy for better held-out accuracy.",
+      "Methods that constrain fitting or favor particular solutions, such as weight penalties, dropout or early stopping. They aim to improve generalization but do not guarantee a better held-out score.",
     aliases: ["regularize", "regularized"],
     scope: "global",
   },
   {
     term: "validation split",
     definition:
-      "The fraction of training data held back from weight updates and scored after every epoch, so overfitting shows up as validation loss rising while training loss keeps falling. In TensorFlow.js, validationSplit takes the last rows, so shuffle first.",
+      "Data reserved from weight updates to guide model choices. TFJS validationSplit takes the last rows; choose the split deliberately and preserve time or group boundaries where the task requires them.",
     aliases: ["validation set", "validationSplit"],
     scope: "global",
   },
@@ -515,7 +515,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "self-attention",
     definition:
-      "Attention applied within a single sequence so each position can draw on every other position.",
+      "Attention whose queries, keys and values come from the same sequence. Masks can restrict which positions each query may use, such as blocking future tokens in a decoder.",
     aliases: ["self attention"],
     scope: "global",
   },
@@ -529,14 +529,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "positional-encoding",
     definition:
-      "A vector added to each input position so attention, which is order-blind on its own, can tell step 4 from step 77.",
+      "Information that lets a model distinguish positions or relative distances. Methods include added position vectors and transformations of attention queries and keys.",
     aliases: ["positional encoding", "positional encodings"],
     scope: "global",
   },
   {
     term: "transformer",
     definition:
-      "A sequence model built entirely from attention rather than recurrence, the basis of modern language models.",
+      "A model architecture using attention alongside feed-forward layers, residual connections and normalization. Many language models use transformer encoders, decoders or both.",
     aliases: ["transformers"],
     scope: "global",
   },
@@ -557,14 +557,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "llm",
     definition:
-      "A large language model, a transformer trained on huge text corpora to predict and generate language.",
+      "A large model trained to process or generate language, commonly using a transformer. Next-token prediction is a common training objective, often followed by additional training.",
     aliases: ["LLM", "language model"],
     scope: "global",
   },
   {
     term: "rag",
     definition:
-      "Retrieval-augmented generation, which fetches relevant documents and feeds them to a language model for grounded answers.",
+      "Retrieval-augmented generation: retrieve relevant records or passages, then supply them as context for a generated answer. Retrieval and citations do not guarantee accurate claims.",
     aliases: ["RAG", "retrieval-augmented generation"],
     scope: "global",
   },
@@ -587,21 +587,21 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "embedding",
     definition:
-      "A learned vector of numbers that stands in for an item such as a word, an image, or a patient note. Items with similar meaning land near each other, so distance between vectors becomes a usable measure of similarity.",
+      "A vector representation of an item such as a word, image or record. Similarity in the vector space reflects the representation and training objective; it must be evaluated for the intended use.",
     aliases: ["embeddings", "embedding space"],
     scope: "global",
   },
   {
     term: "tokenization",
     definition:
-      "Splitting text into the units a model reads, such as words or subword pieces, and mapping each to an integer id. Unknown words survive by breaking into pieces the model has already seen.",
+      "Converting text to units a model reads and their IDs. Subword and byte methods can represent many unseen words; coverage and unknown-token behavior depend on the tokenizer.",
     aliases: ["tokenize", "tokenized", "tokenizing"],
     scope: "global",
   },
   {
     term: "cosine similarity",
     definition:
-      "How closely two vectors point in the same direction, scored from -1 to 1. It ignores vector length, so it compares meaning rather than magnitude.",
+      "The dot product of two nonzero vectors divided by their lengths, ranging from -1 to 1. It measures direction, not meaning by itself; its usefulness depends on the representation.",
     scope: "global",
   },
   {
@@ -614,7 +614,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "latent space",
     definition:
-      "The compressed coordinate system a model files data under, where each item is a short list of numbers instead of raw pixels or text. Nearby points decode to similar outputs, which is what makes it navigable.",
+      "An internal representation space learned by a model. Nearby representations may produce similar outputs, but this depends on training and is not a universal guarantee.",
     aliases: ["latent", "latent vector"],
     scope: "global",
   },
@@ -646,7 +646,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "fft",
     definition:
-      "Fast Fourier Transform, an efficient algorithm for computing the Fourier transform of a sampled signal.",
+      "Fast Fourier Transform: an efficient algorithm for the discrete Fourier transform, mapping a finite sample sequence to frequency bins.",
     aliases: ["FFT"],
     scope: "deep-orbit",
   },
@@ -680,7 +680,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "spectral-leakage",
     definition:
-      "Smearing of a signal's energy across nearby frequencies that happens when a window cuts off mid-cycle.",
+      "Energy from a frequency component appearing across multiple transform bins because a finite observation window spreads its spectrum. A non-integer number of cycles is a common example.",
     aliases: ["spectral leakage"],
     scope: "deep-orbit",
   },
@@ -694,14 +694,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sidelobe",
     definition:
-      "The smaller ripples a window leaves outside the main lobe. Their height, quoted in dB below the peak, says how far leakage reaches.",
+      "A smaller lobe of a window spectrum outside its main lobe. Sidelobe levels and decay describe leakage strength away from a component, not a hard cutoff in frequency.",
     aliases: ["sidelobes", "side lobe", "side lobes"],
     scope: "deep-orbit",
   },
   {
     term: "dB",
     definition:
-      "A logarithmic ratio between two amplitudes. Every 20 dB is a factor of ten, so -20 dB is one tenth of the reference.",
+      "Decibels express a ratio logarithmically: 10 log10 for power ratios, or 20 log10 for amplitude ratios when power is proportional to amplitude squared. Under that assumption, -20 dB means one tenth the amplitude.",
     aliases: ["decibel", "decibels"],
     scope: "deep-orbit",
   },
@@ -772,7 +772,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "ensemble",
     definition:
-      "Running several models on the same input and using their combined prediction instead of any one member's. The blend beats the best single member only when the members are wrong in different places.",
+      "Combining predictions from several models. Different errors can make the combination useful, but neither diversity nor averaging guarantees beating the best member.",
     aliases: ["ensembles"],
     scope: "global",
   },
@@ -799,28 +799,28 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "quantization",
     definition:
-      "Storing model weights at lower numeric precision, such as int8, to shrink the model file. Whether inference also gets faster depends on the runtime: TensorFlow.js decodes quantized weights back to float at load, so the win there is download size, not speed.",
+      "Representing weights or computations at lower numeric precision. TFJS storage-quantized weights decode to floating point at load; download savings do not establish faster inference or lower runtime memory.",
     aliases: ["quantize", "quantized"],
     scope: "global",
   },
   {
     term: "pruning",
     definition:
-      "Zeroing the weights that contribute little. Unstructured pruning changes no shapes, so in TensorFlow.js the weight file stays the same size and inference does the same arithmetic. What improves is how well the file compresses. Structured pruning drops whole neurons or channels, so the file does get smaller and each call does less work.",
+      "Removing weights or structural units according to an importance rule, then checking quality. Zeroing dense weights need not reduce stored slots or computation; structured removal can change shapes and runtime cost.",
     aliases: ["prune", "pruned"],
     scope: "global",
   },
   {
     term: "distillation",
     definition:
-      "Training a small model on a large model's outputs instead of on raw labels. The small model learns the big one's full score distribution, which carries more than the single right answer does.",
+      "Training a student model using a teacher model as a source of targets or intermediate representations, sometimes alongside labeled data. The student may be smaller; matching the teacher does not guarantee its accuracy.",
     aliases: ["distill", "knowledge distillation"],
     scope: "global",
   },
   {
     term: "federated learning",
     definition:
-      "Training one shared model across many devices without moving their data anywhere. Each device trains locally and sends back weight updates, which a server averages.",
+      "Coordinating training across clients while keeping raw training records local. Clients share updates or statistics, which can still leak information; federation alone is not a privacy guarantee.",
     aliases: ["federated", "federated averaging"],
     scope: "global",
   },
@@ -848,42 +848,42 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "webgpu",
     definition:
-      "A newer browser GPU API that offers faster, more general compute than WebGL for in-browser models.",
+      "A browser API for graphics and general GPU computation. Whether it runs a model faster than WebGL, WASM or CPU depends on the model, runtime, device and workload.",
     aliases: ["WebGPU"],
     scope: "global",
   },
   {
     term: "wasm",
     definition:
-      "WebAssembly, a portable low-level bytecode format that runs at near-native speed. TensorFlow.js ships a WASM backend that runs tensor math on the CPU, in the browser or in Node, when no GPU is available.",
+      "WebAssembly, a portable low-level code format. TFJS offers a CPU-based WASM backend; it can be useful even when a GPU is available, depending on the workload.",
     aliases: ["WASM", "WebAssembly"],
     scope: "global",
   },
   {
     term: "opset",
     definition:
-      "A numbered version of the ONNX operator set. Each number fixes which operators exist and how they behave, so an operator the target runtime lacks is fixed by exporting at a lower opset, not by the runtime.",
+      "A versioned set of ONNX operator definitions. The target runtime must support the graph operators and their versions; lowering the export opset is not a universal fix for unsupported operations.",
     aliases: ["op-set", "operator set", "operator-set"],
     scope: "global",
   },
   {
     term: "data-drift",
     definition:
-      "When the statistics of incoming data shift away from what a model was trained on, degrading its accuracy.",
+      "A change in the distribution of incoming data relative to a reference period. It can affect performance, but it does not by itself prove an accuracy decline.",
     aliases: ["data drift"],
     scope: "global",
   },
   {
     term: "population stability index",
     definition:
-      "A drift score that buckets the baseline window and the current window the same way, then compares the two sets of bucket shares. By convention, below 0.1 is stable, 0.1 to 0.25 is worth watching, above 0.25 is major drift.",
+      "A score comparing proportions in fixed bins between two datasets. Results depend on binning and treatment of empty bins; common numeric cutoffs are conventions, not universal significance thresholds.",
     aliases: ["PSI", "population-stability-index"],
     scope: "global",
   },
   {
     term: "Kolmogorov-Smirnov",
     definition:
-      "A drift statistic that reads the largest gap between two cumulative distributions, so it catches a change in spread or shape that a difference of means misses.",
+      "A statistic measuring the largest gap between cumulative distributions. It can reveal marginal distribution changes that means miss; statistical interpretation depends on sampling assumptions.",
     aliases: ["Kolmogorov-Smirnov statistic", "KS statistic"],
     scope: "global",
   },
@@ -939,14 +939,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "random variable",
     definition:
-      "A quantity whose individual outcomes are unpredictable but whose long-run pattern is stable, like request latency or a sensor reading. Described by a probability distribution.",
+      "A numerical function of the outcome of a random process, described by a probability distribution. Observed time series need not have a stable distribution over time.",
     aliases: ["random variables"],
     scope: "global",
   },
   {
     term: "probability distribution",
     definition:
-      "The full description of which values a random variable takes and how often. Discrete variables use a PMF, continuous ones a PDF.",
+      "A description of the probabilities assigned to possible outcomes. A discrete variable can use a probability mass function; many continuous variables use a probability density function.",
     aliases: ["probability distributions", "distribution"],
     scope: "global",
   },
@@ -967,21 +967,21 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "expected value",
     definition:
-      "The probability-weighted average of a random variable over all outcomes. Sample means estimate it, and every ML loss is an expected value estimated by a batch average.",
+      "A probability-weighted average, when it exists. A sample mean can estimate it under suitable sampling assumptions; many training losses estimate an expected per-example loss.",
     aliases: ["expectation"],
     scope: "global",
   },
   {
     term: "normal distribution",
     definition:
-      "The bell-curve distribution, also called Gaussian, described entirely by its center (mean) and spread (standard deviation). Sums of many small independent effects tend toward it.",
+      "A bell-shaped distribution specified by its mean and positive standard deviation. Some sums approach it under central-limit conditions; individual sensor readings need not be normal.",
     aliases: ["Gaussian", "Gaussian distribution", "bell curve"],
     scope: "global",
   },
   {
     term: "central limit theorem",
     definition:
-      "Averages of many independent random effects approach a Normal distribution regardless of the source distribution. It is why Gaussian assumptions and z-score thresholds are usually reasonable, and it fails under heavy tails or correlated inputs.",
+      "For independent, identically distributed variables with finite nonzero variance, the standardized sample mean approaches a normal distribution as sample size grows. This does not make the original observations normal or automatically justify a 3-sigma anomaly rule.",
     aliases: ["CLT"],
     scope: "global",
   },
@@ -997,14 +997,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "eigenvector",
     definition:
-      "A direction a matrix scales without rotating; the scale factor is its eigenvalue. The largest eigenvalue dominates repeated multiplication, which is what drives both power iteration and exploding or vanishing gradients.",
+      "A nonzero vector that a square matrix maps to a scalar multiple of itself; the scalar is its eigenvalue. Repeated multiplication depends on eigenvalue magnitudes and the initial vector, with additional conditions needed for power-iteration convergence.",
     aliases: ["eigenvectors", "eigenvalue", "eigenvalues"],
     scope: "global",
   },
   {
     term: "SVD",
     definition:
-      "Singular Value Decomposition, which factors any matrix into rotate, scale, rotate. Keeping only the largest scale factors gives the best possible low-rank compression of the matrix.",
+      "Singular Value Decomposition: a real matrix factors into orthogonal directions and nonnegative singular values. Keeping the largest singular values gives a best fixed-rank approximation in Frobenius or spectral norm, not necessarily in prediction quality.",
     aliases: ["singular value decomposition"],
     scope: "global",
   },
@@ -1018,7 +1018,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "low-rank approximation",
     definition:
-      "Replacing a large matrix with the product of much smaller factors that keep only its most important directions. The mathematical basis for model compression and low-rank fine-tuning.",
+      "Approximating a matrix using factors with a smaller inner dimension. This differs from low-rank fine-tuning methods that learn an update while retaining the base matrix.",
     aliases: ["low-rank", "low rank"],
     scope: "global",
   },

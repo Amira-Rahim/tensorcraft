@@ -158,7 +158,7 @@ testCode: |
       const out = await ranked(reports, countingStub);
       expect(out).toHaveLength(3);
       expect(typeof tasksAsked[0], 'pipeline() has no default. The task name is the argument that decides which model is fetched, so it is not something the harness can supply for you.').toBe('string');
-      expect(tasksAsked.length, 'Each await of the factory is a model download in the real pipeline. One classification pass needs one.').toBe(1);
+      expect(tasksAsked.length, 'Each factory call can repeat initialization even when assets are cached. Load once for this batch.').toBe(1);
       expect(classifierCalls, 'The classifier takes the whole array, so the batch is one call.').toBe(1);
       expect(batchSize, 'The classifier should have received all three reports at once.').toBe(3);
     });

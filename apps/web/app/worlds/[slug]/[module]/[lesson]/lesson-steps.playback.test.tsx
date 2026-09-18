@@ -103,6 +103,7 @@ vi.mock("@/lib/supabase/client", () => ({
 
 vi.mock("@/app/components/mdx", () => ({
   BossBeat: () => null,
+  StoryConsequence: () => null,
   Concept: () => null,
   DeepScanDemo: () => null,
   DispatchTease: () => null,

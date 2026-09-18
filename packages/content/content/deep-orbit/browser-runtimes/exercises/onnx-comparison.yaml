@@ -1,44 +1,44 @@
 slug: onnx-comparison
 lessonSlug: onnx-runtime-web
-title: "Benchmark TF.js Against ONNX Runtime"
-instructions: "Build `compareRuntimes(model, modelPath, signal)`. `model` is the DEEP SCAN classifier already loaded in TF.js, `modelPath` is the same network exported to ONNX, and `signal` is three normalized numbers. Send that one signal through both runtimes as a [1, 3] float32 input, in the order you were handed it, and return `{ tfjsMs, onnxMs, outputsAgree, pick }`. Time the inference call on each side, not the loading. Pin the ONNX session to the WASM execution provider, the way the lesson's benchmark pins both sides: change the runtime and the backend at once and you have measured the backend. `outputsAgree` is true when the two values the runtimes handed back differ by at most 0.0001, and both numbers have to be the ones they returned rather than ones you worked out. `pick` is where to start looking, read off `model.countParams()`: 'wasm' under a million parameters, 'gpu' at a million or more, before any benchmark has been run. Read the clock with `performance.now()` on both sides. The harness clock is too coarse to say how long a call really took, so the tests check that each timing is the gap between two readings rather than grading the duration itself."
+title: "Compare Runtime Outputs and Timing"
+instructions: "Build `compareRuntimes(model, modelPath, signal)`. Return `{ tfjsMs, onnxMs, outputsAgree }` after sending the same three numbers through both runtimes as a [1, 3] float32 input. The TFJS model is already loaded; create the ONNX session with `executionProviders: ['wasm']`. Exclude loading from inference timings. Read `performance.now()` before inference and after awaiting its output. `outputsAgree` is true when the actual returned scores differ by at most 0.0001. Dispose your TFJS input and prediction, and release the ONNX session after use, including on failure. The supplied model belongs to the caller. This exercise uses an ONNX stand-in and a controlled clock: a single timed call does not choose a backend. Use the real lab for repeated measurements on a target device."
 starterCode: |
   import * as ort from 'onnxruntime-web';
 
   async function compareRuntimes(model, modelPath, signal) {
     // Two runtimes, one reading. Every difference you leave between the two
     // setups ends up inside the measurement. Report the numbers the runtimes
-    // handed back rather than ones you worked out. The pick is a property of
-    // the model, not of the two timings.
-    return { tfjsMs: 0, onnxMs: 0, outputsAgree: false, pick: '' };
+    // handed back rather than ones you worked out.
+    return { tfjsMs: 0, onnxMs: 0, outputsAgree: false };
   }
 solutionCode: |
   import * as ort from 'onnxruntime-web';
 
   async function compareRuntimes(model, modelPath, signal) {
     const input = tf.tensor2d([signal]);
-    const tfStart = performance.now();
-    const prediction = model.predict(input);
-    const tfjsValue = (await prediction.data())[0];
-    const tfjsMs = performance.now() - tfStart;
-    prediction.dispose();
-    input.dispose();
-
-    const session = await ort.InferenceSession.create(modelPath, {
-      executionProviders: ['wasm'],
-    });
-    const feed = new ort.Tensor('float32', new Float32Array(signal), [1, 3]);
-    const onnxStart = performance.now();
-    const results = await session.run({ input: feed });
-    const onnxValue = results.output.data[0];
-    const onnxMs = performance.now() - onnxStart;
-
-    return {
-      tfjsMs,
-      onnxMs,
-      outputsAgree: Math.abs(tfjsValue - onnxValue) <= 0.0001,
-      pick: model.countParams() < 1000000 ? 'wasm' : 'gpu',
-    };
+    let prediction;
+    let tfjsValue;
+    let tfjsMs;
+    try {
+      const start = performance.now();
+      prediction = model.predict(input);
+      tfjsValue = (await prediction.data())[0];
+      tfjsMs = performance.now() - start;
+    } finally {
+      prediction?.dispose();
+      input.dispose();
+    }
+    const session = await ort.InferenceSession.create(modelPath, { executionProviders: ['wasm'] });
+    try {
+      const feed = new ort.Tensor('float32', new Float32Array(signal), [1, 3]);
+      const start = performance.now();
+      const results = await session.run({ input: feed });
+      const onnxValue = results.output.data[0];
+      const onnxMs = performance.now() - start;
+      return { tfjsMs, onnxMs, outputsAgree: Math.abs(tfjsValue - onnxValue) <= 0.0001 };
+    } finally {
+      await session.release();
+    }
   }
 testCode: |
   describe('compareRuntimes', () => {
@@ -61,22 +61,13 @@ testCode: |
       second[0] = 1;
       const third = new Float32Array(16);
       third[0] = 1;
-      model.setWeights([
+      const weights = [
         tf.tensor2d(first, [3, 32]), tf.zeros([32]),
         tf.tensor2d(second, [32, 16]), tf.zeros([16]),
         tf.tensor2d(third, [16, 1]), tf.zeros([1]),
-      ]);
-      return model;
-    }
-
-    // Same input width, same single output, four orders of magnitude more
-    // arithmetic per call. Zero weights: nothing here reads its output.
-    function millionsModel() {
-      const model = tf.sequential();
-      model.add(tf.layers.dense({
-        units: 2000000, activation: 'relu', inputShape: [3], kernelInitializer: 'zeros',
-      }));
-      model.add(tf.layers.dense({ units: 1, activation: 'sigmoid', kernelInitializer: 'zeros' }));
+      ];
+      model.setWeights(weights);
+      weights.forEach(w => w.dispose());
       return model;
     }
 
@@ -84,12 +75,11 @@ testCode: |
     // names what is missing instead of reporting a property of undefined.
     async function report(model, path, signal) {
       const out = await compareRuntimes(model, path, signal);
-      const why = 'compareRuntimes has to resolve to an object carrying tfjsMs, onnxMs, outputsAgree and pick.';
+      const why = 'compareRuntimes has to resolve to an object carrying tfjsMs, onnxMs and outputsAgree.';
       expect(out, why).toBeDefined();
       expect(out, why).toHaveProperty('tfjsMs');
       expect(out, why).toHaveProperty('onnxMs');
       expect(out, why).toHaveProperty('outputsAgree');
-      expect(out, why).toHaveProperty('pick');
       return out;
     }
 
@@ -117,20 +107,6 @@ testCode: |
       expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or the two sides were fed different inputs.').toBe(true);
     });
 
-    it('reads the backend off the model in front of it, not off the lesson', async () => {
-      const small = deepScanModel();
-      const large = millionsModel();
-      try {
-        const tiny = await report(small, '/models/deep-scan.onnx', SIGNAL);
-        const huge = await report(large, '/models/deep-scan.onnx', SIGNAL);
-        expect(tiny.pick, 'One prediction from this classifier is a few hundred multiply-adds. Getting the input onto the GPU and the answer back off it costs more than that.').toBe('wasm');
-        expect(huge.pick, 'This model does four orders of magnitude more arithmetic per call for the same fixed transfer cost, so the rule in the instructions lands on the other side. A pick that does not move between these two models was written down rather than worked out.').toBe('gpu');
-      } finally {
-        small.dispose();
-        large.dispose();
-      }
-    });
-
     it('compares the two numbers the runtimes returned, and feeds both the same input', async () => {
       // Three things are graded here, and all three are about provenance.
       //
@@ -147,15 +123,19 @@ testCode: |
       // agreement that did not happen.
       const sentinel = '/models/spy-check.onnx';
       const model = deepScanModel();
-      const probe = model.predict(tf.tensor2d([SIGNAL]));
+      const probeInput = tf.tensor2d([SIGNAL]);
+      const probe = model.predict(probeInput);
       const tfjsValue = (await probe.data())[0];
       probe.dispose();
+      probeInput.dispose();
       // Math.fround so the value survives the Float32Array round-trip exactly.
       const planted = Math.fround(tfjsValue > 0.5 ? tfjsValue - 0.3 : tfjsValue + 0.3);
       const orig = ort.InferenceSession.create;
       let sentinelCalls = 0;
       let options = null;
       let feeds = null;
+      let released = false;
+      let failRun = false;
       // Sentinel path: only calls made with THIS path are wrapped, so the
       // other tests' sessions (they run concurrently) are untouched.
       ort.InferenceSession.create = async function (...args) {
@@ -163,9 +143,12 @@ testCode: |
         if (args[0] !== sentinel) return session;
         sentinelCalls++;
         options = args[1];
+        const realRelease = session.release.bind(session);
+        session.release = async () => { released = true; await realRelease(); };
         const realRun = session.run.bind(session);
         session.run = async function (f) {
           feeds = f;
+          if (failRun) throw new Error('inference failure fixture');
           await realRun(f);
           return { output: { type: 'float32', dims: [1, 1], data: new Float32Array([planted]) } };
         };
@@ -174,10 +157,21 @@ testCode: |
       let out;
       try {
         out = await report(model, sentinel, SIGNAL);
+        expect(released, 'Release the session after reading its result.').toBe(true);
+        // Keep both branches under one wrapper: the exercise worker can run
+        // tests concurrently, so separate global overrides would race.
+        released = false;
+        failRun = true;
+        let failed = false;
+        try { await report(model, sentinel, SIGNAL); }
+        catch (error) { failed = error.message === 'inference failure fixture'; }
+        expect(failed, 'Preserve an inference failure instead of fabricating a score.').toBe(true);
+        expect(released, 'Release the session when run() rejects too.').toBe(true);
       } finally {
         ort.InferenceSession.create = orig;
         model.dispose();
       }
+      expect(released, 'Release the session after reading its result.').toBe(true);
       expect(sentinelCalls, 'compareRuntimes never opened a session for the path it was handed.').toBeGreaterThanOrEqual(1);
       expect(options && options.executionProviders, 'The comparison only says something about the two runtimes if both are on the same backend. Create the session with the execution provider the instructions name.').toEqual(['wasm']);
       expect(feeds, 'The session was created but never run, so the ONNX side produced nothing to compare.').not.toBe(null);

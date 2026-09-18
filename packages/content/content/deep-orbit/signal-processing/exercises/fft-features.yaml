@@ -3,6 +3,7 @@ lessonSlug: fft-as-features
 title: "Extract Fixed-Bin FFT Features"
 instructions: |
   Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function.
+  Assume finite, nonempty captures, a positive sample rate and 0 <= loHz <= hiHz <= sampleRate / 2.
   Here a crossing means strictly opposite signs on adjacent samples: one positive and one negative. A pair containing an exact zero contributes nothing. Other conventions exist; this exercise uses that one consistently.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
@@ -92,7 +93,7 @@ testCode: |
       // sit at known offsets from it.
       expect(
         features[2],
-        'A 1.0 tone sitting on a bin center puts 64 / 2 = 32 into that bin, and this row reports magnitudes as the transform gives them. A value near 1.0 here is that 32 divided by half the window length, which is the normalization the lesson fits across a training set after extraction, not inside this function.',
+        'A 1.0 tone sitting on a bin center puts 64 / 2 = 32 into that bin, and this row reports magnitudes as the transform gives them. A value near 1.0 here is that 32 divided by half the window length, which is amplitude-spectrum scaling. This task returns raw magnitudes; training-set z-score normalization is a separate later operation.',
       ).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
     });
