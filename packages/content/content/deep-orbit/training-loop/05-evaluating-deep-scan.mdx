@@ -257,7 +257,7 @@ When a denominator is zero, report the metric as undefined or state the conventi
 **ROC and PR curves.** Sweep the threshold and plot the results: a precision-recall (PR) curve shows precision against recall, and an ROC (receiver operating characteristic) curve shows the true-positive rate (the recall you just computed) against the false-positive rate, the fraction of calm rows falsely flagged. One accuracy number from one threshold hides both curves.
 </DerivationDrawer>
 
-One of those four counts deserves suspicion before anyone celebrates: the empty false-alarm cell (precision 1.000, in the drawer above) was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. An eval set built to be balanced instead of drawn from production is selection bias in miniature.
+One of those four counts deserves suspicion before anyone celebrates: the empty false-alarm cell (precision 1.000, in the drawer above) was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. Balanced sampling can help inspect each class, but it changes the class proportions. Its unweighted accuracy and precision need not describe the live stream; use representative data or an explicitly justified weighting scheme for those estimates.
 
 <DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates">
 **Precision depends on how common anomalies are.** Sensitivity and false-positive rate also depend on the decision threshold and the distribution of examples within each class. The calculation below assumes those stay fixed while only the anomaly frequency changes. If sensors, class patterns, or the threshold change, remeasure those rates. The held-out slice (26 anomalous, 24 calm) was assembled to be near balanced; live hull telemetry is overwhelmingly calm.
@@ -268,7 +268,7 @@ One of those four counts deserves suspicion before anyone celebrates: the empty 
 
 Here sens is the sensitivity (the recall from the drawer above), FPR is the false-positive rate (the share of calm readings falsely flagged), and the prior is how common anomalies are before any alarm fires.
 
-**First, honesty about the false-positive rate.** FP = 0 on 24 calm rows says less than it seems: a detector with a true 4% FPR would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make the FPR zero.
+**First, honesty about the false-positive rate.** FP = 0 on 24 calm rows says less than it seems: on 24 independent calm trials with the same true 4% FPR, a detector would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make the FPR zero.
 
 **Worked example.** Take sens = 0.885 (the recall above), assume FPR = 2%, and suppose 1 reading in 1,000 on the live stream is genuinely anomalous (prior = 0.001):
 
@@ -308,7 +308,7 @@ Report the scores this run produced, even when they are disappointing. The grade
 
 <LessonRecap
   whatYouLearned={[
-    "`model.evaluate()` measures performance on held-out data the model has never seen. Held-out accuracy estimates performance on examples represented by that test set; it does not guarantee performance after deployment.",
+    "model.evaluate() computes loss and configured metrics on the rows you supply. Use untouched test rows to estimate performance on the conditions they represent; that estimate does not guarantee deployment performance.",
     "Train/test gaps help diagnose failures, but do not identify the cause by themselves. Check data shift, labels, preprocessing, and performance against a baseline.",
     "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production.",
     "Validation data pays for the decisions you make during training, so repeated selection can make its score optimistic. The test slice is scored once, after the settings are frozen, and that is the number you report."
@@ -317,9 +317,11 @@ Report the scores this run produced, even when they are disappointing. The grade
   youCanNow="Train a classifier, run `model.evaluate()` on a held-out slice, and use the train/test gap as an investigation signal alongside data checks and sliced evaluation."
 />
 
+<ProjectMilestone stage="evaluation" />
+
 <Epilogue>
 
-Deployment authorized, the bridge gone quiet, Farah stays behind with the one number that won't leave her alone. Signal 3: score 0.518. Not normal enough to dismiss, not anomalous enough to alarm: a network that scored 94% on the small test slice, now between the crew's review cutoffs. She traces the reading back through the archive index, already half-certain of what she will find, and the index confirms it: sample 7741. The calibration ghost. The one she flagged before they had ever built a network, and told Demir to move on from, and didn't delete. Being right about it lands colder than surprise would have.
+Deployment authorized, the bridge gone quiet, Farah stays behind with the one number that won't leave her alone. Signal 3: score 0.518. Not normal enough to dismiss, not anomalous enough to alarm: a network that scored 94% on the small test slice, now between the crew's review cutoffs. She traces the reading back through the archive index, already half-certain of what she will find, and the index confirms it: sample 7741. The calibration ghost. Her pencil note still says to check the instrument chain first. The new score has brought her back to the same row without answering that question.
 
 <Dialogue speaker="Dr. Farah">
 Ninety-four percent accurate, and the one reading it can't decide on is the one I couldn't explain by hand. What are you?

@@ -65,7 +65,7 @@ skillAxes: [data_prep]
 
 > **DEEP SCAN · EVALUATION LOG** · archive re-annotated against spectrogram-based review labels · held-out slice: 400 readings · inputs: raw time-domain [3] · accuracy 78.0% (312/400) · rerun with +8 FFT magnitude bins [11] · accuracy 87.0% (348/400) · same slice, same labels, both runs.
 
-Nine points of accuracy, and not one new byte of sensor data. That log line is the whole lesson; the rest is understanding why it isn't a trick.
+Both models read the same captures. The new model receives more measurements from each capture, including frequency information the original three features discarded.
 
 The 78 and the deployment review's 94 are the same three-feature model. That review scored it 47 of 50 against labels that could not see a 73.4 Hz component, so the old scoreboard flattered it. Re-annotate the archive against spectrogram-based review labels, hold out 400 readings instead of 50, and the same model reads 78.0%. Labels are data too, and some of them were wrong.
 
@@ -83,7 +83,7 @@ Eight more measurements are not free either. Eleven inputs instead of three mean
 
 He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. Strip the story out and what he proposed is `rawData.map(...)`: rows arrive in the shape the source produced, and you hand the consumer the shape it can actually use. Feature engineering is that same map, aimed at a model instead of a render.
 
-<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Combine raw features with frequency-domain features into one vector a model can train on, and know why the FFT columns have to be normalized before training", "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model"]} />
+<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Combine raw and frequency-domain features, and explain why their scales can affect training", "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model"]} />
 
 ## Mapping Captures into Features
 
@@ -136,9 +136,9 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     // a different frequency in every row, and no downstream model could
     // ever ask "what lives at 72 Hz?". At this window's 4 Hz resolution
     // (256 Hz / 64 samples), bins 13-20 have centers 52-80 Hz and cover
-    // 50-82 Hz, the band that sits just above every catalogued background
-    // line; the sixth of the eight (bin 18) is the span that holds the
-    // 73.4 Hz line.
+    // 50-82 Hz, above the catalogued background lines. Bin 18 is centered
+    // at 72 Hz, nearest to 73.4 Hz. An off-bin tone can contribute to
+    // several of these features; bins are not isolated frequency buckets.
     const fixedBins = magnitudes.slice(13, 21);
 
     // Combine: [raw features..., fixed-bin FFT magnitudes...]
@@ -176,11 +176,11 @@ function normalizeFeatures(features: number[][]): { normalized: number[][]; stat
     const std = Math.sqrt(
       column.reduce((sum, v) => sum + (v - mean) ** 2, 0) / column.length
     );
-    return { mean, std: std || 1 };  // avoid division by zero
+    return { mean, std };  // preserve the measured standard deviation
   });
 
   const normalized = features.map(row =>
-    row.map((val, i) => (val - stats[i].mean) / stats[i].std)
+    row.map((val, i) => (val - stats[i].mean) / (stats[i].std || 1))
   );
 
   return { normalized, stats };
@@ -192,7 +192,7 @@ const { normalized: trainNorm, stats } = normalizeFeatures(trainingFeatures);
 
 // During inference:
 function normalizeWithStats(features: number[], stats: { mean: number; std: number }[]): number[] {
-  return features.map((val, i) => (val - stats[i].mean) / stats[i].std);
+  return features.map((val, i) => (val - stats[i].mean) / (stats[i].std || 1));
 }`}
 </CodeBlock>
 
@@ -267,7 +267,7 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
   whatYouLearned={[
     "Feature engineering derives new model inputs from data you already have: no new recordings, more measurements of each one, so the pattern the model needs is in its input rather than buried under it.",
     "Identical summary statistics can hide different spectra. Adding FFT magnitudes preserves distinctions those summaries discard; held-out improvement still needs testing.",
-    "Features from different sources often differ in scale by more than an order of magnitude. Z-score normalization must be applied using statistics computed from training data, and those same statistics must be reused at inference time.",
+    "Different feature scales can affect training. When using fitted normalization, compute its statistics on training rows and reuse them at inference.",
     "Evaluation depends on reference labels. In the fictional mission review, correcting those labels lowers the old model score before additional features recover part of the loss."
   ]}
   bridge="Just as `rawData.map(d => ({ normalized: (d.value - min) / (max - min) }))` turns the rows an API returned into the numbers a component can render, `tf.concat([rawSignal, fftMagnitudes], 1)` hands the model measurements of the window it was never shown, so the pattern it needs is in its input instead of lost upstream of it."

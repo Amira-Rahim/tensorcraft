@@ -9,6 +9,13 @@ class RedirectError extends Error {
   }
 }
 
+vi.mock("@/lib/learning-route-server", () => ({
+  getLearningRoutePreference: vi.fn(async () => ({
+    route: null,
+    unavailable: false,
+  })),
+}));
+
 vi.mock("next/navigation", () => ({
   redirect: (target: string) => {
     throw new RedirectError(target);
@@ -115,6 +122,38 @@ describe("dashboard/page (server component)", () => {
   beforeEach(() => {
     getUserMock.mockReset();
     resetTableData();
+  });
+
+  it("puts continuation on the later dashboard only after the finale completion record", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "u-1", email: "x@example.com" } },
+      error: null,
+    });
+    tableData.world_progress = [
+      {
+        world_id: "deep-orbit",
+        module_id: "capstone",
+        lesson_id: "launch",
+        status: "completed",
+        updated_at: new Date().toISOString(),
+      },
+    ];
+    const { default: DashboardPage } = await import("../page");
+    expect(
+      getDashboardViewProps(await DashboardPage())?.continuation,
+    ).toBeTruthy();
+    tableData.world_progress = [
+      {
+        world_id: "deep-orbit",
+        module_id: "foundations",
+        lesson_id: "introduction-to-tensors",
+        status: "completed",
+        updated_at: new Date().toISOString(),
+      },
+    ];
+    expect(
+      getDashboardViewProps(await DashboardPage())?.continuation,
+    ).toBeNull();
   });
 
   it("redirects unauthenticated users to /auth", async () => {

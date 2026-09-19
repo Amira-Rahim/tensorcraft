@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A pipeline is a chain: each stage validates its input before processing, and its output becomes the next stage's input."
   - level: guidance
-    content: "Start with the stage contract. validate is a precondition on the data arriving at that stage, so it answers before process ever sees that data, and a stage that refuses has to name itself, or a shape break in the middle of a chain is anonymous. The instructions carry the exact message text the grader matches on. Chaining is the second decision: new Pipeline().addStage(a).addStage(b) only parses if addStage hands back something that has an addStage on it. The third is the walk itself, where one value moves through and each stage's output stands in as the next stage's input, so the pipeline returns whatever the last stage returned. The grader wires an 8-sample window through normalize, then FFT, which emits 5 bins rather than 8, then a stage that demands 5. A mid-chain contract break is a real case here, not a hypothetical. That last stage waits before it answers, so what it returns is a promise until something settles it, and a walk that forgets to settle each stage hands the next one a promise instead of data."
+    content: "Return this from addStage. In run, validate the current value before processing it, reject with the stage name if validation fails, then await the stage result. Carry that result into the next stage and return the final value. The exercise includes an asynchronous stage in the middle of the chain."
   - level: solution
     content: |
       interface PipelineStage<TIn, TOut> {
@@ -233,12 +233,12 @@ Build the chain runner: stage contracts checked before each stage, `addStage` ch
     "A single-value loop runs a chain. Multiple dependencies require a scheduler that retains outputs by stage name and runs consumers after their dependencies."
   ]}
   bridge="Package manifests and pipeline configs both declare dependencies. ML contracts also include feature order, units, and preprocessing; some violations throw while others silently change predictions."
-  youCanNow="Build a multi-stage ML inference pipeline whose stages declare their input and output types, and whose runner refuses bad data at the stage that received it instead of letting a shape break travel downstream, and read a component manifest closely enough to see where a chain runner stops being enough."
+  youCanNow="Build a validated asynchronous chain and identify where a branched dependency graph needs a scheduler."
 />
 
 <Epilogue>
 
-The diagram stays on the main display after the briefing ends. Five boxes, typed edges, raw signal in at one end and a report out the other. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. Mirza is already gone by then. Nazari stays long enough to write 47.0 in grease pencil on the corner of her board, under the four earlier numbers she has put there this month, and adds no note beside it. ARIA studies the lower corner for 1.4 seconds, which for her is a long time.
+The diagram stays on the main display after the briefing ends. Five boxes, typed edges, raw signal in at one end and a report out the other. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA). Her calibration-tone checks still work; an unknown reading goes to review. A low classifier score can request that path, but a high score does not certify the reading. Mirza is already gone by then. Nazari stays long enough to write 47.0 in grease pencil on the corner of her board, under the four earlier numbers she has put there this month, and adds no note beside it. ARIA studies the lower corner for 1.4 seconds, which for her is a long time.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 I have reviewed the architecture. I appear to be the fallback path. It is a smaller box than I had. It is still a box.

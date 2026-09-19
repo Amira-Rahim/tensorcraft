@@ -2,7 +2,11 @@ slug: compute-fft
 lessonSlug: fourier-transform
 title: "Compute FFT and Find Dominant Frequency"
 instructions: |
-  Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. For an isolated off-bin tone, the winning bin often lies near the tone. Phase, leakage, neighboring components and boundary bins can change the winner; nearest-bin rounding is not the algorithm. Use the computed magnitudes. Assume finite input with at least two samples and a positive sample rate. Break equal-magnitude ties by keeping the lowest eligible bin.
+  Implement `findDominantFrequency(signal, sampleRate)` using `tf.spectral.rfft()`. Return the frequency in hertz of the largest-magnitude non-DC bin; exclude bin 0. Convert its index using `bin * sampleRate / signal.length`. Keep the lowest eligible index when magnitudes tie.
+
+  Return the measured bin center. An isolated off-bin tone often peaks nearby, but phase, leakage and neighboring tones can change the winner. Use the computed magnitudes rather than rounding an estimated frequency.
+
+  Assume finite input with at least two samples and a positive sample rate. For a silent signal, the tie rule returns the first non-DC bin; this is a function convention, not evidence of a tone.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -31,6 +35,10 @@ solutionCode: |
   }
 testCode: |
   describe('findDominantFrequency', () => {
+    it('keeps the first eligible bin when magnitudes tie', () => {
+      expect(findDominantFrequency([0, 0, 0, 0], 8)).toBe(2);
+      expect(findDominantFrequency([1, 0, 0, 0], 8)).toBe(2);
+    });
     it('finds the one tone in a 1-second, 128 Hz capture', () => {
       const signal = Array.from({ length: 128 }, (_, i) => Math.sin((2 * Math.PI * 5 * i) / 128));
       const freq = findDominantFrequency(signal, 128);

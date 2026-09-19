@@ -152,7 +152,7 @@ profiles.patch("/:userId", async (c) => {
     .update(updates)
     .eq("id", targetUserId)
     .select(
-      "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, created_at, updated_at",
+      "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, ml_learning_route, created_at, updated_at",
     )
     .single();
 
@@ -204,6 +204,8 @@ const USER_DATA_TABLES = [
   "arena_submissions",
   // Recall schedules and ratings are learner data (migration 061).
   "review_queue",
+  "learning_activity_progress",
+  "learning_activity_streams",
 ] as const;
 
 // Bug reports are service-role-only (020: no user SELECT policy) and
@@ -263,7 +265,7 @@ profiles.get(
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select(
-        "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, js_background, js_experience_years, email_alerts, weekly_digest, stripe_customer_id, created_at, updated_at",
+        "id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, experience_level, learning_goal, ml_learning_route, js_background, js_experience_years, email_alerts, weekly_digest, stripe_customer_id, created_at, updated_at",
       )
       .eq("id", userId)
       .single();

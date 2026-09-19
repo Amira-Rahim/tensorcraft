@@ -16,6 +16,11 @@ import { useSandpack, type SandpackTheme } from "@codesandbox/sandpack-react";
 import { useScheme } from "../use-scheme";
 import { InstructionText } from "./instruction-text";
 import { HintPanel } from "./hint-panel";
+import {
+  exerciseDraftKey,
+  readExerciseDraft,
+  type ExerciseDraft,
+} from "./exercise-draft";
 
 const SandpackProvider = lazy(() =>
   import("@codesandbox/sandpack-react").then((m) => ({
@@ -123,6 +128,8 @@ export interface ExerciseBridge {
 
 interface ExerciseProps {
   slug: string;
+  /** Signed-in drafts never read another account's or the guest's key. */
+  draftOwner?: string | null;
   onSubmit?: (result: ExerciseSubmitResult) => void;
   /** Optional JS-to-ML bridge hint shown below the editor. */
   bridge?: ExerciseBridge;
@@ -529,6 +536,9 @@ function BridgeHint({ bridge }: { bridge: ExerciseBridge }) {
 
 function ExerciseControls({
   exercise,
+  draftOwner,
+  initialDraft,
+  readFailed,
   onResults,
   onLogs,
   onShowSolution,
@@ -536,6 +546,9 @@ function ExerciseControls({
   showSolution,
 }: {
   exercise: ExerciseData;
+  draftOwner?: string | null;
+  initialDraft: ExerciseDraft | null;
+  readFailed: boolean;
   onResults: (results: TestResult[]) => void;
   onLogs: (logs: ConsoleEntry[]) => void;
   onShowSolution: () => void;
@@ -545,40 +558,74 @@ function ExerciseControls({
   const { sandpack } = useSandpack();
   const [running, setRunning] = useState(false);
   const hasAttempted = useRef(false);
-  const stashedCodeRef = useRef<string | null>(null);
-  const [hasStash, setHasStash] = useState(false);
+  const stashedCodeRef = useRef<string | null>(
+    initialDraft?.stashedCode ?? null,
+  );
+  const [hasStash, setHasStash] = useState(initialDraft?.stashedCode != null);
+  const [draftNotice, setDraftNotice] = useState(
+    readFailed
+      ? "The saved draft could not be read. Copy your work before leaving this page."
+      : initialDraft?.starter && initialDraft.starter !== exercise.starterCode
+        ? "The starter has changed since this draft. Your code is preserved; compare it with the current instructions or use Reset."
+        : "",
+  );
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [storageBlocked, setStorageBlocked] = useState(readFailed);
+  const draftKey = exerciseDraftKey(exercise.slug, draftOwner);
   // Anchor for the attempt's durationMs: when the editor became
   // interactive, not when the run button was pressed - "how long did the
   // learner work before this attempt" is the question the data answers.
   const openedAtRef = useRef<number>(Date.now());
 
-  // Restore the learner's last-run code once on mount. Without this,
-  // leaving mid-lesson reset the editor to starterCode and erased the
-  // code a pass was earned with (2026-07-14 UX audit).
-  const restoredRef = useRef(false);
+  // The parent seeds Sandpack from the draft before mounting its provider.
+  // Child-effect updateFile loses a race to Sandpack's StrictMode reset.
   useEffect(() => {
-    if (restoredRef.current) return;
-    restoredRef.current = true;
-    try {
-      const saved = localStorage.getItem(`tc-code-${exercise.slug}`);
-      if (saved && saved !== exercise.starterCode) {
-        sandpack.updateFile("/index.js", saved);
+    if (initialDraft?.solutionViewed) onShowSolution();
+  }, []);
+
+  const currentCode = sandpack.files["/index.js"]?.code ?? "";
+  const saveDraftRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    if (storageBlocked) return;
+    const save = () => {
+      try {
+        const raw = JSON.stringify({
+          version: 1,
+          code: currentCode,
+          starter: exercise.starterCode,
+          solutionViewed: showSolution,
+          stashedCode: hasStash ? stashedCodeRef.current : null,
+        });
+        if (raw.length > 400_000) throw new Error("Draft is too large");
+        localStorage.setItem(draftKey, raw);
+        setSaveFailed(false);
+      } catch {
+        setSaveFailed(true);
       }
-    } catch {
-      // localStorage unavailable
-    }
-    // one-time restore; sandpack identity churns per keystroke, so an
-    // exhaustive deps array here would re-fire the restore on every edit.
+    };
+    saveDraftRef.current = save;
+    const timer = window.setTimeout(save, 250);
+    return () => window.clearTimeout(timer);
+  }, [
+    currentCode,
+    draftKey,
+    exercise.starterCode,
+    hasStash,
+    showSolution,
+    storageBlocked,
+  ]);
+  useEffect(() => {
+    const flush = () => saveDraftRef.current();
+    window.addEventListener("pagehide", flush);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      flush();
+    };
   }, []);
 
   const handleRun = useCallback(async () => {
     setRunning(true);
     const code = sandpack.files["/index.js"]?.code ?? "";
-    try {
-      localStorage.setItem(`tc-code-${exercise.slug}`, code);
-    } catch {
-      // localStorage unavailable
-    }
 
     try {
       // 30s: each run spawns a fresh worker that importScripts CDN TFJS
@@ -659,13 +706,15 @@ function ExerciseControls({
     sandpack.updateFile("/index.js", exercise.starterCode);
     try {
       // Reset means reset: drop the saved copy too.
-      localStorage.removeItem(`tc-code-${exercise.slug}`);
+      localStorage.removeItem(draftKey);
     } catch {
       // localStorage unavailable
     }
     onResults([]);
     onLogs([]);
-  }, [sandpack, exercise.starterCode, exercise.slug, onResults, onLogs]);
+    setDraftNotice("");
+    setStorageBlocked(false);
+  }, [sandpack, exercise.starterCode, draftKey, onResults, onLogs]);
 
   const handleShowSolution = useCallback(() => {
     // Stash the learner's attempt before overwriting: peeking at the
@@ -684,49 +733,66 @@ function ExerciseControls({
   }, [sandpack]);
 
   return (
-    <div className="flex items-center gap-2 mt-3">
-      <button
-        type="button"
-        onClick={handleRun}
-        disabled={running}
-        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-on-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+    <>
+      <p
+        className="text-xs text-text-muted"
+        role={saveFailed ? "status" : undefined}
       >
-        {/* First run pulls ~1.4 MB of TFJS from the CDN into the worker;
+        {storageBlocked
+          ? "The previous draft is preserved. Use Reset to replace it, or copy your code before leaving."
+          : saveFailed
+            ? "Draft could not be saved. Copy your code before leaving; editing will retry the save."
+            : "Draft saves on this browser as you edit."}
+      </p>
+      {draftNotice && (
+        <p role="status" className="mt-2 text-sm text-text-muted">
+          {draftNotice}
+        </p>
+      )}
+      <div className="flex flex-wrap items-center gap-2 mt-3">
+        <button
+          type="button"
+          onClick={handleRun}
+          disabled={running}
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-on-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+        >
+          {/* First run pulls ~1.4 MB of TFJS from the CDN into the worker;
             up to 30s of silence read as a hang (2026-07-14 UX audit). */}
-        {running
-          ? tfjsRuntimeWarm
-            ? "Running..."
-            : "Downloading TFJS runtime (first run)..."
-          : "Run Tests"}
-      </button>
+          {running
+            ? tfjsRuntimeWarm
+              ? "Running..."
+              : "Downloading TFJS runtime (first run)..."
+            : "Run Tests"}
+        </button>
 
-      <button
-        type="button"
-        onClick={handleReset}
-        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-surface-overlay text-text-muted rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
-      >
-        Reset
-      </button>
-
-      {!showSolution && (
         <button
           type="button"
-          onClick={handleShowSolution}
-          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-warning/10 text-warning border border-warning/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+          onClick={handleReset}
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-surface-overlay text-text-muted rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
         >
-          Show Solution
+          Reset
         </button>
-      )}
-      {hasStash && (
-        <button
-          type="button"
-          onClick={handleRestoreMyCode}
-          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-interactive rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
-        >
-          Restore My Code
-        </button>
-      )}
-    </div>
+
+        {!showSolution && (
+          <button
+            type="button"
+            onClick={handleShowSolution}
+            className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-warning/10 text-warning border border-warning/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+          >
+            Show Solution
+          </button>
+        )}
+        {hasStash && (
+          <button
+            type="button"
+            onClick={handleRestoreMyCode}
+            className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-interactive rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+          >
+            Restore My Code
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -751,6 +817,7 @@ function ExerciseLoadingSkeleton() {
 
 export function Exercise({
   slug,
+  draftOwner,
   onSubmit,
   bridge,
   onHintRevealed,
@@ -762,6 +829,24 @@ export function Exercise({
   const [results, setResults] = useState<TestResult[]>([]);
   const [logs, setLogs] = useState<ConsoleEntry[]>([]);
   const [showSolution, setShowSolution] = useState(false);
+  const [draftState, setDraftState] = useState<{
+    ready: boolean;
+    draft: ExerciseDraft | null;
+    failed: boolean;
+  }>({ ready: false, draft: null, failed: false });
+  useEffect(() => {
+    try {
+      setDraftState({
+        ready: true,
+        draft: readExerciseDraft(
+          localStorage.getItem(exerciseDraftKey(slug, draftOwner)),
+        ),
+        failed: false,
+      });
+    } catch {
+      setDraftState({ ready: true, draft: null, failed: true });
+    }
+  }, [slug, draftOwner]);
 
   // Sandpack resets the editor to props.files whenever the OBJECT IDENTITY
   // changes (its useFiles effect depends on props.files by reference). An
@@ -771,9 +856,12 @@ export function Exercise({
   // Stable identity per exercise; before the early return per hooks rules.
   const sandpackFiles = useMemo(
     () => ({
-      "/index.js": { code: exercise?.starterCode ?? "", active: true },
+      "/index.js": {
+        code: draftState.draft?.code ?? exercise?.starterCode ?? "",
+        active: true,
+      },
     }),
-    [exercise?.starterCode],
+    [exercise?.starterCode, draftState.draft],
   );
 
   // The editor box is capped at 400px (style on SandpackCodeEditor below),
@@ -795,14 +883,19 @@ export function Exercise({
     if (!editorBox) return;
     const makeScrollersFocusable = () => {
       editorBox
-        .querySelectorAll<HTMLElement>(".cm-scroller")
+        .querySelectorAll<HTMLElement>(".cm-scroller, .sp-pre-placeholder")
         .forEach((scroller) => {
           if (scroller.tabIndex !== 0) scroller.tabIndex = 0;
           if (scroller.getAttribute("role") !== "group") {
             scroller.setAttribute("role", "group");
           }
           if (!scroller.hasAttribute("aria-label")) {
-            scroller.setAttribute("aria-label", "Code editor");
+            scroller.setAttribute(
+              "aria-label",
+              scroller.matches(".sp-pre-placeholder")
+                ? "Code preview"
+                : "Code editor",
+            );
           }
         });
     };
@@ -914,32 +1007,39 @@ export function Exercise({
           ref={setEditorBox}
           className="overflow-hidden border border-border rounded-none"
         >
-          <SandpackProvider
-            template="vanilla"
-            theme={SANDPACK_THEMES[scheme]}
-            files={sandpackFiles}
-          >
-            <SandpackCodeEditor
-              showLineNumbers
-              showTabs={false}
-              style={{
-                minHeight: 200,
-                maxHeight: 400,
-              }}
-            />
-
-            {/* Controls inside Sandpack context */}
-            <div className="px-4 py-3 bg-surface-raised border-t border-border">
-              <ExerciseControls
-                exercise={exercise}
-                onResults={setResults}
-                onLogs={setLogs}
-                onShowSolution={() => setShowSolution(true)}
-                onAttempt={onSubmit}
-                showSolution={showSolution}
+          {!draftState.ready ? (
+            <ExerciseLoadingSkeleton />
+          ) : (
+            <SandpackProvider
+              template="vanilla"
+              theme={SANDPACK_THEMES[scheme]}
+              files={sandpackFiles}
+            >
+              <SandpackCodeEditor
+                showLineNumbers
+                showTabs={false}
+                style={{
+                  minHeight: 200,
+                  maxHeight: 400,
+                }}
               />
-            </div>
-          </SandpackProvider>
+
+              {/* Controls inside Sandpack context */}
+              <div className="px-4 py-3 bg-surface-raised border-t border-border">
+                <ExerciseControls
+                  exercise={exercise}
+                  draftOwner={draftOwner}
+                  initialDraft={draftState.draft}
+                  readFailed={draftState.failed}
+                  onResults={setResults}
+                  onLogs={setLogs}
+                  onShowSolution={() => setShowSolution(true)}
+                  onAttempt={onSubmit}
+                  showSolution={showSolution}
+                />
+              </div>
+            </SandpackProvider>
+          )}
         </div>
       </Suspense>
 

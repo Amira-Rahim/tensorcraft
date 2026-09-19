@@ -91,7 +91,7 @@ For finite real inputs, sigmoid lies strictly between 0 and 1 and tanh between -
 
 For the two scores Nazari read out, sigmoid gives about 0.485 and 0.739. A threshold of 0.5 alerts on the second. Thresholding the original scores at zero gives the same decisions. The sigmoid changes the score scale, not the ordering.
 
-A sigmoid output can parameterize a binary probability model during training. Its range alone does not establish calibration. A calibrated 0.8 prediction would be correct about 80% of the time over an appropriate collection of comparable predictions. Check that behavior on representative data before interpreting the score that way.
+A sigmoid output can parameterize a binary probability model during training. Its range alone does not establish calibration. Among comparable cases assigned a calibrated probability of 0.8 for the positive class, that class would occur about 80% of the time. Check that behavior on representative data before interpreting the score that way.
 
 **ReLU** is a common hidden-layer choice. Its derivative, the local rate of change, is 1 for a positive input and 0 for a negative one. That derivative does not shrink a positive branch's gradient by itself; the rest of the network still affects the gradient.
 

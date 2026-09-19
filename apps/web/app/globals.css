@@ -166,6 +166,11 @@ body {
 /* Applied to MDX-rendered content inside lessons for readable typography.
    Desktop sizes stepped up 2026-09-01 (owner redesign pass: bigger fonts
    across the funnel); mobile keeps the 1rem base. */
+/* Long technical words still reflow when a learner enlarges text. */
+.lesson-prose {
+  overflow-wrap: anywhere;
+}
+
 .lesson-prose p {
   margin-bottom: 1.5em;
   line-height: 1.8;
@@ -186,6 +191,30 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--tc-text);
+}
+
+/* Experiments keep the question and its controls close together. */
+.learning-experiment {
+  overflow-wrap: anywhere;
+}
+.lesson-prose .learning-experiment p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.lesson-prose .learning-experiment > p {
+  margin-block: 1rem;
+}
+.lesson-prose .learning-experiment h3 {
+  margin-top: 0;
+}
+.learning-experiment button[aria-pressed="true"] {
+  background: var(--tc-accent);
+  color: var(--tc-on-primary);
+}
+.learning-route-picker button[aria-pressed="true"] {
+  border-color: var(--tc-primary);
+  background: color-mix(in srgb, var(--tc-primary) 10%, var(--tc-bg));
 }
 
 @media (min-width: 768px) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { STORY_HISTORY } from "@tensorcraft/shared";
 import {
   BOSS_BEAT_CHANGED,
   getBossBeatChoice,
@@ -33,6 +34,9 @@ interface BossBeatProps {
   options: [BossBeatOption, BossBeatOption, BossBeatOption, BossBeatOption];
   /** Seconds the player has before timeout. Defaults to 30. */
   timeoutSeconds?: number;
+  contentVersion?: number;
+  /** Reflective decisions can omit the scene clock without changing saving. */
+  showTimer?: boolean;
 }
 
 const TIMEOUT_LABEL: BossBeatChoiceLabel = "random";
@@ -75,6 +79,8 @@ export function BossBeat({
   prompt,
   options,
   timeoutSeconds = 30,
+  contentVersion = 1,
+  showTimer = true,
 }: BossBeatProps) {
   const [priorChoice, setPriorChoice] = useState<BossBeatChoice | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,11 +130,18 @@ export function BossBeat({
       active = false;
       generation.current += 1;
     };
-  }, [beatId, loadAttempt, timeoutSeconds]);
+  }, [beatId, loadAttempt, timeoutSeconds, contentVersion]);
 
   // Countdown, only ticks when no prior choice and not already submitted.
   useEffect(() => {
-    if (loading || loadError || priorChoice || submittedIndex !== null) return;
+    if (
+      !showTimer ||
+      loading ||
+      loadError ||
+      priorChoice ||
+      submittedIndex !== null
+    )
+      return;
     if (secondsLeft <= 0) {
       if (!timedOut) setTimedOut(true);
       return;
@@ -138,7 +151,15 @@ export function BossBeat({
       1000,
     );
     return () => window.clearTimeout(t);
-  }, [loading, loadError, priorChoice, submittedIndex, secondsLeft, timedOut]);
+  }, [
+    showTimer,
+    loading,
+    loadError,
+    priorChoice,
+    submittedIndex,
+    secondsLeft,
+    timedOut,
+  ]);
 
   function reactionMs(): number | null {
     if (!startedAtRef.current) return null;
@@ -159,6 +180,7 @@ export function BossBeat({
         choiceIndex: idx,
         choiceLabel: opt.label,
         reactionMs: reactionMs(),
+        contentVersion,
       });
       // First write wins, including a choice submitted from another tab.
       const saved = inserted ? null : await getBossBeatChoice(beatId);
@@ -229,21 +251,42 @@ export function BossBeat({
           choiceLabel: options[submittedIndex].label,
           reactionMs: reactionMs(),
           chosenAt: new Date().toISOString(),
+          contentVersion,
         }
       : null);
 
   if (resolvedChoice) {
-    const opt = options[resolvedChoice.choiceIndex];
+    const savedVersion = resolvedChoice.contentVersion ?? 1;
+    const historical = savedVersion !== contentVersion;
+    const opt = historical
+      ? STORY_HISTORY[beatId]?.[savedVersion]?.options[
+          resolvedChoice.choiceIndex
+        ]
+      : options[resolvedChoice.choiceIndex];
+    if (!opt)
+      return (
+        <aside role="status" className="my-8 border border-border p-6">
+          Your decision is saved with a different version of this scene. Reload
+          to get its matching text. The saved call has not changed.
+        </aside>
+      );
     return (
       <aside
         className="my-8 p-6 brutalist-shadow bg-surface-raised border border-border"
         data-testid="boss-beat-resolved"
         data-beat-id={beatId}
         data-choice-label={resolvedChoice.choiceLabel}
+        data-content-version={savedVersion}
       >
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-2">
           Decision saved
         </p>
+        {historical && (
+          <p className="mb-3 text-sm text-text-muted">
+            Your earlier call, from version {savedVersion}. The scene has been
+            revised; your original choice is preserved.
+          </p>
+        )}
         <p className="text-sm font-mono text-text-muted mb-3">
           Your call:{" "}
           <strong className="text-text-primary">{opt.display}</strong>
@@ -264,23 +307,28 @@ export function BossBeat({
     >
       <div className="flex items-center justify-between mb-4">
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary">
-          Decision · {timedOut ? "clock out" : `${secondsLeft}s`}
+          Decision
+          {showTimer
+            ? ` · ${timedOut ? "clock out" : `${secondsLeft}s`}`
+            : " · take your time"}
         </p>
-        <div
-          className="h-1 w-32 bg-border"
-          role="progressbar"
-          aria-label="Scene countdown"
-          aria-valuenow={secondsLeft}
-          aria-valuemin={0}
-          aria-valuemax={timeoutSeconds}
-        >
+        {showTimer && (
           <div
-            className="h-full bg-primary transition-all"
-            style={{
-              width: `${Math.max(0, (secondsLeft / timeoutSeconds) * 100)}%`,
-            }}
-          />
-        </div>
+            className="h-1 w-32 bg-border"
+            role="progressbar"
+            aria-label="Scene countdown"
+            aria-valuenow={secondsLeft}
+            aria-valuemin={0}
+            aria-valuemax={timeoutSeconds}
+          >
+            <div
+              className="h-full bg-primary transition-all"
+              style={{
+                width: `${Math.max(0, (secondsLeft / timeoutSeconds) * 100)}%`,
+              }}
+            />
+          </div>
+        )}
       </div>
       <p className="text-base text-text-primary leading-relaxed mb-5">
         {prompt}

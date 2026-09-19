@@ -82,10 +82,12 @@ export function CodeBlock({
   return (
     <div className="overflow-hidden my-8 brutalist-shadow bg-surface border border-border">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-border">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 border-b border-border">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           {title && (
-            <span className="text-xs font-medium text-text-muted">{title}</span>
+            <span className="min-w-0 break-all text-xs font-medium text-text-muted">
+              {title}
+            </span>
           )}
           <span className="text-xs font-mono uppercase tracking-wider px-1.5 py-0.5 text-primary bg-primary/10">
             {language}

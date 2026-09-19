@@ -1,0 +1,8 @@
+Clean project: /var/folders/xk/h8l0ml8n51n_b2nj6f_xsn7r0000gp/T/tensorcraft-room-project-Pqzz6h/room-occupancy-v1
+Clean npm ci passed.
+> tensorcraft-room-occupancy-project@1.0.0 check
+> node check.mjs
+
+Artifact reload matches 4 original scores within 1e-5 on TFJS 4.22.0 / cpu.
+This checks export and inference parity. It does not establish model quality or an assessment pass.
+Passed: clean install, real fit/export/reload, paired evaluation, overlap/leakage guards, browser parity, invalid input, missing/corrupt artifacts, local-only requests.

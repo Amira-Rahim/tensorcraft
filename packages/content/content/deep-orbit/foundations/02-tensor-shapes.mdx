@@ -45,15 +45,21 @@ That log line is the most interesting thing on this ship. The stream isn't a wal
 
 Every tensor has a **shape**: a tuple of numbers describing how many elements exist along each dimension. If you've ever checked `array.length` or calculated `rows × cols` for a grid layout, you already think in shapes.
 
-<LearningObjectives objectives={["Read and interpret tensor shapes", "Predict where each value lands after a reshape (row-major order)", "Recognize common shapes in ML (batches, sequences, images)"]} />
+<LearningObjectives objectives={["Read and interpret tensor shapes", "Predict where each value lands after a reshape (row-major order)", "Choose reshape or transpose from the axis meanings and required values", "Recognize common shapes in ML (batches, sequences, images)"]} />
 
-## Shapes You Already Know
+## The Wrong Kind of Sixty-Four
 
-<BridgeCallout bridge={frontmatter.concept.bridge} />
+Farah has a candidate layout for the stream: `[450, 64]`, meaning 450 readings by 64 channels. The plotter needs one row per channel, shape `[64, 450]`. Demir reaches for reshape. Will each channel's values stay together?
 
-Shapes are already everywhere in the data you handle. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`, where a batch is the group of examples a model reads in one go. That same `[3, 4]` is a sequence when its rows are ordered in time: 3 time steps, 4 channels read at each step, which is the layout the challenge below hands you. Module 6 puts a batch axis in front of the time axis and works in `[32, 5, 3]`: 32 windows, 5 time steps each, 3 features per step.
+Work it out on a small packet first. Each input row is a time step; each column is one channel. The numbers mark positions so you can follow exactly where they move.
 
-## Where Does Each Value Land?
+<ChannelLayoutExperiment />
+
+The axis names explain the result: `input[time][channel]` must become `output[channel][time]`. A transpose swaps those axes. A reshape changes row lengths while preserving flat order. Both can produce the requested dimensions, so checking shape alone cannot catch this mistake.
+
+<ConceptReference summary="Reference: flat order, reshape code, and the full archive example">
+
+### Reshape preserves flat order
 
 Here's the question that actually trips people up when you reshape: not what the new shape *is*, but which value ends up *where*. The answer: reshape fills the new shape **row by row** (row-major order). Watch where each value lands:
 
@@ -89,9 +95,9 @@ matrix.dispose();
 tall.dispose();`}
 </CodeBlock>
 
-The golden rule: **reshaping never changes the data or its order, only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
+**Reshape preserves the logical order of values.** Read the flattened values as one sequence and place the new row breaks without moving any values. This describes the operation's result; physical storage depends on the backend.
 
-## The Wrong Kind of Sixty-Four
+### Apply the rule to the archive
 
 Here is that rule with the stakes attached. Farah's layout hunt has produced a candidate grid for the first stretch of the stream: `[450, 64]`, 450 readings by 64 channels. The channel plotter wants channels as rows, shape `[64, 450]`, and Demir reaches for the tool he just learned.
 
@@ -119,7 +125,18 @@ console.log(right.arraySync()[0].slice(0, 5));  // [0, 64, 128, 192, 256]
 tf.dispose([block, wrong, right]);`}
 </CodeBlock>
 
-On a real sensor block the failure is quieter and worse: any per-channel structure dissolves, the plotter draws sixty-four confident-looking traces of interleaved junk, and nothing throws, because the element count checks out. This is also where a layout instinct serves you, if you read it right. Change `grid-template-columns` on a CSS grid and the browser re-wraps the same items, in source order, at new line breaks: nothing changes places, and that is exactly what `reshape` does to the flat line. What re-columning never does is fill down the columns instead of across the rows. That takes a different property, `grid-auto-flow: column` with the row count pinned by `grid-template-rows`, and its tensor name is `transpose`. When you catch yourself wanting the values rearranged rather than re-wrapped, the tool is `transpose`.
+The element count is valid in both cases, so no error warns you about the mixed channels. Record the axis meanings with the shape: `block[time][channel]` becomes `right[channel][time]`. Reshape preserves the flat sequence; transpose swaps the two axes.
+
+
+</ConceptReference>
+
+## Read Other Shapes
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A list of ten values has shape `[10]`. A batch of 32 RGB images can have shape `[32, 224, 224, 3]`: examples, height, width, and color channels. A batch is a group of examples processed together. Record these axis meanings; the dimensions alone cannot tell you what the data represents.
+
+For sequences later in the course, `[32, 5, 3]` means 32 windows, five time steps in each, and three features per step. The same indexing discipline applies: decide what each axis means before transforming the data.
 
 ## Challenge
 

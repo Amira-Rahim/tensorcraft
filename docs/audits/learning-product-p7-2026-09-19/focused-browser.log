@@ -1,0 +1,22 @@
+
+Running 14 tests using 1 worker
+
+(node:60899) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/14] [chromium] › e2e/editor-drafts.spec.ts:4:7 › unfinished code, solution recovery and save failure at 1440px
+[2/14] [chromium] › e2e/editor-drafts.spec.ts:4:7 › unfinished code, solution recovery and save failure at 390px
+[3/14] [chromium] › e2e/editor-drafts.spec.ts:69:5 › an unreadable draft stays intact until an explicit reset
+[4/14] [chromium] › e2e/normalization-experiment.spec.ts:8:7 › normalization on the real lesson, 1440px dark
+[5/14] [chromium] › e2e/normalization-experiment.spec.ts:8:7 › normalization on the real lesson, 390px light
+[6/14] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: dark, reduce
+[7/14] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: dark, no-preference
+[8/14] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: light, reduce
+[9/14] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: light, no-preference
+[10/14] [chromium] › e2e/ui-remediation.spec.ts:27:7 › consent and support are usable at 320px
+[11/14] [chromium] › e2e/ui-remediation.spec.ts:27:7 › consent and support are usable at 375px
+[12/14] [chromium] › e2e/ui-remediation.spec.ts:27:7 › consent and support are usable at 390px
+[13/14] [chromium] › e2e/ui-remediation.spec.ts:57:5 › mobile glossary opens beside the term and returns focus on Escape
+[14/14] [chromium] › e2e/ui-remediation.spec.ts:82:5 › mobile editor preserves typed work across views and desktop resize
+  14 passed (24.1s)

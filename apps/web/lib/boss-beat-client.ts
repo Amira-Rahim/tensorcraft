@@ -13,6 +13,8 @@ export interface BossBeatChoice {
   choiceLabel: BossBeatChoiceLabel;
   reactionMs: number | null;
   chosenAt: string;
+  /** Missing only for legacy callers; interpreted as version 1. */
+  contentVersion?: number;
 }
 
 /** Fetch the player's prior choice for a beat, null if not yet chosen. */
@@ -30,12 +32,22 @@ export async function getBossBeatChoice(
     throw new Error("Could not verify your session");
   if (!user) return null;
 
-  const { data, error } = await supabase.rpc("get_boss_beat_choice", {
+  let { data, error } = await supabase.rpc("get_boss_beat_choice_versioned", {
     p_beat_id: beatId,
   });
+  // Read-only compatibility while the schema rolls out. Never retry a
+  // version-2 write through the unversioned RPC.
+  if (error && (error.code === "PGRST202" || error.code === "42883")) {
+    const legacy = await supabase.rpc("get_boss_beat_choice", {
+      p_beat_id: beatId,
+    });
+    data = legacy.data?.map((row) => ({ ...row, content_version: 1 })) ?? null;
+    error = legacy.error;
+  }
   if (error) throw new Error("Could not load your story choice");
   if (!data || data.length === 0) return null;
   const row = data[0];
+  const contentVersion = row.content_version ?? 1;
   const labels: BossBeatChoiceLabel[] = [
     "cooperate",
     "defect",
@@ -45,7 +57,10 @@ export async function getBossBeatChoice(
   if (
     row.beat_id !== beatId ||
     !Number.isInteger(row.choice_index) ||
-    labels[row.choice_index] !== row.choice_label
+    labels[row.choice_index] !== row.choice_label ||
+    !Number.isInteger(contentVersion) ||
+    contentVersion < 1 ||
+    contentVersion > 2
   ) {
     throw new Error("Invalid saved story choice");
   }
@@ -55,6 +70,7 @@ export async function getBossBeatChoice(
     choiceLabel: row.choice_label as BossBeatChoiceLabel,
     reactionMs: row.reaction_ms,
     chosenAt: row.chosen_at,
+    contentVersion,
   };
 }
 
@@ -71,6 +87,7 @@ export async function recordBossBeatChoice(args: {
   choiceIndex: number;
   choiceLabel: BossBeatChoiceLabel;
   reactionMs?: number | null;
+  contentVersion?: number;
 }): Promise<boolean> {
   const supabase = getSupabaseBrowserClient();
   const {
@@ -80,17 +97,24 @@ export async function recordBossBeatChoice(args: {
   if (authError) throw new Error("Could not verify your session");
   if (!user) throw new Error("Sign in to save your choice");
 
-  const { data, error } = await supabase.rpc("record_boss_beat_choice", {
-    p_world_id: args.worldId,
-    p_lesson_id: args.lessonId,
-    p_beat_id: args.beatId,
-    p_choice_index: args.choiceIndex,
-    p_choice_label: args.choiceLabel,
-    // Omitting the arg (undefined) hits the SQL "default null" in migration
-    // 030, so this is behavior-identical to passing null, which the generated
-    // RPC arg type no longer accepts.
-    p_reaction_ms: args.reactionMs ?? undefined,
-  });
+  const { data, error } = await supabase.rpc(
+    "record_boss_beat_choice_versioned",
+    {
+      p_world_id: args.worldId,
+      p_lesson_id: args.lessonId,
+      p_beat_id: args.beatId,
+      p_choice_index: args.choiceIndex,
+      p_choice_label: args.choiceLabel,
+      p_content_version: args.contentVersion ?? 1,
+      // Omitting the arg (undefined) hits the SQL "default null" in migration
+      // 030, so this is behavior-identical to passing null, which the generated
+      // RPC arg type no longer accepts.
+      p_reaction_ms:
+        args.reactionMs == null
+          ? undefined
+          : Math.min(2_147_483_647, args.reactionMs),
+    },
+  );
   if (error || typeof data !== "boolean")
     throw new Error("Could not save your story choice");
   return data;

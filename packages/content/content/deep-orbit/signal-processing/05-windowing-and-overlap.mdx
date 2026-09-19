@@ -14,7 +14,7 @@ context:
   narrative: "Demir's FFT results show spurious frequencies that shouldn't exist. Farah diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Windowing tapers a slice's edges down before the FFT, so the transform never mistakes your cut for a cliff in the signal."
+  explanation: "A taper reduces distant spectral leakage by giving less weight to samples near the frame edges. It also broadens peaks and changes their heights."
   bridge:
     jsTitle: "StringDecoder"
     jsCode: "decoder.write(chunk) // a character split across chunks is held back, not mangled"
@@ -57,10 +57,10 @@ Your decoder did not file anything overnight. The dashboard did: two anomaly rep
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper cannot: it attenuates real samples at both edges so the cut is never a cliff. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2, but some nearby bins gain magnitude as the peak broadens. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
+Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper changes the samples: it gives less weight to both edges and reduces distant leakage. It does not remove all leakage. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2, but some nearby bins gain magnitude as the peak broadens. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
 </Dialogue>
 
-Demir has the shape of the fix right. The FFT treats your slice as one period of an infinitely repeating signal, so a hard edge is a real discontinuity in that repeating version, and that artificial boundary spreads the tone across frequency bins. Handling the boundary beats cutting through it, in a byte stream and in a capture. The price is where the two part company. A taper spends real signal to buy a clean spectrum, and the rest of this lesson is what it spends.
+The DFT represents the slice as one period of a repeating signal. An on-bin sinusoid fits a whole number of cycles in that period. An off-bin sinusoid does not: representing the finite slice requires coefficients in many bins. Those coefficients do not prove that the sensor recorded many physical tones. A taper reduces the distant coefficients by changing the samples, at the cost of wider peaks.
 
 <LearningObjectives objectives={["Explain how cutting a finite signal spreads a tone across FFT bins", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Explain how overlapping windows improve coverage of samples near frame edges", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
@@ -79,20 +79,20 @@ for (let i = 0; i < 128; i++) {
   signal.push(Math.sin(2 * Math.PI * 10.5 * i / sampleRate));
 }
 
-// Problem: the window doesn't capture exact whole periods.
-// The last sample sits at 0.49; the wrapped-around start is 0.0.
-// The FFT treats the window as one period of a repeating signal,
-// sees that jump at the seam, and invents frequencies to explain it.
+// The frame contains 10.5 cycles, so no single DFT bin represents it.
+// The transform uses many coefficients to describe this finite slice.
+// Comparing only the first and last sample would be misleading:
+// even an on-bin sine usually has different values at those two samples.
 const rawFFT = tf.tidy(() => {
   const fft = tf.spectral.rfft(tf.tensor1d(signal));
   return tf.abs(fft).arraySync() as number[];
 });
 
-// Expected: energy at 10.5 Hz only (between bins 10 and 11)
+// Source: one 10.5 Hz tone, between bin centers 10 and 11
 // Actual: the peak smears across the whole spectrum
 console.log('Bin 10:', rawFFT[10].toFixed(1));            // ~41.7
 console.log('Bin 11:', rawFFT[11].toFixed(1));            // ~39.9
-console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));    // ~14.5, should be ~0
+console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));    // ~14.5, despite no separate 9 Hz source
 console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from the tone`}
 </CodeBlock>
 
@@ -121,9 +121,10 @@ const hann = tf.tidy(() => Array.from(tf.signal.hannWindow(128).dataSync()));
 // away from the peak, per doubling of that distance.
 
 // Hamming window: main lobe as narrow as Hann's or slightly narrower,
-// and a lower FIRST sidelobe (about -43 dB vs Hann's -31), but its far
+// and lower peak sidelobes (about -43 dB vs Hann's -31), but its far
 // sidelobes decay at only ~-6 dB/octave vs Hann's ~-18: much worse
-// far-field leakage. Pick it for close-in resolution, not cleanliness.
+// far-field leakage. Choose for the spacing and relative strengths of
+// the tones you need to distinguish, rather than one sidelobe number.
 function hammingWindow(n: number): number[] {
   return Array.from({ length: n }, (_, i) =>
     0.54 - 0.46 * Math.cos(2 * Math.PI * i / (n - 1))
@@ -195,7 +196,7 @@ function stftWithWindowing(
   return spectrogram;
 }
 
-// 50% overlap is the standard: good balance of coverage and computation.
+// 50% overlap is a common starting point with Hann; choose for the task.
 // Our demo signal is 128 samples, so use a 64-sample window with hop 32
 const spec = stftWithWindowing(signal, 64, 32, (n) => tf.tidy(() => Array.from(tf.signal.hannWindow(n).dataSync())));
 console.log('Windows:', spec.length);          // 3
@@ -228,7 +229,7 @@ The grader's leakage statistic sums magnitudes outside the central seven-bin ban
 
 <RecallPrompt
   question="Why apply a Hann window before computing the FFT?"
-  answer="The FFT treats the input as one period of an infinitely repeating signal. When a real signal slice does not end at the same amplitude it started, the abrupt edge looks like a sharp discontinuity, which produces spurious high-frequency energy (spectral leakage) across many bins. A Hann window tapers the slice toward zero near its edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+  answer="A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
 />
 
 <RecallPrompt

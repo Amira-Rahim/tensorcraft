@@ -237,15 +237,13 @@ Clamping keeps outputs inside the declared limits; it does not make a forecast a
 
 ## Challenge
 
-First train a forecaster with one output per channel. Return its training history so you can inspect how loss changed. Then use the trained model in the rolling forecast below.
-
-Then write the rolling loop from `multi-step.ts` yourself, at a smaller scale: a stand-in model, a short window, a handful of steps. The two things it grades are the two that are easy to get wrong here. The limits are in counts and the model answers in z-scores, so the bounds have to be converted before anything is compared against them. And the clamp belongs on the reading that goes back into the history, not only on the copy you hand back. The last check runs the loop on the model you trained in the first half.
+Train a forecaster with one output per channel and return its training history. Then implement the rolling loop from `multi-step.ts`. First test it with a stand-in model, a short window and a handful of steps. The two things it grades are the two that are easy to get wrong here. The limits are in counts and the model answers in z-scores, so the bounds have to be converted before anything is compared against them. And the clamp belongs on the reading that goes back into the history, not only on the copy you hand back. The last check runs the loop on the model you trained in the first half.
 
 <Exercise slug="predict-next" />
 
 <RecallPrompt
   question="The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?"
-  answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE measures the distance between the predicted and actual values, which is what matters here. Loss choice follows the output type, not the layer type."
+  answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
 />
 
 <RecallPrompt

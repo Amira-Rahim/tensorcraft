@@ -9,7 +9,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 const root = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
-const base = process.env.UI_AUDIT_BASE ?? "http://127.0.0.1:3118";
+const base = process.env.UI_AUDIT_BASE ?? "http://localhost:3118";
 const verify = process.argv.includes("--verify");
 const out = process.env.UI_AUDIT_OUT ?? "test-results/ui-ux-audit";
 mkdirSync(out, { recursive: true });
@@ -65,7 +65,7 @@ const stubs = {
   "@/lib/supabase/server": database,
   "@/lib/supabase/client": database,
   "@/lib/entitlements": `export const getEntitledWorlds=async()=>new Set(['deep-orbit']);`,
-  "@/lib/progress": `import {rows} from '@/lib/supabase/server';export const getUserProgress=async()=>rows('world_progress'),hasWorldPurchase=async()=>true,isModuleCompleted=async()=>window.fixtureScenario!=='prerequisite';`,
+  "@/lib/progress": `import {rows} from '@/lib/supabase/server';export const getUserProgress=async()=>rows('world_progress'),getPassedExercises=async()=>({slugs:[],unavailable:false}),hasWorldPurchase=async()=>true,isModuleCompleted=async()=>window.fixtureScenario!=='prerequisite';`,
   "@/lib/review-store-server": `export const resolveDueForUser=async()=>[];`,
   "@/lib/progress-client": `export const markLessonStarted=async()=>{},markLessonCompleted=async()=>true,emitSkillEvent=async()=>{},updateExerciseProgress=async()=>{},getLessonExerciseStatus=async()=>[];`,
   "@/lib/review-store-api": `export const enqueueReviews=()=>{},recordReview=()=>{},flushReviewOutbox=async()=>{},mergeGuestReviews=async()=>true;`,
@@ -348,10 +348,15 @@ try {
           await page.evaluate(
             ({ l, step }) => {
               localStorage.setItem(
-                "tc_step_deep-orbit_" + l.slug,
+                "tc_step_deep-orbit_" + l.slug + ":account:ui-audit-fixture",
                 String(step),
               );
-              localStorage.setItem("tc_step_max_deep-orbit_" + l.slug, "5");
+              localStorage.setItem(
+                "tc_step_max_deep-orbit_" +
+                  l.slug +
+                  ":account:ui-audit-fixture",
+                "5",
+              );
               return window.showAudit("lesson", {
                 module: l.moduleId,
                 slug: l.slug,
@@ -388,8 +393,14 @@ try {
     if (lessonMode) {
       for (const lesson of lessonCases) {
         await page.evaluate((l) => {
-          localStorage.setItem("tc_step_deep-orbit_" + l.slug, "1");
-          localStorage.setItem("tc_step_max_deep-orbit_" + l.slug, "5");
+          localStorage.setItem(
+            "tc_step_deep-orbit_" + l.slug + ":account:ui-audit-fixture",
+            "1",
+          );
+          localStorage.setItem(
+            "tc_step_max_deep-orbit_" + l.slug + ":account:ui-audit-fixture",
+            "5",
+          );
           return window.showAudit("lesson", {
             module: l.moduleId,
             slug: l.slug,
@@ -480,6 +491,7 @@ try {
       }
       const axe = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+        .exclude('[data-decorative="true"][aria-hidden="true"]')
         .analyze();
       records.push({
         id,
@@ -524,6 +536,14 @@ try {
         JSON.stringify(records, null, 2),
       );
     await context.close();
+  }
+  if (verify) {
+    expect(
+      records.filter(
+        (record) => record.violations?.length || record.errors?.length,
+      ),
+      "Fixture accessibility and runtime errors (see retained results)",
+    ).toEqual([]);
   }
 } finally {
   await browser?.close();

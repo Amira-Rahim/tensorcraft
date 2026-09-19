@@ -42,30 +42,30 @@ hints:
           model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
         }
         try {
-        const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
+          const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
 
-        const predictFrom = (readings) =>
-          tf.tidy(() => {
-            const window = readings.slice(-windowSize).map((value) => [value]);
-            const output = model.predict(tf.tensor3d([window])).dataSync();
-            if (output.length !== 1 || !Number.isFinite(output[0])) throw new Error('Invalid prediction');
-            return output[0];
-          });
+          const predictFrom = (readings) =>
+            tf.tidy(() => {
+              const window = readings.slice(-windowSize).map((value) => [value]);
+              const output = model.predict(tf.tensor3d([window])).dataSync();
+              if (output.length !== 1 || !Number.isFinite(output[0])) throw new Error('Invalid prediction');
+              return output[0];
+            });
 
-        const fedBack = [...past];
-        const rollout = [];
-        for (let step = 0; step < arrived.length; step++) {
-          const next = predictFrom(fedBack);
-          rollout.push(next);
-          fedBack.push(next);
-        }
+          const fedBack = [...past];
+          const rollout = [];
+          for (let step = 0; step < arrived.length; step++) {
+            const next = predictFrom(fedBack);
+            rollout.push(next);
+            fedBack.push(next);
+          }
 
-        const oneStep = [];
-        for (let step = 0; step < arrived.length; step++) {
-          oneStep.push(predictFrom([...past, ...arrived.slice(0, step)]));
-        }
+          const oneStep = [];
+          for (let step = 0; step < arrived.length; step++) {
+            oneStep.push(predictFrom([...past, ...arrived.slice(0, step)]));
+          }
 
-        return { model, history, rollout, oneStep };
+          return { model, history, rollout, oneStep };
         } catch (error) {
           if (!providedModel) model.dispose();
           throw error;
@@ -158,7 +158,7 @@ async function forecast(
 }
 
 // Forecast 100 steps ahead. Step 1 is one model call from real data; step
-// 100 is one model call from 99 of the model's own guesses. There is no
+// 100 reads an 80-step window made entirely of earlier predictions. There is no
 // trust number in this function because the model does not have one. A
 // prediction interval needs held-out error quantiles at each horizon and
 // a coverage check. Mean absolute error alone is not an interval.
@@ -279,7 +279,7 @@ Train a one-step model, then evaluate the same stretch twice: once feeding predi
 
 <Exercise slug="forecast-signal" />
 
-<RecallPrompt question="Why does multi-step forecasting become less reliable the further ahead you predict?" answer="Each step uses the previous prediction as input, so errors compound whenever the model's own output moves the next window somewhere new: a small error at step 1 gets fed back into step 2, and so on. A forecaster that has learned only the level settles onto that level instead and stops compounding, which is a flat forecast rather than a safe one. Non-stationarity is the other failure: if the series changes, the learned patterns may stop applying at any horizon." />
+<RecallPrompt question="Why can a rolling forecast have larger errors than one-step replay, even if the data distribution has not changed?" answer="The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon." />
 
 <RecallPrompt question="You run the drift check on a 100-step rollout and it reports that error has tripled. What did you actually measure?" answer="You compared different horizons. Feedback can increase error even without drift, and drift may also be present. Compare the same horizon across earlier and later periods before investigating a change. One-step replay is one way to do that." />
 

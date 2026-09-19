@@ -2,9 +2,21 @@ slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
 instructions: |
-  Nazari ran the scan twice. Averaging can reduce independent zero-mean noise; it does not cancel every kind of error. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.
+  Average two sensor passes, then mix their channels.
 
-  Then write `mixChannels(block, mix)`. `block` is [readings, channels]; `mix` is [banks, channels], one row per output bank and one weight per channel inside it. Hand back every reading scored against every bank, shaped [readings, banks], where each score is one reading's channels weighted by one bank's row and summed. The two tensors arrive with their axes in the wrong order for that, and the error at the top of the lesson is what ignoring it prints.
+  - Write `mergePasses(pass1, pass2, gain)` returning `{ merged, boosted }`.
+    `merged` is the element-wise average; `boosted` is that average multiplied
+    by `gain`. Support broadcast-compatible inputs, including `[3, 2]` and `[2]`.
+    Return both tensors. Averaging can reduce independent zero-mean noise;
+    it does not cancel every kind of error.
+  - Write `mixChannels(block, mix)`. `block` has shape `[readings, channels]`
+    and `mix` has shape `[banks, channels]`. Return `[readings, banks]`, with
+    each score equal to one reading's channels weighted by one bank and summed.
+    Decide which axes must change before multiplying.
+
+  Use tensor operations for the average and gain, and `matMul` or `dot` for
+  the channel mix. This lesson practices those APIs; reconstructing the result
+  with JavaScript loops does not satisfy the task.
 starterCode: |
   function mergePasses(pass1, pass2, gain) {
     // 1. Element-wise average of the two passes

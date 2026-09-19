@@ -16,6 +16,25 @@ const get = (slug: string) => {
   if (!exercise) throw new Error(`Missing exercise ${slug}`);
   return exercise;
 };
+it(
+  "model inspection rejects a retained model after copying metadata",
+  { timeout: 30_000 },
+  async () => {
+    const e = get("load-model");
+    const result = await parseAndRunTests(
+      e.solutionCode.replace(
+        "model.dispose();",
+        "// inspection leaked the model",
+      ),
+      e.testCode,
+      20_000,
+    );
+    expect(result.errored).not.toBe(true);
+    expect(
+      result.results.some((r) => !r.passed && r.error?.includes("still alive")),
+    ).toBe(true);
+  },
+);
 
 const boundaries = [
   [

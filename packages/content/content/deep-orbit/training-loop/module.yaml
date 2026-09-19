@@ -2,7 +2,7 @@ slug: training-loop
 title: "Training: Loss, Gradients & Optimization"
 worldId: deep-orbit
 order: 3
-description: "Train the DEEP SCAN signal classifier: loss functions, gradient descent, backpropagation, the loop that ties them together, and the evaluation that decides whether it ships. It ships at 94%, and Farah stays behind with the one archived reading it will not commit on, scored 51.8% anomalous."
+description: "Train the DEEP SCAN signal classifier: loss functions, gradient descent, backpropagation, the loop that ties them together, and the evaluation that decides whether it ships. Compare held-out errors with a baseline before deciding where the classifier can be used. Farah keeps the unresolved archive reading in the review."
 summary: "Loss functions score each guess, gradient descent nudges the weights to shrink that score, backpropagation gets every nudge from one backward pass, the loop ties them together, and evaluation decides what ships."
 lessonCount: 5
 prerequisites:

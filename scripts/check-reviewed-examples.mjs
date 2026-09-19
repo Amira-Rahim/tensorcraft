@@ -53,6 +53,16 @@ async function run(path, titles, prefix = "", suffix = "") {
   console.log(`PASS ${path}: ${titles.join(", ")}`);
 }
 
+await run(
+  "foundations/01-introduction-to-tensors.mdx",
+  ["inspect-a-packet.ts"],
+  "",
+  `
+assert.deepEqual(shape, [3]);
+assert.ok(Math.abs(total - 1.1) < 1e-6);
+assert.ok(values.every((value, i) => Math.abs(value - streamValues[i]) < 1e-6));
+`,
+);
 await run("foundations/01-introduction-to-tensors.mdx", [
   "tensors-are-arrays.ts",
   "tensor-memory.ts",
@@ -175,6 +185,10 @@ const trainY = tf.zeros([40, 1]), validationY = tf.zeros([10, 1]), testY = tf.ze
 assert.equal(extractFeatures(signalSamples).length, 11);
 assert.throws(() => extractFeatures(signalSamples, 32));
 assert.throws(() => normalizeFeatures([]));
+const constantFeatures = normalizeFeatures([[5, 1], [5, 3]]);
+assert.equal(constantFeatures.stats[0].std, 0);
+assert.deepEqual(constantFeatures.normalized, [[0, -1], [0, 1]]);
+assert.deepEqual(normalizeWithStats([7, 5], constantFeatures.stats), [2, 3]);
 tf.dispose([trainY, validationY, testY]);
 `,
 );
@@ -321,6 +335,13 @@ const result = detectAnomaly(Array(11).fill(2), [1, 1, 1], 0.52, { mean: 0.52, s
 assert.equal(result.detectors.lstm.predictionError, 0, 'Use the LSTM-scaled target, not autoencoder columns');
 assert.equal(result.agreement, 1);
 assert.equal(result.isAnomaly, false);
+const detectorArgs = (ae, forecast) => [Array(11).fill(2), [1, 1, 1], 0.52, { mean: 0.52, std: 0.15 }, ae, forecast, [[0, 0, 0]], { zScore: 3, reconstruction: 1, prediction: 0.01 }];
+const beforeInvalid = tf.memory().numTensors;
+assert.throws(() => detectAnomaly(...detectorArgs({ predict: () => tf.fill([1, 11], NaN) }, lstm)), /Invalid reconstruction score/);
+assert.throws(() => detectAnomaly(...detectorArgs({ predict: () => tf.zeros([1, 1]) }, lstm)), /Invalid reconstruction shape/);
+assert.throws(() => detectAnomaly(...detectorArgs(autoencoder, { predict: () => tf.fill([1, 3], NaN) })), /Invalid forecast score/);
+assert.throws(() => detectAnomaly(...detectorArgs(autoencoder, { predict: () => tf.zeros([1, 2]) })), /Invalid forecast shape/);
+assert.equal(tf.memory().numTensors, beforeInvalid);
 autoencoder.dispose();
 `,
 );
@@ -401,6 +422,10 @@ assert.ok(Math.abs(weighted[0] - 1117.32) < 1e-8);
 assert.deepEqual(biased, { mae: 1, variance: 0 });
 assert.deepEqual(varying, { mae: 1, variance: 1 });
 assert.throws(() => weightedEnsemble([]));
+assert.deepEqual(weightedEnsemble([
+  { modelName: "A", prediction: [2], weight: 1e308 },
+  { modelName: "B", prediction: [4], weight: 1e308 },
+]), [3]);
 `,
 );
 
@@ -626,6 +651,23 @@ const slow = await verifyHostedPipeline('https://example.invalid/release',load,p
 await assert.rejects(verifyHostedPipeline('x',async()=>({classify:async()=>{throw new Error('bad');},dispose:()=>{disposed++;}}),probes,{minAccuracy:1,p95Ms:2},signal));
 assert.equal(disposed,3);
 await assert.rejects(verifyHostedPipeline('x',load,[],{minAccuracy:1,p95Ms:2},signal));
+for (const invalidAt of [probes.length + 1, probes.length + 11]) {
+  let calls = 0, releases = 0;
+  await assert.rejects(verifyHostedPipeline('x',async()=>({
+    classify:async()=>({label: ++calls === invalidAt ? '' : 'signal'}),
+    dispose:()=>{releases++;},
+  }),probes,{minAccuracy:1,p95Ms:2},signal), /Invalid prediction/);
+  assert.equal(releases, 1);
+}
+const controller = new AbortController();
+let cancellationCalls = 0, cancellationReleases = 0;
+await assert.rejects(verifyHostedPipeline('x',async()=>({
+  classify:async()=>{if (++cancellationCalls === probes.length) controller.abort(); return {label:'signal'};},
+  dispose:()=>{cancellationReleases++;},
+}),probes,{minAccuracy:1,p95Ms:2},controller.signal));
+assert.equal(cancellationCalls, probes.length);
+assert.equal(cancellationReleases, 1);
+
 assert.equal(loaded,2);
 `,
 );

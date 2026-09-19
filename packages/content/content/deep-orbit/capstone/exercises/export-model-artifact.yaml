@@ -2,18 +2,15 @@ slug: export-model-artifact
 lessonSlug: ci-cd-pipeline
 title: "Export the Artifact CI Pins"
 instructions: |
-  Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the fictional mission build. For a supported TFJS LayersModel, on this bench copy every float32 weight is four bytes.
+  Serialize the supplied uncompiled 3→16→8→1 LayersModel into memory.
 
-  1. Save the model with `model.save(tf.io.withSaveHandler(...))`. The handler is an async function that receives the serialized artifacts, so stash them in `artifacts` and return `{ modelArtifactsInfo }`.
-  2. Write `describeArtifact(a)` returning `{ tensors, totalParams, weightBytes }`: the count of named weight tensors in `a.weightSpecs`, the total parameter count (each spec's shape multiplied out), and `a.weightData.byteLength`. Report the length of that buffer rather than the parameter count times a width. Four bytes a parameter holds on this float32 bench copy, and after module 10's uint8 pass the parameter count is unchanged while the byte count is not. The converter can also quantize part of an export and leave the rest at float32, and that file is neither four bytes a parameter nor one.
-  The exercise uses an uncompiled LayersModel whose handler provides one
-  weightData ArrayBuffer. Other formats may need a different loader.
+  1. Use model.save(tf.io.withSaveHandler(...)). Save the handler's argument in artifacts and return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } }.
+  2. Implement describeArtifact(a) returning { tensors, totalParams, weightBytes }. Count entries in weightSpecs, sum the product of each spec's dimensions, and read weightData.byteLength.
+  3. Set manifest to describeArtifact(artifacts).
 
-  3. Build `manifest` by describing what you exported.
+  The handler supplies one weightData ArrayBuffer. Read its length directly: quantized or mixed-precision files cannot be sized with a universal four-byte multiplier. The grader also supplies a buffer with extra bytes to check measurement; describing its size does not establish that it is a valid model.
 
-  `describeArtifact` is graded on artifacts other than yours. The grader calls it on a quantized copy of this export and on a second export whose size it picks at random, so the function has to read whatever it is handed instead of reporting the bench copy's numbers.
-
-  The grader also loads your artifact back with `tf.models.modelFromJSON`, decodes the weights into the rebuilt network, and checks that it predicts what this one predicts. Take `artifacts` from save() rather than typing out an object that looks like one: the layer configs have to be the serializer's own output or nothing rebuilds from it, and the grader watches for the save() call itself, so an artifact assembled by hand fails even when it would reload.
+  The grader reloads your serialized topology and weights and compares predictions. Use the real save handler rather than constructing an artifact by hand. No file is written and no artifact is published by this exercise.
 starterCode: |
   // The 85 MB artifact that CI restores from cache had to come from
   // somewhere. Prove the export path on the bench copy of DEEP SCAN before

@@ -1,0 +1,12 @@
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+PASS recurrent-networks/01-sequences-matter.mdx: feedforward-limitation.ts, sequence-tensors.ts
+PASS recurrent-networks/02-simple-rnns.mdx: reducer-with-memory.ts, rnn-as-reducer.ts, rnn-unrolled.ts
+Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+Orthogonal initializer is being called on a matrix with more than 2000 (12288) elements: Slowness may result.
+PASS recurrent-networks/03-lstm-gates.mdx: lstm-model.ts, gru-comparison.ts
+PASS recurrent-networks/04-sliding-windows.mdx: the-mirror.ts, sliding-window.ts, streaming-buffer.ts
+Orthogonal initializer is being called on a matrix with more than 2000 (16384) elements: Slowness may result.
+PASS recurrent-networks/05-sequence-prediction.mdx: prediction-model.ts, multi-step.ts

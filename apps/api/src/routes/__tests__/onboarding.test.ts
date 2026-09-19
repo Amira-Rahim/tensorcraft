@@ -91,6 +91,51 @@ function authedUser() {
 }
 
 describe("PATCH /api/onboarding", () => {
+  it.each(["guided", "challenge", null])(
+    "saves ML route %s without changing JS experience or awarding completion",
+    async (route) => {
+      authedUser();
+      const res = await createApp().request("/api/onboarding", {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer valid",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ml_learning_route: route,
+          role: "admin",
+          user_id: "another-user",
+        }),
+      });
+      expect(res.status).toBe(200);
+      expect(mockAdminUpdate).toHaveBeenCalledWith({
+        ml_learning_route: route,
+        updated_at: expect.any(String),
+      });
+      expect(mockTagSubscriber).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    { ml_learning_route: "advanced" },
+    { ml_learning_route: 1 },
+    null,
+    [],
+    "challenge",
+  ])("rejects invalid preference input %j", async (payload) => {
+    authedUser();
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    expect(res.status).toBe(400);
+    expect(mockAdminUpdate).not.toHaveBeenCalled();
+  });
+
   it("returns 401 without auth", async () => {
     mockGetUser.mockResolvedValue({
       data: { user: null },

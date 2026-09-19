@@ -119,12 +119,13 @@ She watches one more crossover-free minute, pours a coffee, and takes it with he
 
 <StoryConsequence
   beatId="deep-orbit-foundations-7741-first-flag"
+  contentVersion={2}
   fallback="Farah opens sample 7741 in the raw archive and checks its timestamp before adding the new score. The cause remains unresolved."
   outcomes={{
-    "cooperate": "Nazari arrives with the investigation packet from the earlier flag: capture intact, calibration unchanged, cause unresolved. The delayed channel check takes the rest of her watch, so Demir runs the neuron demonstration alone.",
-    "defect": "Demir searches the working list for 7741 and finds the removal note. He restores the row from the raw archive and asks Nazari to verify its timestamp before they can compare it with the new output.",
-    "random": "The shift handover has no note about 7741. Farah finds it again in the archive, then waits while Demir reconstructs which channels were active at its timestamp.",
-    "dominant": "Farah opens the replay task attached to 7741. Its timestamp and channel list are already there; Nazari finishes the scheduled channel check while Demir adds the new score to the unresolved record."
+  "cooperate": "Nazari hands Farah the reviewed capture and calibration records for 7741. The recorded settings did not change; that does not establish the cause. The deferred channel check takes the rest of Nazari's watch, so Demir owns the neuron demonstration and its result log.",
+  "defect": "Demir finds his removal note instead of a review packet. He restores 7741 from the raw archive and asks Nazari to check its timestamp. The saved channel-check slot now costs him a second search; sensor noise is still only a hypothesis.",
+  "random": "The handover contains the completed channel check but no 7741 owner. Farah locates the raw row again while Demir reconstructs the active channels. They cannot infer a clean capture from the absence of a review note.",
+  "dominant": "Demir brings the bounded replay: the stored values reproduce, and the timestamp and channel list are attached. Nazari's channel check is complete. Farah places instrument verification on the next watch sheet; matching the replay did not answer that question."
 }}
 />
 

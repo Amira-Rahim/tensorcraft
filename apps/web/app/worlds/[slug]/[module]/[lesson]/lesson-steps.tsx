@@ -1,4 +1,8 @@
 "use client";
+import {
+  LearningActivityScope,
+  useActivityUser,
+} from "@/app/components/learning-activity-scope";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { ResolvedReviewItem } from "@tensorcraft/shared";
@@ -72,6 +76,8 @@ function terms(worldSlug: string): {
 }
 
 interface LessonStepsProps {
+  /** Explicit route entry; never permits bypassing the exercise completion gate. */
+  entryStep?: 0 | 1 | 3;
   reviewUserId?: string | null;
   dueReviews?: ResolvedReviewItem[];
   freeRecallPrompts?: FreeRecallPrompt[];
@@ -118,6 +124,8 @@ interface LessonStepsProps {
     glossaryTerms?: Array<{ term: string; definition: string }>;
   };
   exercises: ExerciseData[];
+  passedExerciseSlugs?: string[];
+  exerciseHistoryUnavailable?: boolean;
   worldSlug: string;
   moduleSlug: string;
   moduleName?: string;
@@ -175,6 +183,9 @@ const BRIEFING_COMPONENTS = new Set([
 // step at all without this). The opening scene does not duplicate here:
 // hideStoryZone hides everything before the first heading on this step.
 const CONCEPT_LEFT = new Set([
+  "ConceptReference",
+  "ChannelLayoutExperiment",
+  "LearningExperiment",
   "BridgeCallout",
   "Concept",
   "Dialogue",
@@ -195,7 +206,11 @@ const CODE_LEFT = new Set([
   "code-tensors",
   "code-shapes",
 ]);
-const CODE_RIGHT = new Set(["CodeBlock", "InteractiveDemo"]);
+const CODE_RIGHT = new Set([
+  "CodeBlock",
+  "InteractiveDemo",
+  "ConceptReference",
+]);
 
 // Challenge: challenge zone + hints on the left; the Exercise editor in the
 // right pane. The hint ladder no longer sits below a full prose re-copy.
@@ -212,6 +227,7 @@ const CHALLENGE_RIGHT = new Set(["Exercise"]);
 // NextLesson); the right rail is the glossary recap + mission progress (app
 // components, not MDX).
 const TAKEAWAYS_COMPONENTS = new Set([
+  "ProjectMilestone",
   "LessonRecap",
   "RecallPrompt",
   "NextLesson",
@@ -249,12 +265,22 @@ function parseStepHash(hash: string): number | null {
   return m ? parseInt(m[1], 10) - 1 : null;
 }
 
-function getStorageKey(worldSlug: string, lessonSlug: string): string {
-  return `tc_step_${worldSlug}_${lessonSlug}`;
+function getStorageKey(
+  worldSlug: string,
+  lessonSlug: string,
+  owner: string | null,
+): string {
+  const key = `tc_step_${worldSlug}_${lessonSlug}`;
+  return owner ? `${key}:account:${owner}` : key;
 }
 
-function getMaxStorageKey(worldSlug: string, lessonSlug: string): string {
-  return `tc_step_max_${worldSlug}_${lessonSlug}`;
+function getMaxStorageKey(
+  worldSlug: string,
+  lessonSlug: string,
+  owner: string | null,
+): string {
+  const key = `tc_step_max_${worldSlug}_${lessonSlug}`;
+  return owner ? `${key}:account:${owner}` : key;
 }
 
 /* Public entry: a single GlossaryProvider wraps the whole reader so the
@@ -262,13 +288,21 @@ function getMaxStorageKey(worldSlug: string, lessonSlug: string): string {
    GlossaryRail in the sidebar share one activeTerm instance. */
 export function LessonSteps(props: LessonStepsProps) {
   return (
-    <GlossaryProvider>
-      <LessonStepsInner {...props} />
-    </GlossaryProvider>
+    <LearningActivityScope
+      userId={props.reviewUserId ?? null}
+      requireServerIdentity
+    >
+      <GlossaryProvider>
+        <LessonStepsInner {...props} />
+      </GlossaryProvider>
+    </LearningActivityScope>
   );
 }
 
 function LessonStepsInner({
+  entryStep = 0,
+  passedExerciseSlugs = [],
+  exerciseHistoryUnavailable = false,
   lesson,
   exercises,
   worldSlug,
@@ -278,26 +312,34 @@ function LessonStepsInner({
   prevLesson,
   nextLesson,
   lessons,
-  reviewUserId = null,
   dueReviews = [],
   freeRecallPrompts = [],
 }: LessonStepsProps) {
+  const reviewUserId = useActivityUser();
+  const knownCompleted = !!lessons?.some(
+    (item) => item.slug === lesson.slug && item.completed,
+  );
+  const restoredPasses = exercises
+    .filter((ex) => knownCompleted || passedExerciseSlugs.includes(ex.slug))
+    .map((ex) => ex.slug);
   const { activeTerm } = useGlossary();
   const warmupCompletedRef = useRef(false);
   const handleWarmupDone = useCallback(() => {
     warmupCompletedRef.current = true;
   }, []);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [maxStepReached, setMaxStepReached] = useState(0);
+  const [currentStep, setCurrentStep] = useState<number>(entryStep);
+  const [maxStepReached, setMaxStepReached] = useState<number>(
+    knownCompleted ? 5 : entryStep,
+  );
   // A lesson with N exercises requires N passes: one green run per embedded
   // exercise, keyed by exercise slug (the incident-pairing lessons have 2).
   const [passedExercises, setPassedExercises] = useState<Set<string>>(
-    () => new Set(),
+    () => new Set(restoredPasses),
   );
   // Mirror of passedExercises for handleExerciseComplete's first-pass
   // dedupe. A ref, not the state, so the callback identity stays stable
   // (diff review D2). Seeded alongside the state in the mount-restore.
-  const passedExercisesRef = useRef<Set<string>>(new Set());
+  const passedExercisesRef = useRef<Set<string>>(new Set(restoredPasses));
   const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
   // The left column carries key={currentStep} so the step animation retriggers,
@@ -365,8 +407,8 @@ function LessonStepsInner({
   }, []);
   const getHintsUsed = useCallback(() => hintsRevealedRef.current.size, []);
 
-  const storageKey = getStorageKey(worldSlug, lesson.slug);
-  const maxStorageKey = getMaxStorageKey(worldSlug, lesson.slug);
+  const storageKey = getStorageKey(worldSlug, lesson.slug, reviewUserId);
+  const maxStorageKey = getMaxStorageKey(worldSlug, lesson.slug, reviewUserId);
 
   // True when the mount-restore below landed directly on step 5. Consumed
   // (and cleared) by the completion effect so a restored arrival never
@@ -395,8 +437,8 @@ function LessonStepsInner({
 
   // Read persisted step + furthest step reached on mount
   useEffect(() => {
-    let step = 0;
-    let maxStep = 0;
+    let step: number = entryStep;
+    let maxStep: number = knownCompleted ? 5 : entryStep;
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved !== null) {
@@ -419,7 +461,7 @@ function LessonStepsInner({
       if (savedMax !== null) {
         const parsed = parseInt(savedMax, 10);
         if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
-          maxStep = parsed;
+          maxStep = Math.max(maxStep, parsed);
         }
       }
       // Passed exercises persist too: without this, leaving mid-lesson
@@ -433,8 +475,9 @@ function LessonStepsInner({
           exercises.some((ex) => ex.slug === s),
         );
         if (valid.length > 0) {
-          setPassedExercises(new Set(valid));
-          passedExercisesRef.current = new Set(valid);
+          const combined = new Set([...restoredPasses, ...valid]);
+          setPassedExercises(combined);
+          passedExercisesRef.current = combined;
         }
       }
     } catch {
@@ -450,7 +493,13 @@ function LessonStepsInner({
     }
     // Normalize the entry so Back from the next step returns here.
     try {
-      window.history.replaceState({ tcStep: step }, "", `#step-${step + 1}`);
+      // Child mount effects can run before Next patches the History API.
+      // Preserve its router state so Back does not turn into a page reload.
+      window.history.replaceState(
+        { ...window.history.state, tcStep: step },
+        "",
+        `#step-${step + 1}`,
+      );
     } catch {
       // History API unavailable (some embedded contexts): steps still work.
     }
@@ -538,7 +587,7 @@ function LessonStepsInner({
     if (parseStepHash(window.location.hash) === currentStep) return;
     try {
       window.history.pushState(
-        { tcStep: currentStep },
+        { ...window.history.state, tcStep: currentStep },
         "",
         `#step-${currentStep + 1}`,
       );
@@ -560,7 +609,7 @@ function LessonStepsInner({
       if (clamped !== target) {
         try {
           window.history.replaceState(
-            { tcStep: clamped },
+            { ...window.history.state, tcStep: clamped },
             "",
             `#step-${clamped + 1}`,
           );
@@ -1194,6 +1243,22 @@ function LessonStepsInner({
       onTouchEnd={handleTouchEnd}
     >
       <div className="py-6">
+        {exerciseHistoryUnavailable && (
+          <p
+            role="status"
+            className="mx-auto mb-4 max-w-7xl px-6 text-sm text-text-muted"
+          >
+            Saved exercise passes could not be loaded. This browser’s progress
+            is still available.{" "}
+            <button
+              type="button"
+              className="min-h-11 underline"
+              onClick={() => window.location.reload()}
+            >
+              Retry saved progress
+            </button>
+          </p>
+        )}
         <LessonShell
           rightKind={rightKind}
           paneOpenOnMobile={paneOpen}

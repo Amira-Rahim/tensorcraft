@@ -1,0 +1,79 @@
+
+Running 67 tests using 2 workers
+
+(node:23025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:23026) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/67] [chromium] › e2e/auth.spec.ts:10:7 › Auth Page › renders with OAuth buttons
+[2/67] [chromium] › e2e/auth.spec.ts:16:7 › Auth Page › has email magic link form
+[3/67] [chromium] › e2e/auth.spec.ts:23:7 › Auth Page › new visitors see the sign-up framing
+[4/67] [chromium] › e2e/auth.spec.ts:32:7 › Auth Page › returning visitors see the sign-in framing
+[5/67] [chromium] › e2e/auth.spec.ts:41:7 › Auth Page › legacy /auth/sign-in redirects to /auth
+[6/67] [chromium] › e2e/auth.spec.ts:46:7 › Auth Page › legacy /auth/sign-up redirects to /auth
+[7/67] [chromium] › e2e/auth.spec.ts:51:7 › Auth Page › links to terms and privacy
+[8/67] [chromium] › e2e/script-playback.spec.ts:4:7 › Lesson script playback › reveals beats progressively, then scrolls to the explanation
+[9/67] [chromium] › e2e/script-playback.spec.ts:66:5 › a due warm-up defers the story and its skip control
+[10/67] [chromium] › e2e/script-playback.spec.ts:91:7 › Lesson without JavaScript › server-rendered idle Briefing remains readable
+[11/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › landing page matches baseline
+[12/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › pricing page matches baseline
+[13/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › worlds index matches baseline
+[14/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › auth sign-in page matches baseline
+[15/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › paywall page matches baseline
+[16/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › learn page matches baseline
+[17/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › landing page matches baseline
+[18/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › pricing page matches baseline
+[19/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › worlds index matches baseline
+[20/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › auth sign-in page matches baseline
+[21/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › paywall page matches baseline
+[22/67] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › learn page matches baseline
+[23/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 320px
+[24/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 768px
+[25/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 1024px
+[26/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 1440px
+[27/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 320px
+[28/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 768px
+[29/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 1024px
+[30/67] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 1440px
+[31/67] [chromium] › e2e/visual/review-warmup.spec.ts:4:7 › review warm-up light
+[32/67] [chromium] › e2e/visual/review-warmup.spec.ts:4:7 › review warm-up dark
+[33/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world deep-orbit renders correct palette
+[34/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world neon-protocol renders correct palette
+[35/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world signal-ward renders correct palette
+[36/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world nova-canvas renders correct palette
+[37/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world terra-grid renders correct palette
+[38/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world deep-orbit renders correct palette
+[39/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world neon-protocol renders correct palette
+[40/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world signal-ward renders correct palette
+[41/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world nova-canvas renders correct palette
+[42/67] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world terra-grid renders correct palette
+[43/67] [chromium] › e2e/worlds.spec.ts:4:7 › Worlds Page › renders world listing with Deep Orbit
+[44/67] [chromium] › e2e/worlds.spec.ts:9:7 › Worlds Page › Deep Orbit shows Live, the other 4 show Coming soon
+[45/67] [chromium] › e2e/worlds.spec.ts:28:7 › Worlds Page › coming-soon world route renders waitlist stub, not 404
+[46/67] [chromium] › e2e/worlds.spec.ts:44:7 › Worlds Page › coming-soon stub shows module roster from preview data
+[47/67] [chromium] › e2e/worlds.spec.ts:60:7 › Worlds Page › coming-soon lesson + capstone routes 404
+[48/67] [chromium] › e2e/worlds.spec.ts:75:7 › Worlds Page › Deep Orbit links to its world page
+[49/67] [chromium] › e2e/worlds.spec.ts:92:7 › World Detail Page › renders Deep Orbit world page with module map and lessons
+[50/67] [chromium] › e2e/worlds.spec.ts:103:7 › World Detail Page › shows module list with correct order
+[51/67] [chromium] › e2e/worlds.spec.ts:113:7 › World Detail Page › shows lesson estimated time
+[52/67] [chromium] › e2e/worlds.spec.ts:123:7 › World Detail Page › lessons link to lesson viewer
+[53/67] [chromium] › e2e/worlds.spec.ts:139:7 › World Detail Page › returns 404 for unknown world
+[54/67] [chromium] › e2e/worlds.spec.ts:150:7 › Module Overview Route › module route redirects to the world page
+[55/67] [chromium] › e2e/worlds.spec.ts:156:7 › Module Overview Route › unknown module 404s
+[56/67] [chromium] › e2e/worlds.spec.ts:161:7 › Module Overview Route › coming-soon world module route 404s
+[57/67] [chromium] › e2e/worlds.spec.ts:168:7 › Lesson Viewer Page › renders lesson content with title
+[58/67] [chromium] › e2e/worlds.spec.ts:175:7 › Lesson Viewer Page › shows segmented step progress bar
+[59/67] [chromium] › e2e/worlds.spec.ts:183:7 › Lesson Viewer Page › shows Continue button
+[60/67] [chromium] › e2e/worlds.spec.ts:189:7 › Lesson Viewer Page › hides marketing nav in focus mode
+[61/67] [chromium] › e2e/worlds.spec.ts:194:7 › Lesson Viewer Page › marketing nav still renders on the world page
+[62/67] [chromium] › e2e/worlds.spec.ts:199:7 › Lesson Viewer Page › shows a link back to the module map
+[63/67] [chromium] › e2e/worlds.spec.ts:207:7 › Lesson Viewer Page › returns 404 for unknown lesson
+[64/67] [chromium] › e2e/worlds.spec.ts:224:7 › Lesson reading experience › Concept step underlines glossary terms and lists them in the rail
+[65/67] [chromium] › e2e/worlds.spec.ts:252:7 › Lesson reading experience › clicking a glossary term activates its rail entry
+[66/67] [chromium] › e2e/worlds.spec.ts:319:7 › Lesson reading experience › inline code renders as a chip in the prose (not a code block)
+[67/67] [chromium] › e2e/worlds.spec.ts:338:7 › Lesson reading experience › Code step swaps the right rail for a work pane
+  67 passed (52.1s)

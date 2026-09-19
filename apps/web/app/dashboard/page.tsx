@@ -1,3 +1,8 @@
+import { SystemEvidence } from "@/app/components/system-evidence";
+import { NextLearningTheme } from "@/app/components/next-learning-theme";
+import { buildSystemEvidence } from "@/lib/system-evidence";
+import { getLearningRoutePreference } from "@/lib/learning-route-server";
+import { canOpenLearningModule } from "@tensorcraft/shared";
 import { redirect } from "next/navigation";
 import { worlds } from "@tensorcraft/worlds";
 import {
@@ -52,6 +57,9 @@ export default async function DashboardPage() {
     { data: streaksRaw },
     { data: exerciseAttempts },
     ownedWorlds,
+    learningPreference,
+    activityResult,
+    reviewResult,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -85,6 +93,28 @@ export default async function DashboardPage() {
     // Entitled worlds from the single source (Tier 1 F4) - was a hand-rolled
     // purchases query + world_ids loop duplicated across three files.
     getEntitledWorlds(user.id),
+    getLearningRoutePreference(supabase, user.id),
+    Promise.resolve(
+      supabase
+        .from("learning_activity_progress")
+        .select("*")
+        .eq("user_id", user.id)
+        .limit(64),
+    ).catch(() => ({
+      data: null,
+      error: new Error("Activity records unavailable"),
+    })),
+    Promise.resolve(
+      supabase
+        .from("review_queue")
+        .select("lesson_id,next_review_at")
+        .eq("user_id", user.id)
+        .eq("world_id", "deep-orbit")
+        .limit(300),
+    ).catch(() => ({
+      data: null,
+      error: new Error("Review records unavailable"),
+    })),
   ]);
 
   // Streak nudge: any of the user's per-world streaks where last_activity_date
@@ -170,7 +200,15 @@ export default async function DashboardPage() {
     }
   }
 
-  // Find current module (first non-complete module)
+  // Resume actual work first; otherwise use the chosen route's recommendation.
+  const suggestedModule =
+    records.find(
+      (r) => r.world_id === activeWorld.slug && r.status === "in_progress",
+    )?.module_id ??
+    (learningPreference.route === "challenge" &&
+    ownedWorlds.has(activeWorld.slug)
+      ? "browser-runtimes"
+      : null);
   let foundActive = false;
   const dashModules: DashboardModule[] = contentModules.map((mod, i) => {
     const modLessons = getModuleLessons(activeWorld.slug, mod.slug);
@@ -191,18 +229,21 @@ export default async function DashboardPage() {
       }
     }
 
-    let status: "done" | "active" | "locked";
+    let status: DashboardModule["status"];
     if (completedInMod === modLessons.length && modLessons.length > 0) {
       status = "done";
-    } else if (!foundActive && (completedInMod > 0 || i === 0)) {
-      status = "active";
-      foundActive = true;
-    } else if (!foundActive && i === 0) {
+    } else if (
+      !canOpenLearningModule(mod.order, ownedWorlds.has(activeWorld.slug))
+    ) {
+      status = "locked";
+    } else if (
+      !foundActive &&
+      (!suggestedModule || suggestedModule === mod.slug)
+    ) {
       status = "active";
       foundActive = true;
     } else {
-      status = foundActive ? "locked" : "locked";
-      // If no module has been started, make the first one active
+      status = "available";
     }
 
     const num = String(i + 1).padStart(2, "0");
@@ -219,8 +260,8 @@ export default async function DashboardPage() {
 
   // Ensure at least one module is active
   if (!dashModules.some((m) => m.status === "active")) {
-    const firstLocked = dashModules.find((m) => m.status === "locked");
-    if (firstLocked) firstLocked.status = "active";
+    const firstAvailable = dashModules.find((m) => m.status === "available");
+    if (firstAvailable) firstAvailable.status = "active";
   }
 
   const completedModules = dashModules.filter(
@@ -228,7 +269,9 @@ export default async function DashboardPage() {
   ).length;
 
   // Current module info
-  const activeModule = dashModules.find((m) => m.status === "active");
+  const activeModule =
+    dashModules.find((m) => m.status === "active") ??
+    dashModules.find((m) => m.status === "locked");
   let currentModuleInfo: {
     number: number;
     name: string;
@@ -266,7 +309,7 @@ export default async function DashboardPage() {
         topic: currentLesson.title ?? "",
       };
 
-      resumeUrl = `/worlds/${activeWorld.slug}/${activeModule.slug}/${currentLesson.slug}`;
+      resumeUrl = `/worlds/${activeWorld.slug}/${activeModule.slug}/${currentLesson.slug}${learningPreference.route === "challenge" ? "?start=challenge" : ""}`;
 
       // Don't promise a lesson the paywall will intercept: modules past
       // the free first one need a purchase, and the old "Resume Lesson"
@@ -301,6 +344,22 @@ export default async function DashboardPage() {
   const isFirstRun =
     attempts.length === 0 && records.every((r) => r.status !== "completed");
 
+  const systemEvidence =
+    activeWorld.slug === "deep-orbit" ? (
+      <SystemEvidence
+        userId={user.id}
+        unavailable={!!activityResult.error || !!reviewResult.error}
+        stages={buildSystemEvidence({
+          lessons: getWorldLessons("deep-orbit"),
+          attempts: exerciseAttempts ?? [],
+          progress: progressRecords ?? [],
+          activities: activityResult.data ?? [],
+          reviews: reviewResult.data ?? [],
+          now: new Date(),
+        })}
+      />
+    ) : null;
+
   if (isFirstRun) {
     return (
       <FirstRunView
@@ -310,6 +369,7 @@ export default async function DashboardPage() {
         plateSrc={surfacePlateSrc(activeWorld.slug, "dashboard")}
         briefing={currentModuleInfo}
         resumeUrl={resumeUrl}
+        systemEvidence={systemEvidence}
         totalWorldLessons={totalLessons}
       />
     );
@@ -423,6 +483,12 @@ export default async function DashboardPage() {
 
   return (
     <DashboardView
+      continuation={
+        completedLessonKeys.has("deep-orbit/capstone/launch") ? (
+          <NextLearningTheme />
+        ) : null
+      }
+      systemEvidence={systemEvidence}
       displayName={displayName}
       avatarUrl={avatarUrl}
       worldName={activeWorld.displayName}

@@ -209,7 +209,7 @@ These deliberately separated clusters make a small training exercise tractable. 
 **Saddles and flat regions can also slow training.** A saddle curves upward in some directions and downward in others. Small gradients can occur near saddles or in other flat regions, but a stalled loss trace does not identify which geometry caused it. Adam uses running gradient statistics to adjust updates; it does not guarantee escape or convergence.
 </DerivationDrawer>
 
-Three of the four settings in the `fit()` call above are dials. `epochs` is how many passes over the data. `batchSize` is how many rows the optimizer sees before it updates the weights, 32 here and by default, so one weight update per batch. `validationSplit` is the fraction held back so the run is checked against rows it never trained on. `epochs` is the judgment call: more passes mean more learning, up to a point.
+Three of the four settings in the `fit()` call above are dials. `epochs` is how many passes over the data. `batchSize` is how many rows the optimizer sees before it updates the weights, 32 here and by default, so one weight update per batch. `validationSplit` is the fraction held back so the run is checked against rows it never trained on. More epochs permit more updates; whether those updates help is a question for evaluation.
 
 Demir gives the run 500 epochs because he does not know when to stop. A larger budget buys more updates, but their value has to be measured. Validation monitoring makes the stopping rule explicit rather than treating an epoch count as proof of learning.
 
@@ -306,13 +306,13 @@ The exercise labels observable trends. A short run can provide too little histor
   whatYouLearned={[
     "`model.fit()` encapsulates the complete training loop: forward pass, loss computation, backpropagation, and weight update, repeated for every batch of every epoch.",
     "Falling training loss with rising validation loss is consistent with overfitting. Check data shift, labels and preprocessing too. A halt only records that the callback's improvement condition was not met.",
-    "Mini-batches balance gradient quality against memory and compute: too large strains memory, too small introduces noise. Shuffling each epoch breaks ordering bias."
+    "Batch size affects memory, throughput and gradient variability. For independent examples, shuffling training rows reduces dependence on file order; preserve order inside sequences."
   ]}
   bridge="setImmediate and model.fit both support repeated work with stopping conditions. Configure the training epoch limit and any early-stopping callbacks explicitly."
   youCanNow="Replace a guessed epoch count with `tf.callbacks.earlyStopping`, read the training and validation curves together, and describe their trends before investigating why they changed."
 />
 
-> **DISPATCH archive · field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation curve had told them everything for six days; nobody was assigned to read it. Escalation cost: one pulled release, four weeks. Read your second curve.
+> **DISPATCH archive · field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation score had been falling for six days; nobody was assigned to read it. Escalation cost: one pulled release, four weeks. Read your second curve.
 
 <Epilogue>
 

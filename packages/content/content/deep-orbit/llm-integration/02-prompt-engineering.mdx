@@ -24,12 +24,12 @@ concept:
     tier: structural
     breaks: "Search asks a system to retrieve ranked items; a prompt asks a generator to produce a response. Either system can use learned or changing behavior. Clear instructions help define the task, but generated claims still need evidence and output checks."
 consequence:
-  narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
+  narrative: "The new template includes the sector catalogue. Farah tests both versions on held-out readings."
 hints:
   - level: nudge
     content: "Four parts in this order: role, reference context, the live signal values, then the output contract. The role gets a line of its own and each signal value gets its own labelled line. Every call rebuilds them from the argument it was handed."
   - level: guidance
-    content: "Each of the four parts does a different job, and the job tells you what to write. The role says who is answering and what kind of answer is wanted. The reference context is the one part the model cannot supply for itself: it has read more physics than anyone aboard, and none of that reading says which tones this sector makes on its own, so the reference set has to arrive as a statement the model can act on rather than a row of digits. The signal section is the only part that reads the argument. The output request has to be specific enough that your parser can rely on it. Rebuild all four on every call: a template that remembers one reading is just a string."
+    content: "Name the classification task in the role line. Label the supplied catalogue as natural frequencies in Hz. Read each signal value from the argument, then request JSON with the three required fields. A format request does not replace response validation."
   - level: solution
     content: |
       interface SignalInput {
@@ -50,7 +50,7 @@ hints:
           '- Frequency: ' + signal.frequency + ' Hz',
           '- Phase: ' + signal.phase + ' rad',
           '',
-          'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).',
+          'Classify this signal. Respond in JSON with fields: classification (noise, anomaly or unknown), confidence (self-reported score, 0.0-1.0), reasoning (explanation).',
         ];
         return lines.join('\n');
       }
@@ -112,7 +112,9 @@ Use this JSON shape:
 // Requested shape, not a guaranteed response. Parse and validate it.`}
 </CodeBlock>
 
-None of those three signal lines quotes a model input. The classifier reads amplitude, frequency and phase after module 4 min-max normalizes all three to 0 to 1, and the prompt reports what the instruments logged instead. Amplitude is the hull sensor's own count against its 2048-count full scale, so the 0.50 the classifier saw goes into the prompt as 1024. Frequency is the line the transform found, in hertz, rather than the model's zero-crossing count. That count is taken over a 64-sample window, which is a quarter second of tape at the array's 256 Hz rate. Phase is radians rather than the normalized angle. Those are the numbers a scientist reading the draft can check against an instrument, and this prompt is written for that reader.
+The prompt uses instrument units so a reviewer can check it against the log. The classifier instead receives three scaled features: amplitude divided by 2048, a zero-crossing count divided by 63, and phase mapped from minus-pi-to-pi onto 0 to 1.
+
+Frequency needs special care. The prompt reports the FFT line in hertz. The classifier uses zero crossings over a 64-sample capture, a quarter second at 256 Hz. Those are different measurements; do not substitute one for the other.
 
 <DerivationDrawer summary="Checking the instrument units in this example">
 These are supplied mission measurements, not reproduced experimental results. The fictional normal period has normalized mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Multiplying the percentile endpoints by 2048 gives roughly 570 to 1560 counts. This is the central 90% reference band, not the 3-sigma decision threshold.

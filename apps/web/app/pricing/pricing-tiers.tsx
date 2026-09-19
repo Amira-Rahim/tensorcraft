@@ -309,7 +309,8 @@ export function PricingTiers() {
                 // go stale the way the "21 bonus lessons" literal did. Pinned
                 // by packages/content/__tests__/scene-art-coverage.test.ts.
                 "Illustrated lessons",
-                "Capstone project",
+                "Train, evaluate, and run models in JavaScript",
+                "Independent project with a local browser app",
                 "GitHub integration",
                 "Certificate of completion",
                 "Access to all updates",

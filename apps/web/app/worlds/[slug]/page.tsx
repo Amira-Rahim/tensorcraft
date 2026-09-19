@@ -1,3 +1,7 @@
+import { canOpenLearningModule } from "@tensorcraft/shared";
+import { getLearningRoutePreference } from "@/lib/learning-route-server";
+import { LearningRoutePicker } from "@/app/components/learning-route-picker";
+import { CourseProjectPreview } from "@/app/components/course-project-preview";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { worlds } from "@tensorcraft/worlds";
@@ -89,7 +93,10 @@ export default async function WorldDetailPage({ params }: Props) {
   const hasPurchased = user ? await hasWorldPurchase(user.id, slug) : false;
 
   // Fetch progress
-  const progress = user ? await getUserProgress(user.id, slug) : [];
+  const [progress, learningPreference] = await Promise.all([
+    user ? getUserProgress(user.id, slug) : Promise.resolve([]),
+    getLearningRoutePreference(supabase, user?.id ?? null),
+  ]);
   const progressByLesson = new Map(
     progress.map((p) => [
       p.lesson_id,
@@ -124,41 +131,21 @@ export default async function WorldDetailPage({ params }: Props) {
     );
   }
 
-  // Determine module statuses (sequential unlock)
-  let foundFirstIncomplete = false;
+  // Completion and paid access are separate from recommended study order.
   const moduleMapItems = worldModules.map((mod) => {
     const modLessons = getModuleLessons(slug, mod.slug);
     const totalLessons = modLessons.length;
     const completedCount = completedByModule.get(mod.slug) ?? 0;
     const hasStarted = (startedByModule.get(mod.slug) ?? 0) > 0;
-    // Free == module 1, matching the paywall gate in
-    // worlds/[slug]/[module]/[lesson]/page.tsx, which redirects on
-    // `mod.order > 1`.
-    //
-    // This used to call isFoundationsModule(mod), i.e. `track === "foundations"`
-    // - and in deep-orbit that track spans modules 1 THROUGH 4. So the map
-    // advertised modules 2, 3 and 4 as available, and clicking any of them
-    // bounced the learner to /pricing?locked=. It landed hardest right after
-    // the free-account CTA converted someone: sign up, see three more modules
-    // apparently unlocked, click, get a paywall. Anonymous visitors were
-    // unaffected, which is why it survived the anonymous free-path checks.
-    const isFree = mod.order === 1;
-
-    let status: ModuleStatus;
-    if (completedCount >= totalLessons && totalLessons > 0) {
-      status = "completed";
-    } else if (!foundFirstIncomplete) {
-      foundFirstIncomplete = true;
-      if (!user) {
-        status = isFree ? "available" : "locked";
-      } else if (!hasPurchased && !isFree) {
-        status = "locked";
-      } else {
-        status = hasStarted ? "active" : "available";
-      }
-    } else {
-      status = "locked";
-    }
+    const accessible = canOpenLearningModule(mod.order, hasPurchased);
+    const status: ModuleStatus =
+      completedCount >= totalLessons && totalLessons > 0
+        ? "completed"
+        : !accessible
+          ? "locked"
+          : hasStarted
+            ? "active"
+            : "available";
 
     // Compute average score for completed modules
     const modScores = scoresByModule.get(mod.slug) ?? [];
@@ -170,29 +157,18 @@ export default async function WorldDetailPage({ params }: Props) {
         : null;
 
     // Compute lesson statuses
-    let foundFirstIncompleteLessonInModule = false;
     const lessonItems = modLessons.map((lesson) => {
       const lessonProgress = progressByLesson.get(lesson.slug);
       const progressStatus = lessonProgress?.status;
 
-      let lessonStatus: "completed" | "in_progress" | "available" | "locked";
-      if (progressStatus === "completed") {
-        lessonStatus = "completed";
-      } else if (progressStatus === "in_progress") {
-        lessonStatus = "in_progress";
-        foundFirstIncompleteLessonInModule = true;
-      } else if (isFree) {
-        // All lessons in free modules are accessible without sequential unlock
-        lessonStatus = "available";
-      } else if (
-        !foundFirstIncompleteLessonInModule &&
-        (status === "active" || status === "available")
-      ) {
-        foundFirstIncompleteLessonInModule = true;
-        lessonStatus = "available";
-      } else {
-        lessonStatus = "locked";
-      }
+      const lessonStatus: "completed" | "in_progress" | "available" | "locked" =
+        progressStatus === "completed"
+          ? "completed"
+          : !accessible
+            ? "locked"
+            : progressStatus === "in_progress"
+              ? "in_progress"
+              : "available";
 
       return {
         slug: lesson.slug,
@@ -270,6 +246,7 @@ export default async function WorldDetailPage({ params }: Props) {
     worldSlug: slug,
     modules: moduleMapItems,
     hasPurchased,
+    learningRoute: learningPreference.route,
   });
 
   const courseJsonLd = buildCourseJsonLd(world, { totalMinutes });
@@ -371,10 +348,8 @@ export default async function WorldDetailPage({ params }: Props) {
           className="text-base md:text-xl"
           style={{ color: "var(--tc-muted)" }}
         >
-          {/* "first" holds while one world is launched; this header only
-              renders for launched worlds, so reword when world 2 opens. */}
-          {worldModules.length} modules stand between you and your first machine
-          learning model.
+          Build, evaluate, and run a signal classifier in JavaScript while the
+          Archimedes investigates an unexplained transmission.
         </p>
 
         <div className="flex gap-8 md:gap-12 mt-6">
@@ -408,6 +383,36 @@ export default async function WorldDetailPage({ params }: Props) {
           get the band, so they keep this strip. Self-hides for a world
           with no characters. */}
       {!trailerPanel && <WorldCast slug={world.slug} />}
+      {slug === "deep-orbit" && (
+        <div className="relative z-10 mx-auto max-w-6xl px-5 md:px-8">
+          {hasPurchased || progress.length > 0 ? (
+            <details className="border border-border bg-surface p-4">
+              <summary className="min-h-11 cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-primary">
+                Course preferences and project brief
+              </summary>
+              <LearningRoutePicker
+                accountId={user?.id ?? null}
+                initialRoute={learningPreference.route}
+                unavailable={learningPreference.unavailable}
+                source="world"
+                showReadiness
+              />
+              <CourseProjectPreview />
+            </details>
+          ) : (
+            <>
+              <LearningRoutePicker
+                accountId={user?.id ?? null}
+                initialRoute={learningPreference.route}
+                unavailable={learningPreference.unavailable}
+                source="world"
+                showReadiness
+              />
+              <CourseProjectPreview />
+            </>
+          )}
+        </div>
+      )}
 
       {/* The trailer for prospects with no progress. The header above is a
           tc-on-art surface whose dark veil only stays legible in the light

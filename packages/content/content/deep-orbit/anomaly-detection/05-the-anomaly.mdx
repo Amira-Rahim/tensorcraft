@@ -63,7 +63,10 @@ hints:
           return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] };
         });
         const std = Math.sqrt(variance);
-        const zScore = constant || std === 0 ? null : (actual - mean) / std;
+        if (!Number.isFinite(mean) || !Number.isFinite(std) || (!constant && std === 0)) {
+          throw new Error('Window statistics lost precision');
+        }
+        const zScore = constant ? null : (actual - mean) / std;
 
         const verdicts = {
           statistical: zScore === null ? actual !== window[0] : Math.abs(zScore) > 3,
@@ -159,8 +162,12 @@ function detectAnomaly(
   const reconError = tf.tidy(() => {
     const input = tf.tensor2d([signal]);
     const reconstructed = autoencoder.predict(input) as tf.Tensor;
+    if (reconstructed.rank !== 2 || reconstructed.shape[0] !== 1 || reconstructed.shape[1] !== 11) {
+      throw new Error('Invalid reconstruction shape');
+    }
     return tf.losses.meanSquaredError(input, reconstructed).dataSync()[0];
   });
+  if (!Number.isFinite(reconError)) throw new Error('Invalid reconstruction score');
   const aeTriggered = reconError > thresholds.reconstruction;
 
   // Detector 3: LSTM prediction deviation
@@ -171,10 +178,15 @@ function detectAnomaly(
     // Use its OWN frozen training scaler for both recentWindow and
     // actualLstmFeatures. The autoencoder may have different training
     // rows and statistics, even for columns with the same names.
-    const predicted = (lstm.predict(input) as tf.Tensor).dataSync();
+    const output = lstm.predict(input) as tf.Tensor;
+    if (output.rank !== 2 || output.shape[0] !== 1 || output.shape[1] !== 3) {
+      throw new Error('Invalid forecast shape');
+    }
+    const predicted = output.dataSync();
     const nextFeatures = actualLstmFeatures;
     return nextFeatures.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / nextFeatures.length;
   });
+  if (!Number.isFinite(predError)) throw new Error('Invalid forecast score');
   const lstmTriggered = predError > thresholds.prediction;
 
   // Ensemble: count how many detectors agree
@@ -208,9 +220,9 @@ function detectAnomaly(
 // features, so this reading's 0.041 is four times the gate.`}
 </CodeBlock>
 
-Separately computed is not the same as independent. All three detectors score the same capture. The statistical gate reads its amplitude channel min-max normalized, and the autoencoder reads that same channel z-scored, as one of the eleven features it is trying to rebuild. That is one hull sensor read twice through two different scalings. If the sensor drifts, both detectors get the drifted number, and neither can tell that the other got it too. The autoencoder and the LSTM were fitted on the same eleven days of telemetry. The votes can therefore fail together, which is why a majority is not three odds multiplied.
+Separately computed is not the same as independent. All three detectors score the same capture. The statistical gate reads its amplitude channel min-max normalized, and the autoencoder reads that same channel z-scored, as one of the eleven features it is trying to rebuild. That is one hull sensor read twice through two different scalings. If the sensor drifts, both detectors get the drifted number, and neither can tell that the other got it too. Both models draw training rows from the same telemetry archive, although the LSTM run used only its first day. The votes can therefore fail together, which is why a majority is not three odds multiplied.
 
-Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The same eleven days sit under the LSTM's training windows. A contaminated archive can weaken two votes at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
+Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The LSTM trained on the first day of that archive. Contamination present in both training selections can weaken two votes at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
 
 ## The Discovery
 
@@ -225,8 +237,8 @@ While the ensemble votes, Farah runs a script she has been putting off: an inter
 // rebuilds, and the min-max amplitude the statistical gate measures.
 // Module 5's extractFeatures turns the 64 raw samples into those eleven
 // in raw units. Module 4's preprocess normalizes the first three of them
-// and takes them as a triple, so if you hand it the capture itself, all
-// three features come back NaN.
+// from a named feature object. Passing the capture array instead breaks
+// that input contract; preprocessing should reject it.
 const [amplitude, zeroCrossings, phase] = extractFeatures(rawCapture);
 const anomalousAmplitude = preprocess({
   amplitude,
@@ -248,7 +260,7 @@ console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(
 
 // Feature analysis reveals: the anomaly is in the frequency domain
 // A 73.4 Hz component; each pulse carries Fibonacci-ratio SUB-intervals
-// (the 73.4-second gap BETWEEN pulses holds steady, as always)
+// (the 73.4-second gap BETWEEN pulses has held steady so far)
 // The same ratios appear in the ship's sensor calibration harmonics`}
 </CodeBlock>
 
@@ -256,7 +268,7 @@ console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(
 
 Write the verdict layer: derive the z-score yourself from the eight recent amplitudes you are handed, take the autoencoder's and the LSTM's scores as they arrive, and return the 2-of-3 vote as a count of failed checks. The statistical detector moves off lesson 1's eleven-day baseline onto that window, so the same full-scale reading that scored 3.2 sigma there scores 32 here. The LSTM moves too: there it forecasts one amplitude and its miss is compared in 0-to-1 units, not in this lesson's z-space mean squared error.
 
-A constant window has no standard deviation to divide by. This exercise reports a null z-score and uses an exact equality policy for its statistical vote. Real sensors need a tolerance chosen from their resolution and noise.
+A constant window has no standard deviation to divide by. This exercise reports a null z-score and uses an exact equality policy for its statistical vote. Real sensors need a tolerance chosen from their resolution and noise. Reject a nonconstant window if float32 conversion loses its spread; a rounded-away variation is not evidence of a constant baseline.
 
 <Exercise slug="ensemble-detector" />
 
@@ -266,8 +278,8 @@ A constant window has no standard deviation to divide by. This exercise reports 
 />
 
 <RecallPrompt
-  question="Module 1's normalization lesson says to keep min-max off open-ended streams, yet this lesson's statistical gate reads the amplitude min-max normalized. What makes that channel safe for min-max, and what does the same fact cost the gate at the top of its range?"
-  answer="Min-max suits data with true, known bounds. The amplitude channel has one: the sensor saturates at its 2048-count full scale, so the stream is not open-ended. The cost sits at the ceiling. A reading pegged at 1.00 is 3.2 sigma off this module's normal-period baseline and can go no higher, while a dead channel at 0.00 reaches 3.47."
+  question="What distinguishes this amplitude channel's fixed-range scaling from min-max bounds fitted on observed data, and what does sensor saturation cost the statistical gate?"
+  answer="A fitted min-max range can be exceeded by later observations. Here the scale instead comes from a physical bound: the sensor saturates at its 2048-count full scale, so the stream is not open-ended. The cost sits at the ceiling. A reading pegged at 1.00 is 3.2 sigma off this module's normal-period baseline and can go no higher, while a dead channel at 0.00 reaches 3.47."
 />
 
 <LessonRecap

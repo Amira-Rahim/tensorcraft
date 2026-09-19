@@ -3,7 +3,13 @@ lessonSlug: windowing-and-overlap
 title: "Build and Apply a Hann Window"
 mlContent: data
 instructions: |
-  Build `hannWindow(n)` returning a JS number array of n weights, one per sample of the slice: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))) for i = 0 to n-1. Plain JS (Array.from + Math.cos) or tensors, your choice; the grader checks the returned numbers, not how you produced them. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map). The grader runs your two functions on a tone that does not fit its window. It takes the FFT of both the raw and the windowed slice. For the two fixtures below, the sum of magnitudes more than three bins from the rounded tone bin drops by more than 20x. This statistic measures far-bin magnitude, not energy. The drop is fixture-specific; a taper also broadens the main lobe. Assume integer n >= 2 and signal/window arrays of equal length.
+  Implement two functions returning JavaScript number arrays:
+  - `hannWindow(n)`: n weights using `w[i] = 0.5 * (1 - cos(2*pi*i / (n-1)))`. This is the symmetric Hann, zero at both ends.
+  - `applyWindow(signal, window)`: multiply corresponding values without reordering them.
+
+  Use plain JavaScript or tensors. For a tensor implementation, `tf.range(0, n)` creates `[0, 1, ..., n-1]`; dispose temporary tensors after readback. Assume integer `n >= 2` and equal-length signal/window arrays.
+
+  The grader also measures the effect on two off-bin tones. Their summed magnitudes more than three bins from the rounded tone bin fall by over 20x. This fixture-specific statistic is not spectral energy, and the taper also broadens the main peak.
 starterCode: |
   function hannWindow(n) {
     // The curve is in the instructions. The open question is which samples of

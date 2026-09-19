@@ -221,6 +221,12 @@ testCode: |
     });
   });
 
+  it('uses position zero for a single step', () => {
+    const r = temporalAttention(tf.tensor2d([[7]]), tf.tensor2d([[0], [20]]));
+    expect(r.summary.shape).toEqual([1]);
+    expect(r.summary.dataSync()[0]).toBe(7);
+    expect(Array.from(r.weights.dataSync())).toEqual([1]);
+  });
   it('keeps a one-feature summary axis',()=>{const r=temporalAttention(tf.tensor2d([[2],[4]]),tf.zeros([2,1]));expect(r.summary.shape).toEqual([1]);});
 estimatedMinutes: 15
 difficulty: intermediate

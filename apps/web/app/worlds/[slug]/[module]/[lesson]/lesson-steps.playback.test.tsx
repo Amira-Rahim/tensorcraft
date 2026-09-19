@@ -97,6 +97,9 @@ vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
     auth: {
       getSession: () => Promise.resolve({ data: { session: null } }),
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe: vi.fn() } },
+      }),
     },
   }),
 }));
@@ -115,6 +118,10 @@ vi.mock("@/app/components/mdx", () => ({
   TransferAssignment: () => null,
   DecisionTask: () => null,
   IndependentProject: () => null,
+  ProjectMilestone: () => null,
+  ConceptReference: () => null,
+  ChannelLayoutExperiment: () => null,
+  LearningExperiment: () => null,
 }));
 
 // Velite-style compiled MDX: two opening dialogues, a story paragraph

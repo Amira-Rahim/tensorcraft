@@ -1,7 +1,19 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
 title: "First Contact: Tensor In, Memory Clean"
-instructions: "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape`, its values into `values` (a plain JS array: remember dataSync()) and their total into `total` (one plain number: let the tensor add the readings up with `sum()` and read the result back, rather than typing it in or adding it up in plain JavaScript), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can."
+instructions: |
+  Start with the five readings in `streamValues`.
+
+  1. Create a 1D tensor called `reading` from that array.
+  2. Before disposing it, save its shape as `shape`, its values as a plain
+     JavaScript array `values`, and its sum as a plain number `total`.
+     Use a tensor sum and read the result back; this task practices tensor
+     operations rather than JavaScript arithmetic. Release temporary tensors too.
+  3. Dispose `reading` after its final use. Its saved JavaScript values must
+     remain available for the checks.
+
+  `dataSync()` returns typed storage. Convert it with `Array.from()` when
+  the task asks for a plain array.
 starterCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\n// 1. Create the tensor\nconst reading = null; // your code here\n\n// 2. Capture shape, values and their total BEFORE disposing\nconst shape = null;\nconst values = null;\nconst total = null;\n\n// 3. Release the GPU memory\n"
 solutionCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\nconst reading = tf.tensor(streamValues);\n\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\nconst total = tf.tidy(() => reading.sum().dataSync()[0]);\n\nreading.dispose();"
 testCode: |

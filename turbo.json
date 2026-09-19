@@ -7,7 +7,8 @@
     },
     "build": {
       "dependsOn": ["^build", "build:content"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "passThroughEnv": ["SENTRY_AUTH_TOKEN"]
     },
     "dev": {
       "dependsOn": ["^build", "build:content"],

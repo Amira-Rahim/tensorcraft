@@ -55,7 +55,7 @@ keywords:
 skillAxes: [training]
 ---
 
-If you've ever written an easing loop, you have already written this lesson. Every loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`. The derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: the easing line because it was written that way, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when nobody can tell you the target.
+If you've ever written an easing loop, you have already written this lesson. Every loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`. The derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: the easing line because it was written that way, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when the best parameter values are unknown.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 An easing loop knows where it is going. This has 673 parameters and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
@@ -104,7 +104,7 @@ Read that trace as distances rather than positions. Each row sits five steps aft
 
 **Learning rate** is a hyperparameter: a setting you choose rather than a weight fitted by this optimizer. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so `pos = 2` running toward `target = 10` at 0.001 needs 6,682 frames to close the gap to 0.01.
 
-Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error on every frame after and arrives in ten. At 2.0 it stops converging and bounces between 18 and 2. Above 2.0 the error grows: at 2.5 the positions are 22, -8 and 37.
+Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error each frame and comes within 0.01 of the target in ten frames. At 2.0 it stops converging and bounces between 18 and 2. Above 2.0 the error grows: at 2.5 the positions are 22, -8 and 37.
 
 The threshold belongs to the loss rather than to the rate. The descent above minimizes `(x - 3)²` instead of half of it, so every slope it reads is twice as steep and its own threshold sits at 1.0. The 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
 
@@ -120,10 +120,12 @@ Each partial derivative gives the local rate of loss change per unit change in t
 `L(w + Δw) ≈ L(w) + ∇L · Δw`
 
 To minimize the linear approximation, pick Δw opposite to ∇L. The learning rate η scales the step:
-- η too large → that straight line stops describing the real curve, so the step lands past the minimum
+- η too large → the local approximation may be poor at the proposed point, and the step can raise the loss
 - η too small → many steps to converge
 - Adaptive optimizers such as Adam scale updates using gradient history; their base learning rate remains a setting.
 </DerivationDrawer>
+
+<LearningExperiment id="learning-rate" />
 
 ## Challenge
 

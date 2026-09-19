@@ -74,10 +74,10 @@ export function MobileNav() {
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
-            className="fixed inset-0 z-50 bg-page flex flex-col"
+            className="fixed inset-0 z-50 bg-page flex flex-col overflow-y-auto"
           >
             {/* Header row */}
-            <div className="flex items-center justify-between h-15 px-8 border-b border-border">
+            <div className="flex flex-wrap shrink-0 items-center justify-between min-h-15 py-1 px-[min(2rem,5vw)] border-b border-border">
               <Link
                 href="/"
                 onClick={() => setOpen(false)}

@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "Mirza needs a report for Earth Command in 6 hours. 47 days of data. Farah suggests using an LLM to draft the report: not to replace analysis, but to accelerate it."
+  narrative: "Mirza needs a report for Earth Command in 6 hours. Farah proposes an LLM draft of 47 days of data, with time reserved to check its claims."
   speaker: "Dr. Farah"
 concept:
   explanation: "An LLM generates a draft from instructions and context. Check its structure and claims before using it."
@@ -60,7 +60,7 @@ skillAxes: [deployment, js_integration]
 Three weeks pass without a lesson in them. The ensemble Farah left running extrapolates every night of those weeks. The logged pulse interval shortens by seconds while nobody sleeps enough. The long-baseline triangulation job she queued against the relay network grinds through its first pass, still refusing to commit to a bearing. What forces everyone back into one room is the calendar: a transmission window, six hours wide.
 
 <Dialogue speaker="Dr. Farah">
-We have 47 days of signal data: 12,000 classified signal events, distilled out of millions of raw dashboard readings, and one anomaly that could change everything. I can't write a comprehensive report in the 6 hours before the next transmission window. But I can guide a language model to draft one.
+We have 47 days of signal data: 12,000 classified signal events, distilled out of millions of raw dashboard readings, and one unclassified event. I can't finish the report in the 6 hours before the next transmission window. But I can guide a language model to draft one.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
@@ -77,7 +77,7 @@ Then we run it with a ledger. Every fabricated claim you catch goes on the board
 
 Nazari's skepticism is the right default. A language model will happily invent a confident paragraph about an anomaly that never happened, and a fabricated number in a report to Earth Command is worse than no report at all. Farah proposes a review gate: check each claim against its evidence before release. Reviewers can miss errors too, so keep sources, corrections and approval with the report.
 
-<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on", "Define the human-AI workflow: generate → review → correct → approve"]} />
+<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Parse an untrusted reply, validate its required fields and reject invalid output", "Define the human-AI workflow: generate → review → correct → approve"]} />
 
 ## LLMs as Developer Tools
 
@@ -142,6 +142,8 @@ Each head uses its own learned projections. Head outputs are combined, then pass
 For positive sampling **temperature** T, divide the vocabulary logits by T before softmax. Smaller values concentrate probability on higher-scoring tokens. Larger values flatten it. A zero-temperature API setting commonly requests greedy selection rather than division by zero; ties and serving details can still affect repeatability. This setting does not change the attention softmax inside the model or verify a claim.
 
 Next-token training rewards predictions of text in the training distribution. Later training can improve instruction following and factual performance, but neither objective checks a new report against your ship's measurements. A fluent answer still needs evidence.
+
+The [original transformer paper](https://arxiv.org/html/1706.03762v7#S3) describes the attention and block structure. Hugging Face’s [cache explanation](https://huggingface.co/docs/transformers/v4.57.1/cache_explanation) shows how cached keys and values are reused during decoding.
 
 The onboard language component and its bundle sizes belong to the fictional mission. This adapter demonstrates the HTTP boundary; it does not download or implement that component. The browser runtime lab measures a separate pretrained sentiment model.
 
@@ -214,7 +216,7 @@ The client above is typed all the way to its edge. What comes back over that edg
     "Lower temperature reduces sampling variation. It does not establish factual accuracy or guarantee identical output."
   ]}
   bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."
-  youCanNow="Write the boundary between a language model and the code that uses it: parse the reply, check every field your caller depends on, and refuse what did not arrive. What survives that goes into a workflow where a human checks the claims before anything ships."
+  youCanNow="Parse and validate a model reply, then send its claims for evidence review before release."
 />
 
 <Epilogue>

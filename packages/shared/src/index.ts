@@ -69,3 +69,8 @@ export type {
 } from "./review-types";
 
 export * from "./project-export";
+export * from "./learning-route";
+
+export * from "./story-decisions";
+export * from "./learning-activity";
+export * from "./curriculum";

@@ -2,6 +2,16 @@
 
 Date: 2026-09-17. Status: approved; implementation in progress.
 
+The September 19 audit's approved next-stage work is detailed in the
+[learning-product development plan](learning-product-development-plan.md).
+It covers the opening experience, concept experiments, experienced-learner
+route, system evidence, character development, instructional design, and
+later value/growth validation. The [September 19 release record](audits/learning-product-release-2026-09-19.md)
+now records its implementation, internal content A, deployment and production
+checks. Actual screen-reader verification remains open. Earlier reviews below
+remain historical evidence; independent learning, value and growth results
+are still required separately.
+
 Owner update, 2026-09-18: work in order on real runtime/conversion/deployment
 verification, complete internal content review, then persistent story
 consequences and two additional decisions. Independent recruitment and learner

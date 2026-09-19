@@ -1,0 +1,9 @@
+PASS anomaly-detection/01-normal-vs-anomalous.mdx: baseline-stats.ts, precision-recall.ts
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+PASS anomaly-detection/02-autoencoders.mdx: autoencoder.ts, training.ts
+PASS anomaly-detection/03-reconstruction-error.mdx: reconstruction-error.ts, reconstruction-counterexample.js, feature-errors.ts
+PASS anomaly-detection/04-threshold-tuning.mdx: threshold-setting.ts, evaluation.ts, f1-and-cost.js, locked-threshold.ts
+PASS anomaly-detection/05-the-anomaly.mdx: ensemble-detector.ts

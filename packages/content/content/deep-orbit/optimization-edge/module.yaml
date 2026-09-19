@@ -3,13 +3,10 @@ title: "Optimization & Edge"
 worldId: deep-orbit
 order: 10
 description: |
-  This one is penance. At 0247 the pulse window opened, and at 0249 the
-  340 MB model took the 512 MB bridge dashboard down with it: the capture
-  was lost and Earth's relay slot closed without it. You'll work through
-  profiling, quantization, pruning, caching, and WebGPU acceleration to
-  shrink the bundle's weight files to 85 MB and the download to 42 MB, at a
-  cost of 2.4 accuracy points, in the fictional mission. The lab separately measures the shipped model. The lost
-  capture stays lost; the next one does not have to.
+  A model load crashes the bridge dashboard during a capture window.
+  Measure the costs of profiling, quantization, pruning, caching and backend
+  changes before the next deployment. The mission uses fictional budgets;
+  the runtime lab measures the supplied model on your device.
 summary: "Shrink a model to fit the hardware: profiling, quantization (fewer bytes per weight), pruning (zeroing small weights and measuring the effect), caching, and WebGPU (the math on the GPU), a trade of size against accuracy."
 lessonCount: 5
 prerequisites:

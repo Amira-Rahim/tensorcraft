@@ -3,7 +3,7 @@
 import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, writeFileSync } from "node:fs";
-const base = process.env.UI_AUDIT_BASE ?? "http://127.0.0.1:3118";
+const base = process.env.UI_AUDIT_BASE ?? "http://localhost:3118";
 const out = process.env.UI_AUDIT_OUT ?? "test-results/ui-ux-audit";
 mkdirSync(out, { recursive: true });
 const browser = await chromium.launch();
@@ -25,6 +25,8 @@ try {
     { width: 390, height: 844, scheme: "light" },
     { width: 1024, height: 768, scheme: "dark" },
     { width: 320, height: 667, scheme: "dark" },
+    { width: 1024, height: 768, scheme: "light" },
+    { width: 320, height: 667, scheme: "light" },
   ]) {
     const context = await browser.newContext({
       viewport: { width: mode.width, height: mode.height },
@@ -34,20 +36,19 @@ try {
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message));
+    await page.addInitScript(() => {
+      if (window.top !== window) return;
+      const step = new URL(location.href).searchParams.get("audit_step") ?? "0";
+      localStorage.setItem("tc-cookie-consent", "declined");
+      localStorage.setItem("tc-script-skip", "1");
+      localStorage.setItem("tc_step_deep-orbit_introduction-to-tensors", step);
+      localStorage.setItem(
+        "tc_step_max_deep-orbit_introduction-to-tensors",
+        "5",
+      );
+    });
     for (let step = 0; step < 6; step++) {
-      await page.addInitScript((step) => {
-        localStorage.setItem("tc-cookie-consent", "declined");
-        localStorage.setItem("tc-script-skip", "1");
-        localStorage.setItem(
-          "tc_step_deep-orbit_introduction-to-tensors",
-          String(step),
-        );
-        localStorage.setItem(
-          "tc_step_max_deep-orbit_introduction-to-tensors",
-          "5",
-        );
-      }, step);
-      const response = await page.goto(base + url, {
+      const response = await page.goto(base + url + `?audit_step=${step}`, {
         waitUntil: "domcontentloaded",
       });
       if ((response?.status() ?? 500) >= 500) throw new Error("Preview failed");
@@ -70,6 +71,11 @@ try {
             exact: true,
           })
           .click();
+        if (step === 3)
+          await page
+            .getByRole("textbox", { name: "Code Editor for index.js" })
+            .first()
+            .scrollIntoViewIfNeeded();
         if (step === 3)
           await expect(page.locator(".cm-content").first()).toBeVisible();
         await capture(id + "-pane");
@@ -154,6 +160,7 @@ try {
       });
       const axe = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+        .exclude('[data-decorative="true"][aria-hidden="true"]')
         .analyze();
       records.push({
         id,

@@ -47,7 +47,7 @@ test.describe("Lesson script playback", () => {
     await page.waitForTimeout(600);
     expect(await page.evaluate(() => window.scrollY)).toBeLessThan(200);
     await expect(
-      page.getByRole("heading", { name: "What Is a Tensor?" }),
+      page.getByRole("heading", { name: "Inspect One Packet" }),
     ).toBeHidden();
 
     // Replay resets and replays.
@@ -97,7 +97,7 @@ test.describe("Lesson without JavaScript", () => {
       }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "What Is a Tensor?", exact: true }),
+      page.getByRole("heading", { name: "Inspect One Packet", exact: true }),
     ).toBeVisible();
   });
 });

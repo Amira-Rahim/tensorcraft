@@ -39,12 +39,14 @@ keywords:
 skillAxes: [data_prep]
 ---
 
+Farah has spent fifty minutes of the lab slot comparing whole-capture magnitude spectra. She expected a steady oscillator to explain the peak. The averages keep showing it, but none tells her when it starts or stops. She crosses 'continuous' out of her test plan and brings up the capture timestamps.
+
 <Dialogue speaker="ARIA">
 Band report, 68 to 78 hertz, eleven days of archive: no events. My rules evaluate each reading against a threshold at the moment it arrives. I hold no rule that represents a frequency which is present for part of a capture and absent for the rest.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-That is the gap, and it is ours as much as hers. A single magnitude spectrum hides where within the capture a tone appears. The full complex FFT retains that information, but the magnitude plot is what we have been inspecting. The anomaly might pulse, might drift, might appear only during specific intervals. We need to see frequency content over time. We need a spectrogram.
+I spent the slot testing the wrong question. A whole-capture magnitude plot shows a peak but hides when it appears. The full complex FFT retains timing information; the magnitude plot drops phase. Next we compare short windows in time order. A spectrogram will let us test whether the tone stays present.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -177,7 +179,7 @@ const fineTime = stftMagnitudes(signal, 64, 32);
 const fineFreq = stftMagnitudes(signal, 512, 256);
 // Window span 2s (time blur), 0.5 Hz per bin
 
-// Good default: balance both
+// Middle setting for this four-second demonstration
 const balanced = stftMagnitudes(signal, 256, 128);
 // Window span 1s (time blur), 1 Hz per bin`}
 </CodeBlock>
@@ -227,6 +229,6 @@ On the spectrogram the anomaly resolves into a row of bright dashes marching alo
 No rule of mine could have produced this image. Request: store a copy of this spectrogram in my reference partition.
 </Dialogue>
 
-Farah grants the request, then goes back to measuring the gaps between pulses.
+Farah grants the request and adds a timing check to the analysis plan. Her steady-oscillator hypothesis is crossed out beside the fifty minutes it used.
 
 </Epilogue>

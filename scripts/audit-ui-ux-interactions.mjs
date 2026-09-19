@@ -1,7 +1,7 @@
 import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { writeFileSync } from "node:fs";
-const base = process.env.UI_AUDIT_BASE ?? "http://127.0.0.1:3118";
+const base = process.env.UI_AUDIT_BASE ?? "http://localhost:3118";
 const out = process.env.UI_AUDIT_OUT ?? "test-results/ui-ux-audit";
 const browser = await chromium.launch();
 const records = [];
@@ -47,6 +47,7 @@ try {
       .boundingBox();
     const axe = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+      .exclude('[data-decorative="true"][aria-hidden="true"]')
       .analyze();
     records.push({
       id: `report-open-${width}`,

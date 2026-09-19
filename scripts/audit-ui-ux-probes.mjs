@@ -2,6 +2,7 @@
 // The email confirmation uses an intercepted OTP response; no email is sent.
 import { chromium, webkit, expect } from "@playwright/test";
 import fs from "node:fs";
+const base = process.env.UI_AUDIT_BASE ?? "http://localhost:3118";
 const out = process.env.UI_AUDIT_OUT ?? "test-results/ui-ux-audit";
 fs.mkdirSync(out, { recursive: true });
 const browser = await chromium.launch();
@@ -21,7 +22,7 @@ try {
       await page.addInitScript(() =>
         localStorage.setItem("tc-cookie-consent", "declined"),
       );
-      await page.goto("http://127.0.0.1:3118/auth", {
+      await page.goto(base + "/auth", {
         waitUntil: "networkidle",
       });
       await page.waitForTimeout(400);
@@ -55,7 +56,7 @@ try {
   await page.addInitScript(() =>
     localStorage.setItem("tc-cookie-consent", "declined"),
   );
-  await page.goto("http://127.0.0.1:3118/worlds/neon-protocol", {
+  await page.goto(base + "/worlds/neon-protocol", {
     waitUntil: "networkidle",
   });
   await page
@@ -78,7 +79,7 @@ try {
   if (posts.length)
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto("http://127.0.0.1:3118/blog/" + posts[0].slug, {
+      await page.goto(base + "/blog/" + posts[0].slug, {
         waitUntil: "networkidle",
       });
       await page.screenshot({
@@ -98,7 +99,7 @@ try {
   await page.route("**/auth/v1/otp**", (route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "{}" }),
   );
-  await page.goto("http://127.0.0.1:3118/auth", { waitUntil: "networkidle" });
+  await page.goto(base + "/auth", { waitUntil: "networkidle" });
   await page.locator("#auth-email").fill("learner@example.test");
   await page.getByRole("button", { name: /send magic link/i }).click();
   await expect(
@@ -170,7 +171,7 @@ try {
       localStorage.setItem("tc-cookie-consent", "declined"),
     );
     await p.goto(
-      "http://127.0.0.1:3118/worlds/deep-orbit/foundations/introduction-to-tensors",
+      base + "/worlds/deep-orbit/foundations/introduction-to-tensors",
       { waitUntil: "networkidle" },
     );
     await p.screenshot({ path: out + "/webkit-lesson-390.png" });

@@ -2,6 +2,311 @@
   "version": 1,
   "scope": "Deep Orbit learning inventory",
   "interpretation": "Source inventory and declared progression. See deep-orbit-assessment-review.json for the dated manual assessment review and its source hashes. A linked exercise is not proof that every objective is assessed; learner readiness remains unvalidated.",
+  "capabilityProgressions": {
+    "version": 1,
+    "recordedOn": "2026-09-19",
+    "interpretation": "Authored capability progression, checked against source links. Changed constraints are task variations, not observed independent transfer. Numerical activities are browser-reported practice; rationales and external work require self-review or later human review.",
+    "helpContract": "Existing exercises keep staged hints and full solutions. New experiments preserve first outcomes and help through reset and offer a changed case. Revisited reference material is recorded as assistance.",
+    "capabilities": [
+      {
+        "id": "data-layout",
+        "title": "Recover feature axes",
+        "workedExample": {
+          "lesson": "tensor-shapes"
+        },
+        "partialCompletion": {
+          "lesson": "tensor-shapes",
+          "exercise": "reshape-tensor"
+        },
+        "failureDiagnosis": {
+          "lesson": "tensor-shapes",
+          "activity": "deep-orbit-channel-layout",
+          "focus": "The reshape has the requested dimensions but mixes channels."
+        },
+        "changedConstraint": {
+          "lesson": "sliding-windows",
+          "exercise": "sliding-window",
+          "constraint": "Temporal windows preserve row order and feature membership."
+        },
+        "laterUse": [
+          "data-loading",
+          "sliding-windows"
+        ]
+      },
+      {
+        "id": "preprocessing",
+        "title": "Preserve a fitted data contract",
+        "workedExample": {
+          "lesson": "normalization"
+        },
+        "partialCompletion": {
+          "lesson": "normalization",
+          "exercise": "normalize-data"
+        },
+        "failureDiagnosis": {
+          "lesson": "normalization",
+          "activity": "deep-orbit-normalization",
+          "focus": "A refitted or mismatched scaler changes the fixed model's inputs."
+        },
+        "changedConstraint": {
+          "lesson": "launch",
+          "constraint": "Fit the room-project scaler on training rows, export it with the model, and explain split ownership."
+        },
+        "laterUse": [
+          "model-loading",
+          "launch"
+        ]
+      },
+      {
+        "id": "forward-computation",
+        "title": "Trace a weighted prediction",
+        "workedExample": {
+          "lesson": "first-neuron"
+        },
+        "partialCompletion": {
+          "lesson": "first-neuron",
+          "exercise": "implement-neuron"
+        },
+        "failureDiagnosis": {
+          "lesson": "activation-functions",
+          "exercise": "relu-activation",
+          "focus": "Preserve negative pre-activation values only when the specified activation permits them."
+        },
+        "changedConstraint": {
+          "lesson": "forward-pass",
+          "exercise": "forward-pass",
+          "constraint": "Propagate values through changed layer dimensions and retain the requested shape."
+        },
+        "laterUse": [
+          "building-a-network",
+          "launch"
+        ]
+      },
+      {
+        "id": "optimization",
+        "title": "Update and evaluate training honestly",
+        "workedExample": {
+          "lesson": "gradient-descent"
+        },
+        "partialCompletion": {
+          "lesson": "gradient-descent",
+          "exercise": "gradient-step"
+        },
+        "failureDiagnosis": {
+          "lesson": "gradient-descent",
+          "activity": "deep-orbit-learning-rate",
+          "focus": "A large step can increase loss; this toy loss differs from the exercise loss."
+        },
+        "changedConstraint": {
+          "lesson": "evaluating-deep-scan",
+          "constraint": "Build-triage uses a separate setting, split rationale, baseline and error review."
+        },
+        "laterUse": [
+          "evaluating-deep-scan",
+          "forecasting"
+        ]
+      },
+      {
+        "id": "runtime",
+        "title": "Own resources and load the intended artifact",
+        "workedExample": {
+          "lesson": "model-loading"
+        },
+        "partialCompletion": {
+          "lesson": "model-loading",
+          "exercise": "load-model"
+        },
+        "failureDiagnosis": {
+          "lesson": "inference-pipeline",
+          "exercise": "incident-tensor-leak",
+          "focus": "Repeated prediction retains tensors when asynchronous ownership is missing."
+        },
+        "changedConstraint": {
+          "lesson": "onnx-runtime-web",
+          "exercise": "onnx-comparison",
+          "constraint": "The runtime lab compares actual artifacts/backends, cache and fallback boundaries."
+        },
+        "laterUse": [
+          "caching-strategies",
+          "launch"
+        ]
+      },
+      {
+        "id": "frequency",
+        "title": "Interpret a spectrum in units",
+        "workedExample": {
+          "lesson": "fourier-transform"
+        },
+        "partialCompletion": {
+          "lesson": "fourier-transform",
+          "exercise": "compute-fft"
+        },
+        "failureDiagnosis": {
+          "lesson": "fourier-transform",
+          "activity": "deep-orbit-fft",
+          "focus": "Zero-padding reduces displayed grid spacing without adding observation time."
+        },
+        "changedConstraint": {
+          "lesson": "windowing-and-overlap",
+          "exercise": "apply-window",
+          "constraint": "Change the window and inspect far-bin leakage on specified fixtures."
+        },
+        "laterUse": [
+          "fft-as-features",
+          "sequences-matter"
+        ]
+      },
+      {
+        "id": "sequence",
+        "title": "Preserve time in forecasting",
+        "workedExample": {
+          "lesson": "sequences-matter"
+        },
+        "partialCompletion": {
+          "lesson": "sequences-matter",
+          "exercise": "create-sequences"
+        },
+        "failureDiagnosis": {
+          "lesson": "sequence-prediction",
+          "exercise": "predict-next",
+          "focus": "A prediction that ignores changed history cannot respond to a new sequence."
+        },
+        "changedConstraint": {
+          "lesson": "forecasting",
+          "exercise": "forecast-signal",
+          "constraint": "Score the later forecast against held-out targets and the last-value baseline."
+        },
+        "laterUse": [
+          "forecasting",
+          "time-series-ensemble-methods"
+        ]
+      },
+      {
+        "id": "alert-policy",
+        "title": "Choose an explicit error objective",
+        "workedExample": {
+          "lesson": "threshold-tuning"
+        },
+        "partialCompletion": {
+          "lesson": "threshold-tuning",
+          "exercise": "find-threshold"
+        },
+        "failureDiagnosis": {
+          "lesson": "threshold-tuning",
+          "activity": "deep-orbit-threshold",
+          "focus": "F1 and error cost can rank the same policies differently; a quiet policy can miss every event."
+        },
+        "changedConstraint": {
+          "lesson": "threshold-tuning",
+          "constraint": "Freeze the selected policy before the new final-test slice; rule-or-model examines an operational alternative."
+        },
+        "laterUse": [
+          "monitoring",
+          "launch"
+        ]
+      },
+      {
+        "id": "attention",
+        "title": "Compute a weighted value vector",
+        "workedExample": {
+          "lesson": "beyond-lstm"
+        },
+        "partialCompletion": {
+          "lesson": "beyond-lstm",
+          "exercise": "simple-attention"
+        },
+        "failureDiagnosis": {
+          "lesson": "beyond-lstm",
+          "activity": "deep-orbit-attention",
+          "focus": "Changing a query changes scores and value contributions; pooling keys is a different operation."
+        },
+        "changedConstraint": {
+          "lesson": "temporal-attention",
+          "exercise": "temporal-attention",
+          "constraint": "Time steps carry weights into a temporal pool with a different value shape."
+        },
+        "laterUse": [
+          "forecasting",
+          "time-series-ensemble-methods"
+        ]
+      },
+      {
+        "id": "grounded-reporting",
+        "title": "Trace claims to supporting data",
+        "workedExample": {
+          "lesson": "prompt-engineering"
+        },
+        "partialCompletion": {
+          "lesson": "prompt-engineering",
+          "exercise": "prompt-template"
+        },
+        "failureDiagnosis": {
+          "lesson": "rag-for-signals",
+          "exercise": "rag-pipeline",
+          "focus": "Retrieved material can be irrelevant or carry instructions; unsupported claims still need review."
+        },
+        "changedConstraint": {
+          "lesson": "multi-model-systems",
+          "exercise": "model-pipeline",
+          "constraint": "Handle stage failures and preserve evidence across the full report pipeline."
+        },
+        "laterUse": [
+          "documentation",
+          "launch"
+        ]
+      },
+      {
+        "id": "cache-and-artifact",
+        "title": "Preserve result identity across reuse",
+        "workedExample": {
+          "lesson": "caching-strategies"
+        },
+        "partialCompletion": {
+          "lesson": "caching-strategies",
+          "exercise": "inference-cache"
+        },
+        "failureDiagnosis": {
+          "lesson": "caching-strategies",
+          "activity": "deep-orbit-cache",
+          "focus": "Rounded inputs collide; unversioned keys reuse stale model or scaler results."
+        },
+        "changedConstraint": {
+          "lesson": "caching-strategies",
+          "exercise": "incident-stale-verdict",
+          "constraint": "Distinguish input validity, artifact mismatch and invalidation failures."
+        },
+        "laterUse": [
+          "ci-cd-pipeline",
+          "launch"
+        ]
+      },
+      {
+        "id": "operations",
+        "title": "Handover a runnable system",
+        "workedExample": {
+          "lesson": "system-architecture"
+        },
+        "partialCompletion": {
+          "lesson": "system-architecture",
+          "exercise": "pipeline-architecture"
+        },
+        "failureDiagnosis": {
+          "lesson": "ci-cd-pipeline",
+          "exercise": "ci-cd-gate",
+          "focus": "Do not join a valid artifact to a different artifact's evaluation report."
+        },
+        "changedConstraint": {
+          "lesson": "launch",
+          "exercise": "launch-rehearsal",
+          "constraint": "Run the external project, retain a baseline comparison and document a supported change."
+        },
+        "laterUse": [
+          "documentation",
+          "launch"
+        ]
+      }
+    ]
+  },
   "modules": [
     {
       "slug": "foundations",
@@ -13,32 +318,34 @@
           "slug": "introduction-to-tensors",
           "title": "Introduction to Tensors",
           "sourcePath": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
-          "sourceSha256": "17ce590fbacc89d9413b52c03153e642a23285e6a73bc93a284bcfc5ffc29a50",
+          "sourceSha256": "04bd92f65777ba4b233e9ba1fdea404b934bb8887d862e2170b873281b717aed",
           "objectives": [
-            "Understand what a tensor is and how it relates to JavaScript arrays",
+            "Explain which shape and lifetime responsibilities a tensor adds to JavaScript numeric storage",
             "Create tensors from regular arrays using TensorFlow.js",
             "Identify the rank (number of dimensions) of a tensor",
             "Manage tensor memory with dispose() and tf.tidy()"
           ],
           "explanationSections": [
-            "What Is a Tensor?",
-            "The Part Garbage Collection Won't Do For You"
+            "Inspect One Packet",
+            "Keeping Repeated Runs Small"
           ],
           "practice": [
             {
               "slug": "create-a-tensor",
               "title": "First Contact: Tensor In, Memory Clean",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml",
-              "taskOpening": "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape`, its values into `values` (a plain JS array: remember dataSync()) and their total into `total` (one plain number: let the tensor add the readings up with `sum()` and read the result back, rather than typing it in or adding it up in plain JavaScript), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you. Prove you can.",
+              "taskOpening": "Start with the five readings in `streamValues`.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What is the rank of `tf.tensor2d([[1, 2, 3], [4, 5, 6]])`?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -46,25 +353,33 @@
           "slug": "tensor-shapes",
           "title": "Understanding Tensor Shapes",
           "sourcePath": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
-          "sourceSha256": "511bf8db221f03784c6cc4760d062e04df805c29d44756bd7c0dc7de9742e89e",
+          "sourceSha256": "1a08a19f36856f1ce8dffb7b0c8747cd60b23299e369fc0f77c0493283edbcf1",
           "objectives": [
             "Read and interpret tensor shapes",
             "Predict where each value lands after a reshape (row-major order)",
+            "Choose reshape or transpose from the axis meanings and required values",
             "Recognize common shapes in ML (batches, sequences, images)"
           ],
           "explanationSections": [
-            "Shapes You Already Know",
-            "Where Does Each Value Land?",
-            "The Wrong Kind of Sixty-Four"
+            "The Wrong Kind of Sixty-Four",
+            "Read Other Shapes"
           ],
           "practice": [
             {
               "slug": "reshape-tensor",
               "title": "Find the Signal's Layout",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/reshape-tensor.yaml",
-              "taskOpening": "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array of four numbers. Careful: row-major fill means you need to know exactly which four values land in that row. All three rows are checked against those twelve readings, so a wrong guess fails. `grid` also has to come out of `flat` itself: the grader checks that the two share one buffer, so a [3, 4] tensor typed out by hand is rejected even when every number in it is right. Release `flat` when you are done with it if you like; `grid` has to still be there for the grader.",
+              "taskOpening": "Twelve readings arrived in `flat`. Farah proposes three time steps with four\nchannels each.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
+            }
+          ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-channel-layout",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/channel-layout-experiment.tsx",
+              "evidence": "Prediction and changed rectangular packet check operation and channel values; browser-reported assistance retained; no lesson credit or independent mastery inferred"
             }
           ],
           "recallQuestions": [
@@ -72,6 +387,7 @@
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -79,13 +395,13 @@
           "slug": "tensor-operations",
           "title": "Basic Tensor Operations",
           "sourcePath": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
-          "sourceSha256": "3e89e1a23c8f1a507abeb0d921a81d92313e4111b65870469f22ed62e31636ef",
+          "sourceSha256": "e2f6951b85999efd669f2e38f0733a92cf91007ad39bbe894393943fddd8426c",
           "objectives": [
             "Read a shape-mismatch error and identify which op it comes from",
             "Perform element-wise tensor operations (add, multiply, subtract)",
             "Combine tensors of different shapes using broadcasting",
             "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]",
-            "Use transpose to make shapes compatible"
+            "Use transpose when the intended matrix axes are reversed"
           ],
           "explanationSections": [
             "Read the Error First",
@@ -97,16 +413,18 @@
               "slug": "add-tensors",
               "title": "Merge the Sensor Passes",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/add-tensors.yaml",
-              "taskOpening": "Nazari ran the scan twice. Averaging can reduce independent zero-mean noise; it does not cancel every kind of error. Write `mergePasses(pass1, pass2, gain)` for any two passes: it hands back `{ merged, boosted }`, where `merged` combines the two passes position by position into their average and `boosted` is that average amplified by `gain`. One test pair is a [3, 2] block of readings against a second pass that came back as a single [2] row, one value per channel, and `merged` still has to come back [3, 2], so the ops have to reconcile those two shapes themselves. The grader watches the ops themselves: the average and the gain have to be tensor operations on the passes (add, div, mul, or their `tf.` forms), and `mixChannels` has to run `matMul` (or `dot`); a plain JavaScript loop over `dataSync()` output that re-wraps the answer computes the same numbers and fails.",
+              "taskOpening": "Average two sensor passes, then mix their channels.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What is the shape rule for matrix multiplication, and what do you use to fix a shape mismatch?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -114,7 +432,7 @@
           "slug": "data-loading",
           "title": "Loading and Preparing Data",
           "sourcePath": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
-          "sourceSha256": "d0a8a034a065efa9d058db918f127ae1d7a6b7ea795c67a79268f80ecdcd1149",
+          "sourceSha256": "5becf2fc326cd370fdf950e481ba9db4570309bb75f2621af77e49516e543697",
           "objectives": [
             "Create data pipelines using tf.data",
             "Batch data into fixed-size chunks for processing",
@@ -131,11 +449,12 @@
               "slug": "batch-data",
               "title": "Build the Lazy Pipeline",
               "sourcePath": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** Add makeDataset(source), which shuffles individual samples before batching. The grader checks stage order directly.",
+              "taskOpening": "Add `makeDataset(source)` to shuffle individual samples before batching.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?",
             "A classifier reads one sensor row at a time. Does that make a random split safe for predicting future readings?"
@@ -148,6 +467,7 @@
             }
           ],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -155,11 +475,11 @@
           "slug": "normalization",
           "title": "Data Normalization",
           "sourcePath": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
-          "sourceSha256": "c06844eb96d61988852e8911842b4a1c5869fcd7c737a85190df4313f316b4e2",
+          "sourceSha256": "0313c73d96bc041bb9e58bb885c56218d230c35f9ba7d0d393ab3cbdecbd7892",
           "objectives": [
             "Explain how feature scaling affects neural-network training",
-            "Apply z-score normalization (zero mean, unit variance)",
-            "Apply min-max normalization (scale to 0-1 range)",
+            "Apply z-score normalization to nonconstant training features",
+            "Apply min-max normalization and explain why later values can exceed 0-1",
             "Recognize when to use each normalization strategy",
             "Feed normalized readings through a real dense neuron and read its verdict"
           ],
@@ -178,12 +498,23 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-normalization",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/learning-experiment.tsx",
+              "evidence": "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim"
+            }
+          ],
           "recallQuestions": [
             "Why normalize features before training?",
             "The challenge's z-score step subtracts a [2] tensor of column means from its [4, 2] batch of readings, and nothing throws. Which rule from lesson 3 allows that, and how does it line the two shapes up?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [
+            "data"
+          ],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -201,7 +532,7 @@
           "slug": "first-neuron",
           "title": "Your First Neuron",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
-          "sourceSha256": "10612e29cffc98d88775ca5666e98b04c3a2ac7fd5109cf9c539325292dbbcd7",
+          "sourceSha256": "dd8b3199cbb7cb9f3d2bf4d4d0a3c9c7ac9ecfd61d0f7845306d5c0ea42536de",
           "objectives": [
             "Understand the anatomy of a single neuron (inputs, weights, bias)",
             "Implement a neuron as a weighted sum plus bias",
@@ -222,11 +553,13 @@
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does a neuron compute, and what role do weights and bias each play?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -234,7 +567,7 @@
           "slug": "activation-functions",
           "title": "Activation Functions",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
-          "sourceSha256": "8d3ee3467de8e3c6b5bb68b8a2f63cfa8869f91d40c3437975e4ad027f8b84fa",
+          "sourceSha256": "0fcf0a869509525f36ededd483103646f67470b0df20742754313a566d67978c",
           "objectives": [
             "Explain why a stack of affine dense layers needs nonlinearity to gain expressive power",
             "Implement ReLU and describe sigmoid and tanh ranges",
@@ -255,12 +588,14 @@
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why does stacking only affine dense layers add no new type of function?",
             "An untrained sigmoid model returns 0.99. Does the range make that a reliable 99% probability?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -268,7 +603,7 @@
           "slug": "layers-and-architecture",
           "title": "Layers and Architecture",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
-          "sourceSha256": "306d3e11c6da65ecfc8c8cacdc3c764072f80f3ebde88d690376c4fda9038b1c",
+          "sourceSha256": "d8c641112c3335d9afbcaa1f225b88de228159685e9d18730ad41920096695a5",
           "objectives": [
             "Build multi-layer neural networks using tf.sequential()",
             "Understand how layers compose like a middleware chain",
@@ -289,11 +624,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A dense layer's parameter count comes from two numbers. Which two, and why does only the first layer need an inputShape?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -301,7 +638,7 @@
           "slug": "forward-pass",
           "title": "The Forward Pass",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
-          "sourceSha256": "30134aacdea3bd3055c56ce8c19bbd3c7c1ee1d465544420395412a6eda096d8",
+          "sourceSha256": "029e11f4ee1b531c3d60d47dd6f9ca87e935e65774b68059495fea285d7c035b",
           "objectives": [
             "Trace data flow through a neural network layer by layer",
             "Use model.predict() to run inference",
@@ -322,11 +659,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens, and how do you fix it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -334,7 +673,7 @@
           "slug": "building-a-network",
           "title": "Building a Complete Network",
           "sourcePath": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
-          "sourceSha256": "d1f5003a34a9780d80b746aa04af29a0f55d075cd696698d7f23318cce7a7fd4",
+          "sourceSha256": "4f30cc09a6361945bc6c8dfabde4373b2c2b7226ee0b5df4675da934cda77e2c",
           "objectives": [
             "Build and compile a complete neural network from scratch",
             "Understand what each compilation option controls",
@@ -354,12 +693,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does model.compile() actually do, and what does it NOT do?",
             "Foundations lesson 3 gave matMul one inflexible shape rule. Apply it to the 32-unit stage printed in the summary above: what shape must its kernel be, and how does that give the 128 parameters on that row?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -378,7 +719,7 @@
           "slug": "loss-functions",
           "title": "Loss Functions",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
-          "sourceSha256": "d18ec88806426d8c706fe14df60f409a01396851ac19552d6a87c1e520b96e2b",
+          "sourceSha256": "b035559dbd1bcb2e62302ba5ed3d23bd5db7f2ce6b41d35422bc180c81e70ddc",
           "objectives": [
             "Understand what loss functions measure and why they're essential",
             "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)",
@@ -392,16 +733,18 @@
               "slug": "mse-loss",
               "title": "Two Losses, and Cross-Entropy's Two Forms",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** pickBceForm now takes an output kind (probabilities or logits), not an activation name. Update that argument in saved code.",
+              "taskOpening": "Implement three functions. mseLoss(labels, predictions) returns a scalar mean squared error tensor using tf.losses.meanSquaredError. bceLoss(labels, logits) returns scalar binary cross-entropy using tf.losses.sigmoidCrossEntropy, which applies sigmoid to raw logits itself.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "For binary classification, why is binary cross-entropy preferred over mean squared error?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -409,7 +752,7 @@
           "slug": "gradient-descent",
           "title": "Gradient Descent",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
-          "sourceSha256": "f4fe091252ed7262775e279e5a0d837e030bdae095724e7fd8add67173e3d3e4",
+          "sourceSha256": "5c9a5b815cbe9e0c97aec9a1cf78d3f1c0342d5e31274c3637511a3c8365d6a0",
           "objectives": [
             "Understand gradients as the direction of steepest ascent",
             "Implement a single gradient descent step",
@@ -429,11 +772,20 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-learning-rate",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/learning-experiment.tsx",
+              "evidence": "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim"
+            }
+          ],
           "recallQuestions": [
             "Your training loss explodes after a few steps. What is the most likely cause and fix?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -441,7 +793,7 @@
           "slug": "backpropagation",
           "title": "Backpropagation",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
-          "sourceSha256": "254da04365b0936c5494a4325aba693c931d72bba48c2e4e2a81f03bb0961cb1",
+          "sourceSha256": "d95e043f93439e700af0e3fd421261591d0e54ed34ad18f6852ace1403b7d64f",
           "objectives": [
             "Estimate a gradient numerically and count what that costs at network scale",
             "Understand how backpropagation works at a high level",
@@ -462,12 +814,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does tf.variableGrads() return, and what do you do with the result?",
             "Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it can approximate a derivative?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -475,7 +829,7 @@
           "slug": "training-loop",
           "title": "The Training Loop",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
-          "sourceSha256": "92a67f19cfa47b882826d5f043f299002ea694fe23f514c00361af83fe4d20ae",
+          "sourceSha256": "1ee889549ed12b9a5ec17a844af1b84c40705b97a8f22fa1e0ba5002eaa41eb8",
           "objectives": [
             "Implement the complete training loop with model.fit()",
             "Configure epochs, batch size, and validation split",
@@ -488,18 +842,20 @@
           "practice": [
             {
               "slug": "training-loop-exercise",
-              "title": "Stop the Loop When It Stops Learning",
+              "title": "Stop on a Validation Plateau",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** Add makeEarlyStopping and use the new observable-trend labels in diagnose. Short histories are valid.",
+              "taskOpening": "Fit the supplied model on trainX/trainY for at most 500 epochs with validationSplit 0.2 and a batch size from 8 to 64 (default 32). Implement makeEarlyStopping() returning tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 }), and attach it to the fit. Store the awaited result in history. A correct run can stop early or reach its epoch limit; neither outcome proves a defect.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What tradeoffs determine a useful batch size?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -507,7 +863,7 @@
           "slug": "evaluating-deep-scan",
           "title": "Evaluating DEEP SCAN",
           "sourcePath": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
-          "sourceSha256": "707e2bf37a343a597f4c03a5e99d3d2692c9e4707c1e45335af454a3ef09730c",
+          "sourceSha256": "ed2c5683928e3c7d079473f6ea14c545924a0d09e680a1cba959941cc5d00d47",
           "objectives": [
             "Evaluate on held-out test data and read the train-vs-test gap",
             "Interpret accuracy, loss, and confusion matrix metrics",
@@ -523,11 +879,12 @@
               "slug": "deep-scan-eval",
               "title": "Train DEEP SCAN, Then Read the Gap",
               "sourcePath": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
-              "taskOpening": "**Contract revision 2026-09-17b:** diagnose now returns large-gap, low-scores or no-gap-warning. The grader accepts the actual measured score without requiring a healthy model.",
+              "taskOpening": "The supplied tensors contain 100 synthetic training rows and 43 separate\nevaluation rows: 40 generated examples and three hand-written story cases.\nKeep the evaluation rows and their labels out of training.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A model has 95% training accuracy and 60% test accuracy. What should you investigate before choosing a fix?",
             "Why did module 1 assign earlier rows to training and later rows to validation before shuffling, and why are separately shuffled take() and skip() pipelines risky?",
@@ -541,6 +898,9 @@
             }
           ],
           "independentProject": null,
+          "projectMilestones": [
+            "evaluation"
+          ],
           "transferAssignment": "build-triage-v1: separate self-review, assistance recorded, no automatic pass",
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -560,7 +920,7 @@
           "slug": "why-the-browser",
           "title": "Why the Browser?",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
-          "sourceSha256": "620bcd2f5404a469e2cfbefee60a535bb0392ee8437044c8371278d11427fa16",
+          "sourceSha256": "5fd639c0f7a64a953210eabb2994f21c3396e98b847f119b13c496923a92d24b",
           "objectives": [
             "Understand the advantages of browser-based ML inference (privacy, latency, offline)",
             "Identify the constraints of running models in the browser (memory, compute, cold start)",
@@ -575,16 +935,18 @@
               "slug": "browser-ml-tradeoffs",
               "title": "Evaluate Browser ML Tradeoffs",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
-              "taskOpening": "**Contract revision 2026-09-17:** recommendDeployment can now return reconsider for conflicting requirements. Add it to the Recommendation type in saved code.",
+              "taskOpening": "Implement recommendDeployment(useCase), returning 'client', 'server' or 'reconsider'. useCase contains latencyBudgetMs, dataSensitive, modelSizeMB and needsOffline.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What is the main tradeoff when moving ML inference from server to browser?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -592,7 +954,7 @@
           "slug": "tensorflow-js-setup",
           "title": "TensorFlow.js Setup",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
-          "sourceSha256": "4408d8d07f37bbb6806b80af1e05b53cff80538eed42c1fecc56a451a020c46b",
+          "sourceSha256": "f3fd4c44e4608b1aab30881923fac2a644821754acbf02edd122fe27091bad62",
           "objectives": [
             "Read the setup steps and initialize the supplied TensorFlow.js runtime",
             "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics",
@@ -608,16 +970,18 @@
               "slug": "tfjs-setup",
               "title": "Initialize TensorFlow.js",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/tfjs-setup.yaml",
-              "taskOpening": "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version, shaped `{ backend, version }`. Read both values off the runtime rather than writing them in as literals: the backend depends on the device the page is open on, and the version on the package installed there. `initTF` also takes an optional preferred backend name. When one is given, ask for it with `tf.setBackend` before you wait; a request is not a fact, so read the backend that is actually running afterwards. The request can fail two ways and neither is fatal: a registered backend that cannot start resolves false, and a name that was never registered throws, because its package was not imported. Either way the runtime settles on whatever works once `ready()` resolves, and that is the name you report.",
+              "taskOpening": "Implement `initTF(preferred?)`, returning the actual `{ backend, version }`.\nRead both values from the runtime after awaiting `tf.ready()`.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why does the selected backend matter, and how do you check it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -649,11 +1013,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does tf.loadLayersModel() return compared with fetch(url).then(r => r.json())?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -661,7 +1027,7 @@
           "slug": "inference-pipeline",
           "title": "Inference Pipeline",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
-          "sourceSha256": "5a96dafa1ced3c7a824bd8efe125a85db0c33328bf9c77c8f685d6a93f1c3e12",
+          "sourceSha256": "e500a34c1588a853dc28e029bccd86fa8ec2d8429ba19c3be8471deb04d334da",
           "objectives": [
             "Build a real-time inference pipeline: input → preprocess → predict → display",
             "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks",
@@ -692,12 +1058,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "How do you keep repeated inference from accumulating tensors, and how do you check it?",
             "numTensors rises from 400 at 03:00 to 1,000 at 05:00. With a budget of 10,000, what can you conclude?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -727,12 +1095,14 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A small classifier runs faster on WASM on your laptop. What can you conclude?",
             "An ONNX export succeeded. What remains to check before shipping it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -740,7 +1110,7 @@
           "slug": "transformers-js",
           "title": "Transformers.js for Pretrained Models",
           "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
-          "sourceSha256": "7c5aa8d742214c6dfddc164f4debc12d3f6d98a1ca0a7154b8b212dcf85e26fa",
+          "sourceSha256": "35181aaf3eb6444f6aeb713373d8a42e796da8aa4c544b06b4e6645e4517bc61",
           "objectives": [
             "Understand when to reach for Transformers.js vs TFJS or ONNX Runtime",
             "Implement the task, loading and output contract around `pipeline()`",
@@ -758,17 +1128,19 @@
               "slug": "load-pretrained-pipeline",
               "title": "Sentiment Classifier via Transformers.js",
               "sourcePath": "packages/content/content/deep-orbit/browser-runtimes/exercises/load-pretrained-pipeline.yaml",
-              "taskOpening": "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything.",
+              "taskOpening": "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. Return [] immediately for an empty list, without loading a pipeline. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "When should you reach for Transformers.js instead of training your own model with TF.js?",
             "Module 3 scored DEEP SCAN on a held-out slice. This pipeline arrived pretrained, with no accuracy number for the crew's reports. What has to be true of the twenty reports you label by hand before Mirza sees any of this?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -789,11 +1161,11 @@
           "slug": "time-vs-frequency",
           "title": "Time vs Frequency",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
-          "sourceSha256": "87c95eae44476b2e434e449a2de2f0de2172228b06e00f5def878d39275c66bc",
+          "sourceSha256": "5713a04e1620c27f624b2a7ac9f3ff42ef63215e14a92b853572956a6bdc621a",
           "objectives": [
             "Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious",
             "Identify what each domain reveals: time shows when things happen, frequency shows what repeats",
-            "Recognize why some patterns are invisible in time but obvious in frequency"
+            "Explain when a magnitude spectrum makes a weak periodic component easier to inspect"
           ],
           "explanationSections": [
             "Two Views, One Signal",
@@ -804,16 +1176,18 @@
               "slug": "time-vs-frequency",
               "title": "Find the Hidden Tone",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/time-vs-frequency.yaml",
-              "taskOpening": "The lesson claims a tone too weak to see in the time view is a clear peak in the frequency view. Make that claim executable on raw samples. compareViews(baseline, suspect, tolerance, threshold) receives two captures, and nothing is precomputed for you: transform BOTH of them yourself with tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync(), which is the call the lesson prints above the challenge (lesson 2 explains what it does).",
+              "taskOpening": "Implement `compareViews(baseline, suspect, tolerance, threshold)`. Transform each capture into FFT magnitudes with `tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync()`.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A capture holds a tiny periodic component underneath four louder tones. Why does looking at the frequency domain reveal it when the time domain does not?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -821,7 +1195,7 @@
           "slug": "fourier-transform",
           "title": "Fourier Transform",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
-          "sourceSha256": "50ac89b3b200bca9d4a7927553f172406d14c4a609e9a130a82405980e84cc4b",
+          "sourceSha256": "9f747d49d6511eacc16a98f279a5d2f09e5c80af6e6f3adec8e6669ca93127ad",
           "objectives": [
             "Understand the Fourier Transform as signal decomposition into frequency components",
             "Compute the FFT of a signal using TensorFlow.js spectral operations",
@@ -837,9 +1211,17 @@
               "slug": "compute-fft",
               "title": "Compute FFT and Find Dominant Frequency",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/compute-fft.yaml",
-              "taskOpening": "Write a function that takes a signal array and a sample rate, computes the FFT with tf.spectral.rfft(), and returns the dominant frequency in hertz: the frequency of the highest-magnitude bin, with the DC component at bin 0 excluded. A spectrum only has bin centers to offer, so the answer is the center of the winning bin. For an isolated off-bin tone, the winning bin often lies near the tone. Phase, leakage, neighboring components and boundary bins can change the winner; nearest-bin rounding is not the algorithm. Use the computed magnitudes. Assume finite input with at least two samples and a positive sample rate. Break equal-magnitude ties by keeping the lowest eligible bin.\n",
+              "taskOpening": "Implement `findDominantFrequency(signal, sampleRate)` using `tf.spectral.rfft()`. Return the frequency in hertz of the largest-magnitude non-DC bin; exclude bin 0. Convert its index using `bin * sampleRate / signal.length`. Keep the lowest eligible index when magnitudes tie.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
+            }
+          ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-fft",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/learning-experiment.tsx",
+              "evidence": "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim"
             }
           ],
           "recallQuestions": [
@@ -847,6 +1229,7 @@
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -854,7 +1237,7 @@
           "slug": "spectrograms",
           "title": "Spectrograms",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
-          "sourceSha256": "6d93b6b5111307dbbf3e43ee6a422665b688adeb540218ad9643adcd333eb856",
+          "sourceSha256": "eb8759da8b53888e6d50133db11e03f4db6130c9dcfea7ca9d071ab75e47edb0",
           "objectives": [
             "Understand spectrograms as time-frequency representations of signals",
             "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)",
@@ -871,16 +1254,18 @@
               "slug": "build-spectrogram",
               "title": "Build a Spectrogram",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/build-spectrogram.yaml",
-              "taskOpening": "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match. Assume integer windowSize >= 2 and hopSize >= 1. Return an empty array when no complete window fits.",
+              "taskOpening": "Implement `stft(signal, windowSize, hopSize)`. Frame i starts at `i * hopSize`; include it only if the entire window fits. Return its FFT magnitudes as one row, keeping rows in time order and columns in bin order.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "If you increase the STFT window size, what happens to frequency resolution and time resolution, and why can't you improve both at once?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -888,11 +1273,11 @@
           "slug": "fft-as-features",
           "title": "FFT as Features",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
-          "sourceSha256": "36d2a0a8891fa9c93f2d485afd512922a446782e824dad0492e7a95af5efeab8",
+          "sourceSha256": "cc73973a9ddb9fb48fb9d06e0861c564d80a3743dcedd6cd5249f881dd09dab7",
           "objectives": [
             "Understand feature engineering as deriving useful model inputs from raw data",
             "Convert a hertz band into fixed FFT bins and use their magnitudes as model features",
-            "Combine raw features with frequency-domain features into one vector a model can train on, and know why the FFT columns have to be normalized before training",
+            "Combine raw and frequency-domain features, and explain why their scales can affect training",
             "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model"
           ],
           "explanationSections": [
@@ -905,16 +1290,18 @@
               "slug": "fft-features",
               "title": "Extract Fixed-Bin FFT Features",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/fft-features.yaml",
-              "taskOpening": "Build DEEP SCAN 2.0's input vector without the phase term. extractFeatures(signal, sampleRate, loHz, hiHz) returns one flat row. First the peak amplitude: the largest absolute sample value in the capture. Then the zero-crossing count: how many times consecutive samples land on opposite sides of zero. Then one FFT magnitude per fixed bin whose center falls inside the band from loHz to hiHz, endpoints included. Bin width is sampleRate divided by the number of samples, so 64 samples at 256 Hz gives 4 Hz bins and the 50 to 82 Hz band is bins 13 through 20. Leave the magnitudes in bin order. Sorting them by size would make the third feature mean a different frequency in every row. Report each magnitude at the height the transform gives it, unscaled: the normalization the lesson describes is measured across a whole training set and applied after extraction, not inside this function.\nAssume finite, nonempty captures, a positive sample rate and 0 <= loHz <= hiHz <= sampleRate / 2.\nHere a crossing means strictly opposite signs on adjacent samples: one positive and one negative. A pair containing an exact zero contributes nothing. Other conventions exist; this exercise uses that one consistently.\n",
+              "taskOpening": "Implement `extractFeatures(signal, sampleRate, loHz, hiHz)`. Return one flat array containing:\n1. Peak amplitude: the largest absolute sample value.\n2. Zero-crossing count: adjacent values with strictly opposite signs. A pair containing zero adds nothing.\n3. Raw FFT magnitudes whose bin centers lie inside `[loHz, hiHz]`, including endpoints, in bin order.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "The FFT computes nothing the samples did not already hold. Why might feeding its magnitudes help a model that previously saw only three summary features?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -922,7 +1309,7 @@
           "slug": "windowing-and-overlap",
           "title": "Windowing & Overlap",
           "sourcePath": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
-          "sourceSha256": "0caf25fa2b16037b0b79ba4bf4519b57a32e26f727ecdfbde9306a7ccb1a64ce",
+          "sourceSha256": "aec0335d2895962da1c7a7528b968b1908c3f24b5a847a64ba9821ea7491bfb4",
           "objectives": [
             "Explain how cutting a finite signal spreads a tone across FFT bins",
             "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT",
@@ -939,17 +1326,19 @@
               "slug": "apply-window",
               "title": "Build and Apply a Hann Window",
               "sourcePath": "packages/content/content/deep-orbit/signal-processing/exercises/apply-window.yaml",
-              "taskOpening": "Build `hannWindow(n)` returning a JS number array of n weights, one per sample of the slice: w[i] = 0.5 * (1 - cos(2*pi*i / (n-1))) for i = 0 to n-1. Plain JS (Array.from + Math.cos) or tensors, your choice; the grader checks the returned numbers, not how you produced them. If you want the tensor route, tf.range(0, n) is new but simple: it makes the tensor [0, 1, ..., n-1]. Then build `applyWindow(signal, window)` returning the element-wise product as a JS number array (tf.tensor1d(signal).mul(...) or a plain map). The grader runs your two functions on a tone that does not fit its window. It takes the FFT of both the raw and the windowed slice. For the two fixtures below, the sum of magnitudes more than three bins from the rounded tone bin drops by more than 20x. This statistic measures far-bin magnitude, not energy. The drop is fixture-specific; a taper also broadens the main lobe. Assume integer n >= 2 and signal/window arrays of equal length.\n",
+              "taskOpening": "Implement two functions returning JavaScript number arrays:\n- `hannWindow(n)`: n weights using `w[i] = 0.5 * (1 - cos(2*pi*i / (n-1)))`. This is the symmetric Hann, zero at both ends.\n- `applyWindow(signal, window)`: multiply corresponding values without reordering them.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why apply a Hann window before computing the FFT?",
             "Your spectrogram rows now come from windows with 50% overlap, so each sample appears in two of them. Which condition from the module 1 train/validation split decides whether rows like these can be split at random, and what does the overlap do to it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -971,9 +1360,9 @@
           "slug": "sequences-matter",
           "title": "Sequences Matter",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
-          "sourceSha256": "a3e2d97d6ca7e6488cf668082d37aa8332f2f70bc3d24744d0a5c38f34b54f6d",
+          "sourceSha256": "6bbac117c8f6723178400d1b5da3f0d0cd1ec4c0880de353c0ffa9b728ae8f2b",
           "objectives": [
-            "Understand why order matters in sequential data: shuffling destroys information",
+            "Understand why order matters in sequential data: shuffling can remove temporal information",
             "Recognize why scoring one reading at a time hides temporal patterns",
             "Prepare sequential input by creating time-step windows from a stream of readings"
           ],
@@ -986,16 +1375,18 @@
               "slug": "create-sequences",
               "title": "Window a Stream for Prediction",
               "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/exercises/create-sequences.yaml",
-              "taskOpening": "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors. Assume positive integer windowSize and stride and equal-width, finite feature rows. The caller owns any returned tensors and must dispose them.",
+              "taskOpening": "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors. Assume positive integer windowSize and stride and equal-width, nonempty finite feature rows. The caller owns any returned tensors and must dispose them.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "You feed a feedforward network three readings one at a time: [0.5, 0.3, 0.7], then [0.8, 0.5, 0.9], then [0.4, 0.6, 0.1]. You run them again in reverse order. What changes about the three scores, and what does not?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1003,12 +1394,12 @@
           "slug": "simple-rnns",
           "title": "Simple RNNs",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
-          "sourceSha256": "d05accf6d9e2d382c1afc4b5cdc5c4f7134b13bc33944d2496ea2025b836fc63",
+          "sourceSha256": "90f89acdcd735265f59388bccd501bb1149e5920b15365f41a6bdf27876783e7",
           "objectives": [
             "Understand the RNN as a learned reducer: (prevState, input) → newState",
             "Build a simple RNN using TensorFlow.js layers API",
             "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences",
-            "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes"
+            "Read a layer's current weights off the model and check your own arithmetic against what the layer computes"
           ],
           "explanationSections": [
             "The Learned Reducer",
@@ -1025,11 +1416,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A simple RNN trains on long windows, but the dependency it must learn spans dozens of time steps. After many epochs the loss is stuck at 0.693. What is happening, and what fixes it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1037,7 +1430,7 @@
           "slug": "lstm-gates",
           "title": "LSTM Gates",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
-          "sourceSha256": "32494a4fb08e558a59ac4de65c96f59e0514b09d2d9b445529b9855f79cc1619",
+          "sourceSha256": "04619e7bf2806402b3430a0af0c118c88b802acadefdbee5a5229ad4873d62a6",
           "objectives": [
             "Understand the three LSTM gates: forget (discard), input (add), output (expose)",
             "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into",
@@ -1059,12 +1452,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does the LSTM forget gate actually output, and how does that differ from a hard expiry like localStorage TTL?",
             "The LSTM flags pulses 72 hours past the last window it trained on, yet no cell state survives between windows. What did the network actually retain?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1072,7 +1467,7 @@
           "slug": "sliding-windows",
           "title": "Sliding Windows",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
-          "sourceSha256": "4bac9e0fa599a688aa15672f35d53bf5430daef283386e218944e3d89642dc61",
+          "sourceSha256": "9641127c3b542a63f7aeb253c7e7e7779b0c6c05495a1f64b8cf886995a18240",
           "objectives": [
             "Convert continuous signal streams into fixed-size overlapping windows",
             "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces",
@@ -1095,12 +1490,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "The stride-1 pipeline scored 97.4 on a held-out fifth of the windows and 60.6 after the stream was split by time. Which score is wrong, and what produced it?",
             "You set windowSize to 30 but the pattern you need to detect spans 50 time steps. What happens, and what should you change?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1108,7 +1505,7 @@
           "slug": "sequence-prediction",
           "title": "Sequence Prediction",
           "sourcePath": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
-          "sourceSha256": "4784988c7b41e34d96283d37d55e06d0e4b9e7bbd0ac2328df50157a5557274c",
+          "sourceSha256": "50574f348091380355fd31a7380b048aa8fd798e2abcb76fba73c076521686cb",
           "objectives": [
             "Train an LSTM for next-value prediction on time-series data",
             "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric",
@@ -1129,12 +1526,14 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?",
             "The rolling forecast builds a window tensor and gets a prediction tensor back on each of its 47 steps. The module-4 inference loop wrapped that same pair in tf.tidy(). What happens to those two tensors when the callback returns, and what gets out?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -1157,7 +1556,7 @@
           "slug": "normal-vs-anomalous",
           "title": "Normal vs Anomalous",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
-          "sourceSha256": "bcc094e7a50a56bcae2c6ec5178f03132277c1bfdc9766da8460c29b5256926d",
+          "sourceSha256": "d0186322b732727f5e3b6547f199a9a2958c6f18a52efefe6b5453980bb92188",
           "objectives": [
             "Understand anomaly detection as modeling normality rather than cataloging every possible anomaly",
             "Compute a baseline mean and standard deviation from known-good readings",
@@ -1186,11 +1585,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A z-score threshold of |z| > 3 flags 0.27% of samples in normal Gaussian data. If a monitor processes 100,000 readings per hour and the data is normal, roughly how many false-alarm flags does it generate per hour?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1219,11 +1620,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Can an autoencoder trained only on normal data reconstruct an anomaly well?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1231,7 +1634,7 @@
           "slug": "reconstruction-error",
           "title": "Reconstruction Error",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
-          "sourceSha256": "7a098895f692c6ca7758b2670c12ea2330419a2b28f5e4686fed3151acb1df30",
+          "sourceSha256": "1a5b4b3bcd9a9a130d07e86b4a39e7a7c0e873c825a11f3b10bcca005582a426",
           "objectives": [
             "Compute reconstruction error as the difference between input and autoencoder output",
             "Use MSE (mean squared error) as the anomaly score for each sample",
@@ -1261,11 +1664,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1273,7 +1678,7 @@
           "slug": "threshold-tuning",
           "title": "Threshold Tuning",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
-          "sourceSha256": "b214139e8fe20d25506b9a188cd069f3f5c0aeddf4919444a6b7daaae6bbd364",
+          "sourceSha256": "4583390a11c0bfaf9ffbd91cbcfebabc25d2b25532601931bf2d1f6006ce60ca",
           "objectives": [
             "Estimate a false-alarm fraction from reviewed normal data and project alert volume under stated assumptions",
             "Understand the precision-recall tradeoff and how threshold affects each",
@@ -1303,6 +1708,14 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-threshold",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/learning-experiment.tsx",
+              "evidence": "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim"
+            }
+          ],
           "recallQuestions": [
             "What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?",
             "Two deployments run the same detector on the same errors: one gates the capture pipeline, the other pages the bridge crew. Why should their thresholds differ when F1 peaks at the same cutoff?",
@@ -1316,6 +1729,7 @@
             }
           ],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1323,7 +1737,7 @@
           "slug": "the-anomaly",
           "title": "The Anomaly",
           "sourcePath": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
-          "sourceSha256": "3e852c089002a4e539840a4a2e7a9180cee562bec8b03fe5cc912e28c4635e7c",
+          "sourceSha256": "b9ecb1bd5780c507e6e8feb63b8abd3019807b2c439bbac7dd5b92e91ab6d27f",
           "objectives": [
             "Combine detectors with a majority rule and explain how shared blind spots can still cause a miss",
             "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it",
@@ -1344,12 +1758,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?",
-            "Module 1's normalization lesson says to keep min-max off open-ended streams, yet this lesson's statistical gate reads the amplitude min-max normalized. What makes that channel safe for min-max, and what does the same fact cost the gate at the top of its range?"
+            "What distinguishes this amplitude channel's fixed-range scaling from min-max bounds fitted on observed data, and what does sensor saturation cost the statistical gate?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -1373,7 +1789,7 @@
           "slug": "beyond-lstm",
           "title": "Beyond LSTM",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/01-beyond-lstm.mdx",
-          "sourceSha256": "eeb60a6848e65263ccaddb61997ed31ab6750d50eab5677464f1aa239a862ba8",
+          "sourceSha256": "56b3c40ae5b1764a85cc1c375d168601c46d7ec3928673fed994827c4f6350c3",
           "objectives": [
             "Understand attention as dynamic relevance scoring: focusing on what matters",
             "Learn the Query-Key-Value framework for computing attention weights",
@@ -1394,11 +1810,20 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-attention",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/learning-experiment.tsx",
+              "evidence": "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim"
+            }
+          ],
           "recallQuestions": [
             "What are the three components of the Query-Key-Value framework in attention, and what does each do?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1406,7 +1831,7 @@
           "slug": "temporal-attention",
           "title": "Temporal Attention",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/02-temporal-attention.mdx",
-          "sourceSha256": "8c2d63b4a09a01299d36f9a1eabdfed6a09d58cbbf3263ee4ce5c40fc6bf95c4",
+          "sourceSha256": "6e9a0082e05d6a3a5027a31d0ba820929cf32b125bbc80213d2ebeafc303bf8d",
           "objectives": [
             "Apply attention specifically to the temporal dimension of sequential data",
             "Read the weights back as one number per time step and name the steps that took the most of the budget",
@@ -1429,11 +1854,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why are temporal attention weights useful beyond improving prediction accuracy?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1441,7 +1868,7 @@
           "slug": "forecasting",
           "title": "Forecasting",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/03-forecasting.mdx",
-          "sourceSha256": "bc3e38356123cf1f170c8d1b40d6be9e164a74eb781195bbc9068ec42ac2e7df",
+          "sourceSha256": "1323774aaeae60e554c0f1129bdc4b54767088d45b8a1849faa2130daa8009ab",
           "objectives": [
             "Train a one-step model and roll it forward into a multi-step forecast",
             "Understand non-stationarity, when past patterns stop predicting the future",
@@ -1462,12 +1889,14 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
-            "Why does multi-step forecasting become less reliable the further ahead you predict?",
+            "Why can a rolling forecast have larger errors than one-step replay, even if the data distribution has not changed?",
             "You run the drift check on a 100-step rollout and it reports that error has tripled. What did you actually measure?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1475,7 +1904,7 @@
           "slug": "kalman-filters",
           "title": "Kalman Filters",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/04-kalman-filters.mdx",
-          "sourceSha256": "515fa5f8f48ff4757c1d99aeaef612ddfa6c6c869a3402f27b75b77374a44cb8",
+          "sourceSha256": "3a0ebeadae413aa8a51f323f56dfbb03c6dc4c7545b98d05537fdfd52b0a232b",
           "objectives": [
             "Understand the Kalman filter as a predict-correct loop for state estimation",
             "Implement a 1D Kalman filter that smooths a noisy timing signal",
@@ -1495,12 +1924,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does the Kalman gain control, and what happens when it is near 0 versus near 1?",
             "You run this filter over eight readings that fall steadily, and its estimate ends up 0.43 above the last one. What in the filter's design put it there?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1508,7 +1939,7 @@
           "slug": "time-series-ensemble-methods",
           "title": "Ensemble Methods",
           "sourcePath": "packages/content/content/deep-orbit/advanced-time-series/05-ensemble-methods.mdx",
-          "sourceSha256": "d1fd9e8dc01e525d6d177277f35d8e19f1d52a624987f813718d5f928599bd86",
+          "sourceSha256": "000730e9003434305b679b4ccd5f78d4c3dc29f9e2b0b107fd7e95f59d8b6227",
           "objectives": [
             "Blend members two ways: equal shares, and shares weighted by each member's validation score",
             "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places",
@@ -1529,6 +1960,7 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "When can averaging models help, and what does it fail to fix?",
             "Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?",
@@ -1536,6 +1968,7 @@
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -1560,10 +1993,10 @@
           "slug": "llms-for-science",
           "title": "LLMs for Science",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/01-llms-for-science.mdx",
-          "sourceSha256": "27da2956e1524c8f536121982d7885c64c983735a475f5158e42fd487b62b244",
+          "sourceSha256": "790e8611f88feba9713c059fe889455fd3e065a816ee617380176020da01f758",
           "objectives": [
             "Understand LLMs as augmentation tools for structured analysis",
-            "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on",
+            "Parse an untrusted reply, validate its required fields and reject invalid output",
             "Define the human-AI workflow: generate → review → correct → approve"
           ],
           "explanationSections": [
@@ -1582,11 +2015,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What workflow reduces errors in LLM-assisted factual output?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1594,7 +2029,7 @@
           "slug": "prompt-engineering",
           "title": "Prompt Engineering",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/02-prompt-engineering.mdx",
-          "sourceSha256": "7326aa029b84fb739a6e0a1de87f9ef90e6d2d4e11a7b4c1e6f5367df3f15a25",
+          "sourceSha256": "f51dcd01d1c4bf08ceb12182fd71e44242a656af0b27c78f0eb7cfaac9abc34a",
           "objectives": [
             "Structure prompts with role, context, data, and format instructions",
             "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review",
@@ -1619,11 +2054,13 @@
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "How do role, context, data and format help this prompt?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1631,7 +2068,7 @@
           "slug": "rag-for-signals",
           "title": "RAG for Signals",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/03-rag-for-signals.mdx",
-          "sourceSha256": "4394544808e94a607d6030b6aad528dd13b2880b81a1704b8b8b6fbf6bed88b3",
+          "sourceSha256": "8cacd0275d1aa57cf2f1400c72e39b45cb7fca30f6c028aae7471f87715d16f4",
           "objectives": [
             "Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response",
             "Build a signal retrieval step from text and metadata matching, with a row cap, that reports how many rows matched before the cap and whether the cap dropped any",
@@ -1647,7 +2084,7 @@
               "slug": "retrieve-signals",
               "title": "Retrieve the Rows the Prompt Will Carry",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/retrieve-signals.yaml",
-              "taskOpening": "Retrieval decides what the model is allowed to know. Write\n`retrieveSignals(query, db, now)`: the step that picks the rows and counts\nwhat it left behind.",
+              "taskOpening": "Write `retrieveSignals(query, db, now)` to select the supplied evidence\nand report omissions. Retrieval does not erase a model's prior knowledge.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             },
@@ -1660,11 +2097,13 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "A generated answer contains only numbers found in retrieved records. Has it been verified?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1672,7 +2111,7 @@
           "slug": "report-generation",
           "title": "Report Generation",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/04-report-generation.mdx",
-          "sourceSha256": "77182bff0984960535db0d538fa17245036666c7df6333bbc5af92edd209ac50",
+          "sourceSha256": "e78b2112a727af8b36f7da3d8254041349410e8cb92c562ac3e1455dba8e3f72",
           "objectives": [
             "Structure report generation as section-by-section assembly rather than monolithic generation",
             "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships",
@@ -1690,16 +2129,18 @@
               "slug": "generate-report",
               "title": "Assemble a Report, Cut What Failed",
               "sourcePath": "packages/content/content/deep-orbit/llm-integration/exercises/generate-report.yaml",
-              "taskOpening": "Each generated section arrives with the reviewer's decision attached: `{ heading, content, validated }`. Write `assembleReport(title, sections)`. Validated sections ship in order as markdown blocks ('## ' heading, blank line, content), joined by a '---' rule padded with blank lines, under '# ' title. Sections that failed validation do not ship their content at all; instead, when at least one was withheld, the document ends with one more block, '## Withheld', listing each withheld heading as a '- ' bullet. A report with nothing withheld carries no Withheld section. The exercise applies the withholding policy: Earth gets what the crew can stand behind, and an honest gap where the guess was.",
+              "taskOpening": "Write `assembleReport(title, sections)` for sections with `{ heading, content, validated }`.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does section-by-section generation make easier to review?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1707,7 +2148,7 @@
           "slug": "multi-model-systems",
           "title": "Multi-Model Systems",
           "sourcePath": "packages/content/content/deep-orbit/llm-integration/05-multi-model-systems.mdx",
-          "sourceSha256": "aa3e6bb99c1eabbb8d6cb37651c7b0b3c5ca10cc93e5ff6550ade036603b7b38",
+          "sourceSha256": "4221a19c73b5e213948dc3cb2e6a977f292266483f50627de20b83030271b328",
           "objectives": [
             "Design a multi-model pipeline with clear interfaces between stages",
             "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them",
@@ -1728,12 +2169,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What can checks between model stages catch, and what requires end-to-end evaluation?",
             "The autoencoder's stand-in here is module 7's 3-sigma gate on the amplitude alone. Why is there a ceiling on the sigma count that feature can produce, and what should you suspect when a reading comes back above it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -1759,7 +2202,7 @@
           "slug": "model-profiling",
           "title": "Model Profiling",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/01-model-profiling.mdx",
-          "sourceSha256": "6671bd03ba20ec31ed1129234c1a2226e05257aa8b00951922fb009f4ef92d72",
+          "sourceSha256": "10adac8f5c87647e6d67bd824fc23ce31ac7d9e377b3dade3f3d5b08eae5884f",
           "objectives": [
             "Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates",
             "Benchmark inference latency with high-resolution timing, mean and tail",
@@ -1779,11 +2222,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why should you profile a model before optimizing it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1791,7 +2236,7 @@
           "slug": "quantization",
           "title": "Quantization",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/02-quantization.mdx",
-          "sourceSha256": "1f7df0dbe0a262d17436903db23920e1f593a2e47cd384902d30c9a47515650e",
+          "sourceSha256": "2e963eeb6f04346735ce9b7bb522aed0bdc390d5a6b9a6083bd0c3f92d680958",
           "objectives": [
             "Understand quantization as byte reduction: float32 storage cut to uint16 or uint8",
             "Quantize a model using TensorFlow.js conversion tools",
@@ -1808,16 +2253,18 @@
               "slug": "quantize-weights",
               "title": "Quantize a Model and Compare Predictions",
               "sourcePath": "packages/content/content/deep-orbit/optimization-edge/exercises/quantize-weights.yaml",
-              "taskOpening": "Quantize a trained model's weights to uint8 and measure how its predictions change. Write quantizeModel(model, captures).",
+              "taskOpening": "Write quantizeModel(model, captures) for the supplied Dense classifier and non-empty capture array. Simulate uint8 storage, apply the decoded weights and compare predictions.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What does this quantization pass change, and what must you measure?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1825,7 +2272,7 @@
           "slug": "pruning",
           "title": "Pruning",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/03-pruning.mdx",
-          "sourceSha256": "8548fa54207bb2e5efa813d4d9d916ea105acc84b2b93579e86d191a8246e799",
+          "sourceSha256": "7f1f68ee9532ec6ca92298ca19d436cd83d37b23418090b151f15de3b4bff5d3",
           "objectives": [
             "Distinguish magnitude pruning from behavior-preserving dead-code removal",
             "Implement magnitude-based pruning with a configurable sparsity level",
@@ -1847,12 +2294,14 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "You zero 60% of a model's weights with magnitude pruning and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?",
             "Pruning hurt the rare class in this experiment. Does that prove rare patterns are stored in small weights?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1860,7 +2309,7 @@
           "slug": "caching-strategies",
           "title": "Caching Strategies",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/04-caching-strategies.mdx",
-          "sourceSha256": "9b0de128f2d18533351d2d1a49806f16181ce90d6f02e2f9a8c20fba7b0857c7",
+          "sourceSha256": "f691902f3d528b712fd41155eaad0b0d5903a3c6eb2645569611ee90e6862477",
           "objectives": [
             "Wrap a model in a cache-first predict that skips inference on a hit",
             "Hash model inputs for cache key generation",
@@ -1888,11 +2337,20 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [
+            {
+              "id": "deep-orbit-cache",
+              "version": 1,
+              "sourcePath": "apps/web/app/components/mdx/learning-experiment.tsx",
+              "evidence": "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim"
+            }
+          ],
           "recallQuestions": [
             "What should you measure before adding an inference cache, and why can a fresh entry be wrong?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1900,7 +2358,7 @@
           "slug": "webgpu-acceleration",
           "title": "WebGPU Acceleration",
           "sourcePath": "packages/content/content/deep-orbit/optimization-edge/05-webgpu-acceleration.mdx",
-          "sourceSha256": "cf01d6a22d0b05bc2843cc5c104204dc5031144042412f88d1cfd86865fdd2c6",
+          "sourceSha256": "cb346fdde852dde19d6b59de08fd9d5f0690feeb5e52ccce3abb1f35e2e8a71f",
           "objectives": [
             "Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)",
             "Configure TensorFlow.js to use the WebGPU backend",
@@ -1922,12 +2380,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why can WebGPU help compute-heavy inference, and why should you still benchmark it?",
             "Demir's first WebGPU timing run printed 0.4 ms and was wrong. Which rule from module 4's backend benchmark does that run break, and would disposing the output tensor before stopping the clock have fixed it?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }
@@ -1954,7 +2414,7 @@
           "slug": "system-architecture",
           "title": "System Architecture",
           "sourcePath": "packages/content/content/deep-orbit/capstone/01-system-architecture.mdx",
-          "sourceSha256": "004bbe526787ab371369566863766f595db878399fcc9b8fea5c1e005fea79b1",
+          "sourceSha256": "c77e31d1cc025d077fa0c31c3314323cb2708abaed8a3bd89ea8f33128cc5a16",
           "objectives": [
             "Assemble the supplied ML pipeline as typed components with explicit dependencies",
             "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter",
@@ -1975,11 +2435,13 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why do ML pipeline stage dependencies differ from npm package dependencies?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -1987,10 +2449,10 @@
           "slug": "ci-cd-pipeline",
           "title": "CI/CD Pipeline",
           "sourcePath": "packages/content/content/deep-orbit/capstone/02-ci-cd-pipeline.mdx",
-          "sourceSha256": "869028ce686df10ccc38cd6a25faff9795584806d137ca3c81045643d87b1bac",
+          "sourceSha256": "e9054ab7e28940a1a4f46db3e2770843d1712c82161bae1630467460bcdf1547",
           "objectives": [
             "Identify model identity and behavior gates in a release workflow",
-            "Implement an accuracy gate that rejects invalid or failing evaluation batches",
+            "Implement a conservative evaluation score and an acceptance threshold",
             "Explain what a device-specific inference benchmark must record",
             "Trace publication, verification and rollback conditions",
             "Export a model with model.save() and inspect its topology, weight specs and byte count"
@@ -2013,17 +2475,19 @@
               "slug": "export-model-artifact",
               "title": "Export the Artifact CI Pins",
               "sourcePath": "packages/content/content/deep-orbit/capstone/exercises/export-model-artifact.yaml",
-              "taskOpening": "Nazari's hash-pin order has a quiet prerequisite: bytes to hash. `model.save()` produces them, and it will save to anything that implements a handler, including plain memory. Prove the export path on the bench copy of DEEP SCAN (3 into 16 into 8 into 1) before anyone points it at the fictional mission build. For a supported TFJS LayersModel, on this bench copy every float32 weight is four bytes.",
+              "taskOpening": "Serialize the supplied uncompiled 3→16→8→1 LayersModel into memory.",
               "feedback": "Executable assertions, lesson hints and complete contract/solution/feedback copy read in the 2026-09-18 internal review; learner interpretation remains unobserved",
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "Why can a green CI run test the wrong model?",
             "What proves a rollback succeeded?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -2031,7 +2495,7 @@
           "slug": "monitoring",
           "title": "Monitoring",
           "sourcePath": "packages/content/content/deep-orbit/capstone/03-monitoring.mdx",
-          "sourceSha256": "0ae348aeb0e67e6dbe3f92d276778d75f8e0d045ec8c68721bc65e9224383d9e",
+          "sourceSha256": "d6d7ed71af3d3057a0a12565ce5f7084572d07ae98e7e21a84e4ac905b04c468",
           "objectives": [
             "Implement prediction quality monitoring: confidence tracking and the prediction-side class mix",
             "Build latency monitoring with P50/P95/P99 percentile tracking",
@@ -2052,12 +2516,14 @@
               "declaredDifficulty": "intermediate"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
-            "What category of model failure does standard app monitoring miss entirely?",
+            "What model failure can occur without an exception or latency change?",
             "A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -2065,7 +2531,7 @@
           "slug": "documentation",
           "title": "Documentation",
           "sourcePath": "packages/content/content/deep-orbit/capstone/04-documentation.mdx",
-          "sourceSha256": "32366b7d3e7379d6e51514957c3ec0f3f6a5c7efc05e9368e896b3928c4ea45f",
+          "sourceSha256": "65b5e0b9a4f70a9a2b11b4bc824b15164a0c7ef697664e4df03074dcad83ff06",
           "objectives": [
             "Write a Model Card documenting model purpose, training data, and performance",
             "Document the pipeline API and write runbooks for common operational scenarios",
@@ -2085,11 +2551,13 @@
               "declaredDifficulty": "beginner"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "What extra evidence belongs with a model performance claim?"
           ],
           "decisionTasks": [],
           "independentProject": null,
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         },
@@ -2097,7 +2565,7 @@
           "slug": "launch",
           "title": "Launch",
           "sourcePath": "packages/content/content/deep-orbit/capstone/05-launch.mdx",
-          "sourceSha256": "33758c57fcc7b7c11f5eb2b9946e81a6a25f6f43681b81c068d2db31c404df0c",
+          "sourceSha256": "97b346c58556a9e653ee3e09bbdda1bc82eb668ca5330a4a54a0500e87a9c361",
           "objectives": [
             "Package model assets and preprocessing with a standalone JavaScript app",
             "Follow the static-hosting setup for an ML-powered app",
@@ -2137,6 +2605,7 @@
               "declaredDifficulty": "advanced"
             }
           ],
+          "conceptExperiments": [],
           "recallQuestions": [
             "How does rolling back a deployed model differ from rolling back a deployed web app?",
             "DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?"
@@ -2146,8 +2615,10 @@
             "id": "room-occupancy-v1",
             "briefPath": "apps/web/public/assignments/room-occupancy-v1/README.md",
             "rubricPath": "apps/web/public/assignments/room-occupancy-v1/RUBRIC.md",
-            "evidence": "Standalone artifact path verified with a maintainer fixture; learner work and independent review unobserved"
+            "evidence": "Standalone artifact path verified with a maintainer fixture; learner work and independent review unobserved",
+            "runRecord": "Metric, baseline/model comparison, split/scaler rationale and observed artifact behavior stay local or in an explicit download. Only a learner-reported summary syncs; no independent pass."
           },
+          "projectMilestones": [],
           "transferAssignment": null,
           "assessmentAlignment": "See deep-orbit-assessment-review.json for manual objective-level findings and open gaps; inventory regeneration does not renew that review"
         }

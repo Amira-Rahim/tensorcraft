@@ -3,6 +3,7 @@ import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
 import { tagSubscriber } from "../lib/kit";
+import { isMLLearningRoute, type MLLearningRoute } from "@tensorcraft/shared";
 import type { AppEnv } from "../types";
 
 /**
@@ -51,6 +52,7 @@ function isLearningGoal(v: unknown): v is LearningGoal {
 }
 
 type OnboardingUpdate = {
+  ml_learning_route?: MLLearningRoute | null;
   experience_level?: ExperienceLevel;
   learning_goal?: LearningGoal;
   js_background?: string;
@@ -68,6 +70,9 @@ onboarding.patch("/", async (c) => {
   } catch {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return c.json({ error: "Expected a JSON object" }, 400);
+  }
 
   // One-release shim (migration 059 rebrand): stale clients still send the
   // pre-rename keys. Map them, then ignore `fe_framework` entirely, the
@@ -83,6 +88,18 @@ onboarding.patch("/", async (c) => {
   const updates: OnboardingUpdate = {
     updated_at: new Date().toISOString(),
   };
+
+  if ("ml_learning_route" in body) {
+    if (
+      body.ml_learning_route !== null &&
+      !isMLLearningRoute(body.ml_learning_route)
+    )
+      return c.json(
+        { error: "ml_learning_route must be guided, challenge, or null" },
+        400,
+      );
+    updates.ml_learning_route = body.ml_learning_route;
+  }
 
   if ("experience_level" in body) {
     const v = body.experience_level;
@@ -147,7 +164,7 @@ onboarding.patch("/", async (c) => {
     return c.json(
       {
         error:
-          "No valid fields to update. Allowed: experience_level, learning_goal, js_background, js_experience_years, onboarding_completed",
+          "No valid fields to update. Allowed: experience_level, learning_goal, js_background, js_experience_years, onboarding_completed, ml_learning_route",
       },
       400,
     );

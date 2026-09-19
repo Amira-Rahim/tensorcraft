@@ -61,7 +61,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "typed-array",
     definition:
-      "A fixed-type JavaScript array such as Float32Array that stores numbers compactly and backs a tensor in memory.",
+      "A JavaScript view of a buffer with a fixed numeric element type, such as Float32Array. TensorFlow.js accepts typed arrays as input; a GPU backend may store the tensor in a different representation.",
     aliases: ["typed array", "typed-arrays"],
     scope: "global",
   },
@@ -84,7 +84,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "broadcasting",
     definition:
-      "Shapes align from the last axis backwards, stretching any size-1 or missing axis to match. A [2] tensor subtracts from every row of a [5, 2] batch.",
+      "Shapes align from the last axis backwards. Each pair must match or include a size-1 axis; missing axes act as size 1. A [2] tensor subtracts from every row of a [5, 2] batch.",
     scope: "global",
   },
   {
@@ -228,7 +228,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "convolution",
     definition:
-      "Sliding a small grid of weights across an image and recording what it matches at each position. The same weights run everywhere, so a filter that finds an edge in one corner finds it in every corner.",
+      "Applying shared kernel weights at successive positions to form output features. In image models, padding and stride determine which neighborhoods are covered and the output shape.",
     aliases: ["convolutional", "conv layer"],
     scope: "global",
   },
@@ -320,14 +320,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sgd",
     definition:
-      "Stochastic gradient descent: gradient descent where each update uses the gradient from a random mini-batch instead of the full dataset, making steps noisy but cheap.",
+      "Stochastic gradient descent estimates each update from one sampled example or a mini-batch. The estimate costs less per update than using the full dataset and can vary between samples.",
     aliases: ["SGD", "stochastic gradient descent"],
     scope: "global",
   },
   {
     term: "learning-rate",
     definition:
-      "How big a step the optimizer takes on each update. Too high overshoots, too low trains slowly.",
+      "A scale factor for an optimizer update. Too large a value can cause overshoot or divergence; too small a value can make progress slow.",
     aliases: ["learning rate"],
     scope: "global",
   },
@@ -394,14 +394,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "threshold",
     definition:
-      "The cutoff score above which a model's output is treated as a positive prediction.",
+      "A cutoff used to turn a score into a decision. The decision rule must specify which side is positive and what happens at equality.",
     aliases: ["thresholds"],
     scope: "global",
   },
   {
     term: "baseline",
     definition:
-      "A simple reference model or score that a real model must beat to prove it adds value.",
+      "A reference model, rule or measurement used for comparison. Compare candidates on the same data and relevant costs; keeping a simpler baseline can be the best outcome.",
     aliases: ["baselines"],
     scope: "global",
   },
@@ -443,7 +443,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "confusion matrix",
     definition:
-      "A two-by-two (or class-by-class) table counting true positives, false positives, true negatives, and false negatives. Accuracy, precision, and recall are all ratios read off it.",
+      "A table counting predicted classes against recorded classes. Check the row and column labels before deriving accuracy, precision or recall.",
     scope: "global",
   },
 
@@ -465,7 +465,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gru",
     definition:
-      "A gated recurrent unit, an RNN cell with two gates instead of the LSTM's three. The update gate emits one value per dimension. Each value keeps that much of the previous hidden state and takes the rest from a new candidate, doing the forget and input gates' work at once. The reset gate sets how much of the previous hidden state that candidate can see. There is no separate cell state, so there is no output gate.",
+      "A recurrent cell with update and reset gates and no separate cell state. The update gate mixes the previous hidden state with a new candidate; the reset gate controls the previous-state information used to form that candidate.",
     aliases: ["GRU"],
     scope: "global",
   },
@@ -500,7 +500,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sliding-window",
     definition:
-      "Taking fixed-length chunks from a sequence by moving a window along it one step at a time.",
+      "Taking fixed-length chunks from a sequence by advancing a window by a chosen stride. Adjacent chunks overlap when the stride is shorter than the window.",
     aliases: ["sliding window"],
     scope: "deep-orbit",
   },
@@ -509,7 +509,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "attention",
     definition:
-      "A mechanism that scores every part of the input and blends it in proportion to those scores, so the model can put most of its weight on a few positions.",
+      "A mechanism that computes scores between representations and uses derived weights to combine values. A large weight identifies a contribution to that combination, not a physical cause.",
     scope: "global",
   },
   {
@@ -522,7 +522,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "query-key-value",
     definition:
-      "The three projections attention uses: a query asks what to look for, keys advertise content, values carry it.",
+      "In attention, queries and keys are compared to obtain scores; the resulting weights combine values. These vectors are commonly learned projections of model representations.",
     aliases: ["query key value", "QKV"],
     scope: "global",
   },
@@ -623,14 +623,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "GAN",
     definition:
-      "A generative adversarial network: a generator that invents samples and a discriminator that judges them, trained against each other. The generator improves by getting better at fooling its opponent.",
+      "A generative adversarial network trains a generator against a discriminator that distinguishes generated samples from training examples. The competing objectives do not guarantee stable training or useful outputs.",
     aliases: ["GANs", "generative adversarial network"],
     scope: "global",
   },
   {
     term: "diffusion",
     definition:
-      "A generative method that trains a model to remove noise, then runs it repeatedly on pure noise until an image appears. Each step undoes a little of the noise the training process added.",
+      "A family of generative methods that learns to reverse a process that adds noise. Sampling uses the learned denoising process, often starting from noise; outputs can include images, audio or other data.",
     aliases: ["diffusion model", "denoising"],
     scope: "global",
   },
@@ -639,7 +639,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "fourier-transform",
     definition:
-      "A method that decomposes a signal into the frequencies that make it up.",
+      "A transform that expresses a signal in complex sinusoidal components. Peaks in a finite recording do not by themselves identify separate physical sources.",
     aliases: ["fourier transform"],
     scope: "deep-orbit",
   },
@@ -723,7 +723,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "autoencoder",
     definition:
-      "A network that learns to compress data and reconstruct it, used to flag inputs it cannot rebuild well.",
+      "A network trained to reconstruct an input through an internal representation, often with a bottleneck or other constraint. Reconstruction error can be used as an anomaly score after validation.",
     aliases: ["autoencoders"],
     scope: "global",
   },
@@ -757,7 +757,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "kalman-filter",
     definition:
-      "A recursive estimator that blends noisy measurements with a motion model to track a hidden state over time.",
+      "A recursive estimator that predicts a hidden state with a dynamics model, then updates it using measurements and uncertainty estimates. The basic Kalman filter assumes linear state and measurement relationships.",
     aliases: ["kalman filter"],
     scope: "deep-orbit",
   },
@@ -827,14 +827,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sparsity",
     definition:
-      "The fraction of a model's weights that are zero. High sparsity compresses well, but a dense storage format still writes every zero and still multiplies it.",
+      "The fraction of entries that are zero. Dense representations retain zero-valued slots; reducing storage or computation requires a format or implementation that can exploit the zeros.",
     aliases: ["sparse"],
     scope: "global",
   },
   {
     term: "pretrained",
     definition:
-      "A model already trained on a large dataset that you reuse instead of training from scratch.",
+      "A model whose parameters were learned before the current task. You can reuse it for inference or adapt it through further training.",
     aliases: ["pre-trained"],
     scope: "global",
   },
@@ -916,14 +916,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "feature",
     definition:
-      "One input number a model reads about a single example, such as the amplitude extracted from a sensor capture. A tf.data pipeline names the features xs.",
+      "An input attribute used for prediction, such as amplitude or a category encoded numerically. In this course, the feature tensor is named xs.",
     aliases: ["features"],
     scope: "global",
   },
   {
     term: "label",
     definition:
-      "The value you want a model to predict for one example, supplied alongside the features during training. A tf.data pipeline names the labels ys.",
+      "The target value used to train or evaluate a prediction, such as a class or future reading. In this course, the target tensor is named ys.",
     aliases: ["labels"],
     scope: "global",
   },

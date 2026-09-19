@@ -305,7 +305,7 @@ function WorldCard({ card, variant, onNotify }: WorldCardProps) {
         // brutalist-hover pose still completes. The card's one tab stop
         // is the Notify me CTA button inside the body.
         <div
-          className={`${shellClassName} cursor-not-allowed opacity-80 hover:opacity-100 transition-opacity`}
+          className={`${shellClassName} cursor-not-allowed`}
           style={shellStyle}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}

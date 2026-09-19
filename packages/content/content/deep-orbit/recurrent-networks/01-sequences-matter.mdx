@@ -25,9 +25,9 @@ consequence:
   narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
-    content: "Most failures here sit at the edges rather than in the middle of the loop. The drop rule belongs in the loop's stop condition, not in a filter run afterwards: stop where a window would have no reading after it, and the last-position case never comes up. Decide what an empty result hands back before you write the body."
+    content: "A forecast window needs a following target. Find the last start index that leaves that target inside the array."
   - level: guidance
-    content: "Both moving parts sit in the loop header. The window's first index advances by the stride rather than by a single reading, so consecutive windows overlap by windowSize minus stride, and stop overlapping once the stride is as wide as the window. The stop condition is where the drop rule lives: the loop has to end while the archive still holds the reading each window is paired with, which means the last window you keep is not the last one that fits. The pair of tensors is that same data with one axis made explicit: a window is a sample, and inside it time comes before features. Build them out of the two lists you just filled, and when nothing survived the drop rule there is nothing to stack."
+    content: "Advance start by stride. The input slice ends before start + windowSize; that index holds its target. Stack inputs as [windows, steps, features] and targets as [windows, features]. Return null tensors when there are no pairs."
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -57,7 +57,7 @@ This isn't random noise. Something is repeating. The pattern spans dozens of tim
 
 Memory in a network is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
 
-<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
+<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling can remove temporal information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
 
 ## Why One Reading At A Time Fails
 
@@ -66,7 +66,7 @@ Memory in a network is the next lesson's answer. Today's problem comes first, an
 <CodeBlock language="typescript" title="feedforward-limitation.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Feedforward network: each input is independent
+// This stateless feedforward call scores one reading without prior readings
 // It sees: [0.5, 0.3, 0.7] → classify
 // Then:    [0.8, 0.5, 0.9] → classify (no memory of previous)
 

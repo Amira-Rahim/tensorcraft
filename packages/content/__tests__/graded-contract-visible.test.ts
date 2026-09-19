@@ -28,19 +28,15 @@ import { BUILT_WORLD_DIRS } from "../src/built-worlds";
  * see: a field declared inside a stripped interface, asserted by name in
  * testCode, has to appear in the instructions or in the delivered starter.
  *
- * WHAT IS PINNED. Two exercises declare interfaces for the DATA the grader
- * hands in, not for what the learner returns: retrieve-signals reads `id`
- * and `anomalyScore` off rows the learner passes through untouched, and
- * prune-weights types the model's own `setWeights`. Those are
- * not contracts the learner has to produce, so they are pinned with that
- * reason. Add to the pin only with a reason a learner would accept.
+ * WHAT IS PINNED. prune-weights types the supplied model's own `setWeights`,
+ * not a returned field. retrieve-signals now names its complete row schema
+ * in the instructions and no longer needs an exception.
  */
 
 const CONTENT_ROOT = join(__dirname, "..", "content");
 const EXERCISES_JSON = join(__dirname, "..", ".velite", "exercises.json");
 
 const INPUT_ONLY_FIELDS: Record<string, string[]> = {
-  "retrieve-signals": ["id", "anomalyScore"],
   "prune-weights": ["setWeights"],
 };
 

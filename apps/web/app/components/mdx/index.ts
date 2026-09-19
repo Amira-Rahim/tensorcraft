@@ -1,6 +1,10 @@
+export { ProjectMilestone } from "./project-milestone";
+export { LearningExperiment } from "./learning-experiment";
 export { Concept } from "./concept";
+export { ConceptReference } from "./concept-reference";
 export { MathBlock } from "./math-block";
 export { InteractiveDemo } from "./interactive-demo";
+export { ChannelLayoutExperiment } from "./channel-layout-experiment";
 export { RecallPrompt } from "./recall-prompt";
 export { NextLesson } from "./next-lesson";
 export { StrategyThread } from "./strategy-thread";

@@ -121,6 +121,8 @@ Two false alarms a week among 18,327 normal readings would require a rate near 0
 
 ## Evaluating the Threshold
 
+For this sweep, undefined precision or recall is reported as zero, and F1 is zero when there are no true positives. This is an explicit reporting convention. The earlier helper returned `null` to keep an undefined ratio visible; a dashboard can still show that distinction.
+
 <CodeBlock language="typescript" title="evaluation.ts">
 {`interface Metrics {
   precision: number;  // of flagged signals, how many are real anomalies?
@@ -188,6 +190,8 @@ const comparisons = candidates.map((c) => ({
 
 For a cost-based decision, define `cost = falseAlarmCost * FP + missCost * FN` and choose the validation cutoff with the lowest cost. Use data representative of deployment, or adjust estimates for its expected class frequencies. An alert-budget or minimum-recall constraint is another explicit objective. Decide it before comparing candidates, then check the chosen rule on the held-out test.
 
+<LearningExperiment id="threshold" />
+
 The crew's two deployments have different costs and constraints.
 
 In the first deployment the detector gates the capture pipeline, so a miss costs the mission: every real event it sleeps through is data the ship never records again. Take t=0.2, recall 1.00 at precision 0.34. Read that precision carefully, because it was measured on a slice holding enough anomalies to score against. Live telemetry is far calmer, so the expected weekly false-alarm count is the false-positive rate times the number of normal readings, and it runs well above what the slice suggests. The capture pipeline can absorb that. A machine reads every flag, and no crew is being taught to ignore anything, so the threshold belongs low here.
@@ -223,7 +227,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 <RecallPrompt
   question="Two deployments run the same detector on the same errors: one gates the capture pipeline, the other pages the bridge crew. Why should their thresholds differ when F1 peaks at the same cutoff?"
-  answer="F1 weighs precision and recall equally, but the two deployments have opposite cost asymmetries. A capture the ship never gets to repeat makes the miss the expensive error, so that threshold goes down and buys recall with false alarms. An alert channel fails by being tuned out, so that threshold goes up and buys precision with missed detections. The cutoff follows the cost of each error, not the F1 peak."
+  answer="F1 weighs precision and recall equally, but the two deployments have opposite cost asymmetries. A capture the ship never gets to repeat makes the miss the expensive error, so that threshold goes down and buys recall with false alarms. An alert channel fails by being tuned out, so a higher threshold may fit its budget. On this fictional validation curve, that increases precision while missing more events; precision is not guaranteed to rise on every dataset. The cutoff follows the cost of each error, not the F1 peak."
 />
 
 <RecallPrompt
@@ -248,7 +252,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 The threshold locks at 1.0 before the watch change, above every normal error in the calm slice, and Nazari replays last week's fourteen alerts through it herself, hunting for the trick. Twelve cosmic-background flags die without a sound. The two survivors are both the signal. There is no trick to find.
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
-Two alerts, both worth my time. Fine. The next false positive still comes out of your sleep schedule, Ensign.
+Two alerts worth reviewing in this replay. Take the next watch's threshold log, Ensign; I have a coolant inspection to finish. Page me if the workload changes.
 </Dialogue>
 
 The lock holds for a day and a half. Then, mid-morning, the dashboard fires the highest-scoring alert DEEP SCAN has ever produced, and this time nobody reaches for the word "false."

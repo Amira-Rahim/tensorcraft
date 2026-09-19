@@ -1,0 +1,10 @@
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+Orthogonal initializer is being called on a matrix with more than 2000 (4096) elements: Slowness may result.
+PASS advanced-time-series/01-beyond-lstm.mdx: attention-basics.ts, comparison.ts
+PASS advanced-time-series/02-temporal-attention.mdx: temporal-attention.ts, interpret-attention.ts, ring-buffer-attention.ts, positional-feature.ts
+PASS advanced-time-series/03-forecasting.mdx: forecasting.ts, non-stationary.ts, error-by-horizon.ts
+PASS advanced-time-series/04-kalman-filters.mdx: ema-two-alphas.ts, kalman-filter.ts
+PASS advanced-time-series/05-ensemble-methods.mdx: ensemble.ts, mae-is-not-variance.js

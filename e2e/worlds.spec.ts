@@ -112,7 +112,12 @@ test.describe("World Detail Page", () => {
 
   test("shows lesson estimated time", async ({ page }) => {
     await page.goto("/worlds/deep-orbit");
-    await expect(page.getByText(/min/i).first()).toBeVisible();
+    await expect(
+      page
+        .getByTestId("module-map")
+        .getByText(/^Lesson \d+ · \d+ min$/)
+        .first(),
+    ).toBeVisible();
   });
 
   test("lessons link to lesson viewer", async ({ page }) => {
@@ -342,7 +347,7 @@ test.describe("Lesson reading experience", () => {
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
     const right = page.getByTestId("lesson-right");
-    await expect(right).toHaveAttribute("data-kind", "pane", {
+    await expect(right).toHaveAttribute("data-kind", "code", {
       timeout: 15000,
     });
   });

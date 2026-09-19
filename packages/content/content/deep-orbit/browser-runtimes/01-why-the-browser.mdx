@@ -77,11 +77,11 @@ async function serverInference(signalData: number[]) {
     body: JSON.stringify({ signal: signalData }),
   });
   if (!response.ok) throw new Error('Classification request failed');
-  return response.json(); // { class: 'anomaly', confidence: 0.94 }
+  return response.json(); // application response, for example { class: 'anomaly', score: 0.94 }
 }
 
 // CLIENT-SIDE INFERENCE, like CSR
-// Data never leaves the browser. Model runs locally.
+// This prediction runs locally. Audit other uploads and telemetry separately.
 async function clientInference(signalData: number[]) {
   const output = tf.tidy(() => model.predict(tf.tensor2d([signalData])) as tf.Tensor);
   try {
@@ -149,14 +149,14 @@ Decide whether one use case belongs in the browser or on the server, and watch w
 
 <RecallPrompt question="What is the main tradeoff when moving ML inference from server to browser?" answer="You can avoid a network request per prediction, at the cost of downloads and local compute/memory. Measure the actual devices. Offline use needs all required assets cached, and privacy still depends on the rest of the application." />
 
-<LessonRecap whatYouLearned={["Local inference avoids a per-prediction request. Model versions, cache eviction and missing assets can require new downloads.", "Browser constraints (memory cap, cold start time, device compute) map directly onto the shipping costs you already budget for: bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, offline availability, and model size. Here availability decided it: the link that carries 86,400 verdicts a day is a dependency the download removes"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
+<LessonRecap whatYouLearned={["Local inference avoids a per-prediction request. Model versions, cache eviction and missing assets can require new downloads.", "Browser constraints (memory cap, cold start time, device compute) map directly onto the shipping costs you already budget for: bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, offline availability, and model size. Here availability decided it: a cached app, runtime and model remove the per-verdict dependency on the compute-bay link"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
 
 <Epilogue>
 
 Nazari signs the deployment order at the bottom of the latency table, then writes one number in the margin: 86,400. Dashboard readings per day, one snapshot a second, live. The archive records the same stream more slowly, one row per 33 seconds, which is where its 28,800 rows over eleven days come from. On the server plan all 86,400 of those verdicts cross one interdeck run to the compute bay, aboard a vessel eleven light-minutes from anything resembling a CDN. Each hop costs 180 milliseconds, which the budget covers. What the budget cannot cover is the run going down.
 
 <Dialogue speaker="Chief Nazari">
-Every verdict on this ship through one cable, 86,400 times a day. Or one download per crew station and no cable at all. Buy the download.
+Every verdict on this ship through one cable, 86,400 times a day. Or a cached model per crew station and no per-verdict trip to the compute bay. Buy the download.
 </Dialogue>
 
 Demir opens a terminal and types `npm install`; the model is going to live where the crew lives. While the package downloads, he starts a survey of the ship's consoles, oldest chair first.

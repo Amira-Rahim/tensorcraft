@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import { StoryConsequence } from "./story-consequence";
+import { STORY_HISTORY } from "@tensorcraft/shared";
 import { BOSS_BEAT_CHANGED, getBossBeatChoice } from "@/lib/boss-beat-client";
 vi.mock("@/lib/boss-beat-client", () => ({
   BOSS_BEAT_CHANGED: "tensorcraft:story-choice-saved",
@@ -19,10 +20,48 @@ const saved = {
   reactionMs: 1,
   chosenAt: "2026-09-18T12:00:00Z",
 };
-beforeEach(() =>
-  vi.mocked(getBossBeatChoice).mockReset().mockResolvedValue(null),
-);
+beforeEach(() => {
+  vi.mocked(getBossBeatChoice).mockReset().mockResolvedValue(null);
+});
 describe("later story scenes", () => {
+  it.each(["cooperate", "defect", "random", "dominant"] as const)(
+    "uses the historical later scene for a version-1 %s call",
+    async (label) => {
+      const beatId = "deep-orbit-drift-response";
+      vi.mocked(getBossBeatChoice).mockResolvedValue({
+        ...saved,
+        beatId,
+        choiceLabel: label,
+        contentVersion: 1,
+      });
+      render(
+        <StoryConsequence
+          beatId={beatId}
+          outcomes={outcomes}
+          fallback="Neutral"
+          contentVersion={2}
+        />,
+      );
+      await screen.findByText(STORY_HISTORY[beatId]![1]!.outcomes[label]);
+      expect(screen.queryByText(outcomes[label])).toBeNull();
+    },
+  );
+
+  it("keeps neutral prose visible on a failed lookup without asserting a decision", async () => {
+    vi.mocked(getBossBeatChoice).mockRejectedValue(new Error("offline"));
+    render(
+      <StoryConsequence
+        beatId="one"
+        outcomes={outcomes}
+        fallback="Neutral continuation"
+      />,
+    );
+    await screen.findByText("Neutral continuation");
+    expect(screen.queryByTestId("story-consequence")).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Retry scene" }),
+    ).toBeInTheDocument();
+  });
   it("acknowledges an earlier saved choice after mounting a later lesson", async () => {
     vi.mocked(getBossBeatChoice).mockResolvedValue(saved);
     render(

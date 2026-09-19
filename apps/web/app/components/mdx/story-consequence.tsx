@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { STORY_HISTORY } from "@tensorcraft/shared";
 import {
   BOSS_BEAT_CHANGED,
   getBossBeatChoice,
@@ -12,16 +13,19 @@ export function StoryConsequence({
   beatId,
   outcomes,
   fallback,
+  contentVersion = 1,
 }: {
   beatId: string;
   outcomes: Record<BossBeatChoiceLabel, string>;
   /** Neutral continuation for readers who skipped the optional decision. */
   fallback: string;
+  contentVersion?: number;
 }) {
   const [state, setState] = useState<{
     beatId: string;
     status: "loading" | "ready" | "error";
     label?: BossBeatChoiceLabel;
+    contentVersion?: number;
   }>({ beatId, status: "loading" });
   const [attempt, setAttempt] = useState(0);
 
@@ -34,7 +38,12 @@ export function StoryConsequence({
       try {
         const choice = await getBossBeatChoice(beatId);
         if (active && request === current)
-          setState({ beatId, status: "ready", label: choice?.choiceLabel });
+          setState({
+            beatId,
+            status: "ready",
+            label: choice?.choiceLabel,
+            contentVersion: choice?.contentVersion ?? 1,
+          });
       } catch {
         if (active && request === current)
           setState({ beatId, status: "error" });
@@ -57,22 +66,37 @@ export function StoryConsequence({
     return (
       <div role="alert" className="my-4">
         <p>This scene needs your saved decision. We could not load it.</p>
+        <p>{fallback}</p>
         <button
           type="button"
-          className="border border-border px-4 py-2"
+          className="min-h-11 border border-border px-4 py-2"
           onClick={() => setAttempt((n) => n + 1)}
         >
           Retry scene
         </button>
       </div>
     );
+  const savedVersion = state.contentVersion ?? 1;
+  const matchingOutcomes =
+    savedVersion === contentVersion
+      ? outcomes
+      : STORY_HISTORY[beatId]?.[savedVersion]?.outcomes;
   return (
     <p
       data-testid="story-consequence"
       data-beat-id={beatId}
       data-choice-label={state.label ?? "unrecorded"}
+      data-content-version={state.label ? savedVersion : undefined}
     >
-      {state.label ? outcomes[state.label] : fallback}
+      {state.label && matchingOutcomes
+        ? matchingOutcomes[state.label]
+        : fallback}
+      {state.label && !matchingOutcomes && (
+        <span className="block text-sm text-text-muted">
+          Your saved call needs a different scene version. Reload to read its
+          continuation.
+        </span>
+      )}
     </p>
   );
 }

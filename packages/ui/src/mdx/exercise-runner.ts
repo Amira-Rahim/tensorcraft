@@ -8,6 +8,8 @@
  * so Next.js/Vite client builds don't try to resolve `node:worker_threads`.
  */
 
+import { FIT_RECORDING_SOURCE } from "./exercise-fit-recording.mjs";
+
 export interface TestResult {
   name: string;
   passed: boolean;
@@ -1170,6 +1172,8 @@ function buildFullCode(userCode: string, testCode: string): string {
 // rolled mock. This delivers genuine semantics for predict/fit/grad and
 // closes the long tail of "is not a function" errors driven by mock gaps.
 const WORKER_BODY = `
+  var createFitRecorder = ${FIT_RECORDING_SOURCE};
+  var fitRecorder;
 (function() {
   // Seal Math.random before anything else runs (round 7, 2026-09-13). The
   // grader's run-time draws and tf's own generator both read it, so a
@@ -1251,6 +1255,7 @@ const WORKER_BODY = `
   function applyShims() {
     var tf = globalThis.tf;
     if (!tf) return;
+    if (!fitRecorder) fitRecorder = createFitRecorder(tf);
 
     // Part of the call spy above: tensor METHODS (a.add(b), x.matMul(w),
     // t.sum().dataSync()) are prototype calls the proxy cannot see, so the
@@ -1285,6 +1290,7 @@ const WORKER_BODY = `
         if (c) c['model.predict'] = (c['model.predict'] || 0) + 1;
         return realPredict.apply(this, arguments);
       };
+      tf.LayersModel.prototype.fit = fitRecorder.wrap(tf.LayersModel.prototype.fit);
       tf.LayersModel.prototype.__tcSpied = true;
     }
     // Lock the spied methods and the read path after the spy has wrapped
@@ -1304,7 +1310,7 @@ const WORKER_BODY = `
         });
       }
       lockMethods(tf.Tensor && tf.Tensor.prototype, TENSOR_METHODS.concat(['data', 'array', 'dataSync', 'arraySync']));
-      lockMethods(tf.LayersModel && tf.LayersModel.prototype, ['predict', 'save']);
+      lockMethods(tf.LayersModel && tf.LayersModel.prototype, ['predict', 'save', 'fit']);
       if (tf.util && typeof tf.util === 'object') { try { Object.freeze(tf.util); } catch (e) {} }
     })();
 
@@ -1529,6 +1535,7 @@ const WORKER_BODY = `
         // spy, and the corpus parity test keeps them in step.
         var calls = Object.create(null);
         globalThis.__tcCalls = calls;
+        if (fitRecorder) fitRecorder.reset();
         var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, dot: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
         var NESTED = { layers: 1, io: 1, train: 1, losses: 1 };
         function bump(name) { calls[name] = (calls[name] || 0) + 1; }
@@ -1551,6 +1558,7 @@ const WORKER_BODY = `
                 // tf.__calls['model.save'] = 1 cleared a grader before this
                 // (round 7b, 2026-09-14). Same rule as the validator.
                 if (prop === '__calls') return Object.freeze(Object.assign(Object.create(null), calls));
+                if (prop === '__fits') return fitRecorder ? fitRecorder.read() : Object.freeze([]);
                 if (stubs[prop]) return stubs[prop];
                 var v = target[prop];
                 if (SPIED[prop] && typeof v === 'function') {

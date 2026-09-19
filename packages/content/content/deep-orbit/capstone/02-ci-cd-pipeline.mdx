@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "For the export: model.save() never touches a disk it was not given. tf.io.withSaveHandler wraps an async function that receives the serialized artifacts; capture them, then count what the digest covers. (The gate exercise states its own contract in its instructions.)"
   - level: guidance
-    content: "model.save() wants an IOHandler rather than a path, and tf.io.withSaveHandler is the adapter that turns a plain async function into one. That is how a save ends in memory with nothing written anywhere: your function is the destination, save() calls it with the serialized artifacts, and it expects a report back (the instructions name the shape of that report). What arrives is the same three-part artifact a real export writes: the topology, one weight spec per tensor carrying that tensor's name, shape and dtype, and one flat buffer holding every weight end to end. Two of the manifest numbers therefore come off the specs, by counting them and by multiplying a shape out. The third is the payload itself, and it is measured rather than derived: after module 10's uint8 pass the parameter count is unchanged and the byte count is not."
+    content: "Use tf.io.withSaveHandler to make memory the export destination. Capture the artifacts passed to the handler and return modelArtifactsInfo. Count tensors from weightSpecs, multiply each shape to count parameters, and read weightData.byteLength for bytes. Mixed precision means one bytes-per-parameter multiplier may not apply."
   - level: solution
     content: |
       const model = tf.sequential();
@@ -67,19 +67,19 @@ skillAxes: [deployment]
 
 > **MERGE REQUEST 47 · DEMIR → NAZARI:** “Model checks passed. Requesting release approval.”
 
-Nazari opens the artifact log before the test summary. The accuracy check ran against an old cache entry. The build is green, but it says nothing about the candidate waiting to ship.
+Nazari opens the artifact log before the test summary. Both cache entries have valid versioned keys. The report job joined the candidate's artifact manifest to the previous release's evaluation result by filename. Each file is valid; the pair describes different models.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Which model did this run test? Show me the graph and weight fingerprints beside the result.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-I keyed the cache on the model's name. The new release uses the same name.
+The cache keys are different. My report job dropped the release ID when it joined the results. I'll make the artifact fingerprint part of that join and test it with two releases present.
 </Dialogue>
 
-A cache hit proves that an entry exists. It does not prove that the entry is the version the release expects. CI/CD means continuous integration and delivery: automation that tests changes and prepares or publishes a release. The automation still needs a precise description of the artifact to test.
+A valid cached result describes the artifact it tested. The release must also prove that this result belongs to the candidate it will publish. CI/CD means continuous integration and delivery: automation that tests changes and prepares or publishes a release. The automation still needs a precise description of the artifact to test.
 
-<LearningObjectives objectives={["Identify model identity and behavior gates in a release workflow", "Implement an accuracy gate that rejects invalid or failing evaluation batches", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its topology, weight specs and byte count"]} />
+<LearningObjectives objectives={["Identify model identity and behavior gates in a release workflow", "Implement a conservative evaluation score and an acceptance threshold", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its topology, weight specs and byte count"]} />
 
 ## Pin the Whole Artifact
 
@@ -157,7 +157,7 @@ Keep the previous release until the replacement passes on the console. If rollba
 
 ## Challenge
 
-Write the accuracy gate's decision function. This exercise tests the evaluation contract with real TFJS predictions. It does not configure GitHub permissions, publish a site or establish a device's performance budget.
+Write the accuracy gate's decision function. This exercise checks supplied label pairs. Missing labels count as unverified rows in its denominator; a separate data-completeness gate should decide whether that batch is suitable for release. It does not configure GitHub permissions, publish a site or establish a device's performance budget.
 
 <Exercise slug="ci-cd-gate" />
 
@@ -177,7 +177,7 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
 
 <Epilogue>
 
-The rerun goes green at 2214, with the candidate's fingerprint beside every gate. Nazari checks the restored-release rehearsal before she closes the log. On the wall display, the pulse interval reads 44.0 seconds.
+Demir keeps the mismatched pair as a regression case; it fails before publication. The correct pair goes green at 2214, with the candidate's fingerprint beside every gate. Nazari gives him the verification handover and checks the restored-release rehearsal herself. On the wall display, the pulse interval reads 44.0 seconds.
 
 <Dialogue speaker="Chief Nazari">
 Three days ago that ticker said 47.0. Put a second operator on the deploy watch.

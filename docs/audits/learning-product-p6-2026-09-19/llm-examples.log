@@ -1,0 +1,9 @@
+PASS llm-integration/01-llms-for-science.mdx: llm-client.ts, workflow.ts
+PASS llm-integration/02-prompt-engineering.mdx: templates.ts
+PASS llm-integration/03-rag-for-signals.mdx: rag-pipeline.ts
+PASS llm-integration/04-report-generation.mdx: report-pipeline.ts
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+PASS llm-integration/05-multi-model-systems.mdx: pipeline.ts, resilience.ts

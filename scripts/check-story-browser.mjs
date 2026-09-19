@@ -6,7 +6,14 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-export async function runStoryChecks({ page, base, lessons, fixture, root }) {
+export async function runStoryChecks({
+  page,
+  base,
+  lessons,
+  fixture,
+  root,
+  history,
+}) {
   const decisions = [];
   const scenes = new Map();
   for (let index = 0; index < lessons.length; index++) {
@@ -28,10 +35,15 @@ export async function runStoryChecks({ page, base, lessons, fixture, root }) {
       const options = JSON.parse(
         match[2].replace(/\b(label|display|consequence):/g, '"$1":'),
       );
-      decisions.push({ beatId: match[1], index, options });
+      decisions.push({
+        beatId: match[1],
+        index,
+        options,
+        version: Number(match[0].match(/contentVersion=\{(\d+)\}/)?.[1] ?? 1),
+      });
     }
     for (const match of source.matchAll(
-      /<StoryConsequence\s+beatId="([^"]+)"\s+fallback="([^"]+)"\s+outcomes=\{(\{[\s\S]*?\})\}\s*\/>/g,
+      /<StoryConsequence\s+beatId="([^"]+)"(?:\s+contentVersion=\{\d+\})?\s+fallback="([^"]+)"\s+outcomes=\{(\{[\s\S]*?\})\}\s*\/>/g,
     )) {
       scenes.set(match[1], {
         index,
@@ -89,12 +101,86 @@ export async function runStoryChecks({ page, base, lessons, fixture, root }) {
       await expect(page.getByTestId("boss-beat-active")).toHaveCount(0);
       results.push({
         beatId: decision.beatId,
+        version: decision.version,
         option: option.label,
         saved: true,
         laterScene: lessons[later.index].slug,
         survivesReload: true,
       });
     }
+  }
+  const historicalResults = [];
+  for (const decision of decisions.filter((d) => history[d.beatId])) {
+    const original = history[decision.beatId][1];
+    for (const [choiceIndex, option] of original.options.entries()) {
+      fixture.choices.clear();
+      fixture.choices.set(decision.beatId, {
+        beat_id: decision.beatId,
+        choice_index: choiceIndex,
+        choice_label: option.label,
+        reaction_ms: 5,
+        chosen_at: "2026-09-18T00:00:00Z",
+        content_version: 1,
+      });
+      await show(page, decision.index, "briefing");
+      await expect(page.getByTestId("boss-beat-resolved")).toContainText(
+        option.display,
+      );
+      await expect(page.getByTestId("boss-beat-resolved")).toContainText(
+        option.consequence,
+      );
+      await expect(page.getByTestId("boss-beat-resolved")).toHaveAttribute(
+        "data-content-version",
+        "1",
+      );
+      await show(page, scenes.get(decision.beatId).index, "consequence");
+      await expect(scene(page, decision.beatId)).toHaveText(
+        original.outcomes[option.label],
+      );
+      historicalResults.push({
+        beatId: decision.beatId,
+        version: 1,
+        choiceIndex,
+        originalMeaningPreserved: true,
+      });
+    }
+  }
+
+  // A drift handover and the launch rehearsal coexist without overwriting
+  // either record. The last mission row must remain after every branch.
+  const drift = decisions.find((d) => d.beatId === "deep-orbit-drift-response");
+  const launch = decisions.find(
+    (d) => d.beatId === "deep-orbit-launch-deploy-call",
+  );
+  for (const [driftIndex, launchIndex] of [
+    [0, 3],
+    [3, 0],
+    [3, 3],
+    [0, 0],
+  ]) {
+    fixture.choices.clear();
+    for (const [decision, choiceIndex] of [
+      [drift, driftIndex],
+      [launch, launchIndex],
+    ])
+      fixture.choices.set(decision.beatId, {
+        beat_id: decision.beatId,
+        choice_index: choiceIndex,
+        choice_label: decision.options[choiceIndex].label,
+        content_version: decision.version,
+        reaction_ms: 5,
+        chosen_at: "2026-09-19T00:00:00Z",
+      });
+    for (const decision of [drift, launch]) {
+      const later = scenes.get(decision.beatId);
+      await show(page, later.index, "consequence");
+      await expect(scene(page, decision.beatId)).toHaveText(
+        later.outcomes[fixture.choices.get(decision.beatId).choice_label],
+      );
+    }
+    await expect(
+      page.locator('[data-testid="epilogue"] code').last(),
+    ).toContainText("operator_note: none");
   }
   const first = decisions[0],
     later = scenes.get(first.beatId);
@@ -136,7 +222,11 @@ export async function runStoryChecks({ page, base, lessons, fixture, root }) {
   await second.close();
 
   for (const decision of decisions.filter((d) =>
-    ["deep-orbit-cache-policy", "deep-orbit-drift-response"].includes(d.beatId),
+    [
+      "deep-orbit-foundations-7741-first-flag",
+      "deep-orbit-cache-policy",
+      "deep-orbit-drift-response",
+    ].includes(d.beatId),
   )) {
     fixture.choices.clear();
     await show(page, decision.index, "briefing");
@@ -164,6 +254,8 @@ export async function runStoryChecks({ page, base, lessons, fixture, root }) {
         scope:
           "Local production MDX/client with mocked Supabase transport, no live database claim",
         results,
+        historicalResults,
+        handoverCombinations: 4,
         failureRecovery: true,
         firstWriteWins: true,
         keyboard: true,
@@ -174,6 +266,6 @@ export async function runStoryChecks({ page, base, lessons, fixture, root }) {
     ),
   );
   console.log(
-    "Story checks passed: 24 saved branches, later scenes, reload/revisit, read/write failures, competing tabs, keyboard and two pilot accessibility checks.",
+    "Story checks passed: 24 current branches, 8 historical branches, 4 combined handovers, reload/revisit, failures, competing tabs, keyboard and three decision accessibility checks.",
   );
 }

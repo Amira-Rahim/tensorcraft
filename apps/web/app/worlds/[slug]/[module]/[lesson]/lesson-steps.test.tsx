@@ -102,6 +102,9 @@ vi.mock("@/lib/api-url", () => ({
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
     auth: {
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe() {} } },
+      }),
       getSession: () => Promise.resolve({ data: { session: null } }),
     },
   }),
@@ -121,9 +124,10 @@ const lesson = {
 const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
 const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
 
-function renderSteps() {
+function renderSteps(entryStep: 0 | 1 | 3 = 0) {
   return render(
     <LessonSteps
+      entryStep={entryStep}
       lesson={lesson}
       exercises={[]}
       worldSlug="deep-orbit"
@@ -143,7 +147,84 @@ beforeEach(() => {
   window.history.replaceState(null, "", window.location.pathname);
 });
 
+describe("account-owned lesson position", () => {
+  const props = {
+    lesson,
+    exercises: [],
+    worldSlug: "deep-orbit",
+    moduleSlug: "foundations",
+    prevLesson: null,
+    nextLesson: null,
+  };
+  it("does not adopt a guest's final step or another account's position", () => {
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(`${STEP_KEY}:account:alice`, "2");
+    localStorage.setItem(`${MAX_KEY}:account:alice`, "3");
+    const { rerender } = render(
+      <LessonSteps {...props} reviewUserId="alice" />,
+    );
+    expect(screen.getByRole("button", { name: /^Step 3:/ })).toHaveAttribute(
+      "aria-current",
+      "step",
+    );
+    rerender(<LessonSteps {...props} reviewUserId="bob" />);
+    expect(screen.getByRole("button", { name: /^Step 1:/ })).toHaveAttribute(
+      "aria-current",
+      "step",
+    );
+    expect(screen.getByRole("button", { name: /^Step 6:/ })).toBeDisabled();
+    expect(localStorage.getItem(`${STEP_KEY}:account:alice`)).toBe("2");
+  });
+  it("restores access to a completed account lesson without inventing a new completion", () => {
+    vi.mocked(markLessonCompleted).mockClear();
+    render(
+      <LessonSteps
+        {...props}
+        reviewUserId="alice"
+        lessons={[
+          {
+            slug: lesson.slug,
+            title: lesson.title,
+            order: 1,
+            locked: false,
+            completed: true,
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByRole("button", { name: /^Step 6:/ })).toBeEnabled();
+    expect(markLessonCompleted).not.toHaveBeenCalled();
+  });
+});
+
 describe("LessonSteps, segmented progress bar", () => {
+  it.each([1, 3] as const)(
+    "opens explicit entry phase %s with earlier context available and no completion credit",
+    (entryStep) => {
+      vi.mocked(markLessonCompleted).mockClear();
+      renderSteps(entryStep);
+      expect(
+        screen.getByRole("button", {
+          name: new RegExp(`^Step ${entryStep + 1}:`),
+        }),
+      ).toHaveAttribute("aria-current", "step");
+      expect(
+        screen.getByRole("button", { name: /^Step 1:/ }),
+      ).not.toBeDisabled();
+      expect(screen.getByRole("button", { name: /^Step 6:/ })).toBeDisabled();
+      expect(markLessonCompleted).not.toHaveBeenCalled();
+    },
+  );
+
+  it("keeps the saved position when a route recommendation changes", () => {
+    localStorage.setItem(STEP_KEY, "1");
+    renderSteps(3);
+    expect(screen.getByRole("button", { name: /^Step 2:/ })).toHaveAttribute(
+      "aria-current",
+      "step",
+    );
+  });
   it("renders one segment button per step", () => {
     renderSteps();
     const segments = screen.getAllByRole("button", { name: /^Step \d/ });

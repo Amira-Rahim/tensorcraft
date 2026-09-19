@@ -91,11 +91,7 @@ solutionCode: |
         }
       }
 
-      let sumSqDiff = 0;
-      for (let i = 0; i < featureCount; i++) {
-        sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2;
-      }
-      return Math.sqrt(sumSqDiff);
+      return Math.hypot(...recentMean.map((value, i) => value - this.baselineMean[i]));
     }
   }
 testCode: |
@@ -186,6 +182,11 @@ testCode: |
         drift,
         'Both rows sit at [3, 4], so the recent mean is [3, 4] and the distance from [0, 0] is the 3-4-5 triangle.',
       ).toBeCloseTo(5, 5);
+    });
+
+    it('keeps a representable distance finite without squaring overflow', () => {
+      const m = new ModelMonitor([0, 0]);
+      expect(m.computeDrift([[3e200, 4e200]]) / 1e200).toBeCloseTo(5, 10);
     });
 
     it('computes drift by straight-line distance from the baseline', () => {

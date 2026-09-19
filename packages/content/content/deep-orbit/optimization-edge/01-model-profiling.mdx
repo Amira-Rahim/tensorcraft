@@ -15,7 +15,7 @@ context:
   narrative: "The capture is gone and the relay slot closed without it. The optimization sprint starts as penance, and it starts with measurement."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. The numbers decide where the knife goes."
+  explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. Use those measurements to choose what to change."
   bridge:
     jsTitle: "DevTools Performance"
     jsCode: "performance.mark('start'); doWork(); performance.measure('task', 'start')"
@@ -24,7 +24,7 @@ concept:
     tier: structural
     breaks: "Both use elapsed-time measurements, but asynchronous work needs an explicit completion boundary. On GPU backends, include tensor readback when timing end-to-end inference. Also inspect memory, operation costs, and disposal; browser applications can have those costs too."
 consequence:
-  narrative: "340 MB, 45 ms, and 80% of the parameters sitting in one Dense layer. Nazari knows exactly where to optimize."
+  narrative: "The profile separates weight storage from inference latency. Nazari asks for a load-peak measurement next."
 hints:
   - level: nudge
     content: |
@@ -184,14 +184,14 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
     const input = createInput();
     let output: tf.Tensor | undefined;
     try {
-    const start = performance.now();
-    output = model.predict(input) as tf.Tensor;
-    // Module 4's benchmarking rule applies to profiles too: read the
-    // result back INSIDE the timed region, or on GPU backends you are
-    // profiling how fast you can enqueue GPU kernels, not run them, and
-    // every mean and P95 below is fiction.
-    await output.data();
-    times.push(performance.now() - start);
+      const start = performance.now();
+      output = model.predict(input) as tf.Tensor;
+      // Module 4's benchmarking rule applies to profiles too: read the
+      // result back INSIDE the timed region, or on GPU backends you are
+      // profiling how fast you can enqueue GPU kernels, not run them, and
+      // every mean and P95 below is fiction.
+      await output.data();
+      times.push(performance.now() - start);
     } finally {
       output?.dispose(); input.dispose();
     }
@@ -201,8 +201,8 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
 
   // Net growth needs investigation. Warmup caches or other page work can
   // also affect the count; this is not a process-memory measurement.
-  const leakedBytes = tf.memory().numBytes - residentBytesBefore;
-  if (leakedBytes !== 0) console.warn('Leaked bytes while profiling:', leakedBytes);
+  const trackedByteChange = tf.memory().numBytes - residentBytesBefore;
+  if (trackedByteChange !== 0) console.warn('Tracked tensor-byte change:', trackedByteChange);
 
   return {
     memorySizeMB,
@@ -213,16 +213,13 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
   };
 }
 
-// The 340 MB here is the pretrained language component from the bundle
-// audit. It opens with an embedding lookup, so it takes 80 token ids, not
-// the eleven-feature float vector the signal classifier reads. Hand it
-// randomNormal and the lookup throws: "GatherV2: the index value -2 is not
-// in [0, 49999]". 50,000 is the tokenizer vocabulary, 256 dims wide, which
-// is the 12,800,000 row below. The rest of the shape: a flatten over the 80
-// positions (80 * 256 = 20,480 features), a 3,320-unit hidden layer
-// ((20,480 + 1) * 3,320 = 67,996,920) and a 1,264-unit output layer
-// ((3,320 + 1) * 1,264 = 4,197,744). Every row in the breakdown is one of
-// those products, so you can check the profiler against the architecture.
+// Integration input: supply model and an input factory matching its contract.
+// The table below uses a size-accounting proxy for the fictional 340 MB
+// component, not a generative language-model architecture. Its layers are:
+// embedding [50000, 256], flatten [80 * 256], Dense 3320, Dense 1264.
+// The embedding needs int32 token IDs in [0, 49999], not random floats.
+// Its parameter arithmetic is 12,800,000 + 67,996,920 + 4,197,744.
+// The runtime lab profiles a separate, small classifier.
 const profile = await profileModel(model, () => tf.randomUniform([1, 80], 0, 50000, 'int32'));
 console.log('Model size:', profile.memorySizeMB.toFixed(1), 'MB');
 console.log('Parameters:', profile.parameterCount.toLocaleString());
@@ -236,7 +233,7 @@ for (const layer of profile.layerBreakdown) {
   console.log(\`  \${layer.name.padEnd(22)}\${layer.params.toLocaleString().padStart(12)}  \${share.toFixed(1)}%\`);
 }
 
-// DEEP SCAN, as it stood at 0249:
+// Fictional profiling table, with parameter counts from the proxy above:
 //
 //   Model size: 340.0 MB
 //   Parameters: 84,994,664
@@ -248,7 +245,7 @@ for (const layer of profile.layerBreakdown) {
 //     dense_Dense1            67,996,920  80.0%
 //     dense_Dense2             4,197,744  4.9%
 //
-// Both timings are wasm-backend numbers: the dashboard had no working
+// Both supplied timings describe the fictional WASM run: the dashboard had no working
 // WebGL context that night, so the profile ran on the fallback.
 //
 // The flatten row is in there because the loop walks model.layers, not

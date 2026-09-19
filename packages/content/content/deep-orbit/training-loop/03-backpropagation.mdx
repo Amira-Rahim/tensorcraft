@@ -96,7 +96,7 @@ const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 This forward finite difference approximates a derivative using 673 extra forward passes for this network. The step size trades truncation error against floating-point cancellation. It can help check gradients on a small problem, but its cost grows with the parameter count. The rig's scene timings are fictional; measure your own implementation before making a speed claim.
 
 <Dialogue speaker="ARIA" expression="deadpan">
-Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 gradients in one backward sweep, reusing the forward computation. Actual time depends on the operations and runtime. It has a name.
+Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 gradients in one backward sweep, reusing the forward computation. It has a name.
 </Dialogue>
 
 ## Working Backwards
@@ -179,7 +179,7 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
 <LessonRecap
   whatYouLearned={[
     "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the cost backpropagation was invented to remove.",
-    "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
+    "Backpropagation reuses the forward computation to calculate parameter gradients in a backward sweep. It avoids a separate forward evaluation per parameter; wall-clock speed depends on the graph and runtime.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
     "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which can help gradient flow without guaranteeing stable gradients."
   ]}
@@ -188,6 +188,8 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
 />
 
 <Epilogue>
+
+> **Story timing:** The 120 milliseconds and 27 seconds below are fictional mission measurements. They illustrate the pass-count difference, not a benchmark for your device.
 
 Nazari times it herself, stopwatch against the console, because she doesn't trust benchmarks she didn't run. One forward pass, one backward pass: 120 milliseconds, all 673 gradients. Then she makes Demir run it the naive way, 673 separate forward passes with one nudged weight at a time, and stands there for the full 27 seconds, arms folded, watching the waste accumulate.
 

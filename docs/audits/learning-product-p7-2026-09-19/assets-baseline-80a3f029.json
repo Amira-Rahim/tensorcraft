@@ -1,0 +1,863 @@
+{
+  "label": "baseline-80a3f029",
+  "base": "http://localhost:3119",
+  "browser": "153.0.8010.12",
+  "environment": "Local Next production build, cold browser context per route, 1440 dark, reduced motion, consent declined. Encoded response bodies exclude headers; no network throttling. Not a user-speed benchmark.",
+  "rows": [
+    {
+      "id": "world",
+      "route": "/worlds/deep-orbit",
+      "resources": [
+        {
+          "path": "/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2",
+          "type": "link",
+          "encodedBytes": 40480,
+          "decodedBytes": 40480
+        },
+        {
+          "path": "/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2",
+          "type": "link",
+          "encodedBytes": 48432,
+          "decodedBytes": 48432
+        },
+        {
+          "path": "/media/deep-orbit-trailer-poster.webp",
+          "type": "link",
+          "encodedBytes": 71344,
+          "decodedBytes": 71344
+        },
+        {
+          "path": "/_next/static/chunks/27bfb5y9y_02_.css",
+          "type": "link",
+          "encodedBytes": 14908,
+          "decodedBytes": 86421
+        },
+        {
+          "path": "/_next/static/chunks/1847brns4qztn.js",
+          "type": "link",
+          "encodedBytes": 2155,
+          "decodedBytes": 7975
+        },
+        {
+          "path": "/_next/static/chunks/1t12p-rd454v6.js",
+          "type": "script",
+          "encodedBytes": 8763,
+          "decodedBytes": 32355
+        },
+        {
+          "path": "/_next/static/chunks/0so5gqb8dkju6.js",
+          "type": "script",
+          "encodedBytes": 666,
+          "decodedBytes": 666
+        },
+        {
+          "path": "/_next/static/chunks/2fx5lfk8bo0kw.js",
+          "type": "script",
+          "encodedBytes": 14342,
+          "decodedBytes": 40555
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-40kf_suk3hlq2.js",
+          "type": "script",
+          "encodedBytes": 4463,
+          "decodedBytes": 11315
+        },
+        {
+          "path": "/_next/static/chunks/34a3y2cod1iw1.js",
+          "type": "script",
+          "encodedBytes": 10793,
+          "decodedBytes": 31892
+        },
+        {
+          "path": "/_next/static/chunks/20hcm7b9m148c.js",
+          "type": "script",
+          "encodedBytes": 42997,
+          "decodedBytes": 155828
+        },
+        {
+          "path": "/_next/static/chunks/25qvae9de-moj.js",
+          "type": "script",
+          "encodedBytes": 116169,
+          "decodedBytes": 367225
+        },
+        {
+          "path": "/_next/static/chunks/082o3s0ovdr-7.js",
+          "type": "script",
+          "encodedBytes": 7614,
+          "decodedBytes": 26987
+        },
+        {
+          "path": "/_next/static/chunks/2k636hjqz4c6b.js",
+          "type": "script",
+          "encodedBytes": 15612,
+          "decodedBytes": 47630
+        },
+        {
+          "path": "/_next/static/chunks/0o6kjye9wcr2y.js",
+          "type": "script",
+          "encodedBytes": 3819,
+          "decodedBytes": 14710
+        },
+        {
+          "path": "/_next/static/chunks/3l6umfk47clfy.js",
+          "type": "script",
+          "encodedBytes": 2092,
+          "decodedBytes": 4600
+        },
+        {
+          "path": "/_next/static/chunks/2kqfhqpx5ws39.js",
+          "type": "script",
+          "encodedBytes": 624,
+          "decodedBytes": 624
+        },
+        {
+          "path": "/_next/static/chunks/3sq3_deq54747.js",
+          "type": "script",
+          "encodedBytes": 689,
+          "decodedBytes": 1183
+        },
+        {
+          "path": "/_next/static/chunks/41fanpghzt6et.js",
+          "type": "script",
+          "encodedBytes": 16506,
+          "decodedBytes": 52656
+        },
+        {
+          "path": "/_next/static/chunks/08imdrqxu0h09.js",
+          "type": "script",
+          "encodedBytes": 61141,
+          "decodedBytes": 236677
+        },
+        {
+          "path": "/_next/static/chunks/0ocjkls_eox_c.js",
+          "type": "script",
+          "encodedBytes": 1094,
+          "decodedBytes": 2308
+        },
+        {
+          "path": "/_next/static/chunks/3l0kaw8jj-pn3.js",
+          "type": "script",
+          "encodedBytes": 1527,
+          "decodedBytes": 3249
+        },
+        {
+          "path": "/_next/static/chunks/2-fijuccs01is.js",
+          "type": "script",
+          "encodedBytes": 1523,
+          "decodedBytes": 3239
+        },
+        {
+          "path": "/_next/static/chunks/1y_iwtqk9yhtc.js",
+          "type": "script",
+          "encodedBytes": 94553,
+          "decodedBytes": 292669
+        },
+        {
+          "path": "/locations/deep-orbit/bridge.webp",
+          "type": "img",
+          "encodedBytes": 132796,
+          "decodedBytes": 132796
+        },
+        {
+          "path": "/",
+          "type": "fetch",
+          "encodedBytes": 295,
+          "decodedBytes": 477
+        },
+        {
+          "path": "/worlds",
+          "type": "fetch",
+          "encodedBytes": 166,
+          "decodedBytes": 266
+        },
+        {
+          "path": "/pricing",
+          "type": "fetch",
+          "encodedBytes": 307,
+          "decodedBytes": 551
+        },
+        {
+          "path": "/blog",
+          "type": "fetch",
+          "encodedBytes": 306,
+          "decodedBytes": 548
+        },
+        {
+          "path": "/auth",
+          "type": "fetch",
+          "encodedBytes": 305,
+          "decodedBytes": 548
+        },
+        {
+          "path": "/",
+          "type": "fetch",
+          "encodedBytes": 2559,
+          "decodedBytes": 11581
+        },
+        {
+          "path": "/",
+          "type": "fetch",
+          "encodedBytes": 4120,
+          "decodedBytes": 18376
+        },
+        {
+          "path": "/worlds",
+          "type": "fetch",
+          "encodedBytes": 1390,
+          "decodedBytes": 3670
+        },
+        {
+          "path": "/_next/static/chunks/3tc7z213o26xm.js",
+          "type": "script",
+          "encodedBytes": 27531,
+          "decodedBytes": 75394
+        },
+        {
+          "path": "/_next/static/chunks/1dlnn9b90r77r.js",
+          "type": "script",
+          "encodedBytes": 42719,
+          "decodedBytes": 131614
+        },
+        {
+          "path": "/pricing",
+          "type": "fetch",
+          "encodedBytes": 5756,
+          "decodedBytes": 31934
+        },
+        {
+          "path": "/blog",
+          "type": "fetch",
+          "encodedBytes": 1719,
+          "decodedBytes": 4618
+        },
+        {
+          "path": "/auth",
+          "type": "fetch",
+          "encodedBytes": 2272,
+          "decodedBytes": 7343
+        },
+        {
+          "path": "/_next/static/chunks/0_j_ho6f0ogxt.js",
+          "type": "script",
+          "encodedBytes": 15885,
+          "decodedBytes": 45812
+        },
+        {
+          "path": "/_next/static/chunks/3iwn906c7d_1j.js",
+          "type": "script",
+          "encodedBytes": 1522,
+          "decodedBytes": 3233
+        },
+        {
+          "path": "/_next/static/chunks/1obo5__nes4_j.js",
+          "type": "script",
+          "encodedBytes": 6935,
+          "decodedBytes": 18745
+        },
+        {
+          "path": "/_next/static/chunks/3cx67ccq33zot.js",
+          "type": "script",
+          "encodedBytes": 1523,
+          "decodedBytes": 3224
+        }
+      ],
+      "jsBytes": 503257,
+      "cssBytes": 14908,
+      "totalResourceBytes": 830412,
+      "modelRequests": 0,
+      "errors": []
+    },
+    {
+      "id": "first-concept",
+      "route": "/worlds/deep-orbit/foundations/introduction-to-tensors",
+      "resources": [
+        {
+          "path": "/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2",
+          "type": "link",
+          "encodedBytes": 40480,
+          "decodedBytes": 40480
+        },
+        {
+          "path": "/characters/deep-orbit/commander-mirza.webp",
+          "type": "link",
+          "encodedBytes": 22730,
+          "decodedBytes": 22730
+        },
+        {
+          "path": "/characters/deep-orbit/aria.webp",
+          "type": "link",
+          "encodedBytes": 31524,
+          "decodedBytes": 31524
+        },
+        {
+          "path": "/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2",
+          "type": "link",
+          "encodedBytes": 48432,
+          "decodedBytes": 48432
+        },
+        {
+          "path": "/characters/deep-orbit/commander-mirza-resolved.webp",
+          "type": "link",
+          "encodedBytes": 22764,
+          "decodedBytes": 22764
+        },
+        {
+          "path": "/_next/static/chunks/27bfb5y9y_02_.css",
+          "type": "link",
+          "encodedBytes": 14908,
+          "decodedBytes": 86421
+        },
+        {
+          "path": "/_next/static/chunks/1847brns4qztn.js",
+          "type": "link",
+          "encodedBytes": 2155,
+          "decodedBytes": 7975
+        },
+        {
+          "path": "/_next/static/chunks/1t12p-rd454v6.js",
+          "type": "script",
+          "encodedBytes": 8763,
+          "decodedBytes": 32355
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-40kf_suk3hlq2.js",
+          "type": "script",
+          "encodedBytes": 4463,
+          "decodedBytes": 11315
+        },
+        {
+          "path": "/_next/static/chunks/2fx5lfk8bo0kw.js",
+          "type": "script",
+          "encodedBytes": 14342,
+          "decodedBytes": 40555
+        },
+        {
+          "path": "/_next/static/chunks/0so5gqb8dkju6.js",
+          "type": "script",
+          "encodedBytes": 666,
+          "decodedBytes": 666
+        },
+        {
+          "path": "/_next/static/chunks/082o3s0ovdr-7.js",
+          "type": "script",
+          "encodedBytes": 7614,
+          "decodedBytes": 26987
+        },
+        {
+          "path": "/_next/static/chunks/20hcm7b9m148c.js",
+          "type": "script",
+          "encodedBytes": 42997,
+          "decodedBytes": 155828
+        },
+        {
+          "path": "/_next/static/chunks/34a3y2cod1iw1.js",
+          "type": "script",
+          "encodedBytes": 10793,
+          "decodedBytes": 31892
+        },
+        {
+          "path": "/_next/static/chunks/2k636hjqz4c6b.js",
+          "type": "script",
+          "encodedBytes": 15612,
+          "decodedBytes": 47630
+        },
+        {
+          "path": "/_next/static/chunks/25qvae9de-moj.js",
+          "type": "script",
+          "encodedBytes": 116169,
+          "decodedBytes": 367225
+        },
+        {
+          "path": "/_next/static/chunks/1y_iwtqk9yhtc.js",
+          "type": "script",
+          "encodedBytes": 94553,
+          "decodedBytes": 292669
+        },
+        {
+          "path": "/_next/static/chunks/0o6kjye9wcr2y.js",
+          "type": "script",
+          "encodedBytes": 3819,
+          "decodedBytes": 14710
+        },
+        {
+          "path": "/_next/static/chunks/2kqfhqpx5ws39.js",
+          "type": "script",
+          "encodedBytes": 624,
+          "decodedBytes": 624
+        },
+        {
+          "path": "/_next/static/chunks/3l6umfk47clfy.js",
+          "type": "script",
+          "encodedBytes": 2092,
+          "decodedBytes": 4600
+        },
+        {
+          "path": "/_next/static/chunks/34qverc-w0-rf.js",
+          "type": "script",
+          "encodedBytes": 737,
+          "decodedBytes": 2087
+        },
+        {
+          "path": "/_next/static/chunks/02z03dp36jhjk.js",
+          "type": "script",
+          "encodedBytes": 24485,
+          "decodedBytes": 65920
+        },
+        {
+          "path": "/_next/static/chunks/08imdrqxu0h09.js",
+          "type": "script",
+          "encodedBytes": 61141,
+          "decodedBytes": 236677
+        },
+        {
+          "path": "/_next/static/chunks/1h6nf8vyidwsw.js",
+          "type": "script",
+          "encodedBytes": 218881,
+          "decodedBytes": 665148
+        },
+        {
+          "path": "/_next/static/chunks/0ocjkls_eox_c.js",
+          "type": "script",
+          "encodedBytes": 1094,
+          "decodedBytes": 2308
+        },
+        {
+          "path": "/_next/static/chunks/3l0kaw8jj-pn3.js",
+          "type": "script",
+          "encodedBytes": 1527,
+          "decodedBytes": 3249
+        },
+        {
+          "path": "/_next/static/chunks/1y6-t76840utu.js",
+          "type": "script",
+          "encodedBytes": 28196,
+          "decodedBytes": 93680
+        },
+        {
+          "path": "/_next/static/chunks/11ej2-8gwh_69.js",
+          "type": "script",
+          "encodedBytes": 1429,
+          "decodedBytes": 2858
+        },
+        {
+          "path": "/_next/static/chunks/2-fijuccs01is.js",
+          "type": "script",
+          "encodedBytes": 1523,
+          "decodedBytes": 3239
+        },
+        {
+          "path": "/_next/static/chunks/303wbhu_-_j4o.js",
+          "type": "script",
+          "encodedBytes": 27621,
+          "decodedBytes": 97959
+        },
+        {
+          "path": "/scenes/deep-orbit/foundations/introduction-to-tensors.webp",
+          "type": "img",
+          "encodedBytes": 158648,
+          "decodedBytes": 158648
+        },
+        {
+          "path": "/_next/static/chunks/1624os7ygd_pi.js",
+          "type": "script",
+          "encodedBytes": 7379,
+          "decodedBytes": 38799
+        },
+        {
+          "path": "/_next/static/chunks/217w872d_hbxn.js",
+          "type": "script",
+          "encodedBytes": 63434,
+          "decodedBytes": 197939
+        },
+        {
+          "path": "/worlds/deep-orbit",
+          "type": "fetch",
+          "encodedBytes": 185,
+          "decodedBytes": 341
+        },
+        {
+          "path": "/worlds/deep-orbit",
+          "type": "fetch",
+          "encodedBytes": 1315,
+          "decodedBytes": 3461
+        },
+        {
+          "path": "/_next/static/chunks/1eo1f003j49im.js",
+          "type": "script",
+          "encodedBytes": 230736,
+          "decodedBytes": 622918
+        },
+        {
+          "path": "/_next/static/chunks/1acba9yw0-19r.js",
+          "type": "script",
+          "encodedBytes": 16334,
+          "decodedBytes": 181547
+        },
+        {
+          "path": "/_next/static/chunks/1y-qau41jc-3b.js",
+          "type": "script",
+          "encodedBytes": 16807,
+          "decodedBytes": 175295
+        },
+        {
+          "path": "/_next/static/chunks/0ixeu_z4o7t-b.js",
+          "type": "script",
+          "encodedBytes": 16807,
+          "decodedBytes": 176004
+        },
+        {
+          "path": "/_next/static/chunks/1eymh8vb6gpj6.js",
+          "type": "script",
+          "encodedBytes": 16903,
+          "decodedBytes": 178260
+        },
+        {
+          "path": "/_next/static/chunks/3gk_zeve_nec5.js",
+          "type": "script",
+          "encodedBytes": 9418,
+          "decodedBytes": 70573
+        },
+        {
+          "path": "/_next/static/chunks/2r91omrmolm7f.js",
+          "type": "script",
+          "encodedBytes": 1023,
+          "decodedBytes": 3291
+        },
+        {
+          "path": "/_next/static/chunks/0nixj2fuxoxx5.js",
+          "type": "script",
+          "encodedBytes": 6385,
+          "decodedBytes": 41947
+        },
+        {
+          "path": "/_next/static/chunks/3pky7aziogn_q.js",
+          "type": "script",
+          "encodedBytes": 23410,
+          "decodedBytes": 106871
+        },
+        {
+          "path": "/_next/static/chunks/2x-lzrkppf40t.js",
+          "type": "script",
+          "encodedBytes": 2515,
+          "decodedBytes": 10978
+        },
+        {
+          "path": "/_next/static/chunks/3yexw5jj9n7wg.js",
+          "type": "script",
+          "encodedBytes": 12158,
+          "decodedBytes": 49525
+        },
+        {
+          "path": "/_next/static/chunks/3l21q--am7z2q.js",
+          "type": "script",
+          "encodedBytes": 5929,
+          "decodedBytes": 59802
+        }
+      ],
+      "jsBytes": 1120534,
+      "cssBytes": 14908,
+      "totalResourceBytes": 1461520,
+      "modelRequests": 0,
+      "errors": []
+    },
+    {
+      "id": "normalization-concept",
+      "route": "/worlds/deep-orbit/foundations/normalization",
+      "resources": [
+        {
+          "path": "/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2",
+          "type": "link",
+          "encodedBytes": 40480,
+          "decodedBytes": 40480
+        },
+        {
+          "path": "/characters/deep-orbit/commander-mirza.webp",
+          "type": "link",
+          "encodedBytes": 22730,
+          "decodedBytes": 22730
+        },
+        {
+          "path": "/characters/deep-orbit/commander-mirza-resolved.webp",
+          "type": "link",
+          "encodedBytes": 22764,
+          "decodedBytes": 22764
+        },
+        {
+          "path": "/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2",
+          "type": "link",
+          "encodedBytes": 48432,
+          "decodedBytes": 48432
+        },
+        {
+          "path": "/characters/deep-orbit/dr-farah.webp",
+          "type": "link",
+          "encodedBytes": 23194,
+          "decodedBytes": 23194
+        },
+        {
+          "path": "/characters/deep-orbit/ensign-demir.webp",
+          "type": "link",
+          "encodedBytes": 29404,
+          "decodedBytes": 29404
+        },
+        {
+          "path": "/_next/static/chunks/27bfb5y9y_02_.css",
+          "type": "link",
+          "encodedBytes": 14908,
+          "decodedBytes": 86421
+        },
+        {
+          "path": "/_next/static/chunks/1847brns4qztn.js",
+          "type": "link",
+          "encodedBytes": 2155,
+          "decodedBytes": 7975
+        },
+        {
+          "path": "/_next/static/chunks/turbopack-40kf_suk3hlq2.js",
+          "type": "script",
+          "encodedBytes": 4463,
+          "decodedBytes": 11315
+        },
+        {
+          "path": "/_next/static/chunks/1t12p-rd454v6.js",
+          "type": "script",
+          "encodedBytes": 8763,
+          "decodedBytes": 32355
+        },
+        {
+          "path": "/_next/static/chunks/2fx5lfk8bo0kw.js",
+          "type": "script",
+          "encodedBytes": 14342,
+          "decodedBytes": 40555
+        },
+        {
+          "path": "/_next/static/chunks/20hcm7b9m148c.js",
+          "type": "script",
+          "encodedBytes": 42997,
+          "decodedBytes": 155828
+        },
+        {
+          "path": "/_next/static/chunks/25qvae9de-moj.js",
+          "type": "script",
+          "encodedBytes": 116169,
+          "decodedBytes": 367225
+        },
+        {
+          "path": "/_next/static/chunks/0so5gqb8dkju6.js",
+          "type": "script",
+          "encodedBytes": 666,
+          "decodedBytes": 666
+        },
+        {
+          "path": "/_next/static/chunks/082o3s0ovdr-7.js",
+          "type": "script",
+          "encodedBytes": 7614,
+          "decodedBytes": 26987
+        },
+        {
+          "path": "/_next/static/chunks/34a3y2cod1iw1.js",
+          "type": "script",
+          "encodedBytes": 10793,
+          "decodedBytes": 31892
+        },
+        {
+          "path": "/_next/static/chunks/2k636hjqz4c6b.js",
+          "type": "script",
+          "encodedBytes": 15612,
+          "decodedBytes": 47630
+        },
+        {
+          "path": "/_next/static/chunks/1y_iwtqk9yhtc.js",
+          "type": "script",
+          "encodedBytes": 94553,
+          "decodedBytes": 292669
+        },
+        {
+          "path": "/_next/static/chunks/08imdrqxu0h09.js",
+          "type": "script",
+          "encodedBytes": 61141,
+          "decodedBytes": 236677
+        },
+        {
+          "path": "/_next/static/chunks/0o6kjye9wcr2y.js",
+          "type": "script",
+          "encodedBytes": 3819,
+          "decodedBytes": 14710
+        },
+        {
+          "path": "/_next/static/chunks/2kqfhqpx5ws39.js",
+          "type": "script",
+          "encodedBytes": 624,
+          "decodedBytes": 624
+        },
+        {
+          "path": "/_next/static/chunks/3l6umfk47clfy.js",
+          "type": "script",
+          "encodedBytes": 2092,
+          "decodedBytes": 4600
+        },
+        {
+          "path": "/_next/static/chunks/34qverc-w0-rf.js",
+          "type": "script",
+          "encodedBytes": 737,
+          "decodedBytes": 2087
+        },
+        {
+          "path": "/_next/static/chunks/02z03dp36jhjk.js",
+          "type": "script",
+          "encodedBytes": 24485,
+          "decodedBytes": 65920
+        },
+        {
+          "path": "/_next/static/chunks/303wbhu_-_j4o.js",
+          "type": "script",
+          "encodedBytes": 27621,
+          "decodedBytes": 97959
+        },
+        {
+          "path": "/_next/static/chunks/1y6-t76840utu.js",
+          "type": "script",
+          "encodedBytes": 28196,
+          "decodedBytes": 93680
+        },
+        {
+          "path": "/_next/static/chunks/1h6nf8vyidwsw.js",
+          "type": "script",
+          "encodedBytes": 218881,
+          "decodedBytes": 665148
+        },
+        {
+          "path": "/_next/static/chunks/0ocjkls_eox_c.js",
+          "type": "script",
+          "encodedBytes": 1094,
+          "decodedBytes": 2308
+        },
+        {
+          "path": "/_next/static/chunks/3l0kaw8jj-pn3.js",
+          "type": "script",
+          "encodedBytes": 1527,
+          "decodedBytes": 3249
+        },
+        {
+          "path": "/_next/static/chunks/11ej2-8gwh_69.js",
+          "type": "script",
+          "encodedBytes": 1429,
+          "decodedBytes": 2858
+        },
+        {
+          "path": "/_next/static/chunks/2-fijuccs01is.js",
+          "type": "script",
+          "encodedBytes": 1523,
+          "decodedBytes": 3239
+        },
+        {
+          "path": "/scenes/deep-orbit/foundations/normalization.webp",
+          "type": "img",
+          "encodedBytes": 122362,
+          "decodedBytes": 122362
+        },
+        {
+          "path": "/_next/static/chunks/1624os7ygd_pi.js",
+          "type": "script",
+          "encodedBytes": 7379,
+          "decodedBytes": 38799
+        },
+        {
+          "path": "/_next/static/chunks/217w872d_hbxn.js",
+          "type": "script",
+          "encodedBytes": 63434,
+          "decodedBytes": 197939
+        },
+        {
+          "path": "/worlds/deep-orbit",
+          "type": "fetch",
+          "encodedBytes": 185,
+          "decodedBytes": 341
+        },
+        {
+          "path": "/worlds/deep-orbit",
+          "type": "fetch",
+          "encodedBytes": 1314,
+          "decodedBytes": 3461
+        },
+        {
+          "path": "/_next/static/chunks/1eo1f003j49im.js",
+          "type": "script",
+          "encodedBytes": 230736,
+          "decodedBytes": 622918
+        },
+        {
+          "path": "/_next/static/chunks/1acba9yw0-19r.js",
+          "type": "script",
+          "encodedBytes": 16334,
+          "decodedBytes": 181547
+        },
+        {
+          "path": "/_next/static/chunks/1y-qau41jc-3b.js",
+          "type": "script",
+          "encodedBytes": 16807,
+          "decodedBytes": 175295
+        },
+        {
+          "path": "/_next/static/chunks/0ixeu_z4o7t-b.js",
+          "type": "script",
+          "encodedBytes": 16807,
+          "decodedBytes": 176004
+        },
+        {
+          "path": "/_next/static/chunks/1eymh8vb6gpj6.js",
+          "type": "script",
+          "encodedBytes": 16903,
+          "decodedBytes": 178260
+        },
+        {
+          "path": "/_next/static/chunks/3gk_zeve_nec5.js",
+          "type": "script",
+          "encodedBytes": 9418,
+          "decodedBytes": 70573
+        },
+        {
+          "path": "/_next/static/chunks/2r91omrmolm7f.js",
+          "type": "script",
+          "encodedBytes": 1023,
+          "decodedBytes": 3291
+        },
+        {
+          "path": "/_next/static/chunks/0nixj2fuxoxx5.js",
+          "type": "script",
+          "encodedBytes": 6385,
+          "decodedBytes": 41947
+        },
+        {
+          "path": "/_next/static/chunks/3pky7aziogn_q.js",
+          "type": "script",
+          "encodedBytes": 23410,
+          "decodedBytes": 106871
+        },
+        {
+          "path": "/_next/static/chunks/3yexw5jj9n7wg.js",
+          "type": "script",
+          "encodedBytes": 12158,
+          "decodedBytes": 49525
+        },
+        {
+          "path": "/_next/static/chunks/2x-lzrkppf40t.js",
+          "type": "script",
+          "encodedBytes": 2515,
+          "decodedBytes": 10978
+        },
+        {
+          "path": "/_next/static/chunks/3l21q--am7z2q.js",
+          "type": "script",
+          "encodedBytes": 5929,
+          "decodedBytes": 59802
+        }
+      ],
+      "jsBytes": 1120534,
+      "cssBytes": 14908,
+      "totalResourceBytes": 1446307,
+      "modelRequests": 0,
+      "errors": []
+    }
+  ]
+}

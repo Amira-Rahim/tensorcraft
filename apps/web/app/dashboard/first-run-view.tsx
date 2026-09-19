@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
 
@@ -43,6 +44,7 @@ export interface FirstRunProps {
   briefing: FirstRunBriefing | null;
   resumeUrl: string | null;
   totalWorldLessons: number;
+  systemEvidence?: ReactNode;
 }
 
 /**
@@ -59,6 +61,7 @@ export function FirstRunView({
   briefing,
   resumeUrl,
   totalWorldLessons,
+  systemEvidence,
 }: FirstRunProps) {
   const tx = TRANSMISSION[worldSlug];
 
@@ -252,6 +255,7 @@ export function FirstRunView({
             </div>
           </div>
         </section>
+        <div className="mx-auto w-full max-w-4xl px-4">{systemEvidence}</div>
       </main>
     </div>
   );

@@ -104,9 +104,8 @@ hints:
 
           return report;
         } finally {
-          model.setWeights(original);
-          original.forEach((w) => w.dispose());
-          input.dispose();
+          try { model.setWeights(original); }
+          finally { original.forEach((w) => w.dispose()); input.dispose(); }
         }
       }
 keywords:
@@ -168,15 +167,16 @@ console.log(dot(pruned).toFixed(3));    // 1.000
 
 // Sparsity levels for DEEP SCAN, one accuracy per level, scored on the
 // natural mix of captures:
-// 30% pruned: 93.8% accuracy (vs 94.2% baseline), barely noticeable
-// 60% pruned: 91.8% accuracy, good tradeoff
-// 80% pruned: 91.6% accuracy, two tenths of a point below 60
-// 90% pruned: 71.2% accuracy, model is broken`}
+// 30% requested: 93.8% accuracy (vs 94.2% baseline)
+// 60% requested: 91.8% accuracy
+// 80% requested: 91.6% accuracy
+// 90% requested: 71.2% accuracy
+// These aggregate figures alone cannot approve any pruning level.`}
 </CodeBlock>
 
-0.994 against 1.000. A tree-shaken bundle would print the same number both times; that is what "provably unreachable" buys, and it is the exact clause the console just struck from Demir's sign-off. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. The small change on this probe does not bound the change on other inputs. A small weight can multiply a large activation, and several removals can interact. Measure the effect on representative data, as the sparsity ladder below does at model scale. The rule the block runs is magnitude pruning, the unstructured kind: order the weights by absolute value, zero the smallest, and leave every shape exactly as it was.
+0.994 against 1.000. A correct tree-shaking pass preserves the program’s observable behavior. This numerical change already breaks Demir’s proposed equivalence. The four weights that went to zero were contributing a combined -0.006 to this output, and now they contribute nothing. The small change on this probe does not bound the change on other inputs. A small weight can multiply a large activation, and several removals can interact. Measure the effect on representative data, as the sparsity ladder below does at model scale. The rule the block runs is magnitude pruning, the unstructured kind: order the weights by absolute value, zero the smallest, and leave every shape exactly as it was.
 
-Two things change when that rule runs on a model instead of on an array. The ranking covers every kernel in the model at once rather than one layer at a time, so a layer whose weights are all small can lose most of them while a layer carrying larger ones keeps nearly all of its own. And the biases sit out of it. A dense layer holds one bias per unit against hundreds of kernel weights, so keeping them costs almost nothing, and zeroing one shifts everything that unit says instead of trimming a single connection.
+Two things change when that rule runs on a model instead of on an array. The ranking covers every kernel in the model at once rather than one layer at a time, so a layer whose weights are all small can lose most of them while a layer carrying larger ones keeps nearly all of its own. And the biases sit out of it. A Dense layer has one bias per output unit and inputWidth kernel weights per unit. This pass leaves biases unchanged; they set offsets rather than individual input connections.
 
 Reading the result changes too, and the natural mix is why. The ladder is scored on held-out captures at the rate they arrive, which makes anomalies a sliver of it: 6 labelled anomalies against 500 of each ordinary class, so the rare class is 0.3 percent of the captures being scored. Those six are held out, and the six the retrain learned from are a different six. Do the arithmetic on that share before you read any row. A class at 0.3 percent can go from every capture right to every capture wrong and move the aggregate by 0.3 of a point. Whatever you can watch falling in that column is the common classes losing ground, and the rare class is invisible there either way. It also means a row where that column holds steady is not a row where nothing happened. Score the same pruned model on a slice with equal counts per class and the pass reads differently, which is the measurement the exercise below asks for.
 
@@ -188,7 +188,9 @@ Staging replay, overnight: 91.6 percent accuracy, the number you signed. Your 80
 
 He reverts. The anomaly class was gone at 80 percent and the aggregate never said so: at 0.3 percent of the mix, its collapse from four captures right to none moved the figure two tenths of a point, two steps of the last digit that column prints. The 2.4 points he did read were an earlier cost and a different one: almost all of that fall was the common classes giving up ground between the baseline and 60. This run lost rare-class performance. It does not show that rare signals generally live in small weights. A per-class report reveals the failure that the aggregate obscures.
 
-And the directive's second assumption resolves the unglamorous way: nothing was ever "removed." A dense weight matrix has no delete operation, so magnitude pruning zeroes weights in place and the file keeps every slot. No sparse storage format in TensorFlow.js changes that. A weight entry in the manifest carries a name, a shape, a dtype, and for a quantized weight a scale and a min. There is no index list of nonzero positions anywhere in it, so all 51 million zeros get written out at full width and the file does not shrink by a byte. What this pass buys in this runtime is compressibility, and that shows up on the wire rather than on disk. The structured kind is the one that does shrink a file: drop a whole unit and the layer's shape changes with it, so the weights go and the arithmetic of every call goes with them. It costs more to get there, since the model has to be retrained once the units are gone, and it is not what this lesson does.
+Dense magnitude pruning keeps every weight slot, including zeroed values. With unchanged shapes and dtypes, the TFJS weight payload retains its size. Its dense manifest has no list of nonzero indexes. Repeated stored codes may compress well, but measure the result; an affine uint8 code representing zero need not be byte 0.
+
+Structured pruning removes complete units or channels and changes tensor shapes. It can reduce storage and computation, but the resulting model still needs evaluation. Fine-tuning may recover quality; success is not guaranteed. This lesson uses unstructured pruning.
 
 <DerivationDrawer summary="Why magnitude is the saliency proxy, and when the proxy lies">
 A useful importance measure would estimate the change in loss when a weight is zeroed. Near a particular weight vector, a second-order approximation is:
@@ -231,8 +233,8 @@ console.log('float32, pruned 60%:  340 MB   148 MB     91.8%');
 console.log('uint8, pruned 60%:     85 MB    42 MB     91.8%');
 console.log('');
 console.log('The accuracy column moves on the rows that say pruned and');
-console.log('nowhere else. Quantizing changed no verdict on this');
-console.log('classifier. Pruning changed 2.4 points of them.');
+console.log('nowhere else. Quantizing changed no verdict on the evaluated');
+console.log('captures. Pruning reduced accuracy by 2.4 percentage points.');
 console.log('');
 console.log('Actual load peaks include backend buffers and the whole page.');
 console.log('Measure peak memory on the dashboard before approving a build.');`}
@@ -268,7 +270,7 @@ At sparsity 1, this exercise removes every kernel weight. An interior cutoff can
 
 <Exercise slug="prune-weights" />
 
-<RecallPrompt question="You zero 60% of a model's weights with magnitude pruning and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?" answer="Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. The zeros do make the bytes highly repetitive, so the win arrives after compression: DEEP SCAN's 85 MB uint8 file gzips to 70 MB unpruned and 42 MB at 60% sparsity. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller." />
+<RecallPrompt question="You zero 60% of a model's weights with magnitude pruning and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?" answer="Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. Repeated values may improve compression; measure the actual files. The mission’s 70 MB and 42 MB gzip figures are supplied fiction, not guaranteed savings. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller." />
 
 <RecallPrompt question="Pruning hurt the rare class in this experiment. Does that prove rare patterns are stored in small weights?" answer="No. The experiment shows a loss of rare-class performance under this pruning rule. It does not identify a universal storage mechanism. Weight magnitude is a proxy for importance; measure per-class errors and compare predictions before and after pruning." />
 

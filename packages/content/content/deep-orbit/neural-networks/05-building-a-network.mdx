@@ -101,7 +101,7 @@ model.add(tf.layers.dense({
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
-// 3. Compile (like createServer(): wired up, not yet working)
+// 3. Configure training. predict() already works on the initialized weights.
 model.compile({
   optimizer: 'adam',              // how to update weights
   loss: 'binaryCrossentropy',    // how to measure error
@@ -139,7 +139,7 @@ model.dispose();`}
 
 Assemble and compile the complete DEEP SCAN signal classifier, then measure what compiling bought. You build it twice, sweep both copies over the same 120 readings while both are still untrained, train one of them, and sweep that one again. The `fit()` call is written out for you in the instructions; module 3 is where it gets taken apart.
 
-One difference from the bridge build above, and it is deliberate: the demo wired to the feed tonight reads the 3 normalized features and totals 673 parameters. Farah has specced a wider front door, 8 features per reading, which puts her build at 833 parameters. Same architecture, five more inputs. Build hers. Then note what happens to the spec: five of Farah's eight features have no source in the stream yet, so the front door gets cut back to the three that do. 673 is the count module 3 trains.
+The practice model differs from the bridge build in both input width and layer sizes. It reads 8 features through 24/12/1 units: `(8 × 24 + 24) + (24 × 12 + 12) + (12 + 1) = 529` parameters. Its synthetic batch adds five noise features to the three class-dependent ones. Compare its own before/after outputs; do not compare its parameter count as if only the input width changed. Module 3 returns to the bridge’s 3-input, 32/16/1 stack with 673 parameters.
 
 <Exercise slug="simple-network" />
 

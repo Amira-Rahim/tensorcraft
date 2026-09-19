@@ -1,7 +1,6 @@
 import { resolveDueForUser } from "@/lib/review-store-server";
 import { FREE_RECALL_PROMPTS } from "@/lib/free-recall-prompts";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { worlds } from "@tensorcraft/worlds";
 import { LAUNCHED_WORLDS, isLaunched } from "@tensorcraft/shared";
 import {
@@ -12,11 +11,11 @@ import {
   getModules,
   getLessonExercises,
   getWorldLessons,
-  isFoundationsModule,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import {
   getUserProgress,
+  getPassedExercises,
   hasWorldPurchase,
   isModuleCompleted,
 } from "@/lib/progress";
@@ -24,9 +23,13 @@ import { LessonSteps } from "./lesson-steps";
 import { NoscriptReveal } from "./noscript-reveal";
 import { LessonPrefsProvider } from "@tensorcraft/ui";
 import type { Metadata } from "next";
+import { getLearningRoutePreference } from "@/lib/learning-route-server";
+import { LearningRoutePicker } from "@/app/components/learning-route-picker";
+import { ModuleEntryContext } from "@/app/components/module-entry-context";
 
 interface Props {
   params: Promise<{ slug: string; module: string; lesson: string }>;
+  searchParams?: Promise<{ start?: string }>;
 }
 
 // Enumerate valid launched-world lesson routes for dynamicParams=false.
@@ -84,7 +87,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function LessonPage({ params }: Props) {
+export default async function LessonPage({ params, searchParams }: Props) {
   const { slug, module: moduleSlug, lesson: lessonSlug } = await params;
   if (!isLaunched(slug)) notFound();
   const world = worlds[slug];
@@ -97,7 +100,7 @@ export default async function LessonPage({ params }: Props) {
   const mod = getModule(slug, moduleSlug);
 
   // Paywall: Module 1 is free, Module 2+ requires purchase
-  // Prerequisite: Module N+1 requires Module N completed
+  // Prerequisites guide study order but do not restrict entitled learners.
   //
   // Per dev-plan §4c, the paywall uses redirect-based enforcement. Both the
   // signed-out and the authenticated-but-locked case land on
@@ -145,23 +148,14 @@ export default async function LessonPage({ params }: Props) {
   const progressPromise = user
     ? getUserProgress(user.id, slug)
     : Promise.resolve([]);
-  // Onboarding's calibration promise: advanced/expert learners get the
-  // math drawers opened by default (LessonPrefsProvider below).
-  const experiencePromise = user
-    ? supabase
-        .from("profiles")
-        .select("experience_level")
-        .eq("id", user.id)
-        .single()
-        .then(({ data }) => data?.experience_level ?? null)
-    : Promise.resolve(null);
+  const routePromise = getLearningRoutePreference(supabase, user?.id ?? null);
 
-  const [purchased, prevCompleted, progress, experienceLevel, dueReviews] =
+  const [purchased, prevCompleted, progress, learningPreference, dueReviews] =
     await Promise.all([
       purchasedPromise,
       prevCompletedPromise,
       progressPromise,
-      experiencePromise,
+      routePromise,
       user
         ? resolveDueForUser(supabase, user.id, slug, 2, new Date())
         : Promise.resolve([]),
@@ -173,71 +167,24 @@ export default async function LessonPage({ params }: Props) {
     );
   }
 
-  const requiresPrerequisite =
-    mod && mod.order > 1 && !!prevMod && !purchased ? false : !prevCompleted;
-  const prevModuleSlug = prevMod?.slug ?? moduleSlug;
+  const exerciseHistory = user
+    ? await getPassedExercises(user.id, slug, lessonSlug)
+    : { slugs: [], unavailable: false };
+
+  const query = await searchParams;
+  const entryStep =
+    query?.start === "concept" ||
+    (query?.start === "experiment" && lessonSlug === "tensor-shapes")
+      ? 1
+      : query?.start === "challenge" || learningPreference.route === "challenge"
+        ? 3
+        : 0;
 
   const completedLessonSlugs = new Set<string>();
   for (const p of progress) {
     if (p.module_id === moduleSlug && p.status === "completed") {
       completedLessonSlugs.add(p.lesson_id);
     }
-  }
-  // A lesson is locked if a previous lesson (by order) is not completed,
-  // unless it's the very first lesson, the current lesson, or the module is free (foundations).
-  const isFreeModule = mod ? isFoundationsModule(mod) : false;
-  function isLessonLocked(
-    lessonOrder: number,
-    lessonSlugToCheck: string,
-  ): boolean {
-    if (isFreeModule) return false; // all lessons in free modules are accessible
-    if (lessonSlugToCheck === lessonSlug) return false; // current lesson is always accessible
-    if (lessonOrder === 1) return false; // first lesson is always open
-    // Check that all previous lessons are completed
-    for (const l of moduleLessons) {
-      if (l.order >= lessonOrder) break;
-      if (!completedLessonSlugs.has(l.slug)) return true;
-    }
-    return false;
-  }
-
-  if (requiresPrerequisite) {
-    return (
-      <main className="min-h-screen" style={{ background: "var(--tc-bg)" }}>
-        <div className="flex-1 max-w-3xl mx-auto px-8 md:px-14 py-16 font-sans">
-          <div
-            className="p-8 text-center"
-            style={{
-              background: "var(--tc-surface)",
-              border: "1px solid var(--tc-border)",
-            }}
-          >
-            <div className="text-3xl mb-4" aria-hidden="true">
-              &#x1F512;
-            </div>
-            <h2
-              className="text-lg font-semibold mb-2"
-              style={{ color: "var(--tc-text)" }}
-            >
-              Complete the previous module first
-            </h2>
-            <p className="text-sm mb-6" style={{ color: "var(--tc-muted)" }}>
-              Finish all lessons in the previous module to unlock this one.
-            </p>
-            <Link
-              href={`/worlds/${slug}/${prevModuleSlug}`}
-              className="inline-flex items-center px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
-              style={{
-                background: "var(--tc-accent)",
-                color: "var(--tc-on-primary)",
-              }}
-            >
-              Go to previous module
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
   }
 
   return (
@@ -322,13 +269,37 @@ export default async function LessonPage({ params }: Props) {
       )}
       {/* Keep the reader in the initial HTML. A streamed Suspense boundary
           needs JavaScript to reveal its content, including the no-JS fallback. */}
+      {slug === "deep-orbit" && (
+        <div className="mx-auto max-w-5xl px-5">
+          <details className="my-4 border-b border-border pb-3 text-text">
+            <summary className="cursor-pointer text-sm focus-visible:outline-2 focus-visible:outline-primary">
+              Course route and prerequisites
+            </summary>
+            {mod && (
+              <ModuleEntryContext
+                moduleSlug={moduleSlug}
+                previousModule={prevMod?.slug}
+                previousComplete={prevCompleted}
+              />
+            )}
+            <LearningRoutePicker
+              accountId={user?.id ?? null}
+              initialRoute={learningPreference.route}
+              unavailable={learningPreference.unavailable}
+              source="lesson"
+            />
+          </details>
+        </div>
+      )}
       <LessonPrefsProvider
         value={{
-          expandDerivations:
-            experienceLevel === "advanced" || experienceLevel === "expert",
+          expandDerivations: learningPreference.route === "challenge",
         }}
       >
         <LessonSteps
+          entryStep={entryStep}
+          passedExerciseSlugs={exerciseHistory.slugs}
+          exerciseHistoryUnavailable={exerciseHistory.unavailable}
           reviewUserId={user?.id ?? null}
           dueReviews={dueReviews}
           freeRecallPrompts={user ? [] : FREE_RECALL_PROMPTS}
@@ -344,7 +315,7 @@ export default async function LessonPage({ params }: Props) {
             slug: l.slug,
             title: l.title,
             order: l.order,
-            locked: isLessonLocked(l.order, l.slug),
+            locked: false, // This route already verified free or paid access.
             completed: completedLessonSlugs.has(l.slug),
           }))}
         />

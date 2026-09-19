@@ -173,7 +173,7 @@ testCode: |
       }
       expect(released, 'Release the session after reading its result.').toBe(true);
       expect(sentinelCalls, 'compareRuntimes never opened a session for the path it was handed.').toBeGreaterThanOrEqual(1);
-      expect(options && options.executionProviders, 'The comparison only says something about the two runtimes if both are on the same backend. Create the session with the execution provider the instructions name.').toEqual(['wasm']);
+      expect(options && options.executionProviders, 'This exercise fixes ONNX to WASM. Create the session with that provider; real comparisons must also report the TFJS backend and distinguish runtime effects from backend effects.').toEqual(['wasm']);
       expect(feeds, 'The session was created but never run, so the ONNX side produced nothing to compare.').not.toBe(null);
       const fed = feeds[Object.keys(feeds)[0]];
       const sameInput = 'Both runtimes have to see the same input, as one [1, 3] float32 batch carrying the three numbers you were given, in order.';

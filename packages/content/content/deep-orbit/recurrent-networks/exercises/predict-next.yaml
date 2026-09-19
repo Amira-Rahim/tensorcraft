@@ -379,6 +379,11 @@ testCode: |
   });
 
   describe('forecastMultiStep', () => {
+    it('zero forecast steps need no prediction', () => {
+      const model = spyModel();
+      expect(roll(model, seedRows(), 3, 0, COARSE)).toEqual([]);
+      expect(model.calls.length).toBe(0);
+    });
     it('returns one three-channel reading per step, and leaves the seed alone', () => {
       const seed = seedRows();
       const rows = roll(spyModel(), seed, 3, 4, COARSE);
@@ -626,6 +631,7 @@ testCode: |
   it('rejects invalid scaling and model output, and frees a failed call input', () => {
     expect(() => forecastMultiStep(spyModel(), seedRows(), 3, 1, { mean: [0, 0, 0], std: [1, 0, 1] })).toThrow();
     expect(() => forecastMultiStep(spyModel(() => [NaN, 0, 0]), seedRows(), 3, 1, COARSE)).toThrow();
+    expect(() => forecastMultiStep(spyModel(() => [0, 0]), seedRows(), 3, 1, COARSE)).toThrow();
     let input;
     const failing = { predict: value => { input = value; throw new Error('prediction fixture failed'); } };
     expect(() => forecastMultiStep(failing, seedRows(), 3, 1, COARSE)).toThrow();

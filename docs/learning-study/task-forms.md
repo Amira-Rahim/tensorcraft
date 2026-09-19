@@ -58,3 +58,38 @@ minutes spent; assistance is useful context, not something to hide.
 5. False-positive cost rises to 6; misses still cost 4. Implement the cost
    function and choose again. Explain how validation and fresh final evidence
    apply if you already examined test results while making this change.
+
+## Observed course tasks: use during the relevant session
+
+The facilitator supplies only the prompt for the activity being observed.
+These observations are separate from the five-task scores above. Keep the
+first response and record help before continuing.
+
+1. Start from the Deep Orbit overview using the route that suits your current
+   ML knowledge. Reach the packet-layout experiment. Predict a result, inspect
+   the two operations and try the changed packet. Explain which operation
+   rearranges the channel values and how you checked. Point out anything that
+   made the first useful result hard to reach.
+2. At normalization, predict the value before revealing it. Use the controls
+   and explain which statistics belong to fitting and which belong to applying
+   the transform. Try the changed case and explain any changed result.
+3. At threshold selection, choose a policy using the displayed validation
+   evidence and costs. Explain the choice before seeing the held-out result.
+   Afterward, explain what that result permits you to conclude and what further
+   evidence you would need before revising the policy.
+4. At one later experiment selected before the session, predict what a control
+   will change. Inspect the result and explain it using the calculation or
+   table. Try the changed case. Name a limit of this example that would matter
+   in an application outside the course.
+5. At a story decision, explain the evidence and cost of the options before
+   choosing. In the later scene, identify what the choice changed. If you
+   skipped the decision, say so. At the ending, describe what each central
+   character wanted, where their behavior changed, and what remains unknown.
+6. After finishing Deep Orbit, open the Neon sample from the dashboard.
+   Explain what this task adds to the skills you already used. Predict a filter
+   response and try a changed image. Describe what the response does and does
+   not establish about the image.
+
+Record interruptions, active minutes, references and hints used. Explain
+uncertainty in your own words; there is no need to agree with a character or
+say that you enjoyed a scene.

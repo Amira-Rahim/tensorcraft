@@ -1,0 +1,40 @@
+{
+  "kind": "maintainer_integration_fixture",
+  "recordedAt": "2026-09-19T11:05:29.563Z",
+  "tfjs": "4.22.0",
+  "backend": "cpu",
+  "phase": "validation",
+  "threshold": 0.5,
+  "baseline": {
+    "kind": "threshold",
+    "feature": "light",
+    "threshold": 100,
+    "direction": "gte"
+  },
+  "row": {
+    "id": "datatest2.txt:1193",
+    "recordedAt": "2015-02-12 10:40:00",
+    "temperature": 23.7,
+    "humidity": 23.0666666666667,
+    "light": 271,
+    "co2": 814.333333333333,
+    "humidityRatio": 0.00417900280407989,
+    "occupied": 0
+  },
+  "prediction": {
+    "id": "datatest2.txt:1193",
+    "label": 0,
+    "score": 0.6562567353248596,
+    "model": 1,
+    "baseline": 1
+  },
+  "artifactHashes": {
+    "model.json": "e96236d971daf95d2378a938235aaa6f29c5094ab4308df35bd43d9b91bb7efa",
+    "weights.bin": "3d7914831e3c7de1f3089d9f4e85d238156c969b07f84378c01cca30e25d6639",
+    "preprocessing.json": "4a69e7e75e4af0ff743463b8bab7d369b28a1aabdf93705891f80dfc00d4095c",
+    "parity.json": "0fad6643979d9cb9cd061aa62dfa9e9581ddb9e372c7647927412aa3e259c9a9"
+  },
+  "fixtureSourceSha256": "7561c5e6ac58d51afb0eba0a862b887a6b9a4d7793b467a577d435cc8d96449c",
+  "reproduce": "node scripts/check-room-project.mjs; then node scripts/build-room-project-preview.mjs <printed project folder>",
+  "limitations": "Five fixed epochs verify integration. This is a validation example where both policies are wrong, not a quality recommendation, calibrated probability, or learner result."
+}

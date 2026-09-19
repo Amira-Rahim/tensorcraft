@@ -1,0 +1,67 @@
+
+> tensorcraft@ typecheck /Users/amira.salah/Desktop/tensorcraft
+> turbo typecheck
+
+• turbo 2.10.12
+
+   • Packages in scope: @tensorcraft/api, @tensorcraft/bridges, @tensorcraft/config, @tensorcraft/content, @tensorcraft/shared, @tensorcraft/supabase, @tensorcraft/ui, @tensorcraft/web, @tensorcraft/worlds
+   • Running typecheck in 9 packages
+   • Remote caching disabled
+
+@tensorcraft/shared:build: cache hit, replaying logs 32bf180d5d3b8ab1
+@tensorcraft/shared:build: 
+@tensorcraft/shared:build: > @tensorcraft/shared@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/shared
+@tensorcraft/shared:build: > tsc
+@tensorcraft/shared:build: 
+@tensorcraft/supabase:build: cache hit, replaying logs 1a29169c12610f26
+@tensorcraft/supabase:build: 
+@tensorcraft/supabase:build: > @tensorcraft/supabase@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/supabase
+@tensorcraft/supabase:build: > tsc
+@tensorcraft/supabase:build: 
+@tensorcraft/worlds:build: cache hit, replaying logs 8f72a83407580776
+@tensorcraft/worlds:build: 
+@tensorcraft/worlds:build: > @tensorcraft/worlds@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/worlds
+@tensorcraft/worlds:build: > tsc
+@tensorcraft/worlds:build: 
+@tensorcraft/ui:build: cache miss, executing a956c6d93247feb6
+@tensorcraft/shared:typecheck: cache hit, replaying logs d8df157a2e5fe517
+@tensorcraft/api:typecheck: cache hit, replaying logs 70c801387f6a7248
+@tensorcraft/content:typecheck: cache hit, replaying logs c75102641aa15f0a
+@tensorcraft/api:typecheck: 
+@tensorcraft/api:typecheck: > @tensorcraft/api@0.0.0 typecheck /Users/amira.salah/Desktop/tensorcraft/apps/api
+@tensorcraft/api:typecheck: > tsc --noEmit
+@tensorcraft/api:typecheck: 
+@tensorcraft/content:typecheck: 
+@tensorcraft/content:typecheck: > @tensorcraft/content@0.0.0 typecheck /Users/amira.salah/Desktop/tensorcraft/packages/content
+@tensorcraft/content:typecheck: > tsc --noEmit
+@tensorcraft/content:typecheck: 
+@tensorcraft/shared:typecheck: 
+@tensorcraft/shared:typecheck: > @tensorcraft/shared@0.0.0 typecheck /Users/amira.salah/Desktop/tensorcraft/packages/shared
+@tensorcraft/shared:typecheck: > tsc --noEmit
+@tensorcraft/shared:typecheck: 
+@tensorcraft/content:build:content: cache hit, replaying logs 148030f2ed478f82
+@tensorcraft/content:build:content: 
+@tensorcraft/content:build:content: > @tensorcraft/content@0.0.0 build:content /Users/amira.salah/Desktop/tensorcraft/packages/content
+@tensorcraft/content:build:content: > velite build
+@tensorcraft/content:build:content: 
+@tensorcraft/content:build:content: [VELITE] building... 
+@tensorcraft/content:build:content: [VELITE] build finished in 3677.65ms
+@tensorcraft/content:build: cache hit, replaying logs b1e39d1ebfe0bbfa
+@tensorcraft/content:build: 
+@tensorcraft/content:build: > @tensorcraft/content@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/content
+@tensorcraft/content:build: > tsc
+@tensorcraft/content:build: 
+@tensorcraft/ui:build: 
+@tensorcraft/ui:build: > @tensorcraft/ui@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/ui
+@tensorcraft/ui:build: > tsc
+@tensorcraft/ui:build: 
+@tensorcraft/web:typecheck: cache miss, executing 2a7a23b3cd56e4ee
+@tensorcraft/web:typecheck: 
+@tensorcraft/web:typecheck: > @tensorcraft/web@0.0.0 typecheck /Users/amira.salah/Desktop/tensorcraft/apps/web
+@tensorcraft/web:typecheck: > tsc --noEmit
+@tensorcraft/web:typecheck: 
+
+ Tasks:    10 successful, 10 total
+Cached:    8 cached, 10 total
+  Time:    7.069s 
+

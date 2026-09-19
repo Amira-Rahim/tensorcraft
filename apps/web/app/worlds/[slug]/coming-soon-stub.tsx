@@ -10,6 +10,8 @@ import {
 import { CharacterAvatar } from "@tensorcraft/ui/character-avatar";
 import { WorldWaitlistForm } from "./world-waitlist-form";
 import { ComingSoonScene } from "./coming-soon-scene";
+import { WorldLearningPreview } from "@/app/components/world-learning-preview";
+import type { WorldSlug } from "@tensorcraft/shared";
 
 interface Props {
   world: WorldManifest;
@@ -68,16 +70,10 @@ export function ComingSoonStub({ world }: Props) {
   const castLead = world.characters.slice(0, 3);
   const castRest = world.characters.slice(3);
 
-  // careerPaths entries follow "Name ($lowK-$highK)"; parsed for the salary
-  // range bars. An entry that doesn't parse falls back to a plain text row.
-  const careers = world.careerPaths.map((path) => {
-    const m = /^(.*?)\s*\(\$(\d+)K\s*[-–]\s*\$(\d+)K\)\s*$/.exec(path);
-    return m
-      ? { name: m[1]!, low: Number(m[2]), high: Number(m[3]) }
-      : { name: path, low: null, high: null };
-  });
-  const axisTop =
-    Math.ceil(Math.max(0, ...careers.map((c) => c.high ?? 0)) / 50) * 50;
+  // Describe relevant roles without presenting unsupported salary outcomes.
+  const careers = world.careerPaths.map((role) => ({
+    name: role.replace(/\s*\(\$[^)]*\)\s*$/, ""),
+  }));
 
   // World-mixed structural colors (see doc comment above).
   const edge = `color-mix(in srgb, ${primary} 25%, var(--tc-border))`;
@@ -185,6 +181,8 @@ export function ComingSoonStub({ world }: Props) {
         </div>
       </header>
 
+      <WorldLearningPreview worldSlug={slug as WorldSlug} />
+
       {/* Module roster: in-world status board. Row state carries the launch
           scope (module 1 online + free, the rest pending rebuild). */}
       {preview ? (
@@ -200,11 +198,9 @@ export function ComingSoonStub({ world }: Props) {
               className="font-mono text-xs"
               style={{ color: "var(--tc-muted)" }}
             >
-              {WORLD_CONTENT.lessonsPerModule} {lessonPlural} per{" "}
-              {world.terminology.module} ·{" "}
               {/* Per-world count from WORLD_SHAPE: neon-protocol authors 54,
                   not the flat 55 this line promised until 2026-07-25. */}
-              {getWorldTotalLessons(slug)} in the full course
+              {getWorldTotalLessons(slug)} planned {lessonPlural.toLowerCase()}
             </p>
           </div>
           <ul
@@ -270,10 +266,7 @@ export function ComingSoonStub({ world }: Props) {
         </section>
       ) : null}
 
-      {/* Skills, careers, and cast. Section-header grammar matches the
-          roster: title bold left, mono-xs muted meta right. Each section
-          takes the form native to its data: counted prose, salary range
-          bars on a shared axis, personnel dossier rows. */}
+      {/* Planned skills, relevant roles and cast. */}
       <section
         className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pt-10 pb-14 border-t grid gap-x-16 gap-y-10 md:grid-cols-2"
         style={{ borderColor: hairline }}
@@ -286,7 +279,7 @@ export function ComingSoonStub({ world }: Props) {
                   className="font-mono text-xl md:text-2xl font-bold tracking-tight"
                   style={{ color: "var(--tc-text)" }}
                 >
-                  You&rsquo;ll master
+                  Planned skills
                 </h2>
                 <p
                   className="font-mono text-xs"
@@ -315,47 +308,15 @@ export function ComingSoonStub({ world }: Props) {
               className="font-mono text-xl md:text-2xl font-bold tracking-tight"
               style={{ color: "var(--tc-text)" }}
             >
-              Where it leads
+              Roles that use these skills
             </h2>
-            {axisTop > 0 ? (
-              <p
-                className="font-mono text-xs"
-                style={{ color: "var(--tc-muted)" }}
-              >
-                to ${axisTop}K / yr
-              </p>
-            ) : null}
           </div>
           <ul className="space-y-4" data-testid={`career-bars-${slug}`}>
             {careers.map((c) => (
               <li key={c.name} className="text-sm">
                 <div className="flex items-baseline justify-between gap-4 mb-1.5">
                   <span style={{ color: "var(--tc-text)" }}>{c.name}</span>
-                  {c.low != null && c.high != null ? (
-                    <span
-                      className="font-mono text-xs whitespace-nowrap"
-                      style={{ color: primary }}
-                    >
-                      ${c.low}K&ndash;${c.high}K
-                    </span>
-                  ) : null}
                 </div>
-                {c.low != null && c.high != null && axisTop > 0 ? (
-                  <div
-                    className="relative h-2"
-                    style={{ borderBottom: `1px solid ${hairline}` }}
-                    aria-hidden="true"
-                  >
-                    <div
-                      className="absolute inset-y-0"
-                      style={{
-                        left: `${(c.low / axisTop) * 100}%`,
-                        width: `${((c.high - c.low) / axisTop) * 100}%`,
-                        background: primary,
-                      }}
-                    />
-                  </div>
-                ) : null}
               </li>
             ))}
           </ul>
@@ -461,7 +422,7 @@ export function ComingSoonStub({ world }: Props) {
           >
             Start free in Deep Orbit
           </Link>
-          , the live world. Same ML foundations track.
+          , the available course on tensors, training and browser inference.
         </p>
       </section>
     </main>

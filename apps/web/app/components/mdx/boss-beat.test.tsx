@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { BossBeat } from "./boss-beat";
+import { STORY_HISTORY } from "@tensorcraft/shared";
 
 // First unit coverage for BossBeat, added by the 2026-07-13 P3 round-3
 // audit after two answer-key leaks shipped in a row: the stance label was
@@ -67,6 +68,54 @@ beforeEach(() => {
 });
 
 describe("BossBeat answer-key resistance", () => {
+  it("lets a reflective choice omit the countdown while keeping all options available", async () => {
+    render(
+      <BossBeat
+        beatId="reflective"
+        worldId="deep-orbit"
+        lessonId="normalization"
+        prompt="Compare the evidence"
+        options={[...OPTIONS] as never}
+        showTimer={false}
+      />,
+    );
+    await screen.findByText("Compare the evidence");
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(screen.getByText("Decision · take your time")).toBeInTheDocument();
+    expect(screen.getAllByTestId(/^boss-beat-option-/)).toHaveLength(4);
+  });
+  it.each([0, 1, 2, 3])(
+    "keeps the historical meaning of original option %s after a revision",
+    async (index) => {
+      const beatId = SHIPPED_BEATS[0];
+      const original = STORY_HISTORY[beatId]![1]!.options[index]!;
+      vi.mocked(getBossBeatChoice).mockResolvedValue({
+        beatId,
+        choiceIndex: index,
+        choiceLabel: original.label,
+        contentVersion: 1,
+        reactionMs: 5,
+        chosenAt: "2026-09-18",
+      });
+      render(
+        <BossBeat
+          beatId={beatId}
+          worldId="deep-orbit"
+          lessonId="normalization"
+          prompt="Revised prompt"
+          options={[...OPTIONS] as never}
+          contentVersion={2}
+        />,
+      );
+      await screen.findByText(original.display);
+      expect(screen.getByText(original.consequence)).toBeInTheDocument();
+      expect(screen.getByTestId("boss-beat-resolved")).toHaveAttribute(
+        "data-content-version",
+        "1",
+      );
+      expect(screen.queryByTestId("boss-beat-active")).toBeNull();
+    },
+  );
   it("never renders the stance enum text on the buttons", async () => {
     renderBeat(SHIPPED_BEATS[3]);
     await waitFor(() =>

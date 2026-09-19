@@ -39,30 +39,30 @@ solutionCode: |
       model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
     }
     try {
-    const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
+      const history = await model.fit(trainX, trainY, { epochs, batchSize: 8 });
 
-    const predictFrom = (readings) =>
-      tf.tidy(() => {
-        const window = readings.slice(-windowSize).map((value) => [value]);
-        const output = model.predict(tf.tensor3d([window])).dataSync();
-        if (output.length !== 1 || !Number.isFinite(output[0])) throw new Error('Invalid prediction');
-        return output[0];
-      });
+      const predictFrom = (readings) =>
+        tf.tidy(() => {
+          const window = readings.slice(-windowSize).map((value) => [value]);
+          const output = model.predict(tf.tensor3d([window])).dataSync();
+          if (output.length !== 1 || !Number.isFinite(output[0])) throw new Error('Invalid prediction');
+          return output[0];
+        });
 
-    const fedBack = [...past];
-    const rollout = [];
-    for (let step = 0; step < arrived.length; step++) {
-      const next = predictFrom(fedBack);
-      rollout.push(next);
-      fedBack.push(next);
-    }
+      const fedBack = [...past];
+      const rollout = [];
+      for (let step = 0; step < arrived.length; step++) {
+        const next = predictFrom(fedBack);
+        rollout.push(next);
+        fedBack.push(next);
+      }
 
-    const oneStep = [];
-    for (let step = 0; step < arrived.length; step++) {
-      oneStep.push(predictFrom([...past, ...arrived.slice(0, step)]));
-    }
+      const oneStep = [];
+      for (let step = 0; step < arrived.length; step++) {
+        oneStep.push(predictFrom([...past, ...arrived.slice(0, step)]));
+      }
 
-    return { model, history, rollout, oneStep };
+      return { model, history, rollout, oneStep };
     } catch (error) {
       if (!providedModel) model.dispose();
       throw error;

@@ -40,28 +40,51 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Commander Mirza">
-We're picking up a structured data stream from Sector 7-G. ARIA has had six hours with it.
+What have the parsing rules found in the stream from Sector 7-G?
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. All have failed. Whatever this is, nobody wrote a rule for it.
+Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. All have failed. None of my rules describes it.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 Then we need someone who doesn't start from rules. Demir, you think in data structures; start there.
 </Dialogue>
 
-You've worked with arrays your entire career: API responses, byte buffers, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. TensorFlow.js adds shape tracking, numerical operations on a selected backend, and an explicit disposal lifecycle. A backend is the implementation that runs those operations on the CPU or GPU.
+Start with one packet: store its readings, inspect the result, and release the tensor before the next packet arrives. A tensor adds named operations and a shape to numeric data.
 
-<LearningObjectives objectives={["Understand what a tensor is and how it relates to JavaScript arrays", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
+<LearningObjectives objectives={["Explain which shape and lifetime responsibilities a tensor adds to JavaScript numeric storage", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 
-## What Is a Tensor?
+## Inspect One Packet
 
-For the default float32 dtype, the CPU backend stores values in a `Float32Array`. Other dtypes use different storage. On WebGL the same values live in a GPU texture instead, which the JavaScript garbage collector cannot see, and that is where the memory rules further down come from.
+A tensor is a numeric array with a **shape**, the size of each axis. A flat list of three readings has shape `[3]`. TensorFlow.js, imported as `tf`, supplies operations on those numbers.
+
+<CodeBlock language="typescript" title="inspect-a-packet.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const streamValues = [0.3, 0.7, 0.1];
+const reading = tf.tensor(streamValues);
+const shape = reading.shape;
+const values = Array.from(reading.dataSync());
+// sum() creates a temporary tensor. tidy releases it after the read.
+const total = tf.tidy(() => reading.sum().dataSync()[0]);
+console.log(shape);   // [3]
+console.log(values);  // approximately [0.3, 0.7, 0.1], stored as float32
+console.log(total);   // approximately 1.1
+reading.dispose();   // release the retained tensor when finished`}
+</CodeBlock>
+
+The shape tells you how the readings are arranged. `dataSync()` returns their values as a typed array; `Array.from()` copies them into the plain JavaScript array used in the challenge. The sum is a numerical operation, not a trained model. You have not taught the system to classify anything yet.
+
+A tensor's **rank** counts its axes: a scalar number has rank 0, a flat vector has rank 1, and a matrix has rank 2. A `[2, 3]` matrix has two axes and six values. The next lesson asks which values belong together when the shape changes.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Shape is the piece you'll reach for most: it's what separates a `[2, 3]` matrix from the six numbers underneath it, and the first thing to check when an op refuses to run.
+Dispose a tensor after its final use. In the example, `reading` lives until `dispose()`. The temporary sum lives only inside the synchronous `tf.tidy()` callback. That keeps repeated packets from accumulating tensors.
+
+<ConceptReference summary="Reference: tensor ranks, readback, and backend storage">
+
+A backend is the implementation that runs operations on the CPU or GPU. With the default float32 dtype, the CPU backend uses `Float32Array` storage; other dtypes use other storage. WebGL stores values in GPU textures. Read values back before ordinary JavaScript iteration, and dispose tensors on every backend.
 
 <CodeBlock language="typescript" title="tensors-are-arrays.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -89,22 +112,22 @@ vector.dispose();
 matrix.dispose();`}
 </CodeBlock>
 
-One difference to internalize early: you can iterate a `Float32Array` directly, but a tensor's data lives on the backend. Call `await t.array()` (or `dataSync()`) to pull the values back into JavaScript.
+</ConceptReference>
 
-## The Part Garbage Collection Won't Do For You
+## Keeping Repeated Runs Small
 
 Dispose tensors when you finish with them, on every backend. `tf.memory().numTensors` counts tensors that have not been disposed. It is useful for detecting unexpected growth, but it is not a browser-process memory measurement.
 
 GPU resources need explicit cleanup. CPU values use JavaScript-managed storage, but relying on garbage collection leaves TFJS's bookkeeping behind and makes code unsafe when it switches backends. Initialization, intentional caches and retained model weights can also raise the count; growth alone does not identify a leak.
 
-Two tools fix this:
+Use a cleanup scope for temporary tensors and dispose anything you retain:
 
 <CodeBlock language="typescript" title="tensor-memory.ts">
-{`// Tool 1: dispose(), manual and surgical
+{`// Tool 1: dispose(), explicit cleanup
 const reading = tf.tensor1d([0.3, 0.7, 0.1]);
-console.log(tf.memory().numTensors);  // 1
-reading.dispose();                     // GPU memory released
-console.log(tf.memory().numTensors);  // 0
+console.log(tf.memory().numTensors);  // compare with the count before creating reading
+reading.dispose();                     // release its backend resources
+console.log(tf.memory().numTensors);  // back to the earlier count if nothing else changed
 
 // Tool 2: tf.tidy(), automatic, for everything intermediate.
 // Every tensor created inside the callback is disposed when it
@@ -120,6 +143,8 @@ result.dispose(); // a returned tensor outlives tidy, so the caller owns it`}
 </CodeBlock>
 
 `tf.tidy()` runs a synchronous callback and disposes its temporary tensors. Do not pass it an async function. Return a tensor you need to read asynchronously, await its data outside the callback, then dispose it. Unlike a React effect cleanup, tidy finishes as soon as the callback returns.
+
+You can [try the channel-layout experiment](/worlds/deep-orbit/foundations/tensor-shapes?start=experiment) now and return to this challenge. That preview does not mark either lesson complete.
 
 ## Challenge
 
@@ -149,12 +174,12 @@ One more thing lands in the archive between lessons, starting now: DISPATCH inte
 
 <Epilogue>
 
-Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 1: one flat line of 256 numbers, and no idea where the rows break.
+Before running the first packet, Demir writes his prediction in the day file: 256 values, one axis. The printed rank confirms it. He leaves the row layout marked unknown; a count cannot tell him where a reading ends.
 
 <Dialogue speaker="ARIA">
 Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you.
 </Dialogue>
 
-Demir saves the tensor to the shared workspace and logs one line in the day file: rank 1, 256 values, layout unknown.
+Demir saves the packet and its shape to the shared workspace. The blank layout field goes to Farah.
 
 </Epilogue>

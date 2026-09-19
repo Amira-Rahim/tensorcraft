@@ -24,7 +24,7 @@ concept:
     tier: intuition
     breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the source: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying almost all of it alone."
+  narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the largest contributor: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying almost all of it alone."
 hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
@@ -202,14 +202,14 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 
 <RecallPrompt
   question="MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
-  answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means this model reconstructed it poorly, which may indicate an anomaly or a model failure. It does not tell you which feature, dimension, or channel caused the deviation. Identifying the source requires computing per-feature squared error separately and inspecting which dimensions contribute most."
+  answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means this model reconstructed it poorly, which may indicate an anomaly or a model failure. It does not tell you which feature, dimension, or channel caused the deviation. Compute per-feature squared errors to locate the reconstruction mismatch. Those contributions still do not identify its physical cause."
 />
 
 <LessonRecap
   whatYouLearned={[
     "Reconstruction error is computed as the MSE between an input and the autoencoder's reconstruction of it; one scalar per sample serves as the anomaly score.",
     "Error distributions depend on the model and data. The story shows separation; the constructed mapping shows why low error cannot rule out an anomaly.",
-    "Diagnosing which part of a signal is anomalous requires per-feature error analysis; the aggregate MSE collapses all dimensions into a single number that shows magnitude but not location."
+    "Per-feature errors locate reconstruction mismatches. Aggregate MSE averages them into one number; neither establishes that a particular feature is physically faulty."
   ]}
   bridge="git diff reports edits; reconstruction error measures a numerical gap between an input and its reconstruction. A high gap alone does not identify its cause."
   youCanNow="Compute per-sample reconstruction error as an anomaly score and run feature-level error analysis to identify which signal dimensions drive the deviation."

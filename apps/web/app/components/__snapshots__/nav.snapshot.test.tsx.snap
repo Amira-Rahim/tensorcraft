@@ -3,7 +3,7 @@
 exports[`Nav snapshots > matches snapshot 1`] = `
 <nav
   aria-label="Main navigation"
-  class="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border rounded-none"
+  class="sticky top-0 z-50 min-h-15 py-1 flex flex-wrap items-center justify-between px-[min(2rem,5vw)] bg-surface border-b border-border rounded-none"
   data-testid="site-nav"
 >
   <a

@@ -56,7 +56,7 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 As a first sketch, and it breaks where it matters. You cannot compute the CSSOM from the DOM, or the DOM from the CSSOM. They describe different things. Time and frequency are one thing described twice, and the transform runs both ways: keep the full complex spectrum, including phase, and we can reconstruct the samples within numerical precision. A magnitude-only plot drops phase and cannot do that. What costs us happens earlier. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
+<LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Explain when a magnitude spectrum makes a weak periodic component easier to inspect"]} />
 
 ## Two Views, One Signal
 
@@ -78,8 +78,9 @@ const timeDomain = [0.5, 0.87, 1.0, 0.87, 0.5, 0.0, -0.5, -0.87, -1.0, -0.87, -0
 const frequencyDomain = tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(timeDomain))).arraySync() as number[]);
 console.log(frequencyDomain.map((m) => m.toFixed(1)).join(' '));
 // "0.0 6.0 0.0 0.0 0.0 0.0 0.0": one 1 Hz component and nothing else. The
-// 6.0 is the tone's amplitude times half the sample count, and that is the
-// unit every later lesson reads its peaks in.
+// 6.0 is approximately amplitude times N/2 for this on-bin sinusoid.
+// Later examples also use raw FFT magnitudes; off-bin tones and tapering
+// spread magnitude across bins, so that shortcut does not always apply.
 
 // Generate a time-domain signal from known frequencies
 function generateSignal(frequencies: { hz: number; amplitude: number }[], samples: number, sampleRate: number): number[] {

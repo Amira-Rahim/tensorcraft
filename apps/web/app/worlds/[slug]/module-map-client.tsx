@@ -83,7 +83,7 @@ export function ModuleMapClient({
         const isDone = mod.status === "completed";
         const isActive = mod.status === "active" || mod.status === "available";
         const isLocked = mod.status === "locked";
-        const shouldOpen = isActive;
+        const shouldOpen = isActive && continueHref.includes(`/${mod.slug}/`);
         const accentOn = isDone || isActive;
         // The price fact renders once, on the first locked row; stating it
         // on all ten reads as a wall of price chips (2026-08-29 design
@@ -266,6 +266,7 @@ function ModuleRow({
         <div
           className={`rounded-none border ${href ? "transition-all brutalist-hover" : ""}`}
           data-module={mod.slug}
+          id={`module-${mod.slug}`}
           data-status={mod.status}
           style={{
             borderColor: "var(--tc-border)",
@@ -302,6 +303,7 @@ function ModuleRow({
         open={shouldOpen}
         className="group rounded-none border"
         data-module={mod.slug}
+        id={`module-${mod.slug}`}
         data-status={mod.status}
         style={{
           borderColor: isActive ? "var(--tc-primary)" : "var(--tc-border)",

@@ -223,7 +223,7 @@ Build the temporal attention path with position as a scored feature, then read t
 
 <Exercise slug="temporal-attention" />
 
-<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions influenced the pooled representation most. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Use these plots alongside input checks, ablations and error analysis, not as a substitute for them." />
+<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions received the largest coefficients in the pooled representation. Their value vectors also determine each contribution. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Use these plots alongside input checks, ablations and error analysis, not as a substitute for them." />
 
 <LessonRecap
   whatYouLearned={[
@@ -231,7 +231,7 @@ Build the temporal attention path with position as a scored feature, then read t
     "The weighted sum of time-step features concentrates the model's representation on the highest-scoring positions, which may help prediction after training and evaluation.",
     "Attention weights are inspectable: one number per time step, which is what a heatmap over the window draws. They show where the model put its weight, and that is a map of where it looked, not a proof of why it decided.",
     "Softmax renormalizes over whatever window it is handed. A capture that lost its onset still produces weights summing to 1 and an output of the same shape, so output shape and weight sum alone cannot establish that the input was complete.",
-    "Attention is order-blind until position is handed to it as a feature. One extra column holding the step's position, scaled to [0, 1], is enough for the scorer to prefer late steps over early ones."
+    "This scorer sees raw readings without sequence context, so pooling is order-invariant until position is added. A position column lets it favor earlier or later steps; the previous lesson's LSTM states already contained context."
   ]}
   bridge="scrollIntoView targets a chosen element. Temporal attention learns weights over time steps and uses them to combine their representations."
   youCanNow="Score a window's time steps with position included, pool it under the resulting weights, and read those weights as where the model looked."

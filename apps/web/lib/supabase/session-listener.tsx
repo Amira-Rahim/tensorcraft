@@ -36,6 +36,7 @@ async function persistProviderToken(
 export function SessionListener() {
   const router = useRouter();
   const identifiedUserId = useRef<string | null>(null);
+  const lastSessionUserId = useRef<string | null | undefined>(undefined);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -66,7 +67,15 @@ export function SessionListener() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "TOKEN_REFRESHED") {
+      const nextUserId = session?.user.id ?? null;
+      const identityChanged =
+        lastSessionUserId.current !== undefined &&
+        lastSessionUserId.current !== nextUserId;
+      lastSessionUserId.current = nextUserId;
+      if (
+        event === "TOKEN_REFRESHED" ||
+        (identityChanged && event !== "SIGNED_OUT")
+      ) {
         router.refresh();
       }
 

@@ -41,11 +41,11 @@ skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Signal feed is connected. Every second, a new reading arrives: three values. I feed them into the model, get a classification, update the display. It's literally an event handler.
+The synchronous path returns to its starting tensor count. I switched the readback to await output.data() so the dashboard can stay responsive, then returned early when a reading was cancelled. That path leaves the output alive.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-And what happens to the tensors you create every second? If you don't dispose them, you'll leak memory until the tab crashes. This is not a lab experiment anymore.
+The cancelled readings added 120 tensors during the console check. Who owns the output while that promise is pending, and who releases it if the request fails?
 </Dialogue>
 
 At one prediction per second, two retained tensors per call add 7,200 tensor handles per hour. Their logical float32 values occupy only 16 bytes per pair in this tiny model, but buffers, textures and runtime bookkeeping can cost more. The exercise's 10,000-tensor budget is an operational limit, not a universal browser crash threshold. Investigate both tensor counts and actual resource use.
@@ -60,9 +60,9 @@ At one prediction per second, two retained tensors per call add 7,200 tensor han
 {`import * as tf from '@tensorflow/tfjs';
 
 // The model expects normalized 3-feature input: [amplitude, frequency, phase]
-// Training used min-max to [0, 1]. Module 1's rule sends open-ended
-// streams to z-score; amplitude and frequency are bounded by hardware,
-// not by history: the hull sensors saturate at 2048 counts, and
+// This training contract uses fixed physical min-max bounds. Z-score
+// is another option, not a general rule for all open-ended streams.
+// Here amplitude and frequency are bounded by the declared hardware: the hull sensors saturate at 2048 counts, and
 // "frequency" is a zero-crossing count over the 64-sample extraction
 // window, so 63 sign flips is its physical ceiling. That window is 64
 // SAMPLES, a quarter second of one channel at 256 Hz. Module 1's
@@ -171,7 +171,7 @@ async function classifyAsync(
 }`}
 </CodeBlock>
 
-Either way the rule is the same: every tensor `predict()` allocates is freed before the next reading arrives, by `tidy()` or by you.
+Both handlers release their temporary input and output tensors. The loaded model keeps its weights until its owner disposes it during teardown.
 
 ## Wiring It into the Dashboard
 
@@ -237,6 +237,8 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 <LessonRecap whatYouLearned={["Inference must use the feature order and preprocessing fitted during training.", "tf.tidy() cleans up synchronous temporary tensors. Returned tensors, variables and tf.keep() tensors need separate disposal.", "Watch tensor counts and bytes after warmup. Growth needs investigation; a flat count is not a complete memory check.", "For sustained growth, headroom equals the remaining budget divided by the growth rate."]} bridge="Just as a UI event handler follows the pattern `event -> process -> render`, a browser inference pipeline follows `input -> predict -> display`, with one additional obligation: every tensor allocated inside the loop must be freed." youCanNow="Build a browser inference loop that normalizes with the training ranges, runs model.predict() on a [1, 3] tensor, reports the verdict and its confidence, and leaves no tensors behind. Investigate sustained tensor growth and estimate headroom if its rate continues." />
 
 <Epilogue>
+
+> **Story timing:** The 3.4 ms below is a fictional dashboard observation, separate from measurements in the runtime lab.
 
 For a full hour after the 03:10 page the patched pipeline runs clean: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test. The labeled windows light amber on schedule, a roll call of already-known events, a replay check on events the crew already knows. At 14:31 ship-time one more flag lands where no label exists, in the calmest stretch of the tape. The ID on the screen is sample 7741. Farah's calibration ghost, the one she flagged before there was a network to flag it with, now glowing on the bridge dashboard where the whole crew can see it.
 

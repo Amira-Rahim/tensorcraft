@@ -58,7 +58,7 @@ That is the whole problem, Chief. We trained it to recognize what things are. No
 How do we know which? How do we tell a genuine anomaly from a false alarm?
 </Dialogue>
 
-Monitoring works the same way whatever you ship. You pick a baseline for the numbers you care about: Largest Contentful Paint under 2.5s in a browser, p99 response time under 200ms on a Node service. Then you alert when a value drifts past it. Anomaly detection makes the same move: define what "normal" looks like, then flag whatever lands outside it.
+Monitoring works the same way whatever you ship. You pick a budget for the numbers you care about: for example, Largest Contentful Paint under 2.5s in a browser or p99 response time under 200ms on a Node service. A measured baseline tells you how the system currently behaves; the budget sets what you will accept. Then you alert when a value drifts past it. Anomaly detection makes the same move: define what "normal" looks like, then flag whatever lands outside it.
 
 <LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score gate and evaluate a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
 
@@ -69,7 +69,7 @@ Monitoring works the same way whatever you ship. You pick a baseline for the num
     {
       label: "cooperate",
       display: "Give it an event label so the filter drops it with the rest",
-      consequence: "The filter removes it. the flag log now reports a confirmed event on a reading nobody confirmed. Every later pass that screens on that log inherits the guess as a fact, and nothing in the file says a human made a call."
+      consequence: "The filter removes it. The flag log now reports a confirmed event on a reading nobody confirmed. Every later pass that screens on that log inherits the guess as a fact, and nothing in the file says a human made a call."
     },
     {
       label: "defect",
@@ -211,6 +211,6 @@ The filter takes four seconds to strip eleven days down to a training set, then 
 If I leave it in, I ask the model to reconstruct it. If I pull it out, I need a reason the next watch can check.
 </Dialogue>
 
-He saves the selected policy beside the run configuration. The raw capture stays unchanged, so the next watch can audit both the row and the decision.
+He attaches the baseline report to the run configuration. The raw capture stays unchanged, so the next watch can audit both the row and the decision.
 
 </Epilogue>

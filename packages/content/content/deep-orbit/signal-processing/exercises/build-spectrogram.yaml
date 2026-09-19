@@ -1,7 +1,12 @@
 slug: build-spectrogram
 lessonSlug: spectrograms
 title: "Build a Spectrogram"
-instructions: "Implement `stft(signal, windowSize, hopSize)`, one FFT per window position stacked in time. Window i starts at sample i * hopSize, and a window counts only when it fits inside the signal whole, so the row count comes out of all three arguments. Each row is the magnitude spectrum of that window's own samples, left in bin order, and rfft returns floor(windowSize / 2) + 1 of those magnitudes, which is 33 for a 64-sample window. Return the rows in time order as a 2D array with one row per window position and one column per frequency bin. Cut each window straight out of the signal with no taper, so a row is the plain magnitude spectrum of the raw slice: tf.signal.stft applies a Hann window by default, and its rows will not match. Assume integer windowSize >= 2 and hopSize >= 1. Return an empty array when no complete window fits."
+instructions: |
+  Implement `stft(signal, windowSize, hopSize)`. Frame i starts at `i * hopSize`; include it only if the entire window fits. Return its FFT magnitudes as one row, keeping rows in time order and columns in bin order.
+
+  Use raw slices without tapering. `tf.signal.stft()` applies Hann by default, so its default output differs from this task. Each row has `floor(windowSize / 2) + 1` bins: 33 for a 64-sample frame.
+
+  Assume integer `windowSize >= 2` and `hopSize >= 1`. Return `[]` when no complete frame fits. Release temporary tensors after reading each row.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -62,6 +67,10 @@ testCode: |
       ).toBe(true);
       return spec;
     };
+    it('returns no rows when a whole frame cannot fit', () => {
+      expect(stft([], 8, 2)).toEqual([]);
+      expect(stft([1, 2, 3], 8, 2)).toEqual([]);
+    });
     it('returns a 2D array', () => {
       const result = rowsOf(signal, 64, 32);
       expect(Array.isArray(result)).toBe(true);

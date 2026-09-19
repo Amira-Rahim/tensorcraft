@@ -27,6 +27,9 @@ import { capture } from "./posthog";
 export const EVENTS = {
   // Learning
   LESSON_STARTED: "lesson_started",
+  EXPERIMENT_STARTED: "experiment_started",
+  LEARNING_ROUTE_SELECTED: "learning_route_selected",
+  EXPERIMENT_SUBMITTED: "experiment_submitted",
   // Added 2026-09-04 (lesson-format audit): the funnel between
   // lesson_started and lesson_completed was invisible - no way to know
   // whether anyone reads any step or where readers quit. Fires on every
@@ -123,6 +126,24 @@ export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
 // ──────────────────────────────────────────────
 
 export interface EventProperties {
+  [EVENTS.LEARNING_ROUTE_SELECTED]: {
+    worldId: string;
+    route: "guided" | "challenge";
+    source: "world" | "lesson" | "settings";
+    persistence: "account" | "browser";
+  };
+  [EVENTS.EXPERIMENT_STARTED]: {
+    worldId: string;
+    lessonId: string;
+    experimentId: string;
+    contentVersion: number;
+  };
+  [EVENTS.EXPERIMENT_SUBMITTED]: EventProperties[typeof EVENTS.EXPERIMENT_STARTED] & {
+    phase: "prediction" | "changed_case";
+    attempt: number;
+    correct: boolean;
+    assisted: boolean;
+  };
   [EVENTS.LESSON_STARTED]: {
     worldId: string;
     moduleId: string;

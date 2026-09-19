@@ -12,11 +12,39 @@ const modules = compiled("modules")
   .sort((a, b) => a.order - b.order);
 const lessons = compiled("lessons").filter((l) => l.worldId === "deep-orbit");
 const exercises = compiled("exercises");
+const progression = JSON.parse(
+  read("docs/audits/deep-orbit-practice-progression.json"),
+);
+for (const capability of progression.capabilities) {
+  for (const phase of [
+    "workedExample",
+    "partialCompletion",
+    "failureDiagnosis",
+    "changedConstraint",
+  ]) {
+    const step = capability[phase];
+    if (!lessons.some((l) => l.slug === step.lesson))
+      throw new Error(`Missing capability lesson: ${step.lesson}`);
+    if (
+      step.exercise &&
+      !exercises.some(
+        (e) => e.slug === step.exercise && e.lessonSlug === step.lesson,
+      )
+    )
+      throw new Error(
+        `Exercise does not belong to capability lesson: ${step.exercise}`,
+      );
+  }
+  for (const slug of capability.laterUse)
+    if (!lessons.some((l) => l.slug === slug))
+      throw new Error(`Missing later use: ${slug}`);
+}
 const result = {
   version: 1,
   scope: "Deep Orbit learning inventory",
   interpretation:
     "Source inventory and declared progression. See deep-orbit-assessment-review.json for the dated manual assessment review and its source hashes. A linked exercise is not proof that every objective is assessed; learner readiness remains unvalidated.",
+  capabilityProgressions: progression,
   modules: modules.map((module) => ({
     slug: module.slug,
     title: module.title,
@@ -68,6 +96,30 @@ const result = {
               declaredDifficulty: exercise.difficulty,
             };
           }),
+          conceptExperiments: (source.includes("<ChannelLayoutExperiment")
+            ? [
+                {
+                  id: "deep-orbit-channel-layout",
+                  version: 1,
+                  sourcePath:
+                    "apps/web/app/components/mdx/channel-layout-experiment.tsx",
+                  evidence:
+                    "Prediction and changed rectangular packet check operation and channel values; browser-reported assistance retained; no lesson credit or independent mastery inferred",
+                },
+              ]
+            : []
+          ).concat(
+            [...source.matchAll(/<LearningExperiment\s+id="([^"]+)"/g)].map(
+              (m) => ({
+                id: `deep-orbit-${m[1]}`,
+                version: 1,
+                sourcePath:
+                  "apps/web/app/components/mdx/learning-experiment.tsx",
+                evidence:
+                  "Calculated prediction, inspectable results, changed case, first/latest outcome and assistance; no lesson credit or independent mastery claim",
+              }),
+            ),
+          ),
           recallQuestions: (lesson.recallPrompts ?? []).map((p) => p.question),
           decisionTasks: [
             ...source.matchAll(/<DecisionTask\s+id="([^"]+)"/g),
@@ -86,8 +138,13 @@ const result = {
                   "apps/web/public/assignments/room-occupancy-v1/RUBRIC.md",
                 evidence:
                   "Standalone artifact path verified with a maintainer fixture; learner work and independent review unobserved",
+                runRecord:
+                  "Metric, baseline/model comparison, split/scaler rationale and observed artifact behavior stay local or in an explicit download. Only a learner-reported summary syncs; no independent pass.",
               }
             : null,
+          projectMilestones: [
+            ...source.matchAll(/<ProjectMilestone\s+stage="([^"]+)"/g),
+          ].map((m) => m[1]),
           transferAssignment: source.includes("<TransferAssignment")
             ? "build-triage-v1: separate self-review, assistance recorded, no automatic pass"
             : null,

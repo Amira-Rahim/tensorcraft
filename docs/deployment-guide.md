@@ -121,7 +121,32 @@ The Next.js web app deploys to Vercel:
 - **Automatic deploys:** Pushes to `main` trigger a production deployment automatically.
 - **Manual deploys:** Go to Vercel dashboard → Deployments → Redeploy.
 - **Environment variables:** Set in Vercel dashboard (Settings → Environment Variables).
-- ESLint runs in CI, not during `next build` (configured via `eslint.ignoreDuringBuilds`).
+- ESLint runs through `pnpm lint` in CI, separately from the production build.
+
+The Vercel project root is `apps/web`. Its build configuration lives in
+`apps/web/vercel.json`; a root `vercel.json` is ignored for this project.
+After dependency installation, the build runs the migration status check
+with `CI=1` before Turbo. Pending or unknown migrations, unavailable database
+access, and missing CI credentials stop the build. Configure the database
+connection used by `scripts/migration-status.mjs` in Vercel's build environment.
+Apply additive schema changes before deploying code that reads them.
+
+For an authorized CLI deployment, run from the monorepo root:
+
+```bash
+pnpm dlx vercel@59.23.2 --prod --yes
+```
+
+Version 59.23.2 completed the September 19 release; the previously installed
+41.1.4 CLI was rejected by Vercel's upload API. The root `.vercelignore`
+excludes local secrets, study records, runtime environments and audit artifacts
+from CLI uploads. Do not rely on `.gitignore` for this deployment path.
+`SENTRY_AUTH_TOKEN` stays in the deployment environment and passes through
+Turbo for build-time source-map upload; it is not a public variable.
+
+The [September 19 release record](audits/learning-product-release-2026-09-19.md)
+contains the deployed IDs, schema ledger, smoke checks and rollback targets.
+Reverting the application should retain the additive schema and learner data.
 
 ### API (Fly.io)
 

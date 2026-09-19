@@ -32,3 +32,13 @@ pnpm-debug.log*
 docs/
 README.md
 CLAUDE.md
+
+# Local studies, browser recordings and asset staging are not build inputs.
+learning-study-private/
+.venv-runtime/
+art-src/
+test-results/
+playwright-report/
+.claude/
+.agents/
+.superpowers/

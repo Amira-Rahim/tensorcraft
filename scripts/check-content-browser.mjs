@@ -26,7 +26,7 @@ import {LessonContent} from '/apps/web/app/worlds/[slug]/[module]/[lesson]/lesso
 import {GlossaryProvider} from '/apps/web/app/worlds/[slug]/[module]/[lesson]/glossary-context.tsx';
 import '/packages/worlds/src/css/worlds.css';import '/apps/web/app/globals.css';
 const lessons=await (await fetch('/__content-data')).json();const root=createRoot(document.getElementById('root'));
-const visible=new Set(['prose','Dialogue','CodeBlock','DerivationDrawer','LearningObjectives','LessonRecap','RecallPrompt','BridgeCallout','Epilogue','BossBeat','StoryConsequence','DecisionTask','IndependentProject','TransferAssignment','DispatchTease','MathBlock','Concept']);
+const visible=new Set(['ConceptReference','ChannelLayoutExperiment','LearningExperiment','ProjectMilestone','prose','Dialogue','CodeBlock','DerivationDrawer','LearningObjectives','LessonRecap','RecallPrompt','BridgeCallout','Epilogue','BossBeat','StoryConsequence','DecisionTask','IndependentProject','TransferAssignment','DispatchTease','MathBlock','Concept']);
 window.showLesson=(index,mode='all')=>{if(index<0){root.render(null);return;}const lesson=lessons[index];const active=mode==='consequence'?new Set(['Epilogue','DispatchTease']):mode==='briefing'?new Set(['BossBeat']):visible;document.querySelector('#title').textContent=lesson.title;root.render(React.createElement(GlossaryProvider,null,React.createElement(LessonContent,{key:index+mode,lesson,worldId:'deep-orbit',lessonId:lesson.slug,moduleId:lesson.moduleId,glossaryTerms:lesson.glossaryTerms,visibleComponents:active,showProse:mode==='all',showPostRecap:mode==='consequence'})));return lesson.slug;};window.lessonCount=lessons.length;window.showLesson(0);
 </script></body></html>`;
 const storyMode = process.argv.includes("--story");
@@ -47,6 +47,7 @@ const stubs = {
 if (storyMode) delete stubs["@/lib/boss-beat-client"];
 const server = await createServer({
   root,
+  cacheDir: path.join(root, "node_modules/.vite/check-content-browser"),
   configFile: false,
   publicDir: path.join(root, "apps/web/public"),
   server: { host: "127.0.0.1", port: 0 },
@@ -91,7 +92,9 @@ const server = await createServer({
           let body = "";
           for await (const chunk of q) body += chunk;
           const { name, args } = JSON.parse(body);
-          const write = name === "record_boss_beat_choice";
+          const write =
+            name === "record_boss_beat_choice" ||
+            name === "record_boss_beat_choice_versioned";
           const failed = write
             ? fixture.failWrites-- > 0
             : fixture.failReads-- > 0;
@@ -106,6 +109,7 @@ const server = await createServer({
                   choice_label: args.p_choice_label,
                   reaction_ms: args.p_reaction_ms ?? null,
                   chosen_at: new Date().toISOString(),
+                  content_version: args.p_content_version ?? 1,
                 });
             } else {
               const row = fixture.choices.get(args.p_beat_id);
@@ -159,7 +163,20 @@ try {
   if (storyMode)
     await (
       await import("./check-story-browser.mjs")
-    ).runStoryChecks({ page, base, lessons, fixture, root });
+    ).runStoryChecks({
+      page,
+      base,
+      lessons,
+      fixture,
+      root,
+      history: (
+        await server.ssrLoadModule("/packages/shared/src/story-decisions.ts")
+      ).STORY_HISTORY,
+    });
+  if (process.argv.includes("--experiments"))
+    await (
+      await import("./check-learning-experiments-browser.mjs")
+    ).runExperimentChecks({ page, lessons });
   for (const width of [1100, 375]) {
     await page.setViewportSize({ width, height: 900 });
     for (let i = 0; i < lessons.length; i++) {

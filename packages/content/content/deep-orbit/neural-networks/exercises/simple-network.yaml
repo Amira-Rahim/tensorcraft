@@ -175,7 +175,7 @@ testCode: |
           spread,
           'Layer ' +
             (index + 1) +
-            ' holds one constant across its whole kernel. Every unit in it then computes the same output, takes the same gradient and updates in lockstep, so the layer can never come to represent different features. The random draw is what stops that, and it is already the default.',
+            ' holds a constant kernel. This exercise asks for the default random initialization. Identically initialized units can remain symmetric when the surrounding weights and updates are symmetric too; a constant kernel in one layer alone does not prove that they can never diverge.',
         ).toBeGreaterThan(1e-6);
         const biases = Array.from(weights[1].dataSync());
         const largestBias = Math.max.apply(
@@ -188,7 +188,7 @@ testCode: |
           largestBias,
           'The biases in layer ' +
             (index + 1) +
-            ' did not start at zero. TensorFlow.js starts them there on purpose: the random kernel already makes the units differ, so there is no symmetry left for the bias to break. If this network was trained, that is why they moved: the starting weights are on the network that stays out of fit().',
+            ' did not start at zero. The dense layer defaults to zero bias and random kernel weights. Random kernels supply different initial computations; random biases are not required here. If this network was trained, that is why they moved: the starting weights are on the network that stays out of fit().',
         ).toBe(0);
       });
     });

@@ -27,7 +27,7 @@ const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
 export interface DashboardModule {
   number: string;
   name: string;
-  status: "done" | "active" | "locked";
+  status: "done" | "active" | "available" | "locked";
   score: number | null;
   formula: string;
   slug: string;
@@ -88,6 +88,8 @@ export interface DashboardProps {
   }>;
   lossCurveData: { weekly: WeeklyHints[] };
   worldCards?: ReactNode;
+  systemEvidence?: ReactNode;
+  continuation?: ReactNode;
   /**
    * True when at least one streak's last_activity_date == today - 1 AND the
    * user has not yet completed a lesson today. Renders a gentle nudge toast.
@@ -234,17 +236,22 @@ export function DashboardView(props: DashboardProps) {
             <Link
               key={m.slug}
               href={
-                m.status !== "locked" ? `/worlds/${worldSlug}/${m.slug}` : "#"
+                m.status !== "locked"
+                  ? `/worlds/${worldSlug}#module-${m.slug}`
+                  : `/pricing?locked=${worldSlug}&module=${m.slug}`
               }
               onMouseEnter={() => setHovM(i)}
               onMouseLeave={() => setHovM(null)}
+              aria-label={
+                m.status === "locked" ? `Unlock ${m.name}` : undefined
+              }
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 14,
                 padding: "16px 24px",
                 borderBottom: `1px solid ${BORDER_VAR}`,
-                cursor: m.status === "locked" ? "default" : "pointer",
+                cursor: "pointer",
                 background:
                   m.status === "active"
                     ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
@@ -797,6 +804,10 @@ export function DashboardView(props: DashboardProps) {
           </section>
 
           {/* World catalog, owned vs locked */}
+          <div style={{ padding: "0 var(--dashboard-gutter)" }}>
+            {props.systemEvidence}
+            {props.continuation}
+          </div>
           {worldCards}
 
           {/* Recent activity */}

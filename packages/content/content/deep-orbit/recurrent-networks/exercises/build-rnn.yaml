@@ -91,7 +91,7 @@ testCode: |
   // cell has to reach one of these to answer: tf.sequential, layers.simpleRNN,
   // model.predict, or a tensor readback. A loop written out of arithmetic and
   // Math.tanh reaches none of them, so the total across a runCell call says
-  // which of the two ran.
+  // whether a monitored TensorFlow call occurred.
   const tfCalls = () => {
     const counts = tf.__calls || {};
     return Object.keys(counts).reduce((total, name) => total + counts[name], 0);
@@ -104,7 +104,7 @@ testCode: |
     const states = runCell(readings, wHidden, wInput, bias);
     expect(
       tfCalls() - before,
-      'runCell reached TensorFlow.js ' + (tfCalls() - before) + ' times while it ran, and the grader counts every call. Write this half as plain arithmetic and Math.tanh: four operations and one tanh per reading, with no tensors in it, because tensors here hide whether the carry is yours or the library\'s, and a cell built out of library layers returns this same list of states with the library doing the work this function is here to do. The library half of the exercise is buildCellLayer.',
+      'runCell called TensorFlow.js. Write this function with plain arithmetic and Math.tanh so you implement the state carry yourself. The library comparison belongs in buildCellLayer.',
     ).toBe(0);
     expect(
       states,

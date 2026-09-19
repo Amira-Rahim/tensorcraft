@@ -75,6 +75,7 @@ testCode: |
       const sentinel = '/models/spy-check/model.json';
       const realTf = tf;
       let seen = null;
+      let loaded = null;
       let loads = 0;
       tf = new Proxy(realTf, {
         get(target, prop) {
@@ -87,6 +88,7 @@ testCode: |
               m.add(realTf.layers.dense({ units: 5, activation: 'relu', inputShape: [7] }));
               m.add(realTf.layers.dense({ units: 3, activation: 'relu' }));
               m.add(realTf.layers.dense({ units: 2, activation: 'softmax' }));
+              loaded = m;
               return m;
             };
           }
@@ -103,6 +105,10 @@ testCode: |
       expect(info.layerCount).toBe(3);
       expect(info.inputShape[info.inputShape.length - 1]).toBe(7);
       expect(info.outputShape[info.outputShape.length - 1]).toBe(2);
+      const probe = realTf.zeros([1, 7]);
+      try {
+        expect(() => loaded.predict(probe), 'The metadata is copied, but the inspected model is still alive. Dispose it in a finally block.').toThrow('disposed');
+      } finally { probe.dispose(); }
       expect(loads, 'One inspection is one load. Every field you report hangs off the model the first call resolved to, so awaiting the loader again per field refetches the manifest and the weight shards each time.').toBe(1);
     });
   });

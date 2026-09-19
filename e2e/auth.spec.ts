@@ -15,7 +15,9 @@ test.describe("Auth Page", () => {
 
   test("has email magic link form", async ({ page }) => {
     await page.goto("/auth");
-    await expect(page.getByPlaceholder(/email/i)).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Email address", exact: true }),
+    ).toBeVisible();
   });
 
   test("new visitors see the sign-up framing", async ({ page }) => {

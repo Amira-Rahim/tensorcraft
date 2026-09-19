@@ -556,9 +556,10 @@ function BackgroundStep(props: {
         Tell us about your JavaScript background
       </h2>
       <p className="text-sm text-text-muted mb-8 font-sans max-w-[480px]">
-        Advanced and expert levels get the math derivations opened by default
-        inside lessons; everyone else keeps the derivations one click away. Only
-        experience level is required.
+        Tell us about your JavaScript experience. Choose your ML learning route
+        separately on the course page, where you can start from the foundations
+        or go directly to engineering challenges. Only experience level is
+        required.
       </p>
 
       {/* experience_level, required radio group */}

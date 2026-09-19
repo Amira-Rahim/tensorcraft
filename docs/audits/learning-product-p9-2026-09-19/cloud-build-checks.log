@@ -1,0 +1,6 @@
+Selected lines from the final Vercel deployment log; full private build log retained locally.
+Running "cd ../.. && CI=1 node scripts/migration-status.mjs && pnpm turbo build --filter=@tensorcraft/web"
+files on disk : 65
+applied (ledger): 65
+IN SYNC - every file is applied, no orphan ledger rows.
+@tensorcraft/web:build: [@sentry/nextjs - After Production Compile] Info: Successfully uploaded source maps to Sentry

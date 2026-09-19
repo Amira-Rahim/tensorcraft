@@ -8,6 +8,13 @@ class RedirectError extends Error {
   }
 }
 
+vi.mock("@/lib/learning-route-server", () => ({
+  getLearningRoutePreference: vi.fn(async () => ({
+    route: null,
+    unavailable: false,
+  })),
+}));
+
 vi.mock("next/navigation", () => ({
   redirect: (target: string) => {
     throw new RedirectError(target);
@@ -61,6 +68,7 @@ vi.mock("@tensorcraft/content", () => {
     getModules: () => [
       {
         slug: "foundations",
+        order: 1,
         title: "Foundations: Tensors & Data",
         description: "Build your first net",
       },

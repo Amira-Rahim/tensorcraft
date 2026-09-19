@@ -1,0 +1,167 @@
+
+> tensorcraft@ lint /Users/amira.salah/Desktop/tensorcraft
+> turbo lint
+
+• turbo 2.10.12
+
+   • Packages in scope: @tensorcraft/api, @tensorcraft/bridges, @tensorcraft/config, @tensorcraft/content, @tensorcraft/shared, @tensorcraft/supabase, @tensorcraft/ui, @tensorcraft/web, @tensorcraft/worlds
+   • Running lint in 9 packages
+   • Remote caching disabled
+
+@tensorcraft/content:build:content: cache hit, replaying logs 148030f2ed478f82
+@tensorcraft/content:build:content: 
+@tensorcraft/content:build:content: > @tensorcraft/content@0.0.0 build:content /Users/amira.salah/Desktop/tensorcraft/packages/content
+@tensorcraft/content:build:content: > velite build
+@tensorcraft/content:build:content: 
+@tensorcraft/content:build:content: [VELITE] building... 
+@tensorcraft/content:build:content: [VELITE] build finished in 4041.04ms
+@tensorcraft/shared:lint: cache miss, executing 49e52d4618193935
+@tensorcraft/worlds:lint: cache hit, replaying logs ae093ed9f5977991
+@tensorcraft/supabase:lint: cache miss, executing 33d81c3d728e9c3a
+@tensorcraft/shared:build: cache hit, replaying logs 32bf180d5d3b8ab1
+@tensorcraft/worlds:lint: 
+@tensorcraft/worlds:lint: > @tensorcraft/worlds@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/packages/worlds
+@tensorcraft/worlds:lint: > eslint .
+@tensorcraft/worlds:lint: 
+@tensorcraft/worlds:lint: 
+@tensorcraft/worlds:lint: /Users/amira.salah/Desktop/tensorcraft/packages/worlds/src/world-properties.test.ts
+@tensorcraft/worlds:lint:   618:9  warning  'semanticSurfaces' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/worlds:lint: 
+@tensorcraft/worlds:lint: ✖ 1 problem (0 errors, 1 warning)
+@tensorcraft/worlds:lint: 
+@tensorcraft/supabase:build: cache hit, replaying logs 1a29169c12610f26
+@tensorcraft/shared:build: 
+@tensorcraft/shared:build: > @tensorcraft/shared@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/shared
+@tensorcraft/shared:build: > tsc
+@tensorcraft/shared:build: 
+@tensorcraft/supabase:build: 
+@tensorcraft/supabase:build: > @tensorcraft/supabase@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/supabase
+@tensorcraft/supabase:build: > tsc
+@tensorcraft/supabase:build: 
+@tensorcraft/worlds:build: cache hit, replaying logs 8f72a83407580776
+@tensorcraft/worlds:build: 
+@tensorcraft/worlds:build: > @tensorcraft/worlds@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/worlds
+@tensorcraft/worlds:build: > tsc
+@tensorcraft/worlds:build: 
+@tensorcraft/api:lint: cache miss, executing 14239400526c659f
+@tensorcraft/content:lint: cache miss, executing 8b016a5e53aef669
+@tensorcraft/ui:build: cache hit, replaying logs a956c6d93247feb6
+@tensorcraft/ui:lint: cache miss, executing d19456321a848d4a
+@tensorcraft/ui:build: 
+@tensorcraft/ui:build: > @tensorcraft/ui@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/ui
+@tensorcraft/ui:build: > tsc
+@tensorcraft/ui:build: 
+@tensorcraft/content:build: cache hit, replaying logs b1e39d1ebfe0bbfa
+@tensorcraft/content:build: 
+@tensorcraft/content:build: > @tensorcraft/content@0.0.0 build /Users/amira.salah/Desktop/tensorcraft/packages/content
+@tensorcraft/content:build: > tsc
+@tensorcraft/content:build: 
+@tensorcraft/web:lint: cache miss, executing fd816665280daa7c
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: > @tensorcraft/api@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/apps/api
+@tensorcraft/api:lint: > eslint .
+@tensorcraft/api:lint: 
+@tensorcraft/supabase:lint: 
+@tensorcraft/supabase:lint: > @tensorcraft/supabase@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/packages/supabase
+@tensorcraft/supabase:lint: > eslint .
+@tensorcraft/supabase:lint: 
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: > @tensorcraft/web@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/apps/web
+@tensorcraft/web:lint: > eslint .
+@tensorcraft/web:lint: 
+@tensorcraft/content:lint: 
+@tensorcraft/content:lint: > @tensorcraft/content@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/packages/content
+@tensorcraft/content:lint: > eslint src/
+@tensorcraft/content:lint: 
+@tensorcraft/shared:lint: 
+@tensorcraft/shared:lint: > @tensorcraft/shared@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/packages/shared
+@tensorcraft/shared:lint: > eslint src/
+@tensorcraft/shared:lint: 
+@tensorcraft/ui:lint: 
+@tensorcraft/ui:lint: > @tensorcraft/ui@0.0.0 lint /Users/amira.salah/Desktop/tensorcraft/packages/ui
+@tensorcraft/ui:lint: > eslint .
+@tensorcraft/ui:lint: 
+@tensorcraft/content:lint: 
+@tensorcraft/content:lint: /Users/amira.salah/Desktop/tensorcraft/packages/content/src/glossary.test.ts
+@tensorcraft/content:lint:   2:25  warning  'GlossaryEntry' is defined but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/content:lint: 
+@tensorcraft/content:lint: /Users/amira.salah/Desktop/tensorcraft/packages/content/src/schemas.test.ts
+@tensorcraft/content:lint:    52:13  warning  'title' is assigned a value but never used          @typescript-eslint/no-unused-vars
+@tensorcraft/content:lint:    94:13  warning  'keywords' is assigned a value but never used       @typescript-eslint/no-unused-vars
+@tensorcraft/content:lint:   154:13  warning  'solutionCode' is assigned a value but never used   @typescript-eslint/no-unused-vars
+@tensorcraft/content:lint:   202:13  warning  'prerequisites' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/content:lint: 
+@tensorcraft/content:lint: ✖ 5 problems (0 errors, 5 warnings)
+@tensorcraft/content:lint: 
+@tensorcraft/ui:lint: 
+@tensorcraft/ui:lint: /Users/amira.salah/Desktop/tensorcraft/packages/ui/src/mdx/exercise-runner.ts
+@tensorcraft/ui:lint:   655:7  warning  'TF_MOCK' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/ui:lint: 
+@tensorcraft/ui:lint: ✖ 1 problem (0 errors, 1 warning)
+@tensorcraft/ui:lint: 
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: /Users/amira.salah/Desktop/tensorcraft/apps/api/src/lib/__tests__/github-project.test.ts
+@tensorcraft/api:lint:   26:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@tensorcraft/api:lint:   78:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: /Users/amira.salah/Desktop/tensorcraft/apps/api/src/routes/__tests__/profiles.test.ts
+@tensorcraft/api:lint:   7:7  warning  'mockSelect' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: /Users/amira.salah/Desktop/tensorcraft/apps/api/src/routes/__tests__/supabase-integration.test.ts
+@tensorcraft/api:lint:   76:7  warning  'selectCols' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: /Users/amira.salah/Desktop/tensorcraft/apps/api/src/routes/admin.ts
+@tensorcraft/api:lint:   41:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: /Users/amira.salah/Desktop/tensorcraft/apps/api/src/routes/issues.test.ts
+@tensorcraft/api:lint:   124:13  warning  'category' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/api:lint:   168:13  warning  'email' is assigned a value but never used     @typescript-eslint/no-unused-vars
+@tensorcraft/api:lint:   190:13  warning  'email' is assigned a value but never used     @typescript-eslint/no-unused-vars
+@tensorcraft/api:lint:   220:13  warning  'context' is assigned a value but never used   @typescript-eslint/no-unused-vars
+@tensorcraft/api:lint: 
+@tensorcraft/api:lint: ✖ 9 problems (0 errors, 9 warnings)
+@tensorcraft/api:lint: 
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/components/mdx/concept.tsx
+@tensorcraft/web:lint:   110:11  warning  'color' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/components/mdx/project-export.test.tsx
+@tensorcraft/web:lint:   77:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/dashboard/dashboard-view.tsx
+@tensorcraft/web:lint:   18:7  warning  'PANEL' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/dashboard/skill-genome.tsx
+@tensorcraft/web:lint:   37:9  warning  'n' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx
+@tensorcraft/web:lint:   152:7  warning  'mdxComponents' is assigned a value but never used                                                              @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint:   563:6  warning  React Hook useMemo has an unnecessary dependency: 'moduleId'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx
+@tensorcraft/web:lint:    312:3   warning  'prevLesson' is defined but never used. Allowed unused args must match /^_/u                                          @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint:    967:9   warning  'highlightTitle' is assigned a value but never used                                                                   @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint:   1525:21  warning  'world' is assigned a value but never used                                                                            @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint:   1795:6   warning  React Hook useCallback has a missing dependency: 'briefingVariant'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/worlds/[slug]/capstone/__tests__/page.test.tsx
+@tensorcraft/web:lint:   197:36  warning  'single' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/app/worlds/[slug]/capstone/capstone-client.tsx
+@tensorcraft/web:lint:    10:37  warning  'bg' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint:   140:3   warning  'bg' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/lib/character-art.test.ts
+@tensorcraft/web:lint:   6:7  warning  'aria' is assigned a value but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: /Users/amira.salah/Desktop/tensorcraft/apps/web/public/assignments/room-occupancy-v1/train.mjs
+@tensorcraft/web:lint:   3:10  warning  'saveArtifact' is defined but never used  @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint:   4:10  warning  'vectorFor' is defined but never used     @typescript-eslint/no-unused-vars
+@tensorcraft/web:lint: 
+@tensorcraft/web:lint: ✖ 16 problems (0 errors, 16 warnings)
+@tensorcraft/web:lint: 
+
+ Tasks:    13 successful, 13 total
+Cached:    7 cached, 13 total
+  Time:    12.8s 
+

@@ -27,7 +27,7 @@ consequence:
 hints:
   - level: nudge
     content: |
-      Every stage is handed the raw capture and does its own preprocessing, and the classifier's verdict rides along as context. Both of its fields get checked, and the two checks end differently: one broken field has an honest stand-in, the other has none. The expensive last stage is conditional: no anomaly, no alert. Stage 1 is a real model this time: scale the three readings the way module 4 did, hand the model one row, and read the verdict off the sigmoid.
+      Scale the three classifier inputs using RANGES and predict one row. Check the returned class and score before running the detector. Call the alert writer only when the detector returns true.
   - level: guidance
     content: |
       Validate before handing data to the next stage. Use the supplied ranges, one prediction inside tf.tidy, and plain returned values. A wrong class becomes unknown; an invalid score stops the run. Only a boolean true detector result triggers the alert writer. The field called confidence is a model score, not a measured probability of correctness.
@@ -218,7 +218,11 @@ The classifier and anomaly-score checks stop the run when their values are inval
 
 The alert identifies the detector, its score type and its threshold. An MSE and a z-score are different quantities; changing detectors silently would mislead the operator. Even a normal fallback result carries its method so the UI can show reduced coverage. These examples share helpers and require the LLMClient interface from lesson 1.
 
-For the autoencoder that stand-in is module 7's amplitude z-score, a weaker detector rather than a drop-in. It reads one channel against a baseline measured once over the normal period, fictional mean 0.52 and standard deviation 0.15 in min-max units, instead of eleven features against each other. A 3-sigma gate on that baseline fires only above 0.97 or below 0.07, and an amplitude pegged at 1.00, the most that feature can reach, scores 3.20 sigma; a dead channel at 0.00 is the only larger deviation, 3.47. The baseline arrives as an argument rather than being recomputed from the last eighty amplitudes, because a rolling baseline makes the sigma count depend on how quiet that stretch happened to be. The same 1.00 reading scores 342.86 sigma against a window whose standard deviation is 0.0014, and 2.29 against one whose standard deviation is 0.21.
+The fallback checks amplitude alone against a fixed normal-period baseline. It cannot detect every relationship the eleven-feature autoencoder might detect. In the fictional baseline, mean 0.52 and standard deviation 0.15 give a 3-sigma boundary at 0.07 and 0.97.
+
+For valid sensor readings scaled into [0, 1], the largest absolute z-score is about 3.47 at zero. That bound depends on the physical range and this fixed baseline, not on min-max scaling alone. The helpers check shape and finite values; an application must also validate sensor ranges.
+
+Refitting the baseline changes the score even if the reading stays fixed. Holding the mean at 0.52, a reading of 1.00 scores 342.86 with standard deviation 0.0014, but 2.29 with standard deviation 0.21. Pass the approved baseline explicitly so an unusually quiet or noisy window cannot silently replace it.
 
 <CodeBlock language="typescript" title="resilience.ts">
 {`// Continue in the same module: reuse the checked stage helpers above.
@@ -248,18 +252,18 @@ async function resilientPipeline(
 
 ## Challenge
 
-Wire the three stages, and make the two decisions the classifier's verdict forces: substitute the class you cannot believe, stop the run on the confidence you cannot replace. Then build stage 1 on a real model: module 4's classifier, three min-max features in, one sigmoid out, with the shape and the scale contracts above sitting on its input.
+Build the classifier stage with the supplied feature ranges, then connect it to the detector and alert writer. Replace an unsupported class with unknown; reject an invalid score before it reaches the next stage.
 
 <Exercise slug="model-pipeline" />
 
 <RecallPrompt question="What can checks between model stages catch, and what requires end-to-end evaluation?" answer="Contract checks can catch invalid shapes, missing fields and out-of-range values. They cannot establish that a plausible prediction is correct. Evaluate the whole pipeline against outcomes, including shared failures and fallback paths." />
 
-<RecallPrompt question="The autoencoder's stand-in here is module 7's 3-sigma gate on the amplitude alone. Why is there a ceiling on the sigma count that feature can produce, and what should you suspect when a reading comes back above it?" answer="Amplitude reaches the gate already min-max normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so nothing arrives above 1.00. Against the baseline of mean 0.52 and std 0.15, a full-scale reading is 3.2 sigma out and a dead channel at 0.00 is 3.47. With this fixed baseline and a valid [0, 1] amplitude, the absolute z-score cannot exceed about 3.47. A larger value means at least one assumption changed: inspect units, the baseline and sensor validity." />
+<RecallPrompt question="The autoencoder's stand-in here is module 7's 3-sigma gate on the amplitude alone. Why is there a ceiling on the sigma count that feature can produce, and what should you suspect when a reading comes back above it?" answer="For valid sensor readings within the stated physical range, amplitude divided by the 2048-count full scale lies in [0, 1]. Scaling itself does not enforce that range. Against the baseline of mean 0.52 and std 0.15, a full-scale reading is 3.2 sigma out and a dead channel at 0.00 is 3.47. With this fixed baseline and a valid [0, 1] amplitude, the absolute z-score cannot exceed about 3.47. A larger value means at least one assumption changed: inspect units, the baseline and sensor validity." />
 
 <LessonRecap
   whatYouLearned={["Validate input and output contracts at each stage, including feature order, units and preprocessing.", "Type and range checks catch malformed results. End-to-end evaluation is still needed for plausible but wrong predictions.", "Use a fallback only when its limitations are acceptable. Otherwise stop that path or request review."]}
   bridge="Services and models both need checked contracts. Model stages also need evaluation against real outcomes because a plausible, correctly typed result can still be wrong."
-  youCanNow="Wire a multi-model pipeline whose stages check what the stage before them promised, substituting a stand-in where one is honest and stopping the run where there is none."
+  youCanNow="Connect model stages with explicit preprocessing, checked outputs and documented fallback behavior."
 />
 
 <Epilogue>

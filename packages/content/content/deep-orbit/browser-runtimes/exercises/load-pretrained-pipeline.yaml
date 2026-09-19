@@ -1,7 +1,7 @@
 slug: load-pretrained-pipeline
 lessonSlug: transformers-js
 title: "Sentiment Classifier via Transformers.js"
-instructions: "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything."
+instructions: "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. Return [] immediately for an empty list, without loading a pipeline. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything."
 starterCode: |
   async function classifyReports(reports, pipelineFactory) {
     // The factory stands in for a model download, so how many times you call
@@ -12,6 +12,7 @@ starterCode: |
   }
 solutionCode: |
   async function classifyReports(reports, pipelineFactory) {
+    if (reports.length === 0) return [];
     const classifier = await pipelineFactory('sentiment-analysis');
     const predictions = await classifier(reports);
     const paired = reports.map((text, i) => ({
@@ -166,7 +167,9 @@ testCode: |
     it('an empty batch returns an empty list, and a one-report batch still returns its row', async () => {
       // Paired on purpose: returning [] for everything satisfies the empty
       // case, so the untouched starter used to score here on its first Run.
-      const empty = await classifyReports([], makeStubPipeline([]));
+      let emptyLoads = 0;
+      const empty = await classifyReports([], async () => { emptyLoads++; return async () => []; });
+      expect(emptyLoads, 'No reports need inference, so skip model loading.').toBe(0);
       expect(empty, 'No reports, no rows.').toEqual([]);
       const one = await ranked(['solo watch entry'], makeStubPipeline([{ label: 'NEG', score: 0.42 }]));
       expect(one[0].text).toBe('solo watch entry');

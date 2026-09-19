@@ -23,7 +23,7 @@ import { execSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { PostgresMeta } from "@supabase/postgres-meta";
 import { getGeneratorMetadata } from "@supabase/postgres-meta/dist/lib/generators.js";
-import { apply as applyTypescriptTemplate } from "@supabase/postgres-meta/dist/server/templates/typescript.js";
+import { generateTypes } from "./supabase-typegen.mjs";
 
 const OUT_FILE = "packages/supabase/src/types.ts";
 
@@ -53,11 +53,7 @@ if (error) {
   process.exit(1);
 }
 
-const generated = await applyTypescriptTemplate({
-  ...data,
-  detectOneToOneRelationships: true,
-  postgrestVersion,
-});
+const generated = await generateTypes(data, postgrestVersion);
 
 const header = `/**
  * Tensorcraft Database Types (GENERATED FILE, do not edit by hand)

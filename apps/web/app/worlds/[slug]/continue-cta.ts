@@ -45,10 +45,12 @@ export function resolveContinueCta({
   worldSlug,
   modules,
   hasPurchased,
+  learningRoute,
 }: {
   worldSlug: string;
   modules: CtaModule[];
   hasPurchased: boolean;
+  learningRoute?: "guided" | "challenge" | null;
 }): ContinueCta {
   // Deliberately lessons, not module status. In the exact state this
   // function exists to fix, module 1's STATUS is still "active" while every
@@ -63,14 +65,24 @@ export function resolveContinueCta({
 
   // Requires a remaining lesson, not merely an active status. That extra
   // clause is the whole fix.
-  const activeModule = modules.find(
+  const accessibleModules = modules.filter(
     (m) =>
       (m.status === "active" || m.status === "available") &&
       hasSomewhereToGo(m),
   );
-  const activeLesson = activeModule?.lessons.find(
-    (l) => l.status === "in_progress" || l.status === "available",
-  );
+  const activeModule =
+    accessibleModules.find((m) =>
+      m.lessons.some((l) => l.status === "in_progress"),
+    ) ??
+    (hasPurchased && learningRoute === "challenge"
+      ? accessibleModules.find((m) => m.slug === "browser-runtimes")
+      : undefined) ??
+    accessibleModules[0];
+  const activeLesson =
+    activeModule?.lessons.find((l) => l.status === "in_progress") ??
+    activeModule?.lessons.find(
+      (l) => l.status === "in_progress" || l.status === "available",
+    );
 
   const nextLockedModule = modules.find((m) => m.status === "locked");
 
@@ -103,7 +115,7 @@ export function resolveContinueCta({
       ),
     );
     return {
-      href: `/worlds/${worldSlug}/${activeModule.slug}/${activeLesson.slug}`,
+      href: `/worlds/${worldSlug}/${activeModule.slug}/${activeLesson.slug}${learningRoute === "challenge" ? "?start=challenge" : ""}`,
       label: hasStartedAnything
         ? `Continue M${activeModule.order}`
         : hasPurchased

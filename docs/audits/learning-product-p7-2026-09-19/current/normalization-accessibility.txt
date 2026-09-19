@@ -1,0 +1,35 @@
+- region "Keep the model and scaler together":
+  - paragraph: Try the calculation
+  - heading "Keep the model and scaler together" [level=3]
+  - paragraph: These four synthetic training rows fit the scaler. The neuron keeps weights [0.6, -0.8] and bias 0.1 throughout. Change preprocessing or one reading and watch the score change. The weights are supplied, not trained here, and the sigmoid score is not a calibrated probability.
+  - group "Keep the model and scaler together controls":
+    - text: Keep the model and scaler together controls
+    - group "Experiment inputs":
+      - text: Experiment inputs Temperature (°C)
+      - combobox "Temperature (°C)":
+        - option "20"
+        - option "22"
+        - option "24" [selected]
+        - option "28"
+      - text: Signal (relative units)
+      - combobox "Signal (relative units)":
+        - option "0"
+        - option "1"
+        - option "2" [selected]
+      - text: Preprocessing
+      - combobox "Preprocessing":
+        - option "Raw inputs"
+        - option "Saved training scaler v1" [selected]
+        - option "Refit on this one reading (mismatch)"
+    - paragraph: "Training rows [temperature, signal]: [20, 0], [20, 2], [24, 0], [24, 2]. Population mean [22, 1], standard deviation [2, 1]. A saved zero standard deviation uses divisor 1; the saved statistic stays zero."
+    - paragraph: "artifact: demo-neuron-v1 · scaler: training-v1 · features: temperature, signal"
+    - text: Predict the two values that reach the neuron.
+    - textbox "Predict the two values that reach the neuron."
+    - paragraph: Enter numbers separated by commas when there is more than one. Rounding to three decimal places is enough.
+    - button "Check prediction" [disabled]
+    - button "Show calculation and help"
+    - status
+    - button "Try a changed case" [disabled]
+    - button "Reset controls"
+    - paragraph: 0/20 checks in this case. No prediction recorded yet. Viewing feedback also counts as help for later attempts. Reset keeps attempts, help and any frozen policy. Draft saved in this tab. This practice does not complete the lesson.
+  - paragraph: This tab keeps the practice record. Sign in to save a summary across devices. Answers stay in this browser.

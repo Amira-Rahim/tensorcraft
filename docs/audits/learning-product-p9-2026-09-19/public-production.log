@@ -1,0 +1,29 @@
+
+Running 17 tests using 2 workers
+
+(node:43350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:43351) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/17] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 1440px dark
+[2/17] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 390px light
+[3/17] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 320px dark
+[4/17] [chromium] › e2e/editor-drafts.spec.ts:4:7 › unfinished code, solution recovery and save failure at 1440px
+[5/17] [chromium] › e2e/editor-drafts.spec.ts:4:7 › unfinished code, solution recovery and save failure at 390px
+[6/17] [chromium] › e2e/editor-drafts.spec.ts:119:5 › an unreadable draft stays intact until an explicit reset
+[7/17] [chromium] › e2e/lesson-history.spec.ts:3:5 › phase history preserves the document and experiment draft
+[8/17] [chromium] › e2e/normalization-experiment.spec.ts:8:7 › normalization on the real lesson, 1440px dark
+[9/17] [chromium] › e2e/normalization-experiment.spec.ts:8:7 › normalization on the real lesson, 390px light
+[10/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1440px dark
+[11/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1440px light
+[12/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1024px dark
+[13/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1024px light
+[14/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 390px dark
+[15/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 390px light
+[16/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 320px dark
+[17/17] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 320px light
+  17 passed (21.6s)

@@ -1,0 +1,15 @@
+  harness parity: 35 assertion fixtures produce identical text in both harnesses.
+
+Validating 1 exercise(s)...
+
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+  CHEAT-OK model-pipeline (model-pipeline.2.js): ignorant solution cleared 8, rejected by 11 (classifierStage > rejects non-finite input before predicting)
+  CHEAT-OK model-pipeline (model-pipeline.3.js): ignorant solution cleared 10, rejected by 9 (stops before alerting on invalid detector output)
+  CHEAT-OK model-pipeline: ignorant solution cleared 8, rejected by 11 (classifierStage > rejects non-finite input before predicting)
+  OK    model-pipeline (multi-model-systems) (19 tests)
+
+Done: 1 passed, 0 failed, 0 warned (allowlisted), 1 total.
+

@@ -64,7 +64,7 @@ The overnight run finished. Two hundred and fifty-seven numbers per window, and 
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-A note, Ensign. Think of a chord on a piano: you hear one sound, but it's actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and tells you exactly which notes are in it, and how loud each one is. Index 10 is the loudest note in yours.
+A note, Ensign. Think of a chord on a piano: you hear one sound, but it's actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and helps us separate the notes and compare their strengths. With a short or noisy recording, nearby notes can be hard to distinguish. Index 10 is the loudest note in yours.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -169,9 +169,11 @@ console.table(bins.filter((b) => b.magnitude > 1));
 // and finding it is the challenge below.`}
 </CodeBlock>
 
+<LearningExperiment id="fft" />
+
 ## The FFT for DEEP SCAN
 
-One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more. That caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. Use an anti-alias filter before sampling to remove higher-frequency content. Then choose a rate above twice the highest retained frequency, and why an under-sampled capture can plant a line that was never there.
+One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more. That caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. Use an anti-alias filter before sampling to remove higher-frequency content. Then choose a rate above twice the highest retained frequency. An under-sampled capture can place a peak at a frequency the original signal did not contain.
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -266,7 +268,7 @@ Return the largest measured non-DC bin. For an isolated tone it often lies near 
     "A median can reduce the influence of a few large bins, but is not automatically a noise estimate. Validate a detector's threshold and false-alarm rate on representative captures."
   ]}
   bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."
-  youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and say why a mean over every bin is the wrong way to estimate a noise floor."
+  youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and explain why a threshold needs validation on representative captures."
 />
 
 <Epilogue>

@@ -28,9 +28,9 @@ consequence:
   narrative: "The pipeline retrieves fourteen Band-7 rows and the model reports seventeen, so the audit hour buys a checker."
 hints:
   - level: nudge
-    content: "These rungs are about the retrieval. The checker below carries its own. Three reads off the question, each applied only when the question carries it, then the row cap that limits the supplied records, then the count and the flag that say what the cap cost."
+    content: "Apply only the filters named in the query. Count all matches before taking the first twenty. The claim-checking exercise has its own hints."
   - level: guidance
-    content: "Four decisions here, and three of them are about absence. A question that names no band, no age and no anomalies still has an answer: the whole catalogue. A condition the question never raised drops out of the pipeline rather than rejecting rows. When the question names two of them, both hold, so this reads as one list narrowed in turn rather than three candidate sets merged at the end. Measure the age window against the clock reading you were handed rather than the wall clock, or the same question answered twice covers two different windows and tomorrow's run cannot reproduce today's. The fourth decision is the one the prompt cannot show. Only the capped list travels, so the number the caller needs comes off the list before the cap trims it, and the flag has to say whether the trim dropped a row, not whether the limit was reached."
+    content: "Combine active filters with AND. Use the supplied now for the age boundary and keep database order. Set matched before slicing; truncated is true only if the slice omits a matching row. With no recognized filters, the whole database matches."
   - level: solution
     content: |
       interface Signal {
@@ -135,10 +135,8 @@ interface Retrieval {
   truncated: boolean;  // true when the cap dropped a matching row
 }
 
-// The honest label for that step: keyword-and-metadata retrieval. It
-// works here because the catalogue is 12,001 STRUCTURED rows with named
-// fields you can match on. What production RAG reaches for when the corpus
-// has no fields is the paragraph right under this block.
+// This is keyword-and-metadata retrieval over structured rows.
+// Prose search and ranking are separate choices, discussed below.
 
 // Step 2: AUGMENT. Keep record IDs and field names with the values.
 // One retrieved signal contributes one event, so sums count cited signals.

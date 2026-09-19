@@ -2,7 +2,7 @@
 import { chromium } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
-const base = process.env.UI_AUDIT_BASE ?? "http://127.0.0.1:3118";
+const base = process.env.UI_AUDIT_BASE ?? "http://localhost:3118";
 const out = process.env.UI_AUDIT_OUT ?? "test-results/ui-ux-audit";
 mkdirSync(out, { recursive: true });
 const routes = [
@@ -19,8 +19,8 @@ const routes = [
   ["pricing", "/pricing"],
   ["locked-pricing", "/pricing?locked=deep-orbit&module=neural-networks"],
   ["paywall", "/paywall"],
-  ["signin", "/auth/sign-in"],
-  ["signup", "/auth/sign-up"],
+  ["signin", "/auth"],
+  ["signup", "/auth?redirectTo=%2Fdashboard"],
   ["about", "/about"],
   ["compare", "/compare"],
   ["blog", "/blog"],
@@ -43,12 +43,9 @@ const records =
 const browser = await chromium.launch();
 const modes = process.argv.includes("--quick")
   ? [{ width: 1440, height: 900, scheme: "dark" }]
-  : [
-      { width: 1440, height: 900, scheme: "dark" },
-      { width: 390, height: 844, scheme: "dark" },
-      { width: 1440, height: 900, scheme: "light" },
-      { width: 390, height: 844, scheme: "light" },
-    ];
+  : [1440, 1024, 390, 320].flatMap((width) =>
+      ["dark", "light"].map((scheme) => ({ width, height: 900, scheme })),
+    );
 try {
   for (const mode of modes) {
     const context = await browser.newContext({
@@ -155,6 +152,9 @@ try {
         });
         const axe = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+          // These duplicated ordinals carry no information and are explicitly
+          // hidden from AT. Other low-contrast text remains in the audit.
+          .exclude('[data-decorative="true"][aria-hidden="true"]')
           .analyze();
         records.push({
           id,

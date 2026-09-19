@@ -30,6 +30,51 @@ const FRESH: CtaModule[] = [
 ];
 
 describe("resolveContinueCta", () => {
+  it("recommends browser work for an entitled challenge learner and resumes actual work first", () => {
+    const modules = [
+      {
+        order: 1,
+        slug: "foundations",
+        status: "available",
+        lessons: [{ slug: "intro", status: "available" }],
+      },
+      {
+        order: 6,
+        slug: "browser-runtimes",
+        status: "available",
+        lessons: [{ slug: "why-the-browser", status: "available" }],
+      },
+    ];
+    expect(
+      resolveContinueCta({
+        worldSlug: "deep-orbit",
+        modules,
+        hasPurchased: true,
+        learningRoute: "challenge",
+      }).href,
+    ).toBe(
+      "/worlds/deep-orbit/browser-runtimes/why-the-browser?start=challenge",
+    );
+    modules[0]!.lessons[0]!.status = "in_progress";
+    expect(
+      resolveContinueCta({
+        worldSlug: "deep-orbit",
+        modules,
+        hasPurchased: true,
+        learningRoute: "challenge",
+      }).href,
+    ).toBe("/worlds/deep-orbit/foundations/intro?start=challenge");
+    modules[0]!.lessons[0]!.status = "available";
+    modules[1]!.status = "locked";
+    expect(
+      resolveContinueCta({
+        worldSlug: "deep-orbit",
+        modules,
+        hasPurchased: false,
+        learningRoute: "challenge",
+      }).href,
+    ).toBe("/worlds/deep-orbit/foundations/intro?start=challenge");
+  });
   it("offers a brand new guest a start, not a continue", () => {
     const cta = resolveContinueCta({
       worldSlug: "deep-orbit",

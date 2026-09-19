@@ -1,0 +1,370 @@
+Skip retired migration 027_review_queue.sql (removed by 033)
+Skip retired migration 028_recall_explore_capture.sql (removed by 033)
+Applied application migrations to isolated PostgreSQL.
+Running row isolation and privileged-write checks
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ record_learning_activity 
+--------------------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+ test_assert 
+-------------
+ 
+(1 row)
+
+
+RLS assertions passed.
+(node:86306) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [BoundPool]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+Generated types from the isolated migrated schema.

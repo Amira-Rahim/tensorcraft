@@ -98,6 +98,7 @@ export type Database = {
           choice_index: number;
           choice_label: string;
           chosen_at: string;
+          content_version: number;
           id: string;
           lesson_id: string;
           reaction_ms: number | null;
@@ -109,6 +110,7 @@ export type Database = {
           choice_index: number;
           choice_label: string;
           chosen_at?: string;
+          content_version?: number;
           id?: string;
           lesson_id: string;
           reaction_ms?: number | null;
@@ -120,6 +122,7 @@ export type Database = {
           choice_index?: number;
           choice_label?: string;
           chosen_at?: string;
+          content_version?: number;
           id?: string;
           lesson_id?: string;
           reaction_ms?: number | null;
@@ -375,6 +378,105 @@ export type Database = {
           },
         ];
       };
+      learning_activity_progress: {
+        Row: {
+          activity_id: string;
+          assistance_observed: boolean;
+          attempt_count: number;
+          completed_at: string | null;
+          content_version: number;
+          first_assisted: boolean | null;
+          first_correct: boolean | null;
+          latest_assisted: boolean | null;
+          latest_correct: boolean | null;
+          phase: string;
+          source: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          activity_id: string;
+          assistance_observed?: boolean;
+          attempt_count?: number;
+          completed_at?: string | null;
+          content_version: number;
+          first_assisted?: boolean | null;
+          first_correct?: boolean | null;
+          latest_assisted?: boolean | null;
+          latest_correct?: boolean | null;
+          phase: string;
+          source: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          activity_id?: string;
+          assistance_observed?: boolean;
+          attempt_count?: number;
+          completed_at?: string | null;
+          content_version?: number;
+          first_assisted?: boolean | null;
+          first_correct?: boolean | null;
+          latest_assisted?: boolean | null;
+          latest_correct?: boolean | null;
+          phase?: string;
+          source?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      learning_activity_streams: {
+        Row: {
+          activity_id: string;
+          assistance_observed: boolean;
+          attempt_count: number;
+          completed_at: string | null;
+          content_version: number;
+          created_at: string;
+          first_assisted: boolean | null;
+          first_correct: boolean | null;
+          latest_assisted: boolean | null;
+          latest_correct: boolean | null;
+          phase: string;
+          stream_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          activity_id: string;
+          assistance_observed?: boolean;
+          attempt_count: number;
+          completed_at?: string | null;
+          content_version: number;
+          created_at?: string;
+          first_assisted?: boolean | null;
+          first_correct?: boolean | null;
+          latest_assisted?: boolean | null;
+          latest_correct?: boolean | null;
+          phase: string;
+          stream_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          activity_id?: string;
+          assistance_observed?: boolean;
+          attempt_count?: number;
+          completed_at?: string | null;
+          content_version?: number;
+          created_at?: string;
+          first_assisted?: boolean | null;
+          first_correct?: boolean | null;
+          latest_assisted?: boolean | null;
+          latest_correct?: boolean | null;
+          phase?: string;
+          stream_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       news_items: {
         Row: {
           curated_at: string | null;
@@ -383,10 +485,10 @@ export type Database = {
           id: string;
           is_content_gap: boolean;
           matched_concepts: string[];
-          matched_lessons: Json;
+          matched_lessons: NonNullable<Json>;
           published_at: string | null;
           published_blog_slug: string | null;
-          raw_json: Json;
+          raw_json: NonNullable<Json>;
           scraped_at: string;
           source: string;
           status: string;
@@ -402,10 +504,10 @@ export type Database = {
           id?: string;
           is_content_gap?: boolean;
           matched_concepts?: string[];
-          matched_lessons?: Json;
+          matched_lessons?: NonNullable<Json>;
           published_at?: string | null;
           published_blog_slug?: string | null;
-          raw_json?: Json;
+          raw_json?: NonNullable<Json>;
           scraped_at?: string;
           source: string;
           status?: string;
@@ -421,10 +523,10 @@ export type Database = {
           id?: string;
           is_content_gap?: boolean;
           matched_concepts?: string[];
-          matched_lessons?: Json;
+          matched_lessons?: NonNullable<Json>;
           published_at?: string | null;
           published_blog_slug?: string | null;
-          raw_json?: Json;
+          raw_json?: NonNullable<Json>;
           scraped_at?: string;
           source?: string;
           status?: string;
@@ -468,6 +570,7 @@ export type Database = {
           js_background: string | null;
           js_experience_years: number | null;
           learning_goal: string | null;
+          ml_learning_route: string | null;
           onboarding_completed: boolean;
           preferred_world_id: string | null;
           role: Database["public"]["Enums"]["user_role"];
@@ -489,6 +592,7 @@ export type Database = {
           js_background?: string | null;
           js_experience_years?: number | null;
           learning_goal?: string | null;
+          ml_learning_route?: string | null;
           onboarding_completed?: boolean;
           preferred_world_id?: string | null;
           role?: Database["public"]["Enums"]["user_role"];
@@ -510,6 +614,7 @@ export type Database = {
           js_background?: string | null;
           js_experience_years?: number | null;
           learning_goal?: string | null;
+          ml_learning_route?: string | null;
           onboarding_completed?: boolean;
           preferred_world_id?: string | null;
           role?: Database["public"]["Enums"]["user_role"];
@@ -657,7 +762,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -666,7 +771,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -675,7 +780,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -695,7 +800,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -704,7 +809,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -713,7 +818,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -725,7 +830,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -734,7 +839,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -743,7 +848,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -755,7 +860,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -764,7 +869,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -773,7 +878,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -785,7 +890,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -794,7 +899,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -803,7 +908,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -815,7 +920,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -824,7 +929,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -833,7 +938,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -845,7 +950,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -854,7 +959,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -863,7 +968,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -875,7 +980,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -884,7 +989,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -893,7 +998,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -905,7 +1010,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -914,7 +1019,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -923,7 +1028,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -935,7 +1040,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -944,7 +1049,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -953,7 +1058,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -965,7 +1070,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -974,7 +1079,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -983,7 +1088,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -995,7 +1100,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1004,7 +1109,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1013,7 +1118,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -1025,7 +1130,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1034,7 +1139,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1043,7 +1148,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -1055,7 +1160,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1064,7 +1169,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1073,7 +1178,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -1085,7 +1190,7 @@ export type Database = {
           created_at: string;
           event_type: string;
           id: string;
-          metadata: Json;
+          metadata: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1094,7 +1199,7 @@ export type Database = {
           created_at?: string;
           event_type: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis: string;
           user_id: string;
           world_id: string;
@@ -1103,7 +1208,7 @@ export type Database = {
           created_at?: string;
           event_type?: string;
           id?: string;
-          metadata?: Json;
+          metadata?: NonNullable<Json>;
           skill_axis?: string;
           user_id?: string;
           world_id?: string;
@@ -1327,7 +1432,10 @@ export type Database = {
         Args: { p_user_id: string; p_world_id: string };
         Returns: undefined;
       };
-      count_unread_dispatch: { Args: never; Returns: number };
+      count_unread_dispatch: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
       custom_access_token_hook: { Args: { event: Json }; Returns: Json };
       dispatch_milestone: {
         Args: {
@@ -1339,7 +1447,10 @@ export type Database = {
         };
         Returns: string;
       };
-      ensure_skill_events_partitions: { Args: never; Returns: undefined };
+      ensure_skill_events_partitions: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
       get_boss_beat_choice: {
         Args: { p_beat_id: string };
         Returns: {
@@ -1347,6 +1458,17 @@ export type Database = {
           choice_index: number;
           choice_label: string;
           chosen_at: string;
+          reaction_ms: number;
+        }[];
+      };
+      get_boss_beat_choice_versioned: {
+        Args: { p_beat_id: string };
+        Returns: {
+          beat_id: string;
+          choice_index: number;
+          choice_label: string;
+          chosen_at: string;
+          content_version: number;
           reaction_ms: number;
         }[];
       };
@@ -1372,7 +1494,7 @@ export type Database = {
           world_id: string;
         }[];
       };
-      is_admin: { Args: never; Returns: boolean };
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       mark_dispatch_read: {
         Args: { p_message_id: string };
         Returns: undefined;
@@ -1382,6 +1504,18 @@ export type Database = {
           p_beat_id: string;
           p_choice_index: number;
           p_choice_label: string;
+          p_lesson_id: string;
+          p_reaction_ms?: number;
+          p_world_id: string;
+        };
+        Returns: boolean;
+      };
+      record_boss_beat_choice_versioned: {
+        Args: {
+          p_beat_id: string;
+          p_choice_index: number;
+          p_choice_label: string;
+          p_content_version: number;
           p_lesson_id: string;
           p_reaction_ms?: number;
           p_world_id: string;
@@ -1398,11 +1532,31 @@ export type Database = {
         };
         Returns: boolean;
       };
+      record_learning_activity: {
+        Args: {
+          p_activity_id: string;
+          p_assistance_observed?: boolean;
+          p_attempt_count: number;
+          p_completed_at?: string;
+          p_content_version: number;
+          p_expected_user_id: string;
+          p_first_assisted?: boolean;
+          p_first_correct?: boolean;
+          p_latest_assisted?: boolean;
+          p_latest_correct?: boolean;
+          p_phase: string;
+          p_stream_id: string;
+        };
+        Returns: undefined;
+      };
       record_streak_activity: {
         Args: { p_world_id: string };
         Returns: undefined;
       };
-      refresh_dashboard_stats: { Args: never; Returns: undefined };
+      refresh_dashboard_stats: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
       restore_purchase_after_dispute: {
         Args: { p_payment_intent: string };
         Returns: number;

@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ../.. && CI=1 node scripts/migration-status.mjs && pnpm turbo build --filter=@tensorcraft/web"
+}

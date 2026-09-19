@@ -1,7 +1,15 @@
 slug: tfjs-setup
 lessonSlug: tensorflow-js-setup
 title: "Initialize TensorFlow.js"
-instructions: "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version, shaped `{ backend, version }`. Read both values off the runtime rather than writing them in as literals: the backend depends on the device the page is open on, and the version on the package installed there. `initTF` also takes an optional preferred backend name. When one is given, ask for it with `tf.setBackend` before you wait; a request is not a fact, so read the backend that is actually running afterwards. The request can fail two ways and neither is fatal: a registered backend that cannot start resolves false, and a name that was never registered throws, because its package was not imported. Either way the runtime settles on whatever works once `ready()` resolves, and that is the name you report."
+instructions: |
+  Implement `initTF(preferred?)`, returning the actual `{ backend, version }`.
+  Read both values from the runtime after awaiting `tf.ready()`.
+
+  When a preferred name is supplied, request it with `tf.setBackend()` first.
+  An unregistered name throws; a registered backend that cannot start can
+  return false. Catch a refused preference, then let `ready()` try the available
+  backends. If none starts, let initialization reject so the application can
+  show an error. Do not invent a successful backend name.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -116,6 +124,16 @@ testCode: |
       const { cold, result } = await onCold((c) => initTF(c.bad));
       expect(cold.asked, 'Ask for it first; the refusal comes back as false, not as a throw.').toEqual([cold.bad]);
       expect(result && result.backend, 'This backend is registered and cannot start. Reading its name right after the refusal reports the name that failed; only after ready() has settled the engine does getBackend() name the one actually running.').toBe(cold.tag);
+    });
+    it('propagates failure when no available backend can initialize', async () => {
+      let message = null;
+      try {
+        await onCold((c) => {
+          c.runtime.ready = async () => { throw new Error('No backend can start'); };
+          return initTF(c.bad);
+        });
+      } catch (error) { message = error.message; }
+      expect(message, 'A refused preference can fall back; a total initialization failure must reach the caller.').toBe('No backend can start');
     });
     it('a name that was never registered throws, and the call still resolves', async () => {
       const never = 'never-' + Math.floor(Math.random() * 1e9);

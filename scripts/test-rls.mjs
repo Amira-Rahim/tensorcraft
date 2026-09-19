@@ -100,7 +100,54 @@ try {
   console.log(
     sql(readFileSync(join(root, "packages/supabase/tests/rls.sql"), "utf8")),
   );
+  console.log(
+    sql(
+      readFileSync(
+        join(root, "packages/supabase/tests/learning-activity.sql"),
+        "utf8",
+      ),
+    ),
+  );
   console.log("RLS assertions passed.");
+  if (process.argv.includes("--types")) {
+    const { PostgresMeta } = await import("@supabase/postgres-meta");
+    const { getGeneratorMetadata } =
+      await import("@supabase/postgres-meta/dist/lib/generators.js");
+    const { generateTypes } = await import("./supabase-typegen.mjs");
+    const { writeFileSync } = await import("node:fs");
+    const meta = new PostgresMeta({
+      host: temp,
+      port: 55437,
+      user: "tensorcraft_test",
+      database: "postgres",
+      ssl: false,
+      max: 1,
+    });
+    try {
+      const { data: schema, error } = await getGeneratorMetadata(meta, {
+        includedSchemas: ["public"],
+        excludedSchemas: [],
+      });
+      if (error) throw new Error(error.message);
+      // Test-only helpers are not part of the application schema.
+      schema.functions = schema.functions.filter(
+        (fn) => !fn.name.startsWith("test_"),
+      );
+      const generated = await generateTypes(schema, "14.1");
+      const filename = join(root, "packages/supabase/src/types.ts");
+      const old = readFileSync(filename, "utf8"),
+        header = old.slice(0, old.indexOf("export type Json"));
+      writeFileSync(
+        filename,
+        header +
+          generated +
+          '\nexport type UserRole = Database["public"]["Enums"]["user_role"];\n',
+      );
+      console.log("Generated types from the isolated migrated schema.");
+    } finally {
+      await meta.end();
+    }
+  }
 } finally {
   if (started) run("pg_ctl", ["-D", data, "-m", "immediate", "-w", "stop"]);
   rmSync(temp, { recursive: true, force: true });

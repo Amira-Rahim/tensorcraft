@@ -26,9 +26,9 @@ consequence:
   narrative: "Demir leaves a run going overnight on the strength of an analogy. The analogy does not survive the log."
 hints:
   - level: nudge
-    content: "A step of an RNN is an ordinary loop iteration with one number carried across it. What arrives now is half of what the cell reads; the other half is what it was already holding. The second half of the exercise is the same cell with its weights chosen for you, so the work there is getting them out and naming them correctly. The third function is a running product: one factor per state, multiplied onto the product so far."
+    content: "Carry h between iterations, but reset it for each call. Collect every updated state."
   - level: guidance
-    content: "The state has to outlive the loop without outliving the call. Declare it before the loop starts and reassign it at every step, so what it holds at the end depends on the whole window. Declared inside the loop, every step starts from nothing. Declared outside the function, the second call starts where the first one stopped. Two of the arguments meet inside one squashing call: one scales what the cell was already holding, the other scales what just arrived. Collect the state after every step, not only the last one. A layer has no numbers of its own until it belongs to a model, so ask the model rather than the layer, and read the three tensors it returns in the order it returns them rather than the order the formula above is written in. For the factors, the only fact you need is on the page: the slope of tanh at a state is one minus the state squared, so each step contributes the weight times that, and the list you return is the product so far rather than the factor alone."
+    content: "Compute tanh(recurrentWeight * h + inputWeight * reading + bias). After building the model, getWeights returns input kernel, recurrent kernel, then bias. For the derivative, accumulate recurrentWeight * (1 - h*h) at each step."
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -102,7 +102,7 @@ h.dispose();
 The carry is the useful comparison. Both computations can give the same event a different result when the incoming state changes. You wrote the reducer rules; training fits the RNN parameters. The 0.8 and 1.0 here were chosen by hand so you can trace the arithmetic.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes"]} />
+<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a layer's current weights off the model and check your own arithmetic against what the layer computes"]} />
 
 ## The Learned Reducer
 
@@ -184,7 +184,7 @@ Nothing bounds the recurrent weight, though, so the product can sit above 1 for 
 
 In this particular constant-input example, tanh eventually saturates. The state approaches 0.8590 and the local factor falls to about 0.393, so the gradient shrinks again. That is not a guarantee for all inputs or weights. For example, an exactly zero state and zero input can remain at zero while a recurrent weight above one amplifies its derivative. Inspect the actual gradient history instead of assuming every explosion will end this way.
 
-The pattern DEEP SCAN needs repeats a little over every 73 seconds, and the dashboard feed carries one sample per second. Reaching back 73 steps comes up just short of one full interval, so an 80-reading window spans a little more than one interval. The useful context still depends on the task and pulse shape. The archive's rows come 2.2 to an interval, one every 33 seconds, and each one's three features come from a single quarter-second window inside that capture. They can show that something repeats. What they cannot carry is the shape inside a pulse, and an 80-row window of them spans 44 minutes instead of one interval. The next lesson introduces the cell that was designed for exactly that gap. Tonight's run, in the epilogue, shows what happens without it.
+The pattern DEEP SCAN needs repeats a little over every 73 seconds, and the dashboard feed carries one sample per second. Reaching back 73 steps comes up just short of one full interval, so an 80-reading window spans a little more than one interval. The useful context still depends on the task and pulse shape. The archive's rows come 2.2 to an interval, one every 33 seconds, and each one's three features come from a single quarter-second window inside that capture. They can show that something repeats. What they cannot carry is the shape inside a pulse, and an 80-row window of them spans 44 minutes instead of one interval. The next lesson introduces gates that can improve gradient flow across long windows. They cannot recover samples that were never recorded. Tonight's run, in the epilogue, shows what happens without it.
 
 ## Challenge
 
@@ -202,12 +202,14 @@ Then build the library's version of the same cell, a one-unit `tf.layers.simpleR
 <LessonRecap
   whatYouLearned={["An RNN updates carried state using a transition whose parameters are learned.", "returnSequences selects all hidden states or only the final state.", "Repeated gradient factors can shrink or amplify the learning signal. There is no fixed sequence length beyond which every simple RNN fails.", "Inspect predictions and gradients before diagnosing a stalled loss. Clipping limits large updates; it does not restore a vanished gradient."]}
   bridge="A replay reducer and an RNN both update carried state. The RNN learns transition parameters; identical fixed state and input can still produce reproducible inference."
-  youCanNow="Run an RNN cell's hidden state forward by hand, build the same cell with `tf.layers.simpleRNN`, and explain why vanishing gradients prevent it from learning long-range dependencies."
+  youCanNow="Run an RNN cell's hidden state forward by hand, build the same cell with `tf.layers.simpleRNN`, and explain how repeated gradient factors can make long-range dependencies difficult to learn."
 />
 
 <Epilogue>
 
-Demir queues the run before he leaves: the simple RNN on 80-step windows, long enough to span one full pulse interval. A reducer holds state, he figures, so catching the pattern is just a matter of epochs. At 0640 he checks the log: six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The network is flipping a coin.
+*Mission scene: the training duration and result are fictional.*
+
+Demir queues the run before he leaves: the simple RNN on 80-step windows, long enough to span one full pulse interval. A reducer holds state, he figures, so catching the pattern is just a matter of epochs. At 0640 he checks the log: six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The predictions sit near 0.5 on both classes.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Six hours of compute to learn nothing. The next overnight run gets cleared through me, with a number attached for what it costs if it fails.

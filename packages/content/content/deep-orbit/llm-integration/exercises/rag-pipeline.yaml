@@ -7,7 +7,7 @@ instructions: |
 
   Implement `verifyClaims(claims, records)`. Return `{ verified, unverified }`:
   arrays of claim IDs in input order. Each claim appears in exactly one list.
-  Claim IDs and record IDs are unique strings. Records supply observations for this exercise; validate their numeric types too. the other claim fields may be wrong or absent.
+  Claim IDs and record IDs are unique strings. Records supply observations for this exercise; validate their numeric types too. The other claim fields may be wrong or absent.
 
   A claim has `{ id, kind, rowIds, field, value, unit }`. A record has `id`
   and any available numeric fields. Only these field/unit pairs are supported:

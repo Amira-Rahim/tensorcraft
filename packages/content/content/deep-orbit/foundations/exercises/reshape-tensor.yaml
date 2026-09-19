@@ -1,7 +1,18 @@
 slug: reshape-tensor
 lessonSlug: tensor-shapes
 title: "Find the Signal's Layout"
-instructions: "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array of four numbers. Careful: row-major fill means you need to know exactly which four values land in that row. All three rows are checked against those twelve readings, so a wrong guess fails. `grid` also has to come out of `flat` itself: the grader checks that the two share one buffer, so a [3, 4] tensor typed out by hand is rejected even when every number in it is right. Release `flat` when you are done with it if you like; `grid` has to still be there for the grader."
+instructions: |
+  Twelve readings arrived in `flat`. Farah proposes three time steps with four
+  channels each.
+
+  Reshape `flat` into a `[3, 4]` tensor called `grid`. Extract its second row
+  (time step index 1) into `step1`, a plain JavaScript array of four numbers.
+  Predict that row from the flat order before running your code.
+
+  The checks compare all three rows and require `grid` to share `flat`'s
+  buffer in this TFJS runtime. Reshape the supplied tensor rather than
+  building a separate grid by hand. You may dispose `flat` afterward, but
+  retain `grid` for the checks.
 starterCode: |
   const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
 
@@ -88,7 +99,7 @@ testCode: |
       filled(step1, 'Step 2 is still empty. Pull row index 1 out of the grid.');
       expect(
         Array.isArray(step1),
-        'step1 has to arrive as a plain JS array of four numbers, which is what create-a-tensor asked for in lesson 1 as well. tf.slice hands back another tensor and a synchronous read hands back a Float32Array, so neither counts until it has been converted.',
+        'step1 has to arrive as a plain JS array of four numbers, which is what create-a-tensor asked for in lesson 1 as well. tf.slice returns a tensor. dataSync() returns flat typed storage; Array.from() converts it to a plain array. arraySync() instead returns ordinary nested arrays, from which you can select a row.',
       ).toBe(true);
       expect(
         step1,

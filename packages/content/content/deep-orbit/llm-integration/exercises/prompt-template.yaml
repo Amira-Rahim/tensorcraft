@@ -42,7 +42,7 @@ solutionCode: |
       '- Frequency: ' + signal.frequency + ' Hz',
       '- Phase: ' + signal.phase + ' rad',
       '',
-      'Classify this signal. Respond in JSON with fields: classification (noise or anomaly), confidence (0.0-1.0), reasoning (explanation).',
+      'Classify this signal. Respond in JSON with fields: classification (noise, anomaly or unknown), confidence (self-reported score, 0.0-1.0), reasoning (explanation).',
     ];
     return lines.join('\n');
   }
@@ -97,7 +97,7 @@ testCode: |
         const reference = parts.filter((line) => REFERENCE.every((hz) => line.includes(hz)));
         expect(
           reference,
-          'The frequencies this sector produces on its own belong on one line, together. That line is the only thing in the prompt the model cannot work out for itself, and version nine of the prompt beat version eight by adding exactly it.',
+          'Put the supplied natural-frequency catalogue together on a separate reference line.',
         ).toHaveLength(1);
         expect(
           reference[0].toLowerCase(),
@@ -105,12 +105,12 @@ testCode: |
         ).toContain('natural');
         expect(
           reference[0].toLowerCase(),
-          'Four numbers under the word natural are still four numbers. The line has to name the quantity, so write frequencies or carry the unit Hz. Without it nothing tells the model whether 5, 12, 23 and 47 are hertz, counts or hours, and the one line it cannot work out for itself arrives unreadable.',
+          'Label the quantity with frequencies or Hz.',
         ).toMatch(/frequenc|hz/);
         for (const value of printed(input)) {
           expect(
             reference[0],
-            'The reference line carries the catalogue, not this reading. Mixing the live values into it leaves the model unable to tell which is which.',
+            'Keep the reference catalogue separate from the current reading.',
           ).not.toContain(value);
         }
       }
@@ -145,13 +145,13 @@ testCode: |
         ).toMatch(/classif|label|categori[sz]/);
         expect(
           first.toLowerCase(),
-          'A job needs an object. The role line says what DEEP SCAN classifies, and here that is signals, so a name with the bare word classifier beside it still leaves the model guessing what it is looking at.',
+          'Name signals as the subject of the classification task.',
         ).toContain('signal');
         for (const value of printed(input)) expect(first).not.toContain(value);
         for (const hz of REFERENCE) {
           expect(
             first,
-            'The role and the reference context are two of the four parts, so they cannot share a line. A first line carrying the natural frequencies leaves the prompt with three parts, and the model with no line it can read as the catalogue.',
+            'This template keeps role and reference context on separate lines.',
           ).not.toContain(hz);
         }
         expect(first.toLowerCase()).not.toContain('json');
@@ -195,7 +195,7 @@ testCode: |
           for (const wrong of wrongLabels[entry[0]]) {
             expect(
               entry[1].toLowerCase(),
-              'Each reading gets the one label that belongs to it. A line that repeats all three labels beside a single number leaves the model no way to say which quantity that number is, which is the whole reason the values are split across lines.',
+              'Give each value its own correct label. Do not attach all three labels to one value.',
             ).not.toContain(wrong);
           }
         }
@@ -220,7 +220,7 @@ testCode: |
         for (const value of printed(first)) {
           expect(
             one,
-            'These readings were drawn a moment ago, so no stored prompt can carry them. Every call rebuilds the prompt from the signal it was handed.',
+            'Build each prompt from the supplied reading.',
           ).toContain(value);
           expect(two).not.toContain(value);
         }
@@ -244,7 +244,7 @@ testCode: |
         const prompt = promptFor(input);
         expect(
           prompt,
-          'Two familiar values and one fresh reading is still a fresh reading. A prompt recognized and returned from storage reports the dial that moved as whatever it was the last time.',
+          'Use the changed value even when the other two values match a previous reading.',
         ).toContain(String(fresh[dial]));
         expect(
           prompt,

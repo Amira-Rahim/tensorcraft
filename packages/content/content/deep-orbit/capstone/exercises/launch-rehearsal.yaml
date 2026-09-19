@@ -14,7 +14,8 @@ instructions: |
   3. Gate the run. Validate non-empty archive/canary sets, finite input values,
      positive range widths, binary labels, positive integer epochs/batchSize,
      finite [0, 1] baselineMeanScore/minAccuracy and nonnegative driftTolerance.
-     Reject invalid configuration or non-finite predictions/losses. Dispose
+     Reject invalid configuration, values that become non-finite when normalized
+     or converted to float32, and non-finite predictions/losses. Dispose
      training tensors even if fit rejects; the caller still owns the model.
 
   Drift here measures only mean prediction-score change, not input shift or
@@ -31,15 +32,24 @@ instructions: |
         launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
       }
 
-  `batchesRun` reads `model.optimizer.iterations`, which records the optimizer update count. It is a consistency check, not a tamper-proof training record. The grader checks it against the number of epochs in `losses`, and runs a second schedule with different numbers, so a loss trace and a trained model have to come from the same call. It also watches the fit itself: the schedule you pass, the trace it hands back, which is the trace `losses` reports, and the rows you hand it, on a rehearsal where all three channels have been recalibrated, so every limit has to come off `config.ranges` rather than from the full scale. One candidate arrives warm, with updates already on that counter from an earlier fit, so `batchesRun` is what the optimizer reads after your fit rather than the number your own schedule added to it.
+  Report the optimizer's total update count after fitting, including earlier
+  training on a warm candidate. Return the loss trace from that same fit.
+  The grader varies the schedule and all three scaling ranges, and checks
+  the actual rows passed to fit. These are consistency checks, not a
+  tamper-proof training record.
 hints:
   - level: nudge
     content: "Every number in the verdict has to come from the same training run, so the order of operations is the exercise: train first, then judge what you trained. Read the optimizer update count and compare it with the fit call, including updates made before this rehearsal."
   - level: guidance
     content: |
-      Three decisions carry this rehearsal, and the scoring path holds the first two. Every reading arrives in instrument units, and the limits a value is scaled against belong to the instrument, so read them off the argument that carries them rather than assuming a full scale. Phase is the one that catches people: its lower limit is negative, so subtracting it moves a value up. Then memory. Everything the scoring path allocates has to be gone by the time plain numbers come back, and the grader counts live tensors either side of the call. A scope that frees what it holds covers the synchronous path. It cannot hold an await, so the two big tensors the training call is handed have to be released by hand once that call resolves.
+      Read each feature's min and max from config. For phase, subtracting a
+      negative minimum shifts the value upward. Use tf.tidy for synchronous
+      prediction, and try/finally to dispose the tensors used by async fit.
 
-      The third decision is the verdict. The candidate arrives compiled, and compiling it again resets the counter the optimizer keeps and discards the training state CI handed over. A second rehearsal on the same model should therefore report a larger count than the first, not the same one. That counter records the optimizer updates, and the grader reads it against the epochs in the trace you report beside it, on two schedules with different numbers. Score the canary set after the training call, with the model that call moved. Then gate twice: the fraction of canary verdicts that matched their labels against the floor the config names, and the average score against the recorded baseline, inside the tolerance the config names. Launch needs both.
+      Keep the supplied compiled model and optimizer. After fitting, read
+      its total update count and loss history, then score the canary rows.
+      Launch requires both sufficient labeled accuracy and a mean score
+      within the configured drift tolerance.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -67,7 +77,11 @@ hints:
       function toRows(readings: Reading[], ranges: Ranges): number[][] {
         if (!readings.length || !readings.every(r => [r.amplitude,r.frequency,r.phase].every(Number.isFinite))) throw new Error('Invalid readings');
         if (![ranges.amplitude,ranges.frequency,ranges.phase].every(r => Number.isFinite(r.min) && Number.isFinite(r.max) && r.max > r.min && Number.isFinite(r.max-r.min))) throw new Error('Invalid ranges');
-        const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
+        const norm = (v: number, r: Range) => {
+          const value = (v - r.min) / (r.max - r.min);
+          if (!Number.isFinite(Math.fround(value))) throw new Error('Invalid normalized value');
+          return value;
+        };
         return readings.map((reading) => [
           norm(reading.amplitude, ranges.amplitude),
           norm(reading.frequency, ranges.frequency),
@@ -205,7 +219,11 @@ solutionCode: |
   function toRows(readings: Reading[], ranges: Ranges): number[][] {
     if (!readings.length || !readings.every(r => [r.amplitude,r.frequency,r.phase].every(Number.isFinite))) throw new Error('Invalid readings');
     if (![ranges.amplitude,ranges.frequency,ranges.phase].every(r => Number.isFinite(r.min) && Number.isFinite(r.max) && r.max > r.min && Number.isFinite(r.max-r.min))) throw new Error('Invalid ranges');
-    const norm = (v: number, r: Range) => (v - r.min) / (r.max - r.min);
+    const norm = (v: number, r: Range) => {
+      const value = (v - r.min) / (r.max - r.min);
+      if (!Number.isFinite(Math.fround(value))) throw new Error('Invalid normalized value');
+      return value;
+    };
     return readings.map((reading) => [
       norm(reading.amplitude, ranges.amplitude),
       norm(reading.frequency, ranges.frequency),
@@ -299,8 +317,8 @@ testCode: |
 
   // The rehearsal candidate: module 4's three-feature gate, compiled and
   // untrained, standing in for the eleven-feature classifier so the whole
-  // chain fits one run. Seeded initializers so a rehearsal is reproducible:
-  // run it twice and it trains the same way both times.
+  // chain fits one run. Seeds control initialization for this fixture;
+  // numerical results can still vary across backends and runtime versions.
   const buildCandidate = () => {
     const m = tf.sequential();
     m.add(tf.layers.dense({
@@ -326,6 +344,16 @@ testCode: |
   };
 
   describe('scoreReadings', () => {
+    it('rejects scaling overflow before prediction without retaining tensors', () => {
+      let calls = 0;
+      const model = { predict: () => { calls++; throw new Error('should not predict'); } };
+      const before = tf.memory().numTensors;
+      const tiny = { ...ranges, amplitude: { min: 0, max: 1e-100 } };
+      expect(() => scoreReadings(model, [{ amplitude: 1, frequency: 0, phase: 0, label: 0 }], tiny)).toThrow();
+      expect(calls).toBe(0);
+      expect(tf.memory().numTensors).toBe(before);
+    });
+
     it('scores are the normalized amplitudes, in input order', () => {
       const probe = columnProbe([[1], [0], [0]]);
       const readings = [
@@ -547,7 +575,7 @@ testCode: |
       expect(Number.isFinite(v.losses[0])).toBe(true);
       expect(
         v.losses[v.losses.length - 1],
-        'Twelve epochs on this archive slice takes binary cross-entropy from about 0.70, the ln 2 coin-flip mark, down to about 0.003. This particular seeded fixture should improve; real training can run without reducing loss.',
+        'This seeded fixture should reduce loss from its initial value near ln 2, where scores are near 0.5. Real training can run without improving loss.',
       ).toBeLessThan(v.losses[0]);
       expect(
         v.losses[v.losses.length - 1],
@@ -644,7 +672,7 @@ testCode: |
       ).toBe(0);
       expect(
         v.drift,
-        'Drift is the distance between the mean of the scores THIS model produced and the recorded baseline. These readings score near 0.997 against a 0.99 baseline, so the output distribution has not moved. Averaging the labels instead measures the canary set rather than the model, and reports drift on a run where the model is scoring exactly as recorded.',
+        'Compare the mean predicted score with the baseline. About 0.997 is within tolerance of 0.99. This mean-only check cannot detect every distribution change; averaging labels checks a different quantity.',
       ).toBe(false);
       expect(
         v.launch,

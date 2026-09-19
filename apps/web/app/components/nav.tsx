@@ -61,7 +61,7 @@ export function Nav() {
   return (
     <nav
       data-testid="site-nav"
-      className="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border rounded-none"
+      className="sticky top-0 z-50 min-h-15 py-1 flex flex-wrap items-center justify-between px-[min(2rem,5vw)] bg-surface border-b border-border rounded-none"
       aria-label="Main navigation"
     >
       <Link

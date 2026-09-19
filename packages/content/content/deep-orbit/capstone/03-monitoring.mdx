@@ -81,11 +81,7 @@ hints:
             }
           }
 
-          let sumSqDiff = 0;
-          for (let i = 0; i < featureCount; i++) {
-            sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2;
-          }
-          return Math.sqrt(sumSqDiff);
+          return Math.hypot(...recentMean.map((value, i) => value - this.baselineMean[i]));
         }
       }
 keywords:
@@ -100,7 +96,7 @@ skillAxes: [deployment, evaluation]
 Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. The 0249 crash made that argument, and nobody has reopened it.
 
 <Dialogue speaker="ARIA" expression="emphasis">
-Commander, I must flag a concern. The model performs at 91.8% accuracy now. That measurement does not establish future accuracy. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
+Commander, I must flag a concern. The model performs at 91.8% accuracy now. That measurement does not establish future accuracy. The signal characteristics in this region of space are not stationary. Without monitoring, we may miss a failure until someone checks an outcome.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -113,28 +109,30 @@ So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set,
 
 <BossBeat
   beatId="deep-orbit-drift-response"
-  prompt="A rehearsal drift score crosses the 0.5 review threshold. The shift is concentrated in fft_5; the calibration log has no recorded change. Prediction scores remain high, but recent outcome labels have not arrived. The next watch has one engineer available. What should that engineer do first?"
+  contentVersion={2}
+  showTimer={false}
+  prompt="In rehearsal, drift in fft_5 crosses the 0.5 review threshold. The calibration log records no change, but nobody has checked the raw instrument chain. Recent outcome labels are missing. One engineer has 20 minutes before scheduled maintenance. The active model can stay in place. A saved candidate passed checks on an older period; it has no evidence on this shift. A shadow run cannot issue alerts and must stop if active-model P95 latency exceeds 200 ms. What should use the slot?"
   options={[
-    {
-        "label": "cooperate",
-        "display": "Inspect raw captures and calibration before changing the model",
-        "consequence": "Nazari takes the investigation slot. The deployed model stays in place while she checks the instrument chain; retraining must wait."
-    },
-    {
-        "label": "defect",
-        "display": "Retrain on the recent stream and replace the current model",
-        "consequence": "Demir starts a candidate fit. Without recent outcome labels, the drift score cannot establish that it is better. The release gate will require a separate evaluation before any replacement."
-    },
-    {
-        "label": "random",
-        "display": "Silence repeat drift pages for this watch",
-        "consequence": "The engineer finishes scheduled maintenance. Raw measurements continue, but the next watch will have to inspect the unreviewed interval before trusting the alert history."
-    },
-    {
-        "label": "dominant",
-        "display": "Keep current alerts and compare a shadow candidate",
-        "consequence": "Demir reserves the engineer for a parallel comparison. The candidate cannot issue operational verdicts; useful quality evaluation still waits for labels, and both runs consume resources."
-    }
+  {
+    "label": "cooperate",
+    "display": "Inspect raw captures, calibration and preprocessing for 20 minutes",
+    "consequence": "Nazari owns the instrument check. The current model and alerts stay active. She records what the slot can establish and hands any unresolved item to the next watch; the shadow comparison waits."
+  },
+  {
+    "label": "defect",
+    "display": "Replace the model after fitting the recent unlabeled stream",
+    "consequence": "A drift score cannot supply outcome labels for a supervised fit or show that a replacement improves decisions. Demir can prepare a candidate, but the release gate blocks replacement until an appropriate labeled evaluation. The engineer's slot is spent without a quality verdict."
+  },
+  {
+    "label": "random",
+    "display": "Mute repeat drift pages and use the slot for maintenance",
+    "consequence": "Maintenance proceeds and raw data stays retained. The interval has no drift-page review owner. High model scores do not establish safety; the next watch must inspect the retained interval before relying on the alert history."
+  },
+  {
+    "label": "dominant",
+    "display": "Run the saved candidate in shadow for at most 20 minutes",
+    "consequence": "Demir records paired outputs and artifact versions while the active model keeps issuing verdicts. Stop at 20 minutes or if active-model P95 latency exceeds the 200 ms rehearsal budget. The candidate cannot control alerts. Label review and the instrument investigation remain outstanding."
+  }
 ]}
 />
 
@@ -252,9 +250,9 @@ Render an absent measurement as "No data". A measured zero distance only says th
 
 <Exercise slug="model-monitor" />
 
-<RecallPrompt question="What category of model failure does standard app monitoring miss entirely?" answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong." />
+<RecallPrompt question="What model failure can occur without an exception or latency change?" answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong." />
 
-<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="Because production predictions arrive without labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Scores and drift do not replace labels. Evaluate when trusted outcomes arrive, record their coverage and delays, and investigate changes before choosing an intervention." />
+<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="In this mission, recent predictions arrive before their trusted labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Scores and drift do not replace labels. Evaluate when trusted outcomes arrive, record their coverage and delays, and investigate changes before choosing an intervention." />
 
 <LessonRecap
   whatYouLearned={[
@@ -267,7 +265,7 @@ Render an absent measurement as "No data". A measured zero distance only says th
   youCanNow="Implement a model health monitor that averages prediction confidence, reads a latency percentile off the recorded inference times, and scores data drift as the distance between the recent feature means and a training-time baseline."
 />
 
-> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. Last quarter it paged his cell for three straight days, every feature mean shifted at once, score pinned above threshold. Nothing in the world had changed: their own maintenance rotation had recalibrated the camera rig, and the detector was faithfully reporting the distance between the old sensors and the new ones. The check compares two means; it cannot tell you which side moved. They rebuilt the baseline from post-calibration data and the paging stopped. The line Hassan then added to the runbook travels well: when drift fires, read the maintenance log before you read the sky.
+> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. Last quarter it paged his cell for three straight days, every feature mean shifted at once, score pinned above threshold. Nothing in the world had changed: their own maintenance rotation had recalibrated the camera rig, and the detector was faithfully reporting the distance between the old sensors and the new ones. The check compares means; it cannot identify why they differ. They corrected the preprocessing, checked labeled outcomes and approved a post-calibration baseline. The paging stopped. The line Hassan then added to the runbook travels well: when drift fires, read the maintenance log before you read the sky.
 
 <Epilogue>
 

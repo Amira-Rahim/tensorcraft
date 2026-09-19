@@ -13,7 +13,7 @@ context:
   narrative: "The LSTM works, but a warning ripple at step 4 is diluted to nothing by step 80. Farah introduces attention: a direct connection between any two time steps, so the forecast can read earlier representations directly."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Attention scores every time step for relevance at once, then spends the model's capacity where the scores are high."
+  explanation: "Attention scores keys against a query and forms a weighted blend of their values. High weights are larger coefficients in that blend, not proof of causal importance."
   bridge:
     jsTitle: "CSS :focus"
     jsCode: ":focus { outline: 2px solid blue; } // highlight the active element"
@@ -52,7 +52,7 @@ skillAxes: [model_arch]
 
 > **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · review finding: precursor ripple at window position 4 of 80. The forecast missed its timing.
 
-The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the review finds a warning ripple at step 4. That suggests a hypothesis about the model's use of early evidence, not a measured cause of the miss. The ripple was in the input. This trained LSTM did not use it well enough.
+The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the review finds a warning ripple at step 4. That suggests a hypothesis about the model's use of early evidence, not a measured cause of the miss. The ripple was in the input. This trained LSTM did not use it well enough. Demir attaches the timing worksheet Mirza ordered after the first three-second miss. The capture clocks and window boundaries agree; this check leaves the forecast as the next thing to investigate.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 This run missed the early ripple. An LSTM can retain distant information, but ours did not retain enough of this event. Attention can read earlier hidden states directly instead of relying only on the final state. We still have to test whether that improves the forecast.
@@ -125,6 +125,8 @@ The worked softmax is the part that vetoes the :focus picture, and it does so wi
 
 One argument in that block has not come up before. `tf.matMul` takes two booleans after the two tensors, `transposeA` and `transposeB`, and each one transposes its own tensor on the way into the multiply. Here the query is [1, dim] and the keys are [seqLen, dim], so the inner sizes are dim and seqLen and they do not meet. Drop the flags and the op refuses: with a 3-wide query and 4 keys, `tf.matMul(query, keys)` stops at `Error in matMul: inner shapes (3) and (4) of Tensors with shapes 1,3 and 4,3 and transposeA=false and transposeB=false must match.` Passing true for `transposeB` reads the keys as [dim, seqLen], which is what makes the scores come out [1, seqLen]. It is the same arithmetic as `tf.matMul(query, keys.transpose())`: with the query [1, 2, 3] and the keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]], both calls return the row [1, 2, 3, 6]. The flag expresses the transpose inside the multiplication; whether it saves work depends on the backend.
 
+<LearningExperiment id="attention" />
+
 ## LSTM vs Attention
 
 <CodeBlock language="typescript" title="comparison.ts">
@@ -173,7 +175,7 @@ Those two multiplies are cheap here because the head asks one question per windo
 
 Transformer attention usually projects the hidden states first. It multiplies its input by three learned matrices, W_Q, W_K and W_V, to build the query, the keys and the values separately. Those matrices are what training adjusts. They are also what separates a key from a value: the key is what a step offers for matching, the value is what that step hands over once matched. Passing `steps` for both keys and values above is the projection-free shortcut this lesson takes. That leaves the encoder and dense head as the trainable components. This example only executes their forward pass.
 
-There is a second shortcut in the same function. Scaled dot-product attention divides the scores by the square root of the key width before the softmax, because dot products grow with that width and large scores push softmax toward spending everything on one step. To isolate the unscaled operation, so this lesson leaves it out and the exercise grades the unscaled split. One more term to carry forward: a head is one complete query-key-value computation like this one, and a transformer runs several of them side by side on the same input, each with its own W_Q, W_K and W_V.
+There is a second shortcut in the same function. Scaled dot-product attention divides the scores by the square root of the key width before the softmax, to control their scale. For independent query and key coordinates with zero mean and unit variance, the dot product has variance equal to that width. Large score differences can concentrate softmax weights and reduce gradients. This lesson omits the divisor to isolate the unscaled operation, and the exercise grades that version. One more term to carry forward: a head is one complete query-key-value computation like this one, and a transformer runs several of them side by side on the same input, each with its own W_Q, W_K and W_V.
 
 Hold the query fixed and shuffle the keys and values together. Without position information, each weight follows its key and the weighted sum stays the same, apart from floating-point rounding. If you choose a new query after shuffling, that is a different computation. Our hybrid uses the last LSTM state as its query, and those states already contain sequence context. Transformers that omit recurrence need another way to represent order, such as positional encodings or relative positions. Lesson 2 introduces a positional encoding.
 
@@ -193,7 +195,7 @@ Implement attention over a sequence, with the keys and the values handed in sepa
 
 <Epilogue>
 
-The freshly validated attention model meets the live feed before anyone logs off, and shows two hotspots in every window: the amplitude spike, then the frequency shift trailing it. On the pre-contact archive, the gap between hotspot centers measures 73.4 seconds. On tonight's feed it measures 73.1. Demir reruns it and gets 73.1 again. Farah, already at the door, prescribes the only test that matters: same window, same archive, tomorrow night. A repeatable change deserves a measurement check before anyone files it as jitter.
+The freshly validated attention model meets the live feed before anyone logs off, and shows two hotspots in every window: the amplitude spike, then the frequency shift trailing it. On the pre-contact archive, the gap between hotspot centers measures 73.4 seconds. On tonight's feed it measures 73.1. Demir reruns it and gets 73.1 again. Farah, already at the door, asks Demir to compare the raw timestamps and window boundaries before interpreting the hotspots. She adds a repeat on tomorrow's capture. After the lost spectrogram slot, her test plans name what each view can leave out.
 
 He files it under jitter anyway, because the alternative is stranger than he wants to be at two in the morning. The file does not stay closed.
 

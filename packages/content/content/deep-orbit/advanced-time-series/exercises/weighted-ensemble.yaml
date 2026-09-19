@@ -9,7 +9,7 @@ instructions: |
 
   What to return. `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-squared-error weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the weights on a scale that totals 1. This is a heuristic: squared MAE is not error variance. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win.
 
-  Assume non-empty arrays, unique member names, finite predictions aligned with actual, and finite positive heldOutError values. Use the prior week's errors only for the weights. Use the current window to compare the resulting predictions with every member. Shared errors may survive averaging, a weak member may worsen the blend, and an old ranking may no longer hold. Find the best member by score rather than array position.
+  Assume non-empty arrays, unique member names, finite predictions aligned with actual, and finite positive heldOutError values. Use the prior week's errors only for the weights. To avoid overflow for tiny errors, normalize `(minError / e_i)^2`; the shared scale cancels, giving the same weights. Treat member names as ordinary keys, including JavaScript property names. Use the current window to compare the resulting predictions with every member. Shared errors may survive averaging, a weak member may worsen the blend, and an old ranking may no longer hold. Find the best member by score rather than array position.
 starterCode: |
   function ensembleGain(members, actual) {
     // The verdict is a comparison, so every member and both blends have to
@@ -22,7 +22,7 @@ solutionCode: |
       values.reduce((sum, v, i) => sum + Math.abs(v - actual[i]), 0) /
       actual.length;
 
-    const perMember = {};
+    const perMember = Object.create(null);
     for (const member of members) {
       perMember[member.name] = mae(member.predictions);
     }
@@ -33,11 +33,14 @@ solutionCode: |
     );
     const ensemble = mae(blended);
 
+    // Multiplying every inverse-square weight by minError^2 cancels
+    // during normalization and avoids overflow for very small errors.
+    const minError = Math.min(...members.map(member => member.heldOutError));
     const inverseSquaredError = members.map(
-      (member) => 1 / (member.heldOutError * member.heldOutError),
+      (member) => (minError / member.heldOutError) ** 2,
     );
     const total = inverseSquaredError.reduce((sum, v) => sum + v, 0);
-    const weights = {};
+    const weights = Object.create(null);
     members.forEach((member, i) => {
       weights[member.name] = inverseSquaredError[i] / total;
     });
@@ -51,6 +54,18 @@ solutionCode: |
     return { perMember, ensemble, weights, weighted, beatsBest: ensemble < best };
   }
 testCode: |
+  it('keeps weights finite for tiny errors and supports arbitrary member names', () => {
+    const r = ensembleGain([
+      { name: '__proto__', predictions: [0], heldOutError: 1e-200 },
+      { name: 'constructor', predictions: [10], heldOutError: 2e-200 },
+    ], [0]);
+    expect(r.weights['__proto__']).toBeCloseTo(0.8, 8);
+    expect(r.weights.constructor).toBeCloseTo(0.2, 8);
+    expect(r.perMember['__proto__']).toBe(0);
+    expect(r.perMember.constructor).toBe(10);
+    expect(r.weighted).toBeCloseTo(2, 8);
+    expect(r.beatsBest).toBe(false);
+  });
   describe('ensembleGain scores members and the blend', () => {
     it('reports one mean absolute error per member', () => {
       const result = ensembleGain(
@@ -274,7 +289,7 @@ testCode: |
       ).toBeCloseTo(5.342809, 4);
       expect(
         result.weighted > result.ensemble,
-        'Confidence is a measurement from another week. When the ranking flips, leaning on it costs you, and compare updated weights with equal weighting on new validation data.',
+        'The weights came from another week. When rankings change, compare updated weights and equal weighting on new validation data.',
       ).toBe(true);
     });
     // Provenance check, added 2026-09-08 and extended 2026-09-12 to the

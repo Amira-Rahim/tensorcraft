@@ -36,6 +36,8 @@ instructions: |
   detector values must be finite, error thresholds nonnegative, and both
   reported model scores in [0, 1]. Reject invalid values before voting.
 
+  Allow 1e-12 arithmetic slack at the 2% ratio boundary. Reject an interval ratio that overflows or underflows. Reject a nonconstant window whose variance collapses to zero in float32.
+
   An empty ratio list is insufficient evidence and returns false. The label confirmed-anomaly is a mission rule combining the vote and this pattern check; it does not establish the signal's origin.
 
   The window must be non-empty and contain finite readings; actual must be finite. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. An undefined z-score is not a measured zero.
@@ -89,7 +91,9 @@ solutionCode: |
     if (!intervals.every(v => Number.isFinite(v) && v > 0)) throw new Error('Invalid intervals');
     const ratios = [];
     for (let i = 0; i < intervals.length - 1; i++) {
-      ratios.push(intervals[i + 1] / intervals[i]);
+      const ratio = intervals[i + 1] / intervals[i];
+      if (!Number.isFinite(ratio) || ratio <= 0) throw new Error('Unrepresentable ratio');
+      ratios.push(ratio);
     }
     return ratios;
   }
@@ -101,7 +105,7 @@ solutionCode: |
     // align on length from the tail, where the train converges on phi.
     const expected = fibonacciRatios.slice(fibonacciRatios.length - ratios.length);
     if (expected.length !== ratios.length) return false;
-    return ratios.every((r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02);
+    return ratios.every((r, i) => Number.isFinite(r) && Math.abs(r - expected[i]) / expected[i] <= 0.02 + 1e-12);
   }
 
   function classifyAnomaly(reading) {
@@ -121,9 +125,9 @@ solutionCode: |
         variance: m.variance.dataSync()[0],
       };
     });
-    if (!Number.isFinite(mean) || !Number.isFinite(variance)) throw new Error('Invalid moments');
+    if (!Number.isFinite(mean) || !Number.isFinite(variance) || (!constant && variance === 0)) throw new Error('Invalid moments or collapsed spread');
     const std = Math.sqrt(variance);
-    const z = constant || std === 0 ? null : (reading.actual - mean) / std;
+    const z = constant ? null : (reading.actual - mean) / std;
 
     const verdicts = {
       statistical: z === null ? reading.actual !== reading.window[0] : Math.abs(z) > 3,
@@ -183,6 +187,14 @@ testCode: |
         expect(() => classifyAnomaly({...zeroHourReading,[key]:NaN})).toThrow();
       }
       for (const intervals of [[0,1],[-1,1],[1,Infinity]]) expect(() => decomposeIntervals(intervals)).toThrow();
+    });
+
+    it('rejects collapsed spread and preserves the relative tolerance boundary', () => {
+      expect(() => classifyAnomaly({...zeroHourReading, window:[1, 1 + 1e-9]})).toThrow();
+      expect(() => decomposeIntervals([1e-300, 1e300])).toThrow();
+      expect(() => decomposeIntervals([1e300, 1e-300])).toThrow();
+      expect(isFibonacciTrain([1.02, 2.04, 1.53, (5/3)*1.02, 1.632, 1.6575])).toBe(true);
+      expect(isFibonacciTrain([1, 2, 1.5, 5/3, 1.6, '1.625'])).toBe(false);
     });
 
     const result = classifyAnomaly(zeroHourReading);

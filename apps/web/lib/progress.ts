@@ -1,6 +1,26 @@
 import { getSupabaseServerClient } from "./supabase/server";
 import { canAccessWorld } from "./entitlements";
 
+/** Account history restores exercise gates on a different browser. */
+export async function getPassedExercises(
+  userId: string,
+  worldId: string,
+  lessonId: string,
+) {
+  const supabase = await getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("exercise_attempts")
+    .select("exercise_slug")
+    .eq("user_id", userId)
+    .eq("world_id", worldId)
+    .eq("lesson_id", lessonId)
+    .eq("passed", true);
+  return {
+    slugs: [...new Set((data ?? []).map((row) => row.exercise_slug))],
+    unavailable: !!error,
+  };
+}
+
 /** Get user progress for a world */
 export async function getUserProgress(userId: string, worldSlug: string) {
   const supabase = await getSupabaseServerClient();

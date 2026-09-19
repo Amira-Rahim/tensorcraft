@@ -37,6 +37,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { createRequire } from "node:module";
 import { randomBytes } from "node:crypto";
+import { FIT_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-fit-recording.mjs";
 
 // Resolve `@tensorflow/tfjs` from the workspace `packages/ui` package, since
 // pnpm doesn't hoist it to the repo root and the validator script lives at
@@ -49,6 +50,7 @@ const _require = createRequire(
   ),
 );
 const realTf = _require("@tensorflow/tfjs");
+const fitRecorder = new Function(`return ${FIT_RECORDING_SOURCE}`)()(realTf);
 
 // Polyfill `inputShape` getter on `LayersModel` (and therefore `Sequential`).
 // Real tfjs only exposes `outputShape`; many exercise tests assert on
@@ -265,6 +267,7 @@ let liveCalls = Object.create(null);
       liveCalls["model.predict"] = (liveCalls["model.predict"] || 0) + 1;
       return realPredict.apply(this, args);
     };
+    proto.fit = fitRecorder.wrap(proto.fit);
     proto.__tcSpied = true;
   }
   // The namespace proxy refuses writes to tf's own properties, but nothing
@@ -292,11 +295,12 @@ let liveCalls = Object.create(null);
     "dataSync",
     "arraySync",
   ]);
-  lockMethods(proto, ["predict", "save"]);
+  lockMethods(proto, ["predict", "save", "fit"]);
   if (realTf.util && typeof realTf.util === "object")
     Object.freeze(realTf.util);
 }
 function spiedTf(base) {
+  fitRecorder.reset();
   const calls = Object.create(null);
   liveCalls = calls;
   const bump = (name) => {
@@ -323,6 +327,7 @@ function spiedTf(base) {
       // counters twice sees the calls in between.
       if (prop === "__calls")
         return Object.freeze(Object.assign(Object.create(null), calls));
+      if (prop === "__fits") return fitRecorder.read();
       const v = target[prop];
       if (SPIED_ENTRY_POINTS.has(prop) && typeof v === "function") {
         return function (...args) {

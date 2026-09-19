@@ -4,6 +4,11 @@ This packet prepares Q5 and Q6 of the [content quality plan](../content-quality-
 It contains no reviewer scores or learner results. The author-side checks in
 the repository cannot establish a 9/10 independent score or a $70 return on investment.
 
+The September 19 [measurement handoff](learning-product-handoff.md) adds
+observations for the new experiments, both ML routes and revised story choices.
+It distinguishes an optional mixed-background discovery round from this
+formal novice pilot. Recruitment remains deferred; these are prepared materials.
+
 The study owner recruits two independent reviewers and 12-20 JavaScript
 engineers new to ML. One reviewer needs practical ML evaluation experience;
 the other needs technical editing and instructional experience. Both must

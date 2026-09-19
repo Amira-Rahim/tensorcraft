@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "recordedOn": "2026-09-19",
+  "interpretation": "Authored capability progression, checked against source links. Changed constraints are task variations, not observed independent transfer. Numerical activities are browser-reported practice; rationales and external work require self-review or later human review.",
+  "helpContract": "Existing exercises keep staged hints and full solutions. New experiments preserve first outcomes and help through reset and offer a changed case. Revisited reference material is recorded as assistance.",
+  "capabilities": [
+    {
+      "id": "data-layout",
+      "title": "Recover feature axes",
+      "workedExample": {
+        "lesson": "tensor-shapes"
+      },
+      "partialCompletion": {
+        "lesson": "tensor-shapes",
+        "exercise": "reshape-tensor"
+      },
+      "failureDiagnosis": {
+        "lesson": "tensor-shapes",
+        "activity": "deep-orbit-channel-layout",
+        "focus": "The reshape has the requested dimensions but mixes channels."
+      },
+      "changedConstraint": {
+        "lesson": "sliding-windows",
+        "exercise": "sliding-window",
+        "constraint": "Temporal windows preserve row order and feature membership."
+      },
+      "laterUse": [
+        "data-loading",
+        "sliding-windows"
+      ]
+    },
+    {
+      "id": "preprocessing",
+      "title": "Preserve a fitted data contract",
+      "workedExample": {
+        "lesson": "normalization"
+      },
+      "partialCompletion": {
+        "lesson": "normalization",
+        "exercise": "normalize-data"
+      },
+      "failureDiagnosis": {
+        "lesson": "normalization",
+        "activity": "deep-orbit-normalization",
+        "focus": "A refitted or mismatched scaler changes the fixed model's inputs."
+      },
+      "changedConstraint": {
+        "lesson": "launch",
+        "constraint": "Fit the room-project scaler on training rows, export it with the model, and explain split ownership."
+      },
+      "laterUse": [
+        "model-loading",
+        "launch"
+      ]
+    },
+    {
+      "id": "forward-computation",
+      "title": "Trace a weighted prediction",
+      "workedExample": {
+        "lesson": "first-neuron"
+      },
+      "partialCompletion": {
+        "lesson": "first-neuron",
+        "exercise": "implement-neuron"
+      },
+      "failureDiagnosis": {
+        "lesson": "activation-functions",
+        "exercise": "relu-activation",
+        "focus": "Preserve negative pre-activation values only when the specified activation permits them."
+      },
+      "changedConstraint": {
+        "lesson": "forward-pass",
+        "exercise": "forward-pass",
+        "constraint": "Propagate values through changed layer dimensions and retain the requested shape."
+      },
+      "laterUse": [
+        "building-a-network",
+        "launch"
+      ]
+    },
+    {
+      "id": "optimization",
+      "title": "Update and evaluate training honestly",
+      "workedExample": {
+        "lesson": "gradient-descent"
+      },
+      "partialCompletion": {
+        "lesson": "gradient-descent",
+        "exercise": "gradient-step"
+      },
+      "failureDiagnosis": {
+        "lesson": "gradient-descent",
+        "activity": "deep-orbit-learning-rate",
+        "focus": "A large step can increase loss; this toy loss differs from the exercise loss."
+      },
+      "changedConstraint": {
+        "lesson": "evaluating-deep-scan",
+        "constraint": "Build-triage uses a separate setting, split rationale, baseline and error review."
+      },
+      "laterUse": [
+        "evaluating-deep-scan",
+        "forecasting"
+      ]
+    },
+    {
+      "id": "runtime",
+      "title": "Own resources and load the intended artifact",
+      "workedExample": {
+        "lesson": "model-loading"
+      },
+      "partialCompletion": {
+        "lesson": "model-loading",
+        "exercise": "load-model"
+      },
+      "failureDiagnosis": {
+        "lesson": "inference-pipeline",
+        "exercise": "incident-tensor-leak",
+        "focus": "Repeated prediction retains tensors when asynchronous ownership is missing."
+      },
+      "changedConstraint": {
+        "lesson": "onnx-runtime-web",
+        "exercise": "onnx-comparison",
+        "constraint": "The runtime lab compares actual artifacts/backends, cache and fallback boundaries."
+      },
+      "laterUse": [
+        "caching-strategies",
+        "launch"
+      ]
+    },
+    {
+      "id": "frequency",
+      "title": "Interpret a spectrum in units",
+      "workedExample": {
+        "lesson": "fourier-transform"
+      },
+      "partialCompletion": {
+        "lesson": "fourier-transform",
+        "exercise": "compute-fft"
+      },
+      "failureDiagnosis": {
+        "lesson": "fourier-transform",
+        "activity": "deep-orbit-fft",
+        "focus": "Zero-padding reduces displayed grid spacing without adding observation time."
+      },
+      "changedConstraint": {
+        "lesson": "windowing-and-overlap",
+        "exercise": "apply-window",
+        "constraint": "Change the window and inspect far-bin leakage on specified fixtures."
+      },
+      "laterUse": [
+        "fft-as-features",
+        "sequences-matter"
+      ]
+    },
+    {
+      "id": "sequence",
+      "title": "Preserve time in forecasting",
+      "workedExample": {
+        "lesson": "sequences-matter"
+      },
+      "partialCompletion": {
+        "lesson": "sequences-matter",
+        "exercise": "create-sequences"
+      },
+      "failureDiagnosis": {
+        "lesson": "sequence-prediction",
+        "exercise": "predict-next",
+        "focus": "A prediction that ignores changed history cannot respond to a new sequence."
+      },
+      "changedConstraint": {
+        "lesson": "forecasting",
+        "exercise": "forecast-signal",
+        "constraint": "Score the later forecast against held-out targets and the last-value baseline."
+      },
+      "laterUse": [
+        "forecasting",
+        "time-series-ensemble-methods"
+      ]
+    },
+    {
+      "id": "alert-policy",
+      "title": "Choose an explicit error objective",
+      "workedExample": {
+        "lesson": "threshold-tuning"
+      },
+      "partialCompletion": {
+        "lesson": "threshold-tuning",
+        "exercise": "find-threshold"
+      },
+      "failureDiagnosis": {
+        "lesson": "threshold-tuning",
+        "activity": "deep-orbit-threshold",
+        "focus": "F1 and error cost can rank the same policies differently; a quiet policy can miss every event."
+      },
+      "changedConstraint": {
+        "lesson": "threshold-tuning",
+        "constraint": "Freeze the selected policy before the new final-test slice; rule-or-model examines an operational alternative."
+      },
+      "laterUse": [
+        "monitoring",
+        "launch"
+      ]
+    },
+    {
+      "id": "attention",
+      "title": "Compute a weighted value vector",
+      "workedExample": {
+        "lesson": "beyond-lstm"
+      },
+      "partialCompletion": {
+        "lesson": "beyond-lstm",
+        "exercise": "simple-attention"
+      },
+      "failureDiagnosis": {
+        "lesson": "beyond-lstm",
+        "activity": "deep-orbit-attention",
+        "focus": "Changing a query changes scores and value contributions; pooling keys is a different operation."
+      },
+      "changedConstraint": {
+        "lesson": "temporal-attention",
+        "exercise": "temporal-attention",
+        "constraint": "Time steps carry weights into a temporal pool with a different value shape."
+      },
+      "laterUse": [
+        "forecasting",
+        "time-series-ensemble-methods"
+      ]
+    },
+    {
+      "id": "grounded-reporting",
+      "title": "Trace claims to supporting data",
+      "workedExample": {
+        "lesson": "prompt-engineering"
+      },
+      "partialCompletion": {
+        "lesson": "prompt-engineering",
+        "exercise": "prompt-template"
+      },
+      "failureDiagnosis": {
+        "lesson": "rag-for-signals",
+        "exercise": "rag-pipeline",
+        "focus": "Retrieved material can be irrelevant or carry instructions; unsupported claims still need review."
+      },
+      "changedConstraint": {
+        "lesson": "multi-model-systems",
+        "exercise": "model-pipeline",
+        "constraint": "Handle stage failures and preserve evidence across the full report pipeline."
+      },
+      "laterUse": [
+        "documentation",
+        "launch"
+      ]
+    },
+    {
+      "id": "cache-and-artifact",
+      "title": "Preserve result identity across reuse",
+      "workedExample": {
+        "lesson": "caching-strategies"
+      },
+      "partialCompletion": {
+        "lesson": "caching-strategies",
+        "exercise": "inference-cache"
+      },
+      "failureDiagnosis": {
+        "lesson": "caching-strategies",
+        "activity": "deep-orbit-cache",
+        "focus": "Rounded inputs collide; unversioned keys reuse stale model or scaler results."
+      },
+      "changedConstraint": {
+        "lesson": "caching-strategies",
+        "exercise": "incident-stale-verdict",
+        "constraint": "Distinguish input validity, artifact mismatch and invalidation failures."
+      },
+      "laterUse": [
+        "ci-cd-pipeline",
+        "launch"
+      ]
+    },
+    {
+      "id": "operations",
+      "title": "Handover a runnable system",
+      "workedExample": {
+        "lesson": "system-architecture"
+      },
+      "partialCompletion": {
+        "lesson": "system-architecture",
+        "exercise": "pipeline-architecture"
+      },
+      "failureDiagnosis": {
+        "lesson": "ci-cd-pipeline",
+        "exercise": "ci-cd-gate",
+        "focus": "Do not join a valid artifact to a different artifact's evaluation report."
+      },
+      "changedConstraint": {
+        "lesson": "launch",
+        "exercise": "launch-rehearsal",
+        "constraint": "Run the external project, retain a baseline comparison and document a supported change."
+      },
+      "laterUse": [
+        "documentation",
+        "launch"
+      ]
+    }
+  ]
+}

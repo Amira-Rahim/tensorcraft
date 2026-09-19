@@ -2,19 +2,13 @@ slug: time-vs-frequency
 lessonSlug: time-vs-frequency
 title: "Find the Hidden Tone"
 instructions: |
-  The lesson claims a tone too weak to see in the time view is a clear peak in the frequency view. Make that claim executable on raw samples. compareViews(baseline, suspect, tolerance, threshold) receives two captures, and nothing is precomputed for you: transform BOTH of them yourself with tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync(), which is the call the lesson prints above the challenge (lesson 2 explains what it does).
+  Implement `compareViews(baseline, suspect, tolerance, threshold)`. Transform each capture into FFT magnitudes with `tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync()`.
 
-  Return { timeTwin, divergentBin }. timeTwin is true when every pair of samples differs by no more than tolerance. divergentBin is the index of the first bin whose two magnitudes differ by MORE than threshold, or -1 when no bin does.
+  Return `{ timeTwin, divergentBin }`:
+  - `timeTwin` is true when every pair of samples differs by at most `tolerance`.
+  - `divergentBin` is the first bin whose magnitudes differ by more than `threshold`, or -1 if none does. Compare absolute differences, including bin 0.
 
-  Three details the grader holds you to.
-
-  1. A gap counts by size, not by direction: a bin whose magnitude fell diverged as much as one whose magnitude rose.
-  2. Every bin is eligible, bin 0 included.
-  3. tolerance measures sample differences; threshold measures unnormalized FFT-magnitude differences. They are separate settings with different scales.
-
-  Assume equal-length, finite captures with at least two samples and nonnegative thresholds.
-
-  One of the grader's intruders is generated when it runs, so the bin it asks for has to come out of the comparison rather than out of a remembered index.
+  The two limits use different scales: sample values and raw FFT magnitudes. Assume equal-length finite captures with at least two samples and nonnegative limits. Release temporary tensors after reading the magnitudes.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

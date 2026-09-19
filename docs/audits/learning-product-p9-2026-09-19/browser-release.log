@@ -1,0 +1,259 @@
+
+Running 234 tests using 2 workers
+
+(node:27973) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:27972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Landing page (/) passes axe audit
+[2/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Auth page (/auth) passes axe audit
+[3/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Terms page (/terms) passes axe audit
+[4/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Privacy page (/privacy) passes axe audit
+[5/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Worlds page (/worlds) passes axe audit
+[6/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › World Detail page (/worlds/deep-orbit) passes axe audit
+[7/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Pricing page (/pricing) passes axe audit
+[8/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Learn page (/learn) passes axe audit
+[9/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [dark] › Lesson Viewer page (/worlds/deep-orbit/foundations/introduction-to-tensors) passes axe audit
+[10/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Landing page (/) passes axe audit
+[11/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Auth page (/auth) passes axe audit
+[12/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Terms page (/terms) passes axe audit
+[13/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Privacy page (/privacy) passes axe audit
+[14/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Worlds page (/worlds) passes axe audit
+[15/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › World Detail page (/worlds/deep-orbit) passes axe audit
+[16/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Pricing page (/pricing) passes axe audit
+[17/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Learn page (/learn) passes axe audit
+[18/234] [chromium] › e2e/accessibility.spec.ts:85:11 › Accessibility audits [light] › Lesson Viewer page (/worlds/deep-orbit/foundations/introduction-to-tensors) passes axe audit
+[19/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [dark] › Lesson step 0 (Briefing) passes axe audit
+[20/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [dark] › Lesson step 1 (Concept) passes axe audit
+[21/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [dark] › Lesson step 2 (Code) passes axe audit
+[22/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [dark] › Lesson step 3 (Challenge) passes axe audit
+[23/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [dark] › Lesson step 4 (Takeaways) passes axe audit
+[24/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [dark] › Lesson step 5 (Complete) passes axe audit
+[25/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [light] › Lesson step 0 (Briefing) passes axe audit
+[26/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [light] › Lesson step 1 (Concept) passes axe audit
+[27/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [light] › Lesson step 2 (Code) passes axe audit
+[28/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [light] › Lesson step 3 (Challenge) passes axe audit
+[29/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [light] › Lesson step 4 (Takeaways) passes axe audit
+[30/234] [chromium] › e2e/accessibility.spec.ts:124:11 › Accessibility audits - every lesson step [light] › Lesson step 5 (Complete) passes axe audit
+[31/234] [chromium] › e2e/accessibility.spec.ts:157:7 › due review warm-up is accessible in light
+[32/234] [chromium] › e2e/accessibility.spec.ts:157:7 › due review warm-up is accessible in dark
+[33/234] [chromium] › e2e/art.spec.ts:21:7 › landing Five Worlds band renders cleanly with no location art
+[34/234] [chromium] › e2e/art.spec.ts:37:7 › landing Five Worlds band shows the plate when the art is present
+[35/234] [chromium] › e2e/art.spec.ts:21:7 › Deep Orbit world page renders cleanly with no location art
+[36/234] [chromium] › e2e/art.spec.ts:37:7 › Deep Orbit world page shows the plate when the art is present
+[37/234] [chromium] › e2e/art.spec.ts:21:7 › auth left pane renders cleanly with no location art
+[38/234] [chromium] › e2e/art.spec.ts:37:7 › auth left pane shows the plate when the art is present
+[39/234] [chromium] › e2e/art.spec.ts:21:7 › worlds index hero card renders cleanly with no location art
+[40/234] [chromium] › e2e/art.spec.ts:37:7 › worlds index hero card shows the plate when the art is present
+[41/234] [chromium] › e2e/art.spec.ts:45:5 › a dead patch route leaves no broken emblem on the world page
+[42/234] [chromium] › e2e/art.spec.ts:62:5 › the plate sits under the canvas, not over it
+[43/234] [chromium] › e2e/auth.spec.ts:10:7 › Auth Page › renders with OAuth buttons
+[44/234] [chromium] › e2e/auth.spec.ts:16:7 › Auth Page › has email magic link form
+[45/234] [chromium] › e2e/auth.spec.ts:23:7 › Auth Page › new visitors see the sign-up framing
+[46/234] [chromium] › e2e/auth.spec.ts:32:7 › Auth Page › returning visitors see the sign-in framing
+[47/234] [chromium] › e2e/auth.spec.ts:41:7 › Auth Page › legacy /auth/sign-in redirects to /auth
+[48/234] [chromium] › e2e/auth.spec.ts:46:7 › Auth Page › legacy /auth/sign-up redirects to /auth
+[49/234] [chromium] › e2e/auth.spec.ts:51:7 › Auth Page › links to terms and privacy
+[50/234] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 1440px dark
+[51/234] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 390px light
+[52/234] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 320px dark
+[53/234] [chromium] › e2e/editor-drafts.spec.ts:4:7 › unfinished code, solution recovery and save failure at 1440px
+[54/234] [chromium] › e2e/editor-drafts.spec.ts:4:7 › unfinished code, solution recovery and save failure at 390px
+[55/234] [chromium] › e2e/editor-drafts.spec.ts:119:5 › an unreadable draft stays intact until an explicit reset
+[56/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › batch-data: browser accepts the solution and rejects the starter and misconception
+[57/234] [chromium] › e2e/end-of-lesson.spec.ts:15:7 › End-of-lesson close: RecallPrompt + LessonRecap › Takeaways step shows recall above recap, reveal, and recap labels
+[58/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › normalize-data: browser accepts the solution and rejects the starter and misconception
+[59/234] [chromium] › e2e/end-of-lesson.spec.ts:81:7 › Patch award moment › closing out the module reveals the mission patch
+[60/234] [chromium] › e2e/end-of-lesson.spec.ts:114:7 › Patch award moment › a mid-module completion shows no award
+[61/234] [chromium] › e2e/exercise-run.spec.ts:30:7 › Exercise run in the real browser worker › starter fails, solution passes, through the shipped pipeline
+[62/234] [chromium] › e2e/exercise-run.spec.ts:81:7 › Exercise editor keyboard access › the editor scroller is focusable with a role and name
+[63/234] [chromium] › e2e/landing.spec.ts:4:7 › Landing Page › renders hero section with headline
+[64/234] [chromium] › e2e/landing.spec.ts:15:7 › Landing Page › primary CTA stays above the fold on a 900px-tall laptop
+[65/234] [chromium] › e2e/landing.spec.ts:29:7 › Landing Page › hero no longer mounts the demo panel
+[66/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › rag-pipeline: browser accepts the solution and rejects the starter and misconception
+[67/234] [chromium] › e2e/landing.spec.ts:35:7 › Landing Page › landing FAQ renders with answers visible
+[68/234] [chromium] › e2e/landing.spec.ts:44:7 › Landing Page › displays navigation with brand and CTA
+[69/234] [chromium] › e2e/landing.spec.ts:51:7 › Landing Page › shows world section with Deep Orbit
+[70/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › find-threshold: browser accepts the solution and rejects the starter and misconception
+[71/234] [chromium] › e2e/landing.spec.ts:56:7 › Landing Page › footer renders with legal links
+[72/234] [chromium] › e2e/landing.spec.ts:63:7 › Landing Page › final CTA opens the free lesson: copy promises no account
+[73/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › weighted-ensemble: browser accepts the solution and rejects the starter and misconception
+[74/234] [chromium] › e2e/landing.spec.ts:77:7 › Landing Page › page title contains Tensorcraft
+[75/234] [chromium] › e2e/landing.spec.ts:82:7 › Landing Page › scheme toggle flips data-scheme, restyles the page, and persists
+[76/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › incident-tensor-leak: browser accepts the solution and rejects the starter and misconception
+[77/234] [chromium] › e2e/learning-routes.spec.ts:8:7 › first-session route, references and access at 1440px
+[78/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › ci-cd-gate: browser accepts the solution and rejects the starter and misconception
+[79/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › simple-attention: browser accepts the solution and rejects the starter and misconception
+[80/234] [chromium] › e2e/learning-routes.spec.ts:8:7 › first-session route, references and access at 390px
+[81/234] [chromium] › e2e/legal.spec.ts:4:7 › Legal Pages › terms page renders all sections
+[82/234] [chromium] › e2e/legal.spec.ts:24:7 › Legal Pages › terms page has back link to home
+[83/234] [chromium] › e2e/legal.spec.ts:32:7 › Legal Pages › privacy page renders all sections
+[84/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › temporal-attention: browser accepts the solution and rejects the starter and misconception
+[85/234] [chromium] › e2e/legal.spec.ts:42:7 › Legal Pages › privacy page has back link to home
+[86/234] [chromium] › e2e/legal.spec.ts:48:7 › Legal Pages › cookie consent banner appears on first visit
+[87/234] [chromium] › e2e/legal.spec.ts:56:7 › Legal Pages › cookie consent banner hides after accepting
+[88/234] [chromium] › e2e/lesson-demo.spec.ts:13:7 › DeepScanDemo: live inference on the free tier › runs the real model and surfaces sample 7741 at ~51%
+[89/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › quantize-weights: browser accepts the solution and rejects the starter and misconception
+[90/234] [chromium] › e2e/lesson-history.spec.ts:3:5 › phase history preserves the document and experiment draft
+[91/234] [chromium] › e2e/lesson-variety.spec.ts:11:7 › Structure variety: pattern + scene render end-to-end › foundations/tensor-operations shows FORMAT tag and slugline
+[92/234] [chromium] › e2e/lesson-variety.spec.ts:27:7 › Structure variety: pattern + scene render end-to-end › the free-tier BossBeat renders without leaking its stance labels
+[93/234] [chromium] › e2e/lesson-variety.spec.ts:41:7 › Structure variety: pattern + scene render end-to-end › a standard-pattern lesson renders no FORMAT tag
+[94/234] [chromium] › e2e/normalization-experiment.spec.ts:8:7 › normalization on the real lesson, 1440px dark
+[95/234] [chromium] › e2e/normalization-experiment.spec.ts:8:7 › normalization on the real lesson, 390px light
+[96/234] [chromium] › e2e/onboarding.spec.ts:4:7 › Onboarding Page › renders onboarding welcome step
+[97/234] [chromium] › e2e/pricing.spec.ts:9:7 › Pricing Page › renders the pricing heading
+[98/234] [chromium] › e2e/pricing.spec.ts:14:7 › Pricing Page › shows only the tier cards a buyer can purchase
+[99/234] [chromium] › e2e/pricing.spec.ts:28:7 › Pricing Page › shows no future bundle pricing anywhere
+[100/234] [chromium] › e2e/pricing.spec.ts:37:7 › Pricing Page › shows the curriculum preview with Module 1 marked free
+[101/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › fft-features: browser accepts the solution and rejects the starter and misconception
+[102/234] [chromium] › e2e/pricing.spec.ts:46:7 › Pricing Page › shows the refund guarantee badge
+[103/234] [chromium] › e2e/pricing.spec.ts:59:7 › Pricing Page › paywall redirect context renders no notice banner
+[104/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › Landing (/) does not scroll horizontally at 320px
+[105/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › llm-client: browser accepts the solution and rejects the starter and misconception
+[106/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › Worlds (/worlds) does not scroll horizontally at 320px
+[107/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › classify-anomaly: browser accepts the solution and rejects the starter and misconception
+[108/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › World Detail (/worlds/deep-orbit) does not scroll horizontally at 320px
+[109/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › model-pipeline: browser accepts the solution and rejects the starter and misconception
+[110/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › Pricing (/pricing) does not scroll horizontally at 320px
+[111/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › Auth (/auth) does not scroll horizontally at 320px
+[112/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › Learn (/learn) does not scroll horizontally at 320px
+[113/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › mse-loss: browser accepts the solution and rejects the starter and misconception
+[114/234] [chromium] › e2e/reflow.spec.ts:36:9 › Reflow at 320px (WCAG 1.4.10) › Lesson Viewer (/worlds/deep-orbit/foundations/introduction-to-tensors) does not scroll horizontally at 320px
+[115/234] [chromium] › e2e/reflow.spec.ts:73:8 › Reflow at 320px (WCAG 1.4.10) › Dashboard reflows at 320px (needs an authenticated e2e session)
+[116/234] [chromium] › e2e/review-warmup.spec.ts:4:5 › guest completion becomes a due warm-up the next day
+[117/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › browser-ml-tradeoffs: browser accepts the solution and rejects the starter and misconception
+[118/234] [chromium] › e2e/script-playback.spec.ts:4:7 › Lesson script playback › reveals beats progressively, then scrolls to the explanation
+[119/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › incident-baseline-drift: browser accepts the solution and rejects the starter and misconception
+[120/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › incident-missed-anomaly: browser accepts the solution and rejects the starter and misconception
+[121/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › incident-false-alarm-storm: browser accepts the solution and rejects the starter and misconception
+[122/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › simple-network: browser accepts the solution and rejects the starter and misconception
+[123/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › prompt-template: browser accepts the solution and rejects the starter and misconception
+[124/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › training-loop-exercise: browser accepts the solution and rejects the starter and misconception
+[125/234] [chromium] › e2e/script-playback.spec.ts:66:5 › a due warm-up defers the story and its skip control
+[126/234] [chromium] › e2e/script-playback.spec.ts:91:7 › Lesson without JavaScript › server-rendered idle Briefing remains readable
+[127/234] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: dark, reduce
+[128/234] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: dark, no-preference
+[129/234] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: light, reduce
+[130/234] [chromium] › e2e/ui-remediation.spec.ts:7:9 › mobile sign-in survives resize: light, no-preference
+[131/234] [chromium] › e2e/ui-remediation.spec.ts:27:7 › consent and support are usable at 320px
+[132/234] [chromium] › e2e/ui-remediation.spec.ts:27:7 › consent and support are usable at 375px
+[133/234] [chromium] › e2e/ui-remediation.spec.ts:27:7 › consent and support are usable at 390px
+[134/234] [chromium] › e2e/ui-remediation.spec.ts:57:5 › mobile glossary opens beside the term and returns focus on Escape
+[135/234] [chromium] › e2e/ui-remediation.spec.ts:82:5 › mobile editor preserves typed work across views and desktop resize
+[136/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1440px dark
+[137/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1440px light
+[138/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1024px dark
+[139/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 1024px light
+[140/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 390px dark
+[141/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 390px light
+[142/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 320px dark
+[143/234] [chromium] › e2e/vision-preview.spec.ts:6:9 › Neon preview is usable without a purchase: 320px light
+[144/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › landing page matches baseline
+[145/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › pricing page matches baseline
+[146/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › worlds index matches baseline
+[147/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › auth sign-in page matches baseline
+[148/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › paywall page matches baseline
+[149/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [dark] › learn page matches baseline
+[150/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › landing page matches baseline
+[151/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › pricing page matches baseline
+[152/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › worlds index matches baseline
+[153/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › auth sign-in page matches baseline
+[154/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › paywall page matches baseline
+[155/234] [chromium] › e2e/visual/key-pages.spec.ts:82:11 › Visual: Key Pages (desktop 1280×800) [light] › learn page matches baseline
+[156/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 320px
+[157/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 768px
+[158/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 1024px
+[159/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › landing @ 1440px
+[160/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 320px
+[161/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 768px
+[162/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 1024px
+[163/234] [chromium] › e2e/visual/responsive.spec.ts:44:11 › Visual: Responsive Breakpoints › pricing @ 1440px
+[164/234] [chromium] › e2e/visual/review-warmup.spec.ts:4:7 › review warm-up light
+[165/234] [chromium] › e2e/visual/review-warmup.spec.ts:4:7 › review warm-up dark
+[166/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world deep-orbit renders correct palette
+[167/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world neon-protocol renders correct palette
+[168/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world signal-ward renders correct palette
+[169/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world nova-canvas renders correct palette
+[170/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [dark] › world terra-grid renders correct palette
+[171/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world deep-orbit renders correct palette
+[172/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world neon-protocol renders correct palette
+[173/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world signal-ward renders correct palette
+[174/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world nova-canvas renders correct palette
+[175/234] [chromium] › e2e/visual/worlds.spec.ts:43:11 › Visual: World Landing Pages [light] › world terra-grid renders correct palette
+[176/234] [chromium] › e2e/worlds.spec.ts:4:7 › Worlds Page › renders world listing with Deep Orbit
+[177/234] [chromium] › e2e/worlds.spec.ts:9:7 › Worlds Page › Deep Orbit shows Live, the other 4 show Coming soon
+[178/234] [chromium] › e2e/worlds.spec.ts:28:7 › Worlds Page › coming-soon world route renders waitlist stub, not 404
+[179/234] [chromium] › e2e/worlds.spec.ts:44:7 › Worlds Page › coming-soon stub shows module roster from preview data
+[180/234] [chromium] › e2e/worlds.spec.ts:60:7 › Worlds Page › coming-soon lesson + capstone routes 404
+[181/234] [chromium] › e2e/worlds.spec.ts:75:7 › Worlds Page › Deep Orbit links to its world page
+[182/234] [chromium] › e2e/worlds.spec.ts:92:7 › World Detail Page › renders Deep Orbit world page with module map and lessons
+[183/234] [chromium] › e2e/worlds.spec.ts:103:7 › World Detail Page › shows module list with correct order
+[184/234] [chromium] › e2e/worlds.spec.ts:113:7 › World Detail Page › shows lesson estimated time
+[185/234] [chromium] › e2e/worlds.spec.ts:123:7 › World Detail Page › lessons link to lesson viewer
+[186/234] [chromium] › e2e/worlds.spec.ts:139:7 › World Detail Page › returns 404 for unknown world
+[187/234] [chromium] › e2e/worlds.spec.ts:150:7 › Module Overview Route › module route redirects to the world page
+[188/234] [chromium] › e2e/worlds.spec.ts:156:7 › Module Overview Route › unknown module 404s
+[189/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › deep-scan-eval: browser accepts the solution and rejects the starter and misconception
+[190/234] [chromium] › e2e/worlds.spec.ts:161:7 › Module Overview Route › coming-soon world module route 404s
+[191/234] [chromium] › e2e/worlds.spec.ts:168:7 › Lesson Viewer Page › renders lesson content with title
+[192/234] [chromium] › e2e/worlds.spec.ts:175:7 › Lesson Viewer Page › shows segmented step progress bar
+[193/234] [chromium] › e2e/worlds.spec.ts:183:7 › Lesson Viewer Page › shows Continue button
+[194/234] [chromium] › e2e/worlds.spec.ts:189:7 › Lesson Viewer Page › hides marketing nav in focus mode
+[195/234] [chromium] › e2e/worlds.spec.ts:194:7 › Lesson Viewer Page › marketing nav still renders on the world page
+[196/234] [chromium] › e2e/worlds.spec.ts:199:7 › Lesson Viewer Page › shows a link back to the module map
+[197/234] [chromium] › e2e/worlds.spec.ts:207:7 › Lesson Viewer Page › returns 404 for unknown lesson
+[198/234] [chromium] › e2e/worlds.spec.ts:224:7 › Lesson reading experience › Concept step underlines glossary terms and lists them in the rail
+[199/234] [chromium] › e2e/worlds.spec.ts:252:7 › Lesson reading experience › clicking a glossary term activates its rail entry
+[200/234] [chromium] › e2e/worlds.spec.ts:319:7 › Lesson reading experience › inline code renders as a chip in the prose (not a code block)
+[201/234] [chromium] › e2e/worlds.spec.ts:338:7 › Lesson reading experience › Code step swaps the right rail for a work pane
+(node:31212) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[202/234] [mobile-iphone-se] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Landing (/) renders without horizontal scroll
+[203/234] [mobile-iphone-se] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Auth (/auth) renders without horizontal scroll
+[204/234] [mobile-iphone-se] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Pricing (/pricing) renders without horizontal scroll
+[205/234] [mobile-iphone-se] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Worlds (/worlds) renders without horizontal scroll
+[206/234] [mobile-iphone-se] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Paywall (/paywall) renders without horizontal scroll
+[207/234] [mobile-iphone-se] › e2e/mobile.spec.ts:48:7 › Mobile smoke › landing hero CTA has 44x44 hit area
+[208/234] [mobile-iphone-se] › e2e/mobile.spec.ts:60:7 › Mobile smoke › mobile nav drawer opens on tap (phone widths)
+(node:31439) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[209/234] [mobile-pixel-7] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Landing (/) renders without horizontal scroll
+[210/234] [mobile-pixel-7] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Auth (/auth) renders without horizontal scroll
+[211/234] [mobile-pixel-7] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Pricing (/pricing) renders without horizontal scroll
+[212/234] [mobile-pixel-7] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Worlds (/worlds) renders without horizontal scroll
+[213/234] [mobile-pixel-7] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Paywall (/paywall) renders without horizontal scroll
+[214/234] [mobile-pixel-7] › e2e/mobile.spec.ts:48:7 › Mobile smoke › landing hero CTA has 44x44 hit area
+[215/234] [mobile-pixel-7] › e2e/mobile.spec.ts:60:7 › Mobile smoke › mobile nav drawer opens on tap (phone widths)
+(node:31510) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[216/234] [tablet-ipad] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Landing (/) renders without horizontal scroll
+[217/234] [tablet-ipad] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Auth (/auth) renders without horizontal scroll
+[218/234] [tablet-ipad] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Pricing (/pricing) renders without horizontal scroll
+[219/234] [tablet-ipad] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Worlds (/worlds) renders without horizontal scroll
+[220/234] [tablet-ipad] › e2e/mobile.spec.ts:30:9 › Mobile smoke › Paywall (/paywall) renders without horizontal scroll
+[221/234] [tablet-ipad] › e2e/mobile.spec.ts:48:7 › Mobile smoke › landing hero CTA has 44x44 hit area
+[222/234] [tablet-ipad] › e2e/mobile.spec.ts:60:7 › Mobile smoke › mobile nav drawer opens on tap (phone widths)
+[223/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › build-autoencoder: browser accepts the solution and rejects the starter and misconception
+[224/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › predict-next: browser accepts the solution and rejects the starter and misconception
+[225/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › forecast-signal: browser accepts the solution and rejects the starter and misconception
+[226/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › profile-model: browser accepts the solution and rejects the starter and misconception
+[227/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › ensemble-detector: browser accepts the solution and rejects the starter and misconception
+[228/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › detect-anomaly: browser accepts the solution and rejects the starter and misconception
+[229/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › prune-weights: browser accepts the solution and rejects the starter and misconception
+[230/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › inference-cache: browser accepts the solution and rejects the starter and misconception
+[231/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › model-monitor: browser accepts the solution and rejects the starter and misconception
+[232/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › verify-deployment: browser accepts the solution and rejects the starter and misconception
+[233/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › compute-fft: browser accepts the solution and rejects the starter and misconception
+[234/234] [chromium] › e2e/education-exercises.spec.ts:129:7 › apply-window: browser accepts the solution and rejects the starter and misconception
+  34 skipped
+  200 passed (4.1m)

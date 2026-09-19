@@ -1,0 +1,27 @@
+{
+  "startedAt": "2026-09-19T15:21:28.014Z",
+  "finishedAt": "2026-09-19T15:22:08.578Z",
+  "status": "passed",
+  "origin": "https://tensorcraft.app",
+  "authMocked": false,
+  "apiMocked": false,
+  "temporaryFixture": true,
+  "learnerAttainment": false,
+  "checks": [
+    "Unentitled existing account retains paid access gate.",
+    "Challenge preference persisted through real API; paid mid-course access and return to Concept work without prerequisite fixtures.",
+    "Actual account summary preserves first/latest/help, reload is idempotent, separate browser storage reads account evidence without inventing a local answer.",
+    "Production version-2 story choice saves from UI, renders after reload and resists a competing choice through the authenticated RPC.",
+    "Actual capstone directory chooser accepts verified project; live GitHub destination resolves; publication still requires file confirmation. No new publication requested.",
+    "Temporary finale-status fixture reveals continuation on actual dashboard; link opens the free Neon sample. This is a QA completion fixture, not learner attainment."
+  ],
+  "cleanup": {
+    "sessionRevoked": true,
+    "reviewsRestored": 1,
+    "startedRowsRemoved": 2,
+    "baselinesRestored": true,
+    "independentReadbackPassed": true,
+    "checkedAt": "2026-09-19T15:24:38.064Z"
+  },
+  "pageErrors": []
+}

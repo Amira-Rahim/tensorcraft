@@ -27,9 +27,9 @@ consequence:
   narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Recurrent state resets between windows; trained weights remain."
 hints:
   - level: nudge
-    content: "Two things here are not where you would guess, and the instructions name both: which curve the gates run on and how the four are packed. Diagnose by the size of the miss. A curve mismatch moves every gate by hundredths, while a packing mistake swaps whole gates and misses by tenths."
+    content: "Check the gate curve and packed column order before comparing outputs with the library."
   - level: guidance
-    content: "All four weight groups are read the same way: one row per dimension, three numbers per row, the same arithmetic every time. Write that arithmetic once and call it four times. Three of the four groups are gates, so they saturate; the fourth is the value being proposed for storage, and it needs a range that reaches below zero. The cell update multiplies before it adds: the old value is scaled by its own gate, the proposed value is scaled by its own gate, and only then do the two meet. The hidden state is the new cell value seen through the remaining gate. Cutting the layer up is the same three numbers per gate, taken at one shared column index: one out of each kernel and one out of the bias, and the library's column order is the one this lesson prints, not the one it narrates."
+    content: "Use sigmoid for the three gates and tanh for the candidate. Multiply each stored or proposed value by its gate before adding. TFJS packs columns as input, forget, candidate, output; each gate row combines the same column from both kernels and the bias."
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -183,14 +183,14 @@ The second thing is which curve the gates run on. Unless overridden as above, TF
 
 // 1. UPDATE GATE: one value per dimension, doing the forget gate's job
 //    and the input gate's job at once
-//    update = sigmoid(W_z · [prevHidden, input])
+//    update = sigmoid(W_z · [prevHidden, input] + b_z)
 //    newHidden = update * prevHidden + (1 - update) * candidate
 //    Keeping 70% of the old state means taking 30% of the new candidate
 
 // 2. RESET GATE: how much of the previous hidden state the candidate
 //    is allowed to see
-//    reset = sigmoid(W_r · [prevHidden, input])
-//    candidate = tanh(W_c · [reset * prevHidden, input])
+//    reset = sigmoid(W_r · [prevHidden, input] + b_r)
+//    candidate = tanh(W_c · [reset * prevHidden, input] + b_c)
 
 // There is no separate cell state, so there is no output gate: the hidden
 // state is the only thing the cell carries, and it leaves the cell whole
@@ -198,6 +198,7 @@ The second thing is which curve the gates run on. Unless overridden as above, TF
 const gruModel = tf.sequential();
 gruModel.add(tf.layers.gru({
   units: 64,
+  recurrentActivation: 'sigmoid', // match the gate equations above
   inputShape: [80, 3],
 }));
 gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
@@ -227,7 +228,7 @@ Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out
 
 <RecallPrompt
   question="The LSTM flags pulses 72 hours past the last window it trained on, yet no cell state survives between windows. What did the network actually retain?"
-  answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A successful result on later windows would be generalization through those weights, not state carried across the gap. The story reports that outcome; real data still needs evaluation. That is generalization across time, and it costs one fixed set of parameters instead of three days of stored state."
+  answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A successful result on later windows would be generalization through those weights, not state carried across the gap. The story reports that outcome; real data still needs evaluation. It does not demonstrate memory across a three-day gap."
 />
 
 <LessonRecap
@@ -238,10 +239,12 @@ Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out
 
 <Epilogue>
 
-Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. The 28,800 capture rows are far too coarse for an 80-step window that has to span a 73-second pulse, so Demir uses the raw capture blocks behind them, re-integrated to the dashboard's 1 Hz stream: 950,400 samples end to end. He trains on the first day of it and replays the other ten. Seventy-two hours past the last window it trained on, the network is still catching every pulse inside a single 80-step window. No cell state carried across those three days; none had to. The gates learned the shape once, and recognition is cheaper than memory. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+*Mission scene: the archive result is fictional, not measured by the random-label training drill.*
+
+Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. The 28,800 capture rows are far too coarse for an 80-step window that has to span a 73-second pulse, so Demir uses the raw capture blocks behind them, re-integrated to the dashboard's 1 Hz stream: 950,400 samples end to end. He trains on the first day of it and replays the other ten. Seventy-two hours past the last window it trained on, the network is still catching every pulse inside a single 80-step window. No cell state carried across those three days; none had to. The learned weights persist while each new window starts with empty recurrent state. On the bridge channel, ARIA is silent for four full seconds before she speaks.
 
 <Dialogue speaker="ARIA">
-Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes pulses it was never trained on, three days downstream. Nothing in my tables explains why that works.
+Archive coverage: every reading since launch. My rules do not represent this pulse sequence. The new model has flagged it in later captures. I have retained those timestamps beside its training cutoff, and the original archive beside both.
 </Dialogue>
 
 Farah closes the channel and adds the replay to the morning briefing.

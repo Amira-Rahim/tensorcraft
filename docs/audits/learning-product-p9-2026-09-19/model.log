@@ -1,0 +1,22 @@
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+{
+  "recordedAt": "2026-09-19T14:56:48.455Z",
+  "fingerprint": "3bce0c1743884fe432067b7fe86c01060070fda193eb9f4828033920dafaa9a1",
+  "local": {
+    "changedWeightsRejected": true,
+    "changedGraphRejected": true,
+    "missingShardRejected": true,
+    "rollbackVerified": true,
+    "baselineScore": 0.06260447204113007
+  },
+  "hosted": {
+    "status": "passed",
+    "url": "https://tensorcraft.app/models/deep-scan/model.json",
+    "fingerprint": "3bce0c1743884fe432067b7fe86c01060070fda193eb9f4828033920dafaa9a1",
+    "score": 0.06260447204113007,
+    "scope": "Read-only HTTPS fetch and inference from the exact verified bytes. No production deployment or rollback was performed."
+  }
+}

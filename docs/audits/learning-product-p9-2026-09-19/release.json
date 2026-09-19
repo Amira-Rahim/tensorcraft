@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-19",
+  "baselineRevision": "80a3f029b8efb1968aa086c53d30c83566d98254",
+  "sourceState": "Approved uncommitted working tree; product source inventory in candidate-source.json. No commit or push performed.",
+  "database": {
+    "appliedMigrations": [
+      62,
+      63,
+      64,
+      65
+    ],
+    "ledgerCount": 65,
+    "status": "IN_SYNC",
+    "evidence": "production-migrations.json"
+  },
+  "api": {
+    "app": "tensorcraft-api",
+    "version": 33,
+    "status": "complete",
+    "image": "registry.fly.io/tensorcraft-api:deployment-01M2X2YHGKEPFM5RGZ7P8302CV",
+    "createdAt": "2026-09-19T15:03:08Z",
+    "health": {
+      "httpStatus": 200,
+      "status": "ok",
+      "service": "tensorcraft-api",
+      "checkedAt": "2026-09-19T15:38:53.701Z"
+    }
+  },
+  "web": {
+    "id": "dpl_Hbv6agc4YcrwqxH9NHBusbZ9412R",
+    "status": "READY",
+    "url": "https://tensorcraft-ky4fqbeq9-amira-salahs-projects.vercel.app",
+    "productionAlias": "https://tensorcraft.app",
+    "createdAt": "2026-09-19T15:17:40Z",
+    "cli": "59.23.2",
+    "schemaGate": "65/65 IN_SYNC in actual cloud build",
+    "sentrySourceMaps": "Successfully uploaded in actual cloud build"
+  },
+  "rollback": {
+    "webId": "dpl_5SRMRq2Zwk3YD7NBGq27SeDrVTnE",
+    "webUrl": "https://tensorcraft-78b8zzz9j-amira-salahs-projects.vercel.app",
+    "apiVersion": 32,
+    "apiImage": "registry.fly.io/tensorcraft-api:deployment-01M2STXX0BCHZ2Q09PQ0W6P0W5",
+    "policy": "Revert application presentation while retaining additive schema and learner data. Production traffic was not rolled back during this verification."
+  },
+  "productionPublicTests": {
+    "passed": 17,
+    "failed": 0,
+    "log": "public-production.log"
+  },
+  "productionAuthenticatedSmoke": {
+    "status": "passed",
+    "checks": 6,
+    "cleanupVerified": true,
+    "evidence": "production-smoke.json"
+  },
+  "open": [
+    "Actual screen-reader walkthrough: native connector startup failed.",
+    "Independent learner/reviewer evidence, $70 value, ROI and growth remain deferred and unproven."
+  ],
+  "reviewCoverage": {
+    "primaryArtifacts": 121,
+    "internallyReviewed": 121,
+    "targetedSupportingArtifacts": 163,
+    "evidence": "manifest-final.log",
+    "qualification": "Matching hashes establish coverage bookkeeping, not independent approval."
+  }
+}

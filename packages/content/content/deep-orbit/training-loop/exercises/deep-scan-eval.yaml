@@ -233,6 +233,20 @@ testCode: |
         'This is how many weight updates the optimizer applied to this model: one per batch, so 30 sweeps over 100 rows in batches of 16. Zero means fit never ran on this model at all.',
       ).toBe(210);
     });
+    it('the fit used the supplied training values, not an equal-sized mixture with test rows', () => {
+      const fit = tf.__fits.find((entry) => entry && entry.history === history);
+      expect(fit, 'No recorded model.fit call produced this history. Train the supplied model.').toBeDefined();
+      expect(fit.x && fit.x.complete, 'The training inputs could not be inspected. Use the supplied tensor.').toBe(true);
+      expect(fit.y && fit.y.complete, 'The training labels could not be inspected. Use the supplied tensor.').toBe(true);
+      expect(fit.x.shape).toEqual(trainX.shape);
+      expect(fit.y.shape).toEqual(trainY.shape);
+      const pairedRows = (xs, ys) => Array.from({ length: xs.shape[0] }, (_, i) =>
+        JSON.stringify([xs.values.slice(i * xs.shape[1], (i + 1) * xs.shape[1]), ys.values[i]])).sort();
+      const suppliedX = { shape: trainX.shape, values: Array.from(trainX.dataSync()) };
+      const suppliedY = { values: Array.from(trainY.dataSync()) };
+      expect(pairedRows(fit.x, fit.y),
+        'Keep the supplied training rows and their paired labels. Reordering pairs is valid; substituting test rows is leakage.').toEqual(pairedRows(suppliedX, suppliedY));
+    });
     it('evaluates the original held-out rows and labels', () => {
 
       // The slice is pinned first. Without the three late-confirmed rows

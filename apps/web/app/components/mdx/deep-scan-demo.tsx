@@ -142,18 +142,34 @@ export function DeepScanDemo({
         setStatus("running");
 
         const input = tf.tensor2d(STREAM.map((s) => s.features));
-        const out = model.predict(input) as {
-          data: () => Promise<Float32Array>;
-        };
-        const scores = await out.data();
-        input.dispose?.();
+        let out: ReturnType<LoadedModel["predict"]> | undefined;
+        let scores: Float32Array;
+        try {
+          out = model.predict(input);
+          scores = await out.data();
+          if (
+            scores.length !== STREAM.length ||
+            scores.some(
+              (score) => !Number.isFinite(score) || score < 0 || score > 1,
+            )
+          ) {
+            throw new Error("Invalid preview scores");
+          }
+        } finally {
+          out?.dispose?.();
+          input.dispose?.();
+        }
 
         // Reveal one classification at a time, let the moment breathe.
         for (let i = 0; i < STREAM.length; i++) {
           if (cancelled) return;
-          await new Promise((r) =>
-            setTimeout(r, i === STREAM.length - 1 ? 900 : 450),
-          );
+          if (
+            !window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+          ) {
+            await new Promise((r) =>
+              setTimeout(r, i === STREAM.length - 1 ? 900 : 450),
+            );
+          }
           // Re-check AFTER the await: unmount during the sleep otherwise
           // still fires one setRows on a dead component (the sibling checks
           // at loadDeepScan and setStatus got this right).
@@ -179,7 +195,7 @@ export function DeepScanDemo({
     <div
       data-testid="deep-scan-demo"
       data-status={status}
-      className="my-6 border border-border bg-code-bg font-mono text-[13px]"
+      className="my-6 border border-border bg-code-bg font-mono text-[13px] break-words"
     >
       {headerLabel !== null && (
         <div
@@ -187,7 +203,7 @@ export function DeepScanDemo({
           className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface"
         >
           <span
-            className={`w-2 h-2 inline-block ${status === "running" ? "bg-primary animate-pulse" : "bg-primary"}`}
+            className={`w-2 h-2 inline-block ${status === "running" ? "bg-primary motion-safe:animate-pulse" : "bg-primary"}`}
           />
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">
             {headerLabel}
@@ -215,8 +231,11 @@ export function DeepScanDemo({
         {status !== "loading" &&
           status !== "error" &&
           rows.map((row) => (
-            <div key={row.id} className="flex items-baseline gap-3">
-              <span className="text-text-muted w-28 shrink-0">
+            <div
+              key={row.id}
+              className="flex flex-wrap items-baseline gap-x-3 gap-y-1"
+            >
+              <span className="text-text-muted w-28 max-w-full shrink-0">
                 sample {row.id}
               </span>
               {row.score === null ? (

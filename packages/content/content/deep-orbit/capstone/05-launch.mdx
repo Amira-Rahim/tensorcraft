@@ -39,7 +39,9 @@ hints:
         if (!intervals.every(v => Number.isFinite(v) && v > 0)) throw new Error('Invalid intervals');
         const ratios = [];
         for (let i = 0; i < intervals.length - 1; i++) {
-          ratios.push(intervals[i + 1] / intervals[i]);
+          const ratio = intervals[i + 1] / intervals[i];
+          if (!Number.isFinite(ratio) || ratio <= 0) throw new Error('Unrepresentable ratio');
+          ratios.push(ratio);
         }
         return ratios;
       }
@@ -51,7 +53,7 @@ hints:
         // align on length from the tail, where the train converges on phi.
         const expected = fibonacciRatios.slice(fibonacciRatios.length - ratios.length);
         if (expected.length !== ratios.length) return false;
-        return ratios.every((r, i) => Math.abs(r - expected[i]) / expected[i] <= 0.02);
+        return ratios.every((r, i) => Number.isFinite(r) && Math.abs(r - expected[i]) / expected[i] <= 0.02 + 1e-12);
       }
 
       function classifyAnomaly(reading) {
@@ -71,9 +73,9 @@ hints:
             variance: m.variance.dataSync()[0],
           };
         });
-        if (!Number.isFinite(mean) || !Number.isFinite(variance)) throw new Error('Invalid moments');
+        if (!Number.isFinite(mean) || !Number.isFinite(variance) || (!constant && variance === 0)) throw new Error('Invalid moments or collapsed spread');
         const std = Math.sqrt(variance);
-        const z = constant || std === 0 ? null : (reading.actual - mean) / std;
+        const z = constant ? null : (reading.actual - mean) / std;
 
         const verdicts = {
           statistical: z === null ? reading.actual !== reading.window[0] : Math.abs(z) > 3,
@@ -194,7 +196,7 @@ const config: BuildConfig = {
     models: [
       'models/deep-scan-v1/model.json',      // 3.4 KB: the classifier's topology
       'models/deep-scan-v1/weights.bin',      // 3,988 bytes: its 997 float32
-                                              // weights, and nothing else
+                                              // weights, retained at float32 in the final selective export
       'models/report-lang-v1/model.json',     // the report pipeline's pretrained
       'models/report-lang-v1/weights.bin',    // language component: 85 MB on disk
                                               // quantized + pruned, which is
@@ -248,6 +250,7 @@ async function verifyHostedPipeline(
   if (!probes.length || !probes.every(p => p.input.length === 64 && p.input.every(Number.isFinite) && typeof p.label === 'string' && p.label.trim()) ||
       !Number.isFinite(budget.minAccuracy) || budget.minAccuracy < 0 || budget.minAccuracy > 1 ||
       !Number.isFinite(budget.p95Ms) || budget.p95Ms <= 0) throw new Error('Invalid smoke configuration');
+  signal.throwIfAborted();
   const pipeline = await loadVerifiedPipeline(baseUrl, signal);
   try {
     let correct = 0;
@@ -259,14 +262,21 @@ async function verifyHostedPipeline(
     }
     // Warmup and repeated timing on the same workload. These repetitions
     // measure latency; they are not additional independent accuracy cases.
-    for (let i=0; i<10; i++) await pipeline.classify(new Float32Array(probes[i%probes.length].input), signal);
+    for (let i=0; i<10; i++) {
+      signal.throwIfAborted();
+      const result = await pipeline.classify(new Float32Array(probes[i%probes.length].input), signal);
+      if (typeof result?.label !== 'string' || !result.label.trim()) throw new Error('Invalid prediction');
+    }
     const times: number[] = [];
     for (let i=0; i<100; i++) {
       signal.throwIfAborted();
       const input = new Float32Array(probes[i%probes.length].input);
       const start = performance.now();
-      await pipeline.classify(input, signal);
-      times.push(performance.now()-start);
+      const result = await pipeline.classify(input, signal);
+      const elapsed = performance.now()-start;
+      signal.throwIfAborted();
+      if (typeof result?.label !== 'string' || !result.label.trim()) throw new Error('Invalid prediction');
+      times.push(elapsed);
     }
     times.sort((a,b) => a-b);
     const accuracy = correct/probes.length;
@@ -278,7 +288,7 @@ async function verifyHostedPipeline(
 }
 // Run under a deadline, as in the verify-deployment exercise. The loader and
 // classifier must honor cancellation. Record device/backend and artifact
-// identity beside this result. A rejected check fails the release gate.\`}`}
+// identity beside this result. A rejected check fails the release gate.`}
 </CodeBlock>
 
 Before the final run, Nazari clears her ledger the only way she clears anything: out loud. Nine hours of telemetry reconstruction. Three hours of prune revalidation. Forty minutes of hash-pinned rerun. Then the single credit line, DEEP SCAN, operational, and she wipes the board clean for the first time since the crash. Nobody comments. Everybody notices.
@@ -377,11 +387,15 @@ And then the one the whole season was for. The console transcript above is what 
 
 <Exercise slug="classify-anomaly" />
 
+The transferable work is the engineering: define a prediction target, build features, preserve the preprocessing contract, evaluate errors, release a specific artifact and watch its behavior. Replacing the columns is not enough. A new dataset may need a different model, loss, split, threshold and validation plan.
+
+For your own project, choose a labeled task and split by time, person or other relevant group before fitting preprocessing. Keep validation data for design choices and a separate final test. Train a small baseline, compare it with a simpler rule, and record error costs as well as aggregate metrics. Package the model with its scaler and label map. After deployment, monitor input validity, latency and output changes, then evaluate against outcomes when labels arrive.
+
 <IndependentProject />
 
 <RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights." />
 
-<RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and the LSTM were fitted on the same eleven days, so one bad archive takes two votes out at once. Read a vote of 2 as two detector thresholds crossed. It is not two independent proofs or a probability of anomaly." />
+<RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and LSTM draw from the same archive, though the LSTM used its first day. Contamination in both selections can weaken both votes. Read a vote of 2 as two detector thresholds crossed. It is not two independent proofs or a probability of anomaly." />
 
 <LessonRecap
   whatYouLearned={[
@@ -391,7 +405,7 @@ And then the one the whole season was for. The console transcript above is what 
     "Record the actual fit history and optimizer update count, then evaluate the trained candidate. These cross-checks support reproducibility; they are not tamper-proof evidence or proof of generalization."
   ]}
   bridge="Both applications and models can ship as versioned assets. Rollback restores selected artifacts; it does not reverse earlier side effects or establish accuracy on current data."
-  youCanNow="Ship a model as a static asset, then prove the deployed system is the one you meant: load, labeled-probe accuracy, latency, and a rehearsal whose reported results are checked against the training call, then sign the verdict with the decision layer: a 2-of-3 detector vote and an interval decomposition that survives a change of units."
+  youCanNow="Package a model with its preprocessing, verify a served release, and run the rehearsal and final decision rule with their stated evidence limits."
 />
 
 <Epilogue>
@@ -452,17 +466,3 @@ One line sits beneath her entry, appended eleven days later by the automated pip
 `interval_s: 0.0 · classification: SIGNAL · confidence: 1.00 · operator_note: none`
 
 </Epilogue>
-
-The transferable work is the engineering: define a prediction target, build features, preserve the preprocessing contract, evaluate errors, release a specific artifact and watch its behavior. Replacing the columns is not enough. A new dataset may need a different model, loss, split, threshold and validation plan.
-
-For your own project, choose a labeled task and split by time, person or other relevant group before fitting preprocessing. Keep validation data for design choices and a separate final test. Train a small baseline, compare it with a simpler rule, and record error costs as well as aggregate metrics. Package the model with its scaler and label map. After deployment, monitor input validity, latency and output changes, then evaluate against outcomes when labels arrive.
-
----
-
-*The Archimedes record ends there. What follows was intercepted later, and belongs to the next story.*
-
-<DispatchTease
-  toWorldId="neon-protocol"
-  toWorldName="Neon Protocol"
-  body="Operator. Intercept logged well after the Archimedes closed its record. Kira, at a partner cell, has escalated a computer-vision anomaly: the overlap heatmap she is reading, the map of how well her model's boxes cover the real ones, carries the same pulse train, the same Fibonacci interval ratios, on a different instrument under a different sky. She reads bounding boxes, not spectrograms, and does not know what she is holding. Her capture began transmitting eleven days after the Archimedes record closed, the day the interval hit zero. It carries the same question, arriving somewhere new. Follow it if you want to keep watching."
-/>

@@ -32,7 +32,7 @@ describe("CodeBlock", () => {
 
   it("does not show title when not provided", () => {
     const { container } = render(<CodeBlock>code</CodeBlock>);
-    const header = container.querySelector(".flex.items-center.gap-2");
+    const header = container.querySelector(".flex.min-w-0.flex-wrap");
     expect(header?.children.length).toBe(1); // only language badge
   });
 

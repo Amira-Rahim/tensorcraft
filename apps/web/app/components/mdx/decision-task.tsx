@@ -51,7 +51,7 @@ function DecisionTaskBody({ id }: { id: string }) {
   return (
     <section
       aria-labelledby={`${uid}-title`}
-      className="my-8 space-y-4 rounded border border-border bg-surface/40 p-5"
+      className="my-8 min-w-0 break-words space-y-4 rounded border border-border bg-surface/40 p-5"
     >
       <h3 id={`${uid}-title`} className="text-lg font-semibold">
         {spec.title}
@@ -59,35 +59,42 @@ function DecisionTaskBody({ id }: { id: string }) {
       <p>{spec.brief}</p>
       {spec.counts && (
         <div className="space-y-2">
-          <table className="w-full text-sm">
-            <caption className="mb-2 text-left">
-              Validation results on the same 100 builds
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">Policy</th>
-                {["TP", "FP", "TN", "FN"].map((label) => (
-                  <th scope="col" key={label}>
-                    {label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {spec.counts.map((row) => (
-                <tr key={row.policy}>
-                  <th scope="row" className="text-left">
-                    {row.policy}
-                  </th>
-                  {[row.tp, row.fp, row.tn, row.fn].map((value, i) => (
-                    <td className="text-center" key={i}>
-                      {value}
-                    </td>
+          <div
+            role="region"
+            aria-label="Validation results by policy"
+            tabIndex={0}
+            className="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-interactive"
+          >
+            <table className="w-full min-w-64 text-sm">
+              <caption className="mb-2 text-left">
+                Validation results on the same 100 builds
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Policy</th>
+                  {["TP", "FP", "TN", "FN"].map((label) => (
+                    <th scope="col" key={label}>
+                      {label}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {spec.counts.map((row) => (
+                  <tr key={row.policy}>
+                    <th scope="row" className="text-left">
+                      {row.policy}
+                    </th>
+                    {[row.tp, row.fp, row.tn, row.fn].map((value, i) => (
+                      <td className="text-center" key={i}>
+                        {value}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <p className="text-sm text-text-muted">
             TP: failures flagged. FP: successful builds flagged. TN: successful
             builds left alone. FN: failures missed.
@@ -95,7 +102,7 @@ function DecisionTaskBody({ id }: { id: string }) {
         </div>
       )}
 
-      <fieldset disabled={!ready} className="space-y-4">
+      <fieldset disabled={!ready} className="min-w-0 space-y-4">
         <legend className="font-semibold">Your decision</legend>
         {spec.options.map((option) => (
           <label className="flex items-start gap-3" key={option.id}>
@@ -114,7 +121,7 @@ function DecisionTaskBody({ id }: { id: string }) {
           <label className="block">
             {spec.number.label}
             <input
-              className="mt-2 block w-full rounded border border-interactive bg-page p-2"
+              className="mt-2 block min-w-0 w-full rounded border border-interactive bg-page p-2"
               type="number"
               value={draft.calculation}
               onChange={(e) => edit("calculation", e.target.value)}
@@ -124,7 +131,7 @@ function DecisionTaskBody({ id }: { id: string }) {
         <label className="block">
           Your reasoning
           <textarea
-            className="mt-2 block w-full rounded border border-interactive bg-page p-3"
+            className="mt-2 block min-w-0 w-full rounded border border-interactive bg-page p-3"
             rows={4}
             maxLength={5000}
             value={draft.rationale}
@@ -138,7 +145,7 @@ function DecisionTaskBody({ id }: { id: string }) {
         <label className="block">
           Help used, or None
           <input
-            className="mt-2 block w-full rounded border border-interactive bg-page p-2"
+            className="mt-2 block min-w-0 w-full rounded border border-interactive bg-page p-2"
             maxLength={5000}
             value={draft.help}
             onChange={(e) => edit("help", e.target.value)}
@@ -147,7 +154,7 @@ function DecisionTaskBody({ id }: { id: string }) {
         <label className="block">
           Minutes spent (your estimate)
           <input
-            className="mt-2 block w-full rounded border border-interactive bg-page p-2"
+            className="mt-2 block min-w-0 w-full rounded border border-interactive bg-page p-2"
             type="number"
             min="0"
             step="any"

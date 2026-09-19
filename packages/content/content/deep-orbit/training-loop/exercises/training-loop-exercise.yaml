@@ -1,6 +1,6 @@
 slug: training-loop-exercise
 lessonSlug: training-loop
-title: "Stop the Loop When It Stops Learning"
+title: "Stop on a Validation Plateau"
 instructions: |
   Fit the supplied model on trainX/trainY for at most 500 epochs with validationSplit 0.2 and a batch size from 8 to 64 (default 32). Implement makeEarlyStopping() returning tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 }), and attach it to the fit. Store the awaited result in history. A correct run can stop early or reach its epoch limit; neither outcome proves a defect.
 
@@ -164,6 +164,12 @@ testCode: |
       const batch = history.params.batchSize || 32;
       expect(batch >= 8 && batch <= 64).toBe(true);
       expect(model.optimizer.iterations).toBe(Math.ceil(80 / batch) * loss.length);
+    });
+    it('attaches the validation callback to the fit that produced history', () => {
+      const fit = tf.__fits.find((entry) => entry && entry.history === history);
+      expect(fit, 'No recorded model.fit call produced this history. Await the training call.').toBeDefined();
+      expect(fit.callbacks.some((c) => c.monitor === 'val_loss' && c.patience === 5 && c.minDelta === 0),
+        'The requested early-stopping callback never reached this fit. Pass it in the callbacks option.').toBe(true);
     });
     it('stops on five consecutive non-improvements, watching validation rather than training', async () => {
       const probe = async (values) => {

@@ -193,7 +193,7 @@ testCode: |
         ).toBe('unknown');
         expect(
           seen,
-          'The next stage has to receive the substituted value. Passing the broken one along is the failure the lesson describes: a stage that is wrong rather than broken raises no exception.',
+          'Pass unknown to the detector when the classifier returns an unsupported class.',
         ).toEqual(['unknown']);
       }
     });
@@ -229,7 +229,7 @@ testCode: |
             async () => { reached += 1; return true; },
             async () => 'ALERT!',
           ),
-          'This confidence is outside the contract, and the alert would quote it as the model\'s own certainty. There is nothing honest to put in its place, so the run stops here.',
+          'Reject the invalid score before calling the detector. Do not invent a replacement score.',
         ).rejects.toThrow();
         expect(
           reached,
@@ -321,6 +321,15 @@ testCode: |
       return stage;
     };
 
+    it('rejects invalid sigmoid outputs and releases temporary tensors', () => serial(async () => {
+      for (const values of [[NaN], [Infinity], [-0.1], [1.1], [0.2, 0.8]]) {
+        const model = { predict: () => tf.tensor2d([values]) };
+        const before = tf.memory().numTensors;
+        await expect(classifierStage(model)([1024, 31.5, 0])).rejects.toThrow();
+        expect(tf.memory().numTensors).toBe(before);
+      }
+    }));
+
     it('runs the model once, on one [1, 3] row, and leaves no tensors behind', () => serial(async () => {
       const model = realClassifier(7741);
       const shapes = [];
@@ -357,7 +366,7 @@ testCode: |
       const raw = verdictOf(modelSays(model, loud));
       expect(
         got.confidence,
-        'This confidence is the number the model gives for a row on the wrong scale. Amplitude arrives in counts up to 2048 and the model learned it as a fraction of that range; fed raw, the sigmoid pins to its rail and every reading reads the same. Fed z-scores it fits the row too and comes back with a number between 0 and 1 that means nothing. Scale each feature with RANGES: (value - min) / (max - min).' + (Math.abs(got.confidence - raw.confidence) < 1e-4 ? ' The number you returned is exactly the raw-units answer.' : ''),
+        'Use the supplied RANGES to scale every feature before inference. A valid output range does not establish that the input scale was correct.' + (Math.abs(got.confidence - raw.confidence) < 1e-4 ? ' The number you returned is exactly the raw-units answer.' : ''),
       ).toBeCloseTo(want.confidence, 4);
     }));
 

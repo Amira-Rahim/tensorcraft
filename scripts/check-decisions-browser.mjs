@@ -22,7 +22,7 @@ const webRequire = createRequire(
 );
 const tailwind = (await import(webRequire.resolve("@tailwindcss/postcss")))
   .default;
-const html = `<!doctype html><html lang="en" data-world="deep-orbit" data-theme="dark"><head><title>Transfer assignment check</title></head><body><main style="max-width:42rem;margin:2rem auto;padding:0 1rem"><div id="root" class="lesson-prose lesson-step-content" data-show-prose="false" data-show-challenge="true"></div></main><script type="module">
+const html = `<!doctype html><html lang="en" data-world="deep-orbit" data-scheme="dark"><head><title>Transfer assignment check</title></head><body><main style="max-width:42rem;margin:2rem auto;padding:0 1rem"><div id="root" class="lesson-prose lesson-step-content" data-show-prose="false" data-show-challenge="true"></div></main><script type="module">
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { DecisionTask } from '/apps/web/app/components/mdx/decision-task.tsx';
@@ -33,6 +33,7 @@ createRoot(document.getElementById('root')).render(React.createElement(React.Fra
 </script></body></html>`;
 const server = await createServer({
   root,
+  cacheDir: path.join(root, "node_modules/.vite/check-decisions-browser"),
   configFile: false,
   publicDir: path.join(root, "apps/web/public"),
   server: { host: "127.0.0.1", port: 0 },
@@ -43,6 +44,7 @@ const server = await createServer({
       "@tensorcraft/worlds": path.join(root, "packages/worlds/src"),
       "@tensorcraft/shared": path.join(root, "packages/shared/src"),
       "@/lib/project-export": path.join(root, "apps/web/lib/project-export.ts"),
+      "@": path.join(root, "apps/web"),
     },
   },
   css: { postcss: { plugins: [tailwind()] } },
@@ -52,7 +54,11 @@ const server = await createServer({
       name: "transfer-check-page",
       // Explicit API boundary stub; production component and folder reader run unchanged.
       resolveId(id) {
-        if (id === "@/lib/api-fetch") return "\0project-api";
+        if (
+          id === "@/lib/api-fetch" ||
+          id === path.join(root, "apps/web/lib/api-fetch")
+        )
+          return "\0project-api";
       },
       load(id) {
         if (id === "\0project-api")

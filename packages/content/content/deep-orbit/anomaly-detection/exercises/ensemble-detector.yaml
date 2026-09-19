@@ -10,7 +10,7 @@ instructions: |
 
   `votes` is how many of the three flagged, and a majority (at least 2 of 3) sets `isAnomaly`. Return `{ zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }`.
 
-  The window must be non-empty and contain finite readings. All other arguments must be finite, and errors and tolerances must be nonnegative. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. An undefined z-score is not a measured zero.
+  The window must be non-empty and contain finite readings. All other arguments must be finite, and errors and tolerances must be nonnegative. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. Return null for that undefined z-score. Reject non-finite computed statistics, or a nonconstant window whose spread becomes zero after float32 conversion, rather than treating lost precision as a constant baseline.
 starterCode: |
   interface EnsembleVerdict {
     zScore: number | null;
@@ -66,7 +66,10 @@ solutionCode: |
       return { mean: m.mean.dataSync()[0], variance: m.variance.dataSync()[0] };
     });
     const std = Math.sqrt(variance);
-    const zScore = constant || std === 0 ? null : (actual - mean) / std;
+    if (!Number.isFinite(mean) || !Number.isFinite(std) || (!constant && std === 0)) {
+      throw new Error('Window statistics lost precision');
+    }
+    const zScore = constant ? null : (actual - mean) / std;
 
     const verdicts = {
       statistical: zScore === null ? actual !== window[0] : Math.abs(zScore) > 3,
@@ -313,6 +316,10 @@ testCode: |
       expect(changed.isAnomaly).toBe(true);
     }
     expect(() => detectAnomalyEnsemble([], 1, 0, 1, 1, 1)).toThrow();
+  });
+  it('rejects statistics lost in float32 conversion', () => {
+    expect(() => detectAnomalyEnsemble([1, 1 + 1e-9], 1, 0, 1, 1, 1)).toThrow();
+    expect(() => detectAnomalyEnsemble([1e39, 2e39], 1, 0, 1, 1, 1)).toThrow();
   });
   it('rejects invalid detector scores rather than silently voting normal', () => {
     expect(() => detectAnomalyEnsemble([0.5,0.6], 0.5, NaN, 1, 0.5, 0.1)).toThrow();

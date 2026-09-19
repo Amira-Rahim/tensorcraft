@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values. Two lines are computed rather than copied, the dated accuracy line and the lowest-recall limitation."
   - level: guidance
-    content: "The strings are a contract, and the instructions write it out line by line and space by space. Read it there rather than inventing a format. What a hint can tell you is where the work sits: only two of these lines are computed instead of copied. Accuracy renders with the benchmark it came from, because a percentage with no measurement attached tells an operator nothing about whether it still holds. And the first limitation is the worst class, which means finding a minimum across recallByClass. Insertion order is not a ranking. The grader hands you objects whose worst entry sits somewhere different each time, so reading whichever key happens to come first or last is a card that files a healthy class under Limitations."
+    content: "Render the requested sections from meta. Format fractions as percentages with one decimal place and keep the benchmark label beside accuracy. Find the smallest recall value across all entries; do not assume a particular class or key order."
   - level: solution
     content: |
       interface ModelMetadata {
@@ -118,9 +118,7 @@ interface ModelCard {
   performance: {
     accuracy: number;
     benchmarkedOn: string;   // which evaluation produced the number above
-    precision: number;
-    recall: number;
-    f1Score: number;
+    perClass: { label: string; examples: number; correct: number }[];
     inferenceMs: number;   // the classifier alone
     pipelineMs: number;    // the whole classify() call, end to end
     weightBytes: number;    // this model's weight file
@@ -154,20 +152,22 @@ const deepScanCard: ModelCard = {
   },
 
   performance: {
-    accuracy: 0.918,
-    benchmarkedOn: 'the pruning review holdout',
-    precision: 0.92,
-    recall: 0.91,
-    f1Score: 0.915,
+    accuracy: 1859 / 2025, // 91.8% rounded; distinct from the earlier six-anomaly pruning slice
+    benchmarkedOn: 'handover evaluation after pruning, 2025 labeled captures',
+    perClass: [
+      { label: 'pulsar', examples: 500, correct: 470 },
+      { label: 'quasar', examples: 500, correct: 468 },
+      { label: 'noise', examples: 500, correct: 455 },
+      { label: 'interference', examples: 500, correct: 445 },
+      { label: 'anomaly', examples: 25, correct: 21 },
+    ],
     inferenceMs: 0.035,  // the eleven-feature classifier alone at the dashboard station, one
                          // backend, readback inside the clock (module 10)
     pipelineMs: 5,       // the whole classify() call on WebGPU, 15 on WebGL: feature extraction,
                          // the classifier and the readback, which is what the monitor times
-    weightBytes: 3_988,  // scenario arithmetic: 997 float32 parameters
-    bundleSizeMB: 85,    // the whole download, quantized: this classifier
-                         // plus the pretrained language component. Over the
-                         // 50 MB cold-load budget module 4 set for this
-                         // dashboard, and accepted as such (see below).
+    weightBytes: 3_988,  // final selective export retains this pruned classifier at float32
+    bundleSizeMB: 85,    // rounded weight payload, mainly the quantized language component;
+                         // transfer compression, JS and metadata are separate
   },
 
   limitations: [
@@ -186,7 +186,7 @@ const deepScanCard: ModelCard = {
 };`}
 </CodeBlock>
 
-Keep weight-file bytes, total download bytes, classifier latency and whole-pipeline latency separate. They describe different scopes. The values on this mission card are fictional: 997 float32 parameters imply 3,988 weight bytes, but the course does not ship that five-class artifact or the fictional 85 MB language component. The downloadable runtime lab records measurements for its own named models and device.
+Keep weight-file bytes, total download bytes, classifier latency and whole-pipeline latency separate. They describe different scopes. The values on this mission card are fictional. The 11→32→16→5 network has 997 parameters: 384 + 528 + 85. The final selective export retains this pruned classifier at float32, giving 3,988 weight bytes, but the course does not ship that five-class artifact or the fictional 85 MB language component. The downloadable runtime lab records measurements for its own named models and device.
 
 A production card also needs the artifact and preprocessing versions, label map, evaluation data identity and split method, sample counts, per-class metrics and averaging convention. Report uncertainty where the evaluation supports it, plus the device, backend, timing protocol and date. A single accuracy and a date cannot establish fitness for another use.
 
@@ -267,12 +267,12 @@ Write a Model Card for the DEEP SCAN classifier.
 <LessonRecap
   whatYouLearned={[
     "A Model Card is structured documentation for an ML model covering purpose, training data, performance metrics, and known limitations: the same documentation discipline as a README, applied to a statistical artifact rather than deterministic code.",
-    "Documenting limitations honestly is load-bearing: what the model cannot do (low recall on rare classes, training distribution boundaries, hardware requirements) is as operationally important as what it can do.",
+    "Describe limitations with evidence: per-class misses, untested data and hardware requirements affect whether someone can use the model.",
     "Runbooks specify checks, thresholds, actions, owners and escalation paths. Some cases require judgment; say who makes the decision.",
     "Select thresholds using representative measurements and the cost of misses and false alarms. A calm-period percentile is one starting point; validate it on separate periods and record window size."
   ]}
   bridge="JSDoc records a function contract. A model card also records training data, evaluation conditions, and limitations, so readers can judge where measured performance applies."
-  youCanNow="Render a Model Card from a model's own metadata, with the accuracy dated to the benchmark that produced it and the weakest class found rather than assumed, and turn a runbook entry with a judgment call in it into one with a threshold and a window size."
+  youCanNow="Render a model card with evaluation context and observed limitations, then write a runbook with named checks and an escalation owner."
 />
 
 <Epilogue>
@@ -287,12 +287,13 @@ Demir adds a calibration record: in this fictional run, 180 calm windows of 100 
 
 <StoryConsequence
   beatId="deep-orbit-drift-response"
+  contentVersion={2}
   fallback="Nazari assigns the next watch to inspect calibration, retained captures and recent outcome labels before proposing a replacement."
   outcomes={{
-    "cooperate": "Nazari attaches her calibration check and the raw fft_5 captures to the runbook. The sensors passed the check, so the next watch moves to outcome review. The replacement model remains unscheduled until that evidence arrives.",
-    "defect": "The new candidate is ready before the outcome labels. Demir marks it unreleased and adds an evaluation gate to the runbook; the overnight fit used the engineer's slot without establishing an improvement.",
-    "random": "The muted interval appears as a gap in the alert review log. Nazari restores paging and assigns the next watch to replay the retained captures, postponing its first maintenance task.",
-    "dominant": "The runbook now has separate columns for the active model and the shadow candidate. Demir records their version IDs and disagreements; Nazari adds an owner for reviewing them when labels arrive. The extra comparison stays on the watch budget."
+  "cooperate": "Nazari attaches the raw fft_5 captures, feature-order check and calibration record. Those checks found no mismatch; they did not establish model quality. Demir takes the remaining label request, and the runbook names the next watch as owner. No shadow comparison was completed in this slot.",
+  "defect": "Demir has a candidate configuration, but the recent stream still lacks the labels needed for a supervised comparison. He records it as unreleased. The watch slot bought preparation, not evidence of improvement; the runbook retains the current model and assigns an evaluation owner.",
+  "random": "The muted interval remains in the alert-review log as unreviewed. Nazari restores paging and assigns the retained captures to the next watch. Its first maintenance task moves back while the missing review is completed.",
+  "dominant": "Demir closes the paired run at the 20-minute limit. Active-model P95 stayed within the 200 ms rehearsal budget; the result log names both artifacts and their disagreements. The runbook assigns the next watch the instrument check and label review. The saved candidate stays shadow-only: disagreement counts do not identify the better model."
 }}
 />
 

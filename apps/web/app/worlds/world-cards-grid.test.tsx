@@ -113,7 +113,7 @@ describe("WorldCardsGrid coming-soon interactivity", () => {
     const shell = card.querySelector(".tc-world-card");
     // brutalist-hover lift + the muted-to-full opacity ramp both survive.
     expect(shell?.className).toContain("brutalist-hover");
-    expect(shell?.className).toContain("hover:opacity-100");
+    expect(shell?.className).not.toContain("opacity-80");
   });
 
   it("still ignites the scene on hover of an inert card", () => {

@@ -1,0 +1,16 @@
+# Production uploads use this file, not .gitignore, in the installed CLI.
+# Runtime and build credentials come from the deployment environment.
+**/.env
+**/.env.*
+**/.dev.vars
+learning-study-private/
+.venv-runtime/
+art-src/
+.claude/
+.agents/
+.superpowers/
+test-results/
+playwright-report/
+docs/audits/
+**/.turbo/
+**/*.tsbuildinfo

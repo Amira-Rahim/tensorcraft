@@ -10,7 +10,7 @@ export function LessonRecap({
   youCanNow,
 }: LessonRecapProps) {
   return (
-    <div className="p-5 my-8 brutalist-shadow bg-surface-raised border border-border">
+    <div className="min-w-0 [overflow-wrap:anywhere] p-5 my-8 brutalist-shadow bg-surface-raised border border-border">
       <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-primary">
         Lesson Recap
       </h4>
@@ -26,8 +26,8 @@ export function LessonRecap({
                 key={item}
                 className="flex items-start gap-2 text-sm leading-relaxed text-text-primary/80"
               >
-                <span className="mt-0.5 text-primary">&#x2713;</span>
-                {item}
+                <span className="mt-0.5 shrink-0 text-primary">&#x2713;</span>
+                <span className="min-w-0">{item}</span>
               </li>
             ))}
           </ul>

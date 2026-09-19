@@ -85,7 +85,7 @@ What I actually want is an alpha that adjusts itself. Trust the measurement more
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-You have just specified the Kalman filter. Your self-adjusting alpha has a name, the Kalman gain, and computing it at every step, by weighing measurement noise against estimate uncertainty, is the entire algorithm. Under a correctly specified linear model, Gaussian initial state and independent Gaussian process and measurement noise, it gives the minimum mean-square-error state estimate, and you arrived at its job description from a scroll handler.
+You have just specified the Kalman filter. The blend weight is called the Kalman gain. The filter predicts state and uncertainty, computes that gain, then corrects both with the measurement. With a correctly specified linear model, a Gaussian initial state and independent zero-mean Gaussian noise, it gives the minimum mean-square-error state estimate.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter that smooths a noisy timing signal", "Connect Kalman filtering to the exponential moving average pattern", "Smooth a drifting interval and read the lag that motivates a velocity state"]} />
@@ -175,7 +175,7 @@ dV/dK = -2(1-K)·P + 2K·R = 0
 
 That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. A steady-state Kalman gain can be constant when the model and noise statistics are constant; using that fixed gain is a legitimate design choice.
 
-One honesty note the EMA bridge has earned. With a constant-state model like this one, P settles and the gain converges: about 0.27 at process noise 0.1 and measurement noise 1. After a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. What the adaptive gain buys is a clean burn-in, the gain falling 0.52, 0.38, 0.33 and on down to 0.27 while the estimate finds the level. It buys no immunity to trends. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-day]` instead of a single number. The crew's filter is the honest first rung, not the whole ladder.
+With this random-walk model and constant noise variances, P settles and the gain converges: about 0.27 at process noise 0.1 and measurement noise 1. After a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. The early gains fall from 0.52 to 0.38 to 0.33, reflecting the assumed uncertainty after each correction. This does not remove trend lag. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-day]` instead of a single number.
 </DerivationDrawer>
 
 ## Challenge
@@ -201,7 +201,7 @@ Implement a Kalman filter and smooth the anomaly timing.
 
 <Epilogue>
 
-Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4. The log under it shrinks roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, with the assumed noise variances printed beside it. Nazari asks which measurements support those assumptions. The slope is the log's own doing, and the log has stopped being flat. Mirza reads the printout twice, writes a time in the margin, and folds it into her jacket without showing anyone.
+Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4. The log under it shrinks roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, with the assumed noise variances printed beside it. Nazari's review note asks which measurements support those assumptions. The slope is the log's own doing, and the log has stopped being flat. Mirza reads the printout twice, writes a time in the margin, and folds it into her jacket without showing anyone.
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.

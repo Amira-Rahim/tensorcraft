@@ -4,7 +4,7 @@ title: "Measure What Pruning Costs"
 instructions: |
   Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels).
 
-  Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is the fraction of the captures labelled c that the model still puts in class c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function.
+  Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is recall for class c: the fraction of captures labelled c predicted as c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function.
 
   Four rules decide whether your numbers mean anything. (1) Pruning is global across the model: pool every weight from the 2-D kernel tensors in model.getWeights() into one ranking of absolute values, and never prune the 1-D bias tensors.
 
@@ -111,9 +111,8 @@ solutionCode: |
 
       return report;
     } finally {
-      model.setWeights(original);
-      original.forEach((w) => w.dispose());
-      input.dispose();
+      try { model.setWeights(original); }
+      finally { original.forEach((w) => w.dispose()); input.dispose(); }
     }
   }
 testCode: |

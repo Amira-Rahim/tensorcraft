@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
 
 /**
@@ -36,11 +35,7 @@ export function LandingHero() {
       <div className="absolute inset-0 grid-bg pointer-events-none z-1" />
 
       <div className="w-full relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
-        >
+        <div>
           {/* Fluid type wall: the longest line is 17 mono chars at 0.555em
               per char (0.6em advance minus 0.045em tracking), so 10vw-1rem
               keeps it inside the md:px-20 gutters at every width. The 3rem
@@ -83,7 +78,7 @@ export function LandingHero() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

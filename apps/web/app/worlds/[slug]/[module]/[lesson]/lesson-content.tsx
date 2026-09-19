@@ -19,6 +19,7 @@ import {
 } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useGlossary } from "./glossary-context";
+import { useActivityUser } from "@/app/components/learning-activity-scope";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
 // runtime + editor (~300 KB gzipped). Loading it dynamically with
@@ -39,9 +40,12 @@ import {
   BossBeat,
   StoryConsequence,
   Concept,
+  ConceptReference,
   DeepScanDemo,
   DispatchTease,
   InteractiveDemo,
+  ChannelLayoutExperiment,
+  LearningExperiment,
   MathBlock,
   NextLesson,
   RecallPrompt,
@@ -49,6 +53,7 @@ import {
   TransferAssignment,
   DecisionTask,
   IndependentProject,
+  ProjectMilestone,
 } from "@/app/components/mdx";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
@@ -147,9 +152,11 @@ const EpilogueContext = createContext(false);
 const mdxComponents = {
   DecisionTask,
   IndependentProject,
+  ProjectMilestone,
   BossBeat,
   StoryConsequence,
   Concept,
+  ConceptReference,
   Dialogue,
   BridgeCallout,
   CodeBlock,
@@ -158,6 +165,8 @@ const mdxComponents = {
   Exercise,
   HintPanel,
   InteractiveDemo,
+  ChannelLayoutExperiment,
+  LearningExperiment,
   KeyTakeaways,
   LearningObjectives,
   MathBlock,
@@ -191,6 +200,7 @@ export function LessonContent({
   hideStoryZone,
   showPostRecap,
 }: LessonContentProps) {
+  const draftOwner = useActivityUser();
   // Map canonical term -> entry, for the span override to look up definitions.
   // Memoized on the (stable) glossaryTerms array so the components map below
   // does not rebuild (and remount the MDX subtree) every render.
@@ -339,6 +349,12 @@ export function LessonContent({
         <pre {...props} tabIndex={0} role="region" aria-label="Code example" />
       ),
       Concept: wrapVisibility("Concept", Concept),
+      ConceptReference: wrapVisibility(
+        "ConceptReference",
+        (props: React.ComponentProps<typeof ConceptReference>) => (
+          <ConceptReference {...props} open={!showProse} />
+        ),
+      ),
       Dialogue: (props: React.ComponentProps<typeof Dialogue>) => {
         // Mirror wrapVisibility's epilogue bypass: inside an <Epilogue>, the
         // epilogue wrapper is the gate, so render unconditionally; elsewhere
@@ -375,8 +391,17 @@ export function LessonContent({
           />
         ) : null,
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
+      LearningExperiment: wrapVisibility(
+        "LearningExperiment",
+        LearningExperiment,
+      ),
+      ChannelLayoutExperiment: wrapVisibility(
+        "ChannelLayoutExperiment",
+        ChannelLayoutExperiment,
+      ),
       DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
       DecisionTask: wrapVisibility("DecisionTask", DecisionTask),
+      ProjectMilestone: wrapVisibility("ProjectMilestone", ProjectMilestone),
       IndependentProject: wrapVisibility(
         "IndependentProject",
         IndependentProject,
@@ -471,6 +496,8 @@ export function LessonContent({
         shouldShow("Exercise") ? (
           <Exercise
             {...props}
+            key={`${props.slug}:${draftOwner ?? "guest"}`}
+            draftOwner={draftOwner}
             bridge={bridgeHint}
             onHintRevealed={handleHintRevealed}
             onSubmit={(result: ExerciseSubmitResult) => {
@@ -486,6 +513,8 @@ export function LessonContent({
         shouldShow("Exercise") ? (
           <Exercise
             {...props}
+            key={`${props.slug}:${draftOwner ?? "guest"}`}
+            draftOwner={draftOwner}
             bridge={bridgeHint}
             onHintRevealed={handleHintRevealed}
           />
@@ -532,12 +561,14 @@ export function LessonContent({
 
     return base;
   }, [
+    draftOwner,
     worldId,
     moduleId,
     lessonId,
     handleExerciseSubmit,
     handleHintRevealed,
     shouldShow,
+    showProse,
     onExerciseComplete,
     lesson.concept.bridge,
     glossaryByTerm,

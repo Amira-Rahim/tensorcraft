@@ -149,9 +149,9 @@ function makeWindows(
 // Window 1: [s1, s2, s3, s4] → predict s5   (stride 1: windows overlap)`}
 </CodeBlock>
 
-Which reading labels a window depends on the task, and this lesson shows both cases. Forecasting takes its target from the reading after the window. The label has to sit outside the window, because including it would let the model read its own answer. Per-window classification takes its label from an external log, at the window's last reading, and leaks nothing, because that label was never a feature. The mirror above and the graded exercise are classification, so they label by `labels[end - 1]`. `makeWindows` here is forecasting, so it labels by `data[i + windowSize]`.
+Which reading labels a window depends on the task, and this lesson shows both cases. Forecasting takes its target from the reading after the window. The label has to sit outside the window, because including it would let the model read its own answer. Here, per-window classification takes an external log label at the window's last reading. That does not put the answer into the features. You must still check that all input measurements were available at prediction time. The mirror above and the graded exercise are classification, so they label by `labels[end - 1]`. `makeWindows` here is forecasting, so it labels by `data[i + windowSize]`.
 
-Window size is the only history the model gets. Lesson 2 put the pattern DEEP SCAN needs at a 74-step dependency on the one-sample-per-second feed, so an 80-step window holds it with six steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
+For the stateless model here, window size limits the input history. Lesson 2 put the pattern DEEP SCAN needs at a 74-step dependency on the one-sample-per-second feed, so an 80-step window holds it with six steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
 
 ## Real-Time Streaming Buffer
 
@@ -205,15 +205,15 @@ The mirror scored 97.4 because the stream was windowed before it was split. Buil
 
 <RecallPrompt
   question="You set windowSize to 30 but the pattern you need to detect spans 50 time steps. What happens, and what should you change?"
-  answer="A stateless model cannot directly compare positions 50 steps apart inside a 30-step input. It may still exploit shorter cues, which would be a different basis for its predictions. Increase windowSize to at least 50 (and likely a bit larger to give the model enough context around the pattern)."
+  answer="A stateless model cannot directly compare positions 50 steps apart inside a 30-step input. It may still exploit shorter cues, which would be a different basis for its predictions. Comparing positions 50 steps apart requires at least 51 readings. Use a longer window if the task also needs surrounding context."
 />
 
 <LessonRecap
   whatYouLearned={[
     "A sliding window yields a fixed-size input. Next-step forecasting labels it with the following reading; window classification uses an external event label.",
-    "Windowing the whole stream before splitting it leaks: with stride 1, neighboring windows are near-copies, so a random or every-Nth holdout scores the model on data it has already seen. Split the stream by time first, then window each side.",
+    "Randomly splitting overlapping windows shares observations across training and evaluation. For forecasting later periods, split the original stream by time before windowing.",
     "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
-    "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping chunks with no repeated data."
+    "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping input windows."
   ]}
   bridge="The shown stream framer emits disjoint blocks. Overlapping windows reuse readings when stride is smaller than the window; next-step labels stay outside each input window."
   youCanNow="Split a stream by time before you window it, so no reading lands on both sides of the boundary, and take each window's label from the task: the next reading when forecasting, the window's last reading when classifying."

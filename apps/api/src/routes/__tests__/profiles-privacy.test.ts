@@ -43,6 +43,7 @@ const mockProfileRow: Record<string, unknown> | null = {
   learning_goal: "ship-ml",
   js_background: "react",
   js_experience_years: 4,
+  ml_learning_route: "challenge",
   email_alerts: true,
   weekly_digest: false,
   stripe_customer_id: null,
@@ -132,6 +133,7 @@ describe("GET /api/profiles/export", () => {
     const body = await res.json();
     expect(body.exportVersion).toBe(1);
     expect(body.account.email).toBe("learner@example.com");
+    expect(body.account.ml_learning_route).toBe("challenge");
     // The token is a LIVE credential: disclosed, never exported.
     expect(body.account.github_token).toMatch(/revoke|Disconnect/);
     expect(JSON.stringify(body)).not.toMatch(/gho_|ghp_/);
@@ -141,6 +143,8 @@ describe("GET /api/profiles/export", () => {
     // Learner-authored code is user data too.
     expect(Object.keys(body.tables)).toContain("arena_submissions");
     expect(Object.keys(body.tables)).toContain("review_queue");
+    expect(Object.keys(body.tables)).toContain("learning_activity_progress");
+    expect(Object.keys(body.tables)).toContain("learning_activity_streams");
     expect(Array.isArray(body.waitlist)).toBe(true);
   });
 

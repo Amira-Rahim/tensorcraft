@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { DeepScanDemo } from "./deep-scan-demo";
 
+const { inputDispose, outputDispose } = vi.hoisted(() => ({
+  inputDispose: vi.fn(),
+  outputDispose: vi.fn(),
+}));
+
 // Mock tfjs: model returns a fixed score per input row. Sample 7741's canon
 // triple [0.5, 0.59, 0.54] scores 0.514 here: the landing demo rounds to a
 // whole percent and the story's line is "fifty-one percent", so the preview
@@ -14,7 +19,7 @@ const predictMock = vi.fn((input: { arraySync: () => number[][] }) => {
   );
   return {
     data: async () => Float32Array.from(scores),
-    dispose: () => {},
+    dispose: outputDispose,
   };
 });
 
@@ -23,7 +28,7 @@ vi.mock("@tensorflow/tfjs-core", () => ({
   ready: vi.fn(async () => undefined),
   tensor2d: (rows: number[][]) => ({
     arraySync: () => rows,
-    dispose: () => {},
+    dispose: inputDispose,
   }),
 }));
 vi.mock("@tensorflow/tfjs-backend-cpu", () => ({}));
@@ -50,6 +55,44 @@ describe("DeepScanDemo", () => {
     );
     expect(screen.getByTestId("demo-verdict-7741").textContent).toMatch(/51/);
   }, 10000);
+
+  it("releases both tensors when reading scores fails", async () => {
+    inputDispose.mockClear();
+    outputDispose.mockClear();
+    predictMock.mockReturnValueOnce({
+      data: async () => {
+        throw new Error("read failed");
+      },
+      dispose: outputDispose,
+    });
+    render(<DeepScanDemo />);
+    await waitFor(() =>
+      expect(screen.getByTestId("deep-scan-demo")).toHaveAttribute(
+        "data-status",
+        "error",
+      ),
+    );
+    expect(inputDispose).toHaveBeenCalledTimes(1);
+    expect(outputDispose).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects invalid model scores and releases the output", async () => {
+    inputDispose.mockClear();
+    outputDispose.mockClear();
+    predictMock.mockReturnValueOnce({
+      data: async () => Float32Array.from([NaN, 0, 0, 0, 0, 0]),
+      dispose: outputDispose,
+    });
+    render(<DeepScanDemo />);
+    await waitFor(() =>
+      expect(screen.getByTestId("deep-scan-demo")).toHaveAttribute(
+        "data-status",
+        "error",
+      ),
+    );
+    expect(inputDispose).toHaveBeenCalledTimes(1);
+    expect(outputDispose).toHaveBeenCalledTimes(1);
+  });
 
   // The framing caption renders on the landing page, before lesson 1, so it
   // carries no story vocabulary (owner bar 2026-08-16; pre-lesson copy audit

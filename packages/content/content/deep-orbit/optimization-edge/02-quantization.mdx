@@ -20,36 +20,20 @@ concept:
     mlTitle: "Quantization"
     mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, then score it and see"
     tier: structural
-    breaks: "Lossy image formats decide what to discard using a model of human eyes, and you judge the damage by looking. Quantization rounds weights onto a coarser grid with no perceptual model protecting anything: one outlier weight can stretch the grid and quietly wreck accuracy. You measure after; you never assume."
+    breaks: "Both change stored values to save space. This exercise uses a uniform weight grid: outliers widen its spacing. Image quality and model prediction quality need different evaluation criteria."
 consequence:
   narrative: "The smaller build clears the engineering rig's load test. Nazari records its version beside the result and leaves the bridge-console check open."
 hints:
   - level: nudge
     content: |
-      Two prediction passes with the quantizing in between. Ask the model what it makes of every capture, squeeze each kernel onto the 256 integer buckets 0 to 255, put the decoded floats back on the model, then ask it again. The difference between the two answers is what the pass cost.
+      Record predictions, quantize each kernel, apply the decoded weights and predict again. Count changed classes, not errors against unknown labels.
   - level: guidance
     content: |
-      There is no tf.quantize() in TFJS, so the mapping is arithmetic you
-      write yourself. Three decisions decide whether the report is a
-      measurement or a story.
-
-      The first is which tensors are in scope. A weight list holds kernels
-      and biases, the biases here keep full precision, and what tells the two
-      apart is how many dimensions the tensor has.
-
-      The second is where the price shows up. Squeezing a weight onto one of
-      256 buckets is what saves the byte, and coming back out of the bucket
-      is what the runtime does for you at load. So the floats that come back
-      out have to go onto the model before the second prediction pass.
-      Otherwise you have measured the original model twice. Zero changed
-      predictions is a valid result, but only after testing the decoded weights.
-
-      The third is the grid. Every tensor gets its own, measured from its own
-      smallest and largest value. One tensor carrying a value far out from
-      the rest would otherwise widen the buckets of every other tensor in the
-      model. That widening is the failure mode this exercise is built around.
-      A wider bucket permits a larger rounding error. The decoded value is
-      q * scale + min, so a small weight does not necessarily round to zero.
+      Select the 2-D kernels and leave biases unchanged. Give each kernel its
+      own min, max and scale; use scale 0 for a constant kernel. Restore the
+      integer codes with q * scale + min, then apply those weights before
+      the second prediction pass. These arrays simulate stored codes; the
+      converter lab writes the actual byte files.
   - level: solution
     content: |
       interface QuantizedKernel {

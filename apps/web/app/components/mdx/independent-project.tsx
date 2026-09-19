@@ -1,3 +1,4 @@
+import { ProjectRunRecord } from "./project-run-record";
 import { ProjectExport } from "./project-export";
 
 export function IndependentProject() {
@@ -56,6 +57,7 @@ export function IndependentProject() {
         for a first attempt; this is an unvalidated author estimate. Local
         execution is sufficient, and hosting is optional.
       </p>
+      <ProjectRunRecord />
       <ProjectExport />
     </section>
   );

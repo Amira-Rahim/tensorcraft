@@ -15,7 +15,7 @@ context:
   narrative: "Commander Mirza orders all sensor data normalized before the deep scan begins."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Normalization scales data to a consistent range, improving model training stability."
+  explanation: "Feature scaling changes numeric units using fitted statistics or known bounds. Comparable scales can make neural-network training easier."
   bridge:
     jsTitle: "Scroll progress calculation"
     jsCode: "const progress = scrollY / (docHeight - viewportHeight)"
@@ -52,32 +52,34 @@ The thermal channel reads in the thirties, signal strength lives under one. If w
 With comparable starting weights, temperature has the larger numerical contribution. Scaling helps us fit the model; it does not tell us which sensor matters.
 </Dialogue>
 
-<LearningObjectives objectives={["Explain how feature scaling affects neural-network training", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
+<LearningObjectives objectives={["Explain how feature scaling affects neural-network training", "Apply z-score normalization to nonconstant training features", "Apply min-max normalization and explain why later values can exceed 0-1", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
 
 <BossBeat
   beatId="deep-orbit-foundations-7741-first-flag"
-  prompt="The normalization job stops on sample 7741. It was logged in the calm period and sits inside every baseline, but its pattern differs from its neighbors. There is no confirmed event label. The raw archive is read-only; this call changes the working review list. What should the next watch receive?"
+  contentVersion={2}
+  showTimer={false}
+  prompt="The normalization job flags sample 7741. It sits inside every baseline but differs from nearby readings, and its true event label is unknown. One engineer has 40 minutes before handover; the scheduled channel check takes 20. A full capture and calibration review needs all 40. A 20-minute replay can preserve the row and test reproducibility, but cannot rule out an instrument problem. The raw archive is read-only. What goes on the watch sheet?"
   options={[
-    {
-        "label": "cooperate",
-        "display": "Open a formal investigation now",
-        "consequence": "Nazari assigns the next watch to inspect the capture and calibration log. That preserves a clear owner, but moves a scheduled channel check back one watch."
-    },
-    {
-        "label": "defect",
-        "display": "Remove it from the working list as likely sensor noise",
-        "consequence": "Demir removes the row from the working review list. The raw archive still holds it; recovering its context later will require reopening that archive."
-    },
-    {
-        "label": "random",
-        "display": "Leave it in the archive without assigning a review",
-        "consequence": "The row stays available, with no owner and no review note. The next watch receives its usual channel checklist."
-    },
-    {
-        "label": "dominant",
-        "display": "Tag it as unresolved and schedule a replay",
-        "consequence": "Farah adds an unresolved tag and a replay task for the first classifier. The channel check stays on schedule; the unexplained capture waits."
-    }
+  {
+    "label": "cooperate",
+    "display": "Give Nazari 40 minutes for capture and calibration review",
+    "consequence": "Nazari takes the full slot and postpones the channel check. Farah will receive a checked capture record, but the next watch inherits that unfinished maintenance. The event label remains unknown."
+  },
+  {
+    "label": "defect",
+    "display": "Remove 7741 from the review list as likely sensor noise",
+    "consequence": "Demir removes the working-list entry without a calibration check. The channel check proceeds, but nobody has established sensor noise as the cause. The raw capture remains available for a later review."
+  },
+  {
+    "label": "random",
+    "display": "Keep the scheduled check and leave 7741 unassigned",
+    "consequence": "Nazari finishes the channel check. Sample 7741 stays in the archive without an owner or a replay deadline; the next watch must recover its context if it returns."
+  },
+  {
+    "label": "dominant",
+    "display": "Give Demir 20 minutes for replay, then finish the channel check",
+    "consequence": "Demir owns the replay and records the timestamp, channels and unresolved label. Nazari gets the remaining 20 minutes for the channel check. Reproducing the row will not clear the instrument chain; that review moves to the next watch."
+  }
 ]}
 />
 
@@ -91,6 +93,10 @@ Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / 
 For this neural network, scaling can help training. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. With comparable weights, temperature contributes more to the weighted sum and can produce larger gradients. Scaling can make optimization easier; it does not decide which feature is informative. A trained model can still assign different weights to the features.
 
 Two names in the code below. The standard deviation is the typical distance between a value and its column's mean, so dividing by it measures a feature in its own units of spread: a z-score of 1 sits one typical distance above the mean, whatever the raw units were. `tf.moments` hands back the variance instead, that distance squared and averaged, so the standard deviation is `variance.sqrt()`. The averaging divides by the number of rows, n, which makes both statistics the population version. The usual unbiased sample variance divides by n minus 1. Its square root is larger than the population standard deviation when n > 1 and variance is nonzero; that square root is not itself an unbiased estimator of standard deviation.
+
+<LearningExperiment id="normalization" />
+
+<ConceptReference summary="Reference: TensorFlow.js scalers and the exercise neuron">
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -148,7 +154,7 @@ A constant training feature has zero variance and zero range, so ordinary divisi
 
 One practical wrinkle that bites in production: whatever mean and std you compute here, you must save. Inference data has to be normalized with the *training* statistics, not its own; otherwise the same reading maps to different numbers on different days, and your model quietly answers a different question each time.
 
-Which rows you compute them from matters too. Lesson 4 kept the validation rows out of training, and the statistics follow the same rule. Compute mean and std on the training rows only, then apply them to validation and to every later reading. Fitting them on training plus validation is the most common leak in a first pipeline.
+Which rows you compute them from matters too. Lesson 4 kept the validation rows out of training, and the statistics follow the same rule. Compute mean and std on the training rows only, then apply them to validation and to every later reading. Fitting them on training plus validation lets held-out information affect the model’s inputs.
 
 ## When to Use Which
 
@@ -189,6 +195,8 @@ Now run those same four readings through the same neuron raw, without normalizin
 
 Module 2 builds these layers and module 3 trains their weights. Tonight the layer is a fixed function you feed. Its score is not a calibrated probability. A familiar reading near the decision boundary can score near 0.5, while an unfamiliar reading can receive a confident score. Neither value tells you whether the model has seen that pattern before.
 
+</ConceptReference>
+
 ## Challenge
 
 Normalized data exists to be fed to a model, so this challenge ends at one. Farah hands you one frozen neuron off her scratch pad, weights fixed: two features in, one verdict out. That is enough to show why the saved statistics matter. Feed it a reading normalized with different stats and it answers a different question.
@@ -213,17 +221,19 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
     "Z-score subtracts the training mean and divides by the training standard deviation. tf.moments() returns mean and variance; take the variance's square root for standard deviation.",
     "Min-max maps fitted bounds to 0 and 1; later values can exceed them. For a constant training feature, use a divisor of 1.",
     "Save the training-time mean and standard deviation, computed on the training rows only. Inference data must be normalized with those same statistics; never recompute them from the new batch.",
-    "A normalization pipeline is proven at a model's front door: a single dense sigmoid neuron (tf.sequential, tf.layers.dense, setWeights) turns normalized readings into verdicts via predict()."
+    "A fixed dense sigmoid unit shows how scaling changes a prediction. Matching its output checks this example, not the quality of a trained model."
   ]}
   bridge="Scroll progress and min-max scaling use an offset and range. Handle a zero range explicitly; sensor readings outside fitted bounds can normalize below zero or above one."
   youCanNow="Apply z-score normalization with tf.moments, preserve the training statistics for inference, and run normalized readings through a real dense layer to get a prediction."
 />
 
+<ProjectMilestone stage="data" />
+
 <Epilogue>
 
 Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he reaches sample 7741 again, logged eight days ago in the middle of the calm period. It converted like everything else. It still doesn't sit like everything else.
 
-Farah pulls up a preview build of the classifier the crew will spend the next ten modules earning, and runs it on the archive, live, in front of you:
+Farah brings up a preview classifier, a small demonstration of what the next modules will build and test. She runs it on the archive:
 
 <DeepScanDemo />
 

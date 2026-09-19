@@ -70,7 +70,7 @@ export function WorldWaitlistForm({
       >
         Notify me when {worldName} ships
       </label>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <input
           id={`waitlist-${worldSlug}${suffix}`}
           name="email"
@@ -93,7 +93,7 @@ export function WorldWaitlistForm({
           // `outlineColor` is set inline so the restored ring matches the
           // per-world palette: the global rule uses the `outline` shorthand,
           // and an inline longhand still wins over it.
-          className="flex-1 border-2 px-4 py-3 font-mono text-sm rounded-none"
+          className="flex-1 min-w-0 basis-40 max-w-full border-2 px-4 py-3 font-mono text-sm rounded-none"
           style={{
             borderColor: "var(--tc-border-interactive)",
             background: "var(--tc-bg)",
@@ -105,7 +105,7 @@ export function WorldWaitlistForm({
           type="submit"
           disabled={status === "submitting"}
           data-testid={`world-waitlist-submit-${worldSlug}${suffix}`}
-          className="font-mono px-5 py-3 text-sm font-medium uppercase tracking-wider border-2 rounded-none disabled:opacity-60"
+          className="max-w-full font-mono px-5 py-3 text-sm font-medium uppercase tracking-wider border-2 rounded-none disabled:opacity-60"
           style={{
             background: palette.primary,
             borderColor: palette.primary,

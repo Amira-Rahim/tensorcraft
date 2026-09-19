@@ -92,7 +92,7 @@ testCode: |
       const missingReasoning = async () => '{"classification":"anomaly","confidence":0.95}';
       await expect(
         analyzeSignal('test', missingReasoning),
-        'This reply parses cleanly and is still not an analysis. Parsing is not validation.',
+        'Valid JSON can still lack required fields. Check reasoning and classification after parsing.',
       ).rejects.toThrow();
       const missingClassification = async () => '{"confidence":0.95,"reasoning":"High amplitude"}';
       await expect(analyzeSignal('test', missingClassification)).rejects.toThrow();
@@ -140,7 +140,7 @@ testCode: |
       const noConfidence = async () => '{"classification":"anomaly","reasoning":"High amplitude"}';
       await expect(
         analyzeSignal('test', noConfidence),
-        'An analysis with no confidence in it cannot be ranked, queued or overridden. It is incomplete, whatever the other two fields say.',
+        'The contract requires a confidence field. Reject a missing field; a supplied score still needs calibration before probability-based use.',
       ).rejects.toThrow();
     });
     it('checks the parsed object, not the prose around it', async () => {
@@ -148,7 +148,7 @@ testCode: |
         'Reasoning: the 73.4 Hz tone matches no natural band.\n{"classification":"anomaly","confidence":0.88}';
       await expect(
         analyzeSignal('test', namesItInProse),
-        'The word reasoning is in this reply and the field is not. A check that searches the raw text for field names passes a reply whose object is missing one, and the caller reads undefined off the field the prose promised.',
+        'Check the parsed reasoning property. Mentioning it in the surrounding prose does not supply the field.',
       ).rejects.toThrow();
       const talksAboutConfidence = async () =>
         'My confidence here is low.\n{"classification":"noise","reasoning":"Zero crossings sit inside the natural band"}';
@@ -160,13 +160,13 @@ testCode: |
         '{"classification":"anomaly","confidence":0.88,"note":"reasoning withheld pending review"}';
       await expect(
         analyzeSignal('test', namesItInsideTheObject),
-        'The word reasoning sits inside the JSON block here, as the value of a key called note, and the reasoning field is still missing. Only reading the parsed object, key by key, tells those two apart.',
+        'A note containing the word reasoning does not supply a reasoning property.',
       ).rejects.toThrow();
       const renamedInsideAValue = async () =>
         '{"classification":"noise","reasoning":"confidence is low on this one"}';
       await expect(
         analyzeSignal('test', renamedInsideAValue),
-        'This object has a reasoning whose text contains the word confidence, and no confidence field. A string search over the block finds the word; the parsed object does not have the key.',
+        'Check the confidence property itself, not a mention inside another value.',
       ).rejects.toThrow();
     });
     it('refuses a reply whose object never parses, however complete it reads', async () => {
@@ -174,13 +174,13 @@ testCode: |
         '{"classification":"anomaly","confidence":0.95,"reasoning":"High amplitude",}';
       await expect(
         analyzeSignal('test', trailingComma),
-        'All three field names sit in this reply with a value beside each one, and the object is still not JSON. Lifting the fields straight out of the text with a pattern shaped like key, colon, value finds all three and hands back an analysis nothing ever parsed. Parsing is what tells the two apart.',
+        'The trailing comma makes this invalid JSON. Parse the complete object before validating fields.',
       ).rejects.toThrow();
       const cutOff = async () =>
         'Assessment follows.\n{"classification":"noise","confidence":0.2,"reasoning":"Zero crossings sit inside the natural band"';
       await expect(
         analyzeSignal('test', cutOff),
-        'This reply stopped mid-object, which is what a truncated response looks like. A reader that scrapes the three fields out of what arrived reports an analysis as though the model had finished answering.',
+        'Reject this truncated object rather than scraping its fields from incomplete text.',
       ).rejects.toThrow();
     });
     it('reads replies built at grade time, field for field', async () => {
@@ -190,7 +190,7 @@ testCode: |
         const result = await analysisFrom(async () => raw, 'classify capture ' + i);
         expect(
           result.classification,
-          'This reply was assembled a moment ago, so nothing about it can be recognised. Only reading the object that arrived produces these three values.',
+          'Return the values from the supplied reply, including when they change.',
         ).toBe(drawn.classification);
         expect(result.confidence).toBe(drawn.confidence);
         expect(result.reasoning).toBe(drawn.reasoning);

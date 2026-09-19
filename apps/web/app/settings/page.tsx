@@ -1,3 +1,5 @@
+import { LearningRoutePicker } from "@/app/components/learning-route-picker";
+import { getLearningRoutePreference } from "@/lib/learning-route-server";
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -45,6 +47,10 @@ export default async function SettingsPage() {
     createdAt: p.created_at,
   }));
 
+  const learningPreference = await getLearningRoutePreference(
+    supabase,
+    user.id,
+  );
   const profileRecord = profile as Record<string, unknown> | null;
 
   return (
@@ -52,6 +58,12 @@ export default async function SettingsPage() {
       <AmbientBackground count={160} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="max-w-[1100px] mx-auto px-6 md:px-8 py-10 relative z-10">
+        <LearningRoutePicker
+          accountId={user.id}
+          initialRoute={learningPreference.route}
+          unavailable={learningPreference.unavailable}
+          source="settings"
+        />
         <SettingsForm
           email={user.email ?? ""}
           displayName={profile?.display_name ?? ""}

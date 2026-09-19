@@ -26,9 +26,9 @@ consequence:
   narrative: "One section fails its own validator with twenty-two minutes left before the window."
 hints:
   - level: nudge
-    content: "Two filters and one join: sections whose validated flag is true ship as markdown blocks; the rest ship only as a list of headings under a Withheld section, and that section exists only when something was withheld. The cut is the decision the BossBeat priced."
+    content: "Keep approved sections in order. List the other headings under Withheld without copying their content."
   - level: guidance
-    content: "Sort the sections into two piles by their own verdict, not by their heading and not by where they sit in the list. One pile goes out as markdown blocks in the order it arrived. The other contributes headings and nothing else, gathered into a single block at the end, and that block exists only when something was actually held back. Then the boring detail that decides whether the document renders: a horizontal rule sits between two blocks, so a document of one block carries none at all, which is a different count from one rule per block."
+    content: "Filter on each section’s validated flag. Build one markdown block per approved section, then append one Withheld block if needed. Join blocks with a horizontal rule surrounded by blank lines; do not add a trailing rule."
   - level: solution
     content: |
       interface Section { heading: string; content: string; validated: boolean; }
@@ -160,7 +160,7 @@ const marked = await generateReport(reportSections, llm, reviewSection);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
-The pipeline passes `temperature: 0.2` on every section call. Temperature divides the scores before the last softmax, the one that picks the next token, so a low value sharpens that distribution toward the likeliest token and can reduce sampling variation. This does not establish truth: greedy token selection can still invent an instrument, and serving details can prevent exact repeatability. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. The review step checks claims against the evidence. A number scan alone would miss an invented instrument or a false causal explanation.
+The pipeline passes `temperature: 0.2` on every section call. For a positive temperature, divide the vocabulary logits by that value before softmax. A low value concentrates the resulting probabilities; the decoding rule then selects a token. This does not establish truth: greedy token selection can still invent an instrument, and serving details can prevent exact repeatability. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. The review step checks claims against the evidence. A number scan alone would miss an invented instrument or a false causal explanation.
 
 ## Challenge
 
