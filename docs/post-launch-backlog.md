@@ -1551,8 +1551,10 @@ has already been written off once (see above) - do not launch dark again.
   setting lives only in the dashboard and can drift silently. Committing a
   `vercel.json` with `installCommand` would put it under version control.
   Not done here because a wrong value breaks every deploy; owner call.
-- [~] **Gate Vercel deploys on CI. Code side DONE 2026-08-20; one operator
-  step remains.** Moved here 2026-08-20 from the "CI RED CLEARED
+  (2026-09-19: `apps/web/vercel.json` now exists and is the file such a
+  setting would go in; the project reads config from its Root Directory.)
+- [x] **Gate Vercel deploys on CI. Code side DONE 2026-08-20; operator
+  step DONE 2026-09-19.** Moved here 2026-08-20 from the "CI RED CLEARED
   (2026-08-14)" section, where it was one prose sentence under a heading
   that reads as fully resolved. A green `main` does not by itself prevent
   the next deploy-before-CI incident, which is the same class of failure as
@@ -1578,7 +1580,8 @@ has already been written off once (see above) - do not launch dark again.
     `ignoreCommand` with cwd `apps/web`, so the path is
     `../../scripts/migration-status.mjs` and the file stays at the root.
     Both facts are now pinned by
-    `packages/content/__tests__/vercel-ignore-command.test.ts`. When
+    `packages/content/__tests__/vercel-ignore-command.test.ts` (renamed
+    2026-09-19 to `vercel-migration-gate.test.ts`, see below). When
     testing this gate by hand, `cd apps/web` first: run from the repo root
     and the script path fails to resolve, node exits 1, the wrapper reads
     that as drift, and it looks like the gate cancels every deploy. That
@@ -1587,8 +1590,17 @@ has already been written off once (see above) - do not launch dark again.
     migration-status verdict appears in the build log. Without it the gate
     was unverifiable and undebuggable from Vercel's side. The script prints
     counts and version numbers only, never secrets.
-  - [ ] (OPERATOR) **Confirm the gate is actually live by reading one build
-    log.** This is the last unverified assumption in the whole mechanism:
+  - [x] (OPERATOR) **Confirm the gate is actually live by reading one build
+    log.** Done 2026-09-19. The production build log for that day's release
+    echoes the `apps/web/vercel.json` build command and prints
+    `applied (ledger): 65` and `IN SYNC`, so the variables reach the build
+    step and the gate is real. The gate moved the same day: it is now a
+    `buildCommand` prefix in `apps/web/vercel.json` (`CI=1`, `&&` before
+    Turbo, fail closed, no exit-code inversion), replacing the repo-root
+    `ignoreCommand` the three sub-items above describe. Current form:
+    `docs/migration-runbook.md` "Deploy gating"; gate test:
+    `packages/content/__tests__/vercel-migration-gate.test.ts`.
+    Original ask: this was the last unverified assumption in the mechanism:
     whether Vercel's Ignored Build Step receives project environment
     variables at all. Open the next deployment's log and look for the
     `Migration status` summary. If it shows `files on disk : NN` and

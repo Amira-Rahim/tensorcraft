@@ -98,10 +98,11 @@ all-or-nothing:
 - **17 pre-042 migrations are non-idempotent.** Never re-run 001–041 blind;
   trust the ledger, not a re-paste.
 
-## Deploy gating (added 2026-08-20)
+## Deploy gating (added 2026-08-20, Vercel side reworked 2026-09-19)
 
-Two gates now stand between a pending migration and production. Both call
-`scripts/migration-status.mjs`; they differ in what they do with the result.
+Two gates stand between a pending migration and production: the CI job and
+the Vercel build. Both call `scripts/migration-status.mjs` with `CI=1`, and
+since 2026-09-19 both fail closed.
 
 **GitHub Actions** (`.github/workflows/ci.yml`, job "Migration ledger drift
 check") fails the build on drift and fails CLOSED when the secrets are
@@ -112,40 +113,52 @@ dependency bump cannot add a migration, and mirroring the service-role
 key into Dependabot secrets would expose it to install scripts of the
 very packages being bumped.
 
-**Vercel** (`vercel.json`, `ignoreCommand`) skips the deploy on drift. Its
-exit codes are INVERTED relative to normal tools, which is the trap: for an
-`ignoreCommand`, exit 0 means "ignore this build" (skip) and any non-zero
-means "go ahead and build". The wrapper therefore maps:
+**Vercel** (`apps/web/vercel.json`, `buildCommand`) runs the same check
+before the Turbo build:
 
-| migrate:status | meaning              | gate exits | Vercel does |
-|----------------|----------------------|------------|-------------|
-| 1              | drift, schema behind | 0          | SKIP deploy |
-| 0              | in sync              | 1          | deploy      |
-| 2              | no creds / no conn   | 1          | deploy      |
+```sh
+cd ../.. && CI=1 node scripts/migration-status.mjs && pnpm turbo build --filter=@tensorcraft/web
+```
 
-Exit 2 deliberately fails OPEN here, the opposite of the CI job. A missing
-env var on Vercel would otherwise block every deploy of the site, including
-the deploy that fixes it. CI is the fail-closed gate; Vercel is the
-last-resort brake.
+The Vercel project's Root Directory is `apps/web`, so Vercel reads that
+directory's `vercel.json` and starts the command there. The `cd ../..` moves
+to the repo root, which is why the script path carries no `../../` prefix.
+The `&&` chain is the gate: any non-zero exit from the script stops the
+build before Turbo starts.
 
-For the Vercel gate to do anything, `SUPABASE_URL` and
-`SUPABASE_SERVICE_ROLE_KEY` must exist in the Vercel project's environment
-variables (Production and Preview). Verified present 2026-08-23. Without
-them the gate silently passes everything.
+| migrate:status | meaning              | Vercel does        |
+|----------------|----------------------|--------------------|
+| 0              | in sync              | builds and deploys |
+| 1              | drift, schema behind | build fails        |
+| 2              | no creds / no conn   | build fails        |
 
-`vercel.json` lives at the repo root, but the command does NOT run there.
-The Vercel project's Root Directory is `apps/web`; Vercel still reads the
-repo-root `vercel.json`, yet executes the `ignoreCommand` with `apps/web`
-as the working directory (verified against build logs, 2026-08-23). The
-script path is therefore `../../scripts/migration-status.mjs`. A
-repo-root-relative path fails as module-not-found, which Node reports
-with exit code 1, the exact code the wrapper reads as drift: from
-2026-08-22 to 2026-08-23 that path bug canceled every production deploy
-while the dashboard's status filter hid the Canceled rows. The path and
-the fail-open behavior are now gated by
-`packages/content/__tests__/vercel-ignore-command.test.ts`; if the Root
-Directory setting ever changes, update that test's constant and the
-script path together.
+Exit 2 fails CLOSED here since 2026-09-19, the same as CI. The cost is that
+a Vercel environment that loses `SUPABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY`
+cannot deploy anything, including a code fix, until the variables are
+restored in the dashboard (Production and Preview; both verified present
+2026-08-23). A failed gate shows as a failed build in the deployment list,
+not as a Canceled row, so the default dashboard filter does not hide it.
+
+Verified live: the 2026-09-19 production build log echoes the command above
+and prints `applied (ledger): 65` and `IN SYNC`. The file location, the
+`CI=1`, the `&&` chaining, the script path, and the exit-2 behavior without
+credentials are pinned by
+`packages/content/__tests__/vercel-migration-gate.test.ts`; if the Root
+Directory setting ever changes, update that test's constant and the `cd` in
+the command together.
+
+History (2026-08-20 to 2026-09-19): the Vercel gate was an `ignoreCommand`
+in a repo-root `vercel.json`. For an `ignoreCommand`, exit 0 means skip the
+deploy and non-zero means build, so a wrapper inverted the script's exit
+codes, and exit 2 deliberately failed OPEN. Two problems came with that
+form. Vercel executed the command with `apps/web` as the working directory,
+and a repo-root-relative script path failed as module-not-found, which Node
+reports with exit 1, the code the wrapper read as drift: from 2026-08-22 to
+2026-08-23 that path bug canceled every production deploy while the
+dashboard's status filter hid the Canceled rows. And the 2026-09-19 release
+record reports that the project did not apply the repo-root file at all
+(`docs/audits/learning-product-release-2026-09-19.md`). The `buildCommand`
+form has no exit-code inversion and lives in the directory Vercel reads.
 
 Why this exists: on 2026-08-18 migration 059 was committed with the app code
 that depended on it. CI went red on exactly this check and stayed red, while
