@@ -90,7 +90,7 @@ export function SceneCanvas({
   const render = useCallback(
     (now?: number) => {
       const c = ref.current;
-      if (!c) return;
+      if (!c || c.width === 0 || c.height === 0) return;
       const ctx = c.getContext("2d");
       if (!ctx) return;
       // Clamp dt so a background-tab pause doesn't fast-forward the scene.
@@ -149,7 +149,7 @@ export function SceneCanvas({
     };
     const sync = () => {
       const reduced = !!mql?.matches;
-      if (reduced || !inView) {
+      if (reduced || !inView || c.width === 0 || c.height === 0) {
         stop();
         // Reduced motion still deserves the atmosphere, one static frame.
         if (reduced && inView) render();
@@ -163,13 +163,18 @@ export function SceneCanvas({
 
     const onResize = () => {
       resize();
-      // Keep the static frame correct after a resize when not animating.
-      if (mql?.matches && inView) render();
+      // A hidden parent can become visible without a window resize.
+      sync();
     };
 
     resize();
     sync();
     window.addEventListener("resize", onResize);
+    const sizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(onResize)
+        : null;
+    if (c.parentElement) sizeObserver?.observe(c.parentElement);
     mql?.addEventListener?.("change", sync);
 
     const io =
@@ -207,6 +212,7 @@ export function SceneCanvas({
       window.removeEventListener("resize", onResize);
       mql?.removeEventListener?.("change", sync);
       io?.disconnect();
+      sizeObserver?.disconnect();
       attrObserver?.disconnect();
     };
   }, [render]);

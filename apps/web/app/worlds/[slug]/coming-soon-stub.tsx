@@ -61,6 +61,7 @@ export function ComingSoonStub({ world }: Props) {
     primary: "#3B6550",
     accent: "#3B6550",
   };
+  const primary = "var(--tc-primary)";
   const modulePlural = plural(world.terminology.module);
   const lessonPlural = plural(world.terminology.lesson);
   const rosterPrefix = world.terminology.module.charAt(0).toUpperCase();
@@ -79,10 +80,10 @@ export function ComingSoonStub({ world }: Props) {
     Math.ceil(Math.max(0, ...careers.map((c) => c.high ?? 0)) / 50) * 50;
 
   // World-mixed structural colors (see doc comment above).
-  const edge = `color-mix(in srgb, ${palette.primary} 25%, var(--tc-border))`;
-  const hairline = `color-mix(in srgb, ${palette.primary} 15%, var(--tc-border))`;
-  const wash = `color-mix(in srgb, ${palette.primary} 7%, var(--tc-bg))`;
-  const accentWash = `color-mix(in srgb, ${palette.accent} 9%, var(--tc-bg))`;
+  const edge = `color-mix(in srgb, ${primary} 25%, var(--tc-border))`;
+  const hairline = `color-mix(in srgb, ${primary} 15%, var(--tc-border))`;
+  const wash = `color-mix(in srgb, ${primary} 7%, var(--tc-bg))`;
+  const accentWash = `color-mix(in srgb, ${primary} 9%, var(--tc-bg))`;
 
   const courseJsonLd = {
     "@context": "https://schema.org",
@@ -139,9 +140,7 @@ export function ComingSoonStub({ world }: Props) {
               <span className="sr-only"> (coming soon)</span>
             </p>
             {preview ? (
-              <p style={{ color: palette.primary }}>
-                {preview.statusBoard.status}
-              </p>
+              <p style={{ color: primary }}>{preview.statusBoard.status}</p>
             ) : null}
           </div>
 
@@ -229,9 +228,9 @@ export function ComingSoonStub({ world }: Props) {
                 <span
                   style={{
                     color: m.free
-                      ? palette.primary
+                      ? primary
                       : m.capstone
-                        ? palette.accent
+                        ? primary
                         : "var(--tc-muted)",
                   }}
                 >
@@ -253,13 +252,17 @@ export function ComingSoonStub({ world }: Props) {
                   className="text-[11px] uppercase tracking-[0.15em] whitespace-nowrap"
                   style={{
                     color: m.free
-                      ? palette.primary
+                      ? primary
                       : m.capstone
-                        ? palette.accent
+                        ? primary
                         : "var(--tc-muted)",
                   }}
                 >
-                  {m.free ? "Online · Free" : m.capstone ? "Finale" : "Pending"}
+                  {m.free
+                    ? "Free at launch"
+                    : m.capstone
+                      ? "Planned finale"
+                      : "Planned"}
                 </span>
               </li>
             ))}
@@ -296,10 +299,7 @@ export function ComingSoonStub({ world }: Props) {
                 {preview.skills.map((skill, i) => (
                   <span key={skill}>
                     {i > 0 ? (
-                      <span
-                        aria-hidden="true"
-                        style={{ color: palette.primary }}
-                      >
+                      <span aria-hidden="true" style={{ color: primary }}>
                         {" / "}
                       </span>
                     ) : null}
@@ -334,7 +334,7 @@ export function ComingSoonStub({ world }: Props) {
                   {c.low != null && c.high != null ? (
                     <span
                       className="font-mono text-xs whitespace-nowrap"
-                      style={{ color: palette.primary }}
+                      style={{ color: primary }}
                     >
                       ${c.low}K&ndash;${c.high}K
                     </span>
@@ -351,7 +351,7 @@ export function ComingSoonStub({ world }: Props) {
                       style={{
                         left: `${(c.low / axisTop) * 100}%`,
                         width: `${((c.high - c.low) / axisTop) * 100}%`,
-                        background: palette.primary,
+                        background: primary,
                       }}
                     />
                   </div>
@@ -386,7 +386,7 @@ export function ComingSoonStub({ world }: Props) {
                 <CharacterAvatar
                   name={c.name}
                   isAI={c.isAI}
-                  accentColor={palette.primary}
+                  accentColor={primary}
                   size={40}
                 />
                 <div className="min-w-0">
@@ -427,7 +427,7 @@ export function ComingSoonStub({ world }: Props) {
       <section className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 pb-16">
         <div
           className="border-2 p-6 md:p-8 rounded-none"
-          style={{ borderColor: palette.primary, background: wash }}
+          style={{ borderColor: primary, background: wash }}
         >
           <h2
             className="font-mono text-lg md:text-xl font-bold tracking-tight mb-1"

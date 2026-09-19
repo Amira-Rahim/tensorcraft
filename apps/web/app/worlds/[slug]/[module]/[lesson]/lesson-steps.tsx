@@ -6,6 +6,7 @@ import type { FreeRecallPrompt } from "@/lib/free-recall-prompts";
 import { enqueueReviews } from "@/lib/review-store-api";
 import { LessonWarmup } from "@/app/components/lesson-warmup";
 import Link from "next/link";
+import { ReportIssueTrigger } from "@/app/components/report-issue-button";
 import { LessonContent } from "./lesson-content";
 import { SceneClip } from "./scene-clip";
 import { sceneClipFor } from "@/lib/scene-clips";
@@ -951,7 +952,7 @@ function LessonStepsInner({
 
   const bottomNav = (
     <div
-      className="flex items-center justify-between mt-10 pt-6"
+      className="flex flex-wrap gap-4 items-center justify-between mt-10 pt-6"
       style={{ borderTop: "1px solid var(--tc-border)" }}
     >
       {/* Back button: the nav was forward-only, leaving the thin 6px step
@@ -989,7 +990,7 @@ function LessonStepsInner({
             background: canContinue ? "var(--tc-primary)" : "var(--tc-border)",
             color: canContinue ? "var(--tc-on-primary)" : "var(--tc-muted)",
             cursor: canContinue ? "pointer" : "not-allowed",
-            opacity: canContinue ? 1 : 0.3,
+            opacity: 1,
           }}
         >
           {/* The gate must explain itself: a silent disabled button at
@@ -1027,7 +1028,7 @@ function LessonStepsInner({
 
   let shellLeft: React.ReactNode = null;
   let shellRight: React.ReactNode = null;
-  let rightKind: "rail" | "pane" | "none" = "none";
+  let rightKind: "rail" | "pane" | "code" | "none" = "none";
 
   if (currentStep === 0) {
     rightKind = "rail";
@@ -1082,7 +1083,7 @@ function LessonStepsInner({
       </div>
     );
   } else if (currentStep === 2) {
-    rightKind = "pane";
+    rightKind = "code";
     shellLeft = <StepCode {...sharedContentProps} />;
     shellRight = (
       <LessonContent
@@ -1160,47 +1161,31 @@ function LessonStepsInner({
     );
   }
 
-  // On mobile, pane steps show a toggle button that swaps prose for the work
-  // pane; on lg+ the shell renders both columns and the toggle is hidden.
-  const mobileToggle =
+  const mobileControls =
     rightKind === "pane" ? (
-      <button
-        type="button"
-        onClick={() => setPaneOpen((o) => !o)}
-        className="lg:hidden mb-4 text-xs font-mono uppercase tracking-[2px] px-4 py-2 transition-colors"
-        style={{
-          color: "var(--tc-primary)",
-          border:
-            "1px solid color-mix(in srgb, var(--tc-primary) 25%, transparent)",
-          background: "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
-        }}
+      <div
+        className="lg:hidden mb-6 flex gap-2"
+        role="group"
+        aria-label="Challenge view"
       >
-        {paneOpen
-          ? "Show explanation"
-          : currentStep === 3
-            ? "Show task"
-            : "Show code"}
-      </button>
+        <button
+          type="button"
+          aria-pressed={!paneOpen}
+          onClick={() => setPaneOpen(false)}
+          className={`min-h-11 flex-1 px-3 text-sm font-mono border border-border ${!paneOpen ? "bg-surface text-primary" : "text-text-muted"}`}
+        >
+          Instructions
+        </button>
+        <button
+          type="button"
+          aria-pressed={paneOpen}
+          onClick={() => setPaneOpen(true)}
+          className={`min-h-11 flex-1 px-3 text-sm font-mono border border-border ${paneOpen ? "bg-surface text-primary" : "text-text-muted"}`}
+        >
+          Editor
+        </button>
+      </div>
     ) : null;
-
-  // For pane steps on mobile the toggle swaps which column is VISIBLE; the
-  // pane itself renders exactly once, in the shell's right slot, and
-  // LessonShell shows/hides that single instance via paneOpenOnMobile.
-  // The old version mounted a SECOND copy of shellRight here behind the
-  // toggle - two live Sandpack editors at every width, racing one
-  // tc-code-{slug} key and showing a stale buffer after a rotate across lg
-  // (fresh-eyes rerun §6 / R3-7; single-mount is now the shell's contract).
-  const shellLeftWithToggle =
-    rightKind === "pane" ? (
-      <>
-        {mobileToggle}
-        <div className={paneOpen ? "hidden lg:block" : "block"}>
-          {shellLeft}
-        </div>
-      </>
-    ) : (
-      shellLeft
-    );
 
   return (
     <div
@@ -1212,6 +1197,10 @@ function LessonStepsInner({
         <LessonShell
           rightKind={rightKind}
           paneOpenOnMobile={paneOpen}
+          controls={mobileControls}
+          footer={
+            rightKind === "pane" || rightKind === "code" ? bottomNav : undefined
+          }
           chrome={
             <div className="mx-auto w-full max-w-7xl px-6 md:px-12">
               <ChromeBar
@@ -1220,6 +1209,7 @@ function LessonStepsInner({
                 worldSlug={worldSlug}
                 moduleSlug={moduleSlug}
                 moduleName={moduleName}
+                lessonTitle={lesson.title}
                 currentStep={currentStep}
                 maxStepReached={maxStepReached}
                 setCurrentStep={setCurrentStep}
@@ -1240,23 +1230,8 @@ function LessonStepsInner({
               aria-label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
               className={`animate-step-in outline-none ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
             >
-              {/*
-                Only step 0 (Briefing) renders a visible <h1>; steps 1-5
-                started at h2/h4 from the MDX, so five of six steps had NO
-                level-one heading and an outline that began mid-hierarchy.
-                Screen-reader users navigating by heading had nothing to
-                orient on. WCAG 1.3.1 and 2.4.6.
-
-                Rendered sr-only and only off step 0, so there is always
-                exactly one h1 per step and the visible design is unchanged.
-              */}
-              {currentStep !== 0 && (
-                <h1 className="sr-only">
-                  {lesson.title}: {STEP_NAMES[currentStep]}
-                </h1>
-              )}
-              {shellLeftWithToggle}
-              {bottomNav}
+              {shellLeft}
+              {rightKind !== "pane" && rightKind !== "code" && bottomNav}
             </div>
           }
           right={shellRight}
@@ -1273,6 +1248,7 @@ function ChromeBar({
   worldSlug,
   moduleSlug,
   moduleName,
+  lessonTitle,
   currentStep,
   maxStepReached,
   setCurrentStep,
@@ -1282,10 +1258,12 @@ function ChromeBar({
   worldSlug: string;
   moduleSlug: string;
   moduleName?: string;
+  lessonTitle: string;
   currentStep: number;
   maxStepReached: number;
   setCurrentStep: (n: number) => void;
 }) {
+  const LessonHeading = currentStep === 0 ? "p" : "h1";
   return (
     // `flex-wrap` plus a full-width basis for the step bar below `sm`.
     //
@@ -1297,77 +1275,99 @@ function ChromeBar({
     // Measured 0.0px at 320px and 0.7px at 375px: invisible on every phone,
     // while remaining perfect on desktop, which is why desktop-only checks
     // never caught it. WCAG 1.4.10 (reflow).
-    <div className="flex flex-wrap items-center gap-4 mb-6">
-      {lessons && (
-        <LessonDrawer
-          lessons={lessons}
-          currentLessonSlug={lessonSlug}
-          worldSlug={worldSlug}
-          moduleSlug={moduleSlug}
-          moduleName={moduleName ?? "Module"}
-        />
-      )}
-      <Link
-        href={`/worlds/${worldSlug}`}
-        className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
-        style={{ color: "var(--tc-text)" }}
-      >
-        {/* The label is the widest fixed child; drop the words on the
+    <div className="mb-8 border-b border-border pb-5">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs font-mono text-text-muted mb-1">
+            {moduleName ?? moduleSlug}
+          </p>
+          <LessonHeading className="text-base font-semibold text-text-primary">
+            {lessonTitle}
+          </LessonHeading>
+        </div>
+        <ReportIssueTrigger />
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        {lessons && (
+          <LessonDrawer
+            lessons={lessons}
+            currentLessonSlug={lessonSlug}
+            worldSlug={worldSlug}
+            moduleSlug={moduleSlug}
+            moduleName={moduleName ?? "Module"}
+          />
+        )}
+        <Link
+          href={`/worlds/${worldSlug}`}
+          className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
+          style={{ color: "var(--tc-text)" }}
+        >
+          {/* The label is the widest fixed child; drop the words on the
             narrowest screens so the first row still fits. The arrow plus the
             accessible name below keep it unambiguous. */}
-        <span aria-hidden="true">&larr;</span>
-        <span className="hidden sm:inline">{terms(worldSlug).lesson} Map</span>
-        <span className="sr-only sm:hidden">{terms(worldSlug).lesson} Map</span>
-      </Link>
+          <span aria-hidden="true">&larr;</span>
+          <span className="hidden sm:inline">
+            {terms(worldSlug).lesson} Map
+          </span>
+          <span className="sr-only sm:hidden">
+            {terms(worldSlug).lesson} Map
+          </span>
+        </Link>
 
-      <div
-        className="order-last basis-full min-w-0 flex items-center gap-1 sm:order-none sm:basis-auto sm:flex-1"
-        role="group"
-        aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
-      >
-        {STEP_NAMES.map((name, i) => {
-          const visited = i <= maxStepReached;
-          const filled = i <= currentStep;
-          return (
-            <button
-              key={name}
-              type="button"
-              onClick={() => setCurrentStep(i)}
-              disabled={!visited}
-              aria-label={`Step ${i + 1}: ${name}`}
-              aria-current={i === currentStep ? "step" : undefined}
-              title={visited ? name : `${name} (locked)`}
-              // h-6 (24px), not h-4: these are documented navigation
-              // affordances, so they must meet the WCAG 2.5.8 AA minimum
-              // target of 24x24. The visible bar stays 6px - only the hit
-              // area grows, centred by `flex items-center`.
-              className="flex-1 h-6 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
-              style={{ cursor: visited ? "pointer" : "not-allowed" }}
-            >
-              <span
-                className="h-1.5 w-full transition-all duration-300"
-                style={{
-                  background: filled ? "var(--tc-primary)" : "var(--tc-border)",
-                  opacity: !visited ? 0.45 : 1,
-                  borderRadius: 2,
-                }}
-              />
-            </button>
-          );
-        })}
+        <div
+          className="order-last basis-full min-w-0 flex items-center gap-1 sm:order-none sm:basis-auto sm:flex-1"
+          role="group"
+          aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
+        >
+          {STEP_NAMES.map((name, i) => {
+            const visited = i <= maxStepReached;
+            const filled = i <= currentStep;
+            return (
+              <button
+                key={name}
+                type="button"
+                onClick={() => setCurrentStep(i)}
+                disabled={!visited}
+                aria-label={`Step ${i + 1}: ${name}`}
+                aria-current={i === currentStep ? "step" : undefined}
+                title={visited ? name : `${name} (locked)`}
+                // h-6 (24px), not h-4: these are documented navigation
+                // affordances, so they must meet the WCAG 2.5.8 AA minimum
+                // target of 24x24. The visible bar stays 6px - only the hit
+                // area grows, centred by `flex items-center`.
+                className="flex-1 h-6 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
+                style={{ cursor: visited ? "pointer" : "not-allowed" }}
+              >
+                <span
+                  className="h-1.5 w-full transition-all duration-300"
+                  style={{
+                    background: filled
+                      ? "var(--tc-primary)"
+                      : "var(--tc-border)",
+                    opacity: !visited ? 0.45 : 1,
+                    borderRadius: 2,
+                  }}
+                />
+              </button>
+            );
+          })}
+        </div>
+
+        <span
+          className="text-xs font-mono shrink-0 tracking-wider px-3 py-1"
+          style={{
+            color: "var(--tc-primary)",
+            background: "color-mix(in srgb, var(--tc-primary) 7%, transparent)",
+            border:
+              "1px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)",
+          }}
+        >
+          <span>
+            {currentStep + 1} / {TOTAL_STEPS}
+          </span>{" "}
+          · {STEP_NAMES[currentStep]}
+        </span>
       </div>
-
-      <span
-        className="text-xs font-mono shrink-0 tracking-wider px-3 py-1"
-        style={{
-          color: "var(--tc-primary)",
-          background: "color-mix(in srgb, var(--tc-primary) 7%, transparent)",
-          border:
-            "1px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)",
-        }}
-      >
-        {currentStep + 1} / {TOTAL_STEPS}
-      </span>
     </div>
   );
 }
@@ -1430,7 +1430,7 @@ function SceneCard({
       {patternLabel && (
         <div data-testid="pattern-format-tag" className="flex flex-col gap-1">
           <span
-            className="font-mono text-[10px] uppercase tracking-[2px]"
+            className="font-mono text-xs uppercase tracking-[2px]"
             style={{ color: "var(--tc-muted)" }}
           >
             Format
@@ -1446,7 +1446,7 @@ function SceneCard({
       {speakers.length > 0 && (
         <div className="flex flex-col gap-2">
           <span
-            className="font-mono text-[10px] uppercase tracking-[2px]"
+            className="font-mono text-xs uppercase tracking-[2px]"
             style={{ color: "var(--tc-muted)" }}
           >
             Cast
@@ -1474,7 +1474,7 @@ function SceneCard({
                     </span>
                     {ch?.role && (
                       <span
-                        className="font-mono text-[10px]"
+                        className="font-mono text-xs"
                         style={{ color: "var(--tc-muted)" }}
                       >
                         {ch.role}
@@ -1886,7 +1886,7 @@ function StepBriefing({
                 rememberScriptSkipped();
                 finish(false);
               }}
-              // Was text-[10px] on a decorative border: technically a control,
+              // Was text-xs on a decorative border: technically a control,
               // practically invisible, and the only exit from a 15.5s scene at
               // the product's activation moment. Now readable, with a real
               // touch target and an interactive border that clears 3:1.
@@ -1906,7 +1906,7 @@ function StepBriefing({
                 runKindRef.current = "replay";
                 play();
               }}
-              className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
+              className="text-xs font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
               style={{
                 color: "var(--tc-muted)",
                 border: "1px solid var(--tc-border)",
@@ -2216,7 +2216,7 @@ function StepConsequence({
 
       {/* Mission complete badge */}
       <div
-        className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[2px] px-4 py-1.5 mb-6"
+        className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[2px] px-4 py-1.5 mb-6"
         style={{
           color: "var(--tc-primary)",
           border:
@@ -2320,7 +2320,7 @@ function StepConsequence({
 function PhaseChip({ label, icon }: { label: string; icon: string }) {
   return (
     <div
-      className="text-[10px] font-mono uppercase tracking-[2px] mb-6 flex items-center gap-2"
+      className="text-xs font-mono uppercase tracking-[2px] mb-6 flex items-center gap-2"
       style={{ color: "var(--tc-primary)" }}
     >
       <span>{icon}</span> {label}

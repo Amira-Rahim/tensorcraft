@@ -29,11 +29,11 @@ export function LessonDrawer({
 
   return (
     <>
-      {/* Trigger, only visible on mobile */}
+      {/* Lesson navigation at every viewport width */}
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center justify-center w-11 h-11 shrink-0"
+        className="flex items-center justify-center gap-2 px-3 h-11 shrink-0 text-xs font-mono"
         style={{
           background: "var(--tc-surface)",
           border: "1px solid var(--tc-border)",
@@ -49,6 +49,7 @@ export function LessonDrawer({
             strokeLinecap="square"
           />
         </svg>
+        Lessons
       </button>
 
       {/* Backdrop + Drawer */}
@@ -66,7 +67,7 @@ export function LessonDrawer({
             role="dialog"
             aria-modal="true"
             aria-label={`${moduleName} lessons`}
-            className="fixed bottom-0 left-0 right-0 z-50 max-h-[70vh] overflow-y-auto animate-slide-up"
+            className="fixed bottom-0 left-0 right-0 z-50 max-h-[70dvh] overflow-y-auto animate-slide-up md:bottom-6 md:left-auto md:right-6 md:w-[440px] md:border md:border-border"
             style={{
               background: "var(--tc-surface)",
               borderTop: "1px solid var(--tc-border)",
@@ -127,7 +128,7 @@ export function LessonDrawer({
                         {statusIcon}
                       </span>
                       <span
-                        className="text-sm truncate"
+                        className="text-sm"
                         style={{ color: "var(--tc-muted)" }}
                       >
                         {l.order}. {l.title}
@@ -140,6 +141,7 @@ export function LessonDrawer({
                   <Link
                     key={l.slug}
                     href={`/worlds/${worldSlug}/${moduleSlug}/${l.slug}`}
+                    aria-current={isCurrent ? "page" : undefined}
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 px-4 py-3 transition-colors"
                     style={{
@@ -155,7 +157,7 @@ export function LessonDrawer({
                       {statusIcon}
                     </span>
                     <span
-                      className="text-sm truncate"
+                      className="text-sm"
                       style={{
                         color: isCurrent
                           ? "var(--tc-primary)"

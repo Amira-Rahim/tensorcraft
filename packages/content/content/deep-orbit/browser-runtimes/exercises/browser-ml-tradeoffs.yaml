@@ -2,8 +2,6 @@ slug: browser-ml-tradeoffs
 lessonSlug: why-the-browser
 title: "Evaluate Browser ML Tradeoffs"
 instructions: |
-  **Contract revision 2026-09-17:** recommendDeployment can now return reconsider for conflicting requirements. Add it to the Recommendation type in saved code.
-
   Implement recommendDeployment(useCase), returning 'client', 'server' or 'reconsider'. useCase contains latencyBudgetMs, dataSensitive, modelSizeMB and needsOffline.
 
   For this exercise, dataSensitive means data must stay on the device, and needsOffline means inference must work without a connection. Both are hard requirements. This dashboard also has a 50 MB cold-load budget. If a model exceeds that budget while either hard requirement holds, return 'reconsider': reduce or replace the model, revise the download plan, or revisit the requirements. Sending the data to a server would not meet them.

@@ -19,7 +19,7 @@
  * the Account tab alongside sign-out + delete-account stub.
  */
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getApiUrl } from "@/lib/api-url";
@@ -128,6 +128,14 @@ export function SettingsForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [tab, setTab] = useState<TabId>("profile");
+  const [verticalTabs, setVerticalTabs] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 768px)");
+    const sync = () => setVerticalTabs(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
 
   // Profile
   const [displayName, setDisplayName] = useState(initialName);
@@ -463,20 +471,20 @@ export function SettingsForm({
         className="md:w-[220px] md:flex-shrink-0"
         aria-label="Settings sections"
       >
-        <div
-          className="font-mono mb-4 hidden md:block"
+        <h1
+          className="font-mono mb-4 text-xl font-semibold"
           style={{
-            fontSize: 9,
-            color: "var(--tc-muted)",
-            letterSpacing: "0.14em",
+            color: "var(--tc-text)",
+            letterSpacing: "0.04em",
           }}
         >
-          SETTINGS
-        </div>
+          Settings
+        </h1>
         <div
           className="flex md:flex-col gap-px overflow-x-auto md:overflow-visible"
           role="tablist"
-          aria-orientation="vertical"
+          aria-label="Settings"
+          aria-orientation={verticalTabs ? "vertical" : "horizontal"}
           data-testid="settings-tabs"
         >
           {TABS.map((t) => {
@@ -490,12 +498,33 @@ export function SettingsForm({
                 aria-controls={`settings-panel-${t.id}`}
                 id={`settings-tab-${t.id}`}
                 data-testid={`settings-tab-${t.id}`}
+                tabIndex={active ? 0 : -1}
                 onClick={() => setTab(t.id)}
+                onKeyDown={(event) => {
+                  const forward = verticalTabs ? "ArrowDown" : "ArrowRight";
+                  const backward = verticalTabs ? "ArrowUp" : "ArrowLeft";
+                  if (![forward, backward, "Home", "End"].includes(event.key))
+                    return;
+                  event.preventDefault();
+                  const index = TABS.findIndex((item) => item.id === t.id);
+                  const next =
+                    event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? TABS.length - 1
+                        : (index +
+                            (event.key === forward ? 1 : -1) +
+                            TABS.length) %
+                          TABS.length;
+                  const id = TABS[next].id;
+                  setTab(id);
+                  document.getElementById(`settings-tab-${id}`)?.focus();
+                }}
                 className="text-left font-mono rounded-none transition-colors whitespace-nowrap focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 style={{
                   padding: "14px 16px",
                   minHeight: 44,
-                  fontSize: 11,
+                  fontSize: 12,
                   letterSpacing: "0.08em",
                   color: active ? "var(--tc-text)" : "var(--tc-muted)",
                   background: active ? "var(--tc-surface)" : "transparent",
@@ -513,13 +542,14 @@ export function SettingsForm({
       <main
         className="flex-1 min-w-0"
         role="tabpanel"
+        tabIndex={0}
         id={`settings-panel-${tab}`}
         aria-labelledby={`settings-tab-${tab}`}
       >
         {tab === "profile" && (
           <Panel label="PROFILE">
             {/* Avatar */}
-            <div className="flex items-center gap-5 mb-8">
+            <div className="flex flex-wrap items-center gap-5 mb-8 break-all">
               <UserAvatar url={avatarUrl} name={displayName} size={56} />
               <div>
                 <div
@@ -530,7 +560,7 @@ export function SettingsForm({
                 </div>
                 <div
                   className="font-mono"
-                  style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                  style={{ fontSize: 12, color: "var(--tc-muted)" }}
                 >
                   {email}
                 </div>
@@ -541,7 +571,7 @@ export function SettingsForm({
                   data-testid="change-photo"
                   className="font-mono mt-2 rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
-                    fontSize: 10,
+                    fontSize: 12,
                     color: "var(--tc-primary)",
                     background: "transparent",
                     border: "1px solid var(--tc-primary)",
@@ -682,7 +712,7 @@ export function SettingsForm({
                 </div>
                 <div
                   className="font-mono mt-1"
-                  style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                  style={{ fontSize: 12, color: "var(--tc-muted)" }}
                 >
                   Lesson artifacts push to tensorcraft-&lt;world&gt; repos.
                 </div>
@@ -752,7 +782,7 @@ export function SettingsForm({
                       background: "transparent",
                       color: "var(--tc-text)",
                       border: "2px solid var(--tc-border-interactive)",
-                      fontSize: 11,
+                      fontSize: 12,
                       padding: "12px 22px",
                       minHeight: 44,
                       cursor: githubBusy ? "not-allowed" : "pointer",
@@ -770,7 +800,7 @@ export function SettingsForm({
                       background: "var(--tc-primary)",
                       color: "var(--tc-on-primary)",
                       border: "2px solid var(--tc-primary)",
-                      fontSize: 11,
+                      fontSize: 12,
                       padding: "12px 22px",
                       minHeight: 44,
                       cursor: githubBusy ? "not-allowed" : "pointer",
@@ -791,7 +821,7 @@ export function SettingsForm({
                     background: "var(--tc-primary)",
                     color: "var(--tc-on-primary)",
                     border: "2px solid var(--tc-primary)",
-                    fontSize: 11,
+                    fontSize: 12,
                     padding: "12px 22px",
                     minHeight: 44,
                     cursor: githubBusy ? "not-allowed" : "pointer",
@@ -806,7 +836,7 @@ export function SettingsForm({
                   role="status"
                   data-testid="github-push-summary"
                   className="mt-4 font-mono"
-                  style={{ fontSize: 11, color: "var(--tc-primary)" }}
+                  style={{ fontSize: 12, color: "var(--tc-primary)" }}
                 >
                   {pushSummary}
                 </p>
@@ -817,7 +847,7 @@ export function SettingsForm({
                   className="font-mono"
                   // Error state must not render in the brand success color
                   // (2026-07-14 audit): use the error red.
-                  style={{ fontSize: 11, color: "var(--color-error)" }}
+                  style={{ fontSize: 12, color: "var(--color-error)" }}
                   data-testid="github-error"
                 >
                   {githubError}
@@ -834,7 +864,7 @@ export function SettingsForm({
               <div
                 className="font-mono mb-2"
                 style={{
-                  fontSize: 9,
+                  fontSize: 12,
                   color: "var(--tc-muted)",
                   letterSpacing: "0.14em",
                 }}
@@ -874,7 +904,7 @@ export function SettingsForm({
                       </div>
                       <div
                         className="font-mono"
-                        style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                        style={{ fontSize: 12, color: "var(--tc-muted)" }}
                       >
                         One-time purchase · ${purchase.amount} ·{" "}
                         {new Date(purchase.createdAt).toLocaleDateString(
@@ -904,7 +934,7 @@ export function SettingsForm({
               <div
                 className="font-mono mb-2"
                 style={{
-                  fontSize: 9,
+                  fontSize: 12,
                   color: "var(--tc-muted)",
                   letterSpacing: "0.14em",
                 }}
@@ -914,7 +944,7 @@ export function SettingsForm({
               <p
                 className="font-mono"
                 style={{
-                  fontSize: 11,
+                  fontSize: 12,
                   color: "var(--tc-muted)",
                   lineHeight: 1.6,
                 }}
@@ -933,7 +963,7 @@ export function SettingsForm({
               <div
                 className="font-mono mb-4"
                 style={{
-                  fontSize: 9,
+                  fontSize: 12,
                   color: "var(--color-error)",
                   letterSpacing: "0.14em",
                 }}
@@ -947,7 +977,7 @@ export function SettingsForm({
                   data-testid="sign-out"
                   className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
-                    fontSize: 11,
+                    fontSize: 12,
                     padding: "12px 22px",
                     minHeight: 44,
                     border: "2px solid var(--tc-border-interactive)",
@@ -964,7 +994,7 @@ export function SettingsForm({
                   data-testid="delete-account"
                   className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
-                    fontSize: 11,
+                    fontSize: 12,
                     padding: "12px 22px",
                     minHeight: 44,
                     border: "2px solid var(--color-error)",
@@ -1007,7 +1037,7 @@ export function SettingsForm({
                   }}
                   className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
-                    fontSize: 11,
+                    fontSize: 12,
                     padding: "12px 22px",
                     minHeight: 44,
                     border: "2px solid var(--tc-border-interactive)",
@@ -1024,7 +1054,7 @@ export function SettingsForm({
                   <p
                     role="alert"
                     className="font-mono mt-2"
-                    style={{ fontSize: 11, color: "var(--color-error)" }}
+                    style={{ fontSize: 12, color: "var(--color-error)" }}
                   >
                     Export failed. Try again, or email support@tensorcraft.app.
                   </p>
@@ -1037,7 +1067,7 @@ export function SettingsForm({
                   className="font-mono mt-4 rounded-none"
                   data-testid="delete-confirm-notice"
                   style={{
-                    fontSize: 11,
+                    fontSize: 12,
                     padding: "14px 18px",
                     border: "1px solid var(--color-error)",
                     background:
@@ -1102,7 +1132,7 @@ export function SettingsForm({
                       }}
                       className="font-mono rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50"
                       style={{
-                        fontSize: 11,
+                        fontSize: 12,
                         padding: "10px 18px",
                         minHeight: 44,
                         border: "2px solid var(--color-error)",
@@ -1151,22 +1181,21 @@ function Panel({
 }) {
   return (
     <section
-      className="border-2 bg-surface-raised rounded-none"
+      className="border-2 bg-surface-raised rounded-none p-5 sm:p-8"
       style={{
         borderColor: "var(--tc-border)",
-        padding: 32,
       }}
     >
-      <div
+      <h2
         className="font-mono mb-6"
         style={{
-          fontSize: 9,
+          fontSize: 12,
           color: "var(--tc-primary)",
           letterSpacing: "0.14em",
         }}
       >
         {label}
-      </div>
+      </h2>
       {children}
     </section>
   );
@@ -1187,7 +1216,7 @@ function Field({
         htmlFor={htmlFor}
         className="font-mono mb-1.5 block"
         style={{
-          fontSize: 10,
+          fontSize: 12,
           color: "var(--tc-muted)",
           letterSpacing: "0.08em",
         }}
@@ -1228,7 +1257,7 @@ function ToggleRow({
         {description && (
           <div
             className="font-mono mt-1"
-            style={{ fontSize: 10, color: "var(--tc-muted)", lineHeight: 1.5 }}
+            style={{ fontSize: 12, color: "var(--tc-muted)", lineHeight: 1.5 }}
           >
             {description}
           </div>
@@ -1267,7 +1296,7 @@ function SaveRow({
           background: hov ? "transparent" : "var(--tc-primary)",
           color: hov ? "var(--tc-primary)" : "var(--tc-on-primary)",
           border: "2px solid var(--tc-primary)",
-          fontSize: 11,
+          fontSize: 12,
           padding: "12px 28px",
           cursor: saving ? "not-allowed" : "pointer",
           boxShadow: hov ? "4px 4px 0 var(--tc-primary)" : "none",
@@ -1283,7 +1312,7 @@ function SaveRow({
           className="font-mono"
           data-testid={`${testId}-saved`}
           style={{
-            fontSize: 11,
+            fontSize: 12,
             color: "var(--tc-primary)",
             letterSpacing: "0.08em",
           }}
@@ -1297,7 +1326,7 @@ function SaveRow({
           className="font-mono"
           data-testid={`${testId}-error`}
           style={{
-            fontSize: 11,
+            fontSize: 12,
             color: "var(--color-error)",
           }}
         >

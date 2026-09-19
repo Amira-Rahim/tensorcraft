@@ -2,8 +2,6 @@ slug: deep-scan-eval
 lessonSlug: evaluating-deep-scan
 title: "Train DEEP SCAN, Then Read the Gap"
 instructions: |
-  **Contract revision 2026-09-17b:** diagnose now returns large-gap, low-scores or no-gap-warning. The grader accepts the actual measured score without requiring a healthy model.
-
   The supplied tensors contain 100 synthetic training rows and 43 separate
   evaluation rows: 40 generated examples and three hand-written story cases.
   Keep the evaluation rows and their labels out of training.

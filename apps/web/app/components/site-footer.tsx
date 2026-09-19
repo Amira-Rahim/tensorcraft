@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ReportIssueTrigger } from "./report-issue-button";
 import { CookieSettingsButton } from "./cookie-settings-button";
 
 const FOOTER_LINK_CLASS =
@@ -42,6 +43,7 @@ export function SiteFooter() {
             {/* Art. 7(3) withdrawal path - sitewide, same weight as the
                 privacy link that promises it (Tier 1-LEGAL). */}
             <CookieSettingsButton className={FOOTER_LINK_CLASS} />
+            <ReportIssueTrigger className={FOOTER_LINK_CLASS} />
           </div>
           <div className="font-mono text-xs">
             &copy; {new Date().getFullYear()} Tensorcraft

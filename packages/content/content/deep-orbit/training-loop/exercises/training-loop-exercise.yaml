@@ -2,8 +2,6 @@ slug: training-loop-exercise
 lessonSlug: training-loop
 title: "Stop the Loop When It Stops Learning"
 instructions: |
-  **Contract revision 2026-09-17b:** Add makeEarlyStopping and use the new observable-trend labels in diagnose. Short histories are valid.
-
   Fit the supplied model on trainX/trainY for at most 500 epochs with validationSplit 0.2 and a batch size from 8 to 64 (default 32). Implement makeEarlyStopping() returning tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 }), and attach it to the fit. Store the awaited result in history. A correct run can stop early or reach its epoch limit; neither outcome proves a defect.
 
   Implement diagnose(trainLosses, valLosses) for equally long arrays of finite, nonnegative losses. Reject invalid arrays. With fewer than 20 entries, return 'insufficient-history'. Otherwise compare the mean of each curve's last ten entries with its previous ten. A drop greater than 5% is improvement; a rise greater than 5% is worsening. Exactly 5% lies in the flat band. Compare by multiplication so an earlier mean of zero is handled without division: zero to positive is worsening, zero to zero is flat.

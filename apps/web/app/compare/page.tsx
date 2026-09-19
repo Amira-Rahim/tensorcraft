@@ -152,7 +152,12 @@ export default function ComparePage() {
           </p>
         </section>
 
-        <div className="overflow-x-auto border border-border">
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Course comparison"
+          className="overflow-x-auto border border-border"
+        >
           <table className="w-full font-mono text-sm">
             <caption className="sr-only">
               Course comparison: Tensorcraft vs fast.ai vs Karpathy zero-to-hero

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
+import styles from "./dashboard-view.module.css";
 import { SkillGenome } from "./skill-genome";
 import { BridgeCollection } from "./bridge-collection";
 import { PatchCollection } from "./patch-collection";
@@ -209,7 +210,7 @@ export function DashboardView(props: DashboardProps) {
             <span
               style={{
                 fontFamily: MONO,
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: 700,
                 color: MUTED,
                 letterSpacing: "0.12em",
@@ -267,7 +268,7 @@ export function DashboardView(props: DashboardProps) {
                       justifyContent: "center",
                       flexShrink: 0,
                       fontFamily: MONO,
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: 800,
                       border: `1px solid ${m.status === "done" || m.status === "active" ? LIME : BORDER_VAR}`,
                       color:
@@ -299,7 +300,7 @@ export function DashboardView(props: DashboardProps) {
                 <div
                   style={{
                     fontFamily: MONO,
-                    fontSize: 9,
+                    fontSize: 12,
                     color:
                       m.status === "done"
                         ? "color-mix(in srgb, var(--tc-primary) 50%, transparent)"
@@ -326,7 +327,7 @@ export function DashboardView(props: DashboardProps) {
                 <div
                   style={{
                     fontFamily: MONO,
-                    fontSize: 9,
+                    fontSize: 12,
                     color: MUTED,
                   }}
                 >
@@ -355,12 +356,15 @@ export function DashboardView(props: DashboardProps) {
         </aside>
 
         {/* Main content */}
-        <main className="grid-bg" style={{ flex: 1, overflow: "auto" }}>
+        <main
+          className={`grid-bg ${styles.main}`}
+          style={{ flex: 1, minWidth: 0 }}
+        >
           {streakAtRisk && (
             <div
               data-testid="streak-at-risk-toast"
               style={{
-                padding: "12px 40px",
+                padding: "12px var(--dashboard-gutter)",
                 background:
                   "color-mix(in srgb, var(--tc-streak) 8%, transparent)",
                 borderBottom: `1px solid ${BORDER_VAR}`,
@@ -385,7 +389,7 @@ export function DashboardView(props: DashboardProps) {
                     color: "var(--tc-streak)",
                     textTransform: "uppercase",
                     letterSpacing: "0.12em",
-                    fontSize: 10,
+                    fontSize: 12,
                     textDecoration: "none",
                   }}
                 >
@@ -397,7 +401,7 @@ export function DashboardView(props: DashboardProps) {
           {/* Lesson header */}
           <div
             style={{
-              padding: "32px 40px",
+              padding: "32px var(--dashboard-gutter)",
               borderBottom: `1px solid ${BORDER_VAR}`,
               display: "flex",
               justifyContent: "space-between",
@@ -419,7 +423,7 @@ export function DashboardView(props: DashboardProps) {
                 <div
                   style={{
                     fontFamily: MONO,
-                    fontSize: 11,
+                    fontSize: 12,
                     color: MUTED,
                     letterSpacing: "0.08em",
                     display: "flex",
@@ -573,9 +577,9 @@ export function DashboardView(props: DashboardProps) {
 
           {/* Stats strip */}
           <div
+            className={styles.stats}
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
               borderBottom: `1px solid ${BORDER_VAR}`,
             }}
           >
@@ -598,13 +602,12 @@ export function DashboardView(props: DashboardProps) {
                 val: averageScore.toFixed(1),
                 sub: "out of 100",
               },
-            ].map((s, i) => (
+            ].map((s) => (
               <div
+                className={styles.stat}
                 key={s.label}
                 data-on-fire={s.onFire ? "true" : undefined}
                 style={{
-                  padding: "36px 40px",
-                  borderRight: i < 2 ? `1px solid ${BORDER_VAR}` : "none",
                   background: s.onFire
                     ? "color-mix(in srgb, var(--tc-streak) 8%, transparent)"
                     : s.accent
@@ -615,7 +618,7 @@ export function DashboardView(props: DashboardProps) {
                 <div
                   style={{
                     fontFamily: MONO,
-                    fontSize: 10,
+                    fontSize: 12,
                     color: s.accent ? LIME : MUTED,
                     fontWeight: 700,
                     letterSpacing: "0.1em",
@@ -628,7 +631,7 @@ export function DashboardView(props: DashboardProps) {
                 <div
                   style={{
                     fontFamily: MONO,
-                    fontSize: 40,
+                    fontSize: "clamp(28px, 3vw, 40px)",
                     fontWeight: 900,
                     color: s.accent ? LIME : WHITE,
                     lineHeight: 1,
@@ -637,7 +640,7 @@ export function DashboardView(props: DashboardProps) {
                 >
                   {s.val}
                 </div>
-                <div style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
+                <div style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
                   {s.sub}
                 </div>
               </div>
@@ -648,14 +651,14 @@ export function DashboardView(props: DashboardProps) {
           <div style={{ borderBottom: `1px solid ${BORDER_VAR}` }}>
             <div
               style={{
-                padding: "20px 40px",
+                padding: "20px var(--dashboard-gutter)",
                 borderBottom: `1px solid ${BORDER_VAR}`,
               }}
             >
               <span
                 style={{
                   fontFamily: MONO,
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: 700,
                   color: MUTED,
                   letterSpacing: "0.12em",
@@ -664,7 +667,7 @@ export function DashboardView(props: DashboardProps) {
                 ACTIVITY · 30 DAYS
               </span>
             </div>
-            <div style={{ padding: "32px 40px" }}>
+            <div style={{ padding: "32px var(--dashboard-gutter)" }}>
               <div
                 style={{
                   display: "grid",
@@ -697,7 +700,7 @@ export function DashboardView(props: DashboardProps) {
               <div
                 style={{
                   fontFamily: MONO,
-                  fontSize: 9,
+                  fontSize: 12,
                   color: MUTED,
                   display: "flex",
                   gap: 6,
@@ -769,7 +772,7 @@ export function DashboardView(props: DashboardProps) {
           >
             <div
               style={{
-                padding: "20px 40px",
+                padding: "20px var(--dashboard-gutter)",
                 borderBottom: `1px solid ${BORDER_VAR}`,
               }}
             >
@@ -777,7 +780,7 @@ export function DashboardView(props: DashboardProps) {
                 id="loss-curve-heading"
                 style={{
                   fontFamily: MONO,
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: 700,
                   color: MUTED,
                   letterSpacing: "0.12em",
@@ -788,7 +791,7 @@ export function DashboardView(props: DashboardProps) {
                 LEARNING TREND
               </h2>
             </div>
-            <div style={{ padding: "24px 40px" }}>
+            <div style={{ padding: "24px var(--dashboard-gutter)" }}>
               <LossCurve weekly={lossCurveData.weekly} />
             </div>
           </section>
@@ -801,14 +804,14 @@ export function DashboardView(props: DashboardProps) {
             <div>
               <div
                 style={{
-                  padding: "20px 40px",
+                  padding: "20px var(--dashboard-gutter)",
                   borderBottom: `1px solid ${BORDER_VAR}`,
                 }}
               >
                 <span
                   style={{
                     fontFamily: MONO,
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: 700,
                     color: MUTED,
                     letterSpacing: "0.12em",
@@ -820,29 +823,30 @@ export function DashboardView(props: DashboardProps) {
               {recentActivity.map((a, i) => (
                 <div
                   key={i}
+                  className={styles.activity}
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "130px 1fr 80px",
                     borderBottom: `1px solid ${BORDER_VAR}`,
-                    padding: "18px 40px",
-                    gap: 24,
+                    padding: "18px var(--dashboard-gutter)",
                     alignItems: "center",
                   }}
                 >
-                  <div style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
+                  <div style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
                     {a.time}
                   </div>
                   <div
                     style={{
                       display: "flex",
                       alignItems: "baseline",
-                      gap: 12,
+                      flexWrap: "wrap",
+                      minWidth: 0,
+                      overflowWrap: "anywhere",
+                      gap: 8,
                     }}
                   >
                     <span
                       style={{
                         fontFamily: MONO,
-                        fontSize: 10,
+                        fontSize: 12,
                         color: LIME,
                         flexShrink: 0,
                       }}

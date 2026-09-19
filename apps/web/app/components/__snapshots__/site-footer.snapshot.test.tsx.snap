@@ -56,6 +56,15 @@ exports[`SiteFooter snapshots > matches snapshot 1`] = `
         >
           Cookie settings
         </button>
+        <button
+          aria-controls="report-issue-panel"
+          aria-haspopup="dialog"
+          aria-label="Report Issue"
+          class="inline-flex items-center min-h-11 font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          type="button"
+        >
+          Report issue
+        </button>
       </div>
       <div
         class="font-mono text-xs"

@@ -69,6 +69,15 @@ vi.mock("@/app/components/user-avatar", () => ({
 const locationOriginal = Object.getOwnPropertyDescriptor(window, "location");
 
 beforeEach(() => {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn().mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }),
+  );
+
   pushMock.mockClear();
   refreshMock.mockClear();
   signOutMock.mockClear();
@@ -127,6 +136,21 @@ async function renderForm(
 // ---------------------------------------------------------------------------
 
 describe("SettingsForm", () => {
+  it("moves selection and focus with horizontal arrows and Home/End", async () => {
+    await renderForm();
+    const profile = screen.getByRole("tab", { name: "Profile" });
+    profile.focus();
+    fireEvent.keyDown(profile, { key: "ArrowRight" });
+    const notifications = screen.getByRole("tab", { name: "Notifications" });
+    expect(notifications).toHaveFocus();
+    expect(notifications).toHaveAttribute("aria-selected", "true");
+    expect(profile).toHaveAttribute("tabindex", "-1");
+    fireEvent.keyDown(notifications, { key: "End" });
+    expect(screen.getByRole("tab", { name: "Account" })).toHaveFocus();
+    fireEvent.keyDown(document.activeElement!, { key: "Home" });
+    expect(profile).toHaveFocus();
+  });
+
   it("renders all 4 tabs in the sidebar (Profile / Notifications / GitHub / Account)", async () => {
     await renderForm();
     expect(screen.getByTestId("settings-tab-profile")).toBeTruthy();

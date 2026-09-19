@@ -68,8 +68,7 @@ export function parseInstructionBlocks(text: string): InstructionBlock[] {
         while (
           i < lines.length &&
           lines[i].trim() !== "" &&
-          !LIST_ITEM.test(lines[i]) &&
-          !isCodeLine(lines[i])
+          !LIST_ITEM.test(lines[i])
         ) {
           item += " " + lines[i].trim();
           i += 1;
@@ -141,6 +140,9 @@ export function InstructionText({
           return (
             <pre
               key={index}
+              tabIndex={0}
+              role="region"
+              aria-label="Exercise code contract"
               className="my-3 overflow-x-auto whitespace-pre font-mono text-[0.92em] leading-relaxed bg-code-bg text-text-primary/85 p-3"
             >
               {block.text}

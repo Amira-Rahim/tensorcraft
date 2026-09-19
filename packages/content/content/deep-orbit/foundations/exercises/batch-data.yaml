@@ -2,7 +2,7 @@ slug: batch-data
 lessonSlug: data-loading
 title: "Build the Lazy Pipeline"
 instructions: |
-  **Contract revision 2026-09-17b:** Add makeDataset(source), which shuffles individual samples before batching. The grader checks stage order directly.
+  Add `makeDataset(source)` to shuffle individual samples before batching.
 
   The archive exposes readSample(i): it returns { features: number[3], label: number } for reading i, the same three features the lesson names (amplitude in counts, frequency as a zero-crossing count, phase in radians), faked from the row index here so you can tell rows apart. It also counts how many times it is called.
 

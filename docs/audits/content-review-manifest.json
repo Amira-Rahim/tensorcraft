@@ -924,7 +924,7 @@
       ],
       "prerequisiteReview": "Internal sequence and first-use context reviewed; observed learner readiness remains pending.",
       "authoredObjectives": [
-        "Understand the autoencoder architecture: encoder \u2192 bottleneck \u2192 decoder",
+        "Understand the autoencoder architecture: encoder → bottleneck → decoder",
         "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself",
         "Verify which rows reach fitting and measure held-out reconstruction errors without assuming a separation ratio",
         "Explain why reconstruction error can miss an anomaly or flag a normal input"
@@ -2166,7 +2166,7 @@
       ],
       "prerequisiteReview": "Internal sequence and first-use context reviewed; observed learner readiness remains pending.",
       "authoredObjectives": [
-        "Build a real-time inference pipeline: input \u2192 preprocess \u2192 predict \u2192 display",
+        "Build a real-time inference pipeline: input → preprocess → predict → display",
         "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks",
         "Preprocess raw input data to match model training format",
         "Measure and optimize inference latency for real-time requirements",
@@ -2418,7 +2418,7 @@
     {
       "path": "packages/content/content/deep-orbit/browser-runtimes/exercises/browser-ml-tradeoffs.yaml",
       "kind": "exercise",
-      "sourceSha256": "419671ac2affe583c1a69a01cec8f585272061d64f527cfe080f4708be33d5de",
+      "sourceSha256": "5312249646b6d3bd931fe3ab828a34f4a7e7a47a488adeb02d587425dce460af",
       "status": "internally_reviewed",
       "checks": {
         "objectives": "reviewed_in_context; current_inventory_linked; learner_attainment_unobserved",
@@ -2426,16 +2426,18 @@
         "facts": "reviewed_locally; sources_and_executable_evidence_in_internal_record",
         "code_examples": "exercise_reference_and_wrong_solution_checks; all_MDX_blocks_parsed; selected_actual_MDX_executed; integration_limits_recorded",
         "assessment_alignment": "contract_hints_solutions_tests_feedback_read_in_context; transfer_unvalidated",
-        "editorial": "full_in_context_internal_pass",
+        "editorial": "internal_revision_notes_removed; current_instructions_read_in_context; substantive_contract_unchanged",
         "story_continuity": "exercise_scenario_and_feedback_read_in_context",
-        "rendered_experience": "contract_and_grader_checked; no_new_full_editor_UI_run"
+        "rendered_experience": "updated_production_components_at_1440_and_390px; isolated_data_and_network; see_UI_remediation_record_for_limits"
       },
       "targetedCorrections": [
-        "A02"
+        "A02",
+        "UI-09"
       ],
       "evidence": [
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
-        "docs/audits/internal-content-review-2026-09-18.md"
+        "docs/audits/internal-content-review-2026-09-18.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -2470,6 +2472,13 @@
           "date": "2026-09-18",
           "evidence": "docs/audits/internal-content-review-2026-09-18.md",
           "limitations": "Internal source/design judgment; integration fixtures identified. No learner or independent outcome inferred."
+        }
+      ],
+      "invalidatedRevisions": [
+        {
+          "sourceSha256": "419671ac2affe583c1a69a01cec8f585272061d64f527cfe080f4708be33d5de",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
         }
       ]
     },
@@ -4023,7 +4032,7 @@
         "Read a shape-mismatch error and identify which op it comes from",
         "Perform element-wise tensor operations (add, multiply, subtract)",
         "Combine tensors of different shapes using broadcasting",
-        "Understand the matmul shape rule: [m,n] \u00d7 [n,p] \u2192 [m,p]",
+        "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]",
         "Use transpose to make shapes compatible"
       ],
       "focusedReviews": [
@@ -4346,7 +4355,7 @@
     {
       "path": "packages/content/content/deep-orbit/foundations/exercises/batch-data.yaml",
       "kind": "exercise",
-      "sourceSha256": "ce35065b0b889efdd5aa799aae32d89f4af8f50aa4dc7e073f5ba86c01f4bf8f",
+      "sourceSha256": "a5092f544eb6c298e5ea4b97d0921c644c6e93fd7fe7ab142b0211cc9ab3a1bd",
       "status": "internally_reviewed",
       "checks": {
         "objectives": "reviewed_in_context; current_inventory_linked; learner_attainment_unobserved",
@@ -4354,19 +4363,21 @@
         "facts": "reviewed_locally; sources_and_executable_evidence_in_internal_record",
         "code_examples": "exercise_reference_and_wrong_solution_checks; all_MDX_blocks_parsed; selected_actual_MDX_executed; integration_limits_recorded",
         "assessment_alignment": "contract_hints_solutions_tests_feedback_read_in_context; transfer_unvalidated",
-        "editorial": "full_in_context_internal_pass",
+        "editorial": "internal_revision_notes_removed; current_instructions_read_in_context; substantive_contract_unchanged",
         "story_continuity": "exercise_scenario_and_feedback_read_in_context",
-        "rendered_experience": "contract_and_grader_checked; no_new_full_editor_UI_run"
+        "rendered_experience": "updated_production_components_at_1440_and_390px; isolated_data_and_network; see_UI_remediation_record_for_limits"
       },
       "targetedCorrections": [
         "F01",
-        "A15"
+        "A15",
+        "UI-09"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
         "docs/audits/assessment-reliability-patch-2026-09-17.md",
-        "docs/audits/internal-content-review-2026-09-18.md"
+        "docs/audits/internal-content-review-2026-09-18.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
       "declaredModulePrerequisites": [],
       "prerequisiteReview": "Internal sequence and first-use context reviewed; observed learner readiness remains pending.",
@@ -4405,6 +4416,13 @@
           "date": "2026-09-18",
           "evidence": "docs/audits/internal-content-review-2026-09-18.md",
           "limitations": "Internal source/design judgment; integration fixtures identified. No learner or independent outcome inferred."
+        }
+      ],
+      "invalidatedRevisions": [
+        {
+          "sourceSha256": "ce35065b0b889efdd5aa799aae32d89f4af8f50aa4dc7e073f5ba86c01f4bf8f",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
         }
       ]
     },
@@ -4621,7 +4639,7 @@
       "authoredObjectives": [
         "Understand LLMs as augmentation tools for structured analysis",
         "Turn an untrusted reply into typed data: find the JSON inside the text, check every field the caller depends on, and throw rather than pass a half-built object on",
-        "Define the human-AI workflow: generate \u2192 review \u2192 correct \u2192 approve"
+        "Define the human-AI workflow: generate → review → correct → approve"
       ],
       "focusedReviews": [
         {
@@ -4776,7 +4794,7 @@
       ],
       "prerequisiteReview": "Internal sequence and first-use context reviewed; observed learner readiness remains pending.",
       "authoredObjectives": [
-        "Understand RAG as retrieve \u2192 augment \u2192 generate: query data, inject into prompt, generate response",
+        "Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response",
         "Build a signal retrieval step from text and metadata matching, with a row cap, that reports how many rows matched before the cap and whether the cap dropped any",
         "Check structured claims against cited fields and units, and explain why free-text answers still need review",
         "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"
@@ -7181,7 +7199,7 @@
       ],
       "prerequisiteReview": "Internal sequence and first-use context reviewed; observed learner readiness remains pending.",
       "authoredObjectives": [
-        "Understand the RNN as a learned reducer: (prevState, input) \u2192 newState",
+        "Understand the RNN as a learned reducer: (prevState, input) → newState",
         "Build a simple RNN using TensorFlow.js layers API",
         "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences",
         "Read a layer's learned weights off the model and check your own arithmetic against what the layer computes"
@@ -9093,7 +9111,7 @@
     {
       "path": "packages/content/content/deep-orbit/training-loop/exercises/deep-scan-eval.yaml",
       "kind": "exercise",
-      "sourceSha256": "8284e104860d20a04c55e76c4f7b8399d69651987da67f6ff245e437cc4399cc",
+      "sourceSha256": "11a396880042a072f917a339c4b69bce3e113ccd4b360da4286501ed994d209f",
       "status": "internally_reviewed",
       "checks": {
         "objectives": "reviewed_in_context; current_inventory_linked; learner_attainment_unobserved",
@@ -9101,19 +9119,21 @@
         "facts": "reviewed_locally; sources_and_executable_evidence_in_internal_record",
         "code_examples": "exercise_reference_and_wrong_solution_checks; all_MDX_blocks_parsed; selected_actual_MDX_executed; integration_limits_recorded",
         "assessment_alignment": "contract_hints_solutions_tests_feedback_read_in_context; transfer_unvalidated",
-        "editorial": "full_in_context_internal_pass",
+        "editorial": "internal_revision_notes_removed; current_instructions_read_in_context; substantive_contract_unchanged",
         "story_continuity": "exercise_scenario_and_feedback_read_in_context",
-        "rendered_experience": "contract_and_grader_checked; no_new_full_editor_UI_run"
+        "rendered_experience": "updated_production_components_at_1440_and_390px; isolated_data_and_network; see_UI_remediation_record_for_limits"
       },
       "targetedCorrections": [
         "F17",
-        "A17"
+        "A17",
+        "UI-09"
       ],
       "evidence": [
         "docs/audits/content-quality-implementation-2026-09-17.md",
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
         "docs/audits/assessment-reliability-patch-2026-09-17.md",
-        "docs/audits/internal-content-review-2026-09-18.md"
+        "docs/audits/internal-content-review-2026-09-18.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -9167,6 +9187,11 @@
           "sourceSha256": "d1ff35209b76bd5cd7c17773d28f282acbc87fde2ddb710a0d83c31af4db6c9f",
           "date": "2026-09-18",
           "reason": "Full internal review, factual/code/readability repairs and saved story consequences."
+        },
+        {
+          "sourceSha256": "8284e104860d20a04c55e76c4f7b8399d69651987da67f6ff245e437cc4399cc",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
         }
       ]
     },
@@ -9235,7 +9260,7 @@
     {
       "path": "packages/content/content/deep-orbit/training-loop/exercises/mse-loss.yaml",
       "kind": "exercise",
-      "sourceSha256": "35961b92e811ed87cc497c8bf91aa59fddb3dc062414757a2a3e241960815fa8",
+      "sourceSha256": "41f702a5ec7fad7997517f2bd4c8d9542c09c1532e426597e633d096af99286c",
       "status": "internally_reviewed",
       "checks": {
         "objectives": "reviewed_in_context; current_inventory_linked; learner_attainment_unobserved",
@@ -9243,16 +9268,18 @@
         "facts": "reviewed_locally; sources_and_executable_evidence_in_internal_record",
         "code_examples": "exercise_reference_and_wrong_solution_checks; all_MDX_blocks_parsed; selected_actual_MDX_executed; integration_limits_recorded",
         "assessment_alignment": "contract_hints_solutions_tests_feedback_read_in_context; transfer_unvalidated",
-        "editorial": "full_in_context_internal_pass",
+        "editorial": "internal_revision_notes_removed; current_instructions_read_in_context; substantive_contract_unchanged",
         "story_continuity": "exercise_scenario_and_feedback_read_in_context",
-        "rendered_experience": "contract_and_grader_checked; no_new_full_editor_UI_run"
+        "rendered_experience": "updated_production_components_at_1440_and_390px; isolated_data_and_network; see_UI_remediation_record_for_limits"
       },
       "targetedCorrections": [
-        "A01"
+        "A01",
+        "UI-09"
       ],
       "evidence": [
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
-        "docs/audits/internal-content-review-2026-09-18.md"
+        "docs/audits/internal-content-review-2026-09-18.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -9293,13 +9320,18 @@
           "sourceSha256": "0c166ca161fde0c2863c356799b69b615e25efddb9c6aee4d004b4752f22cf34",
           "date": "2026-09-18",
           "reason": "Current internal in-context review and executable-example repairs."
+        },
+        {
+          "sourceSha256": "35961b92e811ed87cc497c8bf91aa59fddb3dc062414757a2a3e241960815fa8",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
         }
       ]
     },
     {
       "path": "packages/content/content/deep-orbit/training-loop/exercises/training-loop-exercise.yaml",
       "kind": "exercise",
-      "sourceSha256": "429935e93658c37c73597abdc8837770f898af86779362e63487f5939051b046",
+      "sourceSha256": "4a62e91c9ef1affb29082ce33497b856535163e5ac80c3c6120b9f140a35019a",
       "status": "internally_reviewed",
       "checks": {
         "objectives": "reviewed_in_context; current_inventory_linked; learner_attainment_unobserved",
@@ -9307,17 +9339,19 @@
         "facts": "reviewed_locally; sources_and_executable_evidence_in_internal_record",
         "code_examples": "exercise_reference_and_wrong_solution_checks; all_MDX_blocks_parsed; selected_actual_MDX_executed; integration_limits_recorded",
         "assessment_alignment": "contract_hints_solutions_tests_feedback_read_in_context; transfer_unvalidated",
-        "editorial": "full_in_context_internal_pass",
+        "editorial": "internal_revision_notes_removed; current_instructions_read_in_context; substantive_contract_unchanged",
         "story_continuity": "exercise_scenario_and_feedback_read_in_context",
-        "rendered_experience": "contract_and_grader_checked; no_new_full_editor_UI_run"
+        "rendered_experience": "updated_production_components_at_1440_and_390px; isolated_data_and_network; see_UI_remediation_record_for_limits"
       },
       "targetedCorrections": [
-        "A16"
+        "A16",
+        "UI-09"
       ],
       "evidence": [
         "docs/audits/deep-orbit-assessment-review-2026-09-17.md",
         "docs/audits/assessment-reliability-patch-2026-09-17.md",
-        "docs/audits/internal-content-review-2026-09-18.md"
+        "docs/audits/internal-content-review-2026-09-18.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
       "declaredModulePrerequisites": [
         "foundations",
@@ -9366,6 +9400,11 @@
           "sourceSha256": "5fde274aadb3e6d6e70d08a7c6a06d19a47e99c73957b52bb60bd3c225a90e63",
           "date": "2026-09-18",
           "reason": "Current internal in-context review and executable-example repairs."
+        },
+        {
+          "sourceSha256": "429935e93658c37c73597abdc8837770f898af86779362e63487f5939051b046",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
         }
       ]
     }
@@ -10313,11 +10352,12 @@
     {
       "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx",
       "kind": "independent_assessment_support",
-      "sourceSha256": "f85e38d117530caf2bbd567bf7975a813c96cf094b34b742d09930e99c47227d",
+      "sourceSha256": "9f294ddfc9fd7ea4b50c2fd053b87326ce13168af41e6aa3de403d2d23842d0b",
       "status": "reviewed_locally_with_limits",
       "evidence": [
         "docs/audits/independent-assessment-patch-2026-09-17.md",
-        "docs/audits/internal-content-review-2026-09-18.md"
+        "docs/audits/internal-content-review-2026-09-18.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
       "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance.",
       "invalidatedRevisions": [
@@ -10325,9 +10365,18 @@
           "sourceSha256": "537bcdfd35b691dea9e3ed1e74c36dd3cdcc9a704236cb85c0706b37bceef268",
           "date": "2026-09-18",
           "reason": "Internal review and integration repair; no independent approval."
+        },
+        {
+          "sourceSha256": "f85e38d117530caf2bbd567bf7975a813c96cf094b34b742d09930e99c47227d",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
         }
       ],
-      "wholeArtifactReview": "Internal read/review of the changed learner surface or implementation; limits in evidence record"
+      "wholeArtifactReview": "Internal read/review of the changed learner surface or implementation; limits in evidence record",
+      "targetedCorrections": [
+        "UI-05 through UI-10"
+      ],
+      "targetedReview": "Changed layout, orientation, glossary and scroll-region paths reviewed; lesson navigation tests and 112 Concept renderings checked. Earlier whole-artifact review remains historical; no new independent approval."
     },
     {
       "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.test.tsx",
@@ -10351,12 +10400,24 @@
     {
       "path": "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx",
       "kind": "independent_assessment_support",
-      "sourceSha256": "aa781468ecf223157e3ef262fa825f5b11a856403fe8f5da8697a1ea8f931c37",
+      "sourceSha256": "4be78759a8356ed7bd578042c49da65a9f8b4a29c31d2b861df3f6b86c019359",
       "status": "reviewed_locally_with_limits",
       "evidence": [
-        "docs/audits/independent-assessment-patch-2026-09-17.md"
+        "docs/audits/independent-assessment-patch-2026-09-17.md",
+        "docs/audits/ui-ux-remediation-2026-09-18.md"
       ],
-      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance."
+      "limitations": "Maintainer implementation/integration evidence. A human rubric and learner observations are required for educational acceptance.",
+      "invalidatedRevisions": [
+        {
+          "sourceSha256": "aa781468ecf223157e3ef262fa825f5b11a856403fe8f5da8697a1ea8f931c37",
+          "date": "2026-09-18",
+          "reason": "UI/UX remediation invalidates earlier rendering evidence for this revision; targeted replacement checks and unchanged exercise contracts are recorded in ui-ux-remediation-2026-09-18.md."
+        }
+      ],
+      "targetedCorrections": [
+        "UI-05 through UI-10"
+      ],
+      "targetedReview": "Changed layout, orientation, glossary and scroll-region paths reviewed; lesson navigation tests and 112 Concept renderings checked. Earlier whole-artifact review remains historical; no new independent approval."
     },
     {
       "path": "packages/content/__tests__/independent-project.test.ts",

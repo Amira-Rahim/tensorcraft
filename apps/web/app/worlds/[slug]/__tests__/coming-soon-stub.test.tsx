@@ -48,9 +48,9 @@ describe("ComingSoonStub", () => {
     expect(
       screen.getByTestId("coming-soon-roster-signal-ward"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Online · Free")).toBeInTheDocument();
-    expect(screen.getAllByText("Pending")).toHaveLength(9);
-    expect(screen.getByText("Finale")).toBeInTheDocument();
+    expect(screen.getByText("Free at launch")).toBeInTheDocument();
+    expect(screen.getAllByText("Planned")).toHaveLength(9);
+    expect(screen.getByText("Planned finale")).toBeInTheDocument();
 
     // Skills: counted prose. Careers: salary range bars on a shared axis.
     expect(screen.getByText("clinical NLP")).toBeInTheDocument();

@@ -20,14 +20,19 @@ describe("GlossaryTerm", () => {
     expect(onActivate).toHaveBeenCalledWith("rank");
   });
 
-  it("exposes the definition as an accessible title/tooltip", () => {
+  it("shows the definition on activation and dismisses it with Escape", () => {
     render(
       <GlossaryTerm term="rank" definition="number of axes">
         rank
       </GlossaryTerm>,
     );
-    expect(screen.getByText("rank").getAttribute("title")).toContain(
-      "number of axes",
-    );
+    const button = screen.getByRole("button", { name: "rank" });
+    expect(screen.queryByRole("note")).not.toBeInTheDocument();
+    fireEvent.click(button);
+    expect(screen.getByRole("note")).toHaveTextContent("number of axes");
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("note")).not.toBeInTheDocument();
+    expect(button).toHaveFocus();
   });
 });

@@ -67,6 +67,23 @@ describe("parseInstructionBlocks", () => {
     ]);
   });
 
+  it("keeps indented continuations within their numbered step", () => {
+    expect(
+      parseInstructionBlocks(
+        "1. Compare the scores and\n   report the gap.\n2. Keep the test rows separate.",
+      ),
+    ).toEqual([
+      {
+        kind: "list",
+        ordered: true,
+        items: [
+          "Compare the scores and report the gap.",
+          "Keep the test rows separate.",
+        ],
+      },
+    ]);
+  });
+
   it("renders a single-line instruction as one paragraph", () => {
     expect(parseInstructionBlocks("Add two tensors.")).toEqual([
       { kind: "paragraph", text: "Add two tensors." },

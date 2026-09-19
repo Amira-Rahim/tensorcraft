@@ -1,7 +1,29 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { FocusTrap } from "@tensorcraft/ui/a11y";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+
+const REPORT_EVENT = "tc-open-report";
+
+/** Support access in lesson chrome, without covering the reading surface. */
+export function ReportIssueTrigger({ className }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      className={
+        className ??
+        "min-h-11 px-3 text-xs font-mono text-text-muted hover:text-text-primary"
+      }
+      aria-label="Report Issue"
+      aria-haspopup="dialog"
+      aria-controls="report-issue-panel"
+      onClick={() => window.dispatchEvent(new Event(REPORT_EVENT))}
+    >
+      Report issue
+    </button>
+  );
+}
 
 const CATEGORIES = [
   { value: "bug", label: "Bug" },
@@ -28,11 +50,9 @@ export function ReportIssueButton() {
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [hovSubmit, setHovSubmit] = useState(false);
-  const [hovButton, setHovButton] = useState(false);
   const [dragging, setDragging] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -44,29 +64,10 @@ export function ReportIssueButton() {
   }, []);
 
   useEffect(() => {
-    if (!open) return;
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    function handleClick(e: MouseEvent) {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(e.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
+    const show = () => setOpen(true);
+    window.addEventListener(REPORT_EVENT, show);
+    return () => window.removeEventListener(REPORT_EVENT, show);
+  }, []);
 
   const resetForm = useCallback(() => {
     setCategory("bug");
@@ -229,108 +230,60 @@ export function ReportIssueButton() {
         }
       `}</style>
 
-      {/* Floating Button */}
-      <button
-        ref={buttonRef}
-        type="button"
-        onClick={() => {
-          setOpen((v) => !v);
-          if (status === "success") resetForm();
-        }}
-        onMouseEnter={() => setHovButton(true)}
-        onMouseLeave={() => setHovButton(false)}
-        className="font-mono"
-        style={{
-          position: "fixed",
-          bottom: 24,
-          right: 24,
-          zIndex: 50,
-          borderRadius: 999,
-          background: open
-            ? "var(--tc-primary)"
-            : "color-mix(in srgb, var(--tc-surface) 80%, transparent)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          border: `1px solid ${open ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
-          color: open ? "var(--tc-on-primary)" : "var(--tc-text)",
-          fontSize: 11,
-          fontWeight: 600,
-          padding: "10px 20px",
-          cursor: "pointer",
-          letterSpacing: "0.05em",
-          boxShadow: hovButton
-            ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)`
-            : "none",
-          transform: hovButton ? "translate(-2px, -2px)" : "none",
-          transition: "all 0.15s ease",
-        }}
-        aria-label="Report Issue"
-      >
-        <span
-          style={{
-            display: "inline-block",
-            marginRight: 6,
-            fontSize: 9,
-          }}
-        >
-          {open ? "x" : "?"}
-        </span>
-        {open ? "Close" : "Report Issue"}
-      </button>
-
-      {/* Slide-Up Panel */}
-      <div
-        ref={panelRef}
-        style={{
-          position: "fixed",
-          bottom: 72,
-          right: 24,
-          zIndex: 50,
-          width: 360,
-          maxHeight: "80vh",
-          overflowY: open ? "auto" : "hidden",
-          overflowX: "hidden",
-          background: "color-mix(in srgb, var(--tc-surface) 85%, transparent)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          border: "1px solid var(--tc-border)",
-          borderRadius: 8,
-          boxShadow: open
-            ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent), 0 24px 48px rgba(0,0,0,0.4)`
-            : "none",
-          animation: open ? "ri-slide-up 0.25s ease-out both" : "none",
-          opacity: open ? 1 : 0,
-          pointerEvents: open ? "auto" : "none",
-          transform: open ? undefined : "translateY(16px) scale(0.98)",
-          transition: open
-            ? "none"
-            : "opacity 0.15s ease, transform 0.15s ease",
-        }}
-        role="dialog"
-        aria-label="Report an issue"
-        // The panel stays mounted so the open/close transition has something to
-        // animate, and only a decorative overlay is gated on `open`: the form
-        // itself (select, textarea, two inputs, four buttons) is in the DOM at
-        // all times. opacity:0 and pointerEvents:none hide it from the eye and
-        // the mouse, but neither takes an element out of the tab order or the
-        // accessibility tree, so every page shipped ~8 invisible tab stops and
-        // a permanently-present dialog.
-        //
-        // `inert` is the one attribute that removes a subtree from BOTH, which
-        // is why aria-hidden alone is not the fix here: aria-hidden over
-        // focusable content is its own violation (axe: aria-hidden-focus), and
-        // a keyboard user would still land inside a dialog a screen reader
-        // insists is not there.
-        inert={!open}
-      >
-        {/* Grid overlay */}
+      <FocusTrap active={open} onEscape={() => setOpen(false)}>
+        {open && (
+          <div
+            className="fixed inset-0 z-50 bg-black/50"
+            aria-hidden="true"
+            onClick={() => setOpen(false)}
+          />
+        )}
         <div
+          id="report-issue-panel"
+          ref={panelRef}
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "fixed",
+            bottom: "max(16px, env(safe-area-inset-bottom))",
+            right: 16,
+            zIndex: 50,
+            width: "min(400px, calc(100vw - 32px))",
+            maxHeight: "calc(100dvh - 32px)",
+            overscrollBehavior: "contain",
+            overflowY: open ? "auto" : "hidden",
+            overflowX: "hidden",
+            background:
+              "color-mix(in srgb, var(--tc-surface) 85%, transparent)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            border: "1px solid var(--tc-border)",
             borderRadius: 8,
-            pointerEvents: "none",
-            backgroundImage: `
+            boxShadow: open
+              ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent), 0 24px 48px rgba(0,0,0,0.4)`
+              : "none",
+            animation: open ? "ri-slide-up 0.25s ease-out both" : "none",
+            opacity: open ? 1 : 0,
+            pointerEvents: open ? "auto" : "none",
+            transform: open ? undefined : "translateY(16px) scale(0.98)",
+            transition: open
+              ? "none"
+              : "opacity 0.15s ease, transform 0.15s ease",
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Report an issue"
+          // Keep form state across closes while removing the closed panel
+          // from layout, keyboard navigation and the accessibility tree.
+          hidden={!open}
+          inert={!open}
+        >
+          {/* Grid overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 8,
+              pointerEvents: "none",
+              backgroundImage: `
               repeating-linear-gradient(
                 0deg,
                 transparent,
@@ -346,475 +299,490 @@ export function ReportIssueButton() {
                 color-mix(in srgb, var(--tc-primary) 3%, transparent) 40px
               )
             `,
-            opacity: 0.5,
-            zIndex: 0,
-          }}
-        />
+              opacity: 0.5,
+              zIndex: 0,
+            }}
+          />
 
-        {/* Scan line effect */}
-        {open && (
+          {/* Scan line effect */}
+          {open && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: 8,
+                overflow: "hidden",
+                pointerEvents: "none",
+                zIndex: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: 1,
+                  background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--tc-primary) 20%, transparent), transparent)`,
+                  animation: "ri-scan 3s linear infinite",
+                }}
+              />
+            </div>
+          )}
+
+          {/* Top neon accent line */}
           <div
             style={{
               position: "absolute",
-              inset: 0,
-              borderRadius: 8,
-              overflow: "hidden",
-              pointerEvents: "none",
-              zIndex: 0,
+              top: 0,
+              left: "10%",
+              right: "10%",
+              height: 1,
+              background: `linear-gradient(90deg, transparent, var(--tc-primary), transparent)`,
+              animation: "ri-glow-pulse 2s ease-in-out infinite",
+              zIndex: 1,
             }}
-          >
-            <div
-              style={{
-                width: "100%",
-                height: 1,
-                background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--tc-primary) 20%, transparent), transparent)`,
-                animation: "ri-scan 3s linear infinite",
-              }}
-            />
-          </div>
-        )}
+          />
 
-        {/* Top neon accent line */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: "10%",
-            right: "10%",
-            height: 1,
-            background: `linear-gradient(90deg, transparent, var(--tc-primary), transparent)`,
-            animation: "ri-glow-pulse 2s ease-in-out infinite",
-            zIndex: 1,
-          }}
-        />
-
-        {/* Content */}
-        <div style={{ position: "relative", zIndex: 1, padding: 24 }}>
-          {/* Header */}
-          <div
-            className="font-mono"
-            style={{
-              fontSize: 9,
-              color: "var(--tc-primary)",
-              letterSpacing: "0.15em",
-              marginBottom: 20,
-              textTransform: "uppercase",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <span
-              style={{
-                display: "inline-block",
-                width: 16,
-                height: 1,
-                background: "var(--tc-primary)",
-              }}
-            />
-            Report Issue
-            <span
-              style={{
-                flex: 1,
-                height: 1,
-                background:
-                  "linear-gradient(90deg, color-mix(in srgb, var(--tc-primary) 30%, transparent), transparent)",
-              }}
-            />
-          </div>
-
-          {status === "success" ? (
+          {/* Content */}
+          <div style={{ position: "relative", zIndex: 1, padding: 24 }}>
+            <button
+              type="button"
+              className="mb-4 ml-auto block min-h-11 px-3 text-sm font-mono text-text-muted"
+              onClick={() => setOpen(false)}
+            >
+              Close
+            </button>
+            {/* Header */}
             <div
               className="font-mono"
               style={{
                 fontSize: 12,
                 color: "var(--tc-primary)",
-                padding: "32px 0",
-                textAlign: "center",
-                animation: "ri-success-pop 0.3s ease-out both",
+                letterSpacing: "0.15em",
+                marginBottom: 20,
+                textTransform: "uppercase",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
-              <div
+              <span
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  border: "2px solid var(--tc-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 12px",
+                  display: "inline-block",
+                  width: 16,
+                  height: 1,
+                  background: "var(--tc-primary)",
                 }}
-              >
-                <span style={{ fontSize: 16 }}>&#10003;</span>
-              </div>
-              Thanks! We&apos;ll look into it.
+              />
+              Report Issue
+              <span
+                style={{
+                  flex: 1,
+                  height: 1,
+                  background:
+                    "linear-gradient(90deg, color-mix(in srgb, var(--tc-primary) 30%, transparent), transparent)",
+                }}
+              />
+            </div>
+
+            {status === "success" ? (
               <div
                 className="font-mono"
                 style={{
-                  fontSize: 9,
-                  color: "var(--tc-muted)",
-                  marginTop: 6,
-                }}
-              >
-                Closing in 3s...
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col" style={{ gap: 16 }}>
-              {/* Category */}
-              <div
-                style={{
-                  animation: open
-                    ? "ri-field-in 0.3s ease-out 0.05s both"
-                    : "none",
+                  fontSize: 12,
+                  color: "var(--tc-primary)",
+                  padding: "32px 0",
+                  textAlign: "center",
+                  animation: "ri-success-pop 0.3s ease-out both",
                 }}
               >
                 <div
-                  className="font-mono mb-1.5"
                   style={{
-                    fontSize: 9,
-                    color: "var(--tc-muted)",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    border: "2px solid var(--tc-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 12px",
                   }}
                 >
-                  <label htmlFor="report-category">Category</label>
+                  <span style={{ fontSize: 16 }}>&#10003;</span>
                 </div>
-                <select
-                  id="report-category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  disabled={isLoading}
-                  className="w-full font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                Thanks! We&apos;ll look into it.
+                <div
+                  className="font-mono"
                   style={{
-                    background:
-                      "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
-                    border: "1px solid var(--tc-border-interactive)",
-                    color: "var(--tc-text)",
                     fontSize: 12,
-                    padding: "8px 12px",
-                    borderRadius: 0,
-                    WebkitAppearance: "none",
-                    appearance: "none" as const,
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8a8a'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "right 12px center",
-                    cursor: "pointer",
-                  }}
-                >
-                  {CATEGORIES.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Description */}
-              <div
-                style={{
-                  animation: open
-                    ? "ri-field-in 0.3s ease-out 0.1s both"
-                    : "none",
-                }}
-              >
-                <div
-                  className="font-mono mb-1.5"
-                  style={{
-                    fontSize: 9,
                     color: "var(--tc-muted)",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
+                    marginTop: 6,
                   }}
                 >
-                  <label htmlFor="report-description">Description</label>
-                </div>
-                <textarea
-                  id="report-description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  disabled={isLoading}
-                  required
-                  minLength={10}
-                  maxLength={2000}
-                  placeholder="Describe the issue..."
-                  rows={4}
-                  className="w-full font-mono resize-y focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-                  style={{
-                    background:
-                      "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
-                    border: "1px solid var(--tc-border-interactive)",
-                    color: "var(--tc-text)",
-                    fontSize: 12,
-                    padding: "8px 12px",
-                  }}
-                />
-                <div
-                  className="font-mono text-right"
-                  style={{
-                    fontSize: 8,
-                    color:
-                      description.length > 1900
-                        ? "var(--tc-primary)"
-                        : "var(--tc-muted)",
-                    marginTop: 2,
-                  }}
-                >
-                  {description.length}/2000
+                  Closing in 3s...
                 </div>
               </div>
-
-              {/* Severity */}
-              <div
-                style={{
-                  animation: open
-                    ? "ri-field-in 0.3s ease-out 0.15s both"
-                    : "none",
-                }}
-              >
-                <div
-                  className="font-mono mb-1.5"
-                  style={{
-                    fontSize: 9,
-                    color: "var(--tc-muted)",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Severity
-                </div>
-                <div className="flex gap-1.5">
-                  {SEVERITIES.map((s) => {
-                    const selected = severity === s;
-                    return (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setSeverity(s)}
-                        disabled={isLoading}
-                        className="font-mono flex-1"
-                        style={{
-                          borderRadius: 999,
-                          border: `1px solid ${selected ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
-                          background: selected
-                            ? "color-mix(in srgb, var(--tc-primary) 10%, transparent)"
-                            : "transparent",
-                          color: selected
-                            ? "var(--tc-primary)"
-                            : "var(--tc-muted)",
-                          fontSize: 9,
-                          padding: "5px 0",
-                          cursor: "pointer",
-                          textTransform: "capitalize",
-                          letterSpacing: "0.05em",
-                          transition: "all 0.1s ease",
-                          boxShadow: selected
-                            ? "2px 2px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)"
-                            : "none",
-                        }}
-                      >
-                        {s}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Screenshot */}
-              <div
-                style={{
-                  animation: open
-                    ? "ri-field-in 0.3s ease-out 0.2s both"
-                    : "none",
-                }}
-              >
-                <div
-                  className="font-mono mb-1.5"
-                  style={{
-                    fontSize: 9,
-                    color: "var(--tc-muted)",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Screenshot
-                </div>
-                <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragging(true);
-                  }}
-                  onDragLeave={() => setDragging(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragging(false);
-                    handleFileChange(e.dataTransfer.files[0]);
-                  }}
-                  onClick={() => fileInputRef.current?.click()}
-                  className="font-mono text-center"
-                  style={{
-                    border: `1px dashed ${dragging ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
-                    background: dragging
-                      ? "color-mix(in srgb, var(--tc-primary) 5%, transparent)"
-                      : "transparent",
-                    padding: "14px 12px",
-                    cursor: "pointer",
-                    fontSize: 10,
-                    color: "var(--tc-muted)",
-                    transition: "all 0.15s ease",
-                    borderRadius: 2,
-                  }}
-                >
-                  {screenshot ? (
-                    <span style={{ color: "var(--tc-text)" }}>
-                      {screenshot.name}
-                    </span>
-                  ) : (
-                    <>
-                      <span style={{ opacity: 0.5 }}>+</span> Attach screenshot
-                      (optional)
-                    </>
-                  )}
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e.target.files?.[0])}
-                  disabled={isLoading}
-                  style={{ display: "none" }}
-                />
-                {screenshot && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setScreenshot(null);
-                    }}
-                    className="font-mono"
-                    style={{
-                      fontSize: 8,
-                      color: "var(--tc-muted)",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      marginTop: 4,
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    [remove]
-                  </button>
-                )}
-              </div>
-
-              {/* Email (anonymous only) */}
-              {isAuthenticated === false && (
+            ) : (
+              <div className="flex flex-col" style={{ gap: 16 }}>
+                {/* Category */}
                 <div
                   style={{
                     animation: open
-                      ? "ri-field-in 0.3s ease-out 0.25s both"
+                      ? "ri-field-in 0.3s ease-out 0.05s both"
                       : "none",
                   }}
                 >
                   <div
                     className="font-mono mb-1.5"
                     style={{
-                      fontSize: 9,
+                      fontSize: 12,
                       color: "var(--tc-muted)",
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",
                     }}
                   >
-                    <label htmlFor="report-email">Email (for follow-up)</label>
+                    <label htmlFor="report-category">Category</label>
                   </div>
-                  <input
-                    id="report-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                  <select
+                    id="report-category"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
                     disabled={isLoading}
-                    placeholder="your@email.com"
                     className="w-full font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                     style={{
                       background:
                         "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
                       border: "1px solid var(--tc-border-interactive)",
                       color: "var(--tc-text)",
+                      fontSize: 16,
+                      padding: "8px 12px",
+                      borderRadius: 0,
+                      WebkitAppearance: "none",
+                      appearance: "none" as const,
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8a8a'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 12px center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {CATEGORIES.map((c) => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Description */}
+                <div
+                  style={{
+                    animation: open
+                      ? "ri-field-in 0.3s ease-out 0.1s both"
+                      : "none",
+                  }}
+                >
+                  <div
+                    className="font-mono mb-1.5"
+                    style={{
                       fontSize: 12,
+                      color: "var(--tc-muted)",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    <label htmlFor="report-description">Description</label>
+                  </div>
+                  <textarea
+                    id="report-description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    disabled={isLoading}
+                    required
+                    minLength={10}
+                    maxLength={2000}
+                    placeholder="Describe the issue..."
+                    rows={4}
+                    className="w-full font-mono resize-y focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                    style={{
+                      background:
+                        "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
+                      border: "1px solid var(--tc-border-interactive)",
+                      color: "var(--tc-text)",
+                      fontSize: 16,
                       padding: "8px 12px",
                     }}
                   />
+                  <div
+                    className="font-mono text-right"
+                    style={{
+                      fontSize: 12,
+                      color:
+                        description.length > 1900
+                          ? "var(--tc-primary)"
+                          : "var(--tc-muted)",
+                      marginTop: 2,
+                    }}
+                  >
+                    {description.length}/2000
+                  </div>
                 </div>
-              )}
 
-              {/* Error */}
-              {status === "error" && errorMessage && (
+                {/* Severity */}
+                <div
+                  style={{
+                    animation: open
+                      ? "ri-field-in 0.3s ease-out 0.15s both"
+                      : "none",
+                  }}
+                >
+                  <div
+                    className="font-mono mb-1.5"
+                    style={{
+                      fontSize: 12,
+                      color: "var(--tc-muted)",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Severity
+                  </div>
+                  <div className="flex gap-1.5">
+                    {SEVERITIES.map((s) => {
+                      const selected = severity === s;
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => setSeverity(s)}
+                          disabled={isLoading}
+                          className="font-mono flex-1"
+                          style={{
+                            borderRadius: 999,
+                            border: `1px solid ${selected ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
+                            background: selected
+                              ? "color-mix(in srgb, var(--tc-primary) 10%, transparent)"
+                              : "transparent",
+                            color: selected
+                              ? "var(--tc-primary)"
+                              : "var(--tc-muted)",
+                            fontSize: 12,
+                            padding: "5px 0",
+                            cursor: "pointer",
+                            textTransform: "capitalize",
+                            letterSpacing: "0.05em",
+                            transition: "all 0.1s ease",
+                            boxShadow: selected
+                              ? "2px 2px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)"
+                              : "none",
+                          }}
+                        >
+                          {s}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Screenshot */}
+                <div
+                  style={{
+                    animation: open
+                      ? "ri-field-in 0.3s ease-out 0.2s both"
+                      : "none",
+                  }}
+                >
+                  <div
+                    className="font-mono mb-1.5"
+                    style={{
+                      fontSize: 12,
+                      color: "var(--tc-muted)",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Screenshot
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isLoading}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragging(true);
+                    }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragging(false);
+                      handleFileChange(e.dataTransfer.files[0]);
+                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="font-mono text-center w-full"
+                    style={{
+                      border: `1px dashed ${dragging ? "var(--tc-primary)" : "var(--tc-border-interactive)"}`,
+                      background: dragging
+                        ? "color-mix(in srgb, var(--tc-primary) 5%, transparent)"
+                        : "transparent",
+                      padding: "14px 12px",
+                      cursor: "pointer",
+                      fontSize: 12,
+                      color: "var(--tc-muted)",
+                      transition: "all 0.15s ease",
+                      borderRadius: 2,
+                    }}
+                  >
+                    {screenshot ? (
+                      <span style={{ color: "var(--tc-text)" }}>
+                        {screenshot.name}
+                      </span>
+                    ) : (
+                      <>
+                        <span style={{ opacity: 0.5 }}>+</span> Attach
+                        screenshot (optional)
+                      </>
+                    )}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    tabIndex={-1}
+                    data-focus-trap-ignore
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e.target.files?.[0])}
+                    disabled={isLoading}
+                    style={{ display: "none" }}
+                  />
+                  {screenshot && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setScreenshot(null);
+                      }}
+                      className="font-mono"
+                      style={{
+                        fontSize: 12,
+                        color: "var(--tc-muted)",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        marginTop: 4,
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      [remove]
+                    </button>
+                  )}
+                </div>
+
+                {/* Email (anonymous only) */}
+                {isAuthenticated === false && (
+                  <div
+                    style={{
+                      animation: open
+                        ? "ri-field-in 0.3s ease-out 0.25s both"
+                        : "none",
+                    }}
+                  >
+                    <div
+                      className="font-mono mb-1.5"
+                      style={{
+                        fontSize: 12,
+                        color: "var(--tc-muted)",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      <label htmlFor="report-email">
+                        Email (for follow-up)
+                      </label>
+                    </div>
+                    <input
+                      id="report-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
+                      placeholder="your@email.com"
+                      className="w-full font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                      style={{
+                        background:
+                          "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
+                        border: "1px solid var(--tc-border-interactive)",
+                        color: "var(--tc-text)",
+                        fontSize: 16,
+                        padding: "8px 12px",
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Error */}
+                {status === "error" && errorMessage && (
+                  <div
+                    className="font-mono"
+                    style={{
+                      fontSize: 12,
+                      color: "var(--tc-primary)",
+                      background:
+                        "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
+                      border:
+                        "1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)",
+                      padding: "8px 12px",
+                      borderRadius: 2,
+                      animation: "ri-shake 0.3s ease-out",
+                    }}
+                    role="alert"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
+
+                {/* Submit */}
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  onMouseEnter={() => setHovSubmit(true)}
+                  onMouseLeave={() => setHovSubmit(false)}
+                  disabled={isLoading || !description.trim()}
+                  className="font-mono font-bold disabled:opacity-40"
+                  style={{
+                    marginTop: 4,
+                    background: hovSubmit ? "transparent" : "var(--tc-primary)",
+                    color: hovSubmit
+                      ? "var(--tc-primary)"
+                      : "var(--tc-on-primary)",
+                    border: "1px solid var(--tc-primary)",
+                    fontSize: 12,
+                    padding: "10px 24px",
+                    cursor: "pointer",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    boxShadow: hovSubmit
+                      ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)`
+                      : "none",
+                    transform: hovSubmit ? "translate(-2px, -2px)" : "none",
+                    transition: "all 0.1s ease",
+                  }}
+                >
+                  {isLoading ? "Transmitting..." : "Submit Report"}
+                </button>
+
+                {/* Auto-context note */}
                 <div
                   className="font-mono"
                   style={{
-                    fontSize: 10,
-                    color: "var(--tc-primary)",
-                    background:
-                      "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
-                    border:
-                      "1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)",
-                    padding: "8px 12px",
-                    borderRadius: 2,
-                    animation: "ri-shake 0.3s ease-out",
+                    fontSize: 12,
+                    color: "var(--tc-muted)",
+                    letterSpacing: "0.05em",
+                    textAlign: "center",
                   }}
-                  role="alert"
                 >
-                  {errorMessage}
+                  page url + browser info captured automatically
                 </div>
-              )}
-
-              {/* Submit */}
-              <button
-                type="button"
-                onClick={handleSubmit}
-                onMouseEnter={() => setHovSubmit(true)}
-                onMouseLeave={() => setHovSubmit(false)}
-                disabled={isLoading || !description.trim()}
-                className="font-mono font-bold disabled:opacity-40"
-                style={{
-                  marginTop: 4,
-                  background: hovSubmit ? "transparent" : "var(--tc-primary)",
-                  color: hovSubmit
-                    ? "var(--tc-primary)"
-                    : "var(--tc-on-primary)",
-                  border: "1px solid var(--tc-primary)",
-                  fontSize: 10,
-                  padding: "10px 24px",
-                  cursor: "pointer",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  boxShadow: hovSubmit
-                    ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)`
-                    : "none",
-                  transform: hovSubmit ? "translate(-2px, -2px)" : "none",
-                  transition: "all 0.1s ease",
-                }}
-              >
-                {isLoading ? "Transmitting..." : "Submit Report"}
-              </button>
-
-              {/* Auto-context note */}
-              <div
-                className="font-mono"
-                style={{
-                  fontSize: 8,
-                  color: "var(--tc-muted)",
-                  letterSpacing: "0.05em",
-                  textAlign: "center",
-                }}
-              >
-                page url + browser info captured automatically
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      </FocusTrap>
     </div>
   );
 }

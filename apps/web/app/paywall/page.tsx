@@ -137,6 +137,9 @@ export default function PaywallPage() {
               what&rsquo;s included at each tier
             </p>
             <div
+              tabIndex={0}
+              role="region"
+              aria-label="Plan comparison"
               className="overflow-x-auto border border-border rounded-none"
               data-testid="comparison-table"
             >

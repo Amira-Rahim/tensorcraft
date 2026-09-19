@@ -51,6 +51,10 @@ const RGB_LIGHT: [number, number, number] = [200, 210, 220];
 
 describe("SceneCanvas reduced-motion static frame", () => {
   beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+      width: 600,
+      height: 400,
+    } as DOMRect);
     mockMatchMedia(true); // prefers-reduced-motion: reduce → static-frame path
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,6 +90,18 @@ describe("SceneCanvas reduced-motion static frame", () => {
     const canvas = container.querySelector("canvas");
     expect(canvas).not.toBeNull();
     expect(canvas?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("skips a hidden canvas and draws when its parent becomes visible", () => {
+    const size = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect");
+    size.mockReturnValue({ width: 0, height: 0 } as DOMRect);
+    const draw = vi.fn();
+    render(<SceneCanvas draw={draw} rgb={RGB} />);
+    expect(draw).not.toHaveBeenCalled();
+    size.mockReturnValue({ width: 600, height: 400 } as DOMRect);
+    window.dispatchEvent(new Event("resize"));
+    expect(draw).toHaveBeenCalled();
+    expect(draw.mock.calls.at(-1)?.slice(1, 3)).toEqual([600, 400]);
   });
 
   it("draws once at mount with the dark rgb + scheme", async () => {

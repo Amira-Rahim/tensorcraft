@@ -16,7 +16,7 @@ export const tensorcraftTheme: ThemeRegistration = {
     // Editor chrome
     "editor.background": "#161616",
     "editor.foreground": "#E0E0E0",
-    "editorLineNumber.foreground": "#3A3A3A",
+    "editorLineNumber.foreground": "#959595",
     "editorLineNumber.activeForeground": "#6BAA8A",
     "editor.selectionBackground": "#6BAA8A30",
     "editor.lineHighlightBackground": "#1E1E1E",

@@ -1,80 +1,53 @@
 interface LessonShellProps {
   left: React.ReactNode;
   right: React.ReactNode;
-  rightKind: "rail" | "pane" | "none";
+  rightKind: "rail" | "pane" | "code" | "none";
   chrome?: React.ReactNode;
-  /**
-   * "pane" only: show the pane below lg. The caller's mobile toggle drives
-   * this instead of mounting its own second copy of the pane.
-   */
+  controls?: React.ReactNode;
+  footer?: React.ReactNode;
   paneOpenOnMobile?: boolean;
 }
 
-/**
- * Presentational two-column shell for the lesson reader.
- *
- * - rightKind="none"  -> single centered column (900px cap, current reading width)
- * - rightKind="rail"  -> lg+ two columns: flexible prose | fixed 360px sidebar
- * - rightKind="pane"  -> lg+ two columns: 1fr prose | 1fr interactive pane
- *
- * Below lg, "rail" collapses to a single column and stacks below the prose.
- *
- * "pane" is SINGLE-MOUNT by contract (fresh-eyes rerun §6 / R3-7): this slot
- * is the ONLY place the pane renders, at every width. The first fix for the
- * mobile double-mount hid this slot below lg while the caller mounted its
- * own copy behind a toggle - which was CSS-only: two live Sandpack editors
- * still mounted at every viewport, racing one `tc-code-{slug}` key, showing
- * a stale buffer after a rotate across lg, and doubling CPU on the graded
- * path. Now the caller passes `paneOpenOnMobile` and the same single
- * instance toggles visibility - React keeps it mounted through the toggle,
- * so editor state survives open/close and orientation changes.
- *
- * The chrome slot (progress bar, nav) renders above the grid when provided.
- */
+/** One mounted editor at every width. Code examples use the full column;
+ * challenges keep notes beside the editor on desktop and switch views on mobile. */
 export function LessonShell({
   left,
   right,
   rightKind,
   chrome,
+  controls,
+  footer,
   paneOpenOnMobile = false,
 }: LessonShellProps) {
-  const isSingleColumn = rightKind === "none";
-
-  if (isSingleColumn) {
-    return (
-      <div className="flex flex-col">
-        {chrome && <div>{chrome}</div>}
-        <div className="mx-auto w-full max-w-[900px] px-6 md:px-12">{left}</div>
-      </div>
-    );
-  }
-
-  const gridCols =
-    rightKind === "rail"
-      ? "grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px]"
-      : "grid-cols-1 lg:grid-cols-2";
-
-  // Pane visibility below lg follows the caller's toggle; lg+ always shows.
-  // The border is a desktop column divider only.
-  const rightClasses =
-    rightKind === "pane"
-      ? `lg:border-l border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block`
-      : "border-l border-border";
-
+  const single = rightKind === "none";
+  const code = rightKind === "code";
+  const pane = rightKind === "pane";
   return (
     <div className="flex flex-col">
-      {chrome && <div>{chrome}</div>}
-      <div className={`mx-auto w-full max-w-[1200px] px-6 md:px-12`}>
-        <div className={`grid ${gridCols} gap-8`}>
-          <div className="max-w-[68ch]">{left}</div>
+      {chrome}
+      <div
+        className={`mx-auto w-full px-5 sm:px-6 md:px-10 ${single ? "max-w-[900px]" : code ? "max-w-[1100px]" : "max-w-[1280px]"}`}
+      >
+        {controls}
+        <div
+          className={`grid gap-8 ${rightKind === "rail" ? "lg:grid-cols-[minmax(0,1fr)_320px]" : pane ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]" : "grid-cols-1"}`}
+        >
           <div
-            data-testid="lesson-right"
-            data-kind={rightKind}
-            className={rightClasses}
+            className={`min-w-0 ${code ? "" : "max-w-[68ch]"} ${pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
           >
-            {right}
+            {left}
           </div>
+          {!single && (
+            <div
+              data-testid="lesson-right"
+              data-kind={rightKind}
+              className={`min-w-0 ${pane ? `lg:border-l lg:pl-6 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : rightKind === "rail" ? "border-t pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0 border-border" : ""}`}
+            >
+              {right}
+            </div>
+          )}
         </div>
+        {footer}
       </div>
     </div>
   );

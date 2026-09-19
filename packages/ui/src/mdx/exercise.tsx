@@ -207,7 +207,7 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
       surface3: "#313131",
       clickable: "#A0A0A0",
       base: "#E0E0E0",
-      disabled: "#3a3a3a",
+      disabled: "#969696",
       hover: "#6BAA8A",
       accent: "#6BAA8A",
       error: "#F87171",
@@ -246,7 +246,7 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
       surface3: "#EDEDE8",
       clickable: "#555555",
       base: "#2E2E2E",
-      disabled: "#C0C0BC",
+      disabled: "#73736F",
       hover: "#3B6550",
       accent: "#3B6550",
       error: "#C22F2F",
@@ -852,7 +852,7 @@ export function Exercise({
 
   return (
     <div
-      className={`p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
+      className={`[&_.cm-lineNumbers]:text-xs! p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
         allPassed ? "border-success/30" : "border-border"
       }`}
     >

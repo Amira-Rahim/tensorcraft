@@ -191,8 +191,6 @@ export function LessonContent({
   hideStoryZone,
   showPostRecap,
 }: LessonContentProps) {
-  const { activeTerm, setActiveTerm } = useGlossary();
-
   // Map canonical term -> entry, for the span override to look up definitions.
   // Memoized on the (stable) glossaryTerms array so the components map below
   // does not rebuild (and remount the MDX subtree) every render.
@@ -336,6 +334,9 @@ export function LessonContent({
         >
           {children}
         </h2>
+      ),
+      pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
+        <pre {...props} tabIndex={0} role="region" aria-label="Code example" />
       ),
       Concept: wrapVisibility("Concept", Concept),
       Dialogue: (props: React.ComponentProps<typeof Dialogue>) => {
@@ -498,11 +499,12 @@ export function LessonContent({
     // <span data-glossary-term="...">) into interactive GlossaryTerm chips
     // linked to the shared rail via the glossary context. Plain spans pass
     // through untouched.
-    base.span = (
+    base.span = function GlossarySpan(
       props: React.HTMLAttributes<HTMLSpanElement> & {
         "data-glossary-term"?: string;
       },
-    ) => {
+    ) {
+      const { activeTerm, setActiveTerm } = useGlossary();
       const term = props["data-glossary-term"];
       if (!term) return <span {...props} />;
       const entry = glossaryByTerm.get(term);
@@ -539,8 +541,6 @@ export function LessonContent({
     onExerciseComplete,
     lesson.concept.bridge,
     glossaryByTerm,
-    activeTerm,
-    setActiveTerm,
   ]);
 
   const Content = useMemo(() => {

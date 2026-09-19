@@ -2,8 +2,6 @@ slug: mse-loss
 lessonSlug: loss-functions
 title: "Two Losses, and Cross-Entropy's Two Forms"
 instructions: |
-  **Contract revision 2026-09-17:** pickBceForm now takes an output kind (probabilities or logits), not an activation name. Update that argument in saved code.
-
   Implement three functions. mseLoss(labels, predictions) returns a scalar mean squared error tensor using tf.losses.meanSquaredError. bceLoss(labels, logits) returns scalar binary cross-entropy using tf.losses.sigmoidCrossEntropy, which applies sigmoid to raw logits itself.
 
   pickBceForm(outputKind) chooses a BCE form after the task has already established that binary cross-entropy is appropriate. For 'probabilities', return 'binaryCrossentropy'. For 'logits', return 'sigmoidCrossEntropy'. Throw for any other or missing value.
