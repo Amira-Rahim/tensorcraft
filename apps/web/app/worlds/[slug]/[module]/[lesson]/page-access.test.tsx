@@ -74,16 +74,25 @@ beforeEach(() => {
   });
 });
 
-it("opens a paid lesson on its scene with incomplete prerequisites, without marking any lesson complete", async () => {
+it("holds a paid lesson behind the previous module while that module is incomplete", async () => {
+  // Owner ruling 2026-09-20: sequential module unlock stays. P2 had made
+  // prerequisites advisory for purchasers; that removal does not stand.
+  const page = await LessonPage({ params: Promise.resolve(paid) });
+  expect(findSteps(page)).toBeUndefined();
+  expect(textOf(page)).toContain("Complete the previous module first");
+  expect(textOf(page)).toContain("Go to previous module");
+  expect(mocks.purchase).toHaveBeenCalledWith("alice", "deep-orbit");
+});
+
+it("opens a paid lesson on its scene once the previous module is complete, without marking any lesson complete", async () => {
+  mocks.completed.mockResolvedValue(true);
   const page = await LessonPage({ params: Promise.resolve(paid) });
   const steps = findSteps(page)!;
   // The saved challenge route used to enter at step 3, so a learner who
   // picked it never saw a Briefing on any lesson (owner, 2026-09-20).
   expect(steps.entryStep).toBe(0);
   expect(
-    (steps.lessons as { locked: boolean; completed: boolean }[]).every(
-      (l) => !l.locked && !l.completed,
-    ),
+    (steps.lessons as { completed: boolean }[]).every((l) => !l.completed),
   ).toBe(true);
   expect(mocks.purchase).toHaveBeenCalledWith("alice", "deep-orbit");
 });
@@ -105,6 +114,7 @@ it.each([null, { id: "alice" }])(
 );
 
 it("allows explicit conceptual review over the saved challenge recommendation", async () => {
+  mocks.completed.mockResolvedValue(true);
   const page = await LessonPage({
     params: Promise.resolve(paid),
     searchParams: Promise.resolve({ start: "concept" }),
@@ -128,6 +138,7 @@ it("keeps the first experiment free with a guided fallback when preferences are 
 });
 
 it("still honors an explicit challenge link for a learner on that route", async () => {
+  mocks.completed.mockResolvedValue(true);
   const page = await LessonPage({
     params: Promise.resolve(paid),
     searchParams: Promise.resolve({ start: "challenge" }),
@@ -136,6 +147,7 @@ it("still honors an explicit challenge link for a learner on that route", async 
 });
 
 it("keeps course preferences off the lesson page", async () => {
+  mocks.completed.mockResolvedValue(true);
   const rendered = textOf(await LessonPage({ params: Promise.resolve(paid) }));
   expect(rendered).not.toContain("LearningRoutePicker");
   expect(rendered).not.toContain("Course route and prerequisites");
@@ -143,11 +155,12 @@ it("keeps course preferences off the lesson page", async () => {
 });
 
 it("gives a module opener catch-up and hands it to the reader, not the page", async () => {
+  mocks.completed.mockResolvedValue(true);
   const page = await LessonPage({ params: Promise.resolve(paid) });
   expect(findSteps(page)!.moduleEntry).toEqual({
     moduleSlug: "browser-runtimes",
     previousModule: "training-loop",
-    previousComplete: false,
+    previousComplete: true,
   });
   // It belongs to the Briefing, so the page itself must not render it.
   expect(textOf(page)).not.toContain("Where the investigation stands");
@@ -165,6 +178,7 @@ it.each([
     "a mid-module lesson follows the one before it",
   ],
 ])("carries no catch-up on %s/%s, because %s", async (module, lesson) => {
+  mocks.completed.mockResolvedValue(true);
   const page = await LessonPage({
     params: Promise.resolve({ slug: "deep-orbit", module, lesson }),
   });

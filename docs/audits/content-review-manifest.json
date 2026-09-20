@@ -14430,30 +14430,6 @@
       ]
     },
     {
-      "path": "apps/web/app/components/next-learning-theme.tsx",
-      "kind": "reviewed_teaching_integration",
-      "sourceSha256": "78181a0449b1a65faf4ceb472af8d795443262ddce5d8385782be9020806d333",
-      "status": "reviewed_locally_with_limits",
-      "evidence": [
-        "docs/audits/learning-product-experience-2026-09-19.md",
-        "docs/audits/learning-product-continuation-2026-09-19.md",
-        "docs/audits/learning-product-release-2026-09-19.md"
-      ],
-      "limitations": "P7-P9 source/behavior and relevant numerical/browser verification. Native screen-reader and human outcome evidence are not supplied.",
-      "focusedReviews": [
-        {
-          "date": "2026-09-19",
-          "surface": "P7-P9 integration changes, reflow, recovery, tests or formatting",
-          "evidence": [
-            "docs/audits/learning-product-experience-2026-09-19.md",
-            "docs/audits/learning-product-continuation-2026-09-19.md",
-            "docs/audits/learning-product-release-2026-09-19.md"
-          ],
-          "limitations": "Relevant source/behavior reviewed with final gate results. Not independent learner or native screen-reader evidence."
-        }
-      ]
-    },
-    {
       "path": "apps/web/lib/vision-preview.ts",
       "kind": "reviewed_teaching_integration",
       "sourceSha256": "2aea02c164fcb28f1ff21bebfed2e491f717ca6bd680041431eef4ee06732bb7",

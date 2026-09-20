@@ -15,7 +15,7 @@ export function WorldLearningPreview({ worldSlug }: { worldSlug: WorldSlug }) {
       className="relative z-10 max-w-[1120px] mx-auto px-6 md:px-12 py-12 space-y-6"
       aria-label="Learning scope and availability"
     >
-      <h2 className="text-2xl font-bold">What this theme adds</h2>
+      <h2 className="text-2xl font-bold">What this world adds</h2>
       <p className="font-mono text-xs uppercase text-primary">
         {release.status === "preview"
           ? "Sample available · full course forthcoming"
@@ -52,7 +52,7 @@ export function WorldLearningPreview({ worldSlug }: { worldSlug: WorldSlug }) {
       ) : (
         <p className="text-sm text-text-muted">
           The full curriculum is being reviewed. This page describes its
-          intended scope; no lessons or checkout are available for this theme
+          intended scope; no lessons or checkout are available for this world
           yet.
         </p>
       )}

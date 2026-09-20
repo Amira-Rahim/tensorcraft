@@ -17,53 +17,38 @@ for (const [width, colorScheme] of [
     );
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
-    const picker = page.getByRole("region", {
-      name: "Choose your way through Deep Orbit",
-    });
-    // The preferences disclosure ships closed and does not remember its
-    // state, so every navigation and reload has to reopen it.
-    const openPreferences = async () => {
-      await expect(picker).toBeHidden();
-      await page
-        .locator("summary", { hasText: "Course preferences and project brief" })
-        .click();
-      await expect(picker).toBeVisible();
-    };
+    // Prospects never see the route picker or readiness check, even
+    // collapsed (owner, 2026-09-20); the project brief still closes the page.
     await page.goto("/worlds/deep-orbit");
-    await openPreferences();
+    await expect(
+      page.getByRole("region", { name: "Choose your way through Deep Orbit" }),
+    ).toHaveCount(0);
+    await expect(page.getByText("Course preferences")).toHaveCount(0);
+    await page.locator("summary", { hasText: "Project brief" }).click();
     const preview = page.getByRole("region", {
       name: "Take the work outside the course",
     });
+    await expect(preview).toBeVisible();
     await expect(preview).toContainText("Maintainer demonstration");
     await expect(preview).toContainText("0.656");
-    await picker.screenshot({
-      path: testInfo.outputPath(`route-${width}.png`),
-    });
     await preview.screenshot({
       path: testInfo.outputPath(`project-${width}.png`),
     });
     const a11y = await new AxeBuilder({ page })
-      .include(".learning-route-picker")
       .include('[aria-labelledby="course-project-preview-title"]')
       .analyze();
     expect(a11y.violations).toEqual([]);
-    await picker.getByRole("button", { name: /I know the basics/ }).click();
-    await page.reload();
-    await openPreferences();
-    await expect(
-      picker.getByRole("button", { name: /I know the basics/ }),
-    ).toHaveAttribute("aria-pressed", "true");
-    await picker
-      .getByRole("link", { name: "Open the runtime challenge" })
-      .click();
+    // A paid challenge link still lands a guest on the price, not the lesson.
+    await page.goto(
+      "/worlds/deep-orbit/browser-runtimes/why-the-browser?start=challenge",
+    );
     await expect(page).toHaveURL(
       /\/pricing\?locked=deep-orbit&module=browser-runtimes/,
     );
-    await page.goto("/worlds/deep-orbit");
-    await openPreferences();
-    await picker
-      .getByRole("link", { name: "Try the free channel experiment" })
-      .click();
+    // The free experiment is reachable directly from the first module.
+    await page.goto(
+      "/worlds/deep-orbit/foundations/tensor-shapes?start=experiment",
+    );
     const experiment = page.getByTestId("channel-layout-experiment");
     await expect(experiment).toBeVisible();
     await expect(
@@ -126,7 +111,7 @@ for (const [width, colorScheme] of [
       body: JSON.stringify({
         durationMs: Date.now() - started,
         includes:
-          "navigation, wrong prediction, transforms, changed packet, paywall and code reference",
+          "navigation, project brief, guest paywall, wrong prediction, transforms, changed packet and code reference",
         excludes: "human reading and thinking time; this is not learner timing",
       }),
       contentType: "application/json",

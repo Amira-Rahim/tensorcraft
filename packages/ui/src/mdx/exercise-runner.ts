@@ -1208,6 +1208,34 @@ const WORKER_BODY = `
     listen = function(cb) { addEventListener('message', function(e) { cb(e.data); }); };
   }
 
+  // Backend pin for the browser worker (2026-09-20). Left to itself, tfjs
+  // picks WebGL inside a Chromium worker (OffscreenCanvas is available), and
+  // on a machine without a GPU, CI runners included, that WebGL is
+  // SwiftShader, a software rasterizer that turns each of a training loop's
+  // small kernels into a slow round trip. build-autoencoder (400 epochs),
+  // training-loop-exercise (up to 500) and simple-network (50) blew the
+  // 30-second execution budget on every CI push that way. The models in
+  // this course are small enough that the cpu backend wins on per-op
+  // overhead, and it is the backend the graded reference (the Node branch
+  // below, exercise-runner-node.ts) already runs on, so the learner's
+  // numbers now come from the same arithmetic as the grader's. Guarded: a
+  // rejected or refused setBackend leaves tfjs's own choice in place, and
+  // tf.ready() is awaited either way so backend start-up is charged to the
+  // load phase rather than to the learner's budget. Nothing here can reject.
+  function pinCpuBackend() {
+    var tf = globalThis.tf;
+    if (!tf || typeof tf.setBackend !== 'function') return Promise.resolve();
+    var pinned;
+    try {
+      pinned = Promise.resolve(tf.setBackend('cpu'));
+    } catch (e) {
+      pinned = Promise.resolve(false);
+    }
+    return pinned.then(function() {}, function() {}).then(function() {
+      return typeof tf.ready === 'function' ? tf.ready() : undefined;
+    }).then(function() {}, function() {});
+  }
+
   // Load real @tensorflow/tfjs into global scope as 'tf'.
   var tfReady;
   if (isNode) {
@@ -1224,11 +1252,11 @@ const WORKER_BODY = `
       // Blob workers inherit the page origin, so self.location.origin
       // resolves to the app host.
       importScripts(self.location.origin + '/vendor/tfjs-4.22.0.min.js');
-      tfReady = Promise.resolve();
+      tfReady = pinCpuBackend();
     } catch (eLocal) {
       try {
         importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
-        tfReady = Promise.resolve();
+        tfReady = pinCpuBackend();
       } catch (e) {
         tfReady = Promise.reject(new Error('Failed to importScripts TFJS in worker (local: ' + eLocal.message + '; cdn: ' + e.message + ')'));
       }
@@ -1290,7 +1318,25 @@ const WORKER_BODY = `
         if (c) c['model.predict'] = (c['model.predict'] || 0) + 1;
         return realPredict.apply(this, arguments);
       };
-      tf.LayersModel.prototype.fit = fitRecorder.wrap(tf.LayersModel.prototype.fit);
+      // The host terminates a worker whose budget ran out and cannot look
+      // inside it first, so the worker tells the host when a recorded fit
+      // starts and when the last one in flight settles. The host reads that
+      // flag only at the deadline, to name a training loop that did not
+      // finish instead of printing the generic timeout (2026-09-20). The
+      // wrapper passes the recorder's own promise value through, so the
+      // history a learner awaits is the same object tf.__fits holds.
+      var recordedFit = fitRecorder.wrap(tf.LayersModel.prototype.fit);
+      tf.LayersModel.prototype.fit = function() {
+        var pending = recordedFit.apply(this, arguments);
+        if (++fitsInFlight === 1) post({ fit: true });
+        function settled() {
+          if (fitsInFlight > 0 && --fitsInFlight === 0) post({ fit: false });
+        }
+        return pending.then(
+          function(history) { settled(); return history; },
+          function(error) { settled(); throw error; }
+        );
+      };
       tf.LayersModel.prototype.__tcSpied = true;
     }
     // Lock the spied methods and the read path after the spy has wrapped
@@ -1500,6 +1546,9 @@ const WORKER_BODY = `
   }
 
   var logs = [];
+  // Recorded fits still running in this run; see the fit wrapper in
+  // applyShims and the { fit } reply it posts.
+  var fitsInFlight = 0;
   function stringifyArg(a) {
     if (typeof a === 'string') return a;
     try { return JSON.stringify(a); } catch (e) { return String(a); }
@@ -1536,6 +1585,7 @@ const WORKER_BODY = `
         var calls = Object.create(null);
         globalThis.__tcCalls = calls;
         if (fitRecorder) fitRecorder.reset();
+        fitsInFlight = 0;
         var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, dot: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
         var NESTED = { layers: 1, io: 1, train: 1, losses: 1 };
         function bump(name) { calls[name] = (calls[name] || 0) + 1; }
@@ -1594,7 +1644,12 @@ type WorkerReply =
   // no results: it exists so the host can start the execution timeout at the
   // point execution actually becomes possible, rather than charging a ~1.4 MB
   // download to the learner's 10-second budget.
-  | { ready: true };
+  | { ready: true }
+  // Training signal: true when the first recorded model.fit of the run
+  // starts, false once the last fit in flight has settled. Carries no
+  // results either: the host reads it only when the execution budget
+  // expires, to word the timeout (see startTimer).
+  | { fit: boolean };
 
 /**
  * Budget for loading the runtime, separate from the per-run execution budget.
@@ -1678,6 +1733,9 @@ export async function parseAndRunTestsWith(
 
   return await new Promise<TestRunOutcome>((resolve) => {
     let settled = false;
+    // Set by the worker's { fit } signals: a recorded model.fit is still
+    // running. Only the timeout wording reads it.
+    let trainingInFlight = false;
     const finish = (outcome: TestRunOutcome) => {
       if (settled) return;
       settled = true;
@@ -1702,12 +1760,18 @@ export async function parseAndRunTestsWith(
     const startTimer = () => {
       if (timer !== undefined || settled) return;
       timer = setTimeout(() => {
+        const seconds = Math.round(timeoutMs / 1000);
         finish({
           results: [
             {
               name: "Code execution",
               passed: false,
-              error: `Timed out after ${Math.round(timeoutMs / 1000)} seconds`,
+              // A fit that outlives the budget is the usual cause on the
+              // training exercises, and "timed out" alone sent learners
+              // hunting for a hang in code that was only slow.
+              error: trainingInFlight
+                ? `Training did not finish within the ${seconds}-second budget. Use fewer epochs or a larger batch size, then run again.`
+                : `Timed out after ${seconds} seconds`,
             },
           ],
           logs: [],
@@ -1740,6 +1804,10 @@ export async function parseAndRunTestsWith(
       if ("ready" in reply) {
         clearTimeout(loadTimer);
         startTimer();
+        return;
+      }
+      if ("fit" in reply) {
+        trainingInFlight = reply.fit;
         return;
       }
       // A result arriving without a prior ready signal (older worker, or a

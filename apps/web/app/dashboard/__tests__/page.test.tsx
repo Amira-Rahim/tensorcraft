@@ -124,7 +124,10 @@ describe("dashboard/page (server component)", () => {
     resetTableData();
   });
 
-  it("puts continuation on the later dashboard only after the finale completion record", async () => {
+  it("never renders a continuation section, even after the finale completion record", async () => {
+    // Owner ruling 2026-09-20: only Deep Orbit for now. A forthcoming-course
+    // teaser on the dashboard was the "no future product plans" violation
+    // the 2026-09-19 audit flagged; the coming-soon pages stay the one exception.
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1", email: "x@example.com" } },
       error: null,
@@ -141,7 +144,7 @@ describe("dashboard/page (server component)", () => {
     const { default: DashboardPage } = await import("../page");
     expect(
       getDashboardViewProps(await DashboardPage())?.continuation,
-    ).toBeTruthy();
+    ).toBeUndefined();
     tableData.world_progress = [
       {
         world_id: "deep-orbit",
@@ -153,7 +156,7 @@ describe("dashboard/page (server component)", () => {
     ];
     expect(
       getDashboardViewProps(await DashboardPage())?.continuation,
-    ).toBeNull();
+    ).toBeUndefined();
   });
 
   it("redirects unauthenticated users to /auth", async () => {

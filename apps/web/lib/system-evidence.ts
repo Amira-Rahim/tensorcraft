@@ -92,6 +92,7 @@ export function buildSystemEvidence({
   activities,
   reviews,
   now,
+  entitled = true,
 }: {
   lessons: EvidenceLesson[];
   attempts: EvidenceAttempt[];
@@ -99,10 +100,24 @@ export function buildSystemEvidence({
   activities: ActivitySummary[];
   reviews: EvidenceReview[];
   now: Date;
+  /** Deep Orbit access. Without it, links into paid modules go to pricing. */
+  entitled?: boolean;
 }): SystemEvidenceStage[] {
   const lessonMap = new Map(lessons.map((l) => [l.slug, l]));
   const link = (l: EvidenceLesson, phase = "challenge") =>
     `/worlds/deep-orbit/${l.moduleId}/${l.slug}?start=${phase}`;
+  // A free learner used to be sent into four paid modules and bounced to the
+  // paywall from here (audit 2026-09-20). Say where the link goes instead.
+  const gate = (item: SystemEvidenceItem): SystemEvidenceItem => {
+    if (entitled) return item;
+    const paid = /^\/worlds\/deep-orbit\/([a-z-]+)\//.exec(item.href);
+    if (!paid || paid[1] === "foundations") return item;
+    return {
+      ...item,
+      href: `/pricing?locked=deep-orbit&module=${paid[1]}`,
+      detail: "This module is part of Deep Orbit access.",
+    };
+  };
   return stageDetails.map(([id, title, purpose, defaultLesson]) => {
     const work: SystemEvidenceItem[] = [];
     for (const row of activities) {
@@ -183,8 +198,8 @@ export function buildSystemEvidence({
       id,
       title,
       purpose,
-      work: work.slice(0, 10),
-      due,
+      work: work.slice(0, 10).map(gate),
+      due: due.map(gate),
       completedLessons: progress.filter(
         (r) =>
           r.world_id === "deep-orbit" &&
@@ -192,7 +207,7 @@ export function buildSystemEvidence({
           lessonMap.has(r.lesson_id) &&
           stageFor(lessonMap.get(r.lesson_id)!) === id,
       ).length,
-      next,
+      next: gate(next),
     };
   });
 }

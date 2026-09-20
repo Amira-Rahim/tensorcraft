@@ -136,6 +136,21 @@ async function renderForm(
 // ---------------------------------------------------------------------------
 
 describe("SettingsForm", () => {
+  it("shows the GitHub connection error the API redirected back with", async () => {
+    await renderForm({
+      initialGithubError:
+        "GitHub connection was cancelled. Connect again when you are ready.",
+    });
+    // The GitHub tab opens by itself so the message is on screen.
+    expect(screen.getByRole("tab", { name: "GitHub" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.getByTestId("github-error")).toHaveTextContent(
+      "GitHub connection was cancelled.",
+    );
+  });
+
   it("moves selection and focus with horizontal arrows and Home/End", async () => {
     await renderForm();
     const profile = screen.getByRole("tab", { name: "Profile" });

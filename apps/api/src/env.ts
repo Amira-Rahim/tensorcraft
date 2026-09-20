@@ -41,6 +41,9 @@ export const PROD_REQUIRED = [
   // production deploy should start in.
   "UPSTASH_REDIS_REST_URL",
   "UPSTASH_REDIS_REST_TOKEN",
+  // The GitHub OAuth callback stores the rotating token pair encrypted and
+  // fails closed (503) without it; renewing an expired pair is off too.
+  "GITHUB_TOKEN_ENC_KEY",
 ] as const;
 
 const WARN_IF_UNSET: ReadonlyArray<{ name: string; consequence: string }> = [

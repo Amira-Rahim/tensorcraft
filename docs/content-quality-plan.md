@@ -1,4 +1,4 @@
-# Content quality plan: a $70 course
+# Content quality plan: a $50 course built to a $70 standard
 
 Date: 2026-09-17. Status: approved; implementation in progress.
 
@@ -8,7 +8,8 @@ It covers the opening experience, concept experiments, experienced-learner
 route, system evidence, character development, instructional design, and
 later value/growth validation. The [September 19 release record](audits/learning-product-release-2026-09-19.md)
 now records its implementation, internal content A, deployment and production
-checks. Actual screen-reader verification remains open. Earlier reviews below
+checks. The screen-reader walkthrough is deferred by owner decision
+(2026-09-20). Earlier reviews below
 remain historical evidence; independent learning, value and growth results
 are still required separately.
 

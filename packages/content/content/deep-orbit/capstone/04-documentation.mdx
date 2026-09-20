@@ -283,7 +283,7 @@ The runbook's first draft comes together in the dead hours of the night watch, a
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-Demir adds a calibration record: in this fictional run, 180 calm windows of 100 samples produce a 99th-percentile score of 0.5. That is a starting cutoff, with little evidence about the tail; he schedules a check on a separate period and records the false-alert cost. The runbook now says to inspect calibration and preprocessing, review recent labeled cases, and evaluate any replacement before release. ARIA accepts the named checks and the escalation owner. The pulse interval reads 31.6 seconds when Demir signs the handover. Tomorrow they deploy.
+Demir adds a calibration record: 180 calm windows of 100 samples produce a 99th-percentile score of 0.5. That is a starting cutoff, with little evidence about the tail; he schedules a check on a separate period and records the false-alert cost. The runbook now says to inspect calibration and preprocessing, review recent labeled cases, and evaluate any replacement before release. ARIA accepts the named checks and the escalation owner. The pulse interval reads 31.6 seconds when Demir signs the handover. Tomorrow they deploy.
 
 <StoryConsequence
   beatId="deep-orbit-drift-response"
@@ -296,5 +296,7 @@ Demir adds a calibration record: in this fictional run, 180 calm windows of 100 
   "dominant": "Demir closes the paired run at the 20-minute limit. Active-model P95 stayed within the 200 ms rehearsal budget; the result log names both artifacts and their disagreements. The runbook assigns the next watch the instrument check and label review. The saved candidate stays shadow-only: disagreement counts do not identify the better model."
 }}
 />
+
+*Mission scene: the calibration figures above are story values, not measurements.*
 
 </Epilogue>

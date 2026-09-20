@@ -11,6 +11,11 @@ const configDir = path.dirname(fileURLToPath(import.meta.url));
 const velitePath = path.resolve(configDir, "../../packages/content/.velite");
 
 const nextConfig: NextConfig = {
+  // Next 16 rewrites apps/web/AGENTS.md on every `next dev` start under an
+  // agent, and its managed block carries the em dash the repo bans, so the
+  // file dirtied the tree and failed the gate after normal work
+  // (audit 2026-09-20). Agents read node_modules/next/dist/docs directly.
+  agentRules: false,
   transpilePackages: [
     "@tensorcraft/ui",
     "@tensorcraft/worlds",

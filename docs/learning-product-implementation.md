@@ -4,8 +4,18 @@ Approved 2026-09-19. Baseline: `80a3f029`. Implements the [development plan](lea
 
 Release status: deployed and production-smoke verified on 2026-09-19. The
 [final release record](audits/learning-product-release-2026-09-19.md) carries
-all twelve dispositions, internal scores and evidence. Actual screen-reader
-operation remains open, so P7 and final P9 acceptance are not complete.
+all twelve dispositions, internal scores and evidence. The screen-reader
+walkthrough is deferred by owner decision (2026-09-20), so P7 and final P9
+acceptance stay provisional.
+
+Owner rulings of 2026-09-20, after an independent review of this release:
+sequential module unlock is restored for purchasers (P2's advisory
+prerequisites do not stand); the route picker and readiness check render for
+purchasers only, never for prospects; the dashboard continuation section is
+removed (only Deep Orbit for now; the Neon sample stays on its coming-soon
+page); the capstone project files stay public and linked from the free
+lesson; price wording is $50 everywhere, with $70 an internal standard only;
+screen-reader work is paused.
 
 ## Contracts established in P0
 
@@ -25,13 +35,13 @@ operation remains open, so P7 and final P9 acceptance are not complete.
 | --- | --- | --- | --- |
 | P0 | All, especially F12 | Complete | Baseline and contracts above; traceability and verification requirements below |
 | P1 | F02/F03/F10 | Complete; deployed | Numerical transforms; prediction and changed packet; assistance and persistence; Concept integration; actual production public flows pass. |
-| P2 | F01/F02/F04 | Complete; deployed | First-session revision/timing; honest offer/project preview; reversible ML routes; readiness check; prerequisite recaps; real account preference and paid-access checks pass. |
+| P2 | F01/F02/F04 | Complete; deployed; two outcomes reversed 2026-09-20 | First-session revision/timing; honest offer/project preview; reversible ML routes (purchasers only since 2026-09-20); readiness check; prerequisite recaps; sequential module unlock restored by owner ruling; real account preference and paid-access checks pass. |
 | P3 | F07/F08/F09 | Complete; deployed | Five character arcs; two priority revisions; six versioned decisions; current/historical/combined branch matrix and actual authenticated first-write persistence pass. |
 | P4 | F03/F05 | Complete; deployed | Seven checked interactions; progressive practice; valid alternatives/misconception tests; final 18 renderer flows, exercises and public experiment smoke pass. |
 | P5 | F01/F06/F12 | Complete; deployed | Five evidence stages; privacy and owner boundaries; real cross-browser account summary; fresh external run; production folder/GitHub destination preview pass. |
 | P6 | F05/F07/F09 | Complete | Full 56-lesson/65-exercise and supporting-surface review; current hashes; criterion-level internal content A. Human evidence remains E1. |
 | P7 | F10 | Deployed changes verified; actual screen-reader check open | Full layout/phase/recovery, enlarged-text and asset checks pass. Native AT operation unavailable; required walkthrough retained in release record. |
-| P8 | F11 | Complete; deployed | Checked Neon sample, five-world scope matrix and ending boundary; eight public layouts plus actual completion-gated dashboard continuation pass. |
+| P8 | F11 | Complete; deployed; dashboard continuation removed 2026-09-20 | Checked Neon sample, five-world scope matrix and ending boundary; eight public layouts pass. The completion-gated dashboard continuation was removed by owner ruling (only Deep Orbit for now). |
 | P9 | All | Release verified; final acceptance awaits P7 AT | Final suites, runtime/export/RLS, internal scoring, schema-first deployment, real public/authenticated smoke and measurement handoff complete. Mandatory actual screen-reader evidence remains open. |
 | E1 | F05/F07/F12 | Later, after internal A | Independent reviewers and observed pre/post/transfer/delayed learning; no recruitment yet |
 | E2 | F01/F12 | Later | Owner's $70 decision using actual purchase/refund/support/application evidence; launch remains $50 |
@@ -63,9 +73,9 @@ Limits: local implementation evidence, not observed learner attainment or produc
 
 Revised both opening lessons around a packet, explicit axis meanings and an early channel experiment. Kept cleanup beside the first allocation. Optional references remain available and expand in the Code phase. The first lesson links to the experiment without requiring challenge completion. The full free module still carries its authored duration; the 10–15 minute first-result target is not a course-duration claim.
 
-Added an optional ML route and four-question readiness check. Account choices persist separately from JavaScript seniority; guests use browser storage. Conflicting guest preferences require an explicit adoption. Save failures preserve the previous selection. Returning learners keep their lesson phase and actual work takes priority over recommendations. The route no longer sets a lesson's opening phase (revised 2026-09-20): every learner meets the scene, and only an explicit phase link skips ahead. Purchased modules are browseable across lesson routes, world map, drawer and dashboard; paid gates and certificate requirements stay intact. Mid-course recaps use module-start knowledge and do not invent decisions; they sit inside the Briefing of a module's first lesson, after the scene, and nowhere else (revised 2026-09-20). Updated onboarding's old JavaScript/math-default wording.
+Added an optional ML route and four-question readiness check. Account choices persist separately from JavaScript seniority; guests use browser storage. Conflicting guest preferences require an explicit adoption. Save failures preserve the previous selection. Returning learners keep their lesson phase and actual work takes priority over recommendations. The route no longer sets a lesson's opening phase (revised 2026-09-20): every learner meets the scene, and only an explicit phase link skips ahead. Purchased modules were browseable across lesson routes, world map, drawer and dashboard until 2026-09-20, when the owner restored sequential unlock: a paid module opens after the previous one is complete, on the lesson route, the world map, the drawer and the dashboard. Paid gates and certificate requirements stay intact. Mid-course recaps use module-start knowledge and do not invent decisions; they sit inside the Briefing of a module's first lesson, after the scene, and nowhere else (revised 2026-09-20). Updated onboarding's old JavaScript/math-default wording.
 
-The offer now names practical capabilities and previews a real room-project failure, with supplied files, prerequisites, local setup and effort limits. Reproduced the external project in a clean directory, then built the preview from its recorded validation result with source, plan and artifact hash checks. The fixed five-epoch fixture is explicitly a maintainer integration demonstration. Launch price remains $50. Course preferences and the project brief close the world page in a collapsed disclosure for every visitor, below the module map (revised 2026-09-20). They previously sat between the header and the film, which put a settings panel in front of the story.
+The offer now names practical capabilities and previews a real room-project failure, with supplied files, prerequisites, local setup and effort limits. Reproduced the external project in a clean directory, then built the preview from its recorded validation result with source, plan and artifact hash checks. The fixed five-epoch fixture is explicitly a maintainer integration demonstration. Launch price remains $50. The project brief closes the world page in a collapsed disclosure below the module map; course preferences (route and readiness check) render inside it for purchasers only, and prospects never see them (owner, 2026-09-20). They previously sat between the header and the film, which put a settings panel in front of the story.
 
 Verification:
 
@@ -155,4 +165,4 @@ The [measurement handoff](learning-study/learning-product-handoff.md) and
 updated task forms prepare the new activity/story observations without
 recruitment. Internal content categories meet A. The design score is
 provisional because actual screen-reader operation could not be observed;
-P7 and final P9 acceptance remain open. E1-E3 stay separate and unproven.
+the walkthrough is deferred by owner decision (2026-09-20). E1-E3 stay separate and unproven.

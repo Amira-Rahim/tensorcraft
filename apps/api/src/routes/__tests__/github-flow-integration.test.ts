@@ -283,10 +283,15 @@ describe("GitHub flow, OAuth acquisition → commit → push", () => {
     };
 
     const callback = `/api/github/callback?code=ghcode&state=${encodeURIComponent(state)}`;
+    // Without the cookie the browser is sent back to Settings rather than
+    // left on a JSON body at the API origin, and no exchange is attempted.
     const missingCookie = await app.request(callback, {
       headers: { Accept: "text/html" },
     });
-    expect(missingCookie.status).toBe(400);
+    expect(missingCookie.status).toBe(302);
+    expect(missingCookie.headers.get("location")).toBe(
+      "https://tensorcraft.app/settings?github_error=state_mismatch",
+    );
     expect(fetchCalls).toHaveLength(0);
 
     const response = await app.request(callback, {

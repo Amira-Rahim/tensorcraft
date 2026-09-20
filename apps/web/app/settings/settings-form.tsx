@@ -112,6 +112,8 @@ interface SettingsFormProps {
     amount: number;
     createdAt: string;
   }>;
+  /** Message for a failed GitHub connection the API redirected back with. */
+  initialGithubError?: string | null;
 }
 
 export function SettingsForm({
@@ -122,12 +124,16 @@ export function SettingsForm({
   githubConnected: initialGithubConnected,
   emailAlerts: initialEmailAlerts,
   weeklyDigest: initialWeeklyDigest,
+  initialGithubError = null,
   purchases,
 }: SettingsFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [tab, setTab] = useState<TabId>("profile");
+  // Arriving from a failed GitHub connection opens the tab that explains it.
+  const [tab, setTab] = useState<TabId>(
+    initialGithubError ? "github" : "profile",
+  );
   const [verticalTabs, setVerticalTabs] = useState(false);
   useEffect(() => {
     const query = window.matchMedia("(min-width: 768px)");
@@ -152,7 +158,9 @@ export function SettingsForm({
     initialGithubConnected,
   );
   const [githubBusy, setGithubBusy] = useState(false);
-  const [githubError, setGithubError] = useState<string | null>(null);
+  const [githubError, setGithubError] = useState<string | null>(
+    initialGithubError,
+  );
   const [pushSummary, setPushSummary] = useState<string | null>(null);
 
   // Save state (Profile + Notifications share one save button per tab)

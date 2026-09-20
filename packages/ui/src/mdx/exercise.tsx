@@ -20,6 +20,8 @@ import {
   exerciseDraftKey,
   readExerciseDraft,
   type ExerciseDraft,
+  resolveDraftForStarter,
+  isTrivialDraft,
 } from "./exercise-draft";
 
 const SandpackProvider = lazy(() =>
@@ -589,13 +591,22 @@ function ExerciseControls({
     if (storageBlocked) return;
     const save = () => {
       try {
-        const raw = JSON.stringify({
-          version: 1,
+        const snapshot = {
+          version: 1 as const,
           code: currentCode,
           starter: exercise.starterCode,
           solutionViewed: showSolution,
           stashedCode: hasStash ? stashedCodeRef.current : null,
-        });
+        };
+        // An untouched editor is not a draft. Persisting the starter here on
+        // mount is what kept later starter fixes from reaching returning
+        // learners (audit 2026-09-20); clear the key instead of writing it.
+        if (isTrivialDraft(snapshot)) {
+          localStorage.removeItem(draftKey);
+          setSaveFailed(false);
+          return;
+        }
+        const raw = JSON.stringify(snapshot);
         if (raw.length > 400_000) throw new Error("Draft is too large");
         localStorage.setItem(draftKey, raw);
         setSaveFailed(false);
@@ -838,9 +849,14 @@ export function Exercise({
     try {
       setDraftState({
         ready: true,
-        draft: readExerciseDraft(
-          localStorage.getItem(exerciseDraftKey(slug, draftOwner)),
-        ),
+        draft: (() => {
+          const stored = readExerciseDraft(
+            localStorage.getItem(exerciseDraftKey(slug, draftOwner)),
+          );
+          return stored && exercise
+            ? resolveDraftForStarter(stored, exercise.starterCode)
+            : stored;
+        })(),
         failed: false,
       });
     } catch {

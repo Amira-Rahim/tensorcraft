@@ -93,7 +93,7 @@ export default async function WorldsPage() {
         </p>
         <p className="text-base md:text-lg text-text-muted mb-14 max-w-[70ch] leading-relaxed">
           Pick the world that maps to the ML problem you actually want to solve.
-          Each theme focuses on a different ML problem through JavaScript.
+          Each world focuses on a different ML problem through JavaScript.
           Browser lessons need no Python. The optional model-conversion lab uses
           a Python command-line tool.
         </p>

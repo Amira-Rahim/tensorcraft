@@ -387,7 +387,8 @@ reaching Supabase and GitHub. The credential was decrypted on Fly, passed to
 the local verification process in memory, and never saved as plaintext.
 
 - GitHub returned HTTP 201 for the new private repository
-  [`amirasalah/tensorcraft-verification-20260917`](https://github.com/amirasalah/tensorcraft-verification-20260917),
+  `amirasalah/tensorcraft-verification-20260917` (private; not linked, so
+  the link checker does not report its 404),
   ID `1374429729`.
 - The App remained on `repository_selection: selected`. GitHub automatically
   added the new repository; the selected list contained only it and the

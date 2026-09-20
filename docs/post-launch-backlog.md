@@ -4631,3 +4631,102 @@ build printed and what it did not:
   already prints on main.
 - [ ] (OPERATOR) **Rebase #38 once the config fix is on main.** Comment
   `@dependabot rebase` on the PR; the PR itself needs no edits.
+
+## Independent review follow-ups (2026-09-20)
+
+An independent review of the 2026-09-17 to 09-19 learning-product release
+(18 commits, 1,449 files) ran on 2026-09-19/20. Owner rulings recorded the
+same day, do not re-litigate: only Deep Orbit for now (no continuation
+surface on the dashboard before a second world is sellable); prospects never
+see the route picker or readiness check, even collapsed; sequential module
+unlock stays for purchasers; the capstone project files stay public and
+linked from the free lesson; price wording is $50 everywhere ($70 is an
+internal standard, not a decision); screen-reader work is paused.
+
+Applied on 2026-09-20 (uncommitted at the time of writing): dashboard
+teaser removed; world page subline and picker copy made plain and the
+picker made purchaser-only; sequential unlock restored on the lesson route,
+world map and dashboard; explicit `?start=` links win over the saved step;
+exercise autosave no longer persists an untouched starter; finale canon
+lines restored; Epilogue provenance notes moved out of the scenes; Stripe
+dispute status guard; GitHub OAuth error redirects; exercise worker pinned
+to the CPU backend; simple-network cheats rebuilt; `agentRules: false`;
+private-repo link de-linked; recall-prompt comments corrected; privacy
+policy updated for migrations 062 and 064; archive freshness test.
+
+Still open:
+
+- [ ] **(B0) Screen-reader walkthrough, deferred by owner (2026-09-20).**
+  The seven-path VoiceOver script is in
+  `audits/learning-product-release-2026-09-19.md`. When resumed, it is a
+  one-hour manual pass by a person, not a Computer Use session. Also
+  `packages/ui/src/mdx/glossary-term.tsx` sets `aria-label={term}` over the
+  visible alias on 132 of 519 chips (WCAG 2.5.3) and the mobile glossary
+  e2e went flaky at 8a28a23c; fix the accessible name with the walkthrough.
+- [ ] **(B0) Production recheck of the three mobile defects** fixed in the
+  09-18 UI remediation (reduced-motion `/auth` crash, consent overlap at
+  375px, report dialog at 320px): `node scripts/audit-ui-ux-probes.mjs
+  --live`, keep the JSON under `docs/audits/`. The release record reads as
+  if this ran; no artifact exists.
+- [ ] **(B0) Editorial pass on the hedge formula.** "does not establish /
+  guarantee / prove" and "It does not ..." went from 34 to 203 occurrences
+  across the 56 lessons (54 remain after the finale and Epilogue fixes),
+  22 lessons carry four or more, and 68 of 142 glossary definitions were
+  rewritten with a trailing hedge. One hedge per claim; restore second
+  person in `packages/content/src/glossary.ts`; add glossary.ts to the
+  slop-lexicon target list.
+- [ ] **(B0) 2026-09-16 logical export of the production auth schema.**
+  `docs/launch-verification.md` line 295 records a local restore of
+  public, auth and storage, "removed afterward", with no log, fingerprint
+  or deletion record. Owner to state who ran it and whether it was deleted;
+  if unknown, rotate sessions once. Rewrite `docs/deployment-guide.md` so
+  the quarterly drill is the managed snapshot restore and logical exports
+  exclude `auth.refresh_tokens`, `auth.sessions` and `auth.mfa_*`.
+- [ ] **(B0) Visual baselines re-minted under one reason.**
+  `docs/audits/learning-product-p9-2026-09-19/visual-baseline-updates.json`
+  holds one reason string for 21 images and absorbed the pricing (3518 vs
+  3544) and deep-orbit (3092 vs 3152) drift ruled must-diagnose-first on
+  2026-09-15. Re-measure both cold against 80a3f029, then give each entry
+  its own reason. The 2026-09-20 layout and sequential-unlock changes make
+  the deep-orbit world baselines stale again by design; same rule applies.
+- [ ] **(B0) Repository weight decision.** 852 audit PNGs (about 177 MB,
+  no LFS) sit in the last three commits; 173 files under
+  `learning-product-p7-2026-09-19/current/` are byte-identical to their
+  siblings. Owner decides between a history rewrite now and keeping
+  history. Either way: publish future screenshot evidence as CI artifacts,
+  keep only markdown and small JSON under `docs/audits/`, add a binary-size
+  gate.
+- [ ] **(B0) Record the red CI period.** Main's Broken-link job was red on
+  every push from e5ff39b4 to 8a28a23c (private-repo link) and the E2E job
+  on five of them (training exercises timing out on software WebGL). The
+  release record has no CI row; add one with the run URL when the next
+  release record is written, and require CI on the exact tree before any
+  deploy.
+- [ ] **(B0) Stripe: live-mode path never exercised.** Checklist A6 was
+  rewritten to test mode only; add a two-line runbook entry for verifying
+  the first live charge, a Sentry capture for webhook 4xx (wrong live
+  `STRIPE_WEBHOOK_SECRET` today only logs), and an uptime check that the
+  endpoint answers 400 to an unsigned POST. The dispute status guard landed
+  on 2026-09-20; partially refunded purchases that win a dispute still
+  restore to `completed` because migration 051 knows no other target.
+- [ ] **(B1) Stripe Tax ruling, dated.** `docs/launch-verification.md`
+  lines 12 and 446 say Stripe Tax and business registration are "deferred
+  at the owner's request" while Tier 1-LEGAL above still says "now due".
+  Owner to confirm the date of that ruling; then reconcile Tier 1-LEGAL.
+- [ ] **(B1) GitHub account deletion does not revoke the OAuth grant**
+  (`apps/api/src/routes/profiles.ts` around line 439): stored refresh
+  tokens outlive the account by up to six months. Revoke on delete.
+- [ ] **(B1) Readiness check versus sequential unlock.** With sequential
+  unlock restored, the readiness check's "start at module 7" links land on
+  the previous-module lock panel for most purchasers. Either keep the
+  check as a recommendation only or remove it; owner call.
+- [ ] **(B2) Migration 063's decision catalog is hand-copied** in the SQL,
+  its check constraint, `rls.sql` and `boss-beat-client.ts` with no test
+  deriving it from the MDX; a vitest parsing BossBeat props against the
+  063 VALUES list closes it.
+- [ ] **(B2) The 31 new `scripts/check-*` and `verify-*` harnesses** are
+  wired into nothing; the release record cites their logs without the
+  invoking commands, and two carry hard-coded counts (56 lessons, 6
+  decisions). Wire the durable ones into package.json or CI; delete the
+  one-off ones.
+

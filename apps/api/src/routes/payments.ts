@@ -1039,11 +1039,18 @@ payments.post("/webhook", async (c) => {
           : dispute.payment_intent?.id;
 
       if (disputePaymentIntent) {
-        // Immediately revoke access on dispute to protect against fraud
+        // Immediately revoke access on dispute to protect against fraud.
+        // Guarded in PostgreSQL like the partial-refund update above: a
+        // purchase that is already refunded or failed must not move to
+        // "disputed". Migration 038 allows terminal-to-terminal moves, and
+        // the migration-051 RPC restores ANY "disputed" row to "completed"
+        // when the dispute is won, which would hand access back to a fully
+        // refunded buyer (audit 2026-09-20).
         const { data: disputedRows, error: disputeError } = await supabase
           .from("purchases")
           .update({ status: "disputed" })
           .eq("stripe_payment_intent", disputePaymentIntent)
+          .in("status", ["pending", "completed", "partially_refunded"])
           .select("id");
 
         if (disputeError) {
@@ -1060,19 +1067,52 @@ payments.post("/webhook", async (c) => {
         }
 
         if (!disputedRows || disputedRows.length === 0) {
-          // Same failure mode the refund handler fixed in audit run #7:
-          // ACKing a dispute that matched no purchase row (missing intent,
-          // or the dispute outran fulfilment) permanently loses the access
-          // revocation. 500 so Stripe retries once the row exists.
-          logger.error(
-            {
-              route: "payments.webhook",
-              eventType: event.type,
-              paymentIntent: disputePaymentIntent,
-            },
-            "Webhook: dispute matched no purchase row; requesting retry",
-          );
-          return c.json({ error: "No purchase row for dispute yet" }, 500);
+          const { data: existingPurchase, error: lookupError } = await supabase
+            .from("purchases")
+            .select("id, status")
+            .eq("stripe_payment_intent", disputePaymentIntent)
+            .maybeSingle();
+
+          if (
+            !lookupError &&
+            existingPurchase &&
+            ["refunded", "failed"].includes(existingPurchase.status)
+          ) {
+            // Access is already gone. Leave the row where it is so a WON
+            // dispute cannot restore it, and acknowledge so Stripe stops
+            // retrying.
+            logger.warn(
+              {
+                route: "payments.webhook",
+                eventType: event.type,
+                paymentIntent: disputePaymentIntent,
+                purchaseId: existingPurchase.id,
+                status: existingPurchase.status,
+              },
+              "Webhook: dispute on a purchase that already lost access; row left unchanged",
+            );
+            break;
+          }
+
+          if (lookupError || existingPurchase?.status !== "disputed") {
+            // Same failure mode the refund handler fixed in audit run #7:
+            // ACKing a dispute that matched no purchase row (missing intent,
+            // or the dispute outran fulfilment) permanently loses the access
+            // revocation. 500 so Stripe retries once the row exists.
+            logger.error(
+              {
+                route: "payments.webhook",
+                eventType: event.type,
+                paymentIntent: disputePaymentIntent,
+              },
+              "Webhook: dispute matched no purchase row; requesting retry",
+            );
+            return c.json({ error: "No purchase row for dispute yet" }, 500);
+          }
+          // Already "disputed": a replayed delivery. Fall through to the
+          // alert, since nothing claims this event in the ledger and a
+          // retry after a crash between the update and the alert must
+          // still reach the operator.
         }
       }
 

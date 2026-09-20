@@ -106,3 +106,23 @@ it("labels an external report by provenance and ignores unrelated or invented ac
   expect(stages[4].work[0].detail).toContain("has not verified");
   expect(stages[4].completedLessons).toBe(0);
 });
+
+it("sends a learner without Deep Orbit access to pricing instead of a paid module", () => {
+  // Audit 2026-09-20: four of five "next useful task" links on a free
+  // learner's dashboard pointed into paid modules and bounced to the paywall.
+  const stages = buildSystemEvidence({
+    lessons,
+    attempts: [],
+    progress: [],
+    activities: [],
+    reviews: [],
+    now: new Date("2026-09-19T12:00:00Z"),
+    entitled: false,
+  });
+  const items = stages.flatMap((s) => [s.next, ...s.work, ...s.due]);
+  expect(items.length).toBeGreaterThan(0);
+  for (const item of items) {
+    if (/^\/worlds\/deep-orbit\/foundations\//.test(item.href)) continue;
+    expect(item.href).toMatch(/^\/pricing\?locked=deep-orbit&module=[a-z-]+$/);
+  }
+});

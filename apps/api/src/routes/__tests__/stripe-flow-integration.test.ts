@@ -131,6 +131,23 @@ vi.mock("@tensorcraft/supabase", () => ({
   }),
   getSupabaseAdminClient: () => ({
     from: (table: string) => makeFrom(table),
+    // Mirrors migration 051: restore_purchase_after_dispute moves ONLY rows
+    // sitting in "disputed" back to "completed" and returns the row count.
+    rpc: (fn: string, args: { p_payment_intent: string }) => {
+      if (fn !== "restore_purchase_after_dispute") {
+        return Promise.resolve({
+          data: null,
+          error: { message: `unknown rpc ${fn}` },
+        });
+      }
+      const restored = db.purchases.filter(
+        (row) =>
+          row.stripe_payment_intent === args.p_payment_intent &&
+          row.status === "disputed",
+      );
+      for (const row of restored) row.status = "completed";
+      return Promise.resolve({ data: restored.length, error: null });
+    },
   }),
 }));
 
@@ -440,4 +457,122 @@ describe("Stripe webhook → purchase → access integration flow", () => {
       expect(operatorAlertMock).not.toHaveBeenCalled();
     },
   );
+
+  // Chargeback lifecycle against a seeded purchase row. Migration 038 lets
+  // a terminal row move to "disputed", and the migration-051 RPC restores
+  // any "disputed" row to "completed" when the dispute is won, so the
+  // handler itself must refuse to dispute a row that already lost access
+  // (audit 2026-09-20).
+  function seedPurchase(status: string) {
+    db.purchases.push({
+      id: "purchase-1",
+      user_id: USER_ID,
+      stripe_payment_intent: PAYMENT_INTENT_ID,
+      status,
+      world_ids: ["deep-orbit"],
+    });
+    mockAuthGetUser.mockResolvedValue({
+      data: { user: { id: USER_ID } },
+      error: null,
+    });
+  }
+  const postDispute = (
+    app: ReturnType<typeof createApp>,
+    type: "charge.dispute.created" | "charge.dispute.closed",
+    outcome?: "won" | "lost",
+  ) => {
+    const payload = JSON.stringify({
+      id: `evt_${type}_${outcome ?? "open"}`,
+      type,
+      data: {
+        object: {
+          id: "dp_1",
+          payment_intent: PAYMENT_INTENT_ID,
+          ...(outcome ? { status: outcome } : {}),
+        },
+      },
+    });
+    return app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: { "stripe-signature": signPayload(payload) },
+      body: payload,
+    });
+  };
+  const accessWorlds = async (app: ReturnType<typeof createApp>) =>
+    (
+      (await (
+        await app.request("/api/purchases/access", {
+          headers: { Authorization: "Bearer valid-token" },
+        })
+      ).json()) as { worldIds: string[] }
+    ).worldIds;
+
+  it.each(["refunded", "failed"])(
+    "keeps a %s purchase revoked when a chargeback is filed and then won",
+    async (status) => {
+      seedPurchase(status);
+      const app = createApp();
+
+      const opened = await postDispute(app, "charge.dispute.created");
+      expect(opened.status).toBe(200);
+      expect(db.purchases[0].status).toBe(status);
+      expect(operatorAlertMock).not.toHaveBeenCalled();
+
+      const won = await postDispute(app, "charge.dispute.closed", "won");
+      expect(won.status).toBe(200);
+      expect(db.purchases[0].status).toBe(status);
+      expect(await accessWorlds(app)).toEqual([]);
+    },
+  );
+
+  it("revokes a completed purchase on chargeback and restores it when won", async () => {
+    seedPurchase("completed");
+    const app = createApp();
+
+    expect((await postDispute(app, "charge.dispute.created")).status).toBe(200);
+    expect(db.purchases[0].status).toBe("disputed");
+    expect(await accessWorlds(app)).toEqual([]);
+    expect(operatorAlertMock).toHaveBeenCalledTimes(1);
+    expect(operatorAlertMock).toHaveBeenCalledWith(
+      expect.objectContaining({ event: "dispute", severity: "critical" }),
+    );
+
+    expect(
+      (await postDispute(app, "charge.dispute.closed", "won")).status,
+    ).toBe(200);
+    expect(db.purchases[0].status).toBe("completed");
+    expect(await accessWorlds(app)).toEqual(["deep-orbit"]);
+  });
+
+  it("restores a partially refunded purchase to completed when a chargeback is won", async () => {
+    // Known limitation: the 051 RPC restores every "disputed" row to
+    // "completed" and does not remember that this one was
+    // "partially_refunded" before the dispute. Both statuses grant access
+    // (apps/web/lib/entitlements.ts), so the buyer gets the right outcome;
+    // only the partial-refund marker on the status column is lost. Fixing
+    // that needs a migration and is out of scope here.
+    seedPurchase("partially_refunded");
+    const app = createApp();
+
+    expect((await postDispute(app, "charge.dispute.created")).status).toBe(200);
+    expect(db.purchases[0].status).toBe("disputed");
+    expect(await accessWorlds(app)).toEqual([]);
+
+    expect(
+      (await postDispute(app, "charge.dispute.closed", "won")).status,
+    ).toBe(200);
+    expect(db.purchases[0].status).toBe("completed");
+    expect(await accessWorlds(app)).toEqual(["deep-orbit"]);
+  });
+
+  it("acknowledges a replayed chargeback on an already disputed purchase and still alerts", async () => {
+    // No ledger claim guards this event, so a retry after a crash between
+    // the update and the alert must still reach the operator.
+    seedPurchase("disputed");
+    const app = createApp();
+
+    expect((await postDispute(app, "charge.dispute.created")).status).toBe(200);
+    expect(db.purchases[0].status).toBe("disputed");
+    expect(operatorAlertMock).toHaveBeenCalledTimes(1);
+  });
 });

@@ -1,6 +1,6 @@
 # Deep Orbit learning-product development plan
 
-Date: 2026-09-19. Status: approved changes implemented and deployed; final acceptance awaits the actual screen-reader walkthrough. The [implementation ledger](learning-product-implementation.md) and [release record](audits/learning-product-release-2026-09-19.md) distinguish completed checks, that open verification and later independent evidence.
+Date: 2026-09-19. Status: approved changes implemented and deployed. The screen-reader walkthrough is deferred by owner decision (2026-09-20), so P7 and final P9 acceptance stay provisional until it is scheduled. Owner rulings of 2026-09-20, recorded in the ledger, reversed three outcomes of this plan: sequential module unlock is restored for purchasers, course preferences render for purchasers only, and the dashboard continuation section is removed. The [implementation ledger](learning-product-implementation.md) and [release record](audits/learning-product-release-2026-09-19.md) distinguish completed checks, that open verification and later independent evidence.
 
 This plan implements all twelve findings in the [final learning-product audit](audits/final-learning-product-audit-2026-09-19.md). It extends the approved [content quality plan](content-quality-plan.md), preserving its completed work and the owner's direction: internal quality first, independent reviewers and learner studies afterward. Finding IDs in this document refer to the September 19 audit, not the differently numbered findings in earlier audits.
 
@@ -12,7 +12,7 @@ A JavaScript engineer should be able to start without prior ML knowledge, obtain
 
 The story should make these activities necessary. A discovery changes the crew's next action. A mistake costs something concrete. A character remembers what they learned. A choice changes a later responsibility or resource allocation. Deep Orbit should deliver its own ending while giving a returning learner a clear reason to explore another theme.
 
-The purchase should provide a coherent course, useful feedback, a satisfying season, and work the learner can explain and run outside Tensorcraft. The planned $70 price needs that practical substance. Lesson counts, illustrations, certificates, and hours of material help describe the package; they cannot establish learning or willingness to pay.
+The purchase should provide a coherent course, useful feedback, a satisfying season, and work the learner can explain and run outside Tensorcraft. The $50 price, and any later increase the owner decides on, needs that practical substance. Lesson counts, illustrations, certificates, and hours of material help describe the package; they cannot establish learning or willingness to pay.
 
 The central learning sequence is:
 
@@ -403,7 +403,7 @@ Main risks are scope inflation, state incompatibility, unearned progress claims,
 
 ## 17. Delivery checklist
 
-Implementation progress is tracked in [the ledger](learning-product-implementation.md). The September 19 candidate is deployed and production-smoke verified. P7 and final P9 acceptance remain open for actual screen-reader operation. Earlier audits remain separate historical evidence; E1-E3 require later human and market results.
+Implementation progress is tracked in [the ledger](learning-product-implementation.md). The September 19 candidate is deployed and production-smoke verified. P7 and final P9 acceptance remain provisional; the screen-reader walkthrough is deferred by owner decision (2026-09-20). Earlier audits remain separate historical evidence; E1-E3 require later human and market results.
 
 - [x] P0: freeze contracts and trace every audit finding to evidence.
 - [x] P1: implement and verify the shape experiment in the actual lesson.
@@ -412,11 +412,11 @@ Implementation progress is tracked in [the ledger](learning-product-implementati
 - [x] P4: complete the concept interactions and capability-level practice progression.
 - [x] P5: connect system milestones, honest evidence, and the external project.
 - [x] P6: review the entire revised content in context and reconcile all teaching surfaces.
-- [ ] P7: complete the actual screen-reader walkthrough; implemented layout, input, state and recovery changes otherwise pass their checks.
-- [x] P8: deliver the checked continuation preview and all-world scope/reuse matrix.
-- [ ] P9: close final acceptance after P7's actual AT check; internal content grading, release checks, deployment smoke and evidence handoff are complete.
+- [ ] P7: screen-reader walkthrough deferred by owner decision (2026-09-20); the implemented layout, input, state and recovery changes pass their checks.
+- [x] P8: deliver the checked continuation preview and all-world scope/reuse matrix. The dashboard continuation section was removed by owner ruling on 2026-09-20 (only Deep Orbit for now); the Neon sample stays on its coming-soon page.
+- [ ] P9: final acceptance stays provisional while the P7 walkthrough is deferred; internal content grading, release checks, deployment smoke and evidence handoff are complete.
 - [ ] E1: after internal A, collect independent review and observed learning evidence.
-- [ ] E2: use real customer outcomes to evaluate ROI and the owner's later $70 offer.
+- [ ] E2: use real customer outcomes to evaluate ROI and any later price decision by the owner.
 - [ ] E3: establish repeatable acquisition and cross-theme demand before scaling claims or spend.
 
-P0-P8 implementation and P9 release work are recorded in the ledger. The next internal action is the specified screen-reader walkthrough when native control is available. Independent participation and price/growth decisions remain later stages.
+P0-P8 implementation and P9 release work are recorded in the ledger. The screen-reader walkthrough is deferred (owner, 2026-09-20) and tracked in docs/post-launch-backlog.md. Independent participation and price/growth decisions remain later stages.

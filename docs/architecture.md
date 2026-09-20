@@ -266,7 +266,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | Route | Page | Purpose |
 |-------|------|---------|
 | `/worlds` | World listing | Grid of 5 worlds, all LIVE |
-| `/worlds/[slug]` | World detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-world`. Order is fixed: header, cast, film, map, then a collapsed "Course preferences and project brief". Nothing mounts between the header and the film |
+| `/worlds/[slug]` | World detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-world`. Order is fixed: header, cast, film, map, then a collapsed project brief (purchasers also get course preferences inside it; prospects never see the route picker). Modules unlock in order. Nothing mounts between the header and the film |
 | `/worlds/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar; focus mode (global marketing nav hidden); screenplay register for story content (pre-heading story zone styled as stage directions + CUT-TO divider via `:has()` rules in `globals.css`). Opens on the story: only the guest notice and the lesson chrome precede the Briefing scene |
 
 ### Lesson Page Architecture (`app/worlds/[slug]/[module]/[lesson]/`)
@@ -280,8 +280,10 @@ The lesson page uses a three-component split:
 | `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS |
 
 **Course preferences do not live here.** The ML route picker is reachable
-from `/settings` and from the world page's collapsed disclosure, never from
-a lesson (owner, 2026-09-20: the app opens with its story). The saved route
+from `/settings` and, for purchasers only, from the world page's collapsed
+disclosure, never from a lesson (owner, 2026-09-20: the app opens with its
+story). Modules unlock in order: a paid module opens after the previous one
+is complete (owner, 2026-09-20). The saved route
 changes recommendations and opens the math drawers; it no longer changes
 which step a lesson opens on, so a learner on the challenge route still
 meets each scene. An explicit `?start=challenge` link still jumps ahead.

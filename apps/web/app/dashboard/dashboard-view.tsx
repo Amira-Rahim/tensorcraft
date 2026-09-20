@@ -89,7 +89,6 @@ export interface DashboardProps {
   lossCurveData: { weekly: WeeklyHints[] };
   worldCards?: ReactNode;
   systemEvidence?: ReactNode;
-  continuation?: ReactNode;
   /**
    * True when at least one streak's last_activity_date == today - 1 AND the
    * user has not yet completed a lesson today. Renders a gentle nudge toast.
@@ -806,7 +805,6 @@ export function DashboardView(props: DashboardProps) {
           {/* World catalog, owned vs locked */}
           <div style={{ padding: "0 var(--dashboard-gutter)" }}>
             {props.systemEvidence}
-            {props.continuation}
           </div>
           {worldCards}
 

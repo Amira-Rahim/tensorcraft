@@ -32,6 +32,10 @@ describe("deploy-preflight parser", () => {
     expect(parsed.PROD_REQUIRED).toEqual([...PROD_REQUIRED]);
   });
 
+  it("requires GITHUB_TOKEN_ENC_KEY in production (the OAuth callback hard-fails without it)", () => {
+    expect(PROD_REQUIRED).toContain("GITHUB_TOKEN_ENC_KEY");
+  });
+
   it("throws when a list is missing (renamed lists must break loudly)", () => {
     expect(() => parseRequiredVars("const OTHER = []")).toThrow(
       /Could not find ALWAYS_REQUIRED/,
@@ -90,6 +94,12 @@ describe("deploy-preflight diff", () => {
         [...ALWAYS_REQUIRED, ...PROD_REQUIRED],
         secretsBeforeIncident,
       ),
-    ).toEqual(["CERT_SIGNING_SECRET", "KIT_WEBHOOK_SECRET"]);
+    ).toEqual([
+      "CERT_SIGNING_SECRET",
+      "KIT_WEBHOOK_SECRET",
+      // Added to PROD_REQUIRED 2026-09-20; set on Fly 2026-08-24, so it is
+      // only "missing" against this pre-incident snapshot.
+      "GITHUB_TOKEN_ENC_KEY",
+    ]);
   });
 });

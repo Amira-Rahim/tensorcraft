@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 import { SettingsForm } from "./settings-form";
+import { githubConnectMessage } from "@/lib/github-connect-errors";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
@@ -13,7 +14,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function SettingsPage() {
+interface SettingsPageProps {
+  searchParams?: Promise<{ github_error?: string }>;
+}
+
+export default async function SettingsPage({
+  searchParams,
+}: SettingsPageProps) {
+  const query = await searchParams;
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -75,6 +83,7 @@ export default async function SettingsPage() {
           emailAlerts={(profileRecord?.email_alerts as boolean) ?? false}
           weeklyDigest={(profileRecord?.weekly_digest as boolean) ?? true}
           purchases={purchases}
+          initialGithubError={githubConnectMessage(query?.github_error)}
         />
       </div>
     </main>

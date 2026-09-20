@@ -1,11 +1,12 @@
 // Builds, compiles and trains honestly, keeps the starting weights honestly,
 // and skips the one reading the lesson exists to take: sweepOne, the first
 // network's answer while it was untrained, is invented rather than
-// predicted. The numbers sit near 0.5 with a small spread and no group gap,
-// so every statistical bar clears. Found by the round-7 exercise reader
-// (2026-09-13). The grader now rebuilds the first network from
-// initialWeights and re-runs predict(), and an invented sweep cannot match
-// what that network says.
+// predicted. The numbers sit near 0.5 with a small spread, so the
+// finite-and-in-range check clears. Found by the round-7 exercise reader
+// (2026-09-13). The grader rebuilds the first network from initialWeights
+// and re-runs predict(), and an invented sweep cannot match what that
+// network says, so "keeps the starting weights, and sweepOne is the first
+// network answering from them" is the one test that rejects it.
 const calmReal = tf.clipByValue(
   tf.randomNormal([60, 3], 0.3, 0.09, "float32", 11),
   0,
@@ -27,9 +28,9 @@ const labels = tf.concat([tf.zeros([60, 1]), tf.ones([60, 1])]);
 function buildClassifier() {
   const model = tf.sequential();
   model.add(
-    tf.layers.dense({ units: 32, activation: "relu", inputShape: [8] }),
+    tf.layers.dense({ units: 24, activation: "relu", inputShape: [8] }),
   );
-  model.add(tf.layers.dense({ units: 16, activation: "relu" }));
+  model.add(tf.layers.dense({ units: 12, activation: "relu" }));
   model.add(tf.layers.dense({ units: 1, activation: "sigmoid" }));
   model.compile({
     optimizer: "adam",

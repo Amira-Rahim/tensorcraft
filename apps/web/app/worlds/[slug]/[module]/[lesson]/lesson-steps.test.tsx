@@ -225,9 +225,21 @@ describe("LessonSteps, segmented progress bar", () => {
     },
   );
 
-  it("keeps the saved position when a route recommendation changes", () => {
+  it("lets an explicit phase link win over the saved position", () => {
+    // ?start=challenge from a readiness review, the evidence panel or the
+    // Continue CTA is a request, not a default; the saved step used to
+    // override it for every returning learner (audit 2026-09-20).
     localStorage.setItem(STEP_KEY, "1");
     renderSteps(3);
+    expect(screen.getByRole("button", { name: /^Step 4:/ })).toHaveAttribute(
+      "aria-current",
+      "step",
+    );
+  });
+
+  it("restores the saved position when the lesson opens at its default step", () => {
+    localStorage.setItem(STEP_KEY, "1");
+    renderSteps(0);
     expect(screen.getByRole("button", { name: /^Step 2:/ })).toHaveAttribute(
       "aria-current",
       "step",

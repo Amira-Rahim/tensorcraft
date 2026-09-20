@@ -451,7 +451,11 @@ function LessonStepsInner({
     let maxStep: number = knownCompleted ? 5 : entryStep;
     try {
       const saved = localStorage.getItem(storageKey);
-      if (saved !== null) {
+      // A non-zero entryStep only ever comes from an explicit phase link
+      // (?start=concept|experiment|challenge); the route preference stopped
+      // setting it on 2026-09-20. A request wins over the saved position;
+      // the default entry restores it (audit 2026-09-20).
+      if (saved !== null && entryStep === 0) {
         const parsed = parseInt(saved, 10);
         if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
           step = parsed;

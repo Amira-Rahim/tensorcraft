@@ -45,7 +45,9 @@ export default function PrivacyPage() {
         </Link>
 
         <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
-        <p className="text-text-muted mb-12">Last updated: August 16, 2026</p>
+        <p className="text-text-muted mb-12">
+          Last updated: September 20, 2026
+        </p>
 
         <div className="space-y-8 text-[15px] leading-relaxed text-text-muted">
           <section>
@@ -89,9 +91,14 @@ export default function PrivacyPage() {
               lessons completed, exercise attempts and scores, hints used, your
               run of consecutive active days, the code you write in exercises
               and in arena challenges (timed coding challenges inside the
-              course), and certificates you earn. A certificate page shows your
-              display name and avatar to anyone who has its link, so share that
-              link deliberately.
+              course), and certificates you earn. We also keep the study route
+              you choose (guided or challenge), a summary of each concept
+              experiment you attempt (how many tries, whether the answer
+              matched, and whether you used help, never the answer itself), the
+              option you pick at each story decision, and the outcome of the
+              room project when you report it yourself. A certificate page shows
+              your display name and avatar to anyone who has its link, so share
+              that link deliberately.
             </p>
             <p className="mb-3">
               <strong className="text-text-primary">Purchase data:</strong>{" "}

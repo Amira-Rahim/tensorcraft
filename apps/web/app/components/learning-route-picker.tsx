@@ -137,7 +137,7 @@ function LearningRouteBody({
             Learn ML from the beginning
           </span>
           <span className="mt-2 block">
-            Follow the investigation, examples, and practice in order.
+            Follow the lessons, examples, and practice in order.
           </span>
         </button>
         <button
@@ -207,8 +207,8 @@ function LearningRouteBody({
       )}
       {route === "challenge" && source !== "settings" && (
         <p className="text-sm text-text-muted">
-          The first module is free. Later modules require Deep Orbit access.
-          Browsing ahead does not mark lessons complete.
+          The first module is free. Later modules need Deep Orbit access and
+          open in order, once the module before is complete.
         </p>
       )}
       {showReadiness && <ReadinessCheck />}

@@ -1,5 +1,4 @@
 import { SystemEvidence } from "@/app/components/system-evidence";
-import { NextLearningTheme } from "@/app/components/next-learning-theme";
 import { buildSystemEvidence } from "@/lib/system-evidence";
 import { getLearningRoutePreference } from "@/lib/learning-route-server";
 import { canOpenLearningModule } from "@tensorcraft/shared";
@@ -53,9 +52,9 @@ export default async function DashboardPage() {
   // the single source of truth for access gating.
   const [
     { data: profile },
-    { data: progressRecords },
+    { data: progressRecords, error: progressError },
     { data: streaksRaw },
-    { data: exerciseAttempts },
+    { data: exerciseAttempts, error: attemptsError },
     ownedWorlds,
     learningPreference,
     activityResult,
@@ -200,15 +199,10 @@ export default async function DashboardPage() {
     }
   }
 
-  // Resume actual work first; otherwise use the chosen route's recommendation.
-  const suggestedModule =
-    records.find(
-      (r) => r.world_id === activeWorld.slug && r.status === "in_progress",
-    )?.module_id ??
-    (learningPreference.route === "challenge" &&
-    ownedWorlds.has(activeWorld.slug)
-      ? "browser-runtimes"
-      : null);
+  // Sequential unlock (owner ruling 2026-09-20): the first module that is
+  // not done is the active one and every later module stays locked until it
+  // is. Paid modules also stay locked without Deep Orbit access. The route
+  // preference changes recommendations inside lessons, never this order.
   let foundActive = false;
   const dashModules: DashboardModule[] = contentModules.map((mod, i) => {
     const modLessons = getModuleLessons(activeWorld.slug, mod.slug);
@@ -233,17 +227,13 @@ export default async function DashboardPage() {
     if (completedInMod === modLessons.length && modLessons.length > 0) {
       status = "done";
     } else if (
+      foundActive ||
       !canOpenLearningModule(mod.order, ownedWorlds.has(activeWorld.slug))
     ) {
       status = "locked";
-    } else if (
-      !foundActive &&
-      (!suggestedModule || suggestedModule === mod.slug)
-    ) {
+    } else {
       status = "active";
       foundActive = true;
-    } else {
-      status = "available";
     }
 
     const num = String(i + 1).padStart(2, "0");
@@ -257,12 +247,6 @@ export default async function DashboardPage() {
       patchSrc: patchSrc(activeWorld.slug, mod.slug),
     };
   });
-
-  // Ensure at least one module is active
-  if (!dashModules.some((m) => m.status === "active")) {
-    const firstAvailable = dashModules.find((m) => m.status === "available");
-    if (firstAvailable) firstAvailable.status = "active";
-  }
 
   const completedModules = dashModules.filter(
     (m) => m.status === "done",
@@ -348,8 +332,14 @@ export default async function DashboardPage() {
     activeWorld.slug === "deep-orbit" ? (
       <SystemEvidence
         userId={user.id}
-        unavailable={!!activityResult.error || !!reviewResult.error}
+        unavailable={
+          !!activityResult.error ||
+          !!reviewResult.error ||
+          !!progressError ||
+          !!attemptsError
+        }
         stages={buildSystemEvidence({
+          entitled: ownedWorlds.has("deep-orbit"),
           lessons: getWorldLessons("deep-orbit"),
           attempts: exerciseAttempts ?? [],
           progress: progressRecords ?? [],
@@ -369,7 +359,6 @@ export default async function DashboardPage() {
         plateSrc={surfacePlateSrc(activeWorld.slug, "dashboard")}
         briefing={currentModuleInfo}
         resumeUrl={resumeUrl}
-        systemEvidence={systemEvidence}
         totalWorldLessons={totalLessons}
       />
     );
@@ -483,11 +472,6 @@ export default async function DashboardPage() {
 
   return (
     <DashboardView
-      continuation={
-        completedLessonKeys.has("deep-orbit/capstone/launch") ? (
-          <NextLearningTheme />
-        ) : null
-      }
       systemEvidence={systemEvidence}
       displayName={displayName}
       avatarUrl={avatarUrl}

@@ -1,4 +1,3 @@
-import { canOpenLearningModule } from "@tensorcraft/shared";
 import { getLearningRoutePreference } from "@/lib/learning-route-server";
 import { LearningRoutePicker } from "@/app/components/learning-route-picker";
 import { CourseProjectPreview } from "@/app/components/course-project-preview";
@@ -131,21 +130,33 @@ export default async function WorldDetailPage({ params }: Props) {
     );
   }
 
-  // Completion and paid access are separate from recommended study order.
+  // Module statuses: sequential unlock (owner ruling 2026-09-20, restoring
+  // the pre-September order). The first incomplete module is the open one;
+  // every module after it is locked until it is done. Free == module 1,
+  // matching the paywall gate in worlds/[slug]/[module]/[lesson]/page.tsx.
+  let foundFirstIncomplete = false;
   const moduleMapItems = worldModules.map((mod) => {
     const modLessons = getModuleLessons(slug, mod.slug);
     const totalLessons = modLessons.length;
     const completedCount = completedByModule.get(mod.slug) ?? 0;
     const hasStarted = (startedByModule.get(mod.slug) ?? 0) > 0;
-    const accessible = canOpenLearningModule(mod.order, hasPurchased);
-    const status: ModuleStatus =
-      completedCount >= totalLessons && totalLessons > 0
-        ? "completed"
-        : !accessible
-          ? "locked"
-          : hasStarted
-            ? "active"
-            : "available";
+    const isFree = mod.order === 1;
+
+    let status: ModuleStatus;
+    if (completedCount >= totalLessons && totalLessons > 0) {
+      status = "completed";
+    } else if (!foundFirstIncomplete) {
+      foundFirstIncomplete = true;
+      if (!user) {
+        status = isFree ? "available" : "locked";
+      } else if (!hasPurchased && !isFree) {
+        status = "locked";
+      } else {
+        status = hasStarted ? "active" : "available";
+      }
+    } else {
+      status = "locked";
+    }
 
     // Compute average score for completed modules
     const modScores = scoresByModule.get(mod.slug) ?? [];
@@ -156,19 +167,29 @@ export default async function WorldDetailPage({ params }: Props) {
           ) / 10
         : null;
 
-    // Compute lesson statuses
+    // Lesson statuses follow the same order inside a module.
+    let foundFirstIncompleteLessonInModule = false;
     const lessonItems = modLessons.map((lesson) => {
       const lessonProgress = progressByLesson.get(lesson.slug);
       const progressStatus = lessonProgress?.status;
 
-      const lessonStatus: "completed" | "in_progress" | "available" | "locked" =
-        progressStatus === "completed"
-          ? "completed"
-          : !accessible
-            ? "locked"
-            : progressStatus === "in_progress"
-              ? "in_progress"
-              : "available";
+      let lessonStatus: "completed" | "in_progress" | "available" | "locked";
+      if (progressStatus === "completed") {
+        lessonStatus = "completed";
+      } else if (progressStatus === "in_progress") {
+        lessonStatus = "in_progress";
+        foundFirstIncompleteLessonInModule = true;
+      } else if (isFree) {
+        lessonStatus = "available";
+      } else if (
+        !foundFirstIncompleteLessonInModule &&
+        (status === "active" || status === "available")
+      ) {
+        foundFirstIncompleteLessonInModule = true;
+        lessonStatus = "available";
+      } else {
+        lessonStatus = "locked";
+      }
 
       return {
         slug: lesson.slug,
@@ -348,8 +369,9 @@ export default async function WorldDetailPage({ params }: Props) {
           className="text-base md:text-xl"
           style={{ color: "var(--tc-muted)" }}
         >
-          Build, evaluate, and run a signal classifier in JavaScript while the
-          Archimedes investigates an unexplained transmission.
+          Build, evaluate, and run a signal classifier in JavaScript.{" "}
+          {worldModules.length} modules take you from tensors to a model running
+          in the browser.
         </p>
 
         <div className="flex gap-8 md:gap-12 mt-6">
@@ -472,24 +494,27 @@ export default async function WorldDetailPage({ params }: Props) {
           <div className="mt-8">{trailerPanel}</div>
         )}
 
-        {/* Course preferences and the project brief close the page. They
-            used to sit between the header and the film, which put a
-            settings panel in front of the story for every visitor (owner,
-            2026-09-20). Collapsed for everyone now, prospects included:
-            the route is a choice a reader can come back to, not the first
-            thing the world asks of them. */}
+        {/* The project brief closes the page, collapsed. Course preferences
+            (route and readiness check) render for purchasers only: prospects
+            never see them, even collapsed (owner, 2026-09-20). They used to
+            sit between the header and the film, which put a settings panel
+            in front of the story for every visitor. */}
         {slug === "deep-orbit" && (
           <details className="mt-8 border border-border bg-surface p-4">
             <summary className="min-h-11 cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-primary">
-              Course preferences and project brief
+              {hasPurchased
+                ? "Course preferences and project brief"
+                : "Project brief"}
             </summary>
-            <LearningRoutePicker
-              accountId={user?.id ?? null}
-              initialRoute={learningPreference.route}
-              unavailable={learningPreference.unavailable}
-              source="world"
-              showReadiness
-            />
+            {hasPurchased && (
+              <LearningRoutePicker
+                accountId={user?.id ?? null}
+                initialRoute={learningPreference.route}
+                unavailable={learningPreference.unavailable}
+                source="world"
+                showReadiness
+              />
+            )}
             <CourseProjectPreview />
           </details>
         )}

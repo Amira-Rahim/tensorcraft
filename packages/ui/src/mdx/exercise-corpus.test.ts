@@ -4,19 +4,22 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 // Node worker path: same buildFullCode + HARNESS + real TFJS as the browser
-// worker; only the worker transport differs IN CODE. The RUNTIME differs in
-// one way this file cannot close (blind verifier, 2026-09-12): tfjs picks its
-// backend from the environment, and in a browser Worker `WorkerGlobalScope`
-// is defined, so isBrowser() is true and the learner runs on WEBGL. Here, and
-// in the CI vm harness, only the cpu backend is registered. Both harnesses
-// agree with each other on all 65 exercises (measured: 0 pass/fail and 0
-// test-name disagreements), but neither reproduces the learner's float
-// arithmetic. Graders that train a model therefore assert integers and
-// offsets (optimizer.iterations, halt minus best epoch) or use tolerances at
-// least an order of magnitude wider than measured cpu error (the RNN
-// agreement gate is 5e-6 against a measured worst case of 1.1e-7). A numeric
-// assertion tighter than that is a webgl flake waiting to happen, and this
-// test will not catch it.
+// worker; only the worker transport differs IN CODE. Since 2026-09-20 the
+// browser worker pins the cpu backend too (pinCpuBackend in WORKER_BODY), so
+// in the normal case a learner's float arithmetic is the arithmetic this
+// file runs. The pin is guarded, though: when setBackend('cpu') is refused,
+// tfjs falls back to its own choice, and in a browser Worker
+// `WorkerGlobalScope` is defined, so isBrowser() is true and that choice is
+// WEBGL. Here, and in the CI vm harness, only the cpu backend is registered,
+// so that fallback path is one this file cannot reproduce (blind verifier,
+// 2026-09-12). Both harnesses agree with each other on all 65 exercises
+// (measured: 0 pass/fail and 0 test-name disagreements). Graders that train
+// a model therefore still assert integers and offsets (optimizer.iterations,
+// halt minus best epoch) or use tolerances at least an order of magnitude
+// wider than measured cpu error (the RNN agreement gate is 5e-6 against a
+// measured worst case of 1.1e-7). A numeric assertion tighter than that is a
+// webgl flake waiting to happen on the fallback path, and this test will not
+// catch it.
 import { parseAndRunTests } from "./exercise-runner-node";
 
 /**

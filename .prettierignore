@@ -20,3 +20,8 @@ apps/web/public/vendor
 # packages/content/__tests__/slop-lexicon.test.ts. Content style is governed
 # by its own gates and docs/writing-quality-rubric.md instead.
 packages/content/content
+
+# Learner download folders under apps/web/public/assignments are packaged
+# into zips by scripts/package-*.py; formatting them after packaging made the
+# download differ from the served files (audit 2026-09-20). Hands off.
+apps/web/public/assignments

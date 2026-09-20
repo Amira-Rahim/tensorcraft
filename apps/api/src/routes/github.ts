@@ -15,6 +15,7 @@ import {
   exchangeCodeForToken,
   getGitHubUsername,
   GitHubApiError,
+  type GitHubOAuthTokens,
   pushFile,
   revokeUserToken,
 } from "../lib/github";
@@ -194,26 +195,91 @@ github.post("/connect", async (c) => {
 // It does NOT require our own auth middleware, identity is encoded in
 // `state` (userId.{uuid}), validated against the HttpOnly cookie from /connect.
 
+/**
+ * Closed set of codes the web app's Settings page receives as
+ * `?github_error=<code>` when a browser-driven connection fails.
+ */
+type ConnectionErrorCode =
+  | "access_denied"
+  | "state_mismatch"
+  | "not_configured"
+  | "exchange_failed"
+  | "profile_failed"
+  | "storage_failed";
+
+/** The JSON error a programmatic client receives for the same failure. */
+interface JsonFailure {
+  status: 400 | ReturnType<typeof mapGitHubError>["status"];
+  body: ReturnType<typeof structuredError>;
+}
+
+/** The callback is a top-level navigation when the client asks for a page. */
+function wantsHtml(c: Context<AppEnv>): boolean {
+  return c.req.header("Accept")?.includes("text/html") ?? false;
+}
+
+/** Settings on the web app, the only place OAuth navigation may land. */
+function settingsUrl(): URL {
+  return new URL("/settings", process.env.APP_URL ?? "http://localhost:3000");
+}
+
+/**
+ * Ends a failed connection attempt. Every error branch of the callback goes
+ * through here so none can strand a browser: a learner who cancelled on
+ * GitHub used to land on a JSON body at the API origin with no way back
+ * (audit 2026-09-20). Browsers are sent to Settings with a code the page can
+ * explain; programmatic clients keep the JSON error and status they had.
+ */
+function failConnection(
+  c: Context<AppEnv>,
+  code: ConnectionErrorCode,
+  json: JsonFailure,
+  err?: unknown,
+): Response {
+  // A cancel is a normal outcome; everything else deserves a warning.
+  logger[code === "access_denied" ? "info" : "warn"](
+    { route: "github.callback", code, status: json.status, err },
+    "GitHub connection failed",
+  );
+  if (wantsHtml(c)) {
+    const target = settingsUrl();
+    target.searchParams.set("github_error", code);
+    return c.redirect(target.toString(), 302);
+  }
+  return c.json(json.body, json.status);
+}
+
 github.get("/callback", async (c) => {
   const code = c.req.query("code");
   const state = c.req.query("state");
   const error = c.req.query("error");
 
   if (error) {
-    return c.json(
-      structuredError("validation_error", `GitHub returned error: ${error}`),
-      400,
+    // `access_denied` is the learner cancelling on GitHub. GitHub's other
+    // authorize-step errors (application_suspended, redirect_uri_mismatch)
+    // are operator-side, so they read as a configuration problem.
+    return failConnection(
+      c,
+      error === "access_denied" ? "access_denied" : "not_configured",
+      {
+        status: 400,
+        body: structuredError(
+          "validation_error",
+          `GitHub returned error: ${error}`,
+        ),
+      },
+      error,
     );
   }
 
   if (!code || !state) {
-    return c.json(
-      structuredError(
+    return failConnection(c, "state_mismatch", {
+      status: 400,
+      body: structuredError(
         "validation_error",
         "Missing `code` or `state` query parameter",
       ),
-      400,
-    );
+    });
   }
 
   // CSRF defense: the `state` query param must match the `tc_gh_oauth_state`
@@ -223,29 +289,32 @@ github.get("/callback", async (c) => {
   // identity to the attacker's profile row.
   const cookieState = getCookie(c, "tc_gh_oauth_state");
   if (!cookieState) {
-    return c.json(
-      structuredError(
+    return failConnection(c, "state_mismatch", {
+      status: 400,
+      body: structuredError(
         "validation_error",
         "OAuth state cookie missing; restart the GitHub connect flow",
       ),
-      400,
-    );
+    });
   }
   const a = Buffer.from(state);
   const b = Buffer.from(cookieState);
   if (a.length !== b.length || !timingSafeEqual(a, b)) {
     deleteCookie(c, "tc_gh_oauth_state", { path: "/api/github" });
-    return c.json(
-      structuredError("validation_error", "OAuth state mismatch"),
-      400,
-    );
+    return failConnection(c, "state_mismatch", {
+      status: 400,
+      body: structuredError("validation_error", "OAuth state mismatch"),
+    });
   }
   // One-shot: invalidate cookie immediately so the same state can't be replayed.
   deleteCookie(c, "tc_gh_oauth_state", { path: "/api/github" });
 
   const [userId] = state.split(".");
   if (!userId) {
-    return c.json(structuredError("validation_error", "Invalid state"), 400);
+    return failConnection(c, "state_mismatch", {
+      status: 400,
+      body: structuredError("validation_error", "Invalid state"),
+    });
   }
 
   const clientId = process.env.GITHUB_CLIENT_ID;
@@ -255,35 +324,45 @@ github.get("/callback", async (c) => {
     `${process.env.APP_URL ?? "http://localhost:3000"}/api/github/callback`;
 
   if (!clientId || !clientSecret) {
-    return c.json(
-      structuredError(
+    return failConnection(c, "not_configured", {
+      status: 500,
+      body: structuredError(
         "internal_error",
         "GitHub App is not configured on this server",
       ),
-      500,
-    );
+    });
   }
 
+  let tokens: GitHubOAuthTokens;
   try {
-    const tokens = await exchangeCodeForToken({
+    tokens = await exchangeCodeForToken({
       clientId,
       clientSecret,
       code,
       redirectUri,
     });
+  } catch (err) {
+    return failConnection(c, "exchange_failed", mapGitHubError(err), err);
+  }
 
-    // Look up the username so we can persist it alongside the token.
-    const username = await getGitHubUsername(tokens.access_token);
-    if (!username) {
-      return c.json(
-        structuredError(
-          "github_api_error",
-          "Failed to fetch GitHub user after token exchange",
-        ),
-        500,
-      );
-    }
+  // Look up the username so we can persist it alongside the token.
+  let username: string | null;
+  try {
+    username = await getGitHubUsername(tokens.access_token);
+  } catch (err) {
+    return failConnection(c, "profile_failed", mapGitHubError(err), err);
+  }
+  if (!username) {
+    return failConnection(c, "profile_failed", {
+      status: 500,
+      body: structuredError(
+        "github_api_error",
+        "Failed to fetch GitHub user after token exchange",
+      ),
+    });
+  }
 
+  try {
     // Use the admin client here, no user-scoped Supabase JWT available
     // in the callback request. RLS on `profiles` must still allow this
     // via the service role.
@@ -305,28 +384,21 @@ github.get("/callback", async (c) => {
         { err: dbError, route: "github.callback", userId },
         "Failed to persist GitHub token (callback)",
       );
-      return c.json(
-        structuredError("internal_error", "Failed to store GitHub token"),
-        500,
-      );
+      return failConnection(c, "storage_failed", {
+        status: 500,
+        body: structuredError("internal_error", "Failed to store GitHub token"),
+      });
     }
-
-    // OAuth navigation should return the learner to the web app. Keep JSON
-    // responses for programmatic clients that do not request an HTML page.
-    if (c.req.header("Accept")?.includes("text/html")) {
-      return c.redirect(
-        new URL(
-          "/settings",
-          process.env.APP_URL ?? "http://localhost:3000",
-        ).toString(),
-        302,
-      );
-    }
-    return c.json({ connected: true, username });
   } catch (err) {
-    const mapped = mapGitHubError(err);
-    return c.json(mapped.body, mapped.status);
+    return failConnection(c, "storage_failed", mapGitHubError(err), err);
   }
+
+  // OAuth navigation should return the learner to the web app. Keep JSON
+  // responses for programmatic clients that do not request an HTML page.
+  if (wantsHtml(c)) {
+    return c.redirect(settingsUrl().toString(), 302);
+  }
+  return c.json({ connected: true, username });
 });
 
 // ──────────────────────────────────────────────────────────────────────────

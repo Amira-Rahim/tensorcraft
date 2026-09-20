@@ -22,6 +22,8 @@ let mockProfileSelectError: unknown = null;
 // Captures of calls
 const mockProfileUpdate = vi.fn();
 const mockAdminProfileUpdate = vi.fn();
+// Error returned by the admin-client profile update (callback persistence).
+let mockAdminProfileUpdateError: unknown = null;
 
 // world_progress rows for retroactive-push tests
 let mockWorldProgressRows: Array<Record<string, unknown>> = [];
@@ -115,7 +117,7 @@ vi.mock("@tensorcraft/supabase", () => ({
           update: (data: unknown) => {
             mockAdminProfileUpdate(data);
             return {
-              eq: () => Promise.resolve({ error: null }),
+              eq: () => Promise.resolve({ error: mockAdminProfileUpdateError }),
             };
           },
         };
@@ -149,6 +151,7 @@ beforeEach(() => {
   mockGetUser.mockReset();
   mockProfileUpdate.mockReset();
   mockAdminProfileUpdate.mockReset();
+  mockAdminProfileUpdateError = null;
   mockProfileRow = null;
   mockProfileSelectError = null;
   mockWorldProgressRows = [];
@@ -620,6 +623,188 @@ describe("GitHub routes, connect / callback / disconnect", () => {
       );
       // exchangeCodeForToken throws → mapped to 500 github_api_error
       expect(res.status).toBe(500);
+    });
+
+    // The callback is a top-level browser navigation from GitHub. A JSON body
+    // at the API origin strands the learner with no way back (audit
+    // 2026-09-20), so every failure sends an HTML client to Settings with one
+    // of a closed set of `github_error` codes. Programmatic clients keep the
+    // JSON error they always had.
+    describe("browser (text/html) clients", () => {
+      const HTML = { Accept: "text/html,application/xhtml+xml" };
+      const STATE = "user_123.nonce";
+      const COOKIE = `tc_gh_oauth_state=${STATE}`;
+
+      function expectSettingsRedirect(res: Response, code: string) {
+        expect(res.status).toBe(302);
+        expect(res.headers.get("location")).toBe(
+          `http://localhost:3000/settings?github_error=${code}`,
+        );
+      }
+
+      function happyGitHub(tokens: Record<string, unknown>) {
+        fetchHandler = async (url) => {
+          if (url === "https://github.com/login/oauth/access_token")
+            return jsonResponse(tokens);
+          if (url === "https://api.github.com/user")
+            return jsonResponse({ login: "amira-test" });
+          throw new Error(`unexpected ${url}`);
+        };
+      }
+
+      it("sends a learner who cancelled on GitHub back to Settings with access_denied", async () => {
+        const res = await createApp().request(
+          `/api/github/callback?error=access_denied&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "access_denied");
+      });
+
+      it("maps GitHub's other authorize errors (operator-side) to not_configured", async () => {
+        const res = await createApp().request(
+          `/api/github/callback?error=redirect_uri_mismatch&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "not_configured");
+      });
+
+      it("sends a callback with no state cookie back with state_mismatch", async () => {
+        const res = await createApp().request(
+          `/api/github/callback?code=ghcode&state=${STATE}`,
+          { headers: HTML },
+        );
+        expectSettingsRedirect(res, "state_mismatch");
+      });
+
+      it("sends a callback whose state does not match the cookie back with state_mismatch", async () => {
+        const res = await createApp().request(
+          "/api/github/callback?code=ghcode&state=user_123.forged",
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "state_mismatch");
+        // The one-shot cookie is still discarded on a mismatch.
+        expect(res.headers.get("set-cookie")).toContain("Max-Age=0");
+      });
+
+      it("sends a callback missing code or state back with state_mismatch", async () => {
+        const res = await createApp().request("/api/github/callback", {
+          headers: HTML,
+        });
+        expectSettingsRedirect(res, "state_mismatch");
+      });
+
+      it("sends the learner back with not_configured when the App secret is missing", async () => {
+        vi.stubEnv("GITHUB_CLIENT_SECRET", "");
+        const res = await createApp().request(
+          `/api/github/callback?code=ghcode&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "not_configured");
+      });
+
+      it("sends the learner back with exchange_failed when the token exchange fails", async () => {
+        fetchHandler = async (url) => {
+          if (url === "https://github.com/login/oauth/access_token")
+            return jsonResponse({ error: "bad_verification_code" });
+          throw new Error(`unexpected ${url}`);
+        };
+        const res = await createApp().request(
+          `/api/github/callback?code=bad&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "exchange_failed");
+        expect(mockAdminProfileUpdate).not.toHaveBeenCalled();
+      });
+
+      it("sends the learner back with profile_failed when GitHub rejects the new token", async () => {
+        fetchHandler = async (url) => {
+          if (url === "https://github.com/login/oauth/access_token")
+            return jsonResponse({
+              access_token: "ghu_t",
+              token_type: "bearer",
+            });
+          if (url === "https://api.github.com/user")
+            return new Response("bad credentials", { status: 401 });
+          throw new Error(`unexpected ${url}`);
+        };
+        const res = await createApp().request(
+          `/api/github/callback?code=ghcode&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "profile_failed");
+        expect(mockAdminProfileUpdate).not.toHaveBeenCalled();
+      });
+
+      it("sends the learner back with profile_failed when the user lookup returns no login", async () => {
+        fetchHandler = async (url) => {
+          if (url === "https://github.com/login/oauth/access_token")
+            return jsonResponse({
+              access_token: "ghu_t",
+              token_type: "bearer",
+            });
+          if (url === "https://api.github.com/user")
+            return new Response("upstream down", { status: 502 });
+          throw new Error(`unexpected ${url}`);
+        };
+        const res = await createApp().request(
+          `/api/github/callback?code=ghcode&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "profile_failed");
+        expect(mockAdminProfileUpdate).not.toHaveBeenCalled();
+      });
+
+      it("sends the learner back with storage_failed when the profile write fails", async () => {
+        happyGitHub({ access_token: "ghu_t", token_type: "bearer" });
+        mockAdminProfileUpdateError = { message: "connection reset" };
+        const res = await createApp().request(
+          `/api/github/callback?code=ghcode&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "storage_failed");
+      });
+
+      it("sends the learner back with storage_failed when the rotating pair cannot be encrypted", async () => {
+        vi.stubEnv("GITHUB_TOKEN_ENC_KEY", "");
+        happyGitHub({
+          access_token: "ghu_access",
+          refresh_token: "ghr_refresh",
+          token_type: "bearer",
+          expires_in: 28800,
+          refresh_token_expires_in: 15897600,
+        });
+        const res = await createApp().request(
+          `/api/github/callback?code=ghcode&state=${STATE}`,
+          { headers: { ...HTML, Cookie: COOKIE } },
+        );
+        expectSettingsRedirect(res, "storage_failed");
+        expect(mockAdminProfileUpdate).not.toHaveBeenCalled();
+      });
+
+      it("keeps the JSON error for a client that does not ask for HTML", async () => {
+        const res = await createApp().request(
+          `/api/github/callback?error=access_denied&state=${STATE}`,
+          { headers: { Cookie: COOKIE } },
+        );
+        expect(res.status).toBe(400);
+        expect(res.headers.get("location")).toBeNull();
+        expect(await res.json()).toEqual({
+          code: "validation_error",
+          error: "GitHub returned error: access_denied",
+        });
+      });
+
+      it("keeps the JSON 400 for a state mismatch from a non-browser client", async () => {
+        const res = await createApp().request(
+          "/api/github/callback?code=ghcode&state=user_123.forged",
+          { headers: { Cookie: COOKIE } },
+        );
+        expect(res.status).toBe(400);
+        expect(await res.json()).toEqual({
+          code: "validation_error",
+          error: "OAuth state mismatch",
+        });
+      });
     });
   });
 

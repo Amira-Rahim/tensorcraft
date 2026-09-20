@@ -132,6 +132,15 @@ describe("dashboard/page first-run branch", () => {
     expect(props.totalWorldLessons).toBe(2);
   });
 
+  it("hands FirstRunView no evidence panel, because nothing has been recorded yet", async () => {
+    // Audit 2026-09-20: the five-stage panel rendered empty on first run and
+    // pointed a free learner at four paid modules. It waits for a record.
+    const { default: DashboardPage } = await import("../page");
+    const element = await DashboardPage();
+    expect(viewName(element)).toBe("FirstRunViewMock");
+    expect(viewProps(element).systemEvidence).toBeUndefined();
+  });
+
   it("renders FirstRunView when lessons were started but never completed", async () => {
     tableData.world_progress = [
       {

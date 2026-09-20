@@ -1,6 +1,7 @@
 import { resolveDueForUser } from "@/lib/review-store-server";
 import { FREE_RECALL_PROMPTS } from "@/lib/free-recall-prompts";
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
 import { worlds } from "@tensorcraft/worlds";
 import { LAUNCHED_WORLDS, isLaunched } from "@tensorcraft/shared";
 import {
@@ -11,6 +12,7 @@ import {
   getModules,
   getLessonExercises,
   getWorldLessons,
+  isFoundationsModule,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -97,8 +99,9 @@ export default async function LessonPage({ params, searchParams }: Props) {
   const exercises = getLessonExercises(lessonSlug);
   const mod = getModule(slug, moduleSlug);
 
-  // Paywall: Module 1 is free, Module 2+ requires purchase
-  // Prerequisites guide study order but do not restrict entitled learners.
+  // Paywall: Module 1 is free, Module 2+ requires purchase.
+  // Sequential unlock: a paid module opens after the previous one is done
+  // (owner ruling 2026-09-20, reversing the advisory prerequisites of P2).
   //
   // Per dev-plan §4c, the paywall uses redirect-based enforcement. Both the
   // signed-out and the authenticated-but-locked case land on
@@ -198,6 +201,63 @@ export default async function LessonPage({ params, searchParams }: Props) {
     if (p.module_id === moduleSlug && p.status === "completed") {
       completedLessonSlugs.add(p.lesson_id);
     }
+  }
+
+  // prevCompleted resolves true when there is no previous module or no
+  // signed-in user, so only a purchaser on module 2+ can be held here.
+  const requiresPrerequisite = !prevCompleted;
+  const prevModuleSlug = prevMod?.slug ?? moduleSlug;
+  // A lesson is locked while an earlier lesson in its module is incomplete,
+  // except in the free track, the current lesson and each module's opener.
+  const isFreeModule = mod ? isFoundationsModule(mod) : false;
+  function isLessonLocked(
+    lessonOrder: number,
+    lessonSlugToCheck: string,
+  ): boolean {
+    if (isFreeModule) return false;
+    if (lessonSlugToCheck === lessonSlug) return false;
+    if (lessonOrder === 1) return false;
+    for (const l of moduleLessons) {
+      if (l.order >= lessonOrder) break;
+      if (!completedLessonSlugs.has(l.slug)) return true;
+    }
+    return false;
+  }
+
+  if (requiresPrerequisite) {
+    return (
+      <main className="min-h-screen" style={{ background: "var(--tc-bg)" }}>
+        <div className="flex-1 max-w-3xl mx-auto px-8 md:px-14 py-16 font-sans">
+          <div
+            className="p-8 text-center"
+            style={{
+              background: "var(--tc-surface)",
+              border: "1px solid var(--tc-border)",
+            }}
+          >
+            <h2
+              className="text-lg font-semibold mb-2"
+              style={{ color: "var(--tc-text)" }}
+            >
+              Complete the previous module first
+            </h2>
+            <p className="text-sm mb-6" style={{ color: "var(--tc-muted)" }}>
+              Finish all lessons in the previous module to unlock this one.
+            </p>
+            <Link
+              href={`/worlds/${slug}/${prevModuleSlug}`}
+              className="inline-flex items-center min-h-11 px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
+              style={{
+                background: "var(--tc-accent)",
+                color: "var(--tc-on-primary)",
+              }}
+            >
+              Go to previous module
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -305,7 +365,7 @@ export default async function LessonPage({ params, searchParams }: Props) {
             slug: l.slug,
             title: l.title,
             order: l.order,
-            locked: false, // This route already verified free or paid access.
+            locked: isLessonLocked(l.order, l.slug),
             completed: completedLessonSlugs.has(l.slug),
           }))}
         />

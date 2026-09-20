@@ -190,7 +190,7 @@ The exercise uses an ONNX stand-in to grade inputs, awaited outputs and timing b
 Nazari keeps TF.js on the consoles for this release. Demir files the ONNX export with the measurements, then finds a third entry in the log. Timestamp 0317. Owner: ARIA.
 
 <Dialogue speaker="ARIA">
-I compared the recorded decisions. My rules rejected sample 7741. My successor assigned it a score near the threshold. Neither result tells us what produced the signal. I have retained both.
+I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 0.9 milliseconds on the WASM bench and 3.4 in a live pipeline still running WebGL, and is uncertain about it. Uncertainty appears to be the more expensive product, and the more accurate one. For the record: at 673 parameters the WebGL backend costs more per call than it returns. That reverses as my successor grows.
 </Dialogue>
 
 "My successor." Demir reads the line twice. Nobody taught her to call it that.

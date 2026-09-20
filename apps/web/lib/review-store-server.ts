@@ -6,7 +6,7 @@
  * down as props. `review-store-guest.ts` is the signed-out counterpart, and
  * `free-recall-prompts.ts` is the table that path matches against.
  *
- * THIS MODULE IS A SECURITY BOUNDARY. 75 of Deep Orbit's 82 recall prompts are
+ * THIS MODULE IS A SECURITY BOUNDARY. 76 of Deep Orbit's 83 recall prompts are
  * paid content; only the 7 in the free `foundations` module are not. A
  * `review_queue` row is a KEY, never text, so this file is the only place a
  * key becomes readable prose for a signed-in learner. Four rules keep that
@@ -117,7 +117,7 @@ export async function resolveDueForUser(
 
   // Unbounded on purpose, with `limit` applied after the filter below rather
   // than before it. Filtering second would let a dropped item consume a slot:
-  // a refunded learner keeps up to 74 paid rows and 6 free ones, and their
+  // a refunded learner keeps up to 76 paid rows and 7 free ones, and their
   // paid rows are the oldest and so the most overdue, so a pre-filter
   // `selectDue(items, now, 2)` would return two paid keys, drop both, and
   // show them nothing forever while free items sat due. Not a leak (they see

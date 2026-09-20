@@ -56,7 +56,7 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `GITHUB_CLIENT_ID` | No | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET` | No | GitHub OAuth client secret |
 | `GITHUB_CALLBACK_URL` | Integration | Registered callback URL. Production uses `https://api.tensorcraft.app/api/github/callback`. |
-| `GITHUB_TOKEN_ENC_KEY` | Integration | Encryption key for stored GitHub tokens. Preserve the existing key when deploying. |
+| `GITHUB_TOKEN_ENC_KEY` | Integration, required in production | Encryption key for stored GitHub tokens; the OAuth callback fails without it, and the deploy preflight checks for it. Preserve the existing key when deploying. |
 
 #### Kit (ConvertKit) Email
 
