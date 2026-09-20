@@ -85,9 +85,6 @@ export function ModuleEntryContext({
   if (!context) return null;
   return (
     <div className="mt-4 space-y-3 text-sm">
-      <h2 className="font-semibold">
-        What the crew knows at this module's start
-      </h2>
       <p>{context.story}</p>
       <p>
         <strong>Useful prerequisites:</strong> {context.prerequisites}

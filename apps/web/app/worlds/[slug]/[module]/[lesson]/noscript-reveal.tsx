@@ -21,7 +21,7 @@ export function NoscriptReveal() {
   return (
     <noscript>
       <style
-        // Mirrors the three hiding rules in globals.css. Kept as one string
+        // Mirrors the four hiding rules in globals.css. Kept as one string
         // so it stays obvious that this is an override and not new styling.
         dangerouslySetInnerHTML={{
           __html: `
@@ -37,6 +37,9 @@ export function NoscriptReveal() {
   display: revert !important;
 }
 :is([data-script-state="idle"], [data-script-state="playing"]) .tc-cut-to {
+  display: revert !important;
+}
+:is([data-script-state="idle"], [data-script-state="playing"]) [data-post-scene] {
   display: revert !important;
 }
 `,

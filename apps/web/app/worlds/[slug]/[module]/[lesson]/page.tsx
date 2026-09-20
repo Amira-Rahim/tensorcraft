@@ -24,8 +24,6 @@ import { NoscriptReveal } from "./noscript-reveal";
 import { LessonPrefsProvider } from "@tensorcraft/ui";
 import type { Metadata } from "next";
 import { getLearningRoutePreference } from "@/lib/learning-route-server";
-import { LearningRoutePicker } from "@/app/components/learning-route-picker";
-import { ModuleEntryContext } from "@/app/components/module-entry-context";
 
 interface Props {
   params: Promise<{ slug: string; module: string; lesson: string }>;
@@ -176,9 +174,24 @@ export default async function LessonPage({ params, searchParams }: Props) {
     query?.start === "concept" ||
     (query?.start === "experiment" && lessonSlug === "tensor-shapes")
       ? 1
-      : query?.start === "challenge" || learningPreference.route === "challenge"
+      : query?.start === "challenge"
         ? 3
         : 0;
+
+  // Mid-course catch-up, and nothing else, belongs on a lesson page (owner,
+  // 2026-09-20). It renders inside the Briefing's story zone after the scene
+  // finishes, never as chrome above it. Module 1 never gets one: there is
+  // nothing to catch up on, and its first lesson is the activation moment.
+  // Lessons 2-5 of a module follow the one before them, so they get none
+  // either.
+  const moduleEntry =
+    mod && mod.order > 1 && lesson.order === 1
+      ? {
+          moduleSlug,
+          previousModule: prevMod?.slug,
+          previousComplete: prevCompleted,
+        }
+      : null;
 
   const completedLessonSlugs = new Set<string>();
   for (const p of progress) {
@@ -267,30 +280,6 @@ export default async function LessonPage({ params, searchParams }: Props) {
           and we&rsquo;ll carry your progress over.
         </div>
       )}
-      {/* Keep the reader in the initial HTML. A streamed Suspense boundary
-          needs JavaScript to reveal its content, including the no-JS fallback. */}
-      {slug === "deep-orbit" && (
-        <div className="mx-auto max-w-5xl px-5">
-          <details className="my-4 border-b border-border pb-3 text-text">
-            <summary className="cursor-pointer text-sm focus-visible:outline-2 focus-visible:outline-primary">
-              Course route and prerequisites
-            </summary>
-            {mod && (
-              <ModuleEntryContext
-                moduleSlug={moduleSlug}
-                previousModule={prevMod?.slug}
-                previousComplete={prevCompleted}
-              />
-            )}
-            <LearningRoutePicker
-              accountId={user?.id ?? null}
-              initialRoute={learningPreference.route}
-              unavailable={learningPreference.unavailable}
-              source="lesson"
-            />
-          </details>
-        </div>
-      )}
       <LessonPrefsProvider
         value={{
           expandDerivations: learningPreference.route === "challenge",
@@ -309,6 +298,7 @@ export default async function LessonPage({ params, searchParams }: Props) {
           moduleSlug={moduleSlug}
           moduleName={mod?.title}
           moduleOrder={mod?.order}
+          moduleEntry={moduleEntry}
           prevLesson={prev}
           nextLesson={next}
           lessons={moduleLessons.map((l) => ({

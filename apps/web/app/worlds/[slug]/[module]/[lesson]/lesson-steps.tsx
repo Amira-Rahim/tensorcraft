@@ -9,6 +9,7 @@ import type { ResolvedReviewItem } from "@tensorcraft/shared";
 import type { FreeRecallPrompt } from "@/lib/free-recall-prompts";
 import { enqueueReviews } from "@/lib/review-store-api";
 import { LessonWarmup } from "@/app/components/lesson-warmup";
+import { ModuleEntryContext } from "@/app/components/module-entry-context";
 import Link from "next/link";
 import { ReportIssueTrigger } from "@/app/components/report-issue-button";
 import { LessonContent } from "./lesson-content";
@@ -132,6 +133,14 @@ interface LessonStepsProps {
   /** 1-based module position. Used to detect completion of the free module
    *  (order 1) so Kit can tag the out-of-free-content moment. */
   moduleOrder?: number;
+  /** Catch-up for a learner opening a later module cold. The server sets it
+   *  only on the first lesson of modules 2 and up; the Briefing renders it
+   *  after the scene has played. Null everywhere else. */
+  moduleEntry?: {
+    moduleSlug: string;
+    previousModule?: string;
+    previousComplete: boolean;
+  } | null;
   prevLesson: { slug: string; title: string } | null;
   nextLesson: { slug: string; title: string } | null;
   lessons?: Array<{
@@ -309,6 +318,7 @@ function LessonStepsInner({
   moduleSlug,
   moduleName,
   moduleOrder,
+  moduleEntry = null,
   prevLesson,
   nextLesson,
   lessons,
@@ -1096,6 +1106,7 @@ function LessonStepsInner({
         onScriptPlayed={handleScriptPlayed}
         scriptStatusRef={scriptStatusRef}
         briefingVariant={briefingVariant}
+        moduleEntry={moduleEntry}
         clipUrl={
           briefingVariant === "clip"
             ? (sceneClipFor(worldSlug, moduleSlug, lesson.slug)?.url ?? null)
@@ -1653,6 +1664,7 @@ function StepBriefing({
   onScriptPlayed,
   scriptStatusRef,
   briefingVariant = "text",
+  moduleEntry = null,
   clipUrl = null,
   reviewUserId,
   dueReviews,
@@ -1678,6 +1690,8 @@ function StepBriefing({
   }>;
   /** Which Briefing this browser serves; tags the script telemetry. */
   briefingVariant?: BriefingVariant;
+  /** Set only on the first lesson of modules 2 and up. */
+  moduleEntry?: LessonStepsProps["moduleEntry"];
   /** Approved clip URL, only when the variant is "clip". */
   clipUrl?: string | null;
 }) {
@@ -2050,6 +2064,27 @@ function StepBriefing({
           hideChallengeOnward
           hideTeaching
         />
+
+        {/* Catch-up for someone opening this module cold, after the scene
+          rather than in front of it (owner, 2026-09-20: the app opens with
+          its story). data-post-scene holds it back during playback the way
+          the teaching body is held back; it is not a timeline beat, so the
+          scene's own pacing is unchanged. Rendered in the initial HTML so a
+          reader without JavaScript still gets it (noscript-reveal.tsx). */}
+        {moduleEntry && (
+          <div data-post-scene="">
+            <details className="mt-10 border-t border-border pt-4">
+              <summary className="min-h-11 cursor-pointer text-sm text-text-muted focus-visible:outline-2 focus-visible:outline-primary">
+                Where the investigation stands
+              </summary>
+              <ModuleEntryContext
+                moduleSlug={moduleEntry.moduleSlug}
+                previousModule={moduleEntry.previousModule}
+                previousComplete={moduleEntry.previousComplete}
+              />
+            </details>
+          </div>
+        )}
       </div>
     </>
   );

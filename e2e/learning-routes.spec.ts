@@ -17,11 +17,20 @@ for (const [width, colorScheme] of [
     );
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
-    await page.goto("/worlds/deep-orbit");
     const picker = page.getByRole("region", {
       name: "Choose your way through Deep Orbit",
     });
-    await expect(picker).toBeVisible();
+    // The preferences disclosure ships closed and does not remember its
+    // state, so every navigation and reload has to reopen it.
+    const openPreferences = async () => {
+      await expect(picker).toBeHidden();
+      await page
+        .locator("summary", { hasText: "Course preferences and project brief" })
+        .click();
+      await expect(picker).toBeVisible();
+    };
+    await page.goto("/worlds/deep-orbit");
+    await openPreferences();
     const preview = page.getByRole("region", {
       name: "Take the work outside the course",
     });
@@ -40,6 +49,7 @@ for (const [width, colorScheme] of [
     expect(a11y.violations).toEqual([]);
     await picker.getByRole("button", { name: /I know the basics/ }).click();
     await page.reload();
+    await openPreferences();
     await expect(
       picker.getByRole("button", { name: /I know the basics/ }),
     ).toHaveAttribute("aria-pressed", "true");
@@ -50,6 +60,7 @@ for (const [width, colorScheme] of [
       /\/pricing\?locked=deep-orbit&module=browser-runtimes/,
     );
     await page.goto("/worlds/deep-orbit");
+    await openPreferences();
     await picker
       .getByRole("link", { name: "Try the free channel experiment" })
       .click();

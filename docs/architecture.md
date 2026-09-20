@@ -266,8 +266,8 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | Route | Page | Purpose |
 |-------|------|---------|
 | `/worlds` | World listing | Grid of 5 worlds, all LIVE |
-| `/worlds/[slug]` | World detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-world` |
-| `/worlds/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar; focus mode (global marketing nav hidden); screenplay register for story content (pre-heading story zone styled as stage directions + CUT-TO divider via `:has()` rules in `globals.css`) |
+| `/worlds/[slug]` | World detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-world`. Order is fixed: header, cast, film, map, then a collapsed "Course preferences and project brief". Nothing mounts between the header and the film |
+| `/worlds/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar; focus mode (global marketing nav hidden); screenplay register for story content (pre-heading story zone styled as stage directions + CUT-TO divider via `:has()` rules in `globals.css`). Opens on the story: only the guest notice and the lesson chrome precede the Briefing scene |
 
 ### Lesson Page Architecture (`app/worlds/[slug]/[module]/[lesson]/`)
 
@@ -278,6 +278,22 @@ The lesson page uses a three-component split:
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
 | `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), script playback on the Briefing step (beat-by-beat reveal, Skip/Replay, auto-scroll to explanation; reduced-motion safe), forward-only bottom nav (backward nav = segmented bar / swipe) |
 | `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS |
+
+**Course preferences do not live here.** The ML route picker is reachable
+from `/settings` and from the world page's collapsed disclosure, never from
+a lesson (owner, 2026-09-20: the app opens with its story). The saved route
+changes recommendations and opens the math drawers; it no longer changes
+which step a lesson opens on, so a learner on the challenge route still
+meets each scene. An explicit `?start=challenge` link still jumps ahead.
+
+**Mid-module catch-up** (`module-entry-context.tsx`) renders only on the
+first lesson of modules 2 and up, inside the Briefing, after the scene has
+played. `page.tsx` decides eligibility and passes `moduleEntry`; the reader
+stamps the wrapper `data-post-scene`, `globals.css` hides that attribute
+while `data-script-state="playing"`, and `noscript-reveal.tsx` restores it
+for clients without JavaScript. The three files are kept in agreement by
+`post-scene-contract.test.ts`, because no e2e lesson URL is in a paid
+module and jsdom never applies the stylesheet.
 
 **Step-to-component mapping:**
 

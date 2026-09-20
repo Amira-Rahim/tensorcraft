@@ -3086,6 +3086,24 @@ The full 32 high and 119 medium findings, with file and line, are in the
 audit document. Roughly 230 lower-severity findings were dropped by the
 merge cap and are recoverable from the run journal.
 
+### VISUAL BASELINES 2026-09-20: two world-page baselines now stale by design
+
+The story-first change reorders `/worlds/deep-orbit`: course preferences
+and the project brief moved out from between the header and the film and
+now close the page, collapsed, below the module map. That is a deliberate
+pixel change, so `world-deep-orbit.png` and `world-deep-orbit-light.png`
+under `e2e/visual/worlds.spec.ts-snapshots` no longer match.
+
+- [ ] **(B0) Re-mint the two deep-orbit world baselines, but read them
+  first.** These two were already drifting before this change: a cold run
+  on clean main measured 3092 against a 3152-pixel baseline, a 60-pixel
+  gap nobody has explained. Re-minting now would bake that unexplained
+  drift in behind an intended change and destroy the only record of it.
+  Measure cold, with a freshly started server, since a warm dev server
+  keeps deleted Tailwind rules alive. Establish what the 60 pixels were,
+  then re-mint. The lesson-page baselines are unaffected: no visual spec
+  captures a lesson route.
+
 ### VISUAL BASELINES 2026-09-07: GREEN, 30/30, and a CI gap
 
 Ran the visual suite for the first time since the September 5th re-pace.

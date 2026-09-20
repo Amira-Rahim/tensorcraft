@@ -383,37 +383,6 @@ export default async function WorldDetailPage({ params }: Props) {
           get the band, so they keep this strip. Self-hides for a world
           with no characters. */}
       {!trailerPanel && <WorldCast slug={world.slug} />}
-      {slug === "deep-orbit" && (
-        <div className="relative z-10 mx-auto max-w-6xl px-5 md:px-8">
-          {hasPurchased || progress.length > 0 ? (
-            <details className="border border-border bg-surface p-4">
-              <summary className="min-h-11 cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-primary">
-                Course preferences and project brief
-              </summary>
-              <LearningRoutePicker
-                accountId={user?.id ?? null}
-                initialRoute={learningPreference.route}
-                unavailable={learningPreference.unavailable}
-                source="world"
-                showReadiness
-              />
-              <CourseProjectPreview />
-            </details>
-          ) : (
-            <>
-              <LearningRoutePicker
-                accountId={user?.id ?? null}
-                initialRoute={learningPreference.route}
-                unavailable={learningPreference.unavailable}
-                source="world"
-                showReadiness
-              />
-              <CourseProjectPreview />
-            </>
-          )}
-        </div>
-      )}
-
       {/* The trailer for prospects with no progress. The header above is a
           tc-on-art surface whose dark veil only stays legible in the light
           scheme while it overlaps the viewport-capped backdrop plate;
@@ -501,6 +470,28 @@ export default async function WorldDetailPage({ params }: Props) {
             in front of their Continue CTA. */}
         {!trailerAboveMap && trailerPanel && (
           <div className="mt-8">{trailerPanel}</div>
+        )}
+
+        {/* Course preferences and the project brief close the page. They
+            used to sit between the header and the film, which put a
+            settings panel in front of the story for every visitor (owner,
+            2026-09-20). Collapsed for everyone now, prospects included:
+            the route is a choice a reader can come back to, not the first
+            thing the world asks of them. */}
+        {slug === "deep-orbit" && (
+          <details className="mt-8 border border-border bg-surface p-4">
+            <summary className="min-h-11 cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-primary">
+              Course preferences and project brief
+            </summary>
+            <LearningRoutePicker
+              accountId={user?.id ?? null}
+              initialRoute={learningPreference.route}
+              unavailable={learningPreference.unavailable}
+              source="world"
+              showReadiness
+            />
+            <CourseProjectPreview />
+          </details>
         )}
       </div>
 

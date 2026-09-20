@@ -516,6 +516,14 @@ body {
   display: none !important;
 }
 
+/* Mid-module catch-up closes the Briefing's story zone. It is deliberately
+   not a timeline beat, so without this it would sit there from the first
+   frame of the scene; hold it back exactly as the teaching body is held
+   back, and let it appear once the scene is done. */
+[data-script-state="playing"] [data-post-scene] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-script-state] [data-script-beat],
   [data-script-state] .lesson-step-content[data-story-register="true"] > * {

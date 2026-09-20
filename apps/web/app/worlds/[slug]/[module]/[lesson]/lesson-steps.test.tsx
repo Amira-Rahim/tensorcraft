@@ -124,7 +124,14 @@ const lesson = {
 const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
 const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
 
-function renderSteps(entryStep: 0 | 1 | 3 = 0) {
+function renderSteps(
+  entryStep: 0 | 1 | 3 = 0,
+  moduleEntry: {
+    moduleSlug: string;
+    previousModule?: string;
+    previousComplete: boolean;
+  } | null = null,
+) {
   return render(
     <LessonSteps
       entryStep={entryStep}
@@ -133,6 +140,7 @@ function renderSteps(entryStep: 0 | 1 | 3 = 0) {
       worldSlug="deep-orbit"
       moduleSlug="foundations"
       moduleName="Foundations: Tensors & Data"
+      moduleEntry={moduleEntry}
       prevLesson={null}
       nextLesson={null}
     />,
@@ -922,5 +930,58 @@ describe("LessonSteps, briefing clip variant (owner ruling 2026-09-04)", () => {
     expect(screen.getByTestId("scene-portrait-stub")).toBeInTheDocument();
     vi.mocked(sceneClipFor).mockReturnValue(null);
     vi.mocked(getAssignedBriefingVariant).mockReturnValue("clip");
+  });
+});
+
+describe("mid-module catch-up", () => {
+  const entry = {
+    moduleSlug: "browser-runtimes",
+    previousModule: "training-loop",
+    previousComplete: false,
+  };
+
+  it("closes the Briefing rather than preceding it", () => {
+    const { container } = renderSteps(0, entry);
+    const recap = container.querySelector("[data-post-scene]");
+    expect(recap).not.toBeNull();
+    // Held back during playback by the same mechanism as the teaching body,
+    // and out of the scene's own beat timeline.
+    expect(recap!.querySelector("[data-script-beat]")).toBeNull();
+    // Everything the scene shows comes first in the document.
+    const scene = container.querySelector("[data-script-beat]");
+    expect(
+      scene!.compareDocumentPosition(recap!) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("states what the crew knows and what the lesson assumes", () => {
+    renderSteps(0, entry);
+    expect(
+      screen.getByText("Where the investigation stands"),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/DEEP SCAN has been trained/)).toBeInTheDocument();
+    expect(screen.getByText(/Useful prerequisites:/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "revisit its lessons" }),
+    ).toHaveAttribute("href", "/worlds/deep-orbit#module-training-loop");
+  });
+
+  it("drops the backtrack offer once the previous module is finished", () => {
+    renderSteps(0, { ...entry, previousComplete: true });
+    expect(
+      screen.queryByRole("link", { name: "revisit its lessons" }),
+    ).toBeNull();
+    expect(screen.getByText(/DEEP SCAN has been trained/)).toBeInTheDocument();
+  });
+
+  it("renders nothing without it, which is every lesson of module 1", () => {
+    const { container } = renderSteps(0);
+    expect(container.querySelector("[data-post-scene]")).toBeNull();
+    expect(screen.queryByText("Where the investigation stands")).toBeNull();
+  });
+
+  it("stays on the Briefing and never follows the reader to a later step", () => {
+    const { container } = renderSteps(1, entry);
+    expect(container.querySelector("[data-post-scene]")).toBeNull();
   });
 });
