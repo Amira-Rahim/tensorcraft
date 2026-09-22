@@ -2,7 +2,9 @@
  * Reveal the lesson body when JavaScript never runs.
  *
  * The scene playback rules in globals.css hide instructional content while
- * `:is([data-script-state="idle"], [data-script-state="playing"])`, and the warm-up initially holds the Briefing in an idle state. So a client without JavaScript, which includes any crawler that
+ * `:is([data-script-state="idle"], [data-script-state="playing"])`, and the
+ * Briefing starts idle until its mount effect runs. So a client without
+ * JavaScript, which includes any crawler that
  * does not execute it, receives the lesson text at `opacity: 0` and
  * `display: none` and never sees it revealed.
  *

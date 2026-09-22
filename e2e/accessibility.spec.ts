@@ -157,10 +157,14 @@ for (const colorScheme of ["light", "dark"] as const) {
   test(`due review warm-up is accessible in ${colorScheme}`, async ({
     page,
   }) => {
-    const { seedDueReview, REVIEW_LESSON } = await import("./review-fixture");
+    // Reduced motion resolves the scene at once, so the post-scene card is
+    // on screen without a skip. Lesson 2, because the seeded prompt is
+    // lesson 1's and a warm-up only recalls earlier lessons (2026-09-22).
+    const { seedDueReview, REVIEW_WARMUP_LESSON } =
+      await import("./review-fixture");
     await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
     await seedDueReview(page);
-    await page.goto(REVIEW_LESSON);
+    await page.goto(REVIEW_WARMUP_LESSON);
     const warmup = page.getByRole("region", { name: /Warm-up/ });
     await expect(warmup).toBeVisible();
     expect((await audit(page)).violations).toEqual([]);

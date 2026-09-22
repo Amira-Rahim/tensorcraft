@@ -1046,6 +1046,7 @@ function LessonStepsInner({
       {currentStep < TOTAL_STEPS - 1 ? (
         <button
           type="button"
+          data-step-continue=""
           onClick={goNext}
           disabled={!canContinue}
           className="text-sm font-mono font-bold px-8 py-3 transition-all"
@@ -1103,6 +1104,7 @@ function LessonStepsInner({
         worldSlug={worldSlug}
         lessonSlug={lessonSlug}
         reviewUserId={reviewUserId}
+        moduleOrder={moduleOrder}
         dueReviews={warmupCompletedRef.current ? [] : dueReviews}
         onWarmupDone={handleWarmupDone}
         freeRecallPrompts={freeRecallPrompts}
@@ -1671,12 +1673,16 @@ function StepBriefing({
   moduleEntry = null,
   clipUrl = null,
   reviewUserId,
+  moduleOrder,
   dueReviews,
   freeRecallPrompts,
   onWarmupDone,
 }: {
   onWarmupDone: () => void;
   reviewUserId: string | null;
+  /** Course order of this lesson's module; with `lesson.order` it tells the
+   *  warm-up which prompts count as earlier material. */
+  moduleOrder?: number;
   dueReviews: ResolvedReviewItem[];
   freeRecallPrompts: FreeRecallPrompt[];
   lesson: LessonStepsProps["lesson"];
@@ -1711,24 +1717,30 @@ function StepBriefing({
   const [scriptState, setScriptState] = useState<"idle" | "playing" | "done">(
     "idle",
   );
-  const beginAutoPlayRef = useRef<(() => void) | null>(null);
-  const warmupReadyRef = useRef(false);
   const hasBegunRef = useRef(false);
+  // Deliberately NOT reset in the mount effect's cleanup, unlike hasBegunRef.
+  // React's development double-invoke tears the effect down and runs it
+  // again; playback must restart on that second run (its timers were
+  // cleared), but the remembered-skip metric must not be emitted twice. The
+  // spaced-review spec kept this honest by deferring the whole effect behind
+  // the warm-up; with the warm-up after the scene (2026-09-22) the guard has
+  // to be explicit.
+  const autoSkipEmittedRef = useRef(false);
   const [warmupDone, setWarmupDone] = useState(false);
   const finishWarmup = useCallback(
     (hadReviews: boolean) => {
       setWarmupDone(true);
       onWarmupDone();
+      // The card sits after the scene (2026-09-22), so once it unmounts the
+      // next thing to do is Continue. Put focus there instead of letting it
+      // fall to body.
       if (hadReviews)
         requestAnimationFrame(() => {
-          const heading = rootRef.current?.querySelector("h1");
-          if (heading) {
-            heading.tabIndex = -1;
-            heading.focus();
-          }
+          rootRef.current
+            ?.closest('[role="group"]')
+            ?.querySelector<HTMLElement>("[data-step-continue]")
+            ?.focus();
         });
-      warmupReadyRef.current = true;
-      beginAutoPlayRef.current?.();
     },
     [onWarmupDone],
   );
@@ -1877,24 +1889,28 @@ function StepBriefing({
         // this path was silent, so every skip after the first-ever manual
         // one vanished from the metric and the skip rate was biased low by
         // construction (audit 2026-09-04).
-        track(EVENTS.SCRIPT_SKIPPED, {
-          worldId: worldSlug,
-          lessonId: lessonSlug,
-          step: 0,
-          elapsedMs: 0,
-          via: "auto",
-          briefingVariant,
-        });
+        if (!autoSkipEmittedRef.current) {
+          autoSkipEmittedRef.current = true;
+          track(EVENTS.SCRIPT_SKIPPED, {
+            worldId: worldSlug,
+            lessonId: lessonSlug,
+            step: 0,
+            elapsedMs: 0,
+            via: "auto",
+            briefingVariant,
+          });
+        }
         finish(false);
       } else {
         finish(false);
       }
     };
-    beginAutoPlayRef.current = beginAutoPlay;
-    if (warmupReadyRef.current) beginAutoPlay();
+    // Nothing holds the scene back any more: the warm-up moved into the
+    // post-scene slot on 2026-09-22, so playback starts on mount as it did
+    // before the spaced-review spec deferred it.
+    beginAutoPlay();
     return () => {
       active = false;
-      beginAutoPlayRef.current = null;
       hasBegunRef.current = false;
       clearTimeline();
     };
@@ -1903,15 +1919,6 @@ function StepBriefing({
 
   return (
     <>
-      {!warmupDone && (
-        <LessonWarmup
-          userId={reviewUserId}
-          worldId={worldSlug}
-          dueReviews={dueReviews}
-          freePrompts={freeRecallPrompts}
-          onDone={finishWarmup}
-        />
-      )}
       {/* aria-busy: while the scene plays, the instructional content is
     // display:none and absent from the accessibility tree; flag the region
     // as loading so screen readers know more content is coming. */}
@@ -2069,24 +2076,44 @@ function StepBriefing({
           hideTeaching
         />
 
-        {/* Catch-up for someone opening this module cold, after the scene
-          rather than in front of it (owner, 2026-09-20: the app opens with
-          its story). data-post-scene holds it back during playback the way
-          the teaching body is held back; it is not a timeline beat, so the
+        {/* Everything that is not the story comes AFTER the scene (owner,
+          2026-09-20: the app opens with its story). Two things live here:
+          the spaced-review warm-up, which recalls earlier material before the
+          learner moves on, and the catch-up for someone opening a module
+          cold. data-post-scene holds both back during playback the way the
+          teaching body is held back; neither is a timeline beat, so the
           scene's own pacing is unchanged. Rendered in the initial HTML so a
-          reader without JavaScript still gets it (noscript-reveal.tsx). */}
-        {moduleEntry && (
+          reader without JavaScript still gets the catch-up
+          (noscript-reveal.tsx); the warm-up is client state and renders
+          nothing there. */}
+        {(!warmupDone || moduleEntry) && (
           <div data-post-scene="">
-            <details className="mt-10 border-t border-border pt-4">
-              <summary className="min-h-11 cursor-pointer text-sm text-text-muted focus-visible:outline-2 focus-visible:outline-primary">
-                Where the investigation stands
-              </summary>
-              <ModuleEntryContext
-                moduleSlug={moduleEntry.moduleSlug}
-                previousModule={moduleEntry.previousModule}
-                previousComplete={moduleEntry.previousComplete}
+            {!warmupDone && (
+              <LessonWarmup
+                userId={reviewUserId}
+                worldId={worldSlug}
+                opening={
+                  moduleOrder === undefined
+                    ? null
+                    : { moduleOrder, lessonOrder: lesson.order }
+                }
+                dueReviews={dueReviews}
+                freePrompts={freeRecallPrompts}
+                onDone={finishWarmup}
               />
-            </details>
+            )}
+            {moduleEntry && (
+              <details className="mt-10 border-t border-border pt-4">
+                <summary className="min-h-11 cursor-pointer text-sm text-text-muted focus-visible:outline-2 focus-visible:outline-primary">
+                  Where the investigation stands
+                </summary>
+                <ModuleEntryContext
+                  moduleSlug={moduleEntry.moduleSlug}
+                  previousModule={moduleEntry.previousModule}
+                  previousComplete={moduleEntry.previousComplete}
+                />
+              </details>
+            )}
           </div>
         )}
       </div>

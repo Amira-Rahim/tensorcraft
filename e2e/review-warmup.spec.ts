@@ -6,6 +6,9 @@ test("guest completion becomes a due warm-up the next day", async ({
 }) => {
   await page.addInitScript(() => {
     localStorage.setItem("tc-cookie-consent", "declined");
+    // The warm-up follows the scene (2026-09-22). Remembering a skip resolves
+    // the scene on mount so the card is reachable without a 15 s wait.
+    localStorage.setItem("tc-script-skip", "1");
     localStorage.setItem("tc_step_deep-orbit_introduction-to-tensors", "4");
     localStorage.setItem("tc_step_max_deep-orbit_introduction-to-tensors", "4");
   });
@@ -25,9 +28,18 @@ test("guest completion becomes a due warm-up the next day", async ({
     .toContain("deep-orbit/foundations/introduction-to-tensors/0");
   await page.clock.setFixedTime(new Date(Date.now() + 2 * 86_400_000));
   await page.goto("/worlds/deep-orbit/foundations/tensor-shapes");
+  // The scene resolves first; the card comes after it, never in front.
+  await expect(page.locator("[data-script-state='done']")).toBeAttached();
   const warmup = page.getByRole("region", { name: /Warm-up, item 1 of/ });
   await expect(warmup).toBeVisible();
-  await expect(page.locator("[data-script-state='idle']")).toBeAttached();
+  const [titleTop, cardTop] = await Promise.all([
+    page
+      .getByRole("heading", { level: 1 })
+      .boundingBox()
+      .then((b) => b?.y),
+    warmup.boundingBox().then((b) => b?.y),
+  ]);
+  expect(cardTop).toBeGreaterThan(titleTop ?? Infinity);
   const check = warmup.getByRole("button", { name: "Check", exact: true });
   await expect(check).toBeDisabled();
   await warmup.getByRole("textbox").fill("Numeric data with a shape");
@@ -45,7 +57,6 @@ test("guest completion becomes a due warm-up the next day", async ({
     .toBe(1);
   await warmup.getByRole("button", { name: "Continue to lesson" }).click();
   await expect(warmup).toHaveCount(0);
-  await expect(page.locator("[data-script-state='idle']")).toHaveCount(0);
   await page.reload();
   await expect(page.getByRole("region", { name: /Warm-up/ })).toHaveCount(0);
 });

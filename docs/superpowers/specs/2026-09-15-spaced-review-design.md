@@ -385,6 +385,29 @@ warm-up takes `aria-label="Warm-up, item 1 of 2"`, matching how
 
 ### F. Placement
 
+> **Amended 2026-09-22.** Two parts of this section no longer hold and are
+> kept below only as the record of the original reasoning.
+>
+> 1. **The warm-up now renders AFTER the scene**, inside the Briefing root's
+>    `data-post-scene` block next to the mid-module catch-up, and playback is
+>    no longer deferred. The owner's 2026-09-20 ruling is that a lesson page
+>    opens with its story, and the deferral had a cost this section did not
+>    predict: the held-back Briefing root stayed in the flow at
+>    `visibility: hidden`, so a returning learner saw one card, about 1,600
+>    px of empty page, and a Continue button. Focus moves to Continue when
+>    the last card unmounts. The `"idle"` state remains as the initial value
+>    but now lasts only until the mount effect runs.
+> 2. **Source rule is enforced, not assumed.** Section D says the warm-up
+>    asks "a question from a lesson the learner is not on"; nothing enforced
+>    it, and a learner reopening lesson 1 a day after finishing it was asked
+>    lesson 1's own prompt. `resolveDueForUser` now takes the opening lesson's
+>    course position and returns only prompts from lessons before it;
+>    `FREE_RECALL_PROMPTS` carries `moduleOrder` and `lessonOrder` so the
+>    guest warm-up applies the same rule in the browser
+>    (`apps/web/lib/course-position.ts`). A row for the current or a later
+>    lesson stays queued for a later lesson.
+
+
 `LessonWarmup` renders at the top of the Briefing step, capped at two items,
 and unmounts once both are answered so the Briefing returns to its usual shape.
 An empty queue renders nothing, which covers every learner's first lesson and

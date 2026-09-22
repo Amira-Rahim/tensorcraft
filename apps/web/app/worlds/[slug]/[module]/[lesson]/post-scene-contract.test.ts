@@ -3,10 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-// The mid-module catch-up is held back during scene playback by an
-// attribute contract spread over three files: the reader stamps it, the
-// stylesheet hides it while the scene plays, and the no-JS override puts it
-// back for a client that never runs the timeline.
+// Everything that follows the scene (the spaced-review warm-up and the
+// mid-module catch-up) is held back during playback by an attribute contract
+// spread over three files: the reader stamps it, the stylesheet hides it
+// while the scene plays, and the no-JS override puts it back for a client
+// that never runs the timeline.
 //
 // Nothing else catches a break here. jsdom component tests see the
 // attribute but never apply globals.css, and every lesson URL the e2e suite
@@ -23,7 +24,7 @@ const ATTR = "data-post-scene";
 const read = (p: string) => fs.readFileSync(path.join(webRoot, p), "utf8");
 
 describe("post-scene catch-up attribute contract", () => {
-  it("is stamped by the Briefing, on the recap and nothing else", () => {
+  it("is stamped by the Briefing, on the one post-scene block and nothing else", () => {
     const reader = read("app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx");
     const stamps = reader.match(new RegExp(`${ATTR}=`, "g")) ?? [];
     expect(stamps).toHaveLength(1);

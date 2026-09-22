@@ -53,3 +53,20 @@ describe("free-recall-prompts is server-only", () => {
     ).toBeUndefined();
   });
 });
+
+describe("course order on every free prompt", () => {
+  // The guest warm-up refuses to ask about the lesson being opened or
+  // anything after it (course-position.ts). It can only do that if every
+  // table entry says where its lesson sits.
+  it("carries the free module's order and a lesson order within it", () => {
+    for (const prompt of FREE_RECALL_PROMPTS) {
+      expect(prompt.moduleOrder).toBe(1);
+      expect(prompt.lessonOrder).toBeGreaterThanOrEqual(1);
+      expect(Number.isInteger(prompt.lessonOrder)).toBe(true);
+    }
+    // More than one lesson contributes, so the order actually discriminates.
+    expect(
+      new Set(FREE_RECALL_PROMPTS.map((p) => p.lessonOrder)).size,
+    ).toBeGreaterThan(1);
+  });
+});

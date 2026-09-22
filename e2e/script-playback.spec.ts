@@ -63,27 +63,40 @@ test.describe("Lesson script playback", () => {
   });
 });
 
-test("a due warm-up defers the story and its skip control", async ({
+test("a due warm-up waits for the story and appears after it", async ({
   page,
 }) => {
-  const { seedDueReview, REVIEW_LESSON } = await import("./review-fixture");
+  // Until 2026-09-22 the card sat in front of the scene and held playback.
+  // The page now opens with its story; the card follows in the post-scene
+  // slot, and the skip control is live from the first frame.
+  const { seedDueReview, REVIEW_WARMUP_LESSON } =
+    await import("./review-fixture");
   await seedDueReview(page);
-  await page.goto(REVIEW_LESSON);
-  const warmup = page.getByRole("region", { name: /Warm-up/ });
-  await expect(warmup).toBeVisible();
-  await expect(page.locator("[data-script-state='idle']")).not.toHaveAttribute(
+  await page.goto(REVIEW_WARMUP_LESSON);
+  await expect(page.locator("[data-script-state='playing']")).toHaveAttribute(
     "aria-busy",
     "true",
   );
-  await expect(page.getByRole("button", { name: /skip intro/i })).toHaveCount(
-    0,
-  );
+  const warmup = page.getByRole("region", { name: /Warm-up/ });
+  await expect(warmup).toBeHidden();
+  await page.getByRole("button", { name: /skip intro/i }).click();
+  await expect(page.locator("[data-script-state='done']")).toBeAttached();
+  await expect(warmup).toBeVisible();
+  const [titleTop, cardTop] = await Promise.all([
+    page
+      .getByRole("heading", { level: 1 })
+      .boundingBox()
+      .then((b) => b?.y),
+    warmup.boundingBox().then((b) => b?.y),
+  ]);
+  expect(cardTop).toBeGreaterThan(titleTop ?? Infinity);
   await warmup.getByRole("button", { name: "I couldn't recall it" }).click();
   await expect(warmup.getByRole("status")).toHaveText("Answer revealed.");
   await warmup.getByRole("button", { name: "Continue to lesson" }).click();
-  await expect(page.locator("[data-script-state='playing']")).toBeAttached();
-  await page.getByRole("button", { name: /skip intro/i }).click();
+  await expect(warmup).toHaveCount(0);
+  // Answering the card never restarts the scene.
   await expect(page.locator("[data-script-state='done']")).toBeAttached();
+  await expect(page.getByRole("button", { name: "Continue →" })).toBeFocused();
 });
 
 test.describe("Lesson without JavaScript", () => {

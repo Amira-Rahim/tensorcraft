@@ -359,3 +359,61 @@ it("silently omits the warm-up when the queue request rejects", async () => {
   );
   expect(mockCanAccessWorld).not.toHaveBeenCalled();
 });
+
+describe("a warm-up only asks about lessons before the one being opened", () => {
+  // Before 2026-09-22 nothing enforced this, and a learner who finished
+  // lesson 1 and reopened it a day later was asked lesson 1's own prompt.
+  const freeMod = freeModule;
+  const lessonOf = (l: { slug: string }) =>
+    required(
+      lessons.find((x) => x.worldId === WORLD && x.slug === l.slug),
+      `lesson ${l.slug} in the build`,
+    );
+
+  it("drops the row when the learner is reopening that lesson", async () => {
+    mockCanAccessWorld.mockResolvedValue(false);
+    queueRows = [rowFor(freeLesson)];
+    const due = await resolveDueForUser(fakeSupabase(), USER, WORLD, 2, NOW, {
+      moduleOrder: freeMod.order,
+      lessonOrder: lessonOf(freeLesson).order,
+    });
+    expect(due).toEqual([]);
+  });
+
+  it("drops the row when the learner has not reached that lesson yet", async () => {
+    mockCanAccessWorld.mockResolvedValue(false);
+    queueRows = [rowFor(freeLesson)];
+    const due = await resolveDueForUser(fakeSupabase(), USER, WORLD, 2, NOW, {
+      moduleOrder: freeMod.order,
+      lessonOrder: lessonOf(freeLesson).order - 1,
+    });
+    expect(due).toEqual([]);
+  });
+
+  it("keeps the row on a later lesson of the same module", async () => {
+    mockCanAccessWorld.mockResolvedValue(false);
+    queueRows = [rowFor(freeLesson)];
+    const due = await resolveDueForUser(fakeSupabase(), USER, WORLD, 2, NOW, {
+      moduleOrder: freeMod.order,
+      lessonOrder: lessonOf(freeLesson).order + 1,
+    });
+    expect(due.map((d) => d.lessonId)).toEqual([freeLesson.slug]);
+  });
+
+  it("keeps the row on any lesson of a later module", async () => {
+    mockCanAccessWorld.mockResolvedValue(false);
+    queueRows = [rowFor(freeLesson)];
+    const due = await resolveDueForUser(fakeSupabase(), USER, WORLD, 2, NOW, {
+      moduleOrder: freeMod.order + 1,
+      lessonOrder: 1,
+    });
+    expect(due.map((d) => d.lessonId)).toEqual([freeLesson.slug]);
+  });
+
+  it("applies no position filter when the opening lesson is unknown", async () => {
+    mockCanAccessWorld.mockResolvedValue(false);
+    queueRows = [rowFor(freeLesson)];
+    const due = await resolveDueForUser(fakeSupabase(), USER, WORLD, 2, NOW);
+    expect(due).toHaveLength(1);
+  });
+});

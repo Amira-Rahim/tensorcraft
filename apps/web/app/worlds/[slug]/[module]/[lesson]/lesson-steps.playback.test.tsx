@@ -416,7 +416,10 @@ describe("LessonSteps, script telemetry (2026-09-04 instrumentation)", () => {
   });
 });
 
-it("defers playback and emits one remembered skip after a warm-up", async () => {
+it("plays the scene first and shows a due warm-up after it, in the post-scene slot", async () => {
+  // Before 2026-09-22 the warm-up sat above the scene and held playback in
+  // "idle" until it was answered, so a returning learner saw one card and a
+  // hidden scene's worth of empty page. It now follows the scene.
   const { track } = await import("@/lib/analytics");
   vi.mocked(track).mockClear();
   localStorage.setItem("tc-script-skip", "1");
@@ -447,16 +450,29 @@ it("defers playback and emits one remembered skip after a warm-up", async () => 
       />
     </StrictMode>,
   );
-  expect(
-    document.querySelector("[data-script-state='idle']"),
-  ).toBeInTheDocument();
-  expect(screen.queryByRole("button", { name: /skip intro/i })).toBeNull();
-  expect(track).not.toHaveBeenCalledWith("script_skipped", expect.anything());
-  act(() => screen.getByText("I couldn't recall it").click());
-  act(() => screen.getByText("Continue to lesson").click());
+  // The remembered skip resolves the scene on mount; nothing waits on the card.
+  expect(document.querySelector("[data-script-state='idle']")).toBeNull();
   expect(
     document.querySelector("[data-script-state='done']"),
   ).toBeInTheDocument();
+  expect(
+    vi.mocked(track).mock.calls.filter(([event]) => event === "script_skipped"),
+  ).toHaveLength(1);
+  // The card is inside the Briefing root, in the block the stylesheet holds
+  // back during playback, and below the title.
+  const warmup = screen.getByRole("region", { name: "Warm-up, item 1 of 1" });
+  expect(warmup.closest("[data-post-scene]")).not.toBeNull();
+  expect(document.querySelector("[data-script-state]")?.contains(warmup)).toBe(
+    true,
+  );
+  const h1 = screen.getByRole("heading", { level: 1 });
+  expect(
+    h1.compareDocumentPosition(warmup) & Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
+  act(() => screen.getByText("I couldn't recall it").click());
+  act(() => screen.getByText("Continue to lesson").click());
+  expect(screen.queryByRole("region", { name: /Warm-up/ })).toBeNull();
+  // Still exactly one skip: answering the card never replays the scene.
   expect(
     vi.mocked(track).mock.calls.filter(([event]) => event === "script_skipped"),
   ).toHaveLength(1);

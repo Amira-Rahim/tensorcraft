@@ -4730,3 +4730,36 @@ Still open:
   decisions). Wire the durable ones into package.json or CI; delete the
   one-off ones.
 
+
+## Lesson opener: measured waste, owner call (2026-09-22)
+
+Measured on a fresh production build of the first lesson at 1440 x 900 and
+390 x 844, dark scheme, scene resolved. The spaced-review warm-up bug that
+blanked the page (hidden scene box still in the flow) is fixed separately
+and is not on this list. What remains is structural and needs a design
+decision, not a patch.
+
+- [ ] **(B1) Scene rail duplicates the page.** On the Briefing step the
+  320 px right column shows "Scene: Archimedes, Bridge, six hours after
+  first contact" and a cast list. The slugline one column over says the
+  same place and time, and every dialogue beat already carries the
+  speaker's portrait and name. The rail's content ends about 400 px into a
+  1,600 px column; on a phone it renders below the Continue button as a
+  dead block. Options: drop it on step 0 and let the scene use the single
+  column the Takeaways step already uses, or fold the cast into the slugline
+  row as a compact strip. Rail behaviour on the Concept step is a separate
+  question.
+- [ ] **(B1) Title said twice, module said twice.** The chrome bar shows
+  "Foundations: Tensors & Data / Introduction to Tensors", then the step
+  opens with "SECTOR FOUNDATIONS · MISSION 1" and the same title as the H1.
+  Between the chrome and the scene's first frame sit two hairlines, the
+  duration line, and a lone Replay button on its own row: about 400 px
+  before the story starts on a 900 px viewport. Candidates: fold the
+  duration into the eyebrow, put Replay on the slugline row, and keep one of
+  the two title renderings (the H1 must stay for structure; the chrome copy
+  can drop the lesson title).
+- [ ] **(B2) Dialogue density.** Each beat stacks portrait, name and line
+  vertically in a centred 430 px column, so a two-line utterance costs
+  160 to 190 px. A portrait-left, text-right beat halves that. This is a
+  register choice under docs/story-style-bible.md, so it needs a ruling
+  before anyone touches the Dialogue component.

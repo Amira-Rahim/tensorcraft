@@ -18,17 +18,20 @@ const item = {
   question: "What is a tensor?",
   answer: "An array.",
 };
+// The guest table entry for that item: lesson 1 of module 1.
+const freePrompt = { ...item, moduleOrder: 1, lessonOrder: 1 };
 beforeEach(() => {
   localStorage.clear();
   vi.clearAllMocks();
 });
 describe("LessonWarmup", () => {
-  it("releases playback on an empty queue", async () => {
+  it("reports done at once on an empty queue", async () => {
     const onDone = vi.fn();
     render(
       <LessonWarmup
         userId={null}
         worldId="deep-orbit"
+        opening={null}
         dueReviews={[]}
         freePrompts={[]}
         onDone={onDone}
@@ -37,12 +40,13 @@ describe("LessonWarmup", () => {
     await waitFor(() => expect(onDone).toHaveBeenCalledOnce());
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
-  it("caps at two, records each answer once, and releases after the answer is read", () => {
+  it("caps at two, records each answer once, and reports done after the answer is read", () => {
     const onDone = vi.fn();
     render(
       <LessonWarmup
         userId="alice"
         worldId="deep-orbit"
+        opening={null}
         dueReviews={[
           item,
           { ...item, promptIndex: 1 },
@@ -88,12 +92,73 @@ describe("LessonWarmup", () => {
       <LessonWarmup
         userId={null}
         worldId="deep-orbit"
+        opening={null}
         dueReviews={[]}
-        freePrompts={[{ ...item }]}
+        freePrompts={[freePrompt]}
         onDone={vi.fn()}
       />,
     );
     await screen.findByRole("region", { name: "Warm-up, item 1 of 1" });
     expect(screen.getByText(item.question)).toBeVisible();
+  });
+  describe("a guest is only asked about earlier lessons", () => {
+    beforeEach(() => {
+      localStorage.setItem(
+        "tc_guest_reviews_v1",
+        JSON.stringify({ [`deep-orbit/foundations/${item.lessonId}/0`]: item }),
+      );
+    });
+    it("skips the prompt when the learner is reopening its own lesson", async () => {
+      const onDone = vi.fn();
+      render(
+        <LessonWarmup
+          userId={null}
+          worldId="deep-orbit"
+          opening={{ moduleOrder: 1, lessonOrder: 1 }}
+          dueReviews={[]}
+          freePrompts={[freePrompt]}
+          onDone={onDone}
+        />,
+      );
+      await waitFor(() =>
+        expect(onDone).toHaveBeenCalledExactlyOnceWith(false),
+      );
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    });
+    it("skips the prompt when the learner has not reached its lesson yet", async () => {
+      const onDone = vi.fn();
+      render(
+        <LessonWarmup
+          userId={null}
+          worldId="deep-orbit"
+          opening={{ moduleOrder: 1, lessonOrder: 1 }}
+          dueReviews={[]}
+          freePrompts={[{ ...freePrompt, lessonOrder: 3 }]}
+          onDone={onDone}
+        />,
+      );
+      await waitFor(() =>
+        expect(onDone).toHaveBeenCalledExactlyOnceWith(false),
+      );
+      expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    });
+    it("asks the prompt on a later lesson", async () => {
+      render(
+        <LessonWarmup
+          userId={null}
+          worldId="deep-orbit"
+          opening={{ moduleOrder: 1, lessonOrder: 2 }}
+          dueReviews={[]}
+          freePrompts={[freePrompt]}
+          onDone={vi.fn()}
+        />,
+      );
+      await screen.findByRole("region", { name: "Warm-up, item 1 of 1" });
+      expect(
+        screen.getByRole("heading", {
+          name: "A quick recall before you continue",
+        }),
+      ).toBeVisible();
+    });
   });
 });

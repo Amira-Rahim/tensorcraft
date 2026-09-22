@@ -152,12 +152,13 @@ test("an unreadable draft stays intact until an explicit reset", async ({
   await expect(page.getByText(/The previous draft is preserved/)).toHaveCount(
     0,
   );
+  // Reset drops the saved copy, and an untouched editor is not written back
+  // as a draft, so the unreadable entry is gone rather than replaced with a
+  // version-1 one. Persisting the starter on mount is what kept later starter
+  // fixes from reaching returning learners (audit 2026-09-20).
   await expect
     .poll(() =>
-      page.evaluate(
-        () =>
-          JSON.parse(localStorage.getItem("tc-code-create-a-tensor")!)?.version,
-      ),
+      page.evaluate(() => localStorage.getItem("tc-code-create-a-tensor")),
     )
-    .toBe(1);
+    .toBeNull();
 });

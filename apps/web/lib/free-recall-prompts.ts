@@ -42,6 +42,10 @@ export interface FreeRecallPrompt {
   promptIndex: number;
   lessonId: string;
   moduleId: string;
+  /** Course order of the source lesson, so the warm-up can refuse to ask
+   *  about the lesson being opened or anything after it (course-position.ts). */
+  moduleOrder: number;
+  lessonOrder: number;
 }
 
 // Derive the free module through the `modules` collection, NOT the `lessons`
@@ -97,6 +101,8 @@ export const FREE_RECALL_PROMPTS: FreeRecallPrompt[] = lessons
       // outside the free module. The lookup below keys on
       // (lessonId, promptIndex).
       moduleId: l.moduleId,
+      moduleOrder: freeModule.order,
+      lessonOrder: l.order,
     })),
   );
 

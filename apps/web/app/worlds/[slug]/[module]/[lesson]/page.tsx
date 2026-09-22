@@ -158,7 +158,19 @@ export default async function LessonPage({ params, searchParams }: Props) {
       progressPromise,
       routePromise,
       user
-        ? resolveDueForUser(supabase, user.id, slug, 2, new Date())
+        ? resolveDueForUser(
+            supabase,
+            user.id,
+            slug,
+            2,
+            new Date(),
+            // Only prompts from lessons before this one. Without it a learner
+            // reopening lesson 1 a day after finishing it was quizzed on
+            // lesson 1 (2026-09-22).
+            mod
+              ? { moduleOrder: mod.order, lessonOrder: lesson.order }
+              : undefined,
+          )
         : Promise.resolve([]),
     ]);
 

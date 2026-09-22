@@ -53,6 +53,7 @@ import { lessons, modules } from "@tensorcraft/content";
 import { selectDue } from "@tensorcraft/shared";
 import type { ResolvedReviewItem, ReviewItem } from "@tensorcraft/shared";
 import { canAccessWorld } from "@/lib/entitlements";
+import { isEarlierInCourse, type CoursePosition } from "@/lib/course-position";
 import type { getSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
@@ -76,6 +77,13 @@ export async function resolveDueForUser(
   worldId: string,
   limit: number,
   now: Date,
+  /**
+   * The lesson being opened. When given, only prompts from lessons that come
+   * BEFORE it in course order are returned: a warm-up recalls what came
+   * earlier, never the lesson itself or anything the learner has not reached
+   * (course-position.ts, 2026-09-22).
+   */
+  opening?: CoursePosition,
 ): Promise<ResolvedReviewItem[]> {
   // `break` after the push below means a limit of 0 would otherwise yield one
   // item. Not a leak (it passed the gate), but if stage 2 ever uses 0 to mean
@@ -163,6 +171,18 @@ export async function resolveDueForUser(
     // uses that helper for lesson-to-lesson navigation locking, which is a
     // different question from entitlement.
     if (mod.order !== 1 && !entitled) continue;
+
+    // Earlier material only. A row for the lesson being opened, or a later
+    // one, is not wrong, it is just not due HERE; it stays queued for a later
+    // lesson.
+    if (
+      opening &&
+      !isEarlierInCourse(
+        { moduleOrder: mod.order, lessonOrder: lesson.order },
+        opening,
+      )
+    )
+      continue;
 
     const prompt = (lesson.recallPrompts ?? []).find(
       (p) => p.index === item.promptIndex,
