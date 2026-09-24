@@ -76,14 +76,14 @@ export function SceneClip({
 
   if (failed) {
     // Media error: identical to the pre-video Briefing (still as a beat).
-    return <ScenePortrait beat src={posterSrc} alt={alt} />;
+    return <ScenePortrait beat className="mb-4" src={posterSrc} alt={alt} />;
   }
 
   return (
     <figure
       data-testid="scene-clip"
       data-script-beat=""
-      className="mb-7 relative"
+      className="mb-4 relative"
     >
       {/* No caption track by design: the clip is silent (trailer audio
           doctrine) and the screenplay text below IS the narrative,

@@ -105,6 +105,18 @@ describe("HintPanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders one root with its live region inside it", () => {
+    // The Challenge instructions column drops its last block's bottom margin
+    // with `[data-show-challenge="true"] > :last-child` (apps/web
+    // globals.css), and the panel renders last there. A second root, such
+    // as a live region beside the panel, would take that place instead.
+    const { container } = render(<HintPanel hints={hints} />);
+    expect(container.childElementCount).toBe(1);
+    const live = container.querySelector("[aria-live]");
+    expect(live).not.toBeNull();
+    expect(container.firstElementChild!.contains(live)).toBe(true);
+  });
+
   it("has no accessibility violations", async () => {
     const { axe } = await import("vitest-axe");
     const { container } = render(<HintPanel hints={hints} />);

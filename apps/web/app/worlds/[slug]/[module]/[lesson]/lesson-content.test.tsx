@@ -5,12 +5,14 @@ import { LessonContent } from "./lesson-content";
 vi.mock("@tensorcraft/ui", () => ({
   Dialogue: ({
     speaker,
+    layout,
     children,
   }: {
     speaker: string;
+    layout?: "stack" | "row";
     children: React.ReactNode;
   }) => (
-    <div data-testid="dialogue">
+    <div data-testid="dialogue" data-layout={layout}>
       {speaker}: {children}
     </div>
   ),
@@ -26,25 +28,16 @@ vi.mock("@tensorcraft/ui", () => ({
   ),
   GlossaryTerm: ({
     term,
-    active,
-    onActivate,
     children,
   }: {
     term: string;
-    active?: boolean;
-    onActivate?: (t: string) => void;
     children: React.ReactNode;
   }) => (
-    <button
-      type="button"
-      data-glossary-term={term}
-      data-active={active ? "true" : "false"}
-      onClick={() => onActivate?.(term)}
-    >
+    <button type="button" data-glossary-term={term}>
       {children}
     </button>
   ),
-  HintPanel: () => null,
+  HintPanel: () => <div data-testid="hint-panel" />,
   KeyTakeaways: () => null,
   LearningObjectives: () => null,
   LessonRecap: () => <div>Lesson recap</div>,
@@ -102,27 +95,59 @@ const lesson = {
 };
 
 describe("LessonContent, story register", () => {
-  it("sets data-story-register only when the flag is passed", () => {
+  it("sets data-story-register and row dialogues only when the flag is passed", () => {
+    // One Set for both renders: a fresh Set would rebuild the components
+    // memo on rerender and hide a missing storyRegister dependency.
+    const visible = new Set(["Dialogue", "prose"]);
     const { container, rerender } = render(
       <LessonContent
         lesson={lesson}
-        visibleComponents={new Set(["Dialogue", "prose"])}
+        visibleComponents={visible}
         storyRegister
       />,
     );
     expect(
       container.querySelector("[data-story-register='true']"),
     ).toBeInTheDocument();
-
-    rerender(
-      <LessonContent
-        lesson={lesson}
-        visibleComponents={new Set(["Dialogue", "prose"])}
-      />,
+    expect(screen.getByTestId("dialogue")).toHaveAttribute(
+      "data-layout",
+      "row",
     );
+
+    rerender(<LessonContent lesson={lesson} visibleComponents={visible} />);
     expect(
       container.querySelector("[data-story-register]"),
     ).not.toBeInTheDocument();
+    expect(screen.getByTestId("dialogue")).toHaveAttribute(
+      "data-layout",
+      "stack",
+    );
+  });
+});
+
+describe("LessonContent, paired layout", () => {
+  it("stamps data-layout on the content root only when the layout is passed", () => {
+    // globals.css keys the Concept step's two-track grid on
+    // .lesson-step-content[data-layout="paired"]. lesson-steps.test.tsx
+    // stubs this component, so the stamp itself is checked here, on the
+    // root this component renders (the Dialogue stub carries its own
+    // data-layout, so the root is read directly, not by attribute).
+    const visible = new Set(["Dialogue", "prose"]);
+    const { container, rerender } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={visible}
+        layout="paired"
+      />,
+    );
+    let root = container.firstElementChild;
+    expect(root).toHaveClass("lesson-step-content");
+    expect(root).toHaveAttribute("data-layout", "paired");
+
+    rerender(<LessonContent lesson={lesson} visibleComponents={visible} />);
+    root = container.firstElementChild;
+    expect(root).toHaveClass("lesson-step-content");
+    expect(root).not.toHaveAttribute("data-layout");
   });
 });
 
@@ -315,6 +340,25 @@ describe("LessonContent, prose partition attributes (2026-09-04 audit step 2)", 
     const root = container.querySelector(".lesson-step-content");
     expect(root).toHaveAttribute("data-show-prose", "false");
     expect(root).toHaveAttribute("data-show-challenge", "true");
+  });
+
+  it("renders the hint panel as the content root's last child", () => {
+    // globals.css ends the Challenge instructions column with
+    // `[data-show-challenge="true"] > :last-child { margin-bottom: 0; }`,
+    // which reaches the panel only while it renders inside the root with
+    // nothing after it.
+    const { container } = render(
+      <LessonContent
+        lesson={{
+          ...lesson,
+          hints: [{ level: "nudge", content: "Start from the shape." }],
+        }}
+        visibleComponents={new Set(["challenge", "HintPanel"])}
+      />,
+    );
+    const root = container.querySelector(".lesson-step-content")!;
+    expect(root).toHaveAttribute("data-show-challenge", "true");
+    expect(root.lastElementChild).toBe(screen.getByTestId("hint-panel"));
   });
 
   it("never stamps data-show-challenge while prose is visible", () => {

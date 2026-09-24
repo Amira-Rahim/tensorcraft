@@ -87,4 +87,18 @@ describe("ChallengePassedBanner", () => {
 
     expect(onContinue).toHaveBeenCalledTimes(1);
   });
+
+  it("spaces itself on the lesson scale", () => {
+    // 24 px under the editor (--l-row) and between the message and its
+    // Continue (--l-nav-inner), read from the .lesson-page tokens the banner
+    // always renders inside (lesson layout spec, section 6).
+    render(
+      <ChallengePassedBanner passed exerciseCount={1} onContinue={() => {}} />,
+    );
+
+    expect(screen.getByTestId("challenge-passed-banner")).toHaveClass(
+      "mt-(--l-row)",
+      "gap-(--l-nav-inner)",
+    );
+  });
 });

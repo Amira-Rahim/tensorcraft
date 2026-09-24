@@ -26,16 +26,23 @@ vi.mock("./lesson-content", () => ({
   LessonContent: ({
     storyRegister,
     hideTeaching,
+    hideStoryZone,
     visibleComponents,
+    layout,
   }: {
     storyRegister?: boolean;
     hideTeaching?: boolean;
+    hideStoryZone?: boolean;
     visibleComponents?: Set<string>;
+    layout?: "paired";
   }) => (
     <div
       data-testid="lesson-content"
+      className="lesson-prose lesson-step-content"
+      data-layout={layout}
       data-story-register={storyRegister ? "true" : undefined}
       data-hide-teaching={hideTeaching ? "true" : undefined}
+      data-hide-story-zone={hideStoryZone ? "true" : undefined}
       data-visible={
         visibleComponents ? Array.from(visibleComponents).sort().join(",") : ""
       }
@@ -49,13 +56,6 @@ vi.mock("./lesson-drawer", () => ({
 
 vi.mock("@tensorcraft/ui", () => ({
   SceneHeading: () => null,
-  AnimatedAvatar: ({ name, src }: { name: string; src?: string }) => (
-    <div
-      data-testid="animated-avatar-stub"
-      data-name={name}
-      data-src={src ?? ""}
-    />
-  ),
   ScenePortrait: ({ src }: { src: string }) => (
     <div data-testid="scene-portrait-stub" data-src={src} />
   ),
@@ -377,18 +377,75 @@ describe("LessonSteps, story register", () => {
 });
 
 describe("LessonSteps, LessonShell layout", () => {
-  it("renders the Briefing through a right-rail shell", () => {
+  it("renders no right slot on the Briefing and Concept steps", () => {
     renderSteps();
-    const right = screen.getByTestId("lesson-right");
-    expect(right).toHaveAttribute("data-kind", "rail");
+    expect(screen.queryByTestId("lesson-right")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.queryByTestId("lesson-right")).toBeNull();
   });
 
-  it("renders a two-column rail shell on the Concept step", () => {
+  it("stamps the paired layout on the Concept body only", () => {
+    renderSteps();
+    expect(
+      document.querySelector('.lesson-step-content[data-layout="paired"]'),
+    ).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    expect(
+      document.querySelectorAll('.lesson-step-content[data-layout="paired"]'),
+    ).toHaveLength(1);
+  });
+
+  it("renders the objectives in flow above the Concept body", () => {
     renderSteps();
     fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
-    const right = screen.getByTestId("lesson-right");
-    expect(right).toHaveAttribute("data-kind", "rail");
+    const intro = document.querySelector("[data-testid='concept-intro']")!;
+    const body = document.querySelector(
+      '.lesson-step-content[data-layout="paired"]',
+    )!;
+    expect(
+      intro.compareDocumentPosition(body) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    // The intro instance renders the objectives alone: no paired grid and no
+    // story-zone rule, which would hide them (they sit before the first
+    // heading). The read below it is the instance that hides the story zone.
+    const introContent = intro.querySelector("[data-testid='lesson-content']");
+    expect(introContent).toHaveAttribute("data-visible", "LearningObjectives");
+    expect(introContent).not.toHaveAttribute("data-layout");
+    expect(introContent).not.toHaveAttribute("data-hide-story-zone");
+    expect(body).toHaveAttribute("data-hide-story-zone", "true");
+  });
+
+  it("caps the Takeaways prose and lists the terms after it", () => {
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
+    render(
+      <LessonSteps
+        lesson={{
+          ...lesson,
+          glossaryTerms: [
+            { term: "tensor", definition: "a numeric array with a shape" },
+          ],
+        }}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        moduleEntry={null}
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+    const prose = document.querySelector("[data-testid='takeaways-prose']")!;
+    expect(prose.className).toContain("max-w-[820px]");
+    const list = document.querySelector("[data-testid='lesson-terms-list']");
+    expect(list).toBeInTheDocument();
+    expect(
+      prose.compareDocumentPosition(list!) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 
   it("collapses to a single column on the Consequence step", () => {
@@ -430,6 +487,91 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(screen.getByText("3 / 6")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /back/i }));
     expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  });
+
+  it("shows the lesson title in the chrome on every step but the Briefing", () => {
+    renderSteps();
+    const chrome = document.querySelector("[data-testid='lesson-chrome']")!;
+    expect(chrome.querySelector("h1")).toBeNull();
+    expect(chrome.textContent).not.toContain(lesson.title);
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    expect(
+      document.querySelector("[data-testid='lesson-chrome'] h1"),
+    ).toHaveTextContent(lesson.title);
+  });
+
+  it("leaves the nav's own bottom padding as the whole gap to the footer", () => {
+    // Spec section 6: 40 px between the nav row and the footer. The nav's
+    // bottom padding (--l-nav-bottom) is that gap, so the reader's wrapper
+    // adds none below it. Above, it adds 16 px (the beat gap).
+    renderSteps();
+    const wrapper = document.querySelector(".lesson-page > div")!;
+    const classes = wrapper.className.split(/\s+/);
+    expect(classes).toContain("pt-4");
+    // No bottom padding of any size or breakpoint, from either utility.
+    expect(classes.filter((c) => /(^|:)(pb|py)-/.test(c))).toEqual([]);
+    expect(screen.getByTestId("lesson-nav")).toHaveClass("pb-(--l-nav-bottom)");
+  });
+
+  it("spaces the chrome, the slugline row, the post-scene slot and the nav on the scale", () => {
+    renderSteps(0, {
+      moduleSlug: "browser-runtimes",
+      previousModule: "training-loop",
+      previousComplete: false,
+    });
+    // The chrome's hairline sits 16 px under its controls and 16 px over
+    // the step (spec section 1).
+    expect(screen.getByTestId("lesson-chrome")).toHaveClass("pb-4", "mb-4");
+    // The plate is the scene's second beat after the slugline, and beats
+    // sit 16 px apart (--l-beat).
+    const slugline = screen.getByRole("button", {
+      name: /skip intro|replay scene/i,
+    }).parentElement;
+    expect(slugline).toHaveClass("border-b", "pb-2", "mb-4");
+    // The rest read the .lesson-page tokens (spec section 6): 24 px above
+    // the post-scene slot and between its children; 40 px above the nav's
+    // hairline, 24 px below it and between its controls, 40 px under it.
+    expect(document.querySelector("[data-post-scene]")).toHaveClass(
+      "mt-(--l-slot)",
+      "space-y-(--l-slot)",
+    );
+    expect(screen.getByTestId("lesson-nav")).toHaveClass(
+      "mt-(--l-nav-top)",
+      "pt-(--l-nav-inner)",
+      "gap-(--l-nav-inner)",
+      "pb-(--l-nav-bottom)",
+    );
+  });
+
+  it("leaves no bottom padding under the Consequence step's last block", () => {
+    // Padding there stops the last block's margin collapsing into the nav's
+    // 40 px, which put the nav 88 px below it (120 with no next lesson).
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    renderSteps();
+    const root = screen.getByRole("group", {
+      name: "Step 6 of 6: Consequence",
+    }).firstElementChild;
+    expect(root).toHaveClass("text-center", "pt-12");
+    expect(root).not.toHaveClass("py-12");
+  });
+
+  it("keeps one H1, the lesson title, on every step", () => {
+    // The title card is the Briefing's H1 and the chrome title is every
+    // other step's (spec 2026-09-23, section 1).
+    for (let step = 0; step < 6; step++) {
+      localStorage.clear();
+      window.history.replaceState(null, "", window.location.pathname);
+      localStorage.setItem(STEP_KEY, String(step));
+      localStorage.setItem(MAX_KEY, String(step));
+      const { unmount } = renderSteps();
+      expect(screen.getByText(`${step + 1} / 6`)).toBeInTheDocument();
+      const h1s = screen.getAllByRole("heading", { level: 1 });
+      expect(h1s, `step ${step + 1}`).toHaveLength(1);
+      expect(h1s[0]).toHaveTextContent(lesson.title);
+      unmount();
+    }
   });
 });
 
@@ -624,58 +766,6 @@ describe("LessonSteps, script playback", () => {
       document.querySelector("[data-script-state='done']"),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /replay/i })).toBeInTheDocument();
-  });
-});
-
-describe("LessonSteps, SceneCard cast avatars", () => {
-  // The Cast list is regex-extracted from the compiled body's
-  // speaker: "..." attributes; three registers matter: a human character
-  // (portrait via the art resolver), ARIA (procedural waveform, never
-  // raster) and an unregistered speaker, which must stay on the monogram
-  // path with no src.
-  const castLesson = {
-    ...lesson,
-    body: `jsx(Dialogue, {speaker: "Dr. Farah", children: "x"});
-jsx(Dialogue, {speaker: "ARIA", children: "y"});
-jsx(Dialogue, {speaker: "Instructor", children: "z"});`,
-  };
-
-  function renderCast() {
-    return render(
-      <LessonSteps
-        lesson={castLesson}
-        exercises={[]}
-        worldSlug="deep-orbit"
-        moduleSlug="foundations"
-        moduleName="Foundations: Tensors & Data"
-        prevLesson={null}
-        nextLesson={null}
-      />,
-    );
-  }
-
-  it("routes human cast rows through the portrait resolver", () => {
-    renderCast();
-    const stubs = screen.getAllByTestId("animated-avatar-stub");
-    const farah = stubs.find((s) => s.dataset.name === "Dr. Farah");
-    expect(farah?.dataset.src).toBe("/characters/deep-orbit/dr-farah.webp");
-  });
-
-  it("gives ARIA a portrait like the rest of the cast", () => {
-    // Her art is an abstract voice-orb glyph, never a face, so she takes the
-    // same avatar path as the humans rather than a special-cased renderer.
-    renderCast();
-    const stubs = screen.getAllByTestId("animated-avatar-stub");
-    const aria = stubs.find((s) => s.dataset.name === "ARIA");
-    expect(aria?.dataset.src).toBe("/characters/deep-orbit/aria.webp");
-  });
-
-  it("keeps unregistered speakers on the srcless monogram path", () => {
-    renderCast();
-    const stubs = screen.getAllByTestId("animated-avatar-stub");
-    const instructor = stubs.find((s) => s.dataset.name === "Instructor");
-    expect(instructor).toBeDefined();
-    expect(instructor?.dataset.src).toBe("");
   });
 });
 

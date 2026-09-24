@@ -66,6 +66,12 @@ describe("LessonWarmup", () => {
       "bailed",
     );
     expect(onDone).not.toHaveBeenCalled();
+    // 24 px above the card's Continue: the reader's --l-nav-inner, with a
+    // fallback in case the shared card is ever rendered outside the lesson
+    // page.
+    expect(
+      screen.getByRole("button", { name: "Continue to lesson" }),
+    ).toHaveClass("mt-[var(--l-nav-inner,24px)]");
     fireEvent.click(screen.getByText("Continue to lesson"));
     expect(
       screen.getByRole("region", { name: "Warm-up, item 2 of 2" }),

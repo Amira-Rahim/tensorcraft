@@ -4476,7 +4476,9 @@ anomaly-detection/autoencoders went from 22 rail terms to 3, because its
 prose never says "encoder" or "reconstruction error" outside code and
 component props. Either keep the contract (the rail is what a reader saw
 underlined) or union it with each lesson's own frontmatter term list.
-Nothing in the gates decides this.
+Nothing in the gates decides this. The rail is gone (2026-09-23 layout spec);
+the same question now applies to the Takeaways "Terms in this lesson" list,
+which reads the same set.
 
 **Gates after everything.** content 912 / 912 (37 files; the leak gate grew
 from 66 to 332 cases); validator 65 / 65 solutions, 65 / 65 cheats (90
@@ -4550,13 +4552,26 @@ Left open, each for a reason:
   and both world-page visual baselines (`e2e/visual/worlds.spec.ts`,
   full-page at 0.001). Not done without a ruling; the summary and
   description already name backpropagation.
-- [ ] **OWNER: the glossary rail.** The chip plugin walks only HTML
+- [x] **OWNER: the glossary rail.** The chip plugin walks only HTML
   elements, never the children of a JSX component, and 35 percent of
   lesson prose (99,116 of 283,204 characters) sits inside Dialogue,
   DerivationDrawer, Callout and Epilogue. That, more than frontmatter term
   lists, is why the rail thinned when it moved to the chip contract. Either
   teach the plugin to walk component children (chips would then appear
   inside dialogue) or leave the rail as what the reader saw underlined.
+  Closed 2026-09-23: the rail is removed by the lesson layout spec; the
+  term-source question moves to the Takeaways terms list (see "Owner call, one"
+  above).
+- [ ] **OWNER: which terms the Takeaways "Terms in this lesson" list shows.**
+  Today it shows exactly the terms the lesson prose underlines. The chip plugin
+  walks only HTML elements, never the children of a JSX component. About 35
+  percent of lesson prose (99,116 of 283,204 characters, the count in the item
+  above) sits inside Dialogue, DerivationDrawer, Callout and Epilogue. A term
+  named only there never reaches the list. The options are to teach the plugin
+  to walk component children (chips would then appear inside dialogue), to union
+  the list with each lesson's frontmatter terms, or to keep the list as what the
+  reader saw underlined. "Owner call, one" above has a worked case:
+  anomaly-detection/autoencoders went from 22 listed terms to 3.
 - Declined: teaching the two dictation gates to score `instructions`. A
   brief legitimately names the functions it asks for, so identifier
   coverage there would fail every honest brief, and prose-level
@@ -4739,7 +4754,7 @@ blanked the page (hidden scene box still in the flow) is fixed separately
 and is not on this list. What remains is structural and needs a design
 decision, not a patch.
 
-- [ ] **(B1) Scene rail duplicates the page.** On the Briefing step the
+- [x] **(B1) Scene rail duplicates the page.** On the Briefing step the
   320 px right column shows "Scene: Archimedes, Bridge, six hours after
   first contact" and a cast list. The slugline one column over says the
   same place and time, and every dialogue beat already carries the
@@ -4748,8 +4763,10 @@ decision, not a patch.
   dead block. Options: drop it on step 0 and let the scene use the single
   column the Takeaways step already uses, or fold the cast into the slugline
   row as a compact strip. Rail behaviour on the Concept step is a separate
-  question.
-- [ ] **(B1) Title said twice, module said twice.** The chrome bar shows
+  question. Resolved by
+  docs/superpowers/specs/2026-09-23-lesson-layout-design.md (approved
+  2026-09-23).
+- [x] **(B1) Title said twice, module said twice.** The chrome bar shows
   "Foundations: Tensors & Data / Introduction to Tensors", then the step
   opens with "SECTOR FOUNDATIONS · MISSION 1" and the same title as the H1.
   Between the chrome and the scene's first frame sit two hairlines, the
@@ -4757,9 +4774,124 @@ decision, not a patch.
   before the story starts on a 900 px viewport. Candidates: fold the
   duration into the eyebrow, put Replay on the slugline row, and keep one of
   the two title renderings (the H1 must stay for structure; the chrome copy
-  can drop the lesson title).
-- [ ] **(B2) Dialogue density.** Each beat stacks portrait, name and line
+  can drop the lesson title). Resolved by
+  docs/superpowers/specs/2026-09-23-lesson-layout-design.md (approved
+  2026-09-23).
+- [x] **(B2) Dialogue density.** Each beat stacks portrait, name and line
   vertically in a centred 430 px column, so a two-line utterance costs
   160 to 190 px. A portrait-left, text-right beat halves that. This is a
   register choice under docs/story-style-bible.md, so it needs a ruling
-  before anyone touches the Dialogue component.
+  before anyone touches the Dialogue component. Resolved by
+  docs/superpowers/specs/2026-09-23-lesson-layout-design.md (approved
+  2026-09-23).
+
+### Found during the lesson layout build (2026-09-23 and 2026-09-24)
+
+- [ ] **(B1) The ensemble-methods lesson shows no scene picture.** Deep Orbit
+  lesson `advanced-time-series/05-ensemble-methods.mdx` has the slug
+  `time-series-ensemble-methods`, but its scene art ships as
+  `apps/web/public/scenes/deep-orbit/advanced-time-series/ensemble-methods.webp`.
+  The Briefing requests `time-series-ensemble-methods.webp`, which does not
+  exist, so this live paid lesson shows no picture. The mismatch predates the
+  2026-09-23 layout work, which now renders a Briefing without a picture as a
+  single column. `packages/content/__tests__/scene-art-coverage.test.ts` names
+  each plate from the filename instead of the frontmatter slug, so the gate
+  behind the /pricing "Illustrated lessons" claim passes anyway. Fix: make the
+  gate read the frontmatter slug (it goes red), then rename the asset to the
+  slug (renaming the slug would change the lesson URL and progress keys). Found
+  2026-09-23 during the lesson layout build.
+- [ ] **(B3) A Neon Protocol callout sits inside `<Section>`.** Neon Protocol
+  lesson `ml-through-vision/01-seeing-like-a-machine.mdx` wraps a
+  `BridgeCallout` in `<Section>`, which the lesson page renders as a plain div.
+  Neither the paired grid nor the unpaired companion margin
+  (`.lesson-step-content > [data-aside]`) reaches a companion inside that div.
+  It is not user-visible today, because Neon Protocol is not in
+  `LAUNCHED_WORLDS`. Before Neon launches, unwrap that callout or widen the rule
+  to nested companions. Found 2026-09-23 during the lesson layout build.
+- [ ] **(B2) Recap and takeaway lists pick up the prose list rules.**
+  `LessonRecap` and `KeyTakeaways` (packages/ui) render inside `.lesson-prose`.
+  From the md breakpoint, its unlayered `li` rule sets their `text-sm` items to
+  17 px. Its unlayered `ul` and `ol` rule adds a 1.5em indent to their lists.
+  Their decorative check glyphs are real text, so screen readers read one before
+  every item. `LearningObjectives` already pins its metrics inline and hides its
+  glyph (2026-09-23), and these two need the same treatment. The alternative is
+  to move the `.lesson-prose` element rules into a cascade layer so components
+  stop pinning. The Takeaways step's heading outline runs from the chrome's h1
+  to h4 headings (the recall card and `LessonRecap`) before the h2 terms list,
+  and those h4s predate this work. The `BossBeat` decision's options are an `ol`
+  inside `.lesson-prose` too, so they pick up the same indent (about 25 px).
+  Found 2026-09-23 in the review of Task 9 of
+  docs/superpowers/plans/2026-09-23-lesson-layout.md.
+- [ ] **(B2) OWNER: the focus ring around the whole lesson step.** The lesson
+  page moves focus to the step container (`role="group"`, `tabIndex=-1`) so
+  keyboard and screen reader users land on the new step. The unlayered
+  `*:focus-visible` rule in `apps/web/app/globals.css` overrides the container's
+  `outline-none`. A reader who reopens a lesson mid-way (a reload, a new tab
+  or a bookmark) sees a 2 px ring around the whole step, because the restored
+  step takes focus on load. A reader who arrives by clicking an in-app link sees
+  no ring, because `:focus-visible` matches script focus on load and after a key
+  press, not after a click (checked in the Task 12 review). In development the
+  ring also shows on every freshly loaded Briefing, because StrictMode runs the
+  mount effect twice. This predates the 2026-09-23 layout work.
+  `e2e/visual/lesson.spec.ts` blurs the focused element before each capture, so
+  the lesson baselines do not show the ring. The options are to suppress the
+  outline on that container only, since it is a non-interactive focus target, or
+  to keep it for keyboard-initiated step changes only. The choice touches WCAG
+  2.4.7 (Focus Visible), so it is the owner's call. Found 2026-09-24 while
+  minting the lesson baselines.
+- [ ] **(B2) OWNER: a tall companion leaves an empty text column.** Measured
+  2026-09-24 on a production build at 1,440 x 900, signed out, on the Concept
+  step. A paired row is as tall as its taller item. The companion column is 544
+  px wide, beside the 600 px text column. On lesson 1
+  (`foundations/introduction-to-tensors`), the first bridge callout is 314 px
+  tall beside a 132 px paragraph. That leaves 183 px of empty text column before
+  the next paragraph. At 544 px, both of the callout's code samples also wrap
+  onto a second line. Spanning that row instead (simulated in the browser, not
+  built) makes the callout 253 px tall with each sample on one line, and the
+  page 62 px longer. On `foundations/tensor-operations`, the bridge row leaves
+  152 px (a 162 px paragraph beside a 314 px callout). That lesson also has the
+  free module's only derivation drawer. Opening it grows the drawer from 59 px
+  to 731 px beside a 229 px paragraph, and 502 px of the text column stays
+  empty. The drawer is the step's last block, so that gap sits above the nav
+  rather than between two paragraphs. Spanning the open drawer at the full grid
+  width (1,184 px) would set its text at 114 to 131 characters a line, against
+  49 to 61 paired. The drawers that already span (6 by the spec's count) open at
+  that width today. Capped at the 820 px prose width, the drawer would measure
+  83 to 91, close to the 88 to 99 of the paragraph above it at that width. The
+  page would then be 22 px shorter than paired. Judged by eye on those pages,
+  both rows read better spanning, as long as a spanning drawer gets the 820 px
+  cap. A height threshold therefore needs that cap too.
+  `rehype-pair-companions.ts` runs at content build, so it sees the text but
+  neither rendered heights nor whether a learner opened a drawer. The threshold
+  and the cap are the owner's design call, and the layout plan left the plugin
+  unchanged. To see it, open either lesson's Concept step at 1,440 on a
+  production build and open the drawer. Found 2026-09-24 in Task 13 of
+  docs/superpowers/plans/2026-09-23-lesson-layout.md.
+- [ ] **(B2) OWNER: a Briefing decision leaves the picture column empty.**
+  Measured 2026-09-24 on a production build at 1,440 x 900, signed out, on
+  `foundations/normalization`, the free lesson whose story zone carries a
+  `BossBeat`. The decision box renders in the story grid's beats column, 544 px
+  wide and 724 px tall. The picture and the stage direction end 468 px down the
+  1,152 px grid, so 684 px of the picture column stays empty beside the box. At
+  1,024 the picture shrinks and the empty stretch grows to 855 px. The box
+  itself is legible: its prompt runs about 50 characters a line at 18 px, the
+  four options sit two across in 229 px cards, and nothing overflows. Five paid
+  lessons also carry a story-zone decision (`anomaly-detection/01`,
+  `capstone/03`, `capstone/05`, `llm-integration/04` and
+  `optimization-edge/04`). The e2e suite cannot open them signed out, and their
+  empty stretch depends on the length of each prompt. Two paid lessons put a
+  code block in the same place, before their first heading
+  (`advanced-time-series/04-kalman-filters` and
+  `recurrent-networks/02-simple-rnns`), which the same choice would cover.
+  Moving the decision out of the beats column is a layout choice, so it is the
+  owner's call. Found 2026-09-24 in the final review of
+  docs/superpowers/plans/2026-09-23-lesson-layout.md.
+- [ ] **(B9) The Briefing without JavaScript.** With scripting off, the noscript
+  reveal shows the whole Briefing, and two parts of it read wrong. The "Cut to:
+  Briefing" divider appears under every dialogue beat, because the reveal's
+  `.tc-cut-to { display: revert !important }` reveals all of them instead of the
+  last one. A story-zone `BossBeat` stays on its "Loading beat" placeholder,
+  because it needs JavaScript to render its options. Both predate the 2026-09-23
+  layout work, which made the no-JS story grid one 820 px column. Found
+  2026-09-24 in the final review of
+  docs/superpowers/plans/2026-09-23-lesson-layout.md.

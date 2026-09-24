@@ -33,4 +33,21 @@ describe("SceneHeading", () => {
       expect.stringContaining("--tc-primary"),
     );
   });
+
+  it("draws its own hairline and spacing by default", () => {
+    const { container } = render(<SceneHeading location="Lab" />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.borderBottom).toContain("1px solid");
+    expect(root).toHaveClass("pb-3", "mb-7");
+  });
+
+  it("drops its hairline and spacing when a host row draws the line", () => {
+    const { container } = render(
+      <SceneHeading location="Lab" divider={false} />,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.borderBottom).toBe("");
+    expect(root).not.toHaveClass("pb-3");
+    expect(root).not.toHaveClass("mb-7");
+  });
 });

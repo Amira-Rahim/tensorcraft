@@ -42,4 +42,14 @@ describe("NoscriptReveal", () => {
   it("covers the cut-to marker, which uses its own !important rule", () => {
     expect(css()).toContain(".tc-cut-to");
   });
+
+  it("lays the Briefing story grid out as one 820 px column", () => {
+    // Revealed without JavaScript, the whole teaching body renders in the
+    // Briefing's beats column, 544 px beside the picture at 1,440. One
+    // column capped like other prose puts the picture above it and reads
+    // the body at 820 px.
+    expect(css()).toMatch(
+      /\.lesson-story-grid\s*\{\s*grid-template-columns:\s*minmax\(0, 820px\)\s*!important;\s*\}/,
+    );
+  });
 });

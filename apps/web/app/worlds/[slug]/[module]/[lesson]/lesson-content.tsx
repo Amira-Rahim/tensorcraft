@@ -18,7 +18,6 @@ import {
   Quiz,
 } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
-import { useGlossary } from "./glossary-context";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
@@ -89,6 +88,11 @@ interface LessonContentProps {
   lessonId?: string;
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
+  /**
+   * "paired" turns the root into the two-track grid from globals.css: prose
+   * beside the companion it is about. Only the Concept step passes it.
+   */
+  layout?: "paired";
   onExerciseComplete?: (exerciseSlug: string, score: number) => void;
   /**
    * Fires on EVERY graded run (pass, fail, crash, timeout), unlike
@@ -190,6 +194,7 @@ export function LessonContent({
   lessonId,
   visibleComponents,
   storyRegister,
+  layout,
   onExerciseComplete,
   onExerciseAttempt,
   onHintRevealed,
@@ -380,7 +385,16 @@ export function LessonContent({
             />
           );
         }
-        return <Dialogue {...props} avatarSlot={avatarSlot} />;
+        // The Briefing lays each beat out as an avatar slot beside its line
+        // (spec 2026-09-23, section 2). Mid-lesson beats on Concept and the
+        // epilogue keep the stacked layout.
+        return (
+          <Dialogue
+            {...props}
+            avatarSlot={avatarSlot}
+            layout={storyRegister ? "row" : "stack"}
+          />
+        );
       },
       CodeBlock: wrapVisibility("CodeBlock", CodeBlock),
       HintPanel: (props: { hints: unknown }) =>
@@ -526,24 +540,17 @@ export function LessonContent({
 
     // Upgrade glossary spans (emitted by rehype-glossary as
     // <span data-glossary-term="...">) into interactive GlossaryTerm chips
-    // linked to the shared rail via the glossary context. Plain spans pass
-    // through untouched.
+    // that open their own definition. Plain spans pass through untouched.
     base.span = function GlossarySpan(
       props: React.HTMLAttributes<HTMLSpanElement> & {
         "data-glossary-term"?: string;
       },
     ) {
-      const { activeTerm, setActiveTerm } = useGlossary();
       const term = props["data-glossary-term"];
       if (!term) return <span {...props} />;
       const entry = glossaryByTerm.get(term);
       return (
-        <GlossaryTerm
-          term={term}
-          definition={entry?.definition}
-          active={activeTerm === term}
-          onActivate={setActiveTerm}
-        >
+        <GlossaryTerm term={term} definition={entry?.definition}>
           {props.children}
         </GlossaryTerm>
       );
@@ -569,6 +576,7 @@ export function LessonContent({
     handleHintRevealed,
     shouldShow,
     showProse,
+    storyRegister,
     onExerciseComplete,
     lesson.concept.bridge,
     glossaryByTerm,
@@ -608,6 +616,7 @@ export function LessonContent({
         data-show-challenge={showChallenge ? "true" : undefined}
         data-show-postrecap={showPostRecap ? "true" : undefined}
         data-story-register={storyRegister ? "true" : undefined}
+        data-layout={layout}
         data-hide-challenge-onward={hideChallengeOnward ? "true" : undefined}
         data-hide-teaching={hideTeaching ? "true" : undefined}
         data-hide-story-zone={hideStoryZone ? "true" : undefined}

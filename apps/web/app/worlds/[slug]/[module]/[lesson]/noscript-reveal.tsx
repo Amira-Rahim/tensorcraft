@@ -25,6 +25,10 @@ export function NoscriptReveal() {
       <style
         // Mirrors the four hiding rules in globals.css. Kept as one string
         // so it stays obvious that this is an override and not new styling.
+        // The last rule is the one layout override: revealed, the whole
+        // teaching body renders in the Briefing's beats column (544 px
+        // beside the picture at 1,440), so the story grid becomes one
+        // column capped at 820 px like other prose, the picture above it.
         dangerouslySetInnerHTML={{
           __html: `
 [data-script-state="idle"] {
@@ -43,6 +47,9 @@ export function NoscriptReveal() {
 }
 :is([data-script-state="idle"], [data-script-state="playing"]) [data-post-scene] {
   display: revert !important;
+}
+.lesson-story-grid {
+  grid-template-columns: minmax(0, 820px) !important;
 }
 `,
         }}

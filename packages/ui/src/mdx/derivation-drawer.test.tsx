@@ -15,6 +15,18 @@ describe("DerivationDrawer", () => {
     ).toBeInTheDocument();
   });
 
+  it("marks its root with data-aside", () => {
+    render(
+      <DerivationDrawer summary="x">
+        <p>derivation body</p>
+      </DerivationDrawer>,
+    );
+    expect(screen.getByTestId("derivation-drawer")).toHaveAttribute(
+      "data-aside",
+      "",
+    );
+  });
+
   it("starts closed: hides content panel by default", () => {
     render(
       <DerivationDrawer summary="x">

@@ -216,6 +216,8 @@ describe("LessonSteps, playback against real MDX DOM", () => {
     expect(dialogues).toHaveLength(2);
     for (const d of Array.from(dialogues)) {
       expect(d.hasAttribute("data-beat-shown")).toBe(true);
+      // The Briefing binds every beat to the row layout.
+      expect(d).toHaveAttribute("data-layout", "row");
     }
   });
 
@@ -279,6 +281,37 @@ describe("LessonSteps, scene portrait beat", () => {
       (b) => b.getAttribute("data-testid") === "scene-portrait",
     );
     expect(portraitIdx).toBe(1);
+  });
+
+  it("keeps the playback control outside every beat wrapper", () => {
+    renderWithScene();
+    // Still playing: a control inside a beat wrapper would inherit that
+    // beat's hidden state until the timeline reveals it.
+    expect(
+      document.querySelector("[data-script-state='playing']"),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByRole("button", { name: /skip intro/i })
+        .closest("[data-script-beat]"),
+    ).toBeNull();
+  });
+
+  it("gives Skip and Replay the same minimum box, so the row never jumps", () => {
+    renderWithScene();
+    // A 428 px phone fits the slugline and Skip on one line; a wider Replay
+    // would wrap the row when the scene ends. Both are at least 44 by 160.
+    expect(screen.getByRole("button", { name: /skip intro/i })).toHaveClass(
+      "min-h-11",
+      "min-w-40",
+    );
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(screen.getByRole("button", { name: /replay/i })).toHaveClass(
+      "min-h-11",
+      "min-w-40",
+    );
   });
 
   it("collapses to today's timeline when the portrait 404s (art-agnostic)", () => {
@@ -351,7 +384,14 @@ describe("structure-variety machinery (P2 gate)", () => {
     );
     const tag = screen.getByTestId("pattern-format-tag");
     expect(tag).toHaveTextContent(PATTERN_LABELS.broken_code_first);
-    expect(screen.getAllByText("Archimedes, Bridge").length).toBeGreaterThan(0);
+    expect(tag.closest("[data-testid='lesson-eyebrow']")).not.toBeNull();
+    // Module term and slug, lesson term and number, the tag, the duration.
+    expect(tag.closest("[data-testid='lesson-eyebrow']")?.textContent).toBe(
+      `SECTOR foundations · MISSION 1 · ${PATTERN_LABELS.broken_code_first} · 10 min`,
+    );
+    expect(screen.getAllByText(/Archimedes, Bridge/i).length).toBeGreaterThan(
+      0,
+    );
   });
 
   it("renders no FORMAT tag for standard-pattern lessons", () => {

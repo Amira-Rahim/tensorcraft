@@ -78,7 +78,7 @@ export function LessonWarmup({
   return (
     <section
       aria-label={`Warm-up, item ${index + 1} of ${items.length}`}
-      className="mt-10 border-t border-border pt-6"
+      className="border-t border-border pt-6"
     >
       <h2 className="font-mono text-sm text-text-primary">
         A quick recall before you continue

@@ -2,10 +2,10 @@ import { test, expect } from "@playwright/test";
 
 /**
  * P2 structure-variety machinery, verified through the full stack: velite
- * frontmatter → lesson page → SceneCard. Unit tests cover the components;
- * this proves a real converted lesson ships its FORMAT tag and slugline
- * (the round-4 lesson: schema fields can exist while the page renders
- * nothing).
+ * frontmatter → lesson page → eyebrow and slugline. Unit tests cover the
+ * components; this proves a real converted lesson ships its FORMAT tag and
+ * slugline (the round-4 lesson: schema fields can exist while the page
+ * renders nothing).
  */
 test.describe("Structure variety: pattern + scene render end-to-end", () => {
   test("foundations/tensor-operations shows FORMAT tag and slugline", async ({
@@ -13,7 +13,7 @@ test.describe("Structure variety: pattern + scene render end-to-end", () => {
   }) => {
     await page.goto("/worlds/deep-orbit/foundations/tensor-operations");
 
-    // SceneCard rail: scene slugline fed from frontmatter.
+    // Slugline row: scene location fed from frontmatter.
     await expect(page.getByText("Archimedes, Bridge").first()).toBeVisible({
       timeout: 15000,
     });

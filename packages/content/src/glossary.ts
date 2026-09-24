@@ -7,7 +7,8 @@
  * `scope` is documentation only: the build matches the whole dictionary
  * against every world.
  *
- * Used to auto-underline concept terms in lesson prose and to feed a concept rail.
+ * Used to auto-underline concept terms in lesson prose and to fill the
+ * Takeaways step's terms list ("Terms in this lesson").
  */
 
 export interface GlossaryEntry {

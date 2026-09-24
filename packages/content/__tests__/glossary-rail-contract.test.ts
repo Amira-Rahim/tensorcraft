@@ -4,10 +4,10 @@ import { join } from "node:path";
 import { GLOSSARY } from "../src/glossary";
 
 /**
- * The glossary rail beside the Takeaways step lists exactly the terms the
- * lesson body underlines (round 7 completeness critic, 2026-09-13).
+ * The Takeaways step's terms list ("Terms in this lesson") shows exactly the
+ * terms the lesson body underlines (round 7 completeness critic, 2026-09-13).
  *
- * Before this gate the rail came from a whole-word match over the MDX source,
+ * Before this gate the list came from a whole-word match over the MDX source,
  * so it listed 242 terms across 56 lessons that no reader ever saw as a chip:
  * foundations/normalization carried "attention" off a BossBeat option,
  * signal-processing/windowing-and-overlap carried "decoder" off a Dialogue
@@ -19,7 +19,7 @@ import { GLOSSARY } from "../src/glossary";
  * in prose gets the ML chip, so reword such a sentence rather than let the
  * chip teach the wrong meaning. Two were reworded when this gate landed.
  */
-interface RailTerm {
+interface ListedTerm {
   term: string;
   definition: string;
 }
@@ -27,7 +27,7 @@ interface BuiltLesson {
   slug: string;
   moduleId: string;
   body: string;
-  glossaryTerms: RailTerm[];
+  glossaryTerms: ListedTerm[];
 }
 
 const lessons: BuiltLesson[] = JSON.parse(
@@ -37,7 +37,7 @@ const SPAN = /"data-glossary-term":\s*"([^"]+)"/g;
 const wrapped = (body: string) => [
   ...new Set([...body.matchAll(SPAN)].map((m) => m[1]!)),
 ];
-const rail = (moduleId: string, slug: string) => {
+const termsList = (moduleId: string, slug: string) => {
   const lesson = lessons.find(
     (l) => l.moduleId === moduleId && l.slug === slug,
   );
@@ -45,13 +45,13 @@ const rail = (moduleId: string, slug: string) => {
   return lesson.glossaryTerms.map((t) => t.term);
 };
 
-describe("glossary rail contract", () => {
+describe("lesson terms list contract", () => {
   it("builds every launched lesson with at least one underlined term", () => {
     expect(lessons.length).toBeGreaterThan(0);
     for (const lesson of lessons) {
       expect(
         lesson.glossaryTerms.length,
-        `${lesson.moduleId}/${lesson.slug} has an empty rail`,
+        `${lesson.moduleId}/${lesson.slug} has an empty terms list`,
       ).toBeGreaterThan(0);
     }
   });
@@ -65,7 +65,7 @@ describe("glossary rail contract", () => {
     }
   });
 
-  it("carries the dictionary's definition for every rail entry", () => {
+  it("carries the dictionary's definition for every terms list entry", () => {
     const byTerm = new Map(GLOSSARY.map((e) => [e.term, e.definition]));
     for (const lesson of lessons) {
       for (const t of lesson.glossaryTerms) {
@@ -76,11 +76,15 @@ describe("glossary rail contract", () => {
     }
   });
 
-  it("keeps the three round-7 contradictions off their rails", () => {
-    expect(rail("foundations", "normalization")).not.toContain("attention");
-    expect(rail("signal-processing", "windowing-and-overlap")).not.toContain(
-      "decoder",
+  it("keeps the three round-7 contradictions off their terms lists", () => {
+    expect(termsList("foundations", "normalization")).not.toContain(
+      "attention",
     );
-    expect(rail("training-loop", "training-loop")).not.toContain("stacking");
+    expect(
+      termsList("signal-processing", "windowing-and-overlap"),
+    ).not.toContain("decoder");
+    expect(termsList("training-loop", "training-loop")).not.toContain(
+      "stacking",
+    );
   });
 });

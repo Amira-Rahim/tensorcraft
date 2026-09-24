@@ -6,17 +6,13 @@ import { createPortal } from "react-dom";
 interface GlossaryTermProps {
   term: string;
   definition?: string;
-  active?: boolean;
-  onActivate?: (term: string) => void;
   children: React.ReactNode;
 }
 
-/** A definition beside the term, including when the glossary rail is offscreen. */
+/** A definition shown under the term when it is activated (click, Enter or Space). */
 export function GlossaryTerm({
   term,
   definition,
-  active,
-  onActivate,
   children,
 }: GlossaryTermProps) {
   const [open, setOpen] = useState(false);
@@ -77,18 +73,14 @@ export function GlossaryTerm({
         aria-expanded={definition ? open : undefined}
         aria-controls={open ? id : undefined}
         aria-describedby={open ? `${id}-definition` : undefined}
-        onClick={() => {
-          setOpen((value) => !value);
-          onActivate?.(term);
-        }}
+        onClick={() => setOpen((value) => !value)}
         className="inline cursor-help bg-transparent p-0 border-0 text-left"
         style={{
           color: "var(--tc-text)",
           borderBottom: "2px dotted var(--tc-accent)",
-          background:
-            active || open
-              ? "color-mix(in srgb, var(--tc-accent) 16%, transparent)"
-              : "transparent",
+          background: open
+            ? "color-mix(in srgb, var(--tc-accent) 16%, transparent)"
+            : "transparent",
         }}
       >
         {children}

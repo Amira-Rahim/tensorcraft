@@ -5,29 +5,35 @@ covers Phase 8 §8k of `dev-plan.md`.
 
 ## What is covered
 
-Three spec files under `e2e/visual/`:
+Five spec files under `e2e/visual/`:
 
 | File | Coverage | Tests |
 | --- | --- | --- |
 | `key-pages.spec.ts` | Landing, Pricing, Worlds index, Auth sign-in, Paywall, Learn (desktop 1280×800), in dark and light | 12 |
 | `worlds.spec.ts` | All 5 world landing pages, in dark and light. Confirms the CSS-var palette cascade per world | 10 |
 | `responsive.spec.ts` | Landing + Pricing at 320 / 768 / 1024 / 1440 px widths | 8 |
+| `review-warmup.spec.ts` | The spaced-review warm-up card on lesson 2, as an element screenshot, in dark and light | 2 |
+| `lesson.spec.ts` | Lesson 1, the Briefing and Concept steps at 1440 / 390 px widths, in dark | 4 |
 
-30 tests total, one screenshot each. Verified 2026-09-08 with
+36 tests total, one screenshot each. Verified 2026-09-24 with
 `npx playwright test e2e/visual --project=chromium --list`, which prints
-`Total: 30 tests in 3 files`.
+`Total: 36 tests in 5 files`.
 
-All tests use `expect(page).toHaveScreenshot(...)` with
-`maxDiffPixelRatio: 0.001` (0.1% tolerance).
+The page captures use `expect(page).toHaveScreenshot(...)` with
+`maxDiffPixelRatio: 0.001` (0.1% tolerance). The warm-up card uses
+Playwright's default comparison, which fails on any pixel past the default
+color threshold.
 
-Auth-required pages (dashboard, lesson viewer, settings, etc.) are **not**
-covered in V0.5 - they would require a mocked auth session. Deferred to
-launch polish.
+Two lesson steps are covered, lesson 1's Briefing and Concept steps, plus
+the warm-up card on lesson 2. Both lessons are in the free module, which
+opens without an account. Authenticated pages (dashboard, settings) are not
+covered, because they would need a mocked auth session. Paid lessons would
+also need a purchase fixture.
 
 ## Current baseline set
 
-30 PNGs, all minted on macOS through Playwright's `chromium` project.
-Counted 2026-09-08 with `find e2e/visual -name '*.png' | wc -l`, and every
+36 PNGs, all minted on macOS through Playwright's `chromium` project.
+Counted 2026-09-24 with `find e2e/visual -name '*.png' | wc -l`, and every
 name carries the `-chromium-darwin` suffix:
 
 | Directory | Files |
@@ -35,10 +41,12 @@ name carries the `-chromium-darwin` suffix:
 | `e2e/visual/key-pages.spec.ts-snapshots/` | 12 |
 | `e2e/visual/worlds.spec.ts-snapshots/` | 10 |
 | `e2e/visual/responsive.spec.ts-snapshots/` | 8 |
+| `e2e/visual/review-warmup.spec.ts-snapshots/` | 2 |
+| `e2e/visual/lesson.spec.ts-snapshots/` | 4 |
 
 Playwright writes snapshots next to the spec that owns them, in
 `<spec>.ts-snapshots/`. Older revisions of this doc called that folder
-`__screenshots__/`, and so do the header comments in the three spec files.
+`__screenshots__/`, and so does the header comment in `key-pages.spec.ts`.
 No such folder has ever existed in this repo.
 
 **The baselines are darwin-only, and the filename is why.** Playwright puts
@@ -54,13 +62,13 @@ produced on that platform. See "CI" below.
 
 ## Why the specs are gated on `RUN_VISUAL=1`
 
-All three specs call `test.skip(!shouldRun)` where
-`shouldRun = process.env.RUN_VISUAL === "1"`
+All five specs skip unless `process.env.RUN_VISUAL === "1"`
 (`key-pages.spec.ts:23` and `:71`, `responsive.spec.ts:13` and `:36`,
-`worlds.spec.ts:15` and `:34`). The gate was added while the baselines were
+`worlds.spec.ts:15` and `:34`, `lesson.spec.ts:11` and `:24`,
+`review-warmup.spec.ts:10`). The gate was added while the baselines were
 still being produced, and it is still what keeps a run that has no baselines
-for its platform from failing. Verified 2026-09-08:
-`playwright test e2e/visual` with `RUN_VISUAL` unset reports `30 skipped`.
+for its platform from failing. Verified 2026-09-24:
+`playwright test e2e/visual` with `RUN_VISUAL` unset reports `36 skipped`.
 
 The gate is not a substitute for a baseline check. A skip and a pass look
 alike in a CI summary, which is why the CI job below treats a missing
@@ -68,17 +76,24 @@ baseline as a failure rather than leaning on the skip.
 
 ## Running the suite locally
 
-Two root scripts. Both set `RUN_VISUAL=1` themselves and both run only the
-`chromium` project, which is the only project the visual specs belong to:
+Compare with the root script. Mint or re-mint one spec at a time by naming
+it. Both commands set `RUN_VISUAL=1` and run only the `chromium` project,
+which is the only project the visual specs belong to:
 
 ```bash
-pnpm test:visual         # compare against the committed baselines
-pnpm test:visual:update  # re-mint the darwin baselines
+# compare every spec against the committed baselines
+PW_PORT=3111 pnpm test:visual
+# mint or re-mint the baselines of one spec
+RUN_VISUAL=1 PW_PORT=3111 npx playwright test <spec> --project=chromium --update-snapshots=all
 ```
 
 `pnpm test:visual` passes `--update-snapshots=none`, so a baseline that is
 missing or renamed fails the test instead of being quietly written. That is
 the difference between a comparison and a rubber stamp.
+
+`pnpm test:visual:update` re-mints every baseline in the suite, including
+any that drifted for an unrelated reason, so it is for deliberate
+whole-suite changes only.
 
 Playwright starts the server for you (the `webServer` block in
 `playwright.config.ts`), which locally means `next dev`. Two hazards, both
@@ -117,27 +132,53 @@ Regenerate (and commit new PNGs) whenever:
 Do **not** regenerate to "make the test pass" if the diff is unexpected -
 that defeats the purpose. Investigate first.
 
-Every one of these needs BOTH platforms once Linux baselines exist:
-`pnpm test:visual:update` locally for the darwin set, and the `mint` job in
-CI for the Linux set. A darwin-only re-mint leaves the Linux gate comparing
-against pre-change images, so it fails on the next push with a diff nobody
-introduced.
+Every one of these needs BOTH platforms once Linux baselines exist: a local
+mint of the affected specs for the darwin set (see "Running the suite
+locally"), and the `mint` job in CI for the Linux set. A darwin-only
+re-mint leaves the Linux gate comparing against pre-change images, so it
+fails on the next push with a diff nobody introduced.
+
+## Baseline record
+
+Every mint or re-mint names its reason and the expected change, per the
+owner's 2026-09-15 rule.
+
+| Date | Snapshot | Reason | Expected change |
+| --- | --- | --- | --- |
+| 2026-09-24 | `review-warmup-{dark,light}.png` | The warm-up card now spans the lesson content width instead of the old 68-character column (lesson layout spec, section 2 item 6). Element screenshot in the prompt state, so the Continue gap change is not visible here. The spec now opens lesson 2: since 2026-09-22 a warm-up only recalls earlier lessons, so on lesson 1 the spec could no longer find the card. The old images (2026-09-16) predate the 2026-09-22 warm-up rework | Width from the old text column (687 px) to the frame's content width (1,184 px) at the visual project's 1,280 px viewport. Height from 359 to 361 px. The question text fits on one line in both, so nothing reflows. The 2026-09-22 rework changed the label from "Before this lesson: a quick recall" to "A quick recall before you continue" and put a hairline and 24 px of padding above it. The card's 24 px bottom margin now collapses out of the warm-up section (in the old flex-column story step it stayed inside), so the new image ends at the card's border and shows one row of its offset shadow. That is why the added hairline and padding net only 2 px |
+| 2026-09-24 | `lesson-briefing-{desktop,phone}.png`, `lesson-concept-{desktop,phone}.png` | New coverage for the lesson route after the layout change | New baselines, no prior image. On the Briefing, the "Cut to" divider ends 16 px above the teaser paragraph (the last beat's `--l-beat` margin) and sits 32 px below the dialogue line before it. The 16 px gap is accepted as is |
 
 ## Flake mitigation
 
-All visual specs already:
+Every visual spec:
 
-- Call `page.emulateMedia({ reducedMotion: "reduce" })` - `ParticleField`
-  and `BridgeTicker` both honor this.
-- Await `document.fonts.ready` to avoid FOUT frames.
-- Await `networkidle` to let async components (e.g. Sandpack, charts)
-  settle.
-- Pass `stylePath: e2e/visual/screenshot.css` to `toHaveScreenshot`. Local
+- Calls `page.emulateMedia({ reducedMotion: "reduce" })`. `ParticleField`
+  and `BridgeTicker` both honor it.
+- Awaits `document.fonts.ready` to avoid FOUT frames.
+- Passes `stylePath: e2e/visual/screenshot.css` to `toHaveScreenshot`. Local
   runs serve the app with `next dev`, and the Next.js dev-overlay badge
   ("N · 1 Issue") appears at the bottom-left of the first viewport
   whenever the dev server logs a transient issue; the stylesheet hides
   `nextjs-portal` at capture time (worlds-index-light flaked exactly this
   way, 2026-08-16).
+
+What each spec waits for before it captures:
+
+- `key-pages.spec.ts`, `worlds.spec.ts` and `responsive.spec.ts` await
+  `networkidle` so async components (e.g. Sandpack, charts) settle. The
+  /pricing captures in `key-pages.spec.ts` and `responsive.spec.ts` also
+  wait for the curriculum scene, described below.
+- `lesson.spec.ts` loads with `domcontentloaded`, then waits for the
+  step's settled marker: `[data-script-state='done']` on the Briefing and
+  the paired grid on the Concept step. The step is restored in a client
+  effect after load, so no load state shows which step is on screen. On
+  the Briefing it also waits until the scene picture has loaded, because
+  the image is lazy and removes itself on error. It pins the text Briefing
+  (`tc-briefing-variant`), so a future scene clip cannot change the image.
+  Last, it blurs the focused element: the step container takes script
+  focus, and its ring is transient state, not layout.
+- `review-warmup.spec.ts` waits for the warm-up region to be visible and
+  captures that element only.
 
 If a test is still flaky, consider:
 
@@ -238,7 +279,7 @@ some of the tests, fails on its first step, before the build:
 | switch off | The job does not run and CI stays green. This is today. |
 | switch on, no Linux baselines | Fails in about a minute, with the minting instructions in the error. |
 | switch on, an incomplete set | Fails, naming the count found and the count expected. |
-| switch on, a full set | Builds, serves, compares all 30 screenshots. |
+| switch on, a full set | Builds, serves, compares all 36 screenshots. |
 
 A final step re-reads `git status -- e2e/visual` whether the suite passed or
 failed, and fails the job if anything was written. A stray update flag in
@@ -262,7 +303,7 @@ The mechanism is in place. The gate is not enforcing yet, and it cannot be
 until a human does this once:
 
 1. Actions, "Visual regression", Run workflow. That runs `mint`.
-2. Download `visual-baselines-linux` and look at all 30 images. A mint is
+2. Download `visual-baselines-linux` and look at all 36 images. A mint is
    always green, so nothing but your eyes can reject a bad one. Check that
    text is rendered in Inter rather than a fallback, that no page is a
    loading skeleton, and that no page is unstyled.
@@ -271,6 +312,6 @@ until a human does this once:
 4. In that same commit, set `VISUAL_ENFORCE_DEFAULT` to `"1"`.
 
 Until step 4 lands, a visual regression can still reach main unnoticed:
-30 tests skip on every CI run today. What changed is that minting the Linux
+36 tests skip on every CI run today. What changed is that minting the Linux
 set is now a button rather than an unsolved problem, and that arming the
 gate can no longer produce a green run with nothing behind it.

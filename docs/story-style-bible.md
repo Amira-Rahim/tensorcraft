@@ -158,10 +158,10 @@ the reader earns the scene by doing the work.
 - Every built lesson carries a `scene:` block: `location` (required;
   canon geography only: Bridge, Engineering, Lab, Galley, and named
   stations of those), optional `time`, optional `epilogueLocation` when
-  the epilogue moves. Renders as the INT. slugline and the SceneCard
-  rail. No em dashes in location strings (SceneHeading joins with " - ").
-  Do NOT give every lesson a `time`; uniform time-stamps are their own
-  fingerprint.
+  the epilogue moves. Renders as the INT. slugline row above the picture and
+  the dialogue. No em dashes in location strings (SceneHeading joins with
+  " - "). Do NOT give every lesson a `time`; uniform time-stamps are their
+  own fingerprint.
 - `pattern:` tags a lesson whose BODY genuinely breaks the 5C skeleton
   (`broken_code_first`, `discovery`, `flashback`, `peer_review`). The tag
   must describe structure that is actually there; it renders as the
@@ -225,14 +225,14 @@ Two reader affordances are automatic. Do not hand-author markup for either.
   interactive concept term, add one entry to
   `packages/content/src/glossary.ts` (term, plain-language definition, optional
   aliases, scope). Define it once. The build underlines the FIRST occurrence of
-  that term in each lesson's prose and lists it in the lesson's glossary rail.
-  Clicking the underlined term highlights its rail entry. There is no per-lesson
-  markup to add or maintain. Two consequences to write around: the match is
-  lexical, so a lesson whose first "recall" or "attention" is the everyday word
-  gets the ML chip on it (reword that sentence), and text inside Dialogue,
-  BossBeat, drawers and other components is never underlined, so a term that
-  appears only there stays off the rail (the build derives the rail from the
-  rendered underlines, gate `glossary-rail-contract.test.ts`).
+  that term in each lesson's prose and lists it under "Terms in this lesson"
+  on the Takeaways step. There is no per-lesson markup to add or maintain.
+  Two consequences to write around: the match is lexical, so a lesson whose
+  first "recall" or "attention" is the everyday word gets the ML chip on it
+  (reword that sentence), and text inside Dialogue, BossBeat, drawers and
+  other components is never underlined, so a term that appears only there
+  stays off the terms list (the build derives the list from the rendered
+  underlines, gate `glossary-rail-contract.test.ts`).
 
 Definitions follow the same prose rules as everything else: one or two plain
 sentences, no em dashes (rule 6).

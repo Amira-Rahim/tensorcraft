@@ -11,7 +11,7 @@ export function ConceptReference({
   open?: boolean;
 }) {
   return (
-    <details open={open} className="my-6 border border-border p-4">
+    <details open={open} data-aside="" className="border border-border p-5">
       <summary className="min-h-11 cursor-pointer font-medium focus-visible:outline-2 focus-visible:outline-primary">
         {summary}
       </summary>

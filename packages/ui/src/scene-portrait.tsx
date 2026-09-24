@@ -8,8 +8,9 @@ import { useImgSettled } from "./use-img-settled";
    public/scenes/<world>/<module>/<lesson>.webp. Art is optional by
    contract: on error the component renders NOTHING, so the figure and its
    data-script-beat leave the DOM and the playback timeline (collectBeats
-   in lesson-steps) never holds on an absent image. A lesson with no art is
-   byte-identical to today's slugline-only layout.
+   in lesson-steps) never holds on an absent image. With no art, the
+   Briefing's story grid drops to one column (apps/web/app/globals.css, the
+   story grid).
 
    The art stays dark in both schemes (raster cannot re-render like the
    canvas scenes); the frame presents it as a diegetic ship-monitor panel,

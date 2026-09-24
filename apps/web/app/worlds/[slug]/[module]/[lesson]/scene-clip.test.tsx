@@ -3,8 +3,14 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { SceneClip } from "./scene-clip";
 
 vi.mock("@tensorcraft/ui", () => ({
-  ScenePortrait: ({ src }: { src: string }) => (
-    <div data-testid="scene-portrait-fallback" data-src={src} />
+  // className reaches the stub's root as it reaches the real figure, so the
+  // fallback's spacing inside the story grid is checkable.
+  ScenePortrait: ({ src, className }: { src: string; className?: string }) => (
+    <div
+      data-testid="scene-portrait-fallback"
+      data-src={src}
+      className={className}
+    />
   ),
 }));
 
@@ -83,6 +89,9 @@ describe("SceneClip", () => {
       "data-src",
       props.posterSrc,
     );
+    // 16 px above the stage direction, like the Briefing still and the
+    // video, rather than the portrait's default 28 px.
+    expect(screen.getByTestId("scene-portrait-fallback")).toHaveClass("mb-4");
     expect(container.querySelector("video")).not.toBeInTheDocument();
   });
 

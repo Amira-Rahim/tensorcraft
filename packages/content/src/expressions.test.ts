@@ -27,8 +27,8 @@ interface DialogueTag {
 
 /**
  * Opening <Dialogue ...> tags, attributes possibly spanning lines. Attribute
- * values never contain ">" in this corpus (same uniformity extractSpeakers in
- * the lesson UI relies on), so [^>]* is safe.
+ * values never contain ">" in this corpus (every speaker in the compiled
+ * body is a plain quoted name), so [^>]* is safe.
  */
 function dialogueTags(files: string[]): DialogueTag[] {
   const tags: DialogueTag[] = [];

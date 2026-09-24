@@ -44,14 +44,12 @@ import {
   EVENTS,
 } from "@/lib/analytics";
 import type { ExerciseData } from "@tensorcraft/ui";
-import { SceneHeading, AnimatedAvatar, ScenePortrait } from "@tensorcraft/ui";
+import { SceneHeading, ScenePortrait } from "@tensorcraft/ui";
 import { worlds } from "@tensorcraft/worlds";
-import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
-import { GlossaryProvider, useGlossary } from "./glossary-context";
-import { GlossaryRail } from "./glossary-rail";
+import { LessonTermsList } from "./lesson-terms-list";
 
 /**
  * Per-world vocabulary. The reader used to hardcode Deep Orbit's words
@@ -169,11 +167,13 @@ const BRIEFING_COMPONENTS = new Set([
   "prose",
 ]);
 
-/* Each non-story step splits into a LEFT (reading column) and RIGHT (rail or
-   work pane) partition. The two LessonContent instances per step receive
-   complementary Sets so no component renders in both columns. Interactive
-   components with side effects live in exactly one partition: Exercise only
-   in CHALLENGE_RIGHT, RecallPrompt only in TAKEAWAYS_COMPONENTS. */
+/* The Concept, Code and Challenge steps each render two LessonContent
+   instances with disjoint Sets, so no component renders twice: Concept
+   splits into the objectives intro (in flow above the read) and the read;
+   Code and Challenge split into a LEFT reading column and a RIGHT slot (the
+   worked example or the work pane). Interactive components with side
+   effects live in exactly one partition: Exercise only in CHALLENGE_RIGHT,
+   RecallPrompt only in TAKEAWAYS_COMPONENTS. */
 
 /* Prose partition (2026-09-04, lesson-format audit step 2). The teaching
    prose used to render on FOUR consecutive steps (Briefing after the scene,
@@ -205,10 +205,11 @@ const CONCEPT_LEFT = new Set([
   "prose",
   "code-tensors",
 ]);
-const CONCEPT_RIGHT = new Set(["LearningObjectives"]);
+const CONCEPT_INTRO = new Set(["LearningObjectives"]);
 
-// Code: the runnable/copyable worked example in the right pane, with the
-// derivation drawers (where a lesson has them) on the left. No prose.
+// Code: the runnable/copyable worked example in the right slot, which
+// stacks below the left slot and its derivation drawers (where a lesson has
+// them). No prose.
 const CODE_LEFT = new Set([
   "MathBlock",
   "DerivationDrawer",
@@ -232,9 +233,8 @@ const CHALLENGE_LEFT = new Set([
 ]);
 const CHALLENGE_RIGHT = new Set(["Exercise"]);
 
-// Takeaways: the lesson close on the left (RecallPrompt + LessonRecap +
-// NextLesson); the right rail is the glossary recap + mission progress (app
-// components, not MDX).
+// Takeaways: the lesson close (RecallPrompt + LessonRecap + NextLesson),
+// then the lesson's terms list (an app component, not MDX).
 const TAKEAWAYS_COMPONENTS = new Set([
   "ProjectMilestone",
   "LessonRecap",
@@ -250,7 +250,7 @@ const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
 export const STEP_VISIBILITY = {
   BRIEFING_COMPONENTS,
   CONCEPT_LEFT,
-  CONCEPT_RIGHT,
+  CONCEPT_INTRO,
   CODE_LEFT,
   CODE_RIGHT,
   CHALLENGE_LEFT,
@@ -292,18 +292,15 @@ function getMaxStorageKey(
   return owner ? `${key}:account:${owner}` : key;
 }
 
-/* Public entry: a single GlossaryProvider wraps the whole reader so the
-   in-prose GlossaryTerm chips (via LessonContent's span override) and the
-   GlossaryRail in the sidebar share one activeTerm instance. */
+/* Public entry: wraps the reader in the learning-activity scope, which
+   holds the lesson until the signed-in account matches the server's. */
 export function LessonSteps(props: LessonStepsProps) {
   return (
     <LearningActivityScope
       userId={props.reviewUserId ?? null}
       requireServerIdentity
     >
-      <GlossaryProvider>
-        <LessonStepsInner {...props} />
-      </GlossaryProvider>
+      <LessonStepsInner {...props} />
     </LearningActivityScope>
   );
 }
@@ -332,7 +329,6 @@ function LessonStepsInner({
   const restoredPasses = exercises
     .filter((ex) => knownCompleted || passedExerciseSlugs.includes(ex.slug))
     .map((ex) => ex.slug);
-  const { activeTerm } = useGlossary();
   const warmupCompletedRef = useRef(false);
   const handleWarmupDone = useCallback(() => {
     warmupCompletedRef.current = true;
@@ -1000,8 +996,6 @@ function LessonStepsInner({
 
   const lessonSlug = lesson.slug;
 
-  const isStoryStep = currentStep === 0 || currentStep === 5;
-
   const sharedContentProps = {
     lesson,
     exercises,
@@ -1010,12 +1004,10 @@ function LessonStepsInner({
     lessonSlug,
   };
 
-  // Distinct speakers across the lesson dialogue, for the briefing cast chips.
-  const castSpeakers = extractSpeakers(lesson.body, lesson.context.speaker);
-
   const bottomNav = (
     <div
-      className="flex flex-wrap gap-4 items-center justify-between mt-10 pt-6"
+      data-testid="lesson-nav"
+      className="flex flex-wrap items-center justify-between mt-(--l-nav-top) pt-(--l-nav-inner) gap-(--l-nav-inner) pb-(--l-nav-bottom)"
       style={{ borderTop: "1px solid var(--tc-border)" }}
     >
       {/* Back button: the nav was forward-only, leaving the thin 6px step
@@ -1092,10 +1084,10 @@ function LessonStepsInner({
 
   let shellLeft: React.ReactNode = null;
   let shellRight: React.ReactNode = null;
-  let rightKind: "rail" | "pane" | "code" | "none" = "none";
+  let rightKind: React.ComponentProps<typeof LessonShell>["rightKind"] = "none";
 
   if (currentStep === 0) {
-    rightKind = "rail";
+    rightKind = "none";
     shellLeft = (
       <StepBriefing
         lesson={lesson}
@@ -1120,34 +1112,9 @@ function LessonStepsInner({
         }
       />
     );
-    shellRight = (
-      <SceneCard
-        worldSlug={worldSlug}
-        scene={lesson.scene}
-        pattern={lesson.pattern}
-        speakers={castSpeakers}
-      />
-    );
   } else if (currentStep === 1) {
-    rightKind = "rail";
+    rightKind = "none";
     shellLeft = <StepConcept {...sharedContentProps} />;
-    shellRight = (
-      <div className="flex flex-col gap-8">
-        <GlossaryRail
-          terms={lesson.glossaryTerms ?? []}
-          activeTerm={activeTerm}
-        />
-        <LessonContent
-          lesson={lesson}
-          exercises={exercises}
-          worldId={worldSlug}
-          moduleId={moduleSlug}
-          lessonId={lessonSlug}
-          glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={CONCEPT_RIGHT}
-        />
-      </div>
-    );
   } else if (currentStep === 2) {
     rightKind = "code";
     shellLeft = <StepCode {...sharedContentProps} />;
@@ -1192,21 +1159,8 @@ function LessonStepsInner({
       </div>
     );
   } else if (currentStep === 4) {
-    rightKind = "rail";
+    rightKind = "none";
     shellLeft = <StepTakeaways {...sharedContentProps} />;
-    shellRight = (
-      <div className="flex flex-col gap-8">
-        <GlossaryRail
-          terms={lesson.glossaryTerms ?? []}
-          activeTerm={activeTerm}
-        />
-        <MissionProgress
-          lessons={lessons}
-          lessonSlug={lessonSlug}
-          worldSlug={worldSlug}
-        />
-      </div>
-    );
   } else {
     rightKind = "none";
     shellLeft = (
@@ -1255,15 +1209,18 @@ function LessonStepsInner({
 
   return (
     <div
-      className="flex-1 overflow-y-auto"
+      className="lesson-page flex-1 overflow-y-auto"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="py-6">
+      {/* 16 px on top (the beat gap) and nothing below: the nav's own bottom
+          padding (--l-nav-bottom) is the whole gap to the site footer (spec
+          section 6). */}
+      <div className="pt-4">
         {exerciseHistoryUnavailable && (
           <p
             role="status"
-            className="mx-auto mb-4 max-w-7xl px-6 text-sm text-text-muted"
+            className="mx-auto mb-4 max-w-7xl px-5 md:px-12 text-sm text-text-muted"
           >
             Saved exercise passes could not be loaded. This browser’s progress
             is still available.{" "}
@@ -1284,7 +1241,7 @@ function LessonStepsInner({
             rightKind === "pane" || rightKind === "code" ? bottomNav : undefined
           }
           chrome={
-            <div className="mx-auto w-full max-w-7xl px-6 md:px-12">
+            <div className="mx-auto w-full max-w-7xl px-5 md:px-12">
               <ChromeBar
                 lessons={lessons}
                 lessonSlug={lessonSlug}
@@ -1310,7 +1267,7 @@ function LessonStepsInner({
               tabIndex={-1}
               role="group"
               aria-label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
-              className={`animate-step-in outline-none ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
+              className="animate-step-in outline-none"
             >
               {shellLeft}
               {rightKind !== "pane" && rightKind !== "code" && bottomNav}
@@ -1345,7 +1302,9 @@ function ChromeBar({
   maxStepReached: number;
   setCurrentStep: (n: number) => void;
 }) {
-  const LessonHeading = currentStep === 0 ? "p" : "h1";
+  // The Briefing's title card is that step's H1 (spec 2026-09-23); on every
+  // other step the chrome title is the page's only H1 and stays.
+  const showTitle = currentStep !== 0;
   return (
     // `flex-wrap` plus a full-width basis for the step bar below `sm`.
     //
@@ -1357,15 +1316,23 @@ function ChromeBar({
     // Measured 0.0px at 320px and 0.7px at 375px: invisible on every phone,
     // while remaining perfect on desktop, which is why desktop-only checks
     // never caught it. WCAG 1.4.10 (reflow).
-    <div className="mb-8 border-b border-border pb-5">
+    //
+    // pb-4 and mb-4: the hairline sits 16 px under the controls and 16 px
+    // over the step.
+    <div
+      data-testid="lesson-chrome"
+      className="mb-4 border-b border-border pb-4"
+    >
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs font-mono text-text-muted mb-1">
+          <p className="text-xs font-mono text-text-muted">
             {moduleName ?? moduleSlug}
           </p>
-          <LessonHeading className="text-base font-semibold text-text-primary">
-            {lessonTitle}
-          </LessonHeading>
+          {showTitle && (
+            <h1 className="mt-1 text-base font-semibold text-text-primary">
+              {lessonTitle}
+            </h1>
+          )}
         </div>
         <ReportIssueTrigger />
       </div>
@@ -1468,177 +1435,6 @@ export const PATTERN_LABELS: Record<
   flashback: "Archive playback: an earlier scene, reopened",
   peer_review: "Code review: critique before you write",
 };
-
-/* Right-rail card for the Briefing: scene slugline + cast avatars. */
-function SceneCard({
-  worldSlug,
-  scene,
-  pattern,
-  speakers,
-}: {
-  worldSlug: string;
-  scene?: { location: string; time?: string };
-  pattern?: LessonStepsProps["lesson"]["pattern"];
-  speakers: string[];
-}) {
-  const patternLabel =
-    pattern && pattern !== "standard" ? PATTERN_LABELS[pattern] : undefined;
-  return (
-    <div className="flex flex-col gap-5">
-      <span
-        className="font-mono text-xs uppercase tracking-[0.2em]"
-        style={{ color: "var(--tc-primary)" }}
-      >
-        Scene
-      </span>
-      {scene && (
-        <div className="flex flex-col gap-1">
-          <span
-            className="font-mono text-sm"
-            style={{ color: "var(--tc-text)" }}
-          >
-            {scene.location}
-          </span>
-          {scene.time && (
-            <span
-              className="font-mono text-xs uppercase tracking-wider"
-              style={{ color: "var(--tc-muted)" }}
-            >
-              {scene.time}
-            </span>
-          )}
-        </div>
-      )}
-      {patternLabel && (
-        <div data-testid="pattern-format-tag" className="flex flex-col gap-1">
-          <span
-            className="font-mono text-xs uppercase tracking-[2px]"
-            style={{ color: "var(--tc-muted)" }}
-          >
-            Format
-          </span>
-          <span
-            className="font-mono text-xs"
-            style={{ color: "var(--tc-text)" }}
-          >
-            {patternLabel}
-          </span>
-        </div>
-      )}
-      {speakers.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <span
-            className="font-mono text-xs uppercase tracking-[2px]"
-            style={{ color: "var(--tc-muted)" }}
-          >
-            Cast
-          </span>
-          <div className="flex flex-col gap-3">
-            {speakers.map((s) => {
-              // Dossier roster: always the neutral portrait (a cast card is
-              // not a performance). ARIA renders her live waveform glyph;
-              // unknown speakers keep the monogram via the no-src fallback.
-              const ch = resolveCharacter(worldSlug, s);
-              const world = worlds[worldSlug];
-              return (
-                <div key={s} className="flex items-center gap-2">
-                  <AnimatedAvatar
-                    name={s}
-                    src={portraitSources(worldSlug, ch).src}
-                    size={30}
-                  />
-                  <div className="flex flex-col">
-                    <span
-                      className="font-mono text-xs"
-                      style={{ color: "var(--tc-text)" }}
-                    >
-                      {s}
-                    </span>
-                    {ch?.role && (
-                      <span
-                        className="font-mono text-xs"
-                        style={{ color: "var(--tc-muted)" }}
-                      >
-                        {ch.role}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* Right-rail mission progress for the Takeaways step. */
-function MissionProgress({
-  lessons,
-  lessonSlug,
-  worldSlug,
-}: {
-  lessons: LessonStepsProps["lessons"];
-  lessonSlug: string;
-  worldSlug: string;
-}) {
-  if (!lessons || lessons.length === 0) return null;
-  const done = lessons.filter((l) => l.completed).length;
-  return (
-    <div className="flex flex-col gap-3">
-      <span
-        className="font-mono text-xs uppercase tracking-[0.2em]"
-        style={{ color: "var(--tc-primary)" }}
-      >
-        {terms(worldSlug).lesson} Progress
-      </span>
-      <span className="text-sm" style={{ color: "var(--tc-muted)" }}>
-        {done} / {lessons.length} complete
-      </span>
-      <ul className="flex flex-col gap-1.5">
-        {lessons.map((l) => {
-          const isCurrent = l.slug === lessonSlug;
-          return (
-            <li
-              key={l.slug}
-              className="text-sm flex items-center gap-2"
-              style={{
-                color: isCurrent ? "var(--tc-text)" : "var(--tc-muted)",
-              }}
-            >
-              <span
-                className="w-1.5 h-1.5 inline-block shrink-0"
-                style={{
-                  background:
-                    l.completed || isCurrent
-                      ? "var(--tc-primary)"
-                      : "var(--tc-border)",
-                }}
-              />
-              {l.title}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-/* Pull the distinct dialogue speakers out of the compiled MDX body. The body
-   is a JS function string from Velite; speakers appear as `speaker: "Name"`
-   literals on each Dialogue call. Falls back to the frontmatter speaker. */
-function extractSpeakers(body: string, fallback?: string): string[] {
-  const seen = new Set<string>();
-  const re = /speaker\s*:\s*"((?:[^"\\]|\\.)*)"/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(body)) !== null) {
-    const name = m[1].replace(/\\"/g, '"');
-    if (name) seen.add(name);
-  }
-  if (seen.size === 0 && fallback) seen.add(fallback);
-  return [...seen];
-}
 
 /* ──────────────────────────────────────────────
    Step 0: Briefing
@@ -1929,35 +1725,55 @@ function StepBriefing({
         aria-busy={scriptState === "playing" ? "true" : undefined}
       >
         <div
-          className="text-xs font-mono uppercase tracking-[3px] mb-6"
+          data-testid="lesson-eyebrow"
+          className="text-xs font-mono uppercase tracking-[3px] mb-3"
           style={{ color: "var(--tc-primary)" }}
         >
           {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
           {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
-        </div>
-
-        <h1
-          className="text-4xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight"
-          style={{ color: "var(--tc-text)" }}
-        >
-          {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
-        </h1>
-
-        <div
-          className="font-mono text-xs uppercase tracking-wider mb-8 pt-5"
-          style={{
-            color: "var(--tc-muted)",
-            borderTop: "1px solid var(--tc-border)",
-          }}
-        >
+          {lesson.pattern && lesson.pattern !== "standard" && (
+            <>
+              {" "}
+              &middot;{" "}
+              <span data-testid="pattern-format-tag">
+                {PATTERN_LABELS[lesson.pattern]}
+              </span>
+            </>
+          )}{" "}
+          &middot;{" "}
           {/* Reading + embedded exercises: "14 min · 2 exercises" where the
             exercises alone are 30 min reads as a lie. One basis everywhere
             (module map, JSON-LD, courseWorkload). */}
           {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
         </div>
 
-        {/* Playback controls for the scene */}
-        <div className="flex justify-end mb-3">
+        <h1
+          className="text-4xl md:text-6xl font-bold mb-3 leading-[1.1] tracking-tight"
+          style={{ color: "var(--tc-text)" }}
+        >
+          {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
+        </h1>
+
+        {/* Slugline row: the scene heading (first beat) and the playback
+          control, on one line over one hairline. The control sits outside
+          the beat wrapper so it never inherits a beat's hidden state. Both
+          controls share a 44 px height and a 160 px minimum width (min-h-11
+          min-w-40), so the row keeps its height and its wrapping when Skip
+          becomes Replay, and ml-auto keeps the control at the right when the
+          row wraps on a phone or there is no scene. The plate below is the
+          scene's second beat after the slugline, and beats sit 16 px apart
+          (--l-beat), so the row keeps mb-4 under its hairline. */}
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border pb-2 mb-4">
+          {lesson.scene ? (
+            <div data-script-beat="" className="min-w-0">
+              <SceneHeading
+                prefix="Int."
+                location={lesson.scene.location}
+                time={lesson.scene.time}
+                divider={false}
+              />
+            </div>
+          ) : null}
           {scriptState === "playing" ? (
             <button
               type="button"
@@ -1980,7 +1796,7 @@ function StepBriefing({
               // practically invisible, and the only exit from a 15.5s scene at
               // the product's activation moment. Now readable, with a real
               // touch target and an interactive border that clears 3:1.
-              className="text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 transition-colors hover:opacity-80"
+              className="ml-auto text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 min-w-40 transition-colors hover:opacity-80"
               style={{
                 color: "var(--tc-text)",
                 border: "1px solid var(--tc-border-interactive)",
@@ -1996,7 +1812,7 @@ function StepBriefing({
                 runKindRef.current = "replay";
                 play();
               }}
-              className="text-xs font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
+              className="ml-auto text-xs font-mono uppercase tracking-[2px] px-3 py-1.5 min-h-11 min-w-40 transition-colors hover:opacity-80"
               style={{
                 color: "var(--tc-muted)",
                 border: "1px solid var(--tc-border)",
@@ -2008,73 +1824,68 @@ function StepBriefing({
           )}
         </div>
 
-        {/* Scene heading, only if scene frontmatter exists */}
-        {lesson.scene && (
-          <div data-script-beat="">
-            <SceneHeading
-              prefix="Int."
-              location={lesson.scene.location}
-              time={lesson.scene.time}
-            />
+        {/* Story grid (spec section 2, item 4): the plate column beside the
+          beats. LessonContent's root is the second grid item, unchanged, so
+          collectBeats and the register rules keep walking a flat list. */}
+        <div className="lesson-story-grid">
+          <div className="lesson-story-plate">
+            {/* Establishing shot: its own playback beat, slugline then picture
+              then stage direction, screenplay order. With an approved clip
+              and the "clip" variant this is the scene VIDEO (owner ruling
+              2026-09-04: launch ships with video), poster = the same still;
+              otherwise the still exactly as before. The still's src stays
+              speculative (art ships incrementally per docs/scene-bible.md);
+              on 404 the component removes itself and the timeline matches
+              today's. */}
+            {lesson.scene &&
+            briefingVariant === "clip" &&
+            clipUrl &&
+            scriptState !== "idle" ? (
+              <SceneClip
+                clipUrl={clipUrl}
+                posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+                alt={lesson.scene.portraitAlt}
+                autoPlayEligible={
+                  scriptAutoPlay &&
+                  !prefersSkippedScript() &&
+                  !prefersReducedMotion()
+                }
+                worldId={worldSlug}
+                lessonId={lessonSlug}
+              />
+            ) : lesson.scene ? (
+              <ScenePortrait
+                beat
+                className="mb-4"
+                src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+                alt={lesson.scene.portraitAlt}
+              />
+            ) : null}
+            <p
+              data-script-beat=""
+              className="text-sm italic leading-[1.85] max-w-[52ch]"
+              style={{ color: "var(--tc-muted)" }}
+            >
+              {lesson.context.narrative}
+            </p>
           </div>
-        )}
 
-        {/* Establishing shot: its own playback beat, slugline then picture
-          then stage direction, screenplay order. With an approved clip
-          and the "clip" variant this is the scene VIDEO (owner ruling
-          2026-09-04: launch ships with video), poster = the same still;
-          otherwise the still exactly as before. The still's src stays
-          speculative (art ships incrementally per docs/scene-bible.md);
-          on 404 the component removes itself and the timeline matches
-          today's. */}
-        {lesson.scene &&
-        briefingVariant === "clip" &&
-        clipUrl &&
-        scriptState !== "idle" ? (
-          <SceneClip
-            clipUrl={clipUrl}
-            posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-            alt={lesson.scene.portraitAlt}
-            autoPlayEligible={
-              scriptAutoPlay &&
-              !prefersSkippedScript() &&
-              !prefersReducedMotion()
-            }
+          {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
+            the story zone only since the 2026-09-04 prose partition; the
+            teaching body reads once, on the Concept step. */}
+          <LessonContent
+            lesson={lesson}
+            exercises={exercises}
             worldId={worldSlug}
+            moduleId={moduleSlug}
             lessonId={lessonSlug}
+            glossaryTerms={lesson.glossaryTerms}
+            visibleComponents={BRIEFING_COMPONENTS}
+            storyRegister
+            hideChallengeOnward
+            hideTeaching
           />
-        ) : lesson.scene ? (
-          <ScenePortrait
-            beat
-            src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-            alt={lesson.scene.portraitAlt}
-          />
-        ) : null}
-
-        {/* Narrative as stage direction */}
-        <p
-          data-script-beat=""
-          className="text-sm italic leading-[1.85] mb-7 pl-6 max-w-[52ch]"
-          style={{ color: "var(--tc-muted)" }}
-        >
-          {lesson.context.narrative}
-        </p>
-
-        {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
-          the story zone only since the 2026-09-04 prose partition; the
-          teaching body reads once, on the Concept step. */}
-        <LessonContent
-          lesson={lesson}
-          exercises={exercises}
-          worldId={worldSlug}
-          moduleId={moduleSlug}
-          lessonId={lessonSlug}
-          glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={BRIEFING_COMPONENTS}
-          storyRegister
-          hideChallengeOnward
-          hideTeaching
-        />
+        </div>
 
         {/* Everything that is not the story comes AFTER the scene (owner,
           2026-09-20: the app opens with its story). Two things live here:
@@ -2087,7 +1898,7 @@ function StepBriefing({
           (noscript-reveal.tsx); the warm-up is client state and renders
           nothing there. */}
         {(!warmupDone || moduleEntry) && (
-          <div data-post-scene="">
+          <div data-post-scene="" className="mt-(--l-slot) space-y-(--l-slot)">
             {!warmupDone && (
               <LessonWarmup
                 userId={reviewUserId}
@@ -2103,7 +1914,7 @@ function StepBriefing({
               />
             )}
             {moduleEntry && (
-              <details className="mt-10 border-t border-border pt-4">
+              <details className="border-t border-border pt-4">
                 <summary className="min-h-11 cursor-pointer text-sm text-text-muted focus-visible:outline-2 focus-visible:outline-primary">
                   Where the investigation stands
                 </summary>
@@ -2141,11 +1952,25 @@ function StepConcept({
     <div>
       <PhaseChip label="Concept" icon={"\u25CE"} />
       <p
-        className="text-base leading-[1.85] mb-6"
+        className="text-base leading-[1.85] mb-6 max-w-[820px]"
         style={{ color: "var(--tc-muted)" }}
       >
         {lesson.concept.explanation}
       </p>
+      {/* Objectives sit before the first heading in every lesson, where the
+          main instance's hideStoryZone hides them; this second instance
+          renders them once, in flow, above the read (spec section 3). */}
+      <div className="lesson-prose mb-6" data-testid="concept-intro">
+        <LessonContent
+          lesson={lesson}
+          exercises={exercises}
+          worldId={worldSlug}
+          moduleId={moduleSlug}
+          lessonId={lessonSlug}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={CONCEPT_INTRO}
+        />
+      </div>
       <div className="lesson-prose">
         <LessonContent
           lesson={lesson}
@@ -2155,6 +1980,7 @@ function StepConcept({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONCEPT_LEFT}
+          layout="paired"
           hideChallengeOnward
           hideStoryZone
         />
@@ -2180,12 +2006,12 @@ function StepCode({
   lessonSlug: string;
 }) {
   return (
-    <div>
+    <div className="max-w-[820px]">
       <PhaseChip label="Code" icon={"\u2318"} />
       {/* The prose read lives on the Concept step since the 2026-09-04
           partition; this step isolates the worked example. The line below
-          gives the left column a purpose on the 42 lessons that carry no
-          DerivationDrawer. */}
+          gives the left column a purpose on the 40 lessons that carry no
+          DerivationDrawer (16 of the 56 do). */}
       <p
         className="text-base leading-[1.85] mb-6"
         style={{ color: "var(--tc-muted)" }}
@@ -2234,7 +2060,7 @@ function StepChallenge({
           in the right work pane (CHALLENGE_RIGHT) so its submit handler runs
           exactly once. Hint reveals happen HERE, so this instance carries
           the counter callback; the right pane reads the count at submit. */}
-      <div className="lesson-prose">
+      <div className="lesson-prose max-w-[820px]">
         <LessonContent
           lesson={lesson}
           exercises={exercises}
@@ -2269,7 +2095,7 @@ function StepTakeaways({
   return (
     <div>
       <PhaseChip label="Takeaways" icon={"\u2713"} />
-      <div className="lesson-prose">
+      <div className="lesson-prose max-w-[820px]" data-testid="takeaways-prose">
         <LessonContent
           lesson={lesson}
           exercises={exercises}
@@ -2280,6 +2106,7 @@ function StepTakeaways({
           visibleComponents={TAKEAWAYS_COMPONENTS}
         />
       </div>
+      <LessonTermsList terms={lesson.glossaryTerms ?? []} />
     </div>
   );
 }
@@ -2309,7 +2136,7 @@ function StepConsequence({
   award?: { src: string; moduleName: string; moduleTerm: string } | null;
 }) {
   return (
-    <div className="text-center py-12">
+    <div className="text-center pt-12">
       {/*
         FADE OUT marker. Screenplay atmosphere, not information: it reads at
         1.23:1 by design (border colour on surface), which WCAG 1.4.3 exempts
@@ -2412,6 +2239,7 @@ function StepConsequence({
       {nextLesson && (
         <Link
           href={`/worlds/${worldSlug}/${moduleSlug}/${nextLesson.slug}`}
+          data-testid="next-lesson-card"
           className="inline-flex items-center gap-4 text-left px-6 py-5 max-w-[420px] mx-auto transition-all hover:translate-x-[-2px] hover:translate-y-[-2px]"
           style={{
             background: "var(--tc-surface)",

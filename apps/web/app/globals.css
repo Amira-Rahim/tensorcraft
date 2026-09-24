@@ -177,6 +177,7 @@ body {
   font-size: 1rem;
 }
 
+/* LearningObjectives (packages/ui/src/mdx/learning-objectives.tsx) pins every property this rule sets inline; add any new property here to both places. */
 .lesson-prose h2 {
   margin-top: 2.5em;
   margin-bottom: 0.75em;
@@ -367,12 +368,14 @@ body {
   display: revert;
 }
 
+/* LearningObjectives (packages/ui/src/mdx/learning-objectives.tsx) pins every property this rule sets inline; add any new property here to both places. */
 .lesson-prose ul,
 .lesson-prose ol {
   margin-bottom: 1.5em;
   padding-left: 1.5em;
 }
 
+/* LearningObjectives (packages/ui/src/mdx/learning-objectives.tsx) pins every property this rule sets inline; add any new property here to both places. */
 .lesson-prose li {
   margin-bottom: 0.5em;
   line-height: 1.7;
@@ -386,6 +389,221 @@ body {
   padding: 1em 1.5em;
   background: var(--tc-surface);
   color: var(--tc-muted);
+}
+
+/* Spacing scale for the lesson reader (spec 2026-09-23, section 6).
+   Rules in this file that read it: the unpaired companion margin, the code
+   and editor slot columns, the paired grid, the story grid and the row
+   beat. Utilities that read it through Tailwind's variable shorthand: the
+   nav row (--l-nav-top, --l-nav-inner, --l-nav-bottom), the post-scene
+   slot (--l-slot) and the passed-challenge banner (--l-row,
+   --l-nav-inner) in the lesson route, and the warm-up card's Continue
+   (--l-nav-inner, with a 24px fallback in case the shared card is ever
+   rendered outside the lesson page).
+
+   Values still repeated as literals, to change together with their token:
+   - --l-gutter (40 px): the Challenge grid's gap-x-10 in lesson-shell.tsx,
+     and the pane's lg:pl-5 lg:-ml-5 (half of it, which puts the divider in
+     the middle of the gutter).
+   - --l-row (24 px): the Code intro's mb-6, which is the whole gap above
+     the worked example on the 40 lessons without a drawer, and the mb-6
+     under the phase chip, the Concept explanation and the objectives.
+   - --l-beat (16 px): the slugline row's mb-4, the plate's mb-4 (on the
+     still and on SceneClip) and the reader's pt-4. The chrome's pb-4 and
+     mb-4 use the same 16 px.
+   - --l-row plus --l-heading (40 px, the space above an h2 in the grid):
+     the Takeaways terms list's mt-10.
+   - --l-aside-pad (20 px) is defined and nothing reads it: the companions'
+     p-5 lives in packages/ui (the bridge callout and the drawer) and in
+     the concept reference.
+   The frame's widths have no token and repeat as literals in classes and
+   grid templates: 820 px (the prose measure: rule 2 and the stacked beat
+   rule of the paired grid, the story grid's single column here and in
+   noscript-reveal.tsx, and the max-w-[820px] wrappers in
+   lesson-steps.tsx), 600 px (the text track and the plate's picture), 544
+   and 280 px (the ceiling and floor of the companion and beats tracks),
+   and 440 px (the stacked beat: Dialogue's max-w-[440px] in packages/ui
+   and the stacked beat rule). */
+.lesson-page {
+  --l-gutter: 40px;
+  --l-row: 24px;
+  --l-heading: 16px;
+  --l-beat: 16px;
+  --l-aside-pad: 20px;
+  --l-slot: 24px;
+  --l-nav-top: 40px;
+  --l-nav-inner: 24px;
+  --l-nav-bottom: 40px;
+}
+
+/* Outside the paired grid (the Code step, and any browser without :has(),
+   where the guard below withholds the grid) a companion keeps a row gap on
+   both sides, because the components no longer carry their own margin
+   (spec section 3). Inside the grid, rule 4 zeroes it at (0,3,0). The
+   fallback value covers a reader that has not yet got the .lesson-page
+   tokens. */
+.lesson-step-content > [data-aside] {
+  margin-block: var(--l-row, 24px);
+}
+
+/* The code slot (Code step) and the editor slot (Challenge) are grid items,
+   so a block's trailing margin stays inside them and pushes the nav down,
+   and a leading one adds to the gap above. Lay each slot's blocks out as a
+   column with the row gap between them and no margins of their own: the
+   slot starts at its first block and ends at its last, so the left slot's
+   trailing 24 px is the gap above the worked example and the nav's own
+   40 px is the gap below. Hidden prose is display: none and takes no gap. */
+.lesson-page [data-kind="code"] .lesson-step-content,
+.lesson-page [data-kind="pane"] .lesson-step-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--l-row, 24px);
+}
+.lesson-page [data-kind="code"] .lesson-step-content > *,
+.lesson-page [data-kind="pane"] .lesson-step-content > * {
+  margin-block: 0;
+}
+
+/* The Challenge instructions column is a grid item too. Its last block (the
+   hint panel, in every current lesson) would otherwise keep its bottom
+   margin inside the column and push the nav to 64 px. */
+.lesson-page .lesson-step-content[data-show-challenge="true"] > :last-child {
+  margin-bottom: 0;
+}
+
+/* Paired columns (spec 2026-09-23, section 1). The Concept body is a
+   two-track grid: prose beside the companion it is about. Both tracks are
+   capped, 600 and 544 px, which is the split from 1,280 px up; on a
+   narrower desktop the text track gives way first (about 344 and 544 px at
+   1,024), so bridge code keeps its line length. A prose block
+   followed by a companion narrows to the text track; the companion takes
+   the second track on the same row (grid auto-placement fills the free
+   cell). Everything else spans. Specificity does the work, not order:
+   rule 1 is (0,2,0), rules 2 and 3 (0,2,1), rule 4 (0,3,0), rule 5 (0,3,1),
+   rule 6 (0,3,1) and (0,4,0). Without :has() the guard withholds the whole
+   block and the step reads as one column in DOM order, which the content
+   build already makes the right order (rehype-pair-companions). Pairing
+   follows DOM order: a display:none sibling still counts for :has(+ *)
+   and +, which is safe today because every partition boundary is a
+   heading, so a visible block and its adjacent companion always sit in
+   the same zone. */
+@supports selector(:has(+ *)) {
+  .lesson-step-content[data-layout="paired"] {
+    display: grid;
+    grid-template-columns: minmax(0, 600px) minmax(280px, 544px);
+    column-gap: var(--l-gutter, 40px);
+    row-gap: var(--l-row, 24px);
+  }
+  /* 1. every block spans and drops its own vertical margin */
+  .lesson-step-content[data-layout="paired"] > * {
+    grid-column: 1 / -1;
+    margin-block: 0;
+  }
+  /* 2. prose and headings are capped; everything else keeps its width */
+  .lesson-step-content[data-layout="paired"]
+    > :is(p, ul, ol, blockquote, h2, h3) {
+    max-width: 820px;
+  }
+  /* 3. headings get their extra top space back */
+  .lesson-step-content[data-layout="paired"] > :is(h2, h3) {
+    margin-top: var(--l-heading, 16px);
+  }
+  /* 4. a companion takes the second column; the grid's row gap replaces
+        the unpaired margin above */
+  .lesson-step-content[data-layout="paired"] > [data-aside] {
+    grid-column: 2;
+    align-self: start;
+    margin-block: 0;
+  }
+  /* 5. a pairable block followed by a companion narrows */
+  .lesson-step-content[data-layout="paired"]
+    > :is(p, ul, ol, blockquote):has(+ [data-aside]) {
+    grid-column: 1;
+  }
+  /* 6. a companion with nothing pairable before it spans instead */
+  .lesson-step-content[data-layout="paired"]
+    > :not(p, ul, ol, blockquote)
+    + [data-aside],
+  .lesson-step-content[data-layout="paired"] > [data-aside]:first-child {
+    grid-column: 1 / -1;
+  }
+  /* A stacked dialogue beat centres on the 820 px text measure, not on the
+     whole grid (its own mx-auto would centre it across both tracks). On a
+     phone the measure is narrower than the beat, so it fills the column. */
+  .lesson-step-content[data-layout="paired"] > [data-dialogue] {
+    justify-self: start;
+    width: min(100%, 440px);
+    margin-inline-start: max(0px, (min(100%, 820px) - 440px) / 2);
+  }
+  /* The plain-blockquote rule above this block is (0,2,1) and would beat
+     rule 1's margin reset; a paired blockquote must sit flush with its
+     companion. */
+  .lesson-step-content[data-layout="paired"] > blockquote:not([style]) {
+    margin-block: 0;
+  }
+  @media (width < 64rem) {
+    .lesson-step-content[data-layout="paired"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .lesson-step-content[data-layout="paired"] > [data-aside],
+    .lesson-step-content[data-layout="paired"]
+      > :is(p, ul, ol, blockquote):has(+ [data-aside]) {
+      grid-column: 1;
+    }
+  }
+}
+/* End paired columns */
+
+/* Briefing story grid (spec 2026-09-23, section 2): the plate column (the
+   picture, then the stage direction) beside the beats. Below lg they stack
+   in DOM order in one column no wider than 820 px, with the row gap between
+   them and the picture no wider than 600 px. From lg the beats column is
+   280 to 544 px wide and the plate column takes the rest: 600 and 544 px at
+   the frame's full width (windows of 1,280 px and wider, the spec's
+   numbers), about 344 and 544 px at 1,024 px, so the picture shrinks before
+   the dialogue does. The breakpoint is written like the paired block's
+   (64rem, Tailwind's lg) so the frame's lg: utilities and this grid switch
+   together. */
+.lesson-story-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 820px);
+  column-gap: var(--l-gutter, 40px);
+  row-gap: var(--l-row, 24px);
+}
+.lesson-story-plate > figure {
+  max-width: 600px;
+}
+@media (width >= 64rem) {
+  .lesson-story-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 544px);
+  }
+  .lesson-story-plate {
+    align-self: start;
+  }
+  /* No picture (no scene, or the still failed to load): one column, so the
+     beats never sit beside an empty one. */
+  .lesson-story-grid:not(:has(> .lesson-story-plate > figure)) {
+    grid-template-columns: minmax(0, 820px);
+  }
+}
+/* The beats column is a grid item, so its last story block's margin can no
+   longer collapse into the post-scene slot's or the nav's; zero it so those
+   own the gap. At (0,4,0) this outranks the row-beat margin rule (0,3,0)
+   and the prose paragraph rule (0,1,1). */
+.lesson-story-grid
+  > .lesson-step-content[data-story-register="true"]
+  > :is(:has(+ :is(h2, h3)), :last-child) {
+  margin-bottom: 0;
+}
+/* The first story block's top margin is trapped the same way at the top of
+   the beats column (a sensor-log blockquote opens 12 of the 56 Deep Orbit
+   stories, and its 1.5em margin put the story 24 px below the picture);
+   zero it so the story starts level with the picture, and 24 px under the
+   stage direction when the columns stack. */
+.lesson-story-grid
+  > .lesson-step-content[data-story-register="true"]
+  > :first-child {
+  margin-top: 0;
 }
 
 .lesson-prose pre {
@@ -459,6 +677,17 @@ body {
   display: none;
 }
 
+/* Dialogue lines compile to <p>. Inside a grid cell (the row layout, and
+   any beat that sits in the paired grid) the paragraph's trailing margin
+   cannot collapse into the beat's own margin, so drop it and give the row
+   beat the beat gap itself (spec 2026-09-23, section 6, --l-beat). */
+.lesson-prose [data-dialogue] p:last-child {
+  margin-bottom: 0;
+}
+.lesson-step-content > [data-dialogue][data-layout="row"] {
+  margin-bottom: var(--l-beat, 16px);
+}
+
 /* Screenplay register (Briefing step). The story zone is the opening scene:
    content BEFORE the first heading (some lessons have mid-lesson Dialogues
    after headings; those must keep instruction styling). Story-zone prose =
@@ -471,7 +700,6 @@ body {
   font-style: italic;
   font-size: 0.875rem;
   color: var(--tc-muted, #a0a0a0);
-  padding-left: 1.5rem;
   max-width: 52ch;
 }
 

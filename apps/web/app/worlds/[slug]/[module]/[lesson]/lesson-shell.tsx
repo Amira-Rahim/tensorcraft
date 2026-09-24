@@ -1,15 +1,39 @@
 interface LessonShellProps {
   left: React.ReactNode;
   right: React.ReactNode;
-  rightKind: "rail" | "pane" | "code" | "none";
+  rightKind: "pane" | "code" | "none";
   chrome?: React.ReactNode;
   controls?: React.ReactNode;
   footer?: React.ReactNode;
   paneOpenOnMobile?: boolean;
 }
 
-/** One mounted editor at every width. Code examples use the full column;
- * challenges keep notes beside the editor on desktop and switch views on mobile. */
+/* The grid's classes per kind, each string whole: Tailwind emits a rule only
+   for a class it finds whole in the source, so these are never assembled by
+   interpolation. "none" and "code" are one column with no gap utility:
+   "none" has one slot, and the Code step stacks its two slots with no row
+   gap, because grid items do not collapse margins, so the left slot's
+   trailing 24 px is the whole gap above the worked example (globals.css
+   strips the code slot's own block margins to match; spec section 4,
+   amended). "pane" sets its slots side by side from lg with the 40 px
+   gutter and shows one at a time below it, so it needs no row gap either. */
+const GRID_CLASS: Record<LessonShellProps["rightKind"], string> = {
+  none: "grid grid-cols-1",
+  code: "grid grid-cols-1",
+  pane: "grid gap-x-10 lg:grid-cols-[minmax(0,min(440px,38%))_minmax(0,1fr)]",
+};
+
+/**
+ * One frame for every step (spec 2026-09-23, section 1): 1,280 px with 48 px
+ * side padding at desktop, the width the chrome bar already uses, so the
+ * chrome hairline and the body edges align. "code" is single column (the
+ * worked example uses the full width; derivations stack above it in the
+ * left slot). "pane" is the Challenge: instructions on a track of 440 px,
+ * or 38% of the grid where that is narrower so the editor keeps its width
+ * on small desktops; the editor takes the rest, with one mounted editor at
+ * every width. "none" is a single column. The Challenge gutter repeats a
+ * spacing token in globals.css: gap-x-10 is --l-gutter (see GRID_CLASS).
+ */
 export function LessonShell({
   left,
   right,
@@ -20,20 +44,18 @@ export function LessonShell({
   paneOpenOnMobile = false,
 }: LessonShellProps) {
   const single = rightKind === "none";
-  const code = rightKind === "code";
   const pane = rightKind === "pane";
   return (
     <div className="flex flex-col">
       {chrome}
       <div
-        className={`mx-auto w-full px-5 sm:px-6 md:px-10 ${single ? "max-w-[900px]" : code ? "max-w-[1100px]" : "max-w-[1280px]"}`}
+        data-testid="lesson-frame"
+        className="mx-auto w-full max-w-7xl px-5 md:px-12"
       >
         {controls}
-        <div
-          className={`grid gap-8 ${rightKind === "rail" ? "lg:grid-cols-[minmax(0,1fr)_320px]" : pane ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]" : "grid-cols-1"}`}
-        >
+        <div data-testid="lesson-grid" className={GRID_CLASS[rightKind]}>
           <div
-            className={`min-w-0 ${code ? "" : "max-w-[68ch]"} ${pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
+            className={`min-w-0 ${pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
           >
             {left}
           </div>
@@ -41,7 +63,7 @@ export function LessonShell({
             <div
               data-testid="lesson-right"
               data-kind={rightKind}
-              className={`min-w-0 ${pane ? `lg:border-l lg:pl-6 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : rightKind === "rail" ? "border-t pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0 border-border" : ""}`}
+              className={`min-w-0 ${pane ? `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : ""}`}
             >
               {right}
             </div>

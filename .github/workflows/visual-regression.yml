@@ -8,7 +8,7 @@
 # `testInfo.snapshotSuffix = process.platform` (playwright/lib/index.js:345)
 # feeds the default path template
 # `{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}{-projectName}{-snapshotSuffix}{ext}`.
-# All 30 committed baselines are `*-chromium-darwin.png`, so an ubuntu
+# All 36 committed baselines are `*-chromium-darwin.png`, so an ubuntu
 # runner resolves `*-chromium-linux.png`, which does not exist. Measured
 # with a scratch spec whose resolver was pointed at a `-linux` name while a
 # `-darwin` file sat next to it:

@@ -221,7 +221,7 @@ test.describe("Lesson reading experience", () => {
   const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
   const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
 
-  test("Concept step underlines glossary terms and lists them in the rail", async ({
+  test("Concept step renders the paired grid and underlines glossary terms", async ({
     page,
   }) => {
     await page.addInitScript(
@@ -233,87 +233,38 @@ test.describe("Lesson reading experience", () => {
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
-    // Right region on the Concept step is a rail (not a pane).
-    const right = page.getByTestId("lesson-right");
-    await expect(right).toHaveAttribute("data-kind", "rail");
-
-    // The MDX also contains hidden story text; inspect a visible concept term.
+    // The Concept body is the paired grid (spec 2026-09-23). Wait for it
+    // before the right-slot check: the server renders the Briefing, which has
+    // no right slot either, so that check proves nothing until the client has
+    // restored the Concept step. A visible term chip proves the read rendered.
+    await expect(
+      page.locator('.lesson-step-content[data-layout="paired"]'),
+    ).toBeVisible();
+    await expect(page.getByTestId("lesson-right")).toHaveCount(0);
     const term = page
       .locator(".lesson-prose [data-glossary-term]:visible")
       .first();
     await expect(term).toBeVisible({ timeout: 15000 });
-
-    // The glossary rail lists entries.
-    const railEntries = page.locator('[data-testid^="glossary-entry-"]');
-    await expect(railEntries.first()).toBeVisible();
-    expect(await railEntries.count()).toBeGreaterThan(0);
   });
 
-  test("clicking a glossary term activates its rail entry", async ({
-    page,
-  }) => {
-    let lastSignature = "";
+  test("the Takeaways step lists the lesson's terms", async ({ page }) => {
     await page.addInitScript(
       ({ stepKey, maxKey }) => {
-        localStorage.setItem(stepKey, "1");
-        localStorage.setItem(maxKey, "1");
-        // Every sibling spec declines consent; without this the banner
-        // covers the prose and the click below never lands.
+        localStorage.setItem(stepKey, "4");
+        localStorage.setItem(maxKey, "4");
         localStorage.setItem("tc-cookie-consent", "declined");
       },
       { stepKey: STEP_KEY, maxKey: MAX_KEY },
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
-
-    await expect(page.getByTestId("lesson-right")).toHaveAttribute(
-      "data-kind",
-      /.+/,
-    );
-
-    // Glossary buttons are injected on the client, and the step partition
-    // then hides every paragraph that does not belong to the current step,
-    // so the visible set keeps changing for a moment after load. A term
-    // caught mid-settle is about to be hidden, and clicking it leaves the
-    // rail untouched. Wait until the visible set stops moving.
-    const visibleTerms = page.locator(
-      ".lesson-prose [data-glossary-term]:visible",
-    );
-    await expect
-      .poll(
-        async () => {
-          const count = await visibleTerms.count();
-          const first =
-            count > 0
-              ? await visibleTerms.first().getAttribute("data-glossary-term")
-              : null;
-          const signature = `${count}:${first ?? ""}`;
-          const settled = count > 0 && signature === lastSignature;
-          lastSignature = signature;
-          return settled;
-        },
-        { timeout: 15000, intervals: [250] },
-      )
-      .toBe(true);
-
-    const term = visibleTerms.first();
-    await expect(term).toBeVisible({ timeout: 15000 });
-
-    // Read the term value off the clicked element, then assert the rail
-    // entry with that exact term becomes active.
-    const termValue = await term.getAttribute("data-glossary-term");
-    expect(termValue).toBeTruthy();
-
-    const entry = page.getByTestId(`glossary-entry-${termValue}`);
-    // Wait for the rail entry to exist (proves the client component is
-    // hydrated) before clicking, so the click handler is attached.
-    await expect(entry).toBeVisible({ timeout: 15000 });
-    await expect(entry).toHaveAttribute("data-active", "false");
-
-    await term.click();
-
-    await expect(entry).toHaveAttribute("data-active", "true", {
-      timeout: 15000,
-    });
+    const list = page.getByTestId("lesson-terms-list");
+    await expect(list).toBeVisible({ timeout: 15000 });
+    await expect(
+      list.getByRole("heading", { level: 2, name: "Terms in this lesson" }),
+    ).toBeVisible();
+    expect(
+      await list.locator('[data-testid^="glossary-entry-"]').count(),
+    ).toBeGreaterThan(0);
   });
 
   test("inline code renders as a chip in the prose (not a code block)", async ({
@@ -335,7 +286,9 @@ test.describe("Lesson reading experience", () => {
     await expect(inlineCode).toBeVisible({ timeout: 15000 });
   });
 
-  test("Code step swaps the right rail for a work pane", async ({ page }) => {
+  test("Code step renders the worked example in the code slot", async ({
+    page,
+  }) => {
     // Code is step index 2. Seed maxStep high enough that the step is reachable.
     await page.addInitScript(
       ({ stepKey, maxKey }) => {

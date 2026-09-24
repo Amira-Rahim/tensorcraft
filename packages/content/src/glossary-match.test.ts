@@ -37,7 +37,7 @@ describe("matchGlossaryTerms", () => {
   it("glossaryTermsInCompiledBody reads the spans rehype emitted, in order, once each", () => {
     // What velite's compiled MDX looks like around a wrapped term, with and
     // without the space after the colon, plus a term the dictionary lacks
-    // and a repeat that must not produce a second rail entry.
+    // and a repeat that must not produce a second Takeaways terms list entry.
     const body = [
       'jsx(_span, {"data-glossary-term": "rank", children: "rank"})',
       'jsx(_span, {"data-glossary-term":"tensor", children: "tensor"})',
@@ -52,7 +52,7 @@ describe("matchGlossaryTerms", () => {
   it("glossaryTermsInCompiledBody ignores a term that only the source text carried", () => {
     // A BossBeat option, a Dialogue line or a heading can name "rank" in the
     // MDX source without rehype ever wrapping it; the body then has no span
-    // and the rail must not list it.
+    // and the Takeaways terms list must not show it.
     const body =
       'jsx(BossBeat, {options: ["rank is a size", "rank is a count"]})';
     expect(glossaryTermsInCompiledBody(body, DICT)).toEqual([]);

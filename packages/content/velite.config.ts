@@ -1,6 +1,7 @@
 import { defineCollection, defineConfig, s } from "velite";
 import ts from "typescript";
 import { rehypeGlossary } from "./src/rehype-glossary";
+import { rehypePairCompanions } from "./src/rehype-pair-companions";
 import { GLOSSARY } from "./src/glossary";
 import { glossaryTermsInCompiledBody } from "./src/glossary-match";
 import { parseRecallPrompts } from "./src/parse-recall-prompts";
@@ -126,7 +127,7 @@ const lessons = defineCollection({
         .optional(),
 
       // Pedagogical pattern. The lesson BODY carries the alternate structure
-      // (authored that way); this field tags it so the Briefing SceneCard
+      // (authored that way); this field tags it so the Briefing eyebrow
       // renders a FORMAT line (PATTERN_LABELS in lesson-steps.tsx) and the
       // variety gate can assert skeleton-breakers exist per module.
       // Absent frontmatter defaults to "standard".
@@ -170,8 +171,8 @@ const lessons = defineCollection({
       const { rawBody, ...rest } = data;
       return {
         ...rest,
-        // The rail beside the Takeaways step lists exactly the terms the
-        // rendered body underlines. Matching the MDX source instead listed
+        // The Takeaways "Terms in this lesson" list shows exactly the terms
+        // the rendered body underlines. Matching the MDX source instead listed
         // 242 terms across 56 lessons that no reader ever saw as a chip,
         // several off JSX attributes in the other sense of the word (gate:
         // __tests__/glossary-rail-contract.test.ts).
@@ -330,6 +331,13 @@ export default defineConfig({
     data: ".velite",
     clean: true,
   },
-  mdx: { rehypePlugins: [[rehypeGlossary, { dictionary: GLOSSARY }]] },
+  mdx: {
+    rehypePlugins: [
+      [rehypeGlossary, { dictionary: GLOSSARY }],
+      // Order is immaterial today: rehype-glossary never enters JSX, so
+      // moving a companion cannot change which occurrence is underlined first.
+      rehypePairCompanions,
+    ],
+  },
   collections: { lessons, exercises, modules, posts },
 });

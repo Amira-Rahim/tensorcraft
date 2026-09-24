@@ -41,7 +41,7 @@ export function ChallengePassedBanner({
       {passed && (
         <div
           data-testid="challenge-passed-banner"
-          className="mt-4 flex items-center justify-between gap-4 border px-5 py-4"
+          className="mt-(--l-row) flex items-center justify-between gap-(--l-nav-inner) border px-5 py-4"
           style={{
             borderColor: "var(--tc-primary)",
             background: "color-mix(in srgb, var(--tc-primary) 8%, transparent)",

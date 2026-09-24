@@ -26,6 +26,14 @@ describe("BridgeCallout", () => {
     expect(container.innerHTML).toBe("");
   });
 
+  it.each([
+    ["with variants", bridgeWithVariants],
+    ["without variants", bridgeWithoutVariants],
+  ])("marks the %s root with data-aside", (_label, bridge) => {
+    const { container } = render(<BridgeCallout bridge={bridge} />);
+    expect(container.firstElementChild).toHaveAttribute("data-aside", "");
+  });
+
   it("renders ML title and code", () => {
     render(<BridgeCallout bridge={bridgeWithVariants} />);
     expect(screen.getByText("Training Data")).toBeInTheDocument();

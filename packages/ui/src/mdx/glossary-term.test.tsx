@@ -1,23 +1,16 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { GlossaryTerm } from "./glossary-term";
 
 describe("GlossaryTerm", () => {
-  it("renders children with a glossary affordance and fires onActivate on click", () => {
-    const onActivate = vi.fn();
+  it("renders children with a glossary affordance", () => {
     render(
-      <GlossaryTerm
-        term="rank"
-        definition="number of axes"
-        onActivate={onActivate}
-      >
+      <GlossaryTerm term="rank" definition="number of axes">
         rank
       </GlossaryTerm>,
     );
     const el = screen.getByText("rank");
     expect(el.getAttribute("data-glossary-term")).toBe("rank");
-    fireEvent.click(el);
-    expect(onActivate).toHaveBeenCalledWith("rank");
   });
 
   it("shows the definition on activation and dismisses it with Escape", () => {

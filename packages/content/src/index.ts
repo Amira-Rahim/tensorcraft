@@ -30,7 +30,8 @@ export {
 } from "./concept-index";
 export type { ConceptIndex, ConceptSource, LessonRef } from "./concept-index";
 
-// Curated ML glossary: auto-underline concept terms in prose and feed a rail.
+// Curated ML glossary: auto-underline concept terms in prose and fill the
+// Takeaways terms list.
 export { GLOSSARY } from "./glossary";
 export type { GlossaryEntry } from "./glossary";
 

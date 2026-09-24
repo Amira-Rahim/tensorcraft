@@ -69,7 +69,7 @@ const COMPILED_SPAN = /"data-glossary-term":\s*"([^"]+)"/g;
  * the children and attributes of JSX elements (Dialogue, BossBeat, drawers),
  * so this is narrower than a whole-word match over the source: a term named
  * only inside a BossBeat option never reaches the reader as a chip and must
- * not reach the rail beside the lesson either (round 7, 2026-09-13).
+ * not reach the Takeaways terms list either (round 7, 2026-09-13).
  */
 export function glossaryTermsInCompiledBody(
   body: string,

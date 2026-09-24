@@ -23,11 +23,10 @@ const lessons = JSON.parse(
 const html = `<!doctype html><html lang="en" data-world="deep-orbit" data-theme="dark"><head><title>Internal content review</title></head><body><main style="max-width:48rem;margin:2rem auto;padding:0 1rem"><h1 id="title"></h1><div id="root"></div></main><script type="module">
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LessonContent} from '/apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-content.tsx';
-import {GlossaryProvider} from '/apps/web/app/worlds/[slug]/[module]/[lesson]/glossary-context.tsx';
 import '/packages/worlds/src/css/worlds.css';import '/apps/web/app/globals.css';
 const lessons=await (await fetch('/__content-data')).json();const root=createRoot(document.getElementById('root'));
 const visible=new Set(['ConceptReference','ChannelLayoutExperiment','LearningExperiment','ProjectMilestone','prose','Dialogue','CodeBlock','DerivationDrawer','LearningObjectives','LessonRecap','RecallPrompt','BridgeCallout','Epilogue','BossBeat','StoryConsequence','DecisionTask','IndependentProject','TransferAssignment','DispatchTease','MathBlock','Concept']);
-window.showLesson=(index,mode='all')=>{if(index<0){root.render(null);return;}const lesson=lessons[index];const active=mode==='consequence'?new Set(['Epilogue','DispatchTease']):mode==='briefing'?new Set(['BossBeat']):visible;document.querySelector('#title').textContent=lesson.title;root.render(React.createElement(GlossaryProvider,null,React.createElement(LessonContent,{key:index+mode,lesson,worldId:'deep-orbit',lessonId:lesson.slug,moduleId:lesson.moduleId,glossaryTerms:lesson.glossaryTerms,visibleComponents:active,showProse:mode==='all',showPostRecap:mode==='consequence'})));return lesson.slug;};window.lessonCount=lessons.length;window.showLesson(0);
+window.showLesson=(index,mode='all')=>{if(index<0){root.render(null);return;}const lesson=lessons[index];const active=mode==='consequence'?new Set(['Epilogue','DispatchTease']):mode==='briefing'?new Set(['BossBeat']):visible;document.querySelector('#title').textContent=lesson.title;root.render(React.createElement(LessonContent,{key:index+mode,lesson,worldId:'deep-orbit',lessonId:lesson.slug,moduleId:lesson.moduleId,glossaryTerms:lesson.glossaryTerms,visibleComponents:active,showProse:mode==='all',showPostRecap:mode==='consequence'}));return lesson.slug;};window.lessonCount=lessons.length;window.showLesson(0);
 </script></body></html>`;
 const storyMode = process.argv.includes("--story");
 const fixture = { choices: new Map(), failReads: 0, failWrites: 0 };

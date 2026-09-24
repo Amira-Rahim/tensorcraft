@@ -60,7 +60,7 @@ export const lessonSchema = z.object({
     .optional(),
 
   // Pedagogical pattern. The lesson BODY carries the alternate structure
-  // (authored that way); this field tags it so the Briefing SceneCard renders
+  // (authored that way); this field tags it so the Briefing eyebrow renders
   // a FORMAT line (PATTERN_LABELS in lesson-steps.tsx) and the variety gate
   // can assert skeleton-breakers exist per module.
   // "standard"          → conventional Context→Concept→Code→Challenge→Consequence

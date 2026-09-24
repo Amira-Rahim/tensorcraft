@@ -111,7 +111,7 @@ export function ReviewPromptCard({
           ) : onContinue ? (
             <button
               type="button"
-              className={`${buttonClass} mt-3`}
+              className={`${buttonClass} mt-[var(--l-nav-inner,24px)]`}
               onClick={onContinue}
             >
               Continue to lesson

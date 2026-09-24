@@ -88,7 +88,10 @@ function GenericBridgeLayout({
   const color = tierColors[bridge.tier];
 
   return (
-    <div className="my-8 brutalist-shadow bg-surface-raised border border-border overflow-hidden">
+    <div
+      data-aside=""
+      className="brutalist-shadow bg-surface-raised border border-border overflow-hidden"
+    >
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] divide-y sm:divide-y-0 sm:divide-x divide-border">
         <div className="p-5">
           <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
@@ -148,7 +151,10 @@ function ReactBridgeLayout({
   const jsCode = reactVariant.jsCode || bridge.jsCode;
 
   return (
-    <div className="my-8 brutalist-shadow bg-surface-raised border border-border overflow-hidden">
+    <div
+      data-aside=""
+      className="brutalist-shadow bg-surface-raised border border-border overflow-hidden"
+    >
       <div className="flex items-center justify-between border-b border-border px-4 py-2">
         <span className="font-mono text-xs uppercase tracking-widest text-text-muted">
           React

@@ -3,14 +3,83 @@ import { render, screen } from "@testing-library/react";
 import { Dialogue } from "./dialogue";
 
 describe("Dialogue", () => {
-  it("renders the speaker name", () => {
-    render(<Dialogue speaker="ARIA">Hello, Commander.</Dialogue>);
-    expect(screen.getByText("ARIA")).toBeInTheDocument();
-  });
+  // The row layout (the Briefing) repeats the speaker, direction and line
+  // blocks in its own branch, so the content and style checks run on both.
+  describe.each(["stack", "row"] as const)("%s layout", (layout) => {
+    it("renders the speaker name", () => {
+      render(
+        <Dialogue speaker="ARIA" layout={layout}>
+          Hello, Commander.
+        </Dialogue>,
+      );
+      expect(screen.getByText("ARIA")).toBeInTheDocument();
+    });
 
-  it("renders children content", () => {
-    render(<Dialogue speaker="Dr. Farah">The signal is fading.</Dialogue>);
-    expect(screen.getByText("The signal is fading.")).toBeInTheDocument();
+    it("renders children content", () => {
+      render(
+        <Dialogue speaker="Dr. Farah" layout={layout}>
+          The signal is fading.
+        </Dialogue>,
+      );
+      expect(screen.getByText("The signal is fading.")).toBeInTheDocument();
+    });
+
+    it("displays speaker in uppercase monospace style", () => {
+      render(
+        <Dialogue speaker="Ensign Demir" layout={layout}>
+          Report ready.
+        </Dialogue>,
+      );
+      const speaker = screen.getByText("Ensign Demir");
+      expect(speaker).toHaveClass("uppercase", "tracking-[2px]");
+    });
+
+    it("renders optional direction as parenthetical", () => {
+      render(
+        <Dialogue
+          speaker="Imran"
+          direction="pulling up the chart"
+          layout={layout}
+        >
+          The note said PCN allergy.
+        </Dialogue>,
+      );
+      expect(screen.getByText("(pulling up the chart)")).toBeInTheDocument();
+    });
+
+    it("omits parenthetical when no direction prop", () => {
+      const { container } = render(
+        <Dialogue speaker="ARIA" layout={layout}>
+          Scanning.
+        </Dialogue>,
+      );
+      expect(
+        container.querySelector("[data-testid='direction']"),
+      ).not.toBeInTheDocument();
+    });
+
+    it("colors the speaker with the world primary variable", () => {
+      render(
+        <Dialogue speaker="ARIA" layout={layout}>
+          Test
+        </Dialogue>,
+      );
+      expect(screen.getByText("ARIA")).toHaveAttribute(
+        "style",
+        expect.stringContaining("--tc-primary"),
+      );
+    });
+
+    it("has no accessibility violations", async () => {
+      const { axe } = await import("vitest-axe");
+      const { container } = render(
+        <Dialogue speaker="ARIA" layout={layout}>
+          Scanning for anomalies.
+        </Dialogue>,
+      );
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
   });
 
   it("renders as a div, not a blockquote", () => {
@@ -19,50 +88,11 @@ describe("Dialogue", () => {
     expect(container.querySelector("div")).toBeInTheDocument();
   });
 
-  it("displays speaker in uppercase monospace style", () => {
-    render(<Dialogue speaker="Ensign Demir">Report ready.</Dialogue>);
-    const speaker = screen.getByText("Ensign Demir");
-    expect(speaker).toHaveClass("uppercase", "tracking-[2px]");
-  });
-
-  it("renders optional direction as parenthetical", () => {
-    render(
-      <Dialogue speaker="Imran" direction="pulling up the chart">
-        The note said PCN allergy.
-      </Dialogue>,
-    );
-    expect(screen.getByText("(pulling up the chart)")).toBeInTheDocument();
-  });
-
-  it("omits parenthetical when no direction prop", () => {
-    const { container } = render(<Dialogue speaker="ARIA">Scanning.</Dialogue>);
-    expect(
-      container.querySelector("[data-testid='direction']"),
-    ).not.toBeInTheDocument();
-  });
-
-  it("has no accessibility violations", async () => {
-    const { axe } = await import("vitest-axe");
-    const { container } = render(
-      <Dialogue speaker="ARIA">Scanning for anomalies.</Dialogue>,
-    );
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
-
   it("marks its root with data-dialogue for positional CSS", () => {
     const { container } = render(<Dialogue speaker="ARIA">Test</Dialogue>);
     expect(
       container.querySelector("[data-dialogue='true']"),
     ).toBeInTheDocument();
-  });
-
-  it("colors the speaker with the world primary variable", () => {
-    render(<Dialogue speaker="ARIA">Test</Dialogue>);
-    expect(screen.getByText("ARIA")).toHaveAttribute(
-      "style",
-      expect.stringContaining("--tc-primary"),
-    );
   });
 
   it("renders a hidden, decorative CUT-TO divider", () => {
@@ -150,4 +180,70 @@ describe("Dialogue avatar", () => {
     expect(screen.queryByTestId("character-avatar-img")).toBeNull();
     expect(screen.queryByTestId("character-avatar-placeholder")).toBeNull();
   });
+  it("falls back to the avatarName path when avatarSlot is falsy", () => {
+    render(
+      <Dialogue
+        speaker="Chief Nazari"
+        avatarName="Chief Nazari"
+        avatarSrc="/characters/deep-orbit/chief-nazari.webp"
+        avatarSlot={false}
+      >
+        Line.
+      </Dialogue>,
+    );
+    expect(screen.getByTestId("character-avatar-img")).toBeInTheDocument();
+  });
+});
+
+describe("Dialogue row layout", () => {
+  it("keeps the stacked, centred layout by default", () => {
+    const { container } = render(
+      <Dialogue speaker="ARIA" avatarSlot={<i data-testid="slot" />}>
+        Line.
+      </Dialogue>,
+    );
+    const root = container.querySelector("[data-dialogue]");
+    expect(root).toBeInTheDocument();
+    expect(root).toHaveClass("max-w-[440px]");
+    expect(root).toHaveAttribute("data-layout", "stack");
+  });
+
+  it("puts the avatar slot beside the line in row layout, root still a block", () => {
+    const { container } = render(
+      <Dialogue
+        speaker="ARIA"
+        layout="row"
+        avatarSlot={<i data-testid="slot" />}
+      >
+        Line.
+      </Dialogue>,
+    );
+    const root = container.querySelector("[data-dialogue]");
+    expect(root).toBeInTheDocument();
+    expect(root).toHaveAttribute("data-layout", "row");
+    expect(root).not.toHaveClass("max-w-[440px]");
+    // A flex or grid root would pull the cut-to divider beside the line.
+    for (const display of ["flex", "inline-flex", "grid", "inline-grid"]) {
+      expect(root).not.toHaveClass(display);
+    }
+    const row = root?.querySelector("[data-dialogue-row]");
+    expect(row).toBeInTheDocument();
+    expect(row).toHaveClass("grid");
+    expect(row).toContainElement(screen.getByTestId("slot"));
+    expect(row).toContainElement(screen.getByText("Line."));
+  });
+
+  it.each(["stack", "row"] as const)(
+    "keeps the cut-to divider as the root's last direct child in %s layout",
+    (layout) => {
+      const { container } = render(
+        <Dialogue speaker="ARIA" layout={layout}>
+          Line.
+        </Dialogue>,
+      );
+      const root = container.querySelector("[data-dialogue]");
+      expect(root).toBeInTheDocument();
+      expect(root?.lastElementChild).toHaveClass("tc-cut-to");
+    },
+  );
 });
