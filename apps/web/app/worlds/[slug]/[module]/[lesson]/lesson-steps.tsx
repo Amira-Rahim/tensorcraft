@@ -1082,9 +1082,9 @@ function LessonStepsInner({
     </div>
   );
 
-  let shellLeft: React.ReactNode = null;
+  let shellLeft: React.ReactNode;
   let shellRight: React.ReactNode = null;
-  let rightKind: React.ComponentProps<typeof LessonShell>["rightKind"] = "none";
+  let rightKind: React.ComponentProps<typeof LessonShell>["rightKind"];
 
   if (currentStep === 0) {
     rightKind = "none";

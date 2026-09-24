@@ -77,7 +77,7 @@ export async function updateSession(request: NextRequest) {
   // pages keep serving.
   let user: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] =
     null;
-  let authError: unknown = null;
+  let authError: unknown;
   try {
     const result = await supabase.auth.getUser();
     user = result.data.user;
