@@ -45,7 +45,7 @@ export function DispatchTease({
 
   return (
     <aside
-      className="my-10 p-6 brutalist-shadow bg-surface-raised border border-border"
+      className="my-10 p-6 bg-surface-raised border border-border"
       data-testid="dispatch-tease"
     >
       <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-3">

@@ -60,6 +60,7 @@ vi.mock("@tensorcraft/ui", async () => {
     LearningObjectives: () => null,
     Quiz: () => null,
     Exercise: () => null,
+    ExerciseBrief: () => null,
   };
 });
 

@@ -99,7 +99,7 @@ for (const [width, colorScheme] of [
       reference.getByText("garbled-channels.ts", { exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Step 6: Consequence", exact: true }),
+      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
     ).toBeDisabled();
     expect(
       await page.evaluate(

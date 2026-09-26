@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { LessonContent } from "./lesson-content";
+import { trackHintRequested } from "@/lib/analytics";
 
 vi.mock("@tensorcraft/ui", () => ({
   Dialogue: ({
@@ -42,7 +43,33 @@ vi.mock("@tensorcraft/ui", () => ({
   LearningObjectives: () => null,
   LessonRecap: () => <div>Lesson recap</div>,
   Quiz: () => null,
-  Exercise: () => null,
+  Exercise: ({
+    brief,
+    titled,
+  }: {
+    brief?: "inline" | "external";
+    titled?: boolean;
+  }) => (
+    <div
+      data-testid="exercise-pane"
+      data-brief={brief ?? "inline"}
+      data-titled={titled ? "true" : undefined}
+    />
+  ),
+  ExerciseBrief: ({
+    slug,
+    onHintRevealed,
+  }: {
+    slug: string;
+    onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+  }) => (
+    <div data-testid="exercise-brief">
+      {slug}
+      <button type="button" onClick={() => onHintRevealed?.(1)}>
+        reveal
+      </button>
+    </div>
+  ),
 }));
 
 vi.mock("@/app/components/mdx", () => ({
@@ -57,7 +84,17 @@ vi.mock("@/app/components/mdx", () => ({
   ChannelLayoutExperiment: () => <div>Channel experiment mounted</div>,
   MathBlock: () => null,
   NextLesson: () => null,
-  RecallPrompt: () => null,
+  RecallPrompt: ({
+    question,
+    onAnswer,
+  }: {
+    question: string;
+    onAnswer?: (result: "attempted" | "bailed") => void;
+  }) => (
+    <button type="button" onClick={() => onAnswer?.("attempted")}>
+      Reveal {question}
+    </button>
+  ),
   StrategyThread: () => null,
   TransferAssignment: () => <div>Independent assignment</div>,
   DecisionTask: () => <div>Decision task</div>,
@@ -85,6 +122,29 @@ function _createMdxContent(props) {
       jsx("p", {children: "The scene after the work."}),
       jsx(Dialogue, {speaker: "Dr. Farah", children: "Closing line."})
     ]})})
+  ]});
+}
+return {default: function(props) { return _createMdxContent(props); }};`;
+
+// Two recall cards, as 24 of the 56 lessons carry (spec 2026-09-24, section 2).
+const RECALL_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+function _createMdxContent(props) {
+  const _components = props.components || {};
+  const RecallPrompt = _components.RecallPrompt;
+  return jsxs(Fragment, {children: [
+    jsx(RecallPrompt, {question: "one", answer: "a"}),
+    jsx(RecallPrompt, {question: "two", answer: "b"})
+  ]});
+}
+return {default: function(props) { return _createMdxContent(props); }};`;
+
+const EXERCISE_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+function _createMdxContent(props) {
+  const _components = props.components || {};
+  const Exercise = _components.Exercise;
+  return jsxs(Fragment, {children: [
+    jsx("p", {children: "Now it is your turn."}),
+    jsx(Exercise, {slug: "create-a-tensor"})
   ]});
 }
 return {default: function(props) { return _createMdxContent(props); }};`;
@@ -448,3 +508,137 @@ for (const [component, label] of [
     expect(screen.queryByText(label)).not.toBeInTheDocument();
   });
 }
+
+describe("LessonContent, recall cards pending (spec 2026-09-24, section 2)", () => {
+  it("reports the unsettled card count after mount and after each first answer", () => {
+    const report = vi.fn();
+    const { unmount } = render(
+      <LessonContent
+        lesson={{ body: RECALL_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["RecallPrompt"])}
+        onRecallPending={report}
+      />,
+    );
+    expect(report).toHaveBeenLastCalledWith(2);
+    fireEvent.click(screen.getByRole("button", { name: "Reveal one" }));
+    expect(report).toHaveBeenLastCalledWith(1);
+    // A second answer from the same card (the rating) changes nothing.
+    fireEvent.click(screen.getByRole("button", { name: "Reveal one" }));
+    expect(report).toHaveBeenLastCalledWith(1);
+    fireEvent.click(screen.getByRole("button", { name: "Reveal two" }));
+    expect(report).toHaveBeenLastCalledWith(0);
+    // The whole instance unmounts on every step change; the cleanup that
+    // deletes without reporting must stay that way (spec 2026-09-24, section 2).
+    report.mockClear();
+    unmount();
+    expect(report).not.toHaveBeenCalled();
+  });
+
+  it("reports zero once for a body with no card", () => {
+    const report = vi.fn();
+    render(
+      <LessonContent
+        lesson={{ body: LESSON_RECAP_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["RecallPrompt"])}
+        onRecallPending={report}
+      />,
+    );
+    expect(report).toHaveBeenCalledWith(0);
+    expect(report.mock.calls.every(([n]) => n === 0)).toBe(true);
+    expect(report).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("LessonContent, the exercise brief and the pane (spec 2026-09-24, section 3)", () => {
+  const one = [
+    {
+      slug: "create-a-tensor",
+      title: "t",
+      instructions: "i",
+      starterCode: "",
+      solutionCode: "",
+      testCode: "",
+      estimatedMinutes: 6,
+      difficulty: "beginner" as const,
+    },
+  ];
+  const two = [...one, { ...one[0], slug: "second" }];
+  const lessonBody = { body: EXERCISE_BODY, concept: { explanation: "x" } };
+
+  it("renders the brief and no pane for a set that names ExerciseBrief", () => {
+    render(
+      <LessonContent
+        lesson={lessonBody}
+        exercises={one}
+        worldId="deep-orbit"
+        lessonId="introduction-to-tensors"
+        visibleComponents={new Set(["challenge", "ExerciseBrief"])}
+      />,
+    );
+    expect(screen.getByTestId("exercise-brief")).toHaveTextContent(
+      "create-a-tensor",
+    );
+    expect(screen.queryByText("Loading editor…")).toBeNull();
+    expect(screen.queryByTestId("exercise-pane")).toBeNull();
+  });
+
+  it("wires the brief's own ladder to the page hook and analytics", () => {
+    vi.mocked(trackHintRequested).mockClear();
+    const spy = vi.fn();
+    render(
+      <LessonContent
+        lesson={lessonBody}
+        exercises={one}
+        worldId="deep-orbit"
+        lessonId="introduction-to-tensors"
+        visibleComponents={new Set(["challenge", "ExerciseBrief"])}
+        onHintRevealed={spy}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "reveal" }));
+    expect(spy).toHaveBeenCalledWith(1);
+    expect(trackHintRequested).toHaveBeenCalledWith(1, {
+      worldId: "deep-orbit",
+      lessonId: "introduction-to-tensors",
+    });
+  });
+
+  it("renders the pane without its brief for a set that names Exercise", async () => {
+    render(
+      <LessonContent
+        lesson={lessonBody}
+        exercises={one}
+        worldId="deep-orbit"
+        lessonId="introduction-to-tensors"
+        visibleComponents={new Set(["Exercise"])}
+      />,
+    );
+    const pane = await screen.findByTestId("exercise-pane");
+    expect(pane).toHaveAttribute("data-brief", "external");
+    expect(pane).not.toHaveAttribute("data-titled");
+    expect(screen.queryByTestId("exercise-brief")).toBeNull();
+  });
+
+  it("names the pane when the lesson has more than one exercise", async () => {
+    render(
+      <LessonContent
+        lesson={lessonBody}
+        exercises={two}
+        visibleComponents={new Set(["Exercise"])}
+      />,
+    );
+    expect(await screen.findByTestId("exercise-pane")).toHaveAttribute(
+      "data-titled",
+      "true",
+    );
+  });
+
+  it("renders the inline pane alone when no set is passed", async () => {
+    render(<LessonContent lesson={lessonBody} exercises={one} />);
+    expect(await screen.findByTestId("exercise-pane")).toHaveAttribute(
+      "data-brief",
+      "inline",
+    );
+    expect(screen.queryByTestId("exercise-brief")).toBeNull();
+  });
+});

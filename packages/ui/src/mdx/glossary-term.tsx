@@ -28,11 +28,23 @@ export function GlossaryTerm({
       if (!rect) return;
       const width = Math.min(360, window.innerWidth - 32);
       const height = popup.current?.offsetHeight ?? 160;
+      // The consent bar publishes its height on <html> while it shows
+      // (apps/web/app/components/cookie-consent.tsx): keep the popover
+      // above it. It reads 0 once a choice is made, and in jsdom.
+      const reserved =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--tc-consent-h",
+          ),
+        ) || 0;
       setPosition({
         left: Math.max(16, Math.min(rect.left, window.innerWidth - width - 16)),
         top: Math.max(
           16,
-          Math.min(rect.bottom + 8, window.innerHeight - height - 16),
+          Math.min(
+            rect.bottom + 8,
+            window.innerHeight - height - 16 - reserved,
+          ),
         ),
       });
     };

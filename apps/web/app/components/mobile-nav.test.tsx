@@ -5,8 +5,9 @@ import { MobileNav } from "./mobile-nav";
 /**
  * Mobile menu dialog semantics (audit run #6 follow-up, 2026-07-15).
  *
- * The overlay is `fixed inset-0` and visually owns the viewport, but the page
- * behind it stays mounted. Without a trap, Tab walked straight out of the menu
+ * The overlay is fixed to the viewport (while the consent bar shows, it ends
+ * at the bar's top edge) and visually owns the screen, but the page behind it
+ * stays mounted. Without a trap, Tab walked straight out of the menu
  * and into links the user could not see, and Escape did nothing: a keyboard or
  * screen reader user could be operating a page they believe is covered.
  * FocusTrap already solved this for the lesson drawer; these tests keep the

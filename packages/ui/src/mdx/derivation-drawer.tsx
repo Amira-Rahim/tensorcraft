@@ -35,7 +35,7 @@ export function DerivationDrawer({ summary, children }: DerivationDrawerProps) {
     <div
       data-testid="derivation-drawer"
       data-aside=""
-      className="brutalist-shadow bg-surface-raised border border-border overflow-hidden"
+      className="bg-surface-raised border border-border overflow-hidden"
     >
       <button
         type="button"

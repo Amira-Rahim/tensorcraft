@@ -18,6 +18,8 @@ import { BUILT_WORLD_DIRS } from "@tensorcraft/content";
     margin, the code and editor slots' margin-free columns, the Challenge
     instructions column's last block and the lesson corpus that rule
     relies on, and the spacing tokens these rules read.
+  - the accent shadow rule: which lesson components keep the offset
+    shadow and which sit on a hairline (spec 2026-09-24, section 7).
 */
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -297,5 +299,138 @@ describe("the lesson layout stylesheet", () => {
       const stripped = afterKey.replace(/:(is|not|has)\([^)]*\)/g, ":$1()");
       expect(stripped).toMatch(/^\s*>\s*[^\s>+~]+\s*[{,]$/);
     }
+  });
+});
+
+/* The offset accent shadow marks a container the learner acts in and
+   nothing else (spec 2026-09-24, section 7). Source text checks, like the
+   marker tests above: jsdom applies no CSS, and the class either is or is
+   not in the className string. */
+describe("accent shadow rule", () => {
+  const keeps = [
+    "packages/ui/src/mdx/hint-panel.tsx",
+    "apps/web/app/components/review-prompt-card.tsx",
+    "packages/ui/src/mdx/quiz.tsx",
+    "apps/web/app/components/mdx/interactive-demo.tsx",
+    "apps/web/app/components/mdx/boss-beat.tsx",
+  ];
+  const loses = [
+    "packages/ui/src/mdx/code-block.tsx",
+    "packages/ui/src/mdx/bridge-callout.tsx",
+    "packages/ui/src/mdx/learning-objectives.tsx",
+    "packages/ui/src/mdx/key-takeaways.tsx",
+    "packages/ui/src/mdx/lesson-recap.tsx",
+    "packages/ui/src/mdx/derivation-drawer.tsx",
+    "apps/web/app/components/mdx/concept.tsx",
+    "apps/web/app/components/mdx/math-block.tsx",
+    "apps/web/app/components/mdx/next-lesson.tsx",
+    "apps/web/app/components/mdx/dispatch-tease.tsx",
+    "apps/web/app/components/mdx/strategy-thread.tsx",
+    "packages/ui/src/mdx/exercise-data.tsx",
+  ];
+
+  for (const file of keeps) {
+    it(`${file} keeps the shadow`, () => {
+      expect(read(file)).toMatch(/\bbrutalist-shadow\b/);
+    });
+  }
+
+  for (const file of loses) {
+    it(`${file} sits on a hairline`, () => {
+      // A hover shadow is a control affordance and may stay (next-lesson).
+      // One class token only, so an unclosed bracket cannot swallow text.
+      const src = read(file).replace(/hover:shadow-\[[^\]\s]*\]/g, "");
+      expect(src).not.toMatch(/\bbrutalist-shadow\b/);
+      // The hairline the test name promises: the border that frames the block.
+      expect(src).toMatch(/\bborder border-border\b/);
+    });
+  }
+
+  it("the exercise pane keeps the shadow and its nested panels lose it", () => {
+    const src = read("packages/ui/src/mdx/exercise.tsx");
+    const hits = src.match(/\bbrutalist-shadow\b/g) ?? [];
+    expect(hits).toHaveLength(1);
+    // The one carrier is the pane root, whose class string also names the
+    // line-number override that only the pane has.
+    expect(src).toMatch(/\[&_\.cm-lineNumbers\][^"]*brutalist-shadow/);
+  });
+
+  it("the exercise brief carries no offset shadow", () => {
+    // Prose in the reading column, not a framed block: no hairline to check.
+    expect(read("packages/ui/src/mdx/exercise-brief.tsx")).not.toMatch(
+      /\bbrutalist-shadow\b/,
+    );
+  });
+});
+
+describe("consent bar reserved space", () => {
+  it("body pads its bottom by the bar's published height", () => {
+    const css = read("apps/web/app/globals.css");
+    expect(css).toMatch(
+      /(^|\n)body\s*\{[^}]*padding-bottom:\s*var\(--tc-consent-h,\s*0px\)/,
+    );
+  });
+
+  it("the root scrolls focus and anchors clear of the bar", () => {
+    // Body padding clears the bar only at the page's end; a focused element
+    // in the viewport's bottom band needs the scroll padding on the root,
+    // where the bar publishes the property.
+    const css = read("apps/web/app/globals.css");
+    expect(css).toMatch(
+      /(^|\n)html\s*\{[^}]*scroll-padding-bottom:\s*var\(--tc-consent-h,\s*0px\)/,
+    );
+  });
+
+  for (const file of [
+    "apps/web/app/components/report-issue-button.tsx",
+    "apps/web/app/components/session-toast.tsx",
+    "apps/web/app/components/github-nudge-toast.tsx",
+    "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-drawer.tsx",
+    "apps/web/app/components/mobile-nav.tsx",
+  ]) {
+    it(`${file} lifts its bottom edge by the bar's height`, () => {
+      expect(read(file)).toContain("var(--tc-consent-h,0px)");
+    });
+  }
+
+  it("the glossary popover keeps clear of the bar", () => {
+    expect(read("packages/ui/src/mdx/glossary-term.tsx")).toContain(
+      '"--tc-consent-h"',
+    );
+  });
+});
+
+describe("code wraps on phones (spec 2026-09-24, section 4)", () => {
+  const css = read("apps/web/app/globals.css");
+  const block =
+    /^@media \(width < 64rem\) \{([\s\S]*?)\n\}/m.exec(css)?.[1] ?? "";
+
+  it("wraps pre below the one-column breakpoint", () => {
+    expect(block).toMatch(/\.lesson-prose pre \{[^}]*white-space: pre-wrap/);
+    expect(block).toMatch(/\.lesson-prose pre \{[^}]*overflow-wrap: anywhere/);
+    expect(block).toMatch(/\.lesson-prose pre \{[^}]*overflow-x: visible/);
+  });
+
+  it("gives each highlighted line a 2ch hanging indent", () => {
+    expect(block).toMatch(/\.lesson-prose pre \.line \{[^}]*padding-left: 2ch/);
+    expect(block).toMatch(/\.lesson-prose pre \.line \{[^}]*text-indent: -2ch/);
+  });
+
+  it("reaches no deeper than the line span", () => {
+    const selectors = block.match(/^\s*\.lesson-prose[^{]*\{/gm) ?? [];
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const s of selectors) {
+      expect(s.replace("{", "").trim().split(/\s+/).length).toBeLessThanOrEqual(
+        3,
+      );
+    }
+  });
+
+  it("the editor wraps its lines at every width", () => {
+    const editor =
+      /<SandpackCodeEditor\b(?:(?!\/>)[\s\S])*\/>/.exec(
+        read("packages/ui/src/mdx/exercise.tsx"),
+      )?.[0] ?? "";
+    expect(editor).toMatch(/\bwrapContent\b/);
   });
 });

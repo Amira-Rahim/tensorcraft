@@ -11,6 +11,7 @@ export {
   CodeBlock,
   DerivationDrawer,
   Exercise,
+  ExerciseBrief,
   ExerciseDataProvider,
   GlossaryTerm,
   HintPanel,

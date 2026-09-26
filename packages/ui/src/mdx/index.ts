@@ -5,6 +5,7 @@ export { LessonPrefsProvider, useLessonPrefs } from "./lesson-prefs";
 export type { LessonPrefs } from "./lesson-prefs";
 export { Dialogue } from "./dialogue";
 export { Exercise, ExerciseDataProvider } from "./exercise";
+export { ExerciseBrief } from "./exercise-brief";
 export type {
   ExerciseData,
   ExerciseSubmitResult,

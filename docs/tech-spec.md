@@ -698,7 +698,7 @@ The Phase 11 redesign replaced the prior "Zensman DeFi Neon" direction (glows, g
 | Rule | Convention |
 | --- | --- |
 | Corners | `rounded-none` everywhere. No `rounded-md`, `rounded-lg`, etc. |
-| Shadows | Hard offset shadows only. Use utility `.brutalist-shadow` (e.g., `4px 4px 0 var(--tc-border)`), never `shadow-lg` / blurred shadows. |
+| Shadows | Hard offset shadows only, never `shadow-lg` or blurred shadows. The utility `.brutalist-shadow` is `4px 4px 0 var(--tc-primary)`. On the lesson page it marks only containers the learner acts in (the exercise pane, the recall and warm-up cards, the hint ladder, the decision boxes, the quiz, the interactive demo); presenting blocks sit on their hairline border (spec 2026-09-24, section 7). |
 | Hover | `.brutalist-hover` - a combined translate + shadow shift on hover to preserve the offset-shadow effect. |
 | Comment labels | `.comment-label` - uppercase, tracking-wider, JetBrains Mono, muted color. Used for section headers like `# skill_genome`, `// loss.hints`, ` - 12wk`. |
 | Focus | `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2` (see §7.3). |

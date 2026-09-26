@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { CookieConsent } from "./cookie-consent";
 
 // Mock localStorage
@@ -64,13 +64,66 @@ describe("CookieConsent", () => {
     expect(link).toHaveAttribute("href", "/privacy");
   });
 
-  it("renders a brutalist card (rounded-none + brutalist-shadow)", () => {
+  it("renders the bar square-edged on a hairline, without the offset shadow", () => {
     const { container } = render(<CookieConsent />);
-    const card = container.querySelector('[data-testid="cookie-consent-card"]');
-    expect(card).not.toBeNull();
-    expect(card?.className).toMatch(/rounded-none/);
-    expect(card?.className).toMatch(/brutalist-shadow/);
-    expect(card?.className).toMatch(/border/);
+    const bar = container.querySelector('[data-testid="cookie-consent-card"]');
+    expect(bar).not.toBeNull();
+    expect(bar?.className).toMatch(/rounded-none/);
+    expect(bar?.className).toMatch(/\bborder-t\b/);
+    expect(bar?.className).not.toMatch(/brutalist-shadow/);
+    // The bar is the region: one element carries both.
+    expect(bar).toHaveAttribute("role", "region");
+  });
+
+  it("publishes its height to the root element while it shows", () => {
+    const root = document.documentElement;
+    render(<CookieConsent />);
+    // jsdom lays nothing out, so the height reads 0; the property is still
+    // written, which is what body's padding-bottom reads.
+    expect(root.style.getPropertyValue("--tc-consent-h")).toBe("0px");
+    fireEvent.click(screen.getByText(/essential only/i));
+    expect(root.style.getPropertyValue("--tc-consent-h")).toBe("");
+  });
+
+  it("publishes nothing when consent is already stored", () => {
+    mockStorage["tc-cookie-consent"] = "declined";
+    render(<CookieConsent />);
+    expect(
+      document.documentElement.style.getPropertyValue("--tc-consent-h"),
+    ).toBe("");
+  });
+
+  it("re-publishes its height when the bar resizes, and disconnects on a choice", () => {
+    let resized: ResizeObserverCallback | undefined;
+    const disconnectSpy = vi.fn();
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(cb: ResizeObserverCallback) {
+          resized = cb;
+        }
+        observe() {}
+        unobserve() {}
+        disconnect() {
+          disconnectSpy();
+        }
+      },
+    );
+    try {
+      const root = document.documentElement;
+      render(<CookieConsent />);
+      const bar = screen.getByTestId("cookie-consent-card");
+      vi.spyOn(bar, "getBoundingClientRect").mockReturnValue({
+        height: 60,
+      } as DOMRect);
+      act(() => resized?.([], {} as ResizeObserver));
+      expect(root.style.getPropertyValue("--tc-consent-h")).toBe("60px");
+      fireEvent.click(screen.getByText(/essential only/i));
+      expect(disconnectSpy).toHaveBeenCalled();
+      expect(root.style.getPropertyValue("--tc-consent-h")).toBe("");
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("buttons use brutalist square-edge style (rounded-none, font-mono, type=button)", () => {

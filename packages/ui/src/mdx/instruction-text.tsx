@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 /**
  * Exercise instructions are authored as plain text in YAML, and 45 of the 65
@@ -140,12 +140,18 @@ export function InstructionText({
           return (
             <pre
               key={index}
-              tabIndex={0}
               role="region"
               aria-label="Exercise code contract"
-              className="my-3 overflow-x-auto whitespace-pre font-mono text-[0.92em] leading-relaxed bg-code-bg text-text-primary/85 p-3"
+              className="my-3 whitespace-pre-wrap [overflow-wrap:anywhere] font-mono text-[0.92em] leading-relaxed bg-code-bg text-text-primary/85 p-3"
             >
-              {block.text}
+              {block.text.split("\n").map((line, lineIndex, lines) => (
+                <Fragment key={lineIndex}>
+                  <span className="inline-block w-full pl-[2ch] -indent-[2ch]">
+                    {line}
+                  </span>
+                  {lineIndex < lines.length - 1 ? "\n" : null}
+                </Fragment>
+              ))}
             </pre>
           );
         }

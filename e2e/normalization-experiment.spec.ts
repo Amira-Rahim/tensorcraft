@@ -54,7 +54,7 @@ for (const [width, colorScheme] of [
     await expect(box.getByRole("textbox")).toHaveValue("2,2");
     await expect(box).toContainText("First: matched before help");
     await expect(
-      page.getByRole("button", { name: "Step 6: Consequence", exact: true }),
+      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
     ).toBeDisabled();
     expect(
       (

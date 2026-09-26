@@ -253,6 +253,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | `LearningObjectives` | Server | Checklist at lesson top |
 | `KeyTakeaways` | Server | Summary card at lesson bottom |
 | `Exercise` | Client | Placeholder for Sandpack (V0.5) |
+| `ExerciseBrief` | Client | The exercise's chips, title, instructions and own hint ladder, rendered in the Challenge step's reading column; imports no Sandpack |
 | `Quiz` | Client | Multiple-choice with feedback |
 
 ### V0.5 Content Scope
@@ -276,8 +277,8 @@ The lesson page uses a three-component split:
 | File | Type | Responsibility |
 |------|------|----------------|
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
-| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), script playback on the Briefing step (beat-by-beat reveal, Skip/Replay, auto-scroll to explanation; reduced-motion safe), forward-only bottom nav (backward nav = segmented bar / swipe) |
-| `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS |
+| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (each segment labelled with its step name from `lg`, the sixth reading "Epilogue" while `lesson_step_viewed` keeps "Consequence"; visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), script playback on the Briefing step (beat-by-beat reveal, Skip/Replay, auto-scroll to explanation; reduced-motion safe), the Takeaways recall-before-recap gate (the recall card shows alone until every card has left its prompt, then the recap and terms list follow; settled by an answer, which `tc_recall_*` remembers per browser and account like `tc_step_*`, by a known completion from the `lessons` prop, or by a guest completion in `tc_guest_completed_v1`), bottom nav with Back (from step 2) and Continue, with the segmented bar and swipe as the other ways back |
+| `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS; `onRecallPending(n)` reports how many recall cards in the instance are still in their prompt state, after the first commit and after every settle (cards register through a ref, so a report never remounts the MDX tree); the `Exercise` binding renders `ExerciseBrief` where the MDX places `<Exercise>` when the set names `ExerciseBrief` (the Challenge step's left instance), `Exercise brief="external"` in the pane instance (`titled` when the lesson has more than one exercise), and the inline pane when no set is given |
 
 **Course preferences do not live here.** The ML route picker is reachable
 from `/settings` and, for purchasers only, from the world page's collapsed
