@@ -9,10 +9,10 @@ import { BUILT_WORLD_DIRS } from "@tensorcraft/content";
   unit test, and jsdom applies no CSS, so this test pins the text of each
   side the way post-scene-contract.test.ts does:
   - the companion markers: three companion components stamp data-aside;
-  - the paired grid: the Concept body's two-track block in globals.css,
+  - the reading grid: the Concept body's single-column block in globals.css,
     including the stacked dialogue beat's place on the text measure
     (lesson-content.test.tsx checks that the reader's content root carries
-    data-layout="paired" only when the Concept step asks for it);
+    data-layout="reading" only when the Concept step asks for it);
   - the story grid: the Briefing's plate column beside the beats;
   - the beat and slot rules: the dialogue beat gap, the unpaired companion
     margin, the code and editor slots' margin-free columns, the Challenge
@@ -62,8 +62,8 @@ describe("companion markers", () => {
 
 describe("the lesson layout stylesheet", () => {
   const css = read("apps/web/app/globals.css");
-  const start = css.indexOf("/* Paired columns (spec 2026-09-23, section 1)");
-  const block = css.slice(start, css.indexOf("/* End paired columns */"));
+  const start = css.indexOf("/* Concept reading column.");
+  const block = css.slice(start, css.indexOf("/* End reading column */"));
   // Prettier wraps a long selector at its combinators onto continuation
   // lines that begin with ">" or "+"; fold those back so every selector is
   // one line again before pinning text.
@@ -75,86 +75,39 @@ describe("the lesson layout stylesheet", () => {
     return source.slice(source.indexOf("{", at) + 1, source.indexOf("}", at));
   };
 
-  it("exists, inside a :has() support guard", () => {
+  it("keeps prose and cards in one readable column", () => {
     expect(start).toBeGreaterThan(-1);
-    expect(block).toContain("@supports selector(:has(+ *))");
-  });
-
-  it("carries the six rules with the shared lists", () => {
-    const list = ":is(p, ul, ol, blockquote)";
-    expect(folded).toContain(
-      `.lesson-step-content[data-layout="paired"] > ${list}:has(+ [data-aside])`,
+    const container = body(
+      folded,
+      '.lesson-step-content[data-layout="reading"] {',
     );
-    expect(folded).toContain(
-      `.lesson-step-content[data-layout="paired"] > :not(p, ul, ol, blockquote) + [data-aside]`,
-    );
-    expect(folded).toContain(
-      `.lesson-step-content[data-layout="paired"] > [data-aside]:first-child`,
-    );
-    expect(folded).toContain(
-      `.lesson-step-content[data-layout="paired"] > [data-aside] {`,
-    );
-    expect(folded).toContain(`> :is(p, ul, ol, blockquote, h2, h3) {`);
-    expect(folded).toContain(`> :is(h2, h3) {`);
-
-    // Selectors alone would still pass if rule 4 and rule 5 swapped
-    // grid-column values, so pin each rule's own declarations too.
-    const rule1 = body(folded, "> * {");
-    expect(rule1).toContain("grid-column: 1 / -1;");
-    expect(rule1).toContain("margin-block: 0;");
-    expect(body(folded, "> :is(p, ul, ol, blockquote, h2, h3) {")).toContain(
-      "max-width: 820px;",
-    );
+    expect(container).toContain("display: grid;");
+    expect(container).toContain("grid-template-columns: minmax(0, 1fr);");
+    expect(container).toContain("max-width: 820px;");
+    expect(container).toContain("row-gap: var(--l-row, 24px);");
+    expect(body(folded, "> * {")).toContain("margin-block: 0;");
     expect(body(folded, "> :is(h2, h3) {")).toContain(
       "margin-top: var(--l-heading, 16px);",
     );
-    const rule4 = body(folded, "> [data-aside] {");
-    expect(rule4).toContain("grid-column: 2;");
-    expect(rule4).toContain("align-self: start;");
-    expect(rule4).toContain("margin-block: 0;");
-    expect(body(folded, ":has(+ [data-aside]) {")).toContain("grid-column: 1;");
-    expect(body(folded, "[data-aside]:first-child {")).toContain(
-      "grid-column: 1 / -1;",
+    expect(body(folded, "> blockquote:not([style]) {")).toContain(
+      "margin-block: 0;",
     );
-    // The plain-blockquote rule outside the block is (0,2,1) and would beat
-    // rule 1's margin reset, so the block resets a paired blockquote itself.
-    expect(
-      body(
-        folded,
-        '.lesson-step-content[data-layout="paired"] > blockquote:not([style]) {',
-      ),
-    ).toContain("margin-block: 0;");
-    // Both tracks capped, so on a narrow desktop the text track gives way
-    // before the companion does (spec, Fallbacks): about 344 and 544 px at
-    // 1,024, and 600 and 544 from 1,280 up.
-    expect(
-      body(folded, '.lesson-step-content[data-layout="paired"] {'),
-    ).toContain(
-      "grid-template-columns: minmax(0, 600px) minmax(280px, 544px);",
-    );
+    expect(folded).not.toContain("grid-column: 2");
   });
 
-  it("centres a stacked dialogue beat on the 820 px text measure", () => {
-    // Rule 1 spans every block across both tracks, so the stacked beat's
-    // own mx-auto would centre it on the whole grid: at 1,440 a long line
-    // sat 372 to 812 px from the grid's left while the prose runs 0 to 820.
+  it("centres a stacked dialogue beat in the reading column", () => {
     const beat = body(
       folded,
-      '.lesson-step-content[data-layout="paired"] > [data-dialogue] {',
+      '.lesson-step-content[data-layout="reading"] > [data-dialogue] {',
     );
-    expect(beat).toContain("justify-self: start;");
+    expect(beat).toContain("justify-self: center;");
     expect(beat).toContain("width: min(100%, 440px);");
-    expect(beat).toContain(
-      "margin-inline-start: max(0px, (min(100%, 820px) - 440px) / 2);",
-    );
+    expect(beat).toContain("margin-inline: 0;");
   });
 
   it("spaces companions outside the grid, where nothing else does", () => {
-    // Task 2 removed the components' own margins. The Code step never pairs
-    // and a browser without :has() gets no grid, so this rule is the only
-    // gap between two drawers there. Fold the whole stylesheet (not just
-    // the paired block) so the unpaired rule's own declarations are
-    // checked, not just that both strings appear somewhere in the file.
+    // Companions have no component margins; the default spacing applies
+    // outside the reading column and the code/editor slots.
     const wholeFolded = css.replace(/\n\s+(?=[>+])/g, " ");
     expect(
       body(wholeFolded, ".lesson-step-content > [data-aside] {"),
@@ -169,7 +122,7 @@ describe("the lesson layout stylesheet", () => {
     // example and the nav's own 40 px as the gap below (spec sections 4
     // and 6). Scoped under .lesson-page the child rule is (0,3,0) and
     // outranks the unpaired companion rule wherever it sits. The rules sit
-    // outside the paired block, so fold the whole stylesheet as the
+    // outside the reading block, so fold the whole stylesheet as the
     // unpaired case does.
     const wholeFolded = css.replace(/\n\s+(?=[>+])/g, " ");
     const container = body(
@@ -235,7 +188,7 @@ describe("the lesson layout stylesheet", () => {
     // utility. In the row layout the line sits in a grid cell, where that
     // margin cannot collapse into the beat's own, so the stylesheet drops
     // it and spaces the row beat with --l-beat. Both rules sit outside the
-    // paired block, so fold the whole stylesheet as the case above does.
+    // reading block, so fold the whole stylesheet as the case above does.
     const wholeFolded = css.replace(/\n\s+(?=[>+])/g, " ");
     expect(
       body(wholeFolded, ".lesson-prose [data-dialogue] p:last-child {"),
@@ -250,7 +203,7 @@ describe("the lesson layout stylesheet", () => {
 
   it("lays the Briefing story grid out from lg", () => {
     // The plate column beside the beats (spec section 2, item 4). The rules
-    // sit outside the paired block, so fold the whole stylesheet as the
+    // sit outside the reading block, so fold the whole stylesheet as the
     // cases above do.
     const wholeFolded = css.replace(/\n\s+(?=[>+])/g, " ");
     // Stacked below lg: one column capped like spanning prose, the row gap
@@ -306,7 +259,7 @@ describe("the lesson layout stylesheet", () => {
   });
 
   it("reads the spacing tokens rather than literals", () => {
-    for (const token of ["--l-gutter", "--l-row", "--l-heading"]) {
+    for (const token of ["--l-row", "--l-heading"]) {
       expect(block).toContain(`var(${token}, `);
     }
     const tokens = css.slice(
@@ -329,25 +282,20 @@ describe("the lesson layout stylesheet", () => {
   });
 
   it("selects no deeper than a direct child", () => {
-    // Vacuous while the block is absent (no selector lines to iterate);
-    // the "exists" case above is the one that fails first in that state.
-    // Every selector line, including the comma-terminated first selector
-    // of rule 6 and the media-query copies.
+    // Layout rules must not change the contents of nested cards.
     const selectors = folded
       .split("\n")
       .filter(
         (l) =>
-          l.includes('[data-layout="paired"]') &&
+          l.includes('[data-layout="reading"]') &&
           (l.trim().endsWith("{") || l.trim().endsWith(",")),
       );
     for (const s of selectors) {
-      const afterKey = s.split('[data-layout="paired"]')[1] ?? "";
+      const afterKey = s.split('[data-layout="reading"]')[1] ?? "";
       // The grid container rule itself has no combinator; skip it.
       if (afterKey.trim() === "{") continue;
       const stripped = afterKey.replace(/:(is|not|has)\([^)]*\)/g, ":$1()");
-      // One child combinator, then at most one adjacent-sibling combinator
-      // (rule 6), never a descendant space.
-      expect(stripped).toMatch(/^\s*>\s*[^\s>+~]+(\s*\+\s*[^\s>+~]+)?\s*[{,]$/);
+      expect(stripped).toMatch(/^\s*>\s*[^\s>+~]+\s*[{,]$/);
     }
   });
 });

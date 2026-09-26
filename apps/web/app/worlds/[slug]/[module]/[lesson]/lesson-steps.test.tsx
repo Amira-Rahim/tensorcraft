@@ -34,7 +34,7 @@ vi.mock("./lesson-content", () => ({
     hideTeaching?: boolean;
     hideStoryZone?: boolean;
     visibleComponents?: Set<string>;
-    layout?: "paired";
+    layout?: "reading";
   }) => (
     <div
       data-testid="lesson-content"
@@ -386,15 +386,15 @@ describe("LessonSteps, LessonShell layout", () => {
     expect(screen.queryByTestId("lesson-right")).toBeNull();
   });
 
-  it("stamps the paired layout on the Concept body only", () => {
+  it("stamps the reading layout on the Concept body only", () => {
     renderSteps();
     expect(
-      document.querySelector('.lesson-step-content[data-layout="paired"]'),
+      document.querySelector('.lesson-step-content[data-layout="reading"]'),
     ).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
     expect(
-      document.querySelectorAll('.lesson-step-content[data-layout="paired"]'),
+      document.querySelectorAll('.lesson-step-content[data-layout="reading"]'),
     ).toHaveLength(1);
   });
 
@@ -404,12 +404,12 @@ describe("LessonSteps, LessonShell layout", () => {
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
     const intro = document.querySelector("[data-testid='concept-intro']")!;
     const body = document.querySelector(
-      '.lesson-step-content[data-layout="paired"]',
+      '.lesson-step-content[data-layout="reading"]',
     )!;
     expect(
       intro.compareDocumentPosition(body) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    // The intro instance renders the objectives alone: no paired grid and no
+    // The intro instance renders the objectives alone: no reading grid and no
     // story-zone rule, which would hide them (they sit before the first
     // heading). The read below it is the instance that hides the story zone.
     const introContent = intro.querySelector("[data-testid='lesson-content']");

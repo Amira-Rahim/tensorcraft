@@ -43,7 +43,7 @@ for (const [name, viewport] of [
       // after load, so the step's own marker below is what the test waits on.
       await page.goto(LESSON, { waitUntil: "domcontentloaded" });
       // data-script-state exists only on the Briefing root; the Concept
-      // step's settled marker is its paired grid.
+      // step's settled marker is its reading column.
       if (step === 0) {
         await expect(page.locator("[data-script-state='done']")).toBeAttached();
         // The plate image is lazy and removes itself on error: wait for it.
@@ -60,7 +60,7 @@ for (const [name, viewport] of [
           .toBe(true);
       } else {
         await expect(
-          page.locator('.lesson-step-content[data-layout="paired"]'),
+          page.locator('.lesson-step-content[data-layout="reading"]'),
         ).toBeVisible();
       }
       await page.evaluate(async () => {

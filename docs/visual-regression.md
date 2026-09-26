@@ -147,6 +147,7 @@ owner's 2026-09-15 rule.
 | --- | --- | --- | --- |
 | 2026-09-24 | `review-warmup-{dark,light}.png` | The warm-up card now spans the lesson content width instead of the old 68-character column (lesson layout spec, section 2 item 6). Element screenshot in the prompt state, so the Continue gap change is not visible here. The spec now opens lesson 2: since 2026-09-22 a warm-up only recalls earlier lessons, so on lesson 1 the spec could no longer find the card. The old images (2026-09-16) predate the 2026-09-22 warm-up rework | Width from the old text column (687 px) to the frame's content width (1,184 px) at the visual project's 1,280 px viewport. Height from 359 to 361 px. The question text fits on one line in both, so nothing reflows. The 2026-09-22 rework changed the label from "Before this lesson: a quick recall" to "A quick recall before you continue" and put a hairline and 24 px of padding above it. The card's 24 px bottom margin now collapses out of the warm-up section (in the old flex-column story step it stayed inside), so the new image ends at the card's border and shows one row of its offset shadow. That is why the added hairline and padding net only 2 px |
 | 2026-09-24 | `lesson-briefing-{desktop,phone}.png`, `lesson-concept-{desktop,phone}.png` | New coverage for the lesson route after the layout change | New baselines, no prior image. On the Briefing, the "Cut to" divider ends 16 px above the teaser paragraph (the last beat's `--l-beat` margin) and sits 32 px below the dialogue line before it. The 16 px gap is accepted as is |
+| 2026-09-26 | `lesson-concept-desktop.png` | The Concept step now keeps prose and companion cards in one centered reading column | The intro, objectives, prose and cards share an 820 px column. Cards follow their related prose with a 24 px gap, so tall cards no longer leave empty space beside a paragraph. The phone layout and Briefing baselines stay unchanged |
 
 ## Flake mitigation
 
@@ -170,7 +171,7 @@ What each spec waits for before it captures:
   wait for the curriculum scene, described below.
 - `lesson.spec.ts` loads with `domcontentloaded`, then waits for the
   step's settled marker: `[data-script-state='done']` on the Briefing and
-  the paired grid on the Concept step. The step is restored in a client
+  the reading column on the Concept step. The step is restored in a client
   effect after load, so no load state shows which step is on screen. On
   the Briefing it also waits until the scene picture has loaded, because
   the image is lazy and removes itself on error. It pins the text Briefing

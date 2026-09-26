@@ -221,7 +221,7 @@ test.describe("Lesson reading experience", () => {
   const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
   const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
 
-  test("Concept step renders the paired grid and underlines glossary terms", async ({
+  test("Concept step renders the reading column and underlines glossary terms", async ({
     page,
   }) => {
     await page.addInitScript(
@@ -233,12 +233,12 @@ test.describe("Lesson reading experience", () => {
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
-    // The Concept body is the paired grid (spec 2026-09-23). Wait for it
+    // The Concept body is the reading column. Wait for it
     // before the right-slot check: the server renders the Briefing, which has
     // no right slot either, so that check proves nothing until the client has
     // restored the Concept step. A visible term chip proves the read rendered.
     await expect(
-      page.locator('.lesson-step-content[data-layout="paired"]'),
+      page.locator('.lesson-step-content[data-layout="reading"]'),
     ).toBeVisible();
     await expect(page.getByTestId("lesson-right")).toHaveCount(0);
     const term = page

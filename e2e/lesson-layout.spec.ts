@@ -1,21 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 import { seedDueReview, REVIEW_WARMUP_LESSON } from "./review-fixture";
 
-/*
-  Layout criteria from docs/superpowers/specs/2026-09-23-lesson-layout-design.md.
-  Two free lessons: one whose bridge follows a paragraph, and one whose
-  bridge the build moved after its section's first paragraph. The spanning
-  case, a companion with no paragraph to pair with, is checked on the one
-  free lesson that has it and by injecting a companion after a heading in
-  the first lesson's grid.
-*/
-// All in the free module: a signed-out visitor is redirected to the paywall
-// on any paid lesson, and the e2e suite has no purchased fixture. Of the 22
-// companions that span (the plugin unit test prints the corpus list), one
-// is in a free lesson: the concept reference in foundations/normalization,
-// checked below. The other 21, the twelve heading-led bridges among them,
-// are in paid lessons, so the heading-led shape is exercised by injecting a
-// companion into lesson 1's real grid.
+// Check the reading flow for both authored and build-positioned cards.
+// These lessons are in the free module and need no purchased fixture.
 const LESSONS = {
   paragraphLed: "/worlds/deep-orbit/foundations/introduction-to-tensors",
   headingLed: "/worlds/deep-orbit/foundations/tensor-shapes",
@@ -57,9 +44,9 @@ async function openStep(page: Page, path: string, step: number) {
     case 0: // Briefing: the scene has resolved (the skip preference ends it)
       await expect(page.locator("[data-script-state='done']")).toBeAttached();
       break;
-    case 1: // Concept: the paired grid
+    case 1: // Concept: the reading column
       await expect(
-        page.locator('.lesson-step-content[data-layout="paired"]'),
+        page.locator('.lesson-step-content[data-layout="reading"]'),
       ).toBeVisible();
       break;
     case 2: // Code: the worked-example slot
@@ -211,14 +198,14 @@ function codeStepEdges(page: Page) {
   });
 }
 
-// A stacked dialogue beat after the first heading of lesson 1's real paired
+// A stacked dialogue beat after the first heading of lesson 1's real reading
 // grid. The Concept step shows 12 such beats, in 11 paid lessons the suite
 // cannot open. The element carries the attributes and classes the Dialogue
 // component gives its stacked layout, and a line long enough to fill the
 // 440 px beat.
 function injectStackedBeat(page: Page) {
   return page
-    .locator('.lesson-step-content[data-layout="paired"]')
+    .locator('.lesson-step-content[data-layout="reading"]')
     .evaluate((g) => {
       const beat = document.createElement("div");
       beat.setAttribute("data-dialogue", "true");
@@ -429,84 +416,69 @@ test.describe("lesson layout, desktop", () => {
   });
 
   for (const [name, path] of Object.entries(LESSONS)) {
-    test(`Concept pairs correctly on the ${name} lesson`, async ({ page }) => {
+    test(`Concept keeps prose and cards in one column on the ${name} lesson`, async ({
+      page,
+    }) => {
       await openStep(page, path, 1);
-      const { gridLeft, rows } = await page
-        .locator('.lesson-step-content[data-layout="paired"]')
+      const { width, left, rows } = await page
+        .locator('.lesson-step-content[data-layout="reading"]')
         .evaluate((g) => ({
-          gridLeft: Math.round(g.getBoundingClientRect().left),
+          width: g.getBoundingClientRect().width,
+          left: g.getBoundingClientRect().left,
           rows: [...g.children]
             .map((el) => {
               const r = el.getBoundingClientRect();
               return {
                 aside: el.hasAttribute("data-aside"),
-                prose: ["P", "UL", "OL", "BLOCKQUOTE"].includes(el.tagName),
-                top: Math.round(r.top),
-                left: Math.round(r.left),
-                width: Math.round(r.width),
-                hidden: r.width === 0 && r.height === 0,
+                heading: ["H2", "H3"].includes(el.tagName),
+                top: r.top,
+                bottom: r.bottom,
+                left: r.left,
+                width: r.width,
+                height: r.height,
               };
             })
-            .filter((i) => !i.hidden),
+            .filter((r) => r.height > 0),
         }));
-      for (let i = 0; i < rows.length; i++) {
-        const it = rows[i];
-        if (it.aside) {
-          const prev = rows[i - 1];
-          if (prev && prev.prose && prev.width <= 600) {
-            // paired: same row, in the companion track, which starts after
-            // the 600 px text track and the 40 px gutter
-            expect(Math.abs(it.top - prev.top)).toBeLessThanOrEqual(4);
-            expect(Math.abs(it.left - (gridLeft + 640))).toBeLessThanOrEqual(1);
-          } else {
-            // unpaired: spans from the grid's left edge
-            expect(it.left).toBe(gridLeft);
-            expect(it.width).toBeGreaterThan(820);
-          }
-        } else if (it.prose) {
-          const next = rows[i + 1];
-          if (next?.aside && Math.abs(next.top - it.top) <= 4)
-            expect(it.width).toBe(600);
-          else {
-            expect(it.width).toBeGreaterThan(600);
-            expect(it.width).toBeLessThanOrEqual(820);
-          }
+      expect(width).toBe(820);
+      expect(rows.filter((r) => r.aside).length).toBeGreaterThan(0);
+      for (const [i, row] of rows.entries()) {
+        expect(Math.abs(row.left - left)).toBeLessThanOrEqual(1);
+        expect(Math.abs(row.width - width)).toBeLessThanOrEqual(1);
+        if (i > 0) {
+          const gap = row.heading ? 40 : 24;
+          expect(
+            Math.abs(row.top - rows[i - 1].bottom - gap),
+          ).toBeLessThanOrEqual(1);
         }
       }
-      // No row with an empty first cell: every aside either shares a row
-      // with a narrowed block or starts at the grid's left edge.
-      for (const it of rows.filter((r) => r.aside)) {
-        const partner = rows.find(
-          (r) => !r.aside && Math.abs(r.top - it.top) <= 4,
-        );
-        expect(partner !== undefined || it.left === gridLeft).toBe(true);
-      }
-      // Every companion in these two lessons pairs today (of the 22 that
-      // span, the one in a free lesson is normalization's, which the rule-6
-      // tests below cover), so every companion here must pair. Without
-      // this, a grid where nothing pairs passes the loop above: each
-      // companion takes the spanning branch and each paragraph the
-      // unpaired one.
-      const companions = rows.flatMap((r, i) =>
-        r.aside ? [{ r, prev: rows[i - 1] }] : [],
+      // Opening a reference keeps the following paragraph below the card.
+      const reference = page
+        .locator(
+          '.lesson-step-content[data-layout="reading"] > details[data-aside]',
+        )
+        .first();
+      await reference.locator("summary").click();
+      await expect(reference).toHaveAttribute("open", "");
+      const gap = await reference.evaluate(
+        (el) =>
+          el.nextElementSibling!.getBoundingClientRect().top -
+          el.getBoundingClientRect().bottom,
       );
-      expect(companions.length).toBeGreaterThan(0);
-      for (const { r, prev } of companions) {
-        expect(prev?.prose).toBe(true);
-        expect(prev!.width).toBe(600);
-        expect(Math.abs(r.top - prev!.top)).toBeLessThanOrEqual(4);
-      }
+      expect(gap).toBeGreaterThanOrEqual(24);
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - innerWidth,
+      );
+      expect(overflow).toBeLessThanOrEqual(1);
     });
   }
 
-  test("a companion with nothing pairable before it spans the grid (rule 6)", async ({
-    page,
-  }) => {
+  test("a card after a heading fills the reading column", async ({ page }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
     // Inject a companion straight after the first heading, the shape the
     // twelve paid heading-led sections have after the build leaves them.
     const probe = await page
-      .locator('.lesson-step-content[data-layout="paired"]')
+      .locator('.lesson-step-content[data-layout="reading"]')
       .evaluate((g) => {
         const h2 = g.querySelector(":scope > h2")!;
         const aside = document.createElement("div");
@@ -527,16 +499,15 @@ test.describe("lesson layout, desktop", () => {
     expect(probe.width).toBe(probe.gridWidth);
   });
 
-  test("normalization's concept reference spans the grid (rule 6, real content)", async ({
+  test("normalization's concept reference fills the reading column", async ({
     page,
   }) => {
     await openStep(page, SPANNING_LESSON, 1);
     const m = await page
-      .locator('.lesson-step-content[data-layout="paired"]')
+      .locator('.lesson-step-content[data-layout="reading"]')
       .evaluate((g) => {
-        // Rule 6 reads DOM order: a painted companion whose previous
-        // sibling is not a pairable block. Here that must be exactly one,
-        // the concept reference after the normalization experiment.
+        // This reference follows an experiment rather than a paragraph.
+        // It must stay within the same reading column.
         const pairable = ["P", "UL", "OL", "BLOCKQUOTE"];
         const unpaired = [...g.children].filter(
           (el) =>
@@ -568,7 +539,7 @@ test.describe("lesson layout, desktop", () => {
     await openStep(page, LESSONS.paragraphLed, 1);
     const m = await injectStackedBeat(page);
     // (820 - 440) / 2 = 190 px in from the grid's left, the centre of the
-    // prose measure, not of the whole 1,184 px grid (372 px in).
+    // reading column.
     expect(Math.abs(m.left - (m.gridLeft + 190))).toBeLessThanOrEqual(1);
     expect(Math.abs(m.width - 440)).toBeLessThanOrEqual(1);
   });
@@ -642,12 +613,12 @@ test.describe("lesson layout, desktop", () => {
           throw new Error(`${s}: ${found.length} matches`);
         return found[0];
       };
-      // The paired grid is the last block before the nav on the Concept
+      // The reading column is the last block before the nav on the Concept
       // step; a block placed between them later is a deliberate change to
-      // this test. Its children carry no margin (rule 1), so the lowest
+      // this test. Its children carry no trailing margin, so the lowest
       // painted child is where the grid visibly ends.
       const blocks = [
-        ...one('.lesson-step-content[data-layout="paired"]').children,
+        ...one('.lesson-step-content[data-layout="reading"]').children,
       ].filter((el) => el.getBoundingClientRect().height > 0);
       const nav = one("[data-testid='lesson-nav']").getBoundingClientRect();
       const go = one("[data-step-continue]").getBoundingClientRect();
@@ -675,46 +646,36 @@ test.describe("lesson layout, desktop", () => {
 test.describe("lesson layout, narrow desktop", () => {
   test.use({ viewport: { width: 1024, height: 768 }, colorScheme: "dark" });
 
-  test("the text track gives way before the companion does", async ({
-    page,
-  }) => {
+  test("Concept keeps cards below prose at 1,024 px", async ({ page }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
-    // Spec, Fallbacks: both tracks are capped, so at 1,024 px the
-    // companion keeps its 544 px and the text track takes what is left
-    // after the 40 px gutter (about 344 px), instead of a 600 px text
-    // track squeezing the companion to 288 px.
     const m = await page
-      .locator('.lesson-step-content[data-layout="paired"]')
+      .locator('.lesson-step-content[data-layout="reading"]')
       .evaluate((g) => {
         const shown = [...g.children].filter(
           (el) => el.getBoundingClientRect().height > 0,
         );
         return {
-          gridWidth: g.getBoundingClientRect().width,
-          pairs: shown.flatMap((el, i) => {
+          width: g.getBoundingClientRect().width,
+          cards: shown.flatMap((el, i) => {
             if (!el.hasAttribute("data-aside")) return [];
-            const c = el.getBoundingClientRect();
-            const p = shown[i - 1].getBoundingClientRect();
+            const card = el.getBoundingClientRect();
+            const prev = shown[i - 1].getBoundingClientRect();
             return [
               {
-                prevTag: shown[i - 1].tagName,
-                width: c.width,
-                top: c.top,
-                prevWidth: p.width,
-                prevTop: p.top,
+                width: card.width,
+                gap: card.top - prev.bottom,
+                leftDelta: card.left - prev.left,
               },
             ];
           }),
         };
       });
-    expect(m.pairs.length).toBeGreaterThan(0);
-    for (const c of m.pairs) {
-      expect(c.prevTag).toBe("P");
-      expect(Math.abs(c.width - 544)).toBeLessThanOrEqual(1);
-      expect(
-        Math.abs(c.prevWidth - (m.gridWidth - 40 - 544)),
-      ).toBeLessThanOrEqual(1);
-      expect(Math.abs(c.top - c.prevTop)).toBeLessThanOrEqual(4);
+    expect(m.width).toBe(820);
+    expect(m.cards.length).toBeGreaterThan(0);
+    for (const card of m.cards) {
+      expect(card.width).toBe(m.width);
+      expect(Math.abs(card.leftDelta)).toBeLessThanOrEqual(1);
+      expect(Math.abs(card.gap - 24)).toBeLessThanOrEqual(1);
     }
   });
 
@@ -781,7 +742,7 @@ test.describe("lesson layout, phone", () => {
       // edge, spans the grid, and sits a row gap (24 px) below the block.
       // Reading order alone would pass a companion placed beside its block.
       const companions = await page
-        .locator('.lesson-step-content[data-layout="paired"]')
+        .locator('.lesson-step-content[data-layout="reading"]')
         .evaluate((g) => {
           const grid = g.getBoundingClientRect();
           const shown = [...g.children].filter(

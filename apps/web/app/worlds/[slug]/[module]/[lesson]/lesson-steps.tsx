@@ -1949,7 +1949,7 @@ function StepConcept({
   lessonSlug: string;
 }) {
   return (
-    <div>
+    <div className="mx-auto max-w-[820px]">
       <PhaseChip label="Concept" icon={"\u25CE"} />
       <p
         className="text-base leading-[1.85] mb-6 max-w-[820px]"
@@ -1980,7 +1980,7 @@ function StepConcept({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONCEPT_LEFT}
-          layout="paired"
+          layout="reading"
           hideChallengeOnward
           hideStoryZone
         />

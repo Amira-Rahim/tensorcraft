@@ -125,10 +125,10 @@ describe("LessonContent, story register", () => {
   });
 });
 
-describe("LessonContent, paired layout", () => {
+describe("LessonContent, reading layout", () => {
   it("stamps data-layout on the content root only when the layout is passed", () => {
     // globals.css keys the Concept step's two-track grid on
-    // .lesson-step-content[data-layout="paired"]. lesson-steps.test.tsx
+    // .lesson-step-content[data-layout="reading"]. lesson-steps.test.tsx
     // stubs this component, so the stamp itself is checked here, on the
     // root this component renders (the Dialogue stub carries its own
     // data-layout, so the root is read directly, not by attribute).
@@ -137,12 +137,12 @@ describe("LessonContent, paired layout", () => {
       <LessonContent
         lesson={lesson}
         visibleComponents={visible}
-        layout="paired"
+        layout="reading"
       />,
     );
     let root = container.firstElementChild;
     expect(root).toHaveClass("lesson-step-content");
-    expect(root).toHaveAttribute("data-layout", "paired");
+    expect(root).toHaveAttribute("data-layout", "reading");
 
     rerender(<LessonContent lesson={lesson} visibleComponents={visible} />);
     root = container.firstElementChild;

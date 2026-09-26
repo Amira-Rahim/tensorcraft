@@ -89,10 +89,10 @@ interface LessonContentProps {
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
   /**
-   * "paired" turns the root into the two-track grid from globals.css: prose
-   * beside the companion it is about. Only the Concept step passes it.
+   * "reading" keeps prose and companion cards in one reading column.
+   * Only the Concept step passes it.
    */
-  layout?: "paired";
+  layout?: "reading";
   onExerciseComplete?: (exerciseSlug: string, score: number) => void;
   /**
    * Fires on EVERY graded run (pass, fail, crash, timeout), unlike

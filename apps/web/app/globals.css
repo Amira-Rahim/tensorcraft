@@ -393,7 +393,7 @@ body {
 
 /* Spacing scale for the lesson reader (spec 2026-09-23, section 6).
    Rules in this file that read it: the unpaired companion margin, the code
-   and editor slot columns, the paired grid, the story grid and the row
+   and editor slot columns, the reading column, the story grid and the row
    beat. Utilities that read it through Tailwind's variable shorthand: the
    nav row (--l-nav-top, --l-nav-inner, --l-nav-bottom), the post-scene
    slot (--l-slot) and the passed-challenge banner (--l-row,
@@ -416,14 +416,9 @@ body {
    - --l-aside-pad (20 px) is defined and nothing reads it: the companions'
      p-5 lives in packages/ui (the bridge callout and the drawer) and in
      the concept reference.
-   The frame's widths have no token and repeat as literals in classes and
-   grid templates: 820 px (the prose measure: rule 2 and the stacked beat
-   rule of the paired grid, the story grid's single column here and in
-   noscript-reveal.tsx, and the max-w-[820px] wrappers in
-   lesson-steps.tsx), 600 px (the text track and the plate's picture), 544
-   and 280 px (the ceiling and floor of the companion and beats tracks),
-   and 440 px (the stacked beat: Dialogue's max-w-[440px] in packages/ui
-   and the stacked beat rule). */
+   The frame's widths repeat as literals in classes and grid templates:
+   820 px for the reading column, 600 px for the story picture, 280 to
+   544 px for the story beats track, and 440 px for a stacked dialogue beat. */
 .lesson-page {
   --l-gutter: 40px;
   --l-row: 24px;
@@ -436,12 +431,8 @@ body {
   --l-nav-bottom: 40px;
 }
 
-/* Outside the paired grid (the Code step, and any browser without :has(),
-   where the guard below withholds the grid) a companion keeps a row gap on
-   both sides, because the components no longer carry their own margin
-   (spec section 3). Inside the grid, rule 4 zeroes it at (0,3,0). The
-   fallback value covers a reader that has not yet got the .lesson-page
-   tokens. */
+/* Companions outside the reading column keep a row gap on both sides.
+   The reading column and code/editor slots provide their own gap below. */
 .lesson-step-content > [data-aside] {
   margin-block: var(--l-row, 24px);
 }
@@ -471,88 +462,33 @@ body {
   margin-bottom: 0;
 }
 
-/* Paired columns (spec 2026-09-23, section 1). The Concept body is a
-   two-track grid: prose beside the companion it is about. Both tracks are
-   capped, 600 and 544 px, which is the split from 1,280 px up; on a
-   narrower desktop the text track gives way first (about 344 and 544 px at
-   1,024), so bridge code keeps its line length. A prose block
-   followed by a companion narrows to the text track; the companion takes
-   the second track on the same row (grid auto-placement fills the free
-   cell). Everything else spans. Specificity does the work, not order:
-   rule 1 is (0,2,0), rules 2 and 3 (0,2,1), rule 4 (0,3,0), rule 5 (0,3,1),
-   rule 6 (0,3,1) and (0,4,0). Without :has() the guard withholds the whole
-   block and the step reads as one column in DOM order, which the content
-   build already makes the right order (rehype-pair-companions). Pairing
-   follows DOM order: a display:none sibling still counts for :has(+ *)
-   and +, which is safe today because every partition boundary is a
-   heading, so a visible block and its adjacent companion always sit in
-   the same zone. */
-@supports selector(:has(+ *)) {
-  .lesson-step-content[data-layout="paired"] {
-    display: grid;
-    grid-template-columns: minmax(0, 600px) minmax(280px, 544px);
-    column-gap: var(--l-gutter, 40px);
-    row-gap: var(--l-row, 24px);
-  }
-  /* 1. every block spans and drops its own vertical margin */
-  .lesson-step-content[data-layout="paired"] > * {
-    grid-column: 1 / -1;
-    margin-block: 0;
-  }
-  /* 2. prose and headings are capped; everything else keeps its width */
-  .lesson-step-content[data-layout="paired"]
-    > :is(p, ul, ol, blockquote, h2, h3) {
-    max-width: 820px;
-  }
-  /* 3. headings get their extra top space back */
-  .lesson-step-content[data-layout="paired"] > :is(h2, h3) {
-    margin-top: var(--l-heading, 16px);
-  }
-  /* 4. a companion takes the second column; the grid's row gap replaces
-        the unpaired margin above */
-  .lesson-step-content[data-layout="paired"] > [data-aside] {
-    grid-column: 2;
-    align-self: start;
-    margin-block: 0;
-  }
-  /* 5. a pairable block followed by a companion narrows */
-  .lesson-step-content[data-layout="paired"]
-    > :is(p, ul, ol, blockquote):has(+ [data-aside]) {
-    grid-column: 1;
-  }
-  /* 6. a companion with nothing pairable before it spans instead */
-  .lesson-step-content[data-layout="paired"]
-    > :not(p, ul, ol, blockquote)
-    + [data-aside],
-  .lesson-step-content[data-layout="paired"] > [data-aside]:first-child {
-    grid-column: 1 / -1;
-  }
-  /* A stacked dialogue beat centres on the 820 px text measure, not on the
-     whole grid (its own mx-auto would centre it across both tracks). On a
-     phone the measure is narrower than the beat, so it fills the column. */
-  .lesson-step-content[data-layout="paired"] > [data-dialogue] {
-    justify-self: start;
-    width: min(100%, 440px);
-    margin-inline-start: max(0px, (min(100%, 820px) - 440px) / 2);
-  }
-  /* The plain-blockquote rule above this block is (0,2,1) and would beat
-     rule 1's margin reset; a paired blockquote must sit flush with its
-     companion. */
-  .lesson-step-content[data-layout="paired"] > blockquote:not([style]) {
-    margin-block: 0;
-  }
-  @media (width < 64rem) {
-    .lesson-step-content[data-layout="paired"] {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .lesson-step-content[data-layout="paired"] > [data-aside],
-    .lesson-step-content[data-layout="paired"]
-      > :is(p, ul, ol, blockquote):has(+ [data-aside]) {
-      grid-column: 1;
-    }
-  }
+/* Concept reading column. Cards follow their related prose in document
+   order, so a tall card cannot leave an empty row beside a paragraph.
+   Keep direct children intact for the lesson's visibility selectors. */
+.lesson-step-content[data-layout="reading"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 820px;
+  row-gap: var(--l-row, 24px);
 }
-/* End paired columns */
+.lesson-step-content[data-layout="reading"] > * {
+  min-width: 0;
+  margin-block: 0;
+}
+.lesson-step-content[data-layout="reading"] > :is(h2, h3) {
+  margin-top: var(--l-heading, 16px);
+}
+/* Override the companion and plain-blockquote margins outside this layout. */
+.lesson-step-content[data-layout="reading"] > [data-aside],
+.lesson-step-content[data-layout="reading"] > blockquote:not([style]) {
+  margin-block: 0;
+}
+.lesson-step-content[data-layout="reading"] > [data-dialogue] {
+  justify-self: center;
+  width: min(100%, 440px);
+  margin-inline: 0;
+}
+/* End reading column */
 
 /* Briefing story grid (spec 2026-09-23, section 2): the plate column (the
    picture, then the stage direction) beside the beats. Below lg they stack
@@ -561,9 +497,8 @@ body {
    280 to 544 px wide and the plate column takes the rest: 600 and 544 px at
    the frame's full width (windows of 1,280 px and wider, the spec's
    numbers), about 344 and 544 px at 1,024 px, so the picture shrinks before
-   the dialogue does. The breakpoint is written like the paired block's
-   (64rem, Tailwind's lg) so the frame's lg: utilities and this grid switch
-   together. */
+   the dialogue does. The breakpoint matches Tailwind's lg (64rem), so the frame's
+   lg: utilities and this grid switch together. */
 .lesson-story-grid {
   display: grid;
   grid-template-columns: minmax(0, 820px);
@@ -678,7 +613,7 @@ body {
 }
 
 /* Dialogue lines compile to <p>. Inside a grid cell (the row layout, and
-   any beat that sits in the paired grid) the paragraph's trailing margin
+   any beat that sits in the reading column) the paragraph's trailing margin
    cannot collapse into the beat's own margin, so drop it and give the row
    beat the beat gap itself (spec 2026-09-23, section 6, --l-beat). */
 .lesson-prose [data-dialogue] p:last-child {
