@@ -74,7 +74,7 @@ export function MobileNav() {
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
-            className="fixed inset-0 z-50 bg-page flex flex-col overflow-y-auto"
+            className="fixed inset-x-0 top-0 bottom-[var(--tc-consent-h,0px)] z-50 bg-page flex flex-col overflow-y-auto"
           >
             {/* Header row */}
             <div className="flex flex-wrap shrink-0 items-center justify-between min-h-15 py-1 px-[min(2rem,5vw)] border-b border-border">

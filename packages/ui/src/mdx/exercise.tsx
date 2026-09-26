@@ -8,7 +8,6 @@ import {
   useEffect,
   useMemo,
   useRef,
-  createContext,
   useContext,
 } from "react";
 
@@ -23,6 +22,17 @@ import {
   resolveDraftForStarter,
   isTrivialDraft,
 } from "./exercise-draft";
+import {
+  ExerciseDataContext,
+  ExerciseDataProvider,
+  ExerciseNotFound,
+  difficultyConfig,
+  mlContentConfig,
+} from "./exercise-data";
+
+// The provider moved to exercise-data.tsx (spec 2026-09-24, section 3);
+// lesson-content.tsx and the package index import it from here.
+export { ExerciseDataProvider };
 
 const SandpackProvider = lazy(() =>
   import("@codesandbox/sandpack-react").then((m) => ({
@@ -71,11 +81,15 @@ export interface ExerciseData {
   estimatedMinutes: number;
   difficulty: "beginner" | "intermediate" | "advanced";
   /**
-   * The exercise's own hint ladder, present on a lesson's second exercise.
+   * The exercise's own hint ladder. Most exercises that carry one are a
+   * lesson's second exercise (the incident drills, rag-pipeline,
+   * launch-rehearsal), but ci-cd-gate and verify-deployment come first in
+   * their lessons and browser-ml-tradeoffs is its lesson's only exercise.
    * The lesson-level ladder (rendered by the page in the challenge step's
-   * left column) serves the lesson's primary exercise; this one renders
-   * beneath this exercise's instructions so a learner stuck on the second
-   * exercise of a lesson has a ladder that is about it (2026-09-13).
+   * left column) serves the lesson's primary exercise, the one its solution
+   * rung is excerpted from; this one renders beneath this exercise's
+   * instructions so a learner stuck on it has a ladder that is about it
+   * (2026-09-13).
    */
   hints?: Array<{
     level: "nudge" | "guidance" | "solution";
@@ -141,6 +155,20 @@ interface ExerciseProps {
    * as the lesson-level HintPanel.
    */
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+  /**
+   * "inline" (default) renders the brief (chips, title, instructions and
+   * the exercise's own hint ladder) above the editor, as every mount did
+   * before 2026-09-24. "external" leaves the brief to ExerciseBrief in the
+   * Challenge step's reading column and renders the pane from the editor
+   * down (spec 2026-09-24, section 3).
+   */
+  brief?: "inline" | "external";
+  /**
+   * With an external brief, name the exercise in the eyebrow row so the
+   * learner can match this editor to its brief in the other column. The
+   * page sets it when the lesson has more than one exercise.
+   */
+  titled?: boolean;
 }
 
 import {
@@ -152,54 +180,6 @@ import {
 
 export { parseAndRunTests };
 export type { TestRunOutcome };
-
-/* ------------------------------------------------------------------ */
-/*  Context - exercise data injected from LessonContent                */
-/* ------------------------------------------------------------------ */
-
-const ExerciseDataContext = createContext<Map<string, ExerciseData>>(new Map());
-
-export function ExerciseDataProvider({
-  exercises,
-  children,
-}: {
-  exercises: Map<string, ExerciseData>;
-  children: React.ReactNode;
-}) {
-  return (
-    <ExerciseDataContext.Provider value={exercises}>
-      {children}
-    </ExerciseDataContext.Provider>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Difficulty badge                                                   */
-/* ------------------------------------------------------------------ */
-
-/* Badge colors are scheme-paired: the dark values are bright pastels that
-   sat at 1.5-2.4:1 on the light scheme's white cards (axe, 2026-07-23).
-   Light values are the same hues darkened until >=4.6:1 against both
-   white and their own `${color}15` tint composited on the light paper
-   surface #F5F5F2, the real chip background (axe, 2026-08-12). */
-const difficultyConfig = {
-  beginner: { label: "Beginner", color: "#4ADE80", light: "#16773A" },
-  intermediate: { label: "Intermediate", color: "#FBBF24", light: "#866103" },
-  advanced: { label: "Advanced", color: "#F87171", light: "#CA0A0A" },
-};
-
-const mlContentConfig: Record<
-  MLContent,
-  { label: string; tone: string; light: string }
-> = {
-  arithmetic: { label: "Arithmetic", tone: "#9CA3AF", light: "#606877" },
-  data: { label: "Tensor Data", tone: "#60A5FA", light: "#0762D3" },
-  model: { label: "Model Build", tone: "#A78BFA", light: "#6E44EB" },
-  training: { label: "Training", tone: "#F472B6", light: "#C40F6E" },
-  evaluation: { label: "Evaluation", tone: "#FB923C", light: "#A74D04" },
-  deployment: { label: "Deployment", tone: "#34D399", light: "#1A7554" },
-  systems: { label: "Systems", tone: "#F59E0B", light: "#8F5C06" },
-};
 
 /* ------------------------------------------------------------------ */
 /*  Sandpack editor theme (dark/light, Task 12 - light-mode rollout,   */
@@ -339,7 +319,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
       // This panel mounts and unmounts with the results, so it cannot be a
       // reliable live region.
       data-testid="test-results-panel"
-      className={`p-4 mt-3 brutalist-shadow border rounded-none ${
+      className={`p-4 mt-3 border rounded-none ${
         allPassed
           ? "bg-success/8 border-success/20"
           : partial
@@ -454,7 +434,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
   return (
     <div
       data-testid="console-panel"
-      className="p-4 mt-3 border border-border bg-code-bg rounded-none brutalist-shadow"
+      className="p-4 mt-3 border border-border bg-code-bg rounded-none"
     >
       <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-2">
         # console
@@ -832,6 +812,8 @@ export function Exercise({
   onSubmit,
   bridge,
   onHintRevealed,
+  brief = "inline",
+  titled = false,
 }: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
@@ -927,25 +909,7 @@ export function Exercise({
   }, [editorBox]);
 
   // Fallback if exercise data not provided via context
-  if (!exercise) {
-    return (
-      <div className="p-6 my-6 brutalist-shadow bg-surface-raised border border-border">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-base">⚡</span>
-          <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-primary">
-            Exercise
-          </h4>
-        </div>
-        <p className="text-sm text-text-muted">
-          Exercise{" "}
-          <code className="text-xs px-1.5 py-0.5 bg-surface-overlay text-primary">
-            {slug}
-          </code>{" "}
-          not found.
-        </p>
-      </div>
-    );
-  }
+  if (!exercise) return <ExerciseNotFound slug={slug} />;
 
   const diffConfig = difficultyConfig[exercise.difficulty];
   const diffColor = scheme === "light" ? diffConfig.light : diffConfig.color;
@@ -965,56 +929,79 @@ export function Exercise({
         allPassed ? "border-success/30" : "border-border"
       }`}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
+      {/* Header row. Wraps between whole items only: at 390 px the old
+          non-wrapping row squeezed its chips until they broke inside words
+          ("EXERCIS / E", "Beginne / r"). With an external brief the chips
+          and the minutes live in the brief; the row keeps the eyebrow and,
+          when the lesson has more than one exercise, the exercise's name. */}
+      <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <span className="text-base">⚡</span>
           <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-primary">
             Exercise
+            {brief === "external" && titled && (
+              <span className="sr-only">: {exercise.title}</span>
+            )}
           </h4>
         </div>
-        <div className="flex items-center gap-3">
-          <span
-            className="text-xs font-mono font-medium px-2 py-0.5"
-            style={{
-              background: `${diffColor}15`,
-              color: diffColor,
-            }}
-            title="Cognitive difficulty"
-          >
-            {diffConfig.label}
-          </span>
-          {mlConfig && mlTone && (
+        {brief === "inline" ? (
+          <>
             <span
-              className="text-xs font-mono font-medium px-2 py-0.5"
+              className="whitespace-nowrap text-xs font-mono font-medium px-2 py-0.5"
               style={{
-                background: `${mlTone}15`,
-                color: mlTone,
+                background: `${diffColor}15`,
+                color: diffColor,
               }}
-              title="ML content axis: what skill the exercise actually builds"
-              data-testid="mlcontent-badge"
+              title="Cognitive difficulty"
             >
-              {mlConfig.label}
+              {diffConfig.label}
             </span>
-          )}
-          <span className="text-xs text-text-muted">
-            ~{exercise.estimatedMinutes} min
+            {mlConfig && mlTone && (
+              <span
+                className="whitespace-nowrap text-xs font-mono font-medium px-2 py-0.5"
+                style={{
+                  background: `${mlTone}15`,
+                  color: mlTone,
+                }}
+                title="ML content axis: what skill the exercise actually builds"
+                data-testid="mlcontent-badge"
+              >
+                {mlConfig.label}
+              </span>
+            )}
+            <span className="whitespace-nowrap text-xs text-text-muted">
+              ~{exercise.estimatedMinutes} min
+            </span>
+          </>
+        ) : titled ? (
+          <span
+            className="min-w-0 truncate text-xs text-text-muted"
+            data-testid="exercise-pane-title"
+            title={exercise.title}
+          >
+            {exercise.title}
           </span>
-        </div>
+        ) : null}
       </div>
 
-      {/* Title & Instructions */}
-      <h3 className="text-lg font-semibold mb-2 text-text-primary">
-        {exercise.title}
-      </h3>
-      <InstructionText
-        text={exercise.instructions}
-        className="text-sm leading-relaxed mb-4 text-text-primary/65"
-      />
-      {exercise.hints && exercise.hints.length > 0 && (
-        <div data-testid="exercise-hints">
-          <HintPanel hints={exercise.hints} onHintRevealed={onHintRevealed} />
-        </div>
+      {brief === "inline" && (
+        <>
+          <h3 className="text-lg font-semibold mb-2 text-text-primary">
+            {exercise.title}
+          </h3>
+          <InstructionText
+            text={exercise.instructions}
+            className="text-sm leading-relaxed mb-4 text-text-primary/65"
+          />
+          {exercise.hints && exercise.hints.length > 0 && (
+            <div data-testid="exercise-hints">
+              <HintPanel
+                hints={exercise.hints}
+                onHintRevealed={onHintRevealed}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {/* Sandpack Editor */}
@@ -1034,6 +1021,11 @@ export function Exercise({
               <SandpackCodeEditor
                 showLineNumbers
                 showTabs={false}
+                // The starter's comments are the task's steps, and they were
+                // the part scrolled off-screen: most starters have a line
+                // wider than the editor at every width (spec 2026-09-24,
+                // section 4, amended 2026-09-25).
+                wrapContent
                 style={{
                   minHeight: 200,
                   maxHeight: 400,

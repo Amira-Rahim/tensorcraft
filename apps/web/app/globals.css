@@ -74,6 +74,10 @@
 
 html {
   color-scheme: dark;
+  /* The consent bar's height (cookie-consent.tsx publishes it here), so a
+     focused element or an anchor target scrolls clear of the bar. Body
+     padding below only clears it at the page's end. */
+  scroll-padding-bottom: var(--tc-consent-h, 0px);
 }
 [data-scheme="light"] {
   color-scheme: light;
@@ -85,6 +89,9 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* The consent bar's height while it shows (cookie-consent.tsx), so a page
+     scrolled to its end shows its last row above the bar. 0 once chosen. */
+  padding-bottom: var(--tc-consent-h, 0px);
 }
 
 /* ===== Brutalist Utility Classes ===== */
@@ -186,6 +193,7 @@ body {
   color: var(--tc-text);
 }
 
+/* ExerciseBrief (packages/ui/src/mdx/exercise-brief.tsx) pins every property this rule sets inline; add any new property here to both places. */
 .lesson-prose h3 {
   margin-top: 2em;
   margin-bottom: 0.5em;
@@ -610,6 +618,28 @@ body {
   margin: 1.5em 0;
   max-width: 100%;
   overflow-x: auto;
+}
+
+/* Code on phones wraps instead of scrolling (spec 2026-09-24, section 4):
+   at 390 px the Concept step's blocks hid 47 to 56% of every line, the
+   trailing comments first. Below the one-column breakpoint each Shiki
+   line is a full-width inline block with a 2 ch hanging indent, and the
+   preserved newline after it ends its line. Raw fences and the
+   unhighlighted fallback have no .line spans and wrap without the indent.
+   From 1,024 px nothing changes: most lines fit the 820 and 1,184 px
+   boxes, and a longer one scrolls. */
+@media (width < 64rem) {
+  .lesson-prose pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: visible;
+  }
+  .lesson-prose pre .line {
+    display: inline-block;
+    width: 100%;
+    padding-left: 2ch;
+    text-indent: -2ch;
+  }
 }
 
 .lesson-prose strong {

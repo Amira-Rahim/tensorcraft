@@ -1,5 +1,12 @@
 # Tensorcraft Marketing Plan v3.3
 
+> **Operating plan superseded (2026-09-25):** For the current goal of
+> 1,000 paying customers from zero users on $200/month, use
+> [First 1,000 paying customers](marketing-first-1000-paid.md).
+> This document is historical. Its advertising budgets, waitlist targets,
+> launch forecasts, unavailable bundles and coordinated-upvote instruction
+> are not part of the current plan.
+
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
 > The other 4 worlds appear as "coming soon" cards with waitlist forms. The
 > bundled pricing tiers described below (2-world / 3-world / all-five) are

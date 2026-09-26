@@ -173,7 +173,7 @@ const BRIEFING_COMPONENTS = new Set([
    Code and Challenge split into a LEFT reading column and a RIGHT slot (the
    worked example or the work pane). Interactive components with side
    effects live in exactly one partition: Exercise only in CHALLENGE_RIGHT,
-   RecallPrompt only in TAKEAWAYS_COMPONENTS. */
+   RecallPrompt only in TAKEAWAYS_RECALL. */
 
 /* Prose partition (2026-09-04, lesson-format audit step 2). The teaching
    prose used to render on FOUR consecutive steps (Briefing after the scene,
@@ -222,10 +222,13 @@ const CODE_RIGHT = new Set([
   "ConceptReference",
 ]);
 
-// Challenge: challenge zone + hints on the left; the Exercise editor in the
-// right pane. The hint ladder no longer sits below a full prose re-copy.
+// Challenge: challenge zone, the exercise brief where the MDX places the
+// exercise (a pseudo-name: the left instance renders ExerciseBrief there,
+// spec 2026-09-24 section 3), and the hint ladders on the left; the
+// Exercise editor in the right pane.
 const CHALLENGE_LEFT = new Set([
   "challenge",
+  "ExerciseBrief",
   "HintPanel",
   "TransferAssignment",
   "DecisionTask",
@@ -233,12 +236,14 @@ const CHALLENGE_LEFT = new Set([
 ]);
 const CHALLENGE_RIGHT = new Set(["Exercise"]);
 
-// Takeaways: the lesson close (RecallPrompt + LessonRecap + NextLesson),
-// then the lesson's terms list (an app component, not MDX).
-const TAKEAWAYS_COMPONENTS = new Set([
+// Takeaways: the recall card first, alone; the lesson close (LessonRecap,
+// ProjectMilestone, NextLesson) once every card has left its prompt, so
+// the answer is never on screen while the learner is asked for it (spec
+// 2026-09-24, section 2). Then the terms list, an app component.
+const TAKEAWAYS_RECALL = new Set(["RecallPrompt"]);
+const TAKEAWAYS_AFTER = new Set([
   "ProjectMilestone",
   "LessonRecap",
-  "RecallPrompt",
   "NextLesson",
 ]);
 const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
@@ -255,11 +260,25 @@ export const STEP_VISIBILITY = {
   CODE_RIGHT,
   CHALLENGE_LEFT,
   CHALLENGE_RIGHT,
-  TAKEAWAYS_COMPONENTS,
+  TAKEAWAYS_RECALL,
+  TAKEAWAYS_AFTER,
   CONSEQUENCE_COMPONENTS,
 } as const;
 
+/* Learner-facing step names: the bar's labels, the badge and every
+   accessible name. The last step is the story's epilogue on screen; the
+   pedagogy's name for it, "Consequence", stays in the analytics array below
+   so PostHog queries and scripts/analytics/module1-baseline.mjs keep
+   reading the same stepName. */
 const STEP_NAMES = [
+  "Briefing",
+  "Concept",
+  "Code",
+  "Challenge",
+  "Takeaways",
+  "Epilogue",
+] as const;
+const STEP_EVENT_NAMES = [
   "Briefing",
   "Concept",
   "Code",
@@ -289,6 +308,18 @@ function getMaxStorageKey(
   owner: string | null,
 ): string {
   const key = `tc_step_max_${worldSlug}_${lessonSlug}`;
+  return owner ? `${key}:account:${owner}` : key;
+}
+
+/* "This browser has settled the lesson's recall" (spec 2026-09-24, section
+   2): the same shape as the step keys, so a guest's flag never reads as an
+   account's. The answer itself is never stored. */
+function getRecallStorageKey(
+  worldSlug: string,
+  lessonSlug: string,
+  owner: string | null,
+): string {
+  const key = `tc_recall_${worldSlug}_${lessonSlug}`;
   return owner ? `${key}:account:${owner}` : key;
 }
 
@@ -415,6 +446,32 @@ function LessonStepsInner({
 
   const storageKey = getStorageKey(worldSlug, lesson.slug, reviewUserId);
   const maxStorageKey = getMaxStorageKey(worldSlug, lesson.slug, reviewUserId);
+  const recallKey = getRecallStorageKey(worldSlug, lesson.slug, reviewUserId);
+  // True once every recall card on Takeaways has left its prompt in this
+  // mount, or this browser remembers doing so. Sticky: the left column is
+  // keyed on the step, so StepTakeaways remounts on every visit and its
+  // instance reports afresh; a later non-zero report must not hide the
+  // recap that already showed.
+  const [recallSettled, setRecallSettled] = useState(false);
+  const recallEverPendingRef = useRef(false);
+  const handleRecallPending = useCallback(
+    (pending: number) => {
+      if (pending > 0) {
+        recallEverPendingRef.current = true;
+        return;
+      }
+      setRecallSettled(true);
+      // A body with no card reports 0 without ever being pending: nothing
+      // to remember. A learner who settled a card is remembered.
+      if (!recallEverPendingRef.current) return;
+      try {
+        localStorage.setItem(recallKey, "1");
+      } catch {
+        // localStorage unavailable
+      }
+    },
+    [recallKey],
+  );
 
   // True when the mount-restore below landed directly on step 5. Consumed
   // (and cleared) by the completion effect so a restored arrival never
@@ -474,6 +531,36 @@ function LessonStepsInner({
           maxStep = Math.max(maxStep, parsed);
         }
       }
+    } catch {
+      // localStorage unavailable
+    }
+    // Read before the passed-exercises block below: a malformed `-passed`
+    // entry throws inside that block's own try, and must not skip this
+    // read (Task 5 addendum item 2).
+    try {
+      if (localStorage.getItem(recallKey) === "1") setRecallSettled(true);
+    } catch {
+      // localStorage unavailable
+    }
+    // A guest who finished this lesson is a returning learner too. The
+    // server's lessons prop (knownCompleted) never knows a guest, so the
+    // local guest record settles the gate, merged the way the completion
+    // effect merges it for the award check.
+    try {
+      if (
+        getGuestCompletions().some(
+          (c) =>
+            c.worldId === worldSlug &&
+            c.moduleId === moduleSlug &&
+            c.lessonId === lesson.slug,
+        )
+      ) {
+        setRecallSettled(true);
+      }
+    } catch {
+      // localStorage unavailable
+    }
+    try {
       // Passed exercises persist too: without this, leaving mid-lesson
       // re-locked the Challenge gate the learner had already opened
       // (2026-07-14 UX audit). Only slugs that are really on this lesson
@@ -550,7 +637,7 @@ function LessonStepsInner({
     setMounted(true);
     // exercises identity is stable per lesson page load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storageKey, maxStorageKey]);
+  }, [storageKey, maxStorageKey, recallKey]);
 
   // Persist passed exercises as they happen
   useEffect(() => {
@@ -674,7 +761,7 @@ function LessonStepsInner({
       moduleId: moduleSlug,
       lessonId: lesson.slug,
       step: currentStep,
-      stepName: STEP_NAMES[currentStep],
+      stepName: STEP_EVENT_NAMES[currentStep],
       prevStep: prevStep ?? undefined,
       prevStepMs,
       revisit,
@@ -950,13 +1037,19 @@ function LessonStepsInner({
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
-    // Horizontal pans inside code blocks and the editor are CONTENT
-    // scrolling, not navigation: panning a wide code sample used to page
-    // the whole lesson (2026-07-14 UX audit).
+    // Horizontal pans inside the editor and inside a code block that
+    // scrolls sideways are CONTENT scrolling, not navigation: panning a
+    // wide code sample used to page the whole lesson (2026-07-14 UX audit).
+    // Code wraps below 1,024 px (spec 2026-09-24 section 4), so most blocks
+    // on a phone cannot pan and a swipe over them pages. The block is the
+    // nearest pre first: inline code inside a scrolling pre has no scroll
+    // box of its own. The two widths round separately, so a 1 px gap at a
+    // fractional width is not overflow (the +1 the overflow specs use).
     const target = e.target as HTMLElement | null;
-    touchFromScrollable.current = !!target?.closest(
-      "pre, code, .sp-wrapper, .cm-editor, [data-no-swipe]",
-    );
+    const block = target?.closest("pre") ?? target?.closest("code");
+    touchFromScrollable.current =
+      !!target?.closest(".sp-wrapper, .cm-editor, [data-no-swipe]") ||
+      (!!block && block.scrollWidth - block.clientWidth > 1);
   }, []);
 
   const handleTouchEnd = useCallback(
@@ -1059,13 +1152,25 @@ function LessonStepsInner({
       ) : nextLesson ? (
         <Link
           href={`/worlds/${worldSlug}/${moduleSlug}/${nextLesson.slug}`}
-          className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
+          data-testid="next-lesson-card"
+          className="ml-auto inline-flex min-h-11 items-center gap-4 px-6 py-3 text-left transition-opacity hover:opacity-90"
           style={{
             background: "var(--tc-primary)",
             color: "var(--tc-on-primary)",
           }}
         >
-          Next Lesson &rarr;
+          <span className="flex-1">
+            <span className="block text-[9px] font-mono uppercase tracking-[1.5px] mb-0.5">
+              Next {terms(worldSlug).lesson}
+              <span className="sr-only">: </span>
+            </span>
+            <span className="block text-[15px] font-semibold">
+              {nextLesson.title}
+            </span>
+          </span>
+          <span aria-hidden="true" className="text-base shrink-0">
+            &rarr;
+          </span>
         </Link>
       ) : (
         <Link
@@ -1160,13 +1265,18 @@ function LessonStepsInner({
     );
   } else if (currentStep === 4) {
     rightKind = "none";
-    shellLeft = <StepTakeaways {...sharedContentProps} />;
+    shellLeft = (
+      <StepTakeaways
+        {...sharedContentProps}
+        recallSettled={recallSettled || knownCompleted}
+        onRecallPending={handleRecallPending}
+      />
+    );
   } else {
     rightKind = "none";
     shellLeft = (
       <StepConsequence
         {...sharedContentProps}
-        nextLesson={nextLesson}
         isFreeModule={moduleOrder === 1}
         award={
           awardSrc
@@ -1302,9 +1412,10 @@ function ChromeBar({
   maxStepReached: number;
   setCurrentStep: (n: number) => void;
 }) {
-  // The Briefing's title card is that step's H1 (spec 2026-09-23); on every
-  // other step the chrome title is the page's only H1 and stays.
-  const showTitle = currentStep !== 0;
+  // The Briefing's title card is that step's H1 and the Complete step's
+  // closing card is that step's (spec 2026-09-24, section 6); on steps 2
+  // to 5 the chrome title is the page's only H1 and stays.
+  const showTitle = currentStep !== 0 && currentStep !== TOTAL_STEPS - 1;
   return (
     // `flex-wrap` plus a full-width basis for the step bar below `sm`.
     //
@@ -1371,6 +1482,7 @@ function ChromeBar({
           {STEP_NAMES.map((name, i) => {
             const visited = i <= maxStepReached;
             const filled = i <= currentStep;
+            const current = i === currentStep;
             return (
               <button
                 key={name}
@@ -1378,25 +1490,43 @@ function ChromeBar({
                 onClick={() => setCurrentStep(i)}
                 disabled={!visited}
                 aria-label={`Step ${i + 1}: ${name}`}
-                aria-current={i === currentStep ? "step" : undefined}
+                aria-current={current ? "step" : undefined}
                 title={visited ? name : `${name} (locked)`}
                 // h-6 (24px), not h-4: these are documented navigation
                 // affordances, so they must meet the WCAG 2.5.8 AA minimum
-                // target of 24x24. The visible bar stays 6px - only the hit
-                // area grows, centred by `flex items-center`.
-                className="flex-1 h-6 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
+                // target of 24x24. The visible bar stays 6px. From lg the
+                // step name sits under the bar and the button grows to h-8;
+                // min-w-0 lets `truncate` on the label act on a flex-1 item.
+                // Hover dims the bar only: dimming the whole button took the label below AA.
+                className="group flex-1 min-w-0 h-6 lg:h-8 flex flex-col justify-center gap-1 p-0 border-0 bg-transparent"
                 style={{ cursor: visited ? "pointer" : "not-allowed" }}
               >
                 <span
-                  className="h-1.5 w-full transition-all duration-300"
+                  className={
+                    visited
+                      ? "h-1.5 w-full transition-all duration-300 group-hover:opacity-80"
+                      : "h-1.5 w-full transition-all duration-300 opacity-45"
+                  }
                   style={{
                     background: filled
                       ? "var(--tc-primary)"
                       : "var(--tc-border)",
-                    opacity: !visited ? 0.45 : 1,
                     borderRadius: 2,
                   }}
                 />
+                <span
+                  data-testid="step-label"
+                  className={
+                    visited
+                      ? "hidden lg:block text-[11px] font-mono uppercase tracking-wider truncate text-left"
+                      : "hidden lg:block text-[11px] font-mono uppercase tracking-wider truncate text-left opacity-45"
+                  }
+                  style={{
+                    color: current ? "var(--tc-primary)" : "var(--tc-muted)",
+                  }}
+                >
+                  {name}
+                </span>
               </button>
             );
           })}
@@ -2085,28 +2215,51 @@ function StepTakeaways({
   worldSlug,
   moduleSlug,
   lessonSlug,
+  recallSettled,
+  onRecallPending,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   worldSlug: string;
   moduleSlug: string;
   lessonSlug: string;
+  /** Every recall card has left its prompt, or the browser or server says so. */
+  recallSettled: boolean;
+  onRecallPending: (pending: number) => void;
 }) {
+  const shared = {
+    lesson,
+    exercises,
+    worldId: worldSlug,
+    moduleId: moduleSlug,
+    lessonId: lessonSlug,
+    glossaryTerms: lesson.glossaryTerms,
+  };
   return (
     <div>
       <PhaseChip label="Takeaways" icon={"\u2713"} />
-      <div className="lesson-prose max-w-[820px]" data-testid="takeaways-prose">
+      {/* The recall first, alone (spec 2026-09-24, section 2). */}
+      <div
+        className="lesson-prose max-w-[820px]"
+        data-testid="takeaways-recall"
+      >
         <LessonContent
-          lesson={lesson}
-          exercises={exercises}
-          worldId={worldSlug}
-          moduleId={moduleSlug}
-          lessonId={lessonSlug}
-          glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={TAKEAWAYS_COMPONENTS}
+          {...shared}
+          visibleComponents={TAKEAWAYS_RECALL}
+          onRecallPending={onRecallPending}
         />
       </div>
-      <LessonTermsList terms={lesson.glossaryTerms ?? []} />
+      {recallSettled && (
+        <>
+          <div
+            className="lesson-prose max-w-[820px]"
+            data-testid="takeaways-prose"
+          >
+            <LessonContent {...shared} visibleComponents={TAKEAWAYS_AFTER} />
+          </div>
+          <LessonTermsList terms={lesson.glossaryTerms ?? []} />
+        </>
+      )}
     </div>
   );
 }
@@ -2120,7 +2273,6 @@ function StepConsequence({
   worldSlug,
   moduleSlug,
   lessonSlug,
-  nextLesson,
   isFreeModule,
   award,
 }: {
@@ -2129,7 +2281,6 @@ function StepConsequence({
   worldSlug: string;
   moduleSlug: string;
   lessonSlug: string;
-  nextLesson: { slug: string; title: string } | null;
   isFreeModule?: boolean;
   /** Armed by the completion effect the session this lesson closes out
    *  its module; null otherwise (replay, mid-module, no patch art). */
@@ -2137,18 +2288,13 @@ function StepConsequence({
 }) {
   return (
     <div className="text-center pt-12">
-      {/*
-        FADE OUT marker. Screenplay atmosphere, not information: it reads at
-        1.23:1 by design (border colour on surface), which WCAG 1.4.3 exempts
-        as pure decoration. Marked decorative rather than brightened so the
-        beat survives, and so the axe gate can skip it by attribute instead of
-        having the whole rule muted. See e2e/accessibility.spec.ts.
-      */}
+      {/* FADE OUT marker. Screenplay atmosphere, hidden from the tree, and
+          now readable by sighted readers: the Cut to label's colour, one
+          size up. No contrast exemption. */}
       <div
         aria-hidden="true"
-        data-decorative="true"
-        className="font-mono text-[9px] uppercase tracking-[3px] mb-8"
-        style={{ color: "var(--tc-border)" }}
+        className="font-mono text-[10px] uppercase tracking-[3px] mb-8"
+        style={{ color: "var(--tc-muted)" }}
       >
         Fade Out
       </div>
@@ -2199,12 +2345,12 @@ function StepConsequence({
         />
       )}
 
-      <h2
+      <h1
         className="text-[26px] font-bold mb-5"
         style={{ color: "var(--tc-text)" }}
       >
         {lesson.title}
-      </h2>
+      </h1>
 
       {/* Narrative as italic cinematic narration */}
       <p
@@ -2234,40 +2380,6 @@ function StepConsequence({
           point, and a guest who leaves was permanently unreachable. Guests
           only; the component itself checks the session. */}
       {isFreeModule && <GuestEmailCapture worldSlug={worldSlug} />}
-
-      {/* Next lesson card */}
-      {nextLesson && (
-        <Link
-          href={`/worlds/${worldSlug}/${moduleSlug}/${nextLesson.slug}`}
-          data-testid="next-lesson-card"
-          className="inline-flex items-center gap-4 text-left px-6 py-5 max-w-[420px] mx-auto transition-all hover:translate-x-[-2px] hover:translate-y-[-2px]"
-          style={{
-            background: "var(--tc-surface)",
-            border: "1px solid var(--tc-border)",
-          }}
-        >
-          <div className="flex-1">
-            <div
-              className="text-[9px] font-mono uppercase tracking-[1.5px] mb-1"
-              style={{ color: "var(--tc-muted)" }}
-            >
-              Next {terms(worldSlug).lesson}
-            </div>
-            <div
-              className="text-[15px] font-semibold"
-              style={{ color: "var(--tc-text)" }}
-            >
-              {nextLesson.title}
-            </div>
-          </div>
-          <span
-            className="text-base shrink-0"
-            style={{ color: "var(--tc-primary)" }}
-          >
-            &rarr;
-          </span>
-        </Link>
-      )}
     </div>
   );
 }

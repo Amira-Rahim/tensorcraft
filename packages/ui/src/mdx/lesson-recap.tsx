@@ -10,7 +10,7 @@ export function LessonRecap({
   youCanNow,
 }: LessonRecapProps) {
   return (
-    <div className="min-w-0 [overflow-wrap:anywhere] p-5 my-8 brutalist-shadow bg-surface-raised border border-border">
+    <div className="min-w-0 [overflow-wrap:anywhere] p-5 my-8 bg-surface-raised border border-border">
       <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-primary">
         Lesson Recap
       </h4>

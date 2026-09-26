@@ -257,6 +257,12 @@ test.describe("Lesson reading experience", () => {
       { stepKey: STEP_KEY, maxKey: MAX_KEY },
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
+    // The terms list follows the recap, which waits for the recall card
+    // (spec 2026-09-24, section 2): bail on the card first.
+    await page
+      .getByRole("button", { name: /recall it/i })
+      .first()
+      .click();
     const list = page.getByTestId("lesson-terms-list");
     await expect(list).toBeVisible({ timeout: 15000 });
     await expect(

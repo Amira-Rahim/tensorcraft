@@ -243,11 +243,17 @@ export function ReportIssueButton() {
           ref={panelRef}
           style={{
             position: "fixed",
-            bottom: "max(16px, env(safe-area-inset-bottom))",
+            // With the bar showing, 16 px above it (the bar already clears
+            // the home indicator); without it, the old max(16px, inset).
+            bottom:
+              "max(16px, env(safe-area-inset-bottom), calc(16px + var(--tc-consent-h,0px)))",
             right: 16,
             zIndex: 50,
             width: "min(400px, calc(100vw - 32px))",
-            maxHeight: "calc(100dvh - 32px)",
+            // The panel rises with the bar, so its height gives the bar's
+            // height back: an open panel must not push its Close control
+            // above a short phone's viewport.
+            maxHeight: "calc(100dvh - 32px - var(--tc-consent-h,0px))",
             overscrollBehavior: "contain",
             overflowY: open ? "auto" : "hidden",
             overflowX: "hidden",

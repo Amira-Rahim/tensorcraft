@@ -27,7 +27,7 @@ export function MathBlock({
     }
 
     return (
-      <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+      <div className="p-5 my-6 bg-surface-raised border border-border">
         {label && (
           <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-3">
             {label}
@@ -42,7 +42,7 @@ export function MathBlock({
 
   // App-level API: render children directly
   return (
-    <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+    <div className="p-5 my-6 bg-surface-raised border border-border">
       {label && (
         <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-3">
           {label}

@@ -3,15 +3,15 @@
 exports[`CookieConsent snapshots > matches snapshot when visible 1`] = `
 <div
   aria-label="Cookie consent"
-  class="fixed bottom-0 left-0 right-0 z-50 p-4 animate-fade-up"
+  class="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface-raised rounded-none animate-fade-up"
+  data-testid="cookie-consent-card"
   role="region"
 >
   <div
-    class="max-w-160 mx-auto border border-border bg-surface-raised p-5 rounded-none brutalist-shadow"
-    data-testid="cookie-consent-card"
+    class="mx-auto flex w-full max-w-7xl flex-col gap-3 px-5 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between md:gap-6 md:px-12"
   >
     <p
-      class="text-sm text-text-muted leading-relaxed mb-4 font-mono"
+      class="text-xs font-mono leading-relaxed text-text-muted"
     >
       Essential cookies keep you signed in and remember your world choice. Analytics (PostHog, Vercel Analytics) runs only if you accept. See our
        
@@ -25,10 +25,10 @@ exports[`CookieConsent snapshots > matches snapshot when visible 1`] = `
       for details.
     </p>
     <div
-      class="flex flex-wrap items-center gap-3"
+      class="flex shrink-0 flex-wrap items-center gap-3"
     >
       <button
-        class="min-h-11 border border-primary/30 bg-primary/8 px-5 py-2 text-sm font-mono font-medium rounded-none hover:bg-primary/25 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
+        class="min-h-11 border border-primary/30 bg-primary/8 px-5 py-2 text-sm font-mono font-medium rounded-none hover:bg-primary/25 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all"
         type="button"
       >
         Accept all

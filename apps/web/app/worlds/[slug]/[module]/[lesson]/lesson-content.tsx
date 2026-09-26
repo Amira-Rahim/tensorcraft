@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+} from "react";
 import dynamic from "next/dynamic";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
@@ -9,6 +17,7 @@ import {
   BridgeCallout,
   CodeBlock,
   DerivationDrawer,
+  ExerciseBrief,
   ExerciseDataProvider,
   GlossaryTerm,
   HintPanel,
@@ -102,6 +111,15 @@ interface LessonContentProps {
   onExerciseAttempt?: (result: ExerciseSubmitResult) => void;
   /** Mirrors hint reveals up to the step machine's per-lesson counter. */
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+  /**
+   * How many recall cards in this instance are still in their prompt state
+   * (spec 2026-09-24, section 2). Reported once after the first commit,
+   * so a body with no card reports 0, and again each time a card leaves
+   * its prompt. Read through a ref inside the renderer: it must never join
+   * the components memo's dependencies, which would remount the MDX tree
+   * and snap every revealed card back to its prompt.
+   */
+  onRecallPending?: (pending: number) => void;
   /**
    * Reads the step machine's distinct-hint-levels count at submit time,
    * so the attempts POST can carry it. A callback, not a number: hints
@@ -198,6 +216,7 @@ export function LessonContent({
   onExerciseComplete,
   onExerciseAttempt,
   onHintRevealed,
+  onRecallPending,
   getHintsUsed,
   glossaryTerms,
   hideChallengeOnward,
@@ -296,6 +315,24 @@ export function LessonContent({
     [worldId, lessonId, onHintRevealed],
   );
 
+  // Recall cards register here (RegisteredRecallPrompt below). Both the set
+  // and the latest callback live in refs so the components memo keeps its
+  // dependency list and the MDX tree is never remounted by a report.
+  const onRecallPendingRef = useRef(onRecallPending);
+  useEffect(() => {
+    onRecallPendingRef.current = onRecallPending;
+  });
+  const pendingRecallRef = useRef<Set<string>>(new Set());
+  const reportRecallPending = useCallback(() => {
+    onRecallPendingRef.current?.(pendingRecallRef.current.size);
+  }, []);
+  // Children's effects run before this one, so on the first commit the
+  // cards have registered and this reports their count; with no card it
+  // reports 0, which is what lets the step settle.
+  useEffect(() => {
+    reportRecallPending();
+  }, [reportRecallPending]);
+
   // Visibility helpers for step-based rendering
   const shouldShow = useCallback(
     (name: string) =>
@@ -312,6 +349,8 @@ export function LessonContent({
   // Challenge step's left column: brief + hints without the re-read).
   const showChallenge =
     !showProse && (visibleComponents?.has("challenge") ?? false);
+
+  const exerciseCount = exercises.length;
 
   // Build MDX components with the onSubmit handler and framework wired in
   const components = useMemo(() => {
@@ -480,8 +519,10 @@ export function LessonContent({
       },
       RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) =>
         shouldShow("RecallPrompt") ? (
-          <RecallPrompt
+          <RegisteredRecallPrompt
             {...props}
+            registry={pendingRecallRef}
+            report={reportRecallPending}
             onAnswer={(result) => {
               trackRecallAnswered(result, { worldId, lessonId });
               props.onAnswer?.(result);
@@ -505,35 +546,46 @@ export function LessonContent({
         }
       : undefined;
 
-    if (worldId && lessonId) {
-      base.Exercise = (props: { slug: string }) =>
-        shouldShow("Exercise") ? (
-          <Exercise
-            {...props}
-            key={`${props.slug}:${draftOwner ?? "guest"}`}
-            draftOwner={draftOwner}
-            bridge={bridgeHint}
-            onHintRevealed={handleHintRevealed}
-            onSubmit={(result: ExerciseSubmitResult) => {
-              handleExerciseSubmit(result);
-              if (result.passed) {
-                onExerciseComplete?.(result.exerciseSlug, result.score);
-              }
-            }}
-          />
-        ) : null;
-    } else {
-      base.Exercise = (props: { slug: string }) =>
-        shouldShow("Exercise") ? (
-          <Exercise
-            {...props}
-            key={`${props.slug}:${draftOwner ?? "guest"}`}
-            draftOwner={draftOwner}
-            bridge={bridgeHint}
+    // The Challenge step's left instance names "ExerciseBrief" and renders
+    // the brief where the MDX places the exercise; the pane instance names
+    // "Exercise" and renders the editor without its brief. With no set (or
+    // an empty one) shouldShow is true for every name, so that path keeps
+    // today's inline pane and never renders both (spec 2026-09-24, section
+    // 3). The count comes from the lesson's exercises prop: a numbered
+    // index was rejected because velite lists exercises in file order.
+    const scoped = !!visibleComponents && visibleComponents.size > 0;
+    const submit =
+      worldId && lessonId
+        ? (result: ExerciseSubmitResult) => {
+            handleExerciseSubmit(result);
+            if (result.passed) {
+              onExerciseComplete?.(result.exerciseSlug, result.score);
+            }
+          }
+        : undefined;
+    base.Exercise = (props: { slug: string }) => {
+      if (scoped && shouldShow("ExerciseBrief")) {
+        return (
+          <ExerciseBrief
+            slug={props.slug}
             onHintRevealed={handleHintRevealed}
           />
-        ) : null;
-    }
+        );
+      }
+      if (!shouldShow("Exercise")) return null;
+      return (
+        <Exercise
+          {...props}
+          key={`${props.slug}:${draftOwner ?? "guest"}`}
+          draftOwner={draftOwner}
+          bridge={bridgeHint}
+          onHintRevealed={handleHintRevealed}
+          onSubmit={submit}
+          brief={scoped ? "external" : "inline"}
+          titled={scoped && exerciseCount > 1}
+        />
+      );
+    };
 
     base.Section = (props: { name: string; children: React.ReactNode }) =>
       shouldShow(props.name) ? <div>{props.children}</div> : null;
@@ -574,12 +626,15 @@ export function LessonContent({
     lessonId,
     handleExerciseSubmit,
     handleHintRevealed,
+    reportRecallPending,
     shouldShow,
     showProse,
     storyRegister,
     onExerciseComplete,
     lesson.concept.bridge,
     glossaryByTerm,
+    exerciseCount,
+    visibleComponents,
   ]);
 
   const Content = useMemo(() => {
@@ -627,5 +682,50 @@ export function LessonContent({
         )}
       </div>
     </ExerciseDataProvider>
+  );
+}
+
+/* A recall card that reports its prompt state to the instance. Registered
+   on mount; settled on the card's first onAnswer (attempted or bailed; the
+   later rating call changes nothing). The unmount cleanup deletes without
+   reporting: the whole instance unmounts on every step change, and a
+   report of 0 then would read as "settled". */
+function RegisteredRecallPrompt({
+  registry,
+  report,
+  onAnswer,
+  ...props
+}: React.ComponentProps<typeof RecallPrompt> & {
+  registry: React.MutableRefObject<Set<string>>;
+  report: () => void;
+}) {
+  const id = useId();
+  const settledRef = useRef(false);
+  useEffect(() => {
+    // An answered card must not register again when its effects re-run
+    // (Fast Refresh in development, or any future Activity wrapper);
+    // otherwise the count never reaches 0 again.
+    if (settledRef.current) return;
+    // The Set is never reassigned; taking it once keeps the cleanup reading
+    // the same object the body wrote to.
+    const pending = registry.current;
+    pending.add(id);
+    report();
+    return () => {
+      pending.delete(id);
+    };
+  }, [id, registry, report]);
+  return (
+    <RecallPrompt
+      {...props}
+      onAnswer={(result) => {
+        if (!settledRef.current) {
+          settledRef.current = true;
+          registry.current.delete(id);
+          report();
+        }
+        onAnswer?.(result);
+      }}
+    />
   );
 }

@@ -36,6 +36,11 @@ test.describe("Visual: Responsive Breakpoints", () => {
   test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
 
   test.beforeEach(async ({ page }) => {
+    // The consent bar would otherwise sit in every capture and move with
+    // the copy; the lesson and review specs already store a choice.
+    await page.addInitScript(() => {
+      localStorage.setItem("tc-cookie-consent", "declined");
+    });
     await page.emulateMedia({ reducedMotion: "reduce" });
   });
 

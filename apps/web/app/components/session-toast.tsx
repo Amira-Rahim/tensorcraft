@@ -34,7 +34,7 @@ export function SessionToast() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm border border-error/30 bg-error/10 backdrop-blur-sm md:left-auto md:right-6 md:max-w-md"
+      className="fixed bottom-[calc(1rem+var(--tc-consent-h,0px))] left-4 right-4 z-50 flex items-center justify-between gap-4 px-5 py-4 font-mono text-sm border border-error/30 bg-error/10 backdrop-blur-sm md:left-auto md:right-6 md:max-w-md"
       role="alert"
     >
       <div>
