@@ -28,9 +28,13 @@ const pages = [
  * `[data-decorative]` is the ONLY exclusion, and it is deliberately an
  * attribute rather than a rule mute: WCAG 1.4.3 exempts pure decoration from
  * contrast, but nothing exempts a page from the rule itself. An element opts
- * out one at a time, in source, next to a comment saying why (the epilogue's
- * FADE OUT slug is currently the only one). Muting `color-contrast` globally
- * would have hidden the 3.96:1 comment token this suite was written to catch.
+ * out one at a time, in source, next to a comment saying why (the remaining
+ * ones sit on the landing page, the module map, and the talking indicator in
+ * packages/ui/src/animated-avatar.tsx, which ships wherever AnimatedAvatar
+ * renders: the lesson Briefing, Dialogue avatars on the Concept step and the
+ * Epilogue, the /learn crew strip and the world page cast).
+ * Muting `color-contrast` globally would have hidden the 3.96:1 comment token
+ * this suite was written to catch.
  */
 async function audit(page: import("@playwright/test").Page) {
   return new AxeBuilder({ page })
@@ -128,6 +132,13 @@ for (const scheme of SCHEMES) {
           ({ stepKey, maxKey, step }) => {
             localStorage.setItem(stepKey, String(step));
             localStorage.setItem(maxKey, String(step));
+            // The Takeaways audit (step 4) must scan the recap and the
+            // terms list too, beside the recall card in its prompt state
+            // (Task 5 addendum item 2).
+            localStorage.setItem(
+              "tc_recall_deep-orbit_introduction-to-tensors",
+              "1",
+            );
           },
           { stepKey: STEP_KEY, maxKey: MAX_KEY, step: index },
         );

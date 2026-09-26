@@ -12,7 +12,7 @@ import { test, expect } from "@playwright/test";
  * page's first render reads it (see getStorageKey in lesson-steps.tsx).
  */
 test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
-  test("Takeaways step shows recall above recap, reveal, and recap labels", async ({
+  test("Takeaways step shows the recall, then the recap after the reveal", async ({
     page,
   }) => {
     await page.addInitScript(() => {
@@ -25,18 +25,12 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     });
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
 
-    // Both close blocks render on the Takeaways step.
+    // The recall card renders first, alone; the recap waits for it (spec
+    // 2026-09-24, section 2).
     const recall = page.getByText("Recall Prompt", { exact: true }).first();
     const recap = page.getByText("Lesson Recap", { exact: true }).first();
     await expect(recall).toBeVisible({ timeout: 15000 });
-    await expect(recap).toBeVisible();
-
-    // RecallPrompt appears above LessonRecap in the document.
-    const recallBox = await recall.boundingBox();
-    const recapBox = await recap.boundingBox();
-    expect(recallBox).not.toBeNull();
-    expect(recapBox).not.toBeNull();
-    expect(recallBox!.y).toBeLessThan(recapBox!.y);
+    await expect(recap).toHaveCount(0);
 
     // Reveal the answer; the answer text and the result controls appear.
     const reveal = page.getByRole("button", { name: /^check$/i }).first();
@@ -56,6 +50,18 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     ).toBeVisible();
     // The Check button is replaced by the revealed answer.
     await expect(reveal).toBeHidden();
+    // The recap appears once the card leaves its prompt state, below it.
+    await expect(recap).toBeVisible();
+    // A remount of the recall card after the recap appears would reset it
+    // back to its prompt state and fail this check.
+    await expect(
+      page.getByRole("button", { name: /got it/i }).first(),
+    ).toBeVisible();
+    const recallBox = await recall.boundingBox();
+    const recapBox = await recap.boundingBox();
+    expect(recallBox).not.toBeNull();
+    expect(recapBox).not.toBeNull();
+    expect(recallBox!.y).toBeLessThan(recapBox!.y);
 
     // The recap shows its three sub-labels.
     await expect(

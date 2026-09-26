@@ -73,7 +73,7 @@ async function openStep(page: Page, path: string, step: number) {
       ).toBeAttached();
       break;
     case 4: // Takeaways
-      await expect(page.getByTestId("takeaways-prose")).toBeVisible();
+      await expect(page.getByTestId("takeaways-recall")).toBeVisible();
       break;
     case 5: // Complete
       await expect(
@@ -93,6 +93,19 @@ async function openStep(page: Page, path: string, step: number) {
     .evaluate(async (g) => {
       await Promise.all(g.getAnimations().map((a) => a.finished));
     });
+}
+
+// The Takeaways step as a returning learner sees it: the recall remembered
+// in this browser, so the recap and the terms list show at once. openStep
+// waits only for the recall card, which is the whole step until it settles.
+async function openSettledTakeaways(page: Page, path: string) {
+  const slug = path.split("/").pop()!;
+  await page.addInitScript((slug) => {
+    localStorage.setItem(`tc_recall_deep-orbit_${slug}`, "1");
+  }, slug);
+  await openStep(page, path, 4);
+  await expect(page.getByTestId("takeaways-prose")).toBeVisible();
+  await expect(page.getByTestId("lesson-terms-list")).toBeVisible();
 }
 
 /*
@@ -280,11 +293,23 @@ async function expectChallengeSplit(page: Page) {
 test.describe("lesson layout, desktop", () => {
   test.use({ viewport: { width: 1440, height: 900 }, colorScheme: "dark" });
 
-  for (const step of [0, 1, 4, 5]) {
-    test(`step ${step + 1} has no right column, and the footer sits at least 40 px below the nav`, async ({
+  // Takeaways twice: with the recall card alone, and settled with the
+  // recap and the terms list below it.
+  for (const [step, settled] of [
+    [0, false],
+    [1, false],
+    [4, false],
+    [4, true],
+    [5, false],
+  ] as const) {
+    const which = settled
+      ? `step ${step + 1} with the recall settled`
+      : `step ${step + 1}`;
+    test(`${which} has no right column, and the footer sits at least 40 px below the nav`, async ({
       page,
     }) => {
-      await openStep(page, LESSONS.paragraphLed, step);
+      if (settled) await openSettledTakeaways(page, LESSONS.paragraphLed);
+      else await openStep(page, LESSONS.paragraphLed, step);
       // The spec's criterion names the rail by its kind. These steps render
       // no right slot at all, so any lesson-right here is a rail under
       // another name.
@@ -607,28 +632,83 @@ test.describe("lesson layout, desktop", () => {
     });
   }
 
-  test("the nav sits 40 px below the Complete step's next-lesson card", async ({
+  test("the Complete step's forward control sits in the nav row at the frame's right edge", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 5);
-    // The card paints a box (border and background), so its border-box
-    // bottom is the visible edge; the step's own wrapper must add nothing
-    // (a bottom padding there once put the nav 88 px down). By test id: the
-    // step keeps the lesson body in the DOM, hidden, and lesson 1's teaching
-    // paragraph above the Challenge heading links to the next lesson too.
-    const gap = await page.evaluate(() => {
+    const m = await page.evaluate(() => {
       const one = (s: string) => {
         const found = document.querySelectorAll(s);
         if (found.length !== 1)
           throw new Error(`${s}: ${found.length} matches`);
         return found[0];
       };
-      return (
-        one("[data-testid='lesson-nav']").getBoundingClientRect().top -
-        one("[data-testid='next-lesson-card']").getBoundingClientRect().bottom
-      );
+      const nav = one("[data-testid='lesson-nav']").getBoundingClientRect();
+      const control = one("[data-testid='next-lesson-card']");
+      const box = control.getBoundingClientRect();
+      const frame = one("[data-testid='lesson-frame']").getBoundingClientRect();
+      const frameRight =
+        frame.right -
+        parseFloat(
+          getComputedStyle(one("[data-testid='lesson-frame']")).paddingRight,
+        );
+      const href = control.getAttribute("href");
+      const nextLessonLinks = Array.from(document.querySelectorAll("a")).filter(
+        (a) => a.getAttribute("href") === href && a.getClientRects().length > 0,
+      ).length;
+      return {
+        inside: box.top >= nav.top && box.bottom <= nav.bottom,
+        right: box.right,
+        frameRight,
+        text: control.textContent ?? "",
+        nextLessonLinks,
+      };
     });
-    expect(Math.abs(gap - 40)).toBeLessThanOrEqual(2);
+    expect(m.inside).toBe(true);
+    expect(Math.abs(m.right - m.frameRight)).toBeLessThanOrEqual(1);
+    expect(m.text).toMatch(/Next Mission/i);
+    // One control for one action: no body card links to the next lesson.
+    expect(m.nextLessonLinks).toBe(1);
+  });
+
+  test("the recap and the terms list follow the recall card once it settles", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 4);
+    await expect(page.getByTestId("takeaways-prose")).toHaveCount(0);
+    await expect(page.getByTestId("lesson-terms-list")).toHaveCount(0);
+    await page
+      .getByRole("button", { name: /recall it/i })
+      .first()
+      .click();
+    await expect(page.getByTestId("takeaways-prose")).toBeVisible();
+    const m = await page.evaluate(() => {
+      const box = (s: string) =>
+        document.querySelector(s)!.getBoundingClientRect();
+      return {
+        recallBottom: box("[data-testid='takeaways-recall']").bottom,
+        proseTop: box("[data-testid='takeaways-prose']").top,
+        proseBottom: box("[data-testid='takeaways-prose']").bottom,
+        termsTop: box("[data-testid='lesson-terms-list']").top,
+      };
+    });
+    expect(m.proseTop).toBeGreaterThanOrEqual(m.recallBottom);
+    expect(m.termsTop).toBeGreaterThanOrEqual(m.proseBottom);
+  });
+
+  test("a browser that remembers the recall sees the recap at once", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("tc_recall_deep-orbit_introduction-to-tensors", "1");
+    });
+    await openStep(page, LESSONS.paragraphLed, 4);
+    await expect(page.getByTestId("takeaways-prose")).toBeVisible();
+    await expect(page.getByTestId("lesson-terms-list")).toBeVisible();
+    // The card is back in its prompt state, for practice.
+    await expect(
+      page.getByRole("button", { name: /recall it/i }).first(),
+    ).toBeVisible();
   });
 
   test("on the Concept step the nav sits 40 px below the grid, with Continue at the frame's right edge", async ({
@@ -669,6 +749,79 @@ test.describe("lesson layout, desktop", () => {
     expect(Math.round(m.goRight)).toBeGreaterThanOrEqual(
       Math.round(m.frameRight) - 48 - 1,
     );
+  });
+
+  test("six step labels sit under their segments, the current one in the accent colour", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 0);
+    const m = await page.evaluate(() => {
+      // Continue is filled with the accent colour on the Briefing, so its
+      // background is the token's computed value.
+      const accent = getComputedStyle(
+        document.querySelector("[data-step-continue]")!,
+      ).backgroundColor;
+      return Array.from(
+        document.querySelectorAll<HTMLButtonElement>(
+          "button[aria-label^='Step ']",
+        ),
+      ).map((b) => {
+        const label = b.querySelector<HTMLElement>(
+          "[data-testid='step-label']",
+        )!;
+        const bb = b.getBoundingClientRect();
+        const lb = label.getBoundingClientRect();
+        return {
+          text: label.textContent,
+          visible: lb.width > 0 && lb.height > 0,
+          inside:
+            lb.left >= bb.left - 1 &&
+            lb.right <= bb.right + 1 &&
+            lb.top >= bb.top - 1 &&
+            lb.bottom <= bb.bottom + 1,
+          hit: bb.height,
+          current: b.getAttribute("aria-current") === "step",
+          accent: getComputedStyle(label).color === accent,
+        };
+      });
+    });
+    expect(m.map((s) => s.text)).toEqual([
+      "Briefing",
+      "Concept",
+      "Code",
+      "Challenge",
+      "Takeaways",
+      "Epilogue",
+    ]);
+    for (const s of m) {
+      expect(s.visible).toBe(true);
+      expect(s.inside).toBe(true);
+      expect(s.hit).toBeGreaterThanOrEqual(24);
+      expect(s.accent).toBe(s.current);
+    }
+  });
+
+  test("the exercise brief sits in the reading column and the pane keeps the editor", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 3);
+    const brief = page.getByTestId("exercise-brief");
+    await expect(brief).toBeVisible();
+    await expect(brief.getByRole("heading", { level: 3 })).toBeVisible();
+    const pane = page.locator("[data-testid='lesson-right'][data-kind='pane']");
+    await expect(pane.locator("h3")).toHaveCount(0);
+    await expect(pane.locator(".cm-content")).toBeVisible({ timeout: 30000 });
+    // One exercise: the pane's eyebrow carries no title.
+    await expect(pane.getByTestId("exercise-pane-title")).toHaveCount(0);
+    const m = await page.evaluate(() => {
+      const box = (s: string) =>
+        document.querySelector(s)!.getBoundingClientRect();
+      return {
+        briefRight: box("[data-testid='exercise-brief']").right,
+        paneLeft: box("[data-testid='lesson-right'][data-kind='pane']").left,
+      };
+    });
+    expect(m.briefRight).toBeLessThanOrEqual(m.paneLeft);
   });
 });
 
@@ -722,6 +875,20 @@ test.describe("lesson layout, narrow desktop", () => {
     page,
   }) => {
     await expectChallengeSplit(page);
+  });
+
+  test("no step label is clipped at the narrowest desktop width", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 0);
+    const clipped = await page.evaluate(() =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>("[data-testid='step-label']"),
+      )
+        .filter((label) => label.scrollWidth > label.clientWidth)
+        .map((label) => label.textContent),
+    );
+    expect(clipped).toEqual([]);
   });
 });
 
@@ -815,11 +982,21 @@ test.describe("lesson layout, phone", () => {
     });
   }
 
-  for (const step of [0, 1, 4]) {
-    test(`nothing renders between Continue and the footer on step ${step + 1}`, async ({
+  // Takeaways twice, as on desktop: the recall card alone, then settled.
+  for (const [step, settled] of [
+    [0, false],
+    [1, false],
+    [4, false],
+    [4, true],
+  ] as const) {
+    const which = settled
+      ? `step ${step + 1} with the recall settled`
+      : `step ${step + 1}`;
+    test(`nothing renders between Continue and the footer on ${which}`, async ({
       page,
     }) => {
-      await openStep(page, LESSONS.paragraphLed, step);
+      if (settled) await openSettledTakeaways(page, LESSONS.paragraphLed);
+      else await openStep(page, LESSONS.paragraphLed, step);
       // Everything <main> renders between Continue and the site footer, in
       // document space. The regression this guards is a column landing
       // below the nav on phones, so the probe covers all of <main>,
@@ -859,4 +1036,182 @@ test.describe("lesson layout, phone", () => {
       expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
+
+  test("no step label shows on a phone and every segment keeps a 24 px hit box", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 0);
+    const m = await page.evaluate(() =>
+      Array.from(
+        document.querySelectorAll<HTMLButtonElement>(
+          "button[aria-label^='Step ']",
+        ),
+      ).map((b) => {
+        const label = b.querySelector<HTMLElement>(
+          "[data-testid='step-label']",
+        );
+        return {
+          hidden: !label || label.getClientRects().length === 0,
+          hit: b.getBoundingClientRect().height,
+        };
+      }),
+    );
+    expect(m).toHaveLength(6);
+    for (const s of m) {
+      expect(s.hidden).toBe(true);
+      expect(s.hit).toBeGreaterThanOrEqual(24);
+    }
+  });
+
+  test("the Complete step's forward control still sits at the frame's right edge at 390 px", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 5);
+    const m = await page.evaluate(() => {
+      const one = (s: string) => {
+        const found = document.querySelectorAll(s);
+        if (found.length !== 1)
+          throw new Error(`${s}: ${found.length} matches`);
+        return found[0];
+      };
+      const control = one("[data-testid='next-lesson-card']");
+      const box = control.getBoundingClientRect();
+      const frame = one("[data-testid='lesson-frame']").getBoundingClientRect();
+      const frameRight =
+        frame.right -
+        parseFloat(
+          getComputedStyle(one("[data-testid='lesson-frame']")).paddingRight,
+        );
+      return { right: box.right, frameRight };
+    });
+    expect(Math.abs(m.right - m.frameRight)).toBeLessThanOrEqual(1);
+  });
+
+  test("the Instructions view holds the brief and its header wraps only between chips", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 3);
+    const brief = page.getByTestId("exercise-brief");
+    await expect(brief).toBeVisible();
+    await expect(brief.getByRole("heading", { level: 3 })).toBeVisible();
+    // Every item in the header row is one line tall: a chip that broke
+    // inside a word would be two.
+    const items = await brief
+      .locator(":scope > div:first-child > *")
+      .evaluateAll((els) =>
+        els.map((el) => ({
+          height: el.getBoundingClientRect().height,
+          lineHeight: parseFloat(getComputedStyle(el).lineHeight),
+        })),
+      );
+    expect(items.length).toBeGreaterThanOrEqual(3);
+    for (const item of items) {
+      // An item that broke inside a word is two lines tall. One line plus a
+      // chip's padding, or the eyebrow's larger glyph, stays under 1.9.
+      expect(item.height).toBeLessThan(item.lineHeight * 1.9);
+    }
+    await page.getByRole("button", { name: "Editor" }).click();
+    await expect(
+      page.locator(
+        "[data-testid='lesson-right'][data-kind='pane'] .cm-content",
+      ),
+    ).toBeVisible({ timeout: 30000 });
+    await expect(brief).toBeHidden();
+  });
+
+  for (const step of [1, 2]) {
+    test(`every code block fits the phone on step ${step + 1}, with no blank line between code lines`, async ({
+      page,
+    }) => {
+      await openStep(page, LESSONS.paragraphLed, step);
+      // Rendered blocks only: the Concept step keeps the reference drawer's
+      // example inside a closed <details>, which lays out nothing. Shiki
+      // highlights on the client after mount, so wait until every rendered
+      // block carries its line spans.
+      await expect
+        .poll(() =>
+          page.evaluate(() => {
+            const pres = Array.from(
+              document.querySelectorAll<HTMLElement>(".lesson-prose pre"),
+            ).filter((pre) => pre.getBoundingClientRect().height > 0);
+            return (
+              pres.length > 0 &&
+              pres.every((pre) => !!pre.querySelector(".line"))
+            );
+          }),
+        )
+        .toBe(true);
+      const blocks = await page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>(".lesson-prose pre"))
+          .filter((pre) => pre.getBoundingClientRect().height > 0)
+          .map((pre) => {
+            const lines = Array.from(
+              pre.querySelectorAll<HTMLElement>(".line"),
+            );
+            const boxes = lines.map((l) => l.getBoundingClientRect());
+            // Shiki renders a blank source line as an empty span, which lays
+            // out 0 px tall while its line box keeps the blank line's height.
+            // Measure the lines that carry text: a newline rendering as a line
+            // of its own would still open a gap between every such pair.
+            const filled = boxes.filter((b) => b.height > 0);
+            // One unwrapped line's height; a wrapped line is a multiple of it.
+            const single = Math.min(...filled.map((b) => b.height));
+            let maxGap = 0;
+            for (let i = 1; i < boxes.length; i++) {
+              if (boxes[i].height === 0 || boxes[i - 1].height === 0) continue;
+              maxGap = Math.max(maxGap, boxes[i].top - boxes[i - 1].bottom);
+            }
+            const wrappedAt = boxes.findIndex((b) => b.height > single * 1.5);
+            const style =
+              wrappedAt >= 0 ? getComputedStyle(lines[wrappedAt]) : null;
+            return {
+              scrollWidth: pre.scrollWidth,
+              clientWidth: pre.clientWidth,
+              lines: filled.length,
+              single,
+              maxGap,
+              hanging: style
+                ? {
+                    paddingLeft: parseFloat(style.paddingLeft),
+                    textIndent: parseFloat(style.textIndent),
+                  }
+                : null,
+            };
+          }),
+      );
+      expect(blocks.length).toBeGreaterThan(0);
+      for (const b of blocks) {
+        expect(b.lines).toBeGreaterThan(0);
+        expect(b.scrollWidth).toBeLessThanOrEqual(b.clientWidth);
+        // A blank line between two code lines is a gap of a whole line
+        // height. Half a line of slack absorbs baseline rounding without
+        // letting a blank line through.
+        expect(b.maxGap).toBeLessThan(b.single / 2);
+      }
+      // At least one line wraps, and its continuation starts 2 ch in: the
+      // padding equals the negative indent.
+      const wrapped = blocks.find((b) => b.hanging);
+      expect(wrapped).toBeDefined();
+      expect(wrapped!.hanging!.paddingLeft).toBeGreaterThan(0);
+      expect(
+        wrapped!.hanging!.paddingLeft + wrapped!.hanging!.textIndent,
+      ).toBeCloseTo(0, 1);
+    });
+  }
+
+  test("the editor shows its starter code without a horizontal scrollbar", async ({
+    page,
+  }) => {
+    await openStep(page, LESSONS.paragraphLed, 3);
+    await page.getByRole("button", { name: "Editor" }).click();
+    const scroller = page.locator(
+      "[data-testid='lesson-right'][data-kind='pane'] .cm-scroller",
+    );
+    await expect(scroller).toBeVisible({ timeout: 30000 });
+    const m = await scroller.evaluate((el) => ({
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+    }));
+    expect(m.scrollWidth).toBeLessThanOrEqual(m.clientWidth);
+  });
 });

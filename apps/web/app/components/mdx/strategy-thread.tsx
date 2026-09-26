@@ -30,7 +30,7 @@ export function StrategyThread({
 
   return (
     <aside
-      className="my-8 p-5 brutalist-shadow bg-surface-raised border border-border"
+      className="my-8 p-5 bg-surface-raised border border-border"
       data-testid="strategy-thread"
     >
       <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-3">

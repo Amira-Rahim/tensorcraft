@@ -1006,8 +1006,9 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] Test-infra debt (2026-07-21 audit structural notes): e2e `webServer`
   allowance is 30s against measured 19-154s cold compiles, so the a11y
   gate fails open and Worlds / Pricing / all six lesson steps can skip
-  verification silently; Firefox has zero automated coverage; the three
-  WebKit projects run the mobile smoke suite only; no `browserslist`
+  verification silently; Firefox has zero automated coverage; the two
+  WebKit projects (iPhone SE, iPad) and the Chromium Pixel 7 run the
+  mobile smoke suite only; no `browserslist`
   (floors in `docs/browser-support.md` unenforced); `metadata.test.ts`
   reads exported objects in isolation with zero `generateMetadata`
   coverage. Also fix e2e viewport truth: `mobile.spec.ts` claims iPhone SE
@@ -2123,7 +2124,10 @@ flagging exposure, not legal advice).
   queued events via `beforeSend` after a withdrawal.
 - [x] Consent withdrawal path (code) - **DONE 2026-07-25.** Sitewide
   "Cookie settings" footer control clears the consent key, re-shows the
-  banner, and flips every consent gate off in-tab (Art. 7(3)).
+  banner, and flips every consent gate off in-tab (Art. 7(3)). Correction
+  2026-09-25: the banner does not re-show in the same tab until a reload.
+  The open B1 item about "Cookie settings" under "Lesson audit (2026-09-24)"
+  tracks the fix.
 - [ ] **Privacy-page Art. 13 gaps: 4 of 6 closed by the 2026-08-16 rewrite,
   3 still open.** Re-verified line by line 2026-08-20.
   CLOSED: lawful basis per purpose (§3), international transfers with
@@ -2530,12 +2534,14 @@ Source: the re-audit section of
 found were fixed the same evening; these are the items it deliberately
 left open.
 
-- [ ] (OWNER CALL) **The Code step is thin for the 42 drawer-less
+- [ ] (OWNER CALL) **The Code step is thin for the 40 drawer-less
   lessons**: one framing sentence over code the learner just read
   inline on Concept. Options the audit surfaced: fold to five steps, or
   give the step unique content (per-lesson code annotations, a
   trace-through). Data first: read the Code step's dwell and skip-over
-  rates once the baseline runs.
+  rates once the baseline runs. Direction B of the 2026-09-24 lesson audit
+  (see "Lesson audit (2026-09-24)" below) takes this up after direction A
+  ships.
 - [ ] **Mastery gate is measured, not enforced**: Show Solution then Run
   Tests still opens the gate and still emits full-weight exercise_pass
   skill events with solutionViewed unchecked. Decide whether earned-pass
@@ -4895,3 +4901,176 @@ decision, not a patch.
   layout work, which made the no-JS story grid one 820 px column. Found
   2026-09-24 in the final review of
   docs/superpowers/plans/2026-09-23-lesson-layout.md.
+
+## Lesson audit (2026-09-24)
+
+Every step of lesson 1 walked on the production build as a signed-out
+visitor at 1,440 x 900 and 390 x 844, dark scheme, with Playwright; the
+exercise gate opened with Show solution. Items 2 to 8 are direction A,
+docs/superpowers/specs/2026-09-24-lesson-tightening-design.md (approved
+2026-09-24); the owner ordered "A then B then C".
+
+- [ ] **(B1) OWNER, direction B: the Code step re-serves the Concept step's
+  code.** On lesson 1 the step is 24 words of framing, the same two
+  CodeBlocks the learner read on Concept, and the reference drawer opened
+  by default, on a page 2,748 px tall. CodeBlock sits in both CONCEPT_LEFT
+  and CODE_RIGHT by design, and 40 of 56 lessons have no derivation
+  drawer to justify the step. Direction B folds Code into Concept in its own
+  spec after direction A ships; direction C (content of its own for the
+  step) follows B. The same item as "The Code step is thin" under the
+  2026-09-04 re-audit follow-ups.
+- [x] **(B1) The consent banner covered the activation moment.** 202 px at
+  desktop, 248 px on a phone (29% of the screen), over the last story beat
+  and the divider for the whole 17-second scene; Continue landed under it.
+  Resolved by section 1 of the spec: a bar that reserves its height.
+- [x] **(B1) The recall card sat directly above the recap bullet that states
+  its answer.** Resolved by section 2.
+- [x] **(B1) On a phone the Instructions view held 23 words while the task
+  sat under Editor (459 words), and the exercise header broke inside words at
+  390 px.** Resolved by section 3.
+- [x] **(B2) Every Concept code block scrolled sideways on a phone, 47 to 56%
+  of each line hidden.** Resolved by section 4.
+- [x] **(B2) The step bar had no labels.** Resolved by section 5; the last
+  step reads "Epilogue" on screen and analytics keeps "Consequence".
+- [x] **(B2) The Complete step printed the title twice and offered two
+  next-lesson controls; "Fade out" sat at 1.23:1.** Resolved by section 6.
+- [x] **(B3) The offset accent shadow sat on every container.** Resolved by
+  section 7: it stays on the exercise pane, the recall and warm-up cards, the
+  hint ladder, the decision boxes, the quiz and the demo.
+- [ ] **(B3) The NextLesson card never lifts on hover.**
+  `apps/web/app/components/mdx/next-lesson.tsx` pairs `brutalist-hover` with
+  layered hover utilities that lose to, or cancel, the unlayered
+  `.brutalist-hover:hover` rule in `apps/web/app/globals.css`: the two
+  `translate` utilities offset the rule's 2 px lift, and the rule's 6 px
+  shadow at 35% accent wins over the utility's 4 px accent shadow. On hover
+  the card shows the faint shadow and never moves. Predates the 2026-09-24
+  work. Found in the Task 1 quality review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B3) OWNER: two faint edges after the shadow rule.** The exercise
+  results panel's partial state uses `border-warning/15`, about 1.33:1 in
+  dark and 1.25:1 in light against the pane, fainter than the house hairline
+  (about 1.45:1). Its success and error states sit near the hairline, so
+  `/20` would match them. CodeBlock is framed by its hairline alone (about
+  1.63:1 dark, 1.31:1 light against the page), because Shiki paints the code
+  close to the page colour. The edges are decorative, so neither fails WCAG
+  1.4.11, and no baseline captures the results panel. Found in the Task 1
+  quality review of docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B2) OWNER: the exercise editor wraps at desktop too.** Since
+  2026-09-25 `wrapContent` is on at every width, because 59 of 65 starters
+  have a line wider than the desktop editor and their step comments were
+  scrolled off. Wrapped rows start at the content edge with no line number,
+  and Home, End, Up and Down move by visual row. The alternative is to wrap
+  below 1,024 px only (`wrapContent` from a matchMedia hook); crossing the
+  breakpoint then rebuilds the editor view, which keeps the text but loses
+  undo history and the cursor. Found in the Task 7 quality review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B3) Wrapped code hangs from the block edge, not the line's indent.**
+  Below 1,024 px a wrapped line continues 2 ch in from the `pre` edge, so a
+  line indented 2 or more spaces continues at or left of its own code (2,669
+  CodeBlock lines exceed a 390 px row; 986 are indented 2+ spaces). A Shiki
+  `line` transformer in `packages/ui/src/mdx/code-block.tsx` that stamps
+  each line's leading spaces as `--tc-indent`, with the CSS hang written as
+  `calc((var(--tc-indent, 0) + 2) * 1ch)`, would hang each line from its own
+  indent. Found in the Task 7 quality review.
+- [ ] **(B3) Run the phone wrap tests in WebKit.** `e2e/lesson-layout.spec.ts`
+  runs only in the chromium project, and iOS Safari is the main phone engine.
+  The inline-block line layout with preserved newlines has not been seen in
+  WebKit. The simplest route is a wrap test in `e2e/mobile.spec.ts`, which
+  the `mobile-iphone-se` project already runs in WebKit at 320 x 568. This
+  overlaps the open "Test-infra debt (2026-07-21 audit structural notes)"
+  item, which notes that the WebKit projects run only the mobile smoke
+  suite. Found in the Task 7 quality review.
+- [ ] **(B3) OWNER: two "Need a hint?" ladders in one column.** Since the
+  2026-09-25 change, an exercise's own hint ladder renders in the Challenge
+  step's reading column, above the lesson ladder at the column's foot.
+  Counted from the exercise YAML files on 2026-09-25: 10 exercises carry their
+  own ladder, in 9 lessons (anomaly-detection 01, 03 and 04, browser-runtimes
+  01 and 04, capstone 02 and 05, llm-integration 03, optimization-edge 04),
+  and all 9 lessons carry a lesson ladder too. Each now shows at least two
+  panels headed "Need a hint?" in one column, where the exercise's own ladder
+  used to sit in its own pane. `capstone/05-launch` shows three, since
+  `verify-deployment` and `launch-rehearsal` both carry one. A label per
+  ladder (for example "Hints for" followed by the exercise's title) would
+  tell them apart. It does not fix `browser-runtimes/01-why-the-browser`:
+  there the lesson ladder's nudge and guidance match the two rungs of the
+  `browser-ml-tradeoffs` ladder word for word, so the learner sees the same
+  two hints twice. Drop one of the two ladders there; the exercise's is the
+  one to drop, since the lesson ladder holds the same two rungs plus the
+  solution. Found in the Task 6 quality review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B2) Analytics: `hintsUsed` counts the exercise's own ladder from
+  2026-09-25.** Before, reveals on an exercise's own ladder reached analytics
+  but never the step machine's counter, so `hintsUsed` on the attempts POST,
+  `exercise_submitted` and `lesson_completed` undercounted on those lessons.
+  From this change on they count. The figure is lesson-wide distinct levels,
+  so a reveal on exercise 2's ladder also raises exercise 1's figure.
+  Read any jump on those lessons as this fix, not a behaviour change.
+  Per-exercise attribution would need the counter keyed by exercise slug.
+- [ ] **(B2) Takeaways: Continue before answering skips the recap.** The
+  recall gate keeps Continue available, so a learner who moves on without
+  answering never sees the recap or the terms list on that visit. Compare
+  Takeaways step views with `recall_answered` events once data arrives, to
+  see how often that happens. Found in the Task 5 quality review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B1) OWNER, legal-adjacent: "Cookie settings" never brings the bar
+  back in the same tab.** `cookie-settings-button.tsx` clears the consent
+  key and turns every consent gate off, so withdrawal itself works. But
+  `CookieConsent` reads storage once, on mount, and has never listened for
+  consent changes, so a visitor cannot make a new choice until a full
+  reload. The button's docstring and the closed backlog item "Consent
+  withdrawal path (code)" both say the banner re-shows. The fix is small
+  (subscribe to the consent change event in `CookieConsent`), and the
+  publish effect from the 2026-09-24 work already handles a re-show. Found
+  in the Task 2 quality review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B3) OWNER: the exercise brief's title is no larger than its
+  instructions on desktop.** Measured on the production build, lesson 1's
+  Challenge step, 2026-09-25. The brief pins its `h3` at 18 px, line height
+  28 px, weight 600, at every width. At 1,440 the first instruction paragraph
+  is 18 px (line height 32.4 px, weight 400) and the first list item 17 px
+  (28.9 px); at 390 they are 16 px (28.8 px) and 14 px (23.8 px). On desktop
+  the title matches the paragraph's size and stands apart by weight and
+  colour alone. The old pane title had the same `text-lg` classes but sat
+  under the unlayered `.lesson-prose h3` rule, so it rendered at 24 px (line
+  height 37.3 px) at 1,440 and 20 px (31.1 px) at 390. There are two
+  options. The first pins the title larger inside the brief: the old 24 px
+  from 768 px up and 20 px below. The second pins the instruction metrics
+  inside the brief, as LearningObjectives pins its list. The paragraphs and
+  list items then take the `text-sm leading-relaxed` the instructions
+  already ask for (14 px, line height 22.75 px), and the 18 px title reads
+  larger. The second also ends the phone mismatch between paragraphs
+  (16 px) and list items (14 px) in one instruction block. Found in the
+  final review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md, measured in its
+  Task 9.
+- [ ] **(B3) Duplicate code landmarks.** The exercise code-contract `pre` in
+  `packages/ui/src/mdx/instruction-text.tsx` keeps `role="region"` and
+  `aria-label="Exercise code contract"`. Both predate the 2026-09-24 work
+  (commit 80a3f029, 2026-09-19). The block no longer scrolls at any width,
+  so each contract is now only a named landmark. Counted from the exercise
+  build on 2026-09-25: 5 of 65 exercises carry a contract and none carries
+  two. But `capstone/05-launch` renders three briefs on its Challenge step,
+  each with one contract, so that page holds three regions with the same
+  name. The MDX `pre` mapping in `lesson-content.tsx` does the same with
+  "Code example" on raw fences, and in the Deep Orbit build two lessons
+  carry two fences each (`advanced-time-series/04-kalman-filters`,
+  `training-loop/03-backpropagation`). axe's best-practice `landmark-unique`
+  rule would flag both. `e2e/accessibility.spec.ts` runs only the wcag2a
+  and wcag2aa tags. The four specs that run axe with no tag filter scope it
+  to one component each, none of them a brief, so nothing catches it today. The proposed fix for the contract is to drop both attributes.
+  The mapping's pair belongs with the tab-stop item below, since raw fences
+  still scroll from 1,024 px. Found in the Task 9 quality review of
+  docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+- [ ] **(B3) Tab stops on code that cannot scroll.** Shiki 4 puts
+  `tabindex="0"` on its `pre` by default (`@shikijs/core` 4.4.3), and
+  CodeBlock passes its output through unchanged. The MDX `pre` mapping in
+  `lesson-content.tsx` sets `tabIndex={0}` on raw fences (8 blocks in 6
+  lessons of the Deep Orbit build). Below 1,024 px these blocks wrap and cannot scroll, so each one
+  is a tab stop with nothing to scroll. On the production build at 390 px,
+  lesson 1's Concept and Code steps each show three Shiki blocks, all with
+  `tabindex="0"`, `overflow-x: visible` and no overflow. From 1,024 px the
+  blocks are `overflow-x: auto` and can scroll: at 1,440 one of the three
+  Concept blocks overflows. A block that scrolls needs its tab stop, which
+  axe's `scrollable-region-focusable` rule checks under the wcag2a tag the
+  suite runs. So any fix depends on width. Found in the Task 9 quality
+  review of docs/superpowers/plans/2026-09-24-lesson-tightening.md.

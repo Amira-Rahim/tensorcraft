@@ -109,7 +109,7 @@ export function Concept({
   if (!explanation && resolvedBridge) {
     const color = tierColors[resolvedBridge.tier];
     return (
-      <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+      <div className="p-5 my-6 bg-surface-raised border border-border">
         <BridgeSection bridge={resolvedBridge} />
       </div>
     );
@@ -117,7 +117,7 @@ export function Concept({
 
   // Package-level API (with explanation): render explanation + optional bridge
   return (
-    <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+    <div className="p-5 my-6 bg-surface-raised border border-border">
       <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-3 text-primary">
         Concept
       </h4>

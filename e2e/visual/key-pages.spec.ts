@@ -72,6 +72,11 @@ for (const scheme of ["dark", "light"] as const) {
     test.use({ colorScheme: scheme });
 
     test.beforeEach(async ({ page }) => {
+      // The consent bar would otherwise sit in every capture and move with
+      // the copy; the lesson and review specs already store a choice.
+      await page.addInitScript(() => {
+        localStorage.setItem("tc-cookie-consent", "declined");
+      });
       // Desktop viewport matches dev-plan §8k spec.
       await page.setViewportSize({ width: 1280, height: 800 });
       // Disable animations (ParticleField + BridgeTicker honor this).

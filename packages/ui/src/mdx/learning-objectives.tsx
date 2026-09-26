@@ -4,7 +4,7 @@ interface LearningObjectivesProps {
 
 export function LearningObjectives({ objectives }: LearningObjectivesProps) {
   return (
-    <div className="min-w-0 [overflow-wrap:anywhere] p-5 brutalist-shadow bg-surface-raised border border-border">
+    <div className="min-w-0 [overflow-wrap:anywhere] p-5 bg-surface-raised border border-border">
       {/* Inline metrics on purpose: this heading renders inside .lesson-prose,
           whose unlayered `.lesson-prose h2` rule in apps/web/app/globals.css
           outranks Tailwind's layered utilities and would set it to 1.5rem,

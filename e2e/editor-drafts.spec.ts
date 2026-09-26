@@ -106,7 +106,7 @@ for (const width of [1440, 390]) {
     await writeCode(ownCode + "\n// quota probe");
     await expect(page.getByText(/Draft could not be saved/)).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Step 6: Consequence", exact: true }),
+      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
     ).toBeDisabled();
     expect(
       await page.evaluate(

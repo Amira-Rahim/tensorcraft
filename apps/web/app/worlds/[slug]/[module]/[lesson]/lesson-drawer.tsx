@@ -67,7 +67,7 @@ export function LessonDrawer({
             role="dialog"
             aria-modal="true"
             aria-label={`${moduleName} lessons`}
-            className="fixed bottom-0 left-0 right-0 z-50 max-h-[70dvh] overflow-y-auto animate-slide-up md:bottom-6 md:left-auto md:right-6 md:w-[440px] md:border md:border-border"
+            className="fixed bottom-[var(--tc-consent-h,0px)] left-0 right-0 z-50 max-h-[min(70dvh,calc(100dvh_-_1rem_-_var(--tc-consent-h,0px)))] md:max-h-[min(70dvh,calc(100dvh_-_2.5rem_-_var(--tc-consent-h,0px)))] overflow-y-auto animate-slide-up md:bottom-[calc(1.5rem+var(--tc-consent-h,0px))] md:left-auto md:right-6 md:w-[440px] md:border md:border-border"
             style={{
               background: "var(--tc-surface)",
               borderTop: "1px solid var(--tc-border)",

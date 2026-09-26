@@ -1,8 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
 import { LessonSteps } from "./lesson-steps";
-import { trackLessonCompleted } from "@/lib/analytics";
+import { trackLessonCompleted, track } from "@/lib/analytics";
 import { markLessonCompleted, emitSkillEvent } from "@/lib/progress-client";
+import { recordGuestCompletion } from "@/lib/guest-progress";
 
 // Stub next/link so render works without the Next router.
 vi.mock("next/link", () => ({
@@ -20,35 +27,56 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// What the stubbed content reports as its unsettled recall count on mount,
+// and the last report handler it received, so a test can settle it later.
+const recallState = vi.hoisted(() => ({
+  pendingOnMount: 0,
+  report: null as null | ((pending: number) => void),
+}));
+
 // Step content is exercised in lesson-content.test.tsx; stub it here so the
 // suite focuses on step navigation chrome.
-vi.mock("./lesson-content", () => ({
-  LessonContent: ({
-    storyRegister,
-    hideTeaching,
-    hideStoryZone,
-    visibleComponents,
-    layout,
-  }: {
-    storyRegister?: boolean;
-    hideTeaching?: boolean;
-    hideStoryZone?: boolean;
-    visibleComponents?: Set<string>;
-    layout?: "paired";
-  }) => (
-    <div
-      data-testid="lesson-content"
-      className="lesson-prose lesson-step-content"
-      data-layout={layout}
-      data-story-register={storyRegister ? "true" : undefined}
-      data-hide-teaching={hideTeaching ? "true" : undefined}
-      data-hide-story-zone={hideStoryZone ? "true" : undefined}
-      data-visible={
-        visibleComponents ? Array.from(visibleComponents).sort().join(",") : ""
-      }
-    />
-  ),
-}));
+vi.mock("./lesson-content", async () => {
+  const React = await import("react");
+  return {
+    LessonContent: ({
+      storyRegister,
+      hideTeaching,
+      hideStoryZone,
+      visibleComponents,
+      layout,
+      onRecallPending,
+    }: {
+      storyRegister?: boolean;
+      hideTeaching?: boolean;
+      hideStoryZone?: boolean;
+      visibleComponents?: Set<string>;
+      layout?: "paired";
+      onRecallPending?: (pending: number) => void;
+    }) => {
+      React.useEffect(() => {
+        if (!onRecallPending) return;
+        recallState.report = onRecallPending;
+        onRecallPending(recallState.pendingOnMount);
+      }, [onRecallPending]);
+      return (
+        <div
+          data-testid="lesson-content"
+          className="lesson-prose lesson-step-content"
+          data-layout={layout}
+          data-story-register={storyRegister ? "true" : undefined}
+          data-hide-teaching={hideTeaching ? "true" : undefined}
+          data-hide-story-zone={hideStoryZone ? "true" : undefined}
+          data-visible={
+            visibleComponents
+              ? Array.from(visibleComponents).sort().join(",")
+              : ""
+          }
+        />
+      );
+    },
+  };
+});
 
 vi.mock("./lesson-drawer", () => ({
   LessonDrawer: () => null,
@@ -149,6 +177,8 @@ function renderSteps(
 
 beforeEach(() => {
   localStorage.clear();
+  recallState.pendingOnMount = 0;
+  recallState.report = null;
   // Steps are URL-addressable (#step-N) since 2026-09-04, and jsdom keeps
   // `location` across tests: a hash left by one test reads as a deep link
   // in the next mount. Reset it like localStorage.
@@ -489,7 +519,7 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(screen.getByText("2 / 6")).toBeInTheDocument();
   });
 
-  it("shows the lesson title in the chrome on every step but the Briefing", () => {
+  it("shows the lesson title in the chrome on every step but the Briefing and the Epilogue", () => {
     renderSteps();
     const chrome = document.querySelector("[data-testid='lesson-chrome']")!;
     expect(chrome.querySelector("h1")).toBeNull();
@@ -499,6 +529,61 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(
       document.querySelector("[data-testid='lesson-chrome'] h1"),
     ).toHaveTextContent(lesson.title);
+    // A second mount in the same test: unmount the first, and clear the
+    // #step-2 hash its Continue pushed. jsdom keeps the location, and a
+    // leftover hash reads as a deep link that wins over the stored step.
+    cleanup();
+    window.history.replaceState(null, "", window.location.pathname);
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    renderSteps();
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(
+      document.querySelector("[data-testid='lesson-chrome'] h1"),
+    ).toBeNull();
+    expect(screen.queryByTestId("next-lesson-card")).toBeNull();
+    expect(
+      screen.getByRole("link", { name: /Back to Mission Map/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("puts one next-mission control in the nav row on the last step and no card in the body", () => {
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    render(
+      <LessonSteps
+        lesson={lesson}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        moduleEntry={null}
+        prevLesson={null}
+        nextLesson={{
+          slug: "tensor-shapes",
+          title: "Understanding Tensor Shapes",
+        }}
+      />,
+    );
+    const nav = screen.getByTestId("lesson-nav");
+    const control = screen.getByTestId("next-lesson-card");
+    expect(nav.contains(control)).toBe(true);
+    expect(control).toHaveAttribute(
+      "href",
+      "/worlds/deep-orbit/foundations/tensor-shapes",
+    );
+    expect(control).toHaveTextContent("Next Mission");
+    expect(control).toHaveTextContent("Understanding Tensor Shapes");
+    expect(screen.queryByRole("link", { name: /^Next Lesson/ })).toBeNull();
+    // The closing card is the step's one H1.
+    const h1s = screen.getAllByRole("heading", { level: 1 });
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0]).toHaveTextContent(lesson.title);
+    // The fade-out marker is atmosphere for sighted readers only: hidden
+    // from the tree, no longer exempt from the contrast rule.
+    const fade = screen.getByText(/fade out/i);
+    expect(fade).toHaveAttribute("aria-hidden", "true");
+    expect(fade).not.toHaveAttribute("data-decorative");
   });
 
   it("leaves the nav's own bottom padding as the whole gap to the footer", () => {
@@ -551,15 +636,16 @@ describe("LessonSteps, step navigation chrome", () => {
     localStorage.setItem(MAX_KEY, "5");
     renderSteps();
     const root = screen.getByRole("group", {
-      name: "Step 6 of 6: Consequence",
+      name: "Step 6 of 6: Epilogue",
     }).firstElementChild;
     expect(root).toHaveClass("text-center", "pt-12");
     expect(root).not.toHaveClass("py-12");
   });
 
   it("keeps one H1, the lesson title, on every step", () => {
-    // The title card is the Briefing's H1 and the chrome title is every
-    // other step's (spec 2026-09-23, section 1).
+    // The title card is the Briefing's H1, the chrome title is the H1 on
+    // steps 2 to 5, and the closing card is step 6's (spec 2026-09-24,
+    // section 6).
     for (let step = 0; step < 6; step++) {
       localStorage.clear();
       window.history.replaceState(null, "", window.location.pathname);
@@ -572,6 +658,64 @@ describe("LessonSteps, step navigation chrome", () => {
       expect(h1s[0]).toHaveTextContent(lesson.title);
       unmount();
     }
+  });
+
+  it("labels every segment with its step name and names the last step Epilogue", () => {
+    renderSteps();
+    const labels = screen.getAllByTestId("step-label");
+    expect(labels.map((l) => l.textContent)).toEqual([
+      "Briefing",
+      "Concept",
+      "Code",
+      "Challenge",
+      "Takeaways",
+      "Epilogue",
+    ]);
+    // Hidden below lg, shown from it: the class pair is the contract, jsdom
+    // applies no breakpoints.
+    for (const label of labels) {
+      expect(label).toHaveClass("hidden", "lg:block", "truncate");
+      expect(label.parentElement).toHaveClass(
+        "group",
+        "min-w-0",
+        "h-6",
+        "lg:h-8",
+      );
+      expect(label.className).not.toMatch(/hover:/);
+      // Dimming the whole button took the label below AA on hover, so the
+      // button carries no hover or opacity class of its own.
+      expect(label.parentElement!.className).not.toMatch(/hover:|opacity-/);
+    }
+    // The first step is visited on arrival, so its bar carries the hover
+    // dim; the label itself never does (checked above).
+    expect(labels[0].previousElementSibling).toHaveClass(
+      "group-hover:opacity-80",
+    );
+    // The last step is locked on arrival: its bar and label are dimmed by
+    // class, since an inline opacity would beat the hover class.
+    expect(labels[5]).toHaveClass("opacity-45");
+    expect(labels[5].previousElementSibling).toHaveClass("opacity-45");
+    // The visible label is part of the accessible name (WCAG 2.5.3).
+    expect(
+      screen.getByRole("button", { name: "Step 6: Epilogue" }),
+    ).toBeDisabled();
+    expect(screen.queryByText("6 / 6")).toBeNull();
+    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+  });
+
+  it("keeps the analytics step name for the last step", () => {
+    vi.mocked(track).mockClear();
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    renderSteps();
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("6 / 6").parentElement).toHaveTextContent(
+      "6 / 6 · Epilogue",
+    );
+    expect(track).toHaveBeenCalledWith(
+      "lesson_step_viewed",
+      expect.objectContaining({ step: 5, stepName: "Consequence" }),
+    );
   });
 });
 
@@ -1085,5 +1229,229 @@ describe("mid-module catch-up", () => {
   it("stays on the Briefing and never follows the reader to a later step", () => {
     const { container } = renderSteps(1, entry);
     expect(container.querySelector("[data-post-scene]")).toBeNull();
+  });
+});
+
+describe("Takeaways: the recap after the recall (spec 2026-09-24, section 2)", () => {
+  const RECALL_KEY = "tc_recall_deep-orbit_introduction-to-tensors";
+  const withTerms = {
+    ...lesson,
+    glossaryTerms: [
+      { term: "tensor", definition: "a numeric array with a shape" },
+    ],
+  };
+  function openTakeaways(
+    extra: Partial<React.ComponentProps<typeof LessonSteps>> = {},
+    owner: string | null = null,
+  ) {
+    // A signed-in reader restores from the account-suffixed keys (see the
+    // account-owned position tests at the top of this file).
+    const suffix = owner ? `:account:${owner}` : "";
+    localStorage.setItem(`${STEP_KEY}${suffix}`, "4");
+    localStorage.setItem(`${MAX_KEY}${suffix}`, "4");
+    render(
+      <LessonSteps
+        lesson={withTerms}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        moduleEntry={null}
+        prevLesson={null}
+        nextLesson={null}
+        {...extra}
+      />,
+    );
+    expect(screen.getByText("5 / 6")).toBeInTheDocument();
+  }
+
+  it("holds the recap and the terms list until the recall settles, then remembers it", () => {
+    recallState.pendingOnMount = 1;
+    openTakeaways();
+    expect(screen.getByTestId("takeaways-recall")).toBeInTheDocument();
+    expect(screen.queryByTestId("takeaways-prose")).toBeNull();
+    expect(screen.queryByTestId("lesson-terms-list")).toBeNull();
+    expect(localStorage.getItem(RECALL_KEY)).toBeNull();
+    act(() => recallState.report?.(0));
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(screen.getByTestId("lesson-terms-list")).toBeInTheDocument();
+    expect(localStorage.getItem(RECALL_KEY)).toBe("1");
+    // Sticky for the mount: a later non-zero report never hides it again.
+    act(() => recallState.report?.(1));
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+  });
+
+  it("shows everything at once when this browser remembers the recall", () => {
+    recallState.pendingOnMount = 1;
+    localStorage.setItem(RECALL_KEY, "1");
+    openTakeaways();
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(screen.getByTestId("lesson-terms-list")).toBeInTheDocument();
+  });
+
+  it("shows everything at once when the server knows the lesson is complete", () => {
+    recallState.pendingOnMount = 1;
+    openTakeaways({
+      lessons: [
+        {
+          slug: lesson.slug,
+          title: lesson.title,
+          order: 1,
+          locked: false,
+          completed: true,
+        },
+      ],
+    });
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(localStorage.getItem(RECALL_KEY)).toBeNull();
+  });
+
+  it("shows everything at once when this browser holds a guest completion of the lesson", () => {
+    // A guest who finished lesson 1, came back and stepped back from the
+    // Epilogue: the server never knew them, the guest record does.
+    recallState.pendingOnMount = 1;
+    recordGuestCompletion("deep-orbit", "foundations", lesson.slug);
+    openTakeaways();
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(screen.getByTestId("lesson-terms-list")).toBeInTheDocument();
+    expect(localStorage.getItem(RECALL_KEY)).toBeNull();
+  });
+
+  it("settles for a signed-in owner from a guest completion of the lesson", () => {
+    // Deliberate: GuestProgressBridge replays guest completions into whichever account signs in.
+    recallState.pendingOnMount = 1;
+    recordGuestCompletion("deep-orbit", "foundations", lesson.slug);
+    openTakeaways({ reviewUserId: "alice" }, "alice");
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(screen.getByTestId("lesson-terms-list")).toBeInTheDocument();
+  });
+
+  it("keeps the gate when the guest completion is another lesson's", () => {
+    recallState.pendingOnMount = 1;
+    recordGuestCompletion("deep-orbit", "foundations", "tensor-shapes");
+    openTakeaways();
+    expect(screen.getByTestId("takeaways-recall")).toBeInTheDocument();
+    expect(screen.queryByTestId("takeaways-prose")).toBeNull();
+    expect(screen.queryByTestId("lesson-terms-list")).toBeNull();
+  });
+
+  it("writes no flag when the body has no card", () => {
+    openTakeaways();
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(localStorage.getItem(RECALL_KEY)).toBeNull();
+  });
+
+  it("keys the flag to the account like the step keys", () => {
+    recallState.pendingOnMount = 1;
+    openTakeaways({ reviewUserId: "alice" }, "alice");
+    act(() => recallState.report?.(0));
+    expect(localStorage.getItem(`${RECALL_KEY}:account:alice`)).toBe("1");
+    expect(localStorage.getItem(RECALL_KEY)).toBeNull();
+  });
+});
+
+/* Swipe paging on phones. A horizontal pan that starts where content can
+   pan sideways is content scrolling (2026-07-14 UX audit). Code wraps
+   below 1,024 px since spec 2026-09-24 section 4, so a code block that
+   cannot pan lets the swipe through. jsdom lays nothing out: each test
+   stubs the block's scroll box and appends it inside the stubbed body. */
+describe("LessonSteps, swipe navigation", () => {
+  function openConcept() {
+    localStorage.setItem(STEP_KEY, "1");
+    renderSteps();
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  }
+
+  // The Concept step mounts the objectives and the body as two instances;
+  // either sits inside the element that listens for the swipe.
+  const contentRoot = () => screen.getAllByTestId("lesson-content")[0];
+
+  function stubScrollBox(
+    el: HTMLElement,
+    scrollWidth: number,
+    clientWidth: number,
+  ) {
+    Object.defineProperty(el, "scrollWidth", {
+      configurable: true,
+      value: scrollWidth,
+    });
+    Object.defineProperty(el, "clientWidth", {
+      configurable: true,
+      value: clientWidth,
+    });
+  }
+
+  function codeBlock(scrollWidth: number, clientWidth: number) {
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.textContent = "const t = tf.tensor([1, 2, 3]);";
+    pre.appendChild(code);
+    stubScrollBox(pre, scrollWidth, clientWidth);
+    contentRoot().appendChild(pre);
+    // The touch lands on the inline code, as a finger on a sample does.
+    return code;
+  }
+
+  // Inline code in a prose paragraph, with no pre around it.
+  function inlineCode(scrollWidth: number, clientWidth: number) {
+    const p = document.createElement("p");
+    const code = document.createElement("code");
+    code.textContent = "tf.tensor1d";
+    p.append("Call ", code, " on the readings.");
+    stubScrollBox(code, scrollWidth, clientWidth);
+    contentRoot().appendChild(p);
+    return code;
+  }
+
+  function swipeLeft(el: Element) {
+    fireEvent.touchStart(el, { touches: [{ clientX: 300, clientY: 100 }] });
+    fireEvent.touchEnd(el, {
+      changedTouches: [{ clientX: 100, clientY: 105 }],
+    });
+  }
+
+  it("pages on a swipe that starts on a code block that cannot pan", () => {
+    openConcept();
+    swipeLeft(codeBlock(320, 320));
+    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+  });
+
+  it("pages when the block's widths differ by one rounding pixel", () => {
+    // scrollWidth and clientWidth round separately, so at a fractional
+    // width they can differ by 1 px with nothing overflowing.
+    openConcept();
+    swipeLeft(codeBlock(321, 320));
+    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+  });
+
+  it("pages on a swipe that starts on inline code outside any pre", () => {
+    openConcept();
+    swipeLeft(inlineCode(120, 120));
+    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+  });
+
+  it("leaves a swipe on code outside a pre to the code when its own box pans", () => {
+    // The closest("code") fallback: with no pre, the code is the block.
+    openConcept();
+    swipeLeft(inlineCode(480, 120));
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  });
+
+  it("leaves a swipe on a code block that pans sideways to the block", () => {
+    openConcept();
+    swipeLeft(codeBlock(640, 320));
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+  });
+
+  it("leaves a swipe on the editor to the editor", () => {
+    openConcept();
+    const editor = document.createElement("div");
+    editor.className = "sp-wrapper";
+    const line = document.createElement("div");
+    line.textContent = "const model = tf.sequential();";
+    editor.appendChild(line);
+    contentRoot().appendChild(editor);
+    swipeLeft(line);
+    expect(screen.getByText("2 / 6")).toBeInTheDocument();
   });
 });

@@ -204,10 +204,13 @@ const exercises = defineCollection({
 
     // A hint ladder of the exercise's own. The lesson's `hints` ladder serves
     // the lesson's primary exercise (the one whose solutionCode the solution
-    // rung is excerpted from); a lesson carrying a second exercise (the
-    // incident drills, the capstone's rehearsal and verifier, rag-pipeline,
-    // ci-cd-gate) gives that exercise its ladder here, rendered beneath the
-    // exercise's instructions. Same shape and gates as the lesson ladder:
+    // rung is excerpted from); an exercise that needs a ladder of its own
+    // carries it here. Most are second exercises (the incident drills, the
+    // capstone's rehearsal, rag-pipeline), but ci-cd-gate and
+    // verify-deployment come first in their lessons and browser-ml-tradeoffs
+    // is its lesson's only one. ExerciseBrief renders it beneath the
+    // exercise's instructions in the Challenge step's reading column
+    // (2026-09-25). Same shape and gates as the lesson ladder:
     // guidance-hint-dictation.test.ts and Gate B in
     // metadata-consistency.test.ts read this field when present (2026-09-13,
     // plan item 4).
