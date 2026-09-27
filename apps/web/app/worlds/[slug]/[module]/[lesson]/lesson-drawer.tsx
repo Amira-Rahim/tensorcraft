@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { FocusTrap } from "@tensorcraft/ui/a11y";
 
@@ -26,11 +26,36 @@ export function LessonDrawer({
   moduleName,
 }: LessonDrawerProps) {
   const [open, setOpen] = useState(false);
+  const dialogId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+
+    // The desktop panel follows the trigger; cap it at the viewport's
+    // remaining height so long lesson lists clear the consent bar.
+    const updateAvailableHeight = () => {
+      if (!triggerRef.current || !panelRef.current) return;
+      panelRef.current.style.setProperty(
+        "--lesson-panel-top",
+        `${triggerRef.current.getBoundingClientRect().bottom + 8}px`,
+      );
+    };
+    updateAvailableHeight();
+    window.addEventListener("resize", updateAvailableHeight);
+    window.addEventListener("scroll", updateAvailableHeight, true);
+    return () => {
+      window.removeEventListener("resize", updateAvailableHeight);
+      window.removeEventListener("scroll", updateAvailableHeight, true);
+    };
+  }, [open]);
 
   return (
-    <>
+    <div className="relative shrink-0">
       {/* Lesson navigation at every viewport width */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         className="flex items-center justify-center gap-2 px-3 h-11 shrink-0 text-xs font-mono"
@@ -40,6 +65,9 @@ export function LessonDrawer({
           color: "var(--tc-muted)",
         }}
         aria-label="Open lesson list"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={open ? dialogId : undefined}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path
@@ -62,12 +90,14 @@ export function LessonDrawer({
             aria-hidden="true"
           />
 
-          {/* Bottom sheet */}
+          {/* Anchored panel on desktop, bottom sheet in compact windows */}
           <div
+            ref={panelRef}
+            id={dialogId}
             role="dialog"
             aria-modal="true"
             aria-label={`${moduleName} lessons`}
-            className="fixed bottom-[var(--tc-consent-h,0px)] left-0 right-0 z-50 max-h-[min(70dvh,calc(100dvh_-_1rem_-_var(--tc-consent-h,0px)))] md:max-h-[min(70dvh,calc(100dvh_-_2.5rem_-_var(--tc-consent-h,0px)))] overflow-y-auto animate-slide-up md:bottom-[calc(1.5rem+var(--tc-consent-h,0px))] md:left-auto md:right-6 md:w-[440px] md:border md:border-border"
+            className="lesson-drawer-panel"
             style={{
               background: "var(--tc-surface)",
               borderTop: "1px solid var(--tc-border)",
@@ -174,6 +204,6 @@ export function LessonDrawer({
           </div>
         </FocusTrap>
       )}
-    </>
+    </div>
   );
 }

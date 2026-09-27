@@ -385,13 +385,21 @@ describe("consent bar reserved space", () => {
     "apps/web/app/components/report-issue-button.tsx",
     "apps/web/app/components/session-toast.tsx",
     "apps/web/app/components/github-nudge-toast.tsx",
-    "apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-drawer.tsx",
     "apps/web/app/components/mobile-nav.tsx",
   ]) {
     it(`${file} lifts its bottom edge by the bar's height`, () => {
       expect(read(file)).toContain("var(--tc-consent-h,0px)");
     });
   }
+
+  it("the lesson sheet lifts its bottom edge by the bar's height", () => {
+    expect(
+      read("apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-drawer.tsx"),
+    ).toContain('className="lesson-drawer-panel"');
+    expect(read("apps/web/app/globals.css")).toMatch(
+      /(^|\n)\.lesson-drawer-panel\s*\{[^}]*bottom:\s*var\(--tc-consent-h,\s*0px\)/,
+    );
+  });
 
   it("the glossary popover keeps clear of the bar", () => {
     expect(read("packages/ui/src/mdx/glossary-term.tsx")).toContain(

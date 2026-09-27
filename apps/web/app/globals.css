@@ -926,6 +926,36 @@ body {
   animation: slide-up 0.25s ease-out both;
 }
 
+/* Keep lesson navigation beside its trigger when there is room below it.
+   Short windows use the sheet so its header cannot crowd out the list. */
+.lesson-drawer-panel {
+  position: fixed;
+  bottom: var(--tc-consent-h, 0px);
+  inset-inline: 0;
+  z-index: 50;
+  max-height: min(70dvh, calc(100dvh - 1rem - var(--tc-consent-h, 0px)));
+  overflow-y: auto;
+  animation: slide-up 0.25s ease-out both;
+}
+
+@media (width >= 48rem) and (height >= 32rem) {
+  .lesson-drawer-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    bottom: auto;
+    inset-inline-end: auto;
+    width: 440px;
+    max-height: min(
+      70dvh,
+      calc(
+        100dvh - var(--lesson-panel-top, 0px) - 1rem - var(--tc-consent-h, 0px)
+      )
+    );
+    border: 1px solid var(--tc-border);
+    animation: none;
+  }
+}
+
 /* ===== Ticker / Bridge System ===== */
 @keyframes ticker-scroll {
   from {
