@@ -43,6 +43,21 @@ export function ProgressView(
           </a>
         </p>
       )}
+      {(hasBridges || hasPatches) && (
+        <section
+          className={styles.collections}
+          aria-labelledby="collections-heading"
+        >
+          <h2 id="collections-heading">Your collections</h2>
+          {hasPatches && <PatchCollection modules={props.modules} />}
+          {hasBridges && (
+            <BridgeCollection
+              bridges={props.bridges}
+              worldSlug={props.worldSlug}
+            />
+          )}
+        </section>
+      )}
       <div className={styles.panels}>
         {props.scoredAttemptCount > 0 && (
           <section className={styles.panel} aria-labelledby="score-heading">
@@ -123,21 +138,6 @@ export function ProgressView(
         )}
       </div>
       {hasSkills && <SkillGenome data={props.genomeData} />}
-      {(hasBridges || hasPatches) && (
-        <section
-          className={styles.collections}
-          aria-labelledby="collections-heading"
-        >
-          <h2 id="collections-heading">Your collections</h2>
-          {hasBridges && (
-            <BridgeCollection
-              bridges={props.bridges}
-              worldSlug={props.worldSlug}
-            />
-          )}
-          {hasPatches && <PatchCollection modules={props.modules} />}
-        </section>
-      )}
       {!props.recordsUnavailable &&
         !hasSkills &&
         !hasActivity &&

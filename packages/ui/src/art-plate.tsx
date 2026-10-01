@@ -27,6 +27,7 @@ export interface ArtPlateProps {
    *  element comes back rather than leaving a hole (ModulePatch contract). */
   fallback?: ReactNode;
   className?: string;
+  loading?: "lazy" | "eager";
 }
 
 export function ArtPlate({
@@ -35,6 +36,7 @@ export function ArtPlate({
   bleed = false,
   fallback,
   className,
+  loading = "lazy",
 }: ArtPlateProps) {
   const [failed, setFailed] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -56,7 +58,7 @@ export function ArtPlate({
       src={src}
       alt={alt ?? ""}
       aria-hidden={alt ? undefined : "true"}
-      loading="lazy"
+      loading={loading}
       decoding="async"
       onError={() => setFailed(src)}
       className={[

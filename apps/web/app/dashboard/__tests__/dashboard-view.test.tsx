@@ -50,7 +50,7 @@ describe("learning dashboard", () => {
       screen.queryByRole("heading", { name: /reviews? ready/ }),
     ).toBeNull();
     expect(
-      screen.queryByRole("heading", { name: "Recent accomplishments" }),
+      screen.queryByRole("heading", { name: "Your discoveries" }),
     ).toBeNull();
     expect(
       screen.getByRole("link", { name: "View curriculum →" }),

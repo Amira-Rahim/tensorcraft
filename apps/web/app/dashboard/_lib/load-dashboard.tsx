@@ -22,6 +22,8 @@ import {
   type ActivityRecord,
 } from "../dashboard-view";
 import { computeWeeklyHints } from "./viz-data";
+import { chapterTitle } from "./chapter-titles";
+import { portraitSources } from "@/lib/character-art";
 
 export async function loadDashboardData(
   view: "home" | "progress" | "project" = "home",
@@ -179,6 +181,10 @@ export async function loadDashboardData(
       number: `M${num}`,
       name: mod.title,
       story: mod.description,
+      chapterTitle: chapterTitle(activeWorld.slug, mod.slug),
+      sceneSrc: modLessons[0]?.scene?.portraitAlt
+        ? `/scenes/${activeWorld.slug}/${mod.slug}/${modLessons[0].slug}.webp`
+        : undefined,
       status,
       score: null,
       formula: "",
@@ -216,7 +222,13 @@ export async function loadDashboardData(
 
   let resumeUrl: string | null = null;
   let missionScene:
-    | { src: string; alt: string; location: string; narrative: string }
+    | {
+        src: string;
+        alt: string;
+        location: string;
+        narrative: string;
+        character?: { name: string; src?: string; isAI?: boolean };
+      }
     | undefined;
   let resumeLabel = records.some((r) => r.world_id === activeWorld.slug)
     ? "Continue course →"
@@ -239,11 +251,22 @@ export async function loadDashboardData(
 
     if (currentLesson) {
       if (currentLesson.scene?.portraitAlt) {
+        const narrative = currentLesson.context?.narrative ?? "";
+        const character = activeWorld.characters.find((person) =>
+          new RegExp(`\\b${person.name.split(" ").at(-1)}\\b`).test(narrative),
+        );
         missionScene = {
           src: `/scenes/${activeWorld.slug}/${activeModule.slug}/${currentLesson.slug}.webp`,
           alt: currentLesson.scene.portraitAlt,
           location: currentLesson.scene.location,
-          narrative: currentLesson.context?.narrative ?? "",
+          narrative,
+          character: character
+            ? {
+                name: character.name,
+                src: portraitSources(activeWorld.slug, character).src,
+                isAI: character.isAI,
+              }
+            : undefined,
         };
       }
       currentModuleInfo = {

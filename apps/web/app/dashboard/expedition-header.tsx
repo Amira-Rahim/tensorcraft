@@ -23,7 +23,7 @@ export function ExpeditionHeader({
       ? Math.min(1, Math.max(0, completedLessons / totalLessons))
       : 0;
   return (
-    <header className={styles.expeditionHeader}>
+    <header className={`${styles.expeditionHeader} tc-on-art`}>
       <div className={styles.expeditionCopy}>
         <p className={styles.kicker}>{worldName} · Expedition log</p>
         <h1>{title}</h1>
@@ -60,7 +60,7 @@ export function ExpeditionHeader({
       )}
       <div className={styles.expeditionArt}>
         {plateSrc ? (
-          <ArtPlate src={plateSrc} bleed />
+          <ArtPlate src={plateSrc} bleed loading="eager" />
         ) : (
           <MissionIcon name="signal" />
         )}

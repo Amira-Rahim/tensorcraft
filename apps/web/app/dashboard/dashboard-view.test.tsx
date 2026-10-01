@@ -25,6 +25,9 @@ describe("dashboard curriculum", () => {
       "/scenes/deep-orbit/foundations/tensor-shapes.webp",
     );
     expect(screen.getByText(/Dr. Farah analyzes/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Dr. Farah analyzes",
+    );
     expect(screen.getByText("Archimedes, Lab")).toBeInTheDocument();
   });
   it("lets learners inspect sectors and distinguishes prerequisites from paid access", async () => {
@@ -90,10 +93,11 @@ describe("dashboard curriculum", () => {
         })}
       />,
     );
-    expect(screen.getAllByTestId("module-patch")).toHaveLength(1);
+    expect(screen.getAllByTestId("module-patch")).toHaveLength(2);
     expect(screen.queryByTestId("patch-collection")).toBeNull();
   });
-  it("shows actual completed lesson checkpoints even when they are out of order", () => {
+  it("opens a chapter on demand, shows actual checkpoints, and returns focus on Escape", async () => {
+    const user = userEvent.setup();
     render(
       <DashboardView
         {...dashboardFixture({
@@ -117,11 +121,20 @@ describe("dashboard curriculum", () => {
         })}
       />,
     );
+    const sector = screen.getByRole("button", { name: /M01: Foundations/ });
+    expect(
+      screen.queryByRole("link", { name: "Explore this sector →" }),
+    ).toBeNull();
+    await user.click(sector);
     expect(
       screen.getByRole("img", { name: "Third: completed" }),
     ).toHaveAttribute("data-completed", "true");
     expect(
       screen.getByRole("img", { name: "First: not completed" }),
     ).toHaveAttribute("data-completed", "false");
+    screen.getByRole("link", { name: "Explore this sector →" }).focus();
+    await user.keyboard("{Escape}");
+    expect(sector).toHaveFocus();
+    expect(sector).toHaveAttribute("aria-expanded", "false");
   });
 });

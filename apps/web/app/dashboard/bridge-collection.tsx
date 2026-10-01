@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "./dashboard-view.module.css";
+import { BridgeArt } from "./bridge-art";
 interface BridgeItem {
   lessonSlug: string;
   moduleSlug: string;
@@ -35,7 +36,7 @@ export function BridgeCollection({
           {earned.length} of {bridges.length} collected
         </p>
       </div>
-      <ul className="grid list-none gap-3 sm:grid-cols-2">
+      <ul className="grid list-none gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {earned.map((b) => {
           const key = `${b.moduleSlug}/${b.lessonSlug}`;
           const open = expanded === key;
@@ -49,6 +50,9 @@ export function BridgeCollection({
                 onClick={() => setExpanded(open ? null : key)}
                 className="min-h-11 w-full p-4 text-left focus-visible:outline-2 focus-visible:outline-primary"
               >
+                <span className={styles.collectionBridgeArt}>
+                  <BridgeArt />
+                </span>
                 <span className={styles.bridgeVisual}>
                   <span>
                     <small>JavaScript</small>

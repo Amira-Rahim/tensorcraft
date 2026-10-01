@@ -2,6 +2,9 @@ import Link from "next/link";
 import { ArtPlate } from "@tensorcraft/ui/art-plate";
 import { MissionJourney } from "./mission-journey";
 import { MissionIcon } from "./mission-icon";
+import { CharacterAvatar } from "@tensorcraft/ui/character-avatar";
+import { ModulePatch } from "@tensorcraft/ui/module-patch";
+import { BridgeArt } from "./bridge-art";
 import type { WeeklyHints } from "@tensorcraft/ui/visualizations";
 import type { SystemEvidenceItem } from "@/lib/system-evidence";
 import styles from "./dashboard-view.module.css";
@@ -19,6 +22,8 @@ export interface DashboardModule {
   lockReason?: "prerequisite" | "access";
   prerequisiteName?: string;
   story?: string;
+  chapterTitle?: string;
+  sceneSrc?: string;
   missions?: Array<{ title: string; completed: boolean }>;
 }
 export interface DashboardBridge {
@@ -83,6 +88,7 @@ export interface DashboardProps {
     alt: string;
     location: string;
     narrative: string;
+    character?: { name: string; src?: string; isAI?: boolean };
   };
 }
 
@@ -98,6 +104,11 @@ export function DashboardView(props: DashboardProps) {
       b.collected && recent.some((a) => a.href.endsWith(`/${b.lessonSlug}`)),
   );
   const scene = props.missionScene;
+  const earnedPatch = !props.progressUnavailable
+    ? modules
+        .filter((module) => module.status === "done" && module.patchSrc)
+        .at(-1)
+    : undefined;
   const sceneSrc =
     !props.progressUnavailable && !allDone ? scene?.src : undefined;
   return (
@@ -124,97 +135,107 @@ export function DashboardView(props: DashboardProps) {
         </p>
       </header>
 
-      <section className={styles.continue} aria-labelledby="continue-heading">
-        <div className={styles.missionCopy}>
-          <p className={styles.kicker}>
-            {props.progressUnavailable
-              ? "Your mission"
-              : allDone
-                ? "Voyage complete"
-                : `Sector ${String(currentModule?.number ?? 1).padStart(2, "0")} · Your next mission`}
-          </p>
-          <h1 id="continue-heading">
-            {props.progressUnavailable
-              ? "Return to the mission"
-              : allDone
-                ? "Your course is complete"
-                : (currentModule?.topic ??
-                  `Your journey into ${props.worldName}`)}
-          </h1>
-          {!props.progressUnavailable && !allDone && scene?.narrative && (
-            <p className={styles.storyHook}>{scene.narrative}</p>
-          )}
-          {allDone && !props.progressUnavailable && (
-            <p className={styles.storyHook}>
-              Every sector explored. Bring your work together in the capstone.
-            </p>
-          )}
-          {currentModule && !props.progressUnavailable && !allDone && (
-            <>
-              <p className={styles.moduleContext}>
-                Module {currentModule.number} · {currentModule.name}
-              </p>
-              <div className={styles.missionMeta}>
-                <span>
-                  Mission {currentModule.lessonNumber} of{" "}
-                  {currentModule.totalLessons}
-                </span>
-                <span>About {currentModule.estimatedMinutes} minutes</span>
-              </div>
-            </>
-          )}
-          {props.progressUnavailable ? (
-            <p role="status">
-              Course progress could not load.{" "}
-              <a href="/dashboard" className={styles.textLink}>
-                Retry dashboard
-              </a>
-            </p>
-          ) : (
-            <Link
-              className={styles.primaryButton}
-              href={
-                props.resumeUrl ??
-                (allDone
-                  ? `/worlds/${worldSlug}/capstone`
-                  : `/worlds/${worldSlug}`)
-              }
-            >
-              {props.resumeLabel && !allDone
-                ? props.resumeLabel
-                : allDone
-                  ? "View capstone →"
-                  : "Start learning →"}
-            </Link>
-          )}
-        </div>
+      <section
+        className={`${styles.continue} tc-on-art`}
+        aria-labelledby="continue-heading"
+      >
         <figure className={styles.missionScene}>
           {sceneSrc || props.plateSrc ? (
             <ArtPlate
               src={(sceneSrc ?? props.plateSrc)!}
+              loading="eager"
               alt={
                 sceneSrc
                   ? scene?.alt
-                  : "The monitoring alcove aboard the Archimedes, with glowing green signal displays."
+                  : "The Archimedes mission station, illuminated by green signal displays."
               }
               bleed
               fallback={
-                props.plateSrc && sceneSrc ? (
-                  <ArtPlate src={props.plateSrc} bleed />
-                ) : (
-                  <MissionIcon name="signal" className={styles.sceneFallback} />
-                )
+                <MissionIcon name="signal" className={styles.sceneFallback} />
               }
             />
           ) : (
             <MissionIcon name="signal" className={styles.sceneFallback} />
           )}
-          <figcaption className={styles.sceneCaption}>
+        </figure>
+        <div className={styles.sceneTopline}>
+          <span>
             <span className={styles.sceneLight} aria-hidden="true" />
             {sceneSrc ? scene?.location : props.worldName}
-            <span>Mission scene</span>
-          </figcaption>
-        </figure>
+          </span>
+          {currentModule && !props.progressUnavailable && (
+            <span>
+              Sector {String(currentModule.number).padStart(2, "0")} · Mission{" "}
+              {currentModule.lessonNumber}/{currentModule.totalLessons}
+            </span>
+          )}
+        </div>
+        <div className={styles.missionCopy}>
+          {scene?.character && !props.progressUnavailable && !allDone && (
+            <div className={styles.crewBriefing}>
+              <CharacterAvatar {...scene.character} size={40} />
+              <span>
+                {scene.character.name}
+                <small>In this mission</small>
+              </span>
+            </div>
+          )}
+          <p className={styles.kicker}>
+            {props.progressUnavailable
+              ? "Your mission"
+              : allDone
+                ? "Voyage complete"
+                : (currentModule?.topic ?? "Your next mission")}
+          </p>
+          <h1 id="continue-heading">
+            {props.progressUnavailable
+              ? "Return to the mission"
+              : allDone
+                ? "Every sector explored."
+                : scene?.narrative ||
+                  currentModule?.topic ||
+                  `Your journey into ${props.worldName}`}
+          </h1>
+          <div className={styles.missionActions}>
+            {props.progressUnavailable ? (
+              <p role="status">
+                Course progress could not load.{" "}
+                <a href="/dashboard" className={styles.textLink}>
+                  Retry dashboard
+                </a>
+              </p>
+            ) : (
+              <Link
+                className={styles.primaryButton}
+                href={
+                  props.resumeUrl ??
+                  (allDone
+                    ? `/worlds/${worldSlug}/capstone`
+                    : `/worlds/${worldSlug}`)
+                }
+              >
+                {props.resumeLabel && !allDone
+                  ? props.resumeLabel
+                  : allDone
+                    ? "View capstone →"
+                    : "Start learning →"}
+              </Link>
+            )}
+            {currentModule && !props.progressUnavailable && !allDone && (
+              <span className={styles.missionDuration}>
+                About {currentModule.estimatedMinutes} minutes
+              </span>
+            )}
+          </div>
+        </div>
+        <div className={styles.sceneTag} aria-hidden="true">
+          <MissionIcon name="signal" />
+          <span>
+            ARCHIMEDES
+            <br />
+            MISSION SCENE
+          </span>
+        </div>
       </section>
 
       {props.reviewsUnavailable ? (
@@ -231,14 +252,12 @@ export function DashboardView(props: DashboardProps) {
               <MissionIcon name="review" />
             </span>
             <div className={styles.reviewCopy}>
-              <p className={styles.kicker}>Keep the signal clear</p>
               <h2 id="review-heading">
                 {props.dueReviews.length}{" "}
                 {props.dueReviews.length === 1 ? "review" : "reviews"} ready
               </h2>
               <p className={styles.secondary}>
-                {props.dueReviews[0].label.replace(/^Review due: /, "")} is
-                ready for review.
+                {props.dueReviews[0].label.replace(/^Review due: /, "")}
               </p>
             </div>
             <Link
@@ -270,8 +289,8 @@ export function DashboardView(props: DashboardProps) {
       <section className={styles.course} aria-labelledby="course-heading">
         <div className={styles.sectionHeader}>
           <div>
-            <p className={styles.kicker}>Your course · {props.worldName}</p>
-            <h2 id="course-heading">Chart your voyage</h2>
+            <p className={styles.kicker}>Into the unknown</p>
+            <h2 id="course-heading">Your voyage</h2>
           </div>
           <Link className={styles.textLink} href={`/worlds/${worldSlug}`}>
             View curriculum →
@@ -289,12 +308,6 @@ export function DashboardView(props: DashboardProps) {
                 complete
               </span>
             </div>
-            <progress
-              className={styles.progress}
-              value={props.completedLessons}
-              max={Math.max(1, props.totalLessons)}
-              aria-label="Course lesson completion"
-            />
             <MissionJourney modules={modules} worldSlug={worldSlug} />
           </>
         )}
@@ -312,20 +325,27 @@ export function DashboardView(props: DashboardProps) {
         </div>
       </section>
 
-      {(recent.length > 0 || props.projectCheckpoint || latestBridge) && (
+      {(recent.length > 0 ||
+        props.projectCheckpoint ||
+        latestBridge ||
+        earnedPatch) && (
         <section
           className={styles.accomplishments}
           aria-labelledby="accomplishments-heading"
         >
           <div className={styles.sectionHeader}>
             <div>
-              <p className={styles.kicker}>Your discoveries</p>
-              <h2 id="accomplishments-heading">Recent accomplishments</h2>
+              <p className={styles.kicker}>Brought back from the voyage</p>
+              <h2 id="accomplishments-heading">Your discoveries</h2>
             </div>
+            <Link className={styles.textLink} href="/dashboard/progress">
+              Open collection →
+            </Link>
           </div>
-          {recent.length > 0 && (
-            <ul className={styles.missionLog}>
-              {recent.map((item) => (
+          <ul className={styles.missionLog}>
+            {recent
+              .slice(0, latestBridge || earnedPatch ? 2 : 3)
+              .map((item) => (
                 <li key={item.href}>
                   <Link
                     className={styles.logCard}
@@ -342,45 +362,89 @@ export function DashboardView(props: DashboardProps) {
                       ) : (
                         <MissionIcon name="check" />
                       )}
-                      <span className={styles.logCheck}>
-                        <MissionIcon name="check" />
-                      </span>
                     </div>
-                    <div>
-                      <p className={styles.kicker}>Completed · {item.time}</p>
-                      <span>{item.detail}</span>
-                    </div>
-                    <span className={styles.logArrow} aria-hidden="true">
-                      ↗
+                    <span className={styles.logCheck}>
+                      <MissionIcon name="check" />
                     </span>
+                    <div className={styles.logCaption}>
+                      <p className={styles.kicker}>
+                        Mission complete · {item.time}
+                      </p>
+                      <span>{item.detail}</span>
+                      <span aria-hidden="true">↗</span>
+                    </div>
                   </Link>
                 </li>
               ))}
-            </ul>
-          )}
-          {latestBridge && (
-            <Link className={styles.discovery} href="/dashboard/progress">
-              <span className={styles.kicker}>Bridge discovered</span>
-              <span className={styles.bridgePair}>
-                <span>{latestBridge.jsTitle}</span>
-                <span aria-hidden="true">⟷</span>
-                <span>{latestBridge.mlTitle}</span>
-              </span>
-              <span className={styles.secondary}>
-                Explore your collection →
-              </span>
-            </Link>
-          )}
+            {earnedPatch ? (
+              <li>
+                <Link
+                  className={styles.artifactCard}
+                  href="/dashboard/progress"
+                >
+                  <div className={styles.patchArtifact}>
+                    <ModulePatch
+                      src={earnedPatch.patchSrc!}
+                      size={120}
+                      alt={`${earnedPatch.name} mission patch`}
+                    />
+                  </div>
+                  <div className={styles.artifactCaption}>
+                    <p className={styles.kicker}>Mission patch earned</p>
+                    <span>{earnedPatch.chapterTitle ?? earnedPatch.name}</span>
+                    <span aria-hidden="true">↗</span>
+                  </div>
+                </Link>
+              </li>
+            ) : (
+              latestBridge && (
+                <li>
+                  <Link
+                    className={styles.artifactCard}
+                    href="/dashboard/progress"
+                    aria-label={`Bridge discovered: ${latestBridge.jsTitle} to ${latestBridge.mlTitle}`}
+                  >
+                    <div className={styles.bridgeArtifact}>
+                      <BridgeArt />
+                    </div>
+                    <div className={styles.artifactCaption}>
+                      <p className={styles.kicker}>Bridge discovered</p>
+                      <span>
+                        {latestBridge.jsTitle} ⟷ {latestBridge.mlTitle}
+                      </span>
+                      <span aria-hidden="true">↗</span>
+                    </div>
+                  </Link>
+                </li>
+              )
+            )}
+          </ul>
           {props.projectCheckpoint && (
             <Link className={styles.projectTeaser} href="/dashboard/project">
-              <MissionIcon name="model" />
               <div>
-                <p className={styles.kicker}>Building DEEP SCAN</p>
-                <p>
-                  Your {props.projectCheckpoint.toLowerCase()} practice is
-                  linked to the project.
-                </p>
+                <p className={styles.kicker}>DEEP SCAN</p>
+                <span>{props.projectCheckpoint} practice recorded</span>
               </div>
+              <span className={styles.miniPipeline} aria-hidden="true">
+                {(
+                  [
+                    "data",
+                    "model",
+                    "evaluation",
+                    "runtime",
+                    "operations",
+                  ] as const
+                ).map((stage) => (
+                  <span
+                    key={stage}
+                    data-recorded={
+                      stage === props.projectCheckpoint?.toLowerCase()
+                    }
+                  >
+                    <MissionIcon name={stage} />
+                  </span>
+                ))}
+              </span>
               <span aria-hidden="true">→</span>
             </Link>
           )}
