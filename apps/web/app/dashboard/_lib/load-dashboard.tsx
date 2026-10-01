@@ -178,6 +178,7 @@ export async function loadDashboardData(
     return {
       number: `M${num}`,
       name: mod.title,
+      story: mod.description,
       status,
       score: null,
       formula: "",
@@ -187,6 +188,12 @@ export async function loadDashboardData(
       prerequisiteName: prerequisite?.title,
       slug: mod.slug,
       patchSrc: patchSrc(activeWorld.slug, mod.slug),
+      missions: modLessons.map((lesson) => ({
+        title: lesson.title,
+        completed: completedLessonKeys.has(
+          `${activeWorld.slug}/${mod.slug}/${lesson.slug}`,
+        ),
+      })),
     };
   });
 
@@ -208,6 +215,9 @@ export async function loadDashboardData(
   } | null = null;
 
   let resumeUrl: string | null = null;
+  let missionScene:
+    | { src: string; alt: string; location: string; narrative: string }
+    | undefined;
   let resumeLabel = records.some((r) => r.world_id === activeWorld.slug)
     ? "Continue course →"
     : "Start learning →";
@@ -228,6 +238,14 @@ export async function loadDashboardData(
     const currentLesson = modLessons[lessonIndex];
 
     if (currentLesson) {
+      if (currentLesson.scene?.portraitAlt) {
+        missionScene = {
+          src: `/scenes/${activeWorld.slug}/${activeModule.slug}/${currentLesson.slug}.webp`,
+          alt: currentLesson.scene.portraitAlt,
+          location: currentLesson.scene.location,
+          narrative: currentLesson.context?.narrative ?? "",
+        };
+      }
       currentModuleInfo = {
         number: modIndex + 1,
         name: activeModule.name,
@@ -386,6 +404,10 @@ export async function loadDashboardData(
       detail:
         getLesson(r.world_id, r.module_id, r.lesson_id)?.title ?? r.lesson_id,
       href: `/worlds/${r.world_id}/${r.module_id}/${r.lesson_id}`,
+      sceneSrc: getLesson(r.world_id, r.module_id, r.lesson_id)?.scene
+        ?.portraitAlt
+        ? `/scenes/${r.world_id}/${r.module_id}/${r.lesson_id}.webp`
+        : undefined,
       score: null,
     }));
 
@@ -400,6 +422,7 @@ export async function loadDashboardData(
       worldName: activeWorld.displayName,
       worldSlug: activeWorld.slug,
       plateSrc: surfacePlateSrc(activeWorld.slug, "dashboard"),
+      missionScene,
       modules: dashModules,
       currentModule: currentModuleInfo,
       worldProgressPercent,

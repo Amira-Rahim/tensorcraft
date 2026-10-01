@@ -1,5 +1,6 @@
 import { ModulePatch } from "@tensorcraft/ui/module-patch";
 import type { DashboardModule } from "./dashboard-view";
+import styles from "./dashboard-view.module.css";
 export function PatchCollection({ modules }: { modules: DashboardModule[] }) {
   const earned = modules.filter((m) => m.status === "done" && m.patchSrc);
   if (!earned.length) return null;
@@ -20,10 +21,13 @@ export function PatchCollection({ modules }: { modules: DashboardModule[] }) {
           {earned.length} of {modules.length} earned
         </p>
       </div>
-      <ul className="flex list-none flex-wrap gap-6">
+      <ul className={styles.patchGallery}>
         {earned.map((m) => (
-          <li key={m.slug} className="flex items-center gap-3">
-            <ModulePatch src={m.patchSrc!} size={48} />
+          <li key={m.slug}>
+            <ModulePatch src={m.patchSrc!} size={96} />
+            <span className={styles.kicker}>
+              Sector {m.number.replace(/^M/, "")} · Earned
+            </span>
             <span className="text-sm">{m.name}</span>
           </li>
         ))}

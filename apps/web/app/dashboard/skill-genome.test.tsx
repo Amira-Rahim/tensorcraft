@@ -21,4 +21,16 @@ describe("skill practice", () => {
     );
     expect(container.firstChild).toBeNull();
   });
+  it("keeps the visual practice signals accessible", async () => {
+    const { axe } = await import("vitest-axe");
+    const { container } = render(
+      <SkillGenome
+        data={[
+          { skill_axis: "data_prep", proficiency: 15, velocity: 0 },
+          { skill_axis: "model_arch", proficiency: 40, velocity: 1 },
+        ]}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });

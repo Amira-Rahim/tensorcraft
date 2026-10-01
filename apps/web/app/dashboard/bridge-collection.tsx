@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import styles from "./dashboard-view.module.css";
 interface BridgeItem {
   lessonSlug: string;
   moduleSlug: string;
@@ -48,8 +49,18 @@ export function BridgeCollection({
                 onClick={() => setExpanded(open ? null : key)}
                 className="min-h-11 w-full p-4 text-left focus-visible:outline-2 focus-visible:outline-primary"
               >
-                <span className="block break-words">
-                  {b.jsTitle} → {b.mlTitle}
+                <span className={styles.bridgeVisual}>
+                  <span>
+                    <small>JavaScript</small>
+                    {b.jsTitle}
+                  </span>
+                  <span className={styles.bridgeConnector} aria-hidden="true">
+                    ⟷
+                  </span>
+                  <span>
+                    <small>Machine learning</small>
+                    {b.mlTitle}
+                  </span>
                 </span>
                 <span className="mt-1 block text-sm text-text-muted">
                   {LABELS[b.tier]} bridge

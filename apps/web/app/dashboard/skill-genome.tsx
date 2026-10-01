@@ -30,21 +30,25 @@ export function SkillGenome({
         These signals summarize recorded practice on a 0–100 scale. They are not
         a mastery percentage or a certification.
       </p>
-      <dl className="mt-5 grid gap-4">
+      <dl className="mt-5 grid gap-4 sm:grid-cols-2">
         {recorded.map((axis) => (
-          <div key={axis.key}>
-            <div className="flex justify-between gap-4">
-              <dt>{axis.label}</dt>
-              <dd className="text-sm text-text-muted">
-                {Math.round(axis.value)} / 100
-              </dd>
-            </div>
-            <div aria-hidden="true" className="mt-2 h-1 bg-surface-overlay">
+          <div
+            key={axis.key}
+            className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-3 bg-surface p-4"
+          >
+            <dt className="font-medium">{axis.label}</dt>
+            <dd className="text-sm text-text-muted">
+              {Math.round(axis.value)} / 100
+            </dd>
+            <dd
+              aria-hidden="true"
+              className="col-span-2 h-2 bg-surface-overlay"
+            >
               <div
                 className="h-full bg-primary"
                 style={{ width: `${axis.value}%` }}
               />
-            </div>
+            </dd>
           </div>
         ))}
       </dl>

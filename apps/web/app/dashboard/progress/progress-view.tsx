@@ -5,6 +5,8 @@ import { PatchCollection } from "../patch-collection";
 import { SkillGenome } from "../skill-genome";
 import type { DashboardProps } from "../dashboard-view";
 import styles from "../dashboard-view.module.css";
+import { ExpeditionHeader } from "../expedition-header";
+import { MissionIcon } from "../mission-icon";
 
 export function ProgressView(
   props: DashboardProps & { recordsUnavailable?: boolean },
@@ -23,11 +25,16 @@ export function ProgressView(
       <Link className={styles.textLink} href="/dashboard">
         ← Back to learning
       </Link>
-      <h1>Your progress</h1>
-      <p className={styles.secondary}>
-        {props.worldName} · {props.completedLessons} of {props.totalLessons}{" "}
-        lessons completed
-      </p>
+      <ExpeditionHeader
+        title="Your progress"
+        worldName={props.worldName}
+        description="The trail of your voyage: recorded practice, discoveries and earned mission patches."
+        plateSrc={props.plateSrc}
+        completedLessons={
+          props.progressUnavailable ? undefined : props.completedLessons
+        }
+        totalLessons={props.totalLessons}
+      />
       {props.recordsUnavailable && (
         <p role="status" className={styles.notice}>
           Some records could not load.{" "}
@@ -39,10 +46,19 @@ export function ProgressView(
       <div className={styles.panels}>
         {props.scoredAttemptCount > 0 && (
           <section className={styles.panel} aria-labelledby="score-heading">
-            <h2 id="score-heading">Exercise scores</h2>
+            <div className={styles.metricHeading}>
+              <MissionIcon name="evaluation" />
+              <h2 id="score-heading">Exercise scores</h2>
+            </div>
             <p className={styles.metric}>
               {props.averageScore?.toFixed(0)} / 100
             </p>
+            <progress
+              className={styles.progress}
+              value={props.averageScore ?? 0}
+              max={100}
+              aria-label="Average recorded exercise score"
+            />
             <p className={styles.secondary}>
               Average across {props.scoredAttemptCount} recorded{" "}
               {props.scoredAttemptCount === 1 ? "attempt" : "attempts"} in{" "}
@@ -55,7 +71,10 @@ export function ProgressView(
         )}
         {props.currentStreak > 0 && (
           <section className={styles.panel} aria-labelledby="streak-heading">
-            <h2 id="streak-heading">Learning streak</h2>
+            <div className={styles.metricHeading}>
+              <MissionIcon name="signal" />
+              <h2 id="streak-heading">Learning streak</h2>
+            </div>
             <p className={styles.metric}>
               {props.currentStreak} {props.currentStreak === 1 ? "day" : "days"}
             </p>

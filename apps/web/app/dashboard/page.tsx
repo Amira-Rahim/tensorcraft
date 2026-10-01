@@ -4,7 +4,8 @@ import { loadDashboardData } from "./_lib/load-dashboard";
 
 export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
-  description: "Continue your course and review what you have learned.",
+  description:
+    "Return to your mission, chart your voyage and revisit your discoveries.",
   robots: { index: false, follow: false },
 };
 
