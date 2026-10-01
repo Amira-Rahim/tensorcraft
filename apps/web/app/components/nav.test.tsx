@@ -67,6 +67,26 @@ describe("Nav", () => {
     expect(brandLinks[0]).toHaveAttribute("href", "/");
   });
 
+  it("prioritizes learning destinations in the dashboard area", async () => {
+    mockPathname = "/dashboard/progress";
+    render(<Nav />);
+    expect(screen.getByRole("link", { name: "Progress" })).toHaveAttribute(
+      "href",
+      "/dashboard/progress",
+    );
+    expect(screen.getByRole("link", { name: "Project" })).toHaveAttribute(
+      "href",
+      "/dashboard/project",
+    );
+    expect(screen.queryByRole("link", { name: "Pricing" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Blog" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveClass(
+      "text-primary",
+    );
+    expect(screen.getByRole("link", { name: "Progress" })).toHaveClass(
+      "text-primary",
+    );
+  });
   it("renders Worlds and Pricing links", () => {
     render(<Nav />);
     expect(screen.getByText("Worlds")).toBeInTheDocument();

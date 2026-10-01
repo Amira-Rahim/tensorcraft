@@ -1,119 +1,105 @@
-import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { DashboardView, type DashboardProps } from "../dashboard-view";
+import { describe, expect, it } from "vitest";
+import { DashboardView } from "../dashboard-view";
+import { dashboardFixture } from "./fixtures";
 
-// Render Next's <Link> as a plain <a> so the dashboard view can mount
-// without the Next app runtime.
-vi.mock("next/link", () => ({
-  default: ({
-    href,
-    children,
-    ...props
-  }: {
-    href: string;
-    children: React.ReactNode;
-  }) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  ),
-}));
-
-// UserAvatar pulls in Next <Image>; stub it for the unit test environment.
-vi.mock("@/app/components/user-avatar", () => ({
-  UserAvatar: () => null,
-}));
-
-// SkillGenome is already covered by skill-genome.test.tsx, we don't want
-// its internals (or subpath import of @tensorcraft/ui/visualizations for
-// hexCorners) interacting with assertions about the adjacent LossCurve.
-vi.mock("../skill-genome", () => ({
-  SkillGenome: () => <div data-testid="skill-genome-mock" />,
-}));
-
-/** 12 weeks of non-null hint averages, monotonically decreasing. */
-const fullWeekly = Array.from({ length: 12 }, (_, i) => ({
-  weekStart: `2026-0${1 + Math.floor(i / 4)}-${String((i % 4) * 7 + 1).padStart(2, "0")}`,
-  avgHints: 5 - i * 0.3,
-}));
-
-/** 12 weeks of all-null averages, drives the LossCurve empty state. */
-const emptyWeekly = Array.from({ length: 12 }, (_, i) => ({
-  weekStart: `2026-0${1 + Math.floor(i / 4)}-${String((i % 4) * 7 + 1).padStart(2, "0")}`,
-  avgHints: null,
-}));
-
-function baseProps(overrides: Partial<DashboardProps> = {}): DashboardProps {
-  return {
-    displayName: "Ada",
-    avatarUrl: null,
-    worldName: "Deep Orbit",
-    worldSlug: "deep-orbit",
-    modules: [
-      {
-        number: "M01",
-        name: "Foundations",
-        status: "active",
-        score: null,
-        formula: "y=mx+b",
-        slug: "foundations",
-      },
-    ],
-    currentModule: null,
-    worldProgressPercent: 0,
-    worldPoints: { current: 0, total: 100 },
-    currentStreak: 0,
-    bestStreak: 0,
-    averageScore: 0,
-    bridges: [],
-    activityDays: Array(30).fill(0),
-    recentActivity: [],
-    resumeUrl: null,
-    totalModules: 1,
-    completedModules: 0,
-    genomeData: [],
-    lossCurveData: { weekly: fullWeekly },
-    ...overrides,
-  };
-}
-
-describe("DashboardView (LossCurve integration)", () => {
-  it("renders the LossCurve comment header when lossCurveData is provided", () => {
-    render(<DashboardView {...baseProps()} />);
-    // The LossCurve SVG text: "loss.hints, {n}wk"
-    expect(screen.getByText(/loss\.hints/i)).toBeInTheDocument();
-  });
-
-  it("wraps the LossCurve in a <section aria-labelledby=...> with a section heading", () => {
-    const { container } = render(<DashboardView {...baseProps()} />);
-
-    // The LossCurve SVG is the visual anchor.
-    const lossCurveSvg = container.querySelector(
-      "svg[aria-labelledby='lc-title']",
+describe("learning dashboard", () => {
+  it("leads with the lesson and labels the sequential recommendation honestly", () => {
+    render(<DashboardView {...dashboardFixture()} />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Understanding Tensor Shapes",
     );
-    expect(lossCurveSvg).not.toBeNull();
-
-    // Walk up to a <section> that exposes aria-labelledby pointing at a
-    // heading inside the same section. This matches the pattern from
-    // spec §9 (accessible sectioning).
-    const section = lossCurveSvg!.closest("section");
-    expect(section).not.toBeNull();
-    const labelledBy = section!.getAttribute("aria-labelledby");
-    expect(labelledBy).toBeTruthy();
-
-    const heading = section!.querySelector(`#${labelledBy}`);
-    expect(heading).not.toBeNull();
-    expect(heading!.textContent?.trim().length).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("link", { name: "Continue course →" }),
+    ).toHaveAttribute("href", "/worlds/deep-orbit/foundations/tensor-shapes");
+    expect(screen.getByText("1 of 56 lessons completed")).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        /pts|average score|skill genome|learning trend|coming soon/i,
+      ),
+    ).toBeNull();
   });
-
-  it("renders the LossCurve empty-state copy when weekly avgHints are all null", () => {
+  it("makes due review a direct action before the curriculum", () => {
+    const { container } = render(
+      <DashboardView
+        {...dashboardFixture({
+          dueReviews: [
+            {
+              label: "Review due: Introduction to Tensors",
+              href: "/review",
+              detail: "",
+            },
+          ],
+        })}
+      />,
+    );
+    const review = screen.getByRole("link", { name: "Review now →" });
+    expect(review).toHaveAttribute("href", "/review");
+    const sections = [...container.querySelectorAll("section")];
+    expect(sections.findIndex((s) => s.contains(review))).toBeLessThan(
+      sections.findIndex((s) => s.querySelector("#course-heading")),
+    );
+  });
+  it("omits review and accomplishment panels when nothing is actionable", () => {
     render(
       <DashboardView
-        {...baseProps({ lossCurveData: { weekly: emptyWeekly } })}
+        {...dashboardFixture({ completedLessons: 0, currentStreak: 0 })}
       />,
     );
     expect(
-      screen.getByText(/Complete 3\+ exercises to see trend/i),
+      screen.queryByRole("heading", { name: /reviews? ready/ }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Recent accomplishments" }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("link", { name: "View curriculum →" }),
+    ).toHaveAttribute("href", "/worlds/deep-orbit");
+  });
+  it("limits recent accomplishments to three completed lessons with links", () => {
+    const items = Array.from({ length: 5 }, (_, i) => ({
+      event: "lesson_completed",
+      time: "yesterday",
+      detail: `Lesson ${i}`,
+      href: `/lesson-${i}`,
+      score: null,
+    }));
+    render(<DashboardView {...dashboardFixture({ recentActivity: items })} />);
+    expect(
+      screen.getAllByRole("link", { name: /^Completed Lesson/ }),
+    ).toHaveLength(3);
+    expect(
+      screen.getByRole("link", { name: "Completed Lesson 0" }),
+    ).toHaveAttribute("href", "/lesson-0");
+    expect(screen.queryByText("lesson_completed")).toBeNull();
+  });
+  it("does not invent zero progress when records fail to load", () => {
+    render(
+      <DashboardView
+        {...dashboardFixture({
+          progressUnavailable: true,
+          reviewsUnavailable: true,
+        })}
+      />,
+    );
+    expect(
+      screen.getByText(/Course progress could not load/),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Continue course →" }),
+    ).toBeNull();
+  });
+  it("has no accessibility violations", async () => {
+    const { axe } = await import("vitest-axe");
+    const { container } = render(
+      <DashboardView
+        {...dashboardFixture({
+          dueReviews: [
+            { label: "Review due: Tensors", href: "/review", detail: "" },
+          ],
+        })}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

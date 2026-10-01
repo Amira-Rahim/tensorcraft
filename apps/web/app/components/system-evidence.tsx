@@ -11,6 +11,7 @@ export function SystemEvidence(props: {
   userId: string;
   stages: SystemEvidenceStage[];
   unavailable: boolean;
+  entitled?: boolean;
 }) {
   return (
     <LearningActivityScope userId={props.userId}>
@@ -22,10 +23,12 @@ function EvidenceBody({
   userId,
   stages,
   unavailable,
+  entitled = true,
 }: {
   userId: string;
   stages: SystemEvidenceStage[];
   unavailable: boolean;
+  entitled?: boolean;
 }) {
   const current = useActivityUser(),
     router = useRouter();
@@ -45,7 +48,7 @@ function EvidenceBody({
   return (
     <section
       aria-labelledby="system-evidence-title"
-      className="relative my-6 border border-border bg-surface p-4 text-text sm:p-6"
+      className="relative my-6 bg-surface p-4 text-text sm:p-6"
     >
       <h2 id="system-evidence-title" className="text-xl font-semibold">
         Your DEEP SCAN system
@@ -75,9 +78,11 @@ function EvidenceBody({
               {stage.title}
               <span className="ml-3 font-normal text-text-muted">
                 {stage.work.length
-                  ? `${stage.work.length} linked records`
-                  : "No linked record in this view"}
-                {stage.due.length ? ` · ${stage.due.length} reviews due` : ""}
+                  ? `${stage.work.length} linked ${stage.work.length === 1 ? "record" : "records"}`
+                  : "No recorded practice yet"}
+                {stage.due.length
+                  ? ` · ${stage.due.length} ${stage.due.length === 1 ? "review" : "reviews"} due`
+                  : ""}
               </span>
             </summary>
             <p>{stage.purpose}</p>
@@ -147,9 +152,15 @@ function EvidenceBody({
         </a>
         <Link
           className="min-h-11 py-3 underline"
-          href="/worlds/deep-orbit/capstone/launch?start=challenge"
+          href={
+            entitled
+              ? "/worlds/deep-orbit/capstone/launch?start=challenge"
+              : "/pricing?locked=deep-orbit&module=capstone"
+          }
         >
-          Project run and export
+          {entitled
+            ? "Project run and export"
+            : "Get access to project run and export"}
         </Link>
       </div>
     </section>

@@ -110,6 +110,20 @@ export function UserMenu() {
           </div>
 
           <div className="py-1">
+            {[
+              { href: "/pricing", label: "Access and pricing" },
+              { href: "/blog", label: "Blog" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                role="menuitem"
+                className="flex min-h-11 items-center px-4 py-2.5 text-sm text-text-primary hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-primary"
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
               href="/settings"
               onClick={() => setOpen(false)}

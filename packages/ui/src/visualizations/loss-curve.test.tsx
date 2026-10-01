@@ -1,73 +1,54 @@
 import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { LossCurve } from "./loss-curve";
-
-function makeWeekly(values: Array<number | null>) {
-  return values.map((v, i) => ({
-    weekStart: `2026-0${1 + Math.floor(i / 4)}-${String((i % 4) * 7 + 1).padStart(2, "0")}`,
-    avgHints: v,
+const weekly = (values: Array<number | null>) =>
+  values.map((avgHints, i) => ({
+    weekStart: new Date(Date.UTC(2026, 8, 7 + i * 7))
+      .toISOString()
+      .slice(0, 10),
+    avgHints,
   }));
-}
-
-describe("LossCurve", () => {
-  const full = makeWeekly([
-    5.0, 4.8, 4.2, 3.9, 3.5, 3.1, 2.9, 2.7, 2.5, 2.4, 2.3, 2.1,
-  ]);
-
-  it("renders role=img with labelledby/describedby pointing to id'd title+desc", () => {
-    const { container } = render(<LossCurve weekly={full} />);
-    const svg = container.querySelector("svg");
-    expect(svg?.getAttribute("role")).toBe("img");
-    const titleId = svg?.getAttribute("aria-labelledby");
-    const descId = svg?.getAttribute("aria-describedby");
-    expect(titleId).toBeTruthy();
-    expect(descId).toBeTruthy();
-    expect(svg?.querySelector(`title#${titleId}`)?.textContent).toMatch(
-      /hints per exercise/i,
+describe("weekly hint trend", () => {
+  it("counts weeks with data rather than exercises, and omits an insufficient chart", () => {
+    const { container } = render(
+      <LossCurve weekly={weekly([null, 0, null])} />,
     );
-    expect(svg?.querySelector(`desc#${descId}`)?.textContent).toMatch(
-      /2\.1|decreas/i,
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "1 of 3 weeks with hint data",
     );
-    // Should NOT duplicate with aria-label
-    expect(svg?.hasAttribute("aria-label")).toBe(false);
+    expect(container.querySelector("svg")).toBeNull();
   });
-
-  it("renders the header label", () => {
-    const { container } = render(<LossCurve weekly={full} />);
-    expect(container.textContent).toMatch(/loss\.hints/);
-  });
-
-  it("renders empty-state text when all avgHints are null", () => {
-    const allNull = makeWeekly([
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-    ]);
-    const { container } = render(<LossCurve weekly={allNull} />);
-    expect(container.textContent).toMatch(/Complete 3\+ exercises/);
-  });
-
-  it("handles a single data point without crashing", () => {
-    const single = makeWeekly([3.0]);
-    expect(() => render(<LossCurve weekly={single} />)).not.toThrow();
-    const { container } = render(<LossCurve weekly={single} />);
-    expect(container.textContent).toMatch(/1 of 3\+/);
-    expect(container.querySelector("desc")?.textContent).toMatch(
-      /single data point/,
+  it("handles no observations without a large blank plot", () => {
+    render(<LossCurve weekly={weekly([null, null])} />);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "No hint data recorded yet",
     );
   });
-
-  it("matches snapshot for typical 12-week series", () => {
-    const { container } = render(<LossCurve weekly={full} />);
-    expect(container.firstChild).toMatchSnapshot();
+  it("uses accessible names and units with no misleading loss label", () => {
+    const { container } = render(<LossCurve weekly={weekly([3, 2, 0])} />);
+    const svg = screen.getByRole("img", {
+      name: "Weekly average hints per exercise attempt",
+    });
+    expect(svg.getAttribute("aria-describedby")).toBeTruthy();
+    expect(container.textContent).toContain("Hint levels per attempt");
+    expect(container.textContent).not.toContain("loss.hints");
+  });
+  it("does not connect across missing weeks", () => {
+    const { container } = render(
+      <LossCurve weekly={weekly([3, null, 2, 0])} />,
+    );
+    expect(container.querySelectorAll("polyline")).toHaveLength(2);
+  });
+  it("gives multiple charts distinct accessible identifiers", () => {
+    const { container } = render(
+      <>
+        <LossCurve weekly={weekly([3, 2, 0])} />
+        <LossCurve weekly={weekly([1, 2, 3])} />
+      </>,
+    );
+    const ids = [...container.querySelectorAll("svg")].map((svg) =>
+      svg.getAttribute("aria-labelledby"),
+    );
+    expect(new Set(ids).size).toBe(2);
   });
 });

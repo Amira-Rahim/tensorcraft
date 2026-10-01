@@ -16,6 +16,15 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const pathname = usePathname();
+  const learningNavigation = !!user || pathname.startsWith("/dashboard");
+  const links = learningNavigation
+    ? [
+        { href: "/dashboard", label: "Dashboard" },
+        { href: "/dashboard/progress", label: "Progress" },
+        { href: "/dashboard/project", label: "Project" },
+        { href: "/worlds", label: "Worlds" },
+      ]
+    : NAV_LINKS;
 
   // Close menu on route change
   useEffect(() => {
@@ -115,12 +124,12 @@ export function MobileNav() {
 
             {/* Navigation links */}
             <nav className="flex-1 flex flex-col justify-center px-8 gap-2">
-              {NAV_LINKS.map(({ href, label }) => (
+              {links.map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
                   onClick={() => setOpen(false)}
-                  className={`block py-4 text-xl font-mono font-medium tracking-wider uppercase border-b border-border transition-colors ${
+                  className={`block py-4 text-xl font-medium border-b border-border transition-colors ${
                     pathname === href
                       ? "text-primary"
                       : "text-text-muted hover:text-text-primary"
@@ -136,17 +145,6 @@ export function MobileNav() {
               {user ? (
                 <div className="flex flex-col gap-2">
                   <Link
-                    href="/dashboard"
-                    onClick={() => setOpen(false)}
-                    className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
-                      pathname === "/dashboard"
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-text-muted hover:border-primary/30 hover:text-text-primary"
-                    }`}
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
                     href="/settings"
                     onClick={() => setOpen(false)}
                     className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
@@ -156,6 +154,20 @@ export function MobileNav() {
                     }`}
                   >
                     Settings
+                  </Link>
+                  <Link
+                    href="/pricing"
+                    onClick={() => setOpen(false)}
+                    className="min-h-11 py-3 text-center text-sm underline"
+                  >
+                    Access and pricing
+                  </Link>
+                  <Link
+                    href="/blog"
+                    onClick={() => setOpen(false)}
+                    className="min-h-11 py-3 text-center text-sm underline"
+                  >
+                    Blog
                   </Link>
                   <div className="font-mono text-xs text-text-muted text-center mt-2 truncate">
                     {user.email}

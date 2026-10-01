@@ -1,109 +1,70 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { DashboardView, type DashboardProps } from "./dashboard-view";
+import { DashboardView } from "./dashboard-view";
+import { dashboardFixture } from "./__tests__/fixtures";
 
-// LossCurve draws to canvas; stub it so the view renders under jsdom. Keep
-// the rest of the barrel real (SkillGenome pulls hexCorners from it).
-vi.mock("@tensorcraft/ui/visualizations", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  LossCurve: () => <div data-testid="loss-curve-stub" />,
-}));
-
-function baseProps(overrides: Partial<DashboardProps> = {}): DashboardProps {
-  return {
-    displayName: "Test Operator",
-    worldName: "Deep Orbit",
-    worldSlug: "deep-orbit",
-    modules: [
-      {
-        number: "01",
-        name: "Foundations",
-        status: "done",
-        score: 98,
-        formula: "y = Wx + b",
-        slug: "foundations",
-      },
-    ],
-    currentModule: null,
-    worldProgressPercent: 9,
-    worldPoints: { current: 9, total: 100 },
-    currentStreak: 1,
-    bestStreak: 2,
-    averageScore: 98,
-    bridges: [],
-    activityDays: [],
-    recentActivity: [],
-    resumeUrl: null,
-    totalModules: 11,
-    completedModules: 1,
-    genomeData: [],
-    lossCurveData: { weekly: [] },
-    ...overrides,
-  };
-}
-
-describe("DashboardView station feed plate", () => {
-  it("renders the plate panel in the module sidebar when given a src", () => {
+describe("dashboard curriculum", () => {
+  it("uses a small world banner for station art", () => {
     render(
       <DashboardView
-        {...baseProps({
+        {...dashboardFixture({
           plateSrc: "/locations/deep-orbit/dashboard-station.webp",
         })}
       />,
     );
-    const plate = screen.getByTestId("art-plate");
-    expect(plate.getAttribute("src")).toBe(
-      "/locations/deep-orbit/dashboard-station.webp",
-    );
+    expect(screen.getByTestId("art-plate").closest("header")).not.toBeNull();
   });
-
-  it("renders no plate slot without a src, byte-identical to the old layout", () => {
-    render(<DashboardView {...baseProps()} />);
-    expect(screen.queryByTestId("art-plate")).toBeNull();
-  });
-});
-
-describe("DashboardView mission patches", () => {
-  it("shows the patch in place of the ✓ box on a done module", () => {
+  it("distinguishes prerequisites from paid access and keeps complete titles", () => {
     render(
       <DashboardView
-        {...baseProps({
+        {...dashboardFixture({
           modules: [
             {
-              number: "01",
-              name: "Foundations",
-              status: "done",
-              score: 98,
-              formula: "y = Wx + b",
-              slug: "foundations",
-              patchSrc: "/patches/deep-orbit/foundations.webp",
+              number: "M02",
+              name: "Neural Networks: Layers & Architecture",
+              status: "locked",
+              score: null,
+              formula: "",
+              slug: "neural-networks",
+              lockReason: "prerequisite",
+              prerequisiteName: "Foundations",
+            },
+            {
+              number: "M03",
+              name: "Training",
+              status: "locked",
+              score: null,
+              formula: "",
+              slug: "training-loop",
+              lockReason: "access",
             },
           ],
         })}
       />,
     );
-    // Two renders of the same emblem: the sidebar row and the collection
-    // panel below the stats.
-    const patches = screen.getAllByTestId("module-patch");
-    expect(patches.length).toBeGreaterThanOrEqual(1);
-    for (const p of patches) {
-      expect(p.getAttribute("src")).toBe(
-        "/patches/deep-orbit/foundations.webp",
-      );
-    }
+    expect(
+      screen.getByRole("link", {
+        name: "Neural Networks: Layers & Architecture",
+      }),
+    ).toHaveAttribute("href", "/worlds/deep-orbit#module-neural-networks");
+    expect(screen.getByText("Complete Foundations first")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Training" })).toHaveAttribute(
+      "href",
+      "/pricing?locked=deep-orbit&module=training-loop",
+    );
+    expect(screen.getByText("Paid access required")).toBeInTheDocument();
   });
-
-  it("shows the patch collection panel when the world has patch art", () => {
+  it("shows an earned patch in the module map but no collection placeholders", () => {
     render(
       <DashboardView
-        {...baseProps({
+        {...dashboardFixture({
           modules: [
             {
               number: "M01",
               name: "Foundations",
               status: "done",
-              score: 98,
-              formula: "y = Wx + b",
+              score: 100,
+              formula: "",
               slug: "foundations",
               patchSrc: "/patches/deep-orbit/foundations.webp",
             },
@@ -111,32 +72,7 @@ describe("DashboardView mission patches", () => {
         })}
       />,
     );
-    expect(screen.getByTestId("patch-collection")).toBeTruthy();
-  });
-
-  it("hides the patch collection panel when no module has patch art", () => {
-    render(<DashboardView {...baseProps()} />);
+    expect(screen.getAllByTestId("module-patch")).toHaveLength(1);
     expect(screen.queryByTestId("patch-collection")).toBeNull();
-  });
-
-  it("never previews a patch on an unfinished module", () => {
-    render(
-      <DashboardView
-        {...baseProps({
-          modules: [
-            {
-              number: "02",
-              name: "Neural Networks",
-              status: "active",
-              score: null,
-              formula: "σ(Wx + b)",
-              slug: "neural-networks",
-              patchSrc: "/patches/deep-orbit/neural-networks.webp",
-            },
-          ],
-        })}
-      />,
-    );
-    expect(screen.queryByTestId("module-patch")).toBeNull();
   });
 });

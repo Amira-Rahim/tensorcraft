@@ -89,21 +89,6 @@ vi.mock("../dashboard-view", () => ({
   },
 }));
 
-// The page branches to FirstRunView for zero-activity accounts
-// (first-run tests live in page-first-run.test.tsx); stub it so this
-// file's tests don't pull in its imports.
-vi.mock("../first-run-view", () => ({
-  FirstRunView: function FirstRunViewMock() {
-    return null;
-  },
-}));
-
-// `world-cards` is rendered as JSX inside the page; stub it out so tests
-// don't need its full props surface.
-vi.mock("../world-cards", () => ({
-  WorldCards: () => null,
-}));
-
 /**
  * The dashboard page is a React server component that returns a
  * `<DashboardView .../>` element. We don't render that element, we just
@@ -168,6 +153,14 @@ describe("dashboard/page (server component)", () => {
       target: "/auth",
     });
     expect(getUserMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("protects the Progress and Project destinations with the same auth guard", async () => {
+    getUserMock.mockResolvedValue({ data: { user: null }, error: null });
+    const { default: ProgressPage } = await import("../progress/page");
+    const { default: ProjectPage } = await import("../project/page");
+    await expect(ProgressPage()).rejects.toMatchObject({ target: "/auth" });
+    await expect(ProjectPage()).rejects.toMatchObject({ target: "/auth" });
   });
 
   it("does not redirect to /auth when a user is present", async () => {

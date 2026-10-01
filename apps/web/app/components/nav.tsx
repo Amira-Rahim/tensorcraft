@@ -16,12 +16,15 @@ function NavLink({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive =
+    href === "/" || href === "/dashboard"
+      ? pathname === href
+      : pathname.startsWith(href);
 
   return (
     <Link
       href={href}
-      className={`inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
+      className={`inline-flex items-center min-h-11 text-sm rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
         isActive
           ? "text-primary font-semibold"
           : "text-text-muted hover:text-text-primary"
@@ -57,6 +60,8 @@ export function Nav() {
     /^\/worlds\/[^/]+\/[^/]+\/[^/]+$/.test(pathname) &&
     !pathname.endsWith("/capstone");
   if (isLessonRoute) return null;
+  const learningNavigation =
+    isAuthenticated || pathname.startsWith("/dashboard");
 
   return (
     <nav
@@ -78,10 +83,20 @@ export function Nav() {
       </Link>
 
       <div className="hidden md:flex items-center gap-6 font-mono">
-        {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
+        {learningNavigation && (
+          <>
+            <NavLink href="/dashboard">Dashboard</NavLink>
+            <NavLink href="/dashboard/progress">Progress</NavLink>
+            <NavLink href="/dashboard/project">Project</NavLink>
+          </>
+        )}
         <NavLink href="/worlds">Worlds</NavLink>
-        <NavLink href="/pricing">Pricing</NavLink>
-        <NavLink href="/blog">Blog</NavLink>
+        {!learningNavigation && (
+          <>
+            <NavLink href="/pricing">Pricing</NavLink>
+            <NavLink href="/blog">Blog</NavLink>
+          </>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

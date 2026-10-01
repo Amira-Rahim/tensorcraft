@@ -17,7 +17,7 @@ function makeModule(overrides: Partial<DashboardModule> = {}): DashboardModule {
 }
 
 describe("PatchCollection", () => {
-  it("shows earned patches, dashed slots for the rest, and the earned count", () => {
+  it("shows earned patches and the count without unearned slots", () => {
     render(
       <PatchCollection
         modules={[
@@ -38,9 +38,9 @@ describe("PatchCollection", () => {
       />,
     );
     expect(screen.getAllByTestId("module-patch")).toHaveLength(2);
-    expect(screen.getByTestId("patch-slot-empty-training-loop")).toBeTruthy();
+    expect(screen.queryByTestId("patch-slot-empty-training-loop")).toBeNull();
     const header = screen.getByTestId("patch-collection-count");
-    expect(header.textContent).toBe("2/3");
+    expect(header.textContent).toBe("2 of 3 earned");
   });
 
   it("renders nothing for a world without patch art", () => {

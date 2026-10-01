@@ -60,6 +60,19 @@ function openMenu() {
 }
 
 describe("MobileNav", () => {
+  it("exposes the same learning destinations on mobile", () => {
+    mockPathname = "/dashboard";
+    openMenu();
+    expect(screen.getByRole("link", { name: "Progress" })).toHaveAttribute(
+      "href",
+      "/dashboard/progress",
+    );
+    expect(screen.getByRole("link", { name: "Project" })).toHaveAttribute(
+      "href",
+      "/dashboard/project",
+    );
+    expect(screen.getAllByRole("link", { name: "Dashboard" })).toHaveLength(1);
+  });
   it("renders no dialog until the menu is opened", () => {
     render(<MobileNav />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
