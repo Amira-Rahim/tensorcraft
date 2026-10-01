@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 import { fileURLToPath } from "url";
 import withBundleAnalyzer from "@next/bundle-analyzer";
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import { backendConnectSources } from "./lib/backend-connect-sources";
 
 // Not named __dirname: Next evaluates this file through the CommonJS wrapper,
