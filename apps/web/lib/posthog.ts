@@ -5,6 +5,7 @@
  */
 
 import posthog, { type PostHog } from "posthog-js";
+import { hasAnalyticsConsent } from "./consent";
 
 let initialized = false;
 let pendingIdentity:
@@ -45,7 +46,18 @@ export function initPostHog(): PostHog | null {
 
   posthog.init(key, {
     api_host: host,
+    // Fail closed: nothing is captured until opt_in_capturing() runs, which
+    // AnalyticsProvider does right after init and only with consent. Without
+    // this, anything that clears the SDK's opt-out flag (posthog.reset()
+    // does) silently resumes capture.
+    opt_out_capturing_by_default: true,
+    // AnalyticsProvider sends pageviews itself (App Router navigations). The
+    // SDK default for capture_pageleave follows capture_pageview, so leave
+    // events must be switched on explicitly. Without them the last page of
+    // every visit gets no duration or scroll depth; earlier pages get theirs
+    // from the next $pageview's $prev_pageview_* properties.
     capture_pageview: false,
+    capture_pageleave: true,
     persistence: "localStorage+cookie",
     tracing_headers: tracingHeaders,
     capture_performance: { web_vitals: true },
@@ -96,6 +108,14 @@ export function reset(): void {
   pendingIdentity = undefined;
   if (!initialized) return;
   posthog.reset();
+  // posthog.reset() also deletes the SDK's opt-in/out flag, which every tab
+  // shares through localStorage. Re-apply the visitor's choice, or a
+  // withdrawn consent turns back into capture after sign-out.
+  if (hasAnalyticsConsent()) {
+    posthog.opt_in_capturing({ captureEventName: false });
+  } else {
+    posthog.opt_out_capturing();
+  }
 }
 
 export function isInitialized(): boolean {

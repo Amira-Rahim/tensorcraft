@@ -38,7 +38,6 @@ production release.
 
 | Event | Trigger | Expected properties |
 | --- | --- | --- |
-| `session_started` | Log in (any auth flow) | `userId` |
 | `world_selected` | Complete onboarding with a world picked | `worldId`, `source="onboarding"` |
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
 | `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `yearsExperience?` |
@@ -72,6 +71,20 @@ production release.
 | `world_trailer_played` | World-page trailer band opens the lightbox cut (only once `/media/<slug>-trailer.mp4` ships; prospects only, no loop mode on this surface) | `worldId`, `mode="full"` |
 | `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `worldId` |
 | `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `worldId`, `lessonId`, `exerciseSlug`, `commitSha` |
+
+## SDK events and data hygiene (added 2026-10-03)
+
+posthog-js sends these itself. Check them in the same Live session, with
+two tabs of the site open for at least a minute:
+
+| Event | Expected |
+| --- | --- |
+| `$pageview` | Exactly one per hard load and one per client-side navigation to a new URL (only a repeat of the last captured URL is skipped). `$current_url` is the full URL from posthog-js. Before 2026-10-03 every hard load with stored consent counted twice, and `$current_url` on `$pageview` was a relative path: group by `$pathname` across that date. |
+| `$pageleave` | On tab close, reload or a full-page navigation away (`capture_pageleave: true` since 2026-10-03). It carries the last page's duration and scroll depth; earlier pages get theirs from the next `$pageview`'s `$prev_pageview_*` properties, so before that date only the last page of each visit lacked them. |
+| `$opt_in` | None. Opt-in is measured by `consent_granted`, and the SDK event is suppressed (`captureEventName: false`). Any `$opt_in` volume means the cross-tab storage loop is back; see `docs/observability.md`. |
+| `$autocapture` | No email or name in `elements_chain`. Clicking the user-menu button still captures, with only `aria-label="User menu"`: its avatar is decorative (no name in any attribute) and passes clicks through. |
+| `$dead_click` | Only if dead-click capture is enabled in the project: no name, email or GitHub handle in `$el_text` or the elements. Identity text carries `ph-no-capture`, which drops the event. |
+| Session replay | Spot-check one recording of a signed-in session: the avatar, emails, names, GitHub handle and certificate names appear blanked (`ph-no-capture` blocks them). |
 
 ## In-lesson instrumentation (added 2026-09-04)
 
@@ -141,11 +154,19 @@ whenever `commitLessonArtifact` succeeds - same authoritative pattern as
 
 1. Browser console → look for "PostHog" warnings. If `capture` is being
    called but the event isn't arriving, verify `NEXT_PUBLIC_POSTHOG_HOST`
-   is `https://eu.posthog.com` (US host = wrong project).
+   is the EU ingest host `https://eu.i.posthog.com` (`eu.posthog.com` is
+   the dashboard; a US host is the wrong project).
 2. `localStorage.ph_<key>_posthog` - PostHog persists user ids here; if
-   missing, init never ran (check `posthog-provider.tsx` consent gate).
-3. Server events: check Fly.io logs for `Webhook: Failed to capture`
-   or missing `POSTHOG_KEY` env var.
+   missing, init never ran. Check the consent gate:
+   `apps/web/app/components/analytics-provider.tsx`, subscribed through
+   `onConsentChange` in `apps/web/lib/consent.ts`, which reacts to the
+   `tc-cookie-consent` key only.
+3. Server events: check Fly.io logs for `Webhook: Failed to capture`, or
+   a missing `POSTHOG_PROJECT_TOKEN` / `POSTHOG_HOST` secret.
+4. Events missing only when two tabs are open: look for `$opt_in` or
+   `$$client_ingestion_warning` ("client rate limited") in Live. Either
+   means the cross-tab storage loop is back (`docs/observability.md`,
+   PostHog item 5) and the rate limiter is dropping real events.
 
 ## Done criteria (§6i checklist)
 

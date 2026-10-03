@@ -31,14 +31,32 @@ analytics data stays in the EU. The host is configured via
 production** - doing so would require renegotiating transfer
 safeguards (SCCs + transfer impact assessment).
 
-Server-side conversion events (Stripe webhook `purchase_completed`,
-etc.) are sent via `posthog-node` from the API, also to the EU
-endpoint (`POSTHOG_HOST`).
+Server-side events (`payment_completed`, `payment_refunded`,
+`payment_failed`, `code_pushed`, `$exception`) are sent via `posthog-node`
+from the API, also to the EU endpoint (`POSTHOG_HOST`). They are NOT
+consent-gated today: open item in `docs/post-launch-backlog.md`,
+"PostHog data audit follow-ups (2026-10-03)".
 
-Consent gating: PostHog only initializes after the user accepts
-analytics cookies (see `app/components/cookie-consent.tsx` + the
-`tc-cookie-consent` localStorage key consumed in `posthog-provider.tsx`).
-Without consent, no events are captured.
+Consent gating (browser): PostHog only initializes after the user accepts
+analytics cookies. `app/components/cookie-consent.tsx` writes the
+`tc-cookie-consent` localStorage key; `app/components/analytics-provider.tsx`
+subscribes through `lib/consent.ts`, which reacts to that key only, in
+this tab or another. PostHog starts opted out
+(`opt_out_capturing_by_default`), and sign-out re-applies the stored
+choice after `posthog.reset()`. Without consent, the browser sends
+nothing.
+
+Identity in analytics: PostHog is keyed to the Supabase user id (a random
+UUID). Any element that renders a user's name, email, GitHub handle or
+avatar carries the `ph-no-capture` class, which keeps it out of
+autocapture and dead clicks and blanks it in session replays. `UserAvatar`
+sets it itself; inside an already-labelled control, pass `decorative`.
+Known gap: the public certificate page's `<title>` and Open Graph tags
+carry the learner's name (backlog, B2).
+
+Session replay: switched on in the PostHog project settings (100% of
+consenting sessions, console logs, heatmaps, 30-day retention) and not
+disclosed in the privacy policy. Owner decision pending (backlog, B0).
 
 Vercel Web Analytics and Vercel Speed Insights sit behind the same
 gate (`consent-gated-vercel-analytics.tsx` and

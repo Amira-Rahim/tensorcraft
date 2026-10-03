@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useCallback, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { initPostHog, isInitialized } from "../../lib/posthog";
@@ -20,6 +20,21 @@ function AnalyticsInner() {
   pathnameRef.current = pathname;
   searchParamsRef.current = searchParams?.toString() ?? "";
 
+  // The single way a $pageview is sent. On a hard load with stored consent
+  // the consent handler captures the landing page at init and the route
+  // effect runs in the same commit for the same URL; without this guard every
+  // hard load counted twice (28% of production pageviews). Only a repeat of
+  // the last captured URL is skipped. The URL itself is left to posthog-js
+  // (location.href, which Next has already updated when the route effect
+  // runs), so $pageview matches every other event.
+  const lastPageviewUrl = useRef<string | null>(null);
+  const capturePageview = useCallback((path: string, query: string) => {
+    const url = query ? `${path}?${query}` : path;
+    if (lastPageviewUrl.current === url) return;
+    lastPageviewUrl.current = url;
+    posthog.capture("$pageview");
+  }, []);
+
   // Initialize PostHog (EU instance via lib/posthog, no-op without key).
   //
   // Subscribed to consent rather than read once on mount. A first-time
@@ -35,14 +50,22 @@ function AnalyticsInner() {
       }
 
       if (initialized.current) {
-        posthog.opt_in_capturing();
+        // Consent granted again after a withdrawal. Opt in only while
+        // PostHog's opt-out flag (shared by every tab through localStorage)
+        // is set: calling opt_in_capturing() on every notification is what
+        // fed the cross-tab $opt_in loop.
+        if (posthog.has_opted_out_capturing()) {
+          posthog.opt_in_capturing({ captureEventName: false });
+        }
         return;
       }
 
       const instance = initPostHog();
       if (!instance) return;
       initialized.current = true;
-      posthog.opt_in_capturing();
+      // consent_granted below is the opt-in metric; the SDK's own $opt_in
+      // event would only duplicate it.
+      posthog.opt_in_capturing({ captureEventName: false });
 
       // Opt-in numerator, once per browser, at the first moment consent
       // makes capture possible. The decline side deliberately emits
@@ -60,23 +83,15 @@ function AnalyticsInner() {
 
       // The route effect below only fires on navigation, so without this the
       // page consent was granted on would never be counted.
-      const url = searchParamsRef.current
-        ? `${pathnameRef.current}?${searchParamsRef.current}`
-        : pathnameRef.current;
-      posthog.capture("$pageview", { $current_url: url });
+      capturePageview(pathnameRef.current, searchParamsRef.current);
     });
-  }, []);
+  }, [capturePageview]);
 
   // Capture page views on route changes
   useEffect(() => {
     if (!isInitialized()) return;
-
-    const url = searchParams?.toString()
-      ? `${pathname}?${searchParams.toString()}`
-      : pathname;
-
-    posthog.capture("$pageview", { $current_url: url });
-  }, [pathname, searchParams]);
+    capturePageview(pathname, searchParams?.toString() ?? "");
+  }, [pathname, searchParams, capturePageview]);
 
   // Session lifecycle, fires `session_started` on mount and `session_ended`
   // on tab hide / navigation away. The `sessionId` correlates the two halves

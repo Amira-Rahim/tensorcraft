@@ -43,11 +43,18 @@ export function notifyConsentChanged(): void {
 export function onConsentChange(handler: () => void): () => void {
   if (typeof window === "undefined") return () => {};
   handler();
-  window.addEventListener(CONSENT_CHANGED_EVENT, handler);
   // Cross-tab: `storage` covers the case where consent is granted elsewhere.
-  window.addEventListener("storage", handler);
+  // It fires for every localStorage write in any other tab, so only the
+  // consent key counts (`null` means another tab cleared storage). Unfiltered,
+  // PostHog's own write on each capture made two open tabs re-run each
+  // other's handlers without end.
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === CONSENT_KEY || event.key === null) handler();
+  };
+  window.addEventListener(CONSENT_CHANGED_EVENT, handler);
+  window.addEventListener("storage", onStorage);
   return () => {
     window.removeEventListener(CONSENT_CHANGED_EVENT, handler);
-    window.removeEventListener("storage", handler);
+    window.removeEventListener("storage", onStorage);
   };
 }

@@ -114,6 +114,28 @@ describe("UserMenu brutalist polish", () => {
       }
     });
 
+    it("never writes the account email into an attribute PostHog could capture", async () => {
+      // Autocapture records the attributes of a clicked element and its
+      // ancestors. The avatar in this button used to receive the email as its
+      // name, so its aria-label carried the address into PostHog (seen in
+      // production data on 2026-09-17). The menu's email line is plain text:
+      // autocapture ignores it, but session replay records it and dead-click
+      // capture (when enabled) sends its text.
+      const { container } = render(<UserMenu />);
+      const trigger = await screen.findByRole("button", {
+        name: /user menu/i,
+      });
+      fireEvent.click(trigger);
+      const emailLine = await screen.findByText("user@example.com");
+
+      for (const el of Array.from(container.querySelectorAll("*"))) {
+        for (const attr of Array.from(el.attributes)) {
+          expect(attr.value).not.toContain("user@example.com");
+        }
+      }
+      expect(emailLine).toHaveClass("ph-no-capture");
+    });
+
     it("has no `outline-none` / `outline: none` on any descendant", async () => {
       const { container } = render(<UserMenu />);
       const trigger = await screen.findByRole("button", {

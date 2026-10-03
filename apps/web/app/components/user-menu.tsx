@@ -90,10 +90,14 @@ export function UserMenu() {
         aria-label="User menu"
         className="w-11 h-11 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary rounded-none transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 overflow-hidden"
       >
+        {/* The name only feeds the initial here. decorative keeps it out of
+            every attribute: the button is already labelled, and autocapture
+            used to record the email from the avatar's aria-label. */}
         <UserAvatar
           url={avatarUrl}
           name={displayName || user.email || "U"}
           size={32}
+          decorative
         />
       </button>
 
@@ -104,7 +108,9 @@ export function UserMenu() {
           role="menu"
         >
           <div className="px-4 py-3 border-b border-border">
-            <p className="text-xs font-mono truncate text-text-muted">
+            {/* ph-no-capture: identity text stays out of PostHog
+                autocapture and session replays. */}
+            <p className="text-xs font-mono truncate text-text-muted ph-no-capture">
               {user.email}
             </p>
           </div>

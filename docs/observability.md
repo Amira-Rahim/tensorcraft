@@ -527,8 +527,8 @@ Upstash or Stripe.
 
 ### PostHog (DONE 2026-08-26)
 
-EU project live, events confirmed arriving. Four things that are easy to get
-wrong, all hit on the way in:
+EU project live, events confirmed arriving. Five things that are easy to get
+wrong, all hit on the way in or since:
 
 1. **TWO variables are required, not one.** `apps/web/lib/posthog.ts:33-40`
    returns null and initialises nothing unless BOTH
@@ -549,12 +549,26 @@ wrong, all hit on the way in:
    `eu-assets.i.posthog.com`. Contrast the Sentry line, `*.ingest.sentry.io`,
    whose suffix does NOT match `o123.ingest.de.sentry.io`, which is why that
    region host had to be added explicitly.
+5. **The consent listener reacts to the consent key only (fixed
+   2026-10-03).** `apps/web/lib/consent.ts` used to react to every
+   `storage` event, and PostHog writes localStorage on each capture, so two
+   open tabs re-ran each other's opt-in without end: 97% of all events were
+   `$opt_in`, the client rate limiter dropped real events, and two tabs
+   left open for about a day would use up the free plan's 1M monthly
+   events (data is dropped above the cap). `$opt_in` showing up in volume
+   means this regressed. Each hard load and each client-side navigation
+   sends one `$pageview` (only a repeat of the last captured URL is
+   skipped), and `$pageleave` is on (`capture_pageleave: true`). PostHog
+   also starts opted out (`opt_out_capturing_by_default: true`), and
+   sign-out re-applies the stored consent after `posthog.reset()`, which
+   deletes the SDK's opt-out flag.
 
 **Verifying: analytics is CONSENT GATED.** `initPostHog` runs only after the
 visitor grants analytics consent, deliberately, because Sentry runs as
 legitimate interest and product analytics does not. Zero events before
 accepting the cookie banner is correct behaviour, not a broken setup. Accept
-it, reload, then check Live.
+it, reload, then check Live: one `$pageview` per page load and no `$opt_in`,
+even with two tabs open.
 
 Full event checklist in `docs/analytics-verification.md`.
 

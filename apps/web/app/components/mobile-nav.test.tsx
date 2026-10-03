@@ -14,7 +14,9 @@ import { MobileNav } from "./mobile-nav";
  * menu wired to it.
  */
 
-const authState: { user: { id: string } | null } = { user: null };
+const authState: { user: { id: string; email?: string } | null } = {
+  user: null,
+};
 
 vi.mock("../../lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
@@ -72,6 +74,13 @@ describe("MobileNav", () => {
       "/dashboard/project",
     );
     expect(screen.getAllByRole("link", { name: "Dashboard" })).toHaveLength(1);
+  });
+  it("keeps the signed-in email out of PostHog autocapture and replays", async () => {
+    authState.user = { id: "u1", email: "user@example.com" };
+    openMenu();
+    expect(await screen.findByText("user@example.com")).toHaveClass(
+      "ph-no-capture",
+    );
   });
   it("renders no dialog until the menu is opened", () => {
     render(<MobileNav />);

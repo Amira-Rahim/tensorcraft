@@ -154,7 +154,9 @@ export default async function CertificateSharePage({ params }: Props) {
           </div>
 
           <p className="text-sm text-text-muted mb-1">Awarded to</p>
-          <div className="flex items-center gap-3 mb-8">
+          {/* ph-no-capture: the learner's name and avatar stay out of the
+              PostHog replays of everyone who opens this public link. */}
+          <div className="flex items-center gap-3 mb-8 ph-no-capture">
             {/* The share RPC exposes avatar_url for exactly this render; a
                 dead URL settles to the initials monogram, never a broken
                 image (CharacterAvatar owns the failure path). */}

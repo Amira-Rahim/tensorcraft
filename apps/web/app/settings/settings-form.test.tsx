@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from "@testing-library/react";
 
 /**
  * Settings brutalist redesign tests.
@@ -182,6 +188,27 @@ describe("SettingsForm", () => {
     const email = screen.getByLabelText("Email") as HTMLInputElement;
     expect(email.value).toBe("learner@example.com");
     expect(email.readOnly).toBe(true);
+  });
+
+  it("keeps the profile name and email out of PostHog autocapture and replays", async () => {
+    // Session replays record text unmasked by default, and dead-click
+    // capture (when the project enables it) sends a clicked element's text;
+    // the privacy policy promises PostHog never receives a name or email.
+    await renderForm();
+    // Scoped to the profile line: this file's UserAvatar mock also prints
+    // the name, and the avatar is covered by its own test.
+    const emailLine = screen.getByText("learner@example.com");
+    const nameLine = within(emailLine.parentElement!).getByText("Learner One");
+    expect(nameLine).toHaveClass("ph-no-capture");
+    expect(emailLine).toHaveClass("ph-no-capture");
+  });
+
+  it("keeps the connected GitHub handle out of PostHog replays", async () => {
+    await renderForm({ githubConnected: true, githubUsername: "octo-learner" });
+    fireEvent.click(screen.getByTestId("settings-tab-github"));
+    expect(await screen.findByText("@octo-learner")).toHaveClass(
+      "ph-no-capture",
+    );
   });
 
   it("active tab carries aria-selected + left-border primary indicator", async () => {

@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { AuthForm } from "./auth-form";
+
+const otp = vi.hoisted(() => ({
+  error: null as null | { message: string },
+}));
 
 vi.mock("../../lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
@@ -10,10 +14,14 @@ vi.mock("../../lib/supabase/client", () => ({
         data: { subscription: { unsubscribe: vi.fn() } },
       }),
       signInWithOAuth: () => Promise.resolve({ error: null }),
-      signInWithOtp: () => Promise.resolve({ error: null }),
+      signInWithOtp: () => Promise.resolve({ error: otp.error }),
     },
   }),
 }));
+
+beforeEach(() => {
+  otp.error = null;
+});
 
 vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(""),
@@ -76,6 +84,34 @@ describe("AuthForm brutalist polish", () => {
       expect(btn.className).toMatch(/rounded-none/);
       expect(btn.className).toMatch(/font-mono/);
     }
+  });
+
+  it("keeps the typed email out of PostHog autocapture once the link is sent", async () => {
+    render(<AuthForm />);
+    fireEvent.change(screen.getByPlaceholderText(/you@example\.com/i), {
+      target: { value: "learner@example.com" },
+    });
+    const form = screen
+      .getByRole("button", { name: /send magic link/i })
+      .closest("form");
+    fireEvent.submit(form!);
+    expect(await screen.findByText("learner@example.com")).toHaveClass(
+      "ph-no-capture",
+    );
+  });
+
+  it("keeps a server error that may echo the email out of PostHog", async () => {
+    // GoTrue's invalid-address errors quote the submitted address.
+    otp.error = { message: 'Email address "learner@example.con" is invalid' };
+    render(<AuthForm />);
+    fireEvent.change(screen.getByPlaceholderText(/you@example\.com/i), {
+      target: { value: "learner@example.con" },
+    });
+    const form = screen
+      .getByRole("button", { name: /send magic link/i })
+      .closest("form");
+    fireEvent.submit(form!);
+    expect(await screen.findByText(/is invalid/)).toHaveClass("ph-no-capture");
   });
 
   it("no outline-none / outline:none in entire form markup", () => {

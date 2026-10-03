@@ -476,12 +476,12 @@ These metrics are computed from raw events and displayed on the internal analyti
 #### PostHog Setup
 
 - **Instance:** PostHog Cloud (EU region) for GDPR compliance. Self-hosted migration path documented for future scale.
-- **Client SDK:** `posthog-js` initialized in `apps/web/app/providers.tsx`. The wrapper in `packages/analytics` ensures all events pass through a single typed interface.
+- **Client SDK:** `posthog-js` initialized in `apps/web/lib/posthog.ts`, called from the consent-gated `apps/web/app/components/analytics-provider.tsx`. `apps/web/lib/analytics-events.ts` (`track()`) ensures all events pass through a single typed interface.
 - **Server-side:** The Hono API (`apps/api`) uses `posthog-node` to track server-side events (e.g., `checkout_completed` from Stripe webhooks, `github_commit_pushed` from the commit flow).
 - **Feature Flags:** PostHog feature flags gate new content and UI experiments. Flags are evaluated server-side in Next.js middleware for instant page-level gating.
-- **Session Replay:** Enabled for 10% of sessions initially. Sampling rate adjustable via PostHog dashboard. Replays are auto-tagged with `lessonId` and `worldId` for targeted review.
+- **Session Replay:** Enabled for 10% of sessions initially. Sampling rate adjustable via PostHog dashboard. Replays are auto-tagged with `lessonId` and `worldId` for targeted review. (Actual state on 2026-10-03: the project records 100% of consenting sessions, unsampled and untagged, and the privacy policy does not disclose replay; owner decision pending, `docs/post-launch-backlog.md` B0.)
 - **Data Retention:** Raw events retained for 12 months. Aggregated metrics retained indefinitely.
-- **PII Policy:** No PII (name, email) is sent to PostHog. Users are identified by a hashed `userId`. Email-based cohort analysis is done in Supabase directly.
+- **PII Policy:** No PII (name, email) is sent to PostHog. Users are identified by their Supabase user id (a random UUID, not hashed). Elements that render a name, email or handle carry `ph-no-capture`, which keeps them out of autocapture and blanks them in replays. Email-based cohort analysis is done in Supabase directly.
 
 ---
 

@@ -181,8 +181,9 @@ export function AuthForm() {
         </div>
       )}
 
+      {/* ph-no-capture: GoTrue's invalid-address errors quote the email. */}
       {error && (
-        <div className="mb-6 border border-error/30 bg-error/10 px-4 py-3 text-sm text-error font-mono">
+        <div className="mb-6 border border-error/30 bg-error/10 px-4 py-3 text-sm text-error font-mono ph-no-capture">
           {error}
         </div>
       )}
@@ -215,8 +216,9 @@ export function AuthForm() {
           </div>
           <p className="text-text-muted text-sm font-mono mb-4">
             We sent a magic link to{" "}
-            <strong className="text-text-primary">{email}</strong>. Click the
-            link and you&apos;ll be taken to your dashboard automatically.
+            <strong className="text-text-primary ph-no-capture">{email}</strong>
+            . Click the link and you&apos;ll be taken to your dashboard
+            automatically.
           </p>
           <p className="text-text-muted text-xs font-mono mb-6">
             Didn&apos;t receive it? Check your spam folder or{" "}

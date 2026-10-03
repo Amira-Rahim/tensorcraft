@@ -50,6 +50,24 @@ describe("certificates/[id] share page", () => {
     expect(html).toContain("Amira Salah");
   });
 
+  it("keeps the learner's name and avatar out of PostHog replays", async () => {
+    // A third party's name and avatar URL would otherwise sit in the
+    // session replay of every consenting visitor who opens the link.
+    stubFetch(RECORD);
+    const doc = new DOMParser().parseFromString(
+      await renderPage(),
+      "text/html",
+    );
+    const name = Array.from(doc.querySelectorAll("p")).find(
+      (p) => p.textContent === "Amira Salah",
+    );
+    const block = name?.closest(".ph-no-capture");
+    expect(block).not.toBeNull();
+    expect(
+      block?.querySelector('[data-testid^="character-avatar"]'),
+    ).not.toBeNull();
+  });
+
   it("falls back to the initials monogram when there is no avatar URL", async () => {
     stubFetch({ ...RECORD, user_avatar_url: null });
     const html = await renderPage();

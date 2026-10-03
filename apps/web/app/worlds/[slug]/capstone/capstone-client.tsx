@@ -289,7 +289,9 @@ function CertificateCard({
         {worldDisplayName}: {worldSpecialization}
       </div>
       <div className="font-mono mb-6" style={{ fontSize: 12, color: muted }}>
-        Issued to: {displayName}
+        {/* ph-no-capture on the name only: it stays out of PostHog
+            replays while the rest of the line stays readable there. */}
+        Issued to: <span className="ph-no-capture">{displayName}</span>
         {issuedLabel && <> &middot; {issuedLabel}</>} &middot; Tensorcraft
       </div>
 

@@ -89,6 +89,12 @@ describe("learning dashboard", () => {
       screen.queryByRole("link", { name: "Continue course →" }),
     ).toBeNull();
   });
+  it("keeps the learner's name out of PostHog autocapture and replays", () => {
+    render(<DashboardView {...dashboardFixture()} />);
+    expect(screen.getByText(/^Welcome (back|aboard), Ada$/)).toHaveClass(
+      "ph-no-capture",
+    );
+  });
   it("has no accessibility violations", async () => {
     const { axe } = await import("vitest-axe");
     const { container } = render(

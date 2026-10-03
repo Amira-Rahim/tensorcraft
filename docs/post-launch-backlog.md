@@ -963,7 +963,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - Propagate account deletion to PostHog persons via their API, and
     one-time-scrub existing person properties: `identify()` sent the
     account email until 2026-08-16, so persons created before then
-    still carry it EU-side.
+    still carry it EU-side. (2026-10-02: the scrub half is moot. The EU
+    project went live 2026-08-26, after the fix, and a HogQL count found
+    0 persons with an `email` property. Deletion propagation is still
+    open; recordings need deleting too. See "PostHog data audit
+    follow-ups (2026-10-03)".)
   - Legacy waitlist rows auto-subscribed under the pre-050 default
     (`subscribed = true` without an affirmative opt-in): re-consent
     campaign or purge; owner decision.
@@ -5074,3 +5078,147 @@ docs/superpowers/specs/2026-09-24-lesson-tightening-design.md (approved
   axe's `scrollable-region-focusable` rule checks under the wcag2a tag the
   suite runs. So any fix depends on width. Found in the Task 9 quality
   review of docs/superpowers/plans/2026-09-24-lesson-tightening.md.
+
+## PostHog data audit follow-ups (2026-10-03)
+
+Source: the 2026-10-02 audit of PostHog EU project 257980 (all data from
+2026-08-26 to 2026-10-02, read-only HogQL plus a code trace). Fixed on
+2026-10-03, uncommitted at the time of writing:
+
+- [x] **Cross-tab `$opt_in` loop.** `apps/web/lib/consent.ts` forwarded every
+  `storage` event, and each one re-ran `opt_in_capturing()`. posthog-js
+  writes localStorage on every capture, so two open tabs fed each other:
+  97% of all events, a drained client rate limiter that dropped real events,
+  and a Supabase `getUser` call per event. Now filtered to the consent key,
+  opt-in only when opted out, and `captureEventName: false`. A two-tab
+  Playwright run went from 927 `$opt_in` in 20 s to 0.
+- [x] **Double `$pageview` on every hard load with stored consent** (init
+  capture plus the route effect; 28% of production pageviews). One
+  deduping capture helper that skips only a repeat of the last captured
+  URL. `$current_url` now comes from posthog-js (the full URL) instead of a
+  rebuilt relative path.
+- [x] **`$pageleave` never captured** (`capture_pageview: false` turns the
+  SDK default off), so the last page of every visit had no duration or
+  scroll depth. `capture_pageleave: true`.
+- [x] **The account email reached PostHog** through the user-menu avatar's
+  `aria-label` (one event, 2026-09-17). `UserAvatar` has a `decorative`
+  mode (no name in any attribute, clicks pass through to the labelled
+  button), and identity elements carry `ph-no-capture`: avatars, the
+  user-menu and mobile-nav email, settings name, email and GitHub handle,
+  the dashboard greeting, the magic-link confirmation and auth error box,
+  the capstone "Issued to" name, and the public certificate's name block.
+- [x] **Signing out could resume tracking after a consent withdrawal**
+  (found in review). `posthog.reset()` deletes the SDK's shared opt-out
+  flag; the old unfiltered storage listener happened to restore it from
+  another tab. `reset()` now re-applies the stored consent, and PostHog
+  starts opted out (`opt_out_capturing_by_default: true`).
+
+Reading pre-fix data: drop `$opt_in`; expect duplicate pageviews and lost
+events in multi-tab sessions; exclude the owner (the only identified person,
+created 2026-09-17), `$host` containing `localhost`, and the 2026-10-01
+17:11 UTC automation burst (desktop Chrome 130, and "iOS 15" Mobile Safari
+reporting a 480x720 screen with a 375x667 viewport). `$pageview`
+`$current_url` was a relative path before 2026-10-03, so group pageviews by
+`$pathname` across that date. After those, PostHog saw about two external
+visitors between 2026-08-26 and 2026-10-02.
+
+Privacy:
+
+- [ ] **(B0) Session replay is on but undisclosed.** Project settings record
+  100% of consenting sessions (replay, console logs, heatmaps; default
+  masking, 30-day retention), and `apps/web/lib/posthog.ts` does not turn
+  them off. The policy promises "pageviews and product events"
+  (`apps/web/app/privacy/page.tsx:165`; the "Session recording is off" line
+  at `:177` is about Sentry). Owner call: disable it in the init options
+  (`disable_session_recording`, `enable_heatmaps: false`,
+  `enable_recording_console_log: false`) and in the project, or disclose it,
+  sample it (`docs/tech-spec.md:482` says 10%), mask text, and version
+  consent so earlier "accepted" values are asked again.
+- [ ] **(B1) Server-side PostHog events ignore the banner.** `payment_*`
+  (`apps/api/src/routes/payments.ts`), `code_pushed`
+  (`apps/api/src/routes/github.ts`) and `$exception` (user context from
+  `apps/api/src/middleware/auth.ts`) go out keyed to the Supabase user id
+  whatever the visitor chose, against `privacy/page.tsx:163-171`. None sent
+  yet. Gate them on a stored consent signal, or state a legal basis.
+- [ ] **(B2) Precise location is stored.** Events and the identified person
+  carry city, postal code and coordinates although `anonymize_ips` is on;
+  the policy says nothing about location. Strip below country or region
+  with a PostHog transformation (or `$geoip_disable`), then state the
+  precision in the policy.
+- [ ] **(B2) Certificate page titles carry the learner's name** into the
+  `$pageview` `title` property (`apps/web/app/certificates/[id]/page.tsx:74-75`),
+  and replays record the `og:` metas in the page head (the visible name
+  block is `ph-no-capture` since 2026-10-03). Use a generic `<title>` and
+  keep the name in the Open Graph title, or strip it in `before_send`; for
+  the metas, set `session_recording.slimDOMOptions.headMetaSocial`.
+- [ ] **(B2) Consent flow.** "Cookie settings" does not reopen the banner
+  until a full reload (`cookie-consent.tsx` reads the key once on mount);
+  opting out leaves the `ph_` cookie (`opt_out_persistence_by_default`);
+  stored consent has no version; the banner stays up in other open tabs
+  after Accept.
+- Deletion propagation: see "Privacy deferrals from the 2026-08-16 policy
+  audit" in section 7 (now also covers recordings).
+
+Measurement (needed before any funnel number, and before the B3 gate):
+
+- [ ] **(B0) The internal-traffic filter matches nobody.** Cohort 221371
+  keys on `$internal_or_test_user`, which nothing sets, and anonymous
+  visitors get no person (identified-only profiles). Set
+  `internal_or_test_user_hostname: 'localhost'`, register a persisted
+  `tc_internal` super property (owner account, or a one-time
+  `?tc_internal=1`), filter on event properties, and turn "Filter test
+  accounts" on by default.
+- [ ] **(B0) Usage alerts.** Free plan, hard cap 1M events a month (data
+  dropped above it): billing alert at 250k, insight alert on daily
+  `$opt_in` above 50 as a loop tripwire.
+- [ ] **(B2) Dev servers send to the production project** (`localhost:3001`
+  events 2026-08-26/27). Separate dev project key, or the hostname flag.
+- [ ] **(B2) `signup_completed` is not a signup.** It fires on every
+  Supabase `SIGNED_IN`, including tab refocus (169 events for one account;
+  `apps/web/lib/supabase/session-listener.tsx:102-117`). Fire once for a
+  new account (account age plus a per-user key, or decided server-side in
+  the auth callback); treat every historical value as invalid.
+- [ ] **(B2) Reverse proxy** (Installation Health fails; ad blockers on a
+  JavaScript audience): Next.js rewrites under a neutral path (not
+  `/ingest`), `ui_host`, then narrow the CSP.
+- [ ] **(B3) First-visit mount events are lost.** `lesson_started`,
+  `pricing_page_viewed`, `paywall_hit` and similar fire before Accept and
+  `capture()` drops them. Queue in memory and flush after opt-in, or re-fire
+  page-level events once analytics is ready.
+- [ ] **(B3) Tabs initialised together split one person into several ids.**
+  The consent broadcast initialises every open tab at once; each mints its
+  own distinct id, and `consent_granted` fires once per tab. Initialise only
+  in the visible tab.
+- [ ] **(B3) KPI formulas** in `docs/tech-spec.md:464-472` and
+  `scripts/analytics/module1-baseline.mjs` use events that do not exist
+  (`exercise_started`, `checkout_completed`, `attemptNumber`) and include
+  internal traffic. Define B3's "users" as DB accounts and "data" as
+  consented module-1 starts after these fixes. Dashboard: the existing
+  "Success-metrics dashboard + alerts" operator item.
+- [ ] **(B1) `payment_completed` double count**: the client sends it on every
+  purchase-success mount and the webhook sends it too. Count revenue from
+  `$lib = posthog-node` only, or drop the client event.
+- [ ] **(B1) No posthog-node event has ever arrived.** Consistent with zero
+  payments, but `docs/deployment-guide.md:47` names `POSTHOG_KEY` while the
+  API reads `POSTHOG_PROJECT_TOKEN`; confirm the Fly secret name.
+- [ ] **(B5) Launch links carry no UTMs** (zero tagged visits so far).
+- [ ] **(B9) Blog lesson links carry internal UTMs**
+  (`apps/web/app/blog/[slug]/lesson-link.tsx:25`) that overwrite the
+  session's real campaign.
+- [ ] **(B9) Per-path Web Vitals are attributed to the next page**
+  (`$pathname` at flush); break down by `$current_url`.
+
+Performance (same data):
+
+- [ ] **(B2) `/pricing` layout shift, CLS 0.22-0.34 on hard loads.**
+  `pricing-tiers.tsx` calls `useSearchParams` under
+  `<Suspense fallback={null}>` (`apps/web/app/pricing/page.tsx:148`), so
+  the static HTML has no tier markup and the grid appears after hydration.
+  Read `searchParams` on the server, or isolate the selection restore.
+- [ ] **(B2) Lesson LCP about 2.9 s against 0.84 s for static pages.** The
+  Briefing is hidden until hydration (`lesson-steps.tsx:1853`), the LCP
+  portrait is lazy (`packages/ui/src/scene-portrait.tsx:63`), and Sandpack
+  is imported statically through the mdx barrel
+  (`packages/ui/src/mdx/exercise.tsx:14` via `mdx/index.ts:7`).
+- [ ] **(B9) No reload on `ChunkLoadError`** (seen 2026-09-17 after a
+  deploy).

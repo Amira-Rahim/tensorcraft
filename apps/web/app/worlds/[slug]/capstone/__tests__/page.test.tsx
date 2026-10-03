@@ -5,6 +5,7 @@ import {
   fireEvent,
   waitFor,
   act,
+  within,
 } from "@testing-library/react";
 
 // ─── Mocks ─────────────────────────────────────────────────────────────
@@ -317,6 +318,12 @@ describe("CapstonePage, Phase 11 §11d", () => {
     expect(cert).toBeInTheDocument();
     expect(cert.className).toContain("rounded-none");
     expect(cert.className).toContain("brutalist-shadow");
+  });
+
+  it("keeps the learner's name on the certificate card out of PostHog replays", async () => {
+    await renderPage();
+    const cert = screen.getByTestId("certificate-card");
+    expect(within(cert).getByText("Amira")).toHaveClass("ph-no-capture");
   });
 
   it("stats cards show real values derived from progress + attempts", async () => {

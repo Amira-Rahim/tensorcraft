@@ -101,6 +101,15 @@ Conversion repairs to the current product, most of them trivial. **Several resto
 
 **Treat all historical funnel data as unreliable, not merely sparse.** Rates were computed against a doubled denominator, and first-session behaviour - the entire acquisition and activation path - was never recorded at all.
 
+### P0 - PostHog data integrity (found 2026-10-02, fixed 2026-10-03)
+
+- [x] **Pageviews were double-counted again, by a different path.** On every hard load with stored consent, the consent handler's init capture and the route effect captured the same URL in one commit (28% of production pageviews). One deduping helper now sends every `$pageview`.
+- [x] **A cross-tab storage loop made 97% of all events `$opt_in`** and drained the client rate limiter, which dropped real events in any session with two tabs open. The consent listener now reacts to the consent key only.
+- [x] **`$pageleave` was never captured**, so until 2026-10-03 the last page of every visit had no duration or scroll depth (earlier pages carry theirs on the next `$pageview`).
+- [x] **Signing out could resume tracking after a consent withdrawal.** `posthog.reset()` deletes the SDK's opt-out flag; `reset()` now re-applies the stored consent, and PostHog starts opted out until consent opts it in.
+
+**Filter PostHog data from 2026-08-26 to 2026-10-03 before using it:** drop `$opt_in`, the owner, `localhost` hosts and the 2026-10-01 automation burst, and expect duplicates and gaps in multi-tab sessions. `$pageview` `$current_url` was a relative path before 2026-10-03 and the full URL after, so group pageviews by `$pathname` across that date. Open items: `docs/post-launch-backlog.md`, "PostHog data audit follow-ups (2026-10-03)".
+
 ### Still open from the 2026-07-21 re-audit
 
 Tracked canonically in `docs/audits/launch-blockers-history-2026-08-23.md`; not duplicated here. Status has moved since this section was first written: the six Tier 1 defects (world-callable `SECURITY DEFINER` RPCs, middleware SPOF, paying customers shown the paywall, checkout hang/double-charge, missing signup instrumentation, false guest-progress notice) were **fixed in code the same day** - one blocking operator step remains (apply migration `039`). Everything else open lives in that doc's Tier 1-OPS (operator/distribution setup), Tier 2 (fix in week 1, pre-ad-spend) and Tier 3 (fix before ~10k users). One item this list previously carried was stale: `immutable` headers on `/vendor`/`/models` shipped 2026-07-21 (`next.config.ts`).

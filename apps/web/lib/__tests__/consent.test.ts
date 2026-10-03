@@ -73,7 +73,37 @@ describe("analytics consent", () => {
     const off = onConsentChange(handler);
     handler.mockClear();
 
-    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new StorageEvent("storage", { key: CONSENT_KEY }));
+    expect(handler).toHaveBeenCalledTimes(1);
+    off();
+  });
+
+  it("ignores storage writes to other keys, so open tabs cannot ping-pong", () => {
+    // PostHog persists its own state to localStorage on every capture, and
+    // each write fires `storage` in every other open tab. Reacting to those
+    // made two tabs re-trigger each other without end: tens of thousands of
+    // $opt_in events in production, and a drained client rate limiter that
+    // dropped real events.
+    const handler = vi.fn();
+    const off = onConsentChange(handler);
+    handler.mockClear();
+
+    window.dispatchEvent(
+      new StorageEvent("storage", { key: "ph_phc_test_posthog" }),
+    );
+    window.dispatchEvent(
+      new StorageEvent("storage", { key: "tc-lesson-progress" }),
+    );
+    expect(handler).not.toHaveBeenCalled();
+    off();
+  });
+
+  it("reacts when another tab clears all of localStorage", () => {
+    const handler = vi.fn();
+    const off = onConsentChange(handler);
+    handler.mockClear();
+
+    window.dispatchEvent(new StorageEvent("storage", { key: null }));
     expect(handler).toHaveBeenCalledTimes(1);
     off();
   });

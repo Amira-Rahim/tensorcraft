@@ -274,12 +274,12 @@ production launch (see `docs/privacy-compliance.md`).
 
 ### Product Analytics - PostHog (EU instance)
 
-- **Web** - `apps/web/lib/posthog.ts` handles client-side init,
-  mounted via `apps/web/app/posthog-provider.tsx`. Consent-gated via
-  the `tc-cookie-consent` localStorage flag.
+- **Web** - `apps/web/lib/posthog.ts` handles client-side init, called
+  from `apps/web/app/components/analytics-provider.tsx`. Consent-gated via
+  the `tc-cookie-consent` localStorage flag (`apps/web/lib/consent.ts`).
 - **API** - `apps/api/src/lib/posthog.ts` exposes a `posthog-node`
   client for webhook-triggered conversion events. Only constructed
-  when `POSTHOG_KEY` is set.
+  when `POSTHOG_PROJECT_TOKEN` and `POSTHOG_HOST` are set.
 
 Host **must** be `https://eu.posthog.com` (enforced by default in
 both init paths) for GDPR data residency. DPA required - see

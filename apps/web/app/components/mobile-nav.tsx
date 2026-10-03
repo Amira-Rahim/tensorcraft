@@ -169,7 +169,9 @@ export function MobileNav() {
                   >
                     Blog
                   </Link>
-                  <div className="font-mono text-xs text-text-muted text-center mt-2 truncate">
+                  {/* ph-no-capture: identity text stays out of PostHog
+                      autocapture and session replays. */}
+                  <div className="font-mono text-xs text-text-muted text-center mt-2 truncate ph-no-capture">
                     {user.email}
                   </div>
                 </div>

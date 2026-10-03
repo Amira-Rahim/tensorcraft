@@ -127,7 +127,9 @@ export function DashboardView(props: DashboardProps) {
             </p>
           </div>
         </div>
-        <p className={styles.welcome}>
+        {/* ph-no-capture: the learner's name stays out of PostHog
+            autocapture and session replays. */}
+        <p className={`${styles.welcome} ph-no-capture`}>
           {props.resumeLabel === "Start learning →"
             ? "Welcome aboard"
             : "Welcome back"}

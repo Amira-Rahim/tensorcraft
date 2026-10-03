@@ -560,14 +560,16 @@ export function SettingsForm({
             <div className="flex flex-wrap items-center gap-5 mb-8 break-all">
               <UserAvatar url={avatarUrl} name={displayName} size={56} />
               <div>
+                {/* ph-no-capture: identity text stays out of PostHog
+                    autocapture and session replays. */}
                 <div
-                  className="font-mono"
+                  className="font-mono ph-no-capture"
                   style={{ fontSize: 13, color: "var(--tc-text)" }}
                 >
                   {displayName || "Unnamed"}
                 </div>
                 <div
-                  className="font-mono"
+                  className="font-mono ph-no-capture"
                   style={{ fontSize: 12, color: "var(--tc-muted)" }}
                 >
                   {email}
@@ -712,8 +714,10 @@ export function SettingsForm({
                   padding: "16px 20px",
                 }}
               >
+                {/* ph-no-capture: identity text stays out of PostHog
+                    autocapture and session replays. */}
                 <div
-                  className="font-mono"
+                  className="font-mono ph-no-capture"
                   style={{ fontSize: 12, color: "var(--tc-text)" }}
                 >
                   @{githubUser}
