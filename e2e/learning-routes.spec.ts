@@ -83,14 +83,13 @@ for (const [width, colorScheme] of [
     await expect(
       experiment.getByText(/First changed-case attempt: correct/),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
-    await expect(experiment).toHaveCount(0);
     const reference = page.locator("details").filter({
       has: page.getByText(
         "Reference: flat order, reshape code, and the full archive example",
         { exact: true },
       ),
     });
+    await reference.locator("summary").click();
     await expect(reference).toHaveAttribute("open", "");
     await expect(
       reference.getByText("tensor-shapes.ts", { exact: true }),
@@ -99,13 +98,18 @@ for (const [width, colorScheme] of [
       reference.getByText("garbled-channels.ts", { exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
+      page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
     ).toBeDisabled();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth + 1,
       ),
     ).toBe(true);
+    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    await expect(experiment).toHaveCount(0);
+    await expect(
+      page.getByRole("group", { name: "Step 3 of 5: Challenge", exact: true }),
+    ).toBeVisible();
     expect(errors).toEqual([]);
     await testInfo.attach("scripted-path-time.json", {
       body: JSON.stringify({

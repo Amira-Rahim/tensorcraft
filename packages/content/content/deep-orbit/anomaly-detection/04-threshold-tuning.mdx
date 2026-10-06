@@ -190,7 +190,11 @@ const comparisons = candidates.map((c) => ({
 
 For a cost-based decision, define `cost = falseAlarmCost * FP + missCost * FN` and choose the validation cutoff with the lowest cost. Use data representative of deployment, or adjust estimates for its expected class frequencies. An alert-budget or minimum-recall constraint is another explicit objective. Decide it before comparing candidates, then check the chosen rule on the held-out test.
 
+<ConceptReference summary="Practice: choose a policy and check held-out cases">
+
 <LearningExperiment id="threshold" />
+
+</ConceptReference>
 
 The crew's two deployments have different costs and constraints.
 

@@ -84,116 +84,124 @@ With comparable starting weights, temperature has the larger numerical contribut
 />
 
 
-## Why Scale Features
+## Keep each feature on its own scale
+
+The visual uses the challenge's four rows: `[20, 0.2]`, `[22, 0.8]`,
+`[24, 0.4]`, and `[26, 0.6]`. Columns are temperature and signal strength.
+Their units differ, so fit one set of statistics per column.
+
+A **z-score** subtracts the column mean and divides by its standard deviation,
+its spread around that mean. `tf.moments(batch, 0)` reduces down the rows,
+returning each column's mean and population variance. The square root of
+variance is the standard deviation.
+
+<CodeBlock language="typescript" title="fit-and-scale.ts">
+{`const { mean, variance } = tf.moments(batch, 0);
+const std = variance.sqrt();
+variance.dispose();
+
+const normalized = tf.tidy(() => {
+  const divisor = tf.where(std.equal(0), tf.onesLike(std), std);
+  return batch.sub(mean).div(divisor);
+});`}
+</CodeBlock>
+
+The challenge separates this calculation into `fitStats(rows)` and
+`scaleFeatures(rows, offset, scale)`. Return the saved mean and std from the
+first function; use the supplied offset and scale in the second.
+
+For this batch, mean is `[23, 0.5]` and std is approximately `[2.236, 0.224]`.
+Broadcasting applies those two statistics to every row. `tf.where` chooses
+1 for a zero scale so constant training columns become zero, while the saved
+statistics stay unchanged. A changed future value then becomes its difference
+from the saved offset; the model has not learned that new variation.
+
+Fit statistics on training rows only. Reuse them for validation and future
+readings so the same raw value keeps the same meaning.
+
+## Run the fixed preview neuron
+
+The starter supplies Farah's model: two weights `[0.9, -1.4]`, bias `-0.3`,
+and sigmoid, a function that maps the weighted sum into 0 to 1. You are
+preparing its inputs and running it. Building and training models comes next.
+The score is not a calibrated probability.
+
+<CodeBlock language="typescript" title="score-the-scaled-input.ts">
+{`const scores = previewModel.predict(normalized); // [4, 1]
+
+// Inspect one of those readings as a one-row batch.
+const reading = tf.tensor1d([22, 0.8]);
+const oneScore = tf.tidy(() => {
+  const divisor = tf.where(std.equal(0), tf.onesLike(std), std);
+  const scaled = reading.sub(mean).div(divisor);
+  return previewModel.predict(scaled.expandDims(0));
+});
+reading.dispose();
+oneScore.dispose();`}
+</CodeBlock>
+
+`predict()` expects a batch. `expandDims(0)` makes one `[2]` reading into a
+`[1, 2]` batch. The returned prediction stays alive for its caller; temporary
+tensors are released. This path uses saved statistics even after the original
+training batch is disposed.
+
+## Compare with min-max scaling
+
+Min-max uses `(value - min) / (max - min)`. Fit each column's bounds with
+`batch.min(0)` and `batch.max(0)`, then reuse `scaleFeatures` with the minimum
+and range. The same zero-scale rule applies.
+
+<CodeBlock language="typescript" title="min-max-columns.ts">
+{`const min = batch.min(0);
+const max = batch.max(0);
+const range = max.sub(min);
+// Pass the minimum and range to your scaleFeatures function.
+// Keep min and max; release range after scaling.`}
+</CodeBlock>
+
+Nonconstant training columns span 0 to 1. A later value outside the fitted
+bounds can fall outside that range. Scaling changes numerical units; it does
+not decide which feature contains useful information.
+
+<ConceptReference summary="Reference: choosing a scaler and the supplied neuron">
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Min-max normalization is the arithmetic under a scroll progress bar. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0-1 so the bar can use it. Subtract the minimum, divide by the range: that's the entire formula, and it does the same job on a sensor channel that it does on a scroll position.
+Z-score centers a nonconstant training column at mean 0 and standard deviation
+1. Min-max maps its fitted bounds to 0 and 1. Outliers affect both methods:
+they change the mean and spread, or stretch the range. Known physical bounds
+can also supply min-max limits.
 
-For this neural network, scaling can help training. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. A typical temperature value is near 25 and a typical signal strength near 0.5, so temperature's numbers arrive about fifty times larger. With comparable weights, temperature contributes more to the weighted sum and can produce larger gradients. Scaling can make optimization easier; it does not decide which feature is informative. A trained model can still assign different weights to the features.
+The population variance used here divides by n. The usual unbiased sample
+variance divides by n minus 1; its square root is not an unbiased estimator
+of standard deviation. Use the population convention required by this task.
 
-Two names in the code below. The standard deviation is the typical distance between a value and its column's mean, so dividing by it measures a feature in its own units of spread: a z-score of 1 sits one typical distance above the mean, whatever the raw units were. `tf.moments` hands back the variance instead, that distance squared and averaged, so the standard deviation is `variance.sqrt()`. The averaging divides by the number of rows, n, which makes both statistics the population version. The usual unbiased sample variance divides by n minus 1. Its square root is larger than the population standard deviation when n > 1 and variance is nonzero; that square root is not itself an unbiased estimator of standard deviation.
+The starter builds the fixed neuron this way:
+
+<CodeBlock language="typescript" title="supplied-preview-neuron.ts">
+{`const previewModel = tf.sequential();
+previewModel.add(tf.layers.dense({
+  units: 1, activation: 'sigmoid', inputShape: [2],
+}));
+tf.tidy(() => previewModel.setWeights([
+  tf.tensor2d([[0.9], [-1.4]]), tf.tensor1d([-0.3]),
+]));`}
+</CodeBlock>
+
+For `[20, 0.2]`, the scaled row is approximately `[-1.342, -1.342]`.
+The weighted sum is about 0.371; sigmoid returns about 0.592. Without scaling,
+the temperature term alone is 18 and the output saturates near 1. The weights
+have not changed. A confident score does not establish that an input is
+familiar or that the answer is correct.
+
+</ConceptReference>
+
+<ConceptReference summary="Practice: a different scaler and reading">
+
+This separate practice case changes the dataset and frozen neuron. Use the
+statistics printed inside it, then return to the four-row batch in the challenge.
 
 <LearningExperiment id="normalization" />
-
-<ConceptReference summary="Reference: TensorFlow.js scalers and the exercise neuron">
-
-<CodeBlock language="typescript" title="normalization.ts">
-{`import * as tf from '@tensorflow/tfjs';
-
-// Sensor data: temperature in °C, signal strength as a 0-1 fraction
-const temperature = tf.tensor([20, 22, 19, 35, 28]);  // range: 19-35
-const signal = tf.tensor([0.1, 0.8, 0.3, 0.9, 0.5]);  // range: 0.1-0.9
-
-// Z-score normalization: center at 0, spread to ~1.
-// TFJS has no tensor.std(); moments() gives mean and variance together.
-function zNormalize(tensor: tf.Tensor) {
-  return tf.tidy(() => {
-  const { mean, variance } = tf.moments(tensor);
-  const std = variance.sqrt();
-  // where(condition, yes, no) selects per feature. A constant feature
-  // has std 0: use a divisor of 1, so its training values become 0.
-  const divisor = tf.where(std.equal(0), tf.onesLike(std), std);
-  return tensor.sub(mean).div(divisor);
-  });
-}
-
-// One argument you'll need the moment features live side by side in a
-// 2D batch: the AXIS. tf.moments(batch, 0) reduces DOWN axis 0 (down
-// the rows), producing one mean and one variance PER COLUMN, so each
-// feature is scaled by its own statistics. Without the axis you get a
-// single global mean over every number in the batch, which stirs
-// temperature and signal strength into one meaningless average.
-const batch = tf.stack([temperature, signal], 1);  // [5, 2]: 5 readings x 2 features
-const colMeans = tf.tidy(() => tf.moments(batch, 0).mean);
-// colMeans: [24.8, 0.52], one per column, not one for the whole batch
-
-const tempNorm = zNormalize(temperature);
-// [-0.80, -0.47, -0.97, 1.71, 0.54]: centered around 0
-
-const signalNorm = zNormalize(signal);
-// [-1.40, 0.94, -0.73, 1.27, -0.07]: same scale!
-
-// Min-max normalization: squeeze to [0, 1] range
-// (the scroll-progress formula, applied to sensors)
-function minMaxNormalize(tensor: tf.Tensor) {
-  return tf.tidy(() => {
-  const min = tensor.min();
-  const max = tensor.max();
-  const range = max.sub(min);
-  const divisor = tf.where(range.equal(0), tf.onesLike(range), range);
-  return tensor.sub(min).div(divisor);
-  });
-}
-
-const tempMinMax = minMaxNormalize(temperature);
-// [0.06, 0.19, 0.0, 1.0, 0.56]: all between 0 and 1`}
-</CodeBlock>
-
-A constant training feature has zero variance and zero range, so ordinary division produces invalid values. The examples use a divisor of 1 only for those zero scales. Constant training values then map to 0. Reuse that rule at inference: a changed value becomes its difference from the saved mean or minimum. That change needs investigation because training showed no variation in that feature.
-
-One practical wrinkle that bites in production: whatever mean and std you compute here, you must save. Inference data has to be normalized with the *training* statistics, not its own; otherwise the same reading maps to different numbers on different days, and your model quietly answers a different question each time.
-
-Which rows you compute them from matters too. Lesson 4 kept the validation rows out of training, and the statistics follow the same rule. Compute mean and std on the training rows only, then apply them to validation and to every later reading. Fitting them on training plus validation lets held-out information affect the model’s inputs.
-
-## When to Use Which
-
-Z-score is a common choice for neural network inputs. It centers each nonconstant training feature at mean 0 and standard deviation 1. Extreme values still affect both statistics; check outliers rather than assuming this scaler removes their influence.
-
-Min-max maps the fitted minimum and maximum to 0 and 1. Known physical bounds can supply those limits, as with pixel values. Fitted bounds are also usable, but later values can fall outside 0-1. One extreme value can compress the rest into a narrow range.
-
-
-## What the Preview Neuron Computes
-
-The exercise ends at a model, so here is all of it. `tf.sequential()` holds an ordered list of layers, and here the list is one entry long: a single dense unit that reads two features. Farah's frozen numbers are one weight per feature, 0.9 for temperature and -1.4 for signal strength, plus one bias of -0.3.
-
-<CodeBlock language="typescript" title="preview-neuron.ts">
-{`// One neuron, built and frozen: two features in, one verdict out.
-const neuron = tf.sequential();
-neuron.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }));
-
-// setWeights is positional: the kernel first, one weight per input feature
-// arranged as a column, then the bias, one number per unit. Farah's numbers
-// arrive as plain JS arrays, so each becomes a tensor on the way in.
-tf.tidy(() => neuron.setWeights([tf.tensor2d([[0.9], [-1.4]]), tf.tensor1d([-0.3])]));
-
-// predict reads a batch: [n, 2] rows in, [n, 1] verdicts out. Stack the two
-// z-scored columns from above the same way the raw batch was stacked.
-const normalizedBatch = tf.stack([tempNorm, signalNorm], 1);  // [5, 2]
-const verdicts = neuron.predict(normalizedBatch) as tf.Tensor;
-console.log(await verdicts.array());
-tf.dispose([temperature, signal, batch, colMeans, tempNorm, signalNorm,
-  tempMinMax, normalizedBatch, verdicts]);
-neuron.dispose();`}
-</CodeBlock>
-
-The neuron multiplies each normalized feature by its weight and adds the bias. It passes the total through sigmoid, `1 / (1 + Math.exp(-x))`, which squashes any number into the range 0 to 1.
-
-The numbers below come from the exercise's four-reading batch, not the five readings above: its per-column mean is `[23, 0.5]` and its std is `[2.24, 0.224]`. Against those stats, reading `[20, 0.2]` z-scores to `[-1.34, -1.34]`. The total is `0.9 * -1.34 + -1.4 * -1.34 - 0.3`, or `0.37`, and sigmoid of that is `0.59`. Reading `[22, 0.8]` z-scores to `[-0.45, 1.34]`, total `-2.58`, verdict `0.07`. Both are worth checking on a calculator. `predict()` runs that arithmetic for a whole batch, one row in, one score out. It always wants a batch, so a single reading goes in as one row of a `[1, 2]` tensor rather than the bare `[2]` you are holding.
-
-Now run those same four readings through the same neuron raw, without normalizing, and every verdict comes back 1.000000. The temperature term alone gets there: `0.9 * 20` is 18, and sigmoid is flat at the top long before signal strength contributes its `-1.4 * 0.2`. Normalized, the same neuron answers 0.59, 0.07, 0.67 and 0.57, and the lowest of the four belongs to `[22, 0.8]`, the reading with the strongest signal. Same weights, same bias, both times. Only the scales changed.
-
-Module 2 builds these layers and module 3 trains their weights. Tonight the layer is a fixed function you feed. Its score is not a calibrated probability. A familiar reading near the decision boundary can score near 0.5, while an unfamiliar reading can receive a confident score. Neither value tells you whether the model has seen that pattern before.
 
 </ConceptReference>
 

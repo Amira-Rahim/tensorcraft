@@ -149,11 +149,11 @@ const lesson = {
   consequence: { narrative: "c" },
 };
 
-const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
-const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
+const STEP_KEY = "tc_step_v2_deep-orbit_introduction-to-tensors";
+const MAX_KEY = "tc_step_max_v2_deep-orbit_introduction-to-tensors";
 
 function renderSteps(
-  entryStep: 0 | 1 | 3 = 0,
+  entryStep: 0 | 1 | 2 = 0,
   moduleEntry: {
     moduleSlug: string;
     previousModule?: string;
@@ -195,14 +195,14 @@ describe("account-owned lesson position", () => {
     nextLesson: null,
   };
   it("does not adopt a guest's final step or another account's position", () => {
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
-    localStorage.setItem(`${STEP_KEY}:account:alice`, "2");
-    localStorage.setItem(`${MAX_KEY}:account:alice`, "3");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
+    localStorage.setItem(`${STEP_KEY}:account:alice`, "1");
+    localStorage.setItem(`${MAX_KEY}:account:alice`, "2");
     const { rerender } = render(
       <LessonSteps {...props} reviewUserId="alice" />,
     );
-    expect(screen.getByRole("button", { name: /^Step 3:/ })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: /^Step 2:/ })).toHaveAttribute(
       "aria-current",
       "step",
     );
@@ -211,8 +211,8 @@ describe("account-owned lesson position", () => {
       "aria-current",
       "step",
     );
-    expect(screen.getByRole("button", { name: /^Step 6:/ })).toBeDisabled();
-    expect(localStorage.getItem(`${STEP_KEY}:account:alice`)).toBe("2");
+    expect(screen.getByRole("button", { name: /^Step 5:/ })).toBeDisabled();
+    expect(localStorage.getItem(`${STEP_KEY}:account:alice`)).toBe("1");
   });
   it("restores access to a completed account lesson without inventing a new completion", () => {
     vi.mocked(markLessonCompleted).mockClear();
@@ -231,13 +231,13 @@ describe("account-owned lesson position", () => {
         ]}
       />,
     );
-    expect(screen.getByRole("button", { name: /^Step 6:/ })).toBeEnabled();
+    expect(screen.getByRole("button", { name: /^Step 5:/ })).toBeEnabled();
     expect(markLessonCompleted).not.toHaveBeenCalled();
   });
 });
 
 describe("LessonSteps, segmented progress bar", () => {
-  it.each([1, 3] as const)(
+  it.each([1, 2] as const)(
     "opens explicit entry phase %s with earlier context available and no completion credit",
     (entryStep) => {
       vi.mocked(markLessonCompleted).mockClear();
@@ -250,7 +250,7 @@ describe("LessonSteps, segmented progress bar", () => {
       expect(
         screen.getByRole("button", { name: /^Step 1:/ }),
       ).not.toBeDisabled();
-      expect(screen.getByRole("button", { name: /^Step 6:/ })).toBeDisabled();
+      expect(screen.getByRole("button", { name: /^Step 5:/ })).toBeDisabled();
       expect(markLessonCompleted).not.toHaveBeenCalled();
     },
   );
@@ -260,8 +260,8 @@ describe("LessonSteps, segmented progress bar", () => {
     // Continue CTA is a request, not a default; the saved step used to
     // override it for every returning learner (audit 2026-09-20).
     localStorage.setItem(STEP_KEY, "1");
-    renderSteps(3);
-    expect(screen.getByRole("button", { name: /^Step 4:/ })).toHaveAttribute(
+    renderSteps(2);
+    expect(screen.getByRole("button", { name: /^Step 3:/ })).toHaveAttribute(
       "aria-current",
       "step",
     );
@@ -278,7 +278,7 @@ describe("LessonSteps, segmented progress bar", () => {
   it("renders one segment button per step", () => {
     renderSteps();
     const segments = screen.getAllByRole("button", { name: /^Step \d/ });
-    expect(segments).toHaveLength(6);
+    expect(segments).toHaveLength(5);
   });
 
   it("marks the current step segment with aria-current", () => {
@@ -288,51 +288,51 @@ describe("LessonSteps, segmented progress bar", () => {
   });
 
   it("jumps back to a visited step when its segment is clicked", () => {
-    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
     renderSteps();
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /^Step 1/ }));
-    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
   });
 
   it("disables segments beyond the furthest step reached", () => {
-    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
     renderSteps();
-    expect(screen.getByRole("button", { name: /^Step 4/ })).toBeDisabled();
-    expect(screen.getByRole("button", { name: /^Step 6/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^Step 3/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^Step 5/ })).toBeDisabled();
   });
 
   it("keeps forward segments clickable after jumping back", () => {
-    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
     renderSteps();
 
     fireEvent.click(screen.getByRole("button", { name: /^Step 1/ }));
-    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
 
-    const third = screen.getByRole("button", { name: /^Step 3/ });
+    const third = screen.getByRole("button", { name: /^Step 2/ });
     expect(third).not.toBeDisabled();
     fireEvent.click(third);
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 
   it("restores the furthest step reached from storage after going back in a previous visit", () => {
     // Earlier visit reached step 3 (index 2), then went back to the start.
     localStorage.setItem(STEP_KEY, "0");
-    localStorage.setItem(MAX_KEY, "2");
+    localStorage.setItem(MAX_KEY, "1");
     renderSteps();
 
-    expect(screen.getByText("1 / 6")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^Step 3/ })).not.toBeDisabled();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Step 2/ })).not.toBeDisabled();
   });
 
   it("persists the furthest step reached when navigating back", () => {
-    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
     renderSteps();
 
     fireEvent.click(screen.getByRole("button", { name: /^Step 1/ }));
     expect(localStorage.getItem(STEP_KEY)).toBe("0");
-    expect(localStorage.getItem(MAX_KEY)).toBe("2");
+    expect(localStorage.getItem(MAX_KEY)).toBe("1");
   });
 });
 
@@ -412,7 +412,7 @@ describe("LessonSteps, LessonShell layout", () => {
     expect(screen.queryByTestId("lesson-right")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
     expect(screen.queryByTestId("lesson-right")).toBeNull();
   });
 
@@ -428,7 +428,7 @@ describe("LessonSteps, LessonShell layout", () => {
     ).toHaveLength(1);
   });
 
-  it("renders the objectives in flow above the Concept body", () => {
+  it("keeps learning goals available after the visual-first Concept read", () => {
     renderSteps();
     fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
@@ -437,11 +437,10 @@ describe("LessonSteps, LessonShell layout", () => {
       '.lesson-step-content[data-layout="reading"]',
     )!;
     expect(
-      intro.compareDocumentPosition(body) & Node.DOCUMENT_POSITION_FOLLOWING,
+      body.compareDocumentPosition(intro) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    // The intro instance renders the objectives alone: no reading grid and no
-    // story-zone rule, which would hide them (they sit before the first
-    // heading). The read below it is the instance that hides the story zone.
+    expect(intro.closest("details")).not.toHaveAttribute("open");
+    // Goals remain rendered in their own partition, within an optional disclosure.
     const introContent = intro.querySelector("[data-testid='lesson-content']");
     expect(introContent).toHaveAttribute("data-visible", "LearningObjectives");
     expect(introContent).not.toHaveAttribute("data-layout");
@@ -450,8 +449,8 @@ describe("LessonSteps, LessonShell layout", () => {
   });
 
   it("caps the Takeaways prose and lists the terms after it", () => {
-    localStorage.setItem(STEP_KEY, "4");
-    localStorage.setItem(MAX_KEY, "4");
+    localStorage.setItem(STEP_KEY, "3");
+    localStorage.setItem(MAX_KEY, "3");
     render(
       <LessonSteps
         lesson={{
@@ -480,10 +479,10 @@ describe("LessonSteps, LessonShell layout", () => {
 
   it("collapses to a single column on the Consequence step", () => {
     // Reach the final step directly via persisted state.
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     renderSteps();
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
     expect(screen.queryByTestId("lesson-right")).not.toBeInTheDocument();
   });
 });
@@ -504,19 +503,19 @@ describe("LessonSteps, step navigation chrome", () => {
   });
 
   it("renders a bottom Back button once past the first step", () => {
-    localStorage.setItem(STEP_KEY, "2");
-    localStorage.setItem(MAX_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
+    localStorage.setItem(MAX_KEY, "1");
     renderSteps();
     expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
   });
 
   it("steps backward when the Back button is activated", () => {
-    localStorage.setItem(STEP_KEY, "2");
-    localStorage.setItem(MAX_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
+    localStorage.setItem(MAX_KEY, "1");
     renderSteps();
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /back/i }));
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
   });
 
   it("shows the lesson title in the chrome on every step but the Briefing and the Epilogue", () => {
@@ -534,10 +533,10 @@ describe("LessonSteps, step navigation chrome", () => {
     // leftover hash reads as a deep link that wins over the stored step.
     cleanup();
     window.history.replaceState(null, "", window.location.pathname);
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     renderSteps();
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
     expect(
       document.querySelector("[data-testid='lesson-chrome'] h1"),
     ).toBeNull();
@@ -548,8 +547,8 @@ describe("LessonSteps, step navigation chrome", () => {
   });
 
   it("puts one next-mission control in the nav row on the last step and no card in the body", () => {
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     render(
       <LessonSteps
         lesson={lesson}
@@ -632,11 +631,11 @@ describe("LessonSteps, step navigation chrome", () => {
   it("leaves no bottom padding under the Consequence step's last block", () => {
     // Padding there stops the last block's margin collapsing into the nav's
     // 40 px, which put the nav 88 px below it (120 with no next lesson).
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     renderSteps();
     const root = screen.getByRole("group", {
-      name: "Step 6 of 6: Epilogue",
+      name: "Step 5 of 5: Epilogue",
     }).firstElementChild;
     expect(root).toHaveClass("text-center", "pt-12");
     expect(root).not.toHaveClass("py-12");
@@ -646,13 +645,13 @@ describe("LessonSteps, step navigation chrome", () => {
     // The title card is the Briefing's H1, the chrome title is the H1 on
     // steps 2 to 5, and the closing card is step 6's (spec 2026-09-24,
     // section 6).
-    for (let step = 0; step < 6; step++) {
+    for (let step = 0; step < 5; step++) {
       localStorage.clear();
       window.history.replaceState(null, "", window.location.pathname);
       localStorage.setItem(STEP_KEY, String(step));
       localStorage.setItem(MAX_KEY, String(step));
       const { unmount } = renderSteps();
-      expect(screen.getByText(`${step + 1} / 6`)).toBeInTheDocument();
+      expect(screen.getByText(`${step + 1} / 5`)).toBeInTheDocument();
       const h1s = screen.getAllByRole("heading", { level: 1 });
       expect(h1s, `step ${step + 1}`).toHaveLength(1);
       expect(h1s[0]).toHaveTextContent(lesson.title);
@@ -666,7 +665,6 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(labels.map((l) => l.textContent)).toEqual([
       "Briefing",
       "Concept",
-      "Code",
       "Challenge",
       "Takeaways",
       "Epilogue",
@@ -693,28 +691,28 @@ describe("LessonSteps, step navigation chrome", () => {
     );
     // The last step is locked on arrival: its bar and label are dimmed by
     // class, since an inline opacity would beat the hover class.
-    expect(labels[5]).toHaveClass("opacity-45");
-    expect(labels[5].previousElementSibling).toHaveClass("opacity-45");
+    expect(labels[4]).toHaveClass("opacity-45");
+    expect(labels[4].previousElementSibling).toHaveClass("opacity-45");
     // The visible label is part of the accessible name (WCAG 2.5.3).
     expect(
-      screen.getByRole("button", { name: "Step 6: Epilogue" }),
+      screen.getByRole("button", { name: "Step 5: Epilogue" }),
     ).toBeDisabled();
-    expect(screen.queryByText("6 / 6")).toBeNull();
-    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+    expect(screen.queryByText("5 / 5")).toBeNull();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
   });
 
   it("keeps the analytics step name for the last step", () => {
     vi.mocked(track).mockClear();
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     renderSteps();
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
-    expect(screen.getByText("6 / 6").parentElement).toHaveTextContent(
-      "6 / 6 · Epilogue",
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5").parentElement).toHaveTextContent(
+      "5 / 5 · Epilogue",
     );
     expect(track).toHaveBeenCalledWith(
       "lesson_step_viewed",
-      expect.objectContaining({ step: 5, stepName: "Consequence" }),
+      expect.objectContaining({ step: 4, stepName: "Consequence" }),
     );
   });
 });
@@ -730,10 +728,10 @@ describe("LessonSteps, completion signal dedupe (R3-7 / diff review D1)", () => 
     // The refire scenario: a finished lesson is reloaded. prevStepRef alone
     // cannot catch this (the effect's first run stamps prev=0 before the
     // restore's setCurrentStep(5) lands), so restoredAtFinalStepRef must.
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     renderSteps();
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
     expect(trackLessonCompleted).not.toHaveBeenCalled();
     expect(emitSkillEvent).not.toHaveBeenCalled();
     // The completion WRITE always runs (idempotent upsert + guest bridge).
@@ -741,12 +739,12 @@ describe("LessonSteps, completion signal dedupe (R3-7 / diff review D1)", () => 
   });
 
   it("fires completion analytics exactly once when walking into step 5 in-session", () => {
-    localStorage.setItem(STEP_KEY, "4");
-    localStorage.setItem(MAX_KEY, "4");
+    localStorage.setItem(STEP_KEY, "3");
+    localStorage.setItem(MAX_KEY, "3");
     renderSteps();
-    expect(screen.getByText("5 / 6")).toBeInTheDocument();
+    expect(screen.getByText("4 / 5")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /continue|complete/i }));
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
     expect(trackLessonCompleted).toHaveBeenCalledTimes(1);
   });
 });
@@ -785,8 +783,8 @@ describe("LessonSteps, patch award moment", () => {
   }
 
   it("reveals the patch when the module's last remaining lesson completes in-session", () => {
-    localStorage.setItem(STEP_KEY, "4");
-    localStorage.setItem(MAX_KEY, "4");
+    localStorage.setItem(STEP_KEY, "3");
+    localStorage.setItem(MAX_KEY, "3");
     renderWithLessons(closingLessons);
     fireEvent.click(screen.getByRole("button", { name: /continue|complete/i }));
     expect(screen.getByTestId("patch-award")).toBeInTheDocument();
@@ -794,16 +792,16 @@ describe("LessonSteps, patch award moment", () => {
   });
 
   it("does not award on a mount restored to the final step", () => {
-    localStorage.setItem(STEP_KEY, "5");
-    localStorage.setItem(MAX_KEY, "5");
+    localStorage.setItem(STEP_KEY, "4");
+    localStorage.setItem(MAX_KEY, "4");
     renderWithLessons(closingLessons);
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
     expect(screen.queryByTestId("patch-award")).not.toBeInTheDocument();
   });
 
   it("does not award while another lesson in the module is still open", () => {
-    localStorage.setItem(STEP_KEY, "4");
-    localStorage.setItem(MAX_KEY, "4");
+    localStorage.setItem(STEP_KEY, "3");
+    localStorage.setItem(MAX_KEY, "3");
     renderWithLessons([
       ...closingLessons,
       {
@@ -815,7 +813,7 @@ describe("LessonSteps, patch award moment", () => {
       },
     ]);
     fireEvent.click(screen.getByRole("button", { name: /continue|complete/i }));
-    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.getByText("5 / 5")).toBeInTheDocument();
     expect(screen.queryByTestId("patch-award")).not.toBeInTheDocument();
   });
 });
@@ -836,7 +834,7 @@ describe("LessonSteps, focus management", () => {
     fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
 
-    const step = screen.getByRole("group", { name: /^Step 2 of 6: Concept$/ });
+    const step = screen.getByRole("group", { name: /^Step 2 of 5: Concept$/ });
     expect(document.activeElement).toBe(step);
     expect(document.activeElement).not.toBe(document.body);
   });
@@ -847,11 +845,11 @@ describe("LessonSteps, focus management", () => {
   });
 
   it("labels each step group for screen readers", () => {
-    localStorage.setItem(STEP_KEY, "3");
-    localStorage.setItem(MAX_KEY, "3");
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
     renderSteps();
     expect(
-      screen.getByRole("group", { name: /^Step 4 of 6: Challenge$/ }),
+      screen.getByRole("group", { name: /^Step 3 of 5: Challenge$/ }),
     ).toBeInTheDocument();
   });
 });
@@ -936,18 +934,20 @@ describe("LessonSteps, prose partition (2026-09-04 audit step 2)", () => {
     expect(withProse).toContain("CodeBlock");
   });
 
-  it("drops the prose re-read from the Code step", () => {
-    localStorage.setItem(STEP_KEY, "2");
-    localStorage.setItem(MAX_KEY, "2");
+  it("keeps code with Concept and removes the duplicate Code phase", () => {
+    localStorage.setItem(STEP_KEY, "1");
     renderSteps();
-    for (const v of visibleSets()) {
-      expect(v).not.toContain("prose");
-    }
+    expect(screen.queryByRole("button", { name: /^Step .*Code/ })).toBeNull();
+    expect(
+      screen
+        .getAllByTestId("lesson-content")
+        .filter((el) => el.dataset.visible?.includes("CodeBlock")),
+    ).toHaveLength(1);
   });
 
   it("drops the prose re-read from the Challenge left column, keeping the challenge zone + hints", () => {
-    localStorage.setItem(STEP_KEY, "3");
-    localStorage.setItem(MAX_KEY, "3");
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
     renderSteps();
     const sets = visibleSets();
     expect(sets.some((v) => v.includes("challenge"))).toBe(true);
@@ -961,8 +961,8 @@ describe("LessonSteps, URL-addressable steps (2026-09-04 audit step 2)", () => {
   it("pushes a #step-N hash entry per forward step", () => {
     renderSteps();
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
-    expect(window.location.hash).toBe("#step-2");
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(window.location.hash).toBe("#step-concept");
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 
   it("steps back (not out) on popstate", () => {
@@ -973,20 +973,20 @@ describe("LessonSteps, URL-addressable steps (2026-09-04 audit step 2)", () => {
         new PopStateEvent("popstate", { state: { tcStep: 0 } }),
       );
     });
-    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
   });
 
   it("honors a #step-N deep link into already-covered ground", () => {
-    localStorage.setItem(MAX_KEY, "3");
+    localStorage.setItem(MAX_KEY, "2");
     window.history.replaceState(null, "", "#step-3");
     renderSteps();
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 
   it("clamps a deep link into never-reached ground", () => {
     window.history.replaceState(null, "", "#step-5");
     renderSteps();
-    expect(screen.getByText("1 / 6")).toBeInTheDocument();
+    expect(screen.getByText("1 / 5")).toBeInTheDocument();
   });
 });
 
@@ -1015,13 +1015,13 @@ describe("LessonSteps, skip to the challenge (2026-09-04 audit step 2)", () => {
     fireEvent.click(
       screen.getByRole("button", { name: /skip to the challenge/i }),
     );
-    expect(screen.getByText("4 / 6")).toBeInTheDocument();
+    expect(screen.getByText("3 / 5")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^Step 2/ })).not.toBeDisabled();
   });
 
   it("hides the fast path once the Challenge step is reachable from the bar", () => {
     localStorage.setItem(STEP_KEY, "0");
-    localStorage.setItem(MAX_KEY, "3");
+    localStorage.setItem(MAX_KEY, "2");
     renderWithExercise();
     expect(
       screen.queryByRole("button", { name: /skip to the challenge/i }),
@@ -1053,13 +1053,13 @@ describe("LessonSteps, revisit-honest step views (re-audit 2026-09-04)", () => {
   it("marks a restored session's landing step as a revisit", async () => {
     const { track } = await import("@/lib/analytics");
     vi.mocked(track).mockClear();
-    localStorage.setItem(STEP_KEY, "2");
-    localStorage.setItem(MAX_KEY, "2");
+    localStorage.setItem(STEP_KEY, "1");
+    localStorage.setItem(MAX_KEY, "1");
     renderSteps();
     const stepViews = vi
       .mocked(track)
       .mock.calls.filter(([name]) => name === "lesson_step_viewed");
-    expect(stepViews[0][1]).toMatchObject({ step: 2, revisit: true });
+    expect(stepViews[0][1]).toMatchObject({ step: 1, revisit: true });
   });
 
   it("does not mark jumped-over steps as visited", async () => {
@@ -1247,8 +1247,8 @@ describe("Takeaways: the recap after the recall (spec 2026-09-24, section 2)", (
     // A signed-in reader restores from the account-suffixed keys (see the
     // account-owned position tests at the top of this file).
     const suffix = owner ? `:account:${owner}` : "";
-    localStorage.setItem(`${STEP_KEY}${suffix}`, "4");
-    localStorage.setItem(`${MAX_KEY}${suffix}`, "4");
+    localStorage.setItem(`${STEP_KEY}${suffix}`, "3");
+    localStorage.setItem(`${MAX_KEY}${suffix}`, "3");
     render(
       <LessonSteps
         lesson={withTerms}
@@ -1262,7 +1262,7 @@ describe("Takeaways: the recap after the recall (spec 2026-09-24, section 2)", (
         {...extra}
       />,
     );
-    expect(screen.getByText("5 / 6")).toBeInTheDocument();
+    expect(screen.getByText("4 / 5")).toBeInTheDocument();
   }
 
   it("holds the recap and the terms list until the recall settles, then remembers it", () => {
@@ -1359,7 +1359,7 @@ describe("LessonSteps, swipe navigation", () => {
   function openConcept() {
     localStorage.setItem(STEP_KEY, "1");
     renderSteps();
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   }
 
   // The Concept step mounts the objectives and the body as two instances;
@@ -1413,7 +1413,7 @@ describe("LessonSteps, swipe navigation", () => {
   it("pages on a swipe that starts on a code block that cannot pan", () => {
     openConcept();
     swipeLeft(codeBlock(320, 320));
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("3 / 5")).toBeInTheDocument();
   });
 
   it("pages when the block's widths differ by one rounding pixel", () => {
@@ -1421,26 +1421,26 @@ describe("LessonSteps, swipe navigation", () => {
     // width they can differ by 1 px with nothing overflowing.
     openConcept();
     swipeLeft(codeBlock(321, 320));
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("3 / 5")).toBeInTheDocument();
   });
 
   it("pages on a swipe that starts on inline code outside any pre", () => {
     openConcept();
     swipeLeft(inlineCode(120, 120));
-    expect(screen.getByText("3 / 6")).toBeInTheDocument();
+    expect(screen.getByText("3 / 5")).toBeInTheDocument();
   });
 
   it("leaves a swipe on code outside a pre to the code when its own box pans", () => {
     // The closest("code") fallback: with no pre, the code is the block.
     openConcept();
     swipeLeft(inlineCode(480, 120));
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 
   it("leaves a swipe on a code block that pans sideways to the block", () => {
     openConcept();
     swipeLeft(codeBlock(640, 320));
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 
   it("leaves a swipe on the editor to the editor", () => {
@@ -1452,6 +1452,6 @@ describe("LessonSteps, swipe navigation", () => {
     editor.appendChild(line);
     contentRoot().appendChild(editor);
     swipeLeft(line);
-    expect(screen.getByText("2 / 6")).toBeInTheDocument();
+    expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 });

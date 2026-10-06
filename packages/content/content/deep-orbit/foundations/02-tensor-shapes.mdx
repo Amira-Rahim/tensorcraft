@@ -47,15 +47,29 @@ Every tensor has a **shape**: a tuple of numbers describing how many elements ex
 
 <LearningObjectives objectives={["Read and interpret tensor shapes", "Predict where each value lands after a reshape (row-major order)", "Choose reshape or transpose from the axis meanings and required values", "Recognize common shapes in ML (batches, sequences, images)"]} />
 
-## The Wrong Kind of Sixty-Four
+## Carry the layout into JavaScript
 
-Farah has a candidate layout for the stream: `[450, 64]`, meaning 450 readings by 64 channels. The plotter needs one row per channel, shape `[64, 450]`. Demir reaches for reshape. Will each channel's values stay together?
+The plotter above needs `input[time][channel]` to become
+`output[channel][time]`. A transpose swaps those axes. A reshape preserves
+flat order and only changes the row breaks. Matching dimensions alone cannot
+show whether the channels stayed together.
 
-Work it out on a small packet first. Each input row is a time step; each column is one channel. The numbers mark positions so you can follow exactly where they move.
+Read back the position-marked packet from the visual:
 
-<ChannelLayoutExperiment />
+<CodeBlock language="typescript" title="read-a-row.ts">
+{`const flat = tf.tensor1d([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+const grid = flat.reshape([3, 4]);
+const secondRow = grid.arraySync()[1]; // [4, 5, 6, 7]
+tf.dispose([flat, grid]);`}
+</CodeBlock>
 
-The axis names explain the result: `input[time][channel]` must become `output[channel][time]`. A transpose swaps those axes. A reshape changes row lengths while preserving flat order. Both can produce the requested dimensions, so checking shape alone cannot catch this mistake.
+`arraySync()` copies the grid into nested JavaScript arrays. Row indices start
+at zero. In the challenge, keep `grid` alive for the checks; its copied
+`step1` row is a plain array.
+
+Farah's archive block is a separate, larger grid: `[450, 64]`, with 450 time
+steps and 64 channels. The same rule applies there. Its plotter needs a
+transpose to `[64, 450]`.
 
 <ConceptReference summary="Reference: flat order, reshape code, and the full archive example">
 
@@ -140,7 +154,7 @@ For sequences later in the course, `[32, 5, 3]` means 32 windows, five time step
 
 ## Challenge
 
-Reshape a flat tensor into a matrix.
+Try a different twelve-value packet. Predict which readings belong in the second row, then reshape the flat tensor and check your prediction.
 
 <Exercise slug="reshape-tensor" />
 
@@ -162,7 +176,7 @@ Reshape a flat tensor into a matrix.
 
 <Epilogue>
 
-Farah reshapes the first stretch of the stream every way the element count allows. Most layouts are mush. Then `[450, 64]`, and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
+With the small-packet checks complete, Farah returns to the full archive block and tries the layouts its element count allows. Most layouts are mush. Then `[450, 64]`, and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
 
 <Dialogue speaker="Dr. Farah">
 Sixty-four columns. One per hull sensor, so this is our grid, not theirs. Whatever structure they sent is in the swell down each column, not in the shape.

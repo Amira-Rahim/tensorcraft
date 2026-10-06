@@ -2,17 +2,25 @@ slug: batch-data
 lessonSlug: data-loading
 title: "Build the Lazy Pipeline"
 instructions: |
-  Add `makeDataset(source)` to shuffle individual samples before batching.
+  Repair Demir's pipeline on the same 16-row stand-in as the visual. The supplied
+  readSample(i) returns three features and one label; it counts every read.
 
-  The archive exposes readSample(i): it returns { features: number[3], label: number } for reading i, the same three features the lesson names (amplitude in counts, frequency as a zero-crossing count, phase in radians), faked from the row index here so you can tell rows apart. It also counts how many times it is called.
+  1. Complete `sensorGen` as a lazy generator over IDs 0 through 15. Read each
+     sample inside the loop and yield `{ xs, ys }` tensors. One sample has
+     feature shape `[3]` and label shape `[1]`; do not collect the archive first.
+  2. Implement `makeDataset(source)` with shuffle buffer 10, then batch size 4.
+     Pass `tf.data.generator(sensorGen)` into it. This mixes individual samples;
+     repeated random groupings are allowed to coincide.
+  3. Await `dataset.forEachAsync`, adding each batch's `xs.shape` to the supplied
+     `batchShapes`. Four batches should each have shape `[4, 3]`. Finish the drain
+     before the code ends, and keep the generator reusable for a second pass.
+  4. Set plain arrays `trainIdx` and `valIdx`: earlier IDs 0–11 for training,
+     later IDs 12–15 for validation. Training order may be shuffled with
+     `tf.util.createShuffledIndices(12)`, but membership must stay separate.
 
-  Build a LAZY generator called `sensorGen` that yields all 16 samples as { xs, ys } tensors: `xs` carries the reading's three features and `ys` carries its one label. The batcher stacks whatever each sample hands it, and the grader reads a column of labels off every batch, so decide what shape one label has to arrive in.
-
-  Implement makeDataset(source): return source shuffled with buffer 10, then batched in groups of 4. Build dataset by passing tf.data.generator(sensorGen) to that function. The grader uses a controlled source to inspect order; repeated random draws are allowed to coincide.
-
-  Finally drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`, and wait for that drain to finish before your code ends, because the grader reads `batchShapes` the moment it does. Keep the generator's name: the grader also drains `sensorGen` through a pipeline of its own, no shuffle buffer and one sample per batch, and counts how many rows were read before the first batch arrived.
-
-  Last, split the time-ordered indices into plain arrays: `trainIdx` holds the earlier 12 readings and `valIdx` holds the later 4. Both sets must be disjoint and cover all 16 readings. You may shuffle the training indices, using `tf.util.createShuffledIndices(12)`, but membership must not change. The full-fixture dataset above demonstrates batching; a training run would read only `trainIdx`.
+  The full-fixture pipeline demonstrates batching. A training run would read
+  only `trainIdx`. Feature order is amplitude, zero-crossing count, phase;
+  the supplied values are keyed to each row ID so the checks can trace them.
 starterCode: |
   // Provided: lazy archive access (do NOT modify)
   let readCount = 0;

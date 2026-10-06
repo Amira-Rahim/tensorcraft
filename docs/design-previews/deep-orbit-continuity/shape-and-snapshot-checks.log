@@ -1,0 +1,25 @@
+
+Running 7 tests using 2 workers
+
+(node:46229) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:46230) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/7] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 390px light
+[2/7] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 1440px dark
+[3/7] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 320px dark
+[4/7] [chromium] › e2e/visual/lesson.spec.ts:23:9 › lesson briefing desktop
+[5/7] [chromium] › e2e/visual/lesson.spec.ts:23:9 › lesson concept desktop
+[6/7] [chromium] › e2e/visual/lesson.spec.ts:23:9 › lesson briefing phone
+[7/7] [chromium] › e2e/visual/lesson.spec.ts:23:9 › lesson concept phone
+[chromium] › e2e/visual/lesson.spec.ts:23:9 › lesson concept desktop
+/Users/amira.salah/Desktop/tensorcraft/e2e/visual/lesson.spec.ts-snapshots/lesson-concept-desktop-chromium-darwin.png is re-generated, writing actual.
+
+[chromium] › e2e/visual/lesson.spec.ts:23:9 › lesson concept phone
+/Users/amira.salah/Desktop/tensorcraft/e2e/visual/lesson.spec.ts-snapshots/lesson-concept-phone-chromium-darwin.png is re-generated, writing actual.
+
+  7 passed (13.0s)

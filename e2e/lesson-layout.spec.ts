@@ -10,9 +10,8 @@ const LESSONS = {
 // Its concept reference follows the normalization experiment and wraps the
 // rest of its section, so the build leaves it with nothing to pair with.
 const SPANNING_LESSON = "/worlds/deep-orbit/foundations/normalization";
-// The Code step on the free module's only lesson with a derivation drawer,
-// which stacks above the worked example in the left slot (spec section 4).
-const CODE_LESSONS = {
+// Concept examples include the lesson with a derivation drawer.
+const EXAMPLE_LESSONS = {
   ...LESSONS,
   withDrawer: "/worlds/deep-orbit/foundations/tensor-operations",
 };
@@ -28,8 +27,8 @@ async function openStep(page: Page, path: string, step: number) {
       // the plate for any lesson the clip manifest lists; pinning "text"
       // keeps a future clip from changing what these checks measure.
       localStorage.setItem("tc-briefing-variant", "text");
-      localStorage.setItem(`tc_step_deep-orbit_${slug}`, String(step));
-      localStorage.setItem(`tc_step_max_deep-orbit_${slug}`, String(step));
+      localStorage.setItem(`tc_step_v2_deep-orbit_${slug}`, String(step));
+      localStorage.setItem(`tc_step_max_v2_deep-orbit_${slug}`, String(step));
     },
     { slug, step },
   );
@@ -49,34 +48,29 @@ async function openStep(page: Page, path: string, step: number) {
         page.locator('.lesson-step-content[data-layout="reading"]'),
       ).toBeVisible();
       break;
-    case 2: // Code: the worked-example slot
-      await expect(
-        page.locator("[data-testid='lesson-right'][data-kind='code']"),
-      ).toBeVisible();
-      break;
-    case 3: // Challenge: the editor pane, behind the view toggle on phones
+    case 2: // Challenge: the editor pane, behind the view toggle on phones
       await expect(
         page.locator("[data-testid='lesson-right'][data-kind='pane']"),
       ).toBeAttached();
       break;
-    case 4: // Takeaways
+    case 3: // Takeaways
       await expect(page.getByTestId("takeaways-recall")).toBeVisible();
       break;
-    case 5: // Complete
+    case 4: // Complete
       await expect(
-        page.getByRole("group", { name: /^Step 6 of 6/ }),
+        page.getByRole("group", { name: /^Step 5 of 5/ }),
       ).toBeVisible();
       break;
     default:
       throw new Error(`openStep has no settled marker for step ${step}`);
   }
   // The marker appears as the client mounts the step, which is when the
-  // step group starts its 0.3 s step-in (a 12 px translateY). On the Code
-  // and Challenge steps the right slot and the nav sit outside the group,
+  // step group starts its 0.3 s step-in (a 12 px translateY). On the
+  // Challenge step the right slot and the nav sit outside the group,
   // so a box read mid-animation shortens every gap across that boundary by
   // the remaining offset. Measure once the group has settled.
   await page
-    .getByRole("group", { name: /^Step \d of 6/ })
+    .getByRole("group", { name: /^Step \d of 5/ })
     .evaluate(async (g) => {
       await Promise.all(g.getAnimations().map((a) => a.finished));
     });
@@ -90,7 +84,7 @@ async function openSettledTakeaways(page: Page, path: string) {
   await page.addInitScript((slug) => {
     localStorage.setItem(`tc_recall_deep-orbit_${slug}`, "1");
   }, slug);
-  await openStep(page, path, 4);
+  await openStep(page, path, 3);
   await expect(page.getByTestId("takeaways-prose")).toBeVisible();
   await expect(page.getByTestId("lesson-terms-list")).toBeVisible();
 }
@@ -164,53 +158,6 @@ async function freshGuestStoryEnd(page: Page) {
   expect(Math.abs(m.navTop - m.storyBottom - 40)).toBeLessThanOrEqual(1);
 }
 
-// Painted edges on the Code step. A slot's blocks are the direct children
-// of its LessonContent root (.lesson-step-content > *); the left slot adds
-// its intro line, which sits outside LessonContent and is the last block
-// above the example on every lesson with nothing else there (40 of 56).
-// The roots are left out on purpose: the code slot's root is a flex column,
-// and a flex container's box contains its items' margins, so reading it
-// would swallow the stray margin these checks exist to catch.
-function codeStepEdges(page: Page) {
-  return page.evaluate(() => {
-    const within = (root: ParentNode, s: string) => [
-      ...root.querySelectorAll(s),
-    ];
-    const one = (root: ParentNode, s: string) => {
-      const found = within(root, s);
-      if (found.length !== 1) throw new Error(`${s}: ${found.length} matches`);
-      return found[0];
-    };
-    const painted = (els: Element[]) =>
-      els.filter((el) => el.getBoundingClientRect().height > 0);
-    const top = (el: Element) => el.getBoundingClientRect().top;
-    const bottom = (el: Element) => el.getBoundingClientRect().bottom;
-    const right = one(
-      document,
-      "[data-testid='lesson-right'][data-kind='code']",
-    );
-    const left = right.previousElementSibling!;
-    const leftBlocks = [
-      one(left, "[role='group'][aria-label^='Step 3'] > div > p"),
-      ...painted(within(left, ".lesson-step-content > *")),
-    ];
-    const rightBlocks = painted(within(right, ".lesson-step-content > *"));
-    if (rightBlocks.length === 0)
-      throw new Error("the code slot paints no block");
-    const drawers = painted(
-      within(left, ".lesson-step-content > [data-aside]"),
-    );
-    return {
-      leftBottom: Math.max(...leftBlocks.map(bottom)),
-      rightTop: Math.min(...rightBlocks.map(top)),
-      lastBottom: Math.max(...[...leftBlocks, ...rightBlocks].map(bottom)),
-      navTop: top(one(document, "[data-testid='lesson-nav']")),
-      // The lowest derivation drawer in the left slot, or null without one.
-      drawerBottom: drawers.length ? Math.max(...drawers.map(bottom)) : null,
-    };
-  });
-}
-
 // A stacked dialogue beat after the first heading of lesson 1's real reading
 // grid. The Concept step shows 12 such beats, in 11 paid lessons the suite
 // cannot open. The element carries the attributes and classes the Dialogue
@@ -268,7 +215,7 @@ function challengeSplit(page: Page) {
 }
 
 async function expectChallengeSplit(page: Page) {
-  await openStep(page, LESSONS.paragraphLed, 3);
+  await openStep(page, LESSONS.paragraphLed, 2);
   const m = await challengeSplit(page);
   const instructions = Math.min(440, 0.38 * m.content);
   expect(Math.abs(m.instructions - instructions)).toBeLessThanOrEqual(1);
@@ -285,9 +232,9 @@ test.describe("lesson layout, desktop", () => {
   for (const [step, settled] of [
     [0, false],
     [1, false],
+    [3, false],
+    [3, true],
     [4, false],
-    [4, true],
-    [5, false],
   ] as const) {
     const which = settled
       ? `step ${step + 1} with the recall settled`
@@ -305,7 +252,7 @@ test.describe("lesson layout, desktop", () => {
       ).toHaveCount(0);
       await expect(page.getByTestId("lesson-right")).toHaveCount(0);
       // A floor, not an exact value: on a step shorter than the viewport
-      // the page's minimum height adds space. The Code step pins the 40.
+      // the page's minimum height adds space. The nav owns that minimum spacing.
       expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
@@ -477,7 +424,7 @@ test.describe("lesson layout, desktop", () => {
           ).toBeLessThanOrEqual(1);
         }
       }
-      // Opening a reference keeps the following paragraph below the card.
+      // Opening a reference keeps the next visible block below the card.
       const reference = page
         .locator(
           '.lesson-step-content[data-layout="reading"] > details[data-aside]',
@@ -485,11 +432,15 @@ test.describe("lesson layout, desktop", () => {
         .first();
       await reference.locator("summary").click();
       await expect(reference).toHaveAttribute("open", "");
-      const gap = await reference.evaluate(
-        (el) =>
-          el.nextElementSibling!.getBoundingClientRect().top -
-          el.getBoundingClientRect().bottom,
-      );
+      const gap = await reference.evaluate((el) => {
+        let next = el.nextElementSibling;
+        while (next && !next.checkVisibility()) next = next.nextElementSibling;
+        const following = next ?? document.querySelector(".lesson-goals")!;
+        return (
+          following.getBoundingClientRect().top -
+          el.getBoundingClientRect().bottom
+        );
+      });
       expect(gap).toBeGreaterThanOrEqual(24);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - innerWidth,
@@ -524,38 +475,25 @@ test.describe("lesson layout, desktop", () => {
     expect(probe.width).toBe(probe.gridWidth);
   });
 
-  test("normalization's concept reference fills the reading column", async ({
+  test("normalization keeps scaling and inference prerequisites in the main read", async ({
     page,
   }) => {
     await openStep(page, SPANNING_LESSON, 1);
-    const m = await page
-      .locator('.lesson-step-content[data-layout="reading"]')
-      .evaluate((g) => {
-        // This reference follows an experiment rather than a paragraph.
-        // It must stay within the same reading column.
-        const pairable = ["P", "UL", "OL", "BLOCKQUOTE"];
-        const unpaired = [...g.children].filter(
-          (el) =>
-            el.hasAttribute("data-aside") &&
-            el.getBoundingClientRect().height > 0 &&
-            !pairable.includes(el.previousElementSibling?.tagName ?? ""),
-        );
-        if (unpaired.length !== 1)
-          throw new Error(`${unpaired.length} unpaired companions`);
-        const gr = g.getBoundingClientRect();
-        const r = unpaired[0].getBoundingClientRect();
-        return {
-          summary:
-            unpaired[0].querySelector(":scope > summary")?.textContent ?? "",
-          gridLeft: gr.left,
-          gridWidth: gr.width,
-          left: r.left,
-          width: r.width,
-        };
-      });
-    expect(m.summary).toMatch(/^Reference: /);
-    expect(Math.abs(m.left - m.gridLeft)).toBeLessThanOrEqual(1);
-    expect(Math.abs(m.width - m.gridWidth)).toBeLessThanOrEqual(1);
+    const read = page.locator('.lesson-step-content[data-layout="reading"]');
+    await expect(
+      read.getByText("fit-and-scale.ts", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      read.getByText("score-the-scaled-input.ts", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      read.getByRole("heading", { name: "Compare with min-max scaling" }),
+    ).toBeVisible();
+    expect(
+      await read
+        .getByText("score-the-scaled-input.ts", { exact: true })
+        .evaluate((el) => !!el.closest("details:not([open])")),
+    ).toBe(false);
   });
 
   test("a stacked dialogue beat centres on the 820 px text measure", async ({
@@ -575,38 +513,29 @@ test.describe("lesson layout, desktop", () => {
     await expectChallengeSplit(page);
   });
 
-  for (const [name, path] of Object.entries(CODE_LESSONS)) {
-    test(`Code step: the worked example sits 24 px below the left slot on the ${name} lesson`, async ({
+  for (const [name, path] of Object.entries(EXAMPLE_LESSONS)) {
+    test(`Concept keeps code in context on the ${name} lesson`, async ({
       page,
     }) => {
-      await openStep(page, path, 2);
-      const m = await codeStepEdges(page);
-      if (path === CODE_LESSONS.withDrawer) {
-        // The drawer, not the intro line above it, is the lowest block
-        // over the example, so the gap below is read from the drawer.
-        expect(m.drawerBottom).not.toBeNull();
-        expect(m.drawerBottom).toBe(m.leftBottom);
-      }
-      expect(Math.abs(m.rightTop - m.leftBottom - 24)).toBeLessThanOrEqual(2);
-    });
-
-    test(`Code step: the nav sits 40 px below the example and 40 px above the footer on the ${name} lesson`, async ({
-      page,
-    }) => {
-      await openStep(page, path, 2);
-      const m = await codeStepEdges(page);
-      expect(Math.abs(m.navTop - m.lastBottom - 40)).toBeLessThanOrEqual(2);
-      // The Code step is taller than the viewport, so the page's minimum
-      // height adds nothing: the nav's bottom padding (--l-nav-bottom) is
-      // the whole gap between its controls and the footer.
-      expect(Math.abs((await footerGap(page)) - 40)).toBeLessThanOrEqual(1);
+      await openStep(page, path, 1);
+      await expect(
+        page.getByRole("button", { name: /^Step .*Code/ }),
+      ).toHaveCount(0);
+      await expect(page.getByTestId("lesson-workbench")).toBeVisible();
+      await expect(
+        page
+          .locator('.lesson-step-content[data-layout="reading"] pre:visible')
+          .first(),
+      ).toBeVisible();
+      await expect(page.getByTestId("lesson-right")).toHaveCount(0);
+      expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
 
   test("the Complete step's forward control sits in the nav row at the frame's right edge", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 5);
+    await openStep(page, LESSONS.paragraphLed, 4);
     const m = await page.evaluate(() => {
       const one = (s: string) => {
         const found = document.querySelectorAll(s);
@@ -645,7 +574,7 @@ test.describe("lesson layout, desktop", () => {
   test("the recap and the terms list follow the recall card once it settles", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 4);
+    await openStep(page, LESSONS.paragraphLed, 3);
     await expect(page.getByTestId("takeaways-prose")).toHaveCount(0);
     await expect(page.getByTestId("lesson-terms-list")).toHaveCount(0);
     await page
@@ -673,7 +602,7 @@ test.describe("lesson layout, desktop", () => {
     await page.addInitScript(() => {
       localStorage.setItem("tc_recall_deep-orbit_introduction-to-tensors", "1");
     });
-    await openStep(page, LESSONS.paragraphLed, 4);
+    await openStep(page, LESSONS.paragraphLed, 3);
     await expect(page.getByTestId("takeaways-prose")).toBeVisible();
     await expect(page.getByTestId("lesson-terms-list")).toBeVisible();
     // The card is back in its prompt state, for practice.
@@ -682,7 +611,7 @@ test.describe("lesson layout, desktop", () => {
     ).toBeVisible();
   });
 
-  test("on the Concept step the nav sits 40 px below the grid, with Continue at the frame's right edge", async ({
+  test("on the Concept step the nav sits 40 px below the optional goals, with Continue at the frame's right edge", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
@@ -693,20 +622,13 @@ test.describe("lesson layout, desktop", () => {
           throw new Error(`${s}: ${found.length} matches`);
         return found[0];
       };
-      // The reading column is the last block before the nav on the Concept
-      // step; a block placed between them later is a deliberate change to
-      // this test. Its children carry no trailing margin, so the lowest
-      // painted child is where the grid visibly ends.
-      const blocks = [
-        ...one('.lesson-step-content[data-layout="reading"]').children,
-      ].filter((el) => el.getBoundingClientRect().height > 0);
+      // Learning goals follow the reading as an optional disclosure.
+      const goals = one(".lesson-goals").getBoundingClientRect();
       const nav = one("[data-testid='lesson-nav']").getBoundingClientRect();
       const go = one("[data-step-continue]").getBoundingClientRect();
       const frame = one("[data-testid='lesson-frame']").getBoundingClientRect();
       return {
-        last: Math.max(
-          ...blocks.map((el) => el.getBoundingClientRect().bottom),
-        ),
+        last: goals.bottom,
         navTop: nav.top,
         goTop: go.top,
         goRight: go.right,
@@ -722,7 +644,7 @@ test.describe("lesson layout, desktop", () => {
     );
   });
 
-  test("six step labels sit under their segments, the current one in the accent colour", async ({
+  test("five step labels sit under their segments, the current one in the accent colour", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 0);
@@ -759,7 +681,6 @@ test.describe("lesson layout, desktop", () => {
     expect(m.map((s) => s.text)).toEqual([
       "Briefing",
       "Concept",
-      "Code",
       "Challenge",
       "Takeaways",
       "Epilogue",
@@ -775,7 +696,7 @@ test.describe("lesson layout, desktop", () => {
   test("the exercise brief sits in the reading column and the pane keeps the editor", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 3);
+    await openStep(page, LESSONS.paragraphLed, 2);
     const brief = page.getByTestId("exercise-brief");
     await expect(brief).toBeVisible();
     await expect(brief.getByRole("heading", { level: 3 })).toBeVisible();
@@ -876,7 +797,7 @@ test.describe("lesson layout, phone", () => {
   test("on the Challenge step's Instructions view the nav sits 40 px below the hint panel", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 3);
+    await openStep(page, LESSONS.paragraphLed, 2);
     const m = await page.evaluate(() => {
       const one = (s: string) => {
         const found = document.querySelectorAll(s);
@@ -887,7 +808,7 @@ test.describe("lesson layout, phone", () => {
       // The Instructions view is the phone default; the hint panel is the
       // last block of the instructions column and paints a bordered box.
       const panel = one(
-        "[role='group'][aria-label^='Step 4'] .lesson-step-content > :last-child",
+        "[role='group'][aria-label^='Step 3'] .lesson-step-content > :last-child",
       ).getBoundingClientRect();
       return {
         panelHeight: panel.height,
@@ -947,8 +868,8 @@ test.describe("lesson layout, phone", () => {
   for (const [step, settled] of [
     [0, false],
     [1, false],
-    [4, false],
-    [4, true],
+    [3, false],
+    [3, true],
   ] as const) {
     const which = settled
       ? `step ${step + 1} with the recall settled`
@@ -979,6 +900,7 @@ test.describe("lesson layout, phone", () => {
         const bottom = doc(one("footer"));
         return [...document.querySelectorAll("main *")]
           .filter((el) => {
+            if (!el.checkVisibility()) return false;
             if (getComputedStyle(el).position === "fixed") return false;
             const y = doc(el);
             return (
@@ -1017,7 +939,7 @@ test.describe("lesson layout, phone", () => {
         };
       }),
     );
-    expect(m).toHaveLength(6);
+    expect(m).toHaveLength(5);
     for (const s of m) {
       expect(s.hidden).toBe(true);
       expect(s.hit).toBeGreaterThanOrEqual(24);
@@ -1027,7 +949,7 @@ test.describe("lesson layout, phone", () => {
   test("the Complete step's forward control still sits at the frame's right edge at 390 px", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 5);
+    await openStep(page, LESSONS.paragraphLed, 4);
     const m = await page.evaluate(() => {
       const one = (s: string) => {
         const found = document.querySelectorAll(s);
@@ -1051,7 +973,7 @@ test.describe("lesson layout, phone", () => {
   test("the Instructions view holds the brief and its header wraps only between chips", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 3);
+    await openStep(page, LESSONS.paragraphLed, 2);
     const brief = page.getByTestId("exercise-brief");
     await expect(brief).toBeVisible();
     await expect(brief.getByRole("heading", { level: 3 })).toBeVisible();
@@ -1080,7 +1002,7 @@ test.describe("lesson layout, phone", () => {
     await expect(brief).toBeHidden();
   });
 
-  for (const step of [1, 2]) {
+  for (const step of [1]) {
     test(`every code block fits the phone on step ${step + 1}, with no blank line between code lines`, async ({
       page,
     }) => {
@@ -1163,7 +1085,7 @@ test.describe("lesson layout, phone", () => {
   test("the editor shows its starter code without a horizontal scrollbar", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 3);
+    await openStep(page, LESSONS.paragraphLed, 2);
     await page.getByRole("button", { name: "Editor" }).click();
     const scroller = page.locator(
       "[data-testid='lesson-right'][data-kind='pane'] .cm-scroller",

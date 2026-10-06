@@ -110,15 +110,14 @@ for (const scheme of SCHEMES) {
  * key must be seeded too or the step bar clamps back to 0.
  */
 const LESSON_PATH = "/worlds/deep-orbit/foundations/introduction-to-tensors";
-const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
-const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
+const STEP_KEY = "tc_step_v2_deep-orbit_introduction-to-tensors";
+const MAX_KEY = "tc_step_max_v2_deep-orbit_introduction-to-tensors";
 const STEP_NAMES = [
   "Briefing",
   "Concept",
-  "Code",
   "Challenge",
   "Takeaways",
-  "Complete",
+  "Epilogue",
 ];
 
 for (const scheme of SCHEMES) {
@@ -132,7 +131,7 @@ for (const scheme of SCHEMES) {
           ({ stepKey, maxKey, step }) => {
             localStorage.setItem(stepKey, String(step));
             localStorage.setItem(maxKey, String(step));
-            // The Takeaways audit (step 4) must scan the recap and the
+            // The Takeaways audit (step 3) must scan the recap and the
             // terms list too, beside the recall card in its prompt state
             // (Task 5 addendum item 2).
             localStorage.setItem(

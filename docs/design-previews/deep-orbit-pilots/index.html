@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-scheme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#181818">
+  <title>Deep Orbit: training and evaluation pilots</title>
+  <link rel="icon" href="data:,">
+  <link rel="preload" href="../foundations/assets/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="pilot.css">
+  <script>try { if(sessionStorage.getItem('tensorcraft:pilots:scheme') === 'light') { document.documentElement.dataset.scheme='light'; document.querySelector('meta[name="theme-color"]').content='#f5f5f2'; } } catch {}</script>
+</head>
+<body>
+  <a class="skip-link" href="#lesson-main">Skip to lesson</a>
+  <div id="lesson-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div class="preview-notice">Visual pilot. Illustrative scenes; Challenge runs your JavaScript.</div>
+  <div class="frame">
+    <header class="lesson-chrome">
+      <div class="module-row"><div><p class="module-name">Deep Orbit: The Training Loop</p><div class="chrome-title" id="chrome-title" hidden></div></div><button class="text-button" id="theme-toggle">Light appearance</button></div>
+      <nav class="lesson-nav" aria-label="Lesson navigation">
+        <details class="lesson-menu" id="lesson-menu"><summary><span aria-hidden="true">☰</span>Lessons</summary><nav id="lesson-list" aria-label="Pilot lessons"></nav></details>
+        <a class="mission-map" href="../foundations/index.html" aria-label="Return to Foundations preview"><span aria-hidden="true">←</span><span class="map-label">Foundations</span></a>
+        <div class="steps" id="steps" role="group" aria-label="Lesson steps"></div><span class="step-count" id="step-count"></span>
+      </nav>
+    </header>
+    <main id="lesson-main" tabindex="-1">
+      <div class="heading-row" id="hero-heading"><p class="mission-eyebrow" id="mission-eyebrow"></p><div id="title-slot"><h1 id="lesson-title" tabindex="-1"></h1></div></div>
+      <div id="lesson-body"><p>Loading the lesson…</p></div>
+      <div class="lesson-actions"><a class="text-button" id="back-button">Back</a><a class="primary" id="next-button">Continue</a></div>
+    </main>
+  </div>
+  <footer class="brand-footer"><strong translate="no"><span>T_</span>TENSORCRAFT</strong><nav class="review-actions" aria-label="Preview review"><button class="text-button" id="open-settings">Preview settings</button><button class="text-button" id="open-notes">Design notes</button></nav></footer>
+  <dialog class="review-dialog" id="review-dialog" aria-labelledby="review-title" aria-describedby="review-intro">
+    <header class="review-header"><div class="review-title-row"><h2 id="review-title">Preview settings</h2><button class="review-close" id="close-review" aria-label="Close review panel">×</button></div><p class="review-intro" id="review-intro">Explore these two lessons and the choices behind their design.</p></header>
+    <div class="review-scroll">
+      <section id="settings-panel" class="review-panel"><form id="preview-navigation" class="review-fields">
+        <label>Lesson<span class="review-select"><select id="lesson-select" name="lesson"><option value="0">The Training Loop</option><option value="1">Evaluating DEEP SCAN</option></select><svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span></label>
+        <label>Step<span class="review-select"><select id="step-select" name="phase"><option value="0">Briefing</option><option value="1">Concept</option><option value="2">Challenge</option><option value="3">Takeaways</option><option value="4">Epilogue</option></select><svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span></label>
+        <button class="primary">Open view</button>
+      </form><p class="review-note">Steps are unlocked for review. Drafts stay in this browser tab. No production progress is recorded.</p></section>
+      <section id="notes-panel" class="review-panel" hidden>
+        <h3>The crew works beside the evidence</h3><p>Training unfolds over epochs. Evaluation exposes individual mistakes behind an aggregate score. Each lesson has one main instrument, followed by its explanation and JavaScript.</p>
+        <dl class="review-decisions"><dt>Preserve the opening</dt><dd>The large header, original artwork, crew voices, and five-step sequence continue from Foundations.</dd><dt>Show where numbers come from</dt><dd>The 24-epoch trace and 50-signal board are illustrations. The Challenge runs the original exercise in the existing worker and reports its actual checks.</dd><dt>Keep the two stopping questions separate</dt><dd>Early stopping watches individual validation scores. The exercise compares recent ten-epoch means to describe trends.</dd><dt>Recall before revealing</dt><dd>A new case asks for a written explanation. Opening the suggested answer does not mark the learner correct.</dd></dl>
+        <p>Frontend-design review covers composition, story, interactions, typography, and phone layouts. Automated checks cannot establish learning.</p>
+        <div class="review-links"><a href="learner-protocol.md">Learner test protocol</a><a href="README.md">Build and evidence notes</a><a href="review.md">Design review findings</a></div>
+      </section>
+    </div>
+  </dialog>
+  <script type="module" src="pilot.js"></script>
+</body>
+</html>

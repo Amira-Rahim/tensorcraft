@@ -292,10 +292,10 @@ test.describe("Lesson reading experience", () => {
     await expect(inlineCode).toBeVisible({ timeout: 15000 });
   });
 
-  test("Code step renders the worked example in the code slot", async ({
+  test("legacy Code position restores to Concept with its code", async ({
     page,
   }) => {
-    // Code is step index 2. Seed maxStep high enough that the step is reachable.
+    // Legacy Code was index 2. It restores to the unified Concept.
     await page.addInitScript(
       ({ stepKey, maxKey }) => {
         localStorage.setItem(stepKey, "2");
@@ -305,9 +305,13 @@ test.describe("Lesson reading experience", () => {
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
-    const right = page.getByTestId("lesson-right");
-    await expect(right).toHaveAttribute("data-kind", "code", {
-      timeout: 15000,
-    });
+    await expect(page.getByTestId("lesson-workbench")).toBeVisible();
+    await expect(
+      page
+        .locator('.lesson-step-content[data-layout="reading"] pre:visible')
+        .first(),
+    ).toBeVisible();
+    await expect(page.getByTestId("lesson-right")).toHaveCount(0);
+    await expect(page).toHaveURL(/#step-concept$/);
   });
 });

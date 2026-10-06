@@ -143,7 +143,7 @@ it("still honors an explicit challenge link for a learner on that route", async 
     params: Promise.resolve(paid),
     searchParams: Promise.resolve({ start: "challenge" }),
   });
-  expect(findSteps(page)!.entryStep).toBe(3);
+  expect(findSteps(page)!.entryStep).toBe(2);
 });
 
 it("keeps course preferences off the lesson page", async () => {

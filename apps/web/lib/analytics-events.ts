@@ -153,9 +153,13 @@ export interface EventProperties {
     worldId: string;
     moduleId: string;
     lessonId: string;
-    /** 0-based step index (0 Briefing … 5 Consequence). */
+    /** Version 2: Briefing 0, Concept 1, Challenge 2, Takeaways 3,
+     * Consequence 4. Legacy events: Briefing 0, Concept 1, Code 2,
+     * Challenge 3, Takeaways 4, Consequence 5. */
     step: number;
     stepName: string;
+    /** Absent on historical six-step events; 2 is the five-step reader. */
+    stepsVersion?: 2;
     /** The step just left; absent on the first view after mount. */
     prevStep?: number;
     /** Dwell on the step just left, ms; absent on the first view. */
@@ -175,7 +179,7 @@ export interface EventProperties {
     worldId: string;
     moduleId: string;
     lessonId: string;
-    /** Ms from this session's lesson mount to the step-5 transition.
+    /** Ms from this session's lesson mount to the Epilogue transition.
      *  Sessions that resume mid-lesson under-report total lesson time;
      *  sum lesson_step_viewed.prevStepMs across sessions for the truth. */
     durationMs?: number;

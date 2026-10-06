@@ -47,24 +47,26 @@ const M1_LESSONS = `('introduction-to-tensors','tensor-shapes','tensor-operation
 // comparison robust whether PostHog has typed the new property or not.
 const QUERIES = {
   "Step funnel (first views, module 1)": `
-    SELECT toInt64(properties.step) AS step,
+    SELECT toInt64(coalesce(properties.stepsVersion, 1)) AS steps_version,
+           toInt64(properties.step) AS step,
            any(properties.stepName) AS name,
            count() AS views,
            count(DISTINCT person_id) AS people
     FROM events
     WHERE event = 'lesson_step_viewed'
       AND toString(properties.revisit) = 'false' AND ${SCOPE}
-    GROUP BY step ORDER BY step`,
+    GROUP BY steps_version, step ORDER BY steps_version, step`,
 
   "Dwell per step (ms, from the NEXT view's prevStepMs)": `
-    SELECT toInt64(properties.prevStep) AS step,
+    SELECT toInt64(coalesce(properties.stepsVersion, 1)) AS steps_version,
+           toInt64(properties.prevStep) AS step,
            count() AS samples,
            round(quantile(0.5)(toFloat(properties.prevStepMs))) AS median_ms,
            round(quantile(0.9)(toFloat(properties.prevStepMs))) AS p90_ms
     FROM events
     WHERE event = 'lesson_step_viewed'
       AND properties.prevStep IS NOT NULL AND ${SCOPE}
-    GROUP BY step ORDER BY step`,
+    GROUP BY steps_version, step ORDER BY steps_version, step`,
 
   "Honest narrative skip rate (the >40% rule)": `
     SELECT countIf(event = 'script_skipped') AS skips,

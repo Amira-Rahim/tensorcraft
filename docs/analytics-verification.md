@@ -42,7 +42,7 @@ production release.
 | `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
 | `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `yearsExperience?` |
 | `lesson_started` | Open any lesson (step 1 auto-fires) | `worldId`, `moduleId`, `lessonId` |
-| `lesson_step_viewed` | Every step entry: mount, Continue, back-nav, step-bar jump | `step` (0-5), `stepName`, `prevStep?`, `prevStepMs?`, `revisit` |
+| `lesson_step_viewed` | Every step entry: mount, Continue, back-nav, step-bar jump | `step` (0-4), `stepsVersion=2`, `stepName`, `prevStep?`, `prevStepMs?`, `revisit` |
 | `script_skipped` | Skip intro button; Continue past a playing scene; the remembered preference suppressing playback | `step=0`, `elapsedMs`, `via` (`button`/`continue`/`auto`) |
 | `script_finished` | Let the Briefing scene play to its natural end | `step=0`, `elapsedMs`, `run` (`auto`/`replay`), `briefingVariant` |
 | `scene_clip_played` | Briefing scene clip starts (autoplay or the play control), clip-variant browsers on lessons with an approved clip | `trigger` (`auto`/`manual`) |
@@ -96,12 +96,11 @@ unmeasurable. How to read the new metrics:
   `revisit=false` for first-view survival curves. Dwell per step is the
   NEXT view's `prevStepMs`; the final step's dwell is deliberately
   unmeasured (unload handlers lose to tab close often enough that a
-  partial number would mislead). Interpretation note: the prose
-  partition shipped the same day, so from this deploy on the Concept
-  step is where reading happens (Briefing is the story zone only, Code
-  is the isolated worked example, Challenge is brief + hints); compare
-  dwell only within the post-partition era. Baseline capture:
-  `scripts/analytics/module1-baseline.mjs` +
+  partial number would mislead). Version 2 combines teaching and code in
+  Concept and adds the visual workbench. Group numeric `step` and `prevStep`
+  by `stepsVersion` (absent means legacy version 1); use `stepName` for
+  semantic comparisons. Historic Code dwell remains historic Code dwell.
+  Baseline capture: `scripts/analytics/module1-baseline.mjs` and
   `docs/audits/module1-baseline-template.md`.
 - **Honest narrative skip rate** (the >40% redesign rule, and the video
   investment gate): `script_skipped` (all `via` values) divided by
@@ -109,7 +108,7 @@ unmeasurable. How to read the new metrics:
   Reduced-motion visitors emit neither and are correctly excluded.
   History note: before 2026-09-04 the rate was biased low by
   construction; skip counts from before that date are not comparable.
-- **Time on lesson**: `lesson_completed.durationMs` is mount-to-step-5
+- **Time on lesson**: `lesson_completed.durationMs` is mount-to-Epilogue
   for the completing session; cross-session truth is the sum of
   `prevStepMs`.
 - **Earned-pass rate** (the learning-evidence query): exercise passes

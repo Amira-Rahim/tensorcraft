@@ -268,7 +268,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 |-------|------|---------|
 | `/worlds` | World listing | Grid of 5 worlds, all LIVE |
 | `/worlds/[slug]` | World detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-world`. Order is fixed: header, cast, film, map, then a collapsed project brief (purchasers also get course preferences inside it; prospects never see the route picker). Modules unlock in order. Nothing mounts between the header and the film |
-| `/worlds/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar; focus mode (global marketing nav hidden); screenplay register for story content (pre-heading story zone styled as stage directions + CUT-TO divider via `:has()` rules in `globals.css`). Opens on the story: only the guest notice and the lesson chrome precede the Briefing scene |
+| `/worlds/[slug]/[module]/[lesson]` | Lesson viewer | 5-step progression (no sidebar); step-based nav with segmented, clickable progress bar; focus mode (global marketing nav hidden); screenplay register for story content (pre-heading story zone styled as stage directions + CUT-TO divider via `:has()` rules in `globals.css`). Opens on the story: only the guest notice and the lesson chrome precede the Briefing scene |
 
 ### Lesson Page Architecture (`app/worlds/[slug]/[module]/[lesson]/`)
 
@@ -277,8 +277,23 @@ The lesson page uses a three-component split:
 | File | Type | Responsibility |
 |------|------|----------------|
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
-| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (each segment labelled with its step name from `lg`, the sixth reading "Epilogue" while `lesson_step_viewed` keeps "Consequence"; visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), script playback on the Briefing step (beat-by-beat reveal, Skip/Replay, auto-scroll to explanation; reduced-motion safe), the Takeaways recall-before-recap gate (the recall card shows alone until every card has left its prompt, then the recap and terms list follow; settled by an answer, which `tc_recall_*` remembers per browser and account like `tc_step_*`, by a known completion from the `lessons` prop, or by a guest completion in `tc_guest_completed_v1`), bottom nav with Back (from step 2) and Continue, with the segmented bar and swipe as the other ways back |
+| `lesson-steps.tsx` | Client component | Manages 5-step progression state, renders segmented step bar (each segment labelled with its step name from `lg`, the fifth reading "Epilogue" while `lesson_step_viewed` keeps "Consequence"; visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_v2_*` alongside `tc_step_v2_*`, with account-scoped migration of legacy six-step positions), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), script playback on the Briefing step (beat-by-beat reveal, Skip/Replay, auto-scroll to explanation; reduced-motion safe), the Takeaways recall-before-recap gate (the recall card shows alone until every card has left its prompt, then the recap and terms list follow; settled by an answer, which `tc_recall_*` remembers per browser and account like `tc_step_*`, by a known completion from the `lessons` prop, or by a guest completion in `tc_guest_completed_v1`), bottom nav with Back (from step 2) and Continue, with the segmented bar and swipe as the other ways back |
 | `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS; `onRecallPending(n)` reports how many recall cards in the instance are still in their prompt state, after the first commit and after every settle (cards register through a ref, so a report never remounts the MDX tree); the `Exercise` binding renders `ExerciseBrief` where the MDX places `<Exercise>` when the set names `ExerciseBrief` (the Challenge step's left instance), `Exercise brief="external"` in the pane instance (`titled` when the lesson has more than one exercise), and the inline pane when no set is given |
+
+The Deep Orbit Concept begins with `LessonConceptWorkbench`: original scene,
+crew context and one of the explicitly authored instruments in
+`components/lesson-visuals/deep-orbit-visuals.ts`. Foundations instruments share
+their stated examples with the worked code or exercise; their displayed outputs
+remain labeled teaching previews, separate from submitted results. Shapes embeds
+`ChannelLayoutExperiment` directly, replacing its duplicate MDX placement.
+`lesson-handoffs.ts` connects all 56 crew needs to the actual exercise work.
+Concept omits the repeated context/objective introduction and puts learning goals
+in a closed disclosure after the reading. Essential teaching stays visible;
+extended explanations and supplementary predictions use named references.
+Challenge retains mission context and its real-pass banner lists checked exercise
+titles. Every Epilogue uses scene art. `lib/lesson-phases.ts` owns phase names, storage migration and
+semantic URLs. Legacy Concept and Code both map to Concept; passed exercises,
+recall and drafts retain their existing keys.
 
 **Course preferences do not live here.** The ML route picker is reachable
 from `/settings` and, for purchasers only, from the world page's collapsed

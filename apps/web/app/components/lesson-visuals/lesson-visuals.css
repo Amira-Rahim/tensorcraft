@@ -1,0 +1,821 @@
+/* The mission and its instrument share one surface. All selectors are scoped. */
+.lesson-workbench,
+.lesson-mission-scene {
+  --iv-brass: #c1a678;
+  --iv-blue: #85b4ce;
+  color: var(--tc-text);
+}
+[data-scheme="light"] .lesson-workbench,
+[data-scheme="light"] .lesson-mission-scene {
+  --iv-brass: #7c5a23;
+  --iv-blue: #2c6283;
+}
+.lesson-workbench {
+  margin: 0 0 40px;
+}
+.lesson-goals {
+  margin-top: 32px;
+  border-top: 1px solid var(--tc-border);
+  color: var(--tc-muted);
+}
+.lesson-goals > summary {
+  padding: 16px 0;
+  min-height: 48px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.lesson-goals > summary:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
+}
+.lesson-workbench > h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  font-weight: 650;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 32px;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+.lesson-workbench-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  border: 1px solid var(--tc-border);
+  background: var(--tc-surface);
+  align-items: start;
+}
+.lesson-mission-scene {
+  min-width: 0;
+}
+.lesson-mission-scene .mission-context-image {
+  margin: 0;
+}
+.lesson-mission-scene .mission-context-image img {
+  border: 0 !important;
+}
+.mission-context-copy {
+  padding: 24px 28px 28px;
+}
+.mission-context-location {
+  color: var(--iv-brass);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+.mission-context-crew {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.mission-context-crew img {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 44px;
+  height: 44px;
+}
+.mission-context-crew small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--tc-muted);
+  margin-top: 2px;
+}
+.mission-context-narrative {
+  font-size: 15px;
+  line-height: 1.85;
+  margin: 0;
+  max-width: 52ch;
+}
+.lesson-instrument {
+  min-width: 0;
+  padding: 28px 32px;
+  border-left: 1px solid var(--tc-border);
+}
+.lesson-embedded-experiment > section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.lesson-embedded-experiment > section > h3 {
+  margin-top: 8px;
+  font-size: 20px;
+}
+.channel-worked-grid {
+  display: grid;
+  gap: 24px;
+}
+.iv-instruction {
+  color: var(--tc-text);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 18px;
+  max-width: 62ch;
+}
+.lesson-instrument button {
+  cursor: pointer;
+  min-height: 44px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.lesson-instrument :is(button, input, pre):focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
+}
+.lesson-instrument button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.lesson-instrument svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.lesson-instrument svg text {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  fill: var(--tc-muted);
+}
+.iv-gridline {
+  stroke: var(--tc-border);
+  stroke-width: 1;
+}
+.iv-wire {
+  stroke: var(--tc-muted);
+  stroke-width: 1.5;
+}
+.iv-node {
+  fill: var(--tc-surface);
+  stroke: var(--tc-muted);
+  stroke-width: 1.5;
+}
+.iv-node-active {
+  fill: color-mix(in srgb, var(--tc-primary) 15%, var(--tc-surface));
+  stroke: var(--tc-primary);
+  stroke-width: 2;
+}
+.iv-diagram {
+  margin: 12px 0 20px;
+}
+.iv-plot,
+.iv-spectrum {
+  margin: 0 0 20px;
+}
+.iv-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 12px;
+  color: var(--tc-muted);
+  margin: 0 0 10px;
+}
+.iv-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.iv-legend i {
+  width: 16px;
+  height: 3px;
+}
+.iv-control {
+  margin: 24px 0;
+}
+.iv-control > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+}
+.iv-control output {
+  font-family: var(--font-mono), monospace;
+  color: var(--tc-primary);
+  font-size: 15px;
+}
+.iv-control input {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  accent-color: var(--tc-primary);
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.iv-choices,
+.iv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+.iv-choices button,
+.iv-actions button {
+  padding: 9px 15px;
+  border: 1px solid var(--tc-border);
+  color: var(--tc-text);
+  background: transparent;
+  border-radius: 4px;
+}
+.iv-choices button[aria-pressed="true"],
+.iv-actions button:first-child {
+  background: var(--tc-primary);
+  color: var(--tc-on-primary);
+  border-color: var(--tc-primary);
+}
+.iv-readout {
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 20px 0 0;
+}
+.iv-readout strong {
+  font-weight: 650;
+}
+.iv-readout pre {
+  margin: 16px 0 0;
+  padding: 16px;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--tc-border);
+  border-radius: 4px;
+  background: var(--tc-bg);
+  font-size: 12px;
+  line-height: 1.75;
+  font-family: var(--font-mono), monospace;
+  color: var(--tc-text);
+  tab-size: 2;
+}
+.iv-takeaway {
+  padding-top: 20px;
+  margin: 24px 0 10px;
+  border-top: 1px solid var(--tc-border);
+  color: var(--tc-text);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.iv-provenance {
+  margin: 0;
+  font-size: 11px;
+  color: var(--tc-muted);
+  line-height: 1.65;
+}
+.iv-tensor-pair {
+  display: grid;
+  gap: 10px;
+}
+.iv-tensor > p {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--tc-muted);
+}
+.iv-cells {
+  display: grid;
+  gap: 6px;
+}
+.iv-cells > span {
+  display: grid;
+  place-content: center;
+  min-height: 42px;
+  min-width: 0;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--tc-primary) 35%, var(--tc-border));
+  background: color-mix(in srgb, var(--tc-primary) 9%, transparent);
+  color: var(--tc-primary);
+  font:
+    15px var(--font-mono),
+    monospace;
+}
+.iv-cells-muted > span {
+  color: var(--tc-muted);
+  background: var(--tc-bg);
+  border-color: var(--tc-border);
+}
+.iv-cells > span[data-selected] {
+  background: var(--tc-primary);
+  color: var(--tc-on-primary);
+}
+.iv-transform {
+  text-align: center;
+  color: var(--tc-muted);
+  font-size: 20px;
+}
+.iv-bars {
+  margin: 22px 0;
+}
+.iv-bars > p {
+  font-size: 12px;
+  color: var(--tc-primary);
+  margin: 0 0 12px;
+}
+.iv-bars > p > span {
+  color: var(--iv-brass);
+}
+.iv-bar-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 82px;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+.iv-bar-row > div {
+  display: grid;
+  gap: 3px;
+}
+.iv-bar-row i {
+  display: block;
+  height: 8px;
+  min-width: 1px;
+}
+.iv-bar-row output {
+  text-align: right;
+}
+.iv-chain,
+.iv-memory {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 0;
+}
+.iv-chain > div,
+.iv-memory > div {
+  border: 1px solid var(--tc-border);
+  background: var(--tc-bg);
+  padding: 16px 12px;
+  text-align: center;
+  flex: 1;
+  min-width: 80px;
+}
+.iv-chain small,
+.iv-memory div > span {
+  display: block;
+  font-size: 12px;
+  color: var(--tc-muted);
+  margin-bottom: 8px;
+}
+.iv-chain strong,
+.iv-memory strong {
+  font:
+    24px var(--font-mono),
+    monospace;
+  color: var(--tc-primary);
+}
+.iv-chain > span,
+.iv-memory > span {
+  font:
+    12px var(--font-mono),
+    monospace;
+  color: var(--tc-muted);
+}
+.iv-backward {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--iv-brass);
+  font:
+    12px var(--font-mono),
+    monospace;
+  padding-bottom: 16px;
+}
+.iv-measures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 30px;
+  margin: 18px 0 24px;
+}
+.iv-measures > div {
+  display: grid;
+  gap: 6px;
+}
+.iv-measures span {
+  font-size: 12px;
+  color: var(--tc-muted);
+}
+.iv-measures strong {
+  font:
+    24px var(--font-mono),
+    monospace;
+  color: var(--tc-text);
+}
+.iv-case-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+.iv-case {
+  display: grid;
+  gap: 6px;
+  padding: 10px 4px;
+  background: var(--tc-bg);
+  border: 1px solid var(--tc-border);
+  border-radius: 3px;
+}
+.iv-case span {
+  font:
+    10px var(--font-mono),
+    monospace;
+  color: var(--tc-muted);
+}
+.iv-case strong {
+  font:
+    13px var(--font-mono),
+    monospace;
+}
+.iv-case-tp,
+.iv-case-tn {
+  color: var(--tc-primary);
+}
+.iv-case-fp,
+.iv-case-fn {
+  color: var(--iv-brass);
+  background: color-mix(in srgb, var(--iv-brass) 12%, transparent);
+}
+.iv-case[aria-pressed="true"] {
+  outline: 2px solid var(--tc-text);
+  outline-offset: 2px;
+}
+.iv-case-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 12px;
+  font-size: 11px;
+  color: var(--tc-muted);
+  margin: 16px 0;
+}
+.iv-spectrogram {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 8px;
+  margin: 18px 0;
+}
+.iv-spectro-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font:
+    11px var(--font-mono),
+    monospace;
+  color: var(--tc-muted);
+}
+.iv-spectro-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 1px 3px;
+  height: 160px;
+  background: #151515;
+  padding: 6px;
+}
+.iv-spectro-grid i {
+  background: #c1decf;
+}
+.iv-spectro-grid i[data-window] {
+  outline: 1px solid #fff;
+}
+.iv-spectro-caption {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+}
+.iv-sequence {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  margin: 20px 0;
+}
+.iv-sequence > span {
+  display: grid;
+  gap: 9px;
+  text-align: center;
+  padding: 10px 2px;
+  border: 1px solid var(--tc-border);
+}
+.iv-sequence small {
+  font-size: 10px;
+  color: var(--tc-muted);
+}
+.iv-sequence strong {
+  font:
+    16px var(--font-mono),
+    monospace;
+}
+.iv-sequence [data-active] {
+  background: color-mix(in srgb, var(--tc-primary) 16%, transparent);
+  border-color: var(--tc-primary);
+}
+.iv-sequence [data-target] {
+  outline: 2px solid var(--iv-brass);
+  outline-offset: 1px;
+}
+.iv-attention {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+}
+.iv-attention > div {
+  display: grid;
+  flex: 1;
+  gap: 8px;
+  text-align: center;
+  min-width: 0;
+}
+.iv-attention span,
+.iv-attention small {
+  font-size: 11px;
+  color: var(--tc-muted);
+}
+.iv-attention > div > div {
+  height: 155px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-bottom: 1px solid var(--tc-border);
+}
+.iv-attention i {
+  display: block;
+  width: 70%;
+  background: var(--tc-primary);
+  max-height: 100%;
+}
+.iv-attention strong {
+  font:
+    12px var(--font-mono),
+    monospace;
+}
+.iv-rule-results {
+  margin: 18px 0;
+}
+.iv-rule-results p {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--tc-border);
+  padding: 10px 0;
+  margin: 0;
+}
+.iv-rule-results strong {
+  color: var(--tc-primary);
+}
+.iv-compression {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0;
+  font:
+    13px var(--font-mono),
+    monospace;
+  color: var(--tc-muted);
+}
+.iv-compression b {
+  color: var(--tc-primary);
+}
+.iv-flow {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 18px;
+  padding: 0;
+  margin: 24px 0;
+}
+.iv-flow li {
+  min-width: 0;
+  position: relative;
+}
+.iv-flow li:not(:last-child)::after {
+  content: "↓";
+  position: absolute;
+  right: 14px;
+  bottom: -22px;
+  color: var(--tc-muted);
+}
+.iv-flow li:nth-child(1)::after,
+.iv-flow li:nth-child(3)::after {
+  content: "→";
+  top: 40%;
+  bottom: auto;
+  right: -16px;
+}
+.iv-flow li:nth-child(2)::after {
+  right: calc(100% + 12px);
+  transform: rotate(32deg);
+}
+.iv-flow button {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  text-align: left;
+  gap: 6px 10px;
+  width: 100%;
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid var(--tc-border);
+  border-radius: 4px;
+  background: var(--tc-bg);
+  color: var(--tc-text);
+}
+.iv-flow button[aria-pressed="true"] {
+  border-color: var(--tc-primary);
+  background: color-mix(in srgb, var(--tc-primary) 9%, var(--tc-bg));
+}
+.iv-flow button > span {
+  grid-row: span 2;
+  font:
+    12px var(--font-mono),
+    monospace;
+  color: var(--tc-primary);
+  padding-top: 3px;
+}
+.iv-flow strong {
+  font-size: 13px;
+  font-weight: 550;
+}
+.iv-flow small {
+  font-size: 11px;
+  color: var(--tc-muted);
+  overflow-wrap: anywhere;
+}
+.iv-stage-detail {
+  border-top: 1px solid var(--tc-border);
+  padding-top: 18px;
+}
+.iv-stage-detail h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 550;
+}
+.iv-stage-detail .iv-readout {
+  margin-top: 10px;
+}
+.lesson-mission-scene-compact {
+  margin-bottom: 28px;
+  border: 1px solid var(--tc-border);
+  background: var(--tc-surface);
+}
+.lesson-mission-scene-compact .mission-context-copy {
+  padding: 16px 20px 20px;
+}
+.lesson-mission-scene-compact .mission-context-location {
+  margin-bottom: 10px;
+}
+.lesson-mission-scene-compact .mission-context-narrative {
+  font-size: 13px;
+  line-height: 1.75;
+}
+@media (min-width: 1440px) {
+  .lesson-workbench-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+}
+@media (min-width: 901px) {
+  .lesson-workbench-expanded .lesson-workbench-grid {
+    grid-template-columns: 1fr;
+  }
+  .lesson-workbench-expanded .lesson-mission-scene {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+  .lesson-workbench-expanded .lesson-embedded-experiment {
+    border-left: 0;
+    border-top: 1px solid var(--tc-border);
+  }
+  .lesson-workbench-expanded .channel-worked-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
+  }
+  .lesson-workbench-expanded .lesson-embedded-experiment > section > p {
+    max-width: 74ch;
+  }
+}
+@media (max-width: 900px) {
+  .lesson-workbench-grid {
+    grid-template-columns: 1fr;
+  }
+  .lesson-workbench .lesson-mission-scene {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .lesson-workbench .mission-context-image img {
+    height: 100%;
+    min-height: 260px;
+  }
+  .mission-context-copy {
+    padding: 22px;
+  }
+  .lesson-instrument {
+    border-left: 0;
+    border-top: 1px solid var(--tc-border);
+    padding: 28px;
+  }
+  .lesson-workbench {
+    margin-bottom: 40px;
+  }
+}
+@media (max-width: 540px) {
+  .lesson-workbench > h2 {
+    margin-bottom: 24px;
+  }
+  .lesson-workbench .lesson-mission-scene {
+    display: block;
+  }
+  .lesson-workbench .mission-context-image img {
+    aspect-ratio: 16 / 9 !important;
+    min-height: 0;
+  }
+  .mission-context-copy {
+    padding: 20px;
+  }
+  .mission-context-narrative {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .mission-context-crew {
+    margin-bottom: 14px;
+  }
+  .lesson-instrument {
+    padding: 22px 18px;
+  }
+  .iv-control {
+    margin: 18px 0;
+  }
+  .iv-readout pre {
+    padding: 12px;
+    font-size: 11px;
+  }
+  .iv-case-grid {
+    gap: 7px;
+  }
+  .iv-case strong {
+    font-size: 11px;
+  }
+  .iv-case-legend {
+    grid-template-columns: 1fr;
+  }
+  .iv-sequence {
+    gap: 3px;
+  }
+  .iv-attention {
+    gap: 6px;
+  }
+  .iv-chain {
+    gap: 8px;
+  }
+  .iv-chain > div {
+    min-width: 64px;
+    padding: 12px 6px;
+  }
+  .iv-chain > span {
+    font-size: 10px;
+  }
+  .iv-flow {
+    gap: 22px 14px;
+  }
+  .iv-flow button {
+    padding: 12px 10px;
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 6px;
+  }
+  .iv-flow strong {
+    font-size: 12px;
+  }
+  .lesson-ending-scene img {
+    aspect-ratio: 16 / 10 !important;
+  }
+}
+
+.lesson-instrument {
+  font-variant-numeric: tabular-nums;
+}
+.lesson-instrument button {
+  touch-action: manipulation;
+}
+.lesson-instrument button:hover:not(:disabled) {
+  border-color: var(--tc-primary);
+}
+.lesson-workbench > h2 {
+  scroll-margin-top: 24px;
+}
+
+@media (max-width: 540px) {
+  /* SVG type is expressed in viewBox units. Compensate for phone scaling. */
+  .lesson-instrument svg text {
+    font-size: 24px;
+  }
+  .lesson-instrument .iv-network text {
+    font-size: 20px;
+  }
+  .iv-readout pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

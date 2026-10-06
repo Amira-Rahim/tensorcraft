@@ -1,0 +1,27 @@
+
+Running 15 tests using 2 workers
+
+(node:45021) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:45022) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/15] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 1440px dark
+[2/15] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 390px light
+[3/15] [chromium] › e2e/channel-experiment.spec.ts:10:7 › channel experiment: real lesson at 320px dark
+[4/15] [chromium] › e2e/exercise-run.spec.ts:30:7 › Exercise run in the real browser worker › starter fails, solution passes, through the shipped pipeline
+[5/15] [chromium] › e2e/exercise-run.spec.ts:84:7 › Exercise editor keyboard access › the editor scroller is focusable with a role and name
+[6/15] [chromium] › e2e/lesson-continuity.spec.ts:5:7 › one packet from visual to practice at 1440px dark
+[7/15] [chromium] › e2e/lesson-continuity.spec.ts:5:7 › one packet from visual to practice at 390px dark
+[8/15] [chromium] › e2e/lesson-continuity.spec.ts:5:7 › one packet from visual to practice at 320px light
+[9/15] [chromium] › e2e/lesson-history.spec.ts:3:5 › phase history preserves the document and experiment draft
+[10/15] [chromium] › e2e/lesson-layout.spec.ts:391:9 › lesson layout, desktop › Concept keeps prose and cards in one column on the paragraphLed lesson
+[11/15] [chromium] › e2e/lesson-layout.spec.ts:391:9 › lesson layout, desktop › Concept keeps prose and cards in one column on the headingLed lesson
+[12/15] [chromium] › e2e/lesson-layout.spec.ts:475:7 › lesson layout, desktop › normalization keeps scaling and inference prerequisites in the main read
+[13/15] [chromium] › e2e/lesson-layout.spec.ts:611:7 › lesson layout, desktop › on the Concept step the nav sits 40 px below the optional goals, with Continue at the frame's right edge
+[14/15] [chromium] › e2e/lesson-layout.spec.ts:693:7 › lesson layout, desktop › the exercise brief sits in the reading column and the pane keeps the editor
+[15/15] [chromium] › e2e/lesson-layout.spec.ts:874:9 › lesson layout, phone › nothing renders between Continue and the footer on step 2
+  15 passed (16.7s)

@@ -11,6 +11,9 @@ test("phase history preserves the document and experiment draft", async ({
   });
   await page.goto("/worlds/deep-orbit/foundations/normalization?start=concept");
   const experiment = page.getByTestId("experiment-normalization");
+  await page
+    .getByText("Practice: a different scaler and reading", { exact: true })
+    .click();
   await expect(experiment).toBeVisible();
   await page.evaluate(
     () => (document.documentElement.dataset.historyProbe = "same-document"),
@@ -24,10 +27,16 @@ test("phase history preserves the document and experiment draft", async ({
   await page.getByRole("button", { name: "Continue →", exact: true }).click();
   await expect(experiment).toHaveCount(0);
   await page.goBack();
+  await page
+    .getByText("Practice: a different scaler and reading", { exact: true })
+    .click();
   await expect(experiment.getByRole("textbox")).toHaveValue("1,1");
   await page.goForward();
   await expect(experiment).toHaveCount(0);
   await page.goBack();
+  await page
+    .getByText("Practice: a different scaler and reading", { exact: true })
+    .click();
   await expect(experiment).toBeVisible();
   expect(
     await page.evaluate(() => document.documentElement.dataset.historyProbe),

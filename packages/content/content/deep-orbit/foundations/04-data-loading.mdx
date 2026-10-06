@@ -80,7 +80,66 @@ What keeps this pipeline alive on real sensor data is where the readings come fr
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle independent training examples while preserving split membership", "Split data into training and validation sets"]} />
 
-## From Fetch to Feed
+## Read one sample when it is requested
+
+Use the exercise's 16-row archive stand-in. Each row has three **features**
+(numbers the model reads): amplitude, zero-crossing count, and phase. Its
+**label** is the target 0 or 1. These small values stand in for the ship's
+28,800 archived readings and their much larger raw captures.
+
+A generator, written `function*`, pauses at `yield`. Put the archive read inside
+that loop so a record is read only when requested. The supplied reader returns
+one row; no full archive array is needed.
+
+<CodeBlock language="typescript" title="one-sample.ts">
+{`function* rowsById(ids) {
+  for (const id of ids) {
+    const row = readSample(id);
+    yield {
+      xs: tf.tensor(row.features), // one sample: [3]
+      ys: tf.tensor([row.label]),  // one label: [1]
+    };
+  }
+}`}
+</CodeBlock>
+
+The label needs its one-element axis: four samples stack into feature shape
+`[4, 3]` and label shape `[4, 1]`.
+
+## Shuffle samples, then form batches
+
+<CodeBlock language="typescript" title="batch-and-read.ts">
+{`const ids = Array.from({ length: 16 }, (_, i) => i);
+const source = tf.data.generator(() => rowsById(ids));
+const batches = source.shuffle(10).batch(4);
+await batches.forEachAsync((group) => {
+  console.log(group.xs.shape); // [4, 3]
+});`}
+</CodeBlock>
+
+Shuffle comes first so it mixes individual samples. Batching first would keep
+each original group together. Buffer size 10 means limited mixing, not a
+uniform shuffle of all 16 rows. The challenge asks you to collect these shapes in `batchShapes` instead of logging them. Await the drain before reading that array.
+This full-fixture pipeline demonstrates batching; it does not train a model.
+
+## Keep the future outside training
+
+For future readings, assign the earlier 12 row IDs to training and the last
+four to validation. Shuffle only inside the training set:
+
+<CodeBlock language="typescript" title="split-membership.ts">
+{`const trainIdx = Array.from(tf.util.createShuffledIndices(12));
+const valIdx = Array.from({ length: 4 }, (_, i) => i + 12);`}
+</CodeBlock>
+
+A training pipeline would read only `trainIdx`; validation would read only
+`valIdx`. Neighboring records can share information, even for a model that
+reads one row at a time. Keep shared captures together and leave a gap when
+windows overlap. Fit preprocessing on training rows only.
+
+<ConceptReference summary="Reference: the full archive, buffers, and split policies">
+
+### From fetch to feed
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -134,13 +193,13 @@ For independent training examples, shuffle samples before forming batches. The r
 
 Sizing the buffer to the whole archive would sample fairly, but a shuffle buffer fills before it yields anything. The first batch would wait for all 28,800 readings, and the pipeline would stop being a stream. So a buffer shuffle is what you are left with when records arrive as a stream you cannot index. This archive can be read by id, so it has a better option: shuffle a list of indices once, up front, and read in that order. That is a full shuffle with no buffer at all, and the split section below builds it.
 
-## Why Batching Matters
+### Why Batching Matters
 
 Batching is virtual-list rendering for model input. A virtual list doesn't render 10,000 DOM nodes at once; it renders a window of visible items. ML models likewise process a window (batch) of data at a time, updating their understanding incrementally.
 
 Memory is only half the reason 32 is the number. The other half is training. The model updates its weights once per batch, using that batch as its estimate of the whole archive: a batch of 1 gives a noisy estimate and a jittery update, and a batch of the full archive gives an exact estimate but one update per pass. Module 3 passes this number to `model.fit()` and gives the reasoning for a middle value. For now, know that batch size is a knob you set on purpose, not a number the memory limit hands you.
 
-## Splitting Without Leaking
+### Splitting Without Leaking
 
 Batching decides what the model sees on each step. The split decides what it never sees while training. Get the second one wrong and your validation score is measuring what the model already memorized, not what it learned.
 
@@ -172,6 +231,9 @@ const valData = tf.data.generator(() => splitGenerator(valIdx)).batch(32);
 Choose the split for the job the model will do. We want to predict future readings, so validation uses a later period. A classifier that reads one row at a time can still exploit similarities between neighboring rows. Randomly mixing those rows across both sets can make the score too optimistic.
 
 Time order is a starting point. If examples share a capture or overlap in time, keep those groups together and leave a gap at the boundary where needed. Module 6 applies this to overlapping windows. A random split can suit independent examples drawn from the same population as deployment. Whichever rule you choose, assign membership once: separate `.shuffle().take()` and `.shuffle().skip()` passes can reshuffle differently and overlap. Fit preprocessing on training rows only; module 3 adds a final test set that stays out of model selection.
+
+
+</ConceptReference>
 
 ## Challenge
 

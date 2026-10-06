@@ -48,6 +48,7 @@ test.describe("Exercise run in the real browser worker", () => {
     const results = page.getByTestId("test-results-panel");
     await expect(results).toBeVisible({ timeout: 90_000 });
     await expect(results).not.toContainText("All tests passed!");
+    await expect(page.getByTestId("challenge-passed-banner")).toHaveCount(0);
 
     // 2. Replace editor contents with the canonical solution and re-run.
     const editor = page.locator(".cm-content").first();
@@ -63,6 +64,11 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(results).toContainText("All tests passed!", {
       timeout: 90_000,
     });
+    await expect(
+      page
+        .getByTestId("challenge-passed-banner")
+        .getByRole("list", { name: "Checked work" }),
+    ).toContainText("First Contact: Tensor In, Memory Clean");
   });
 });
 

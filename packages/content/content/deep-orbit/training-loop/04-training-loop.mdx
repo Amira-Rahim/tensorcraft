@@ -133,7 +133,72 @@ Training sequence initiated. I have run this loop by hand twice this week: forwa
 
 <LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Describe recent training and validation trends and identify questions to investigate"]} />
 
-## The Learning Loop
+## Give the run a stopping rule
+
+An **epoch** is one pass over the training rows. A **batch** is the group used
+for one weight update. `model.fit()` repeats forward pass, loss,
+backpropagation and update for you.
+
+The visual is an illustrative trace. The challenge supplies a model and 100
+synthetic rows so you can measure your own run. `validationSplit: 0.2` holds
+back the last 20 rows before training. This independent synthetic fixture is
+shuffled in advance; a real time series needs its time or group split first.
+
+<CodeBlock language="typescript" title="watch-validation.ts">
+{`function makeEarlyStopping() {
+  return tf.callbacks.earlyStopping({
+    monitor: 'val_loss', patience: 5, minDelta: 0,
+  });
+}
+const history = await model.fit(trainX, trainY, {
+  epochs: 500,
+  batchSize: 32,
+  validationSplit: 0.2,
+  callbacks: makeEarlyStopping(),
+});
+const trainingLoss = history.history.loss;
+const validationLoss = history.history.val_loss;`}
+</CodeBlock>
+
+Five epochs without a new best validation loss stop the run, unless the
+500-epoch budget ends first. TFJS 4.22.0 leaves the final weights in place;
+this callback does not restore the best checkpoint. Saving and restoring that
+checkpoint is separate work, described in the reference.
+
+Batch size trades memory and throughput against update frequency and
+variability. Smaller batches update more often; larger ones average more
+examples per update. Compare on the actual model and hardware.
+
+## Describe the curves before explaining them
+
+For the challenge's trend rule, compare the last ten losses with the previous
+ten. Fewer than 20 values means `insufficient-history`. Reject unequal arrays
+or non-finite, negative losses before making a comparison.
+
+<CodeBlock language="typescript" title="compare-two-windows.ts">
+{`const mean = values => values.reduce((sum, x) => sum + x, 0) / values.length;
+const before = mean(losses.slice(-20, -10));
+const recent = mean(losses.slice(-10));
+const improving = recent < before * 0.95 - 1e-12;
+const worsening = recent > before * 1.05 + 1e-12;`}
+</CodeBlock>
+
+Apply the rules in this order: validation improving, both worsening, training
+improving while validation worsens, any other validation worsening, otherwise
+plateau. The instructions give their return strings. Exactly 5% stays in the
+flat band. Handle a zero previous mean explicitly: zero to positive is
+worsening; zero to zero is flat.
+
+A widening gap is a reason to investigate data, labels, preprocessing and
+model fit. Neither a stopped run nor one curve shape proves the cause.
+
+<Dialogue speaker="Chief Nazari">
+Ten times the compute and you cannot tell me what it bought. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
+</Dialogue>
+
+<ConceptReference summary="Reference: full training setup, checkpoints, and optimizer details">
+
+### A complete standalone run
 
 `setImmediate(loop)` gives you a loop only because each callback queues the next one: do a pass, check the exit condition, re-schedule, with the event loop free for other work in between. Training has that same self-rescheduling shape, plus one problem a drain loop never has. Nothing hands training its last iteration.
 
@@ -249,9 +314,7 @@ rerun.dispose();
 
 Early stopping leaves the final epoch's weights in place in TFJS 4.22.0. With `minDelta: 0` and `patience: 5`, it stops after five epochs that fail to improve the best monitored value, unless the budget ends first. It does not prove convergence or overfitting. This version does not implement `restoreBestWeights: true`. To retain the best checkpoint, clone its weight tensors when validation improves, restore them after fitting, and dispose the snapshots.
 
-<Dialogue speaker="Chief Nazari">
-Ten times the compute and you cannot tell me what it bought. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
-</Dialogue>
+
 
 <DerivationDrawer summary="The 7-step loop that fit() hides, and what Adam changes in step 4">
 **`model.fit()` is a wrapper around this loop.** Sampling mini-batches instead of the whole dataset is what makes it stochastic gradient descent: each batch is a random sample, so each gradient is only an estimate of the true one. Without early stopping, the inner update runs `epochs × ceil(trainingRows / batchSize)` times, including a partial final batch. Validation rows are excluded:
@@ -288,6 +351,9 @@ for epoch in 1..N:
 
 **Why shuffle?** For independent examples, it reduces dependence on file ordering. It must preserve features and labels together. Do not shuffle across train/validation boundaries or destroy the temporal order inside a sequence.
 </DerivationDrawer>
+
+
+</ConceptReference>
 
 ## Challenge
 

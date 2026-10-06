@@ -34,7 +34,7 @@ for (const width of [1440, 390]) {
       .getByRole("button", { name: "Step 2: Concept", exact: true })
       .click();
     await page
-      .getByRole("button", { name: "Step 4: Challenge", exact: true })
+      .getByRole("button", { name: "Step 3: Challenge", exact: true })
       .click();
     await openEditor();
     await expect(page.locator(".cm-content").first()).toContainText(ownCode);
@@ -106,7 +106,7 @@ for (const width of [1440, 390]) {
     await writeCode(ownCode + "\n// quota probe");
     await expect(page.getByText(/Draft could not be saved/)).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
+      page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
     ).toBeDisabled();
     expect(
       await page.evaluate(
@@ -146,7 +146,7 @@ test("an unreadable draft stays intact until an explicit reset", async ({
     ),
   ).toBe("future draft");
   await page
-    .getByRole("button", { name: "Step 4: Challenge", exact: true })
+    .getByRole("button", { name: "Step 3: Challenge", exact: true })
     .click();
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(page.getByText(/The previous draft is preserved/)).toHaveCount(

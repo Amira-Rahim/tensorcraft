@@ -23,10 +23,12 @@
 export function ChallengePassedBanner({
   passed,
   exerciseCount,
+  checkedWork = [],
   onContinue,
 }: {
   passed: boolean;
   exerciseCount: number;
+  checkedWork?: string[];
   onContinue: () => void;
 }) {
   const message =
@@ -35,24 +37,45 @@ export function ChallengePassedBanner({
   return (
     <>
       <p role="status" className="sr-only">
-        {passed ? message : ""}
+        {passed
+          ? `${message}${checkedWork.length ? `. Checked: ${checkedWork.join("; ")}.` : ""}`
+          : ""}
       </p>
 
       {passed && (
         <div
           data-testid="challenge-passed-banner"
-          className="mt-(--l-row) flex items-center justify-between gap-(--l-nav-inner) border px-5 py-4"
+          className="mt-(--l-row) flex flex-wrap items-center justify-between gap-(--l-nav-inner) border px-5 py-4"
           style={{
             borderColor: "var(--tc-primary)",
             background: "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
           }}
         >
-          <p
-            className="font-mono text-xs uppercase tracking-widest"
-            style={{ color: "var(--tc-primary)" }}
-          >
-            {message}
-          </p>
+          <div className="min-w-0 flex-1 basis-48">
+            <p
+              className="font-mono text-xs uppercase tracking-widest"
+              style={{ color: "var(--tc-primary)" }}
+            >
+              {message}
+            </p>
+            {checkedWork.length > 0 && (
+              <ul
+                className="mt-2 space-y-1 text-sm leading-relaxed"
+                aria-label="Checked work"
+              >
+                {checkedWork.map((title, index) => (
+                  <li key={`${index}-${title}`}>{title}</li>
+                ))}
+              </ul>
+            )}
+            <p
+              className="mt-2 text-sm leading-relaxed"
+              style={{ color: "var(--tc-muted)" }}
+            >
+              Check your reasoning next, then follow the crew into the next
+              scene.
+            </p>
+          </div>
           <button
             type="button"
             onClick={onContinue}

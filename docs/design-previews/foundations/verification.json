@@ -1,0 +1,396 @@
+{
+  "artifact": "Isolated visual prototype, not the production app",
+  "date": "2026-10-05",
+  "viewChecks": 200,
+  "viewCheckScope": "Five lessons and five phases, both appearances, at 1440, 1024, 390, 320 pixels: overflow, image loading, single H1",
+  "reviewPanelChecks": 16,
+  "interactionChecks": [
+    "Skip link is first in keyboard order, visible on focus, and focuses the lesson",
+    "Approved header preserves 60/36px two-tone title, mission metadata, five visible progress segments, full crew scene, and review tools closed by default",
+    "Lesson drawer navigates to actual lesson links, closes on selection, and supports Escape",
+    "Scene replay is user-triggered, stoppable, and respects reduced motion without hiding dialogue",
+    "Packet selection updates matching code without closing reference or moving keyboard focus",
+    "One persistent polite live region receives changed instrument messages",
+    "Step anchors create browser history; Back and Forward restore phase and heading focus",
+    "Modified step-link click opens a new tab without changing the current step",
+    "Drafts survive steps, reload, and sample switching; each authored attempt keeps its own draft",
+    "Authored success and retry feedback preserve editor and hint, and update live announcement",
+    "Recall feedback updates in place with keyboard focus and selected answer retained",
+    "Transpose, gain, and next-batch controls update their displayed values correctly",
+    "Scaling animates a mounted bar using transforms and can be interrupted by another choice",
+    "Reduced motion suppresses measurement transitions",
+    "Appearance persists across reload and synchronizes native/browser chrome colors",
+    "Desktop and mobile keep scene context and the working instrument ahead of explanation and code, in matching DOM and visual order",
+    "All five lessons retain scene context through Concept and Challenge, visual recall without new story, and canonical epilogue voices with unresolved evidence",
+    "Packet selection updates the mounted plot, readout, and code for the same selected value",
+    "Final destination announces the preview boundary without restarting the foundations",
+    "Review dialog contains focus, makes the lesson inert, and restores footer focus and scroll on Escape",
+    "Review tabs support arrow, Home, and End keys; outside click dismisses without treating panel content as backdrop",
+    "Preview navigation waits for Open step, closes the panel, focuses the lesson, and keeps per-lesson drafts",
+    "Preview feedback shows the selected authored outcome in the lesson, preserving the editor and announcing the result",
+    "Unavailable storage keeps in-memory edits and shows an accurate retention label"
+  ],
+  "pageErrors": [],
+  "axeChecks": [
+    {
+      "lesson": 1,
+      "phase": 1,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 3,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 4,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 5,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 5,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 2,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 3,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 4,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 1,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 3,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 4,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 5,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 5,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 2,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 3,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 4,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 2,
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 1,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 2,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 3,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 4,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 5,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 5,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 2,
+      "phase": 2,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 3,
+      "phase": 2,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 4,
+      "phase": 2,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 2,
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 1,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 2,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 3,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 4,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 1,
+      "phase": 5,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 5,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 2,
+      "phase": 2,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 3,
+      "phase": 2,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 4,
+      "phase": 2,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "lesson": 5,
+      "phase": 2,
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "panel": "settings",
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "panel": "notes",
+      "scheme": "dark",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "panel": "settings",
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "panel": "notes",
+      "scheme": "dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "panel": "settings",
+      "scheme": "dark",
+      "width": 320,
+      "violations": []
+    },
+    {
+      "panel": "notes",
+      "scheme": "dark",
+      "width": 320,
+      "violations": []
+    },
+    {
+      "panel": "settings",
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "panel": "notes",
+      "scheme": "light",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "panel": "settings",
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "panel": "notes",
+      "scheme": "light",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "panel": "settings",
+      "scheme": "light",
+      "width": 320,
+      "violations": []
+    },
+    {
+      "panel": "notes",
+      "scheme": "light",
+      "width": 320,
+      "violations": []
+    }
+  ],
+  "limits": [
+    "Exercise feedback is authored and does not grade submitted code",
+    "Production migration and access gates are not implemented or tested here",
+    "Automated accessibility checks and DOM announcement checks do not replace assistive technology testing",
+    "No learner study or commercial validation",
+    "Preview drafts use tab-scoped session storage; closing the tab ends the session"
+  ],
+  "reducedMotionTransition": "0s"
+}

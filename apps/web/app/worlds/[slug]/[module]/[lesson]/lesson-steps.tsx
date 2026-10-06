@@ -50,6 +50,22 @@ import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
+import {
+  PHASE,
+  TOTAL_STEPS,
+  STEP_NAMES,
+  STEP_EVENT_NAMES,
+  LESSON_STEPS_VERSION,
+  lessonStepKeys,
+  restoreLessonSteps,
+  parseStepHash,
+  stepHash,
+  historyStep,
+} from "@/lib/lesson-phases";
+import {
+  LessonMissionScene,
+  LessonConceptWorkbench,
+} from "@/app/components/lesson-visuals/lesson-workbench";
 
 /**
  * Per-world vocabulary. The reader used to hardcode Deep Orbit's words
@@ -76,7 +92,7 @@ function terms(worldSlug: string): {
 
 interface LessonStepsProps {
   /** Explicit route entry; never permits bypassing the exercise completion gate. */
-  entryStep?: 0 | 1 | 3;
+  entryStep?: 0 | 1 | 2;
   reviewUserId?: string | null;
   dueReviews?: ResolvedReviewItem[];
   freeRecallPrompts?: FreeRecallPrompt[];
@@ -150,8 +166,6 @@ interface LessonStepsProps {
   }>;
 }
 
-const TOTAL_STEPS = 6;
-
 /* Per-step MDX visibility sets, hoisted so their identity is stable across
    renders. Passing a fresh Set each render makes LessonContent rebuild its
    memoized MDX component, which remounts the whole MDX DOM subtree on every
@@ -167,23 +181,17 @@ const BRIEFING_COMPONENTS = new Set([
   "prose",
 ]);
 
-/* The Concept, Code and Challenge steps each render two LessonContent
+/* The Concept and Challenge steps each render two LessonContent
    instances with disjoint Sets, so no component renders twice: Concept
    splits into the objectives intro (in flow above the read) and the read;
-   Code and Challenge split into a LEFT reading column and a RIGHT slot (the
-   worked example or the work pane). Interactive components with side
+   Challenge splits into a LEFT reading column and a RIGHT work pane. Interactive components with side
    effects live in exactly one partition: Exercise only in CHALLENGE_RIGHT,
    RecallPrompt only in TAKEAWAYS_RECALL. */
 
-/* Prose partition (2026-09-04, lesson-format audit step 2). The teaching
-   prose used to render on FOUR consecutive steps (Briefing after the scene,
-   Concept, Code, Challenge left), so the designed path re-served the same
-   700-1,100 words up to four times, and the Concept step narrated code it
-   hid ("Two tools fix this:" over an invisible block). Now each step owns a
-   disjoint slice: Briefing = story zone only (hideTeaching), Concept = THE
-   one full read with code and tables inline, Code = the worked example
-   isolated in the work pane (no prose re-read), Challenge = the challenge
-   zone + hints only ("challenge" re-reveals it under data-show-prose=false). */
+/* Each phase owns one content slice. Briefing keeps the opening scene,
+   Concept keeps the full teaching read with code and derivations,
+   Challenge owns instructions and the editor, Takeaways owns recall and
+   recap, and Epilogue keeps the earned ending. */
 
 // Concept: the complete teaching read. Code blocks render INLINE here so
 // prose that narrates code has the code beside it on every viewport, and
@@ -206,21 +214,6 @@ const CONCEPT_LEFT = new Set([
   "code-tensors",
 ]);
 const CONCEPT_INTRO = new Set(["LearningObjectives"]);
-
-// Code: the runnable/copyable worked example in the right slot, which
-// stacks below the left slot and its derivation drawers (where a lesson has
-// them). No prose.
-const CODE_LEFT = new Set([
-  "MathBlock",
-  "DerivationDrawer",
-  "code-tensors",
-  "code-shapes",
-]);
-const CODE_RIGHT = new Set([
-  "CodeBlock",
-  "InteractiveDemo",
-  "ConceptReference",
-]);
 
 // Challenge: challenge zone, the exercise brief where the MDX places the
 // exercise (a pseudo-name: the left instance renders ExerciseBrief there,
@@ -256,72 +249,12 @@ export const STEP_VISIBILITY = {
   BRIEFING_COMPONENTS,
   CONCEPT_LEFT,
   CONCEPT_INTRO,
-  CODE_LEFT,
-  CODE_RIGHT,
   CHALLENGE_LEFT,
   CHALLENGE_RIGHT,
   TAKEAWAYS_RECALL,
   TAKEAWAYS_AFTER,
   CONSEQUENCE_COMPONENTS,
 } as const;
-
-/* Learner-facing step names: the bar's labels, the badge and every
-   accessible name. The last step is the story's epilogue on screen; the
-   pedagogy's name for it, "Consequence", stays in the analytics array below
-   so PostHog queries and scripts/analytics/module1-baseline.mjs keep
-   reading the same stepName. */
-const STEP_NAMES = [
-  "Briefing",
-  "Concept",
-  "Code",
-  "Challenge",
-  "Takeaways",
-  "Epilogue",
-] as const;
-const STEP_EVENT_NAMES = [
-  "Briefing",
-  "Concept",
-  "Code",
-  "Challenge",
-  "Takeaways",
-  "Consequence",
-] as const;
-
-/** #step-N (1-based, matching the on-screen numbering) → 0-based index. */
-function parseStepHash(hash: string): number | null {
-  const m = /^#step-([1-6])$/.exec(hash);
-  return m ? parseInt(m[1], 10) - 1 : null;
-}
-
-function getStorageKey(
-  worldSlug: string,
-  lessonSlug: string,
-  owner: string | null,
-): string {
-  const key = `tc_step_${worldSlug}_${lessonSlug}`;
-  return owner ? `${key}:account:${owner}` : key;
-}
-
-function getMaxStorageKey(
-  worldSlug: string,
-  lessonSlug: string,
-  owner: string | null,
-): string {
-  const key = `tc_step_max_${worldSlug}_${lessonSlug}`;
-  return owner ? `${key}:account:${owner}` : key;
-}
-
-/* "This browser has settled the lesson's recall" (spec 2026-09-24, section
-   2): the same shape as the step keys, so a guest's flag never reads as an
-   account's. The answer itself is never stored. */
-function getRecallStorageKey(
-  worldSlug: string,
-  lessonSlug: string,
-  owner: string | null,
-): string {
-  const key = `tc_recall_${worldSlug}_${lessonSlug}`;
-  return owner ? `${key}:account:${owner}` : key;
-}
 
 /* Public entry: wraps the reader in the learning-activity scope, which
    holds the lesson until the signed-in account matches the server's. */
@@ -366,7 +299,7 @@ function LessonStepsInner({
   }, []);
   const [currentStep, setCurrentStep] = useState<number>(entryStep);
   const [maxStepReached, setMaxStepReached] = useState<number>(
-    knownCompleted ? 5 : entryStep,
+    knownCompleted ? PHASE.epilogue : entryStep,
   );
   // A lesson with N exercises requires N passes: one green run per embedded
   // exercise, keyed by exercise slug (the incident-pairing lessons have 2).
@@ -383,19 +316,25 @@ function LessonStepsInner({
   // which means React unmounts the whole subtree on every step change, bottomNav
   // included. A keyboard user who activates Continue therefore has the element
   // they just activated destroyed under them, and focus falls to <body>: they
-  // restart from the top of the document six times per lesson (WCAG 2.4.3,
+  // restart from the top of the document on every phase change (WCAG 2.4.3,
   // level A). Move focus onto the new step instead. Not on first mount, where
   // the user has not navigated anywhere and stealing focus would be the bug.
   const stepRef = useRef<HTMLDivElement>(null);
-  const hasNavigated = useRef(false);
-
+  const navigationReadyRef = useRef(false);
+  const focusedStepRef = useRef(currentStep);
   useEffect(() => {
-    if (!hasNavigated.current) {
-      hasNavigated.current = true;
+    if (!mounted) return;
+    // Restoring a position, including a StrictMode effect replay, must not
+    // steal initial focus or scroll the lesson header out of view.
+    if (!navigationReadyRef.current) {
+      navigationReadyRef.current = true;
+      focusedStepRef.current = currentStep;
       return;
     }
+    if (focusedStepRef.current === currentStep) return;
+    focusedStepRef.current = currentStep;
     stepRef.current?.focus();
-  }, [currentStep]);
+  }, [currentStep, mounted]);
   // Mobile-only: reveal the right work pane (code/exercise) over the prose.
   const [paneOpen, setPaneOpen] = useState(false);
 
@@ -444,9 +383,13 @@ function LessonStepsInner({
   }, []);
   const getHintsUsed = useCallback(() => hintsRevealedRef.current.size, []);
 
-  const storageKey = getStorageKey(worldSlug, lesson.slug, reviewUserId);
-  const maxStorageKey = getMaxStorageKey(worldSlug, lesson.slug, reviewUserId);
-  const recallKey = getRecallStorageKey(worldSlug, lesson.slug, reviewUserId);
+  const stepKeys = lessonStepKeys(worldSlug, lesson.slug, reviewUserId);
+  const {
+    current: storageKey,
+    max: maxStorageKey,
+    passed: passedKey,
+    recall: recallKey,
+  } = stepKeys;
   // True once every recall card on Takeaways has left its prompt in this
   // mount, or this browser remembers doing so. Sticky: the left column is
   // keyed on the step, so StepTakeaways remounts on every visit and its
@@ -473,7 +416,7 @@ function LessonStepsInner({
     [recallKey],
   );
 
-  // True when the mount-restore below landed directly on step 5. Consumed
+  // True when the mount-restore below landed directly on the Epilogue. Consumed
   // (and cleared) by the completion effect so a restored arrival never
   // fires the emit-once completion signals (diff review D1).
   const restoredAtFinalStepRef = useRef(false);
@@ -501,39 +444,23 @@ function LessonStepsInner({
   // Read persisted step + furthest step reached on mount
   useEffect(() => {
     let step: number = entryStep;
-    let maxStep: number = knownCompleted ? 5 : entryStep;
+    let maxStep: number = knownCompleted ? PHASE.epilogue : entryStep;
+    // New keys take precedence; old Concept and Code both restore to Concept.
+    // Read fields separately so a corrupt list cannot discard valid progress.
+    let restored: ReturnType<typeof restoreLessonSteps> = {
+      current: null,
+      max: null,
+      visited: [],
+    };
     try {
-      const saved = localStorage.getItem(storageKey);
-      // A non-zero entryStep only ever comes from an explicit phase link
-      // (?start=concept|experiment|challenge); the route preference stopped
-      // setting it on 2026-09-20. A request wins over the saved position;
-      // the default entry restores it (audit 2026-09-20).
-      if (saved !== null && entryStep === 0) {
-        const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
-          step = parsed;
-          // A restore ONTO step 5 is not an in-session transition. The
-          // prevStepRef stamp alone cannot express this: the completion
-          // effect's first run (currentStep still 0) stamps prev=0 before
-          // this setCurrentStep lands, so its second run would read 0→5 and
-          // fire the emit-once signals on every reload of a finished lesson
-          // - the exact refire the guard exists to stop (diff review D1;
-          // verified empirically). The flag suppresses exactly that first
-          // restored arrival and is cleared once consumed.
-          if (parsed === 5) restoredAtFinalStepRef.current = true;
-          setCurrentStep(parsed);
-        }
-      }
-      const savedMax = localStorage.getItem(maxStorageKey);
-      if (savedMax !== null) {
-        const parsed = parseInt(savedMax, 10);
-        if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
-          maxStep = Math.max(maxStep, parsed);
-        }
-      }
+      restored = restoreLessonSteps(localStorage, stepKeys);
     } catch {
-      // localStorage unavailable
+      /* storage denied */
     }
+    if (entryStep === PHASE.briefing && restored.current !== null)
+      step = restored.current;
+    maxStep = Math.max(maxStep, restored.max ?? 0, step);
+    visitedStepsRef.current = new Set(restored.visited);
     // Read before the passed-exercises block below: a malformed `-passed`
     // entry throws inside that block's own try, and must not skip this
     // read (Task 5 addendum item 2).
@@ -565,7 +492,7 @@ function LessonStepsInner({
       // re-locked the Challenge gate the learner had already opened
       // (2026-07-14 UX audit). Only slugs that are really on this lesson
       // count, so stale storage can't unlock a different lesson's gate.
-      const savedPassed = localStorage.getItem(`${storageKey}-passed`);
+      const savedPassed = localStorage.getItem(passedKey);
       if (savedPassed !== null) {
         const slugs = JSON.parse(savedPassed) as string[];
         const valid = slugs.filter((s) =>
@@ -584,49 +511,27 @@ function LessonStepsInner({
     // was already covered; a link into unvisited territory clamps away.
     const fromHash = parseStepHash(window.location.hash);
     if (fromHash !== null && fromHash <= Math.max(step, maxStep)) {
-      if (fromHash === 5) restoredAtFinalStepRef.current = true;
       step = fromHash;
-      setCurrentStep(fromHash);
     }
+    restoredAtFinalStepRef.current = step === PHASE.epilogue;
+    setCurrentStep(step);
     // Normalize the entry so Back from the next step returns here.
     try {
       // Child mount effects can run before Next patches the History API.
       // Preserve its router state so Back does not turn into a page reload.
       window.history.replaceState(
-        { ...window.history.state, tcStep: step },
+        {
+          ...window.history.state,
+          tcStep: step,
+          tcStepsVersion: LESSON_STEPS_VERSION,
+        },
         "",
-        `#step-${step + 1}`,
+        stepHash(step),
       );
     } catch {
       // History API unavailable (some embedded contexts): steps still work.
     }
     setMaxStepReached(Math.max(step, maxStep));
-    // Seed the visited set for revisit-honest step views. Preference
-    // order: the persisted visited list (exact); else, when storage
-    // proves an earlier visit, 0..max (approximation for sessions from
-    // before the list existed). A brand-new visit seeds NOTHING: the
-    // re-audit (2026-09-04) proved the old unconditional seed made every
-    // first Briefing view fire revisit:true, zeroing the baseline
-    // funnel's step-0 first views.
-    try {
-      const savedVisited = localStorage.getItem(`${storageKey}-visited`);
-      if (savedVisited !== null) {
-        for (const s of JSON.parse(savedVisited) as number[]) {
-          if (Number.isInteger(s) && s >= 0 && s < TOTAL_STEPS) {
-            visitedStepsRef.current.add(s);
-          }
-        }
-      } else if (
-        localStorage.getItem(storageKey) !== null ||
-        localStorage.getItem(maxStorageKey) !== null
-      ) {
-        for (let s = 0; s <= Math.max(step, maxStep); s++) {
-          visitedStepsRef.current.add(s);
-        }
-      }
-    } catch {
-      // localStorage unavailable: treat every view as a first view.
-    }
     if (
       lesson.scene &&
       sceneClipFor(worldSlug, moduleSlug, lesson.slug) &&
@@ -637,20 +542,20 @@ function LessonStepsInner({
     setMounted(true);
     // exercises identity is stable per lesson page load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storageKey, maxStorageKey, recallKey]);
+  }, [storageKey, maxStorageKey, passedKey, recallKey]);
 
   // Persist passed exercises as they happen
   useEffect(() => {
     if (!mounted || passedExercises.size === 0) return;
     try {
       localStorage.setItem(
-        `${storageKey}-passed`,
+        passedKey,
         JSON.stringify(Array.from(passedExercises)),
       );
     } catch {
       // localStorage unavailable
     }
-  }, [passedExercises, storageKey, mounted]);
+  }, [passedExercises, passedKey, mounted]);
 
   // Track the furthest step reached so going back never locks steps again
   useEffect(() => {
@@ -684,9 +589,13 @@ function LessonStepsInner({
     if (parseStepHash(window.location.hash) === currentStep) return;
     try {
       window.history.pushState(
-        { ...window.history.state, tcStep: currentStep },
+        {
+          ...window.history.state,
+          tcStep: currentStep,
+          tcStepsVersion: LESSON_STEPS_VERSION,
+        },
         "",
-        `#step-${currentStep + 1}`,
+        stepHash(currentStep),
       );
     } catch {
       // History API unavailable
@@ -698,17 +607,23 @@ function LessonStepsInner({
   // URL), and the hash is re-normalized when the clamp bites.
   useEffect(() => {
     const onPop = (e: PopStateEvent) => {
-      const state = e.state as { tcStep?: unknown } | null;
-      const fromState = typeof state?.tcStep === "number" ? state.tcStep : null;
-      const target = fromState ?? parseStepHash(window.location.hash);
+      const target = historyStep(e.state, window.location.hash);
       if (target === null) return;
       const clamped = Math.min(Math.max(target, 0), maxStepRef.current);
-      if (clamped !== target) {
+      if (
+        clamped !== target ||
+        window.location.hash !== stepHash(clamped) ||
+        e.state?.tcStepsVersion !== LESSON_STEPS_VERSION
+      ) {
         try {
           window.history.replaceState(
-            { ...window.history.state, tcStep: clamped },
+            {
+              ...window.history.state,
+              tcStep: clamped,
+              tcStepsVersion: LESSON_STEPS_VERSION,
+            },
             "",
-            `#step-${clamped + 1}`,
+            stepHash(clamped),
           );
         } catch {
           // History API unavailable
@@ -762,6 +677,7 @@ function LessonStepsInner({
       lessonId: lesson.slug,
       step: currentStep,
       stepName: STEP_EVENT_NAMES[currentStep],
+      stepsVersion: LESSON_STEPS_VERSION,
       prevStep: prevStep ?? undefined,
       prevStepMs,
       revisit,
@@ -780,8 +696,8 @@ function LessonStepsInner({
   ]);
 
   // Tracks the previous step so the completion effect can distinguish an
-  // in-session TRANSITION into step 5 from a mount that merely restored a
-  // persisted step-5 position. Without this, every page load of a finished
+  // in-session TRANSITION into the Epilogue from a mount that merely restored a
+  // persisted Epilogue position. Without this, every page load of a finished
   // lesson re-fired the completion analytics and one skill event per axis -
   // reopening a lesson 10× added +40 proficiency for zero work, and
   // completion metrics inflated from day 1 (R3-7).
@@ -796,8 +712,8 @@ function LessonStepsInner({
   useEffect(() => {
     const prevStep = prevStepRef.current;
     prevStepRef.current = currentStep;
-    if (currentStep === 5) {
-      // prevStep alone cannot distinguish a mount-restore onto 5 from a
+    if (currentStep === PHASE.epilogue) {
+      // prevStep alone cannot distinguish a mount-restore onto the Epilogue from a
       // real walk: the effect's first run stamps prev=0 before the restore
       // effect's setCurrentStep(5) lands, so the second run reads 0→5.
       // restoredAtFinalStepRef covers exactly that first restored arrival
@@ -805,7 +721,8 @@ function LessonStepsInner({
       // in the same session still count.
       const restored = restoredAtFinalStepRef.current;
       restoredAtFinalStepRef.current = false;
-      const enteredThisSession = !restored && prevStep !== null && prevStep < 5;
+      const enteredThisSession =
+        !restored && prevStep !== null && prevStep < PHASE.epilogue;
       const scores = Object.values(exerciseScoresRef.current);
       const avgScore =
         scores.length > 0
@@ -814,7 +731,7 @@ function LessonStepsInner({
       // The completion WRITE always runs: it is an idempotent upsert, and the
       // guest fallback below is what GuestProgressBridge replays after
       // signup. Only the emit-once signals live behind the transition guard.
-      // Hint/attempt counters ride along ONLY on a genuine walk to step 5:
+      // Hint/attempt counters ride along ONLY on a genuine walk to the Epilogue:
       // the write re-runs on every reload of a finished lesson, and session
       // counters must not re-accumulate on restores.
       const extras = enteredThisSession
@@ -894,7 +811,7 @@ function LessonStepsInner({
         // Fire-and-forget by design - a lost skill event must never affect
         // lesson completion. Guarded by enteredThisSession: 014's SUM has no
         // dedupe, so these must fire only when the learner actually walked
-        // to step 5 this session, never on a restored mount.
+        // to the Epilogue this session, never on a restored mount.
         for (const axis of lesson.skillAxes ?? []) {
           emitSkillEvent(worldSlug, "lesson_complete", axis, {
             lessonId: lesson.slug,
@@ -983,7 +900,7 @@ function LessonStepsInner({
   );
 
   const canContinue =
-    currentStep === 3 // Challenge step
+    currentStep === PHASE.challenge // Challenge step
       ? exercises.length === 0 || passedExercises.size >= exercises.length
       : currentStep < TOTAL_STEPS - 1;
 
@@ -1009,7 +926,7 @@ function LessonStepsInner({
 
   const goNext = useCallback(() => {
     if (canContinue && currentStep < TOTAL_STEPS - 1) {
-      if (currentStep === 0) markSceneSkippedByNav();
+      if (currentStep === PHASE.briefing) markSceneSkippedByNav();
       setCurrentStep((s) => s + 1);
     }
   }, [canContinue, currentStep, markSceneSkippedByNav]);
@@ -1020,7 +937,7 @@ function LessonStepsInner({
   // exercise gate itself is untouched.
   const jumpToChallenge = useCallback(() => {
     markSceneSkippedByNav();
-    setCurrentStep(3);
+    setCurrentStep(PHASE.challenge);
   }, [markSceneSkippedByNav]);
 
   const goBack = useCallback(() => {
@@ -1114,7 +1031,7 @@ function LessonStepsInner({
         >
           &larr; Back
         </button>
-      ) : exercises.length > 0 && maxStepReached < 3 ? (
+      ) : exercises.length > 0 && maxStepReached < PHASE.challenge ? (
         // First-visit fast path to the editor; hidden once the Challenge
         // step is reachable from the step bar anyway.
         <button
@@ -1145,7 +1062,7 @@ function LessonStepsInner({
           {/* The gate must explain itself: a silent disabled button at
               the Challenge step read as a broken page (2026-07-14 UX
               audit). */}
-          {!canContinue && currentStep === 3
+          {!canContinue && currentStep === PHASE.challenge
             ? `Pass ${exercises.length - passedExercises.size} more ${exercises.length - passedExercises.size === 1 ? "exercise" : "exercises"} to continue`
             : "Continue →"}
         </button>
@@ -1191,7 +1108,7 @@ function LessonStepsInner({
   let shellRight: React.ReactNode = null;
   let rightKind: React.ComponentProps<typeof LessonShell>["rightKind"];
 
-  if (currentStep === 0) {
+  if (currentStep === PHASE.briefing) {
     rightKind = "none";
     shellLeft = (
       <StepBriefing
@@ -1217,24 +1134,10 @@ function LessonStepsInner({
         }
       />
     );
-  } else if (currentStep === 1) {
+  } else if (currentStep === PHASE.concept) {
     rightKind = "none";
     shellLeft = <StepConcept {...sharedContentProps} />;
-  } else if (currentStep === 2) {
-    rightKind = "code";
-    shellLeft = <StepCode {...sharedContentProps} />;
-    shellRight = (
-      <LessonContent
-        lesson={lesson}
-        exercises={exercises}
-        worldId={worldSlug}
-        moduleId={moduleSlug}
-        lessonId={lessonSlug}
-        glossaryTerms={lesson.glossaryTerms}
-        visibleComponents={CODE_RIGHT}
-      />
-    );
-  } else if (currentStep === 3) {
+  } else if (currentStep === PHASE.challenge) {
     rightKind = "pane";
     shellLeft = (
       <StepChallenge
@@ -1259,11 +1162,12 @@ function LessonStepsInner({
         <ChallengePassedBanner
           passed={canContinue}
           exerciseCount={exercises.length}
+          checkedWork={exercises.map((exercise) => exercise.title)}
           onContinue={goNext}
         />
       </div>
     );
-  } else if (currentStep === 4) {
+  } else if (currentStep === PHASE.takeaways) {
     rightKind = "none";
     shellLeft = (
       <StepTakeaways
@@ -1347,9 +1251,7 @@ function LessonStepsInner({
           rightKind={rightKind}
           paneOpenOnMobile={paneOpen}
           controls={mobileControls}
-          footer={
-            rightKind === "pane" || rightKind === "code" ? bottomNav : undefined
-          }
+          footer={rightKind === "pane" ? bottomNav : undefined}
           chrome={
             <div className="mx-auto w-full max-w-7xl px-5 md:px-12">
               <ChromeBar
@@ -1380,7 +1282,7 @@ function LessonStepsInner({
               className="animate-step-in outline-none"
             >
               {shellLeft}
-              {rightKind !== "pane" && rightKind !== "code" && bottomNav}
+              {rightKind !== "pane" && bottomNav}
             </div>
           }
           right={shellRight}
@@ -2078,95 +1980,67 @@ function StepConcept({
   moduleSlug: string;
   lessonSlug: string;
 }) {
+  const visualFirst = worldSlug === "deep-orbit";
+  const objectives = (
+    <div className="lesson-prose" data-testid="concept-intro">
+      <LessonContent
+        lesson={lesson}
+        exercises={exercises}
+        worldId={worldSlug}
+        moduleId={moduleSlug}
+        lessonId={lessonSlug}
+        glossaryTerms={lesson.glossaryTerms}
+        visibleComponents={CONCEPT_INTRO}
+      />
+    </div>
+  );
   return (
-    <div className="mx-auto max-w-[820px]">
-      <PhaseChip label="Concept" icon={"\u25CE"} />
-      <p
-        className="text-base leading-[1.85] mb-6 max-w-[820px]"
-        style={{ color: "var(--tc-muted)" }}
-      >
-        {lesson.concept.explanation}
-      </p>
-      {/* Objectives sit before the first heading in every lesson, where the
-          main instance's hideStoryZone hides them; this second instance
-          renders them once, in flow, above the read (spec section 3). */}
-      <div className="lesson-prose mb-6" data-testid="concept-intro">
-        <LessonContent
-          lesson={lesson}
-          exercises={exercises}
-          worldId={worldSlug}
-          moduleId={moduleSlug}
-          lessonId={lessonSlug}
-          glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={CONCEPT_INTRO}
-        />
-      </div>
-      <div className="lesson-prose">
-        <LessonContent
-          lesson={lesson}
-          exercises={exercises}
-          worldId={worldSlug}
-          moduleId={moduleSlug}
-          lessonId={lessonSlug}
-          glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={CONCEPT_LEFT}
-          layout="reading"
-          hideChallengeOnward
-          hideStoryZone
-        />
+    <div className="lesson-concept">
+      <LessonConceptWorkbench
+        lesson={lesson}
+        worldSlug={worldSlug}
+        moduleSlug={moduleSlug}
+      />
+      <div className="mx-auto max-w-[820px]">
+        {!visualFirst && (
+          <>
+            <PhaseChip label="Concept" icon={"\u25CE"} />
+            <p
+              className="text-base leading-[1.85] mb-6 max-w-[820px]"
+              style={{ color: "var(--tc-muted)" }}
+            >
+              {lesson.concept.explanation}
+            </p>
+            {objectives}
+          </>
+        )}
+        <div className="lesson-prose">
+          <LessonContent
+            lesson={lesson}
+            exercises={exercises}
+            worldId={worldSlug}
+            moduleId={moduleSlug}
+            lessonId={lessonSlug}
+            glossaryTerms={lesson.glossaryTerms}
+            visibleComponents={CONCEPT_LEFT}
+            layout="reading"
+            hideChallengeOnward
+            hideStoryZone
+          />
+        </div>
+        {visualFirst && (
+          <details className="lesson-goals">
+            <summary>Learning goals for this mission</summary>
+            {objectives}
+          </details>
+        )}
       </div>
     </div>
   );
 }
 
 /* ──────────────────────────────────────────────
-   Step 3: Code
-   ────────────────────────────────────────────── */
-function StepCode({
-  lesson,
-  exercises,
-  worldSlug,
-  moduleSlug,
-  lessonSlug,
-}: {
-  lesson: LessonStepsProps["lesson"];
-  exercises: ExerciseData[];
-  worldSlug: string;
-  moduleSlug: string;
-  lessonSlug: string;
-}) {
-  return (
-    <div className="max-w-[820px]">
-      <PhaseChip label="Code" icon={"\u2318"} />
-      {/* The prose read lives on the Concept step since the 2026-09-04
-          partition; this step isolates the worked example. The line below
-          gives the left column a purpose on the 40 lessons that carry no
-          DerivationDrawer (16 of the 56 do). */}
-      <p
-        className="text-base leading-[1.85] mb-6"
-        style={{ color: "var(--tc-muted)" }}
-      >
-        The lesson&apos;s code, gathered in one place. Read it top to bottom;
-        the exercise on the next step starts from these patterns.
-      </p>
-      <div className="lesson-prose">
-        <LessonContent
-          lesson={lesson}
-          exercises={exercises}
-          worldId={worldSlug}
-          moduleId={moduleSlug}
-          lessonId={lessonSlug}
-          glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={CODE_LEFT}
-          hideChallengeOnward
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Step 4: Challenge
+   Step 3: Challenge
    ────────────────────────────────────────────── */
 function StepChallenge({
   lesson,
@@ -2185,7 +2059,17 @@ function StepChallenge({
 }) {
   return (
     <div>
-      <PhaseChip label="Challenge" icon={"\u26A1"} />
+      {worldSlug !== "deep-orbit" && (
+        <PhaseChip label="Challenge" icon={"\u26A1"} />
+      )}
+      {worldSlug === "deep-orbit" && (
+        <LessonMissionScene
+          lesson={lesson}
+          worldSlug={worldSlug}
+          moduleSlug={moduleSlug}
+          compact
+        />
+      )}
       {/* Left column: brief + hints only. The Exercise editor itself renders
           in the right work pane (CHALLENGE_RIGHT) so its submit handler runs
           exactly once. Hint reveals happen HERE, so this instance carries
@@ -2207,7 +2091,7 @@ function StepChallenge({
 }
 
 /* ──────────────────────────────────────────────
-   Step 5: Takeaways
+   Step 4: Takeaways
    ────────────────────────────────────────────── */
 function StepTakeaways({
   lesson,
@@ -2265,7 +2149,7 @@ function StepTakeaways({
 }
 
 /* ──────────────────────────────────────────────
-   Step 6: Consequence
+   Step 5: Consequence
    ────────────────────────────────────────────── */
 function StepConsequence({
   lesson,
@@ -2310,11 +2194,12 @@ function StepConsequence({
       {/* Epilogue shot, only for the lessons with a distinct epilogue
           location (the -epilogue asset variant). No beat: this step has no
           playback. Missing art removes itself, as on the Briefing. */}
-      {lesson.scene?.epilogueLocation && (
+      {lesson.scene && (
         <ScenePortrait
-          src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}-epilogue.webp`}
-          alt={lesson.scene.epiloguePortraitAlt}
-          className="mb-7 mx-auto max-w-[440px]"
+          src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}${lesson.scene.epilogueLocation ? "-epilogue" : ""}.webp`}
+          alt={lesson.scene.epiloguePortraitAlt ?? lesson.scene.portraitAlt}
+          aspectRatio="21/9"
+          className="lesson-ending-scene mb-7 mx-auto max-w-[960px]"
         />
       )}
 

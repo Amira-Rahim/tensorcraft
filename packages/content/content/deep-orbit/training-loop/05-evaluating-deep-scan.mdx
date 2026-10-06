@@ -130,7 +130,65 @@ Run the evaluation suite. I want real numbers on signals the network has never s
 
 <LearningObjectives objectives={["Evaluate on held-out test data and read the train-vs-test gap", "Interpret accuracy, loss, and confusion matrix metrics", "Compare a trained classifier with a simple baseline", "Tell a validation set from a test set and know which one your decisions may touch", "Use the train/validation gap as a clue, then investigate possible causes"]} />
 
-## The Final Test
+## Read the mistakes behind the score
+
+The visual's twelve cases show why one accuracy number is not enough. A
+missed anomaly and a false alarm have different costs. **Precision** is the
+share of alerts that were true anomalies; **recall** is the share of actual
+anomalies caught. Inspect these alongside accuracy and individual errors.
+
+Mirza's next request is a separate evaluation. The challenge supplies 100
+synthetic training rows and 43 evaluation rows: 40 generated examples and
+three hand-written story cases. Keep those evaluation rows and labels out of
+training. Their scores describe this fixture, not a live spacecraft system.
+
+## Train, then measure separate rows
+
+The compiled model and tensors are supplied. Fit only the training pair, then
+evaluate the separate pair:
+
+<CodeBlock language="typescript" title="measure-the-gap.ts">
+{`const history = await model.fit(trainX, trainY, {
+  epochs: 30, batchSize: 16,
+});
+const evalResult = model.evaluate(testX, testY); // [loss, accuracy]
+const trainAcc = history.history.acc.at(-1);
+const testAcc = evalResult[1].dataSync()[0];
+const gap = trainAcc - testAcc;`}
+</CodeBlock>
+
+`evaluate()` returns loss followed by the metrics configured at compile time.
+Read accuracy from the second tensor here. The exercise retains `evalResult`
+for inspection; release result tensors after their final use in an application.
+Report your measured scores. The story's 0.518 and 94% belong to the crew's
+fictional run and are not targets for this exercise.
+
+For `diagnose`, check the gap first: greater than 0.15 returns `large-gap`.
+Otherwise, if both scores are below 0.7, return `low-scores`; all other cases
+return `no-gap-warning`. Set `verdict` from the measured values. These labels
+describe results without identifying a cause or approving deployment.
+
+## Decide what the evidence can support
+
+A **validation set** supports choices such as when to stop or which threshold
+to keep. A **test set** stays untouched until those choices are fixed.
+Repeatedly tuning on test results turns that set into another validation set.
+For a real time-ordered archive, assign earlier and later groups before
+shuffling; separately shuffled `take()` and `skip()` calls can overlap.
+
+Compare the network with a simple baseline on the same held-out rows. For
+example, predict the training set's most common class. A large gap can come
+from overfitting, changed data, incorrect labels or mismatched preprocessing.
+Investigate those before choosing a remedy.
+
+Anomaly frequency also matters: a rare anomaly can make most alerts false
+even with apparently good rates. You can reuse sensitivity and false-positive
+rate for a pure frequency change only if the threshold and within-class input
+distributions stay fixed. A new sensor or threshold calls for new measurements.
+
+<ConceptReference summary="Reference: the crew's 50-row example, metrics, and base rates">
+
+### The crew's separate evaluation example
 
 A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and if the run held nothing back, nothing in its logs will warn you. Lesson 4's validation curve is the first warning. This lesson adds the second, measured on rows no decision ever touched. Mirza wants that gap investigated. Overfitting is one possible cause; changed data, poor labels or mismatched preprocessing can also lower the held-out score. Like an E2E test, an evaluation checks selected cases. The cases must represent the conditions you intend to deploy into.
 
@@ -278,6 +336,9 @@ Under those assumed rates, about 4% of live alarms would be true positives. This
 
 A cheaper filter can reduce the number of readings reaching an expensive model. It also changes which examples that model sees. Remeasure sensitivity and FPR on the filtered population; raising its anomaly prevalence does not by itself establish the combined system's performance.
 </DerivationDrawer>
+
+
+</ConceptReference>
 
 ## Challenge
 

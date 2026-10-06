@@ -111,7 +111,7 @@ for (const [width, colorScheme] of [
       experiment.getByText(/First changed-case attempt: needs another look/),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
+      page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
     ).toBeDisabled();
     await experiment.screenshot({
       path: testInfo.outputPath(`check-${width}-${colorScheme}.png`),

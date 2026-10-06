@@ -1,0 +1,280 @@
+{
+  "date": "2026-10-06",
+  "scope": "Two local visual pilots; production is unchanged",
+  "views": 80,
+  "accessibility": [
+    {
+      "label": "1440 dark 0/0",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 0/1",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 0/2",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 0/3",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 0/4",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 1/0",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 1/1",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 1/2",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 1/3",
+      "violations": []
+    },
+    {
+      "label": "1440 dark 1/4",
+      "violations": []
+    },
+    {
+      "label": "1440 light 0/0",
+      "violations": []
+    },
+    {
+      "label": "1440 light 0/1",
+      "violations": []
+    },
+    {
+      "label": "1440 light 0/2",
+      "violations": []
+    },
+    {
+      "label": "1440 light 0/3",
+      "violations": []
+    },
+    {
+      "label": "1440 light 0/4",
+      "violations": []
+    },
+    {
+      "label": "1440 light 1/0",
+      "violations": []
+    },
+    {
+      "label": "1440 light 1/1",
+      "violations": []
+    },
+    {
+      "label": "1440 light 1/2",
+      "violations": []
+    },
+    {
+      "label": "1440 light 1/3",
+      "violations": []
+    },
+    {
+      "label": "1440 light 1/4",
+      "violations": []
+    },
+    {
+      "label": "390 dark 0/0",
+      "violations": []
+    },
+    {
+      "label": "390 dark 0/1",
+      "violations": []
+    },
+    {
+      "label": "390 dark 0/2",
+      "violations": []
+    },
+    {
+      "label": "390 dark 0/3",
+      "violations": []
+    },
+    {
+      "label": "390 dark 0/4",
+      "violations": []
+    },
+    {
+      "label": "390 dark 1/0",
+      "violations": []
+    },
+    {
+      "label": "390 dark 1/1",
+      "violations": []
+    },
+    {
+      "label": "390 dark 1/2",
+      "violations": []
+    },
+    {
+      "label": "390 dark 1/3",
+      "violations": []
+    },
+    {
+      "label": "390 dark 1/4",
+      "violations": []
+    },
+    {
+      "label": "390 light 0/0",
+      "violations": []
+    },
+    {
+      "label": "390 light 0/1",
+      "violations": []
+    },
+    {
+      "label": "390 light 0/2",
+      "violations": []
+    },
+    {
+      "label": "390 light 0/3",
+      "violations": []
+    },
+    {
+      "label": "390 light 0/4",
+      "violations": []
+    },
+    {
+      "label": "390 light 1/0",
+      "violations": []
+    },
+    {
+      "label": "390 light 1/1",
+      "violations": []
+    },
+    {
+      "label": "390 light 1/2",
+      "violations": []
+    },
+    {
+      "label": "390 light 1/3",
+      "violations": []
+    },
+    {
+      "label": "390 light 1/4",
+      "violations": []
+    },
+    {
+      "label": "highlighted evaluation misses",
+      "violations": []
+    },
+    {
+      "label": "1440 dark review settings",
+      "violations": []
+    },
+    {
+      "label": "1440 dark review notes",
+      "violations": []
+    },
+    {
+      "label": "1440 light review settings",
+      "violations": []
+    },
+    {
+      "label": "1440 light review notes",
+      "violations": []
+    },
+    {
+      "label": "390 dark review settings",
+      "violations": []
+    },
+    {
+      "label": "390 dark review notes",
+      "violations": []
+    },
+    {
+      "label": "390 light review settings",
+      "violations": []
+    },
+    {
+      "label": "390 light review notes",
+      "violations": []
+    },
+    {
+      "label": "320 dark review settings",
+      "violations": []
+    },
+    {
+      "label": "320 dark review notes",
+      "violations": []
+    },
+    {
+      "label": "320 light review settings",
+      "violations": []
+    },
+    {
+      "label": "320 light review notes",
+      "violations": []
+    },
+    {
+      "label": "actual failing exercise feedback",
+      "violations": []
+    }
+  ],
+  "interactions": [
+    "Training slider is keyboard operable, preserves focus/reference state, and follows the shared-axis trace and five-epoch stopping rule.",
+    "Next epoch and end-of-trace controls update the same timeline.",
+    "All 50 outcomes reconcile with the 23/24/3/0 matrix; selecting, highlighting and hiding retain usable controls.",
+    "Recall notes survive navigation and reload; answer reveal is explicit and Takeaways contain no new story.",
+    "Skip link, semantic step links, history and heading focus work.",
+    "Lesson menu supports Escape without navigating.",
+    "Review drawers fit desktop and phone in both themes, preserve select padding, trap native dialog focus and restore the opener.",
+    "Reduced motion keeps all teaching states available without an autoplay dependency.",
+    "Real runner rejects untouched starters and passes canonical solutions; edits mark old results stale and drafts survive reload."
+  ],
+  "runner": [
+    {
+      "lesson": "training-loop-exercise",
+      "case": "canonical starter rejected",
+      "passed": true
+    },
+    {
+      "lesson": "training-loop-exercise",
+      "case": "canonical solution passes unchanged exercise checks in browser worker",
+      "checks": 6,
+      "passed": true
+    },
+    {
+      "lesson": "deep-scan-eval",
+      "case": "canonical starter rejected",
+      "passed": true
+    },
+    {
+      "lesson": "deep-scan-eval",
+      "case": "canonical solution passes unchanged exercise checks in browser worker",
+      "checks": 9,
+      "passed": true
+    },
+    {
+      "case": "syntax error is reported as an uncompleted run",
+      "passed": true
+    },
+    {
+      "case": "stop terminates worker and preserves draft",
+      "passed": true
+    },
+    {
+      "case": "leaving Challenge cancels execution without leaking results into another step",
+      "passed": true
+    },
+    {
+      "case": "training on held-out rows is rejected by original provenance checks",
+      "passed": true
+    }
+  ],
+  "pageErrors": [],
+  "limits": [
+    "No participant sessions have been conducted.",
+    "Automated accessibility scans do not replace assistive technology testing.",
+    "Production routes, paid access, progress, decisions and transfer assignment integration are outside this pilot."
+  ]
+}

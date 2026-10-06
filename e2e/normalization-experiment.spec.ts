@@ -21,6 +21,9 @@ for (const [width, colorScheme] of [
     );
     const box = page.getByTestId("experiment-normalization");
     await expect(box).toHaveCount(1);
+    await page
+      .getByText("Practice: a different scaler and reading", { exact: true })
+      .click();
     await expect(box).toBeVisible();
     await box.getByRole("textbox").fill("24,2");
     await box
@@ -41,6 +44,9 @@ for (const [width, colorScheme] of [
     await page
       .getByRole("button", { name: "Step 2: Concept", exact: true })
       .click();
+    await page
+      .getByText("Practice: a different scaler and reading", { exact: true })
+      .click();
     await expect(box.getByLabel("Preprocessing", { exact: true })).toHaveValue(
       "0",
     );
@@ -51,10 +57,13 @@ for (const [width, colorScheme] of [
       .click();
     await expect(box.getByRole("status")).toContainText("matches");
     await page.reload();
+    await page
+      .getByText("Practice: a different scaler and reading", { exact: true })
+      .click();
     await expect(box.getByRole("textbox")).toHaveValue("2,2");
     await expect(box).toContainText("First: matched before help");
     await expect(
-      page.getByRole("button", { name: "Step 6: Epilogue", exact: true }),
+      page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
     ).toBeDisabled();
     expect(
       (

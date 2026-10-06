@@ -125,7 +125,11 @@ The worked softmax is the part that vetoes the :focus picture, and it does so wi
 
 One argument in that block has not come up before. `tf.matMul` takes two booleans after the two tensors, `transposeA` and `transposeB`, and each one transposes its own tensor on the way into the multiply. Here the query is [1, dim] and the keys are [seqLen, dim], so the inner sizes are dim and seqLen and they do not meet. Drop the flags and the op refuses: with a 3-wide query and 4 keys, `tf.matMul(query, keys)` stops at `Error in matMul: inner shapes (3) and (4) of Tensors with shapes 1,3 and 4,3 and transposeA=false and transposeB=false must match.` Passing true for `transposeB` reads the keys as [dim, seqLen], which is what makes the scores come out [1, seqLen]. It is the same arithmetic as `tf.matMul(query, keys.transpose())`: with the query [1, 2, 3] and the keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]], both calls return the row [1, 2, 3, 6]. The flag expresses the transpose inside the multiplication; whether it saves work depends on the backend.
 
+<ConceptReference summary="Practice: calculate attention on a new query">
+
 <LearningExperiment id="attention" />
+
+</ConceptReference>
 
 ## LSTM vs Attention
 

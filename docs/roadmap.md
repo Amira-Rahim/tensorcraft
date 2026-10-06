@@ -1,6 +1,6 @@
 # Tensorcraft - Growth Roadmap
 
-> **Status:** living document. Supersedes the version-roadmap tables in `docs/prd.md` §7 and `docs/dev-plan.md` "Version Roadmap", both of which predate the 100k-paying-users goal and are reconciled below.
+> **Status:** living document. The owner confirmed a long-term goal of 200,000 unique paying customers on 2026-10-03. This supersedes the earlier 100,000 target and the version-roadmap tables in `docs/prd.md` §7 and `docs/dev-plan.md`. Earlier channel, revenue, staffing, and timing scenarios are planning assumptions, not forecasts for the current goal.
 > **Scope:** what to build, in what order, to grow revenue. Engineering phase detail stays in `docs/dev-plan.md`; pricing/positioning detail stays in `docs/product-plan.md`.
 > **Task index (2026-07-21):** the Horizon 1-3 work items are indexed canonically in `docs/post-launch-backlog.md` §8, the single source of truth for post-launch tasks. This file remains the strategy detail doc (arithmetic, gates, framing). Still-open Horizon 0 defects: `docs/audits/launch-blockers-history-2026-08-23.md`.
 > **Deduped 2026-07-22:** horizon sections carry rationale, decisions, and codebase facts only - item enumerations and exit criteria live solely in the backlog §8 index; still-open defect lists live solely in `docs/audits/launch-blockers-history-2026-08-23.md`.
@@ -19,17 +19,43 @@ Honest current state, verified against the codebase:
 | Entitlement | Derived ad-hoc from `purchases.world_ids`; no entitlements table |
 | Cross-user features | **None.** All gamification is per-user RLS. No leaderboard |
 | Free tier | Module 1 (5 lessons). (`/extras` and its 23 public lessons removed 2026-08-15, owner decision) |
-| Product quality | High. Content, grading, and trust handling are genuinely strong |
+| Product quality | Internally reviewed content and grading; independent beginner learning, delayed transfer, and paid demand remain unvalidated |
 
-**The gap is not product quality. It is distribution and business model.**
+The October 6 working tree applies the visual/story-first experience to all
+56 Deep Orbit lessons, with internal verification recorded in the
+[rollout report](design-previews/deep-orbit-rollout.md). The owner removed the
+five-person test as an implementation prerequisite. Observing independent
+learning remains a separate source of future product evidence. Distribution
+and acquisition economics also need evidence; internal quality checks do not
+settle any of those questions.
 
 ---
 
-## 1. The Goal and the Re-Base
+## 1. The Current Goal
 
-**Goal: 100,000 _paying_ customers.**
+**Goal: 200,000 unique paying customers over the lifetime of Tensorcraft.**
 
-This is a different order of magnitude than every previously written plan, and the roadmap must say so plainly rather than append to plans that contradict it:
+Owner decision, 2026-10-03: the goal is cumulative customers, not simultaneous active subscribers. The previous 100,000 target is superseded. Count successful real purchases with positive retained revenue, excluding staff, test payments, complimentary access, and fully refunded purchases. Deduplicate repeat buyers. Track enterprise contracts and paid learner seats separately rather than treating one company purchase as hundreds of individual customers.
+
+At the current $50 price, 200,000 customers each buying once would produce $10 million in cumulative gross sales before refunds, taxes, fees, and operating costs. It would not be annual recurring revenue. Over ten years the average would be 20,000 new customers per year; this is arithmetic, not a forecast.
+
+The next commercial milestone remains 1,000 paying customers under the [current acquisition plan](marketing-first-1000-paid.md). The [foundations opening plan](foundations-opening-plan.md) improves the visual and story-driven entrance to the existing course. Its internal work does not establish demand at the long-term scale.
+
+The product remains a visual, story-driven path for JavaScript engineers to
+understand, build, train, evaluate, and deploy real models. Growth work should
+support that promise. A larger audience target does not justify hiding hard
+concepts, adding competing learning routes, or substituting API integration
+for model understanding.
+
+### Earlier channel assumptions
+
+The earlier roadmap divided a hypothetical 100,000 learners or seats among enterprise, subscription, an arena, and one-time sales. That mix did not consistently count unique customers. Its proposed revenue, acquisition costs, and staffing were unvalidated. It cannot supply a forecast for the new cumulative goal, and doubling its channel counts would not resolve that problem.
+
+The horizons below retain those product options and their existing dependencies. Changing the target does not authorize subscriptions, enterprise infrastructure, or an arena. Reassess them using actual buyer demand, learning outcomes, and acquisition costs. Deferred tasks remain indexed in the backlog.
+
+### Superseded scenario (set 2026-07-14, superseded 2026-10-03)
+
+Retained as the record of how the 100,000 goal was expected to be reached, so the reasoning is not lost with the number. It is history, not a forecast for the current goal. The text below is reproduced as it stood in the roadmap on 2026-07-22; "the goal" and "100k" in it refer to the superseded target.
 
 | Prior plan | Its terminal milestone | vs. new goal |
 |---|---|---|
@@ -58,6 +84,15 @@ This is a different order of magnitude than every previously written plan, and t
 - **Seat sales:** 1,000 contracts × 100 seats = 100k users at $10–50k ACV → **$10–50M ARR**. CAC *per user* collapses to ~$50–200 because one sale delivers hundreds. Throughput: 10 AEs × 2 deals/mo ≈ 24k seats/yr.
 
 **Strategy in one line: don't sell 100,000 people - sell ~1,000 buyers who each bring 100 people.**
+
+The scenario also set the gate wording and the framing that §3 and §8 replaced on 2026-10-03:
+
+- Gate 1 as written then: **Gate 1 - Denominator.** Only 1 world is purchasable and the ICP was "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies - impossible arithmetic. Widen to JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.* Status 2026-08-19: the JavaScript rebrand is complete (copy, SEO metadata, schema identifiers, docs, content noun pass, and the browser-anchored bridge triage across all five worlds and the canonical registry). Still open for Gate 1: launching more worlds.
+- Horizon 3 enterprise sequencing as written then: **Sequenced last despite carrying ~60% of the count** - it sits behind Gate 3 (buyers demand completion data) and Gate 4 (a single narrow path fails procurement). Built earlier, it produces a seat-management system with nothing sellable to put in it.
+- §8 framing as written then:
+  - **The binding constraint at 100k is distribution** - audience, brand, sales pipeline, category position. None of it lives in this repo.
+  - **Cost of admission:** ~4–5 year arc, 20–40 person company, ~$5–20M deployed, and a founder whose days become hiring and sales rather than writing lessons.
+  - **Odds:** ~1% on the current model; ~15–25% with all levers executed over ~5 years. A real plan, not a lottery ticket.
 
 ---
 
@@ -118,18 +153,23 @@ Tracked canonically in `docs/audits/launch-blockers-history-2026-08-23.md`; not 
 
 `KIT_TAG_PAYWALL_HIT` and `KIT_TAG_MODULE_1_COMPLETE` - documented with the rest of the Kit setup in `docs/audits/launch-blockers-history-2026-08-23.md` Tier 1-OPS. Setting them late is safe: R2-7 made missing-tag skips recoverable.
 
-**Why Horizon 0 came first:** it is the cheapest revenue in the plan, and it produces the funnel data (`paywall_hit`, conversion by step) that Gate 3 below requires before any spending scales. That data now exists for the first time.
+**Why Horizon 0 came first:** it made the existing offer purchasable and added
+funnel instrumentation. The October 3 [PostHog follow-ups](post-launch-backlog.md#posthog-data-audit-follow-ups-2026-10-03)
+record low tracked external use and attribution, event-loss, and duplication
+gaps. Instrumentation exists; a trustworthy funnel baseline is still pending.
 
 ---
 
 ## 3. Gating Sequence - What Must Be True Before What
 
-Preconditions, not preferences. Violating the order wastes capital.
+These are evidence requirements for expansion. Learning observations,
+measurement repairs, and audience-building can proceed in parallel. The gate
+numbers do not put learner validation after subscription implementation.
 
-- **Gate 1 - Denominator.** Only 1 world is purchasable and the ICP was "frontend dev ∩ wants ML ∩ pays" (low millions). 100k would be several % of everyone who qualifies - impossible arithmetic. Widen to JS devs (10M+) and launch more worlds. *Nothing downstream matters until this opens.* Status 2026-08-19: the JavaScript rebrand is complete (copy, SEO metadata, schema identifiers, docs, content noun pass, and the browser-anchored bridge triage across all five worlds and the canonical registry). Still open for Gate 1: launching more worlds.
-- **Gate 2 - LTV.** No recurring revenue exists. Until LTV > 3×CAC, paid acquisition is a furnace, not an engine.
-- **Gate 3 - Proof.** Do not hire sales or buy traffic against an unproven funnel. Activation/retention curves must exist and flatten - and enterprise buyers will demand completion data. (Horizon 0 produces it.)
-- **Gate 4 - Catalog.** Enterprises buy *broad* upskilling. One narrow path does not clear procurement. Catalog breadth is a hard dependency for enterprise being sellable.
+- **Gate 1 - Qualified demand.** Demonstrate that JavaScript engineers with a concrete learning need will buy and use the course. The JavaScript rebrand was completed on 2026-08-19 across copy, metadata, schema, and content. Broader positioning and additional worlds cannot establish demand by themselves. Use the first 1,000 buyers plan and separate learner observations before expanding the catalog.
+- **Gate 2 - Acquisition economics.** Measure retained revenue after refunds, fees, delivery/support costs, and attributable acquisition costs for the actual offer. Report source, cohort, observation window, and missing attribution. A one-time course can satisfy this gate; recurring billing is optional. Do not count hypothetical future subscriptions or purchases as observed lifetime value.
+- **Gate 3 - Learning and funnel proof.** Complete internal checks, run the opening discovery round, then retain the existing [formal novice pilot](learning-study/pilot-protocol.md). It observes all five free lessons, independent model work, the final project, delayed understanding, and actual use. Fix failed learning gates before claiming effectiveness. Repair measurement and reconcile genuine purchases/refunds before scaling an unproven paid funnel. Completion clicks and story enjoyment are insufficient by themselves.
+- **Gate 4 - Relevant coverage.** For an optional enterprise offer, establish the specific team's learning need and whether the catalog meets it. Broader coverage is required only where that buyer need requires it. Each additional world retains its own release and learner gates.
 
 ---
 
@@ -137,15 +177,30 @@ Preconditions, not preferences. Violating the order wastes capital.
 
 _Work items: `docs/post-launch-backlog.md` §8, Horizon 1. This section carries rationale and decisions only._
 
-**Widen the market (Gate 1).** Executed 2026-08-18: the audience is JavaScript engineers across copy, metadata, schema (migration 059), docs, and content; the bridge frontmatter fields are now `jsTitle`/`jsCode` and the `Framework = "react"` union (`packages/shared/src/bridges.ts:11`) remains typed for `variants`. What remains is editorial: ~72 of 274 bridges still anchor on browser-only concepts (triage tracked in `docs/post-launch-backlog.md` Horizon 1). The volume bottleneck is authoring velocity (no lesson generator exists), which is what puts the authoring scaffold on the critical path.
+**Qualified demand (Gate 1).** The JavaScript rebrand shipped August 18 and
+the browser-anchored bridge triage completed August 19, as recorded in the
+canonical backlog. Wider positioning is implemented, but paid demand remains
+unmeasured. Observe whether beginners see why the free foundations lead to
+useful model work, including learners initially interested in AI features
+rather than training. Record research intent separately from product analytics.
+Authoring tools and more worlds follow a demonstrated content need; they are
+not substitutes for that evidence.
 
-**Add recurring revenue (Gate 2).** An all-access subscription (~$15–25/mo) alongside one-time purchases, replacing ad-hoc entitlement derivation with a real entitlements model. Money-touching - full TDD and Stripe test-mode e2e before any live charge.
+**Optional subscription.** Reassess all-access only if buyers want continuing
+learning value and a sustainable release cadence exists. Compare its economics
+with the one-time offer before committing to billing or entitlements work.
+The earlier ~$15–25/month range is an unvalidated proposal. If selected, retain
+the backlog's payment tests, existing-buyer treatment, and release-cadence
+dependencies. A subscription is not Gate 2's required implementation.
 
 **Payment rails (decided 2026-07-22): stay on Stripe; Lemon Squeezy rejected.** Lemon Squeezy has been in maintenance mode since Stripe acquired it (July 2024) - its team now builds Stripe Managed Payments (SMP), Stripe's own merchant-of-record product, and LS support/updates have visibly slowed. Adopting it in 2026 means migrating twice. Fee reality on the $59–159 ladder: Stripe direct 2.9% + 30¢ (~3.2% effective on $99); Lemon Squeezy 5% + 50¢, plus 1.5% international and 0.5% subscription surcharges (~5.5%); SMP 6.4% + 30¢ (~6.7%). The MoR premium is 2.3–3.5 points of revenue, and what it buys - global tax registration, filing, remittance - matters to us almost entirely as EU/UK VAT, which is already a launch blocker (`docs/audits/launch-blockers-history-2026-08-23.md` R2-4). Stripe Tax (+0.5%/txn) automates calculation and collection but leaves OSS registration and filing with us.
 
 The money path is deep and freshly hardened (`apps/api/src/routes/payments.ts`, migrations 035/037/038, Run #7 behavioral proofs); switching providers pre-launch is pure risk with zero launch upside. Re-evaluate MoR only when the subscription launches or international mix makes OSS filing a real operating cost - and then compare Paddle (5% + 50¢, mature B2B invoicing, relevant to Horizon 3 seats) and Polar (~4% + 40¢) against SMP, not Lemon Squeezy.
 
-**Instrument growth.** Existing PostHog taxonomy covers conversion and onboarding well but has **no virality instrumentation** - nothing measures whether users bring users, which the Gate 2 LTV math and Horizon 2's K-factor exit both depend on.
+**Instrument growth.** Complete the existing PostHog repairs and reconcile
+payments first. Then measure sources, qualified use, retained revenue, and
+acquisition costs. Add referral events when testing a referral mechanism;
+virality is not required to establish viable one-time acquisition economics.
 
 ---
 
@@ -153,9 +208,20 @@ The money path is deep and freshly hardened (`apps/api/src/routes/payments.ts`, 
 
 _Work items: `docs/post-launch-backlog.md` §8, Horizon 2._
 
-**Viral competition arena.** The expensive half already exists: real in-browser TFJS grading with numeric scores in a sandboxed worker (`packages/ui/src/mdx/exercise-runner.ts`), reaction-time capture, trained model assets, and a public OG-imaged shareable (`certificates/[id]`). What is missing is purely the **cross-user layer** - every gamification table today is per-user RLS with zero aggregation, and the Arena exists only as prose in `docs/product-plan.md`.
+This horizon is a set of distribution options. The 9–24-month range is a
+legacy planning label, not a measured delivery forecast.
 
-Keep the arena **free** - monetize via the free→paid funnel, not an arena paywall. The $29/yr arena concept in `product-plan.md` undercuts the virality that is the entire point.
+**Optional competition arena.** Test whether learners want shared challenges
+and whether a small prototype improves learning or qualified acquisition
+before building the full product. Existing browser exercise grading is
+client-authoritative; it does not establish trustworthy public rankings.
+The canonical backlog and [arena scoring contract](arena-scoring-contract.md)
+retain the server-side re-scoring, sandbox, determinism, moderation, and
+cross-user requirements. An arena is not needed to make the core course useful.
+
+If an arena is selected, retain the earlier free-arena decision and measure its
+learning and free-to-paid outcomes. Do not assume a viral coefficient in the
+200,000-customer forecast.
 
 **Scale SEO.** The assets already exist, disconnected: the 51-bridge dataset (`packages/shared/src/bridges.ts`) has rendered nowhere public since the 2026-05-05 revert, the sitemap is deliberately throttled to "core", and the blog sits at one post despite a working news→lesson matching pipeline.
 
@@ -165,9 +231,15 @@ Keep the arena **free** - monetize via the free→paid funnel, not an arena payw
 
 _Work items: `docs/post-launch-backlog.md` §8, Horizon 3._
 
-**Enterprise / seats.** Currently zero exists in the codebase: no orgs, members, seats, or invitations; the role enum is a flat `user | admin`. Everything procurement expects - SSO/SCIM, SOC2, invoicing, DPA - is greenfield.
+Enterprise remains optional. The 24–48-month range is a legacy planning label,
+not a required timetable or forecast of customer contribution.
 
-**Sequenced last despite carrying ~60% of the count** - it sits behind Gate 3 (buyers demand completion data) and Gate 4 (a single narrow path fails procurement). Built earlier, it produces a seat-management system with nothing sellable to put in it.
+**Enterprise / seats.** No orgs, members, seats, or invitations exist; the role
+enum is a flat `user | admin`. Establish the actual team's learning and
+procurement requirements before selecting infrastructure. SSO/SCIM, invoicing,
+and compliance proposals retain their own dependencies and estimates.
+
+**Sequenced behind Gate 3 and Gate 4.** Enterprise buyers need evidence of useful learning and coverage suitable for their specific need. The earlier assumption that enterprise would supply about 60% of the count was a seat scenario, not a forecast of unique customers.
 
 ---
 
@@ -175,7 +247,7 @@ _Work items: `docs/post-launch-backlog.md` §8, Horizon 3._
 
 Every item here could ship perfectly and the goal could still be missed.
 
-- **The binding constraint at 100k is distribution** - audience, brand, sales pipeline, category position. None of it lives in this repo.
+- **Reaching 200,000 paying customers requires sustained distribution:** an audience, trusted recommendations, and repeatable acquisition. Product implementation alone cannot provide them.
 - **It has the longest lead time and no shortcuts.** Comparable creators built free audiences for *years*; the course monetized existing trust rather than creating it.
 - **So it runs in parallel, starting before the code is ready.** Audience-building is the critical path and it is slower than the engineering. Do not sequence it after the platform work.
 
@@ -184,9 +256,9 @@ Every item here could ship perfectly and the goal could still be missed.
 ## 8. Honest Framing
 
 - **Each horizon is a different business.** Subscription = SaaS ops. Arena = consumer growth. Enterprise = B2B sales + compliance. Staff and capitalize accordingly.
-- **Cost of admission:** ~4–5 year arc, 20–40 person company, ~$5–20M deployed, and a founder whose days become hiring and sales rather than writing lessons.
-- **Odds:** ~1% on the current model; ~15–25% with all levers executed over ~5 years. A real plan, not a lottery ticket.
-- **Product quality is not the constraint** - it is the necessary foundation that makes the 1k–10k range achievable and the rest possible.
+- **Timing, staffing, and capital remain unmeasured.** The earlier four-to-five-year, 20–40-person, and $5–20M scenarios were assumptions for a different business mix. They are not requirements or forecasts for the cumulative customer goal.
+- **No defensible probability estimate exists.** The previous percentage estimates had no supporting model or customer evidence and are withdrawn.
+- **Learner effectiveness and paying demand remain open questions.** Internal review supports proceeding to observation, not a claim that any customer-count range is achievable. Require useful independent model work and genuine buying evidence before expanding the offer or scaling acquisition.
 
 ---
 

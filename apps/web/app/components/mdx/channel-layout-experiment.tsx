@@ -146,144 +146,155 @@ export function ChannelLayoutExperiment() {
         <legend className="sr-only">Channel layout controls</legend>
         {draft.mode === "worked" ? (
           <>
-            <label
-              className="flex flex-wrap items-center gap-3"
-              htmlFor={`${uid}-channel`}
-            >
-              Inspect channel
-              <select
-                id={`${uid}-channel`}
-                className={`${input} !w-auto`}
-                value={draft.channel}
-                onChange={(event) =>
-                  update({
-                    channel: Number(event.target.value),
-                    prediction: "",
-                    predictionResult: null,
-                  })
-                }
-              >
-                {[0, 1, 2, 3].map((channel) => (
-                  <option key={channel} value={channel}>
-                    {channel}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <PacketTable
-              packet={WORKED_PACKET}
-              caption="Input: [3 times, 4 channels]"
-              channel={draft.channel}
-            />
-            <form onSubmit={submitPrediction} className="space-y-3">
-              <label
-                htmlFor={`${uid}-prediction`}
-                className="block font-medium"
-              >
-                Predict channel {draft.channel}&apos;s values in time order
-              </label>
-              <input
-                id={`${uid}-prediction`}
-                className={input}
-                autoComplete="off"
-                maxLength={80}
-                placeholder="Values separated by commas"
-                value={draft.prediction}
-                onChange={(event) =>
-                  update({
-                    prediction: event.target.value,
-                    predictionResult: null,
-                  })
-                }
-              />
-              <button
-                type="submit"
-                className={button}
-                disabled={
-                  !draft.prediction.trim() || draft.predictionAttempts >= 20
-                }
-              >
-                Check prediction
-              </button>
-              <p role="status">
-                {draft.predictionResult
-                  ? draft.predictionResult.correct
-                    ? "Those are the channel's readings, in time order. Now compare how each operation arranges them."
-                    : "Follow the selected column from top to bottom. A row contains different channels at one time."
-                  : "A prediction is optional. You can try either operation or open the explanation."}
-              </p>
-            </form>
-            <div>
-              <p>
-                Both operations produce shape [4, 3]. Which keeps a channel
-                together?
-              </p>
-              <div
-                className="mt-3 flex flex-wrap gap-2"
-                role="group"
-                aria-label="Compare layout operations"
-              >
-                {(["reshape", "transpose"] as const).map((operation) => (
-                  <button
-                    type="button"
-                    key={operation}
-                    className={button}
-                    aria-pressed={draft.operation === operation}
-                    onClick={() => update({ operation, predictionHelp: true })}
+            <div className="channel-worked-grid">
+              <div className="min-w-0 space-y-5">
+                <label
+                  className="flex flex-wrap items-center gap-3"
+                  htmlFor={`${uid}-channel`}
+                >
+                  Inspect channel
+                  <select
+                    id={`${uid}-channel`}
+                    className={`${input} !w-auto`}
+                    value={draft.channel}
+                    onChange={(event) =>
+                      update({
+                        channel: Number(event.target.value),
+                        prediction: "",
+                        predictionResult: null,
+                      })
+                    }
                   >
-                    {operation === "reshape" ? "Run reshape" : "Run transpose"}
+                    {[0, 1, 2, 3].map((channel) => (
+                      <option key={channel} value={channel}>
+                        {channel}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <PacketTable
+                  packet={WORKED_PACKET}
+                  caption="Input: [3 times, 4 channels]"
+                  channel={draft.channel}
+                />
+                <form onSubmit={submitPrediction} className="space-y-3">
+                  <label
+                    htmlFor={`${uid}-prediction`}
+                    className="block font-medium"
+                  >
+                    Predict channel {draft.channel}&apos;s values in time order
+                  </label>
+                  <input
+                    id={`${uid}-prediction`}
+                    className={input}
+                    autoComplete="off"
+                    maxLength={80}
+                    placeholder="Values separated by commas"
+                    value={draft.prediction}
+                    onChange={(event) =>
+                      update({
+                        prediction: event.target.value,
+                        predictionResult: null,
+                      })
+                    }
+                  />
+                  <button
+                    type="submit"
+                    className={button}
+                    disabled={
+                      !draft.prediction.trim() || draft.predictionAttempts >= 20
+                    }
+                  >
+                    Check prediction
                   </button>
-                ))}
+                  <p role="status">
+                    {draft.predictionResult
+                      ? draft.predictionResult.correct
+                        ? "Those are the channel's readings, in time order. Now compare how each operation arranges them."
+                        : "Follow the selected column from top to bottom. A row contains different channels at one time."
+                      : "A prediction is optional. You can try either operation or open the explanation."}
+                  </p>
+                </form>
+              </div>
+              <div className="min-w-0 space-y-5">
+                <div>
+                  <p>
+                    Both operations produce shape [4, 3]. Which keeps a channel
+                    together?
+                  </p>
+                  <div
+                    className="mt-3 flex flex-wrap gap-2"
+                    role="group"
+                    aria-label="Compare layout operations"
+                  >
+                    {(["reshape", "transpose"] as const).map((operation) => (
+                      <button
+                        type="button"
+                        key={operation}
+                        className={button}
+                        aria-pressed={draft.operation === operation}
+                        onClick={() =>
+                          update({ operation, predictionHelp: true })
+                        }
+                      >
+                        {operation === "reshape"
+                          ? "Run reshape"
+                          : "Run transpose"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {output && draft.operation && (
+                  <div className="space-y-3" data-testid="channel-result">
+                    <PacketTable
+                      packet={output}
+                      caption={`Output: [4, 3] after ${draft.operation}`}
+                      channel={draft.channel}
+                      operation={draft.operation}
+                    />
+                    <p role="status">
+                      Plotter row {draft.channel}: [
+                      {output[draft.channel].join(", ")}].{" "}
+                      {draft.operation === "transpose"
+                        ? "It contains this channel's readings in time order."
+                        : "It mixes channels. The shape fits, but the values do not."}
+                    </p>
+                    <Trace
+                      expected={expected}
+                      actual={output[draft.channel]}
+                      channel={draft.channel}
+                    />
+                    <pre
+                      tabIndex={0}
+                      aria-label="Equivalent TensorFlow.js operation"
+                    >
+                      <code>{`// input shape: [time, channel] = [3, 4]\nconst output = input.${draft.operation === "reshape" ? "reshape([4, 3])" : "transpose()"};\n// plotter reads output.arraySync()[${draft.channel}]\n// [${output[draft.channel].join(", ")}]\noutput.dispose();`}</code>
+                    </pre>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  className={button}
+                  aria-expanded={draft.explanation}
+                  aria-controls={`${uid}-explanation`}
+                  onClick={() =>
+                    update({ explanation: true, predictionHelp: true })
+                  }
+                >
+                  Explain the difference
+                </button>
+                {draft.explanation && (
+                  <p id={`${uid}-explanation`}>
+                    Reshape reads the flat sequence 0 through 11 in the same
+                    order and changes where rows end. Transpose swaps the two
+                    axes: output[channel][time] equals input[time][channel]. For
+                    channel {draft.channel}, that gives [{expected.join(", ")}].
+                    Shape describes axis sizes; you must also know what the axes
+                    mean.
+                  </p>
+                )}
               </div>
             </div>
-            {output && draft.operation && (
-              <div className="space-y-3" data-testid="channel-result">
-                <PacketTable
-                  packet={output}
-                  caption={`Output: [4, 3] after ${draft.operation}`}
-                  channel={draft.channel}
-                  operation={draft.operation}
-                />
-                <p role="status">
-                  Plotter row {draft.channel}: [
-                  {output[draft.channel].join(", ")}].{" "}
-                  {draft.operation === "transpose"
-                    ? "It contains this channel's readings in time order."
-                    : "It mixes channels. The shape fits, but the values do not."}
-                </p>
-                <Trace
-                  expected={expected}
-                  actual={output[draft.channel]}
-                  channel={draft.channel}
-                />
-                <pre
-                  tabIndex={0}
-                  aria-label="Equivalent TensorFlow.js operation"
-                >
-                  <code>{`// input shape: [time, channel] = [3, 4]\nconst output = input.${draft.operation === "reshape" ? "reshape([4, 3])" : "transpose()"};\n// plotter reads output.arraySync()[${draft.channel}]\n// [${output[draft.channel].join(", ")}]\noutput.dispose();`}</code>
-                </pre>
-              </div>
-            )}
-            <button
-              type="button"
-              className={button}
-              aria-expanded={draft.explanation}
-              aria-controls={`${uid}-explanation`}
-              onClick={() =>
-                update({ explanation: true, predictionHelp: true })
-              }
-            >
-              Explain the difference
-            </button>
-            {draft.explanation && (
-              <p id={`${uid}-explanation`}>
-                Reshape reads the flat sequence 0 through 11 in the same order
-                and changes where rows end. Transpose swaps the two axes:
-                output[channel][time] equals input[time][channel]. For channel{" "}
-                {draft.channel}, that gives [{expected.join(", ")}]. Shape
-                describes axis sizes; you must also know what the axes mean.
-              </p>
-            )}
             <button
               type="button"
               className={`${button} block`}

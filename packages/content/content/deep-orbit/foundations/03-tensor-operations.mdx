@@ -61,7 +61,55 @@ This lesson starts where you are standing: at the bug. You'll read the error, me
 
 <LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Combine tensors of different shapes using broadcasting", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose when the intended matrix axes are reversed"]} />
 
-## Read the Error First
+## Repair the merge, then amplify it
+
+Demir used `matMul` to multiply matching positions. The error came from its
+inner-dimension rule: `[1, 64] × [1, 64]` cannot form a matrix product.
+Element-wise `mul` is the operation an amplifier needs.
+
+Use the same two-channel passes as the visual. Add matching values, divide by
+2 to average them, then multiply the average by the gain:
+
+<CodeBlock language="typescript" title="merge-two-passes.ts">
+{`const pass1 = tf.tensor2d([[2, 10], [4, 12], [6, 14]]);
+const pass2 = tf.tensor1d([4, 8]);
+const gain = 2;
+
+const { merged, boosted } = tf.tidy(() => {
+  const merged = pass1.add(pass2).div(2);
+  const boosted = merged.mul(gain);
+  return { merged, boosted };
+});
+// merged:  [[3, 9], [4, 10], [5, 11]]
+// boosted: [[6, 18], [8, 20], [10, 22]]
+tf.dispose([pass1, pass2, merged, boosted]);`}
+</CodeBlock>
+
+**Broadcasting** lines shapes up from the last axis: each pair must match or
+include a size of 1. The `[2]` row broadcasts across `[3, 2]`; a scalar gain
+reaches every value. Keep both results alive by returning them from `tf.tidy()`.
+Their caller releases them after use. Averaging helps with independent,
+zero-mean noise; it does not remove every error.
+
+## Mix channels with weighted sums
+
+A matrix product sums the products. Its shape rule is
+`[m, n] × [n, p] → [m, p]`. For the exercise, readings are rows of `block`;
+rows of `mix` are banks of channel weights. Transpose those banks into columns:
+
+<CodeBlock language="typescript" title="weighted-channel-mix.ts">
+{`// block: [readings, channels], mix: [banks, channels]
+const mixed = tf.tidy(() => block.matMul(mix.transpose()));
+// result: [readings, banks]; its caller disposes it after use`}
+</CodeBlock>
+
+Check axis meanings before transposing. Matching dimensions alone cannot tell
+you whether a multiplication combines the intended channels. Backend speed
+depends on the workload; these checks establish arithmetic and shape behavior.
+
+<ConceptReference summary="Reference: the original amplifier and matrix products">
+
+### Read the error first
 
 Here is the code that produced it. The intent: amplify each of the 64 channels by its own gain factor. Position by position, gain times reading.
 
@@ -81,7 +129,7 @@ const amplified = gains.matMul(readings);
 
 The error is precise once you can read it: `matMul` multiplies **rows into columns**, so it needs the left tensor's column count (64) to equal the right tensor's row count (1). But matching positions was the intent all along, and that is a different op with no inner-dimension rule at all. TensorFlow.js has both multiplications; the bug is reaching for the wrong one.
 
-## Element-wise Operations: The Repair
+### Element-wise Operations: The Repair
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -113,7 +161,7 @@ The shapes do not have to be identical. Aligned dimensions must be equal, or one
 
 Tensor operations are not automatically faster than JavaScript loops. Call overhead and readback can dominate a small array. Acceleration depends on the workload and backend; measure the version you intend to run. This lesson practices shape rules, not a speed guarantee.
 
-## When You DO Want matMul
+### When You DO Want matMul
 
 Dense layers compute weighted sums. `matMul` computes them for every row of its left input against every column of its right input. Element-wise multiplication alone leaves the products unsummed. The matrix operation has a shape rule:
 
@@ -147,6 +195,9 @@ Take `weights.transpose()` from the block above, `[[1, 3, 5], [2, 4, 6]]`. Feed 
 
 Now run two matrices back to back. The one that goes first emits as many numbers as it has rows; the one that goes next reads as many as it has columns. Those two counts have to be the same number, and in `[m, n] × [n, p]` that number is `n`, sitting on the inside of the pair. That is the whole shape rule.
 </DerivationDrawer>
+
+
+</ConceptReference>
 
 ## Challenge
 

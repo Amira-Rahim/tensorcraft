@@ -11,6 +11,99 @@ a link to the detail spec if one exists). Detail specs stay in their own files;
 this doc is the index of record. Deferred mentions surviving elsewhere
 (`dev-plan.md`, audit ledgers) are historical and non-authoritative.
 
+## Foundations opening follow-ups (2026-10-03)
+
+Detail: [visual story driven foundations plan](foundations-opening-plan.md).
+Owner update, October 6: the visual/story-first treatment and five-phase reader
+are implemented across all 56 Deep Orbit lessons. The former five-person pilot
+gate is superseded. [Implementation and verification](design-previews/deep-orbit-rollout.md)
+record the initial scope. The subsequent [continuity and pacing pass](design-previews/deep-orbit-continuity.md) completes the opening packet, exercise scaffolding and editorial work below. Commercial research remains separate from implementation.
+
+- [x] **Apply the visual/story experience to every Deep Orbit lesson.** Explicit
+  lesson instruments, original scene and crew context, five-phase navigation
+  with legacy migration, original challenge behavior, and illustrated endings.
+  No production deployment is implied by this working-tree implementation.
+
+
+The original opening estimate was 44–68 hours, excluding direction B, targeted C teaching, exercise scaffolding and editorial work. These estimates describe the earlier plan, not outstanding implementation. The [corrected B specification](superpowers/specs/2026-10-04-direction-b-five-steps-outline.md) remains the compatibility contract for the five-phase reader.
+The [roadmap](roadmap.md) now records the owner's long-term goal of 200,000
+unique paying customers. This opening project cannot establish that demand.
+
+- [x] **Visual design before production coding, 2026-10-04.** Used the
+  frontend-design skill to create an [isolated prototype](design-previews/foundations/index.html)
+  covering all five free lessons and five steps, with desktop/phone captures,
+  existing artwork and tokens, linked packet/code selection, shape and scaling
+  interactions, and authored retry/success states. Token choices, wireframes,
+  self-critique, and implementation limits are included in the artifact.
+  This records prototype creation and internal review, not owner design
+  acceptance, production implementation, learner results, or paying demand.
+- [x] **Connect and simplify the Foundations opening, 2026-10-06.** The
+  same five-value excerpt appears in the first instrument, worked code and
+  challenge; the full 256-value packet has an explicit story transition.
+  All five Foundations visuals connect to their examples and real tasks.
+  Shapes uses the existing channel experiment once, in the main workbench.
+  Required cleanup remains visible, extended API material stays in references,
+  and lesson one's mid-Concept forward link is removed. Task-specific mission
+  handoffs cover all 56 lessons; the pass banner names the checked exercises.
+- [ ] **Optional future opening research, unscheduled.** This does not block
+  the visual rollout. If separately commissioned, the proposed prerequisites are: internal content
+  and runtime checks pass with no blocking defects, and a research slot and
+  compensation budget are allocated. The owner is the proposed study lead.
+  Reserve 16–24 hours for recruitment, twelve short observations, follow-ups,
+  and analysis. Proposed compensation is $25 each, $300 total. Allocating $150
+  in each of two months fits within the current $200 monthly marketing budget
+  while leaving $50 per month for other acquisition work. Recruitment time is
+  uncertain. Keep this round separate from the formal novice pilot and exclude
+  compensated purchases from demand evidence.
+  Assess explanation of the first result, a changed case before its worked
+  answer, and whether the learner understands why this prepares data for ML.
+  Record voluntary continuation and its stated reason. Include a short
+  seven-day follow-up within the existing time and compensation budget,
+  reporting missing responses and help. Scheduled follow-ups are not organic
+  product retention. The detail plan defines these observations.
+- [ ] **Assess purchases after the opening revision.** Gate: the relevant
+  PostHog measurement follow-ups below are complete and there is enough new
+  external use to report meaningful counts. Reconcile payment and refund
+  records, separate study participants and existing owners, and label missing
+  consent or attribution. Until then, commercial evidence remains inconclusive.
+- [x] **Extend the visual presentation through later modules.** Completed across
+  all 56 lessons using the existing story, decisions, tasks and exercises.
+  Subject-specific content is explicitly registered and verified; future
+  substantive curriculum revisions still need their own scope.
+- [ ] **Consider a randomized opening comparison.** Gate: measurement is reliable
+  and sufficient eligible traffic exists. Define a primary outcome, useful effect
+  size, sample requirement, and stopping rule before running the comparison.
+  Current tracked traffic is insufficient; this is not part of the initial
+  implementation or twelve-person discovery round.
+- [x] **Close required prerequisites and scaffold the free exercises,
+  2026-10-06.** Visible teaching covers reshape/readback, batching, laziness,
+  awaited draining, split membership, per-feature statistics, zero-scale
+  handling and saved-stat inference. batch-data has four named stages.
+  normalize-data supplies the frozen model and leaves scaling/inference to the
+  learner. Model assertions remain inside the prediction check so supplied
+  code earns no independent credit. Canonical solution, untouched starter
+  and registered cheat checks pass their expected outcomes. The audience and
+  exercise contracts remain unchanged. Learner timing is still unmeasured.
+- [x] **Editorial pacing pass on the five free lessons, 2026-10-06.** Shorter
+  required reads retain the operations and distinctions needed for practice.
+  Extended examples, derivations and backend details are named references.
+  Distinct datasets are labeled at their transition. Training-loop and
+  evaluation received the same treatment; this does not claim a full prose
+  rewrite of the other 49 lessons. Original scenes, dialogue, decisions and
+  mission provenance remain. See the [continuity report](design-previews/deep-orbit-continuity.md)
+  for screenshots, checks and the measured change in phone page length.
+- [ ] **Prepare the revised course for the existing formal novice pilot.**
+  Gate: B, prerequisite coverage, opening implementation, and internal checks
+  are complete; review opening diagnostics before freezing the study version.
+  Refresh the Q6 handoff below and retain the [pilot protocol](learning-study/pilot-protocol.md),
+  including all five free lessons, early independent model work, the final
+  project, delayed checks, and 30-day use evidence. Schedule and budget this
+  separately from the twelve-person opening round. Required resource fields
+  and recruitment remain pending; no participants or results are implied.
+  Treat observed enjoyment, independent skill, and genuine purchases as
+  separate evidence. Full-course learner evidence remains required before
+  claiming beginner effectiveness or scaling an unproven paid funnel.
+
 ## Current content priority: the $70 course standard (2026-09-17)
 
 **Owner sequence, 2026-09-18:** first close technical teaching gaps, then
@@ -90,7 +183,8 @@ data-gated deferrals. The world-2 release gate remains separate.
 - [ ] **After quality and learner gates, Q7:** validate the $70 offer using
   actual purchase/refund evidence. Keep the live price at $50 during repairs.
 - [ ] **Start measurement review now, Q8:** verify learning and acquisition
-  funnels; use cohort evidence to assess the 150,000-user ambition.
+  funnels; use cohort evidence to assess the 200,000 unique paying-customer
+  ambition, with buyers distinguished from seats and repeat purchases.
 - [ ] **Before each future world release, Q9:** complete full subject, prose,
   story, exercise, and project review, plus a world-specific learner pilot.
 
@@ -117,7 +211,7 @@ new milestones were invented for this.
 | **B5** | When you buy traffic | Ad spend or a public launch push, not a quiet beta |
 | **B6** | When EU/UK sales open | Requires the entity, VAT/OSS registration, and Art. 27 reps |
 | **B7** | ~10k users | Scale debt: things that are fine until they are not |
-| **B8** | The 100k arc | Only if you decide that is the business (see the honest ceiling) |
+| **B8** | Long-term growth infrastructure | Only when demand and economics justify the relevant business model |
 | **B9** | No trigger | Opportunistic. Do it when you are already in that file for another reason |
 
 **Items already marked `[x]` carry no benchmark.** They are the record of what
@@ -1083,13 +1177,17 @@ memory was refuted by that audit: `pnpm audit` clean.)
   Version, README, and description were corrected to 51 on 2026-08-19/20
   and are publish-ready; only the packaging is not.
 
-## 8. Growth roadmap (100k paying users)
+## 8. Growth roadmap
 
-Strategy, arithmetic, and gating rationale live in `docs/roadmap.md` (detail
-doc); the work items are indexed here. Gate order is a hard precondition
-chain: Gate 1 denominator (widen ICP + more worlds) → Gate 2 LTV (recurring
-revenue) → Gate 3 proof (funnel data, produced by Horizon 0) → Gate 4
-catalog breadth (enterprise procurement). Horizon 0 shipped 2026-07-21; its
+The [roadmap](roadmap.md) records the current goal of 200,000 unique paying
+customers over time, confirmed 2026-10-03. This task index retains earlier
+product options, not a forecast of how many buyers each will supply.
+Its gates are qualified demand, viable acquisition economics, useful learning
+and funnel evidence, and suitable catalog breadth for any enterprise offer.
+Subscription, arena, and seat proposals remain optional and keep their separate
+dependencies; changing the customer target does not trigger implementation.
+The horizon dates below are retained planning labels, not measured deadlines.
+Horizon 0 shipped 2026-07-21; its
 still-open defects are launch blockers (`docs/audits/launch-blockers-history-2026-08-23.md`), not
 post-launch work.
 
@@ -1109,10 +1207,13 @@ post-launch work.
   frontend mentions went with it. (`Framework` union still typed for
   `variants` when multi-framework returns.)
 - [ ] Launch more of the 4 built-but-gated worlds (overlaps §5 world
-  sprints; this is the Gate 1 dependency).
+  sprints). Gate: the existing world-release requirements and demonstrated
+  learner or buyer need. A larger target alone does not open this gate.
 - [ ] Authoring scaffold `scripts/new-lesson.mjs` (no generator exists;
   authoring velocity is the volume bottleneck).
 - [ ] All-access subscription (~$15-25/mo) alongside one-time:
+  Optional. Gate: demonstrated demand for continuing learning value, a
+  sustainable release cadence, and economics assessed against one-time sales.
   `subscriptions` table + persisted `stripe_customer_id`, real
   `entitlements` table replacing ad-hoc `purchases.world_ids` derivation,
   `mode:"subscription"` checkout, `customer.subscription.*` /
@@ -1144,7 +1245,11 @@ post-launch work.
   `docs/roadmap.md` §4.
 - [ ] Growth instrumentation: activation metric, referral/virality events,
   cohort-LTV dashboards (current taxonomy has zero virality events).
-- Exit: LTV > 3x CAC provable; ads viable on warm traffic; ≥3 worlds live.
+- Exit: measured positive contribution after refunds, fees, delivery/support,
+  and attributable acquisition costs for the offer being sold. Report cohort,
+  source, observation window, and attribution gaps before increasing spend.
+  Neither recurring billing nor a minimum world count is required. Retain the
+  existing learner and qualified-demand gates before expanding the catalog.
 
 ### Horizon 2: build reach (9-24 months)
 
@@ -1152,6 +1257,9 @@ post-launch work.
   paywall): public no-auth weekly challenge, `challenges` /
   `arena_submissions` / `leaderboard` tables, ranking service, arena result
   cards, referral loop, public profiles.
+  Optional. Gate: evidence that learners want shared challenges and that the
+  proposed experience supports learning or qualified acquisition. Compare a
+  small prototype with simpler distribution work before building the arena.
   **Write-model bone LAID (2026-07-24, migration 048):** `arena_submissions`
   exists, **service-role-write-only** (self-read RLS, no client write policy),
   so scores cannot be forged. **Correction (scalability re-audit 2026-07-24):**
@@ -1171,18 +1279,25 @@ post-launch work.
   2026-05-05 revert).
 - [ ] Flip sitemap from throttled "core" to "full"; scale blog from single
   post via the existing news→lesson matching pipeline.
-- Exit: viral coefficient K measurable and trending > 0.5; arena → signup →
-  paid instrumented.
+- Exit: a repeatable source of qualified buyers with measured acquisition
+  costs and retained revenue. If an arena is selected, instrument its learner
+  outcomes and arena → signup → paid path; virality is not a required property
+  of the platform.
 
-### Horizon 3: enterprise seats (24-48 months; ~60% of the target count)
+### Horizon 3: enterprise seats (optional; legacy 24-48-month planning label)
+
+Gate: actual team-buyer need, useful learning evidence, and coverage suitable
+for that need. The old 60% seat allocation is historical, not a forecast of
+unique paying customers. Track contracts and learner seats separately.
 
 - [ ] Orgs + members + invitations; org-scoped roles
   (`billing_owner | manager | learner`) replacing flat `user | admin`.
 - [ ] Seat-quantity Stripe billing with proration.
 - [ ] Team progress dashboard.
 - [ ] SSO/SCIM + procurement table stakes (SOC2, invoicing, DPA).
-- Sequenced last deliberately: behind Gate 3 (buyers demand completion
-  data) and Gate 4 (single narrow path fails procurement).
+- Sequenced behind Gate 3 (useful learning and buyer evidence) and Gate 4
+  (coverage required by the specific team need). Do not add catalog breadth
+  or procurement infrastructure solely to serve the 200,000 target.
 
 **Parallel track, starts immediately (not code):** audience building /
 distribution. Longest lead time in the whole plan; do not sequence it after
@@ -4914,15 +5029,23 @@ exercise gate opened with Show solution. Items 2 to 8 are direction A,
 docs/superpowers/specs/2026-09-24-lesson-tightening-design.md (approved
 2026-09-24); the owner ordered "A then B then C".
 
-- [ ] **(B1) OWNER, direction B: the Code step re-serves the Concept step's
-  code.** On lesson 1 the step is 24 words of framing, the same two
+- [x] **(B1) OWNER, direction B: the Code step re-serves the Concept step's
+  code.** Resolved in the October 6 working tree. Five phases, versioned storage,
+  legacy URL/history migration, analytics versions, and browser checks are
+  complete. The following describes the prior issue: On lesson 1 the step is 24 words of framing, the same two
   CodeBlocks the learner read on Concept, and the reference drawer opened
   by default, on a page 2,748 px tall. CodeBlock sits in both CONCEPT_LEFT
   and CODE_RIGHT by design, and 40 of 56 lessons have no derivation
   drawer to justify the step. Direction B folds Code into Concept in its own
-  spec after direction A ships; direction C (content of its own for the
-  step) follows B. The same item as "The Code step is thin" under the
+  spec after direction A ships. Direction C supplies targeted explanation
+  and traces inside Concept after B; it does not restore a Code step.
+  The same item as "The Code step is thin" under the
   2026-09-04 re-audit follow-ups.
+  [Corrected implementation specification (2026-10-04)](superpowers/specs/2026-10-04-direction-b-five-steps-outline.md):
+  exact progress mapping, semantic hashes with legacy handling, account
+  isolation, completion suppression, and essential teaching in lessons two
+  and five. Runtime implementation and verification are complete; see the
+  [rollout record](design-previews/deep-orbit-rollout.md).
 - [x] **(B1) The consent banner covered the activation moment.** 202 px at
   desktop, 248 px on a phone (29% of the screen), over the last story beat
   and the divider for the whole 17-second scene; Continue landed under it.

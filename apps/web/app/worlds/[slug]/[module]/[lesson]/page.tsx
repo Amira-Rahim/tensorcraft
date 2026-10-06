@@ -190,7 +190,7 @@ export default async function LessonPage({ params, searchParams }: Props) {
     (query?.start === "experiment" && lessonSlug === "tensor-shapes")
       ? 1
       : query?.start === "challenge"
-        ? 3
+        ? 2
         : 0;
 
   // Mid-course catch-up, and nothing else, belongs on a lesson page (owner,

@@ -457,6 +457,20 @@ All events are typed in `packages/analytics/events.ts` and tracked via a type-sa
 | `github_connected` | `hasExistingRepo`, `repoVisibility` (public, private) | User connects their GitHub account |
 | `github_commit_pushed` | `exerciseId`, `commitSha`, `filesChanged` | Code is successfully committed to the user's repo |
 
+### Lesson phase telemetry (reader version 2, October 6)
+
+`lesson_step_viewed.stepsVersion = 2` identifies the five-phase reader:
+Briefing 0, Concept 1, Challenge 2, Takeaways 3, Epilogue 4. Analytics retains
+`stepName: "Consequence"` for Epilogue. Events without `stepsVersion` use the
+legacy six-phase numbering, including Code at 2 and Consequence at 5.
+
+For first-view funnels, count `revisit=false` per `(stepsVersion, step)`.
+For dwell, group `prevStepMs` by `(stepsVersion, prevStep)`. Never combine
+numeric phase indices across versions. Use semantic names for comparisons,
+while accounting for the new Concept containing both teaching and code.
+Restoring saved progress does not emit a new completion or invent visits to
+skipped phases. The baseline script separates versions in both queries.
+
 ### 4.3 Critical Derived Metrics
 
 These metrics are computed from raw events and displayed on the internal analytics dashboard.

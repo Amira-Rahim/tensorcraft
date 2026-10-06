@@ -15,9 +15,8 @@ instructions: |
      Subtract the per-feature offset and divide by scale. When scale is zero,
      use divisor 1 without changing the saved statistics. The lesson shows
      `tf.where` for this choice. Set `normalized` using the saved mean and std.
-  3. Build `previewModel` as a real `tf.sequential()` model with one dense sigmoid
-     unit and input shape `[2]`. Set its weights from `KERNEL` and `BIAS`: the
-     kernel is a `[2, 1]` tensor and the bias is a `[1]` tensor, in that order.
+  3. Use the supplied `previewModel`. Its two fixed weights and bias are already
+     installed. Model construction is provided; your work is input scaling.
   4. Predict on `normalized` in one batch. Save the `[4, 1]` output as `scores`.
   5. Implement `scoreReading(reading)` for a new `[2]` tensor. Reuse the saved
      mean and std, add a batch axis, and predict with `previewModel`. Return the
@@ -59,10 +58,19 @@ starterCode: |
     return null; // your code here
   }
 
+  // Apply the saved statistics to the original batch.
   const normalized = null;
 
-  const previewModel = null;
+  // Supplied fixed model. Building and training networks comes next.
+  const previewModel = tf.sequential();
+  previewModel.add(tf.layers.dense({
+    units: 1, activation: 'sigmoid', inputShape: [2],
+  }));
+  tf.tidy(() => previewModel.setWeights([
+    tf.tensor2d(KERNEL), tf.tensor1d(BIAS),
+  ]));
 
+  // One prediction call for all four scaled rows.
   const scores = null;
 
   // The other scaler. One min and one max per feature, then each column
@@ -202,11 +210,11 @@ testCode: |
       expect(stds[0], stdWhy).toBeCloseTo(1, 4);
       expect(stds[1], stdWhy).toBeCloseTo(1, 4);
     });
-    it('previewModel is a real dense layer carrying the frozen weights', () => {
-      filled(previewModel, 'Step 3 is still empty. Build the one-neuron model, then load the frozen weights into it.');
+    function checkSuppliedModel() {
+      filled(previewModel, 'Keep the supplied fixed preview model available.');
       expect(
         previewModel instanceof tf.LayersModel,
-        'getWeights and predict are ordinary methods, so any object can carry them. This asks whether tf.sequential built the model: previewModel has to be the LayersModel it returns.',
+        'Keep the supplied LayersModel. An object with getWeights and predict methods does not run the provided dense layer.',
       ).toBe(true);
       expect(previewModel.layers.length, 'One dense layer, nothing else in the stack.').toBe(1);
       expect(
@@ -225,9 +233,11 @@ testCode: |
       expect(k[0], why).toBeCloseTo(0.9, 5);
       expect(k[1], why).toBeCloseTo(-1.4, 5);
       expect(w[1].dataSync()[0], why).toBeCloseTo(-0.3, 5);
-    });
+    }
     it('scores = predict(normalized): one sigmoid verdict per reading', () => {
-      filled(scores, 'Step 4 is still empty. Score the whole normalized batch in one call.');
+      expect(scores instanceof tf.Tensor, 'Score the normalized batch before checking its fixed model.').toBe(true);
+      checkSuppliedModel();
+      checkModelOnAnotherInput();
       expect(
         scores.shape,
         'One row of output per row of input, and one column because the layer has a single unit.',
@@ -240,14 +250,14 @@ testCode: |
       expect(s[2], why).toBeCloseTo(0.6745, 3);
       expect(s[3], why).toBeCloseTo(0.5699, 3);
     });
-    it('the neuron computes on inputs it has never seen', () => {
-      filled(previewModel, 'Step 3 is still empty.');
+    function checkModelOnAnotherInput() {
+      filled(previewModel, 'Keep the supplied fixed preview model available.');
       const out = previewModel.predict(tf.tensor2d([[1, -1]]));
       expect(
         out.dataSync()[0],
         'These two numbers are not in the batch. The layer has to do the arithmetic rather than return a stored answer.',
       ).toBeCloseTo(0.8808, 3);
-    });
+    }
     it('scoreReading keeps working after the training rows are gone', () => {
       // A [2] reading handed straight to predict throws a raw framework
       // error on tfjs 4.22.0 (measured 2026-09-13: "expected ... input to

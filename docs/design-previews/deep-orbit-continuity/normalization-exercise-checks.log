@@ -1,0 +1,14 @@
+  harness parity: 35 assertion fixtures produce identical text in both harnesses.
+
+Validating 1 exercise(s)...
+
+
+============================
+Hi, looks like you are running TensorFlow.js in Node.js. To speed things up dramatically, install our node backend, visit https://github.com/tensorflow/tfjs-node for more details. 
+============================
+  CHEAT-OK normalize-data (normalize-data.2.js): ignorant solution cleared 9, rejected by 1 (Normalize, Then Ask the Preview Neuron > keeps true zero statistics and handles a constant feature without NaN)
+  CHEAT-OK normalize-data: ignorant solution cleared 5, rejected by 5 (Normalize, Then Ask the Preview Neuron > scoreReading keeps working after the training rows are gone)
+  OK    normalize-data (normalization) (10 tests)
+
+Done: 1 passed, 0 failed, 0 warned (allowlisted), 1 total.
+

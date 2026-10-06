@@ -1,0 +1,127 @@
+/* The main instrument carries the visual emphasis. Keep the approved shell. */
+button:disabled { opacity: .5; cursor: default; }
+.pilot-link { color: var(--primary); }
+.pilot-small { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.briefing-beats > .pilot-small { font-size: 13px; }
+.pilot-workbench .scene-context .dialogue p { font-size: 16px; }
+.pilot-workbench .instrument { min-width: 0; }
+.plot { display: block; width: 100%; height: auto; overflow: visible; }
+.plot text { fill: var(--muted); font-family: Inter, sans-serif; font-size: 12px; }
+.plot .grid { stroke: var(--border); stroke-width: 1; }
+.plot .train { stroke: var(--primary); }
+.plot .validation { stroke: var(--axis); stroke-dasharray: 7 5; }
+.plot .curve { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.plot .cursor { stroke: var(--muted); stroke-dasharray: 2 5; }
+.curve-legend { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; }
+.curve-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.curve-legend i { width: 25px; border-top: 3px solid var(--primary); }
+.curve-legend .val-key { border-color: var(--axis); border-top-style: dashed; }
+.epoch-control { display: block; margin: 18px 0 6px; font-size: 14px; }
+.epoch-control input { display: block; width: 100%; min-height: 44px; accent-color: var(--primary); margin: 0; cursor: pointer; }
+.curve-readout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.curve-readout div { border-top: 1px solid var(--border); padding-top: 12px; }
+.curve-readout dt { font-size: 13px; color: var(--muted); }
+.curve-readout dd { font-family: "JetBrains Mono", monospace; font-size: 29px; margin: 0; }
+.curve-readout div:first-child dd { color: var(--primary); }
+.curve-readout div:last-child dd { color: var(--axis); }
+.pilot-observation { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 15px; }
+.pilot-observation p { margin: 0; }
+.patience-marks { display: flex; gap: 6px; margin: 16px 0 8px; }
+.patience-marks span { width: 28px; height: 10px; background: var(--border); border: 1px solid var(--control); }
+.patience-marks .spent { background: var(--brass); border-color: var(--brass); }
+.signal-summary { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin: 8px 0 14px; }
+.signal-summary strong { font-size: 54px; line-height: 1; letter-spacing: -2px; color: var(--primary); }
+.signal-summary span { font-size: 14px; }
+.signal-board { display: grid; grid-template-columns: repeat(10, minmax(0,1fr)); gap: 6px; margin: 24px 0 12px; }
+.signal-tile { display: flex; align-items: center; justify-content: center; min-height: 40px; border: 1px solid var(--control); color: var(--text); background: var(--surface); font: 15px "JetBrains Mono", monospace; }
+.signal-tile[data-kind="tp"] { color: var(--primary); border-color: var(--primary); background: var(--selected); }
+.signal-tile[data-kind="tn"] { color: var(--axis); border-color: var(--axis); }
+.signal-tile[data-kind="fn"] { color: var(--error); border: 2px solid var(--error); }
+.signal-tile[aria-pressed="true"] { outline: 2px solid var(--text); outline-offset: 2px; }
+.signal-tile[data-dim="true"] { color: var(--muted); border-color: var(--control); background: var(--code); }
+.signal-key { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; color: var(--muted); }
+.signal-key b { color: var(--text); font-family: "JetBrains Mono", monospace; }
+.tile-detail { background: var(--surface); padding: 14px 16px; margin-top: 16px; }
+.tile-detail p { font-size: 14px; margin: 0; }
+.confusion { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 13px; }
+.confusion th { text-align: left; font-weight: 500; padding: 8px; color: var(--muted); }
+.confusion td { border: 1px solid var(--border); padding: 12px; vertical-align: top; }
+.confusion td strong { display: block; font: 23px "JetBrains Mono", monospace; }
+.confusion .miss { background: color-mix(in srgb, var(--error) 8%, var(--code)); }
+.confusion caption { text-align: left; font-weight: 600; margin-bottom: 10px; }
+.metric-list { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 18px 0 0; }
+.metric-list dt { font-size: 12px; color: var(--muted); }
+.metric-list dd { font-family: "JetBrains Mono", monospace; margin: 4px 0 0; font-size: 20px; }
+.pilot-reference { border-top: 1px solid var(--border); margin-top: 24px; }
+.pilot-reference details { margin: 16px 0; }
+.pilot-reference li { margin: 8px 0; font-size: 15px; }
+.teaching-copy p { font-size: 17px; }
+.pilot-code { white-space: pre; overflow-x: auto; }
+.challenge-intro { margin-bottom: 24px; }
+.pilot-challenge { grid-template-columns: minmax(0,.85fr) minmax(0,1.25fr); }
+.pilot-challenge .scene-context { margin-bottom: 24px; }
+.pilot-challenge .task-list { padding-left: 22px; }
+.pilot-challenge .task-list li { padding-left: 2px; font-size: 15px; margin-bottom: 12px; }
+.pilot-challenge textarea { min-height: 470px; resize: vertical; }
+.editor-footer { flex-wrap: wrap; gap: 12px; }
+.run-summary { margin: 0 0 12px; font-weight: 600; }
+.run-results { margin: 0; padding-left: 22px; }
+.run-results li { margin: 12px 0; font-size: 14px; }
+.run-results p { color: var(--muted); white-space: pre-wrap; font-size: 13px; margin: 4px 0; overflow-wrap: anywhere; }
+.run-status { color: var(--muted); font-size: 13px; }
+.feedback { overflow-wrap: anywhere; }
+.feedback .pass { color: var(--primary); }
+.feedback .fail { color: var(--error); }
+.supplied-setup { margin-top: 16px; }
+.supplied-setup pre { padding: 16px; max-height: 320px; font: 12px/1.8 "JetBrains Mono", monospace; background: var(--code); }
+.recall label { display: block; font-weight: 500; margin-top: 16px; }
+.recall textarea { width: 100%; min-height: 160px; resize: vertical; padding: 14px; margin-top: 8px; background: var(--code); color: var(--text); border: 1px solid var(--control); font: inherit; }
+.recall-answer { margin-top: 20px; }
+.recall-answer > p { margin-top: 12px; }
+.recall-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.recall-table td, .recall-table th { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--border); }
+.recall-bars { display: grid; gap: 20px; margin: 24px 0; }
+.recall-bars > div > span { display: block; font-size: 14px; margin-bottom: 8px; }
+.recall-bar-track { height: 18px; background: var(--surface); margin-top: 5px; }
+.recall-bar-track i { display: block; width: var(--amount); height: 100%; background: var(--primary); }
+.recall-bar-track.later i { background: var(--axis); }
+.recall-dots { display: flex; gap: 10px; margin: 8px 0 20px; }
+.recall-dots span { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--control); }
+.recall-dots .caught { color: var(--primary); background: var(--selected); border-color: var(--primary); }
+.run-readout { padding: 16px; background: var(--surface); font: 13px/1.8 "JetBrains Mono", monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.epilogue .story-label { color: var(--muted); font-size: 13px; }
+.epilogue-evidence { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0; margin: 24px 0; }
+.epilogue-evidence strong { color: var(--brass); font: 26px "JetBrains Mono", monospace; }
+.epilogue-evidence p { margin: 8px 0 0; color: var(--muted); font-size: 15px; }
+.pilot-boundary { font-size: 14px; color: var(--muted); padding-top: 20px; }
+.review-actions button { min-height: 44px; }
+@media (max-width: 800px) {
+  .pilot-workbench, .pilot-challenge { grid-template-columns: minmax(0,1fr); }
+  .pilot-workbench .scene-context { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .pilot-workbench .scene-context .dialogue { margin-top: 0; }
+  .pilot-workbench .scene-location { grid-column: 1; }
+  .pilot-challenge textarea { min-height: 390px; }
+}
+@media (max-width: 580px) {
+  .plot text { font-size: 22px; }
+  .pilot-workbench .scene-context { display: block; }
+  .pilot-workbench .scene-context .dialogue { margin-top: 20px; }
+  .pilot-workbench .instrument { padding: 20px 16px; }
+  .signal-board { gap: 5px; grid-template-columns: repeat(5,minmax(0,1fr)); }
+  .signal-tile { min-height: 44px; }
+  .signal-summary strong { font-size: 44px; }
+  .confusion th { font-size: 12px; padding: 6px 3px; }
+  .confusion td { padding: 10px 7px; font-size: 12px; }
+  .confusion td strong { font-size: 21px; }
+  .metric-list { gap: 8px; }
+  .metric-list dd { font-size: 17px; }
+  .curve-readout dd { font-size: 26px; }
+  .pilot-challenge .scene-context .dialogue img { display: block; width: 40px; height: 46px; margin-bottom: 8px; }
+  .pilot-challenge .scene-context { grid-template-columns: 100px minmax(0,1fr); }
+  .pilot-challenge .scene-context .dialogue p { font-size: 14px; }
+  .pilot-code { font-size: 12px; }
+  .review-actions { gap: 20px; }
+}
+@media (max-width: 360px) {
+  .plot text { font-size: 28px; }
+}
