@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "Use the three lines from the Concept step: create a tensor, read its shape, then copy its values. The cleanup line is already provided."
   - level: guidance
-    content: "tf.tensor(streamValues) creates the tensor. reading.shape gives its shape. reading.arraySync() returns its values as a JavaScript array."
+    content: "After creating reading, inspect that object for both results. Its shape describes the arrangement; its stored values should match the five input readings in order. Save both before the supplied cleanup runs."
   - level: solution
     content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = reading.arraySync();"
 keywords:
