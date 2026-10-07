@@ -180,6 +180,7 @@ const BRIEFING_COMPONENTS = new Set([
   "CodeBlock",
   "prose",
 ]);
+const BRIEFING_TAKEAWAY_COMPONENTS = new Set(["BriefingTakeaway"]);
 
 /* The Concept and Challenge steps each render two LessonContent
    instances with disjoint Sets, so no component renders twice: Concept
@@ -247,6 +248,7 @@ const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
    of shipping. */
 export const STEP_VISIBILITY = {
   BRIEFING_COMPONENTS,
+  BRIEFING_TAKEAWAY_COMPONENTS,
   CONCEPT_LEFT,
   CONCEPT_INTRO,
   CHALLENGE_LEFT,
@@ -1939,21 +1941,27 @@ function StepBriefing({
             />
           </div>
 
-          {/* Everything that is not the story comes AFTER the scene (owner,
-          2026-09-20: the app opens with its story). Two things live here:
-          the spaced-review warm-up, which recalls earlier material before the
-          learner moves on, and the catch-up for someone opening a module
-          cold. data-post-scene holds both back during playback the way the
-          teaching body is held back; neither is a timeline beat, so the
-          scene's own pacing is unchanged. Rendered in the initial HTML so a
-          reader without JavaScript still gets the catch-up
-          (noscript-reveal.tsx); the warm-up is client state and renders
-          nothing there. */}
-          {(!warmupDone || moduleEntry) && (
+          {/* Learning notes and review follow the story, outside its timeline.
+          The authored takeaway gets its own full-width MDX slice so it never
+          stretches the dialogue column or appears twice. The no-JS reveal
+          also makes these server-rendered notes readable. */}
+          {(lesson.body.includes("BriefingTakeaway") ||
+            !warmupDone ||
+            moduleEntry) && (
             <div
               data-post-scene=""
               className="mt-(--l-slot) space-y-(--l-slot)"
             >
+              {lesson.body.includes("BriefingTakeaway") && (
+                <LessonContent
+                  lesson={lesson}
+                  worldId={worldSlug}
+                  moduleId={moduleSlug}
+                  lessonId={lessonSlug}
+                  glossaryTerms={lesson.glossaryTerms}
+                  visibleComponents={BRIEFING_TAKEAWAY_COMPONENTS}
+                />
+              )}
               {!warmupDone && (
                 <LessonWarmup
                   userId={reviewUserId}

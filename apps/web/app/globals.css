@@ -506,6 +506,72 @@ body {
   margin-inline: auto;
 }
 
+/* A scene's learning note spans the reading frame, outside its dialogue.
+   These scoped selectors override prose rhythm without changing the story. */
+.briefing-takeaway {
+  display: grid;
+  gap: 28px;
+  padding: 24px;
+  border: 1px solid var(--tc-border);
+  background: var(--tc-surface);
+  color: var(--tc-text);
+}
+.briefing-takeaway > div {
+  min-width: 0;
+}
+.lesson-prose .briefing-takeaway :is(h2, h3) {
+  margin: 0 0 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tc-muted);
+}
+.lesson-prose .briefing-takeaway p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.lesson-prose .briefing-takeaway-definition > p:first-child {
+  max-width: 28ch;
+  font-size: clamp(1.5rem, 2.2vw, 1.875rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.lesson-prose .briefing-takeaway-definition > p + p {
+  margin-top: 12px;
+  max-width: 48ch;
+  color: var(--tc-muted);
+}
+.briefing-takeaway-readings {
+  margin: 16px 0;
+}
+.briefing-takeaway-readings figcaption {
+  margin-bottom: 6px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--tc-muted);
+}
+.lesson-prose .briefing-takeaway-readings code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: clamp(0.75rem, 3.6vw, 1rem);
+  white-space: nowrap;
+  color: var(--tc-text);
+}
+.lesson-prose .briefing-takeaway .briefing-takeaway-next {
+  font-size: 0.875rem;
+  color: var(--tc-muted);
+}
+@media (width >= 48rem) {
+  .briefing-takeaway {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    padding: 32px;
+  }
+}
+
 /* Briefing story grid: the picture beside the dialogue, with scene context
    above both columns. Below lg they stack
    in DOM order in one column no wider than 820 px, with the row gap between

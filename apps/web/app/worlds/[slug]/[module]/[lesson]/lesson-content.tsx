@@ -28,6 +28,7 @@ import {
 } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
+import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
 // runtime + editor (~300 KB gzipped). Loading it dynamically with
@@ -172,6 +173,7 @@ const EpilogueContext = createContext(false);
 
 /** MDX components available in lesson content */
 const mdxComponents = {
+  BriefingTakeaway,
   DecisionTask,
   IndependentProject,
   ProjectMilestone,
@@ -392,6 +394,7 @@ export function LessonContent({
       pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
         <pre {...props} tabIndex={0} role="region" aria-label="Code example" />
       ),
+      BriefingTakeaway: wrapVisibility("BriefingTakeaway", BriefingTakeaway),
       Concept: wrapVisibility("Concept", Concept),
       ConceptReference: wrapVisibility(
         "ConceptReference",

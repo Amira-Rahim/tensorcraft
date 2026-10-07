@@ -11,7 +11,7 @@ scene:
   time: "Six hours after first contact"
   portraitAlt: "On the Archimedes bridge, Mirza and Demir face a holo column of unparsed signal noise while ARIA's waveform ripples on a side screen."
 context:
-  narrative: "The research ship Archimedes has received an unfamiliar signal. Its existing software, ARIA, follows rules written in advance. The crew needs to find patterns those rules have missed."
+  narrative: "The research ship Archimedes has received an unfamiliar signal from Sector 7-G, a region of space the crew is monitoring. Its existing software, ARIA, follows rules written in advance. The crew needs to find patterns those rules have missed."
   speaker: "Commander Mirza"
 concept:
   explanation: "Tensors are multi-dimensional arrays: the fundamental data structure of machine learning."
@@ -44,14 +44,27 @@ Can ARIA tell which readings from Sector 7-G need a closer look?
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Six hours, fourteen minutes. I have applied 4,096 rules to the incoming readings. None identifies a useful pattern.
+I have spent six hours and fourteen minutes applying 4,096 rules to these readings. None identifies a useful pattern.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 Then we need a system that can learn from examples. Demir, start with the readings.
 </Dialogue>
 
-You will work alongside Demir, the crew's JavaScript engineer. A **tensor** is a container for numbers used by **TensorFlow.js**, our machine learning library. Your first task is to fill one from a five-reading JavaScript array. Select Continue to inspect the readings before writing code.
+You will work alongside Demir, the crew's JavaScript engineer.
+
+<BriefingTakeaway
+  task="You will create a tensor from these five readings."
+  next="Select Continue to inspect these readings before writing code."
+  readings={[0.12, 0.94, 0.31, 0.88, 0.47]}
+  readingsLabel="Five readings in a JavaScript array"
+>
+
+A **tensor** is a container for numbers.
+
+**TensorFlow.js** is the JavaScript machine learning library you will use to create it.
+
+</BriefingTakeaway>
 
 <LearningObjectives objectives={["Explain which shape and lifetime responsibilities a tensor adds to JavaScript numeric storage", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 

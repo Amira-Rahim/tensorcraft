@@ -147,15 +147,17 @@ function storyEdges(page: Page) {
   });
 }
 
-// Lesson 1 opens the course, so a fresh guest has nothing earlier to recall
-// and no module to catch up on: the post-scene slot must have no height,
-// and the nav's hairline sits --l-nav-top below the story. A slot with
-// height here is a surprise to look at, not a gap to accept.
+// Lesson 1 closes the scene with its key idea and first task. The note owns
+// the post-scene slot, and the nav follows it at the standard 40 px gap.
 async function freshGuestStoryEnd(page: Page) {
   await openStep(page, LESSONS.paragraphLed, 0);
+  const takeaway = page.getByTestId("briefing-takeaway");
+  await expect(takeaway).toBeVisible();
+  const note = (await takeaway.boundingBox())!;
   const m = await storyEdges(page);
-  expect(m.slotHeight).toBe(0);
-  expect(Math.abs(m.navTop - m.storyBottom - 40)).toBeLessThanOrEqual(1);
+  expect(m.slotHeight).toBe(note.height);
+  expect(note.y).toBeGreaterThan(m.storyBottom);
+  expect(Math.abs(m.navTop - note.y - note.height - 40)).toBeLessThanOrEqual(1);
 }
 
 // A stacked dialogue beat after the first heading of lesson 1's real reading
@@ -341,7 +343,7 @@ test.describe("lesson layout, desktop", () => {
     expect(Math.abs((gap ?? 0) - 16)).toBeLessThanOrEqual(2);
   });
 
-  test("a fresh guest's story ends --l-nav-top above the nav at 1,440 px", async ({
+  test("a fresh guest's learning note ends --l-nav-top above the nav at 1,440 px", async ({
     page,
   }) => {
     await freshGuestStoryEnd(page);
@@ -780,7 +782,7 @@ test.describe("lesson layout, narrow desktop", () => {
 test.describe("lesson layout, phone", () => {
   test.use({ viewport: { width: 390, height: 844 }, colorScheme: "dark" });
 
-  test("a fresh guest's story ends --l-nav-top above the nav at 390 px", async ({
+  test("a fresh guest's learning note ends --l-nav-top above the nav at 390 px", async ({
     page,
   }) => {
     // One column here, so the beats column is always the story's last row.

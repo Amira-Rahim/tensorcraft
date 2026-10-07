@@ -20,9 +20,11 @@ for (const [width, scheme] of [
     await expect(orientation).toContainText("machine learning in JavaScript");
     await expect(orientation).toContainText("program trained on examples");
     await expect(
-      page.getByText(
-        /You will work alongside Demir, the crew's JavaScript engineer/,
-      ),
+      page
+        .locator(".lesson-story-grid")
+        .getByText(
+          /You will work alongside Demir, the crew's JavaScript engineer/,
+        ),
     ).toBeVisible();
     const header = await page
       .getByTestId("lesson-briefing-header")
@@ -43,11 +45,25 @@ for (const [width, scheme] of [
       .boundingBox())!;
     expect(contextBox.y + contextBox.height).toBeLessThan(picture.y);
     expect(contextBox.y + contextBox.height).toBeLessThan(dialogue.y);
-    await expect(
-      page.getByText(
-        /Your first task is to fill one from a five-reading JavaScript array/,
-      ),
-    ).toBeVisible();
+    const takeaway = page.getByTestId("briefing-takeaway");
+    await expect(takeaway).toHaveCount(1);
+    await expect(takeaway).toBeVisible();
+    await expect(takeaway).toContainText(
+      "A tensor is a container for numbers.",
+    );
+    await expect(takeaway).toContainText(
+      "You will create a tensor from these five readings.",
+    );
+    await expect(takeaway.locator("code")).toHaveText(
+      "[0.12, 0.94, 0.31, 0.88, 0.47]",
+    );
+    const takeawayBox = (await takeaway.boundingBox())!;
+    const storyBox = (await page.locator(".lesson-story-grid").boundingBox())!;
+    expect(takeawayBox.y).toBeGreaterThanOrEqual(storyBox.y + storyBox.height);
+    expect(takeawayBox.width).toBe(contextBox.width);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(width);
     expect(
       (await new AxeBuilder({ page }).include("[data-script-state]").analyze())
         .violations,
@@ -62,6 +78,7 @@ for (const [width, scheme] of [
     });
     await page.getByRole("button", { name: "Continue →", exact: true }).click();
     await expect(orientation).toHaveCount(0);
+    await expect(takeaway).toHaveCount(0);
     const instrument = page.locator(".lesson-instrument");
     await expect(instrument).toContainText("five-reading excerpt");
     const slider = instrument.getByRole("slider", {

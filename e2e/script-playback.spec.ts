@@ -22,6 +22,7 @@ test.describe("Lesson script playback", () => {
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
     await expect(page.getByTestId("course-orientation")).toBeVisible();
     await expect(page.getByTestId("scene-context")).toHaveCSS("opacity", "1");
+    await expect(page.getByTestId("briefing-takeaway")).toBeHidden();
 
     // Sample the revealed-beat count across the timeline.
     const counts: number[] = [];
@@ -41,6 +42,7 @@ test.describe("Lesson script playback", () => {
     // + 1 story paragraph on foundations/01, with the art deliberately absent.
     expect(await page.locator("[data-beat-shown]").count()).toBe(5);
     expect(Math.max(...counts)).toBeGreaterThanOrEqual(3);
+    await expect(page.getByTestId("briefing-takeaway")).toBeVisible();
 
     // Prose partition (2026-09-04): the Briefing ends at the story zone, so
     // there is no auto-scroll and the teaching body must NOT be readable
@@ -55,6 +57,7 @@ test.describe("Lesson script playback", () => {
     // Replay resets and replays.
     await page.getByRole("button", { name: /replay/i }).click();
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
+    await expect(page.getByTestId("briefing-takeaway")).toBeHidden();
     await expect(page.getByTestId("scene-context")).toHaveCSS("opacity", "1");
     expect(await page.locator("[data-beat-shown]").count()).toBeLessThanOrEqual(
       1,
@@ -108,6 +111,7 @@ test.describe("Lesson without JavaScript", () => {
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
     await expect(page.getByTestId("course-orientation")).toBeVisible();
     await expect(page.getByTestId("scene-context")).toBeVisible();
+    await expect(page.getByTestId("briefing-takeaway")).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: "Introduction to Tensors",
