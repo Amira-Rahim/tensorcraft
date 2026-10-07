@@ -144,6 +144,9 @@ const lesson = {
   order: 1,
   estimatedMinutes: 10,
   body: "",
+  // Every authored lesson has a scene. Its slugline supplies this chrome
+  // fixture's playback beat now that the context is always readable.
+  scene: { location: "Archimedes, Bridge" },
   context: { narrative: "n" },
   concept: { explanation: "e" },
   consequence: { narrative: "c" },

@@ -21,6 +21,7 @@ test.describe("Lesson script playback", () => {
 
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
     await expect(page.getByTestId("course-orientation")).toBeVisible();
+    await expect(page.getByTestId("scene-context")).toHaveCSS("opacity", "1");
 
     // Sample the revealed-beat count across the timeline.
     const counts: number[] = [];
@@ -36,9 +37,9 @@ test.describe("Lesson script playback", () => {
       expect(counts[i]).toBeGreaterThanOrEqual(counts[i - 1]);
     }
     await expect(page.locator("[data-script-state='done']")).toBeAttached();
-    // 6 beats since P2 added scene sluglines: slugline + narrative stage
-    // direction + 3 dialogues + 1 story paragraph on foundations/01.
-    expect(await page.locator("[data-beat-shown]").count()).toBe(6);
+    // The context stays visible outside playback: slugline + 3 dialogues
+    // + 1 story paragraph on foundations/01, with the art deliberately absent.
+    expect(await page.locator("[data-beat-shown]").count()).toBe(5);
     expect(Math.max(...counts)).toBeGreaterThanOrEqual(3);
 
     // Prose partition (2026-09-04): the Briefing ends at the story zone, so
@@ -54,6 +55,7 @@ test.describe("Lesson script playback", () => {
     // Replay resets and replays.
     await page.getByRole("button", { name: /replay/i }).click();
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
+    await expect(page.getByTestId("scene-context")).toHaveCSS("opacity", "1");
     expect(await page.locator("[data-beat-shown]").count()).toBeLessThanOrEqual(
       1,
     );
@@ -105,6 +107,7 @@ test.describe("Lesson without JavaScript", () => {
   test("server-rendered idle Briefing remains readable", async ({ page }) => {
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
     await expect(page.getByTestId("course-orientation")).toBeVisible();
+    await expect(page.getByTestId("scene-context")).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: "Introduction to Tensors",

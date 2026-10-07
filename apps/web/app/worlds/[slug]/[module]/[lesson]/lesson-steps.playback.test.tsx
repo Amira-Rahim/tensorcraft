@@ -191,7 +191,7 @@ describe("LessonSteps, playback against real MDX DOM", () => {
       document.querySelector("[data-script-state='playing']"),
     ).toBeInTheDocument();
 
-    // Beats: narrative P (script-beat) + dialogue + story P + dialogue = 4.
+    // The context is always visible. Beats: dialogue + story P + dialogue = 3.
     expect(shownBeatCount()).toBe(0);
 
     act(() => {
@@ -207,7 +207,7 @@ describe("LessonSteps, playback against real MDX DOM", () => {
     act(() => {
       vi.advanceTimersByTime(20_000);
     });
-    expect(shownBeatCount()).toBe(4);
+    expect(shownBeatCount()).toBe(3);
     expect(
       document.querySelector("[data-script-state='done']"),
     ).toBeInTheDocument();
@@ -232,7 +232,7 @@ describe("LessonSteps, playback against real MDX DOM", () => {
     act(() => {
       vi.advanceTimersByTime(30_000);
     });
-    expect(shownBeatCount()).toBe(4);
+    expect(shownBeatCount()).toBe(3);
 
     // Replay resets and re-reveals.
     act(() => {
@@ -242,7 +242,7 @@ describe("LessonSteps, playback against real MDX DOM", () => {
     act(() => {
       vi.advanceTimersByTime(30_000);
     });
-    expect(shownBeatCount()).toBe(4);
+    expect(shownBeatCount()).toBe(3);
   });
 });
 
@@ -268,14 +268,18 @@ describe("LessonSteps, scene portrait beat", () => {
     );
   }
 
-  it("plays slugline, then establishing shot, then stage direction", () => {
+  it("keeps context readable while the slugline and establishing shot play", () => {
     renderWithScene();
-    // Six beats now: slugline + portrait + narrative + dialogue + story P
-    // + dialogue. jsdom never loads images, so the portrait stays mounted.
+    // Five beats: slugline + portrait + dialogue + story P + dialogue.
+    // jsdom never loads images, so the portrait stays mounted.
+    expect(screen.getByTestId("scene-context")).toBeVisible();
+    expect(screen.getByTestId("scene-context")).not.toHaveAttribute(
+      "data-script-beat",
+    );
     act(() => {
       vi.advanceTimersByTime(30_000);
     });
-    expect(shownBeatCount()).toBe(6);
+    expect(shownBeatCount()).toBe(5);
 
     const beats = Array.from(document.querySelectorAll("[data-beat-shown]"));
     const portraitIdx = beats.findIndex(
@@ -325,8 +329,8 @@ describe("LessonSteps, scene portrait beat", () => {
       document.querySelector("[data-testid='scene-portrait']"),
     ).not.toBeInTheDocument();
 
-    // Replay collects beats fresh from the DOM: back to the 5 art-less
-    // beats (slugline + narrative + dialogue + story P + dialogue).
+    // Replay collects four art-less beats: slugline + dialogue + story P
+    // + dialogue. The context remains outside playback.
     act(() => {
       vi.advanceTimersByTime(30_000);
     });
@@ -336,7 +340,7 @@ describe("LessonSteps, scene portrait beat", () => {
     act(() => {
       vi.advanceTimersByTime(30_000);
     });
-    expect(shownBeatCount()).toBe(5);
+    expect(shownBeatCount()).toBe(4);
   });
 });
 

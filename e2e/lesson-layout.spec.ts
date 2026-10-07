@@ -118,8 +118,8 @@ function footerGap(page: Page) {
 }
 
 // The story's lowest painted edge: the border-box bottom of the blocks
-// inside the story grid's two items (the plate column's picture and stage
-// direction, and the beats), not the items themselves, whose boxes contain
+// inside the story grid's two items (the picture and the dialogue),
+// not the items themselves, whose boxes contain
 // any margin trapped inside them, which is exactly what these checks must
 // see as gap. Read with the post-scene slot and the nav.
 function storyEdges(page: Page) {
@@ -282,13 +282,16 @@ test.describe("lesson layout, desktop", () => {
           plateRight: plate.right,
           beatLeft: beat.left,
           storyTop: first.getBoundingClientRect().top,
+          contextBottom: one(
+            "[data-testid='scene-context']",
+          ).getBoundingClientRect().bottom,
         };
       });
-      // This 360 px ceiling and the spec's 492 px starting point are both
-      // signed-out measurements: the guest notice strip (about 33 px) sits
-      // inside both. A miss by about that height means the measurement
-      // conditions changed, not that the number should move.
-      expect(m.plateTop).toBeLessThanOrEqual(360);
+      // Context leads into the picture and dialogue with one 24 px gap,
+      // regardless of the course introduction or guest notice above it.
+      expect(Math.abs(m.plateTop - m.contextBottom - 24)).toBeLessThanOrEqual(
+        1,
+      );
       expect(m.beatLeft).toBeGreaterThan(m.plateRight);
       // The story's first painted block starts level with the picture. On
       // lesson 1 that block is the first Dialogue; lesson 2 opens on the

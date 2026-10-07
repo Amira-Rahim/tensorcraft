@@ -1583,7 +1583,7 @@ function StepBriefing({
   }, []);
 
   /* A beat is one story element revealed on the timeline: the scene
-     slugline, the narrative stage direction, then every pre-heading child
+     slugline, the picture, then every pre-heading child
      of the MDX container (the same story-zone boundary the screenplay CSS
      uses). */
   const collectBeats = useCallback((): HTMLElement[] => {
@@ -1794,7 +1794,7 @@ function StepBriefing({
             lessonSlug === "introduction-to-tensors" && (
               <p
                 data-testid="course-orientation"
-                className="max-w-[76ch] mb-6 text-base md:text-lg leading-relaxed text-text"
+                className="w-full mb-6 text-base md:text-lg leading-relaxed text-text"
               >
                 You’ll learn machine learning in JavaScript by building a system
                 that flags unusual sensor readings. At its core is a model: a
@@ -1811,9 +1811,9 @@ function StepBriefing({
           controls share a 44 px height and a 160 px minimum width (min-h-11
           min-w-40), so the row keeps its height and its wrapping when Skip
           becomes Replay, and ml-auto keeps the control at the right when the
-          row wraps on a phone or there is no scene. The plate below is the
-          scene's second beat after the slugline, and beats sit 16 px apart
-          (--l-beat), so the row keeps mb-4 under its hairline. */}
+          row wraps on a phone or there is no scene. The context below stays
+          visible while the scene plays, so the learner can understand the
+          situation before the picture and dialogue reveal. */}
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border pb-2 mb-4">
             {lesson.scene ? (
               <div data-script-beat="" className="min-w-0">
@@ -1875,13 +1875,22 @@ function StepBriefing({
             )}
           </div>
 
+          <p
+            data-testid="scene-context"
+            className="mb-6 text-lg md:text-xl leading-relaxed"
+            style={{ color: "var(--tc-text)" }}
+          >
+            {lesson.context.narrative}
+          </p>
+
           {/* Story grid (spec section 2, item 4): the plate column beside the
           beats. LessonContent's root is the second grid item, unchanged, so
           collectBeats and the register rules keep walking a flat list. */}
           <div className="lesson-story-grid">
             <div className="lesson-story-plate">
-              {/* Establishing shot: its own playback beat, slugline then picture
-              then stage direction, screenplay order. With an approved clip
+              {/* Establishing shot: its own playback beat after the slugline.
+              The scene context is already readable above both columns.
+              With an approved clip
               and the "clip" variant this is the scene VIDEO (owner ruling
               2026-09-04: launch ships with video), poster = the same still;
               otherwise the still exactly as before. The still's src stays
@@ -1907,18 +1916,10 @@ function StepBriefing({
               ) : lesson.scene ? (
                 <ScenePortrait
                   beat
-                  className="mb-4"
                   src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
                   alt={lesson.scene.portraitAlt}
                 />
               ) : null}
-              <p
-                data-script-beat=""
-                className="text-sm italic leading-[1.85] max-w-[52ch]"
-                style={{ color: "var(--tc-muted)" }}
-              >
-                {lesson.context.narrative}
-              </p>
             </div>
 
             {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is

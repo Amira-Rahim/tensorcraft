@@ -506,8 +506,8 @@ body {
   margin-inline: auto;
 }
 
-/* Briefing story grid (spec 2026-09-23, section 2): the plate column (the
-   picture, then the stage direction) beside the beats. Below lg they stack
+/* Briefing story grid: the picture beside the dialogue, with scene context
+   above both columns. Below lg they stack
    in DOM order in one column no wider than 820 px, with the row gap between
    them and the picture no wider than 600 px. From lg the beats column is
    280 to 544 px wide and the plate column takes the rest: 600 and 544 px at
@@ -523,6 +523,10 @@ body {
 }
 .lesson-story-plate > figure {
   max-width: 600px;
+  margin: 0;
+}
+.lesson-story-plate:not(:has(> figure)) {
+  display: none;
 }
 @media (width >= 64rem) {
   .lesson-story-grid {
@@ -684,8 +688,8 @@ body {
   display: flex;
 }
 
-/* Script playback (Briefing step). Beats reveal on a reading-paced JS
-   timeline: while playing, every beat (slugline, stage direction, each
+/* Script playback (Briefing step). The scene context stays visible. Beats
+   reveal on a reading-paced JS timeline: while playing, every beat (slugline, each
    pre-heading story element) is hidden until it gains [data-beat-shown];
    instructional content (first heading onward) and the CUT-TO divider stay
    out of sight until the scene finishes. In the "done" state none of these

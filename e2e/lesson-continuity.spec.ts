@@ -32,6 +32,17 @@ for (const [width, scheme] of [
     expect(header!.x).toBe(gutter);
     expect(header!.width).toBe(width - 2 * gutter);
     expect(chrome!.width).toBe(header!.width);
+    const context = page.getByTestId("scene-context");
+    await expect(context).toContainText("Its existing software, ARIA");
+    await expect(context).toHaveCSS("font-style", "normal");
+    const contextBox = (await context.boundingBox())!;
+    const picture = (await page.getByTestId("scene-portrait").boundingBox())!;
+    const dialogue = (await page
+      .locator(".lesson-story-grid [data-dialogue]")
+      .first()
+      .boundingBox())!;
+    expect(contextBox.y + contextBox.height).toBeLessThan(picture.y);
+    expect(contextBox.y + contextBox.height).toBeLessThan(dialogue.y);
     await expect(
       page.getByText(
         /Your first task is to fill one from a five-reading JavaScript array/,
