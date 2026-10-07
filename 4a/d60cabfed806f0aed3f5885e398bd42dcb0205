@@ -1,0 +1,37 @@
+apps/web/app/globals.css
+  s_e5e3f635436b96::t_c05e33eebea9d0 509-510,528-529,691-692
+  s_e5e3f635436b96::t_c6ebfe14ee410c 526
+  s_e5e3f635436b96::t_4af6786363a9cf 527
+e2e/script-playback.spec.ts
+  s_e5e3f635436b96::t_c6ebfe14ee410c 24,40-42,58,110
+e2e/lesson-continuity.spec.ts
+  s_e5e3f635436b96::t_c6ebfe14ee410c 35-39,44-45
+  s_e5e3f635436b96::t_55177d2a46e107 40-43
+apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.tsx
+  s_e5e3f635436b96::t_8b94edaab39b30 1797
+  s_e5e3f635436b96::t_c05e33eebea9d0 1814-1816,1878-1885,1891-1893
+  s_e5e3f635436b96::t_c6ebfe14ee410c 1586
+apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.playback.test.tsx
+  s_e5e3f635436b96::t_55177d2a46e107 194,210,235,245,271,273-278,282,332-333,343
+apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-steps.test.tsx
+  s_e5e3f635436b96::t_c7a901a1f308ba 147-149
+e2e/lesson-layout.spec.ts
+  s_e5e3f635436b96::t_55177d2a46e107 285-287,292-294
+  s_e5e3f635436b96::t_c6ebfe14ee410c 121-122,290-291
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4ad60cabfed806f0aed3f5885e398bd42dcb0205",
+  "prompts": {},
+  "sessions": {
+    "s_e5e3f635436b96": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a10226-1621-7c70-ad9a-662892c0f596",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
