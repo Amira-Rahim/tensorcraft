@@ -11,7 +11,7 @@ scene:
   time: "Six hours after first contact"
   portraitAlt: "On the Archimedes bridge, Mirza and Demir face a holo column of unparsed signal noise while ARIA's waveform ripples on a side screen."
 context:
-  narrative: "The Archimedes receives a mysterious data stream from deep space."
+  narrative: "The research ship Archimedes has received an unfamiliar signal. Its existing software, ARIA, follows rules written in advance. The crew needs to find patterns those rules have missed."
   speaker: "Commander Mirza"
 concept:
   explanation: "Tensors are multi-dimensional arrays: the fundamental data structure of machine learning."
@@ -40,18 +40,18 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Commander Mirza">
-What have the parsing rules found in the stream from Sector 7-G?
+Can ARIA tell which readings from Sector 7-G need a closer look?
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. All have failed. None of my rules describes it.
+Six hours, fourteen minutes. I have applied 4,096 rules to the incoming readings. None identifies a useful pattern.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
-Then we need someone who doesn't start from rules. Demir, you think in data structures; start there.
+Then we need a system that can learn from examples. Demir, start with the readings.
 </Dialogue>
 
-Start with one packet: store its readings, inspect the result, and release the tensor before the next packet arrives. A tensor adds named operations and a shape to numeric data.
+Work alongside Demir, the crew's JavaScript engineer. A **tensor** is a container for numbers used by **TensorFlow.js**, our machine learning library. Your first task is to fill one from a five-reading JavaScript array. Select Continue to inspect the readings before writing code.
 
 <LearningObjectives objectives={["Explain which shape and lifetime responsibilities a tensor adds to JavaScript numeric storage", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 

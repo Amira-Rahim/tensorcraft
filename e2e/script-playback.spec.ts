@@ -20,6 +20,7 @@ test.describe("Lesson script playback", () => {
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
 
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
+    await expect(page.getByTestId("course-orientation")).toBeVisible();
 
     // Sample the revealed-beat count across the timeline.
     const counts: number[] = [];
@@ -103,6 +104,7 @@ test.describe("Lesson without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
   test("server-rendered idle Briefing remains readable", async ({ page }) => {
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+    await expect(page.getByTestId("course-orientation")).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: "Introduction to Tensors",

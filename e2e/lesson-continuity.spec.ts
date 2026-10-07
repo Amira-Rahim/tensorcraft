@@ -14,9 +14,30 @@ for (const [width, scheme] of [
     await page.addInitScript(() =>
       localStorage.setItem("tc-cookie-consent", "declined"),
     );
-    await page.goto(
-      "/worlds/deep-orbit/foundations/introduction-to-tensors?start=concept",
-    );
+    await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+    const orientation = page.getByTestId("course-orientation");
+    await expect(orientation).toBeVisible();
+    await expect(orientation).toContainText("machine learning in JavaScript");
+    await expect(orientation).toContainText("program trained on examples");
+    await expect(
+      page.getByText(
+        /Your first task is to fill one from a five-reading JavaScript array/,
+      ),
+    ).toBeVisible();
+    expect(
+      (await new AxeBuilder({ page }).include("[data-script-state]").analyze())
+        .violations,
+    ).toEqual([]);
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      (document.activeElement as HTMLElement)?.blur();
+    });
+    await page.screenshot({
+      path: testInfo.outputPath(`briefing-${width}-${scheme}.png`),
+      fullPage: true,
+    });
+    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    await expect(orientation).toHaveCount(0);
     const instrument = page.locator(".lesson-instrument");
     await expect(instrument).toContainText("five-reading excerpt");
     const slider = instrument.getByRole("slider", {

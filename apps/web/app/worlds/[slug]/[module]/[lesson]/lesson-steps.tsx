@@ -1786,6 +1786,19 @@ function StepBriefing({
           {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
         </h1>
 
+        {worldSlug === "deep-orbit" &&
+          lessonSlug === "introduction-to-tensors" && (
+            <p
+              data-testid="course-orientation"
+              className="max-w-[76ch] mb-6 text-base md:text-lg leading-relaxed text-text"
+            >
+              You’ll learn machine learning in JavaScript by building a system
+              that flags unusual sensor readings. At its core is a model: a
+              program trained on examples to recognize patterns. You’ll test it
+              on new data and run it in the browser.
+            </p>
+          )}
+
         {/* Slugline row: the scene heading (first beat) and the playback
           control, on one line over one hairline. The control sits outside
           the beat wrapper so it never inherits a beat's hidden state. Both
