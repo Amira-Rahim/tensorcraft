@@ -77,6 +77,8 @@ Backwards, in one important way. Your keyframes are steps you authored for that 
 
 One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, and the how-much is the only half of the transform's output this course reads. DEEP SCAN's third input feature is also called phase, but that one is a time-domain angle taken off the first two samples of a window, not this one; lesson 4 builds it and says so. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the floor(N/2)+1 bins that carry unique information.
 
+You will use a Fourier transform to find the strongest eligible frequency in a capture.
+
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
 ## Decomposing Signals

@@ -268,6 +268,22 @@ try {
           }),
         ).toBeVisible({ timeout: 30000 });
         await page.evaluate(() => document.fonts.ready);
+        if (phase === 0) {
+          await expect(
+            page
+              .locator(".lesson-story-grid .lesson-step-content > p")
+              .filter({ hasText: /^You will / })
+              .last(),
+          ).toBeVisible();
+          const header = await page
+            .getByTestId("lesson-briefing-header")
+            .boundingBox();
+          const chrome = await page.getByTestId("lesson-chrome").boundingBox();
+          const gutter = mode.width >= 768 ? 48 : 20;
+          expect(header.x).toBe(gutter);
+          expect(header.width).toBe(mode.width - 2 * gutter);
+          expect(chrome.width).toBe(header.width);
+        }
         if (phase === 1) {
           await expect(page.getByTestId("lesson-workbench")).toBeVisible();
           const image = page.locator(".mission-context-image img").first();

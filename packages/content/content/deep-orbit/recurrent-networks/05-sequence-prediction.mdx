@@ -111,6 +111,8 @@ Check that timing on later captures, against a simple baseline. A predictable co
 
 A list-based autocomplete filters known entries from what you typed. Our forecaster instead computes the next sensor values from a window of previous readings. Both propose what comes next, but the forecast is not selected from a fixed list. Its errors need measurement on later observations.
 
+You will train a forecaster and feed its predictions back into the input to estimate later readings.
+
 <LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and the mean absolute error (MAE) metric", "Generate multi-step forecasts by feeding predictions back as input", "Convert the sensors' physical limits into the units the model works in, and clamp every fed-back reading against them"]} />
 
 ## Next-Value Prediction

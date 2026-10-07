@@ -88,6 +88,8 @@ What I actually want is an alpha that adjusts itself. Trust the measurement more
 You have just specified the Kalman filter. The blend weight is called the Kalman gain. The filter predicts state and uncertainty, computes that gain, then corrects both with the measurement. With a correctly specified linear model, a Gaussian initial state and independent zero-mean Gaussian noise, it gives the minimum mean-square-error state estimate.
 </Dialogue>
 
+You will update an estimate and its uncertainty as each noisy measurement arrives.
+
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter that smooths a noisy timing signal", "Connect Kalman filtering to the exponential moving average pattern", "Smooth a drifting interval and read the lag that motivates a velocity state"]} />
 
 ## Predict, Then Correct

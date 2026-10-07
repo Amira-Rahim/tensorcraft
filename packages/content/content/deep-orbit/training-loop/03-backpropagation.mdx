@@ -63,6 +63,8 @@ skillAxes: [training]
 
 Parameter 500 of 673, twenty seconds into a single training step, and the engineering rig is still going. The method Demir reached for needs no new math, which is exactly why he reached for it: nudge one weight, rerun the network, see how the loss moved. You know how to do that already. So before this lesson hands you anything, do it his way and watch what it costs.
 
+You will compare automatic differentiation with estimating a gradient by changing a weight and measuring the effect.
+
 <LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to an error travelling back up the call stack", "Use tf.variableGrads() for automatic gradient computation"]} />
 
 ## The Method You Already Have

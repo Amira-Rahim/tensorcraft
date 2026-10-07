@@ -6,6 +6,7 @@ interface LessonShellProps {
   controls?: React.ReactNode;
   footer?: React.ReactNode;
   paneOpenOnMobile?: boolean;
+  fullWidth?: boolean;
 }
 
 /* The grid's classes per kind, each string whole: Tailwind emits a rule only
@@ -24,9 +25,9 @@ const GRID_CLASS: Record<LessonShellProps["rightKind"], string> = {
 };
 
 /**
- * One frame for every step (spec 2026-09-23, section 1): 1,280 px with 48 px
- * side padding at desktop, the width the chrome bar already uses, so the
- * chrome hairline and the body edges align. "code" is single column (the
+ * Reading and exercise frames stay at 1,280 px with 48 px side padding.
+ * Briefing uses the full page width for its title; its story and navigation
+ * keep their own reading frame. "code" is single column (the
  * worked example uses the full width; derivations stack above it in the
  * left slot). "pane" is the Challenge: instructions on a track of 440 px,
  * or 38% of the grid where that is narrower so the editor keeps its width
@@ -42,6 +43,7 @@ export function LessonShell({
   controls,
   footer,
   paneOpenOnMobile = false,
+  fullWidth = false,
 }: LessonShellProps) {
   const single = rightKind === "none";
   const pane = rightKind === "pane";
@@ -50,7 +52,7 @@ export function LessonShell({
       {chrome}
       <div
         data-testid="lesson-frame"
-        className="mx-auto w-full max-w-7xl px-5 md:px-12"
+        className={`mx-auto w-full px-5 md:px-12 ${fullWidth ? "" : "max-w-7xl"}`}
       >
         {controls}
         <div data-testid="lesson-grid" className={GRID_CLASS[rightKind]}>

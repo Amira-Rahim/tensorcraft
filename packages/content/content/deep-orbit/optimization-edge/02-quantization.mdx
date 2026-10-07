@@ -104,6 +104,8 @@ A reduction in stored bytes is straightforward. The effect on predictions needs 
 Give me the byte count and the changed decisions. Break the errors down by class. An average can hide the one signal we came to find.
 </Dialogue>
 
+You will store weights at lower precision, decode them, and compare the model’s predictions.
+
 <LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure what a quantized build gets wrong instead of quoting a rule of thumb for it", "Distinguish smaller stored weights from runtime memory and compute speed", "Know that the quantize flags take weight-name patterns, so a pass can cover some layers and skip others"]} />
 
 ## Precision Reduction

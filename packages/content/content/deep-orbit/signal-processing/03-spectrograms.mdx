@@ -55,6 +55,8 @@ Then we cut the signal into slices, transform each slice, and stack the results 
 
 Demir has the layout right: time on the x-axis, the second quantity on the y-axis, and a picture you read whole instead of row by row. Two things change on the way across. The waterfall sizes its bars by duration; a spectrogram spends color on magnitude. And a waterfall cell is an event that either happened or did not, while every cell here carries a computed magnitude, including the ones that read as empty.
 
+You will build a spectrogram by measuring frequencies in successive windows of a capture.
+
 <LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
 
 ## From Single FFT to Spectrogram

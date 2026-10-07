@@ -123,6 +123,8 @@ Profiling first. Same discipline as a slow React app: measure, find the bottlene
 
 The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Start with weight size, inference latency and parameters per layer. Weight bytes are only part of runtime memory: activations, temporary tensors, backend buffers and the application also occupy space. Measure the load peak before deciding what fits.
 
+You will measure completed predictions and distinguish stored weight size from total runtime memory.
+
 <LearningObjectives objectives={["Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates", "Benchmark inference latency with high-resolution timing, mean and tail", "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time", "Establish baseline metrics before optimization"]} />
 
 ## Measure Everything

@@ -81,6 +81,8 @@ So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for
 
 A WebGL tensor backend can store values in textures and compute through fragment shaders. WebGPU exposes compute shaders suited to operations such as matrix multiplication and reduction. Both incur dispatch, data-transfer and synchronization costs; the API alone does not determine speed.
 
+You will try backends in preference order and check that each one works before selecting it.
+
 <LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
 
 ## WebGPU Backend

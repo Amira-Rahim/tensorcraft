@@ -102,6 +102,8 @@ h.dispose();
 The carry is the useful comparison. Both computations can give the same event a different result when the incoming state changes. You wrote the reducer rules; training fits the RNN parameters. The 0.8 and 1.0 here were chosen by hand so you can trace the arithmetic.
 </Dialogue>
 
+You will compute a recurrent network’s hidden state in JavaScript and compare it with TensorFlow.js.
+
 <LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a layer's current weights off the model and check your own arithmetic against what the layer computes"]} />
 
 ## The Learned Reducer

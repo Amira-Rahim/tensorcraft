@@ -43,6 +43,8 @@ One reading is minus 0.06 and another is 1.04. Which one triggers the alert, and
 
 Any numeric score can be compared with a threshold. A sigmoid adds a useful range, from 0 to 1, but it does not choose the threshold or make an untrained score trustworthy. Activations also serve another purpose: they let hidden layers represent functions that a single weighted sum cannot.
 
+You will apply ReLU, an activation function that turns negative values into zero and keeps positive values.
+
 <LearningObjectives objectives={["Explain why a stack of affine dense layers needs nonlinearity to gain expressive power", "Implement ReLU and describe sigmoid and tanh ranges", "Distinguish an activation's output range from a decision threshold and calibrated probability"]} />
 
 ## What a Linear Stack Cannot Add

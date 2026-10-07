@@ -56,6 +56,8 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 As a first sketch, and it breaks where it matters. You cannot compute the CSSOM from the DOM, or the DOM from the CSSOM. They describe different things. Time and frequency are one thing described twice, and the transform runs both ways: keep the full complex spectrum, including phase, and we can reconstruct the samples within numerical precision. A magnitude-only plot drops phase and cannot do that. What costs us happens earlier. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
 </Dialogue>
 
+You will compare two captures in time and frequency views to find a difference hidden in the time trace.
+
 <LearningObjectives objectives={["Understand that every signal has two representations, the time domain and the frequency domain, and that each one hides what the other makes obvious", "Identify what each domain reveals: time shows when things happen, frequency shows what repeats", "Explain when a magnitude spectrum makes a weak periodic component easier to inspect"]} />
 
 ## Two Views, One Signal

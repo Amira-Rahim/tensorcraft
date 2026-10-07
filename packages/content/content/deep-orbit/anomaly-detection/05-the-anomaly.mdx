@@ -109,6 +109,8 @@ Two detectors crossed their thresholds, Commander. That does not prove the patte
 
 In Node, `process.on('uncaughtException')` handles a throw that escaped earlier handlers. It can be a familiar bug. The ensemble is also an escalation point, but its triggers are statistical checks that can be wrong. Two fired here while the amplitude check stayed quiet; that tells us which checks failed, not whether the signal is new. That quiet dial is why sample 7741 sat in the archive for eight days. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 1.0, and this reading came back at 6.2, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
 
+You will calculate three detector verdicts and combine them into one alert decision.
+
 <LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection

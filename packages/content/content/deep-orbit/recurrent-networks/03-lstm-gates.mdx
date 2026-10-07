@@ -96,6 +96,8 @@ They can learn longer dependencies, but no fixed reach is guaranteed. Budget rou
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
 
+You will calculate one LSTM update to see how its gates keep, replace, and expose stored information.
+
 <LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
 
 ## Three Gates, One Cell

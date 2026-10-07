@@ -134,6 +134,8 @@ Mirza authorizes the deployment and waits for the classification.
 
 For a browser-only application, the publishing step can be: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The local inference model can be a static asset served alongside the app. A server-side language-model adapter, authentication or secret-bearing API needs a separately deployed service; static hosting does not provide one.
 
+You will rehearse training and verify deployment checks, including how the procedure handles failures and timeouts.
+
 <LearningObjectives objectives={["Package model assets and preprocessing with a standalone JavaScript app", "Follow the static-hosting setup for an ML-powered app", "Verify saved-model inference locally and distinguish it from a hosted deployment check", "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
 <BossBeat

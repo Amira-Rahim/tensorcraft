@@ -89,6 +89,8 @@ What observation would distinguish those explanations?
 
 `<link rel="prefetch">` asks the browser to fetch a resource the application expects to need. The application supplies that expectation; the link does not learn or predict the next navigation. Forecasting learns from past observations to estimate a future value. Both can support preparation, but only the forecast here is a learned prediction.
 
+You will compare a forecast that reuses its predictions with one that receives each new observed reading.
+
 <LearningObjectives objectives={["Train a one-step model and roll it forward into a multi-step forecast", "Understand non-stationarity, when past patterns stop predicting the future", "Build the two runs a drift check has to tell apart: a rollout that feeds itself, and a one-step replay re-seeded from the readings that arrived"]} />
 
 ## Multi-Step Forecasting

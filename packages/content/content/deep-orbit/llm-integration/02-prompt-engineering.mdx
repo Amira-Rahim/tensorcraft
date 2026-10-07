@@ -75,6 +75,8 @@ A more specific search query can narrow retrieved results. A prompt instead asks
 
 One word does double duty across these two lessons. Lesson 1's client set a `role` on every message it sent, which is the API's label for whose turn it is: the system message that stands behind the whole call, then the user's. The role in Farah's four parts is a line of English inside that user message, naming who the model should answer as. It is the same word at two different layers.
 
+You will build a prompt that separates the current reading, reference facts, and required output format.
+
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
 ## From Vague to Precise

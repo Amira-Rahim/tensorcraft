@@ -62,6 +62,8 @@ Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands 
 
 The DFT represents the slice as one period of a repeating signal. An on-bin sinusoid fits a whole number of cycles in that period. An off-bin sinusoid does not: representing the finite slice requires coefficients in many bins. Those coefficients do not prove that the sensor recorded many physical tones. A taper reduces the distant coefficients by changing the samples, at the cost of wider peaks.
 
+You will apply a Hann window to soften a capture’s edges before measuring its frequencies.
+
 <LearningObjectives objectives={["Explain how cutting a finite signal spreads a tone across FFT bins", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Explain how overlapping windows improve coverage of samples near frame edges", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
 ## The Spectral Leakage Problem

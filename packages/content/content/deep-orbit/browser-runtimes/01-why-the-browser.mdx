@@ -57,6 +57,8 @@ You have made this call before: does the work happen on the server or on the cli
 
 TensorFlow.js is not browser-only. `@tensorflow/tfjs-node` binds the same API to the native TensorFlow build and runs on a server, with performance depending on its hardware, model and backend. This module goes to the browser because that is where DEEP SCAN has to land: the bridge dashboard, on the consoles the crew already reads.
 
+You will choose where a model should run using the console’s privacy, offline, and loading requirements.
+
 <LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Decide between browser and server inference using the CSR-vs-SSR mental model"]} />
 
 ## Where Inference Runs: Server or Client

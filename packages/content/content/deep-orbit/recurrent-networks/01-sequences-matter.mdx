@@ -57,6 +57,8 @@ This isn't random noise. Something is repeating. The pattern spans dozens of tim
 
 Memory in a network is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
 
+You will arrange consecutive readings into input windows and pair each window with the reading that follows it.
+
 <LearningObjectives objectives={["Understand why order matters in sequential data: shuffling can remove temporal information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
 
 ## Why One Reading At A Time Fails

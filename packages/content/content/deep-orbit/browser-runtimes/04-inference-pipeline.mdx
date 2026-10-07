@@ -50,6 +50,8 @@ The cancelled readings added 120 tensors during the console check. Who owns the 
 
 At one prediction per second, two retained tensors per call add 7,200 tensor handles per hour. Their logical float32 values occupy only 16 bytes per pair in this tiny model, but buffers, textures and runtime bookkeeping can cost more. The exercise's 10,000-tensor budget is an operational limit, not a universal browser crash threshold. Investigate both tensor counts and actual resource use.
 
+You will turn readings into predictions, release temporary tensors, and check how many tensors remain in memory.
+
 <LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements", "Investigate tensor growth and estimate headroom when that growth continues"]} />
 
 ## The Real-Time Inference Loop

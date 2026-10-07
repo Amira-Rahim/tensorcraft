@@ -83,6 +83,8 @@ Eight more measurements are not free either. Eleven inputs instead of three mean
 
 He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. Strip the story out and what he proposed is `rawData.map(...)`: rows arrive in the shape the source produced, and you hand the consumer the shape it can actually use. Feature engineering is that same map, aimed at a model instead of a render.
 
+You will turn each capture into a consistent set of measurements that a model can use.
+
 <LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Combine raw and frequency-domain features, and explain why their scales can affect training", "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model"]} />
 
 ## Mapping Captures into Features

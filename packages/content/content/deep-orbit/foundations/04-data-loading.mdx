@@ -78,6 +78,8 @@ Confirmed. Batch processing will allow me to analyze data incrementally while ma
 
 What keeps this pipeline alive on real sensor data is where the readings come from. A lazy source reads records on demand. With bounded buffers and correct disposal, memory need not grow with the archive length. `.batch(32)` sits after that source and sets the model's step size. The model sees 32 readings at a time and asks for the next group when it finishes this one. Demir picked the right analogy and the wrong version of it. A well-built infinite-scroll list keeps the pages it is showing and drops the rest, and a tf.data pipeline does the same with readings.
 
+You will build a pipeline that reads the archive in small batches and keeps training data separate from later readings.
+
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle independent training examples while preserving split membership", "Split data into training and validation sets"]} />
 
 ## Read one sample when it is requested

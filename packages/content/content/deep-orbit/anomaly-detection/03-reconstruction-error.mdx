@@ -54,6 +54,8 @@ Then run your diff, Ensign. And when it fires, tell me which feature it says cha
 
 The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will not answer her.
 
+You will measure reconstruction error and inspect which features contributed to a missed anomaly.
+
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Compare raw and baseline-relative per-feature errors without treating either as a diagnosis"]} />
 
 ## Measuring the Diff

@@ -70,6 +70,8 @@ So the model is not one file at all. That's... exactly like a web font or a spri
 
 The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the network leg of the trip, and only for that leg.
 
+You will load a saved model and inspect the input and output shapes it expects.
+
 <LearningObjectives objectives={["Implement and inspect a TensorFlow.js model-loading call", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Explain how an IndexedDB cache changes the model-loading path", "Handle loading states and errors gracefully in the UI"]} />
 
 ## The Fetch Pattern You Already Know

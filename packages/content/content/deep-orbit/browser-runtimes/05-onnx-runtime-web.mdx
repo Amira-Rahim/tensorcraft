@@ -81,6 +81,8 @@ ONNX stands for Open Neural Network Exchange. It stores a graph of operations, t
 
 Compatibility depends on all three: the graph, the runtime version and the provider. An unsupported operation can prevent loading or execution. Options include using a supported provider, changing the export, decomposing an operation or supplying a supported custom implementation. An older opset is useful only if the exported graph still represents the intended computation.
 
+You will run the same inputs through two model runtimes and compare their outputs and inference times.
+
 <LearningObjectives objectives={["Explain ONNX model interchange and runtime compatibility limits", "Implement the input and awaited-output contract for an ONNX session", "Compare timing and output agreement in a controlled runtime exercise", "Explain why backend selection requires measurements on the target device"]} />
 
 ## Load the Same Weights

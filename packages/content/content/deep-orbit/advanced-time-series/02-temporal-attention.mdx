@@ -58,6 +58,8 @@ The attention weights are like a heatmap over time. I can see exactly WHERE the 
 
 `scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention scores every step and combines the values under those weights. A high weight does not skip computation on other steps. Lesson 1 read its query off the sequence. Here the scorer's learned weights play that part, the same query on every window, and each step is both its own key and its own value.
 
+You will add position information to an attention scorer and use its weights to summarize a sequence.
+
 <LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Read the weights back as one number per time step and name the steps that took the most of the budget", "Use attention weights as a where-it-looked map, and state what they do not prove about why", "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"]} />
 
 ## Temporal Attention Layer

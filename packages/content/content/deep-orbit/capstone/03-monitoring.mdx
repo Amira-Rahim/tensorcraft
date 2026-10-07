@@ -105,6 +105,8 @@ Same problem as any production app. I'll set up monitoring: track prediction con
 
 So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw. Score changes, latency increases and input drift are investigation signals. A failing model can remain confident, and a distribution shift need not reduce accuracy.
 
+You will track prediction scores, inference times, and input drift to support investigations after deployment.
+
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and the prediction-side class mix", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
 <BossBeat

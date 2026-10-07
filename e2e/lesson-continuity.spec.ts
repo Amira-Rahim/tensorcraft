@@ -21,6 +21,19 @@ for (const [width, scheme] of [
     await expect(orientation).toContainText("program trained on examples");
     await expect(
       page.getByText(
+        /You will work alongside Demir, the crew's JavaScript engineer/,
+      ),
+    ).toBeVisible();
+    const header = await page
+      .getByTestId("lesson-briefing-header")
+      .boundingBox();
+    const chrome = await page.getByTestId("lesson-chrome").boundingBox();
+    const gutter = width >= 768 ? 48 : 20;
+    expect(header!.x).toBe(gutter);
+    expect(header!.width).toBe(width - 2 * gutter);
+    expect(chrome!.width).toBe(header!.width);
+    await expect(
+      page.getByText(
         /Your first task is to fill one from a five-reading JavaScript array/,
       ),
     ).toBeVisible();

@@ -96,6 +96,8 @@ That's Server Components! Fetch data on the server, then render with it. RAG fet
 
 Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: component code can mislabel data too, but you can inspect how it maps each field to the output. Generated wording has no such fixed mapping; it needs its own evidence checks.
 
+You will retrieve relevant records and check each generated claim against the record it cites.
+
 <LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, with a row cap, that reports how many rows matched before the cap and whether the cap dropped any", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"]} />
 
 ## The RAG Pipeline

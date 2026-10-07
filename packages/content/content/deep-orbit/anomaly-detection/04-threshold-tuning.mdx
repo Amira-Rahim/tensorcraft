@@ -77,6 +77,8 @@ But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Naz
 
 Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
 
+You will compare alert thresholds on labeled readings and investigate an incident with too many alerts.
+
 <LearningObjectives objectives={["Estimate a false-alarm fraction from reviewed normal data and project alert volume under stated assumptions", "Understand the precision-recall tradeoff and how threshold affects each", "Compare F1 maximization with an explicit false-alarm and miss cost", "Choose an investigation priority from an alert-storm runbook without treating it as a confirmed cause"]} />
 
 ## Setting the Threshold

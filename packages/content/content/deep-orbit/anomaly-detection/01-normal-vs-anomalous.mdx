@@ -60,6 +60,8 @@ How do we know which? How do we tell a genuine anomaly from a false alarm?
 
 Monitoring works the same way whatever you ship. You pick a budget for the numbers you care about: for example, Largest Contentful Paint under 2.5s in a browser or p99 response time under 200ms on a Node service. A measured baseline tells you how the system currently behaves; the budget sets what you will accept. Then you alert when a value drifts past it. Anomaly detection makes the same move: define what "normal" looks like, then flag whatever lands outside it.
 
+You will define a baseline for normal readings and use z-scores to flag readings outside it.
+
 <LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score gate and evaluate a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
 
 <BossBeat

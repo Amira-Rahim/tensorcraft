@@ -58,6 +58,8 @@ skillAxes: [model_arch]
 
 The first pipeline scored in the high nineties on eleven days of archive. Demir windowed the whole stream, shuffled the pairs the way foundations taught him to, and held out every fifth one for evaluation. Farah's response is to make him rebuild the experiment at a scale he can audit by hand, before she reads a single decimal of it.
 
+You will split the stream before creating windows so training and evaluation cannot share readings.
+
 <LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces", "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying", "Choose a window size longer than the dependency you need to detect, and read the overlap a stride-1 window produces", "Recognize the fixed-length buffer that turns a live feed into one model-ready window per reading"]} />
 
 ## Ninety-Seven Percent, Briefly

@@ -105,6 +105,8 @@ Four models, four contracts: a class and a chosen-class score from the classifie
 
 If four stages each have a 95% chance of being correct and those events are independent, the chance that all four are correct is 0.95^4, about 81%. That is not automatically the final system accuracy: stages may recover from errors, and some outputs may not affect the result. Shared inputs can also make errors dependent. Check contracts between stages, then evaluate the complete pipeline against real outcomes. A plausible value can satisfy every type and range check and still be wrong.
 
+You will connect the classifier, detector, and alert generator while handling failures between stages.
+
 <LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them", "Validate each stage's output against its contract, then decide per stage: substitute a fallback, or stop the run when there is no honest substitute", "Trace one capture through the full DEEP SCAN pipeline, and see why each model needs its own preprocessing rather than one shared array"]} />
 
 ## The DEEP SCAN Pipeline

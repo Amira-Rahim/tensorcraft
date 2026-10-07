@@ -79,6 +79,8 @@ The cache keys are different. My report job dropped the release ID when it joine
 
 A valid cached result describes the artifact it tested. The release must also prove that this result belongs to the candidate it will publish. CI/CD means continuous integration and delivery: automation that tests changes and prepares or publishes a release. The automation still needs a precise description of the artifact to test.
 
+You will build a prediction gate and a model manifest so release checks refer to the artifact being published.
+
 <LearningObjectives objectives={["Identify model identity and behavior gates in a release workflow", "Implement a conservative evaluation score and an acceptance threshold", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its topology, weight specs and byte count"]} />
 
 ## Pin the Whole Artifact

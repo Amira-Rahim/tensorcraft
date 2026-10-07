@@ -62,6 +62,8 @@ This run missed the early ripple. An LSTM can retain distant information, but ou
 So instead of inheriting whatever survived eighty recurrent updates, the model scores each step against what it is trying to predict and reads the high scorers directly. CSS :focus, except the model picks the target.
 </Dialogue>
 
+You will calculate attention weights to combine earlier readings according to their relevance to the current query.
+
 <LearningObjectives objectives={["Understand attention as dynamic relevance scoring: focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare direct access to earlier states with the sequential updates of an LSTM", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
 ## The Query-Key-Value Framework

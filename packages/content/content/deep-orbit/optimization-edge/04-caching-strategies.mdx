@@ -95,6 +95,8 @@ That 45 milliseconds is the bundle, Ensign. The bundle's time is the language co
 
 The story assigns 45 ms to the language component and 0.035 ms to the classifier. Those are scenario inputs, not recorded measurements. The cache avoids the classifier call, so its saving must be estimated from that call, including key construction and lookup overhead. The browser runtime lab tests exact reuse and a rounding collision on real predictions.
 
+You will build an inference cache and check that saved results match the model version and age limit.
+
 <LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes", "Measure cache hit rate and its impact on effective inference latency"]} />
 
 <BossBeat

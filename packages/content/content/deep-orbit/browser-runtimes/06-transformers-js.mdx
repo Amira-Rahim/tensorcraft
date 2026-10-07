@@ -49,6 +49,8 @@ No. I spent last night reading the Transformers.js docs so you don't spend three
 
 The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads all of them before her watch starts. She wants them sorted by how sure the classifier is, whichever way it leans: the confident calls at the top and the hedged ones at the bottom, where her own read is the one that counts.
 
+You will load a sentiment model once and use it to classify several crew reports.
+
 <LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Implement the task, loading and output contract around `pipeline()`", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
 
 ## Three Browser ML Runtimes, Three Jobs

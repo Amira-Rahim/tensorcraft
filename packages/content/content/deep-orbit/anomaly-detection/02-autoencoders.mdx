@@ -80,6 +80,8 @@ Gzip reconstructs the original bytes exactly. An autoencoder learns a compressed
 
 That score is a heuristic, a rule we must test on data. The bottleneck does not guarantee that unfamiliar inputs reconstruct badly. Normal inputs can also reconstruct poorly if the model has not learned their variation. Evaluate both misses and false alarms before using the score to wake anyone.
 
+You will train an autoencoder to reconstruct unflagged readings while keeping flagged readings out of training.
+
 <LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "Verify which rows reach fitting and measure held-out reconstruction errors without assuming a separation ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
 
 ## Encoder → Bottleneck → Decoder

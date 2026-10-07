@@ -1249,11 +1249,12 @@ function LessonStepsInner({
         )}
         <LessonShell
           rightKind={rightKind}
+          fullWidth={currentStep === PHASE.briefing}
           paneOpenOnMobile={paneOpen}
           controls={mobileControls}
           footer={rightKind === "pane" ? bottomNav : undefined}
           chrome={
-            <div className="mx-auto w-full max-w-7xl px-5 md:px-12">
+            <div className="w-full px-5 md:px-12">
               <ChromeBar
                 lessons={lessons}
                 lessonSlug={lessonSlug}
@@ -1282,7 +1283,9 @@ function LessonStepsInner({
               className="animate-step-in outline-none"
             >
               {shellLeft}
-              {rightKind !== "pane" && bottomNav}
+              {rightKind !== "pane" && (
+                <div className="lesson-body-frame">{bottomNav}</div>
+              )}
             </div>
           }
           right={shellRight}
@@ -1756,50 +1759,53 @@ function StepBriefing({
         data-script-state={scriptState}
         aria-busy={scriptState === "playing" ? "true" : undefined}
       >
-        <div
-          data-testid="lesson-eyebrow"
-          className="text-xs font-mono uppercase tracking-[3px] mb-3"
-          style={{ color: "var(--tc-primary)" }}
-        >
-          {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
-          {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
-          {lesson.pattern && lesson.pattern !== "standard" && (
-            <>
-              {" "}
-              &middot;{" "}
-              <span data-testid="pattern-format-tag">
-                {PATTERN_LABELS[lesson.pattern]}
-              </span>
-            </>
-          )}{" "}
-          &middot;{" "}
-          {/* Reading + embedded exercises: "14 min · 2 exercises" where the
+        <header data-testid="lesson-briefing-header">
+          <div
+            data-testid="lesson-eyebrow"
+            className="text-xs font-mono uppercase tracking-[3px] mb-3"
+            style={{ color: "var(--tc-primary)" }}
+          >
+            {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
+            {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
+            {lesson.pattern && lesson.pattern !== "standard" && (
+              <>
+                {" "}
+                &middot;{" "}
+                <span data-testid="pattern-format-tag">
+                  {PATTERN_LABELS[lesson.pattern]}
+                </span>
+              </>
+            )}{" "}
+            &middot;{" "}
+            {/* Reading + embedded exercises: "14 min · 2 exercises" where the
             exercises alone are 30 min reads as a lie. One basis everywhere
             (module map, JSON-LD, courseWorkload). */}
-          {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
-        </div>
+            {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
+          </div>
 
-        <h1
-          className="text-4xl md:text-6xl font-bold mb-3 leading-[1.1] tracking-tight"
-          style={{ color: "var(--tc-text)" }}
-        >
-          {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
-        </h1>
+          <h1
+            className="text-4xl md:text-6xl font-bold mb-3 leading-[1.1] tracking-tight"
+            style={{ color: "var(--tc-text)" }}
+          >
+            {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
+          </h1>
 
-        {worldSlug === "deep-orbit" &&
-          lessonSlug === "introduction-to-tensors" && (
-            <p
-              data-testid="course-orientation"
-              className="max-w-[76ch] mb-6 text-base md:text-lg leading-relaxed text-text"
-            >
-              You’ll learn machine learning in JavaScript by building a system
-              that flags unusual sensor readings. At its core is a model: a
-              program trained on examples to recognize patterns. You’ll test it
-              on new data and run it in the browser.
-            </p>
-          )}
+          {worldSlug === "deep-orbit" &&
+            lessonSlug === "introduction-to-tensors" && (
+              <p
+                data-testid="course-orientation"
+                className="max-w-[76ch] mb-6 text-base md:text-lg leading-relaxed text-text"
+              >
+                You’ll learn machine learning in JavaScript by building a system
+                that flags unusual sensor readings. At its core is a model: a
+                program trained on examples to recognize patterns. You’ll test
+                it on new data and run it in the browser.
+              </p>
+            )}
+        </header>
 
-        {/* Slugline row: the scene heading (first beat) and the playback
+        <div className="lesson-body-frame">
+          {/* Slugline row: the scene heading (first beat) and the playback
           control, on one line over one hairline. The control sits outside
           the beat wrapper so it never inherits a beat's hidden state. Both
           controls share a 44 px height and a 160 px minimum width (min-h-11
@@ -1808,73 +1814,73 @@ function StepBriefing({
           row wraps on a phone or there is no scene. The plate below is the
           scene's second beat after the slugline, and beats sit 16 px apart
           (--l-beat), so the row keeps mb-4 under its hairline. */}
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border pb-2 mb-4">
-          {lesson.scene ? (
-            <div data-script-beat="" className="min-w-0">
-              <SceneHeading
-                prefix="Int."
-                location={lesson.scene.location}
-                time={lesson.scene.time}
-                divider={false}
-              />
-            </div>
-          ) : null}
-          {scriptState === "playing" ? (
-            <button
-              type="button"
-              onClick={() => {
-                // The scene only plays on the briefing step (step 0).
-                track(EVENTS.SCRIPT_SKIPPED, {
-                  worldId: worldSlug,
-                  lessonId: lessonSlug,
-                  step: 0,
-                  elapsedMs: playStartedAtRef.current
-                    ? Date.now() - playStartedAtRef.current
-                    : 0,
-                  via: "button",
-                  briefingVariant,
-                });
-                rememberScriptSkipped();
-                finish(false);
-              }}
-              // Was text-xs on a decorative border: technically a control,
-              // practically invisible, and the only exit from a 15.5s scene at
-              // the product's activation moment. Now readable, with a real
-              // touch target and an interactive border that clears 3:1.
-              className="ml-auto text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 min-w-40 transition-colors hover:opacity-80"
-              style={{
-                color: "var(--tc-text)",
-                border: "1px solid var(--tc-border-interactive)",
-                background: "transparent",
-              }}
-            >
-              Skip intro <span aria-hidden="true">&#9656;</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                runKindRef.current = "replay";
-                play();
-              }}
-              className="ml-auto text-xs font-mono uppercase tracking-[2px] px-3 py-1.5 min-h-11 min-w-40 transition-colors hover:opacity-80"
-              style={{
-                color: "var(--tc-muted)",
-                border: "1px solid var(--tc-border)",
-                background: "transparent",
-              }}
-            >
-              <span aria-hidden="true">&#8635;</span> Replay scene
-            </button>
-          )}
-        </div>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border pb-2 mb-4">
+            {lesson.scene ? (
+              <div data-script-beat="" className="min-w-0">
+                <SceneHeading
+                  prefix="Int."
+                  location={lesson.scene.location}
+                  time={lesson.scene.time}
+                  divider={false}
+                />
+              </div>
+            ) : null}
+            {scriptState === "playing" ? (
+              <button
+                type="button"
+                onClick={() => {
+                  // The scene only plays on the briefing step (step 0).
+                  track(EVENTS.SCRIPT_SKIPPED, {
+                    worldId: worldSlug,
+                    lessonId: lessonSlug,
+                    step: 0,
+                    elapsedMs: playStartedAtRef.current
+                      ? Date.now() - playStartedAtRef.current
+                      : 0,
+                    via: "button",
+                    briefingVariant,
+                  });
+                  rememberScriptSkipped();
+                  finish(false);
+                }}
+                // Was text-xs on a decorative border: technically a control,
+                // practically invisible, and the only exit from a 15.5s scene at
+                // the product's activation moment. Now readable, with a real
+                // touch target and an interactive border that clears 3:1.
+                className="ml-auto text-xs font-mono uppercase tracking-[2px] px-4 py-2 min-h-11 min-w-40 transition-colors hover:opacity-80"
+                style={{
+                  color: "var(--tc-text)",
+                  border: "1px solid var(--tc-border-interactive)",
+                  background: "transparent",
+                }}
+              >
+                Skip intro <span aria-hidden="true">&#9656;</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  runKindRef.current = "replay";
+                  play();
+                }}
+                className="ml-auto text-xs font-mono uppercase tracking-[2px] px-3 py-1.5 min-h-11 min-w-40 transition-colors hover:opacity-80"
+                style={{
+                  color: "var(--tc-muted)",
+                  border: "1px solid var(--tc-border)",
+                  background: "transparent",
+                }}
+              >
+                <span aria-hidden="true">&#8635;</span> Replay scene
+              </button>
+            )}
+          </div>
 
-        {/* Story grid (spec section 2, item 4): the plate column beside the
+          {/* Story grid (spec section 2, item 4): the plate column beside the
           beats. LessonContent's root is the second grid item, unchanged, so
           collectBeats and the register rules keep walking a flat list. */}
-        <div className="lesson-story-grid">
-          <div className="lesson-story-plate">
-            {/* Establishing shot: its own playback beat, slugline then picture
+          <div className="lesson-story-grid">
+            <div className="lesson-story-plate">
+              {/* Establishing shot: its own playback beat, slugline then picture
               then stage direction, screenplay order. With an approved clip
               and the "clip" variant this is the scene VIDEO (owner ruling
               2026-09-04: launch ships with video), poster = the same still;
@@ -1882,57 +1888,57 @@ function StepBriefing({
               speculative (art ships incrementally per docs/scene-bible.md);
               on 404 the component removes itself and the timeline matches
               today's. */}
-            {lesson.scene &&
-            briefingVariant === "clip" &&
-            clipUrl &&
-            scriptState !== "idle" ? (
-              <SceneClip
-                clipUrl={clipUrl}
-                posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-                alt={lesson.scene.portraitAlt}
-                autoPlayEligible={
-                  scriptAutoPlay &&
-                  !prefersSkippedScript() &&
-                  !prefersReducedMotion()
-                }
-                worldId={worldSlug}
-                lessonId={lessonSlug}
-              />
-            ) : lesson.scene ? (
-              <ScenePortrait
-                beat
-                className="mb-4"
-                src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
-                alt={lesson.scene.portraitAlt}
-              />
-            ) : null}
-            <p
-              data-script-beat=""
-              className="text-sm italic leading-[1.85] max-w-[52ch]"
-              style={{ color: "var(--tc-muted)" }}
-            >
-              {lesson.context.narrative}
-            </p>
-          </div>
+              {lesson.scene &&
+              briefingVariant === "clip" &&
+              clipUrl &&
+              scriptState !== "idle" ? (
+                <SceneClip
+                  clipUrl={clipUrl}
+                  posterSrc={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+                  alt={lesson.scene.portraitAlt}
+                  autoPlayEligible={
+                    scriptAutoPlay &&
+                    !prefersSkippedScript() &&
+                    !prefersReducedMotion()
+                  }
+                  worldId={worldSlug}
+                  lessonId={lessonSlug}
+                />
+              ) : lesson.scene ? (
+                <ScenePortrait
+                  beat
+                  className="mb-4"
+                  src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}.webp`}
+                  alt={lesson.scene.portraitAlt}
+                />
+              ) : null}
+              <p
+                data-script-beat=""
+                className="text-sm italic leading-[1.85] max-w-[52ch]"
+                style={{ color: "var(--tc-muted)" }}
+              >
+                {lesson.context.narrative}
+              </p>
+            </div>
 
-          {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
+            {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
             the story zone only since the 2026-09-04 prose partition; the
             teaching body reads once, on the Concept step. */}
-          <LessonContent
-            lesson={lesson}
-            exercises={exercises}
-            worldId={worldSlug}
-            moduleId={moduleSlug}
-            lessonId={lessonSlug}
-            glossaryTerms={lesson.glossaryTerms}
-            visibleComponents={BRIEFING_COMPONENTS}
-            storyRegister
-            hideChallengeOnward
-            hideTeaching
-          />
-        </div>
+            <LessonContent
+              lesson={lesson}
+              exercises={exercises}
+              worldId={worldSlug}
+              moduleId={moduleSlug}
+              lessonId={lessonSlug}
+              glossaryTerms={lesson.glossaryTerms}
+              visibleComponents={BRIEFING_COMPONENTS}
+              storyRegister
+              hideChallengeOnward
+              hideTeaching
+            />
+          </div>
 
-        {/* Everything that is not the story comes AFTER the scene (owner,
+          {/* Everything that is not the story comes AFTER the scene (owner,
           2026-09-20: the app opens with its story). Two things live here:
           the spaced-review warm-up, which recalls earlier material before the
           learner moves on, and the catch-up for someone opening a module
@@ -1942,36 +1948,40 @@ function StepBriefing({
           reader without JavaScript still gets the catch-up
           (noscript-reveal.tsx); the warm-up is client state and renders
           nothing there. */}
-        {(!warmupDone || moduleEntry) && (
-          <div data-post-scene="" className="mt-(--l-slot) space-y-(--l-slot)">
-            {!warmupDone && (
-              <LessonWarmup
-                userId={reviewUserId}
-                worldId={worldSlug}
-                opening={
-                  moduleOrder === undefined
-                    ? null
-                    : { moduleOrder, lessonOrder: lesson.order }
-                }
-                dueReviews={dueReviews}
-                freePrompts={freeRecallPrompts}
-                onDone={finishWarmup}
-              />
-            )}
-            {moduleEntry && (
-              <details className="border-t border-border pt-4">
-                <summary className="min-h-11 cursor-pointer text-sm text-text-muted focus-visible:outline-2 focus-visible:outline-primary">
-                  Where the investigation stands
-                </summary>
-                <ModuleEntryContext
-                  moduleSlug={moduleEntry.moduleSlug}
-                  previousModule={moduleEntry.previousModule}
-                  previousComplete={moduleEntry.previousComplete}
+          {(!warmupDone || moduleEntry) && (
+            <div
+              data-post-scene=""
+              className="mt-(--l-slot) space-y-(--l-slot)"
+            >
+              {!warmupDone && (
+                <LessonWarmup
+                  userId={reviewUserId}
+                  worldId={worldSlug}
+                  opening={
+                    moduleOrder === undefined
+                      ? null
+                      : { moduleOrder, lessonOrder: lesson.order }
+                  }
+                  dueReviews={dueReviews}
+                  freePrompts={freeRecallPrompts}
+                  onDone={finishWarmup}
                 />
-              </details>
-            )}
-          </div>
-        )}
+              )}
+              {moduleEntry && (
+                <details className="border-t border-border pt-4">
+                  <summary className="min-h-11 cursor-pointer text-sm text-text-muted focus-visible:outline-2 focus-visible:outline-primary">
+                    Where the investigation stands
+                  </summary>
+                  <ModuleEntryContext
+                    moduleSlug={moduleEntry.moduleSlug}
+                    previousModule={moduleEntry.previousModule}
+                    previousComplete={moduleEntry.previousComplete}
+                  />
+                </details>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

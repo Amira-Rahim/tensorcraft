@@ -85,6 +85,8 @@ Because all three run on every input. An ensemble isn't a router that picks the 
 
 `Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Services can answer the same or different questions. An ensemble needs predictions about the same target, time and units. A third model must justify its compute cost through measured accuracy, robustness or another explicit requirement.
 
+You will combine forecasts using weights based on earlier errors, then compare the result with the best individual model.
+
 <LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Train a stacking model on predictions from rows the base models did not fit, then evaluate on another period", "Score an ensemble against its best single member, not against the average member"]} />
 
 ## Combining Models
