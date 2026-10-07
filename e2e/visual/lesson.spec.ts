@@ -2,9 +2,9 @@ import path from "node:path";
 import { test, expect } from "@playwright/test";
 
 /*
-  Lesson route baselines (spec 2026-09-23). Four images: the Briefing and the
-  Concept step of lesson 1 at 1,440 and 390. Dark scheme, scene resolved,
-  reduced motion, consent declined.
+  Lesson route baselines: the Briefing and both states of the Concept
+  preview at 1,440 and 390. Dark scheme, scene resolved, reduced motion,
+  consent declined.
 */
 
 const LESSON = "/worlds/deep-orbit/foundations/introduction-to-tensors";
@@ -75,6 +75,25 @@ for (const [name, viewport] of [
         maxDiffPixelRatio: 0.001,
         stylePath: SCREENSHOT_STYLE,
       });
+      if (step === 1) {
+        await page
+          .getByRole("button", { name: "Preview tensor creation" })
+          .click();
+        await expect(page.locator(".iv-creation-status")).toContainText(
+          "Same readings, same order",
+        );
+        await page.evaluate(() =>
+          (document.activeElement as HTMLElement | null)?.blur(),
+        );
+        await expect(page).toHaveScreenshot(
+          `lesson-concept-created-${name}.png`,
+          {
+            fullPage: true,
+            maxDiffPixelRatio: 0.001,
+            stylePath: SCREENSHOT_STYLE,
+          },
+        );
+      }
     });
   }
 }

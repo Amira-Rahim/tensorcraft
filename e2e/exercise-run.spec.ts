@@ -21,9 +21,8 @@ const SOLUTION = [
   "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];",
   "const reading = tf.tensor(streamValues);",
   "const shape = reading.shape;",
-  "const values = Array.from(reading.dataSync());",
-  "const total = tf.tidy(() => reading.sum().dataSync()[0]);",
-  "reading.dispose();",
+  "const values = reading.arraySync();",
+  "reading?.dispose();",
 ].join("\n");
 
 test.describe("Exercise run in the real browser worker", () => {
@@ -68,7 +67,7 @@ test.describe("Exercise run in the real browser worker", () => {
       page
         .getByTestId("challenge-passed-banner")
         .getByRole("list", { name: "Checked work" }),
-    ).toContainText("First Contact: Tensor In, Memory Clean");
+    ).toContainText("Prepare the Five Readings");
   });
 });
 

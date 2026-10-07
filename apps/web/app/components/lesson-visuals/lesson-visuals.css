@@ -46,6 +46,72 @@
   background: var(--tc-surface);
   align-items: start;
 }
+.lesson-workbench:has(> .lesson-workbench-introduction) > h2 {
+  margin-bottom: 16px;
+}
+.lesson-workbench-introduction {
+  margin: 0 0 28px;
+  width: 100%;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.iv-tensor-creation {
+  margin-top: 24px;
+}
+.iv-tensor-creation .iv-cells > span {
+  font-size: clamp(12px, 3.6vw, 15px);
+}
+.iv-creation-line {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding-block: 24px;
+}
+.iv-creation-line > code {
+  max-width: 100%;
+  font:
+    13px/1.8 var(--font-mono),
+    monospace;
+  overflow-wrap: anywhere;
+}
+.iv-creation-line > button {
+  padding: 10px 18px;
+  border: 1px solid var(--tc-primary);
+  background: var(--tc-primary);
+  color: var(--tc-on-primary);
+  font-weight: 600;
+}
+.iv-creation-line > button[aria-expanded="true"] {
+  background: transparent;
+  color: var(--tc-text);
+  border-color: var(--tc-border);
+}
+.iv-creation-result {
+  border-top: 1px solid var(--tc-border);
+  padding-top: 20px;
+}
+.iv-creation-shape {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 18px;
+  font-size: 14px;
+}
+.iv-creation-shape code {
+  font:
+    600 16px/1.5 var(--font-mono),
+    monospace;
+  color: var(--tc-primary);
+}
+.iv-creation-status {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.iv-creation-status:empty {
+  margin: 0;
+}
 .lesson-mission-scene {
   min-width: 0;
 }

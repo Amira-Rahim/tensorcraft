@@ -297,9 +297,54 @@ function Bars({
   );
 }
 
+function TensorCreationPreview() {
+  const [created, setCreated] = useState(false);
+  const resultId = useId();
+  return (
+    <div className="iv-tensor-creation">
+      <Grid
+        values={[...FIRST_PACKET]}
+        width={5}
+        label="Your JavaScript array: streamValues"
+        muted
+      />
+      <div className="iv-creation-line">
+        <code>const reading = tf.tensor(streamValues);</code>
+        <button
+          type="button"
+          aria-expanded={created}
+          aria-controls={resultId}
+          onClick={() => setCreated(!created)}
+        >
+          {created ? "Reset preview" : "Preview tensor creation"}
+        </button>
+      </div>
+      <div id={resultId} className="iv-creation-result" hidden={!created}>
+        {created && (
+          <>
+            <Grid
+              values={[...FIRST_PACKET]}
+              width={5}
+              label="TensorFlow.js tensor: reading"
+            />
+            <div className="iv-creation-shape">
+              <code>shape [5]</code>
+              <span>One list containing five numbers.</span>
+            </div>
+          </>
+        )}
+      </div>
+      <p role="status" aria-live="polite" className="iv-creation-status">
+        {created
+          ? "Same readings, same order. They are now represented as a tensor that TensorFlow.js can use."
+          : ""}
+      </p>
+    </div>
+  );
+}
+
 function TensorInstrument({ mode }: { mode: string }) {
-  const [reading, setReading] = useState(0),
-    [option, setOption] = useState(0);
+  const [option, setOption] = useState(0);
   const [correction, setCorrection] = useState(2),
     [batch, setBatch] = useState(0);
   let before = [...READING_VALUES],
@@ -308,13 +353,6 @@ function TensorInstrument({ mode }: { mode: string }) {
     code = "",
     note = "",
     label = "Tensor values";
-  if (mode === "create") {
-    before = [...FIRST_PACKET];
-    after = before;
-    width = 5;
-    code = "const reading = tf.tensor(streamValues);\n// shape [5], rank 1";
-    note = `Index ${reading} holds ${before[reading]} in both views. Tensor values use float32 storage.`;
-  }
   if (mode === "reshape") {
     after = before;
     width = [3, 2, 6][option]!;
@@ -377,52 +415,30 @@ function TensorInstrument({ mode }: { mode: string }) {
         <Grid
           values={before}
           width={
-            mode === "create"
-              ? 5
-              : mode === "reshape"
-                ? 6
-                : mode === "batch"
-                  ? 8
-                  : mode === "normalize" || mode === "operations"
-                    ? 2
-                    : 3
+            mode === "reshape"
+              ? 6
+              : mode === "batch"
+                ? 8
+                : mode === "normalize" || mode === "operations"
+                  ? 2
+                  : 3
           }
           label={
-            mode === "create"
-              ? "streamValues: five-reading excerpt"
-              : mode === "batch"
-                ? "Archive row IDs (0–15), in recording order"
-                : mode === "normalize"
-                  ? "Training batch: temperature, signal strength"
-                  : mode === "operations"
-                    ? "Pass 1: three readings, two channels"
-                    : "Input values"
+            mode === "batch"
+              ? "Archive row IDs (0–15), in recording order"
+              : mode === "normalize"
+                ? "Training batch: temperature, signal strength"
+                : mode === "operations"
+                  ? "Pass 1: three readings, two channels"
+                  : "Input values"
           }
-          selected={mode === "create" ? reading : -1}
           muted
         />
         <span className="iv-transform" aria-hidden="true">
           ↓
         </span>
-        <Grid
-          values={after}
-          width={width}
-          label={
-            mode === "create" ? "reading: shape [5], dtype float32" : label
-          }
-          selected={mode === "create" ? reading : -1}
-        />
+        <Grid values={after} width={width} label={label} />
       </div>
-      {mode === "create" && (
-        <Range
-          label="Inspect a reading"
-          value={reading}
-          min={0}
-          max={4}
-          display={`Index ${reading}`}
-          onChange={setReading}
-        />
-      )}
       {mode === "reshape" && (
         <Choices
           label="Tensor shape"
@@ -1674,7 +1690,12 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
   let content: ReactNode;
   switch (spec.kind) {
     case "tensor":
-      content = <TensorInstrument mode={spec.mode} />;
+      content =
+        spec.mode === "create" ? (
+          <TensorCreationPreview />
+        ) : (
+          <TensorInstrument mode={spec.mode} />
+        );
       break;
     case "neuron":
       content = <NeuronInstrument mode={spec.mode} />;
@@ -1730,7 +1751,7 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
         {spec.kind === "flow"
           ? "Illustrative handoff; code excerpts are not a live system run."
           : spec.kind === "tensor" && spec.mode === "create"
-            ? "Worked preview. Run your code in the challenge."
+            ? "Illustrated preview; readings rounded for display. You will run the code in the challenge."
             : "Practice data for this mechanism. Your challenge runs its own checks."}
       </p>
     </div>

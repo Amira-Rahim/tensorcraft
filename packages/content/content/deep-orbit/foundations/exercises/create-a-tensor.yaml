@@ -1,158 +1,83 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
-title: "First Contact: Tensor In, Memory Clean"
+title: "Prepare the Five Readings"
 instructions: |
-  Start with the five readings in `streamValues`.
+  Put the five sensor readings in `streamValues` into a form TensorFlow.js can use.
+  Replace the three `null` values:
 
-  1. Create a 1D tensor called `reading` from that array.
-  2. Before disposing it, save its shape as `shape`, its values as a plain
-     JavaScript array `values`, and its sum as a plain number `total`.
-     Use a tensor sum and read the result back; this task practices tensor
-     operations rather than JavaScript arithmetic. Release temporary tensors too.
-  3. Dispose `reading` after its final use. Its saved JavaScript values must
-     remain available for the checks.
+  1. Create `reading` with `tf.tensor(streamValues)`.
+  2. Save `reading.shape` in `shape`. Expect `[5]`: a list of five numbers.
+  3. Save `reading.arraySync()` in `values`. Check that it contains all five
+     readings in their original order.
 
-  `dataSync()` returns typed storage. Convert it with `Array.from()` when
-  the task asks for a plain array.
-starterCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\n// 1. Create the tensor\nconst reading = null; // your code here\n\n// 2. Capture shape, values and their total BEFORE disposing\nconst shape = null;\nconst values = null;\nconst total = null;\n\n// 3. Release the GPU memory\n"
-solutionCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\nconst reading = tf.tensor(streamValues);\n\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\nconst total = tf.tidy(() => reading.sum().dataSync()[0]);\n\nreading.dispose();"
+  TensorFlow.js is already available as `tf`. The cleanup line is provided;
+  leave it after your three lines. Select Run Tests to check your work.
+starterCode: |
+  const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
+
+  // Create the tensor from streamValues.
+  const reading = null;
+
+  // Check its shape and copy its values into a JavaScript array.
+  const shape = null;
+  const values = null;
+
+  // Provided cleanup. Keep this after you read the values.
+  reading?.dispose();
+solutionCode: |
+  const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
+  const reading = tf.tensor(streamValues);
+  const shape = reading.shape;
+  const values = reading.arraySync();
+  reading?.dispose();
 testCode: |
-  describe('First Contact', () => {
-    // tf.__calls is the harness's call counter, read here at registration:
-    // what the submission's own top-level code did before any test ran.
-    const summedOnTheTensor =
-      (tf.__calls['tensor.sum'] || 0) + (tf.__calls.sum || 0);
-    const readBackFromTheTensor =
-      (tf.__calls['tensor.dataSync'] || 0) + (tf.__calls['tensor.data'] || 0) + (tf.__calls['tensor.arraySync'] || 0);
-    // Nothing in here can read the tensor's numbers: step 3 released them
-    // before the suite ran. So the tensor is graded on what a released tensor
-    // still answers (that tf built it, its rank, size and dtype, and that a
-    // read of its data now throws), and `values` is graded on float32
-    // provenance. Measured on tfjs 4.22.0, 2026-09-08: a disposed tensor
-    // keeps rank, size and dtype, and dataSync() throws "Tensor is disposed".
-    // Before the first check below, all five tests passed for a submission
-    // that loaded no tfjs at all and set `reading` to a four-field object
-    // literal (measured 2026-09-08).
-    //
-    // `total` (added 2026-09-12) asks for a number the readings produce, so
-    // the values have to be right and not merely present. What it still
-    // cannot do is tie that number to THIS tensor: once `reading` is
-    // released, no assertion can ask it anything about its contents, so a
-    // submission that builds `reading` from the wrong numbers and reads a
-    // second tensor holding the right ones clears the file. Closing that
-    // would mean grading the tensor before step 3 runs, which is the step
-    // this exercise exists to teach. The float32 sum is 2.7200000286102295
-    // on the CPU backend and the arithmetic is not pinned tighter than 4
-    // decimals, because the browser runs WebGL and sums in a different
-    // order. Where that number came FROM is graded separately, in the test
-    // added below on 2026-09-13.
+  describe('Prepare the Five Readings', () => {
+    // Capture only reads made by the learner, before grading begins.
+    const reads = (tf.__calls['tensor.arraySync'] || 0)
+      + (tf.__calls['tensor.dataSync'] || 0)
+      + (tf.__calls['tensor.array'] || 0)
+      + (tf.__calls['tensor.data'] || 0);
     const source = [0.12, 0.94, 0.31, 0.88, 0.47];
-    const filled = (value, what) => expect(value, what).toBeDefined();
-    it('reading is a tensor, not an object shaped like one', () => {
-      filled(reading, 'Step 1 is still empty. Build the tensor from streamValues.');
+
+    it('reading is a TensorFlow.js tensor', () => {
       expect(
         reading instanceof tf.Tensor,
-        'rank, size and dtype are ordinary properties, so any object can carry them. This asks whether tf built the value in reading.',
+        'Replace the first null with tf.tensor(streamValues).',
       ).toBe(true);
     });
-    it('the tensor has one axis and holds five float32 numbers', () => {
-      filled(reading, 'Step 1 is still empty. Build the tensor from streamValues.');
-      expect(reading.rank, 'A flat list of readings has one axis.').toBe(1);
-      expect(reading.size, 'Every reading in the stream, not a slice of it.').toBe(5);
-      expect(reading.dtype, 'tf.tensor stores numbers as float32 unless you ask for another dtype.').toBe('float32');
+    it('the tensor holds a list of five numbers', () => {
+      expect(reading?.size, 'Include all five readings from streamValues.').toBe(5);
+      expect(reading?.shape, 'Pass the flat array directly to tf.tensor.').toEqual([5]);
     });
-    it('shape carries one entry per axis', () => {
-      filled(shape, 'Step 2 is half empty: shape has not been captured. Read it off the tensor before releasing it.');
-      expect(shape, 'One axis, so one entry, and it counts the readings.').toEqual([5]);
+    it('shape is [5]', () => {
+      expect(shape, 'Save reading.shape in shape before the cleanup line.').toEqual([5]);
     });
-    it('values is a plain JS array holding all five readings', () => {
-      filled(values, 'Step 2 is half empty: values has not been captured. Pull the numbers out before releasing the tensor.');
+    it('values contains the five readings in order', () => {
       expect(
         Array.isArray(values),
-        'dataSync() hands back a Float32Array, which is not a plain array yet. Array.from converts it.',
+        'Use reading.arraySync() to copy the readings into a JavaScript array.',
       ).toBe(true);
-      expect(values.length, 'One entry per reading.').toBe(5);
-      const stored = Array.from(new Float32Array(source));
+      expect(values.length, 'Keep all five readings.').toBe(5);
       for (let i = 0; i < source.length; i++) {
         expect(
           values[i],
-          'Position ' + i + ' does not hold the reading that arrived at that position.',
-        ).toBeCloseTo(stored[i], 6);
+          'Reading ' + (i + 1) + ' should match streamValues at the same position.',
+        ).toBeCloseTo(source[i], 6);
       }
-    });
-    it('values are float32 numbers, not the decimals off the page', () => {
-      // This is provenance only as far as the number system reaches. float32
-      // storage rounds 0.12 to 0.11999999731779099 and 0.47 to
-      // 0.4699999988079071, so a value that is EXACTLY 0.12 was copied from
-      // the instructions. It cannot prove dataSync() was the route, because
-      // new Float32Array rounds identically with no backend involved
-      // (measured 2026-09-08), which is why the first test grades the tensor.
-      filled(values, 'Step 2 is half empty: values has not been captured.');
       expect(
-        values[0],
-        'This is the decimal as printed, not the number float32 storage keeps.',
-      ).not.toBe(source[0]);
-      expect(
-        values[4],
-        'Same for the last reading. Exact means typed, not read back.',
-      ).not.toBe(source[4]);
-    });
-    it('total is the sum of the five readings', () => {
-      expect(
-        typeof total,
-        'Step 2 is unfinished: total has not been captured. Add the readings up while the tensor still holds them, and keep the result as a plain number.',
-      ).toBe('number');
-      const summed = tf.tidy(() => tf.tensor(source).sum().dataSync()[0]);
-      expect(
-        total,
-        'This is the total of all five readings. A total that skips one, doubles one, or counts a reading that never arrived lands somewhere else.',
-      ).toBeCloseTo(summed, 4);
-    });
-    it('total came back from the tensor, not off the page', () => {
-      expect(
-        summedOnTheTensor,
-        'No sum ran on a tensor before the grader started. total has to come out of reading.sum() on the backend, not out of Math.fround or a plain JavaScript reduce over the printed decimals, which land on the same float32 bits without touching the tensor.',
+        reads,
+        'Read the values from the tensor with reading.arraySync().',
       ).toBeGreaterThan(0);
-      expect(
-        readBackFromTheTensor,
-        'Nothing was read back off a tensor. values comes from dataSync() or arraySync() on the tensor you built; a Float32Array built from the page rounds identically and skips the readback.',
-      ).toBeGreaterThan(0);
-      // Added 2026-09-13, after three ignorant submissions cleared the whole
-      // file: one typed `total = 2.72`, one added the printed decimals up in
-      // plain JavaScript, and one did that on a tensor of zeros. A number the
-      // backend hands back is a float32 value widened to a double, so
-      // Math.fround leaves it exactly where it is. The CPU sum
-      // 2.7200000286102295 survives that round trip, and so does whatever
-      // order WebGL adds in, because both arrive in a Float32Array. Doubles
-      // do not survive it: 2.72 as printed moves to 2.7200000286102295, and
-      // so do both plain-JS sums, 2.7199999999999998 over the instructions
-      // and 2.7199999913573265 over the read-back values (measured on tfjs
-      // 4.22.0, 2026-09-13). This grades the ROUTE the number took, not which
-      // tensor produced it. A submission that sums a SECOND tensor holding
-      // the right readings still clears it, for the reason the note at the
-      // top of this file gives.
-      expect(
-        typeof total,
-        'Step 2 is unfinished: total has not been captured.',
-      ).toBe('number');
-      expect(
-        Math.fround(total) === total,
-        'This total never went through the tensor. The backend stores and adds in float32, and dataSync() hands that number back unchanged, so a total typed off the page or added up in plain JavaScript carries decimals float32 cannot hold.',
-      ).toBe(true);
     });
-    it('the memory was released, not just flagged as released', () => {
-      filled(reading, 'Step 3 has not happened: nothing has been released.');
-      expect(
-        reading.isDisposed,
-        'The collector cannot see GPU memory. Release it yourself once you have what you need.',
-      ).toBe(true);
+    it('the provided cleanup runs after the values are saved', () => {
+      expect(reading?.isDisposed, 'Keep the provided cleanup line at the end.').toBe(true);
       expect(
         () => reading.dataSync(),
-        'A released tensor cannot hand its numbers back. If this call still returns, the memory is still held.',
+        'The provided cleanup should release the tensor after you read it.',
       ).toThrow('Tensor is disposed');
     });
   });
-estimatedMinutes: 6
+estimatedMinutes: 4
 difficulty: beginner
 mlContent: data
 skillAxis: data_prep

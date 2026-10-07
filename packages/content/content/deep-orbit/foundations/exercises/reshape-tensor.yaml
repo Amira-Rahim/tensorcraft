@@ -99,7 +99,7 @@ testCode: |
       filled(step1, 'Step 2 is still empty. Pull row index 1 out of the grid.');
       expect(
         Array.isArray(step1),
-        'step1 has to arrive as a plain JS array of four numbers, which is what create-a-tensor asked for in lesson 1 as well. tf.slice returns a tensor. dataSync() returns flat typed storage; Array.from() converts it to a plain array. arraySync() instead returns ordinary nested arrays, from which you can select a row.',
+        'step1 has to arrive as a plain JS array of four numbers, which is what create-a-tensor asked for in lesson 1 as well. tf.slice returns a tensor. arraySync() returns ordinary nested arrays, from which you can select a row.',
       ).toBe(true);
       expect(
         step1,

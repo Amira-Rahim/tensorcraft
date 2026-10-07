@@ -14,20 +14,30 @@ const requiredRead = (name: string) =>
     .replace(/<ConceptReference[\s\S]*?<\/ConceptReference>/g, "");
 
 describe("the opening investigation's visible prerequisites", () => {
-  it("teaches every first-packet operation before optional reference and distinguishes the full packet", () => {
+  it("keeps the first task to creation, values and shape, with supplied cleanup", () => {
     const read = requiredRead("01-introduction-to-tensors");
     for (const operation of [
       "[0.12, 0.94, 0.31, 0.88, 0.47]",
       "tf.tensor(",
       "reading.shape",
-      "Array.from(reading.dataSync())",
-      "reading.sum()",
-      "tf.tidy(",
+      "reading.arraySync()",
       "reading.dispose()",
     ])
       expect(read).toContain(operation);
     expect(lesson("01-introduction-to-tensors")).toContain(
-      "The five-reading excerpt is checked. Demir turns to the full packet",
+      "The five readings return from the tensor in their original order",
+    );
+    for (const deferred of [
+      "reading.sum()",
+      "tf.tidy(",
+      "rank",
+      "256",
+      "float32",
+    ])
+      expect(read).not.toContain(deferred);
+    expect(requiredRead("02-tensor-shapes")).toContain("rank 1");
+    expect(requiredRead("03-tensor-operations")).toContain(
+      "synchronous callback",
     );
     expect(read).not.toContain("?start=experiment");
   });

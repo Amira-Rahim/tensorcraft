@@ -34,7 +34,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
       lessons.map((l) => l.slug).sort(),
     );
   });
-  it("keeps the first packet identical to the exercise and inspects without changing it", () => {
+  it("previews tensor creation from the exercise's readings and resets it", () => {
     const exercises = JSON.parse(
       readFileSync(root + "packages/content/.velite/exercises.json", "utf8"),
     );
@@ -49,24 +49,28 @@ describe("the complete Deep Orbit visual curriculum", () => {
         spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
       />,
     );
-    const grids = [...document.querySelectorAll(".iv-cells")].map(
-      (grid) => grid.textContent,
+    const source = screen.getByRole("list", {
+      name: "Your JavaScript array: streamValues",
+    });
+    expect(
+      screen.queryByRole("list", { name: "TensorFlow.js tensor: reading" }),
+    ).not.toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Preview tensor creation" }),
     );
-    fireEvent.change(
-      screen.getByRole("slider", { name: "Inspect a reading" }),
-      { target: { value: "4" } },
+    expect(
+      screen.getByRole("list", { name: "TensorFlow.js tensor: reading" })
+        .textContent,
+    ).toBe(source.textContent);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Same readings, same order",
     );
+    expect(screen.getByText("shape [5]")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Reset preview" }));
     expect(
-      document.querySelector('.iv-readout [role="status"]'),
-    ).toHaveTextContent("Index 4 holds 0.47");
-    expect(
-      [...document.querySelectorAll(".iv-cells")].map(
-        (grid) => grid.textContent,
-      ),
-    ).toEqual(grids);
-    expect(
-      screen.getByText("reading: shape [5], dtype float32"),
-    ).toBeInTheDocument();
+      screen.queryByRole("list", { name: "TensorFlow.js tensor: reading" }),
+    ).not.toBeInTheDocument();
+    expect(source).toHaveTextContent(FIRST_PACKET.join(""));
   });
   it("uses the normalization exercise's rows and distinguishes raw, z-score and min-max results", () => {
     const exercises = JSON.parse(
@@ -128,7 +132,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
         fireEvent.change(slider, {
           target: { value: input.value === input.max ? input.min : input.max },
         });
-      } else fireEvent.click(buttons[1]!);
+      } else fireEvent.click(buttons[1] ?? buttons[0]!);
       expect(screen.getByText(spec.action).parentElement!.textContent).not.toBe(
         before,
       );

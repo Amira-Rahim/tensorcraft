@@ -4,7 +4,7 @@ title: "Introduction to Tensors"
 moduleId: foundations
 worldId: deep-orbit
 order: 1
-estimatedMinutes: 12
+estimatedMinutes: 8
 difficulty: beginner
 scene:
   location: "Archimedes, Bridge"
@@ -14,28 +14,27 @@ context:
   narrative: "The research ship Archimedes has received an unfamiliar signal from Sector 7-G, a region of space the crew is monitoring. Its existing software, ARIA, follows rules written in advance. The crew needs to find patterns those rules have missed."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Tensors are multi-dimensional arrays: the fundamental data structure of machine learning."
+  explanation: "A tensor holds numbers and their shape for TensorFlow.js. Create one from a JavaScript array, then check its contents."
   bridge:
-    jsTitle: "TypedArray"
-    jsCode: "const arr = new Float32Array([1, 2, 3])"
+    jsTitle: "JavaScript array"
+    jsCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47]"
     mlTitle: "Tensor"
-    mlCode: "const t = tf.tensor([1, 2, 3])"
+    mlCode: "const reading = tf.tensor(streamValues)"
     tier: structural
-    breaks: "Float32Array provides iterable flat numeric storage. A tensor adds shape and backend operations, with its own disposal lifecycle. Read its values with await tensor.data(), dataSync(), or the array equivalents before ordinary JavaScript iteration."
+    breaks: "A JavaScript array and a tensor are different objects. A tensor records its shape and supports TensorFlow.js operations. Use arraySync() to copy its values into a JavaScript array."
 consequence:
-  narrative: "The signal begins to take shape as structured data."
+  narrative: "The first five readings are checked. Their sensor assignments are still unknown."
 hints:
   - level: nudge
-    content: "Three moves: create the tensor from the plain array, copy out everything the grader asks for while it is still alive, then dispose the tensor"
+    content: "Use the three lines from the Concept step: create a tensor, read its shape, then copy its values. The cleanup line is already provided."
   - level: guidance
-    content: "Separate three jobs: construct the reading, copy the requested information into plain JavaScript values, then release backend resources. A reduction creates a temporary too; the synchronous cleanup scope shown in the lesson handles that lifetime."
+    content: "tf.tensor(streamValues) creates the tensor. reading.shape gives its shape. reading.arraySync() returns its values as a JavaScript array."
   - level: solution
-    content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = Array.from(reading.dataSync()); const total = tf.tidy(() => reading.sum().dataSync()[0]); reading.dispose();"
+    content: "const reading = tf.tensor(streamValues); const shape = reading.shape; const values = reading.arraySync();"
 keywords:
   - tensor
   - array
-  - typed-array
-  - memory
+  - shape
 skillAxes: [data_prep]
 ---
 
@@ -66,123 +65,64 @@ A **tensor** is a container for numbers.
 
 </BriefingTakeaway>
 
-<LearningObjectives objectives={["Explain which shape and lifetime responsibilities a tensor adds to JavaScript numeric storage", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
+<LearningObjectives objectives={["Explain why this course uses tensors to hold data for TensorFlow.js", "Create a tensor from a JavaScript array", "Read its values and interpret shape [5] as a list of five numbers"]} />
 
-## Keep the packet, read the result
+## Create and check your tensor
 
-Use the same five-reading excerpt you just inspected. A tensor holds numeric
-values and their **shape**. `[5]` means one axis with five values; its **rank**
-(the number of axes) is 1. A matrix has two axes, so its rank is 2.
+TensorFlow.js is available as `tf` in the exercise. Create the tensor,
+then read its shape and values:
 
-Demir needs a copy of the readings before releasing the tensor. TensorFlow.js,
-imported as `tf`, provides the operations below.
-
-<CodeBlock language="typescript" title="inspect-a-packet.ts">
+<CodeBlock language="javascript" title="prepare-readings.js">
 {`const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
 const reading = tf.tensor(streamValues);
 
-// Copy out the information before releasing the tensor.
-const shape = reading.shape;                       // [5]
-const values = Array.from(reading.dataSync());      // the five readings
-const total = tf.tidy(() => reading.sum().dataSync()[0]); // approximately 2.72
+const shape = reading.shape; // [5]
+const values = reading.arraySync();
 
+// Provided cleanup
 reading.dispose();`}
 </CodeBlock>
 
-`dataSync()` reads the tensor into typed JavaScript storage. `Array.from()`
-copies that into the plain array the exercise asks for. Float32 storage can
-round a decimal slightly; the order and shape stay the same.
+The **shape** `[5]` describes one list of five numbers. `arraySync()` copies
+them into a JavaScript array. Check that all five readings are present and
+in their original order.
 
-`sum()` makes a temporary tensor. The synchronous `tf.tidy()` callback reads
-its number and releases that temporary. `reading.dispose()` then releases the
-original tensor. The copied `shape`, `values`, and `total` remain available.
-Do not put an async callback inside `tf.tidy()`.
+<ConceptReference summary="Reading values and cleanup">
 
-<ConceptReference summary="Reference: tensor ranks, backend storage, and cleanup">
+Small differences in the last decimal places are normal when TensorFlow.js
+stores numbers. The preview rounds the readings for display.
 
-A backend is the implementation that runs operations on the CPU or GPU. With the default float32 dtype, the CPU backend uses `Float32Array` storage; other dtypes use other storage. WebGL stores values in GPU textures. Read values back before ordinary JavaScript iteration, and dispose tensors on every backend.
+`reading.dispose()` releases the tensor's storage after you finish with it.
+The copied JavaScript values remain available. This line is already supplied
+in the exercise, so you can focus on creating and checking the tensor.
 
-<CodeBlock language="typescript" title="tensors-are-arrays.ts">
-{`import * as tf from '@tensorflow/tfjs';
-
-// A scalar (0D tensor), just a single number
-const scalar = tf.scalar(42);
-console.log(scalar.rank);  // 0
-
-// A vector (1D tensor), like a regular array
-const vector = tf.tensor1d([1, 2, 3, 4, 5]);
-console.log(vector.rank);  // 1
-
-// A matrix (2D tensor), like an array of arrays
-const matrix = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);
-console.log(matrix.rank);  // 2
-
-// You can always get the data back as a JavaScript array
-const jsArray = await vector.array();
-console.log(jsArray);  // [1, 2, 3, 4, 5]
-
-// Three tensors are alive at this point, and dropping the variables would
-// not free them. Release them before the next block starts counting.
-scalar.dispose();
-vector.dispose();
-matrix.dispose();`}
-</CodeBlock>
-
-
-### Keeping repeated runs small
-
-Dispose tensors when you finish with them, on every backend. `tf.memory().numTensors` counts tensors that have not been disposed. It is useful for detecting unexpected growth, but it is not a browser-process memory measurement.
-
-GPU resources need explicit cleanup. CPU values use JavaScript-managed storage, but relying on garbage collection leaves TFJS's bookkeeping behind and makes code unsafe when it switches backends. Initialization, intentional caches and retained model weights can also raise the count; growth alone does not identify a leak.
-
-Use a cleanup scope for temporary tensors and dispose anything you retain:
-
-<CodeBlock language="typescript" title="tensor-memory.ts">
-{`// Tool 1: dispose(), explicit cleanup
-const reading = tf.tensor1d([0.3, 0.7, 0.1]);
-console.log(tf.memory().numTensors);  // compare with the count before creating reading
-reading.dispose();                     // release its backend resources
-console.log(tf.memory().numTensors);  // back to the earlier count if nothing else changed
-
-// Tool 2: tf.tidy(), automatic, for everything intermediate.
-// Every tensor created inside the callback is disposed when it
-// returns, EXCEPT the one you return.
-const result = tf.tidy(() => {
-  const a = tf.tensor1d([1, 2, 3]);   // disposed automatically
-  const b = tf.tensor1d([4, 5, 6]);   // disposed automatically
-  return a.add(b);                     // survives: it's the return value
-});
-
-console.log(await result.array()); // [5, 7, 9]
-result.dispose(); // a returned tensor outlives tidy, so the caller owns it`}
-</CodeBlock>
-
-`tf.tidy()` runs a synchronous callback and disposes its temporary tensors. Do not pass it an async function. Return a tensor you need to read asynchronously, await its data outside the callback, then dispose it. Unlike a React effect cleanup, tidy finishes as soon as the callback returns.
-
-<BridgeCallout bridge={frontmatter.concept.bridge} />
+This small exercise uses `arraySync()` to read the values immediately. In an
+application, prefer `await reading.array()` so reading the data does not block
+the page. Later lessons cover cleanup when you combine several operations.
 
 </ConceptReference>
 
 ## Challenge
 
-Inspect this same five-reading excerpt in code. Save its shape, values and total, then release the tensor so Demir can process the next packet.
+Prepare the same five sensor readings for TensorFlow.js. Create the tensor,
+then save its shape and values so Demir can check the data before the crew
+starts looking for patterns. The cleanup line is provided.
 
 <Exercise slug="create-a-tensor" />
 
 <RecallPrompt
-  question="What is the rank of `tf.tensor2d([[1, 2, 3], [4, 5, 6]])`?"
-  answer="The rank is 2. Rank equals the number of dimensions. tf.tensor2d creates a 2D tensor (a matrix). The shape is [2, 3], but rank counts the axes, not the elements."
+  question="For a new three-reading example, you create tf.tensor([0.2, 0.4, 0.6]). What is its shape, and has creating it trained a model?"
+  answer="Its shape is [3]: a list of three numbers. Creating the tensor prepares data for TensorFlow.js. It has not trained a model or identified a pattern."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "A tensor adds shape and backend operations to numeric storage; dispose it when you finish.",
-    "Tensor rank equals the number of dimensions: scalar=0, vector=1, matrix=2.",
-    "A tensor is not directly iterable. Read values with await t.array() or dataSync() before ordinary JavaScript iteration.",
-    "Use dispose() for tensors you retain and synchronous tf.tidy() blocks for temporary work. A rising tensor count needs investigation, not an automatic leak diagnosis."
+    "TensorFlow.js uses tensors to hold the numbers that models work with.",
+    "tf.tensor(array) creates a tensor from a JavaScript array. Its shape describes how the numbers are arranged: [5] means a list of five numbers.",
+    "arraySync() copies the stored values into a JavaScript array so you can inspect them. Creating a tensor does not train a model."
   ]}
-  bridge="Float32Array provides flat numeric storage. A tensor adds shape, numerical backend operations, and an explicit disposal lifecycle."
-  youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and manage their lifetime with dispose() and tf.tidy()."
+  bridge="Your JavaScript array supplies the readings; a tensor holds them in a form TensorFlow.js can work with."
+  youCanNow="Turn a JavaScript array into a tensor, inspect its values and shape, and explain why this course needs that step."
 />
 
 One more thing lands in the archive between lessons, starting now: DISPATCH intercepts, relay chatter from other crews working the same band on other missions. This is the first.
@@ -191,12 +131,12 @@ One more thing lands in the archive between lessons, starting now: DISPATCH inte
 
 <Epilogue>
 
-The five-reading excerpt is checked. Demir turns to the full packet and writes his prediction in the day file: 256 values, one axis. The printed rank confirms it. He leaves the row layout marked unknown; a count cannot tell him where a reading ends.
+The five readings return from the tensor in their original order. Demir saves their shape, `[5]`, beside them. He opens the next capture, but its list does not say which readings belong to which sensor.
 
 <Dialogue speaker="ARIA">
 Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you.
 </Dialogue>
 
-Demir saves the packet and its shape to the shared workspace. The blank layout field goes to Farah.
+Demir sends the next capture to Farah. The sensor assignments are still blank.
 
 </Epilogue>

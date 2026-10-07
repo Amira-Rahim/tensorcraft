@@ -68,7 +68,9 @@ inner-dimension rule: `[1, 64] × [1, 64]` cannot form a matrix product.
 Element-wise `mul` is the operation an amplifier needs.
 
 Use the same two-channel passes as the visual. Add matching values, divide by
-2 to average them, then multiply the average by the gain:
+2 to average them, then multiply the average by the gain. Each operation
+creates a tensor. `tf.tidy()` releases the temporary tensors when its
+synchronous callback finishes, while keeping the tensors you return:
 
 <CodeBlock language="typescript" title="merge-two-passes.ts">
 {`const pass1 = tf.tensor2d([[2, 10], [4, 12], [6, 14]]);

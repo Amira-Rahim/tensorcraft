@@ -77,6 +77,9 @@ export function LessonConceptWorkbench({
       data-testid="lesson-workbench"
     >
       <h2 id={`visual-${lesson.slug}`}>{spec.question}</h2>
+      {spec.introduction && (
+        <p className="lesson-workbench-introduction">{spec.introduction}</p>
+      )}
       <div className="lesson-workbench-grid">
         <LessonMissionScene
           lesson={lesson}

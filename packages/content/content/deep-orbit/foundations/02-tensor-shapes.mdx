@@ -148,6 +148,9 @@ The element count is valid in both cases, so no error warns you about the mixed 
 
 ## Read Other Shapes
 
+The **rank** counts the dimensions in a shape. A list with shape `[5]` has
+rank 1; a grid with shape `[3, 4]` has rank 2.
+
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 A list of ten values has shape `[10]`. A batch of 32 RGB images can have shape `[32, 224, 224, 3]`: examples, height, width, and color channels. A batch is a group of examples processed together. Record these axis meanings; the dimensions alone cannot tell you what the data represents.

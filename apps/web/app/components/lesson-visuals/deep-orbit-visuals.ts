@@ -25,6 +25,7 @@ export interface LessonVisualSpec {
   kind: InstrumentKind;
   mode: string;
   question: string;
+  introduction?: string;
   action: string;
   takeaway: string;
   stages?: FlowStage[];
@@ -60,14 +61,18 @@ const flow = (
 });
 
 export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
-  "introduction-to-tensors": visual(
-    "foundations",
-    "tensor",
-    "create",
-    "How do readings become something a model can use?",
-    "Follow one of the five readings from its JavaScript position into the tensor.",
-    "Shape [5] means five values on one axis (rank 1). This excerpt comes from a 256-value packet. A model will need structured inputs like these.",
-  ),
+  "introduction-to-tensors": {
+    ...visual(
+      "foundations",
+      "tensor",
+      "create",
+      "Give JavaScript data to TensorFlow.js",
+      "Start with five sensor readings. Preview the line that puts them into a tensor.",
+      "This prepares the readings for TensorFlow.js. Training a model to find patterns comes later.",
+    ),
+    introduction:
+      "A tensor is a container for numbers. TensorFlow.js, our machine learning library, uses tensors to represent the data a model receives. You will create one from a JavaScript array and check its contents.",
+  },
   "tensor-shapes": visual(
     "foundations",
     "tensor",
