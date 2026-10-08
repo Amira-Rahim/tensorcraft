@@ -67,11 +67,11 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       "tensor",
       "create",
       "What can you do with a tensor?",
-      "Demir wants the average of these five readings. In the code below, streamValues is the JavaScript array that holds them.",
+      "Demir needs one number to summarize this packet. Calculate the average, then compare it with the individual readings on the chart.",
       "JavaScript can calculate an average too. We use tensors here because TensorFlow.js uses them for calculations and model inputs. Later, you'll train a model to recognize patterns.",
     ),
     introduction:
-      "A tensor is a container for numbers that TensorFlow.js, our machine learning library, can calculate with. Creating a tensor keeps your readings intact. Using it in a calculation produces a new result.",
+      "A tensor is a container for numbers used by TensorFlow.js, our machine learning library. Creating it stores the readings. Calculating their average works like using .reduce() on a JavaScript array: five values become one result, while the original readings stay unchanged.",
   },
   "tensor-shapes": visual(
     "foundations",

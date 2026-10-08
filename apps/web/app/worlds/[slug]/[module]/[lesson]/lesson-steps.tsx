@@ -50,6 +50,8 @@ import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
+import { LessonDocumentation } from "./lesson-documentation";
+import type { GlossaryEntry, LessonReference } from "@tensorcraft/content";
 import {
   PHASE,
   TOTAL_STEPS,
@@ -136,7 +138,8 @@ interface LessonStepsProps {
     }>;
     skillAxes?: string[];
     recallPrompts?: Array<{ index: number }>;
-    glossaryTerms?: Array<{ term: string; definition: string }>;
+    glossaryTerms?: GlossaryEntry[];
+    documentation?: LessonReference[];
   };
   exercises: ExerciseData[];
   passedExerciseSlugs?: string[];
@@ -2054,6 +2057,7 @@ function StepConcept({
             hideStoryZone
           />
         </div>
+        <LessonDocumentation references={lesson.documentation} />
         {visualFirst && (
           <details className="lesson-goals">
             <summary>Learning goals for this mission</summary>

@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import type { LessonVisualSpec } from "./deep-orbit-visuals";
 import { runTensorExample } from "./tensor-example";
+import { TensorFlowApiLink, TensorFlowCode } from "../mdx/tensorflow-reference";
 import {
   READING_VALUES,
   FIRST_PACKET,
@@ -93,7 +94,9 @@ function Readout({ children, code }: { children: ReactNode; code?: string }) {
       </div>
       {code && (
         <pre tabIndex={0} aria-label="JavaScript for this example">
-          <code>{code}</code>
+          <code>
+            <TensorFlowCode code={code} />
+          </code>
         </pre>
       )}
     </div>
@@ -374,61 +377,85 @@ function TensorCreationPreview() {
           ))}
         </div>
       </figure>
-      <ol className="iv-calculation-steps">
-        <li>
-          <span>Store the readings in a tensor</span>
-          <code>const reading = tf.tensor(streamValues);</code>
+      <section className="iv-worked-example" aria-label="Worked example">
+        <div className="iv-example-step">
+          <h3>Give TensorFlow.js the readings</h3>
+          <pre className="iv-example-code">
+            <code>
+              <span className="iv-code-keyword">const</span>{" "}
+              <span className="iv-code-reading">reading</span>
+              {" = "}
+              <TensorFlowApiLink symbol="tf.tensor" />
+              (streamValues);
+            </code>
+          </pre>
+          <p>
+            Here, <code>tf</code> is TensorFlow.js. This creates the tensor{" "}
+            <code>reading</code> from your array, <code>streamValues</code>.
+          </p>
           {result && (
-            <small className="iv-creation-shape">
+            <div className="iv-creation-shape">
               <code>shape [{result.shape.join(", ")}]</code>
               <span>One list containing five numbers.</span>
-            </small>
+            </div>
           )}
-        </li>
-        <li>
-          <span>Use the tensor to calculate their average</span>
-          <code>const average = tf.mean(reading);</code>
-        </li>
-      </ol>
-      <div className="iv-creation-line">
-        <button
-          type="button"
-          disabled={pending}
-          aria-expanded={Boolean(result)}
-          aria-controls={resultId}
-          onClick={calculate}
-        >
-          {pending
-            ? "Calculating…"
-            : result
-              ? "Reset example"
-              : "Calculate average"}
-        </button>
-      </div>
-      <div
-        id={resultId}
-        className="iv-creation-status"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {result ? (
-          <>
-            <p className="iv-average-result">
-              Average reading <strong>{fmt(result.average, 3)}</strong>
-            </p>
-            <p>
-              TensorFlow.js calculated this average from all five readings. An
-              average summarizes the data; it does not identify unusual
-              readings.
-            </p>
-          </>
-        ) : failed ? (
-          "The calculation could not run. Select Calculate average to try again."
-        ) : pending ? (
-          "Loading TensorFlow.js and calculating the average…"
-        ) : null}
-      </div>
+        </div>
+        <div className="iv-example-step">
+          <h3>Calculate the packet's average</h3>
+          <pre className="iv-example-code">
+            <code>
+              <span className="iv-code-keyword">const</span>{" "}
+              <span className="iv-code-average">average</span>
+              {" = "}
+              <TensorFlowApiLink symbol="tf.mean" />(
+              <span className="iv-code-reading">reading</span>);
+            </code>
+          </pre>
+          <p>
+            <code>mean</code> means average: add the five readings, then divide
+            by five.
+          </p>
+          <div
+            id={resultId}
+            className="iv-creation-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {result ? (
+              <>
+                <p className="iv-average-result">
+                  Average reading <strong>{fmt(result.average, 3)}</strong>
+                </p>
+                <p>
+                  The new tensor holds this one number. The dashed line marks
+                  the average; it does not identify unusual readings.
+                </p>
+              </>
+            ) : failed ? (
+              "The calculation could not run. Select Calculate average to try again."
+            ) : pending ? (
+              "Loading TensorFlow.js and calculating the average…"
+            ) : null}
+          </div>
+        </div>
+        <div className="iv-creation-line">
+          <button
+            type="button"
+            disabled={pending}
+            aria-expanded={Boolean(result)}
+            aria-controls={resultId}
+            onClick={calculate}
+          >
+            {pending
+              ? "Calculating…"
+              : result
+                ? "Reset example"
+                : "Calculate average"}
+          </button>
+          {!result && <span>Runs both lines above.</span>}
+        </div>
+      </section>
     </div>
   );
 }

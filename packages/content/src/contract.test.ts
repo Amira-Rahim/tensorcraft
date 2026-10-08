@@ -15,9 +15,13 @@ describe("Public schemas preserve compiled content", () => {
       const authored = Object.fromEntries(
         Object.entries(lesson).filter(
           ([key]) =>
-            !["body", "metadata", "glossaryTerms", "recallPrompts"].includes(
-              key,
-            ),
+            ![
+              "body",
+              "metadata",
+              "glossaryTerms",
+              "recallPrompts",
+              "documentation",
+            ].includes(key),
         ),
       );
       expect(lessonSchema.parse(authored)).toEqual(authored);

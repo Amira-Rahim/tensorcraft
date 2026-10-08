@@ -10,6 +10,7 @@ import {
   useRef,
 } from "react";
 import dynamic from "next/dynamic";
+import type { GlossaryEntry } from "@tensorcraft/content";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
   AnimatedAvatar,
@@ -29,6 +30,7 @@ import {
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
 import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
+import { TensorFlowReferences } from "@/app/components/mdx/tensorflow-reference";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
 // runtime + editor (~300 KB gzipped). Loading it dynamically with
@@ -128,7 +130,7 @@ interface LessonContentProps {
    * the RIGHT pane instance, and a prop value would be stale.
    */
   getHintsUsed?: () => number;
-  glossaryTerms?: Array<{ term: string; definition: string }>;
+  glossaryTerms?: GlossaryEntry[];
   /**
    * XS renderer slice (fresh-eyes rerun §4/T1-16): prose visibility is a
    * single boolean, so all 56 lessons rendered the task brief ("## Challenge"
@@ -231,7 +233,7 @@ export function LessonContent({
   // Memoized on the (stable) glossaryTerms array so the components map below
   // does not rebuild (and remount the MDX subtree) every render.
   const glossaryByTerm = useMemo(() => {
-    const map = new Map<string, { term: string; definition: string }>();
+    const map = new Map<string, GlossaryEntry>();
     for (const g of glossaryTerms ?? []) map.set(g.term, g);
     return map;
   }, [glossaryTerms]);
@@ -438,7 +440,20 @@ export function LessonContent({
           />
         );
       },
-      CodeBlock: wrapVisibility("CodeBlock", CodeBlock),
+      CodeBlock: (props: React.ComponentProps<typeof CodeBlock>) =>
+        shouldShow("CodeBlock") ? (
+          <CodeBlock
+            {...props}
+            footer={
+              typeof props.children === "string" &&
+              ["javascript", "typescript", "js", "ts", "jsx", "tsx"].includes(
+                props.language ?? "typescript",
+              ) ? (
+                <TensorFlowReferences code={props.children} />
+              ) : undefined
+            }
+          />
+        ) : null,
       HintPanel: (props: { hints: unknown }) =>
         shouldShow("HintPanel") ? (
           <HintPanel
@@ -605,7 +620,11 @@ export function LessonContent({
       if (!term) return <span {...props} />;
       const entry = glossaryByTerm.get(term);
       return (
-        <GlossaryTerm term={term} definition={entry?.definition}>
+        <GlossaryTerm
+          term={term}
+          definition={entry?.definition}
+          documentation={entry?.documentation}
+        >
           {props.children}
         </GlossaryTerm>
       );

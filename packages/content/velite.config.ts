@@ -3,7 +3,11 @@ import ts from "typescript";
 import { rehypeGlossary } from "./src/rehype-glossary";
 import { rehypePairCompanions } from "./src/rehype-pair-companions";
 import { GLOSSARY } from "./src/glossary";
-import { glossaryTermsInCompiledBody } from "./src/glossary-match";
+import {
+  glossaryTermsInCompiledBody,
+  findGlossaryTermsInText,
+} from "./src/glossary-match";
+import { collectLessonDocumentation } from "./src/lesson-documentation";
 import { parseRecallPrompts } from "./src/parse-recall-prompts";
 import { BUILT_WORLD_GLOB } from "./src/built-worlds";
 
@@ -169,6 +173,7 @@ const lessons = defineCollection({
     })
     .transform((data) => {
       const { rawBody, ...rest } = data;
+      const glossaryTerms = glossaryTermsInCompiledBody(data.body, GLOSSARY);
       return {
         ...rest,
         // The Takeaways "Terms in this lesson" list shows exactly the terms
@@ -176,7 +181,14 @@ const lessons = defineCollection({
         // 242 terms across 56 lessons that no reader ever saw as a chip,
         // several off JSX attributes in the other sense of the word (gate:
         // __tests__/glossary-rail-contract.test.ts).
-        glossaryTerms: glossaryTermsInCompiledBody(data.body, GLOSSARY),
+        glossaryTerms,
+        documentation: collectLessonDocumentation(
+          [
+            ...glossaryTerms,
+            ...findGlossaryTermsInText(data.keywords.join(" "), GLOSSARY),
+          ],
+          rawBody,
+        ),
         // Prompt text lifted out of the RAW body, unlike glossaryTerms above,
         // which deliberately matches the compiled one. The raw source is
         // where the authored `question` and `answer` props still exist as

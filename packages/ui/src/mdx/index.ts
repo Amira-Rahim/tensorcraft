@@ -12,6 +12,7 @@ export type {
   ExerciseBridge,
 } from "./exercise";
 export { GlossaryTerm } from "./glossary-term";
+export { DocumentationLink } from "./documentation-link";
 export { HintPanel } from "./hint-panel";
 export { KeyTakeaways } from "./key-takeaways";
 export { LearningObjectives } from "./learning-objectives";

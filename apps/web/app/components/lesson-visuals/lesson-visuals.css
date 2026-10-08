@@ -70,37 +70,66 @@
   font-size: 12px;
   line-height: 1.6;
 }
-.iv-calculation-steps {
+.iv-worked-example {
   margin: 24px 0 0;
-  padding-left: 22px;
-  display: grid;
-  gap: 20px;
-  list-style: decimal;
+  border: 1px solid var(--tc-border);
+  background: var(--tc-bg);
 }
-.iv-calculation-steps li {
-  padding-left: 6px;
+.iv-example-step {
+  padding: clamp(16px, 2vw, 20px);
+}
+.iv-example-step + .iv-example-step {
+  border-top: 1px solid var(--tc-border);
+}
+.iv-example-step > h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.iv-example-step > p {
+  margin: 12px 0 0;
   font-size: 14px;
   line-height: 1.6;
-}
-.iv-calculation-steps li::marker {
   color: var(--tc-muted);
 }
-.iv-calculation-steps li > span,
-.iv-calculation-steps li > code {
-  display: block;
+.iv-example-step > p code {
+  font-family: var(--font-mono), monospace;
+  color: var(--tc-text);
 }
-.iv-calculation-steps li > code {
-  margin-top: 6px;
-  font:
-    13px/1.8 var(--font-mono),
-    monospace;
+.iv-example-code {
+  margin: 0;
+  white-space: pre-wrap;
   overflow-wrap: anywhere;
+  font:
+    14px/1.8 var(--font-mono),
+    monospace;
+}
+.iv-code-keyword {
+  color: var(--tc-muted);
+}
+.iv-code-function,
+.iv-api-link {
+  color: var(--tc-primary);
+}
+.iv-code-reading {
+  color: var(--iv-blue);
+}
+.iv-code-average {
+  color: var(--iv-brass);
 }
 .iv-creation-line {
-  display: grid;
-  justify-items: start;
-  gap: 16px;
-  padding-block: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--tc-border);
+  background: var(--tc-surface);
+}
+.iv-creation-line > span {
+  color: var(--tc-muted);
+  font-size: 12px;
 }
 .iv-creation-line > button {
   padding: 10px 18px;
@@ -119,7 +148,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 8px 16px;
-  margin-top: 8px;
+  margin-top: 16px;
   font-size: 12px;
 }
 .iv-creation-shape code {
@@ -129,7 +158,7 @@
   color: var(--tc-primary);
 }
 .iv-creation-status {
-  margin: 0;
+  margin: 20px 0 0;
   font-size: 14px;
   line-height: 1.7;
 }
@@ -924,4 +953,17 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
+}
+
+.iv-api-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.iv-api-link:hover {
+  text-decoration-thickness: 2px;
+}
+.iv-api-link:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
 }

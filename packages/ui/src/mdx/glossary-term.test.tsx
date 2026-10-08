@@ -28,4 +28,37 @@ describe("GlossaryTerm", () => {
     expect(screen.queryByRole("note")).not.toBeInTheDocument();
     expect(button).toHaveFocus();
   });
+
+  it("makes documentation reachable inside the note and returns focus to the term", () => {
+    render(
+      <GlossaryTerm
+        term="tensor"
+        definition="A container for numbers"
+        documentation={{
+          href: "https://js.tensorflow.org/api/4.22.0/#tensor",
+          title: "tf.tensor",
+          source: "TensorFlow.js",
+          kind: "api",
+        }}
+      >
+        tensor
+      </GlossaryTerm>,
+    );
+    const trigger = screen.getByRole("button", { name: "tensor" });
+    fireEvent.click(trigger);
+    expect(
+      screen.getByRole("button", { name: "Close definition" }),
+    ).toHaveFocus();
+    const link = screen.getByRole("link", { name: /TensorFlow.js: tf.tensor/ });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://js.tensorflow.org/api/4.22.0/#tensor",
+    );
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    link.focus();
+    fireEvent.keyDown(link, { key: "Escape" });
+    expect(trigger).toHaveFocus();
+    expect(screen.queryByRole("note")).not.toBeInTheDocument();
+  });
 });

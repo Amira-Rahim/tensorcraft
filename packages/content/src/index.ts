@@ -34,6 +34,8 @@ export type { ConceptIndex, ConceptSource, LessonRef } from "./concept-index";
 // Takeaways terms list.
 export { GLOSSARY } from "./glossary";
 export type { GlossaryEntry } from "./glossary";
+export type { DocumentationReference } from "./documentation";
+export type { LessonReference } from "./lesson-documentation";
 
 // Glossary matching: whole-word prose scanner used by rehype plugin + Velite transform.
 export {

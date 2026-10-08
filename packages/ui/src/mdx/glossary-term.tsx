@@ -2,10 +2,15 @@
 
 import { useLayoutEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import {
+  DocumentationLink,
+  type DocumentationLinkTarget,
+} from "./documentation-link";
 
 interface GlossaryTermProps {
   term: string;
   definition?: string;
+  documentation?: DocumentationLinkTarget;
   children: React.ReactNode;
 }
 
@@ -13,6 +18,7 @@ interface GlossaryTermProps {
 export function GlossaryTerm({
   term,
   definition,
+  documentation,
   children,
 }: GlossaryTermProps) {
   const [open, setOpen] = useState(false);
@@ -61,8 +67,30 @@ export function GlossaryTerm({
         setOpen(false);
         trigger.current?.focus({ preventScroll: true });
       }
+      // The note is portaled to the end of the document. Keep its controls
+      // in the term's keyboard sequence, then return to the reading flow.
+      if (
+        event.key === "Tab" &&
+        popup.current?.contains(document.activeElement)
+      ) {
+        const controls =
+          popup.current.querySelectorAll<HTMLElement>("button, a[href]");
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          setOpen(false);
+          trigger.current?.focus({ preventScroll: true });
+        } else if (!event.shiftKey && document.activeElement === last) {
+          setOpen(false);
+          trigger.current?.focus({ preventScroll: true });
+        }
+      }
     };
     place();
+    popup.current
+      ?.querySelector<HTMLButtonElement>("button")
+      ?.focus({ preventScroll: true });
     document.addEventListener("pointerdown", dismiss);
     document.addEventListener("keydown", escape);
     window.addEventListener("resize", place);
@@ -128,6 +156,17 @@ export function GlossaryTerm({
               </button>
             </div>
             <p id={`${id}-definition`}>{definition}</p>
+            {documentation && (
+              <div className="mt-3 border-t border-border pt-3 text-xs leading-relaxed">
+                {documentation.kind === "related-api" && (
+                  <p className="mb-1 text-text-muted">Related API</p>
+                )}
+                <DocumentationLink
+                  reference={documentation}
+                  className="inline-block py-1"
+                />
+              </div>
+            )}
           </div>,
           document.body,
         )}

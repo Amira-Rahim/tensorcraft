@@ -14,6 +14,7 @@ export {
   ExerciseBrief,
   ExerciseDataProvider,
   GlossaryTerm,
+  DocumentationLink,
   HintPanel,
   KeyTakeaways,
   LearningObjectives,

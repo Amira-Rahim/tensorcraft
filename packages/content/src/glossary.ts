@@ -11,6 +11,11 @@
  * Takeaways step's terms list ("Terms in this lesson").
  */
 
+import {
+  CONCEPT_DOCUMENTATION,
+  type DocumentationReference,
+} from "./documentation";
+
 export interface GlossaryEntry {
   /** Canonical display form, e.g. "rank". */
   term: string;
@@ -20,6 +25,7 @@ export interface GlossaryEntry {
   aliases?: string[];
   /** "global" ML term, or a world slug for world-specific terms. */
   scope?: "global" | string;
+  documentation?: DocumentationReference;
 }
 
 export const GLOSSARY: GlossaryEntry[] = [
@@ -1023,4 +1029,9 @@ export const GLOSSARY: GlossaryEntry[] = [
     aliases: ["low-rank", "low rank"],
     scope: "global",
   },
-];
+].map((entry) => {
+  const documentation = CONCEPT_DOCUMENTATION[entry.term];
+  if (!documentation)
+    throw new Error(`Missing documentation for ${entry.term}`);
+  return { ...entry, documentation };
+});

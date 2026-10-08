@@ -6,6 +6,7 @@ interface CodeBlockProps {
   language?: string;
   title?: string;
   children: ReactNode;
+  footer?: ReactNode;
 }
 
 import { tensorcraftTheme } from "./tensorcraft-theme";
@@ -45,6 +46,7 @@ export function CodeBlock({
   language = "typescript",
   title,
   children,
+  footer,
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
@@ -117,6 +119,7 @@ export function CodeBlock({
           </code>
         </pre>
       )}
+      {footer}
     </div>
   );
 }

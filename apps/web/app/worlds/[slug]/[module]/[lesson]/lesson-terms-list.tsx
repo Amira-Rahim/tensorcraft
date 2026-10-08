@@ -1,7 +1,9 @@
 import { useId } from "react";
+import { DocumentationLink } from "@tensorcraft/ui";
+import type { GlossaryEntry } from "@tensorcraft/content";
 
 interface LessonTermsListProps {
-  terms: Array<{ term: string; definition: string }>;
+  terms: GlossaryEntry[];
 }
 
 /**
@@ -28,7 +30,7 @@ export function LessonTermsList({ terms }: LessonTermsListProps) {
         Terms in this lesson
       </h2>
       <dl className="grid gap-x-10 gap-y-4 lg:grid-cols-2">
-        {terms.map(({ term, definition }) => (
+        {terms.map(({ term, definition, documentation }) => (
           <div
             key={term}
             data-testid={`glossary-entry-${term}`}
@@ -45,6 +47,12 @@ export function LessonTermsList({ terms }: LessonTermsListProps) {
               style={{ color: "var(--tc-muted)" }}
             >
               {definition}
+              {documentation && (
+                <span className="mt-2 block text-xs">
+                  {documentation.kind === "related-api" && "Related API: "}
+                  <DocumentationLink reference={documentation} />
+                </span>
+              )}
             </dd>
           </div>
         ))}
