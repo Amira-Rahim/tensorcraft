@@ -1341,18 +1341,12 @@ function ChromeBar({
       data-testid="lesson-chrome"
       className="mb-4 border-b border-border pb-4"
     >
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs font-mono text-text-muted">
-            {moduleName ?? moduleSlug}
-          </p>
-          {showTitle && (
-            <h1 className="mt-1 text-base font-semibold text-text-primary">
-              {lessonTitle}
-            </h1>
-          )}
+      <div className="lesson-masthead">
+        <div className="lesson-masthead-context">
+          <p className="lesson-masthead-module">{moduleName ?? moduleSlug}</p>
+          <ReportIssueTrigger />
         </div>
-        <ReportIssueTrigger />
+        {showTitle && <h1 className="lesson-masthead-title">{lessonTitle}</h1>}
       </div>
       <div className="flex flex-wrap items-center gap-3">
         {lessons && (
