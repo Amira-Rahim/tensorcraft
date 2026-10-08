@@ -95,16 +95,19 @@ describe("the complete Deep Orbit visual curriculum", () => {
     expect(source).toHaveTextContent(FIRST_PACKET.join(""));
   });
   it("allows retry after TensorFlow.js fails to load without inventing a result", async () => {
-    vi.spyOn(tensorExample, "runTensorExample").mockRejectedValueOnce(
-      new Error("offline"),
-    );
+    const run = vi
+      .spyOn(tensorExample, "runTensorExample")
+      .mockRejectedValueOnce(new Error("offline"));
     render(
       <LessonInstrument
         spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
-    expect(screen.getByRole("button", { name: "Calculating…" })).toBeDisabled();
+    const pendingButton = screen.getByRole("button", { name: "Calculating…" });
+    expect(pendingButton).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(pendingButton);
+    expect(run).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent("could not run"),
     );

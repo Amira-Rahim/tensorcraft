@@ -86,6 +86,18 @@ for (const [width, scheme] of [
     await expect(page.locator(".lesson-workbench-introduction")).toContainText(
       "A tensor is a container for numbers",
     );
+    const goals = page.locator(".lesson-goals");
+    await expect(
+      goals.getByRole("heading", {
+        name: "Learning goals for this mission",
+      }),
+    ).toBeVisible();
+    await expect(goals.getByRole("listitem")).toHaveCount(3);
+    await expect(page.getByTestId("concept-intro")).toBeVisible();
+    const goalsBox = (await goals.boundingBox())!;
+    const activityBox = (await instrument.boundingBox())!;
+    expect(goalsBox.y + goalsBox.height).toBeLessThanOrEqual(activityBox.y);
+    expect(goalsBox.width).toBe(activityBox.width);
     const preview = instrument.getByRole("button", {
       name: "Calculate average",
     });
@@ -98,6 +110,9 @@ for (const [width, scheme] of [
     await expect(page.getByTestId("tensor-story-response")).toContainText(
       "full packet for Farah",
     );
+    await expect(
+      instrument.getByRole("button", { name: "Reset example" }),
+    ).toBeFocused();
     await expect(page.getByTestId("tensor-story-response")).toBeInViewport({
       ratio: 0.85,
     });
@@ -120,12 +135,6 @@ for (const [width, scheme] of [
     await expect(
       page.getByText("prepare-readings.js", { exact: true }),
     ).toBeVisible();
-    const reference = page.locator("details").filter({
-      has: page.getByText("Reading values and cleanup", { exact: true }),
-    });
-    await expect(reference).not.toHaveAttribute("open");
-    const goals = page.locator(".lesson-goals");
-    await expect(goals).not.toHaveAttribute("open");
     expect(
       (await new AxeBuilder({ page }).include(".lesson-concept").analyze())
         .violations,
@@ -152,10 +161,6 @@ for (const [width, scheme] of [
       ),
       contentType: "application/json",
     });
-    await reference.locator("summary").click();
-    await expect(reference.getByText(/This small exercise uses/)).toBeVisible();
-    await goals.locator("summary").click();
-    await expect(page.getByTestId("concept-intro")).toBeVisible();
     await page.getByRole("button", { name: "Continue →", exact: true }).click();
     await expect(page.getByTestId("exercise-brief")).toContainText(
       "five readings",

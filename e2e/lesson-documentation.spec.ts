@@ -47,16 +47,6 @@ for (const [width, scheme] of [
       "https://js.tensorflow.org/api/4.22.0/#tf.Tensor.arraySync",
     );
 
-    const references = page.getByTestId("lesson-documentation");
-    await expect(references).not.toHaveAttribute("open");
-    await references.locator("summary").focus();
-    await page.keyboard.press("Enter");
-    await expect(
-      references.getByRole("link", { name: /TensorFlow.js: tf.tensor/ }),
-    ).toBeVisible();
-    await references.screenshot({
-      path: testInfo.outputPath(`references-${width}.png`),
-    });
     const shape = page.getByRole("button", { name: "shape", exact: true });
     await shape.focus();
     await page.keyboard.press("Enter");

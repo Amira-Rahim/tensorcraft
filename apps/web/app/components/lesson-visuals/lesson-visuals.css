@@ -13,20 +13,36 @@
 .lesson-workbench {
   margin: 0 0 40px;
 }
-.lesson-goals {
-  margin-top: 32px;
-  border-top: 1px solid var(--tc-border);
-  color: var(--tc-muted);
+.lesson-workbench .lesson-goals {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+  gap: 16px clamp(24px, 3vw, 40px);
+  margin: 0 0 28px;
+  padding: 24px 0;
+  border-block: 1px solid var(--tc-border);
+  color: var(--tc-text);
 }
-.lesson-goals > summary {
-  padding: 16px 0;
-  min-height: 48px;
-  cursor: pointer;
-  font-size: 14px;
+.lesson-workbench .lesson-goals > h3 {
+  margin: 0;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
 }
-.lesson-goals > summary:focus-visible {
-  outline: 2px solid var(--tc-primary);
-  outline-offset: 4px;
+.lesson-workbench .lesson-goals > ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0 0 0 1.1em;
+  list-style: disc;
+}
+.lesson-workbench .lesson-goals li {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.lesson-workbench .lesson-goals li::marker {
+  color: var(--tc-primary);
 }
 .lesson-workbench > h2 {
   font-size: clamp(2rem, 4vw, 3.5rem);
@@ -259,7 +275,8 @@
   outline: 2px solid var(--tc-primary);
   outline-offset: 4px;
 }
-.lesson-instrument button:disabled {
+.lesson-instrument button:disabled,
+.lesson-instrument button[aria-disabled="true"] {
   opacity: 0.55;
   cursor: default;
 }
@@ -931,7 +948,7 @@
 .lesson-instrument button {
   touch-action: manipulation;
 }
-.lesson-instrument button:hover:not(:disabled) {
+.lesson-instrument button:hover:not(:disabled):not([aria-disabled="true"]) {
   border-color: var(--tc-primary);
 }
 .lesson-workbench > h2 {
@@ -1054,6 +1071,29 @@
   line-height: 1.6;
   max-width: 48ch;
 }
+.tensor-investigation-purpose {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+  gap: 16px clamp(24px, 3vw, 40px);
+  align-items: start;
+  padding: 24px clamp(20px, 3vw, 36px);
+  border-top: 1px solid var(--tc-border);
+}
+.tensor-investigation-purpose > h3 {
+  margin: 0;
+  color: var(--tc-text);
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.tensor-investigation-purpose > p {
+  margin: 0;
+  color: var(--tc-text);
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 72ch;
+}
 .tensor-investigation-console .iv-worked-example {
   min-width: 0;
   margin: 0;
@@ -1083,31 +1123,16 @@
   color: var(--tc-muted);
 }
 .tensor-investigation-reference {
-  padding: 0 clamp(20px, 3vw, 36px) 20px;
+  padding: 20px clamp(20px, 3vw, 36px);
   border-top: 1px solid var(--tc-border);
-}
-.tensor-investigation-reference summary {
-  padding: 16px 0;
-  cursor: pointer;
-  color: var(--tc-muted);
-  font-size: 14px;
-  min-height: 48px;
-}
-.tensor-investigation-reference summary:focus-visible {
-  outline: 2px solid var(--tc-primary);
-  outline-offset: 2px;
-}
-.tensor-investigation-reference .iv-takeaway {
-  margin: 0 0 16px;
-  padding: 0;
-  border: 0;
-  max-width: 72ch;
 }
 .tensor-investigation-reference .iv-provenance {
   margin: 0;
 }
 @media (max-width: 760px) {
+  .lesson-workbench .lesson-goals,
   .tensor-investigation-opening,
+  .tensor-investigation-purpose,
   .tensor-investigation-console,
   .tensor-investigation-findings {
     grid-template-columns: 1fr;

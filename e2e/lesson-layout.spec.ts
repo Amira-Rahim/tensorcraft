@@ -418,7 +418,9 @@ test.describe("lesson layout, desktop", () => {
             .filter((r) => r.height > 0),
         }));
       expect(width).toBe(820);
-      expect(rows.filter((r) => r.aside).length).toBeGreaterThan(0);
+      const cardCount = rows.filter((r) => r.aside).length;
+      if (name === "paragraphLed") expect(cardCount).toBe(0);
+      else expect(cardCount).toBeGreaterThan(0);
       for (const [i, row] of rows.entries()) {
         expect(Math.abs(row.left - left)).toBeLessThanOrEqual(1);
         expect(Math.abs(row.width - width)).toBeLessThanOrEqual(1);
@@ -429,24 +431,28 @@ test.describe("lesson layout, desktop", () => {
           ).toBeLessThanOrEqual(1);
         }
       }
-      // Opening a reference keeps the next visible block below the card.
-      const reference = page
-        .locator(
-          '.lesson-step-content[data-layout="reading"] > details[data-aside]',
-        )
-        .first();
-      await reference.locator("summary").click();
-      await expect(reference).toHaveAttribute("open", "");
-      const gap = await reference.evaluate((el) => {
-        let next = el.nextElementSibling;
-        while (next && !next.checkVisibility()) next = next.nextElementSibling;
-        const following = next ?? document.querySelector(".lesson-goals")!;
-        return (
-          following.getBoundingClientRect().top -
-          el.getBoundingClientRect().bottom
-        );
-      });
-      expect(gap).toBeGreaterThanOrEqual(24);
+      // Where a lesson has references, opening one keeps the next block below it.
+      if (cardCount > 0) {
+        const reference = page
+          .locator(
+            '.lesson-step-content[data-layout="reading"] > details[data-aside]',
+          )
+          .first();
+        await reference.locator(":scope > summary").click();
+        await expect(reference).toHaveAttribute("open", "");
+        const gap = await reference.evaluate((el) => {
+          let next = el.nextElementSibling;
+          while (next && !next.checkVisibility())
+            next = next.nextElementSibling;
+          const following =
+            next ?? document.querySelector("[data-testid='lesson-nav']")!;
+          return (
+            following.getBoundingClientRect().top -
+            el.getBoundingClientRect().bottom
+          );
+        });
+        expect(gap).toBeGreaterThanOrEqual(24);
+      }
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - innerWidth,
       );
@@ -616,7 +622,7 @@ test.describe("lesson layout, desktop", () => {
     ).toBeVisible();
   });
 
-  test("on the Concept step the nav sits 40 px below the optional goals, with Continue at the frame's right edge", async ({
+  test("on the Concept step the nav sits 40 px below the reading, with Continue at the frame's right edge", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
@@ -627,13 +633,14 @@ test.describe("lesson layout, desktop", () => {
           throw new Error(`${s}: ${found.length} matches`);
         return found[0];
       };
-      // Learning goals follow the reading as an optional disclosure.
-      const goals = one(".lesson-goals").getBoundingClientRect();
+      const reading = one(
+        '.lesson-step-content[data-layout="reading"]',
+      ).getBoundingClientRect();
       const nav = one("[data-testid='lesson-nav']").getBoundingClientRect();
       const go = one("[data-step-continue]").getBoundingClientRect();
       const frame = one("[data-testid='lesson-frame']").getBoundingClientRect();
       return {
-        last: goals.bottom,
+        last: reading.bottom,
         navTop: nav.top,
         goTop: go.top,
         goRight: go.right,
@@ -726,7 +733,7 @@ test.describe("lesson layout, narrow desktop", () => {
   test.use({ viewport: { width: 1024, height: 768 }, colorScheme: "dark" });
 
   test("Concept keeps cards below prose at 1,024 px", async ({ page }) => {
-    await openStep(page, LESSONS.paragraphLed, 1);
+    await openStep(page, LESSONS.headingLed, 1);
     const m = await page
       .locator('.lesson-step-content[data-layout="reading"]')
       .evaluate((g) => {
@@ -858,7 +865,8 @@ test.describe("lesson layout, phone", () => {
             ];
           });
         });
-      expect(companions.length).toBeGreaterThan(0);
+      if (name === "paragraphLed") expect(companions).toHaveLength(0);
+      else expect(companions.length).toBeGreaterThan(0);
       for (const c of companions) {
         expect(["p", "ul", "ol", "blockquote"]).toContain(c.prevTag);
         expect(Math.abs(c.leftDelta!)).toBeLessThanOrEqual(1);

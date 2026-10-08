@@ -1,5 +1,6 @@
 "use client";
 import "./lesson-visuals.css";
+import type { ReactNode } from "react";
 import { ScenePortrait } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
@@ -66,7 +67,8 @@ export function LessonConceptWorkbench({
   lesson,
   worldSlug,
   moduleSlug,
-}: Props) {
+  learningGoals,
+}: Props & { learningGoals?: ReactNode }) {
   if (worldSlug !== "deep-orbit") return null;
   const spec = DEEP_ORBIT_VISUALS[lesson.slug];
   if (!spec) return null;
@@ -80,6 +82,7 @@ export function LessonConceptWorkbench({
       {spec.introduction && (
         <p className="lesson-workbench-introduction">{spec.introduction}</p>
       )}
+      {learningGoals}
       {spec.kind === "tensor" && spec.mode === "create" ? (
         <LessonInstrument key={lesson.slug} spec={spec} />
       ) : (

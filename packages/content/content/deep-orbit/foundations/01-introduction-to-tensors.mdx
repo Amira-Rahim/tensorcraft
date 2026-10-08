@@ -83,28 +83,15 @@ const reading = tf.tensor(streamValues);
 const shape = reading.shape; // [5]
 const values = reading.arraySync();
 
-// Provided cleanup
+// Provided: release the tensor's memory.
+// The copied values remain available.
 reading.dispose();`}
 </CodeBlock>
 
 The **shape** `[5]` describes one list of five numbers. `arraySync()` copies
 them into a JavaScript array. Check that all five readings are present and
-in their original order.
-
-<ConceptReference summary="Reading values and cleanup">
-
-Small differences in the last decimal places are normal when TensorFlow.js
-stores numbers. The preview rounds the readings for display.
-
-`reading.dispose()` releases the tensor's storage after you finish with it.
-The copied JavaScript values remain available. This line is already supplied
-in the exercise, so you can focus on creating and checking the tensor.
-
-This small exercise uses `arraySync()` to read the values immediately. In an
-application, prefer `await reading.array()` so reading the data does not block
-the page. Later lessons cover cleanup when you combine several operations.
-
-</ConceptReference>
+in their original order. TensorFlow.js may show tiny rounding differences
+in the copied values.
 
 ## Challenge
 

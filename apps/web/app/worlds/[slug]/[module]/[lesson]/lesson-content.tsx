@@ -31,6 +31,7 @@ import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
 import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
 import { TensorFlowReferences } from "@/app/components/mdx/tensorflow-reference";
+import { MissionLearningGoals } from "@/app/components/lesson-visuals/mission-learning-goals";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
 // runtime + editor (~300 KB gzipped). Loading it dynamically with
@@ -499,7 +500,7 @@ export function LessonContent({
       },
       LearningObjectives: wrapVisibility(
         "LearningObjectives",
-        LearningObjectives,
+        worldId === "deep-orbit" ? MissionLearningGoals : LearningObjectives,
       ),
       MathBlock: wrapVisibility("MathBlock", MathBlock),
       NextLesson: wrapVisibility("NextLesson", NextLesson),

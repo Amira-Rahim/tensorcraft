@@ -50,7 +50,6 @@ import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
-import { LessonDocumentation } from "./lesson-documentation";
 import type { GlossaryEntry, LessonReference } from "@tensorcraft/content";
 import {
   PHASE,
@@ -2029,6 +2028,7 @@ function StepConcept({
         lesson={lesson}
         worldSlug={worldSlug}
         moduleSlug={moduleSlug}
+        learningGoals={visualFirst ? objectives : undefined}
       />
       <div className="mx-auto max-w-[820px]">
         {!visualFirst && (
@@ -2057,13 +2057,6 @@ function StepConcept({
             hideStoryZone
           />
         </div>
-        <LessonDocumentation references={lesson.documentation} />
-        {visualFirst && (
-          <details className="lesson-goals">
-            <summary>Learning goals for this mission</summary>
-            {objectives}
-          </details>
-        )}
       </div>
     </div>
   );

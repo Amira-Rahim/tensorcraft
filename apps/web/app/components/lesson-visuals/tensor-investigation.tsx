@@ -89,6 +89,11 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
         </div>
       </div>
 
+      <section className="tensor-investigation-purpose">
+        <h3>Why use a tensor for an average?</h3>
+        <p>{spec.takeaway}</p>
+      </section>
+
       <div className="tensor-investigation-console">
         <figure className="iv-reading-chart tensor-investigation-packet">
           <figcaption>
@@ -197,7 +202,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
             <button
               ref={runButton}
               type="button"
-              disabled={pending}
+              aria-disabled={pending}
               aria-expanded={Boolean(result)}
               aria-controls={resultId}
               onClick={calculate}
@@ -259,10 +264,6 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
       </div>
 
       <div className="tensor-investigation-reference">
-        <details>
-          <summary>Why use a tensor for an average?</summary>
-          <p className="iv-takeaway">{spec.takeaway}</p>
-        </details>
         <p className="iv-provenance">
           Runs with TensorFlow.js in your browser. Values are rounded for
           display.

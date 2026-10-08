@@ -21,7 +21,8 @@ starterCode: |
   const shape = null;
   const values = null;
 
-  // Provided cleanup. Keep this after you read the values.
+  // Provided: release the tensor's memory.
+  // The copied values remain available.
   reading?.dispose();
 solutionCode: |
   const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];

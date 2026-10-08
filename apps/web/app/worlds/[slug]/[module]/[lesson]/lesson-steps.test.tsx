@@ -434,7 +434,7 @@ describe("LessonSteps, LessonShell layout", () => {
     ).toHaveLength(1);
   });
 
-  it("keeps learning goals available after the visual-first Concept read", () => {
+  it("shows learning goals before the Concept activity", () => {
     renderSteps();
     fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
@@ -442,11 +442,13 @@ describe("LessonSteps, LessonShell layout", () => {
     const body = document.querySelector(
       '.lesson-step-content[data-layout="reading"]',
     )!;
+    const activity = document.querySelector(".lesson-instrument")!;
     expect(
-      body.compareDocumentPosition(intro) & Node.DOCUMENT_POSITION_FOLLOWING,
+      intro.compareDocumentPosition(activity) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(intro.closest("details")).not.toHaveAttribute("open");
-    // Goals remain rendered in their own partition, within an optional disclosure.
+    expect(intro.closest("details")).toBeNull();
+    // Goals retain their own content partition before the activity.
     const introContent = intro.querySelector("[data-testid='lesson-content']");
     expect(introContent).toHaveAttribute("data-visible", "LearningObjectives");
     expect(introContent).not.toHaveAttribute("data-layout");
