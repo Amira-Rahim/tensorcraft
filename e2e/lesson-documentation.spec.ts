@@ -36,17 +36,6 @@ for (const [width, scheme] of [
     await expect(instrument.getByRole("status")).toContainText("0.544");
     await expect(page).toHaveURL(/#step-concept$/);
 
-    const codeDocs = page.getByTestId("code-documentation");
-    await expect(codeDocs).toHaveCount(1);
-    await expect(codeDocs).not.toHaveAttribute("open");
-    await codeDocs.locator("summary").click();
-    await expect(
-      codeDocs.getByRole("link", { name: /tf.Tensor.arraySync/ }),
-    ).toHaveAttribute(
-      "href",
-      "https://js.tensorflow.org/api/4.22.0/#tf.Tensor.arraySync",
-    );
-
     const shape = page.getByRole("button", { name: "shape", exact: true });
     await shape.focus();
     await page.keyboard.press("Enter");

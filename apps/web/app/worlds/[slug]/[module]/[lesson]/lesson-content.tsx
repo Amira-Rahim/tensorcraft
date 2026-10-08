@@ -30,7 +30,6 @@ import {
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { useActivityUser } from "@/app/components/learning-activity-scope";
 import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
-import { TensorFlowReferences } from "@/app/components/mdx/tensorflow-reference";
 import { MissionLearningGoals } from "@/app/components/lesson-visuals/mission-learning-goals";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
@@ -442,19 +441,7 @@ export function LessonContent({
         );
       },
       CodeBlock: (props: React.ComponentProps<typeof CodeBlock>) =>
-        shouldShow("CodeBlock") ? (
-          <CodeBlock
-            {...props}
-            footer={
-              typeof props.children === "string" &&
-              ["javascript", "typescript", "js", "ts", "jsx", "tsx"].includes(
-                props.language ?? "typescript",
-              ) ? (
-                <TensorFlowReferences code={props.children} />
-              ) : undefined
-            }
-          />
-        ) : null,
+        shouldShow("CodeBlock") ? <CodeBlock {...props} /> : null,
       HintPanel: (props: { hints: unknown }) =>
         shouldShow("HintPanel") ? (
           <HintPanel

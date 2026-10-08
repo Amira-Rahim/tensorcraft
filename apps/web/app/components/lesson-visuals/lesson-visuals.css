@@ -982,16 +982,19 @@
   outline-offset: 4px;
 }
 
-/* One opening scene, one packet, and a crew response to the learner's run. */
+/* Separate the crew's scene from the explanation and working console. */
 .lesson-instrument.tensor-investigation {
   padding: 0;
-  border: 1px solid var(--tc-border);
-  background: var(--tc-surface);
+  border: 0;
+  background: transparent;
 }
 .tensor-investigation-opening {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   align-items: center;
+  margin-bottom: 40px;
+  border: 1px solid var(--tc-border);
+  background: var(--tc-surface);
 }
 .tensor-investigation-art {
   margin: 0;
@@ -1037,12 +1040,15 @@
   line-height: 1.6;
   max-width: 46ch;
 }
+.tensor-investigation-workspace {
+  border: 1px solid var(--tc-border);
+  background: var(--tc-bg);
+}
 .tensor-investigation-console {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(24px, 3vw, 40px);
   padding: clamp(20px, 3vw, 36px);
-  border-top: 1px solid var(--tc-border);
   background: var(--tc-bg);
   align-items: start;
 }
@@ -1076,8 +1082,7 @@
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
   gap: 16px clamp(24px, 3vw, 40px);
   align-items: start;
-  padding: 24px clamp(20px, 3vw, 36px);
-  border-top: 1px solid var(--tc-border);
+  margin-bottom: 28px;
 }
 .tensor-investigation-purpose > h3 {
   margin: 0;
@@ -1102,6 +1107,7 @@
   margin: 0;
   padding: clamp(20px, 3vw, 36px);
   border-top: 1px solid var(--tc-border);
+  background: var(--tc-surface);
   scroll-margin-block: 24px;
 }
 .tensor-investigation-findings {
@@ -1125,6 +1131,7 @@
 .tensor-investigation-reference {
   padding: 20px clamp(20px, 3vw, 36px);
   border-top: 1px solid var(--tc-border);
+  background: var(--tc-surface);
 }
 .tensor-investigation-reference .iv-provenance {
   margin: 0;
