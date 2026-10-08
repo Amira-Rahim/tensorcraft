@@ -84,6 +84,9 @@ vi.mock("./lesson-drawer", () => ({
 
 vi.mock("@tensorcraft/ui", () => ({
   SceneHeading: () => null,
+  AnimatedAvatar: ({ name }: { name: string }) => (
+    <span role="img" aria-label={name} />
+  ),
   ScenePortrait: ({ src }: { src: string }) => (
     <div data-testid="scene-portrait-stub" data-src={src} />
   ),

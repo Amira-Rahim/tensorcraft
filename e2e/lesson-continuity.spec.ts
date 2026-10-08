@@ -80,6 +80,9 @@ for (const [width, scheme] of [
     await expect(orientation).toHaveCount(0);
     await expect(takeaway).toHaveCount(0);
     const instrument = page.locator(".lesson-instrument");
+    await expect(instrument).toContainText("Sector 7-G: the first packet");
+    await expect(instrument).toContainText("Demir");
+    await expect(page.getByTestId("tensor-story-response")).toHaveCount(0);
     await expect(page.locator(".lesson-workbench-introduction")).toContainText(
       "A tensor is a container for numbers",
     );
@@ -92,6 +95,15 @@ for (const [width, scheme] of [
     await expect(instrument.getByRole("status")).toContainText(
       "Average reading 0.544",
     );
+    await expect(page.getByTestId("tensor-story-response")).toContainText(
+      "full packet for Farah",
+    );
+    await expect(page.getByTestId("tensor-story-response")).toBeInViewport({
+      ratio: 0.85,
+    });
+    await expect(
+      page.getByRole("heading", { name: "Prepare the same packet for Farah" }),
+    ).toBeVisible();
     await expect(
       instrument.getByText("shape [5]", { exact: true }),
     ).toBeVisible();

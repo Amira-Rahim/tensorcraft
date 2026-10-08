@@ -72,11 +72,26 @@ describe("the complete Deep Orbit visual curriculum", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       "does not identify unusual readings",
     );
+    expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
+      "ARIA",
+    );
+    expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
+      "lowest reading is 0.12",
+    );
+    expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
+      "highest is 0.94",
+    );
+    expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
+      "full packet for Farah",
+    );
     expect(screen.getByText("shape [5]")).toBeInTheDocument();
     expect(screen.getByText("Dashed line: average 0.544")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
     expect(screen.queryByText("shape [5]")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("tensor-story-response"),
+    ).not.toBeInTheDocument();
     expect(source).toHaveTextContent(FIRST_PACKET.join(""));
   });
   it("allows retry after TensorFlow.js fails to load without inventing a result", async () => {
@@ -94,6 +109,9 @@ describe("the complete Deep Orbit visual curriculum", () => {
       expect(screen.getByRole("status")).toHaveTextContent("could not run"),
     );
     expect(screen.queryByText("shape [5]")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("tensor-story-response"),
+    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent("0.544"),
@@ -152,7 +170,10 @@ describe("the complete Deep Orbit visual curriculum", () => {
       const slider = screen.queryAllByRole("slider")[0];
       const buttons = screen.queryAllByRole("button");
       expect(slider || buttons.length).toBeTruthy();
-      const before = screen.getByText(spec.action).parentElement!.textContent;
+      const instrument = screen
+        .getByText(spec.action)
+        .closest("[data-instrument]")!;
+      const before = instrument.textContent;
       if (slider) {
         expect(slider).toHaveAccessibleName();
         const input = slider as HTMLInputElement;
@@ -165,9 +186,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
           expect(screen.getByRole("status")).toHaveTextContent("0.544"),
         );
       }
-      expect(screen.getByText(spec.action).parentElement!.textContent).not.toBe(
-        before,
-      );
+      expect(instrument.textContent).not.toBe(before);
     },
   );
 });

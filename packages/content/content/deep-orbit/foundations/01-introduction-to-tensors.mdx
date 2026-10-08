@@ -67,13 +67,14 @@ A **tensor** is a container for numbers.
 
 <LearningObjectives objectives={["Explain why this course uses tensors to hold data for TensorFlow.js", "Create a tensor from a JavaScript array", "Read its values and interpret shape [5] as a list of five numbers"]} />
 
-## Create and check your tensor
+## Prepare the same packet for Farah
 
-The average above is an example of using a tensor. Your challenge focuses
-on creating one and checking that all five readings arrived correctly.
+Farah needs the individual readings to investigate the signal. An average
+alone would hide the differences between them. Help Demir create a **tensor**
+that holds the full packet, then read it back to check that nothing is missing.
 
 TensorFlow.js is available as `tf` in the exercise. Create the tensor,
-then read its shape and values:
+then check its shape and stored values:
 
 <CodeBlock language="javascript" title="prepare-readings.js">
 {`const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
@@ -107,9 +108,9 @@ the page. Later lessons cover cleanup when you combine several operations.
 
 ## Challenge
 
-Prepare the same five sensor readings for TensorFlow.js. Create the tensor,
-then save its shape and values so Demir can check the data before the crew
-starts looking for patterns. The cleanup line is provided.
+Help Demir prepare the same five sensor readings for Farah. Create the tensor,
+then save its shape and values so she can check every reading in order.
+The cleanup line is provided.
 
 <Exercise slug="create-a-tensor" />
 

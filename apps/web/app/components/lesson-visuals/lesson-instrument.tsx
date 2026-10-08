@@ -2,11 +2,10 @@
 import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import type { LessonVisualSpec } from "./deep-orbit-visuals";
-import { runTensorExample } from "./tensor-example";
-import { TensorFlowApiLink, TensorFlowCode } from "../mdx/tensorflow-reference";
+import { TensorInvestigation } from "./tensor-investigation";
+import { TensorFlowCode } from "../mdx/tensorflow-reference";
 import {
   READING_VALUES,
-  FIRST_PACKET,
   NORMALIZATION_ROWS,
   screening,
   gradientStep,
@@ -297,165 +296,6 @@ function Bars({
           </output>
         </div>
       ))}
-    </div>
-  );
-}
-
-function TensorCreationPreview() {
-  const [result, setResult] = useState<Awaited<
-    ReturnType<typeof runTensorExample>
-  > | null>(null);
-  const [pending, setPending] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const resultId = useId();
-  async function calculate() {
-    if (pending) return;
-    if (result) {
-      setResult(null);
-      return;
-    }
-    setPending(true);
-    setFailed(false);
-    try {
-      setResult(await runTensorExample(FIRST_PACKET));
-    } catch {
-      setFailed(true);
-    } finally {
-      setPending(false);
-    }
-  }
-  return (
-    <div className="iv-tensor-creation">
-      <figure className="iv-reading-chart">
-        <figcaption>Five sensor readings in a JavaScript array</figcaption>
-        <svg viewBox="0 0 400 150" aria-hidden="true">
-          <text x="0" y="18">
-            1
-          </text>
-          <text x="0" y="125">
-            0
-          </text>
-          <line x1="0" x2="400" y1="120" y2="120" className="iv-gridline" />
-          {FIRST_PACKET.map((value, i) => (
-            <rect
-              key={i}
-              x={20 + i * 80}
-              y={120 - value * 104}
-              width="40"
-              height={value * 104}
-              fill={result ? sage : "var(--tc-muted)"}
-              fillOpacity={result ? 1 : 0.7}
-            />
-          ))}
-          {result && (
-            <g>
-              <line
-                x1="0"
-                x2="400"
-                y1={120 - result.average * 104}
-                y2={120 - result.average * 104}
-                stroke={brass}
-                strokeWidth="2"
-                strokeDasharray="6 4"
-              />
-              <text x="0" y="145">
-                Dashed line: average {fmt(result.average, 3)}
-              </text>
-            </g>
-          )}
-        </svg>
-        <div
-          className={`iv-cells${result ? "" : " iv-cells-muted"}`}
-          style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
-          role="list"
-          aria-label="Five sensor readings in a JavaScript array"
-        >
-          {(result?.values ?? FIRST_PACKET).map((value, i) => (
-            <span key={i} role="listitem">
-              {fmt(value)}
-            </span>
-          ))}
-        </div>
-      </figure>
-      <section className="iv-worked-example" aria-label="Worked example">
-        <div className="iv-example-step">
-          <h3>Give TensorFlow.js the readings</h3>
-          <pre className="iv-example-code">
-            <code>
-              <span className="iv-code-keyword">const</span>{" "}
-              <span className="iv-code-reading">reading</span>
-              {" = "}
-              <TensorFlowApiLink symbol="tf.tensor" />
-              (streamValues);
-            </code>
-          </pre>
-          <p>
-            Here, <code>tf</code> is TensorFlow.js. This creates the tensor{" "}
-            <code>reading</code> from your array, <code>streamValues</code>.
-          </p>
-          {result && (
-            <div className="iv-creation-shape">
-              <code>shape [{result.shape.join(", ")}]</code>
-              <span>One list containing five numbers.</span>
-            </div>
-          )}
-        </div>
-        <div className="iv-example-step">
-          <h3>Calculate the packet's average</h3>
-          <pre className="iv-example-code">
-            <code>
-              <span className="iv-code-keyword">const</span>{" "}
-              <span className="iv-code-average">average</span>
-              {" = "}
-              <TensorFlowApiLink symbol="tf.mean" />(
-              <span className="iv-code-reading">reading</span>);
-            </code>
-          </pre>
-          <p>
-            <code>mean</code> means average: add the five readings, then divide
-            by five.
-          </p>
-          <div
-            id={resultId}
-            className="iv-creation-status"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {result ? (
-              <>
-                <p className="iv-average-result">
-                  Average reading <strong>{fmt(result.average, 3)}</strong>
-                </p>
-                <p>
-                  The new tensor holds this one number. The dashed line marks
-                  the average; it does not identify unusual readings.
-                </p>
-              </>
-            ) : failed ? (
-              "The calculation could not run. Select Calculate average to try again."
-            ) : pending ? (
-              "Loading TensorFlow.js and calculating the average…"
-            ) : null}
-          </div>
-        </div>
-        <div className="iv-creation-line">
-          <button
-            type="button"
-            disabled={pending}
-            aria-expanded={Boolean(result)}
-            aria-controls={resultId}
-            onClick={calculate}
-          >
-            {pending
-              ? "Calculating…"
-              : result
-                ? "Reset example"
-                : "Calculate average"}
-          </button>
-          {!result && <span>Runs both lines above.</span>}
-        </div>
-      </section>
     </div>
   );
 }
@@ -1807,12 +1647,8 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
   let content: ReactNode;
   switch (spec.kind) {
     case "tensor":
-      content =
-        spec.mode === "create" ? (
-          <TensorCreationPreview />
-        ) : (
-          <TensorInstrument mode={spec.mode} />
-        );
+      if (spec.mode === "create") return <TensorInvestigation spec={spec} />;
+      content = <TensorInstrument mode={spec.mode} />;
       break;
     case "neuron":
       content = <NeuronInstrument mode={spec.mode} />;

@@ -80,23 +80,27 @@ export function LessonConceptWorkbench({
       {spec.introduction && (
         <p className="lesson-workbench-introduction">{spec.introduction}</p>
       )}
-      <div className="lesson-workbench-grid">
-        <LessonMissionScene
-          lesson={lesson}
-          worldSlug={worldSlug}
-          moduleSlug={moduleSlug}
-        />
-        {lesson.slug === "tensor-shapes" ? (
-          <div
-            className="lesson-instrument lesson-prose lesson-embedded-experiment"
-            data-no-swipe
-          >
-            <ChannelLayoutExperiment />
-          </div>
-        ) : (
-          <LessonInstrument key={lesson.slug} spec={spec} />
-        )}
-      </div>
+      {spec.kind === "tensor" && spec.mode === "create" ? (
+        <LessonInstrument key={lesson.slug} spec={spec} />
+      ) : (
+        <div className="lesson-workbench-grid">
+          <LessonMissionScene
+            lesson={lesson}
+            worldSlug={worldSlug}
+            moduleSlug={moduleSlug}
+          />
+          {lesson.slug === "tensor-shapes" ? (
+            <div
+              className="lesson-instrument lesson-prose lesson-embedded-experiment"
+              data-no-swipe
+            >
+              <ChannelLayoutExperiment />
+            </div>
+          ) : (
+            <LessonInstrument key={lesson.slug} spec={spec} />
+          )}
+        </div>
+      )}
     </section>
   );
 }

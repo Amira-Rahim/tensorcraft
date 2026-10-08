@@ -2,7 +2,8 @@ slug: create-a-tensor
 lessonSlug: introduction-to-tensors
 title: "Prepare the Five Readings"
 instructions: |
-  Put the five sensor readings in `streamValues` into a form TensorFlow.js can use.
+  Help Demir prepare the five sensor readings for Farah. Put `streamValues`
+  into a tensor, then check that all five values are still there and in order.
   Replace the three `null` values:
 
   1. Create `reading` with `tf.tensor(streamValues)`.
