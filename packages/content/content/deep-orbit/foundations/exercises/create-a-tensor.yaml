@@ -21,7 +21,7 @@ starterCode: |
   const shape = null;
   const values = null;
 
-  // Provided: release the tensor's memory.
+  // Provided: free the memory used by reading.
   // The copied values remain available.
   reading?.dispose();
 solutionCode: |
