@@ -1,10 +1,17 @@
-import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { describe, it, expect, afterEach, vi } from "vitest";
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  waitFor,
+} from "@testing-library/react";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import { LessonInstrument } from "./lesson-instrument";
+import * as tensorExample from "./tensor-example";
 import { LESSON_HANDOFFS } from "./lesson-handoffs";
 import {
   gradientStep,
@@ -27,14 +34,17 @@ const lessons = JSON.parse(
   moduleId: string;
   scene?: { epilogueLocation?: string };
 }>;
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 describe("the complete Deep Orbit visual curriculum", () => {
   it("has a task-specific handoff for every actual lesson", () => {
     expect(Object.keys(LESSON_HANDOFFS).sort()).toEqual(
       lessons.map((l) => l.slug).sort(),
     );
   });
-  it("previews tensor creation from the exercise's readings and resets it", () => {
+  it("calculates an average from the exercise's readings without changing them, then resets", async () => {
     const exercises = JSON.parse(
       readFileSync(root + "packages/content/.velite/exercises.json", "utf8"),
     );
@@ -50,27 +60,44 @@ describe("the complete Deep Orbit visual curriculum", () => {
       />,
     );
     const source = screen.getByRole("list", {
-      name: "Your JavaScript array: streamValues",
+      name: "Five sensor readings in a JavaScript array",
     });
-    expect(
-      screen.queryByRole("list", { name: "TensorFlow.js tensor: reading" }),
-    ).not.toBeInTheDocument();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Preview tensor creation" }),
+    const originalValues = source.textContent;
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
+    await waitFor(() =>
+      expect(screen.getByRole("status")).toHaveTextContent("0.544"),
     );
-    expect(
-      screen.getByRole("list", { name: "TensorFlow.js tensor: reading" })
-        .textContent,
-    ).toBe(source.textContent);
+    expect(source.textContent).toBe(originalValues);
     expect(screen.getByRole("status")).toHaveTextContent(
-      "Same readings, same order",
+      "does not identify unusual readings",
     );
     expect(screen.getByText("shape [5]")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Reset preview" }));
-    expect(
-      screen.queryByRole("list", { name: "TensorFlow.js tensor: reading" }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByText("Dashed line: average 0.544")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    expect(screen.queryByText("shape [5]")).not.toBeInTheDocument();
     expect(source).toHaveTextContent(FIRST_PACKET.join(""));
+  });
+  it("allows retry after TensorFlow.js fails to load without inventing a result", async () => {
+    vi.spyOn(tensorExample, "runTensorExample").mockRejectedValueOnce(
+      new Error("offline"),
+    );
+    render(
+      <LessonInstrument
+        spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
+    expect(screen.getByRole("button", { name: "Calculating…" })).toBeDisabled();
+    await waitFor(() =>
+      expect(screen.getByRole("status")).toHaveTextContent("could not run"),
+    );
+    expect(screen.queryByText("shape [5]")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
+    await waitFor(() =>
+      expect(screen.getByRole("status")).toHaveTextContent("0.544"),
+    );
   });
   it("uses the normalization exercise's rows and distinguishes raw, z-score and min-max results", () => {
     const exercises = JSON.parse(
@@ -118,7 +145,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
   });
   it.each(Object.entries(DEEP_ORBIT_VISUALS))(
     "%s renders an instrument and an operable, labeled input",
-    (_slug, spec) => {
+    async (_slug, spec) => {
       render(<LessonInstrument spec={spec} />);
       expect(screen.getByText(spec.action)).toBeInTheDocument();
       expect(screen.getByText(spec.takeaway)).toBeInTheDocument();
@@ -133,6 +160,11 @@ describe("the complete Deep Orbit visual curriculum", () => {
           target: { value: input.value === input.max ? input.min : input.max },
         });
       } else fireEvent.click(buttons[1] ?? buttons[0]!);
+      if (spec.kind === "tensor" && spec.mode === "create") {
+        await waitFor(() =>
+          expect(screen.getByRole("status")).toHaveTextContent("0.544"),
+        );
+      }
       expect(screen.getByText(spec.action).parentElement!.textContent).not.toBe(
         before,
       );

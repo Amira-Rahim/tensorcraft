@@ -61,18 +61,46 @@
 .iv-tensor-creation .iv-cells > span {
   font-size: clamp(12px, 3.6vw, 15px);
 }
+.iv-reading-chart {
+  margin: 0 0 12px;
+}
+.iv-reading-chart > figcaption {
+  margin-bottom: 12px;
+  color: var(--tc-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.iv-calculation-steps {
+  margin: 24px 0 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 20px;
+  list-style: decimal;
+}
+.iv-calculation-steps li {
+  padding-left: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.iv-calculation-steps li::marker {
+  color: var(--tc-muted);
+}
+.iv-calculation-steps li > span,
+.iv-calculation-steps li > code {
+  display: block;
+}
+.iv-calculation-steps li > code {
+  margin-top: 6px;
+  font:
+    13px/1.8 var(--font-mono),
+    monospace;
+  overflow-wrap: anywhere;
+}
 .iv-creation-line {
   display: grid;
   justify-items: start;
   gap: 16px;
   padding-block: 24px;
-}
-.iv-creation-line > code {
-  max-width: 100%;
-  font:
-    13px/1.8 var(--font-mono),
-    monospace;
-  overflow-wrap: anywhere;
 }
 .iv-creation-line > button {
   padding: 10px 18px;
@@ -86,28 +114,40 @@
   color: var(--tc-text);
   border-color: var(--tc-border);
 }
-.iv-creation-result {
-  border-top: 1px solid var(--tc-border);
-  padding-top: 20px;
-}
 .iv-creation-shape {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 8px 16px;
-  margin-top: 18px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 12px;
 }
 .iv-creation-shape code {
   font:
-    600 16px/1.5 var(--font-mono),
+    600 13px/1.5 var(--font-mono),
     monospace;
   color: var(--tc-primary);
 }
 .iv-creation-status {
-  margin: 16px 0 0;
+  margin: 0;
   font-size: 14px;
   line-height: 1.7;
+}
+.iv-creation-status p {
+  margin: 0;
+}
+.iv-creation-status .iv-average-result {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.iv-average-result strong {
+  color: var(--iv-brass);
+  font:
+    600 28px/1.4 var(--font-mono),
+    monospace;
 }
 .iv-creation-status:empty {
   margin: 0;

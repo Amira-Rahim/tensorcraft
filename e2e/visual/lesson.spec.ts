@@ -76,11 +76,9 @@ for (const [name, viewport] of [
         stylePath: SCREENSHOT_STYLE,
       });
       if (step === 1) {
-        await page
-          .getByRole("button", { name: "Preview tensor creation" })
-          .click();
+        await page.getByRole("button", { name: "Calculate average" }).click();
         await expect(page.locator(".iv-creation-status")).toContainText(
-          "Same readings, same order",
+          "Average reading 0.544",
         );
         await page.evaluate(() =>
           (document.activeElement as HTMLElement | null)?.blur(),

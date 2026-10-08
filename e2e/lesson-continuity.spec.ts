@@ -84,25 +84,27 @@ for (const [width, scheme] of [
       "A tensor is a container for numbers",
     );
     const preview = instrument.getByRole("button", {
-      name: "Preview tensor creation",
+      name: "Calculate average",
     });
     await expect(preview).toHaveAttribute("aria-expanded", "false");
     await preview.focus();
     await page.keyboard.press("Space");
     await expect(instrument.getByRole("status")).toContainText(
-      "Same readings, same order",
+      "Average reading 0.544",
     );
     await expect(
       instrument.getByText("shape [5]", { exact: true }),
     ).toBeVisible();
     await expect(
-      instrument.getByRole("list", { name: "TensorFlow.js tensor: reading" }),
-    ).toHaveText(
-      await instrument
-        .getByRole("list", { name: "Your JavaScript array: streamValues" })
-        .innerText(),
-      { useInnerText: true },
-    );
+      instrument
+        .getByRole("list", {
+          name: "Five sensor readings in a JavaScript array",
+        })
+        .getByRole("listitem"),
+    ).toHaveText(["0.12", "0.94", "0.31", "0.88", "0.47"]);
+    await expect(
+      instrument.getByText("Dashed line: average 0.544"),
+    ).toBeVisible();
     await expect(
       page.getByText("prepare-readings.js", { exact: true }),
     ).toBeVisible();

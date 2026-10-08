@@ -2,6 +2,7 @@
 import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import type { LessonVisualSpec } from "./deep-orbit-visuals";
+import { runTensorExample } from "./tensor-example";
 import {
   READING_VALUES,
   FIRST_PACKET,
@@ -298,47 +299,136 @@ function Bars({
 }
 
 function TensorCreationPreview() {
-  const [created, setCreated] = useState(false);
+  const [result, setResult] = useState<Awaited<
+    ReturnType<typeof runTensorExample>
+  > | null>(null);
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
   const resultId = useId();
+  async function calculate() {
+    if (pending) return;
+    if (result) {
+      setResult(null);
+      return;
+    }
+    setPending(true);
+    setFailed(false);
+    try {
+      setResult(await runTensorExample(FIRST_PACKET));
+    } catch {
+      setFailed(true);
+    } finally {
+      setPending(false);
+    }
+  }
   return (
     <div className="iv-tensor-creation">
-      <Grid
-        values={[...FIRST_PACKET]}
-        width={5}
-        label="Your JavaScript array: streamValues"
-        muted
-      />
+      <figure className="iv-reading-chart">
+        <figcaption>Five sensor readings in a JavaScript array</figcaption>
+        <svg viewBox="0 0 400 150" aria-hidden="true">
+          <text x="0" y="18">
+            1
+          </text>
+          <text x="0" y="125">
+            0
+          </text>
+          <line x1="0" x2="400" y1="120" y2="120" className="iv-gridline" />
+          {FIRST_PACKET.map((value, i) => (
+            <rect
+              key={i}
+              x={20 + i * 80}
+              y={120 - value * 104}
+              width="40"
+              height={value * 104}
+              fill={result ? sage : "var(--tc-muted)"}
+              fillOpacity={result ? 1 : 0.7}
+            />
+          ))}
+          {result && (
+            <g>
+              <line
+                x1="0"
+                x2="400"
+                y1={120 - result.average * 104}
+                y2={120 - result.average * 104}
+                stroke={brass}
+                strokeWidth="2"
+                strokeDasharray="6 4"
+              />
+              <text x="0" y="145">
+                Dashed line: average {fmt(result.average, 3)}
+              </text>
+            </g>
+          )}
+        </svg>
+        <div
+          className={`iv-cells${result ? "" : " iv-cells-muted"}`}
+          style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
+          role="list"
+          aria-label="Five sensor readings in a JavaScript array"
+        >
+          {(result?.values ?? FIRST_PACKET).map((value, i) => (
+            <span key={i} role="listitem">
+              {fmt(value)}
+            </span>
+          ))}
+        </div>
+      </figure>
+      <ol className="iv-calculation-steps">
+        <li>
+          <span>Store the readings in a tensor</span>
+          <code>const reading = tf.tensor(streamValues);</code>
+          {result && (
+            <small className="iv-creation-shape">
+              <code>shape [{result.shape.join(", ")}]</code>
+              <span>One list containing five numbers.</span>
+            </small>
+          )}
+        </li>
+        <li>
+          <span>Use the tensor to calculate their average</span>
+          <code>const average = tf.mean(reading);</code>
+        </li>
+      </ol>
       <div className="iv-creation-line">
-        <code>const reading = tf.tensor(streamValues);</code>
         <button
           type="button"
-          aria-expanded={created}
+          disabled={pending}
+          aria-expanded={Boolean(result)}
           aria-controls={resultId}
-          onClick={() => setCreated(!created)}
+          onClick={calculate}
         >
-          {created ? "Reset preview" : "Preview tensor creation"}
+          {pending
+            ? "Calculating…"
+            : result
+              ? "Reset example"
+              : "Calculate average"}
         </button>
       </div>
-      <div id={resultId} className="iv-creation-result" hidden={!created}>
-        {created && (
+      <div
+        id={resultId}
+        className="iv-creation-status"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {result ? (
           <>
-            <Grid
-              values={[...FIRST_PACKET]}
-              width={5}
-              label="TensorFlow.js tensor: reading"
-            />
-            <div className="iv-creation-shape">
-              <code>shape [5]</code>
-              <span>One list containing five numbers.</span>
-            </div>
+            <p className="iv-average-result">
+              Average reading <strong>{fmt(result.average, 3)}</strong>
+            </p>
+            <p>
+              TensorFlow.js calculated this average from all five readings. An
+              average summarizes the data; it does not identify unusual
+              readings.
+            </p>
           </>
-        )}
+        ) : failed ? (
+          "The calculation could not run. Select Calculate average to try again."
+        ) : pending ? (
+          "Loading TensorFlow.js and calculating the average…"
+        ) : null}
       </div>
-      <p role="status" aria-live="polite" className="iv-creation-status">
-        {created
-          ? "Same readings, same order. They are now represented as a tensor that TensorFlow.js can use."
-          : ""}
-      </p>
     </div>
   );
 }
@@ -1751,7 +1841,7 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
         {spec.kind === "flow"
           ? "Illustrative handoff; code excerpts are not a live system run."
           : spec.kind === "tensor" && spec.mode === "create"
-            ? "Illustrated preview; readings rounded for display. You will run the code in the challenge."
+            ? "Runs with TensorFlow.js in your browser. Values are rounded for display."
             : "Practice data for this mechanism. Your challenge runs its own checks."}
       </p>
     </div>
