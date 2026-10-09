@@ -1,0 +1,37 @@
+apps/web/app/components/lesson-visuals/lesson-visuals.css
+  s_e5e3f635436b96::t_d8788f9551ed01 1056-1057,1073,1077-1095,1240-1244
+apps/web/app/components/lesson-visuals/lesson-visuals.test.tsx
+  s_e5e3f635436b96::t_d58b1c0720a0f8 82
+  s_e5e3f635436b96::t_d8788f9551ed01 73,79
+apps/web/app/components/lesson-visuals/lesson-handoffs.ts
+  s_e5e3f635436b96::t_ac6121a64571f8 4
+apps/web/app/components/lesson-visuals/deep-orbit-visuals.ts
+  s_e5e3f635436b96::t_ac6121a64571f8 70-71,74
+e2e/lesson-continuity.spec.ts
+  s_e5e3f635436b96::t_d8788f9551ed01 122
+  s_e5e3f635436b96::t_d58b1c0720a0f8 113
+apps/web/app/components/lesson-visuals/tensor-investigation.tsx
+  s_e5e3f635436b96::t_7bc232490e48a2 110-112,176-178,190-191,196-198,254-257,272-273
+  s_e5e3f635436b96::t_ac6121a64571f8 100,113,163-165,168-173,189,193-195,199-200,217,279
+packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx
+  s_e5e3f635436b96::t_ac6121a64571f8 17,64,70,72-73,89-91
+  s_e5e3f635436b96::t_26ab4c72e42cd7 68
+packages/content/content/deep-orbit/foundations/exercises/create-a-tensor.yaml
+  s_e5e3f635436b96::t_ac6121a64571f8 5-6,9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cebeb19b0f94c597c0396279013557a499d3492e",
+  "prompts": {},
+  "sessions": {
+    "s_e5e3f635436b96": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a10226-1621-7c70-ad9a-662892c0f596",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "amirasalah <amera.salah.89@gmail.com>"
+    }
+  }
+}
