@@ -22,9 +22,11 @@ for (const [width, scheme] of [
     await expect(
       page
         .locator(".lesson-story-grid")
-        .getByText(
-          /You will work alongside Demir, the crew's JavaScript engineer/,
-        ),
+        .locator("p")
+        .filter({
+          hasText:
+            /You will work alongside Demir, the crew's JavaScript engineer/,
+        }),
     ).toBeVisible();
     const header = await page
       .getByTestId("lesson-briefing-header")

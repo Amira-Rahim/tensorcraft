@@ -1,0 +1,68 @@
+/* The inline control keeps the surrounding prose's size and rhythm, including
+   inside instruments whose action buttons otherwise have a 44px minimum. */
+button.character-mention[data-character-mention] {
+  display: inline;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tc-primary, #6baa8a);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: inherit;
+  vertical-align: baseline;
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+button.character-mention[data-character-mention]:hover,
+button.character-mention[data-character-mention][aria-expanded="true"] {
+  text-decoration-style: solid;
+}
+
+button.character-mention[data-character-mention]:focus-visible {
+  outline: 2px solid var(--tc-primary, #6baa8a);
+  outline-offset: 3px;
+}
+
+.character-tooltip {
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: min(320px, calc(100vw - 24px));
+  padding: 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--tc-border, #3d3d3d);
+  background: var(--tc-surface-overlay, #313131);
+  color: var(--tc-text, #e0e0e0);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+  font-family: var(--font-inter), sans-serif;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.character-tooltip-copy {
+  min-width: 0;
+}
+.character-tooltip strong {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.character-tooltip p {
+  margin: 0;
+  color: var(--tc-muted, #b0b0b0);
+  font-size: 13px;
+  line-height: 1.5;
+}

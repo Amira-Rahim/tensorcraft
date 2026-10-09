@@ -1,3 +1,4 @@
+import { ProseText } from "../prose-text";
 import { Fragment, type ReactNode } from "react";
 
 /**
@@ -120,7 +121,9 @@ function Inline({ text }: { text: string }): ReactNode {
         {span.value}
       </code>
     ) : (
-      <span key={index}>{span.value}</span>
+      <span key={index}>
+        <ProseText>{span.value}</ProseText>
+      </span>
     ),
   );
 }

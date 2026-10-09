@@ -1,4 +1,5 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import type { ReviewOutcome } from "@tensorcraft/shared";
@@ -46,7 +47,7 @@ export function ReviewPromptCard({
         id={questionId}
         className="text-[15px] mb-4 text-text-primary font-mono"
       >
-        {question}
+        <ProseText>{question}</ProseText>
       </p>
       {state === "prompt" ? (
         <>
@@ -85,7 +86,7 @@ export function ReviewPromptCard({
             tabIndex={-1}
             className="p-4 bg-surface text-sm leading-relaxed text-text-primary"
           >
-            {answer}
+            <ProseText>{answer}</ProseText>
           </div>
           {state === "revealed" ? (
             <div className="mt-3 flex flex-wrap gap-2">

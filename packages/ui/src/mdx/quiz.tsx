@@ -1,5 +1,6 @@
 // DEPRECATED: replaced by RecallPrompt/LessonRecap in the lesson close; retained for unbuilt coming-soon world MDX. See docs/superpowers/specs/2026-06-15-end-of-lesson-design.md
 "use client";
+import { ProseText } from "../prose-text";
 
 import { useState } from "react";
 
@@ -78,7 +79,9 @@ export function Quiz({
       <h3 className="text-base font-semibold mb-2 text-text-primary">
         Quick Check
       </h3>
-      <p className="text-[15px] mb-4 text-text-primary/80">{question}</p>
+      <p className="text-[15px] mb-4 text-text-primary/80">
+        <ProseText>{question}</ProseText>
+      </p>
 
       <div
         className="flex flex-col gap-2"
@@ -168,7 +171,7 @@ export function Quiz({
           data-testid="quiz-explanation"
           className="mt-4 pt-4 border-t border-border text-sm text-text-primary/80 font-sans leading-relaxed"
         >
-          {explanation}
+          <ProseText>{explanation}</ProseText>
         </div>
       )}
     </div>

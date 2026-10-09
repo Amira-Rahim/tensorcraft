@@ -1,4 +1,5 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
 
 import { useEffect, useRef, useState } from "react";
 import { STORY_HISTORY } from "@tensorcraft/shared";
@@ -292,7 +293,7 @@ export function BossBeat({
           <strong className="text-text-primary">{opt.display}</strong>
         </p>
         <p className="text-base text-text-primary leading-relaxed">
-          {opt.consequence}
+          <ProseText>{opt.consequence}</ProseText>
         </p>
       </aside>
     );
@@ -331,7 +332,7 @@ export function BossBeat({
         )}
       </div>
       <p className="text-base text-text-primary leading-relaxed mb-5">
-        {prompt}
+        <ProseText>{prompt}</ProseText>
       </p>
       {/* Always mounted so the clock-out note is announced when it lands
           (round 7b, 2026-09-14), the way recall-prompt announces a reveal.

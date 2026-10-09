@@ -1,3 +1,4 @@
+import { ProseText } from "../prose-text";
 import type { ReactNode } from "react";
 import { CharacterAvatar } from "../character-avatar";
 
@@ -71,7 +72,7 @@ export function Dialogue({
               className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1"
               style={{ color: "var(--tc-primary, #E0E0E0)" }}
             >
-              {speaker}
+              <ProseText>{speaker}</ProseText>
             </div>
             {direction && (
               <div
@@ -79,14 +80,14 @@ export function Dialogue({
                 style={{ color: "var(--tc-muted, #A0A0A0)" }}
                 data-testid="direction"
               >
-                ({direction})
+                (<ProseText>{direction}</ProseText>)
               </div>
             )}
             <div
               className="text-[15px] leading-relaxed"
               style={{ color: "var(--tc-text, #c8c8c8)" }}
             >
-              {children}
+              <ProseText>{children}</ProseText>
             </div>
           </div>
         </div>
@@ -99,7 +100,7 @@ export function Dialogue({
             className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5 text-center"
             style={{ color: "var(--tc-primary, #E0E0E0)" }}
           >
-            {speaker}
+            <ProseText>{speaker}</ProseText>
           </div>
           {direction && (
             <div
@@ -107,14 +108,14 @@ export function Dialogue({
               style={{ color: "var(--tc-muted, #A0A0A0)" }}
               data-testid="direction"
             >
-              ({direction})
+              (<ProseText>{direction}</ProseText>)
             </div>
           )}
           <div
             className="text-[15px] leading-relaxed"
             style={{ color: "var(--tc-text, #c8c8c8)" }}
           >
-            {children}
+            <ProseText>{children}</ProseText>
           </div>
         </>
       )}

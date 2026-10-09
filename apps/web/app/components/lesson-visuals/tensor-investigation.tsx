@@ -1,4 +1,5 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
 
 import { useEffect, useId, useRef, useState } from "react";
 import { AnimatedAvatar, ScenePortrait } from "@tensorcraft/ui";
@@ -83,17 +84,23 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
           <div className="tensor-investigation-speaker">
             <AnimatedAvatar name="Ensign Demir" {...demir} />
             <p>
-              <strong>Demir</strong>
+              <strong>
+                <ProseText>Demir</ProseText>
+              </strong>
               <span>At the signal console</span>
             </p>
           </div>
-          <blockquote className="iv-instruction">{spec.action}</blockquote>
+          <blockquote className="iv-instruction">
+            <ProseText>{spec.action}</ProseText>
+          </blockquote>
         </div>
       </div>
 
       <section className="tensor-investigation-purpose">
         <h3>Why use a tensor for an average?</h3>
-        <p>{spec.takeaway}</p>
+        <p>
+          <ProseText>{spec.takeaway}</ProseText>
+        </p>
       </section>
 
       <div className="tensor-investigation-workspace">
@@ -160,7 +167,9 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               </div>
             ) : (
               <p className="tensor-packet-note">
-                These are the five sensor readings Demir is examining.
+                <ProseText>
+                  These are the five sensor readings Demir is examining.
+                </ProseText>
               </p>
             )}
           </figure>
@@ -184,7 +193,9 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               </p>
             </div>
             <div className="iv-example-step">
-              <h3>Calculate Demir's summary</h3>
+              <h3>
+                <ProseText>Calculate Demir's summary</ProseText>
+              </h3>
               <pre className="iv-example-code">
                 <code>
                   <span className="iv-code-keyword">const</span>{" "}
@@ -236,7 +247,9 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               <div className="tensor-investigation-speaker">
                 <AnimatedAvatar name="ARIA" {...aria} />
                 <p>
-                  <strong>ARIA</strong>
+                  <strong>
+                    <ProseText>ARIA</ProseText>
+                  </strong>
                   <span>Responding to the calculation</span>
                 </p>
               </div>
@@ -250,8 +263,10 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                   not identify unusual readings.
                 </p>
                 <p className="tensor-investigation-consequence">
-                  Demir keeps the full packet for Farah. She will need the
-                  individual readings to investigate further.
+                  <ProseText>
+                    Demir keeps the full packet for Farah. She will need the
+                    individual readings to investigate further.
+                  </ProseText>
                 </p>
               </div>
             </div>

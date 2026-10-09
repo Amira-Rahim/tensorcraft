@@ -1,4 +1,6 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
+import { LessonCharacters } from "@/app/components/lesson-characters";
 import {
   LearningActivityScope,
   useActivityUser,
@@ -268,7 +270,9 @@ export function LessonSteps(props: LessonStepsProps) {
       userId={props.reviewUserId ?? null}
       requireServerIdentity
     >
-      <LessonStepsInner {...props} />
+      <LessonCharacters worldSlug={props.worldSlug}>
+        <LessonStepsInner {...props} />
+      </LessonCharacters>
     </LearningActivityScope>
   );
 }
@@ -1878,7 +1882,7 @@ function StepBriefing({
             className="mb-6 text-lg md:text-xl leading-relaxed"
             style={{ color: "var(--tc-text)" }}
           >
-            {lesson.context.narrative}
+            <ProseText>{lesson.context.narrative}</ProseText>
           </p>
 
           {/* Story grid (spec section 2, item 4): the plate column beside the
@@ -2038,7 +2042,7 @@ function StepConcept({
               className="text-base leading-[1.85] mb-6 max-w-[820px]"
               style={{ color: "var(--tc-muted)" }}
             >
-              {lesson.concept.explanation}
+              <ProseText>{lesson.concept.explanation}</ProseText>
             </p>
             {objectives}
           </>
@@ -2265,7 +2269,7 @@ function StepConsequence({
         className="text-[15px] italic leading-[1.9] max-w-[520px] mx-auto mb-8"
         style={{ color: "var(--tc-muted)" }}
       >
-        {lesson.consequence.narrative}
+        <ProseText>{lesson.consequence.narrative}</ProseText>
       </p>
 
       {/* Closing scene from the MDX body (<Epilogue> blocks), the story

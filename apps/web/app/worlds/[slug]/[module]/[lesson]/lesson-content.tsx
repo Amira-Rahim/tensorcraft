@@ -1,4 +1,7 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
+import { createElement } from "react";
+import { LessonCharacters } from "@/app/components/lesson-characters";
 
 import {
   createContext,
@@ -390,7 +393,7 @@ export function LessonContent({
               : undefined
           }
         >
-          {children}
+          <ProseText>{children}</ProseText>
         </h2>
       ),
       pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
@@ -541,6 +544,22 @@ export function LessonContent({
         ) : null,
     };
 
+    for (const tag of [
+      "p",
+      "li",
+      "blockquote",
+      "h1",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "td",
+      "th",
+    ] as const) {
+      base[tag] = ({ children, ...props }: React.HTMLAttributes<HTMLElement>) =>
+        createElement(tag, props, <ProseText>{children}</ProseText>);
+    }
+
     // Derive the optional bridge-hint payload from lesson.concept.bridge
     // so the Exercise can surface the JS-to-ML reminder without reading
     // frontmatter itself.
@@ -674,24 +693,29 @@ export function LessonContent({
   }, [lesson.body, lesson.concept, lesson.hints, components]);
 
   return (
-    <ExerciseDataProvider exercises={exerciseMap}>
-      <div
-        className="max-w-none lesson-prose lesson-step-content"
-        data-show-prose={showProse ? "true" : "false"}
-        data-show-challenge={showChallenge ? "true" : undefined}
-        data-show-postrecap={showPostRecap ? "true" : undefined}
-        data-story-register={storyRegister ? "true" : undefined}
-        data-layout={layout}
-        data-hide-challenge-onward={hideChallengeOnward ? "true" : undefined}
-        data-hide-teaching={hideTeaching ? "true" : undefined}
-        data-hide-story-zone={hideStoryZone ? "true" : undefined}
-      >
-        <Content />
-        {shouldShow("HintPanel") && lesson.hints && (
-          <HintPanel hints={lesson.hints} onHintRevealed={handleHintRevealed} />
-        )}
-      </div>
-    </ExerciseDataProvider>
+    <LessonCharacters worldSlug={worldId ?? ""}>
+      <ExerciseDataProvider exercises={exerciseMap}>
+        <div
+          className="max-w-none lesson-prose lesson-step-content"
+          data-show-prose={showProse ? "true" : "false"}
+          data-show-challenge={showChallenge ? "true" : undefined}
+          data-show-postrecap={showPostRecap ? "true" : undefined}
+          data-story-register={storyRegister ? "true" : undefined}
+          data-layout={layout}
+          data-hide-challenge-onward={hideChallengeOnward ? "true" : undefined}
+          data-hide-teaching={hideTeaching ? "true" : undefined}
+          data-hide-story-zone={hideStoryZone ? "true" : undefined}
+        >
+          <Content />
+          {shouldShow("HintPanel") && lesson.hints && (
+            <HintPanel
+              hints={lesson.hints}
+              onHintRevealed={handleHintRevealed}
+            />
+          )}
+        </div>
+      </ExerciseDataProvider>
+    </LessonCharacters>
   );
 }
 

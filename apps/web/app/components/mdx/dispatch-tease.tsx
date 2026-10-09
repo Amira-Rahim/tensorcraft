@@ -1,3 +1,4 @@
+import { ProseText } from "@tensorcraft/ui/prose-text";
 import Link from "next/link";
 import { worlds } from "@tensorcraft/worlds";
 import { getLeadsTo } from "@tensorcraft/shared";
@@ -51,7 +52,9 @@ export function DispatchTease({
       <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-3">
         DISPATCH · cross-world intel
       </p>
-      <p className="text-base text-text-primary leading-relaxed mb-5">{body}</p>
+      <p className="text-base text-text-primary leading-relaxed mb-5">
+        <ProseText>{body}</ProseText>
+      </p>
       <Link
         href={`/worlds/${targetId}`}
         className="inline-block px-5 py-2 text-xs font-mono font-semibold uppercase tracking-wider bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-colors"

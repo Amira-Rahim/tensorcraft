@@ -1,3 +1,4 @@
+import { ProseText } from "@tensorcraft/ui/prose-text";
 import type { ReactNode } from "react";
 
 interface BriefingTakeawayProps {
@@ -24,18 +25,24 @@ export function BriefingTakeaway({
     >
       <div className="briefing-takeaway-idea">
         <h2>Key idea</h2>
-        <div className="briefing-takeaway-definition">{children}</div>
+        <div className="briefing-takeaway-definition">
+          <ProseText>{children}</ProseText>
+        </div>
       </div>
       <div className="briefing-takeaway-task">
         <h3>Your first task</h3>
-        <p>{task}</p>
+        <p>
+          <ProseText>{task}</ProseText>
+        </p>
         {readings && (
           <figure className="briefing-takeaway-readings">
             <figcaption>{readingsLabel}</figcaption>
             <code>[{readings.join(", ")}]</code>
           </figure>
         )}
-        <p className="briefing-takeaway-next">{next}</p>
+        <p className="briefing-takeaway-next">
+          <ProseText>{next}</ProseText>
+        </p>
       </div>
     </aside>
   );

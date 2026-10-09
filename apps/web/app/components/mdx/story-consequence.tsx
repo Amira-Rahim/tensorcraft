@@ -1,4 +1,5 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
 
 import { useEffect, useState } from "react";
 import { STORY_HISTORY } from "@tensorcraft/shared";
@@ -66,7 +67,9 @@ export function StoryConsequence({
     return (
       <div role="alert" className="my-4">
         <p>This scene needs your saved decision. We could not load it.</p>
-        <p>{fallback}</p>
+        <p>
+          <ProseText>{fallback}</ProseText>
+        </p>
         <button
           type="button"
           className="min-h-11 border border-border px-4 py-2"
@@ -88,9 +91,11 @@ export function StoryConsequence({
       data-choice-label={state.label ?? "unrecorded"}
       data-content-version={state.label ? savedVersion : undefined}
     >
-      {state.label && matchingOutcomes
-        ? matchingOutcomes[state.label]
-        : fallback}
+      <ProseText>
+        {state.label && matchingOutcomes
+          ? matchingOutcomes[state.label]
+          : fallback}
+      </ProseText>
       {state.label && !matchingOutcomes && (
         <span className="block text-sm text-text-muted">
           Your saved call needs a different scene version. Reload to read its

@@ -1,4 +1,5 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
 import "./lesson-visuals.css";
 import type { ReactNode } from "react";
 import { ScenePortrait } from "@tensorcraft/ui";
@@ -49,15 +50,17 @@ export function LessonMissionScene({
               <img src={portrait.src} alt="" width={44} height={44} />
             )}
             <span>
-              {character.name}
+              <ProseText>{character.name}</ProseText>
               <small>In this scene</small>
             </span>
           </div>
         )}
         <p className="mission-context-narrative" data-testid="mission-handoff">
-          {worldSlug === "deep-orbit"
-            ? (LESSON_HANDOFFS[lesson.slug] ?? lesson.context.narrative)
-            : lesson.context.narrative}
+          <ProseText>
+            {worldSlug === "deep-orbit"
+              ? (LESSON_HANDOFFS[lesson.slug] ?? lesson.context.narrative)
+              : lesson.context.narrative}
+          </ProseText>
         </p>
       </div>
     </aside>
@@ -78,9 +81,13 @@ export function LessonConceptWorkbench({
       aria-labelledby={`visual-${lesson.slug}`}
       data-testid="lesson-workbench"
     >
-      <h2 id={`visual-${lesson.slug}`}>{spec.question}</h2>
+      <h2 id={`visual-${lesson.slug}`}>
+        <ProseText>{spec.question}</ProseText>
+      </h2>
       {spec.introduction && (
-        <p className="lesson-workbench-introduction">{spec.introduction}</p>
+        <p className="lesson-workbench-introduction">
+          <ProseText>{spec.introduction}</ProseText>
+        </p>
       )}
       {learningGoals}
       {spec.kind === "tensor" && spec.mode === "create" ? (

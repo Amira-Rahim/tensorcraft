@@ -1,3 +1,4 @@
+import { ProseText } from "../prose-text";
 interface LearningObjectivesProps {
   objectives: string[];
 }
@@ -45,7 +46,9 @@ export function LearningObjectives({ objectives }: LearningObjectivesProps) {
             >
               ○
             </span>
-            <span className="min-w-0">{obj}</span>
+            <span className="min-w-0">
+              <ProseText>{obj}</ProseText>
+            </span>
           </li>
         ))}
       </ul>

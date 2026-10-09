@@ -1,3 +1,4 @@
+import { ProseText } from "../prose-text";
 interface LessonRecapProps {
   whatYouLearned: string[];
   bridge: string;
@@ -27,7 +28,9 @@ export function LessonRecap({
                 className="flex items-start gap-2 text-sm leading-relaxed text-text-primary/80"
               >
                 <span className="mt-0.5 shrink-0 text-primary">&#x2713;</span>
-                <span className="min-w-0">{item}</span>
+                <span className="min-w-0">
+                  <ProseText>{item}</ProseText>
+                </span>
               </li>
             ))}
           </ul>
@@ -38,7 +41,7 @@ export function LessonRecap({
             The bridge
           </p>
           <p className="text-sm leading-relaxed text-text-primary/80">
-            {bridge}
+            <ProseText>{bridge}</ProseText>
           </p>
         </section>
 
@@ -47,7 +50,7 @@ export function LessonRecap({
             You can now
           </p>
           <p className="text-sm leading-relaxed text-text-primary/80">
-            {youCanNow}
+            <ProseText>{youCanNow}</ProseText>
           </p>
         </section>
       </div>

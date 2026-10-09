@@ -1,3 +1,4 @@
+import { ProseText } from "../prose-text";
 // DEPRECATED: replaced by RecallPrompt/LessonRecap in the lesson close; retained for unbuilt coming-soon world MDX. See docs/superpowers/specs/2026-06-15-end-of-lesson-design.md
 interface KeyTakeawaysProps {
   takeaways: string[];
@@ -16,7 +17,9 @@ export function KeyTakeaways({ takeaways }: KeyTakeawaysProps) {
             className="flex items-start gap-2 text-sm leading-relaxed text-text-primary/80"
           >
             <span className="mt-0.5 text-primary">✓</span>
-            {t}
+            <span>
+              <ProseText>{t}</ProseText>
+            </span>
           </li>
         ))}
       </ul>

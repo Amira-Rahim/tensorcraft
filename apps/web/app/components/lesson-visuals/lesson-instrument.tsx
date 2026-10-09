@@ -1,4 +1,5 @@
 "use client";
+import { ProseText } from "@tensorcraft/ui/prose-text";
 import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import type { LessonVisualSpec } from "./deep-orbit-visuals";
@@ -1697,9 +1698,13 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
       data-instrument={spec.kind}
       data-mode={spec.mode}
     >
-      <p className="iv-instruction">{spec.action}</p>
+      <p className="iv-instruction">
+        <ProseText>{spec.action}</ProseText>
+      </p>
       {content}
-      <p className="iv-takeaway">{spec.takeaway}</p>
+      <p className="iv-takeaway">
+        <ProseText>{spec.takeaway}</ProseText>
+      </p>
       <p className="iv-provenance">
         {spec.kind === "flow"
           ? "Illustrative handoff; code excerpts are not a live system run."

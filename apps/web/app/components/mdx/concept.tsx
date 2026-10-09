@@ -1,3 +1,4 @@
+import { ProseText } from "@tensorcraft/ui/prose-text";
 interface BridgeMapping {
   jsTitle: string;
   mlTitle: string;
@@ -123,7 +124,7 @@ export function Concept({
       </h4>
       {explanation && (
         <p className="text-sm leading-relaxed text-text-primary/80">
-          {explanation}
+          <ProseText>{explanation}</ProseText>
         </p>
       )}
 
