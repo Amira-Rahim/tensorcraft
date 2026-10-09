@@ -110,7 +110,7 @@ for (const [width, scheme] of [
       "Average reading 0.544",
     );
     await expect(page.getByTestId("tensor-story-response")).toContainText(
-      "full packet for Farah",
+      "all five readings for Farah",
     );
     await expect(
       instrument.getByRole("button", { name: "Reset example" }),
@@ -119,7 +119,7 @@ for (const [width, scheme] of [
       ratio: 0.85,
     });
     await expect(
-      page.getByRole("heading", { name: "Prepare the same packet for Farah" }),
+      page.getByRole("heading", { name: "Now prepare the readings yourself" }),
     ).toBeVisible();
     await expect(
       instrument.getByText("shape [5]", { exact: true }),

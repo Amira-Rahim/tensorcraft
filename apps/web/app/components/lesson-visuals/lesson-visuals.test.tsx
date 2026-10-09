@@ -70,19 +70,16 @@ describe("the complete Deep Orbit visual curriculum", () => {
     );
     expect(source.textContent).toBe(originalValues);
     expect(screen.getByRole("status")).toHaveTextContent(
-      "does not identify unusual readings",
+      "cannot tell which readings, if any, are unusual",
     );
     expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
       "ARIA",
     );
     expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
-      "lowest reading is 0.12",
+      "one summary of the five readings",
     );
     expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
-      "highest is 0.94",
-    );
-    expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
-      "full packet for Farah",
+      "all five readings for Farah",
     );
     expect(screen.getByText("shape [5]")).toBeInTheDocument();
     expect(screen.getByText("Dashed line: average 0.544")).toBeInTheDocument();

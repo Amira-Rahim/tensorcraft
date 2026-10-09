@@ -1053,8 +1053,8 @@
 }
 .tensor-investigation-console {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(24px, 3vw, 40px);
+  grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+  gap: clamp(12px, 2vw, 24px);
   padding: clamp(20px, 3vw, 36px);
   background: var(--tc-bg);
   align-items: start;
@@ -1070,9 +1070,28 @@
   font-weight: 600;
   margin-bottom: 6px;
 }
-.tensor-investigation-packet figcaption span {
+.tensor-investigation-packet figcaption > span {
   display: block;
   font-size: 13px;
+}
+.tensor-investigation .tensor-stage-number {
+  display: inline;
+  margin-right: 8px;
+  color: var(--tc-primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.tensor-flow-connector {
+  align-self: center;
+  color: var(--tc-muted);
+}
+.tensor-flow-connector svg {
+  display: block;
+  width: 32px;
+  height: 24px;
+  margin: 0;
+  stroke: currentColor;
+  stroke-width: 1.5;
 }
 .tensor-investigation-packet svg {
   margin: 24px 0 12px;
@@ -1218,7 +1237,11 @@
     aspect-ratio: 16 / 7 !important;
   }
   .tensor-investigation-console {
-    gap: 24px;
+    gap: 12px;
+  }
+  .tensor-flow-connector {
+    justify-self: center;
+    transform: rotate(90deg);
   }
   .tensor-investigation-findings {
     gap: 24px;

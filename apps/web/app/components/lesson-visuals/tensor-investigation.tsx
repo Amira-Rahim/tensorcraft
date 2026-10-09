@@ -97,7 +97,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
       </div>
 
       <section className="tensor-investigation-purpose">
-        <h3>Why use a tensor for an average?</h3>
+        <h3>Why start with an average?</h3>
         <p>
           <ProseText>{spec.takeaway}</ProseText>
         </p>
@@ -107,8 +107,10 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
         <div className="tensor-investigation-console">
           <figure className="iv-reading-chart tensor-investigation-packet">
             <figcaption>
-              <strong>Sector 7-G: the first packet</strong>
-              <span>Five sensor readings in a JavaScript array</span>
+              <strong>
+                <span className="tensor-stage-number">1</span> JavaScript array
+              </strong>
+              <span>Sector 7-G: the first packet</span>
             </figcaption>
             <svg viewBox="0 0 400 150" aria-hidden="true">
               <text x="0" y="18">
@@ -158,30 +160,22 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 </span>
               ))}
             </div>
-            {result ? (
-              <div className="iv-creation-shape">
-                <code>shape [{result.shape.join(", ")}]</code>
-                <span>
-                  The tensor still holds all {result.values.length} readings.
-                </span>
-                <p>
-                  For this one-dimensional list, <code>reading.shape[0]</code>{" "}
-                  and <code>streamValues.length</code> both give{" "}
-                  <code>{result.shape[0]}</code>.
-                </p>
-              </div>
-            ) : (
-              <p className="tensor-packet-note">
-                <ProseText>
-                  These are the five sensor readings Demir is examining.
-                </ProseText>
-              </p>
-            )}
+            <p className="tensor-packet-note">
+              <code>streamValues</code> holds these five readings.
+            </p>
           </figure>
+
+          <div className="tensor-flow-connector" aria-hidden="true">
+            <svg viewBox="0 0 40 24" fill="none">
+              <path d="M1 12h36M29 4l8 8-8 8" />
+            </svg>
+          </div>
 
           <section className="iv-worked-example" aria-label="Worked example">
             <div className="iv-example-step">
-              <h3>Keep the five readings together</h3>
+              <h3>
+                <span className="tensor-stage-number">2</span> Tensor
+              </h3>
               <pre className="iv-example-code">
                 <code>
                   <span className="iv-code-keyword">const</span>{" "}
@@ -192,10 +186,18 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 </code>
               </pre>
               <p>
-                Here, <code>tf</code> is TensorFlow.js. The tensor{" "}
-                <code>reading</code> holds the values from your array,{" "}
-                <code>streamValues</code>.
+                <code>tf</code> is TensorFlow.js. This line creates a tensor
+                from your array so TensorFlow.js can calculate with the
+                readings.
               </p>
+              {result && (
+                <div className="iv-creation-shape">
+                  <code>shape [{result.shape.join(", ")}]</code>
+                  <span>
+                    All {result.values.length} readings, in the same order.
+                  </span>
+                </div>
+              )}
             </div>
             <div className="iv-creation-line">
               <button
@@ -212,7 +214,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                     ? "Reset example"
                     : "Calculate average"}
               </button>
-              <span>The average calculation is supplied.</span>
+              <span>This example runs for you.</span>
             </div>
             <details className="tensor-calculation-code">
               <summary>How the average is calculated (optional)</summary>
@@ -249,7 +251,10 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
             >
               <div className="tensor-investigation-result">
                 <p className="iv-average-result">
-                  <span>Average reading</span>{" "}
+                  <span>
+                    <span className="tensor-stage-number">3</span> Average
+                    reading
+                  </span>{" "}
                   <strong>{fmt(result.average, 3)}</strong>
                 </p>
                 <p className="tensor-investigation-result-source">
@@ -264,16 +269,14 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                   </h3>
                 </div>
                 <blockquote>
-                  The lowest reading is {fmt(Math.min(...result.values))}; the
-                  highest is {fmt(Math.max(...result.values))}. An average does
-                  not identify unusual readings.
+                  This gives us one summary of the five readings. I still cannot
+                  tell which readings, if any, are unusual.
                 </blockquote>
               </div>
               <div className="tensor-investigation-consequence">
                 <p>
                   <ProseText>
-                    Demir keeps the full packet for Farah. She will need the
-                    individual readings to investigate further.
+                    Demir keeps all five readings for Farah's investigation.
                   </ProseText>
                 </p>
               </div>
