@@ -811,6 +811,359 @@
   font-size: 13px;
   line-height: 1.75;
 }
+
+/* The first tensor challenge has one brief beside the code it describes.
+   Its scene spans both columns so it cannot push the task below the editor. */
+.challenge-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1440px;
+  margin-inline: auto;
+  align-items: start;
+}
+.lesson-challenge-workspace > [data-testid="lesson-nav"] {
+  max-width: 1440px;
+  margin-inline: auto;
+}
+.lesson-mission-scene.challenge-mission-header {
+  display: grid;
+  grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+  margin-bottom: 32px;
+  background: var(--tc-surface);
+}
+.challenge-mission-header .mission-context-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: none;
+}
+.challenge-mission-header .mission-context-copy {
+  align-self: center;
+  padding: 24px 28px;
+}
+.challenge-mission-header .mission-context-copy h2 {
+  margin: 0 0 8px;
+  color: var(--tc-text);
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.challenge-mission-header .mission-context-location {
+  margin: 0 0 12px;
+  color: var(--tc-muted);
+  font-size: 12px;
+}
+.challenge-mission-header .mission-context-narrative {
+  max-width: none;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.challenge-task-panel {
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--tc-border);
+}
+.challenge-task-panel .lesson-prose {
+  max-width: none;
+}
+.challenge-task-panel .lesson-step-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 32px;
+  align-items: center;
+}
+.challenge-task-panel .challenge-hints {
+  grid-column: 2;
+  grid-row: 1;
+}
+.lesson-challenge-workspace [data-testid="exercise-brief"] {
+  margin: 0;
+}
+.lesson-challenge-workspace .challenge-task-instructions p {
+  margin: 0;
+  color: var(--tc-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.lesson-challenge-workspace .challenge-task-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+.lesson-challenge-workspace .challenge-task-steps > li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.challenge-task-number {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--tc-border);
+  border-radius: 50%;
+  color: var(--tc-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.lesson-challenge-workspace .challenge-task-step h4 {
+  margin: 0 0 8px;
+  color: var(--tc-text);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.lesson-challenge-workspace .challenge-task-step pre {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 0;
+  background: var(--tc-bg);
+  box-shadow: none;
+  color: var(--tc-primary);
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  width: fit-content;
+  min-width: min(100%, 240px);
+  max-width: 100%;
+}
+.lesson-challenge-workspace .challenge-task-step pre code {
+  font: inherit;
+}
+.lesson-challenge-workspace .challenge-task-result {
+  margin-top: 10px;
+}
+.lesson-challenge-workspace .challenge-task-support {
+  max-width: 88ch;
+}
+.lesson-challenge-workspace [data-exercise-workspace] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  grid-template-rows: min-content minmax(0, 1fr);
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.lesson-challenge-workspace [data-exercise-workspace] > div:first-child {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  padding: 16px 20px;
+}
+.lesson-challenge-workspace .challenge-editor-heading {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--tc-text);
+}
+.lesson-challenge-workspace [data-editor-frame] {
+  grid-column: 1;
+  grid-row: 2;
+  border: 0;
+  border-top: 1px solid var(--tc-border);
+}
+.lesson-challenge-workspace [data-exercise-workspace] p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.lesson-challenge-workspace [data-editor-frame] button {
+  min-height: 44px;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.lesson-challenge-workspace [data-solution-action] {
+  background: transparent;
+  border-color: transparent;
+  color: var(--tc-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lesson-challenge-workspace
+  [data-exercise-workspace]
+  > [data-testid="test-results-panel"],
+.lesson-challenge-workspace [data-exercise-workspace] > details,
+.lesson-challenge-workspace [data-exercise-workspace] > p {
+  margin: 20px;
+}
+.lesson-challenge-workspace .challenge-hints {
+  margin: 0;
+}
+.challenge-hint-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--tc-border);
+  background: transparent;
+  color: var(--tc-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+.challenge-hint-action svg {
+  flex-shrink: 0;
+  color: var(--iv-brass);
+}
+.challenge-hint-action:hover {
+  background: var(--tc-bg);
+  border-color: var(--tc-muted);
+}
+.challenge-hint-action:focus-visible,
+.challenge-hint-content:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
+}
+.challenge-hint-content {
+  padding-block: 16px;
+  border-top: 1px solid var(--tc-border);
+}
+.challenge-hint-title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--iv-brass);
+  font-size: 14px;
+  font-weight: 600;
+}
+.lesson-challenge-workspace .challenge-hint-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.challenge-checks {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-width: 0;
+  align-self: stretch;
+  padding: 20px 24px;
+  border-left: 1px solid var(--tc-border);
+  background: var(--tc-bg);
+}
+.challenge-expected-tensor {
+  margin: 0;
+}
+.challenge-expected-tensor figcaption {
+  color: var(--tc-text);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.lesson-challenge-workspace .challenge-expected-tensor p {
+  margin: 12px 0 0;
+  color: var(--tc-muted);
+}
+.lesson-challenge-workspace .challenge-expected-tensor ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin: 24px 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.lesson-challenge-workspace .challenge-expected-tensor li {
+  display: grid;
+  place-items: center;
+  min-height: 54px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--tc-border);
+  background: var(--tc-surface);
+}
+.lesson-challenge-workspace .challenge-expected-tensor li code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tc-primary);
+  font-size: 14px;
+}
+.challenge-expected-shape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+.challenge-expected-shape span:last-child {
+  flex-basis: 100%;
+}
+.lesson-challenge-workspace .challenge-run-prompt {
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--tc-border);
+  color: var(--tc-muted);
+}
+.lesson-challenge-workspace
+  .challenge-checks
+  [data-testid="test-results-panel"] {
+  padding: 20px 0 0;
+  margin: 24px 0 0;
+  border: 0;
+  border-top: 1px solid var(--tc-border);
+  background: transparent;
+}
+@media (max-width: 1023px) {
+  .challenge-task-panel .lesson-step-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .challenge-task-panel .challenge-hints {
+    grid-column: 1;
+    grid-row: auto;
+    max-width: 480px;
+  }
+  .lesson-challenge-workspace [data-exercise-workspace] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .challenge-checks {
+    grid-column: 1;
+    grid-row: 3;
+    border-left: 0;
+    border-top: 1px solid var(--tc-border);
+  }
+}
+@media (max-width: 639px) {
+  .lesson-challenge-workspace .challenge-task-steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .challenge-checks {
+    padding: 20px 16px;
+  }
+  .lesson-mission-scene.challenge-mission-header {
+    grid-template-columns: minmax(0, 1fr);
+    margin-bottom: 24px;
+  }
+  .challenge-mission-header .mission-context-image img {
+    height: 130px;
+    object-position: center 45%;
+  }
+  .challenge-mission-header .mission-context-copy {
+    padding: 20px;
+  }
+  .challenge-mission-header .mission-context-narrative {
+    font-size: 15px;
+  }
+  .lesson-challenge-workspace [data-solution-action] {
+    flex-basis: 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+}
 @media (min-width: 1440px) {
   .lesson-workbench-grid {
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);

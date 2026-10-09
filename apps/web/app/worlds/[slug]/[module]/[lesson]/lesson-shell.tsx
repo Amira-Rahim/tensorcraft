@@ -5,6 +5,10 @@ interface LessonShellProps {
   chrome?: React.ReactNode;
   controls?: React.ReactNode;
   footer?: React.ReactNode;
+  header?: React.ReactNode;
+  workspace?: boolean;
+  workspaceFocusRef?: React.Ref<HTMLDivElement>;
+  workspaceLabel?: string;
   paneOpenOnMobile?: boolean;
   fullWidth?: boolean;
 }
@@ -42,6 +46,10 @@ export function LessonShell({
   chrome,
   controls,
   footer,
+  header,
+  workspace = false,
+  workspaceFocusRef,
+  workspaceLabel,
   paneOpenOnMobile = false,
   fullWidth = false,
 }: LessonShellProps) {
@@ -52,12 +60,22 @@ export function LessonShell({
       {chrome}
       <div
         data-testid="lesson-frame"
-        className={`mx-auto w-full px-5 md:px-12 ${fullWidth ? "" : "max-w-7xl"}`}
+        ref={workspace ? workspaceFocusRef : undefined}
+        role={workspace ? "group" : undefined}
+        tabIndex={workspace ? -1 : undefined}
+        aria-label={workspace ? workspaceLabel : undefined}
+        className={`mx-auto w-full px-5 md:px-12 ${fullWidth ? "" : "max-w-7xl"} ${workspace ? "lesson-challenge-workspace outline-none" : ""}`}
       >
+        {header}
         {controls}
-        <div data-testid="lesson-grid" className={GRID_CLASS[rightKind]}>
+        <div
+          data-testid="lesson-grid"
+          className={
+            workspace ? "challenge-workspace-grid" : GRID_CLASS[rightKind]
+          }
+        >
           <div
-            className={`min-w-0 ${pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
+            className={`min-w-0 ${!workspace && pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
           >
             {left}
           </div>
@@ -65,7 +83,7 @@ export function LessonShell({
             <div
               data-testid="lesson-right"
               data-kind={rightKind}
-              className={`min-w-0 ${pane ? `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : ""}`}
+              className={`min-w-0 ${!workspace && pane ? `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : ""}`}
             >
               {right}
             </div>

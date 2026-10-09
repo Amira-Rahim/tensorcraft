@@ -208,6 +208,29 @@ const exercises = defineCollection({
     lessonSlug: s.string().min(1),
     title: s.string().min(1),
     instructions: s.string().min(1),
+    taskBrief: s
+      .object({
+        title: s.string().min(1),
+        intro: s.string().min(1),
+        steps: s
+          .array(
+            s.object({
+              title: s.string().min(1),
+              instruction: s.string().min(1),
+              code: s.string().min(1),
+              result: s.string().optional(),
+            }),
+          )
+          .min(1),
+        support: s.string().min(1),
+        expectedTensor: s
+          .object({
+            values: s.array(s.number()).min(1),
+            shape: s.array(s.number().int().nonnegative()).min(1),
+          })
+          .optional(),
+      })
+      .optional(),
     starterCode: s.string().min(1).transform(tsToJs),
     solutionCode: s.string().min(1).transform(tsToJs),
     testCode: s.string().min(1).transform(tsToJs),

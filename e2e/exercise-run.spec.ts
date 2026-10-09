@@ -29,10 +29,11 @@ const SOLUTION = [
 test.describe("Exercise run in the real browser worker", () => {
   test("starter fails, solution passes, through the shipped pipeline", async ({
     page,
-  }) => {
+  }, testInfo) => {
     test.setTimeout(180_000);
     await page.addInitScript(
       ({ stepKey, maxKey }) => {
+        localStorage.setItem("tc-cookie-consent", "declined");
         localStorage.setItem(stepKey, "3"); // Challenge step
         localStorage.setItem(maxKey, "3");
       },
@@ -45,6 +46,7 @@ test.describe("Exercise run in the real browser worker", () => {
 
     // 1. Untouched starter must not pass (worker + CDN TFJS + harness all real).
     await runButton.click();
+    await expect(runButton).toBeEnabled({ timeout: 90_000 });
     const results = page.getByTestId("test-results-panel");
     await expect(results).toBeVisible({ timeout: 90_000 });
     await expect(results).not.toContainText("All tests passed!");
@@ -67,6 +69,7 @@ test.describe("Exercise run in the real browser worker", () => {
     await page.keyboard.press("Delete");
     await page.keyboard.insertText(completed);
     await runButton.click();
+    await expect(runButton).toBeEnabled({ timeout: 90_000 });
     await expect(results).toContainText("All tests passed!", {
       timeout: 90_000,
     });
@@ -81,14 +84,45 @@ test.describe("Exercise run in the real browser worker", () => {
     await page.keyboard.insertText(SOLUTION);
 
     await runButton.click();
+    await expect(runButton).toBeEnabled({ timeout: 90_000 });
     await expect(results).toContainText("All tests passed!", {
       timeout: 90_000,
     });
+    const banner = page.getByTestId("challenge-passed-banner");
+    await expect(banner).toContainText("Exercise passed");
     await expect(
-      page
-        .getByTestId("challenge-passed-banner")
-        .getByRole("list", { name: "Checked work" }),
-    ).toContainText("Prepare the Five Readings");
+      banner.getByRole("list", { name: "Checked work" }),
+    ).toHaveCount(0);
+    await expect(
+      banner.getByText("Exercise passed", { exact: true }),
+    ).toHaveCSS("font-weight", "700");
+    // The workspace's pass result owns the next action; no second Continue
+    // at the bottom of the page competing with it.
+    await expect(
+      page.getByRole("button", { name: "Continue →", exact: true }),
+    ).toHaveCount(1);
+    // Results must not stretch the editor's title row into an empty panel.
+    const workspaceBox = (await page
+      .locator("[data-exercise-workspace]")
+      .boundingBox())!;
+    const editorFrameBox = (await page
+      .locator("[data-editor-frame]")
+      .boundingBox())!;
+    expect(editorFrameBox.y - workspaceBox.y).toBeLessThan(65);
+    await page.screenshot({
+      path: testInfo.outputPath("challenge-passed-desktop.png"),
+      fullPage: true,
+      style: "nextjs-portal { display: none !important; }",
+    });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(editor).toBeVisible();
+    await expect(page.getByTestId("exercise-brief")).toBeVisible();
+    await expect(page.getByTestId("challenge-passed-banner")).toBeVisible();
+    await page.screenshot({
+      path: testInfo.outputPath("challenge-passed-phone.png"),
+      fullPage: true,
+      style: "nextjs-portal { display: none !important; }",
+    });
   });
 });
 

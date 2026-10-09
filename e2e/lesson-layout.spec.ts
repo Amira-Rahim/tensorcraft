@@ -217,7 +217,9 @@ function challengeSplit(page: Page) {
 }
 
 async function expectChallengeSplit(page: Page) {
-  await openStep(page, LESSONS.paragraphLed, 2);
+  // The tensor introduction uses the continuous workspace, covered in
+  // challenge-workspace.spec.ts. Keep the other lessons' split contract.
+  await openStep(page, LESSONS.headingLed, 2);
   const m = await challengeSplit(page);
   const instructions = Math.min(440, 0.38 * m.content);
   expect(Math.abs(m.instructions - instructions)).toBeLessThanOrEqual(1);
@@ -705,7 +707,7 @@ test.describe("lesson layout, desktop", () => {
     }
   });
 
-  test("the exercise brief sits in the reading column and the pane keeps the editor", async ({
+  test("the exercise brief precedes the code and checks workbench", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 2);
@@ -721,11 +723,11 @@ test.describe("lesson layout, desktop", () => {
       const box = (s: string) =>
         document.querySelector(s)!.getBoundingClientRect();
       return {
-        briefRight: box("[data-testid='exercise-brief']").right,
-        paneLeft: box("[data-testid='lesson-right'][data-kind='pane']").left,
+        briefBottom: box("[data-testid='exercise-brief']").bottom,
+        paneTop: box("[data-testid='lesson-right'][data-kind='pane']").top,
       };
     });
-    expect(m.briefRight).toBeLessThanOrEqual(m.paneLeft);
+    expect(m.briefBottom).toBeLessThan(m.paneTop);
   });
 });
 
@@ -809,7 +811,7 @@ test.describe("lesson layout, phone", () => {
   test("on the Challenge step's Instructions view the nav sits 40 px below the hint panel", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 2);
+    await openStep(page, LESSONS.headingLed, 2);
     const m = await page.evaluate(() => {
       const one = (s: string) => {
         const found = document.querySelectorAll(s);
@@ -986,7 +988,7 @@ test.describe("lesson layout, phone", () => {
   test("the Instructions view holds the brief and its header wraps only between chips", async ({
     page,
   }) => {
-    await openStep(page, LESSONS.paragraphLed, 2);
+    await openStep(page, LESSONS.headingLed, 2);
     const brief = page.getByTestId("exercise-brief");
     await expect(brief).toBeVisible();
     await expect(brief.getByRole("heading", { level: 3 })).toBeVisible();
@@ -1099,7 +1101,6 @@ test.describe("lesson layout, phone", () => {
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 2);
-    await page.getByRole("button", { name: "Editor" }).click();
     const scroller = page.locator(
       "[data-testid='lesson-right'][data-kind='pane'] .cm-scroller",
     );

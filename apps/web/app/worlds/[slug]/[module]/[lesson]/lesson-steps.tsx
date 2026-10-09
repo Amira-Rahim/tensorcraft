@@ -320,6 +320,11 @@ function LessonStepsInner({
   const passedExercisesRef = useRef<Set<string>>(new Set(restoredPasses));
   const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
+  const challengeWorkspace =
+    currentStep === PHASE.challenge &&
+    worldSlug === "deep-orbit" &&
+    lesson.slug === "introduction-to-tensors" &&
+    exercises.length === 1;
   // The left column carries key={currentStep} so the step animation retriggers,
   // which means React unmounts the whole subtree on every step change, bottomNav
   // included. A keyboard user who activates Continue therefore has the element
@@ -341,8 +346,16 @@ function LessonStepsInner({
     }
     if (focusedStepRef.current === currentStep) return;
     focusedStepRef.current = currentStep;
-    stepRef.current?.focus();
-  }, [currentStep, mounted]);
+    stepRef.current?.focus({ preventScroll: challengeWorkspace });
+    // A phone's continuous workspace is taller than the viewport. Native
+    // focus can centre that box on the editor, hiding the mission above it.
+    if (challengeWorkspace) {
+      stepRef.current?.scrollIntoView?.({
+        block: "start",
+        behavior: "instant",
+      });
+    }
+  }, [currentStep, mounted, challengeWorkspace]);
   // Mobile-only: reveal the right work pane (code/exercise) over the prose.
   const [paneOpen, setPaneOpen] = useState(false);
 
@@ -1054,26 +1067,30 @@ function LessonStepsInner({
         <span aria-hidden="true" />
       )}
       {currentStep < TOTAL_STEPS - 1 ? (
-        <button
-          type="button"
-          data-step-continue=""
-          onClick={goNext}
-          disabled={!canContinue}
-          className="text-sm font-mono font-bold px-8 py-3 transition-all"
-          style={{
-            background: canContinue ? "var(--tc-primary)" : "var(--tc-border)",
-            color: canContinue ? "var(--tc-on-primary)" : "var(--tc-muted)",
-            cursor: canContinue ? "pointer" : "not-allowed",
-            opacity: 1,
-          }}
-        >
-          {/* The gate must explain itself: a silent disabled button at
+        (!challengeWorkspace || !canContinue) && (
+          <button
+            type="button"
+            data-step-continue=""
+            onClick={goNext}
+            disabled={!canContinue}
+            className="text-sm font-mono font-bold px-8 py-3 transition-all"
+            style={{
+              background: canContinue
+                ? "var(--tc-primary)"
+                : "var(--tc-border)",
+              color: canContinue ? "var(--tc-on-primary)" : "var(--tc-muted)",
+              cursor: canContinue ? "pointer" : "not-allowed",
+              opacity: 1,
+            }}
+          >
+            {/* The gate must explain itself: a silent disabled button at
               the Challenge step read as a broken page (2026-07-14 UX
               audit). */}
-          {!canContinue && currentStep === PHASE.challenge
-            ? `Pass ${exercises.length - passedExercises.size} more ${exercises.length - passedExercises.size === 1 ? "exercise" : "exercises"} to continue`
-            : "Continue →"}
-        </button>
+            {!canContinue && currentStep === PHASE.challenge
+              ? `Pass ${exercises.length - passedExercises.size} more ${exercises.length - passedExercises.size === 1 ? "exercise" : "exercises"} to continue`
+              : "Continue →"}
+          </button>
+        )
       ) : nextLesson ? (
         <Link
           href={`/worlds/${worldSlug}/${moduleSlug}/${nextLesson.slug}`}
@@ -1150,6 +1167,7 @@ function LessonStepsInner({
     shellLeft = (
       <StepChallenge
         {...sharedContentProps}
+        workspace={challengeWorkspace}
         onHintRevealed={handleHintLevelRevealed}
       />
     );
@@ -1163,11 +1181,13 @@ function LessonStepsInner({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_RIGHT}
+          exerciseWorkspace={challengeWorkspace}
           onExerciseComplete={handleExerciseComplete}
           onExerciseAttempt={handleExerciseAttempt}
           getHintsUsed={getHintsUsed}
         />
         <ChallengePassedBanner
+          compact={challengeWorkspace}
           passed={canContinue}
           exerciseCount={exercises.length}
           checkedWork={exercises.map((exercise) => exercise.title)}
@@ -1204,7 +1224,7 @@ function LessonStepsInner({
   }
 
   const mobileControls =
-    rightKind === "pane" ? (
+    rightKind === "pane" && !challengeWorkspace ? (
       <div
         className="lg:hidden mb-6 flex gap-2"
         role="group"
@@ -1257,7 +1277,21 @@ function LessonStepsInner({
         )}
         <LessonShell
           rightKind={rightKind}
-          fullWidth={currentStep === PHASE.briefing}
+          fullWidth={currentStep === PHASE.briefing || challengeWorkspace}
+          workspace={challengeWorkspace}
+          workspaceFocusRef={stepRef}
+          workspaceLabel={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
+          header={
+            challengeWorkspace ? (
+              <LessonMissionScene
+                lesson={lesson}
+                worldSlug={worldSlug}
+                moduleSlug={moduleSlug}
+                compact
+                heading={exercises[0]!.title}
+              />
+            ) : undefined
+          }
           paneOpenOnMobile={paneOpen}
           controls={mobileControls}
           footer={rightKind === "pane" ? bottomNav : undefined}
@@ -1279,16 +1313,22 @@ function LessonStepsInner({
           left={
             <div
               key={currentStep}
-              ref={stepRef}
+              ref={challengeWorkspace ? undefined : stepRef}
               // -1 keeps it out of the tab sequence while still being
               // programmatically focusable, so the step is where a keyboard
               // user lands rather than <body>. The label is what a screen
               // reader announces on arrival, which doubles as the step change
               // announcement.
-              tabIndex={-1}
-              role="group"
-              aria-label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
-              className="animate-step-in outline-none"
+              tabIndex={challengeWorkspace ? undefined : -1}
+              role={challengeWorkspace ? undefined : "group"}
+              aria-label={
+                challengeWorkspace
+                  ? undefined
+                  : `Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`
+              }
+              className={
+                challengeWorkspace ? undefined : "animate-step-in outline-none"
+              }
             >
               {shellLeft}
               {rightKind !== "pane" && (
@@ -1440,18 +1480,11 @@ function ChromeBar({
         </div>
 
         <span
-          className="text-xs font-mono shrink-0 tracking-wider px-3 py-1"
-          style={{
-            color: "var(--tc-primary)",
-            background: "color-mix(in srgb, var(--tc-primary) 7%, transparent)",
-            border:
-              "1px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)",
-          }}
+          className="lg:hidden ml-auto text-sm text-text-muted"
+          data-testid="mobile-step-name"
+          aria-hidden="true"
         >
-          <span>
-            {currentStep + 1} / {TOTAL_STEPS}
-          </span>{" "}
-          · {STEP_NAMES[currentStep]}
+          {STEP_NAMES[currentStep]}
         </span>
       </div>
     </div>
@@ -2076,6 +2109,7 @@ function StepChallenge({
   moduleSlug,
   lessonSlug,
   onHintRevealed,
+  workspace = false,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
@@ -2083,13 +2117,14 @@ function StepChallenge({
   moduleSlug: string;
   lessonSlug: string;
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+  workspace?: boolean;
 }) {
   return (
-    <div>
+    <div className={workspace ? "challenge-task-panel" : undefined}>
       {worldSlug !== "deep-orbit" && (
         <PhaseChip label="Challenge" icon={"\u26A1"} />
       )}
-      {worldSlug === "deep-orbit" && (
+      {worldSlug === "deep-orbit" && !workspace && (
         <LessonMissionScene
           lesson={lesson}
           worldSlug={worldSlug}
@@ -2110,6 +2145,7 @@ function StepChallenge({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_LEFT}
+          exerciseWorkspace={workspace}
           onHintRevealed={onHintRevealed}
         />
       </div>

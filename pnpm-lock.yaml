@@ -363,6 +363,21 @@ importers:
 
   packages/ui:
     dependencies:
+      '@codemirror/autocomplete':
+        specifier: 6.20.1
+        version: 6.20.1
+      '@codemirror/lang-javascript':
+        specifier: 6.2.5
+        version: 6.2.5
+      '@codemirror/language':
+        specifier: 6.12.2
+        version: 6.12.2
+      '@codemirror/state':
+        specifier: 6.6.0
+        version: 6.6.0
+      '@codemirror/view':
+        specifier: 6.40.0
+        version: 6.40.0
       '@codesandbox/sandpack-react':
         specifier: ^2.20.0
         version: 2.20.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

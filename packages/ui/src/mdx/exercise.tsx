@@ -1,5 +1,7 @@
 "use client";
 
+import { EXERCISE_EDITOR_EXTENSIONS } from "./exercise-autocomplete";
+
 import {
   lazy,
   Suspense,
@@ -75,6 +77,19 @@ export interface ExerciseData {
   slug: string;
   title: string;
   instructions: string;
+  /** Authored steps for a compact workspace; instructions remain the fallback. */
+  taskBrief?: {
+    title: string;
+    intro: string;
+    steps: Array<{
+      title: string;
+      instruction: string;
+      code: string;
+      result?: string;
+    }>;
+    support: string;
+    expectedTensor?: { values: number[]; shape: number[] };
+  };
   starterCode: string;
   solutionCode: string;
   testCode: string;
@@ -169,6 +184,7 @@ interface ExerciseProps {
    * page sets it when the lesson has more than one exercise.
    */
   titled?: boolean;
+  workspace?: boolean;
 }
 
 import {
@@ -306,7 +322,13 @@ function TestResultsLiveRegion({ results }: { results: TestResult[] }) {
   );
 }
 
-function TestResultsPanel({ results }: { results: TestResult[] }) {
+function TestResultsPanel({
+  results,
+  namePrefix,
+}: {
+  results: TestResult[];
+  namePrefix?: string;
+}) {
   const passed = results.filter((r) => r.passed).length;
   const total = results.length;
   const allPassed = passed === total;
@@ -404,7 +426,9 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
                     : "text-text-primary/90 font-mono text-xs break-words"
                 }
               >
-                {result.name}
+                {namePrefix && result.name.startsWith(`${namePrefix} > `)
+                  ? result.name.slice(namePrefix.length + 3)
+                  : result.name}
               </span>
               {/* pre-wrap keeps the author's explanation on its own line
                   above the discrepancy (expect(value, why)); break-words
@@ -767,6 +791,7 @@ function ExerciseControls({
         {!showSolution && (
           <button
             type="button"
+            data-solution-action=""
             onClick={handleShowSolution}
             className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-warning/10 text-warning border border-warning/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
           >
@@ -776,6 +801,7 @@ function ExerciseControls({
         {hasStash && (
           <button
             type="button"
+            data-solution-action=""
             onClick={handleRestoreMyCode}
             className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-interactive rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
           >
@@ -814,6 +840,7 @@ export function Exercise({
   onHintRevealed,
   brief = "inline",
   titled = false,
+  workspace = false,
 }: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
@@ -925,6 +952,7 @@ export function Exercise({
 
   return (
     <div
+      data-exercise-workspace={workspace || undefined}
       className={`[&_.cm-lineNumbers]:text-xs! p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
         allPassed ? "border-success/30" : "border-border"
       }`}
@@ -936,9 +964,15 @@ export function Exercise({
           when the lesson has more than one exercise, the exercise's name. */}
       <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <span className="text-base">⚡</span>
-          <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-primary">
-            Exercise
+          {!workspace && <span className="text-base">⚡</span>}
+          <h4
+            className={
+              workspace
+                ? "challenge-editor-heading"
+                : "text-xs font-mono font-semibold uppercase tracking-widest text-primary"
+            }
+          >
+            {workspace ? "Your JavaScript" : "Exercise"}
             {brief === "external" && titled && (
               <span className="sr-only">: {exercise.title}</span>
             )}
@@ -1008,6 +1042,7 @@ export function Exercise({
       <Suspense fallback={<ExerciseLoadingSkeleton />}>
         <div
           ref={setEditorBox}
+          data-editor-frame=""
           className="overflow-hidden border border-border rounded-none"
         >
           {!draftState.ready ? (
@@ -1019,6 +1054,7 @@ export function Exercise({
               files={sandpackFiles}
             >
               <SandpackCodeEditor
+                extensions={EXERCISE_EDITOR_EXTENSIONS}
                 showLineNumbers
                 showTabs={false}
                 // The starter's comments are the task's steps, and they were
@@ -1054,10 +1090,48 @@ export function Exercise({
       {/* Test Results. The live region is mounted unconditionally so it can
           announce; the panel renders only once there is something to show. */}
       <TestResultsLiveRegion results={results} />
-      {results.length > 0 && <TestResultsPanel results={results} />}
-
-      {/* Console output */}
-      <ConsolePanel logs={logs} />
+      {workspace ? (
+        <aside
+          className="challenge-checks"
+          aria-label="Expected tensor and test results"
+        >
+          {exercise.taskBrief?.expectedTensor && (
+            <figure className="challenge-expected-tensor">
+              <figcaption>Expected tensor</figcaption>
+              <p>Keep these five readings in their original order.</p>
+              <ol aria-label="Expected sensor readings">
+                {exercise.taskBrief.expectedTensor.values.map(
+                  (value, index) => (
+                    <li key={index}>
+                      <code>{value}</code>
+                    </li>
+                  ),
+                )}
+              </ol>
+              <p className="challenge-expected-shape">
+                <span>Shape</span>
+                <code>
+                  [{exercise.taskBrief.expectedTensor.shape.join(", ")}]
+                </code>
+                <span>One list of five readings</span>
+              </p>
+            </figure>
+          )}
+          {results.length > 0 ? (
+            <TestResultsPanel results={results} namePrefix={exercise.title} />
+          ) : (
+            <p className="challenge-run-prompt">
+              Run Tests checks your tensor against these readings.
+            </p>
+          )}
+          <ConsolePanel logs={logs} />
+        </aside>
+      ) : (
+        <>
+          {results.length > 0 && <TestResultsPanel results={results} />}
+          <ConsolePanel logs={logs} />
+        </>
+      )}
 
       {/* Bridge hint */}
       {bridge && <BridgeHint bridge={bridge} />}

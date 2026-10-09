@@ -9,6 +9,30 @@ const hints = [
 ];
 
 describe("HintPanel", () => {
+  it("reveals inline help directly, preserving progressive hints and analytics", () => {
+    const onHintRevealed = vi.fn();
+    render(
+      <HintPanel
+        hints={hints}
+        presentation="inline"
+        onHintRevealed={onHintRevealed}
+      />,
+    );
+    expect(screen.queryByText("Need a hint?")).not.toBeInTheDocument();
+    expect(screen.queryByText("Guidance")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Get a nudge" }));
+    expect(
+      screen.getByText("Think about array operations"),
+    ).toBeInTheDocument();
+    expect(onHintRevealed).toHaveBeenLastCalledWith(1);
+    fireEvent.click(screen.getByRole("button", { name: "Get more guidance" }));
+    expect(onHintRevealed).toHaveBeenLastCalledWith(2);
+    fireEvent.click(screen.getByRole("button", { name: "Reveal solution" }));
+    expect(onHintRevealed).toHaveBeenLastCalledWith(3);
+    expect(
+      screen.getByText("const t = tf.tensor([1, 2, 3])"),
+    ).toBeInTheDocument();
+  });
   it("renders nothing when hints is undefined", () => {
     const { container } = render(<HintPanel hints={undefined} />);
     expect(container.innerHTML).toBe("");

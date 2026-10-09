@@ -108,6 +108,8 @@ interface LessonContentProps {
    * Only the Concept step passes it.
    */
   layout?: "reading";
+  /** Compact brief and editor for the introductory tensor workspace. */
+  exerciseWorkspace?: boolean;
   onExerciseComplete?: (exerciseSlug: string, score: number) => void;
   /**
    * Fires on EVERY graded run (pass, fail, crash, timeout), unlike
@@ -220,6 +222,7 @@ export function LessonContent({
   visibleComponents,
   storyRegister,
   layout,
+  exerciseWorkspace = false,
   onExerciseComplete,
   onExerciseAttempt,
   onHintRevealed,
@@ -355,7 +358,9 @@ export function LessonContent({
   // "challenge" re-reveals the challenge zone when prose is hidden (the
   // Challenge step's left column: brief + hints without the re-read).
   const showChallenge =
-    !showProse && (visibleComponents?.has("challenge") ?? false);
+    !exerciseWorkspace &&
+    !showProse &&
+    (visibleComponents?.has("challenge") ?? false);
 
   const exerciseCount = exercises.length;
 
@@ -593,6 +598,7 @@ export function LessonContent({
         return (
           <ExerciseBrief
             slug={props.slug}
+            workspace={exerciseWorkspace}
             onHintRevealed={handleHintRevealed}
           />
         );
@@ -603,7 +609,8 @@ export function LessonContent({
           {...props}
           key={`${props.slug}:${draftOwner ?? "guest"}`}
           draftOwner={draftOwner}
-          bridge={bridgeHint}
+          bridge={exerciseWorkspace ? undefined : bridgeHint}
+          workspace={exerciseWorkspace}
           onHintRevealed={handleHintRevealed}
           onSubmit={submit}
           brief={scoped ? "external" : "inline"}
@@ -664,6 +671,7 @@ export function LessonContent({
     glossaryByTerm,
     exerciseCount,
     visibleComponents,
+    exerciseWorkspace,
   ]);
 
   const Content = useMemo(() => {
@@ -707,12 +715,20 @@ export function LessonContent({
           data-hide-story-zone={hideStoryZone ? "true" : undefined}
         >
           <Content />
-          {shouldShow("HintPanel") && lesson.hints && (
-            <HintPanel
-              hints={lesson.hints}
-              onHintRevealed={handleHintRevealed}
-            />
-          )}
+          {shouldShow("HintPanel") &&
+            lesson.hints &&
+            (exerciseWorkspace ? (
+              <HintPanel
+                hints={lesson.hints}
+                presentation="inline"
+                onHintRevealed={handleHintRevealed}
+              />
+            ) : (
+              <HintPanel
+                hints={lesson.hints}
+                onHintRevealed={handleHintRevealed}
+              />
+            ))}
         </div>
       </ExerciseDataProvider>
     </LessonCharacters>

@@ -19,18 +19,20 @@ interface Props {
   worldSlug: string;
   moduleSlug: string;
   compact?: boolean;
+  heading?: string;
 }
 export function LessonMissionScene({
   lesson,
   worldSlug,
   moduleSlug,
   compact = false,
+  heading,
 }: Props) {
   const character = resolveCharacter(worldSlug, lesson.context.speaker);
   const portrait = portraitSources(worldSlug, character);
   return (
     <aside
-      className={`lesson-mission-scene ${compact ? "lesson-mission-scene-compact" : ""}`}
+      className={`lesson-mission-scene ${compact ? "lesson-mission-scene-compact" : ""} ${heading ? "challenge-mission-header" : ""}`}
       aria-label="Mission context"
     >
       <ScenePortrait
@@ -40,8 +42,11 @@ export function LessonMissionScene({
         className="mission-context-image"
       />
       <div className="mission-context-copy">
+        {heading && <h2>{heading}</h2>}
         <p className="mission-context-location">
-          {lesson.scene?.location ?? "Deep Orbit"}
+          {heading && lesson.scene?.location === "Archimedes, Bridge"
+            ? "Control room aboard the Archimedes"
+            : (lesson.scene?.location ?? "Deep Orbit")}
           {lesson.scene?.time ? ` · ${lesson.scene.time}` : ""}
         </p>
         {!compact && character && (

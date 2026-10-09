@@ -103,6 +103,29 @@ export const exerciseSchema = z.object({
   lessonSlug: z.string().min(1),
   title: z.string().min(1),
   instructions: z.string().min(1),
+  taskBrief: z
+    .object({
+      title: z.string().min(1),
+      intro: z.string().min(1),
+      steps: z
+        .array(
+          z.object({
+            title: z.string().min(1),
+            instruction: z.string().min(1),
+            code: z.string().min(1),
+            result: z.string().optional(),
+          }),
+        )
+        .min(1),
+      support: z.string().min(1),
+      expectedTensor: z
+        .object({
+          values: z.array(z.number()).min(1),
+          shape: z.array(z.number().int().nonnegative()).min(1),
+        })
+        .optional(),
+    })
+    .optional(),
   starterCode: z.string().min(1),
   solutionCode: z.string().min(1),
   testCode: z.string().min(1),

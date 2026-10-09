@@ -170,7 +170,7 @@ for (const [width, scheme] of [
       "five readings",
     );
     await expect(page.getByTestId("mission-handoff")).toContainText(
-      "same five values",
+      "five sensor readings",
     );
     await expect(page.getByTestId("challenge-passed-banner")).toHaveCount(0);
     await expect(

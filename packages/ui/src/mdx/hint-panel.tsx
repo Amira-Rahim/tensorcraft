@@ -10,6 +10,7 @@ interface Hint {
 
 interface HintPanelProps {
   hints: Hint[] | undefined;
+  presentation?: "ladder" | "inline";
   /**
    * Called when the user reveals a hint tier. The consumer wires this up
    * to analytics, kept here as a pure callback so the UI package has no
@@ -30,7 +31,12 @@ const levelConfig = {
   solution: { label: "Solution", color: "var(--tc-tier-intuition)" },
 };
 
-export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
+export function HintPanel({
+  hints,
+  onHintRevealed,
+  presentation = "ladder",
+}: HintPanelProps) {
+  const inline = presentation === "inline";
   const [revealedLevel, setRevealedLevel] = useState(-1);
   // Focus target for the hint that was just revealed.
   const revealedRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +45,13 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
   const justRevealed = revealedLevel >= 0 ? hints[revealedLevel] : undefined;
 
   return (
-    <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+    <div
+      className={
+        inline
+          ? "challenge-hints"
+          : "p-5 my-6 brutalist-shadow bg-surface-raised border border-border"
+      }
+    >
       {/*
         Revealing a hint replaced the button with its own result in the same
         commit. Focus fell to <body>, and nothing announced - so a screen
@@ -66,15 +78,18 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
           : ""}
       </div>
 
-      <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-text-muted">
-        Need a hint?
-      </h4>
+      {!inline && (
+        <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-text-muted">
+          Need a hint?
+        </h4>
+      )}
 
       <div className="flex flex-col gap-3">
         {hints.map((hint, index) => {
           const config = levelConfig[hint.level];
           const isRevealed = index <= revealedLevel;
           const isNext = index === revealedLevel + 1;
+          if (inline && !isRevealed && !isNext) return null;
 
           return (
             <div key={hint.level}>
@@ -85,13 +100,27 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                   // lands on the hint it just asked for rather than <body>.
                   ref={index === revealedLevel ? revealedRef : undefined}
                   tabIndex={index === revealedLevel ? -1 : undefined}
-                  className="p-3 bg-surface outline-none"
+                  className={
+                    inline
+                      ? "challenge-hint-content"
+                      : "p-3 bg-surface outline-none"
+                  }
                 >
                   <span
-                    className="text-xs font-mono font-semibold uppercase tracking-widest block mb-1"
-                    style={{ color: config.color }}
+                    className={
+                      inline
+                        ? "challenge-hint-title"
+                        : "text-xs font-mono font-semibold uppercase tracking-widest block mb-1"
+                    }
+                    style={inline ? undefined : { color: config.color }}
                   >
-                    {config.label}
+                    {inline
+                      ? {
+                          nudge: "A nudge",
+                          guidance: "More guidance",
+                          solution: "The solution",
+                        }[hint.level]
+                      : config.label}
                   </span>
                   {hint.level === "solution" ? (
                     // Solution hints are code excerpts by convention (Gate B:
@@ -123,13 +152,46 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                     // has to tab from the top of the document again.
                     requestAnimationFrame(() => revealedRef.current?.focus());
                   }}
-                  className="w-full text-left p-3 transition-colors duration-100 hover:bg-surface border border-dashed border-border brutalist-hover"
-                  style={{
-                    color: config.color,
-                  }}
+                  className={
+                    inline
+                      ? "challenge-hint-action"
+                      : "w-full text-left p-3 transition-colors duration-100 hover:bg-surface border border-dashed border-border brutalist-hover"
+                  }
+                  style={
+                    inline
+                      ? undefined
+                      : {
+                          color: config.color,
+                        }
+                  }
                 >
-                  <span className="text-xs font-medium">
-                    Reveal {config.label} →
+                  {inline && (
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2.5 1.5-2.5 3" />
+                      <path
+                        d="M12 16h.01"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )}
+                  <span className={inline ? undefined : "text-xs font-medium"}>
+                    {inline
+                      ? {
+                          nudge: "Get a nudge",
+                          guidance: "Get more guidance",
+                          solution: "Reveal solution",
+                        }[hint.level]
+                      : `Reveal ${config.label} →`}
                   </span>
                 </button>
               ) : (

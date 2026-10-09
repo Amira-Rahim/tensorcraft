@@ -25,11 +25,13 @@ export function ChallengePassedBanner({
   exerciseCount,
   checkedWork = [],
   onContinue,
+  compact = false,
 }: {
   passed: boolean;
   exerciseCount: number;
   checkedWork?: string[];
   onContinue: () => void;
+  compact?: boolean;
 }) {
   const message =
     exerciseCount > 1 ? "All exercises passed" : "Exercise passed";
@@ -53,12 +55,16 @@ export function ChallengePassedBanner({
         >
           <div className="min-w-0 flex-1 basis-48">
             <p
-              className="font-mono text-xs uppercase tracking-widest"
+              className={
+                compact
+                  ? "text-lg font-bold"
+                  : "font-mono text-xs uppercase tracking-widest"
+              }
               style={{ color: "var(--tc-primary)" }}
             >
               {message}
             </p>
-            {checkedWork.length > 0 && (
+            {!compact && checkedWork.length > 0 && (
               <ul
                 className="mt-2 space-y-1 text-sm leading-relaxed"
                 aria-label="Checked work"
@@ -68,13 +74,15 @@ export function ChallengePassedBanner({
                 ))}
               </ul>
             )}
-            <p
-              className="mt-2 text-sm leading-relaxed"
-              style={{ color: "var(--tc-muted)" }}
-            >
-              Check your reasoning next, then follow the crew into the next
-              scene.
-            </p>
+            {!compact && (
+              <p
+                className="mt-2 text-sm leading-relaxed"
+                style={{ color: "var(--tc-muted)" }}
+              >
+                Check your reasoning next, then follow the crew into the next
+                scene.
+              </p>
+            )}
           </div>
           <button
             type="button"
