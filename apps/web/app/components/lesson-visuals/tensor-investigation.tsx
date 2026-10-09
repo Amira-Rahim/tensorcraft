@@ -197,25 +197,6 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 <code>streamValues</code>.
               </p>
             </div>
-            <div className="iv-example-step">
-              <h3>
-                <ProseText>Calculate Demir's summary</ProseText>
-              </h3>
-              <pre className="iv-example-code">
-                <code>
-                  <span className="iv-code-keyword">const</span>{" "}
-                  <span className="iv-code-average">average</span>
-                  {" = "}
-                  <TensorFlowApiLink symbol="tf.mean" />(
-                  <span className="iv-code-reading">reading</span>);
-                </code>
-              </pre>
-              <p>
-                <code>mean</code> means average: add the five readings, then
-                divide by five. Like <code>.reduce()</code>, this combines them
-                into one result.
-              </p>
-            </div>
             <div className="iv-creation-line">
               <button
                 ref={runButton}
@@ -231,8 +212,25 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                     ? "Reset example"
                     : "Calculate average"}
               </button>
-              {!result && <span>Run both lines for this packet.</span>}
+              <span>The average calculation is supplied.</span>
             </div>
+            <details className="tensor-calculation-code">
+              <summary>How the average is calculated (optional)</summary>
+              <pre className="iv-example-code">
+                <code>
+                  <span className="iv-code-keyword">const</span>{" "}
+                  <span className="iv-code-average">average</span>
+                  {" = "}
+                  <TensorFlowApiLink symbol="tf.mean" />(
+                  <span className="iv-code-reading">reading</span>);
+                </code>
+              </pre>
+              <p>
+                <code>mean</code> means average: add the five readings, then
+                divide by five. Like <code>.reduce()</code>, this combines them
+                into one result.
+              </p>
+            </details>
           </section>
         </div>
 

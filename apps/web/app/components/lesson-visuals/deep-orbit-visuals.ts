@@ -68,7 +68,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       "create",
       "What can you do with a tensor?",
       "ARIA's rules found no useful pattern. I'll start with a smaller question: what is the average of these five readings?",
-      "You could calculate Demir's average with a JavaScript array. Using a tensor lets you practise how TensorFlow.js works: put numbers into a tensor, then run a calculation on them. Later, you will pass sensor readings to a model as tensors, so it can learn patterns from examples.",
+      "JavaScript can calculate this average too. Here, the average shows TensorFlow.js working with numbers stored in a tensor. Later, you will use tensors to pass readings into a model that learns patterns.",
     ),
     introduction:
       "A tensor is a container for numbers used by TensorFlow.js, our machine learning library. You will help Demir use one to examine five sensor readings from Sector 7-G.",

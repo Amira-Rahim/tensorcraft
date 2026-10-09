@@ -2,27 +2,24 @@ slug: create-a-tensor
 lessonSlug: introduction-to-tensors
 title: "Prepare the Five Readings"
 instructions: |
-  Help Demir prepare the five sensor readings for Farah. Put `streamValues`
-  into a tensor, then check that all five values are still there and in order.
-  Replace the three `null` values:
+  Help Demir prepare the five sensor readings for Farah. Replace the two `null` values:
 
   1. Create `reading` with `tf.tensor(streamValues)`.
-  2. Save `reading.shape` in `shape`. Expect `[5]`: a list of five numbers.
-  3. Save `reading.arraySync()` in `values`. Check that it contains all five
-     readings in their original order.
+  2. Save `reading.shape` in `shape`. Expect `[5]`: one list of five readings.
 
-  TensorFlow.js is already available as `tf`. The cleanup line is provided;
-  leave it after your three lines. Select Run Tests to check your work.
+  TensorFlow.js is already available as `tf`. The supplied lines copy the
+  values for Farah and release the tensor's memory. Leave them in place,
+  then select Run Tests to check that all five readings are present and in order.
 starterCode: |
   const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
 
-  // Replace each null using the example from the Concept step.
+  // Your work: create the tensor and read its shape.
   const reading = null;
   const shape = null;
-  const values = null;
 
-  // Provided: free the memory used by reading.
-  // The copied values remain available.
+  // Supplied: copy the readings into a JavaScript array for Farah.
+  const values = reading?.arraySync();
+  // Supplied: release the tensor's memory after copying its values.
   reading?.dispose();
 solutionCode: |
   const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
@@ -32,7 +29,7 @@ solutionCode: |
   reading?.dispose();
 testCode: |
   describe('Prepare the Five Readings', () => {
-    // Capture only reads made by the learner, before grading begins.
+    // Capture readback calls made by the exercise, before grading begins.
     const reads = (tf.__calls['tensor.arraySync'] || 0)
       + (tf.__calls['tensor.dataSync'] || 0)
       + (tf.__calls['tensor.array'] || 0)
@@ -42,7 +39,7 @@ testCode: |
     it('reading is a TensorFlow.js tensor', () => {
       expect(
         reading instanceof tf.Tensor,
-        'Replace the first null with tf.tensor(streamValues).',
+        'Replace reading’s null with tf.tensor(streamValues).',
       ).toBe(true);
     });
     it('the tensor holds a list of five numbers', () => {
@@ -55,7 +52,7 @@ testCode: |
     it('values contains the five readings in order', () => {
       expect(
         Array.isArray(values),
-        'Use reading.arraySync() to copy the readings into a JavaScript array.',
+        'Keep the supplied values = reading?.arraySync() line after creating the tensor.',
       ).toBe(true);
       expect(values.length, 'Keep all five readings.').toBe(5);
       for (let i = 0; i < source.length; i++) {
@@ -66,7 +63,7 @@ testCode: |
       }
       expect(
         reads,
-        'Read the values from the tensor with reading.arraySync().',
+        'Keep the supplied readback line so the values come from the tensor.',
       ).toBeGreaterThan(0);
     });
     it('the provided cleanup runs after the values are saved', () => {

@@ -114,7 +114,7 @@ test.describe("Lesson without JavaScript", () => {
     await expect(page.getByTestId("briefing-takeaway")).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: "Introduction to Tensors",
+        name: "From JavaScript Arrays to Tensors",
         exact: true,
       }),
     ).toBeVisible();

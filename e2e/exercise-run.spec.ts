@@ -4,9 +4,10 @@ import { test, expect } from "@playwright/test";
  * The one path no other suite exercises end-to-end: a learner clicking
  * "Run Tests" in the real browser. This drives the BROWSER worker transport
  * (importScripts CDN TFJS + shims), which differs from the node worker the
- * corpus test uses. Two invariants:
+ * corpus test uses. Three invariants:
  *   1. the untouched starter must FAIL (red results panel),
- *   2. the canonical solution must PASS ("All tests passed!").
+ *   2. filling just the two learner-owned lines must PASS,
+ *   3. the canonical solution must PASS ("All tests passed!").
  *
  * Uses the free-tier lesson foundations/01 (create-a-tensor). SOLUTION is a
  * copy of that exercise's solutionCode; packages/content/__tests__/
@@ -49,8 +50,28 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(results).not.toContainText("All tests passed!");
     await expect(page.getByTestId("challenge-passed-banner")).toHaveCount(0);
 
-    // 2. Replace editor contents with the canonical solution and re-run.
+    // 2. Complete only the two blanks; keep the supplied readback and cleanup.
     const editor = page.locator(".cm-content").first();
+    const starter = await editor.innerText();
+    expect(starter.match(/= null;/g)).toHaveLength(2);
+    const completed = starter
+      .replace(
+        "const reading = null;",
+        "const reading = tf.tensor(streamValues);",
+      )
+      .replace("const shape = null;", "const shape = reading.shape;");
+    await editor.click();
+    await page.keyboard.press(
+      process.platform === "darwin" ? "Meta+a" : "Control+a",
+    );
+    await page.keyboard.press("Delete");
+    await page.keyboard.insertText(completed);
+    await runButton.click();
+    await expect(results).toContainText("All tests passed!", {
+      timeout: 90_000,
+    });
+
+    // 3. The canonical solution still passes independently.
     await editor.click();
     await page.keyboard.press(
       process.platform === "darwin" ? "Meta+a" : "Control+a",

@@ -1110,6 +1110,28 @@
   min-width: 0;
   margin: 0;
 }
+.tensor-calculation-code {
+  border-top: 1px solid var(--tc-border);
+  padding: 0 clamp(16px, 2vw, 20px);
+}
+.tensor-calculation-code > summary {
+  padding-block: 14px;
+  min-height: 44px;
+  color: var(--tc-muted);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.tensor-calculation-code > summary:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
+}
+.tensor-calculation-code > p {
+  margin: 12px 0 20px;
+  color: var(--tc-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
 .tensor-investigation-response:not(:empty) {
   margin: 0;
   padding: clamp(20px, 3vw, 36px);

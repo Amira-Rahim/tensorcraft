@@ -19,6 +19,10 @@ for (const [width, scheme] of [
     const instrument = page.locator(".lesson-instrument");
     await instrument.getByRole("button", { name: "Calculate average" }).click();
     await expect(instrument.getByRole("status")).toContainText("0.544");
+    const calculation = instrument.locator(".tensor-calculation-code");
+    await expect(calculation).not.toHaveAttribute("open");
+    await calculation.locator("summary").focus();
+    await page.keyboard.press("Enter");
     const mean = instrument.getByRole("link", { name: /^tf.mean,/ });
     await expect(mean).toHaveAttribute(
       "href",
