@@ -13,13 +13,13 @@ instructions: |
 starterCode: |
   const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
 
-  // Your work: create the tensor and read its shape.
+  // Your work: replace the two nulls.
   const reading = null;
   const shape = null;
 
   // Supplied: copy the readings into a JavaScript array for Farah.
   const values = reading?.arraySync();
-  // Supplied: release the tensor's memory after copying its values.
+  // Supplied: release memory after copying the values.
   reading?.dispose();
 solutionCode: |
   const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];

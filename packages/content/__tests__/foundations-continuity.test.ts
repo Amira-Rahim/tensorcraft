@@ -14,16 +14,30 @@ const requiredRead = (name: string) =>
     .replace(/<ConceptReference[\s\S]*?<\/ConceptReference>/g, "");
 
 describe("the opening investigation's visible prerequisites", () => {
-  it("keeps the first task to creation, values and shape, with supplied cleanup", () => {
+  it("keeps the first task to creation and shape, with supplied readback and cleanup", () => {
     const read = requiredRead("01-introduction-to-tensors");
     for (const operation of [
       "[0.12, 0.94, 0.31, 0.88, 0.47]",
-      "tf.tensor(",
+      "tf.tensor(streamValues)",
       "reading.shape",
-      "reading.arraySync()",
-      "reading.dispose()",
     ])
       expect(read).toContain(operation);
+    const exercise = readFileSync(
+      resolve(foundations, "exercises/create-a-tensor.yaml"),
+      "utf8",
+    );
+    const starter = exercise
+      .split("starterCode: |")[1]!
+      .split("solutionCode:")[0]!;
+    expect(starter).toContain("[0.12, 0.94, 0.31, 0.88, 0.47]");
+    expect(starter).toContain("const reading = null;");
+    expect(starter).toContain("const shape = null;");
+    expect(starter.match(/\bnull\b/g)).toHaveLength(2);
+    expect(starter).toContain("const values = reading?.arraySync();");
+    expect(starter).toContain("reading?.dispose();");
+    expect(starter.indexOf("reading?.arraySync()")).toBeLessThan(
+      starter.indexOf("reading?.dispose()"),
+    );
     expect(lesson("01-introduction-to-tensors")).toContain(
       "The five readings return from the tensor in their original order",
     );
