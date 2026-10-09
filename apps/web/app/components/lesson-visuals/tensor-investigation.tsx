@@ -164,6 +164,11 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 <span>
                   The tensor still holds all {result.values.length} readings.
                 </span>
+                <p>
+                  For this one-dimensional list, <code>reading.shape[0]</code>{" "}
+                  and <code>streamValues.length</code> both give{" "}
+                  <code>{result.shape[0]}</code>.
+                </p>
               </div>
             ) : (
               <p className="tensor-packet-note">
@@ -244,25 +249,30 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               className="tensor-investigation-findings"
               data-testid="tensor-story-response"
             >
-              <div className="tensor-investigation-speaker">
-                <AnimatedAvatar name="ARIA" {...aria} />
-                <p>
-                  <strong>
-                    <ProseText>ARIA</ProseText>
-                  </strong>
-                  <span>Responding to the calculation</span>
+              <div className="tensor-investigation-result">
+                <p className="iv-average-result">
+                  <span>Average reading</span>{" "}
+                  <strong>{fmt(result.average, 3)}</strong>
+                </p>
+                <p className="tensor-investigation-result-source">
+                  Calculated from all {result.values.length} readings.
                 </p>
               </div>
-              <div>
-                <p className="iv-average-result">
-                  Average reading <strong>{fmt(result.average, 3)}</strong>
-                </p>
-                <p>
+              <div className="tensor-investigation-interpretation">
+                <div className="tensor-investigation-speaker">
+                  <AnimatedAvatar name="ARIA" {...aria} />
+                  <h3>
+                    <ProseText>ARIA</ProseText>
+                  </h3>
+                </div>
+                <blockquote>
                   The lowest reading is {fmt(Math.min(...result.values))}; the
                   highest is {fmt(Math.max(...result.values))}. An average does
                   not identify unusual readings.
-                </p>
-                <p className="tensor-investigation-consequence">
+                </blockquote>
+              </div>
+              <div className="tensor-investigation-consequence">
+                <p>
                   <ProseText>
                     Demir keeps the full packet for Farah. She will need the
                     individual readings to investigate further.

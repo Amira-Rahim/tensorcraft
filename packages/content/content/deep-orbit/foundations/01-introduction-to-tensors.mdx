@@ -88,10 +88,15 @@ const values = reading.arraySync();
 reading.dispose();`}
 </CodeBlock>
 
-The **shape** `[5]` describes one list of five numbers. `arraySync()` copies
-them into a JavaScript array. Check that all five readings are present and
-in their original order. TensorFlow.js may show tiny rounding differences
-in the copied values.
+You already use `streamValues.length` to get the array's length: `5`.
+A tensor's **shape** lists the length of each dimension. This tensor holds
+one list, so `reading.shape` is `[5]` and `reading.shape[0]` is `5`.
+Shape is an array because tensors can have several dimensions, such as
+rows and columns.
+
+`arraySync()` copies the readings into a JavaScript array. Check that all
+five are present and in their original order. TensorFlow.js may show tiny
+rounding differences in the copied values.
 
 ## Challenge
 
