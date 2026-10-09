@@ -17,27 +17,30 @@ for (const [width, scheme] of [
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
     await page.getByRole("button", { name: "Continue →", exact: true }).click();
     const instrument = page.locator(".lesson-instrument");
-    await instrument.getByRole("button", { name: "Calculate average" }).click();
-    await expect(instrument.getByRole("status")).toContainText("0.544");
-    const calculation = instrument.locator(".tensor-calculation-code");
-    await expect(calculation).not.toHaveAttribute("open");
-    await calculation.locator("summary").focus();
-    await page.keyboard.press("Enter");
-    const mean = instrument.getByRole("link", { name: /^tf.mean,/ });
-    await expect(mean).toHaveAttribute(
+    await instrument.getByRole("button", { name: "Create tensor" }).click();
+    await expect(instrument.getByRole("status")).toContainText(
+      "All 5 readings match",
+    );
+    const tensor = instrument.getByRole("link", { name: /^tf.tensor,/ });
+    await expect(tensor).toHaveAttribute(
       "href",
-      "https://js.tensorflow.org/api/4.22.0/#mean",
+      "https://js.tensorflow.org/api/4.22.0/#tensor",
     );
     // Check the navigation without making the UI test depend on an external site.
     await context.route("https://js.tensorflow.org/api/**", (route) =>
       route.fulfill({ body: "TensorFlow.js reference" }),
     );
     const popupPromise = page.waitForEvent("popup");
-    await mean.click();
+    await tensor.focus();
+    await page.keyboard.press("Enter");
     const docs = await popupPromise;
-    await expect(docs).toHaveURL("https://js.tensorflow.org/api/4.22.0/#mean");
+    await expect(docs).toHaveURL(
+      "https://js.tensorflow.org/api/4.22.0/#tensor",
+    );
     await docs.close();
-    await expect(instrument.getByRole("status")).toContainText("0.544");
+    await expect(instrument.getByRole("status")).toContainText(
+      "All 5 readings match",
+    );
     await expect(page).toHaveURL(/#step-concept$/);
 
     const shape = page.getByRole("button", { name: "shape", exact: true });

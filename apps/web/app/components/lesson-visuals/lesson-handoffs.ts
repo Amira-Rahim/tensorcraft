@@ -1,7 +1,7 @@
 /** Connect each practice view to the authored task, without inventing results. */
 export const LESSON_HANDOFFS: Record<string, string> = {
   "introduction-to-tensors":
-    "Now help Demir prepare the same five values for TensorFlow.js. Create a tensor and check that its shape is [5]. The average calculation was the demonstration; your task is to prepare the data.",
+    "Help Demir prepare the same five values for TensorFlow.js. Create a tensor and save its shape. The supplied code reads the values back so the tests can check that all five readings are preserved.",
   "tensor-shapes":
     "Farah needs to know where each value lands. You will carry the small layout experiment into a twelve-value block: predict the second row, then reshape and read it back.",
   "tensor-operations":

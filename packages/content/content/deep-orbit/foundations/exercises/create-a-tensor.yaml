@@ -2,8 +2,8 @@ slug: create-a-tensor
 lessonSlug: introduction-to-tensors
 title: "Prepare the Five Readings"
 instructions: |
-  Prepare the five sensor readings for TensorFlow.js, as Demir did before
-  calculating their average. Replace the two `null` values:
+  Help Demir prepare the five sensor readings for TensorFlow.js.
+  Replace the two `null` values:
 
   1. Create `reading` with `tf.tensor(streamValues)`.
   2. Save `reading.shape` in `shape`. It should be `[5]`, meaning the tensor holds a list of five numbers.

@@ -44,7 +44,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
       lessons.map((l) => l.slug).sort(),
     );
   });
-  it("calculates an average from the exercise's readings without changing them, then resets", async () => {
+  it("creates a tensor from the exercise's readings, reports the readback, then resets", async () => {
     const exercises = JSON.parse(
       readFileSync(root + "packages/content/.velite/exercises.json", "utf8"),
     );
@@ -64,25 +64,28 @@ describe("the complete Deep Orbit visual curriculum", () => {
     });
     const originalValues = source.textContent;
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
-    fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
     await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent("0.544"),
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "All 5 readings match",
+      ),
     );
     expect(source.textContent).toBe(originalValues);
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "cannot tell which readings, if any, are unusual",
-    );
+    expect(screen.getByRole("status")).toHaveTextContent("in the same order");
     expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
       "ARIA",
     );
     expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
-      "one summary of the five readings",
+      "a tensor that TensorFlow.js can work with",
     );
     expect(screen.getByTestId("tensor-story-response")).toHaveTextContent(
-      "all five readings for Farah",
+      "Demir records the successful check for Farah",
     );
     expect(screen.getByText("shape [5]")).toBeInTheDocument();
-    expect(screen.getByText("Dashed line: average 0.544")).toBeInTheDocument();
+    const readback = screen.getByRole("list", {
+      name: "Readings returned from the tensor",
+    });
+    expect(readback.textContent).toBe(originalValues);
     fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
     expect(screen.queryByText("shape [5]")).not.toBeInTheDocument();
@@ -100,22 +103,51 @@ describe("the complete Deep Orbit visual curriculum", () => {
         spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
-    const pendingButton = screen.getByRole("button", { name: "Calculating…" });
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
+    const pendingButton = screen.getByRole("button", {
+      name: "Creating tensor…",
+    });
     expect(pendingButton).toHaveAttribute("aria-disabled", "true");
     fireEvent.click(pendingButton);
     expect(run).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent("could not run"),
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "could not be created",
+      ),
     );
     expect(screen.queryByText("shape [5]")).not.toBeInTheDocument();
     expect(
       screen.queryByTestId("tensor-story-response"),
     ).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Calculate average" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
     await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent("0.544"),
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "All 5 readings match",
+      ),
     );
+  });
+  it("does not report success when the returned readings are out of order", async () => {
+    vi.spyOn(tensorExample, "runTensorExample").mockResolvedValueOnce({
+      shape: [5],
+      values: [...FIRST_PACKET].reverse(),
+    });
+    render(
+      <LessonInstrument
+        spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
+    await waitFor(() =>
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "The tensor does not match the original readings",
+      ),
+    );
+    expect(screen.getByRole("status")).not.toHaveTextContent(
+      "successful check",
+    );
+    expect(
+      screen.getByRole("list", { name: "Readings returned from the tensor" }),
+    ).toHaveTextContent([...FIRST_PACKET].reverse().join(""));
   });
   it("uses the normalization exercise's rows and distinguishes raw, z-score and min-max results", () => {
     const exercises = JSON.parse(
@@ -183,7 +215,9 @@ describe("the complete Deep Orbit visual curriculum", () => {
       } else fireEvent.click(buttons[1] ?? buttons[0]!);
       if (spec.kind === "tensor" && spec.mode === "create") {
         await waitFor(() =>
-          expect(screen.getByRole("status")).toHaveTextContent("0.544"),
+          expect(screen.getByRole("status")).toHaveTextContent(
+            "All 5 readings match",
+          ),
         );
       }
       expect(instrument.textContent).not.toBe(before);

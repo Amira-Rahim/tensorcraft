@@ -13,10 +13,7 @@ describe("the live tensor example", () => {
       result.values.forEach((value, index) =>
         expect(value).toBeCloseTo(values[index]!, 6),
       );
-      expect(result.average).toBeCloseTo(
-        values.reduce((a, b) => a + b, 0) / values.length,
-        6,
-      );
+      expect(result.values).toHaveLength(values.length);
       expect(memory().numTensors).toBe(before);
     }
   });

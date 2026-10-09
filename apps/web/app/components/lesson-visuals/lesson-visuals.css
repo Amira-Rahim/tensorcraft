@@ -128,9 +128,6 @@
 .iv-code-reading {
   color: var(--iv-blue);
 }
-.iv-code-average {
-  color: var(--iv-brass);
-}
 .iv-creation-line {
   display: flex;
   flex-wrap: wrap;
@@ -184,19 +181,6 @@
 }
 .iv-creation-status p {
   margin: 0;
-}
-.iv-creation-status .iv-average-result {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-.iv-average-result strong {
-  color: var(--iv-brass);
-  font:
-    600 28px/1.4 var(--font-mono),
-    monospace;
 }
 .iv-creation-status:empty {
   margin: 0;
@@ -1129,28 +1113,6 @@
   min-width: 0;
   margin: 0;
 }
-.tensor-calculation-code {
-  border-top: 1px solid var(--tc-border);
-  padding: 0 clamp(16px, 2vw, 20px);
-}
-.tensor-calculation-code > summary {
-  padding-block: 14px;
-  min-height: 44px;
-  color: var(--tc-muted);
-  cursor: pointer;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.tensor-calculation-code > summary:focus-visible {
-  outline: 2px solid var(--tc-primary);
-  outline-offset: 4px;
-}
-.tensor-calculation-code > p {
-  margin: 12px 0 20px;
-  color: var(--tc-muted);
-  font-size: 14px;
-  line-height: 1.6;
-}
 .tensor-investigation-response:not(:empty) {
   margin: 0;
   padding: clamp(20px, 3vw, 36px);
@@ -1160,27 +1122,18 @@
 }
 .tensor-investigation-findings {
   display: grid;
-  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: 24px clamp(24px, 3vw, 40px);
   align-items: start;
 }
 .tensor-investigation-result {
   min-width: 0;
 }
-.tensor-investigation-result .iv-average-result {
-  display: grid;
-  gap: 8px;
-  margin: 0 0 8px;
-  font-size: 15px;
-}
-.tensor-investigation-result .iv-average-result strong {
-  font-size: clamp(32px, 3vw, 40px);
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-}
-.tensor-investigation-result-source {
-  color: var(--tc-muted);
-  font-size: 13px;
+.tensor-investigation-result > h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 .tensor-investigation-interpretation {
   min-width: 0;
@@ -1245,10 +1198,5 @@
   }
   .tensor-investigation-findings {
     gap: 24px;
-  }
-  .tensor-investigation-result .iv-average-result {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
   }
 }

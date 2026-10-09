@@ -101,16 +101,16 @@ for (const [width, scheme] of [
     expect(goalsBox.y + goalsBox.height).toBeLessThanOrEqual(activityBox.y);
     expect(goalsBox.width).toBe(activityBox.width);
     const preview = instrument.getByRole("button", {
-      name: "Calculate average",
+      name: "Create tensor",
     });
     await expect(preview).toHaveAttribute("aria-expanded", "false");
     await preview.focus();
     await page.keyboard.press("Space");
     await expect(instrument.getByRole("status")).toContainText(
-      "Average reading 0.544",
+      "All 5 readings match the original array",
     );
     await expect(page.getByTestId("tensor-story-response")).toContainText(
-      "all five readings for Farah",
+      "Demir records the successful check for Farah",
     );
     await expect(
       instrument.getByRole("button", { name: "Reset example" }),
@@ -132,8 +132,10 @@ for (const [width, scheme] of [
         .getByRole("listitem"),
     ).toHaveText(["0.12", "0.94", "0.31", "0.88", "0.47"]);
     await expect(
-      instrument.getByText("Dashed line: average 0.544"),
-    ).toBeVisible();
+      instrument
+        .getByRole("list", { name: "Readings returned from the tensor" })
+        .getByRole("listitem"),
+    ).toHaveText(["0.12", "0.94", "0.31", "0.88", "0.47"]);
     await expect(
       page.getByText("prepare-readings.js", { exact: true }),
     ).toBeVisible();

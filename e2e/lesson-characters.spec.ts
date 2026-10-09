@@ -51,11 +51,11 @@ test("character portraits stay hoverable and keyboard accessible throughout a le
   await page.keyboard.press("Escape");
 
   await page
-    .getByRole("button", { name: "Calculate average", exact: true })
+    .getByRole("button", { name: "Create tensor", exact: true })
     .click();
   await expect(
     page.locator(".lesson-instrument").getByRole("status"),
-  ).toContainText("0.544");
+  ).toContainText("All 5 readings match");
   await page
     .locator(
       '.tensor-investigation-consequence [data-character-mention="Dr. Farah"]',
@@ -122,7 +122,7 @@ test("character cards fit a narrow touch screen in light mode", async ({
   await expect(tooltip).toHaveCount(0);
   await demir.tap();
   await page
-    .getByRole("heading", { name: "What can you do with a tensor?" })
+    .getByRole("heading", { name: "Prepare the readings for TensorFlow.js" })
     .tap();
   await expect(tooltip).toHaveCount(0);
   expect(

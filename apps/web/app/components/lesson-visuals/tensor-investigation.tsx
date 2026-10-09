@@ -9,8 +9,7 @@ import type { LessonVisualSpec } from "./deep-orbit-visuals";
 import { FIRST_PACKET } from "./instrument-math";
 import { runTensorExample } from "./tensor-example";
 
-const fmt = (value: number, digits = 2) =>
-  Number(value.toFixed(digits)).toString();
+const fmt = (value: number) => Number(value.toFixed(2)).toString();
 const demir = portraitSources(
   "deep-orbit",
   resolveCharacter("deep-orbit", "Ensign Demir"),
@@ -32,9 +31,18 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
   const resultId = useId();
   const response = useRef<HTMLDivElement>(null);
   const runButton = useRef<HTMLButtonElement>(null);
+  // Compare the readback with the input, allowing TensorFlow.js float32 rounding.
+  const readingsPreserved =
+    result !== null &&
+    result.shape.length === 1 &&
+    result.shape[0] === FIRST_PACKET.length &&
+    result.values.length === FIRST_PACKET.length &&
+    result.values.every(
+      (value, index) => Math.abs(value - FIRST_PACKET[index]!) < 1e-6,
+    );
 
   useEffect(() => {
-    // Follow a requested calculation, but do not pull the reader back if
+    // Show the created tensor, but do not pull the reader back if
     // they moved elsewhere while TensorFlow.js was loading.
     if ((result || failed) && document.activeElement === runButton.current) {
       response.current?.scrollIntoView?.({
@@ -46,7 +54,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
     }
   }, [result, failed]);
 
-  async function calculate() {
+  async function createTensor() {
     if (pending) return;
     if (result) {
       setResult(null);
@@ -97,7 +105,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
       </div>
 
       <section className="tensor-investigation-purpose">
-        <h3>Why start with an average?</h3>
+        <h3>Why create a tensor?</h3>
         <p>
           <ProseText>{spec.takeaway}</ProseText>
         </p>
@@ -112,7 +120,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               </strong>
               <span>Sector 7-G: the first packet</span>
             </figcaption>
-            <svg viewBox="0 0 400 150" aria-hidden="true">
+            <svg viewBox="0 0 400 130" aria-hidden="true">
               <text x="0" y="18">
                 1
               </text>
@@ -127,34 +135,18 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                   y={120 - value * 104}
                   width="40"
                   height={value * 104}
-                  fill={result ? "var(--tc-primary)" : "var(--tc-muted)"}
-                  fillOpacity={result ? 1 : 0.7}
+                  fill="var(--tc-muted)"
+                  fillOpacity={0.7}
                 />
               ))}
-              {result && (
-                <g>
-                  <line
-                    x1="0"
-                    x2="400"
-                    y1={120 - result.average * 104}
-                    y2={120 - result.average * 104}
-                    stroke="var(--iv-brass)"
-                    strokeWidth="2"
-                    strokeDasharray="6 4"
-                  />
-                  <text x="0" y="145">
-                    Dashed line: average {fmt(result.average, 3)}
-                  </text>
-                </g>
-              )}
             </svg>
             <div
-              className={`iv-cells${result ? "" : " iv-cells-muted"}`}
+              className="iv-cells iv-cells-muted"
               style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
               role="list"
               aria-label="Five sensor readings in a JavaScript array"
             >
-              {(result?.values ?? FIRST_PACKET).map((value, index) => (
+              {FIRST_PACKET.map((value, index) => (
                 <span key={index} role="listitem">
                   {fmt(value)}
                 </span>
@@ -174,7 +166,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
           <section className="iv-worked-example" aria-label="Worked example">
             <div className="iv-example-step">
               <h3>
-                <span className="tensor-stage-number">2</span> Tensor
+                <span className="tensor-stage-number">2</span> Create a tensor
               </h3>
               <pre className="iv-example-code">
                 <code>
@@ -190,14 +182,6 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 from your array so TensorFlow.js can calculate with the
                 readings.
               </p>
-              {result && (
-                <div className="iv-creation-shape">
-                  <code>shape [{result.shape.join(", ")}]</code>
-                  <span>
-                    All {result.values.length} readings, in the same order.
-                  </span>
-                </div>
-              )}
             </div>
             <div className="iv-creation-line">
               <button
@@ -206,33 +190,16 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 aria-disabled={pending}
                 aria-expanded={Boolean(result)}
                 aria-controls={resultId}
-                onClick={calculate}
+                onClick={createTensor}
               >
                 {pending
-                  ? "Calculating…"
+                  ? "Creating tensor…"
                   : result
                     ? "Reset example"
-                    : "Calculate average"}
+                    : "Create tensor"}
               </button>
               <span>This example runs for you.</span>
             </div>
-            <details className="tensor-calculation-code">
-              <summary>How the average is calculated (optional)</summary>
-              <pre className="iv-example-code">
-                <code>
-                  <span className="iv-code-keyword">const</span>{" "}
-                  <span className="iv-code-average">average</span>
-                  {" = "}
-                  <TensorFlowApiLink symbol="tf.mean" />(
-                  <span className="iv-code-reading">reading</span>);
-                </code>
-              </pre>
-              <p>
-                <code>mean</code> means average: add the five readings, then
-                divide by five. Like <code>.reduce()</code>, this combines them
-                into one result.
-              </p>
-            </details>
           </section>
         </div>
 
@@ -250,16 +217,28 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               data-testid="tensor-story-response"
             >
               <div className="tensor-investigation-result">
-                <p className="iv-average-result">
-                  <span>
-                    <span className="tensor-stage-number">3</span> Average
-                    reading
-                  </span>{" "}
-                  <strong>{fmt(result.average, 3)}</strong>
-                </p>
-                <p className="tensor-investigation-result-source">
-                  Calculated from all {result.values.length} readings.
-                </p>
+                <h3>
+                  <span className="tensor-stage-number">3</span> Inspect the
+                  tensor
+                </h3>
+                <div
+                  className="iv-cells"
+                  style={{
+                    gridTemplateColumns: `repeat(${result.values.length}, minmax(0, 1fr))`,
+                  }}
+                  role="list"
+                  aria-label="Readings returned from the tensor"
+                >
+                  {result.values.map((value, index) => (
+                    <span key={index} role="listitem">
+                      {fmt(value)}
+                    </span>
+                  ))}
+                </div>
+                <div className="iv-creation-shape">
+                  <code>shape [{result.shape.join(", ")}]</code>
+                  <span>{result.values.length} numbers in one list.</span>
+                </div>
               </div>
               <div className="tensor-investigation-interpretation">
                 <div className="tensor-investigation-speaker">
@@ -269,25 +248,29 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                   </h3>
                 </div>
                 <blockquote>
-                  This gives us one summary of the five readings. I still cannot
-                  tell which readings, if any, are unusual.
+                  {readingsPreserved
+                    ? `All ${result.values.length} readings match the original array, in the same order. They are now in a tensor that TensorFlow.js can work with.`
+                    : "The tensor does not match the original readings. Reset the example and try again."}
                 </blockquote>
               </div>
-              <div className="tensor-investigation-consequence">
-                <p>
-                  <ProseText>
-                    Demir keeps all five readings for Farah's investigation.
-                  </ProseText>
-                </p>
-              </div>
+              {readingsPreserved && (
+                <div className="tensor-investigation-consequence">
+                  <p>
+                    <ProseText>
+                      Demir records the successful check for Farah. The readings
+                      are prepared; finding patterns in them comes later.
+                    </ProseText>
+                  </p>
+                </div>
+              )}
             </div>
           ) : failed ? (
             <p>
-              The calculation could not run. Select Calculate average to try
+              The tensor could not be created. Select Create tensor to try
               again.
             </p>
           ) : pending ? (
-            <p>Loading TensorFlow.js and calculating the average…</p>
+            <p>Loading TensorFlow.js and creating the tensor…</p>
           ) : null}
         </div>
 
