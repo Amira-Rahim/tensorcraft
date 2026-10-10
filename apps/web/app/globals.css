@@ -608,6 +608,144 @@ body {
   }
 }
 
+/* Takeaways (owner, 2026-10-10): the step spans the frame, so each card is
+   laid out for that width instead of stretching its lines. The recall card
+   and the recap render inside .lesson-prose, whose p rule (0,1,1) set their
+   12 px labels and note at body size; the selectors below outrank it. */
+
+/* Recall card: the question keeps a readable measure and the privacy note
+   its 12 px size. The Briefing warm-up renders outside the prose. */
+.lesson-prose .review-prompt-question {
+  max-width: 80ch;
+}
+.lesson-prose .review-prompt-note {
+  margin-bottom: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Room-project checkpoint (two lessons): its text keeps the reading
+   measure, and its heading drops the prose top margin, which left an empty
+   band at the top of the card. */
+.lesson-prose .project-milestone > h3 {
+  margin-top: 0;
+}
+.lesson-prose .project-milestone > p {
+  max-width: 68ch;
+}
+
+/* Recap: on a wide card the learned list takes the left column, and the
+   bridge and the next ability stack on the right. Its items and texts share
+   one size (the prose rules gave them 14 and 16 px on phones). */
+.lesson-recap {
+  container-type: inline-size;
+}
+.lesson-recap .lesson-recap-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.lesson-recap .lesson-recap-sections li,
+.lesson-recap .lesson-recap-text {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.lesson-recap .lesson-recap-text {
+  margin: 0;
+}
+/* The check marks are the bullets: no prose indent, no trailing margin. */
+.lesson-recap .lesson-recap-sections ul {
+  margin: 0;
+  padding-left: 0;
+}
+.lesson-recap .lesson-recap-sections li:last-child {
+  margin-bottom: 0;
+}
+@media (width >= 48rem) {
+  .lesson-recap .lesson-recap-sections li,
+  .lesson-recap .lesson-recap-text {
+    font-size: 1.0625rem;
+  }
+}
+@container (width >= 760px) {
+  /* The second row takes the learned list's extra height, so the next
+     ability follows the bridge instead of floating below it. */
+  .lesson-recap-sections {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-rows: auto 1fr;
+    gap: 20px 48px;
+    align-items: start;
+  }
+  .lesson-recap-learned {
+    grid-row: span 2;
+  }
+}
+
+/* Terms in this lesson: a reference sheet. Each row holds the headword, its
+   definition and where to read more: three columns on a wide card, the
+   source under the definition below 960 px, one column on phones. */
+.lesson-terms {
+  container-type: inline-size;
+}
+.lesson-terms-row {
+  display: grid;
+  gap: 6px;
+  padding-block: 16px;
+  border-top: 1px solid var(--tc-border);
+}
+.lesson-terms-row:last-child {
+  padding-bottom: 0;
+}
+.lesson-terms-term {
+  color: var(--tc-primary);
+  font-family: var(--font-mono), monospace;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.lesson-terms-definition {
+  margin: 0;
+  color: var(--tc-text);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.lesson-terms-source {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.lesson-terms-kind {
+  color: var(--tc-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+@container (width >= 560px) {
+  .lesson-terms-row {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    column-gap: 24px;
+  }
+  .lesson-terms-definition,
+  .lesson-terms-source {
+    grid-column: 2;
+  }
+}
+@container (width >= 960px) {
+  .lesson-terms-row {
+    grid-template-columns: 11rem minmax(0, 1fr) 15rem;
+    column-gap: 32px;
+  }
+  .lesson-terms-source {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
 /* Briefing story grid: the picture beside the dialogue, with scene context
    above both columns. Below lg they stack
    in DOM order in one column no wider than 820 px, with the row gap between

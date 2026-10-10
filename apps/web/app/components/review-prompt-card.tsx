@@ -45,7 +45,7 @@ export function ReviewPromptCard({
       </h4>
       <p
         id={questionId}
-        className="text-[15px] mb-4 text-text-primary font-mono"
+        className="review-prompt-question text-[15px] mb-4 text-text-primary font-mono"
       >
         <ProseText>{question}</ProseText>
       </p>
@@ -58,7 +58,7 @@ export function ReviewPromptCard({
             rows={3}
             className="w-full p-3 mb-3 border border-border bg-surface text-text-primary"
           />
-          <p className="text-xs text-text-muted mb-3">
+          <p className="review-prompt-note text-xs text-text-muted mb-3">
             Your answer stays on this page and is never saved.
           </p>
           <div className="flex flex-wrap gap-2">

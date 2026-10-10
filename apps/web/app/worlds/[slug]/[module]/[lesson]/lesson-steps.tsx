@@ -2189,12 +2189,10 @@ function StepTakeaways({
   };
   return (
     <div>
-      <PhaseChip label="Takeaways" icon={"\u2713"} />
-      {/* The recall first, alone (spec 2026-09-24, section 2). */}
-      <div
-        className="lesson-prose max-w-[820px]"
-        data-testid="takeaways-recall"
-      >
+      {/* The recall first, alone (spec 2026-09-24, section 2). The step
+          spans the whole frame, with no 820 px reading cap and no step label
+          over it: the step bar already names the step (owner, 2026-10-10). */}
+      <div className="lesson-prose" data-testid="takeaways-recall">
         <LessonContent
           {...shared}
           visibleComponents={TAKEAWAYS_RECALL}
@@ -2203,10 +2201,7 @@ function StepTakeaways({
       </div>
       {recallSettled && (
         <>
-          <div
-            className="lesson-prose max-w-[820px]"
-            data-testid="takeaways-prose"
-          >
+          <div className="lesson-prose" data-testid="takeaways-prose">
             <LessonContent {...shared} visibleComponents={TAKEAWAYS_AFTER} />
           </div>
           <LessonTermsList terms={lesson.glossaryTerms ?? []} />

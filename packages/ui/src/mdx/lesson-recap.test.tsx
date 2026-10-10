@@ -19,6 +19,26 @@ describe("LessonRecap", () => {
     expect(screen.getByText(/create a tensor and manage/i)).toBeInTheDocument();
   });
 
+  it("carries the layout hooks the app's Takeaways CSS places in two columns", () => {
+    const { container } = render(
+      <LessonRecap
+        whatYouLearned={["A tensor tracks shape."]}
+        bridge="b"
+        youCanNow="c"
+      />,
+    );
+    // apps/web globals.css: the learned list spans both rows of the left
+    // column, the bridge and the next ability stack on the right.
+    const sections = container.querySelector(
+      ".lesson-recap > .lesson-recap-sections",
+    )!;
+    expect(
+      Array.from(sections.children, (section) => section.className),
+    ).toEqual(["lesson-recap-learned", "", ""]);
+    expect(container.querySelectorAll(".lesson-recap-label")).toHaveLength(3);
+    expect(container.querySelectorAll(".lesson-recap-text")).toHaveLength(2);
+  });
+
   it("renders without crashing on empty whatYouLearned", () => {
     const { container } = render(
       <LessonRecap whatYouLearned={[]} bridge="b" youCanNow="c" />,

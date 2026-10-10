@@ -624,6 +624,96 @@ test.describe("lesson layout, desktop", () => {
     ).toBeVisible();
   });
 
+  // Owner, 2026-10-10: Takeaways uses the whole frame, the step bar alone
+  // names the step, and the terms list is one row per term.
+  test("Takeaways spans the frame: no step label, a two-column recap, one row per term", async ({
+    page,
+  }) => {
+    await openSettledTakeaways(page, LESSONS.paragraphLed);
+    await expect(
+      page.getByRole("group", { name: /^Step 4 of 5/ }).getByText(/takeaways/i),
+    ).toHaveCount(0);
+    const m = await page.evaluate(() => {
+      const one = (s: string) => {
+        const found = document.querySelectorAll(s);
+        if (found.length !== 1)
+          throw new Error(`${s}: ${found.length} matches`);
+        return found[0];
+      };
+      const box = (el: Element) => {
+        const r = el.getBoundingClientRect();
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom };
+      };
+      const width = (s: string) => one(s).getBoundingClientRect().width;
+      const [learned, bridge, nextAbility] = Array.from(
+        one(".lesson-recap-sections").children,
+        box,
+      );
+      const [term, definition, source] = Array.from(
+        one("[data-testid='glossary-entry-tensor']").children,
+        box,
+      );
+      return {
+        grid: width("[data-testid='lesson-grid']"),
+        widths: [
+          width("[data-testid='takeaways-recall']"),
+          width(".lesson-recap"),
+          width("[data-testid='lesson-terms-list']"),
+        ],
+        learned,
+        bridge,
+        nextAbility,
+        term,
+        definition,
+        source,
+        labels: Array.from(
+          document.querySelectorAll(".lesson-recap-label, .review-prompt-note"),
+          (el) => getComputedStyle(el).fontSize,
+        ),
+      };
+    });
+    for (const width of m.widths) {
+      expect(Math.abs(width - m.grid)).toBeLessThanOrEqual(1);
+    }
+    // The learned list on the left; the bridge beside it, top-aligned, and
+    // the next ability right under the bridge.
+    expect(m.bridge.left).toBeGreaterThanOrEqual(m.learned.right + 40);
+    expect(Math.abs(m.bridge.top - m.learned.top)).toBeLessThanOrEqual(1);
+    expect(m.nextAbility.top - m.bridge.bottom).toBeGreaterThanOrEqual(0);
+    expect(m.nextAbility.top - m.bridge.bottom).toBeLessThanOrEqual(24);
+    // Headword, definition and reading share one row, left to right.
+    expect(Math.abs(m.definition.top - m.term.top)).toBeLessThanOrEqual(1);
+    expect(Math.abs(m.source.top - m.term.top)).toBeLessThanOrEqual(1);
+    expect(m.definition.left).toBeGreaterThan(m.term.right);
+    expect(m.source.left).toBeGreaterThan(m.definition.right);
+    // The prose p rule no longer sets these 12 px labels at body size.
+    expect(m.labels).toEqual(["12px", "12px", "12px", "12px"]);
+  });
+
+  test("a room-project checkpoint keeps its reading measure on the full-width step", async ({
+    page,
+  }) => {
+    await openSettledTakeaways(page, SPANNING_LESSON);
+    const m = await page.evaluate(() => {
+      const card = document.querySelector(".project-milestone")!;
+      const top = card.getBoundingClientRect().top;
+      return {
+        card: card.getBoundingClientRect().width,
+        text: Math.max(
+          ...Array.from(
+            card.querySelectorAll(":scope > p"),
+            (p) => p.getBoundingClientRect().width,
+          ),
+        ),
+        heading: card.querySelector("h3")!.getBoundingClientRect().top - top,
+      };
+    });
+    expect(m.card).toBeGreaterThan(1100);
+    expect(m.text).toBeLessThanOrEqual(800);
+    // The card's 16 px padding and border, with no prose margin above.
+    expect(m.heading).toBeLessThanOrEqual(18);
+  });
+
   test("on the Concept step the nav sits 40 px below the reading, with Continue at the frame's right edge", async ({
     page,
   }) => {
@@ -937,6 +1027,41 @@ test.describe("lesson layout, phone", () => {
       expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
     });
   }
+
+  test("on Takeaways the recap is one column and each term stacks at 390 px", async ({
+    page,
+  }) => {
+    await openSettledTakeaways(page, LESSONS.paragraphLed);
+    const m = await page.evaluate(() => {
+      const box = (el: Element) => {
+        const r = el.getBoundingClientRect();
+        return { left: r.left, top: r.top, bottom: r.bottom };
+      };
+      const [learned, bridge] = Array.from(
+        document.querySelector(".lesson-recap-sections")!.children,
+        box,
+      );
+      const [term, definition, source] = Array.from(
+        document.querySelector("[data-testid='glossary-entry-tensor']")!
+          .children,
+        box,
+      );
+      return {
+        learned,
+        bridge,
+        term,
+        definition,
+        source,
+        overflow: document.documentElement.scrollWidth - window.innerWidth,
+      };
+    });
+    expect(m.bridge.top).toBeGreaterThanOrEqual(m.learned.bottom);
+    expect(m.definition.top).toBeGreaterThanOrEqual(m.term.bottom);
+    expect(m.source.top).toBeGreaterThanOrEqual(m.definition.bottom);
+    expect(m.definition.left).toBe(m.term.left);
+    expect(m.source.left).toBe(m.term.left);
+    expect(m.overflow).toBeLessThanOrEqual(0);
+  });
 
   test("no step label shows on a phone and every segment keeps a 24 px hit box", async ({
     page,

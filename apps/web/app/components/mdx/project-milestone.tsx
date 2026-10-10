@@ -1,7 +1,7 @@
 export function ProjectMilestone({ stage }: { stage: "data" | "evaluation" }) {
   return (
     <aside
-      className="my-6 space-y-3 border border-border bg-surface p-4"
+      className="project-milestone my-6 space-y-3 border border-border bg-surface p-4"
       aria-label={`Room-project ${stage} checkpoint`}
     >
       <h3 className="font-semibold">

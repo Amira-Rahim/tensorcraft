@@ -474,7 +474,7 @@ describe("LessonSteps, LessonShell layout", () => {
     expect(body).toHaveAttribute("data-hide-story-zone", "true");
   });
 
-  it("caps the Takeaways prose and lists the terms after it", () => {
+  it("spans the Takeaways step across the frame, with no step label, and lists the terms after the recap", () => {
     localStorage.setItem(STEP_KEY, "3");
     localStorage.setItem(MAX_KEY, "3");
     render(
@@ -494,8 +494,15 @@ describe("LessonSteps, LessonShell layout", () => {
         nextLesson={null}
       />,
     );
+    // Owner, 2026-10-10: the step uses the whole frame, so neither block
+    // keeps the 820 px reading cap, and the step bar alone names the step.
+    const recall = document.querySelector("[data-testid='takeaways-recall']")!;
     const prose = document.querySelector("[data-testid='takeaways-prose']")!;
-    expect(prose.className).toContain("max-w-[820px]");
+    for (const block of [recall, prose]) {
+      expect(block.className).toBe("lesson-prose");
+    }
+    const step = screen.getByRole("group", { name: /^Step 4 of 5/ });
+    expect(step.textContent).not.toMatch(/takeaways/i);
     const list = document.querySelector("[data-testid='lesson-terms-list']");
     expect(list).toBeInTheDocument();
     expect(
