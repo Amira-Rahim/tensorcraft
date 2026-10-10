@@ -79,13 +79,18 @@ export interface ExerciseData {
   instructions: string;
   /** Authored steps for a compact workspace; instructions remain the fallback. */
   taskBrief?: {
-    title: string;
-    intro: string;
+    title?: string;
+    intro?: string;
     steps: Array<{
       title: string;
       instruction: string;
       code: string;
       result?: string;
+      /** The variable this step fills; its starter declaration holds `placeholder`. */
+      target: string;
+      placeholder?: string;
+      /** 1-based line of that declaration in the built starter (velite). */
+      line: number;
     }>;
     support: string;
     expectedTensor?: { values: number[]; shape: number[] };

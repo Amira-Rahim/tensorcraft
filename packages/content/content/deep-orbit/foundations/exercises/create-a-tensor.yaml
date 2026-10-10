@@ -17,10 +17,12 @@ taskBrief:
     - title: "Create the tensor"
       instruction: "Set `reading` to:"
       code: "tf.tensor(streamValues)"
+      target: reading
     - title: "Read its shape"
       instruction: "Set `shape` to:"
       code: "reading.shape"
       result: "Expect `[5]`: a list of five readings."
+      target: shape
   support: "TensorFlow.js is ready as `tf`. Leave the supplied lines in place; they copy the readings for Farah and free the tensor's memory."
   expectedTensor:
     values: [0.12, 0.94, 0.31, 0.88, 0.47]

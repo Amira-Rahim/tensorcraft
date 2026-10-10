@@ -87,7 +87,12 @@ export function ExerciseBrief({
       </h3>
       {task ? (
         <div className="challenge-task-instructions">
-          <InstructionText text={task.intro} className="challenge-task-intro" />
+          {task.intro && (
+            <InstructionText
+              text={task.intro}
+              className="challenge-task-intro"
+            />
+          )}
           <ol className="challenge-task-steps" aria-label="Lines to complete">
             {task.steps.map((step, index) => (
               <li key={index}>

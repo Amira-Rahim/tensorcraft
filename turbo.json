@@ -3,7 +3,13 @@
   "tasks": {
     "build:content": {
       "outputs": [".velite/**"],
-      "inputs": ["content/**", "src/**", "velite.config.ts", "package.json"]
+      "inputs": [
+        "content/**",
+        "src/**",
+        "velite.config.ts",
+        "package.json",
+        "$TURBO_ROOT$/packages/shared/src/scan-stops.ts"
+      ]
     },
     "build": {
       "dependsOn": ["^build", "build:content"],

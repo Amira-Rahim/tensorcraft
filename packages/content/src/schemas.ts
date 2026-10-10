@@ -105,8 +105,8 @@ export const exerciseSchema = z.object({
   instructions: z.string().min(1),
   taskBrief: z
     .object({
-      title: z.string().min(1),
-      intro: z.string().min(1),
+      title: z.string().min(1).optional(),
+      intro: z.string().min(1).optional(),
       steps: z
         .array(
           z.object({
@@ -114,6 +114,10 @@ export const exerciseSchema = z.object({
             instruction: z.string().min(1),
             code: z.string().min(1),
             result: z.string().optional(),
+            target: z.string().regex(/^[A-Za-z_$][\w$]*$/),
+            placeholder: z.string().min(1).optional(),
+            // Computed by the velite transform from the built starter.
+            line: z.number().int().positive(),
           }),
         )
         .min(1),

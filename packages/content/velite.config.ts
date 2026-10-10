@@ -10,6 +10,7 @@ import {
 import { collectLessonDocumentation } from "./src/lesson-documentation";
 import { parseRecallPrompts } from "./src/parse-recall-prompts";
 import { BUILT_WORLD_GLOB } from "./src/built-worlds";
+import { taskBriefLines } from "./src/task-brief-lines";
 
 /**
  * Transpile TS-flavored exercise code to plain JS so the runtime worker
@@ -203,99 +204,118 @@ const lessons = defineCollection({
 const exercises = defineCollection({
   name: "Exercise",
   pattern: `${LAUNCHED_WORLD_DIRS}/**/exercises/*.yaml`,
-  schema: s.object({
-    slug: s.slug("exercises"),
-    lessonSlug: s.string().min(1),
-    title: s.string().min(1),
-    instructions: s.string().min(1),
-    taskBrief: s
-      .object({
-        title: s.string().min(1),
-        intro: s.string().min(1),
-        steps: s
-          .array(
-            s.object({
-              title: s.string().min(1),
-              instruction: s.string().min(1),
-              code: s.string().min(1),
-              result: s.string().optional(),
-            }),
-          )
-          .min(1),
-        support: s.string().min(1),
-        expectedTensor: s
-          .object({
-            values: s.array(s.number()).min(1),
-            shape: s.array(s.number().int().nonnegative()).min(1),
-          })
-          .optional(),
-      })
-      .optional(),
-    starterCode: s.string().min(1).transform(tsToJs),
-    solutionCode: s.string().min(1).transform(tsToJs),
-    testCode: s.string().min(1).transform(tsToJs),
-    estimatedMinutes: s.number().int().positive(),
-    difficulty: s.enum(["beginner", "intermediate", "advanced"]),
+  schema: s
+    .object({
+      slug: s.slug("exercises"),
+      lessonSlug: s.string().min(1),
+      title: s.string().min(1),
+      instructions: s.string().min(1),
+      taskBrief: s
+        .object({
+          title: s.string().min(1).optional(),
+          intro: s.string().min(1).optional(),
+          steps: s
+            .array(
+              s.object({
+                title: s.string().min(1),
+                instruction: s.string().min(1),
+                code: s.string().min(1),
+                result: s.string().optional(),
+                // The variable this step fills. The transform below finds its
+                // declaration in the built starter (spec 2026-10-10).
+                target: s.string().regex(/^[A-Za-z_$][\w$]*$/),
+                placeholder: s.string().min(1).optional(),
+              }),
+            )
+            .min(1),
+          support: s.string().min(1),
+          expectedTensor: s
+            .object({
+              values: s.array(s.number()).min(1),
+              shape: s.array(s.number().int().nonnegative()).min(1),
+            })
+            .optional(),
+        })
+        .optional(),
+      starterCode: s.string().min(1).transform(tsToJs),
+      solutionCode: s.string().min(1).transform(tsToJs),
+      testCode: s.string().min(1).transform(tsToJs),
+      estimatedMinutes: s.number().int().positive(),
+      difficulty: s.enum(["beginner", "intermediate", "advanced"]),
 
-    // A hint ladder of the exercise's own. The lesson's `hints` ladder serves
-    // the lesson's primary exercise (the one whose solutionCode the solution
-    // rung is excerpted from); an exercise that needs a ladder of its own
-    // carries it here. Most are second exercises (the incident drills, the
-    // capstone's rehearsal, rag-pipeline), but ci-cd-gate and
-    // verify-deployment come first in their lessons and browser-ml-tradeoffs
-    // is its lesson's only one. ExerciseBrief renders it beneath the
-    // exercise's instructions in the Challenge step's reading column
-    // (2026-09-25). Same shape and gates as the lesson ladder:
-    // guidance-hint-dictation.test.ts and Gate B in
-    // metadata-consistency.test.ts read this field when present (2026-09-13,
-    // plan item 4).
-    hints: s
-      .array(
-        s.object({
-          level: s.enum(["nudge", "guidance", "solution"]),
-          content: s.string().min(1),
-        }),
-      )
-      .min(2)
-      .max(3)
-      .optional(),
+      // A hint ladder of the exercise's own. The lesson's `hints` ladder serves
+      // the lesson's primary exercise (the one whose solutionCode the solution
+      // rung is excerpted from); an exercise that needs a ladder of its own
+      // carries it here. Most are second exercises (the incident drills, the
+      // capstone's rehearsal, rag-pipeline), but ci-cd-gate and
+      // verify-deployment come first in their lessons and browser-ml-tradeoffs
+      // is its lesson's only one. ExerciseBrief renders it beneath the
+      // exercise's instructions in the Challenge step's reading column
+      // (2026-09-25). Same shape and gates as the lesson ladder:
+      // guidance-hint-dictation.test.ts and Gate B in
+      // metadata-consistency.test.ts read this field when present (2026-09-13,
+      // plan item 4).
+      hints: s
+        .array(
+          s.object({
+            level: s.enum(["nudge", "guidance", "solution"]),
+            content: s.string().min(1),
+          }),
+        )
+        .min(2)
+        .max(3)
+        .optional(),
 
-    // ML-content axis (independent of cognitive difficulty). Distinguishes
-    // exercises that exercise real ML primitives (model/training/...) from
-    // those that are arithmetic-grade JavaScript wrapped in ML framing. See
-    // docs/audits/exercise-mlcontent-audit-2026-04-26.md.
-    mlContent: s
-      .enum([
-        "arithmetic",
-        "data",
-        "model",
-        "training",
-        "evaluation",
-        "deployment",
-        "systems",
-      ])
-      .optional()
-      .default("arithmetic"),
+      // ML-content axis (independent of cognitive difficulty). Distinguishes
+      // exercises that exercise real ML primitives (model/training/...) from
+      // those that are arithmetic-grade JavaScript wrapped in ML framing. See
+      // docs/audits/exercise-mlcontent-audit-2026-04-26.md.
+      mlContent: s
+        .enum([
+          "arithmetic",
+          "data",
+          "model",
+          "training",
+          "evaluation",
+          "deployment",
+          "systems",
+        ])
+        .optional()
+        .default("arithmetic"),
 
-    // Skill Genome: the primary axis a PASS on this exercise credits.
-    // Read by the exercise component, which puts it on the submit result as
-    // `skillAxis` so the caller can credit the axis the exercise declares.
-    // Before 2026-09-08 nothing read this field: an `exercise_pass` credited
-    // every axis in `lesson.skillAxes` instead, which double-credits a
-    // two-axis lesson for one exercise and credits the wrong axis wherever
-    // an exercise's axis is not one of its lesson's. Keep it optional: an
-    // exercise without one falls back to the lesson's axis list.
-    skillAxis: s
-      .enum([
-        "data_prep",
-        "model_arch",
-        "training",
-        "evaluation",
-        "deployment",
-        "js_integration",
-      ])
-      .optional(),
-  }),
+      // Skill Genome: the primary axis a PASS on this exercise credits.
+      // Read by the exercise component, which puts it on the submit result as
+      // `skillAxis` so the caller can credit the axis the exercise declares.
+      // Before 2026-09-08 nothing read this field: an `exercise_pass` credited
+      // every axis in `lesson.skillAxes` instead, which double-credits a
+      // two-axis lesson for one exercise and credits the wrong axis wherever
+      // an exercise's axis is not one of its lesson's. Keep it optional: an
+      // exercise without one falls back to the lesson's axis list.
+      skillAxis: s
+        .enum([
+          "data_prep",
+          "model_arch",
+          "training",
+          "evaluation",
+          "deployment",
+          "js_integration",
+        ])
+        .optional(),
+    })
+    // Each brief step's line in the BUILT starter, for the Line keys (spec
+    // 2026-10-10, section 5 item 10). A bad target throws. velite 0.4's CLI
+    // defaults --strict to false, and that overrides the config's
+    // strict: true, so an issue added with ctx.addIssue would only be logged
+    // and the build would ship an empty step list.
+    .transform((data) => {
+      const { taskBrief, ...rest } = data;
+      if (!taskBrief) return { ...rest, taskBrief: undefined };
+      const lines = taskBriefLines(data.starterCode, taskBrief.steps);
+      if (!lines.ok) {
+        throw new Error(`${data.slug}: ${lines.errors.join(" ")}`);
+      }
+      return { ...rest, taskBrief: { ...taskBrief, steps: lines.steps } };
+    }),
 });
 
 const modules = defineCollection({

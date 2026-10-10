@@ -74,3 +74,4 @@ export * from "./learning-route";
 export * from "./story-decisions";
 export * from "./learning-activity";
 export * from "./curriculum";
+export * from "./scan-stops";

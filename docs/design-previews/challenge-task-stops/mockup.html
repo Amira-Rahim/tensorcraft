@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en" data-scheme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Challenge Task Stops</title>
+<script>
+  // ?scheme=light|dark, ?state=typed (line 3 already typed), ?hint=1 (nudge open), ?focus=key3
+  const q = new URLSearchParams(location.search);
+  document.documentElement.dataset.scheme = q.get("scheme") === "light" ? "light" : "dark";
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #181818;
+  --surface: #232323;
+  --overlay: #313131;
+  --border: #3d3d3d;
+  --text: #e0e0e0;
+  --muted: #b0b0b0;
+  --primary: #6baa8a;
+  --on-primary: #181818;
+  --brass: #c1a678;
+  --ed-bg: #252525;
+  --ed-num: #969696;
+  --ed-plain: #e0e0e0;
+  --ed-comment: #a0a0a0;
+  --ed-kw: #c792ea;
+  --ed-punct: #89ddff;
+  --ed-prop: #82aaff;
+  --ed-static: #f78c6c;
+  /* One wash marks the code to type, in the brief only. */
+  --wash: color-mix(in srgb, var(--primary) 20%, var(--surface));
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --gutter: 38px;
+}
+:root[data-scheme="light"] {
+  color-scheme: light;
+  --bg: #f5f5f2;
+  --surface: #ffffff;
+  --overlay: #ffffff;
+  --border: #d8d8d4;
+  --text: #1f1f1f;
+  --muted: #555555;
+  --primary: #3b6550;
+  --on-primary: #ffffff;
+  --brass: #7c5a23;
+  --ed-bg: #ffffff;
+  --ed-num: #73736f;
+  --ed-plain: #2e2e2e;
+  --ed-comment: #6f6f6f;
+  --ed-kw: #9d41da;
+  --ed-punct: #0077a8;
+  --ed-prop: #1761ff;
+  --ed-static: #ce380b;
+  --wash: color-mix(in srgb, var(--primary) 12%, var(--surface));
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+code { font-family: var(--mono); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+:where(button, a):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+.region { max-width: 1440px; margin: 0 auto; padding: 32px 48px 0; }
+
+/* Mission header: unchanged from live. */
+.mission { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); margin-bottom: 32px; border: 1px solid var(--border); background: var(--surface); }
+.mission img { display: block; width: 100%; height: 100%; min-height: 150px; object-fit: cover; }
+.mission-copy { align-self: center; padding: 24px 28px; }
+.mission h2 { margin: 0 0 8px; font-size: clamp(24px, 2.4vw, 34px); font-weight: 650; line-height: 1.2; letter-spacing: -0.025em; }
+.mission-location { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.mission-narrative { margin: 0; font-size: 16px; line-height: 1.65; }
+.mission-narrative .who { color: var(--primary); text-decoration: underline dotted; text-underline-offset: 4px; }
+
+/* Workspace: brief and editor share the left column; the expected tensor
+   panel spans beside both, as live. */
+.workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); border: 1px solid var(--border); background: var(--surface); }
+.ws-main { min-width: 0; border-right: 1px solid var(--border); }
+
+/* ---------- The brief ---------- */
+.brief { container-type: inline-size; padding: 20px 24px 22px; }
+.brief h3 { margin: 0; font-size: 20px; font-weight: 650; line-height: 1.3; letter-spacing: -0.01em; }
+.brief-note { margin: 4px 0 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+.brief code:not(.type) { color: var(--text); font-size: 0.93em; font-weight: 500; }
+
+.stops { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
+.stops > li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 6px;
+  align-items: baseline;
+  margin: 0;
+}
+.line-key {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -10px 0 -10px -8px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font: 600 13px/1.4 var(--mono);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.line-key:hover { background: color-mix(in srgb, var(--text) 7%, var(--surface)); text-decoration-thickness: 2px; }
+.stops h4 { grid-column: 2; grid-row: 1; margin: 0; font-size: 15px; font-weight: 600; line-height: 1.45; }
+.stop-do { grid-column: 2; grid-row: 2; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 0; font-size: 15px; line-height: 1.5; }
+/* The code to type: the editor's own size and face, on the one wash. */
+.type { display: inline-block; padding: 2px 10px; background: var(--wash); color: var(--text); font: 500 16px/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.stop-result { grid-column: 2; grid-row: 3; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+/* Typed: once the line holds the code shown, its stop goes quiet. Nothing moves. */
+.stops > li[data-done] .line-key { color: var(--muted); text-decoration-color: transparent; }
+.stops > li[data-done] h4,
+.stops > li[data-done] .stop-do,
+.stops > li[data-done] .stop-result { color: var(--muted); }
+.stops > li[data-done] .type { background: transparent; color: var(--muted); }
+
+/* Wide brief: one row per stop. The result sits under its code. */
+@container (min-width: 720px) {
+  .stops { gap: 12px; }
+  .stops > li { grid-template-columns: 4.5rem 10.5rem 8.5rem minmax(0, 1fr); align-items: center; row-gap: 4px; }
+  .stop-do { display: contents; }
+  .stop-do .instr { grid-column: 3; grid-row: 1; }
+  .stop-do .type { grid-column: 4; grid-row: 1; justify-self: start; }
+  .stop-result { grid-column: 4; grid-row: 2; }
+}
+/* Narrow brief: the code always gets its own line, so every stop reads the same way. */
+@container (max-width: 480px) {
+  .stops > li { grid-template-columns: 4rem minmax(0, 1fr); }
+  .stop-do { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .type { font-size: 15px; padding: 2px 8px; }
+}
+
+/* ---------- Editor (static stand-in for CodeMirror) ---------- */
+.editor { border-top: 1px solid var(--border); }
+.cm { padding: 10px 0; background: var(--ed-bg); color: var(--ed-plain); font: 400 16px/1.6 var(--mono); }
+.ln { display: grid; grid-template-columns: var(--gutter) minmax(0, 1fr); min-height: 25.6px; }
+.g { padding-right: 12px; color: var(--ed-num); font-size: 12px; line-height: 25.6px; text-align: right; user-select: none; }
+.c { padding: 0 8px 0 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.kw { color: var(--ed-kw); }
+.pu { color: var(--ed-punct); }
+.pr { color: var(--ed-prop); }
+.nu { color: var(--ed-static); }
+.cmt { color: var(--ed-comment); font-style: italic; }
+/* A line still waiting for its code: primary bold number, and a tight frame
+   on the null itself. The frame sits inside the glyph box, so it never
+   crosses the semicolon or touches the next line. */
+.ln.stop .g { color: var(--primary); font-weight: 700; }
+.slot { box-shadow: inset 0 0 0 1px var(--primary); padding: 0 3px; margin: 0 -3px; }
+.slot.selected { background: color-mix(in srgb, var(--primary) 30%, var(--ed-bg)); }
+.caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 1px; vertical-align: -0.15em; background: var(--ed-plain); }
+
+/* Footer: draft note, help, then actions. Help lives with the other help
+   (Show Solution), and its rungs open here, so the code never moves. */
+.ed-foot { padding: 12px 16px 16px; border-top: 1px solid var(--border); background: var(--surface); }
+.ed-foot > p { margin: 0 0 12px; font: 400 14px/1.6 var(--mono); }
+.hint { margin: 0 0 14px; padding: 12px 16px; background: color-mix(in srgb, var(--text) 6%, var(--surface)); }
+.hint:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.hint-title { display: block; color: var(--brass); font-size: 14px; font-weight: 600; }
+.hint p { margin: 4px 0 0; font-size: 14px; line-height: 1.7; }
+.hint code { color: var(--text); font-size: 0.93em; font-weight: 500; }
+.ed-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ed-actions button { min-height: 44px; padding: 0 18px; border: 0; font: 500 13px/1 var(--mono); cursor: pointer; }
+.run { background: var(--primary); color: var(--on-primary); }
+.reset { background: var(--overlay); color: var(--text); }
+.help { display: inline-flex; gap: 8px; margin-left: auto; }
+.nudge { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--text); font-family: var(--sans) !important; font-size: 14px !important; }
+.nudge svg { flex: none; color: var(--brass); }
+.nudge:hover { background: color-mix(in srgb, var(--text) 7%, var(--surface)); }
+.solution { background: transparent; color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Expected tensor panel (unchanged from live) ---------- */
+.ws-checks { min-width: 0; padding: 24px; background: var(--bg); font-size: 14px; line-height: 1.6; }
+.ws-checks figure { margin: 0; }
+.ws-checks figcaption { font-size: 16px; font-weight: 600; line-height: 1.5; }
+.ws-checks p { margin: 12px 0 0; color: var(--muted); }
+.ws-checks ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin: 24px 0 16px; padding: 0; list-style: none; }
+.ws-checks li { display: grid; place-items: center; min-height: 54px; margin: 0; border: 1px solid var(--border); background: var(--surface); }
+.ws-checks li code { color: var(--primary); font-size: 14px; }
+.shape-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; color: var(--text) !important; }
+.shape-line code { padding: 1px 6px; border: 1px solid var(--border); color: var(--primary); font-size: 12.5px; }
+.shape-line span:last-child { flex-basis: 100%; }
+.run-prompt { margin-top: 24px !important; padding-top: 20px; border-top: 1px solid var(--border); }
+
+/* ---------- Lesson nav (unchanged from live) ---------- */
+.lesson-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 40px; padding: 24px 0 40px; border-top: 1px solid var(--border); }
+.back { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 24px; border: 0; background: transparent; color: var(--muted); font: 400 14px/1 var(--mono); cursor: pointer; }
+.continue { min-height: 44px; padding: 0 32px; border: 0; background: var(--border); color: var(--muted); font: 600 14px/1 var(--mono); }
+
+@media (max-width: 1023px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .ws-main { border-right: 0; }
+  .ws-checks { border-top: 1px solid var(--border); }
+}
+@media (max-width: 639px) {
+  .region { padding: 20px 20px 0; }
+  .mission { grid-template-columns: minmax(0, 1fr); margin-bottom: 24px; }
+  .mission img { height: 130px; min-height: 0; object-position: center 45%; }
+  .mission-copy { padding: 20px; }
+  .mission-narrative { font-size: 15px; }
+  .brief { padding: 18px 16px 18px; }
+  .brief h3 { font-size: 18px; }
+  .brief-note { font-size: 14px; }
+  .stops { margin-top: 14px; }
+  .g { padding-right: 10px; }
+  .help { margin-left: 0; flex-basis: 100%; justify-content: space-between; }
+  .help .nudge { padding-left: 0; }
+  .help .solution { padding-right: 0; }
+  .ws-checks { padding: 20px 16px; }
+  .lesson-nav { flex-direction: column; align-items: stretch; }
+  .back { align-self: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main class="region">
+  <h1 class="sr-only">From JavaScript Arrays to Tensors</h1>
+
+  <section class="mission" aria-labelledby="mission-title">
+    <img src="../../../apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors.webp" alt="The control room aboard the Archimedes, with a crew member holding a tablet beside the central console." width="1536" height="1024">
+    <div class="mission-copy">
+      <h2 id="mission-title">Prepare the Five Readings</h2>
+      <p class="mission-location">Control room aboard the Archimedes · Six hours after first contact</p>
+      <p class="mission-narrative"><span class="who">Demir</span> pulls up the five sensor readings. “Let’s get these ready for TensorFlow.js. Can you put them into a tensor?”</p>
+    </div>
+  </section>
+
+  <div class="workspace">
+    <div class="ws-main">
+      <section id="brief" class="brief" aria-labelledby="brief-title">
+        <h3 id="brief-title">Finish lines 3 and 4</h3>
+        <p class="brief-note">TensorFlow.js is loaded as <code>tf</code>. Leave the other lines as they are.</p>
+        <ol class="stops" aria-label="Lines to finish">
+          <li id="stop3">
+            <button type="button" class="line-key" data-line="3" aria-describedby="t3">Line 3</button>
+            <h4 id="t3">Create the tensor<span class="sr-only done-note"></span></h4>
+            <p class="stop-do"><span class="instr">Set <code>reading</code> to:</span> <code class="type">tf.tensor(streamValues)</code></p>
+          </li>
+          <li id="stop4">
+            <button type="button" class="line-key" data-line="4" aria-describedby="t4">Line 4</button>
+            <h4 id="t4">Read its shape<span class="sr-only done-note"></span></h4>
+            <p class="stop-do"><span class="instr">Set <code>shape</code> to:</span> <code class="type">reading.shape</code></p>
+            <p class="stop-result">Expect <code>[5]</code>: a list of five readings.</p>
+          </li>
+        </ol>
+      </section>
+
+      <div id="editor" class="editor">
+        <h4 class="sr-only">Your JavaScript</h4>
+        <div class="cm">
+          <div class="ln"><span class="g" aria-hidden="true">1</span><span class="c"><span class="kw">const</span> streamValues = <span class="pu">[</span><span class="nu">0.12</span><span class="pu">,</span> <span class="nu">0.94</span><span class="pu">,</span> <span class="nu">0.31</span><span class="pu">,</span> <span class="nu">0.88</span><span class="pu">,</span> <span class="nu">0.47</span><span class="pu">];</span></span></div>
+          <div class="ln"><span class="g" aria-hidden="true">2</span><span class="c cmt">// Your work: replace the two nulls.</span></div>
+          <div class="ln stop" id="ln3"><span class="g" aria-hidden="true">3</span><span class="c"><span class="kw">const</span> reading = <span class="slot" data-line="3"><span class="kw">null</span></span><span class="pu">;</span></span></div>
+          <div class="ln stop" id="ln4"><span class="g" aria-hidden="true">4</span><span class="c"><span class="kw">const</span> shape = <span class="slot" data-line="4"><span class="kw">null</span></span><span class="pu">;</span></span></div>
+          <div class="ln"><span class="g" aria-hidden="true">5</span><span class="c cmt">// Supplied: copy the readings into a JavaScript array for Farah.</span></div>
+          <div class="ln"><span class="g" aria-hidden="true">6</span><span class="c"><span class="kw">const</span> values = reading?.<span class="pr">arraySync</span><span class="pu">();</span></span></div>
+          <div class="ln"><span class="g" aria-hidden="true">7</span><span class="c cmt">// Supplied: release memory after copying the values.</span></div>
+          <div class="ln"><span class="g" aria-hidden="true">8</span><span class="c">reading?.<span class="pr">dispose</span><span class="pu">();</span></span></div>
+          <div class="ln"><span class="g" aria-hidden="true">9</span><span class="c"></span></div>
+        </div>
+        <div class="ed-foot">
+          <p>Draft saves on this browser as you edit.</p>
+          <div id="hint" class="hint" tabindex="-1" hidden>
+            <span class="hint-title">A nudge</span>
+            <p>Select Line 3 or Line 4 above the code. It highlights that line’s <code>null</code>, so you can type the new code over it.</p>
+          </div>
+          <div class="ed-actions">
+            <button type="button" class="run">Run Tests</button>
+            <button type="button" class="reset">Reset</button>
+            <span class="help">
+              <button type="button" class="nudge" aria-controls="hint">
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2.5 1.5-2.5 3"/><path d="M12 16h.01" stroke-width="3" stroke-linecap="round"/></svg>
+                Get a nudge
+              </button>
+              <button type="button" class="solution">Show Solution</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="ws-checks" aria-label="Expected tensor and test results">
+      <figure>
+        <figcaption>Expected tensor</figcaption>
+        <p>Keep these five readings in their original order.</p>
+        <ol aria-label="Expected sensor readings">
+          <li><code>0.12</code></li>
+          <li><code>0.94</code></li>
+          <li><code>0.31</code></li>
+          <li><code>0.88</code></li>
+          <li><code>0.47</code></li>
+        </ol>
+        <p class="shape-line"><span>Shape</span><code>[5]</code><span>One list of five readings</span></p>
+      </figure>
+      <p class="run-prompt">Run Tests checks your tensor against these readings.</p>
+    </section>
+  </div>
+
+  <nav class="lesson-nav" aria-label="Lesson steps">
+    <button type="button" class="back"><span aria-hidden="true">⟵</span> Back</button>
+    <button type="button" class="continue" disabled>Pass 1 more exercise to continue</button>
+  </nav>
+</main>
+<script>
+  // A line key selects its null, as the CodeMirror command will.
+  const selectStop = (n) => {
+    document.querySelectorAll(".slot.selected").forEach((s) => s.classList.remove("selected"));
+    const slot = document.querySelector(`.slot[data-line="${n}"]`);
+    if (slot) slot.classList.add("selected");
+  };
+  document.querySelectorAll(".line-key").forEach((k) => k.addEventListener("click", () => selectStop(k.dataset.line)));
+  document.querySelector(".nudge").addEventListener("click", () => { const h = document.getElementById("hint"); h.hidden = false; h.focus(); });
+  // Review states for screenshots.
+  if (q.get("state") === "typed") {
+    document.getElementById("stop3").dataset.done = "";
+    document.querySelector("#stop3 .done-note").textContent = ", typed";
+    const ln3 = document.getElementById("ln3");
+    ln3.classList.remove("stop");
+    ln3.querySelector(".c").innerHTML = '<span class="kw">const</span> reading = tf.<span class="pr">tensor</span><span class="pu">(</span>streamValues<span class="pu">);</span>';
+  }
+  if (q.get("hint") === "1") { document.getElementById("hint").hidden = false; document.querySelector(".nudge").lastChild.textContent = " Get more guidance"; }
+  if (q.get("focus") === "key3") { const k = document.querySelector('.line-key[data-line="3"]'); k.focus(); selectStop(3); }
+</script>
+</body>
+</html>
