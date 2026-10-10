@@ -101,14 +101,15 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(
       page.getByRole("button", { name: "Continue →", exact: true }),
     ).toHaveCount(1);
-    // Results must not stretch the editor's title row into an empty panel.
-    const workspaceBox = (await page
-      .locator("[data-exercise-workspace]")
-      .boundingBox())!;
+    // Results must not stretch the brief's row into an empty panel: the
+    // editor frame still starts where the brief ends (spec 2026-10-10).
+    const briefBox = (await page.getByTestId("exercise-brief").boundingBox())!;
     const editorFrameBox = (await page
       .locator("[data-editor-frame]")
       .boundingBox())!;
-    expect(editorFrameBox.y - workspaceBox.y).toBeLessThan(65);
+    expect(
+      Math.abs(editorFrameBox.y - (briefBox.y + briefBox.height)),
+    ).toBeLessThanOrEqual(1);
     await page.screenshot({
       path: testInfo.outputPath("challenge-passed-desktop.png"),
       fullPage: true,

@@ -707,15 +707,18 @@ test.describe("lesson layout, desktop", () => {
     }
   });
 
-  test("the exercise brief precedes the code and checks workbench", async ({
+  test("the workspace brief heads the editor column, above the code", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 2);
-    const brief = page.getByTestId("exercise-brief");
-    await expect(brief).toBeVisible();
-    await expect(brief.getByRole("heading", { level: 3 })).toBeVisible();
     const pane = page.locator("[data-testid='lesson-right'][data-kind='pane']");
-    await expect(pane.locator("h3")).toHaveCount(0);
+    const brief = pane.getByTestId("exercise-brief");
+    await expect(brief).toBeVisible({ timeout: 30000 });
+    // One h3 in the pane, the brief's own (spec 2026-10-10).
+    await expect(pane.locator("h3")).toHaveCount(1);
+    await expect(brief.getByRole("heading", { level: 3 })).toHaveText(
+      "Finish lines 3 and 4",
+    );
     await expect(pane.locator(".cm-content")).toBeVisible({ timeout: 30000 });
     // One exercise: the pane's eyebrow carries no title.
     await expect(pane.getByTestId("exercise-pane-title")).toHaveCount(0);
@@ -724,10 +727,10 @@ test.describe("lesson layout, desktop", () => {
         document.querySelector(s)!.getBoundingClientRect();
       return {
         briefBottom: box("[data-testid='exercise-brief']").bottom,
-        paneTop: box("[data-testid='lesson-right'][data-kind='pane']").top,
+        frameTop: box("[data-editor-frame]").top,
       };
     });
-    expect(m.briefBottom).toBeLessThan(m.paneTop);
+    expect(m.briefBottom).toBeLessThanOrEqual(m.frameTop + 1);
   });
 });
 

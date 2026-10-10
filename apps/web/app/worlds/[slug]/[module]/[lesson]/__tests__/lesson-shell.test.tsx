@@ -8,6 +8,22 @@ describe("LessonShell", () => {
     expect(screen.getByText("prose")).toBeInTheDocument();
   });
 
+  it("renders no left wrapper when the left slot is null", () => {
+    // The challenge workspace keeps its brief in the pane (spec 2026-10-10);
+    // an empty wrapper would still take a grid row and a 24 px gap.
+    const { container } = render(
+      <LessonShell
+        left={null}
+        right={<aside>pane</aside>}
+        rightKind="pane"
+        workspace
+      />,
+    );
+    const grid = container.querySelector("[data-testid='lesson-grid']")!;
+    expect(grid.children).toHaveLength(1);
+    expect(grid.firstElementChild).toBe(screen.getByTestId("lesson-right"));
+  });
+
   it("uses one frame for every kind", () => {
     for (const rightKind of ["none", "code", "pane"] as const) {
       const { container, unmount } = render(

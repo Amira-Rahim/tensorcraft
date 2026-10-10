@@ -598,7 +598,6 @@ export function LessonContent({
         return (
           <ExerciseBrief
             slug={props.slug}
-            workspace={exerciseWorkspace}
             onHintRevealed={handleHintRevealed}
           />
         );
@@ -611,6 +610,7 @@ export function LessonContent({
           draftOwner={draftOwner}
           bridge={exerciseWorkspace ? undefined : bridgeHint}
           workspace={exerciseWorkspace}
+          hints={exerciseWorkspace ? lesson.hints : undefined}
           onHintRevealed={handleHintRevealed}
           onSubmit={submit}
           brief={scoped ? "external" : "inline"}
@@ -672,6 +672,7 @@ export function LessonContent({
     exerciseCount,
     visibleComponents,
     exerciseWorkspace,
+    lesson.hints,
   ]);
 
   const Content = useMemo(() => {
@@ -715,20 +716,14 @@ export function LessonContent({
           data-hide-story-zone={hideStoryZone ? "true" : undefined}
         >
           <Content />
-          {shouldShow("HintPanel") &&
-            lesson.hints &&
-            (exerciseWorkspace ? (
-              <HintPanel
-                hints={lesson.hints}
-                presentation="inline"
-                onHintRevealed={handleHintRevealed}
-              />
-            ) : (
-              <HintPanel
-                hints={lesson.hints}
-                onHintRevealed={handleHintRevealed}
-              />
-            ))}
+          {/* The workspace's ladder lives in its editor footer (spec
+              2026-10-10, section 5). */}
+          {shouldShow("HintPanel") && lesson.hints && !exerciseWorkspace && (
+            <HintPanel
+              hints={lesson.hints}
+              onHintRevealed={handleHintRevealed}
+            />
+          )}
         </div>
       </ExerciseDataProvider>
     </LessonCharacters>

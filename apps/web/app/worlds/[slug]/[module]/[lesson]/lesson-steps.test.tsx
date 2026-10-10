@@ -46,6 +46,8 @@ vi.mock("./lesson-content", async () => {
       visibleComponents,
       layout,
       onRecallPending,
+      exerciseWorkspace,
+      onHintRevealed,
     }: {
       storyRegister?: boolean;
       hideTeaching?: boolean;
@@ -53,6 +55,8 @@ vi.mock("./lesson-content", async () => {
       visibleComponents?: Set<string>;
       layout?: "reading";
       onRecallPending?: (pending: number) => void;
+      exerciseWorkspace?: boolean;
+      onHintRevealed?: (level: 1 | 2 | 3) => void;
     }) => {
       React.useEffect(() => {
         if (!onRecallPending) return;
@@ -72,6 +76,8 @@ vi.mock("./lesson-content", async () => {
               ? Array.from(visibleComponents).sort().join(",")
               : ""
           }
+          data-workspace={exerciseWorkspace ? "true" : undefined}
+          data-hint-callback={onHintRevealed ? "true" : undefined}
         />
       );
     },
@@ -1065,6 +1071,18 @@ describe("LessonSteps, skip to the challenge (2026-09-04 audit step 2)", () => {
       />,
     );
   }
+
+  it("leaves the workspace's left slot empty and hands the hint hook to the pane", () => {
+    localStorage.setItem(STEP_KEY, "2");
+    localStorage.setItem(MAX_KEY, "2");
+    renderWithExercise();
+    const contents = screen.getAllByTestId("lesson-content");
+    expect(contents).toHaveLength(1);
+    expect(contents[0]).toHaveAttribute("data-visible", "Exercise");
+    expect(contents[0]).toHaveAttribute("data-workspace", "true");
+    expect(contents[0]).toHaveAttribute("data-hint-callback", "true");
+    expect(screen.getByTestId("lesson-grid").children).toHaveLength(1);
+  });
 
   it("jumps a first visit straight to the Challenge step and unlocks the bar behind it", () => {
     renderWithExercise();

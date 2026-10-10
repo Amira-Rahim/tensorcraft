@@ -1164,10 +1164,11 @@ function LessonStepsInner({
     shellLeft = <StepConcept {...sharedContentProps} />;
   } else if (currentStep === PHASE.challenge) {
     rightKind = "pane";
-    shellLeft = (
+    // The workspace's brief and help live in its editor pane (spec
+    // 2026-10-10), so its left slot renders nothing.
+    shellLeft = challengeWorkspace ? null : (
       <StepChallenge
         {...sharedContentProps}
-        workspace={challengeWorkspace}
         onHintRevealed={handleHintLevelRevealed}
       />
     );
@@ -1182,6 +1183,9 @@ function LessonStepsInner({
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_RIGHT}
           exerciseWorkspace={challengeWorkspace}
+          onHintRevealed={
+            challengeWorkspace ? handleHintLevelRevealed : undefined
+          }
           onExerciseComplete={handleExerciseComplete}
           onExerciseAttempt={handleExerciseAttempt}
           getHintsUsed={getHintsUsed}
@@ -1311,30 +1315,34 @@ function LessonStepsInner({
             </div>
           }
           left={
-            <div
-              key={currentStep}
-              ref={challengeWorkspace ? undefined : stepRef}
-              // -1 keeps it out of the tab sequence while still being
-              // programmatically focusable, so the step is where a keyboard
-              // user lands rather than <body>. The label is what a screen
-              // reader announces on arrival, which doubles as the step change
-              // announcement.
-              tabIndex={challengeWorkspace ? undefined : -1}
-              role={challengeWorkspace ? undefined : "group"}
-              aria-label={
-                challengeWorkspace
-                  ? undefined
-                  : `Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`
-              }
-              className={
-                challengeWorkspace ? undefined : "animate-step-in outline-none"
-              }
-            >
-              {shellLeft}
-              {rightKind !== "pane" && (
-                <div className="lesson-body-frame">{bottomNav}</div>
-              )}
-            </div>
+            shellLeft === null ? null : (
+              <div
+                key={currentStep}
+                ref={challengeWorkspace ? undefined : stepRef}
+                // -1 keeps it out of the tab sequence while still being
+                // programmatically focusable, so the step is where a keyboard
+                // user lands rather than <body>. The label is what a screen
+                // reader announces on arrival, which doubles as the step change
+                // announcement.
+                tabIndex={challengeWorkspace ? undefined : -1}
+                role={challengeWorkspace ? undefined : "group"}
+                aria-label={
+                  challengeWorkspace
+                    ? undefined
+                    : `Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`
+                }
+                className={
+                  challengeWorkspace
+                    ? undefined
+                    : "animate-step-in outline-none"
+                }
+              >
+                {shellLeft}
+                {rightKind !== "pane" && (
+                  <div className="lesson-body-frame">{bottomNav}</div>
+                )}
+              </div>
+            )
           }
           right={shellRight}
         />
@@ -2109,7 +2117,6 @@ function StepChallenge({
   moduleSlug,
   lessonSlug,
   onHintRevealed,
-  workspace = false,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
@@ -2117,14 +2124,13 @@ function StepChallenge({
   moduleSlug: string;
   lessonSlug: string;
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
-  workspace?: boolean;
 }) {
   return (
-    <div className={workspace ? "challenge-task-panel" : undefined}>
+    <div>
       {worldSlug !== "deep-orbit" && (
         <PhaseChip label="Challenge" icon={"\u26A1"} />
       )}
-      {worldSlug === "deep-orbit" && !workspace && (
+      {worldSlug === "deep-orbit" && (
         <LessonMissionScene
           lesson={lesson}
           worldSlug={worldSlug}
@@ -2145,7 +2151,6 @@ function StepChallenge({
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CHALLENGE_LEFT}
-          exerciseWorkspace={workspace}
           onHintRevealed={onHintRevealed}
         />
       </div>

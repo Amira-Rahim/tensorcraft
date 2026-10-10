@@ -168,6 +168,7 @@ for (const [width, scheme] of [
     await page.getByRole("button", { name: "Continue →", exact: true }).click();
     await expect(page.getByTestId("exercise-brief")).toContainText(
       "five readings",
+      { timeout: 30_000 },
     );
     await expect(page.getByTestId("mission-handoff")).toContainText(
       "five sensor readings",

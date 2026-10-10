@@ -15,8 +15,8 @@ for (const width of [1440, 390]) {
       "/worlds/deep-orbit/foundations/introduction-to-tensors?start=challenge";
     await page.goto(url);
     async function openEditor() {
-      if (width < 1024)
-        await page.getByRole("button", { name: "Editor", exact: true }).click();
+      // The challenge workspace shows the editor at every width; this
+      // lesson has no Instructions/Editor toggle.
       await expect(page.locator(".cm-content").first()).toBeVisible();
     }
     async function writeCode(code: string) {

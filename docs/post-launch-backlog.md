@@ -5202,6 +5202,31 @@ docs/superpowers/specs/2026-09-24-lesson-tightening-design.md (approved
   suite runs. So any fix depends on width. Found in the Task 9 quality
   review of docs/superpowers/plans/2026-09-24-lesson-tightening.md.
 
+## Challenge task stops follow-ups (2026-10-10)
+
+Found while planning and verifying the [challenge task stops](superpowers/specs/2026-10-10-challenge-task-stops-design.md) change.
+
+- [ ] **Velite's `strict: true` does nothing.** velite 0.4's CLI declares
+  `--strict` with a default of `false` and resolves
+  `options.strict ?? config.strict`, so the CLI's `false` overrides the
+  config and every content schema issue is only logged. Fix: run
+  `velite build --strict` in `packages/content`'s `build:content` (the tree
+  built cleanly with it on 2026-10-10). The task-brief transform throws
+  instead, so it does not depend on this. Gate: owner call.
+- [ ] **`e2e/exercise-autocomplete.spec.ts` flakes.** It failed in main's CI
+  run before 2026-10-10 and passed locally. Find the race before it
+  masks a real failure.
+- [ ] **The Expected tensor's shape readout is still a prose chip.** The
+  `[5]` in `.challenge-expected-shape` takes the
+  `.lesson-prose :not(pre) > code` rule in `globals.css`: a bordered chip
+  at 0.85em of the panel's 14 px, so 11.9 px, under the 12 px floor. The
+  2026-10-10 overrides cover the brief and the hint rungs, and the five
+  readings above it have their own override, but this `code` has none. It
+  predates the change, and the approved mockup kept it. Fix: give
+  `.lesson-challenge-workspace .challenge-expected-shape code` the
+  readings' treatment (no border or wash, 14 px). Gate: owner call, since
+  it changes the panel's look.
+
 ## PostHog data audit follow-ups (2026-10-03)
 
 Source: the 2026-10-02 audit of PostHog EU project 257980 (all data from

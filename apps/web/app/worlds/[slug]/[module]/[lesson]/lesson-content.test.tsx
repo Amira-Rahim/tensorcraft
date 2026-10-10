@@ -46,15 +46,27 @@ vi.mock("@tensorcraft/ui", () => ({
   Exercise: ({
     brief,
     titled,
+    workspace,
+    hints,
+    onHintRevealed,
   }: {
     brief?: "inline" | "external";
     titled?: boolean;
+    workspace?: boolean;
+    hints?: Array<{ level: string; content: string }>;
+    onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
   }) => (
     <div
       data-testid="exercise-pane"
       data-brief={brief ?? "inline"}
       data-titled={titled ? "true" : undefined}
-    />
+      data-workspace={workspace ? "true" : undefined}
+      data-hints={hints?.map((hint) => hint.level).join(",")}
+    >
+      <button type="button" onClick={() => onHintRevealed?.(1)}>
+        pane reveal
+      </button>
+    </div>
   ),
   ExerciseBrief: ({
     slug,
@@ -640,5 +652,59 @@ describe("LessonContent, the exercise brief and the pane (spec 2026-09-24, secti
       "inline",
     );
     expect(screen.queryByTestId("exercise-brief")).toBeNull();
+  });
+
+  const ladder = [
+    { level: "nudge" as const, content: "n" },
+    { level: "guidance" as const, content: "g" },
+  ];
+
+  it("hands the lesson's ladder to the workspace pane and wires it to the page hook", async () => {
+    vi.mocked(trackHintRequested).mockClear();
+    const spy = vi.fn();
+    render(
+      <LessonContent
+        lesson={{ ...lessonBody, hints: ladder }}
+        exercises={one}
+        worldId="deep-orbit"
+        lessonId="introduction-to-tensors"
+        visibleComponents={new Set(["Exercise"])}
+        exerciseWorkspace
+        onHintRevealed={spy}
+      />,
+    );
+    const pane = await screen.findByTestId("exercise-pane");
+    expect(pane).toHaveAttribute("data-workspace", "true");
+    expect(pane).toHaveAttribute("data-hints", "nudge,guidance");
+    fireEvent.click(screen.getByRole("button", { name: "pane reveal" }));
+    expect(spy).toHaveBeenCalledWith(1);
+    expect(trackHintRequested).toHaveBeenCalledWith(1, {
+      worldId: "deep-orbit",
+      lessonId: "introduction-to-tensors",
+    });
+  });
+
+  it("gives a non-workspace pane no ladder", async () => {
+    render(
+      <LessonContent
+        lesson={{ ...lessonBody, hints: ladder }}
+        exercises={one}
+        visibleComponents={new Set(["Exercise"])}
+      />,
+    );
+    expect(await screen.findByTestId("exercise-pane")).not.toHaveAttribute(
+      "data-hints",
+    );
+  });
+
+  it("renders no lesson-level hint panel in the workspace", () => {
+    render(
+      <LessonContent
+        lesson={{ ...lesson, hints: ladder }}
+        visibleComponents={new Set(["challenge", "HintPanel"])}
+        exerciseWorkspace
+      />,
+    );
+    expect(screen.queryByTestId("hint-panel")).toBeNull();
   });
 });

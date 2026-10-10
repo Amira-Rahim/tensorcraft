@@ -72,8 +72,10 @@ test("character portraits stay hoverable and keyboard accessible throughout a le
   ).toEqual([]);
   await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Continue →", exact: true }).click();
+  // The challenge brief names no character since 2026-10-10; the mission
+  // header's "Demir" is the Challenge step's mention.
   await page
-    .locator('[data-testid="exercise-instructions"] [data-character-mention]')
+    .locator(".challenge-mission-header [data-character-mention]")
     .first()
     .hover();
   await expect(tooltip).toBeVisible();

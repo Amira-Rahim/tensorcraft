@@ -11,12 +11,21 @@ import {
   useMemo,
   useRef,
   useContext,
+  type ReactNode,
 } from "react";
 
 import { useSandpack, type SandpackTheme } from "@codesandbox/sandpack-react";
 import { useScheme } from "../use-scheme";
 import { InstructionText } from "./instruction-text";
-import { HintPanel } from "./hint-panel";
+import {
+  HintButton,
+  HintPanel,
+  HintRungs,
+  useHintLadder,
+  type Hint,
+} from "./hint-panel";
+import { useTaskStops } from "./task-stops";
+import { TaskStopsBrief } from "./task-stops-brief";
 import {
   exerciseDraftKey,
   readExerciseDraft,
@@ -175,6 +184,11 @@ interface ExerciseProps {
    * as the lesson-level HintPanel.
    */
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+  /**
+   * The lesson's ladder, shown in the challenge workspace's editor footer
+   * (spec 2026-10-10). The exercise's own `hints` win when it has them.
+   */
+  hints?: Hint[];
   /**
    * "inline" (default) renders the brief (chips, title, instructions and
    * the exercise's own hint ladder) above the editor, as every mount did
@@ -555,6 +569,8 @@ function ExerciseControls({
   onShowSolution,
   onAttempt,
   showSolution,
+  rungs,
+  help,
 }: {
   exercise: ExerciseData;
   draftOwner?: string | null;
@@ -565,6 +581,10 @@ function ExerciseControls({
   onShowSolution: () => void;
   onAttempt?: (result: ExerciseSubmitResult) => void;
   showSolution: boolean;
+  /** Revealed hint rungs, between the draft note and the actions row. */
+  rungs?: ReactNode;
+  /** The next-rung button, first in the right-aligned help group. */
+  help?: ReactNode;
 }) {
   const { sandpack } = useSandpack();
   const [running, setRunning] = useState(false);
@@ -769,6 +789,7 @@ function ExerciseControls({
           {draftNotice}
         </p>
       )}
+      {rungs}
       <div className="flex flex-wrap items-center gap-2 mt-3">
         <button
           type="button"
@@ -793,26 +814,35 @@ function ExerciseControls({
           Reset
         </button>
 
-        {!showSolution && (
-          <button
-            type="button"
-            data-solution-action=""
-            onClick={handleShowSolution}
-            className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-warning/10 text-warning border border-warning/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
-          >
-            Show Solution
-          </button>
-        )}
-        {hasStash && (
-          <button
-            type="button"
-            data-solution-action=""
-            onClick={handleRestoreMyCode}
-            className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-surface-overlay text-text-primary border border-interactive rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
-          >
-            Restore My Code
-          </button>
-        )}
+        {/* Help and the solution controls sit together at the right for
+            every exercise; only the challenge workspace passes `help`
+            (spec 2026-10-10, section 5 item 3). */}
+        <div
+          data-help-group=""
+          className="ml-auto flex flex-wrap items-center gap-2"
+        >
+          {help}
+          {!showSolution && (
+            <button
+              type="button"
+              data-solution-action=""
+              onClick={handleShowSolution}
+              className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-warning/10 text-warning border border-warning/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+            >
+              Show Solution
+            </button>
+          )}
+          {hasStash && (
+            <button
+              type="button"
+              data-solution-action=""
+              onClick={handleRestoreMyCode}
+              className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-surface-overlay text-text-primary border border-interactive rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
+            >
+              Restore My Code
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
@@ -843,6 +873,7 @@ export function Exercise({
   onSubmit,
   bridge,
   onHintRevealed,
+  hints,
   brief = "inline",
   titled = false,
   workspace = false,
@@ -850,6 +881,15 @@ export function Exercise({
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
   const scheme = useScheme();
+  // The challenge workspace: its brief's stops and the ladder its footer
+  // shows (spec 2026-10-10). Both are inert outside the workspace.
+  const taskStops = useTaskStops(
+    workspace ? exercise?.taskBrief?.steps : undefined,
+  );
+  const ladder = useHintLadder(
+    workspace ? (exercise?.hints ?? hints) : undefined,
+    onHintRevealed,
+  );
 
   const [results, setResults] = useState<TestResult[]>([]);
   const [logs, setLogs] = useState<ConsoleEntry[]>([]);
@@ -962,66 +1002,72 @@ export function Exercise({
         allPassed ? "border-success/30" : "border-border"
       }`}
     >
-      {/* Header row. Wraps between whole items only: at 390 px the old
+      {taskStops && exercise.taskBrief ? (
+        <TaskStopsBrief brief={exercise.taskBrief} store={taskStops.store} />
+      ) : (
+        <>
+          {/* Header row. Wraps between whole items only: at 390 px the old
           non-wrapping row squeezed its chips until they broke inside words
           ("EXERCIS / E", "Beginne / r"). With an external brief the chips
           and the minutes live in the brief; the row keeps the eyebrow and,
           when the lesson has more than one exercise, the exercise's name. */}
-      <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
-        <div className="flex items-center gap-2 whitespace-nowrap">
-          {!workspace && <span className="text-base">⚡</span>}
-          <h4
-            className={
-              workspace
-                ? "challenge-editor-heading"
-                : "text-xs font-mono font-semibold uppercase tracking-widest text-primary"
-            }
-          >
-            {workspace ? "Your JavaScript" : "Exercise"}
-            {brief === "external" && titled && (
-              <span className="sr-only">: {exercise.title}</span>
-            )}
-          </h4>
-        </div>
-        {brief === "inline" ? (
-          <>
-            <span
-              className="whitespace-nowrap text-xs font-mono font-medium px-2 py-0.5"
-              style={{
-                background: `${diffColor}15`,
-                color: diffColor,
-              }}
-              title="Cognitive difficulty"
-            >
-              {diffConfig.label}
-            </span>
-            {mlConfig && mlTone && (
-              <span
-                className="whitespace-nowrap text-xs font-mono font-medium px-2 py-0.5"
-                style={{
-                  background: `${mlTone}15`,
-                  color: mlTone,
-                }}
-                title="ML content axis: what skill the exercise actually builds"
-                data-testid="mlcontent-badge"
+          <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              {!workspace && <span className="text-base">⚡</span>}
+              <h4
+                className={
+                  workspace
+                    ? "challenge-editor-heading"
+                    : "text-xs font-mono font-semibold uppercase tracking-widest text-primary"
+                }
               >
-                {mlConfig.label}
+                {workspace ? "Your JavaScript" : "Exercise"}
+                {brief === "external" && titled && (
+                  <span className="sr-only">: {exercise.title}</span>
+                )}
+              </h4>
+            </div>
+            {brief === "inline" ? (
+              <>
+                <span
+                  className="whitespace-nowrap text-xs font-mono font-medium px-2 py-0.5"
+                  style={{
+                    background: `${diffColor}15`,
+                    color: diffColor,
+                  }}
+                  title="Cognitive difficulty"
+                >
+                  {diffConfig.label}
+                </span>
+                {mlConfig && mlTone && (
+                  <span
+                    className="whitespace-nowrap text-xs font-mono font-medium px-2 py-0.5"
+                    style={{
+                      background: `${mlTone}15`,
+                      color: mlTone,
+                    }}
+                    title="ML content axis: what skill the exercise actually builds"
+                    data-testid="mlcontent-badge"
+                  >
+                    {mlConfig.label}
+                  </span>
+                )}
+                <span className="whitespace-nowrap text-xs text-text-muted">
+                  ~{exercise.estimatedMinutes} min
+                </span>
+              </>
+            ) : titled ? (
+              <span
+                className="min-w-0 truncate text-xs text-text-muted"
+                data-testid="exercise-pane-title"
+                title={exercise.title}
+              >
+                {exercise.title}
               </span>
-            )}
-            <span className="whitespace-nowrap text-xs text-text-muted">
-              ~{exercise.estimatedMinutes} min
-            </span>
-          </>
-        ) : titled ? (
-          <span
-            className="min-w-0 truncate text-xs text-text-muted"
-            data-testid="exercise-pane-title"
-            title={exercise.title}
-          >
-            {exercise.title}
-          </span>
-        ) : null}
-      </div>
+            ) : null}
+          </div>
+        </>
+      )}
 
       {brief === "inline" && (
         <>
@@ -1050,6 +1096,9 @@ export function Exercise({
           data-editor-frame=""
           className="overflow-hidden border border-border rounded-none"
         >
+          {/* The brief is the column's visible title; the editor keeps its
+              name for screen readers (spec 2026-10-10, section 3). */}
+          {taskStops && <h4 className="sr-only">Your JavaScript</h4>}
           {!draftState.ready ? (
             <ExerciseLoadingSkeleton />
           ) : (
@@ -1059,7 +1108,7 @@ export function Exercise({
               files={sandpackFiles}
             >
               <SandpackCodeEditor
-                extensions={EXERCISE_EDITOR_EXTENSIONS}
+                extensions={taskStops?.extensions ?? EXERCISE_EDITOR_EXTENSIONS}
                 showLineNumbers
                 showTabs={false}
                 // The starter's comments are the task's steps, and they were
@@ -1085,6 +1134,8 @@ export function Exercise({
                   onShowSolution={() => setShowSolution(true)}
                   onAttempt={onSubmit}
                   showSolution={showSolution}
+                  rungs={workspace ? <HintRungs ladder={ladder} /> : undefined}
+                  help={workspace ? <HintButton ladder={ladder} /> : undefined}
                 />
               </div>
             </SandpackProvider>

@@ -351,7 +351,10 @@ function hintStatements(hint: string): string[] {
 // eigenvectors-svd-compression, each with a solution ladder.
 // 79 -> 56 (2026-08-15): /extras removed (owner decision); its 23 exercise
 // ladders went with it.
-const EXPECTED_SOLUTION_HINTS = 56;
+// 56 -> 55 (2026-10-10): introduction-to-tensors drops its solution rung.
+// Its challenge brief prints both lines, and Show Solution stays (spec
+// 2026-10-10, decision 4).
+const EXPECTED_SOLUTION_HINTS = 55;
 
 /**
  * The nine exercises that carry their own ladder: every second (or third)

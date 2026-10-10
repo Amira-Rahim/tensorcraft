@@ -10,7 +10,6 @@ export interface Hint {
 
 interface HintPanelProps {
   hints: Hint[] | undefined;
-  presentation?: "ladder" | "inline";
   /**
    * Called when the user reveals a hint tier. The consumer wires this up
    * to analytics, kept here as a pure callback so the UI package has no
@@ -145,37 +144,23 @@ function QuestionIcon() {
   );
 }
 
-export function HintPanel({
-  hints,
-  onHintRevealed,
-  presentation = "ladder",
-}: HintPanelProps) {
-  const inline = presentation === "inline";
+export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
   const ladder = useHintLadder(hints, onHintRevealed);
   if (ladder.hints.length === 0) return null;
 
   return (
-    <div
-      className={
-        inline
-          ? "challenge-hints"
-          : "p-5 my-6 brutalist-shadow bg-surface-raised border border-border"
-      }
-    >
+    <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
       <RevealAnnouncer ladder={ladder} />
 
-      {!inline && (
-        <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-text-muted">
-          Need a hint?
-        </h4>
-      )}
+      <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-text-muted">
+        Need a hint?
+      </h4>
 
       <div className="flex flex-col gap-3">
         {ladder.hints.map((hint, index) => {
           const config = levelConfig[hint.level];
           const isRevealed = index <= ladder.revealedLevel;
           const isNext = index === ladder.revealedLevel + 1;
-          if (inline && !isRevealed && !isNext) return null;
 
           return (
             <div key={hint.level}>
@@ -190,21 +175,13 @@ export function HintPanel({
                       : undefined
                   }
                   tabIndex={index === ladder.revealedLevel ? -1 : undefined}
-                  className={
-                    inline
-                      ? "challenge-hint-content"
-                      : "p-3 bg-surface outline-none"
-                  }
+                  className="p-3 bg-surface outline-none"
                 >
                   <span
-                    className={
-                      inline
-                        ? "challenge-hint-title"
-                        : "text-xs font-mono font-semibold uppercase tracking-widest block mb-1"
-                    }
-                    style={inline ? undefined : { color: config.color }}
+                    className="text-xs font-mono font-semibold uppercase tracking-widest block mb-1"
+                    style={{ color: config.color }}
                   >
-                    {inline ? RUNG_TITLE[hint.level] : config.label}
+                    {config.label}
                   </span>
                   <HintBody
                     hint={hint}
@@ -214,18 +191,11 @@ export function HintPanel({
               ) : isNext ? (
                 <button
                   onClick={ladder.reveal}
-                  className={
-                    inline
-                      ? "challenge-hint-action"
-                      : "w-full text-left p-3 transition-colors duration-100 hover:bg-surface border border-dashed border-border brutalist-hover"
-                  }
-                  style={inline ? undefined : { color: config.color }}
+                  className="w-full text-left p-3 transition-colors duration-100 hover:bg-surface border border-dashed border-border brutalist-hover"
+                  style={{ color: config.color }}
                 >
-                  {inline && <QuestionIcon />}
-                  <span className={inline ? undefined : "text-xs font-medium"}>
-                    {inline
-                      ? NEXT_LABEL[hint.level]
-                      : `Reveal ${config.label} →`}
+                  <span className="text-xs font-medium">
+                    {`Reveal ${config.label} →`}
                   </span>
                 </button>
               ) : (

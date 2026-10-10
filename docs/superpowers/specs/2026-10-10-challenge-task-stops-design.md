@@ -198,8 +198,10 @@ back.
   `.lesson-challenge-workspace` so they render brass, as approved.
   Rungs open in the editor footer above the actions row, on
   `color-mix(in srgb, text 6%, surface)`, with the rung title in brass
-  14 px/600 and the body at 14 px/1.7. On phones the help pair takes its own
-  row under Run Tests and Reset, flush with their left edge.
+  Inter 14 px/600 and the body in Inter at 14 px/1.7; only their code is
+  JetBrains Mono. The footer around them is mono, so the rungs set Inter
+  themselves. On phones the help pair takes its own row under Run Tests
+  and Reset, flush with their left edge.
 
 ## Section 3: copy
 

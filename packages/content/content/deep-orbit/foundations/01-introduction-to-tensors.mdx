@@ -26,11 +26,9 @@ consequence:
   narrative: "The first five readings are checked. Their sensor assignments are still unknown."
 hints:
   - level: nudge
-    content: "Fill the two nulls: create a tensor, then read its shape. The starter already copies the values and releases the tensor’s memory."
+    content: "Select Line 3 or Line 4 above the code. It highlights that line’s `null`, so you can type the new code over it."
   - level: guidance
-    content: "Create reading from streamValues. Then save reading.shape in shape: [5] describes one list of five readings. Keep the supplied lines below your work."
-  - level: solution
-    content: "const reading = tf.tensor(streamValues); const shape = reading.shape;"
+    content: "`shape` is a property, so `reading.shape` takes no parentheses. Pass `streamValues` on its own: wrapping it in another pair of brackets makes the shape `[1, 5]`."
 keywords:
   - tensor
   - array

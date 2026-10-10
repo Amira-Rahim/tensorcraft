@@ -74,11 +74,13 @@ export function LessonShell({
             workspace ? "challenge-workspace-grid" : GRID_CLASS[rightKind]
           }
         >
-          <div
-            className={`min-w-0 ${!workspace && pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
-          >
-            {left}
-          </div>
+          {left != null && (
+            <div
+              className={`min-w-0 ${!workspace && pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
+            >
+              {left}
+            </div>
+          )}
           {!single && (
             <div
               data-testid="lesson-right"
