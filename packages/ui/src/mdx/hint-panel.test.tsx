@@ -1,6 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { HintPanel } from "./hint-panel";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  HintButton,
+  HintPanel,
+  HintRungs,
+  useHintLadder,
+  type Hint,
+} from "./hint-panel";
 
 const hints = [
   { level: "nudge" as const, content: "Think about array operations" },
@@ -146,5 +152,62 @@ describe("HintPanel", () => {
     const { container } = render(<HintPanel hints={hints} />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+});
+
+function Split({
+  hints: list,
+  onHintRevealed,
+}: {
+  hints: Hint[] | undefined;
+  onHintRevealed?: (level: 1 | 2 | 3) => void;
+}) {
+  const ladder = useHintLadder(list, onHintRevealed);
+  return (
+    <>
+      <HintRungs ladder={ladder} />
+      <div data-testid="actions">
+        <HintButton ladder={ladder} />
+      </div>
+    </>
+  );
+}
+
+describe("the workspace's split ladder (spec 2026-10-10)", () => {
+  it("reveals rungs in order, relabels the button and reports each level", () => {
+    const spy = vi.fn();
+    render(<Split hints={hints.slice(0, 2)} onHintRevealed={spy} />);
+    fireEvent.click(screen.getByRole("button", { name: "Get a nudge" }));
+    expect(screen.getByText("A nudge")).toBeInTheDocument();
+    expect(
+      screen.getByText("Think about array operations"),
+    ).toBeInTheDocument();
+    expect(spy).toHaveBeenLastCalledWith(1);
+    fireEvent.click(screen.getByRole("button", { name: "Get more guidance" }));
+    expect(spy).toHaveBeenLastCalledWith(2);
+    // Two rungs: the ladder is spent, so the button goes.
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("announces the reveal and moves focus to the new rung", async () => {
+    render(<Split hints={hints} />);
+    fireEvent.click(screen.getByRole("button", { name: "Get a nudge" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Nudge revealed.");
+    await waitFor(() =>
+      expect(document.activeElement).toHaveTextContent(
+        "Think about array operations",
+      ),
+    );
+  });
+
+  it("mounts the live region before the first reveal", () => {
+    render(<Split hints={hints} />);
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+  });
+
+  it("renders nothing without hints", () => {
+    const { container } = render(<Split hints={undefined} />);
+    expect(container.querySelector(".challenge-hints")).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
   });
 });
