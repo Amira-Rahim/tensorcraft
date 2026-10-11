@@ -688,6 +688,26 @@ test.describe("lesson layout, desktop", () => {
     expect(m.source.left).toBeGreaterThan(m.definition.right);
     // The prose p rule no longer sets these 12 px labels at body size.
     expect(m.labels).toEqual(["12px", "12px", "12px", "12px"]);
+
+    // The revealed answer keeps a readable measure inside its full-width
+    // panel.
+    await page
+      .getByRole("button", { name: /recall it/i })
+      .first()
+      .click();
+    const answer = page.locator(".review-prompt-answer");
+    await expect(answer).toBeVisible();
+    const [text, panel] = await answer.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return [
+        el.clientWidth -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight),
+        el.getBoundingClientRect().width,
+      ];
+    });
+    expect(text).toBeLessThan(720);
+    expect(panel).toBeGreaterThan(1100);
   });
 
   test("a room-project checkpoint keeps its reading measure on the full-width step", async ({

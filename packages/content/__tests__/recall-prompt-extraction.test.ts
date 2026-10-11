@@ -161,3 +161,27 @@ describe("recall prompts use the string-prop form only", () => {
     ).toEqual([]);
   });
 });
+
+/*
+  The recall card renders its question and answer as plain text: ProseText
+  only links character names, so a markdown backtick reaches the learner as
+  a literal "`" (lesson 2's question showed one around [8, 224, 224, 3] until
+  2026-10-10). The question is already set in a code font, so write code
+  without backticks here.
+*/
+describe("recall prompts are plain text", () => {
+  it("carries no markdown backticks in any question or answer", () => {
+    const offenders = lessons.flatMap((lesson) =>
+      (lesson.recallPrompts ?? [])
+        .filter((prompt) => `${prompt.question} ${prompt.answer}`.includes("`"))
+        .map(
+          (prompt) =>
+            `${lesson.moduleId}/${lesson.slug} prompt ${prompt.index}`,
+        ),
+    );
+    expect(
+      offenders,
+      "the recall card shows a backtick literally; write the code without it",
+    ).toEqual([]);
+  });
+});

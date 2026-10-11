@@ -613,10 +613,18 @@ body {
    and the recap render inside .lesson-prose, whose p rule (0,1,1) set their
    12 px labels and note at body size; the selectors below outrank it. */
 
-/* Recall card: the question keeps a readable measure and the privacy note
-   its 12 px size. The Briefing warm-up renders outside the prose. */
+/* Recall card: the question and the revealed answer keep a readable measure
+   (the answer panel stays full width, in the textarea's slot), and the
+   privacy note keeps its 12 px size. The Briefing warm-up renders outside
+   the prose. */
 .lesson-prose .review-prompt-question {
   max-width: 80ch;
+}
+/* The end padding takes whatever the panel has past 75ch, so the text wraps
+   at a reading measure without a wrapper element (the panel is the focus
+   target the reveal moves to). */
+.lesson-prose .review-prompt-answer {
+  padding-inline-end: max(16px, calc(100% - 75ch - 16px));
 }
 .lesson-prose .review-prompt-note {
   margin-bottom: 12px;

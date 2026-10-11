@@ -84,7 +84,7 @@ export function ReviewPromptCard({
           <div
             ref={answerRef}
             tabIndex={-1}
-            className="p-4 bg-surface text-sm leading-relaxed text-text-primary"
+            className="review-prompt-answer p-4 bg-surface text-sm leading-relaxed text-text-primary"
           >
             <ProseText>{answer}</ProseText>
           </div>
