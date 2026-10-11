@@ -213,8 +213,50 @@ Build the STFT itself: slide a window across a capture, transform each window on
 <Exercise slug="build-spectrogram" />
 
 <RecallPrompt
-  question="If you increase the STFT window size, what happens to frequency resolution and time resolution, and why can't you improve both at once?"
+  question="Keep the sample rate fixed and increase the STFT window size."
   answer="A larger window gives better frequency resolution because more samples means finer frequency bins (bin spacing = sampleRate / windowSize). But it also spans more time, so you cannot tell precisely when within that window a frequency appears. The analysis window averages frequency information across its duration. Shortening it localizes that measurement in time but reduces separation of nearby frequencies. A smaller hop adds overlapping observations; it does not remove that tradeoff."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "At a fixed sample rate, what does a larger STFT window do to frequency-bin spacing?",
+      "options": [
+        {
+          "text": "It leaves spacing unchanged.",
+          "feedback": "Changing the denominator changes the bin spacing."
+        },
+        {
+          "text": "It makes the spacing smaller.",
+          "feedback": "More samples per window give finer frequency bins."
+        },
+        {
+          "text": "It makes the spacing larger.",
+          "feedback": "Bin spacing equals sample rate divided by window size."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "More samples per window give finer frequency bins."
+    },
+    {
+      "kind": "choice",
+      "question": "What is the time-resolution cost of that larger window?",
+      "options": [
+        {
+          "text": "Each spectrum covers a longer interval, reducing time localization.",
+          "feedback": "The window summarizes frequency content across a longer duration. Overlap does not remove this tradeoff."
+        },
+        {
+          "text": "Events become localized to a shorter interval.",
+          "feedback": "The larger window spans more time, not less."
+        },
+        {
+          "text": "There is no cost if you use enough overlapping windows.",
+          "feedback": "Smaller hops add observations but do not shorten the analysis window."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The window summarizes frequency content across a longer duration. Overlap does not remove this tradeoff."
+    }
+  ]}
 />
 
 <LessonRecap

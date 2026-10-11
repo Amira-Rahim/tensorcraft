@@ -32,12 +32,13 @@
  */
 
 import { lessons, modules } from "@tensorcraft/content";
-import { DEFAULT_WORLD } from "@tensorcraft/shared";
+import { DEFAULT_WORLD, type RecallCheck } from "@tensorcraft/shared";
 
 /** One free recall prompt with the key a guest queue entry carries. */
 export interface FreeRecallPrompt {
   question: string;
   answer: string;
+  checks?: RecallCheck[];
   /** Position of the prompt within its lesson, 0-based. Part of the key. */
   promptIndex: number;
   lessonId: string;

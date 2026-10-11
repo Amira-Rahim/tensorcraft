@@ -209,7 +209,32 @@ The client above is typed all the way to its edge. What comes back over that edg
 
 <Exercise slug="llm-client" />
 
-<RecallPrompt question="What workflow reduces errors in LLM-assisted factual output?" answer="Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. Keep evidence and approval with the draft, and check the assembled report. Human review can still miss errors." />
+<RecallPrompt
+  question="Which workflow supports more trustworthy factual reports?"
+  answer="Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. Keep evidence and approval with the draft, and check the assembled report. Human review can still miss errors."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Which workflow supports more trustworthy factual reports?",
+      "options": [
+        {
+          "text": "Publish the first fluent draft as long as it sounds confident.",
+          "feedback": "Fluency and confidence do not establish factual support."
+        },
+        {
+          "text": "Lower temperature and treat every generated statement as verified.",
+          "feedback": "Reduced sampling variation does not verify claims."
+        },
+        {
+          "text": "Draft, verify claims against evidence, correct errors and obtain review before release.",
+          "feedback": "Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. Keep evidence and approval with the draft, and check the assembled report. Human review can still miss errors."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. Keep evidence and approval with the draft, and check the assembled report. Human review can still miss errors."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

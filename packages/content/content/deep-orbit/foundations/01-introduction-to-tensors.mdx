@@ -91,8 +91,35 @@ the values for Farah and releases memory.
 <Exercise slug="create-a-tensor" />
 
 <RecallPrompt
-  question="You run tf.tensor([0.2, 0.4, 0.6]). What shape does the tensor have? Does that line train a model?"
-  answer="Its shape is [3], a list of three numbers. No model is trained. The line only puts the numbers in a tensor that TensorFlow.js can work with. Finding a pattern takes a trained model."
+  question="Consider tf.tensor([0.2, 0.4, 0.6])."
+  answer="Its shape is [3]: one dimension containing three numbers. The line only creates a tensor. It does not train a model."
+  checks={[
+    {
+      "kind": "shape",
+      "question": "What is the shape of tf.tensor([0.2, 0.4, 0.6])?",
+      "expected": [
+        3
+      ],
+      "hint": "Count the numbers in this one-dimensional list. Write its length inside brackets.",
+      "explanation": "The shape is [3]: one dimension containing three numbers."
+    },
+    {
+      "kind": "choice",
+      "question": "Does this line train a model?",
+      "options": [
+        {
+          "text": "Yes, it trains a model on the three numbers.",
+          "feedback": "Creating a container for numbers does not adjust model weights. Training is a separate step."
+        },
+        {
+          "text": "No, it only creates a tensor.",
+          "feedback": "tf.tensor() creates a tensor. It does not create or train a model."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "tf.tensor() creates a tensor. It does not create or train a model."
+    }
+  ]}
 />
 
 <LessonRecap

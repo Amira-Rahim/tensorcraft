@@ -261,8 +261,30 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
 <Exercise slug="fft-features" />
 
 <RecallPrompt
-  question="The FFT computes nothing the samples did not already hold. Why might feeding its magnitudes help a model that previously saw only three summary features?"
+  question="Why might FFT magnitudes help a model that previously received only three summary features?"
   answer="Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why might FFT magnitudes help a model that previously received only three summary features?",
+      "options": [
+        {
+          "text": "They add information that was never present in the captured window.",
+          "feedback": "The FFT is computed from the original samples."
+        },
+        {
+          "text": "They guarantee better held-out accuracy regardless of the task.",
+          "feedback": "Whether the extra distinctions help must be measured."
+        },
+        {
+          "text": "They can expose spectral differences that the three summaries discarded.",
+          "feedback": "Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
+    }
+  ]}
 />
 
 <LessonRecap

@@ -227,18 +227,85 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 <Exercise slug="incident-false-alarm-storm" />
 
 <RecallPrompt
-  question="What does F1 score measure, and why is it useful when comparing anomaly detection thresholds?"
+  question="Use F1 with a clear understanding of its objective."
   answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because raising a threshold cannot increase recall, but precision may move either way; F1 captures both effects together, so the highest F1 is the winner for that metric on that slice. It need not minimize FP plus FN, even when the errors cost the same. Use an explicit cost or operational constraint when that is the deployment objective."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What is F1?",
+      "options": [
+        {
+          "text": "The arithmetic mean of accuracy and specificity.",
+          "feedback": "F1 is defined using precision and recall."
+        },
+        {
+          "text": "The total number of false positives plus false negatives.",
+          "feedback": "F1 is a ratio-based summary, not an error count."
+        },
+        {
+          "text": "The harmonic mean of precision and recall.",
+          "feedback": "F1 combines precision and recall into one score."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "F1 combines precision and recall into one score."
+    },
+    {
+      "kind": "choice",
+      "question": "Does the highest F1 cutoff necessarily minimize deployment costs?",
+      "options": [
+        {
+          "text": "Yes. F1 accounts for every possible operational cost.",
+          "feedback": "F1 does not encode an arbitrary cost for each type of error."
+        },
+        {
+          "text": "No. Choose a cutoff using the actual error costs or operational constraints.",
+          "feedback": "The best F1 on a validation slice wins for that metric, not necessarily for the deployment objective."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "The best F1 on a validation slice wins for that metric, not necessarily for the deployment objective."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="Two deployments run the same detector on the same errors: one gates the capture pipeline, the other pages the bridge crew. Why should their thresholds differ when F1 peaks at the same cutoff?"
+  question="Explain why a detector that gates irreplaceable captures may need a different threshold from one that pages the crew."
   answer="F1 weighs precision and recall equally, but the two deployments have opposite cost asymmetries. A capture the ship never gets to repeat makes the miss the expensive error, so that threshold goes down and buys recall with false alarms. An alert channel fails by being tuned out, so a higher threshold may fit its budget. On this fictional validation curve, that increases precision while missing more events; precision is not guaranteed to rise on every dataset. The cutoff follows the cost of each error, not the F1 peak."
 />
 
 <RecallPrompt
-  question="The archive records one reading per 33-second window. How many flags a week does a cutoff at the 99th percentile of normal error produce, and what does that say about percentile thresholds?"
+  question="A threshold at the 99th percentile leaves about 1% of the sampled normal errors above it."
   answer="One reading per 33-second window is 2,618 a day and 18,327 a week, so one percent of the calm readings is about 26 flags a day and 183 a week. A percentile estimates a false-alarm rate on the sampled normal data, and the alert count is that rate times the reading volume. Two false alarms a week corresponds to about 0.011% of 18,327 normal readings. A sample of 2,880 is too small to estimate that tail reliably. Sweeping labeled candidates helps compare costs but does not establish such a low future rate."
+  checks={[
+    {
+      "kind": "number",
+      "question": "At one normal reading every 33 seconds, about how many weekly flags does a 1% false-alarm rate imply? Round to the nearest whole flag.",
+      "expected": 183,
+      "hint": "A week has 604,800 seconds. Divide by 33, then multiply by 0.01.",
+      "explanation": "604,800 ÷ 33 × 0.01 is about 183 flags per week, if the estimated rate applies."
+    },
+    {
+      "kind": "choice",
+      "question": "What else is needed to turn a false-alarm rate into an expected alert count?",
+      "options": [
+        {
+          "text": "The number of normal readings processed.",
+          "feedback": "Expected false alarms equal the false-positive rate times the volume of normal readings."
+        },
+        {
+          "text": "Only the number of model layers.",
+          "feedback": "Model depth does not determine how many readings are processed."
+        },
+        {
+          "text": "Only the percentile label.",
+          "feedback": "The same percentage can produce very different counts at different volumes."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Expected false alarms equal the false-positive rate times the volume of normal readings."
+    }
+  ]}
 />
 
 <LessonRecap

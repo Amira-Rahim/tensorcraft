@@ -167,9 +167,37 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
 
 <Exercise slug="export-model-artifact" />
 
-<RecallPrompt question="Why can a green CI run test the wrong model?" answer="Its steps can resolve an old cache entry or a mutable URL. Pin and verify the complete intended artifact, including graph, weights and preprocessing, then score those verified bytes. A passing gate describes only the candidate and evaluation it actually ran." />
+<RecallPrompt
+  question="Explain how you would establish that a green CI run evaluated the exact model artifact intended for release."
+  answer="Its steps can resolve an old cache entry or a mutable URL. Pin and verify the complete intended artifact, including graph, weights and preprocessing, then score those verified bytes. A passing gate describes only the candidate and evaluation it actually ran."
+/>
 
-<RecallPrompt question="What proves a rollback succeeded?" answer="The served release matches the recorded previous version and file hashes, and its smoke checks pass. A successful publish command alone is insufficient. Keep the failed release attempt visible even if recovery succeeds." />
+<RecallPrompt
+  question="What evidence establishes that a rollback restored the intended release?"
+  answer="The served release matches the recorded previous version and file hashes, and its smoke checks pass. A successful publish command alone is insufficient. Keep the failed release attempt visible even if recovery succeeds."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What evidence establishes that a rollback restored the intended release?",
+      "options": [
+        {
+          "text": "The served files match the previous version and hashes, and smoke checks pass.",
+          "feedback": "The served release matches the recorded previous version and file hashes, and its smoke checks pass. A successful publish command alone is insufficient. Keep the failed release attempt visible even if recovery succeeds."
+        },
+        {
+          "text": "The publish command returned a success status.",
+          "feedback": "A successful command alone does not verify the bytes actually being served."
+        },
+        {
+          "text": "The failed release attempt was removed from the history.",
+          "feedback": "Keep the failed attempt visible; removing it does not verify recovery."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The served release matches the recorded previous version and file hashes, and its smoke checks pass. A successful publish command alone is insufficient. Keep the failed release attempt visible even if recovery succeeds."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["Model identity and model quality are separate gates; verify both.", "Pin graph, weights, preprocessing and label order. Load the bytes you verified.", "Benchmark the intended workload on the intended device. A CI runner does not stand in for every browser.", "Verify the served candidate after publication and the complete restored release after rollback.", "model.save() can serialize into memory through tf.io.withSaveHandler; the handler receives topology, weight specs and weight data."]}

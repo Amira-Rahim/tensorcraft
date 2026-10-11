@@ -252,9 +252,37 @@ Render an absent measurement as "No data". A measured zero distance only says th
 
 <Exercise slug="model-monitor" />
 
-<RecallPrompt question="What model failure can occur without an exception or latency change?" answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong." />
+<RecallPrompt
+  question="What model failure can occur while latency and exception rates look normal?"
+  answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What model failure can occur while latency and exception rates look normal?",
+      "options": [
+        {
+          "text": "No model failures are possible while those metrics are stable.",
+          "feedback": "Infrastructure health does not establish predictive quality."
+        },
+        {
+          "text": "Only a missing JavaScript import.",
+          "feedback": "A missing import is an execution problem, not the silent prediction failure described here."
+        },
+        {
+          "text": "Plausible but incorrect predictions.",
+          "feedback": "A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong."
+    }
+  ]}
+/>
 
-<RecallPrompt question="A drift alert fires in production. Why can you not settle it by reading the model's live accuracy?" answer="In this mission, recent predictions arrive before their trusted labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Scores and drift do not replace labels. Evaluate when trusted outcomes arrive, record their coverage and delays, and investigate changes before choosing an intervention." />
+<RecallPrompt
+  question="Explain how you would investigate a drift alert when trusted labels for recent predictions have not yet arrived."
+  answer="In this mission, recent predictions arrive before their trusted labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Scores and drift do not replace labels. Evaluate when trusted outcomes arrive, record their coverage and delays, and investigate changes before choosing an intervention."
+/>
 
 <LessonRecap
   whatYouLearned={[

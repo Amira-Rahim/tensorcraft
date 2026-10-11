@@ -170,7 +170,52 @@ The model has written the sections and a reviewer has marked each one. The boole
 
 <Exercise slug="generate-report" />
 
-<RecallPrompt question="What does section-by-section generation make easier to review?" answer="Each section can be checked against a smaller evidence set and revised on its own. You can review a full draft too, and splitting it does not guarantee accuracy. Check consistency and missing context again after assembly." />
+<RecallPrompt
+  question="Review both individual sections and the assembled report."
+  answer="Each section can be checked against a smaller evidence set and revised on its own. You can review a full draft too, and splitting it does not guarantee accuracy. Check consistency and missing context again after assembly."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What review benefit can section-by-section generation provide?",
+      "options": [
+        {
+          "text": "It removes the need for reviewers to inspect the source evidence.",
+          "feedback": "Evidence checking is still necessary for each claim."
+        },
+        {
+          "text": "Each section can be checked against a smaller evidence set and revised separately.",
+          "feedback": "Smaller sections make local review and revision easier."
+        },
+        {
+          "text": "Every section becomes factually correct without review.",
+          "feedback": "Smaller drafts can still contain unsupported claims."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Smaller sections make local review and revision easier."
+    },
+    {
+      "kind": "choice",
+      "question": "What should you check after assembling the approved sections?",
+      "options": [
+        {
+          "text": "Cross-section consistency and missing context.",
+          "feedback": "Review the assembled report as well as its individual sections."
+        },
+        {
+          "text": "Only whether the file opens.",
+          "feedback": "Readable output can still contain conflicting claims or missing context."
+        },
+        {
+          "text": "Nothing, because separate approval guarantees whole-report consistency.",
+          "feedback": "Individually reviewed sections can conflict or leave gaps when combined."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Review the assembled report as well as its individual sections."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["Generating smaller sections lets reviewers check and revise each claim set separately.", "Low temperature reduces sampling variation; it does not establish truth.", "Assemble approved sections, name omissions and check consistency across the final report."]}

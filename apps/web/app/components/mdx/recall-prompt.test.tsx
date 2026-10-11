@@ -3,10 +3,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { RecallPrompt } from "./recall-prompt";
 
 describe("RecallPrompt", () => {
-  it("requires a non-whitespace attempt before checking", () => {
+  it("requires a non-whitespace attempt before revealing the self-assessment answer", () => {
     const onAnswer = vi.fn();
     render(<RecallPrompt question="Q?" answer="A." onAnswer={onAnswer} />);
-    const check = screen.getByRole("button", { name: "Check" });
+    const check = screen.getByRole("button", { name: "Show answer" });
     expect(check).toBeDisabled();
     fireEvent.change(screen.getByRole("textbox", { name: "Q?" }), {
       target: { value: "  \n " },
@@ -44,4 +44,29 @@ describe("RecallPrompt", () => {
       screen.queryByRole("button", { name: "Got it" }),
     ).not.toBeInTheDocument();
   });
+});
+
+it("labels ungraded reflection and keeps the learner response available for comparison and retry", () => {
+  const onAnswer = vi.fn();
+  render(
+    <RecallPrompt
+      question="Explain your reasoning."
+      answer="Example reasoning."
+      onAnswer={onAnswer}
+    />,
+  );
+  expect(
+    screen.getByRole("heading", { name: "Self-assessment" }),
+  ).toBeVisible();
+  expect(screen.getByText(/not automatically graded/)).toBeVisible();
+  fireEvent.change(screen.getByRole("textbox"), {
+    target: { value: "My reasoning." },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Show answer" }));
+  expect(screen.getByText("My reasoning.")).toBeVisible();
+  expect(screen.getByText("Example reasoning.")).toBeVisible();
+  expect(onAnswer.mock.calls).toEqual([["attempted"]]);
+  fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+  expect(screen.getByRole("textbox")).toHaveValue("My reasoning.");
+  expect(screen.getByRole("textbox")).toHaveFocus();
 });

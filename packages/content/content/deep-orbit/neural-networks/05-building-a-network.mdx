@@ -146,13 +146,70 @@ The practice model differs from the bridge build in both input width and layer s
 <Exercise slug="simple-network" />
 
 <RecallPrompt
-  question="What does model.compile() actually do, and what does it NOT do?"
+  question="You have created a model and called model.compile()."
   answer="compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random connection weights."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What does model.compile() configure?",
+      "options": [
+        {
+          "text": "The learned weights from the training examples.",
+          "feedback": "Weights are learned during training, not during compile()."
+        },
+        {
+          "text": "Predictions for every row in the dataset.",
+          "feedback": "Running predictions is a separate operation."
+        },
+        {
+          "text": "The optimizer, loss function and metrics for training.",
+          "feedback": "compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random connection weights."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random connection weights."
+    },
+    {
+      "kind": "choice",
+      "question": "Has model.compile() trained a newly created model?",
+      "options": [
+        {
+          "text": "Yes.",
+          "feedback": "Compilation configures training; it does not run training updates."
+        },
+        {
+          "text": "No.",
+          "feedback": "A compiled model still needs a training call such as fit()."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "A compiled model still needs a training call such as fit()."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="Foundations lesson 3 gave matMul one inflexible shape rule. Apply it to the 32-unit stage printed in the summary above: what shape must its kernel be, and how does that give the 128 parameters on that row?"
+  question="A dense layer maps three input features to 32 units."
   answer="Inner dimensions must match: [m, n] x [n, p] produces [m, p]. A batch arrives as [rows, 3], so the kernel has to be [3, 32] for the multiply to run. That is 96 weights, plus one bias per unit: 128."
+  checks={[
+    {
+      "kind": "shape",
+      "question": "A batch has shape [rows, 3] and the dense layer has 32 units. What is the kernel shape?",
+      "expected": [
+        3,
+        32
+      ],
+      "hint": "The kernel must match 3 input features and produce 32 output features.",
+      "explanation": "The product [rows, 3] × [3, 32] produces [rows, 32]."
+    },
+    {
+      "kind": "number",
+      "question": "Including one bias per unit, how many parameters does that layer have?",
+      "expected": 128,
+      "hint": "Add the 3 × 32 kernel weights and the 32 biases.",
+      "explanation": "96 weights plus 32 biases gives 128 parameters."
+    }
+  ]}
 />
 
 <LessonRecap

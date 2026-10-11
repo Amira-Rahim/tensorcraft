@@ -2,34 +2,49 @@
 import { ProseText } from "@tensorcraft/ui/prose-text";
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import type { ReviewOutcome } from "@tensorcraft/shared";
+import { CheckedRecallCard } from "./checked-recall-card";
+import type { RecallCheck, ReviewOutcome } from "@tensorcraft/shared";
 
 export type RecallAction = "attempted" | ReviewOutcome;
 
-export function ReviewPromptCard({
+interface ReviewPromptCardProps {
+  question: string;
+  answer: ReactNode;
+  checks?: RecallCheck[];
+  onAction?: (action: RecallAction) => void;
+  onContinue?: () => void;
+}
+
+export function ReviewPromptCard(props: ReviewPromptCardProps) {
+  return props.checks?.length ? (
+    <CheckedRecallCard {...props} checks={props.checks} />
+  ) : (
+    <SelfAssessmentCard {...props} />
+  );
+}
+
+function SelfAssessmentCard({
   question,
   answer,
   onAction,
   onContinue,
-}: {
-  question: string;
-  answer: ReactNode;
-  onAction?: (action: RecallAction) => void;
-  onContinue?: () => void;
-}) {
+}: ReviewPromptCardProps) {
   const questionId = useId();
   const [attempt, setAttempt] = useState("");
   const [state, setState] = useState<"prompt" | "revealed" | "rated">("prompt");
   const answerRef = useRef<HTMLDivElement>(null);
+  const attemptRef = useRef<HTMLTextAreaElement>(null);
+  const retrying = useRef(false);
   const reveal = (bailed: boolean) => {
     setState(bailed ? "rated" : "revealed");
     onAction?.(bailed ? "bailed" : "attempted");
   };
   useEffect(() => {
     if (state !== "prompt") answerRef.current?.focus();
+    else if (retrying.current) attemptRef.current?.focus();
   }, [state]);
   const buttonClass =
-    "px-4 py-2 text-sm font-mono border border-border bg-surface-raised text-text-primary hover:bg-surface disabled:opacity-50";
+    "min-h-11 px-4 py-2 text-sm font-mono border border-interactive bg-surface-raised text-text-primary hover:bg-surface disabled:opacity-50";
   return (
     <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
       <div
@@ -40,8 +55,8 @@ export function ReviewPromptCard({
       >
         {state !== "prompt" ? "Answer revealed." : ""}
       </div>
-      <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-3 text-primary">
-        Recall Prompt
+      <h4 className="text-sm font-mono font-semibold mb-3 text-primary">
+        Self-assessment
       </h4>
       <p
         id={questionId}
@@ -52,14 +67,17 @@ export function ReviewPromptCard({
       {state === "prompt" ? (
         <>
           <textarea
+            ref={attemptRef}
             aria-labelledby={questionId}
             value={attempt}
             onChange={(event) => setAttempt(event.target.value)}
             rows={3}
-            className="w-full p-3 mb-3 border border-border bg-surface text-text-primary"
+            className="w-full p-3 mb-3 border border-interactive bg-surface text-text-primary"
           />
           <p className="review-prompt-note text-xs text-text-muted mb-3">
-            Your answer stays on this page and is never saved.
+            Your response is not automatically graded. Compare it with the
+            answer, then rate your recall. Your text stays on this page and is
+            never saved.
           </p>
           <div className="flex flex-wrap gap-2">
             <button
@@ -68,7 +86,7 @@ export function ReviewPromptCard({
               disabled={!attempt.trim()}
               onClick={() => reveal(false)}
             >
-              Check
+              Show answer
             </button>
             <button
               type="button"
@@ -81,6 +99,12 @@ export function ReviewPromptCard({
         </>
       ) : (
         <>
+          {attempt.trim() && (
+            <div className="mb-3 max-w-[75ch] text-sm text-text-primary">
+              <strong>Your answer</strong>
+              <div className="whitespace-pre-wrap break-words">{attempt}</div>
+            </div>
+          )}
           <div
             ref={answerRef}
             tabIndex={-1}
@@ -90,6 +114,16 @@ export function ReviewPromptCard({
           </div>
           {state === "revealed" ? (
             <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={buttonClass}
+                onClick={() => {
+                  retrying.current = true;
+                  setState("prompt");
+                }}
+              >
+                Try again
+              </button>
               {(
                 [
                   ["got-it", "Got it"],

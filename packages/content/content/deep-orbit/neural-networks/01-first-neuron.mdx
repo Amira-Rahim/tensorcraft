@@ -95,8 +95,70 @@ Build your first neuron: the weighted sum behind every verdict this ship will ev
 <Exercise slug="implement-neuron" />
 
 <RecallPrompt
-  question="What does a neuron compute, and what role do weights and bias each play?"
+  question="Separate the three pieces of a neuron calculation."
   answer="A neuron computes the dot product of its inputs and weights, then adds a bias: output = dot(inputs, weights) + bias. Weights control how much each input contributes; the bias adds an input-independent offset. A decision threshold is a separate rule applied to the score."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What is the neuron score before an activation or decision threshold?",
+      "options": [
+        {
+          "text": "dot(inputs, weights) + bias",
+          "feedback": "The score is the sum of input-weight products plus the bias."
+        },
+        {
+          "text": "sum(inputs) + sum(weights)",
+          "feedback": "Each input must first be multiplied by its corresponding weight."
+        },
+        {
+          "text": "dot(inputs, weights) * bias",
+          "feedback": "The bias is added as an offset, not multiplied into the weighted sum."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The score is the sum of input-weight products plus the bias."
+    },
+    {
+      "kind": "choice",
+      "question": "What do the weights control?",
+      "options": [
+        {
+          "text": "A fixed offset independent of the inputs.",
+          "feedback": "That is the role of the bias."
+        },
+        {
+          "text": "The number of training examples.",
+          "feedback": "Weights affect the computation, not the dataset size."
+        },
+        {
+          "text": "How much each input contributes to the score.",
+          "feedback": "Each weight scales its corresponding input."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Each weight scales its corresponding input."
+    },
+    {
+      "kind": "choice",
+      "question": "What does the bias contribute?",
+      "options": [
+        {
+          "text": "A mandatory cutoff for classification.",
+          "feedback": "A decision threshold is a separate rule applied to the score."
+        },
+        {
+          "text": "An offset independent of the input values.",
+          "feedback": "The bias is added to the weighted sum."
+        },
+        {
+          "text": "A separate multiplier for every input.",
+          "feedback": "Those multipliers are the weights."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "The bias is added to the weighted sum."
+    }
+  ]}
 />
 
 <LessonRecap

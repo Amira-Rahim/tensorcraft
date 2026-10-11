@@ -135,9 +135,37 @@ Sort the crew's status reports by classifier confidence. The harness stands in f
 
 <Exercise slug="load-pretrained-pipeline" />
 
-<RecallPrompt question="When should you reach for Transformers.js instead of training your own model with TF.js?" answer="When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch." />
+<RecallPrompt
+  question="When is a supported pretrained Transformers.js model a reasonable starting point?"
+  answer="When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "When is a supported pretrained Transformers.js model a reasonable starting point?",
+      "options": [
+        {
+          "text": "Whenever the task uses text, regardless of its labels or license.",
+          "feedback": "Check task fit, label meanings, license and representative performance."
+        },
+        {
+          "text": "Only when you plan to train every parameter from scratch.",
+          "feedback": "Using a suitable pretrained model can avoid training from scratch."
+        },
+        {
+          "text": "When it fits the task and passes representative quality and deployment checks.",
+          "feedback": "When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch."
+    }
+  ]}
+/>
 
-<RecallPrompt question="Module 3 scored DEEP SCAN on a held-out slice. This pipeline arrived pretrained, with no accuracy number for the crew's reports. What has to be true of the twenty reports you label by hand before Mirza sees any of this?" answer="A test slice is data no decision ever touched, scored once. Label the twenty before you see the pipeline's answers, and draw them the way reports actually arrive. Class-balanced sampling can help inspect each class, but its unweighted accuracy need not estimate performance on incoming reports. Twenty reports can reveal problems; they cannot establish reliable rare-error rates." />
+<RecallPrompt
+  question="Describe how you would select and label twenty reports for an honest first evaluation of a pretrained pipeline."
+  answer="A test slice is data no decision ever touched, scored once. Label the twenty before you see the pipeline's answers, and draw them the way reports actually arrive. Class-balanced sampling can help inspect each class, but its unweighted accuracy need not estimate performance on incoming reports. Twenty reports can reveal problems; they cannot establish reliable rare-error rates."
+/>
 
 <LessonRecap whatYouLearned={["pipeline() supplies preprocessing and output handling around a supported model", "Pin the model revision, dtype and device for reproducible evaluation", "Measure asset downloads and cached startup separately; cached does not mean instant or permanently available", "Evaluate representative text and inspect errors. Confidence ranking does not establish urgency or task accuracy"]} bridge="A library component saves implementation work. A pretrained model also needs evaluation on the inputs your application will receive." youCanNow="Load a pinned pretrained pipeline, preserve the pairing between inputs and outputs, and investigate whether it suits your text." />
 

@@ -355,18 +355,82 @@ Report the scores this run produced, even when they are disappointing. The grade
 <TransferAssignment />
 
 <RecallPrompt
-  question="A model has 95% training accuracy and 60% test accuracy. What should you investigate before choosing a fix?"
+  question="Explain what you would investigate before treating a 95% training versus 60% test accuracy gap as overfitting."
   answer="The gap is consistent with overfitting, but a changed data distribution, label errors, or inconsistent preprocessing can also cause it. Check those first. If overfitting is the cause, compare more representative training data, early stopping, and suitable capacity or regularization changes using validation data."
 />
 
 <RecallPrompt
-  question="Why did module 1 assign earlier rows to training and later rows to validation before shuffling, and why are separately shuffled take() and skip() pipelines risky?"
+  question="Keep train and validation membership fixed."
   answer="The time split tests prediction on later readings and reduces leakage from neighboring observations. Training indices may then be shuffled without changing membership. Separate shuffled iterations can place the same row in both sets; such overlap makes a held-out score misleading."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Which split tests performance on future readings?",
+      "options": [
+        {
+          "text": "Shuffle all rows first, then divide them randomly.",
+          "feedback": "This can mix neighboring observations across both sets and fails to simulate a future period."
+        },
+        {
+          "text": "Choose validation rows from the training batches after every epoch.",
+          "feedback": "A held-out split must remain separate from training."
+        },
+        {
+          "text": "Assign earlier rows to training and later rows to validation before shuffling training rows.",
+          "feedback": "A time split preserves the future-period evaluation; shuffling within training does not change membership."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "A time split preserves the future-period evaluation; shuffling within training does not change membership."
+    },
+    {
+      "kind": "choice",
+      "question": "What can go wrong with separate shuffled take() and skip() iterations?",
+      "options": [
+        {
+          "text": "They necessarily remove all rare examples.",
+          "feedback": "The specific risk is overlapping membership, not guaranteed class removal."
+        },
+        {
+          "text": "The same row can enter both splits.",
+          "feedback": "Fix the split membership first; separate shuffled iterations can overlap."
+        },
+        {
+          "text": "They guarantee identical ordering on every iteration.",
+          "feedback": "Separately shuffled iterations need not use the same ordering."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Fix the split membership first; separate shuffled iterations can overlap."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="Can you reuse a detector's sensitivity and false-positive rate when anomalies become rarer, when the threshold changes, or when a new sensor changes normal readings?"
+  question="When can sensitivity and false-positive rate stay valid after anomalies become rarer?"
   answer="A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "When can sensitivity and false-positive rate stay valid after anomalies become rarer?",
+      "options": [
+        {
+          "text": "When the threshold and within-class input distributions stay fixed.",
+          "feedback": "A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
+        },
+        {
+          "text": "Whenever only the reported accuracy changes.",
+          "feedback": "Accuracy alone does not establish stable class-conditional rates."
+        },
+        {
+          "text": "Even after changing the threshold or installing a different sensor.",
+          "feedback": "A new cutoff or sensor can change sensitivity and false-positive rate."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
+    }
+  ]}
 />
 
 <LessonRecap

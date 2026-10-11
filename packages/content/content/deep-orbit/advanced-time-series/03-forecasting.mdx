@@ -281,9 +281,59 @@ Train a one-step model, then evaluate the same stretch twice: once feeding predi
 
 <Exercise slug="forecast-signal" />
 
-<RecallPrompt question="Why can a rolling forecast have larger errors than one-step replay, even if the data distribution has not changed?" answer="The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon." />
+<RecallPrompt
+  question="Why can a rolling forecast accumulate errors even without distribution change?"
+  answer="The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why can a rolling forecast accumulate errors even without distribution change?",
+      "options": [
+        {
+          "text": "One-step replay also replaces all observed history with predictions.",
+          "feedback": "One-step replay uses observed history; rollout feeds predictions back."
+        },
+        {
+          "text": "Its predictions become inputs to later prediction windows.",
+          "feedback": "The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon."
+        },
+        {
+          "text": "Every increase in horizon proves data drift.",
+          "feedback": "Feedback error can grow while the data distribution remains unchanged."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon."
+    }
+  ]}
+/>
 
-<RecallPrompt question="You run the drift check on a 100-step rollout and it reports that error has tripled. What did you actually measure?" answer="You compared different horizons. Feedback can increase error even without drift, and drift may also be present. Compare the same horizon across earlier and later periods before investigating a change. One-step replay is one way to do that." />
+<RecallPrompt
+  question="Error triples between short and long horizons of one rollout. What comparison did you make?"
+  answer="You compared different horizons. Feedback can increase error even without drift, and drift may also be present. Compare the same horizon across earlier and later periods before investigating a change. One-step replay is one way to do that."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Error triples between short and long horizons of one rollout. What comparison did you make?",
+      "options": [
+        {
+          "text": "Different forecast horizons, which does not by itself establish drift.",
+          "feedback": "You compared different horizons. Feedback can increase error even without drift, and drift may also be present. Compare the same horizon across earlier and later periods before investigating a change. One-step replay is one way to do that."
+        },
+        {
+          "text": "The same horizon across two different time periods.",
+          "feedback": "One rollout across horizons is not that controlled comparison."
+        },
+        {
+          "text": "A direct measurement of a changed data distribution.",
+          "feedback": "Rollout feedback can change errors without distribution drift."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "You compared different horizons. Feedback can increase error even without drift, and drift may also be present. Compare the same horizon across earlier and later periods before investigating a change. One-step replay is one way to do that."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

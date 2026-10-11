@@ -179,9 +179,37 @@ The exercise uses an ONNX stand-in to grade inputs, awaited outputs and timing b
 
 <Exercise slug="onnx-comparison" />
 
-<RecallPrompt question="A small classifier runs faster on WASM on your laptop. What can you conclude?" answer="That measured workload favored WASM in that environment. It does not establish a universal crossover by parameter count. Repeat with the target devices, batch size and input shapes, and check cold start, output agreement and memory as well as warm latency." />
+<RecallPrompt
+  question="WASM wins a latency comparison for a small classifier on your laptop. What does this establish?"
+  answer="That measured workload favored WASM in that environment. It does not establish a universal crossover by parameter count. Repeat with the target devices, batch size and input shapes, and check cold start, output agreement and memory as well as warm latency."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "WASM wins a latency comparison for a small classifier on your laptop. What does this establish?",
+      "options": [
+        {
+          "text": "This workload favored WASM in that measured environment.",
+          "feedback": "That measured workload favored WASM in that environment. It does not establish a universal crossover by parameter count. Repeat with the target devices, batch size and input shapes, and check cold start, output agreement and memory as well as warm latency."
+        },
+        {
+          "text": "WASM is faster for every model below that parameter count.",
+          "feedback": "One measurement cannot establish a universal model-size crossover."
+        },
+        {
+          "text": "The runtime choice is settled for all supported devices.",
+          "feedback": "Repeat the workload on target devices and check more than warm latency."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "That measured workload favored WASM in that environment. It does not establish a universal crossover by parameter count. Repeat with the target devices, batch size and input shapes, and check cold start, output agreement and memory as well as warm latency."
+    }
+  ]}
+/>
 
-<RecallPrompt question="An ONNX export succeeded. What remains to check before shipping it?" answer="Load and run the graph on the target runtime and execution provider. Check operator and opset support, input/output names and shapes, numerical agreement, resource cleanup and deployment budgets. Export success alone does not establish those properties." />
+<RecallPrompt
+  question="Describe the checks needed to ship an exported ONNX model on a target runtime."
+  answer="Load and run the graph on the target runtime and execution provider. Check operator and opset support, input/output names and shapes, numerical agreement, resource cleanup and deployment budgets. Export success alone does not establish those properties."
+/>
 
 <LessonRecap whatYouLearned={["ONNX portability depends on the graph, runtime version and execution provider", "Compare outputs before comparing speed; conversion parity is separate from accuracy on labeled data", "Warm the exact workload and include readback in timed inference; measure cold start separately", "Choose a backend from target-device measurements, not parameter count alone"]} bridge="Browser and model portability both depend on supported features. Test the features your application actually uses." youCanNow="Run an ONNX session, check conversion parity and collect a repeatable latency comparison." />
 

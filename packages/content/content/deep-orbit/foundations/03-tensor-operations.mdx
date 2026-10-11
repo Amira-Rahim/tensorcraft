@@ -208,8 +208,40 @@ Repair Demir's amplifier: average the two passes, amplify the average, and let b
 <Exercise slug="add-tensors" />
 
 <RecallPrompt
-  question="What is the shape rule for matrix multiplication, and what do you use to fix a shape mismatch?"
+  question="Check both the dimensions and the meaning of a matrix multiplication."
   answer="The rule is [m, n] x [n, p] produces [m, p]. Check what each axis represents. Transpose only when those axes are reversed; otherwise fix the input layout or feature count. Matching dimensions alone does not prove the multiplication means what you intended."
+  checks={[
+    {
+      "kind": "shape",
+      "question": "What shape results from multiplying a [2, 3] matrix by a [3, 4] matrix?",
+      "expected": [
+        2,
+        4
+      ],
+      "hint": "The inner dimensions must match; the outer dimensions form the result.",
+      "explanation": "[m, n] times [n, p] produces [m, p], so this result is [2, 4]."
+    },
+    {
+      "kind": "choice",
+      "question": "What should you check before transposing a matrix to fix a mismatch?",
+      "options": [
+        {
+          "text": "Whether its axes are reversed relative to the intended operation.",
+          "feedback": "Transpose when the intended axes are reversed. Otherwise fix the input layout or feature count."
+        },
+        {
+          "text": "Whether transposing makes any two dimensions match.",
+          "feedback": "Matching sizes alone does not show that the axes represent the intended quantities."
+        },
+        {
+          "text": "Whether both matrices contain the same number of elements.",
+          "feedback": "Equal element counts are not the matrix multiplication rule."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Transpose when the intended axes are reversed. Otherwise fix the input layout or feature count."
+    }
+  ]}
 />
 
 <LessonRecap

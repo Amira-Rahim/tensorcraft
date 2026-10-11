@@ -197,8 +197,50 @@ Then build the library's version of the same cell, a one-unit `tf.layers.simpleR
 <Exercise slug="build-rnn" />
 
 <RecallPrompt
-  question="A simple RNN trains on long windows, but the dependency it must learn spans dozens of time steps. After many epochs the loss is stuck at 0.693. What is happening, and what fixes it?"
+  question="The task depends on distant time steps, and a simple RNN loss has stalled near 0.693."
   answer="Vanishing gradients are one possibility, not a diagnosis from the loss alone. A constant 0.5 prediction gives binary cross-entropy ln(2), about 0.693. Inspect labels, predictions and gradient magnitudes; compare with a simple baseline. An LSTM can improve gradient flow over long sequences, but still needs appropriate data and training."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "A simple RNN loss stays near 0.693. What does this establish?",
+      "options": [
+        {
+          "text": "It proves the sequence contains no useful information.",
+          "feedback": "An unsuccessful training run does not establish that the task is impossible."
+        },
+        {
+          "text": "The loss is compatible with constant 0.5 predictions, but does not diagnose the cause.",
+          "feedback": "Binary cross-entropy at a constant 0.5 prediction is ln(2), about 0.693. Inspect predictions, labels and gradients."
+        },
+        {
+          "text": "It proves that vanishing gradients are the cause.",
+          "feedback": "Several data or training failures can produce the same loss trace."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Binary cross-entropy at a constant 0.5 prediction is ln(2), about 0.693. Inspect predictions, labels and gradients."
+    },
+    {
+      "kind": "choice",
+      "question": "If vanishing gradients across long sequences are confirmed, what is a reasonable comparison?",
+      "options": [
+        {
+          "text": "Try an LSTM with suitable data and training, then evaluate it.",
+          "feedback": "LSTM gates can improve gradient flow over long sequences; they do not guarantee success."
+        },
+        {
+          "text": "Keep the same setup and assume more epochs must solve it.",
+          "feedback": "Repeating ineffective updates does not necessarily restore long-range gradient flow."
+        },
+        {
+          "text": "Treat the current loss value as proof an LSTM will succeed.",
+          "feedback": "An LSTM can help gradient flow, but its performance still needs evaluation."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "LSTM gates can improve gradient flow over long sequences; they do not guarantee success."
+    }
+  ]}
 />
 
 <LessonRecap

@@ -255,7 +255,32 @@ Load a model once and verify its architecture off the model you loaded.
 
 <Exercise slug="load-model" />
 
-<RecallPrompt question="What does tf.loadLayersModel() return compared with fetch(url).then(r => r.json())?" answer="The fetch chain parses a JSON value. The model loader reads the manifest and weights and constructs a LayersModel with methods such as predict(). Its tensors need disposal when the model is no longer used." />
+<RecallPrompt
+  question="What does tf.loadLayersModel() resolve to?"
+  answer="The fetch chain parses a JSON value. The model loader reads the manifest and weights and constructs a LayersModel with methods such as predict(). Its tensors need disposal when the model is no longer used."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What does tf.loadLayersModel() resolve to?",
+      "options": [
+        {
+          "text": "A trained model that no longer owns any tensors.",
+          "feedback": "The loaded model owns tensors that need disposal when no longer used."
+        },
+        {
+          "text": "A LayersModel built from the manifest and weights, with methods such as predict().",
+          "feedback": "The fetch chain parses a JSON value. The model loader reads the manifest and weights and constructs a LayersModel with methods such as predict(). Its tensors need disposal when the model is no longer used."
+        },
+        {
+          "text": "The same plain JSON value returned by response.json().",
+          "feedback": "The loader also reads weights and constructs a runnable model."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "The fetch chain parses a JSON value. The model loader reads the manifest and weights and constructs a LayersModel with methods such as predict(). Its tensors need disposal when the model is no longer used."
+    }
+  ]}
+/>
 
 <LessonRecap whatYouLearned={["The manifest describes the model and names its weight shards. The loader needs both.", "IndexedDB stores an explicit local model copy. Version its key when weights change and remove obsolete entries.", "onProgress reports loading progress. A downloaded model still needs to be constructed and warmed up.", "Keep exported filenames and manifest paths consistent. Renaming a weight shard requires updating weightsManifest.paths in the JSON."]} bridge="Just as `fetch(url).then(r => r.json())` loads API data, `tf.loadLayersModel(url)` loads a model: same HTTP fetch shape, but the resolved value is a live compute graph with `predict()` rather than a plain data object." youCanNow="Load a pre-trained TF.js model, read its input and output shapes off the model you loaded, and distinguish HTTP caching from an explicit IndexedDB model copy." />
 

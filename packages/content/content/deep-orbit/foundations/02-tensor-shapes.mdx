@@ -164,8 +164,48 @@ Try a different twelve-value packet. Predict which readings belong in the second
 <Exercise slug="reshape-tensor" />
 
 <RecallPrompt
-  question="If a tensor has shape [8, 224, 224, 3], what does each dimension represent for a typical image batch?"
+  question="An image batch uses channel-last layout and has shape [8, 224, 224, 3]."
   answer="The dimensions are [batch, height, width, channels]. The image models in this course use channel-last layout. Some other frameworks put it second, which is why lesson 1's Nova Canvas intercept read [batch, channels, h, w] for the same kind of data."
+  checks={[
+    {
+      "kind": "number",
+      "question": "How many images are in a batch with shape [8, 224, 224, 3]?",
+      "expected": 8,
+      "hint": "In this channel-last image layout, the first dimension is the batch size.",
+      "explanation": "The leading 8 is the number of images."
+    },
+    {
+      "kind": "shape",
+      "question": "What is the shape of one image in that batch?",
+      "expected": [
+        224,
+        224,
+        3
+      ],
+      "hint": "Remove the batch dimension and keep height, width and channels in order.",
+      "explanation": "Each image has shape [224, 224, 3]: height, width, then color channels."
+    },
+    {
+      "kind": "choice",
+      "question": "In this layout, what do the three dimensions of one image represent, in order?",
+      "options": [
+        {
+          "text": "Channels, height, width.",
+          "feedback": "That is channel-first order. This example uses channel-last order."
+        },
+        {
+          "text": "Batch size, width, channels.",
+          "feedback": "The batch dimension has already been removed; these dimensions describe one image."
+        },
+        {
+          "text": "Height, width, channels.",
+          "feedback": "The image is 224 pixels high, 224 pixels wide and has 3 color channels."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "The image is 224 pixels high, 224 pixels wide and has 3 color channels."
+    }
+  ]}
 />
 
 <LessonRecap

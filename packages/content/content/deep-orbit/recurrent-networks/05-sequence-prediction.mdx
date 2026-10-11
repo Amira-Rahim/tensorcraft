@@ -244,13 +244,77 @@ Train a forecaster with one output per channel and return its training history. 
 <Exercise slug="predict-next" />
 
 <RecallPrompt
-  question="The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?"
+  question="Why use a regression loss such as MSE for predicting the next sensor reading?"
   answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why use a regression loss such as MSE for predicting the next sensor reading?",
+      "options": [
+        {
+          "text": "Every LSTM must use MSE, regardless of its target.",
+          "feedback": "The prediction task determines a suitable loss, not the recurrent layer type."
+        },
+        {
+          "text": "MSE makes the forecast a calibrated class probability.",
+          "feedback": "MSE here measures squared numeric prediction errors."
+        },
+        {
+          "text": "The targets are continuous signal values rather than class labels.",
+          "feedback": "Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="The rolling forecast builds a window tensor and gets a prediction tensor back on each of its 47 steps. The module-4 inference loop wrapped that same pair in tf.tidy(). What happens to those two tensors when the callback returns, and what gets out?"
+  question="The rollout uses a synchronous tf.tidy() without variables or tf.keep()."
   answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees temporary tensors created inside it, except returned tensors, variables and tensors retained with tf.keep(). This loop creates no variables or kept tensors. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so the example leaves no temporary tensor registered with its backend."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "A synchronous tf.tidy() creates input and output tensors, then returns only dataSync() values. What happens to those temporary tensors?",
+      "options": [
+        {
+          "text": "Neither tensor is disposed until the JavaScript array is collected.",
+          "feedback": "The returned numeric values are separate from the temporary tensors."
+        },
+        {
+          "text": "Both are disposed when the callback returns.",
+          "feedback": "With no variables or kept tensors in this callback, both temporary tensors are cleaned up."
+        },
+        {
+          "text": "The output tensor survives because dataSync() was called.",
+          "feedback": "Reading plain values does not retain the tensor itself."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "With no variables or kept tensors in this callback, both temporary tensors are cleaned up."
+    },
+    {
+      "kind": "choice",
+      "question": "What would change if the callback returned the output tensor itself?",
+      "options": [
+        {
+          "text": "That tensor would survive and its owner would need to dispose it later.",
+          "feedback": "A returned tensor has an ongoing lifetime; plain copied values do not retain it."
+        },
+        {
+          "text": "tf.tidy() would dispose the returned tensor before the caller could use it.",
+          "feedback": "Returned tensors are excluded from tidy cleanup."
+        },
+        {
+          "text": "The input tensor would also have to survive.",
+          "feedback": "Returning the output does not automatically retain the temporary input."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "A returned tensor has an ongoing lifetime; plain copied values do not retain it."
+    }
+  ]}
 />
 
 <LessonRecap

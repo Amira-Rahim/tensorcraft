@@ -4,15 +4,15 @@ import { test, expect } from "@playwright/test";
  * End-of-lesson close, verified end-to-end: the Takeaways step (index 4) of a
  * deep-orbit lesson must render the new RecallPrompt + LessonRecap close.
  *
- * RecallPrompt sits above LessonRecap; revealing the answer exposes the
- * Got it / Needs work controls; the recap shows its three sub-labels.
+ * RecallPrompt sits above LessonRecap; every checked part must be resolved
+ * before the recap appears. Incorrect attempts remain retryable.
  *
  * The step index persists in localStorage under the slugified lesson TITLE
  * ("Introduction to Tensors" -> introduction-to-tensors), seeded before the
  * page's first render reads it (see getStorageKey in lesson-steps.tsx).
  */
 test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
-  test("Takeaways step shows the recall, then the recap after the reveal", async ({
+  test("Takeaways checks both answers and reveals the recap after correction", async ({
     page,
   }) => {
     await page.addInitScript(() => {
@@ -27,36 +27,48 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
 
     // The recall card renders first, alone; the recap waits for it (spec
     // 2026-09-24, section 2).
-    const recall = page.getByText("Recall Prompt", { exact: true }).first();
+    const recall = page
+      .getByRole("heading", { name: "Knowledge check", exact: true })
+      .first();
     const recap = page.getByText("Lesson Recap", { exact: true }).first();
     await expect(recall).toBeVisible({ timeout: 15000 });
     await expect(recap).toHaveCount(0);
 
-    // Reveal the answer; the answer text and the result controls appear.
-    const reveal = page.getByRole("button", { name: /^check$/i }).first();
-    await expect(reveal).toBeVisible();
-    await expect(reveal).toBeDisabled();
+    const check = page.getByRole("button", {
+      name: "Check answers",
+      exact: true,
+    });
+    await expect(check).toBeDisabled();
+    const shape = page.getByRole("textbox", {
+      name: "What is the shape of tf.tensor([0.2, 0.4, 0.6])?",
+    });
+    await shape.fill("[1, 3]");
     await page
-      .getByRole("textbox")
-      .first()
-      .fill("A tensor holds numeric data with a shape.");
-    await reveal.click();
+      .getByRole("radio", { name: "No, it only creates a tensor." })
+      .check();
+    await check.click();
+    await expect(
+      page.getByRole("status").filter({ hasText: "1 of 2 correct" }),
+    ).toBeVisible();
+    await expect(recap).toHaveCount(0);
+    await expect(shape).toHaveAttribute("aria-invalid", "true");
+    await expect(
+      page.getByRole("radio", { name: "No, it only creates a tensor." }),
+    ).toBeDisabled();
 
+    await shape.fill(" [ 3 ] ");
+    await page
+      .getByRole("button", { name: "Check again", exact: true })
+      .click();
     await expect(
-      page.getByRole("button", { name: /got it/i }).first(),
+      page.getByRole("status").filter({ hasText: "All answers are correct." }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /needs work/i }).first(),
-    ).toBeVisible();
-    // The Check button is replaced by the revealed answer.
-    await expect(reveal).toBeHidden();
-    // The recap appears once the card leaves its prompt state, below it.
     await expect(recap).toBeVisible();
-    // A remount of the recall card after the recap appears would reset it
-    // back to its prompt state and fail this check.
+    await expect(shape).toBeDisabled();
+    await expect(shape).toHaveValue(" [ 3 ] ");
     await expect(
-      page.getByRole("button", { name: /got it/i }).first(),
-    ).toBeVisible();
+      page.getByRole("button", { name: "Got it", exact: true }),
+    ).toHaveCount(0);
     const recallBox = await recall.boundingBox();
     const recapBox = await recap.boundingBox();
     expect(recallBox).not.toBeNull();

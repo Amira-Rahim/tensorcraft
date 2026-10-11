@@ -186,9 +186,79 @@ Implement a Kalman filter and smooth the anomaly timing.
 
 <Exercise slug="kalman-filter" />
 
-<RecallPrompt question="What does the Kalman gain control, and what happens when it is near 0 versus near 1?" answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means measurement variance is large relative to prediction variance so the filter trusts its prediction; near 1 means prediction variance is large relative to measurement variance so the filter defers to the measurement." />
+<RecallPrompt
+  question="Consider the scalar update: estimate = prediction + gain × (measurement − prediction)."
+  answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means measurement variance is large relative to prediction variance so the filter trusts its prediction; near 1 means prediction variance is large relative to measurement variance so the filter defers to the measurement."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "In this scalar Kalman update, what does a gain near 0 emphasize?",
+      "options": [
+        {
+          "text": "The new measurement.",
+          "feedback": "A small gain applies only a small measurement correction."
+        },
+        {
+          "text": "Equal weight for prediction and measurement.",
+          "feedback": "Equal weighting would require a gain around 0.5."
+        },
+        {
+          "text": "The filter prediction.",
+          "feedback": "A small gain makes a small move from the prediction toward the measurement."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "A small gain makes a small move from the prediction toward the measurement."
+    },
+    {
+      "kind": "choice",
+      "question": "What does a gain near 1 emphasize?",
+      "options": [
+        {
+          "text": "The arithmetic average of all historical measurements.",
+          "feedback": "The gain controls this update, not a direct average of the whole history."
+        },
+        {
+          "text": "The new measurement.",
+          "feedback": "A gain near 1 moves the estimate close to the new measurement."
+        },
+        {
+          "text": "The previous prediction almost exclusively.",
+          "feedback": "A gain near 1 makes a large measurement correction."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "A gain near 1 moves the estimate close to the new measurement."
+    }
+  ]}
+/>
 
-<RecallPrompt question="You run this filter over eight readings that fall steadily, and its estimate ends up 0.43 above the last one. What in the filter's design put it there?" answer="The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter." />
+<RecallPrompt
+  question="Why can a one-state level filter lag behind steadily falling measurements?"
+  answer="The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why can a one-state level filter lag behind steadily falling measurements?",
+      "options": [
+        {
+          "text": "It has no state representing the rate of change.",
+          "feedback": "The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter."
+        },
+        {
+          "text": "A gain below 1 proves that all measurements are invalid.",
+          "feedback": "The gain balances uncertainty; it does not declare measurements invalid."
+        },
+        {
+          "text": "It is already predicting the downward velocity explicitly.",
+          "feedback": "A single level state has no separate velocity term."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

@@ -224,12 +224,54 @@ Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out
 <Exercise slug="build-lstm" />
 
 <RecallPrompt
-  question="What does the LSTM forget gate actually output, and how does that differ from a hard expiry like localStorage TTL?"
+  question="Compare learned forgetting with a time-based expiry rule."
   answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, with no clock anywhere in it. A value near 0 discards that dimension; near 1 keeps most of it. Application code can implement a TTL that expires a localStorage entry; localStorage itself has no expiry timer. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What does an LSTM forget gate output for each cell-state dimension?",
+      "options": [
+        {
+          "text": "A timestamp saying when the state expires.",
+          "feedback": "The gate is computed from inputs and state, not from an expiry clock."
+        },
+        {
+          "text": "One shared Boolean that deletes the whole state.",
+          "feedback": "Forgetting is continuous and can differ across dimensions."
+        },
+        {
+          "text": "A learned value between 0 and 1.",
+          "feedback": "Values near 0 discard most of a dimension; values near 1 retain most of it."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Values near 0 discard most of a dimension; values near 1 retain most of it."
+    },
+    {
+      "kind": "choice",
+      "question": "How does that differ from an application-defined TTL?",
+      "options": [
+        {
+          "text": "A TTL learns a different fraction for each state dimension.",
+          "feedback": "Learned per-dimension fractions describe the gate, not a time-to-live policy."
+        },
+        {
+          "text": "The gate scales state continuously; a TTL expires an entry according to time.",
+          "feedback": "A TTL is an application time rule; the forget gate is learned, input-dependent scaling."
+        },
+        {
+          "text": "Both automatically delete stored data after the same fixed interval.",
+          "feedback": "An LSTM forget gate has no built-in expiry clock; localStorage also needs application logic for TTL."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "A TTL is an application time rule; the forget gate is learned, input-dependent scaling."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="The LSTM flags pulses 72 hours past the last window it trained on, yet no cell state survives between windows. What did the network actually retain?"
+  question="Explain what a trained LSTM retains between independent windows when its recurrent state resets."
   answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A successful result on later windows would be generalization through those weights, not state carried across the gap. The story reports that outcome; real data still needs evaluation. It does not demonstrate memory across a three-day gap."
 />
 

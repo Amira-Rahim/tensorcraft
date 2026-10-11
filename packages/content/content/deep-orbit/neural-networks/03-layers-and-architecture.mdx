@@ -120,8 +120,37 @@ Build a three-stage stack, then quote its price at a width the grader picks.
 <Exercise slug="build-layer" />
 
 <RecallPrompt
-  question="A dense layer's parameter count comes from two numbers. Which two, and why does only the first layer need an inputShape?"
+  question="Consider the widths and biases in a sequential dense network."
   answer="The incoming width and units. units sets the number of neurons (output features) in a layer, and parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape, which is where its incoming width comes from; TFJS infers every later input size from the previous layer's units."
+  checks={[
+    {
+      "kind": "number",
+      "question": "A dense layer receives 3 features and has 4 units with biases. How many parameters does it have?",
+      "expected": 16,
+      "hint": "Count 3 weights per unit, then add one bias for each of the 4 units.",
+      "explanation": "There are 3 × 4 = 12 weights and 4 biases, for 16 parameters."
+    },
+    {
+      "kind": "choice",
+      "question": "Why can later layers omit inputShape in this sequential model?",
+      "options": [
+        {
+          "text": "Only the first layer has weights.",
+          "feedback": "Later dense layers also learn weights and biases."
+        },
+        {
+          "text": "Their incoming width is inferred from the previous layer output.",
+          "feedback": "The first layer declares the input shape; each following layer receives the preceding output."
+        },
+        {
+          "text": "All dense layers must have the same width.",
+          "feedback": "Successive layers may have different numbers of units."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "The first layer declares the input shape; each following layer receives the preceding output."
+    }
+  ]}
 />
 
 <LessonRecap

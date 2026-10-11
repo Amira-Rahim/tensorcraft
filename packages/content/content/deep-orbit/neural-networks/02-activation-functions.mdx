@@ -119,9 +119,59 @@ Apply ReLU to every value of a tensor. Preserve positive values, including large
 
 <Exercise slug="relu-activation" />
 
-<RecallPrompt question="Why does stacking only affine dense layers add no new type of function?" answer="Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it." />
+<RecallPrompt
+  question="Why can a stack of affine dense layers be replaced by one affine layer?"
+  answer="Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why can a stack of affine dense layers be replaced by one affine layer?",
+      "options": [
+        {
+          "text": "Their matrix multiplications and offsets combine into one matrix and one bias.",
+          "feedback": "Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it."
+        },
+        {
+          "text": "Every layer learns identical weights.",
+          "feedback": "The layers can have different weights and still compose into one affine map."
+        },
+        {
+          "text": "The stack has no trainable parameters.",
+          "feedback": "It has parameters, but without nonlinearities their composition remains affine."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it."
+    }
+  ]}
+/>
 
-<RecallPrompt question="An untrained sigmoid model returns 0.99. Does the range make that a reliable 99% probability?" answer="No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes." />
+<RecallPrompt
+  question="Does an untrained sigmoid output of 0.99 establish a reliable 99% probability?"
+  answer="No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Does an untrained sigmoid output of 0.99 establish a reliable 99% probability?",
+      "options": [
+        {
+          "text": "Yes. Every number in [0, 1] is a calibrated probability.",
+          "feedback": "Being inside a numeric range says nothing about agreement with real outcome frequencies."
+        },
+        {
+          "text": "Yes, as long as the classification threshold is 0.5.",
+          "feedback": "A threshold does not calibrate a model."
+        },
+        {
+          "text": "No. A bounded score still needs training, evaluation and calibration checks.",
+          "feedback": "No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes."
+    }
+  ]}
+/>
 
 <LessonRecap whatYouLearned={["Affine dense layers collapse to one affine transformation; nonlinearity permits more expressive functions.", "ReLU keeps positive values and zeroes negatives. Sigmoid and tanh have bounded mathematical ranges, with finite-precision endpoint rounding.", "Activation range, decision threshold and probability calibration are different questions.", "A local activation derivative is only one factor in the full training gradient."]} bridge="Math.max(0, x) and ReLU use the same value-level rule; TensorFlow.js applies it to tensors and defines its training gradient." youCanNow="Apply ReLU, read activation ranges and explain why a bounded score still needs evaluation." />
 

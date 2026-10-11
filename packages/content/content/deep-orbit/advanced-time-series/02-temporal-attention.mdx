@@ -225,7 +225,52 @@ Build the temporal attention path with position as a scored feature, then read t
 
 <Exercise slug="temporal-attention" />
 
-<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions received the largest coefficients in the pooled representation. Their value vectors also determine each contribution. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Use these plots alongside input checks, ablations and error analysis, not as a substitute for them." />
+<RecallPrompt
+  question="Use an attention plot as evidence with limits."
+  answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions received the largest coefficients in the pooled representation. Their value vectors also determine each contribution. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Use these plots alongside input checks, ablations and error analysis, not as a substitute for them."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What can a plot of temporal attention weights directly show?",
+      "options": [
+        {
+          "text": "Which time steps received larger coefficients in the pooled representation.",
+          "feedback": "The weights show allocation across time steps; the value vectors also determine their contributions."
+        },
+        {
+          "text": "A verified causal explanation of the prediction.",
+          "feedback": "Weights alone do not establish why a prediction changed."
+        },
+        {
+          "text": "Which inputs must be anomalies.",
+          "feedback": "An attention coefficient is not an anomaly label."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The weights show allocation across time steps; the value vectors also determine their contributions."
+    },
+    {
+      "kind": "choice",
+      "question": "What should you use alongside the plot when investigating a decision?",
+      "options": [
+        {
+          "text": "Only the largest coefficient, because it proves the cause.",
+          "feedback": "Different value vectors or weightings can yield the same prediction."
+        },
+        {
+          "text": "No other checks, because softmax already verifies the explanation.",
+          "feedback": "Softmax normalizes weights; it does not validate explanations."
+        },
+        {
+          "text": "Input checks, ablations and error analysis.",
+          "feedback": "Attention plots are a starting point for investigation, not a substitute for evaluating the decision."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Attention plots are a starting point for investigation, not a substitute for evaluating the decision."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

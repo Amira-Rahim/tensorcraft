@@ -149,6 +149,7 @@ describe("resolveDueForUser", () => {
     expect(due[0].lessonId).toBe(freeLesson.slug);
     expect(due[0].question).toBe(freeLesson.recallPrompts[0].question);
     expect(due[0].answer).toBe(freeLesson.recallPrompts[0].answer);
+    expect(due[0].checks).toEqual(freeLesson.recallPrompts[0].checks);
 
     // Scoped to the caller's own rows in this world, belt and braces over the
     // RLS select policy in migration 061.

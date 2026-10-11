@@ -201,13 +201,42 @@ The mirror scored 97.4 because the stream was windowed before it was split. Buil
 <Exercise slug="sliding-window" />
 
 <RecallPrompt
-  question="The stride-1 pipeline scored 97.4 on a held-out fifth of the windows and 60.6 after the stream was split by time. Which score is wrong, and what produced it?"
+  question="Explain why 97.4% accuracy on randomly split overlapping windows can be misleading for predicting a later period."
   answer="The arithmetic of 97.4 is correct, but it evaluates heavily overlapping windows instead of future periods. Adjacent 8-step windows share seven readings. A chronological split removes shared observations; its later period can also have a different distribution. Use a split that matches the intended prediction task."
 />
 
 <RecallPrompt
-  question="You set windowSize to 30 but the pattern you need to detect spans 50 time steps. What happens, and what should you change?"
+  question="The target relationship is between readings 50 steps apart. The model resets state between windows."
   answer="A stateless model cannot directly compare positions 50 steps apart inside a 30-step input. It may still exploit shorter cues, which would be a different basis for its predictions. Comparing positions 50 steps apart requires at least 51 readings. Use a longer window if the task also needs surrounding context."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Can a stateless model directly compare readings 50 positions apart inside a 30-reading window?",
+      "options": [
+        {
+          "text": "No. Both positions cannot fit in that input.",
+          "feedback": "It may use shorter cues, but it cannot directly compare the two distant readings in that window."
+        },
+        {
+          "text": "Yes. Recurrent layers automatically access readings outside the supplied window.",
+          "feedback": "A stateless model does not receive the missing history."
+        },
+        {
+          "text": "Yes. Increasing the number of units enlarges the input window.",
+          "feedback": "More units do not supply additional time steps."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "It may use shorter cues, but it cannot directly compare the two distant readings in that window."
+    },
+    {
+      "kind": "number",
+      "question": "What is the minimum number of readings needed to include two positions 50 steps apart?",
+      "expected": 51,
+      "hint": "Count both endpoints: positions 0 through 50.",
+      "explanation": "Positions 0 and 50 require 51 readings. Use more if the task needs surrounding context."
+    }
+  ]}
 />
 
 <LessonRecap

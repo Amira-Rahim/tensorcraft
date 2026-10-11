@@ -264,7 +264,32 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Exercise slug="write-model-card" />
 
-<RecallPrompt question="What extra evidence belongs with a model performance claim?" answer="Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs." />
+<RecallPrompt
+  question="What evidence should accompany a measured model score?"
+  answer="Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What evidence should accompany a measured model score?",
+      "options": [
+        {
+          "text": "Only the repository name and latest branch.",
+          "feedback": "Mutable references do not identify the exact evaluated model and data."
+        },
+        {
+          "text": "The exact artifact, split, evaluation protocol, sample counts and limitations.",
+          "feedback": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
+        },
+        {
+          "text": "Only the score and a statement that it will hold on all future data.",
+          "feedback": "A score describes a particular evaluation, not every future input."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

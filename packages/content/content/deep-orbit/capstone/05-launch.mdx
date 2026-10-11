@@ -395,9 +395,57 @@ For your own project, choose a labeled task and split by time, person or other r
 
 <IndependentProject />
 
-<RecallPrompt question="How does rolling back a deployed model differ from rolling back a deployed web app?" answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights." />
+<RecallPrompt
+  question="Describe the evidence and compatible artifacts you need to verify a deployed model rollback."
+  answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights."
+/>
 
-<RecallPrompt question="DEEP SCAN's final verdict fires on a 2-of-3 detector majority, the vote from module 7. That module said the majority is not three odds multiplied. What makes the three votes fail together?" answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and LSTM draw from the same archive, though the LSTM used its first day. Contamination in both selections can weaken both votes. Read a vote of 2 as two detector thresholds crossed. It is not two independent proofs or a probability of anomaly." />
+<RecallPrompt
+  question="Interpret a detector majority without assuming independent evidence."
+  answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and LSTM draw from the same archive, though the LSTM used its first day. Contamination in both selections can weaken both votes. Read a vote of 2 as two detector thresholds crossed. It is not two independent proofs or a probability of anomaly."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why can the three DEEP SCAN detectors fail together?",
+      "options": [
+        {
+          "text": "They share capture data and some sensor or training-data sources.",
+          "feedback": "The statistical gate and autoencoder share amplitude evidence, and model training draws from overlapping archive sources."
+        },
+        {
+          "text": "Different architectures guarantee independent errors.",
+          "feedback": "Different model structures can still share the same flawed inputs or training data."
+        },
+        {
+          "text": "A majority vote removes every common source of error.",
+          "feedback": "Voting does not remove shared sensor problems or archive contamination."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The statistical gate and autoencoder share amplitude evidence, and model training draws from overlapping archive sources."
+    },
+    {
+      "kind": "choice",
+      "question": "What does a 2-of-3 vote directly mean?",
+      "options": [
+        {
+          "text": "Two independent proofs that the capture is anomalous.",
+          "feedback": "The votes are not independent proofs."
+        },
+        {
+          "text": "A calibrated anomaly probability of exactly two thirds.",
+          "feedback": "Counting votes does not establish a calibrated probability."
+        },
+        {
+          "text": "Two detector thresholds were crossed.",
+          "feedback": "Treat the vote as a decision rule and evaluate its joint errors."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Treat the vote as a decision rule and evaluate its joint errors."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

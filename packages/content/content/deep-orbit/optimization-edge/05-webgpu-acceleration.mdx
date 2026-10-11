@@ -233,9 +233,95 @@ Walk a preference order and return the backend that is actually running, reading
 
 <Exercise slug="gpu-backend" />
 
-<RecallPrompt question="Why can WebGPU help compute-heavy inference, and why should you still benchmark it?" answer="WebGPU exposes compute shaders suited to tensor operations. That can help, but operator implementations, transfer and setup costs matter too. Setup can dominate small workloads; the scene’s 3x gain is fictional. Benchmark your actual model and device; WebGPU can also lose." />
+<RecallPrompt
+  question="Treat a backend speedup as a measurement to establish."
+  answer="WebGPU exposes compute shaders suited to tensor operations. That can help, but operator implementations, transfer and setup costs matter too. Setup can dominate small workloads; the scene’s 3x gain is fictional. Benchmark your actual model and device; WebGPU can also lose."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What can make WebGPU useful for compute-heavy tensor workloads?",
+      "options": [
+        {
+          "text": "Automatic removal of all model weights.",
+          "feedback": "WebGPU changes execution, not the need for model parameters."
+        },
+        {
+          "text": "Compute shaders suited to parallel tensor operations.",
+          "feedback": "Compute shaders can help tensor operations, depending on the workload and implementation."
+        },
+        {
+          "text": "A guarantee of zero transfer and setup costs.",
+          "feedback": "Transfers, initialization and operator implementations still matter."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Compute shaders can help tensor operations, depending on the workload and implementation."
+    },
+    {
+      "kind": "choice",
+      "question": "Why still benchmark WebGPU on the target device?",
+      "options": [
+        {
+          "text": "Setup, transfers and operator costs can outweigh the compute benefit.",
+          "feedback": "Measure completed inference on the actual model and devices; WebGPU can also lose."
+        },
+        {
+          "text": "WebGPU must always be exactly three times faster.",
+          "feedback": "The story timing is not a universal speedup."
+        },
+        {
+          "text": "The API name alone determines device performance.",
+          "feedback": "Actual hardware and workload affect the result."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Measure completed inference on the actual model and devices; WebGPU can also lose."
+    }
+  ]}
+/>
 
-<RecallPrompt question="Demir's first WebGPU timing run printed 0.4 ms and was wrong. Which rule from module 4's backend benchmark does that run break, and would disposing the output tensor before stopping the clock have fixed it?" answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms." />
+<RecallPrompt
+  question="A timer reports 0.4 ms because it stops immediately after predict()."
+  answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What must a GPU inference timer include before it stops?",
+      "options": [
+        {
+          "text": "Only the synchronous return from predict().",
+          "feedback": "That may measure how quickly work was queued, not how long it took to complete."
+        },
+        {
+          "text": "Only the call to dispose() on the output.",
+          "feedback": "Disposal is not a replacement for waiting for the output data."
+        },
+        {
+          "text": "Completion of the output readback, such as await output.data().",
+          "feedback": "Awaiting readback ensures the timed result is ready."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Awaiting readback ensures the timed result is ready."
+    },
+    {
+      "kind": "choice",
+      "question": "Would disposing the output instead of awaiting readback validate the timing?",
+      "options": [
+        {
+          "text": "Yes.",
+          "feedback": "Disposal does not provide the required output-completion measurement."
+        },
+        {
+          "text": "No.",
+          "feedback": "Measure through awaited readback, then dispose the output when finished."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Measure through awaited readback, then dispose the output when finished."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["WebGPU exposes compute pipelines. Whether it beats WebGL depends on the workload and device.", "Check backend initialization and verify the active backend after fallback.", "Include output readback when timing completed inference.", "Measure download size, runtime memory, call count, latency and prediction quality separately after each optimization."]}

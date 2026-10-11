@@ -101,11 +101,16 @@ vi.mock("@/app/components/mdx", () => ({
     onAnswer,
   }: {
     question: string;
-    onAnswer?: (result: "attempted" | "bailed") => void;
+    onAnswer?: (result: "attempted" | "got-it" | "bailed") => void;
   }) => (
-    <button type="button" onClick={() => onAnswer?.("attempted")}>
-      Reveal {question}
-    </button>
+    <>
+      <button type="button" onClick={() => onAnswer?.("attempted")}>
+        Attempt {question}
+      </button>
+      <button type="button" onClick={() => onAnswer?.("got-it")}>
+        Answer {question}
+      </button>
+    </>
   ),
   StrategyThread: () => null,
   TransferAssignment: () => <div>Independent assignment</div>,
@@ -532,12 +537,14 @@ describe("LessonContent, recall cards pending (spec 2026-09-24, section 2)", () 
       />,
     );
     expect(report).toHaveBeenLastCalledWith(2);
-    fireEvent.click(screen.getByRole("button", { name: "Reveal one" }));
+    fireEvent.click(screen.getByRole("button", { name: "Attempt one" }));
+    expect(report).toHaveBeenLastCalledWith(2);
+    fireEvent.click(screen.getByRole("button", { name: "Answer one" }));
     expect(report).toHaveBeenLastCalledWith(1);
     // A second answer from the same card (the rating) changes nothing.
-    fireEvent.click(screen.getByRole("button", { name: "Reveal one" }));
+    fireEvent.click(screen.getByRole("button", { name: "Answer one" }));
     expect(report).toHaveBeenLastCalledWith(1);
-    fireEvent.click(screen.getByRole("button", { name: "Reveal two" }));
+    fireEvent.click(screen.getByRole("button", { name: "Answer two" }));
     expect(report).toHaveBeenLastCalledWith(0);
     // The whole instance unmounts on every step change; the cleanup that
     // deletes without reporting must stay that way (spec 2026-09-24, section 2).

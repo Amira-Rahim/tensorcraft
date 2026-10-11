@@ -215,7 +215,32 @@ Now check the structured claims against their cited records, including the field
 
 <Exercise slug="rag-pipeline" />
 
-<RecallPrompt question="A generated answer contains only numbers found in retrieved records. Has it been verified?" answer="No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it." />
+<RecallPrompt
+  question="Every number in a generated answer appears somewhere in retrieved records. Is the answer verified?"
+  answer="No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Every number in a generated answer appears somewhere in retrieved records. Is the answer verified?",
+      "options": [
+        {
+          "text": "Yes. Matching numbers proves that all claims are supported.",
+          "feedback": "The answer can use a real number for the wrong field, row or unit."
+        },
+        {
+          "text": "Yes, if the response includes any citation.",
+          "feedback": "A citation must support its specific claim; its mere presence is insufficient."
+        },
+        {
+          "text": "No. Field meanings, source rows, units and nonnumeric claims still need checking.",
+          "feedback": "No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

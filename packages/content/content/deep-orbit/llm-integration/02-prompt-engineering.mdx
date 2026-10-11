@@ -189,7 +189,48 @@ Write v9: the template above with the line it is still missing, the reference th
 
 <Exercise slug="prompt-template" />
 
-<RecallPrompt question="How do role, context, data and format help this prompt?" answer="Role suggests a perspective, context supplies relevant constraints, data supplies the reading, and format requests a useful output shape. They are a checklist for this task, not four mandatory ingredients for every prompt. Parse the reply and check its claims even when the prompt is clear." />
+<RecallPrompt
+  question="Use a clear prompt and verify the resulting output."
+  answer="Role suggests a perspective, context supplies relevant constraints, data supplies the reading, and format requests a useful output shape. They are a checklist for this task, not four mandatory ingredients for every prompt. Parse the reply and check its claims even when the prompt is clear."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Which mapping describes this prompt checklist?",
+      "options": [
+        {
+          "text": "All four parts serve only to select the model temperature.",
+          "feedback": "These prompt components describe the task and desired response, not just sampling settings."
+        },
+        {
+          "text": "Role: perspective; context: constraints; data: readings; format: output structure.",
+          "feedback": "These components help specify this task; they are not mandatory ingredients of every prompt."
+        },
+        {
+          "text": "Role: output structure; context: readings; data: perspective; format: constraints.",
+          "feedback": "Separate the requested perspective and structure from the actual readings and task constraints."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "These components help specify this task; they are not mandatory ingredients of every prompt."
+    },
+    {
+      "kind": "choice",
+      "question": "Does requesting JSON establish that the response is valid and factually correct?",
+      "options": [
+        {
+          "text": "Yes. JSON formatting verifies the content automatically.",
+          "feedback": "A response can be malformed or contain unsupported claims even when JSON was requested."
+        },
+        {
+          "text": "No. Parse it, validate its fields and check its claims against evidence.",
+          "feedback": "Requested format and verified output are different. Check both structure and content."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Requested format and verified output are different. Check both structure and content."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["Role, context, data and format are a useful checklist for this reporting task.", "Requesting JSON does not guarantee valid JSON. Parse it, validate required fields and review claims against the evidence.", "Test prompt revisions on varied examples. Keep cases that expose errors instead of tuning only to one successful reply."]}

@@ -262,8 +262,25 @@ Return the largest measured non-DC bin. For an isolated tone it often lies near 
 <Exercise slug="compute-fft" />
 
 <RecallPrompt
-  question="Given an FFT of 128 samples taken at 128 Hz, what frequency does bin 20 correspond to, and what does a 73.4 Hz tone in that same capture read as?"
+  question="The FFT uses 128 samples recorded at 128 samples per second."
   answer="Bin 20 corresponds to 20 Hz because each bin maps to binIndex x (sampleRate / fftSize) = 20 x (128 / 128) = 20 Hz. A 73.4 Hz tone sits above the 64 Hz Nyquist frequency, sampleRate / 2, so it does not vanish from the spectrum. It folds down and reads as a peak near 54.6 Hz, which is 128 minus 73.4, and nothing in the output marks that peak as false."
+  checks={[
+    {
+      "kind": "number",
+      "question": "For an FFT of 128 samples at 128 Hz, what frequency in Hz does bin 20 represent?",
+      "expected": 20,
+      "hint": "Use bin index × sample rate ÷ FFT size.",
+      "explanation": "20 × 128 ÷ 128 = 20 Hz."
+    },
+    {
+      "kind": "number",
+      "question": "At a 128 Hz sample rate, a 73.4 Hz tone aliases to what frequency in Hz?",
+      "expected": 54.6,
+      "hint": "The tone is above the 64 Hz Nyquist frequency. Fold it down using 128 − 73.4.",
+      "explanation": "The tone aliases to 54.6 Hz. The spectrum does not label the peak as an alias.",
+      "tolerance": 0.01
+    }
+  ]}
 />
 
 <LessonRecap

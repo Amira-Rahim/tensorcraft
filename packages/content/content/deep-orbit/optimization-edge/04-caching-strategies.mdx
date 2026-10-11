@@ -260,7 +260,52 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 
 <Exercise slug="incident-stale-verdict" />
 
-<RecallPrompt question="What should you measure before adding an inference cache, and why can a fresh entry be wrong?" answer="Measure the actual inference call, lookup overhead and expected hit rate. A fresh entry can use an old model or preprocessing version. Rounding can also map different inputs to one key, so test prediction changes near bucket boundaries and invalidate entries when the pipeline changes." />
+<RecallPrompt
+  question="Evaluate both the benefit and validity of cached predictions."
+  answer="Measure the actual inference call, lookup overhead and expected hit rate. A fresh entry can use an old model or preprocessing version. Rounding can also map different inputs to one key, so test prediction changes near bucket boundaries and invalidate entries when the pipeline changes."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What should you measure before adding an inference cache?",
+      "options": [
+        {
+          "text": "Inference cost, lookup overhead and expected hit rate.",
+          "feedback": "A cache helps only when the saved work justifies lookup and maintenance costs."
+        },
+        {
+          "text": "Only the maximum age of a cache entry.",
+          "feedback": "Age does not tell you whether lookup and maintenance cost less than saved inference."
+        },
+        {
+          "text": "Only the number of model parameters.",
+          "feedback": "Parameter count alone does not establish inference cost or reuse frequency."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "A cache helps only when the saved work justifies lookup and maintenance costs."
+    },
+    {
+      "kind": "choice",
+      "question": "Why can a recently stored prediction still be wrong for a request?",
+      "options": [
+        {
+          "text": "Fresh entries are guaranteed correct until they expire.",
+          "feedback": "Recency does not establish that the cached result matches the current input and pipeline."
+        },
+        {
+          "text": "Cache lookups always retrain the model.",
+          "feedback": "A lookup retrieves a stored result; it does not retrain."
+        },
+        {
+          "text": "Its key may combine different inputs or refer to an old model or preprocessing version.",
+          "feedback": "Test rounded-key approximations and version or invalidate entries when the pipeline changes."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Test rounded-key approximations and version or invalidate entries when the pipeline changes."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["A cache avoids inference on a hit. Measure whether saved work exceeds lookup and maintenance costs.", "Rounded keys deliberately reuse predictions for different inputs. Test the resulting errors.", "Bound the cache and expire entries. Model and preprocessing changes need versioned keys or invalidation.", "Store plain results when possible; cached tensors need explicit ownership and disposal."]}

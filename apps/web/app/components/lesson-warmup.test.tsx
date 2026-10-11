@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import type { RecallCheck } from "@tensorcraft/shared";
 import { LessonWarmup } from "./lesson-warmup";
 import { recordReview } from "@/lib/review-store-api";
 vi.mock("@/lib/review-store-api", () => ({
@@ -168,3 +169,48 @@ describe("LessonWarmup", () => {
     });
   });
 });
+
+it.each([null, "alice"])(
+  "preserves checked parts for %s and records a correction as review",
+  async (userId) => {
+    const checks: RecallCheck[] = [
+      {
+        kind: "shape",
+        question: "Shape?",
+        expected: [3],
+        hint: "Count.",
+        explanation: "Three elements.",
+      },
+    ];
+    const checkedItem = { ...item, checks };
+    if (!userId)
+      localStorage.setItem(
+        "tc_guest_reviews_v1",
+        JSON.stringify({ [`deep-orbit/foundations/${item.lessonId}/0`]: item }),
+      );
+    render(
+      <LessonWarmup
+        userId={userId}
+        worldId="deep-orbit"
+        opening={null}
+        dueReviews={[checkedItem]}
+        freePrompts={[{ ...freePrompt, checks }]}
+        onDone={vi.fn()}
+      />,
+    );
+    const input = await screen.findByRole("textbox", { name: "Shape?" });
+    fireEvent.change(input, { target: { value: "[1,3]" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check answer" }));
+    expect(recordReview).not.toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: "[3]" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check again" }));
+    expect(recordReview).toHaveBeenCalledExactlyOnceWith(
+      userId,
+      expect.objectContaining({ checks }),
+      "review",
+    );
+    expect(
+      screen.getByRole("button", { name: "Continue to lesson" }),
+    ).toBeVisible();
+  },
+);

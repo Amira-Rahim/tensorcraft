@@ -193,6 +193,7 @@ export async function resolveDueForUser(
       ...item,
       question: prompt.question,
       answer: prompt.answer,
+      checks: prompt.checks,
     });
 
     // The quota, applied after the gate rather than before it. Breaking here

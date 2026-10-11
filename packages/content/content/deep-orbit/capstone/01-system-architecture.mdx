@@ -225,7 +225,32 @@ Build the chain runner: stage contracts checked before each stage, `addStage` ch
 
 <Exercise slug="pipeline-architecture" />
 
-<RecallPrompt question="Why do ML pipeline stage dependencies differ from npm package dependencies?" answer="Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility." />
+<RecallPrompt
+  question="Beyond package versions, what must remain compatible between ML pipeline stages?"
+  answer="Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Beyond package versions, what must remain compatible between ML pipeline stages?",
+      "options": [
+        {
+          "text": "Only whether npm install succeeds.",
+          "feedback": "Successful installation does not verify the model input and output meanings."
+        },
+        {
+          "text": "Feature order, units, preprocessing and data assumptions.",
+          "feedback": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
+        },
+        {
+          "text": "Only the filenames of the installed packages.",
+          "feedback": "Models can produce plausible wrong outputs when feature meanings change despite unchanged filenames."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

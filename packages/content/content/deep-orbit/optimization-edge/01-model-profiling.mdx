@@ -270,7 +270,52 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
 
 <Exercise slug="profile-model" />
 
-<RecallPrompt question="Why should you profile a model before optimizing it?" answer="Profiling identifies which layers hold the most parameters, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped. Note what this profile does not give you: parameter share is not time share. A layer holding 80% of the weights dominates parameter storage. It need not dominate execution time or peak runtime memory; those require separate measurements." />
+<RecallPrompt
+  question="Separate what parameter profiling shows from what still needs measurement."
+  answer="Profiling identifies which layers hold the most parameters, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped. Note what this profile does not give you: parameter share is not time share. A layer holding 80% of the weights dominates parameter storage. It need not dominate execution time or peak runtime memory; those require separate measurements."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What does a layer holding 80% of the parameters tell you directly?",
+      "options": [
+        {
+          "text": "It dominates parameter storage.",
+          "feedback": "Parameter counts locate storage costs; time and peak memory need separate measurements."
+        },
+        {
+          "text": "It must consume 80% of execution time.",
+          "feedback": "Parameter share is not execution-time share."
+        },
+        {
+          "text": "It must consume 80% of peak runtime memory.",
+          "feedback": "Activations and backend allocations also affect peak memory."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Parameter counts locate storage costs; time and peak memory need separate measurements."
+    },
+    {
+      "kind": "choice",
+      "question": "Why collect a baseline before optimizing?",
+      "options": [
+        {
+          "text": "To guarantee that the largest layer is the slowest.",
+          "feedback": "Only timing measurements can establish the runtime bottleneck."
+        },
+        {
+          "text": "To avoid evaluating the modified model.",
+          "feedback": "A baseline is useful only when you compare the modified result against it."
+        },
+        {
+          "text": "To measure whether the change improved the target metric.",
+          "feedback": "Measure the same workload before and after the change."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Measure the same workload before and after the change."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["Parameter count estimates weight storage, not peak runtime memory.", "Time completed inference over repeated runs and report both typical and slow calls.", "Warmup reduces startup effects. It does not remove all timing noise.", "Parameter share is not execution-time share. Profile operations before claiming a layer is the latency bottleneck."]}

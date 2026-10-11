@@ -270,9 +270,55 @@ At sparsity 1, this exercise removes every kernel weight. An interior cutoff can
 
 <Exercise slug="prune-weights" />
 
-<RecallPrompt question="You zero 60% of a model's weights with magnitude pruning and re-export it with the TensorFlow.js converter. Why is the weight file the same size as before?" answer="Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. Repeated values may improve compression; measure the actual files. The mission’s 70 MB and 42 MB gzip figures are supplied fiction, not guaranteed savings. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller." />
+<RecallPrompt
+  question="Why can zeroing 60% of weights leave an uncompressed dense weight file the same size?"
+  answer="Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. Repeated values may improve compression; measure the actual files. The mission’s 70 MB and 42 MB gzip figures are supplied fiction, not guaranteed savings. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why can zeroing 60% of weights leave an uncompressed dense weight file the same size?",
+      "options": [
+        {
+          "text": "A zero always takes more bytes than a nonzero weight.",
+          "feedback": "The dense dtype uses the same width for both."
+        },
+        {
+          "text": "The export automatically removes every unit containing a zero.",
+          "feedback": "Magnitude pruning zeros values; it does not automatically shrink layer shapes."
+        },
+        {
+          "text": "The tensor shapes are unchanged and zero entries still occupy storage.",
+          "feedback": "Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. Repeated values may improve compression; measure the actual files. The mission’s 70 MB and 42 MB gzip figures are supplied fiction, not guaranteed savings. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Because the shapes never moved and the manifest stores dense arrays. A weight entry carries a name, a shape, a dtype, and for a quantized weight a scale and a min, with no index list of nonzero positions, so every zero is written out at full width. Repeated values may improve compression; measure the actual files. The mission’s 70 MB and 42 MB gzip figures are supplied fiction, not guaranteed savings. Structured pruning, which drops whole units and changes the layer shapes, is the case where the file itself gets smaller."
+    }
+  ]}
+/>
 
-<RecallPrompt question="Pruning hurt the rare class in this experiment. Does that prove rare patterns are stored in small weights?" answer="No. The experiment shows a loss of rare-class performance under this pruning rule. It does not identify a universal storage mechanism. Weight magnitude is a proxy for importance; measure per-class errors and compare predictions before and after pruning." />
+<RecallPrompt
+  question="Rare-class accuracy drops after magnitude pruning. Does that prove rare patterns are stored in small weights?"
+  answer="No. The experiment shows a loss of rare-class performance under this pruning rule. It does not identify a universal storage mechanism. Weight magnitude is a proxy for importance; measure per-class errors and compare predictions before and after pruning."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Rare-class accuracy drops after magnitude pruning. Does that prove rare patterns are stored in small weights?",
+      "options": [
+        {
+          "text": "Yes. Weight magnitude directly identifies the class stored in each weight.",
+          "feedback": "Magnitude is an importance proxy, not a universal explanation of where a class is represented."
+        },
+        {
+          "text": "No. It shows a performance change under this pruning rule.",
+          "feedback": "No. The experiment shows a loss of rare-class performance under this pruning rule. It does not identify a universal storage mechanism. Weight magnitude is a proxy for importance; measure per-class errors and compare predictions before and after pruning."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "No. The experiment shows a loss of rare-class performance under this pruning rule. It does not identify a universal storage mechanism. Weight magnitude is a proxy for importance; measure per-class errors and compare predictions before and after pruning."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={[

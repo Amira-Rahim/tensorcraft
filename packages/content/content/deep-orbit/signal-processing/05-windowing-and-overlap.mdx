@@ -230,13 +230,77 @@ The grader's leakage statistic sums magnitudes outside the central seven-bin ban
 <Exercise slug="apply-window" />
 
 <RecallPrompt
-  question="Why apply a Hann window before computing the FFT?"
+  question="What tradeoff comes with applying a Hann window before an FFT?"
   answer="A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What tradeoff comes with applying a Hann window before an FFT?",
+      "options": [
+        {
+          "text": "A higher sample rate and a higher Nyquist frequency.",
+          "feedback": "Weighting the existing samples does not increase the sampling rate."
+        },
+        {
+          "text": "Less distant spectral leakage, but broader peaks and changed magnitudes.",
+          "feedback": "A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+        },
+        {
+          "text": "Exact recovery of every physical tone with no tradeoff.",
+          "feedback": "Windowing changes the spectrum and does not guarantee perfect separation."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="Your spectrogram rows now come from windows with 50% overlap, so each sample appears in two of them. Which condition from the module 1 train/validation split decides whether rows like these can be split at random, and what does the overlap do to it?"
+  question="Adjacent spectrogram windows share 50% of their raw samples."
   answer="Random splitting of overlapping windows can leak shared samples across the split and inflate validation results. The severity depends on the task and data. Split by time instead: divide the signal first, then window inside each side."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why is randomly splitting overlapping windows risky?",
+      "options": [
+        {
+          "text": "Shared raw samples may appear on both sides of the split.",
+          "feedback": "Train and validation windows can contain the same readings, making the held-out result misleading."
+        },
+        {
+          "text": "Overlap makes the windows statistically independent.",
+          "feedback": "Overlap creates shared observations rather than removing them."
+        },
+        {
+          "text": "Random splitting always lowers validation accuracy.",
+          "feedback": "Leakage can inflate validation scores; its exact effect depends on the task."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Train and validation windows can contain the same readings, making the held-out result misleading."
+    },
+    {
+      "kind": "choice",
+      "question": "How should you build windows for a future-period evaluation?",
+      "options": [
+        {
+          "text": "Window the full stream, then assign windows randomly.",
+          "feedback": "That can place shared samples in both sets."
+        },
+        {
+          "text": "Duplicate the boundary windows in both sets to preserve continuity.",
+          "feedback": "Duplicating boundary windows introduces exactly the overlap you need to avoid."
+        },
+        {
+          "text": "Split the signal by time first, then create windows within each side.",
+          "feedback": "Window each time split separately so no window crosses the boundary."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Window each time split separately so no window crosses the boundary."
+    }
+  ]}
 />
 
 <LessonRecap

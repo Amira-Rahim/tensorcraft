@@ -63,7 +63,14 @@ export function LessonWarmup({
       );
       if (!prompt) return [];
       if (opening && !isEarlierInCourse(prompt, opening)) return [];
-      return [{ ...item, question: prompt.question, answer: prompt.answer }];
+      return [
+        {
+          ...item,
+          question: prompt.question,
+          answer: prompt.answer,
+          checks: prompt.checks,
+        },
+      ];
     });
     setItems(resolved.slice(0, 2));
   }, [userId, worldId, freePrompts, opening]);
@@ -87,6 +94,7 @@ export function LessonWarmup({
         key={`${item.lessonId}/${item.promptIndex}`}
         question={item.question}
         answer={item.answer}
+        checks={item.checks}
         onAction={(action) => {
           trackRecallAnswered(action, { worldId, lessonId: item.lessonId });
           if (action !== "attempted" && !rated.current.has(index)) {

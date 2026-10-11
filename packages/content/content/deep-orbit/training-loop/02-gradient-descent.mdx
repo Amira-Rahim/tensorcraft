@@ -140,8 +140,30 @@ Implement one descent step, written so the grader can hand your step() any loss 
 <Exercise slug="gradient-step" />
 
 <RecallPrompt
-  question="Your training loss explodes after a few steps. What is the most likely cause and fix?"
+  question="Loss explodes after a few steps. What is a reasonable next step?"
   answer="An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Loss explodes after a few steps. What is a reasonable next step?",
+      "options": [
+        {
+          "text": "Try a smaller learning rate and inspect input scales, non-finite values and gradients.",
+          "feedback": "An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
+        },
+        {
+          "text": "Increase the learning rate because large loss always means updates are too small.",
+          "feedback": "A rate that is already too large can make the instability worse."
+        },
+        {
+          "text": "Conclude that the model needs more layers without checking the data.",
+          "feedback": "The loss trace alone cannot identify the cause."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
+    }
+  ]}
 />
 
 <LessonRecap

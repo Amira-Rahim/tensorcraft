@@ -258,9 +258,57 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
 
 <Exercise slug="model-pipeline" />
 
-<RecallPrompt question="What can checks between model stages catch, and what requires end-to-end evaluation?" answer="Contract checks can catch invalid shapes, missing fields and out-of-range values. They cannot establish that a plausible prediction is correct. Evaluate the whole pipeline against outcomes, including shared failures and fallback paths." />
+<RecallPrompt
+  question="Separate valid stage interfaces from correct system predictions."
+  answer="Contract checks can catch invalid shapes, missing fields and out-of-range values. They cannot establish that a plausible prediction is correct. Evaluate the whole pipeline against outcomes, including shared failures and fallback paths."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What can a contract check between model stages catch?",
+      "options": [
+        {
+          "text": "Every plausible but incorrect prediction.",
+          "feedback": "A wrong prediction can satisfy the expected type, shape and range."
+        },
+        {
+          "text": "All future changes in real-world data.",
+          "feedback": "A structural check cannot establish future predictive behavior."
+        },
+        {
+          "text": "Invalid shapes, missing fields and out-of-range values.",
+          "feedback": "Contract checks validate the handoff structure and stated constraints."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Contract checks validate the handoff structure and stated constraints."
+    },
+    {
+      "kind": "choice",
+      "question": "How do you assess plausible outputs that pass those checks?",
+      "options": [
+        {
+          "text": "Evaluate only the number of stages.",
+          "feedback": "Pipeline depth does not establish output quality."
+        },
+        {
+          "text": "Evaluate the complete pipeline against outcomes, including shared failures and fallbacks.",
+          "feedback": "End-to-end evaluation is needed for correctness beyond the interface contract."
+        },
+        {
+          "text": "Assume they are correct because every field exists.",
+          "feedback": "Structural validity is not predictive accuracy."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "End-to-end evaluation is needed for correctness beyond the interface contract."
+    }
+  ]}
+/>
 
-<RecallPrompt question="The autoencoder's stand-in here is module 7's 3-sigma gate on the amplitude alone. Why is there a ceiling on the sigma count that feature can produce, and what should you suspect when a reading comes back above it?" answer="For valid sensor readings within the stated physical range, amplitude divided by the 2048-count full scale lies in [0, 1]. Scaling itself does not enforce that range. Against the baseline of mean 0.52 and std 0.15, a full-scale reading is 3.2 sigma out and a dead channel at 0.00 is 3.47. With this fixed baseline and a valid [0, 1] amplitude, the absolute z-score cannot exceed about 3.47. A larger value means at least one assumption changed: inspect units, the baseline and sensor validity." />
+<RecallPrompt
+  question="Explain what you would investigate if a valid [0, 1] amplitude appears more than 3.47 standard deviations from a fixed mean of 0.52 and standard deviation of 0.15."
+  answer="For valid sensor readings within the stated physical range, amplitude divided by the 2048-count full scale lies in [0, 1]. Scaling itself does not enforce that range. Against the baseline of mean 0.52 and std 0.15, a full-scale reading is 3.2 sigma out and a dead channel at 0.00 is 3.47. With this fixed baseline and a valid [0, 1] amplitude, the absolute z-score cannot exceed about 3.47. A larger value means at least one assumption changed: inspect units, the baseline and sensor validity."
+/>
 
 <LessonRecap
   whatYouLearned={["Validate input and output contracts at each stage, including feature order, units and preprocessing.", "Type and range checks catch malformed results. End-to-end evaluation is still needed for plausible but wrong predictions.", "Use a fallback only when its limitations are acceptable. Otherwise stop that path or request review."]}

@@ -76,3 +76,76 @@ describe("parseRecallPrompts", () => {
     expect(parseRecallPrompts(raw)).toEqual([]);
   });
 });
+
+describe("structured recall extraction", () => {
+  const check = {
+    kind: "shape",
+    question: "Shape?",
+    expected: [3],
+    hint: "Count the elements.",
+    explanation: "Three elements.",
+  };
+  it("carries checked parts to the review payload", () => {
+    const result = parseRecallPrompts(
+      `<RecallPrompt question="Q?" answer="A." checks={${JSON.stringify([check])}} />`,
+    );
+    expect(result[0].checks).toEqual([check]);
+  });
+  it("accepts formatter-style objects and trailing commas without evaluating code", () => {
+    const result = parseRecallPrompts(
+      `<RecallPrompt question="Q?" answer="A." checks={[{kind: 'shape', question: 'Shape?', expected: [3], hint: 'Count the elements.', explanation: 'Three elements.',}]} />`,
+    );
+    expect(result[0].checks).toEqual([check]);
+  });
+  it("handles tag-like text, quotes, and entities consistently with MDX", () => {
+    const special = { ...check, hint: 'The string "/>" is not a tag here.' };
+    const result = parseRecallPrompts(
+      `<RecallPrompt question="A &amp; B?" answer="A." checks={${JSON.stringify([special])}} />`,
+    );
+    expect(result[0].question).toBe("A & B?");
+    expect(result[0].checks).toEqual([special]);
+  });
+  it.each([
+    "makeChecks()",
+    "checksFromElsewhere",
+    "[...otherChecks]",
+    "[{ get kind() { return 'shape' } }]",
+    "[{ kind: 'shape', kind: 'number' }]",
+  ])("rejects nonliteral or ambiguous checks: %s", (expression) => {
+    expect(() =>
+      parseRecallPrompts(
+        `<RecallPrompt question="Q?" answer="A." checks={${expression}} />`,
+      ),
+    ).toThrow("invalid checks");
+  });
+  it.each([
+    [],
+    [{ ...check, expected: [-1] }],
+    [{ ...check, hint: "" }],
+    [
+      {
+        kind: "choice",
+        question: "Q?",
+        explanation: "A.",
+        options: [
+          { text: "A", feedback: "a" },
+          { text: "B", feedback: "b" },
+        ],
+        correctIndex: 2,
+      },
+    ],
+  ])("fails the build for invalid checked content", (checks) => {
+    expect(() =>
+      parseRecallPrompts(
+        `<RecallPrompt question="Q?" answer="A." checks={${JSON.stringify(checks)}} />`,
+      ),
+    ).toThrow("invalid checks");
+  });
+  it("ignores prompt examples inside code fences", () => {
+    expect(
+      parseRecallPrompts(
+        '```mdx\n<RecallPrompt question="Q?" answer="A." />\n```',
+      ),
+    ).toEqual([]);
+  });
+});

@@ -149,7 +149,32 @@ Decide whether one use case belongs in the browser or on the server, and watch w
 
 <Exercise slug="browser-ml-tradeoffs" />
 
-<RecallPrompt question="What is the main tradeoff when moving ML inference from server to browser?" answer="You can avoid a network request per prediction, at the cost of downloads and local compute/memory. Measure the actual devices. Offline use needs all required assets cached, and privacy still depends on the rest of the application." />
+<RecallPrompt
+  question="What tradeoff comes with moving inference into the browser?"
+  answer="You can avoid a network request per prediction, at the cost of downloads and local compute/memory. Measure the actual devices. Offline use needs all required assets cached, and privacy still depends on the rest of the application."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What tradeoff comes with moving inference into the browser?",
+      "options": [
+        {
+          "text": "Guaranteed offline operation and privacy without any other changes.",
+          "feedback": "Offline use requires cached assets, and privacy depends on the rest of the application."
+        },
+        {
+          "text": "Fewer per-prediction network requests, but model downloads and local resource use.",
+          "feedback": "You can avoid a network request per prediction, at the cost of downloads and local compute/memory. Measure the actual devices. Offline use needs all required assets cached, and privacy still depends on the rest of the application."
+        },
+        {
+          "text": "No model download and unlimited compute.",
+          "feedback": "The browser needs model assets and uses the device compute and memory."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "You can avoid a network request per prediction, at the cost of downloads and local compute/memory. Measure the actual devices. Offline use needs all required assets cached, and privacy still depends on the rest of the application."
+    }
+  ]}
+/>
 
 <LessonRecap whatYouLearned={["Local inference avoids a per-prediction request. Model versions, cache eviction and missing assets can require new downloads.", "Browser constraints (memory cap, cold start time, device compute) map directly onto the shipping costs you already budget for: bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, offline availability, and model size. Here availability decided it: a cached app, runtime and model remove the per-verdict dependency on the compute-bay link"]} bridge="Just as `createRoot().render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
 

@@ -203,8 +203,50 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 <Exercise slug="incident-missed-anomaly" />
 
 <RecallPrompt
-  question="MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
+  question="Separate an aggregate reconstruction score from its individual feature contributions."
   answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means this model reconstructed it poorly, which may indicate an anomaly or a model failure. It does not tell you which feature, dimension, or channel caused the deviation. Compute per-feature squared errors to locate the reconstruction mismatch. Those contributions still do not identify its physical cause."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What does a high scalar reconstruction MSE establish?",
+      "options": [
+        {
+          "text": "The exact channel responsible for the mismatch.",
+          "feedback": "The aggregate scalar combines feature contributions."
+        },
+        {
+          "text": "The model reconstructed that sample poorly across its features.",
+          "feedback": "A large aggregate mismatch may signal an anomaly or a model failure."
+        },
+        {
+          "text": "The physical cause of an anomaly.",
+          "feedback": "Reconstruction error is a mismatch score, not a causal diagnosis."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "A large aggregate mismatch may signal an anomaly or a model failure."
+    },
+    {
+      "kind": "choice",
+      "question": "What should you inspect to locate the reconstruction mismatch?",
+      "options": [
+        {
+          "text": "Per-feature squared reconstruction errors.",
+          "feedback": "Per-feature errors locate contributions to the score; they still do not establish a physical cause."
+        },
+        {
+          "text": "Only the same aggregate MSE with more decimal places.",
+          "feedback": "Greater numeric precision does not separate the feature contributions."
+        },
+        {
+          "text": "The parameter count alone.",
+          "feedback": "Parameter count does not locate this sample mismatch."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Per-feature errors locate contributions to the score; they still do not establish a physical cause."
+    }
+  ]}
 />
 
 <LessonRecap

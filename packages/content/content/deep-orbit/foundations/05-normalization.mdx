@@ -216,13 +216,77 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 <Exercise slug="normalize-data" />
 
 <RecallPrompt
-  question="Why normalize features before training?"
+  question="How can normalizing differently scaled features help training?"
   answer="Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "How can normalizing differently scaled features help training?",
+      "options": [
+        {
+          "text": "It guarantees that all features have equal importance.",
+          "feedback": "The model still learns how much each feature contributes."
+        },
+        {
+          "text": "It removes the need to learn weights.",
+          "feedback": "Normalization prepares inputs; it does not learn the model."
+        },
+        {
+          "text": "It can make optimization easier by putting input scales on a comparable footing.",
+          "feedback": "Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="The challenge's z-score step subtracts a [2] tensor of column means from its [4, 2] batch of readings, and nothing throws. Which rule from lesson 3 allows that, and how does it line the two shapes up?"
+  question="The readings have shape [4, 2], and the two column means have shape [2]."
   answer="Broadcasting. TensorFlow.js lines the two tensors up from the last axis backwards and stretches any axis of size 1, or any axis the smaller tensor does not have at all, until it matches the larger one. Here that takes each column's mean down its own column."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Which rule permits subtracting column means of shape [2] from readings of shape [4, 2]?",
+      "options": [
+        {
+          "text": "Flattening.",
+          "feedback": "Neither tensor is flattened for this subtraction."
+        },
+        {
+          "text": "Broadcasting.",
+          "feedback": "Broadcasting aligns shapes from the trailing axis, treating a missing leading dimension as size 1."
+        },
+        {
+          "text": "Matrix multiplication.",
+          "feedback": "Subtraction is elementwise; it does not perform a matrix product."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Broadcasting aligns shapes from the trailing axis, treating a missing leading dimension as size 1."
+    },
+    {
+      "kind": "choice",
+      "question": "Which values are subtracted from each row?",
+      "options": [
+        {
+          "text": "The first column mean from column 1, and the second from column 2.",
+          "feedback": "The [2] means behave like a [1, 2] row repeated across all four rows."
+        },
+        {
+          "text": "Both means from every individual value.",
+          "feedback": "The two means align with the two columns, rather than both applying to every value."
+        },
+        {
+          "text": "The first mean from the first two rows, and the second from the last two.",
+          "feedback": "The trailing dimension represents columns, not groups of rows."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The [2] means behave like a [1, 2] row repeated across all four rows."
+    }
+  ]}
 />
 
 <LessonRecap

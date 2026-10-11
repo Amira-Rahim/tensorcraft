@@ -1,4 +1,6 @@
-/** What the learner reported after a retrieval attempt. */
+import type { RecallCheck } from "./recall-checks";
+
+/** A checked result or the learner's explicit self-assessment. */
 export type ReviewOutcome = "got-it" | "review" | "bailed";
 
 /** One schedulable recall prompt. Keys only: never carries question text. */
@@ -20,6 +22,7 @@ export interface ReviewItem {
 export interface ResolvedReviewItem extends ReviewItem {
   question: string;
   answer: string;
+  checks?: RecallCheck[];
 }
 
 export interface ScheduleResult {

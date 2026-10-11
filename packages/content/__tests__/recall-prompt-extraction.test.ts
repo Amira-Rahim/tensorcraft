@@ -11,10 +11,8 @@ import { BUILT_WORLD_DIRS } from "../src/built-worlds";
  * prompts and is not in the velite build, so an unscoped scan compares 85
  * raw tags against 82 built entries and is red on day one.
  *
- * The count is the whole point of the gate: parseRecallPrompts drops a tag
- * it cannot read both attributes off (a JSX-children answer, a single-quoted
- * value), and a parser that silently matches 81 of 82 is otherwise
- * invisible, since the lesson that lost its prompt still renders fine.
+ * The count gate catches prompts missing literal question or answer props.
+ * Structured checks are validated by the MDX parser during extraction.
  */
 interface BuiltLesson {
   slug: string;
@@ -138,18 +136,8 @@ describe("recall prompt extraction", () => {
   });
 });
 
-/*
-  The parser matches `<RecallPrompt ... />` non-greedily to the next `/>`, so a
-  children-form prompt (`<RecallPrompt ...>text</RecallPrompt>`) is not
-  self-closing and its match runs forward into whatever tag comes next,
-  potentially carrying off that tag's `answer=` and pairing it with the wrong
-  question. The count gate catches the common shape of that, but not the case
-  where the swallowed tag donates exactly one answer.
-
-  Rather than teach the parser the children form, forbid the precondition: the
-  corpus uses the string-prop form only. `recall-prompt.tsx` does accept JSX
-  children, so this is a content rule, not a component one.
-*/
+/* Review payloads require literal question and answer props. The UI also
+   supports children, but authored lessons must use the extractable form. */
 describe("recall prompts use the string-prop form only", () => {
   it("has no closing </RecallPrompt> tag anywhere in the built worlds", () => {
     const offenders = sources
@@ -157,7 +145,7 @@ describe("recall prompts use the string-prop form only", () => {
       .map((s) => `${s.moduleId}/${s.slug}`);
     expect(
       offenders,
-      "a children-form <RecallPrompt> can swallow the following tag's answer attribute; author it with question= and answer= string props instead",
+      "author reviewable prompts with literal question= and answer= string props",
     ).toEqual([]);
   });
 });

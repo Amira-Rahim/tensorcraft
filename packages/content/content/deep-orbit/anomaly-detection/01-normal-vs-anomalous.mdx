@@ -189,8 +189,17 @@ PAGER, two weeks after go-live: alerts have increased on readings a human review
 <Exercise slug="incident-baseline-drift" />
 
 <RecallPrompt
-  question="A z-score threshold of |z| > 3 flags 0.27% of samples in normal Gaussian data. If a monitor processes 100,000 readings per hour and the data is normal, roughly how many false-alarm flags does it generate per hour?"
+  question="At a 0.27% false-alarm rate and 100,000 normal readings per hour, about how many flags occur per hour?"
   answer="About 270 false alarms per hour. P(|Z| > 3) is approximately 0.0027 for a standard normal distribution; multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. That expected count assumes the stated Gaussian distribution and population parameters. The threshold itself is a rule, not a probability; observed rates may differ."
+  checks={[
+    {
+      "kind": "number",
+      "question": "At a 0.27% false-alarm rate and 100,000 normal readings per hour, about how many flags occur per hour?",
+      "expected": 270,
+      "hint": "Convert 0.27% to 0.0027 and multiply by 100,000.",
+      "explanation": "0.0027 × 100,000 = about 270 expected flags per hour under the stated assumptions."
+    }
+  ]}
 />
 
 <LessonRecap

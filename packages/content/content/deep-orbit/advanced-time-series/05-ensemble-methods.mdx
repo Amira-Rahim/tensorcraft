@@ -243,11 +243,84 @@ Score each member, score both blends (equal shares, then validation-derived shar
 
 <Exercise slug="weighted-ensemble" />
 
-<RecallPrompt question="When can averaging models help, and what does it fail to fix?" answer="It can reduce errors that cancel across members. A shared bias survives averaging. Different architectures do not guarantee different errors, so compare the blend with the best member on the same held-out examples." />
+<RecallPrompt
+  question="Evaluate the benefit of an ensemble rather than assuming it."
+  answer="It can reduce errors that cancel across members. A shared bias survives averaging. Different architectures do not guarantee different errors, so compare the blend with the best member on the same held-out examples."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "When can averaging predictions reduce error?",
+      "options": [
+        {
+          "text": "Whenever architectures have different names.",
+          "feedback": "Different architectures do not guarantee complementary errors."
+        },
+        {
+          "text": "Whenever every member makes the same biased error.",
+          "feedback": "A shared bias remains when predictions are averaged."
+        },
+        {
+          "text": "When some member errors cancel each other.",
+          "feedback": "Complementary errors can cancel; shared errors can persist."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Complementary errors can cancel; shared errors can persist."
+    },
+    {
+      "kind": "choice",
+      "question": "Which baseline should the blend beat to justify an accuracy claim?",
+      "options": [
+        {
+          "text": "Any member measured on an easier dataset.",
+          "feedback": "Use the same held-out examples for a fair comparison."
+        },
+        {
+          "text": "The best member evaluated on the same held-out examples.",
+          "feedback": "Measure the blend against the strongest individual model on the same evaluation data."
+        },
+        {
+          "text": "Only the average member score.",
+          "feedback": "Beating the average can still leave the ensemble worse than the best member."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Measure the blend against the strongest individual model on the same evaluation data."
+    }
+  ]}
+/>
 
-<RecallPrompt question="Your three-model ensemble scores MAE 0.041 and the members scored 0.052, 0.036, and 0.050. Did the ensemble help?" answer="It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit." />
+<RecallPrompt
+  question="An ensemble has MAE 0.041; its members have 0.052, 0.036 and 0.050. Did it beat the best member?"
+  answer="It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "An ensemble has MAE 0.041; its members have 0.052, 0.036 and 0.050. Did it beat the best member?",
+      "options": [
+        {
+          "text": "No. The member with MAE 0.036 performed better.",
+          "feedback": "It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit."
+        },
+        {
+          "text": "Yes. 0.041 is lower than two of the member scores.",
+          "feedback": "The comparison is against the best member, not most of the members."
+        },
+        {
+          "text": "Yes. A larger MAE indicates better predictions.",
+          "feedback": "MAE is an error measure; smaller is better."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit."
+    }
+  ]}
+/>
 
-<RecallPrompt question="Why are the member errors here fractions of each channel's range instead of raw counts and radians?" answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and unscaled error could favor the larger-unit feature. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the blend weights computed from it, could be dominated by amplitude error. It depends on the errors, not just the values." />
+<RecallPrompt
+  question="Explain why combining errors measured in raw counts and radians can make ensemble weighting depend on channel scale."
+  answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and unscaled error could favor the larger-unit feature. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the blend weights computed from it, could be dominated by amplitude error. It depends on the errors, not just the values."
+/>
 
 <LessonRecap
   whatYouLearned={["Averaging can cancel some member errors. Shared bias survives.", "The inverse-squared-MAE weights here are a heuristic, not inverse-variance weights or calibrated probabilities.", "Different seeds, architectures or samples do not guarantee uncorrelated errors.", "Compare blends with the best member, select on validation data, and keep a final evaluation period untouched."]}

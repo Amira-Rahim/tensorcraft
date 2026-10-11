@@ -731,9 +731,10 @@ export function LessonContent({
 }
 
 /* A recall card that reports its prompt state to the instance. Registered
-   on mount; settled on the card's first onAnswer (attempted or bailed; the
-   later rating call changes nothing). The unmount cleanup deletes without
-   reporting: the whole instance unmounts on every step change, and a
+   on mount; settled only after a checked result, explicit self-rating, or bail.
+   An incorrect attempt or an unrated reveal leaves the card pending.
+   The unmount cleanup deletes without reporting: the whole instance
+   unmounts on every step change, and a
    report of 0 then would read as "settled". */
 function RegisteredRecallPrompt({
   registry,
@@ -764,7 +765,7 @@ function RegisteredRecallPrompt({
     <RecallPrompt
       {...props}
       onAnswer={(result) => {
-        if (!settledRef.current) {
+        if (result !== "attempted" && !settledRef.current) {
           settledRef.current = true;
           registry.current.delete(id);
           report();

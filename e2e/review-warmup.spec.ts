@@ -40,11 +40,19 @@ test("guest completion becomes a due warm-up the next day", async ({
     warmup.boundingBox().then((b) => b?.y),
   ]);
   expect(cardTop).toBeGreaterThan(titleTop ?? Infinity);
-  const check = warmup.getByRole("button", { name: "Check", exact: true });
+  const check = warmup.getByRole("button", {
+    name: "Check answers",
+    exact: true,
+  });
   await expect(check).toBeDisabled();
-  await warmup.getByRole("textbox").fill("Numeric data with a shape");
+  await warmup.getByRole("textbox").fill("[3]");
+  await warmup
+    .getByRole("radio", { name: "No, it only creates a tensor." })
+    .check();
   await check.click();
-  await warmup.getByRole("button", { name: "Got it", exact: true }).click();
+  await expect(warmup.getByRole("status")).toHaveText(
+    "All answers are correct.",
+  );
   await expect
     .poll(() =>
       page.evaluate(

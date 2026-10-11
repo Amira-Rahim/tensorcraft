@@ -116,8 +116,40 @@ Run a forward pass, then give one flat reading the batch axis the layer wants.
 <Exercise slug="forward-pass" />
 
 <RecallPrompt
-  question="Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens, and how do you fix it?"
+  question="The model input shape is [null, 8]. You have one example with eight features."
   answer="TFJS throws a shape mismatch error. The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: use tensor.reshape([1, 8]) or tensor.expandDims(0)."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "A model expects [null, 8]. What happens if you pass a tensor with shape [8]?",
+      "options": [
+        {
+          "text": "A shape mismatch: the batch dimension is missing.",
+          "feedback": "The model expects a rank-2 batch of examples, not a rank-1 vector."
+        },
+        {
+          "text": "TFJS always adds the batch dimension automatically.",
+          "feedback": "This model requires you to supply the batch axis."
+        },
+        {
+          "text": "The model treats the eight values as eight complete examples.",
+          "feedback": "Each example needs eight features, in addition to the batch dimension."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "The model expects a rank-2 batch of examples, not a rank-1 vector."
+    },
+    {
+      "kind": "shape",
+      "question": "What input shape represents one example with eight features?",
+      "expected": [
+        1,
+        8
+      ],
+      "hint": "The first dimension counts examples; the second counts features.",
+      "explanation": "Use [1, 8], for example with reshape([1, 8]) or expandDims(0)."
+    }
+  ]}
 />
 
 <LessonRecap

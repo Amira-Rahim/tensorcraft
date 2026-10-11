@@ -275,12 +275,34 @@ A constant window has no standard deviation to divide by. This exercise reports 
 <Exercise slug="ensemble-detector" />
 
 <RecallPrompt
-  question="How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?"
+  question="How can a normal-trained autoencoder provide an anomaly score?"
   answer="It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "How can a normal-trained autoencoder provide an anomaly score?",
+      "options": [
+        {
+          "text": "It guarantees high error for every input not seen in training.",
+          "feedback": "An unfamiliar input can still reconstruct well."
+        },
+        {
+          "text": "It learns the correct anomaly label without any evaluation data.",
+          "feedback": "Normal-only training supplies a reconstruction objective, not guaranteed anomaly labels."
+        },
+        {
+          "text": "Measure reconstruction error; some anomalies may reconstruct poorly.",
+          "feedback": "It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="What distinguishes this amplitude channel's fixed-range scaling from min-max bounds fitted on observed data, and what does sensor saturation cost the statistical gate?"
+  question="Explain how physical sensor saturation limits the amplitude evidence available to this statistical gate."
   answer="A fitted min-max range can be exceeded by later observations. Here the scale instead comes from a physical bound: the sensor saturates at its 2048-count full scale, so the stream is not open-ended. The cost sits at the ceiling. A reading pegged at 1.00 is 3.2 sigma off this module's normal-period baseline and can go no higher, while a dead channel at 0.00 reaches 3.47."
 />
 

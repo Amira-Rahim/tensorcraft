@@ -60,6 +60,8 @@ export {
 export type { JourneyNode, Spine, SpineStop } from "./journey";
 
 export { selectDue, nextInterval } from "./review-schedule";
+export { isRecallCheckCorrect, recallCheckAnswer } from "./recall-checks";
+export type { RecallCheck } from "./recall-checks";
 export type {
   ReviewItem,
   ResolvedReviewItem,

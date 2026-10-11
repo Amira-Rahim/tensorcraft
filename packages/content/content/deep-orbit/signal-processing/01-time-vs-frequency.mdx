@@ -171,8 +171,30 @@ Transform both captures yourself, then say whether they are twins in time and na
 <Exercise slug="time-vs-frequency" />
 
 <RecallPrompt
-  question="A capture holds a tiny periodic component underneath four louder tones. Why does looking at the frequency domain reveal it when the time domain does not?"
+  question="Why can a frequency representation make a weak periodic component easier to see?"
   answer="The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Why can a frequency representation make a weak periodic component easier to see?",
+      "options": [
+        {
+          "text": "It creates new measurements absent from the captured samples.",
+          "feedback": "The transform reorganizes information in the same samples."
+        },
+        {
+          "text": "It removes all noise and spectral leakage automatically.",
+          "feedback": "Visibility still depends on noise, windowing and nearby peaks."
+        },
+        {
+          "text": "It separates contributions by frequency instead of showing only their summed value at each moment.",
+          "feedback": "The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
+    }
+  ]}
 />
 
 <LessonRecap

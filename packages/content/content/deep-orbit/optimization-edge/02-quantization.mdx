@@ -199,7 +199,52 @@ Quantize a model's kernels to uint8, load the decoded floats back onto it, and c
 
 <Exercise slug="quantize-weights" />
 
-<RecallPrompt question="What does this quantization pass change, and what must you measure?" answer="It stores each selected float32 weight using uint16 or uint8 plus scale metadata. TFJS decodes those weights back to float32. Verify byte counts, conversion error and task metrics on labeled evaluation data. Memory peaks and inference speed require their own measurements; file compression does not establish either." />
+<RecallPrompt
+  question="Distinguish weight-file size from runtime behavior and model quality."
+  answer="It stores each selected float32 weight using uint16 or uint8 plus scale metadata. TFJS decodes those weights back to float32. Verify byte counts, conversion error and task metrics on labeled evaluation data. Memory peaks and inference speed require their own measurements; file compression does not establish either."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What changes in the weight-storage quantization used here?",
+      "options": [
+        {
+          "text": "The number of neurons necessarily decreases.",
+          "feedback": "Quantization changes representation rather than layer width."
+        },
+        {
+          "text": "Selected float32 weights are stored as uint8 or uint16 with scale metadata.",
+          "feedback": "This pass reduces stored precision; TFJS decodes these weights back to float32."
+        },
+        {
+          "text": "The graph automatically performs every operation using integer arithmetic.",
+          "feedback": "Smaller stored weights do not establish integer runtime computation."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "This pass reduces stored precision; TFJS decodes these weights back to float32."
+    },
+    {
+      "kind": "choice",
+      "question": "What can a smaller weight download establish by itself?",
+      "options": [
+        {
+          "text": "Fewer downloaded weight bytes; quality, runtime memory and speed still need measurement.",
+          "feedback": "Measure byte counts, conversion agreement and labeled task performance, then profile runtime separately."
+        },
+        {
+          "text": "Guaranteed lower peak memory and faster inference.",
+          "feedback": "TFJS decoding and execution costs require their own measurements."
+        },
+        {
+          "text": "Unchanged predictions and task accuracy.",
+          "feedback": "Quantization can change weights and predictions; evaluate conversion error and task metrics."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Measure byte counts, conversion agreement and labeled task performance, then profile runtime separately."
+    }
+  ]}
+/>
 
 <LessonRecap
   whatYouLearned={["Uint16 and uint8 use two and one bytes per stored weight; metadata and other assets still count toward the download.", "Quantization error depends on the tensor's range. A constant tensor needs an explicit zero-spread case.", "Compare the decoded model with the original, then evaluate both on labeled data. Disagreement alone is not accuracy loss.", "Converter patterns can select which weights to quantize. This storage encoding does not provide integer inference kernels."]}

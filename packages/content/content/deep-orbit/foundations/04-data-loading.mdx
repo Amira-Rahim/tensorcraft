@@ -246,13 +246,77 @@ Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This
 <DecisionTask id="future-builds" />
 
 <RecallPrompt
-  question="What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?"
+  question="The training split is already fixed. Now prepare its rows for mini-batch training."
   answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Which training pipeline mixes individual rows before grouping them?",
+      "options": [
+        {
+          "text": "batch(32).shuffle(bufferSize)",
+          "feedback": "This shuffles already formed batches; it does not change which rows belong to each batch."
+        },
+        {
+          "text": "batch(32) without shuffling",
+          "feedback": "Consecutive rows remain together in each batch."
+        },
+        {
+          "text": "shuffle(bufferSize).batch(32)",
+          "feedback": "Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
+    },
+    {
+      "kind": "choice",
+      "question": "Why does shuffling only after batching preserve narrow slices of the stream?",
+      "options": [
+        {
+          "text": "It increases the number of examples in each batch.",
+          "feedback": "The batch size does not change when the batch order changes."
+        },
+        {
+          "text": "Each batch keeps the same members.",
+          "feedback": "Reordering complete batches leaves their membership fixed."
+        },
+        {
+          "text": "It changes the labels attached to the readings.",
+          "feedback": "Shuffling reorders examples or batches; it should not change their labels."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Reordering complete batches leaves their membership fixed."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="A classifier reads one sensor row at a time. Does that make a random split safe for predicting future readings?"
+  question="Does reading one row at a time make a random split safe for forecasting future readings?"
   answer="No. Neighboring rows can share patterns even when the model reads them separately. Hold out later periods, keep shared captures together, and add a gap when windows overlap. Fit preprocessing on training rows only."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Does reading one row at a time make a random split safe for forecasting future readings?",
+      "options": [
+        {
+          "text": "No. Nearby rows may share patterns, so evaluate on later periods.",
+          "feedback": "No. Neighboring rows can share patterns even when the model reads them separately. Hold out later periods, keep shared captures together, and add a gap when windows overlap. Fit preprocessing on training rows only."
+        },
+        {
+          "text": "Yes. Independent predictions make neighboring rows independent.",
+          "feedback": "How the model reads a row does not remove relationships between neighboring observations."
+        },
+        {
+          "text": "Yes, if you shuffle both splits again before evaluation.",
+          "feedback": "Shuffling cannot undo leakage across the split."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "No. Neighboring rows can share patterns even when the model reads them separately. Hold out later periods, keep shared captures together, and add a gap when windows overlap. Fit preprocessing on training rows only."
+    }
+  ]}
 />
 
 <LessonRecap

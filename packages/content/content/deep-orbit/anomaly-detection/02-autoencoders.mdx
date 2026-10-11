@@ -154,8 +154,30 @@ Screen the archive against the flag log, then train the autoencoder on what surv
 <Exercise slug="build-autoencoder" />
 
 <RecallPrompt
-  question="Can an autoencoder trained only on normal data reconstruct an anomaly well?"
+  question="Can an autoencoder trained on normal data also reconstruct an anomaly well?"
   answer="Yes. Its learned mapping may also reconstruct unfamiliar inputs. A high error is an investigation signal, and a low error does not prove normality. Evaluate the score on held-out normal examples and known anomalies, then inspect the misses."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "Can an autoencoder trained on normal data also reconstruct an anomaly well?",
+      "options": [
+        {
+          "text": "No. Any input absent from training must have a high error.",
+          "feedback": "A learned mapping can reconstruct unfamiliar inputs too."
+        },
+        {
+          "text": "Only if the anomaly was labeled during training.",
+          "feedback": "Normal-only training does not prevent the mapping from reconstructing some anomalies."
+        },
+        {
+          "text": "Yes. A low reconstruction error does not prove normality.",
+          "feedback": "Yes. Its learned mapping may also reconstruct unfamiliar inputs. A high error is an investigation signal, and a low error does not prove normality. Evaluate the score on held-out normal examples and known anomalies, then inspect the misses."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Yes. Its learned mapping may also reconstruct unfamiliar inputs. A high error is an investigation signal, and a low error does not prove normality. Evaluate the score on held-out normal examples and known anomalies, then inspect the misses."
+    }
+  ]}
 />
 
 <LessonRecap

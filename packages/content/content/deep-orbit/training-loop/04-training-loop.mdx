@@ -366,8 +366,30 @@ The exercise labels observable trends. A short run can provide too little histor
 <Exercise slug="training-loop-exercise" />
 
 <RecallPrompt
-  question="What tradeoffs determine a useful batch size?"
+  question="What should guide your choice of batch size?"
   answer="Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What should guide your choice of batch size?",
+      "options": [
+        {
+          "text": "Measured memory use, throughput and learning behavior on the target workload.",
+          "feedback": "Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
+        },
+        {
+          "text": "Always use the largest batch that fits because it guarantees best accuracy.",
+          "feedback": "Fitting in memory does not establish the best learning behavior."
+        },
+        {
+          "text": "Always use one example because smaller batches guarantee better generalization.",
+          "feedback": "Smaller batches change update frequency and variability, but do not guarantee generalization."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
+    }
+  ]}
 />
 
 <LessonRecap

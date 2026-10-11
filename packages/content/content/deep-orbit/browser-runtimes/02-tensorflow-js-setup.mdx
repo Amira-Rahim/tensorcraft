@@ -173,7 +173,52 @@ Set up TensorFlow.js and verify the active backend.
 
 <Exercise slug="tfjs-setup" />
 
-<RecallPrompt question="Why does the selected backend matter, and how do you check it?" answer="Backends differ in operation support, startup cost, memory use and speed on a given device. Await initialization, call tf.getBackend(), then benchmark the actual workload with output readback included. Do not copy a latency budget from another machine." />
+<RecallPrompt
+  question="Verify the selected backend and its measured behavior."
+  answer="Backends differ in operation support, startup cost, memory use and speed on a given device. Await initialization, call tf.getBackend(), then benchmark the actual workload with output readback included. Do not copy a latency budget from another machine."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "After initialization, which call reports the active TFJS backend?",
+      "options": [
+        {
+          "text": "tf.getBackend()",
+          "feedback": "Await backend initialization, then inspect tf.getBackend()."
+        },
+        {
+          "text": "tf.memory()",
+          "feedback": "This reports memory information, not the selected backend."
+        },
+        {
+          "text": "model.summary()",
+          "feedback": "This describes model layers and parameters, not the active backend."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Await backend initialization, then inspect tf.getBackend()."
+    },
+    {
+      "kind": "choice",
+      "question": "How should you decide whether that backend meets your latency budget?",
+      "options": [
+        {
+          "text": "Use the latency measured on any developer laptop.",
+          "feedback": "Backend speed depends on the model and device."
+        },
+        {
+          "text": "Time only the call that queues predict(), without reading its output.",
+          "feedback": "GPU work can finish later than the JavaScript call returns."
+        },
+        {
+          "text": "Benchmark the actual workload on target devices, including output readback.",
+          "feedback": "Measure completed work, along with startup and memory costs, on the devices you support."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Measure completed work, along with startup and memory costs, on the devices you support."
+    }
+  ]}
+/>
 
 <LessonRecap whatYouLearned={["Import TF.js, await initialization and check tf.getBackend() before running the model.", "Backend speed depends on the model and device. Test the fallback on the weakest supported hardware.", "Check the result of tf.setBackend() and verify which backend actually initialized.", "Include output readback when measuring completed GPU inference."]} bridge="Just as `npm install react` brings a rendering runtime into a project, `npm install @tensorflow/tfjs` brings an ML inference runtime with the same install-import-configure flow." youCanNow="Install TensorFlow.js, initialize it, verify the active backend, and say why a device that falls back to WASM changes your latency budget." />
 

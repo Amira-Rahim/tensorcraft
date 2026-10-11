@@ -128,8 +128,30 @@ Score the DEEP SCAN classifier's first predictions with both losses, then write 
 <Exercise slug="mse-loss" />
 
 <RecallPrompt
-  question="For binary classification, why is binary cross-entropy preferred over mean squared error?"
+  question="For sigmoid binary classification, what is the ideal unclipped BCE derivative with respect to the output logit?"
   answer="Not because MSE's own slope goes flat: at a label of 1 and a prediction of 0.01 it is -1.98, close to its largest magnitude for predictions in [0, 1]. The sigmoid in front of it is the problem, with a slope of 0.0099 there, and backprop multiplies the two. In the ideal unclipped BCE-plus-sigmoid calculation, the derivative with respect to the output logit is prediction minus label. Stable logits-based implementations avoid taking logs of rounded probabilities. Earlier layers still contribute their own derivative factors."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "For sigmoid binary classification, what is the ideal unclipped BCE derivative with respect to the output logit?",
+      "options": [
+        {
+          "text": "prediction × (1 − prediction)",
+          "feedback": "That is the sigmoid derivative alone; it does not include the loss or label."
+        },
+        {
+          "text": "prediction − label",
+          "feedback": "BCE with sigmoid gives prediction minus label in the ideal unclipped calculation, avoiding the extra sigmoid factor found with MSE. Stable logits-based implementations avoid logs of rounded probabilities."
+        },
+        {
+          "text": "2 × (prediction − label) × prediction × (1 − prediction)",
+          "feedback": "That is the MSE-plus-sigmoid derivative; sigmoid saturation adds the small factor."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "BCE with sigmoid gives prediction minus label in the ideal unclipped calculation, avoiding the extra sigmoid factor found with MSE. Stable logits-based implementations avoid logs of rounded probabilities."
+    }
+  ]}
 />
 
 <LessonRecap

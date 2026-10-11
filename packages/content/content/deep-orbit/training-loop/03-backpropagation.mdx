@@ -169,12 +169,54 @@ Run backpropagation yourself: one call to `tf.variableGrads()`, behind a functio
 <Exercise slug="backprop-chain" />
 
 <RecallPrompt
-  question="What does tf.variableGrads() return, and what do you do with the result?"
+  question="Separate gradient computation from weight updates."
   answer="It returns an object with two keys: value (the loss scalar) and grads (a dict of gradient tensors keyed by variable name). You use the grads to update each weight, either via an optimizer or by manual subtraction."
+  checks={[
+    {
+      "kind": "choice",
+      "question": "What does tf.variableGrads() return?",
+      "options": [
+        {
+          "text": "Updated model weights and final accuracy.",
+          "feedback": "Gradient computation does not itself apply updates or measure final accuracy."
+        },
+        {
+          "text": "Only a JavaScript number containing the loss.",
+          "feedback": "The result also contains a dictionary of gradient tensors."
+        },
+        {
+          "text": "A loss scalar in value and gradient tensors in grads.",
+          "feedback": "value is the loss tensor; grads maps variable names to gradient tensors."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "value is the loss tensor; grads maps variable names to gradient tensors."
+    },
+    {
+      "kind": "choice",
+      "question": "What must happen after computing those gradients to train the model?",
+      "options": [
+        {
+          "text": "Nothing: reading gradients has already changed the weights.",
+          "feedback": "Computing derivatives and changing variables are separate operations."
+        },
+        {
+          "text": "Apply weight updates using the gradients.",
+          "feedback": "An optimizer or an explicit update changes the weights using the gradients."
+        },
+        {
+          "text": "Call compile() again to apply the gradients.",
+          "feedback": "compile() configures training; it does not apply the computed gradients."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "An optimizer or an explicit update changes the weights using the gradients."
+    }
+  ]}
 />
 
 <RecallPrompt
-  question="Why is numeric gradient estimation (nudge one weight, rerun) too expensive to train with, even though it can approximate a derivative?"
+  question="Explain why estimating each parameter gradient with a separate forward pass becomes expensive as a model grows."
   answer="It costs one full forward pass per parameter per training step: 673 parameters means 673 extra forward passes for a single update. Backpropagation applies the chain rule in one backward sweep, subject to floating-point arithmetic and the derivative rules of the operations. Its runtime depends on the graph and backend."
 />
 
