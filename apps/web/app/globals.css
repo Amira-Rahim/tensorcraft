@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@tensorcraft/worlds/css/worlds.css";
+@import "./components/mdx/deep-orbit-takeaways.css";
 /* Tailwind only auto-scans the app's own source tree; shared UI components
    in packages/ui use utility classes too (incl. arbitrary values like
    max-w-[440px]) and must be scanned explicitly or their utilities are

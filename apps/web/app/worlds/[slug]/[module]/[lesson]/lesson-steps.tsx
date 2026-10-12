@@ -1281,7 +1281,11 @@ function LessonStepsInner({
         )}
         <LessonShell
           rightKind={rightKind}
-          fullWidth={currentStep === PHASE.briefing || challengeWorkspace}
+          fullWidth={
+            currentStep === PHASE.briefing ||
+            challengeWorkspace ||
+            (worldSlug === "deep-orbit" && currentStep === PHASE.takeaways)
+          }
           workspace={challengeWorkspace}
           workspaceFocusRef={stepRef}
           workspaceLabel={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
@@ -1339,7 +1343,16 @@ function LessonStepsInner({
               >
                 {shellLeft}
                 {rightKind !== "pane" && (
-                  <div className="lesson-body-frame">{bottomNav}</div>
+                  <div
+                    className={
+                      worldSlug === "deep-orbit" &&
+                      currentStep === PHASE.takeaways
+                        ? "orbit-takeaways-nav"
+                        : "lesson-body-frame"
+                    }
+                  >
+                    {bottomNav}
+                  </div>
                 )}
               </div>
             )
@@ -2188,7 +2201,7 @@ function StepTakeaways({
     glossaryTerms: lesson.glossaryTerms,
   };
   return (
-    <div>
+    <div className={worldSlug === "deep-orbit" ? "orbit-takeaways" : undefined}>
       {/* The recall first, alone (spec 2026-09-24, section 2). The step
           spans the whole frame, with no 820 px reading cap and no step label
           over it: the step bar already names the step (owner, 2026-10-10). */}
@@ -2204,7 +2217,10 @@ function StepTakeaways({
           <div className="lesson-prose" data-testid="takeaways-prose">
             <LessonContent {...shared} visibleComponents={TAKEAWAYS_AFTER} />
           </div>
-          <LessonTermsList terms={lesson.glossaryTerms ?? []} />
+          <LessonTermsList
+            terms={lesson.glossaryTerms ?? []}
+            worldId={worldSlug}
+          />
         </>
       )}
     </div>

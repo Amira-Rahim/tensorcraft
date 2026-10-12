@@ -1,9 +1,11 @@
+import { DeepOrbitTerms } from "./deep-orbit-terms";
 import { useId } from "react";
 import { DocumentationLink } from "@tensorcraft/ui";
 import type { GlossaryEntry } from "@tensorcraft/content";
 
 interface LessonTermsListProps {
   terms: GlossaryEntry[];
+  worldId?: string;
 }
 
 type DocumentationKind = NonNullable<GlossaryEntry["documentation"]>["kind"];
@@ -28,9 +30,10 @@ const DOCUMENTATION_KIND_LABEL: Record<DocumentationKind, string> = {
  * no empty cell whatever the count (1 to 21 terms a lesson). The row grid
  * lives in globals.css under `.lesson-terms`.
  */
-export function LessonTermsList({ terms }: LessonTermsListProps) {
+export function LessonTermsList({ terms, worldId }: LessonTermsListProps) {
   const headingId = useId();
   if (terms.length === 0) return null;
+  if (worldId === "deep-orbit") return <DeepOrbitTerms terms={terms} />;
 
   return (
     <section

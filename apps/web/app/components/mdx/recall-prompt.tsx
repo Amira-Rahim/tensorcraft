@@ -6,6 +6,8 @@ import { ReviewPromptCard, type RecallAction } from "../review-prompt-card";
 
 interface RecallPromptProps {
   question: string;
+  example?: string;
+  variant?: "default" | "deep-orbit";
   checks?: RecallCheck[];
   children?: ReactNode;
   answer?: string;
@@ -14,6 +16,8 @@ interface RecallPromptProps {
 
 export function RecallPrompt({
   question,
+  example,
+  variant,
   checks,
   children,
   answer,
@@ -22,6 +26,8 @@ export function RecallPrompt({
   return (
     <ReviewPromptCard
       question={question}
+      example={example}
+      variant={variant}
       checks={checks}
       answer={children ?? answer}
       onAction={onAnswer}

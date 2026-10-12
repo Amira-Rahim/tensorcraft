@@ -92,11 +92,12 @@ the values for Farah and releases memory.
 
 <RecallPrompt
   question="Consider tf.tensor([0.2, 0.4, 0.6])."
+  example="tf.tensor([0.2, 0.4, 0.6])"
   answer="Its shape is [3]: one dimension containing three numbers. The line only creates a tensor. It does not train a model."
   checks={[
     {
       "kind": "shape",
-      "question": "What is the shape of tf.tensor([0.2, 0.4, 0.6])?",
+      "question": "What is this tensor’s shape?",
       "expected": [
         3
       ],

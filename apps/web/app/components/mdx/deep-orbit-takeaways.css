@@ -1,0 +1,781 @@
+/* Approved Deep Orbit takeaways: shared layout, lesson-specific content. */
+.orbit-takeaways,
+.orbit-takeaways-nav {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+.orbit-takeaways {
+  --orbit-soft: color-mix(in srgb, var(--tc-primary) 12%, var(--tc-bg));
+  color: var(--tc-text);
+}
+.orbit-takeaways :is(.orbit-recap, .orbit-terms) :where(h2, h3, p, figure) {
+  margin: 0;
+}
+.orbit-takeaways code {
+  font-family: var(--font-mono);
+}
+.orbit-takeaways :is(.orbit-recap, .orbit-check, .orbit-terms) code {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.orbit-check {
+  margin: 0;
+  min-width: 0;
+}
+.orbit-takeaways .orbit-check-heading {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -1.1px;
+  margin: 0 0 24px;
+}
+.orbit-check-example {
+  padding: 22px 26px;
+  background: var(--orbit-soft);
+  border-radius: 5px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+.orbit-takeaways .orbit-check-example code {
+  padding: 0;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--tc-text);
+  white-space: pre;
+}
+.orbit-check .review-prompt-question {
+  max-width: 65ch;
+  font-size: 22px;
+  line-height: 1.6;
+}
+.orbit-takeaways .orbit-check .review-prompt-note {
+  font-size: 14px;
+  margin: 8px 0 0;
+  line-height: 1.6;
+}
+.orbit-check-questions > fieldset + fieldset {
+  border-top: 1px solid var(--tc-border);
+}
+.orbit-check-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: start;
+  padding-block: 28px;
+}
+.orbit-check-prompt {
+  padding-top: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+}
+.orbit-check-response {
+  min-width: 0;
+}
+.orbit-check-input {
+  display: block;
+  width: 100%;
+  max-width: 264px;
+  height: 56px;
+  border: 1px solid var(--tc-border-interactive);
+  border-radius: 4px;
+  padding: 12px 16px;
+  background: var(--tc-surface);
+  color: var(--tc-text);
+  font: 20px/28px var(--font-mono);
+}
+.orbit-check-input[aria-invalid="true"] {
+  border-color: var(--tc-error);
+}
+.orbit-check-options {
+  display: grid;
+  gap: 12px;
+}
+.orbit-check-options[data-binary="true"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.orbit-check-option {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  padding: 17px 18px;
+  border: 1px solid var(--tc-border-interactive);
+  border-radius: 4px;
+  background: var(--tc-surface);
+  color: var(--tc-text);
+  font-size: 18px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.orbit-check-option:has(input:checked) {
+  background: var(--orbit-soft);
+  border-color: var(--tc-primary);
+  box-shadow: inset 0 0 0 1px var(--tc-primary);
+}
+.orbit-check-option:has(input:disabled) {
+  cursor: default;
+}
+.orbit-check-option input {
+  width: 18px;
+  height: 18px;
+  margin-top: 4px;
+}
+.orbit-check-option strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+}
+.orbit-check-option small {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+}
+.orbit-check-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  padding-top: 22px;
+  margin-top: 16px;
+  border-top: 1px solid var(--tc-border);
+}
+.orbit-check-submit,
+.orbit-check-explain {
+  min-height: 44px;
+  font: 14px/1.45 var(--font-mono);
+  cursor: pointer;
+}
+.orbit-check-submit {
+  order: 1;
+  padding: 11px 18px;
+  border-radius: 3px;
+  background: var(--tc-primary);
+  color: var(--tc-on-primary);
+}
+.orbit-check-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.orbit-check-explain {
+  color: var(--tc-muted);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.orbit-takeaways .orbit-section-heading {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  line-height: 1.25;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-recap {
+  padding: 44px 0 16px;
+  margin-top: 28px;
+  border-top: 1px solid var(--tc-border);
+}
+.orbit-takeaways .orbit-recap-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: start;
+}
+.orbit-takeaways .orbit-recap-copy {
+  max-width: 38ch;
+}
+.orbit-takeaways .orbit-recap-intro {
+  color: var(--tc-text);
+  font-size: 22px;
+  margin-top: 16px;
+  line-height: 1.6;
+}
+.orbit-takeaways .orbit-recap-note {
+  color: var(--tc-text);
+  font-size: 22px;
+  line-height: 1.6;
+  margin-top: 24px;
+}
+.orbit-takeaways .orbit-recap-note code {
+  font-size: 22px;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-tensor-figure {
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  max-width: 720px;
+}
+.orbit-takeaways .orbit-transform-grid {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  column-gap: 20px;
+  align-items: center;
+}
+.orbit-takeaways .orbit-row-label {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-transform-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 0;
+  padding: 18px 12px;
+  min-width: 0;
+  text-align: center;
+}
+.orbit-takeaways .orbit-transform-values span {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  line-height: 1.4;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-array-values {
+  position: relative;
+}
+.orbit-takeaways .orbit-array-values::before,
+.orbit-takeaways .orbit-array-values::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  width: 6px;
+  border-top: 1px solid var(--tc-muted);
+  border-bottom: 1px solid var(--tc-muted);
+}
+.orbit-takeaways .orbit-array-values::before {
+  left: 0;
+  border-left: 1px solid var(--tc-muted);
+}
+.orbit-takeaways .orbit-array-values::after {
+  right: 0;
+  border-right: 1px solid var(--tc-muted);
+}
+.orbit-takeaways .orbit-transform-function {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-value-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0 12px;
+  height: 44px;
+}
+.orbit-takeaways .orbit-value-link {
+  position: relative;
+}
+.orbit-takeaways .orbit-value-link::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 29px;
+  width: 1px;
+  background: var(--tc-border);
+}
+.orbit-takeaways .orbit-value-link::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 3px);
+  top: 22px;
+  width: 7px;
+  height: 7px;
+  border-bottom: 1px solid var(--tc-muted);
+  border-right: 1px solid var(--tc-muted);
+  transform: rotate(45deg);
+}
+.orbit-takeaways .orbit-tensor-values {
+  background: var(--orbit-soft);
+  border-radius: 4px;
+}
+.orbit-takeaways .orbit-axis-bracket {
+  grid-column: 2;
+  height: 11px;
+  border: 1px solid var(--tc-primary);
+  border-top: 0;
+  margin: 12px 12px 0;
+  position: relative;
+}
+.orbit-takeaways .orbit-axis-bracket::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  height: 10px;
+  width: 1px;
+  background: var(--tc-primary);
+}
+.orbit-takeaways .orbit-shape-reading {
+  grid-column: 2;
+  text-align: center;
+  margin-top: 19px;
+}
+.orbit-takeaways .orbit-shape-reading code {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 26px;
+  line-height: 1.4;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-shape-reading code span {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-shape-reading p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+  margin-top: 5px;
+}
+.orbit-takeaways .orbit-tensor-figure figcaption {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 22px 0 0 160px;
+  text-align: center;
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-terms {
+  margin-top: 29px;
+  border-top: 1px solid var(--tc-border);
+  border-bottom: 1px solid var(--tc-border);
+}
+.orbit-takeaways .orbit-terms summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  padding: 16px 0;
+  cursor: pointer;
+  font-size: 16px;
+  list-style: none;
+}
+.orbit-takeaways .orbit-terms summary::-webkit-details-marker {
+  display: none;
+}
+.orbit-takeaways .orbit-terms .orbit-expand-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-expand-mark::before {
+  content: "+";
+}
+.orbit-takeaways .orbit-terms[open] .orbit-expand-mark::before {
+  content: "−";
+}
+.orbit-takeaways .orbit-glossary {
+  padding: 12px 0 32px;
+}
+.orbit-takeaways .orbit-term-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 32px;
+  border-bottom: 1px solid var(--tc-border);
+}
+.orbit-takeaways .orbit-term-button {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  padding: 12px 0 17px;
+  border: 0;
+  background: transparent;
+  color: var(--tc-muted);
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  min-height: 52px;
+}
+.orbit-takeaways .orbit-term-button[aria-pressed="true"] {
+  color: var(--tc-text);
+  font-weight: 600;
+}
+.orbit-takeaways .orbit-term-button[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--tc-primary);
+}
+.orbit-takeaways .orbit-glossary-body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 48px;
+  padding: 32px 0 0;
+  align-items: start;
+}
+.orbit-takeaways .orbit-term-copy {
+  max-width: 42ch;
+  min-width: 0;
+}
+.orbit-takeaways .orbit-term-definition {
+  color: var(--tc-text);
+  font-size: 22px;
+  line-height: 1.6;
+}
+.orbit-takeaways .orbit-term-detail {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-term-detail code {
+  color: var(--tc-text);
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.orbit-takeaways .orbit-term-detail p {
+  margin-top: 10px;
+}
+.orbit-takeaways .orbit-term-detail strong {
+  font-weight: 500;
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-glossary-stage {
+  min-width: 0;
+  margin: 0;
+  padding: 26px 28px 22px;
+  background: var(--tc-surface);
+  border-radius: 6px;
+}
+.orbit-takeaways .orbit-glossary-stage figcaption {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+  margin-top: 24px;
+}
+.orbit-takeaways .orbit-study-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 30px;
+  align-items: start;
+}
+.orbit-takeaways .orbit-study-object {
+  min-width: 0;
+}
+.orbit-takeaways .orbit-study-title {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--tc-muted);
+  margin-bottom: 18px;
+}
+.orbit-takeaways .orbit-study-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  background: var(--orbit-soft);
+  padding: 15px 8px;
+  border-radius: 3px;
+}
+.orbit-takeaways .orbit-study-values span {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  line-height: 1.5;
+  color: var(--tc-text);
+  padding: 6px 0;
+}
+.orbit-takeaways .orbit-study-underbrace {
+  height: 10px;
+  border: 1px solid var(--tc-primary);
+  border-top: 0;
+  margin: 10px 8px 0;
+  position: relative;
+}
+.orbit-takeaways .orbit-study-underbrace::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 1px;
+  height: 8px;
+  background: var(--tc-primary);
+}
+.orbit-takeaways .orbit-study-shape {
+  text-align: center;
+  margin-top: 13px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-study-shape code {
+  font-size: 26px;
+  line-height: 1.4;
+  color: var(--tc-text);
+  margin-left: 8px;
+}
+.orbit-takeaways .orbit-study-axis {
+  position: relative;
+  height: 26px;
+  border-top: 1px solid var(--tc-primary);
+  margin: 15px 8px 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+  padding-top: 4px;
+}
+.orbit-takeaways .orbit-study-axis::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid var(--tc-primary);
+  border-right: 1px solid var(--tc-primary);
+  transform: rotate(45deg);
+}
+.orbit-takeaways .orbit-study-matrix {
+  position: relative;
+  padding-left: 25px;
+}
+.orbit-takeaways .orbit-study-vertical {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--tc-primary);
+}
+.orbit-takeaways .orbit-study-vertical::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  bottom: 0;
+  width: 7px;
+  height: 7px;
+  border-bottom: 1px solid var(--tc-primary);
+  border-right: 1px solid var(--tc-primary);
+  transform: rotate(45deg);
+}
+.orbit-takeaways .orbit-study-vertical-label {
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  font-size: 14px;
+  line-height: 1.3;
+  white-space: nowrap;
+  background: var(--tc-surface);
+  padding: 0 5px;
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-study-axis-count {
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--tc-text);
+  line-height: 1.5;
+}
+.orbit-takeaways
+  .orbit-glossary-stage[data-term="dimensions"]
+  .orbit-study-comparison {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.orbit-takeaways
+  .orbit-glossary-stage[data-term="dimensions"]
+  .orbit-study-values
+  span {
+  font-size: 20px;
+}
+.orbit-takeaways
+  .orbit-glossary-stage[data-term="dimensions"]
+  .orbit-study-values {
+  padding: 12px 5px;
+}
+
+/* Long term lists wrap; terms without a useful illustration keep a readable measure. */
+.orbit-takeaways .orbit-glossary-body:not([data-illustrated]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.orbit-takeaways .orbit-glossary-body:not([data-illustrated]) .orbit-term-copy {
+  max-width: 65ch;
+}
+.orbit-term-documentation {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 6px;
+  margin-top: 24px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.orbit-term-documentation > span {
+  color: var(--tc-muted);
+}
+.orbit-takeaways .orbit-recap-summary {
+  overflow-wrap: anywhere;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 64px;
+  margin-top: 28px;
+}
+.orbit-takeaways .orbit-recap-summary code {
+  font-size: 1em;
+}
+.orbit-takeaways .orbit-recap-summary ul {
+  padding: 0 0 0 24px;
+  margin: 0;
+  list-style: disc;
+}
+.orbit-takeaways .orbit-recap-summary li {
+  font-size: 22px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  padding-left: 8px;
+}
+.orbit-takeaways .orbit-recap-summary li::marker {
+  color: var(--tc-primary);
+}
+.orbit-takeaways .orbit-recap-application h3 {
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.orbit-takeaways .orbit-recap-application p {
+  font-size: 22px;
+  line-height: 1.6;
+}
+.orbit-takeaways .orbit-recap-application p + h3 {
+  margin-top: 32px;
+}
+.orbit-takeaways .orbit-self-assessment {
+  margin-bottom: 32px;
+}
+.orbit-takeaways .orbit-self-assessment > h4 {
+  font: 600 32px/1.25 var(--font-sans);
+  color: var(--tc-text);
+}
+.orbit-takeaways .orbit-self-assessment .review-prompt-question {
+  font: 400 22px/1.6 var(--font-sans);
+}
+.orbit-takeaways .orbit-self-assessment :is(textarea, .review-prompt-answer) {
+  font-size: 20px;
+  line-height: 1.6;
+}
+@media (max-width: 900px) {
+  .orbit-check-row {
+    gap: 28px;
+  }
+  .orbit-check-options[data-binary="true"] {
+    grid-template-columns: 1fr;
+  }
+  .orbit-takeaways
+    :is(.orbit-recap-layout, .orbit-recap-summary, .orbit-glossary-body) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .orbit-takeaways :is(.orbit-recap-copy, .orbit-term-copy) {
+    max-width: 65ch;
+  }
+  .orbit-takeaways .orbit-tensor-figure {
+    width: 100%;
+    max-width: none;
+  }
+}
+@media (max-width: 650px) {
+  .orbit-check-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding-block: 24px;
+  }
+  .orbit-check-prompt {
+    padding: 0;
+  }
+  .orbit-check-input {
+    max-width: none;
+  }
+  .orbit-check-example {
+    padding: 18px 16px;
+  }
+  .orbit-takeaways .orbit-check-example code {
+    font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+  .orbit-check-actions {
+    gap: 12px;
+    justify-content: space-between;
+  }
+  .orbit-check-explain {
+    font-family: var(--font-sans);
+  }
+  .orbit-takeaways .orbit-recap {
+    padding-top: 30px;
+  }
+  .orbit-takeaways .orbit-section-heading {
+    font-size: 28px;
+  }
+  .orbit-takeaways .orbit-transform-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .orbit-takeaways .orbit-row-label {
+    margin-bottom: 8px;
+  }
+  .orbit-takeaways .orbit-transform-values {
+    padding: 16px 12px;
+  }
+  .orbit-takeaways .orbit-transform-values span {
+    font-size: 24px;
+  }
+  .orbit-takeaways .orbit-transform-function {
+    margin: 16px 0 8px;
+    text-align: center;
+  }
+  .orbit-takeaways .orbit-value-links {
+    height: 32px;
+  }
+  .orbit-takeaways :is(.orbit-axis-bracket, .orbit-shape-reading) {
+    grid-column: 1;
+  }
+  .orbit-takeaways .orbit-tensor-figure figcaption {
+    margin-left: 0;
+  }
+  .orbit-takeaways .orbit-term-picker {
+    gap: 0 20px;
+  }
+  .orbit-takeaways .orbit-term-button {
+    font-size: 18px;
+    padding-block: 12px 14px;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+  .orbit-takeaways .orbit-glossary-stage {
+    padding: 22px 16px;
+  }
+  .orbit-takeaways
+    .orbit-glossary-stage[data-term="dimensions"]
+    .orbit-study-comparison {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .orbit-takeaways
+    .orbit-glossary-stage[data-term="dimensions"]
+    .orbit-study-values
+    span {
+    font-size: 24px;
+  }
+}

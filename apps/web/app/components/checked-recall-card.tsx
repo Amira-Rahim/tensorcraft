@@ -13,15 +13,20 @@ type Result = "correct" | "incorrect" | "revealed" | null;
 
 export function CheckedRecallCard({
   question,
+  example,
+  variant,
   checks,
   onAction,
   onContinue,
 }: {
   question: string;
+  example?: string;
+  variant?: "default" | "deep-orbit";
   checks: RecallCheck[];
   onAction?: (action: RecallAction) => void;
   onContinue?: () => void;
 }) {
+  const lessonLayout = variant === "deep-orbit";
   const id = useId();
   const [responses, setResponses] = useState<string[]>(() =>
     checks.map(() => ""),
@@ -95,24 +100,42 @@ export function CheckedRecallCard({
   return (
     <form
       aria-label="Knowledge check"
-      className="review-check p-5 my-6 brutalist-shadow bg-surface-raised border border-border"
+      className={
+        lessonLayout
+          ? "review-check orbit-check"
+          : "review-check p-5 my-6 brutalist-shadow bg-surface-raised border border-border"
+      }
       onSubmit={(event) => {
         event.preventDefault();
         checkAnswers();
       }}
     >
-      <h4 className="font-mono text-sm font-semibold text-primary mb-3">
-        Knowledge check
-      </h4>
-      {(checks.length > 1 || checks[0].question !== question) && (
-        <p className="review-prompt-question text-text-primary mb-4">
-          <ProseText>{question}</ProseText>
-        </p>
+      {lessonLayout ? (
+        <h2 className="orbit-check-heading">Check what you learned</h2>
+      ) : (
+        <h4 className="font-mono text-sm font-semibold text-primary mb-3">
+          Knowledge check
+        </h4>
+      )}
+      {lessonLayout && example ? (
+        <div className="orbit-check-example">
+          <code>{example}</code>
+        </div>
+      ) : (
+        (checks.length > 1 || checks[0].question !== question) && (
+          <p className="review-prompt-question text-text-primary mb-4">
+            <ProseText>{question}</ProseText>
+          </p>
+        )
       )}
       <p className="review-prompt-note text-xs text-text-muted mb-4">
         Each answer is checked separately. You can retry any mistakes.
       </p>
-      <div className="grid gap-6 max-w-[75ch]">
+      <div
+        className={
+          lessonLayout ? "orbit-check-questions" : "grid gap-6 max-w-[75ch]"
+        }
+      >
         {checks.map((check, index) => {
           const result = results[index];
           const locked = done || result === "correct";
@@ -134,80 +157,129 @@ export function CheckedRecallCard({
             >
               <legend
                 id={questionId}
-                className="mb-3 font-medium text-text-primary"
+                className={
+                  lessonLayout
+                    ? "sr-only"
+                    : "mb-3 font-medium text-text-primary"
+                }
               >
-                <ProseText>{check.question}</ProseText>
+                {lessonLayout ? (
+                  check.question
+                ) : (
+                  <ProseText>{check.question}</ProseText>
+                )}
               </legend>
-              {check.kind === "choice" ? (
-                <div className="grid gap-2">
-                  {check.options.map((option, optionIndex) => (
-                    <label
-                      key={optionIndex}
-                      className={`flex min-h-11 items-start gap-3 border p-3 text-sm text-text-primary ${responses[index] === String(optionIndex) ? "border-primary bg-surface" : "border-interactive"} ${locked ? "" : "cursor-pointer hover:bg-surface"}`}
-                    >
-                      <input
-                        type="radio"
-                        name={`${id}-choice-${index}`}
-                        value={optionIndex}
-                        checked={responses[index] === String(optionIndex)}
-                        disabled={locked}
-                        onChange={() => change(index, String(optionIndex))}
-                        className="mt-1 shrink-0 accent-primary"
-                      />
-                      <span>
-                        <ProseText>{option.text}</ProseText>
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    aria-labelledby={questionId}
-                    aria-describedby={`${helpId}${result ? ` ${feedbackId}` : ""}`}
-                    aria-invalid={result === "incorrect" || undefined}
-                    value={responses[index]}
-                    disabled={locked}
-                    onChange={(event) => change(index, event.target.value)}
-                    autoComplete="off"
-                    spellCheck={false}
-                    inputMode={check.kind === "number" ? "decimal" : "text"}
-                    className="w-full max-w-sm min-h-11 p-3 border border-interactive bg-surface text-text-primary font-mono"
-                  />
-                  <p
-                    id={helpId}
-                    className="review-prompt-note mt-2 text-xs text-text-muted"
-                  >
-                    {check.kind === "shape"
-                      ? "Use brackets, for example [2, 4]. Spaces are fine."
-                      : "Enter a number without units."}
-                  </p>
-                </>
-              )}
-              {result && (
+              <div className={lessonLayout ? "orbit-check-row" : undefined}>
+                {lessonLayout && (
+                  <div className="orbit-check-prompt" aria-hidden="true">
+                    {check.question}
+                  </div>
+                )}
                 <div
-                  id={feedbackId}
-                  className={`mt-3 border-l-2 pl-3 text-sm text-text-primary ${result === "correct" ? "border-success" : result === "incorrect" ? "border-error" : "border-primary"}`}
+                  className={lessonLayout ? "orbit-check-response" : undefined}
                 >
-                  <strong
-                    className={
-                      result === "correct"
-                        ? "text-success"
-                        : result === "incorrect"
-                          ? "text-error"
-                          : "text-text-primary"
-                    }
-                  >
-                    {result === "correct"
-                      ? "Correct. "
-                      : result === "incorrect"
-                        ? "Not yet. "
-                        : `Expected answer: ${expectedAnswer}${/[.!?]$/.test(expectedAnswer) ? "" : "."} `}
-                  </strong>
-                  <ProseText>{feedback}</ProseText>
+                  {check.kind === "choice" ? (
+                    <div
+                      className={
+                        lessonLayout ? "orbit-check-options" : "grid gap-2"
+                      }
+                      data-binary={
+                        (check.options.length === 2 &&
+                          check.options.every((option) =>
+                            /^(Yes|No)(?:,|$)/.test(option.text),
+                          )) ||
+                        undefined
+                      }
+                    >
+                      {check.options.map((option, optionIndex) => (
+                        <label
+                          key={optionIndex}
+                          className={
+                            lessonLayout
+                              ? "orbit-check-option"
+                              : `flex min-h-11 items-start gap-3 border p-3 text-sm text-text-primary ${responses[index] === String(optionIndex) ? "border-primary bg-surface" : "border-interactive"} ${locked ? "" : "cursor-pointer hover:bg-surface"}`
+                          }
+                        >
+                          <input
+                            type="radio"
+                            name={`${id}-choice-${index}`}
+                            value={optionIndex}
+                            checked={responses[index] === String(optionIndex)}
+                            disabled={locked}
+                            onChange={() => change(index, String(optionIndex))}
+                            className="mt-1 shrink-0 accent-primary"
+                          />
+                          <span>
+                            {lessonLayout && /^(Yes|No), /.test(option.text) ? (
+                              <>
+                                <strong>{option.text.split(", ")[0]}</strong>
+                                <small>
+                                  {option.text.slice(
+                                    option.text.indexOf(", ") + 2,
+                                  )}
+                                </small>
+                              </>
+                            ) : (
+                              <ProseText>{option.text}</ProseText>
+                            )}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <input
+                        type="text"
+                        aria-labelledby={questionId}
+                        aria-describedby={`${helpId}${result ? ` ${feedbackId}` : ""}`}
+                        aria-invalid={result === "incorrect" || undefined}
+                        value={responses[index]}
+                        disabled={locked}
+                        onChange={(event) => change(index, event.target.value)}
+                        autoComplete="off"
+                        spellCheck={false}
+                        inputMode={check.kind === "number" ? "decimal" : "text"}
+                        className={
+                          lessonLayout
+                            ? "orbit-check-input"
+                            : "w-full max-w-sm min-h-11 p-3 border border-interactive bg-surface text-text-primary font-mono"
+                        }
+                      />
+                      <p
+                        id={helpId}
+                        className="review-prompt-note mt-2 text-xs text-text-muted"
+                      >
+                        {check.kind === "shape"
+                          ? "Use brackets, for example [2, 4]. Spaces are fine."
+                          : "Enter a number without units."}
+                      </p>
+                    </>
+                  )}
+                  {result && (
+                    <div
+                      id={feedbackId}
+                      className={`mt-3 border-l-2 pl-3 text-sm text-text-primary ${result === "correct" ? "border-success" : result === "incorrect" ? "border-error" : "border-primary"}`}
+                    >
+                      <strong
+                        className={
+                          result === "correct"
+                            ? "text-success"
+                            : result === "incorrect"
+                              ? "text-error"
+                              : "text-text-primary"
+                        }
+                      >
+                        {result === "correct"
+                          ? "Correct. "
+                          : result === "incorrect"
+                            ? "Not yet. "
+                            : `Expected answer: ${expectedAnswer}${/[.!?]$/.test(expectedAnswer) ? "" : "."} `}
+                      </strong>
+                      <ProseText>{feedback}</ProseText>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </fieldset>
           );
         })}
@@ -227,10 +299,23 @@ export function CheckedRecallCard({
         {summary}
       </div>
       {!done ? (
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div
+          className={
+            lessonLayout ? "orbit-check-actions" : "mt-4 flex flex-wrap gap-2"
+          }
+        >
+          {lessonLayout && (
+            <button
+              type="button"
+              className="orbit-check-explain"
+              onClick={reveal}
+            >
+              Show an explanation
+            </button>
+          )}
           <button
             type="submit"
-            className={buttonClass}
+            className={lessonLayout ? "orbit-check-submit" : buttonClass}
             disabled={responses.some((response) => !response.trim())}
           >
             {submitted.current
@@ -239,9 +324,11 @@ export function CheckedRecallCard({
                 ? "Check answer"
                 : "Check answers"}
           </button>
-          <button type="button" className={buttonClass} onClick={reveal}>
-            I couldn&apos;t recall it
-          </button>
+          {!lessonLayout && (
+            <button type="button" className={buttonClass} onClick={reveal}>
+              I couldn&apos;t recall it
+            </button>
+          )}
         </div>
       ) : onContinue ? (
         <button

@@ -9,6 +9,8 @@ export type RecallAction = "attempted" | ReviewOutcome;
 
 interface ReviewPromptCardProps {
   question: string;
+  example?: string;
+  variant?: "default" | "deep-orbit";
   answer: ReactNode;
   checks?: RecallCheck[];
   onAction?: (action: RecallAction) => void;
@@ -24,6 +26,7 @@ export function ReviewPromptCard(props: ReviewPromptCardProps) {
 }
 
 function SelfAssessmentCard({
+  variant,
   question,
   answer,
   onAction,
@@ -46,7 +49,13 @@ function SelfAssessmentCard({
   const buttonClass =
     "min-h-11 px-4 py-2 text-sm font-mono border border-interactive bg-surface-raised text-text-primary hover:bg-surface disabled:opacity-50";
   return (
-    <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+    <div
+      className={
+        variant === "deep-orbit"
+          ? "orbit-self-assessment"
+          : "p-5 my-6 brutalist-shadow bg-surface-raised border border-border"
+      }
+    >
       <div
         role="status"
         aria-live="polite"

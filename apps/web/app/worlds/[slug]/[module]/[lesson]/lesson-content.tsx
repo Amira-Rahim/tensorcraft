@@ -1,4 +1,5 @@
 "use client";
+import { DeepOrbitRecap } from "./deep-orbit-recap";
 import { ProseText } from "@tensorcraft/ui/prose-text";
 import { createElement } from "react";
 import { LessonCharacters } from "@/app/components/lesson-characters";
@@ -488,7 +489,11 @@ export function LessonContent({
       LessonRecap: (props: React.ComponentProps<typeof LessonRecap>) => {
         const insideEpilogue = useContext(EpilogueContext);
         return insideEpilogue || shouldShow("LessonRecap") ? (
-          <LessonRecap {...props} />
+          worldId === "deep-orbit" && !insideEpilogue ? (
+            <DeepOrbitRecap {...props} lessonId={lessonId} />
+          ) : (
+            <LessonRecap {...props} />
+          )
         ) : (
           <span data-post-recap-marker hidden />
         );
@@ -535,6 +540,7 @@ export function LessonContent({
         shouldShow("RecallPrompt") ? (
           <RegisteredRecallPrompt
             {...props}
+            variant={worldId === "deep-orbit" ? "deep-orbit" : "default"}
             registry={pendingRecallRef}
             report={reportRecallPending}
             onAnswer={(result) => {
