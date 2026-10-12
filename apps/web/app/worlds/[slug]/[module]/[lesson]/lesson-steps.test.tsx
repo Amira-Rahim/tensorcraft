@@ -619,11 +619,19 @@ describe("LessonSteps, step navigation chrome", () => {
     const h1s = screen.getAllByRole("heading", { level: 1 });
     expect(h1s).toHaveLength(1);
     expect(h1s[0]).toHaveTextContent(lesson.title);
-    // The fade-out marker is atmosphere for sighted readers only: hidden
-    // from the tree, no longer exempt from the contrast rule.
-    const fade = screen.getByText(/fade out/i);
-    expect(fade).toHaveAttribute("aria-hidden", "true");
-    expect(fade).not.toHaveAttribute("data-decorative");
+    expect(screen.getByText("Mission complete")).toBeInTheDocument();
+    expect(screen.queryByText(/fade out/i)).not.toBeInTheDocument();
+    // The archive's scope must stay nonempty: empty means render everything.
+    const archive = document.querySelector(".orbit-epilogue-archive")!;
+    expect(archive).not.toHaveAttribute("open");
+    expect(
+      archive.querySelector("[data-testid='lesson-content']"),
+    ).toHaveAttribute("data-visible", "postrecap");
+    expect(
+      document.querySelector(
+        ".orbit-epilogue-story [data-testid='lesson-content']",
+      ),
+    ).toHaveAttribute("data-visible", "DispatchTease,Epilogue");
   });
 
   it("leaves the nav's own bottom padding as the whole gap to the footer", () => {
@@ -678,7 +686,8 @@ describe("LessonSteps, step navigation chrome", () => {
     const root = screen.getByRole("group", {
       name: "Step 5 of 5: Epilogue",
     }).firstElementChild;
-    expect(root).toHaveClass("text-center", "pt-12");
+    expect(root).toHaveClass("orbit-epilogue");
+    expect(screen.getByText("Mission complete")).toBeInTheDocument();
     expect(root).not.toHaveClass("py-12");
   });
 

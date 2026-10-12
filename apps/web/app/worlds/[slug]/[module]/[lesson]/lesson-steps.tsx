@@ -52,6 +52,7 @@ import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
+import { LessonEpilogue } from "./lesson-epilogue";
 import type { GlossaryEntry, LessonReference } from "@tensorcraft/content";
 import {
   PHASE,
@@ -245,6 +246,9 @@ const TAKEAWAYS_AFTER = new Set([
   "NextLesson",
 ]);
 const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
+// A nonempty prose-only scope: an empty set means the entire lesson.
+// showPostRecap reveals the authored prose after the hidden recap marker.
+const EPILOGUE_ARCHIVE_COMPONENTS = new Set(["postrecap"]);
 
 /* Exported for the content-partition contract test only: the test sweeps
    every lesson MDX against these sets so a component that would render on
@@ -320,6 +324,11 @@ function LessonStepsInner({
   const passedExercisesRef = useRef<Set<string>>(new Set(restoredPasses));
   const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
+  const openingEpilogue =
+    currentStep === PHASE.epilogue &&
+    worldSlug === "deep-orbit" &&
+    moduleSlug === "foundations" &&
+    lesson.slug === "introduction-to-tensors";
   const challengeWorkspace =
     currentStep === PHASE.challenge &&
     worldSlug === "deep-orbit" &&
@@ -1266,7 +1275,7 @@ function LessonStepsInner({
         {exerciseHistoryUnavailable && (
           <p
             role="status"
-            className="mx-auto mb-4 max-w-7xl px-5 md:px-12 text-sm text-text-muted"
+            className="lesson-frame mb-4 text-sm text-text-muted"
           >
             Saved exercise passes could not be loaded. This browser’s progress
             is still available.{" "}
@@ -1281,11 +1290,6 @@ function LessonStepsInner({
         )}
         <LessonShell
           rightKind={rightKind}
-          fullWidth={
-            currentStep === PHASE.briefing ||
-            challengeWorkspace ||
-            (worldSlug === "deep-orbit" && currentStep === PHASE.takeaways)
-          }
           workspace={challengeWorkspace}
           workspaceFocusRef={stepRef}
           workspaceLabel={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
@@ -1304,7 +1308,7 @@ function LessonStepsInner({
           controls={mobileControls}
           footer={rightKind === "pane" ? bottomNav : undefined}
           chrome={
-            <div className="w-full px-5 md:px-12">
+            <div className="lesson-frame">
               <ChromeBar
                 lessons={lessons}
                 lessonSlug={lessonSlug}
@@ -1348,7 +1352,9 @@ function LessonStepsInner({
                       worldSlug === "deep-orbit" &&
                       currentStep === PHASE.takeaways
                         ? "orbit-takeaways-nav"
-                        : "lesson-body-frame"
+                        : openingEpilogue
+                          ? "orbit-epilogue-nav"
+                          : "lesson-body-frame"
                     }
                   >
                     {bottomNav}
@@ -2088,7 +2094,7 @@ function StepConcept({
         moduleSlug={moduleSlug}
         learningGoals={visualFirst ? objectives : undefined}
       />
-      <div className="mx-auto max-w-[820px]">
+      <div className="max-w-[820px]">
         {!visualFirst && (
           <>
             <PhaseChip label="Concept" icon={"\u25CE"} />
@@ -2249,6 +2255,50 @@ function StepConsequence({
    *  its module; null otherwise (replay, mid-module, no patch art). */
   award?: { src: string; moduleName: string; moduleTerm: string } | null;
 }) {
+  if (
+    worldSlug === "deep-orbit" &&
+    moduleSlug === "foundations" &&
+    lessonSlug === "introduction-to-tensors"
+  ) {
+    const shared = {
+      lesson,
+      exercises,
+      worldId: worldSlug,
+      moduleId: moduleSlug,
+      lessonId: lessonSlug,
+      glossaryTerms: lesson.glossaryTerms,
+    };
+    return (
+      <LessonEpilogue
+        title={lesson.title}
+        outcome={lesson.consequence.narrative}
+        scene={
+          lesson.scene
+            ? {
+                src: `/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}${lesson.scene.epilogueLocation ? "-epilogue" : ""}.webp`,
+                alt:
+                  lesson.scene.epiloguePortraitAlt ?? lesson.scene.portraitAlt,
+                location:
+                  lesson.scene.epilogueLocation ?? lesson.scene.location,
+              }
+            : undefined
+        }
+        archive={
+          <LessonContent
+            {...shared}
+            visibleComponents={EPILOGUE_ARCHIVE_COMPONENTS}
+            showPostRecap
+          />
+        }
+        award={award ? <PatchAward {...award} /> : undefined}
+        guestCapture={
+          isFreeModule ? <GuestEmailCapture worldSlug={worldSlug} /> : undefined
+        }
+      >
+        <LessonContent {...shared} visibleComponents={CONSEQUENCE_COMPONENTS} />
+      </LessonEpilogue>
+    );
+  }
   return (
     <div className="text-center pt-12">
       {/* FADE OUT marker. Screenplay atmosphere, hidden from the tree, and
@@ -2278,7 +2328,7 @@ function StepConsequence({
           src={`/scenes/${worldSlug}/${moduleSlug}/${lessonSlug}${lesson.scene.epilogueLocation ? "-epilogue" : ""}.webp`}
           alt={lesson.scene.epiloguePortraitAlt ?? lesson.scene.portraitAlt}
           aspectRatio="21/9"
-          className="lesson-ending-scene mb-7 mx-auto max-w-[960px]"
+          className="lesson-ending-scene mb-7 w-full"
         />
       )}
 

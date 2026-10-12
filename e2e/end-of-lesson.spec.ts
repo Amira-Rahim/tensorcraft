@@ -145,9 +145,9 @@ test.describe("Patch award moment", () => {
       .first()
       .click();
 
-    await expect(
-      page.getByText("Mission Complete", { exact: false }).first(),
-    ).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/mission complete/i).first()).toBeVisible({
+      timeout: 15000,
+    });
     await expect(page.getByTestId("patch-award")).toHaveCount(0);
   });
 });

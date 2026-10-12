@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@tensorcraft/worlds/css/worlds.css";
 @import "./components/mdx/deep-orbit-takeaways.css";
+@import "./worlds/[slug]/[module]/[lesson]/lesson-epilogue.css";
 /* Tailwind only auto-scans the app's own source tree; shared UI components
    in packages/ui use utility classes too (incl. arbitrary values like
    max-w-[440px]) and must be scanned explicitly or their utilities are
@@ -425,10 +426,10 @@ body {
    - --l-aside-pad (20 px) is defined and nothing reads it: the companions'
      p-5 lives in packages/ui (the bridge callout and the drawer) and in
      the concept reference.
-   The frame's widths repeat as literals in classes and grid templates:
-   820 px for the reading column, 600 px for the story picture, 280 to
-   544 px for the story beats track, and 440 px for a stacked dialogue beat. */
+   Reading measures stay inside the full-width page grid: 820 px for the
+   teaching column and 440 px for a stacked dialogue beat. */
 .lesson-page {
+  --l-page-gutter: 20px;
   --l-gutter: 40px;
   --l-row: 24px;
   --l-heading: 16px;
@@ -438,6 +439,17 @@ body {
   --l-nav-top: 40px;
   --l-nav-inner: 24px;
   --l-nav-bottom: 40px;
+}
+
+/* One outer grid for every lesson and step, including its chrome and nav. */
+.lesson-frame {
+  width: 100%;
+  padding-inline: var(--l-page-gutter, 20px);
+}
+@media (width >= 48rem) {
+  .lesson-page {
+    --l-page-gutter: 48px;
+  }
 }
 
 /* A compact lesson identity orients the learner above the navigation.
@@ -535,12 +547,13 @@ body {
 }
 /* End reading column */
 
-/* The Briefing title and lesson chrome use the full page width. The scene
-   and its Continue control share the same readable frame as other steps. */
+/* Inner sections inherit the grid instead of imposing another page width. */
 .lesson-body-frame {
   width: 100%;
-  max-width: 1184px;
-  margin-inline: auto;
+}
+.lesson-page
+  :is([data-testid="course-orientation"], [data-testid="scene-context"]) {
+  max-width: 75ch;
 }
 
 /* A scene's learning note spans the reading frame, outside its dialogue.
@@ -755,31 +768,28 @@ body {
   }
 }
 
-/* Briefing story grid: the picture beside the dialogue, with scene context
-   above both columns. Below lg they stack
-   in DOM order in one column no wider than 820 px, with the row gap between
-   them and the picture no wider than 600 px. From lg the beats column is
-   280 to 544 px wide and the plate column takes the rest: 600 and 544 px at
-   the frame's full width (windows of 1,280 px and wider, the spec's
-   numbers), about 344 and 544 px at 1,024 px, so the picture shrinks before
-   the dialogue does. The breakpoint matches Tailwind's lg (64rem), so the frame's
-   lg: utilities and this grid switch together. */
+/* Briefing fills the same grid as the other steps. The picture scales with
+   its column while dialogue keeps a readable measure within its own track. */
 .lesson-story-grid {
   display: grid;
-  grid-template-columns: minmax(0, 820px);
+  grid-template-columns: minmax(0, 1fr);
   column-gap: var(--l-gutter, 40px);
   row-gap: var(--l-row, 24px);
 }
 .lesson-story-plate > figure {
-  max-width: 600px;
+  width: 100%;
   margin: 0;
+}
+.lesson-story-grid > .lesson-step-content {
+  min-width: 0;
+  max-width: 65ch;
 }
 .lesson-story-plate:not(:has(> figure)) {
   display: none;
 }
 @media (width >= 64rem) {
   .lesson-story-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 544px);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   }
   .lesson-story-plate {
     align-self: start;
@@ -787,7 +797,7 @@ body {
   /* No picture (no scene, or the still failed to load): one column, so the
      beats never sit beside an empty one. */
   .lesson-story-grid:not(:has(> .lesson-story-plate > figure)) {
-    grid-template-columns: minmax(0, 820px);
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 /* The beats column is a grid item, so its last story block's margin can no

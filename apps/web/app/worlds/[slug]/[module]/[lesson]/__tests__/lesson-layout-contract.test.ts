@@ -208,15 +208,14 @@ describe("the lesson layout stylesheet", () => {
     // sit outside the reading block, so fold the whole stylesheet as the
     // cases above do.
     const wholeFolded = css.replace(/\n\s+(?=[>+])/g, " ");
-    // Stacked below lg: one column capped like spanning prose, the row gap
-    // between the plate column and the beats, the picture capped at 600 px.
+    // Stacked below lg: the picture fills the shared lesson grid.
     const grid = body(wholeFolded, ".lesson-story-grid {");
     expect(grid).toContain("display: grid;");
-    expect(grid).toContain("grid-template-columns: minmax(0, 820px);");
+    expect(grid).toContain("grid-template-columns: minmax(0, 1fr);");
     expect(grid).toContain("row-gap: var(--l-row, 24px);");
     expect(grid).toContain("column-gap: var(--l-gutter, 40px);");
     expect(body(wholeFolded, ".lesson-story-plate > figure {")).toContain(
-      "max-width: 600px;",
+      "width: 100%;",
     );
     expect(wholeFolded).toContain("@media (width >= 64rem)");
     // The lg copies come after the base rules, so look for the query after
@@ -228,7 +227,7 @@ describe("the lesson layout stylesheet", () => {
     expect(lg).toBeGreaterThan(-1);
     const fromLg = wholeFolded.slice(lg);
     expect(body(fromLg, ".lesson-story-grid {")).toContain(
-      "grid-template-columns: minmax(0, 1fr) minmax(280px, 544px);",
+      "grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);",
     );
     expect(body(fromLg, ".lesson-story-plate {")).toContain(
       "align-self: start;",
@@ -240,7 +239,7 @@ describe("the lesson layout stylesheet", () => {
         fromLg,
         ".lesson-story-grid:not(:has(> .lesson-story-plate > figure)) {",
       ),
-    ).toContain("grid-template-columns: minmax(0, 820px);");
+    ).toContain("grid-template-columns: minmax(0, 1fr);");
     // The beats column is a grid item, so its last story block's margin
     // cannot collapse into the post-scene slot's or the nav's.
     expect(

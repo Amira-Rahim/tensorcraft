@@ -440,12 +440,20 @@ export function LessonContent({
         }
         // The Briefing lays each beat out as an avatar slot beside its line
         // (spec 2026-09-23, section 2). Mid-lesson beats on Concept and the
-        // epilogue keep the stacked layout.
+        // other epilogues keep the stacked layout. The opening mission's
+        // redesigned close uses the same readable row treatment.
         return (
           <Dialogue
             {...props}
             avatarSlot={avatarSlot}
-            layout={storyRegister ? "row" : "stack"}
+            layout={
+              storyRegister ||
+              (insideEpilogue &&
+                worldId === "deep-orbit" &&
+                lessonId === "introduction-to-tensors")
+                ? "row"
+                : "stack"
+            }
           />
         );
       },

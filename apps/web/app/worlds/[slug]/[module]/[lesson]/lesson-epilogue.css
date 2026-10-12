@@ -1,0 +1,222 @@
+/* The opening mission closes in the lesson's existing Inter / sage palette. */
+.orbit-epilogue,
+.orbit-epilogue-nav {
+  width: 100%;
+}
+.orbit-epilogue {
+  color: var(--tc-text);
+}
+.orbit-epilogue-header {
+  margin-bottom: 36px;
+}
+.orbit-epilogue-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: var(--tc-primary);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.orbit-epilogue-header h1 {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -1.1px;
+  text-wrap: balance;
+}
+.orbit-epilogue-outcome {
+  max-width: 65ch;
+  margin-top: 20px;
+  font-size: 22px;
+  line-height: 1.6;
+}
+.orbit-epilogue-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: start;
+}
+.orbit-epilogue-story,
+.orbit-epilogue-art {
+  min-width: 0;
+}
+.orbit-epilogue-story .lesson-epilogue > p {
+  margin: 0 0 24px;
+  font-size: 22px;
+  line-height: 1.6;
+}
+.orbit-epilogue-story .lesson-epilogue > p:last-child {
+  margin-bottom: 0;
+}
+.orbit-epilogue-story [data-dialogue] {
+  margin: 28px 0;
+  padding: 24px 0;
+  border-block: 1px solid var(--tc-border);
+  max-width: none;
+}
+.orbit-epilogue-story [data-dialogue-row] {
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 16px;
+}
+.orbit-epilogue-story [data-dialogue-row] > div:last-child > div:first-child {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.orbit-epilogue-story [data-dialogue] p {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.65;
+}
+.orbit-epilogue .orbit-epilogue-story code {
+  font-size: 1em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.orbit-epilogue-art {
+  margin: 0;
+}
+.orbit-epilogue-portrait {
+  margin: 0;
+}
+.orbit-epilogue-art > p {
+  margin-top: 12px;
+  color: var(--tc-muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.orbit-epilogue-art:not(:has(figure)) {
+  display: none;
+}
+.orbit-epilogue-scene:not(:has(figure)) {
+  grid-template-columns: minmax(0, 65ch);
+}
+.orbit-epilogue-archive {
+  border-block: 1px solid var(--tc-border);
+  margin-top: 40px;
+}
+.orbit-epilogue-archive summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 20px;
+  list-style: none;
+  cursor: pointer;
+}
+.orbit-epilogue-archive summary::-webkit-details-marker {
+  display: none;
+}
+.orbit-epilogue-archive h2 {
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+}
+.orbit-epilogue-archive summary > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  font-size: 36px;
+  line-height: 1;
+}
+.orbit-epilogue-archive summary > span::before {
+  content: "+";
+}
+.orbit-epilogue-archive[open] summary > span::before {
+  content: "−";
+}
+.orbit-epilogue-archive-body {
+  padding-bottom: 28px;
+}
+.orbit-epilogue-archive-body .lesson-step-content > p,
+.orbit-epilogue-archive-body blockquote {
+  max-width: 65ch;
+  font-size: 20px;
+  line-height: 1.65;
+}
+.orbit-epilogue-archive-body blockquote {
+  margin: 24px 0 0;
+  padding: 0 0 0 24px;
+  border-left: 2px solid var(--tc-primary);
+  color: var(--tc-text);
+}
+.orbit-epilogue-archive-body blockquote p {
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+.orbit-epilogue-archive-body code {
+  overflow-wrap: anywhere;
+}
+.orbit-epilogue-guest [data-testid="guest-email-capture"] {
+  margin: 32px 0 0;
+  max-width: 640px;
+}
+.orbit-epilogue-guest [data-testid="guest-email-capture"] > p:first-child {
+  font: 500 18px/1.5 var(--font-sans);
+  text-transform: none;
+  letter-spacing: normal;
+}
+.orbit-epilogue-guest [data-testid="guest-email-capture"] > p {
+  font-size: 16px;
+}
+.orbit-epilogue-nav [data-testid="next-lesson-card"] {
+  padding: 16px 24px;
+}
+.orbit-epilogue-nav
+  [data-testid="next-lesson-card"]
+  > span:first-child
+  > span:first-child {
+  font: 400 14px/1.5 var(--font-sans);
+  letter-spacing: normal;
+  text-transform: none;
+}
+.orbit-epilogue-nav
+  [data-testid="next-lesson-card"]
+  > span:first-child
+  > span:last-child {
+  font-size: 18px;
+  line-height: 1.5;
+}
+@media (max-width: 1000px) {
+  .orbit-epilogue-scene {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .orbit-epilogue-story {
+    max-width: 65ch;
+  }
+  .orbit-epilogue-art {
+    max-width: 800px;
+  }
+}
+@media (max-width: 650px) {
+  .orbit-epilogue-header {
+    margin-bottom: 28px;
+  }
+  .orbit-epilogue-archive h2 {
+    font-size: 28px;
+  }
+  .orbit-epilogue-archive summary {
+    gap: 12px;
+  }
+  .orbit-epilogue-archive-body blockquote {
+    padding-left: 16px;
+  }
+  .orbit-epilogue-nav [data-testid="lesson-nav"] {
+    align-items: stretch;
+  }
+  .orbit-epilogue-nav [data-testid="next-lesson-card"] {
+    width: 100%;
+  }
+  .orbit-epilogue-nav [data-testid="next-lesson-card"] > span:last-child {
+    margin-left: auto;
+  }
+}

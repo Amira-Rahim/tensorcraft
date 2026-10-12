@@ -10,7 +10,6 @@ interface LessonShellProps {
   workspaceFocusRef?: React.Ref<HTMLDivElement>;
   workspaceLabel?: string;
   paneOpenOnMobile?: boolean;
-  fullWidth?: boolean;
 }
 
 /* The grid's classes per kind, each string whole: Tailwind emits a rule only
@@ -29,9 +28,8 @@ const GRID_CLASS: Record<LessonShellProps["rightKind"], string> = {
 };
 
 /**
- * Reading and exercise frames stay at 1,280 px with 48 px side padding.
- * Briefing uses the full page width for its title; its story and navigation
- * keep their own reading frame. "code" is single column (the
+ * Every step shares the full-width lesson frame and its responsive gutters.
+ * Text measures belong to the content, not the page grid. "code" is single column (the
  * worked example uses the full width; derivations stack above it in the
  * left slot). "pane" is the Challenge: instructions on a track of 440 px,
  * or 38% of the grid where that is narrower so the editor keeps its width
@@ -51,7 +49,6 @@ export function LessonShell({
   workspaceFocusRef,
   workspaceLabel,
   paneOpenOnMobile = false,
-  fullWidth = false,
 }: LessonShellProps) {
   const single = rightKind === "none";
   const pane = rightKind === "pane";
@@ -64,7 +61,7 @@ export function LessonShell({
         role={workspace ? "group" : undefined}
         tabIndex={workspace ? -1 : undefined}
         aria-label={workspace ? workspaceLabel : undefined}
-        className={`mx-auto w-full px-5 md:px-12 ${fullWidth ? "" : "max-w-7xl"} ${workspace ? "lesson-challenge-workspace outline-none" : ""}`}
+        className={`lesson-frame ${workspace ? "lesson-challenge-workspace outline-none" : ""}`}
       >
         {header}
         {controls}

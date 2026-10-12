@@ -68,6 +68,7 @@
 .lesson-workbench-introduction {
   margin: 0 0 28px;
   width: 100%;
+  max-width: 75ch;
   font-size: 18px;
   line-height: 1.7;
 }
@@ -818,13 +819,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 24px;
-  max-width: 1440px;
-  margin-inline: auto;
   align-items: start;
-}
-.lesson-challenge-workspace > [data-testid="lesson-nav"] {
-  max-width: 1440px;
-  margin-inline: auto;
 }
 .lesson-mission-scene.challenge-mission-header {
   display: grid;

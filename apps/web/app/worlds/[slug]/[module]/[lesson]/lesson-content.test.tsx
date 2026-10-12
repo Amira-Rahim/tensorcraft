@@ -257,6 +257,27 @@ describe("LessonContent, glossary span upgrade", () => {
 });
 
 describe("LessonContent, Epilogue step routing", () => {
+  it("keeps a post-recap archive separate from both the opening and closing scenes", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["postrecap"])}
+        showPostRecap
+      />,
+    );
+    expect(container.querySelector(".lesson-step-content")).toHaveAttribute(
+      "data-show-prose",
+      "false",
+    );
+    expect(container.querySelector(".lesson-step-content")).toHaveAttribute(
+      "data-show-postrecap",
+      "true",
+    );
+    expect(screen.queryByText(/Opening line\./)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Closing line\./)).not.toBeInTheDocument();
+    expect(screen.queryByTestId("epilogue")).not.toBeInTheDocument();
+  });
+
   it("Briefing step (Dialogue+prose) shows opening dialogue but NOT epilogue content", () => {
     render(
       <LessonContent

@@ -34,8 +34,8 @@ describe("LessonShell", () => {
         />,
       );
       const frame = container.querySelector("[data-testid='lesson-frame']")!;
-      expect(frame.className).toContain("max-w-7xl");
-      expect(frame.className).toContain("md:px-12");
+      expect(frame).toHaveClass("lesson-frame");
+      expect(frame.className).not.toMatch(/max-w-/);
       unmount();
     }
   });
