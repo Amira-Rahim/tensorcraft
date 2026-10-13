@@ -28,9 +28,7 @@ for (const [width, scheme] of [
             /You will work alongside Demir, the crew's JavaScript engineer/,
         }),
     ).toBeVisible();
-    const header = await page
-      .getByTestId("lesson-briefing-header")
-      .boundingBox();
+    const header = await page.getByTestId("lesson-title-header").boundingBox();
     const chrome = await page.getByTestId("lesson-chrome").boundingBox();
     const gutter = width >= 768 ? 48 : 20;
     expect(header!.x).toBe(gutter);

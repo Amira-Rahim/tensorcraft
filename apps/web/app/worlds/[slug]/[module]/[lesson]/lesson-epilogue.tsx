@@ -3,7 +3,6 @@ import { ScenePortrait } from "@tensorcraft/ui";
 import { ProseText } from "@tensorcraft/ui/prose-text";
 
 interface LessonEpilogueProps {
-  title: string;
   outcome: string;
   scene?: { src: string; alt?: string; location: string };
   children: ReactNode;
@@ -14,7 +13,6 @@ interface LessonEpilogueProps {
 
 /** A lesson close with the same reading scale and frame as its takeaways. */
 export function LessonEpilogue({
-  title,
   outcome,
   scene,
   children,
@@ -40,7 +38,6 @@ export function LessonEpilogue({
           </svg>
           Mission complete
         </p>
-        <h1>{title}</h1>
         <p className="orbit-epilogue-outcome">
           <ProseText>{outcome}</ProseText>
         </p>

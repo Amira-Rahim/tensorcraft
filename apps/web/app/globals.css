@@ -452,8 +452,7 @@ body {
   }
 }
 
-/* A compact lesson identity orients the learner above the navigation.
-   The content heading carries the visual emphasis. */
+/* Module context stays above navigation; every step shares the title below. */
 .lesson-masthead {
   margin-bottom: 20px;
 }
@@ -476,15 +475,9 @@ body {
 .lesson-masthead-context > button {
   flex-shrink: 0;
 }
-.lesson-masthead-title {
+.lesson-title-header {
   width: 100%;
-  max-width: none;
-  margin: 2px 0 0;
-  color: var(--tc-text);
-  font-size: clamp(1.25rem, 2vw, 1.625rem);
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.015em;
+  margin-bottom: 24px;
   overflow-wrap: anywhere;
 }
 

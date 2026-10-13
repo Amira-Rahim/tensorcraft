@@ -557,7 +557,7 @@ describe("LessonSteps, step navigation chrome", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows the lesson title in the chrome on every step but the Briefing and the Epilogue", () => {
+  it("keeps the title below the chrome when navigating between steps", () => {
     renderSteps();
     const chrome = document.querySelector("[data-testid='lesson-chrome']")!;
     expect(chrome.querySelector("h1")).toBeNull();
@@ -566,7 +566,10 @@ describe("LessonSteps, step navigation chrome", () => {
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
     expect(
       document.querySelector("[data-testid='lesson-chrome'] h1"),
-    ).toHaveTextContent(lesson.title);
+    ).toBeNull();
+    expect(screen.getByTestId("lesson-title-header")).toHaveTextContent(
+      lesson.title,
+    );
     // A second mount in the same test: unmount the first, and clear the
     // #step-2 hash its Continue pushed. jsdom keeps the location, and a
     // leftover hash reads as a deep link that wins over the stored step.
@@ -615,7 +618,7 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(control).toHaveTextContent("Next Mission");
     expect(control).toHaveTextContent("Understanding Tensor Shapes");
     expect(screen.queryByRole("link", { name: /^Next Lesson/ })).toBeNull();
-    // The closing card is the step's one H1.
+    // The shared header is the step's one H1.
     const h1s = screen.getAllByRole("heading", { level: 1 });
     expect(h1s).toHaveLength(1);
     expect(h1s[0]).toHaveTextContent(lesson.title);
@@ -683,18 +686,17 @@ describe("LessonSteps, step navigation chrome", () => {
     localStorage.setItem(STEP_KEY, "4");
     localStorage.setItem(MAX_KEY, "4");
     renderSteps();
-    const root = screen.getByRole("group", {
-      name: "Step 5 of 5: Epilogue",
-    }).firstElementChild;
+    const root = screen
+      .getByRole("group", {
+        name: "Step 5 of 5: Epilogue",
+      })
+      .querySelector(".orbit-epilogue");
     expect(root).toHaveClass("orbit-epilogue");
     expect(screen.getByText("Mission complete")).toBeInTheDocument();
     expect(root).not.toHaveClass("py-12");
   });
 
-  it("keeps one H1, the lesson title, on every step", () => {
-    // The title card is the Briefing's H1, the chrome title is the H1 on
-    // steps 2 to 5, and the closing card is step 6's (spec 2026-09-24,
-    // section 6).
+  it("keeps the same title and metadata header below navigation on every step", () => {
     for (let step = 0; step < 5; step++) {
       localStorage.clear();
       window.history.replaceState(null, "", window.location.pathname);
@@ -709,6 +711,17 @@ describe("LessonSteps, step navigation chrome", () => {
       const h1s = screen.getAllByRole("heading", { level: 1 });
       expect(h1s, `step ${step + 1}`).toHaveLength(1);
       expect(h1s[0]).toHaveTextContent(lesson.title);
+      const header = screen.getByTestId("lesson-title-header");
+      expect(header.contains(h1s[0])).toBe(true);
+      expect(header.contains(screen.getByTestId("lesson-eyebrow"))).toBe(true);
+      expect(header.parentElement).toBe(screen.getByTestId("lesson-frame"));
+      const chrome = screen.getByTestId("lesson-chrome");
+      expect(chrome.querySelector("h1")).toBeNull();
+      expect(
+        chrome.compareDocumentPosition(header) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      expect(h1s[0]).toHaveClass("text-4xl", "md:text-6xl");
       unmount();
     }
   });

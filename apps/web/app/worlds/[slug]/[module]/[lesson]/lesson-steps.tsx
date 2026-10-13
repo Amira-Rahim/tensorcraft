@@ -355,16 +355,14 @@ function LessonStepsInner({
     }
     if (focusedStepRef.current === currentStep) return;
     focusedStepRef.current = currentStep;
-    stepRef.current?.focus({ preventScroll: challengeWorkspace });
-    // A phone's continuous workspace is taller than the viewport. Native
-    // focus can centre that box on the editor, hiding the mission above it.
-    if (challengeWorkspace) {
-      stepRef.current?.scrollIntoView?.({
-        block: "start",
-        behavior: "instant",
-      });
-    }
-  }, [currentStep, mounted, challengeWorkspace]);
+    // Keep the shared title visible when entering any step. Native focus
+    // can otherwise centre a tall frame on its content instead of its header.
+    stepRef.current?.focus({ preventScroll: true });
+    stepRef.current?.scrollIntoView?.({
+      block: "start",
+      behavior: "instant",
+    });
+  }, [currentStep, mounted]);
   // Mobile-only: reveal the right work pane (code/exercise) over the prose.
   const [paneOpen, setPaneOpen] = useState(false);
 
@@ -1291,18 +1289,26 @@ function LessonStepsInner({
         <LessonShell
           rightKind={rightKind}
           workspace={challengeWorkspace}
-          workspaceFocusRef={stepRef}
-          workspaceLabel={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
+          focusRef={stepRef}
+          label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
           header={
-            challengeWorkspace ? (
-              <LessonMissionScene
+            <>
+              <LessonTitleHeader
                 lesson={lesson}
                 worldSlug={worldSlug}
                 moduleSlug={moduleSlug}
-                compact
-                heading={exercises[0]!.title}
+                exercises={exercises}
               />
-            ) : undefined
+              {challengeWorkspace && (
+                <LessonMissionScene
+                  lesson={lesson}
+                  worldSlug={worldSlug}
+                  moduleSlug={moduleSlug}
+                  compact
+                  heading={exercises[0]!.title}
+                />
+              )}
+            </>
           }
           paneOpenOnMobile={paneOpen}
           controls={mobileControls}
@@ -1315,7 +1321,6 @@ function LessonStepsInner({
                 worldSlug={worldSlug}
                 moduleSlug={moduleSlug}
                 moduleName={moduleName}
-                lessonTitle={lesson.title}
                 currentStep={currentStep}
                 maxStepReached={maxStepReached}
                 setCurrentStep={setCurrentStep}
@@ -1326,24 +1331,7 @@ function LessonStepsInner({
             shellLeft === null ? null : (
               <div
                 key={currentStep}
-                ref={challengeWorkspace ? undefined : stepRef}
-                // -1 keeps it out of the tab sequence while still being
-                // programmatically focusable, so the step is where a keyboard
-                // user lands rather than <body>. The label is what a screen
-                // reader announces on arrival, which doubles as the step change
-                // announcement.
-                tabIndex={challengeWorkspace ? undefined : -1}
-                role={challengeWorkspace ? undefined : "group"}
-                aria-label={
-                  challengeWorkspace
-                    ? undefined
-                    : `Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`
-                }
-                className={
-                  challengeWorkspace
-                    ? undefined
-                    : "animate-step-in outline-none"
-                }
+                className={challengeWorkspace ? undefined : "animate-step-in"}
               >
                 {shellLeft}
                 {rightKind !== "pane" && (
@@ -1377,7 +1365,6 @@ function ChromeBar({
   worldSlug,
   moduleSlug,
   moduleName,
-  lessonTitle,
   currentStep,
   maxStepReached,
   setCurrentStep,
@@ -1387,15 +1374,10 @@ function ChromeBar({
   worldSlug: string;
   moduleSlug: string;
   moduleName?: string;
-  lessonTitle: string;
   currentStep: number;
   maxStepReached: number;
   setCurrentStep: (n: number) => void;
 }) {
-  // The Briefing's title card is that step's H1 and the Complete step's
-  // closing card is that step's (spec 2026-09-24, section 6); on steps 2
-  // to 5 the chrome title is the page's only H1 and stays.
-  const showTitle = currentStep !== 0 && currentStep !== TOTAL_STEPS - 1;
   return (
     // `flex-wrap` plus a full-width basis for the step bar below `sm`.
     //
@@ -1419,7 +1401,6 @@ function ChromeBar({
           <p className="lesson-masthead-module">{moduleName ?? moduleSlug}</p>
           <ReportIssueTrigger />
         </div>
-        {showTitle && <h1 className="lesson-masthead-title">{lessonTitle}</h1>}
       </div>
       <div className="flex flex-wrap items-center gap-3">
         {lessons && (
@@ -1532,6 +1513,56 @@ export const PATTERN_LABELS: Record<
   flashback: "Archive playback: an earlier scene, reopened",
   peer_review: "Code review: critique before you write",
 };
+
+/** Briefing's title card is the shared lesson identity on every step. */
+function LessonTitleHeader({
+  lesson,
+  worldSlug,
+  moduleSlug,
+  exercises,
+}: {
+  lesson: LessonStepsProps["lesson"];
+  worldSlug: string;
+  moduleSlug: string;
+  exercises: ExerciseData[];
+}) {
+  const minutes =
+    lesson.estimatedMinutes +
+    exercises.reduce(
+      (total, exercise) => total + (exercise.estimatedMinutes ?? 0),
+      0,
+    );
+  return (
+    <header data-testid="lesson-title-header" className="lesson-title-header">
+      <div
+        data-testid="lesson-eyebrow"
+        className="text-xs font-mono uppercase tracking-[3px] mb-3"
+        style={{ color: "var(--tc-primary)" }}
+      >
+        {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
+        {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
+        {lesson.pattern && lesson.pattern !== "standard" && (
+          <>
+            {" "}
+            &middot;{" "}
+            <span data-testid="pattern-format-tag">
+              {PATTERN_LABELS[lesson.pattern]}
+            </span>
+          </>
+        )}{" "}
+        &middot; {minutes} min
+        {exercises.length > 0 &&
+          ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}`}
+      </div>
+      <h1
+        className="text-4xl md:text-6xl font-bold leading-[1.1] tracking-tight"
+        style={{ color: "var(--tc-text)" }}
+      >
+        {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
+      </h1>
+    </header>
+  );
+}
 
 /* ──────────────────────────────────────────────
    Step 0: Briefing
@@ -1821,50 +1852,18 @@ function StepBriefing({
         data-script-state={scriptState}
         aria-busy={scriptState === "playing" ? "true" : undefined}
       >
-        <header data-testid="lesson-briefing-header">
-          <div
-            data-testid="lesson-eyebrow"
-            className="text-xs font-mono uppercase tracking-[3px] mb-3"
-            style={{ color: "var(--tc-primary)" }}
-          >
-            {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
-            {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
-            {lesson.pattern && lesson.pattern !== "standard" && (
-              <>
-                {" "}
-                &middot;{" "}
-                <span data-testid="pattern-format-tag">
-                  {PATTERN_LABELS[lesson.pattern]}
-                </span>
-              </>
-            )}{" "}
-            &middot;{" "}
-            {/* Reading + embedded exercises: "14 min · 2 exercises" where the
-            exercises alone are 30 min reads as a lie. One basis everywhere
-            (module map, JSON-LD, courseWorkload). */}
-            {`${lesson.estimatedMinutes + exercises.reduce((s, e) => s + (e.estimatedMinutes ?? 0), 0)} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
-          </div>
-
-          <h1
-            className="text-4xl md:text-6xl font-bold mb-3 leading-[1.1] tracking-tight"
-            style={{ color: "var(--tc-text)" }}
-          >
-            {highlightFirstLongWord(lesson.title, "var(--tc-primary)")}
-          </h1>
-
-          {worldSlug === "deep-orbit" &&
-            lessonSlug === "introduction-to-tensors" && (
-              <p
-                data-testid="course-orientation"
-                className="w-full mb-6 text-base md:text-lg leading-relaxed text-text"
-              >
-                You’ll learn machine learning in JavaScript by building a system
-                that flags unusual sensor readings. At its core is a model: a
-                program trained on examples to recognize patterns. You’ll test
-                it on new data and run it in the browser.
-              </p>
-            )}
-        </header>
+        {worldSlug === "deep-orbit" &&
+          lessonSlug === "introduction-to-tensors" && (
+            <p
+              data-testid="course-orientation"
+              className="w-full mb-6 text-base md:text-lg leading-relaxed text-text"
+            >
+              You’ll learn machine learning in JavaScript by building a system
+              that flags unusual sensor readings. At its core is a model: a
+              program trained on examples to recognize patterns. You’ll test it
+              on new data and run it in the browser.
+            </p>
+          )}
 
         <div className="lesson-body-frame">
           {/* Slugline row: the scene heading (first beat) and the playback
@@ -2270,7 +2269,6 @@ function StepConsequence({
     };
     return (
       <LessonEpilogue
-        title={lesson.title}
         outcome={lesson.consequence.narrative}
         scene={
           lesson.scene
@@ -2359,13 +2357,6 @@ function StepConsequence({
         />
       )}
 
-      <h1
-        className="text-[26px] font-bold mb-5"
-        style={{ color: "var(--tc-text)" }}
-      >
-        {lesson.title}
-      </h1>
-
       {/* Narrative as italic cinematic narration */}
       <p
         className="text-[15px] italic leading-[1.9] max-w-[520px] mx-auto mb-8"
@@ -2419,12 +2410,9 @@ function highlightFirstLongWord(title: string, color: string) {
   if (idx === -1) return title;
   return (
     <>
-      {words.map((word, i) => (
-        <span key={i}>
-          {i > 0 ? " " : ""}
-          {i === idx ? <span style={{ color }}>{word}</span> : word}
-        </span>
-      ))}
+      {idx > 0 ? `${words.slice(0, idx).join(" ")} ` : ""}
+      <span style={{ color }}>{words[idx]}</span>
+      {idx < words.length - 1 ? ` ${words.slice(idx + 1).join(" ")}` : ""}
     </>
   );
 }

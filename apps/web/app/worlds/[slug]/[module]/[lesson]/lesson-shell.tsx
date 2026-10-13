@@ -7,8 +7,8 @@ interface LessonShellProps {
   footer?: React.ReactNode;
   header?: React.ReactNode;
   workspace?: boolean;
-  workspaceFocusRef?: React.Ref<HTMLDivElement>;
-  workspaceLabel?: string;
+  focusRef?: React.Ref<HTMLDivElement>;
+  label?: string;
   paneOpenOnMobile?: boolean;
 }
 
@@ -46,8 +46,8 @@ export function LessonShell({
   footer,
   header,
   workspace = false,
-  workspaceFocusRef,
-  workspaceLabel,
+  focusRef,
+  label,
   paneOpenOnMobile = false,
 }: LessonShellProps) {
   const single = rightKind === "none";
@@ -57,11 +57,11 @@ export function LessonShell({
       {chrome}
       <div
         data-testid="lesson-frame"
-        ref={workspace ? workspaceFocusRef : undefined}
-        role={workspace ? "group" : undefined}
-        tabIndex={workspace ? -1 : undefined}
-        aria-label={workspace ? workspaceLabel : undefined}
-        className={`lesson-frame ${workspace ? "lesson-challenge-workspace outline-none" : ""}`}
+        ref={focusRef}
+        role={label ? "group" : undefined}
+        tabIndex={label ? -1 : undefined}
+        aria-label={label}
+        className={`lesson-frame outline-none ${workspace ? "lesson-challenge-workspace" : ""}`}
       >
         {header}
         {controls}
