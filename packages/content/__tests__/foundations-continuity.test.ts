@@ -39,7 +39,7 @@ describe("the opening investigation's visible prerequisites", () => {
       starter.indexOf("reading?.dispose()"),
     );
     expect(lesson("01-introduction-to-tensors")).toContain(
-      "The five readings return from the tensor in their original order",
+      "The five readings are returned from the tensor in the original order",
     );
     for (const deferred of [
       "reading.sum()",

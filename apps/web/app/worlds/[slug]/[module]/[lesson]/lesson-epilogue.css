@@ -6,25 +6,6 @@
 .orbit-epilogue {
   color: var(--tc-text);
 }
-.orbit-epilogue-header {
-  margin-bottom: 36px;
-}
-.orbit-epilogue-status {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  color: var(--tc-primary);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-.orbit-epilogue-outcome {
-  max-width: 65ch;
-  margin-top: 20px;
-  font-size: 22px;
-  line-height: 1.6;
-}
 .orbit-epilogue-scene {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -88,66 +69,6 @@
 .orbit-epilogue-scene:not(:has(figure)) {
   grid-template-columns: minmax(0, 65ch);
 }
-.orbit-epilogue-archive {
-  border-block: 1px solid var(--tc-border);
-  margin-top: 40px;
-}
-.orbit-epilogue-archive summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding-block: 20px;
-  list-style: none;
-  cursor: pointer;
-}
-.orbit-epilogue-archive summary::-webkit-details-marker {
-  display: none;
-}
-.orbit-epilogue-archive h2 {
-  font-size: 32px;
-  line-height: 1.25;
-  font-weight: 600;
-  letter-spacing: -0.8px;
-}
-.orbit-epilogue-archive summary > span {
-  display: grid;
-  place-items: center;
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
-  font-size: 36px;
-  line-height: 1;
-}
-.orbit-epilogue-archive summary > span::before {
-  content: "+";
-}
-.orbit-epilogue-archive[open] summary > span::before {
-  content: "−";
-}
-.orbit-epilogue-archive-body {
-  padding-bottom: 28px;
-}
-.orbit-epilogue-archive-body .lesson-step-content > p,
-.orbit-epilogue-archive-body blockquote {
-  max-width: 65ch;
-  font-size: 20px;
-  line-height: 1.65;
-}
-.orbit-epilogue-archive-body blockquote {
-  margin: 24px 0 0;
-  padding: 0 0 0 24px;
-  border-left: 2px solid var(--tc-primary);
-  color: var(--tc-text);
-}
-.orbit-epilogue-archive-body blockquote p {
-  font-size: inherit;
-  line-height: inherit;
-  margin: 0;
-}
-.orbit-epilogue-archive-body code {
-  overflow-wrap: anywhere;
-}
 .orbit-epilogue-guest [data-testid="guest-email-capture"] {
   margin: 32px 0 0;
   max-width: 640px;
@@ -191,18 +112,6 @@
   }
 }
 @media (max-width: 650px) {
-  .orbit-epilogue-header {
-    margin-bottom: 28px;
-  }
-  .orbit-epilogue-archive h2 {
-    font-size: 28px;
-  }
-  .orbit-epilogue-archive summary {
-    gap: 12px;
-  }
-  .orbit-epilogue-archive-body blockquote {
-    padding-left: 16px;
-  }
   .orbit-epilogue-nav [data-testid="lesson-nav"] {
     align-items: stretch;
   }

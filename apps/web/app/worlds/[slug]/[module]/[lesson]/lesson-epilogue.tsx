@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 import { ScenePortrait } from "@tensorcraft/ui";
-import { ProseText } from "@tensorcraft/ui/prose-text";
+import { LessonCompleteBanner } from "./lesson-complete-banner";
 
 interface LessonEpilogueProps {
   outcome: string;
   scene?: { src: string; alt?: string; location: string };
   children: ReactNode;
-  archive: ReactNode;
   award?: ReactNode;
   guestCapture?: ReactNode;
 }
@@ -16,32 +15,12 @@ export function LessonEpilogue({
   outcome,
   scene,
   children,
-  archive,
   award,
   guestCapture,
 }: LessonEpilogueProps) {
   return (
     <div className="orbit-epilogue">
-      <header className="orbit-epilogue-header">
-        <p className="orbit-epilogue-status">
-          <svg
-            viewBox="0 0 24 24"
-            width="22"
-            height="22"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="9" />
-            <path d="m8 12 3 3 5-6" />
-          </svg>
-          Mission complete
-        </p>
-        <p className="orbit-epilogue-outcome">
-          <ProseText>{outcome}</ProseText>
-        </p>
-      </header>
+      <LessonCompleteBanner outcome={outcome} lessonTerm="Mission" />
       {award}
       <div className="orbit-epilogue-scene">
         <div className="orbit-epilogue-story lesson-prose">{children}</div>
@@ -57,15 +36,6 @@ export function LessonEpilogue({
           </aside>
         )}
       </div>
-      <details className="orbit-epilogue-archive">
-        <summary>
-          <h2>From the DISPATCH archive</h2>
-          <span aria-hidden="true" />
-        </summary>
-        <div className="orbit-epilogue-archive-body lesson-prose">
-          {archive}
-        </div>
-      </details>
       {guestCapture && (
         <div className="orbit-epilogue-guest">{guestCapture}</div>
       )}

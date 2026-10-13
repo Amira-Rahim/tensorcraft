@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "A JavaScript array and a tensor are different objects. A tensor records its shape and supports TensorFlow.js operations. Use arraySync() to copy its values into a JavaScript array."
 consequence:
-  narrative: "The first five readings are checked. Their sensor assignments are still unknown."
+  narrative: "The first five readings are ready. We still need to find out which sensor each one came from."
 hints:
   - level: nudge
     content: "Select Line 3 or Line 4 above the code. It highlights that line’s `null`, so you can type the new code over it."
@@ -133,18 +133,14 @@ the values for Farah and releases memory.
   youCanNow="Create a tensor from a JavaScript array and use its shape to check the length of the list."
 />
 
-One more thing lands in the archive between lessons, starting now: DISPATCH intercepts, relay chatter from other crews working the same band on other missions. This is the first.
-
-> **DISPATCH archive · field intercept #02-T:** Yara's collective in Nova Canvas ships stacks of images with the color channel as the second axis, shape `[batch, channels, h, w]`. This course's TFJS models put the channel last, `[batch, h, w, channels]`. Two of those axis names are new; lesson 2 explains them. Different domain, different layout, same primitive.
-
 <Epilogue>
 
-The five readings return from the tensor in their original order. Demir saves their shape, `[5]`, beside them. He opens the next capture, but its list does not say which readings belong to which sensor.
+The five readings are returned from the tensor in the original order. Demir saves their shape, `[5]`. He opens the next capture, but the list doesn't say which readings belong to which sensor.
 
 <Dialogue speaker="ARIA">
-Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you.
+My rules couldn't find a pattern in these readings. You've prepared them for TensorFlow.js. Let's see what you find.
 </Dialogue>
 
-Demir sends the next capture to Farah. The sensor assignments are still blank.
+Demir sends the next set of readings to Farah. They still don't know which sensor each reading came from.
 
 </Epilogue>

@@ -624,12 +624,7 @@ describe("LessonSteps, step navigation chrome", () => {
     expect(h1s[0]).toHaveTextContent(lesson.title);
     expect(screen.getByText("Mission complete")).toBeInTheDocument();
     expect(screen.queryByText(/fade out/i)).not.toBeInTheDocument();
-    // The archive's scope must stay nonempty: empty means render everything.
-    const archive = document.querySelector(".orbit-epilogue-archive")!;
-    expect(archive).not.toHaveAttribute("open");
-    expect(
-      archive.querySelector("[data-testid='lesson-content']"),
-    ).toHaveAttribute("data-visible", "postrecap");
+    expect(screen.queryByText("From the DISPATCH archive")).toBeNull();
     expect(
       document.querySelector(
         ".orbit-epilogue-story [data-testid='lesson-content']",

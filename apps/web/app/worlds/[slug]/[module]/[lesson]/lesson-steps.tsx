@@ -53,6 +53,7 @@ import { LessonShell } from "./lesson-shell";
 import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
 import { LessonEpilogue } from "./lesson-epilogue";
+import { LessonCompleteBanner } from "./lesson-complete-banner";
 import type { GlossaryEntry, LessonReference } from "@tensorcraft/content";
 import {
   PHASE,
@@ -246,9 +247,6 @@ const TAKEAWAYS_AFTER = new Set([
   "NextLesson",
 ]);
 const CONSEQUENCE_COMPONENTS = new Set(["Epilogue", "DispatchTease"]);
-// A nonempty prose-only scope: an empty set means the entire lesson.
-// showPostRecap reveals the authored prose after the hidden recap marker.
-const EPILOGUE_ARCHIVE_COMPONENTS = new Set(["postrecap"]);
 
 /* Exported for the content-partition contract test only: the test sweeps
    every lesson MDX against these sets so a component that would render on
@@ -2281,13 +2279,6 @@ function StepConsequence({
               }
             : undefined
         }
-        archive={
-          <LessonContent
-            {...shared}
-            visibleComponents={EPILOGUE_ARCHIVE_COMPONENTS}
-            showPostRecap
-          />
-        }
         award={award ? <PatchAward {...award} /> : undefined}
         guestCapture={
           isFreeModule ? <GuestEmailCapture worldSlug={worldSlug} /> : undefined
@@ -2298,7 +2289,11 @@ function StepConsequence({
     );
   }
   return (
-    <div className="text-center pt-12">
+    <div className="text-center">
+      <LessonCompleteBanner
+        outcome={lesson.consequence.narrative}
+        lessonTerm={terms(worldSlug).lesson}
+      />
       {/* FADE OUT marker. Screenplay atmosphere, hidden from the tree, and
           now readable by sighted readers: the Cut to label's colour, one
           size up. No contrast exemption. */}
@@ -2330,23 +2325,6 @@ function StepConsequence({
         />
       )}
 
-      {/* Mission complete badge */}
-      <div
-        className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[2px] px-4 py-1.5 mb-6"
-        style={{
-          color: "var(--tc-primary)",
-          border:
-            "1px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)",
-          background: "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
-        }}
-      >
-        <span
-          className="w-1.5 h-1.5 inline-block"
-          style={{ background: "var(--tc-primary)" }}
-        />
-        {terms(worldSlug).lesson} Complete
-      </div>
-
       {/* The award moment: the module's mission patch, only in the session
           the module's last remaining lesson completed. */}
       {award && (
@@ -2356,14 +2334,6 @@ function StepConsequence({
           moduleTerm={award.moduleTerm}
         />
       )}
-
-      {/* Narrative as italic cinematic narration */}
-      <p
-        className="text-[15px] italic leading-[1.9] max-w-[520px] mx-auto mb-8"
-        style={{ color: "var(--tc-muted)" }}
-      >
-        <ProseText>{lesson.consequence.narrative}</ProseText>
-      </p>
 
       {/* Closing scene from the MDX body (<Epilogue> blocks), the story
           beat the learner earns by finishing the work. */}
