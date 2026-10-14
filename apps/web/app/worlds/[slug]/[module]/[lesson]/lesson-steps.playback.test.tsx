@@ -217,8 +217,8 @@ describe("LessonSteps, playback against real MDX DOM", () => {
     expect(dialogues).toHaveLength(2);
     for (const d of Array.from(dialogues)) {
       expect(d.hasAttribute("data-beat-shown")).toBe(true);
-      // The Briefing binds every beat to the row layout.
-      expect(d).toHaveAttribute("data-layout", "row");
+      // Playback preserves the shared full-width Deep Orbit speech layout.
+      expect(d).toHaveAttribute("data-layout", "speech");
     }
   });
 

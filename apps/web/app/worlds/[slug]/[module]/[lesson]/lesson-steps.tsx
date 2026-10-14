@@ -1234,9 +1234,11 @@ function LessonStepsInner({
   }
 
   const mobileControls =
-    rightKind === "pane" && !challengeWorkspace ? (
+    rightKind === "pane" &&
+    !challengeWorkspace &&
+    worldSlug !== "deep-orbit" ? (
       <div
-        className={`${worldSlug === "deep-orbit" ? "xl:hidden" : "lg:hidden"} mb-6 flex gap-2`}
+        className="lg:hidden mb-6 flex gap-2"
         role="group"
         aria-label="Challenge view"
       >
@@ -2438,7 +2440,6 @@ export function LessonDesignPreview({
   moduleSlug: string;
   phase: "briefing" | "concept" | "challenge" | "takeaways" | "epilogue";
 }) {
-  const [paneOpen, setPaneOpen] = useState(false);
   const shared = {
     lesson,
     exercises,
@@ -2483,7 +2484,6 @@ export function LessonDesignPreview({
         orbit
         workspace={workspace}
         rightKind={challenge ? "pane" : "none"}
-        paneOpenOnMobile={paneOpen}
         header={
           <>
             <LessonTitleHeader
@@ -2500,30 +2500,6 @@ export function LessonDesignPreview({
               />
             )}
           </>
-        }
-        controls={
-          challenge && !workspace ? (
-            <div
-              className="xl:hidden mb-6 flex gap-2"
-              role="group"
-              aria-label="Challenge view"
-            >
-              {[
-                { open: false, label: "Instructions" },
-                { open: true, label: "Editor" },
-              ].map(({ open, label }) => (
-                <button
-                  key={String(label)}
-                  type="button"
-                  aria-pressed={paneOpen === open}
-                  className="min-h-11 flex-1 px-3 text-sm border border-border"
-                  onClick={() => setPaneOpen(Boolean(open))}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          ) : undefined
         }
         left={left}
         right={

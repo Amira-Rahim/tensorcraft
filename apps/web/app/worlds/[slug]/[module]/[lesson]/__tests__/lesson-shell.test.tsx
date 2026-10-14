@@ -152,4 +152,33 @@ describe("LessonShell", () => {
     expect(right.className).toContain("block");
     expect(right.className).not.toMatch(/(?:^|\s)hidden(?:\s|$)/);
   });
+
+  it("keeps Deep Orbit instructions and its one editor visible together", () => {
+    const { container, rerender } = render(
+      <LessonShell
+        orbit
+        left={<p>Instructions</p>}
+        right={<aside>Editor</aside>}
+        rightKind="pane"
+      />,
+    );
+    for (const paneOpenOnMobile of [false, true]) {
+      rerender(
+        <LessonShell
+          orbit
+          left={<p>Instructions</p>}
+          right={<aside>Editor</aside>}
+          rightKind="pane"
+          paneOpenOnMobile={paneOpenOnMobile}
+        />,
+      );
+      expect(screen.getAllByText("Editor")).toHaveLength(1);
+      const grid = container.querySelector("[data-testid='lesson-grid']")!;
+      expect(grid).toHaveClass("orbit-challenge-grid");
+      expect(grid.firstElementChild!.className).not.toContain("hidden");
+      expect(screen.getByTestId("lesson-right").className).not.toContain(
+        "hidden",
+      );
+    }
+  });
 });

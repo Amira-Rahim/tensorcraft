@@ -26,9 +26,9 @@
 }
 .orbit-investigation-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 40px 56px;
+  gap: 40px;
 }
 .orbit-investigation-setup,
 .orbit-investigation-results,
@@ -119,11 +119,13 @@
   outline-offset: 4px;
 }
 .orbit-investigation-input {
-  margin-top: 0;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--tc-border);
 }
 .orbit-investigation-input > h4 {
   font-size: 22px;
-  margin-bottom: 16px;
+  margin: 0 0 16px;
 }
 .orbit-investigation-graphic {
   margin: 0;
@@ -242,9 +244,13 @@
   text-align: left;
 }
 .orbit-investigation-status {
-  margin-top: 24px;
+  margin: 0 0 28px;
   font-size: 20px;
   line-height: 1.5;
+}
+.orbit-investigation-results {
+  padding-top: 32px;
+  border-top: 1px solid var(--tc-border);
 }
 .orbit-investigation-result-head {
   padding-bottom: 20px;
@@ -303,14 +309,20 @@
 }
 .orbit-investigation-comparison {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
   margin-top: 32px;
   padding-top: 32px;
   border-top: 1px solid var(--tc-border);
 }
+.orbit-investigation-comparison
+  > .orbit-investigation-run
+  + .orbit-investigation-run {
+  padding-top: 32px;
+  border-top: 1px solid var(--tc-border);
+}
 .orbit-investigation-comparison .orbit-investigation-result-answer {
-  font-size: 24px;
+  font-size: 28px;
 }
 .orbit-investigation-explanation {
   margin-top: 28px;
@@ -383,9 +395,9 @@
   grid-column: 1 / -1;
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px 32px;
-  padding: 24px 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  padding: 28px clamp(20px, 3vw, 36px);
   border: 0;
   border-top: 1px solid var(--tc-border);
   border-bottom: 1px solid var(--tc-border);
@@ -461,9 +473,13 @@
 }
 .tensor-investigation-comparison-runs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
-  margin-top: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+  margin-top: 28px;
+}
+.tensor-investigation-comparison-runs > div + div {
+  padding-top: 28px;
+  border-top: 1px solid var(--tc-border);
 }
 .orbit-investigation-briefing-visual .orbit-investigation-cell {
   font-size: 20px;
@@ -477,15 +493,6 @@
   padding: 10px 0;
   gap: 12px;
 }
-@media (width < 74rem) {
-  .orbit-investigation-layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 36px;
-  }
-  .tensor-investigation-practice {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
 @media (width < 40rem) {
   .orbit-investigation {
     padding: 20px;
@@ -494,7 +501,6 @@
     font-size: 24px;
   }
   .orbit-investigation-comparison {
-    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
   .orbit-investigation-stage {
@@ -512,8 +518,5 @@
   }
   .tensor-investigation-practice legend {
     font-size: 24px;
-  }
-  .tensor-investigation-comparison-runs {
-    grid-template-columns: minmax(0, 1fr);
   }
 }

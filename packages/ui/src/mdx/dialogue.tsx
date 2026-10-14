@@ -23,11 +23,12 @@ interface DialogueProps {
    * "stack": avatar centred above the name and line, 440 px wide (the
    * default, used for mid-lesson beats and the epilogue). "row": a 44 px
    * avatar slot beside the line, name over the line, full width (the
-   * Briefing story grid, spec 2026-09-23). The root stays a block element
-   * in both so the cut-to divider remains its last direct child, which the
+   * Briefing story grid, spec 2026-09-23). "speech": a full-width speech
+   * surface with the avatar and speaker above the spoken line. The root
+   * stays a block element so the cut-to divider remains its last direct child, which the
    * host stylesheet selects with a child combinator.
    */
-  layout?: "stack" | "row";
+  layout?: "stack" | "row" | "speech";
   children: ReactNode;
 }
 
@@ -55,13 +56,37 @@ export function Dialogue({
       />
     ) : null);
   const row = layout === "row";
+  const speech = layout === "speech";
   return (
     <div
-      className={row ? "mb-4" : "mb-7 mx-auto max-w-[440px]"}
+      className={
+        speech
+          ? "tc-dialogue-speech"
+          : row
+            ? "mb-4"
+            : "mb-7 mx-auto max-w-[440px]"
+      }
       data-dialogue="true"
       data-layout={layout}
     >
-      {row ? (
+      {speech ? (
+        <>
+          <div data-dialogue-row="" data-dialogue-header="">
+            {avatar && <div data-dialogue-avatar="">{avatar}</div>}
+            <div data-dialogue-speaker="">
+              <ProseText>{speaker}</ProseText>
+            </div>
+          </div>
+          {direction && (
+            <div data-dialogue-direction="" data-testid="direction">
+              (<ProseText>{direction}</ProseText>)
+            </div>
+          )}
+          <div data-dialogue-text="">
+            <ProseText>{children}</ProseText>
+          </div>
+        </>
+      ) : row ? (
         <div
           data-dialogue-row=""
           className="grid grid-cols-[44px_minmax(0,1fr)] gap-x-3 items-start"

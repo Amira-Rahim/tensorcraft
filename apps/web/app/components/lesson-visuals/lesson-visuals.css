@@ -73,7 +73,11 @@
   line-height: 1.7;
 }
 .tensor-investigation .iv-cells > span {
-  font-size: clamp(12px, 3.6vw, 15px);
+  font-size: 20px;
+}
+.tensor-investigation .iv-cells {
+  overflow-x: auto;
+  padding-bottom: 8px;
 }
 .iv-reading-chart {
   margin: 0 0 12px;
@@ -248,7 +252,12 @@
 }
 .channel-worked-grid {
   display: grid;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+}
+.channel-worked-grid > div + div {
+  padding-top: 32px;
+  border-top: 1px solid var(--tc-border);
 }
 .iv-instruction {
   color: var(--tc-text);
@@ -1327,10 +1336,6 @@
     border-left: 0;
     border-top: 1px solid var(--tc-border);
   }
-  .lesson-workbench-expanded .channel-worked-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 40px;
-  }
   .lesson-workbench-expanded .lesson-embedded-experiment > section > p {
     max-width: 74ch;
   }
@@ -1479,55 +1484,29 @@
 }
 .tensor-investigation-opening {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 32px;
   margin-bottom: 40px;
-  border: 1px solid var(--tc-border);
-  background: var(--tc-surface);
 }
 .tensor-investigation-art {
   margin: 0;
   align-self: stretch;
 }
 .tensor-investigation-art img {
-  height: 100%;
-  border: 0 !important;
+  height: auto;
+  border: 1px solid var(--tc-border) !important;
+  border-radius: 6px;
 }
 .tensor-investigation-request {
-  padding: clamp(20px, 3vw, 36px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
 }
 .tensor-investigation-location {
-  margin: 0 0 18px;
-  font-size: 13px;
+  margin: 0;
+  font-size: 18px;
   color: var(--iv-brass);
-}
-.tensor-investigation-speaker {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.tensor-investigation-speaker p {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-}
-.tensor-investigation-speaker strong,
-.tensor-investigation-speaker span {
-  display: block;
-}
-.tensor-investigation-speaker span {
-  color: var(--tc-muted);
-  font-size: 12px;
-  margin-top: 3px;
-}
-.tensor-investigation-request .iv-instruction {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: clamp(16px, 1.7vw, 20px);
-  line-height: 1.6;
-  max-width: 46ch;
 }
 .tensor-investigation-workspace {
   border: 1px solid var(--tc-border);
@@ -1535,8 +1514,8 @@
 }
 .tensor-investigation-console {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
-  gap: clamp(12px, 2vw, 24px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
   padding: clamp(20px, 3vw, 36px);
   background: var(--tc-bg);
   align-items: start;
@@ -1548,13 +1527,13 @@
 .tensor-investigation-packet figcaption strong {
   display: block;
   color: var(--tc-text);
-  font-size: 16px;
+  font-size: 28px;
   font-weight: 600;
   margin-bottom: 6px;
 }
 .tensor-investigation-packet figcaption > span {
   display: block;
-  font-size: 13px;
+  font-size: 18px;
 }
 .tensor-investigation .tensor-stage-number {
   display: inline;
@@ -1564,7 +1543,8 @@
   font-weight: 600;
 }
 .tensor-flow-connector {
-  align-self: center;
+  justify-self: center;
+  transform: rotate(90deg);
   color: var(--tc-muted);
 }
 .tensor-flow-connector svg {
@@ -1581,21 +1561,21 @@
 .tensor-packet-note {
   margin: 16px 0 0;
   color: var(--tc-muted);
-  font-size: 13px;
+  font-size: 22px;
   line-height: 1.6;
-  max-width: 48ch;
+  max-width: 75ch;
 }
 .tensor-investigation-purpose {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
-  gap: 16px clamp(24px, 3vw, 40px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
   align-items: start;
   margin-bottom: 28px;
 }
 .tensor-investigation-purpose > h3 {
   margin: 0;
   color: var(--tc-text);
-  font-size: clamp(20px, 2vw, 24px);
+  font-size: 28px;
   font-weight: 600;
   line-height: 1.35;
   text-wrap: balance;
@@ -1603,13 +1583,44 @@
 .tensor-investigation-purpose > p {
   margin: 0;
   color: var(--tc-text);
-  font-size: 16px;
+  font-size: 22px;
   line-height: 1.65;
-  max-width: 72ch;
+  max-width: 75ch;
 }
 .tensor-investigation-console .iv-worked-example {
   min-width: 0;
   margin: 0;
+}
+.tensor-investigation-console .iv-example-step > h3 {
+  font-size: 28px;
+}
+.tensor-investigation-console .iv-example-step > p,
+.tensor-investigation-response p {
+  font-size: 22px;
+  line-height: 1.65;
+  max-width: 75ch;
+}
+.tensor-investigation .iv-creation-line > span,
+.tensor-investigation-reference .iv-provenance {
+  font-size: 18px;
+  line-height: 1.6;
+}
+.lesson-page.deep-orbit-lesson
+  .lesson-instrument.tensor-investigation
+  .tensor-investigation-workspace
+  :is(button, label, output) {
+  font-size: 20px;
+}
+.tensor-investigation .iv-creation-shape {
+  font-size: 22px;
+}
+.tensor-investigation .iv-creation-shape code {
+  font-size: 24px;
+}
+.tensor-investigation-comparison-runs h4 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  line-height: 1.4;
 }
 .tensor-investigation-response:not(:empty) {
   margin: 0;
@@ -1620,8 +1631,8 @@
 }
 .tensor-investigation-findings {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: 24px clamp(24px, 3vw, 40px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
   align-items: start;
 }
 .tensor-investigation-result {
@@ -1629,31 +1640,13 @@
 }
 .tensor-investigation-result > h3 {
   margin: 0 0 16px;
-  font-size: 16px;
+  font-size: 28px;
   font-weight: 600;
   line-height: 1.4;
 }
 .tensor-investigation-interpretation {
   min-width: 0;
-  max-width: 64ch;
-}
-.tensor-investigation-interpretation .tensor-investigation-speaker {
-  margin: 0 0 12px;
-}
-.tensor-investigation-interpretation h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-.tensor-investigation-interpretation blockquote {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  color: var(--tc-text);
-  font-size: 16px;
-  font-style: normal;
-  line-height: 1.7;
+  width: 100%;
 }
 .tensor-investigation-response .tensor-investigation-consequence {
   grid-column: 1 / -1;
@@ -1661,7 +1654,7 @@
   padding-top: 20px;
   border-top: 1px solid var(--tc-border);
   color: var(--tc-text);
-  font-size: 14px;
+  font-size: 22px;
   line-height: 1.7;
 }
 .tensor-investigation-consequence > p {
@@ -1684,15 +1677,10 @@
     grid-template-columns: 1fr;
   }
   .tensor-investigation-art img {
-    max-height: 280px;
-    aspect-ratio: 16 / 7 !important;
+    height: auto;
   }
   .tensor-investigation-console {
     gap: 12px;
-  }
-  .tensor-flow-connector {
-    justify-self: center;
-    transform: rotate(90deg);
   }
   .tensor-investigation-findings {
     gap: 24px;

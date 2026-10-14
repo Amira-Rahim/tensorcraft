@@ -85,13 +85,14 @@ export function LessonWarmup({
   return (
     <section
       aria-label={`Warm-up, item ${index + 1} of ${items.length}`}
-      className="border-t border-border pt-6"
+      className={`border-t border-border pt-6 ${worldId === "deep-orbit" ? "orbit-takeaways" : ""}`}
     >
       <h2 className="font-mono text-sm text-text-primary">
         A quick recall before you continue
       </h2>
       <ReviewPromptCard
         key={`${item.lessonId}/${item.promptIndex}`}
+        variant={worldId === "deep-orbit" ? "deep-orbit" : "default"}
         question={item.question}
         answer={item.answer}
         checks={item.checks}

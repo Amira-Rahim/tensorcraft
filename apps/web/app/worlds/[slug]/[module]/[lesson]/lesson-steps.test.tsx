@@ -88,15 +88,21 @@ vi.mock("./lesson-drawer", () => ({
   LessonDrawer: () => null,
 }));
 
-vi.mock("@tensorcraft/ui", () => ({
-  SceneHeading: () => null,
-  AnimatedAvatar: ({ name }: { name: string }) => (
-    <span role="img" aria-label={name} />
-  ),
-  ScenePortrait: ({ src }: { src: string }) => (
-    <div data-testid="scene-portrait-stub" data-src={src} />
-  ),
-}));
+vi.mock("@tensorcraft/ui", async () => {
+  const { Dialogue } = await vi.importActual<
+    typeof import("../../../../../../../packages/ui/src/mdx/dialogue")
+  >("../../../../../../../packages/ui/src/mdx/dialogue");
+  return {
+    Dialogue,
+    SceneHeading: () => null,
+    AnimatedAvatar: ({ name }: { name: string }) => (
+      <span role="img" aria-label={name} />
+    ),
+    ScenePortrait: ({ src }: { src: string }) => (
+      <div data-testid="scene-portrait-stub" data-src={src} />
+    ),
+  };
+});
 
 vi.mock("@/lib/progress-client", () => ({
   markLessonStarted: vi.fn().mockResolvedValue(undefined),

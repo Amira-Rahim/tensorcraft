@@ -1,0 +1,96 @@
+/* The ship's conversations use one treatment in every mission and stage. */
+.lesson-page.deep-orbit-lesson [data-dialogue][data-layout="speech"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
+  margin: 0;
+  padding: 28px 32px 32px;
+  border: 1px solid var(--tc-border);
+  border-radius: 6px;
+  background: var(--tc-surface);
+  color: var(--tc-text);
+  text-align: left;
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-header] {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 20px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--tc-border);
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-avatar] {
+  flex-shrink: 0;
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-speaker] {
+  min-width: 0;
+  font: 600 22px/1.4 var(--font-sans);
+  color: var(--tc-text);
+  letter-spacing: normal;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-direction] {
+  max-width: 75ch;
+  margin-bottom: 12px;
+  color: var(--tc-muted);
+  font: italic 20px/1.6 var(--font-sans);
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-text] {
+  max-width: 75ch;
+  font: 400 24px/1.65 var(--font-sans);
+  overflow-wrap: anywhere;
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-text]
+  p {
+  margin: 0 0 16px;
+  max-width: none;
+  color: inherit;
+  font: inherit;
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue][data-layout="speech"]
+  [data-dialogue-text]
+  p:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 650px) {
+  .lesson-page.deep-orbit-lesson [data-dialogue][data-layout="speech"] {
+    padding: 20px;
+  }
+  .lesson-page.deep-orbit-lesson
+    [data-dialogue][data-layout="speech"]
+    [data-dialogue-header] {
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+  }
+  .lesson-page.deep-orbit-lesson
+    [data-dialogue][data-layout="speech"]
+    [data-dialogue-speaker] {
+    font-size: 20px;
+  }
+  .lesson-page.deep-orbit-lesson
+    [data-dialogue][data-layout="speech"]
+    [data-dialogue-direction] {
+    font-size: 18px;
+  }
+  .lesson-page.deep-orbit-lesson
+    [data-dialogue][data-layout="speech"]
+    [data-dialogue-text] {
+    font-size: 22px;
+  }
+}

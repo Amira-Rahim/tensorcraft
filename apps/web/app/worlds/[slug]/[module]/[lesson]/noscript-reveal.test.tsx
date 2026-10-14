@@ -43,13 +43,11 @@ describe("NoscriptReveal", () => {
     expect(css()).toContain(".tc-cut-to");
   });
 
-  it("lays the Briefing story grid out as one 820 px column", () => {
+  it("lays the Briefing story grid out as one full-width column", () => {
     // Revealed without JavaScript, the whole teaching body renders in the
-    // Briefing's beats column, 544 px beside the picture at 1,440. One
-    // column capped like other prose puts the picture above it and reads
-    // the body at 820 px.
+    // Briefing beneath the picture, using the same full-width frame.
     expect(css()).toMatch(
-      /\.lesson-story-grid\s*\{\s*grid-template-columns:\s*minmax\(0, 820px\)\s*!important;\s*\}/,
+      /\.lesson-story-grid\s*\{\s*grid-template-columns:\s*minmax\(0, 1fr\)\s*!important;\s*\}/,
     );
   });
 });

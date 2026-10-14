@@ -50,7 +50,7 @@ export function BriefingTakeaway({
                   <div
                     className="briefing-shape-cells"
                     style={{
-                      gridTemplateColumns: `repeat(${shape.at(-1)}, 26px)`,
+                      gridTemplateColumns: `repeat(${shape.at(-1)}, var(--briefing-cell-size))`,
                     }}
                     aria-hidden="true"
                   >

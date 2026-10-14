@@ -234,7 +234,7 @@ describe("Dialogue row layout", () => {
     expect(row).toContainElement(screen.getByText("Line."));
   });
 
-  it.each(["stack", "row"] as const)(
+  it.each(["stack", "row", "speech"] as const)(
     "keeps the cut-to divider as the root's last direct child in %s layout",
     (layout) => {
       const { container } = render(
@@ -247,4 +247,61 @@ describe("Dialogue row layout", () => {
       expect(root?.lastElementChild).toHaveClass("tc-cut-to");
     },
   );
+});
+
+describe("Dialogue speech layout", () => {
+  it("keeps the speaker and avatar above a separate full-width spoken line", () => {
+    const { container } = render(
+      <Dialogue
+        speaker="Dr. Farah"
+        layout="speech"
+        avatarSlot={<i data-testid="speaker-portrait" />}
+      >
+        <p>Let’s see how these readings fit together.</p>
+      </Dialogue>,
+    );
+    const root = container.querySelector("[data-dialogue]");
+    const header = root?.querySelector("[data-dialogue-header]");
+    const text = root?.querySelector("[data-dialogue-text]");
+    expect(root).toHaveAttribute("data-layout", "speech");
+    expect(root).not.toHaveClass("max-w-[440px]");
+    expect(header).toContainElement(screen.getByText("Dr. Farah"));
+    expect(header).toContainElement(screen.getByTestId("speaker-portrait"));
+    expect(header).not.toContainElement(
+      screen.getByText("Let’s see how these readings fit together."),
+    );
+    expect(header?.nextElementSibling).toBe(text);
+    expect(screen.getByText("Dr. Farah")).not.toHaveClass("uppercase");
+  });
+
+  it("places a direction between the speaker header and spoken line", () => {
+    const { container } = render(
+      <Dialogue
+        speaker="ARIA"
+        layout="speech"
+        direction="checking the readings"
+      >
+        Three values, one axis.
+      </Dialogue>,
+    );
+    const direction = screen.getByTestId("direction");
+    expect(direction).toHaveTextContent("(checking the readings)");
+    expect(direction.previousElementSibling).toHaveAttribute(
+      "data-dialogue-header",
+    );
+    expect(direction.nextElementSibling).toBe(
+      container.querySelector("[data-dialogue-text]"),
+    );
+    expect(container.querySelector(".tc-cut-to")).toBeNull();
+  });
+
+  it("has no accessibility violations without an avatar", async () => {
+    const { axe } = await import("vitest-axe");
+    const { container } = render(
+      <Dialogue speaker="ARIA" layout="speech">
+        Scanning for anomalies.
+      </Dialogue>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });

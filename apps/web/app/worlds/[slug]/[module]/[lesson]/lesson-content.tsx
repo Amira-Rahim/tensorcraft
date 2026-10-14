@@ -445,20 +445,18 @@ export function LessonContent({
             />
           );
         }
-        // The Briefing lays each beat out as an avatar slot beside its line
-        // (spec 2026-09-23, section 2). Mid-lesson beats on Concept and the
-        // other epilogues keep the stacked layout. The opening mission's
-        // redesigned close uses the same readable row treatment.
+        // Every Deep Orbit beat shares the same full-width speech surface,
+        // including nested epilogues and mid-lesson conversations.
         return (
           <Dialogue
             {...props}
             avatarSlot={avatarSlot}
             layout={
-              storyRegister ||
-              (worldId === "deep-orbit" &&
-                (insideEpilogue || layout === "reading"))
-                ? "row"
-                : "stack"
+              worldId === "deep-orbit"
+                ? "speech"
+                : storyRegister
+                  ? "row"
+                  : "stack"
             }
           />
         );

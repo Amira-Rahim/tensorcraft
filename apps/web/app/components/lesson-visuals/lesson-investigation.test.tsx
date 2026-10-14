@@ -87,6 +87,18 @@ describe("the lesson investigation", () => {
     expect(
       screen.queryByRole("img", { name: "Output total" }),
     ).not.toBeInTheDocument();
+    // Learners inspect the current inputs before making a prediction or running.
+    const inputReadings = screen.getByRole("list", { name: "Input readings" });
+    const prediction = screen.getByLabelText("What total do you expect?");
+    const runButton = screen.getByRole("button", { name: "Run experiment" });
+    expect(
+      inputReadings.compareDocumentPosition(prediction) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      prediction.compareDocumentPosition(runButton) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     fireEvent.change(screen.getByLabelText("What total do you expect?"), {
       target: { value: "5" },
     });

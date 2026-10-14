@@ -309,6 +309,15 @@ export function LessonInvestigation({
               </div>
             ))}
           </div>
+          <div className="orbit-investigation-input">
+            <h4>Current inputs</h4>
+            {inputGraphic && (
+              <InvestigationGraphic
+                graphic={inputGraphic}
+                domain={inputDomain}
+              />
+            )}
+          </div>
           <div className="orbit-investigation-prediction">
             <label htmlFor={`${id}-prediction`}>{spec.prediction.prompt}</label>
             {spec.prediction.choices ? (
@@ -368,15 +377,6 @@ export function LessonInvestigation({
           className="orbit-investigation-results"
           data-stale={dirty ? "true" : "false"}
         >
-          <div className="orbit-investigation-input">
-            <h4>Current inputs</h4>
-            {inputGraphic && (
-              <InvestigationGraphic
-                graphic={inputGraphic}
-                domain={inputDomain}
-              />
-            )}
-          </div>
           <p
             className="orbit-investigation-status"
             role="status"

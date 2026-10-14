@@ -79,7 +79,7 @@ export function LessonShell({
         >
           {left != null && (
             <div
-              className={`min-w-0 ${!workspace && pane && paneOpenOnMobile ? (orbit ? "hidden xl:block" : "hidden lg:block") : ""}`}
+              className={`min-w-0 ${!orbit && !workspace && pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
             >
               {left}
             </div>
@@ -88,7 +88,7 @@ export function LessonShell({
             <div
               data-testid="lesson-right"
               data-kind={rightKind}
-              className={`min-w-0 ${!workspace && pane ? (orbit ? `${paneOpenOnMobile ? "block" : "hidden"} xl:block` : `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block`) : ""}`}
+              className={`min-w-0 ${!orbit && !workspace && pane ? `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : ""}`}
             >
               {right}
             </div>

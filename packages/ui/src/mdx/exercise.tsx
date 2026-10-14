@@ -856,7 +856,7 @@ function ExerciseLoadingSkeleton() {
   return (
     <div className="border border-border p-6 animate-pulse">
       <div className="h-5 w-32 bg-border mb-4" />
-      <div className="h-4 w-64 bg-border mb-6" />
+      <div className="h-4 w-64 max-w-full bg-border mb-6" />
       <div className="h-32 bg-code-bg border border-border mb-4" />
       <div className="h-10 w-28 bg-border" />
     </div>

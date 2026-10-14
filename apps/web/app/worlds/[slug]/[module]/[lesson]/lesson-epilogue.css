@@ -8,43 +8,30 @@
 }
 .orbit-epilogue-scene {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
-  gap: 56px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
   align-items: start;
 }
 .orbit-epilogue-story,
 .orbit-epilogue-art {
   min-width: 0;
 }
+.orbit-epilogue-story :is(.lesson-epilogue, .lesson-step-content) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+.orbit-epilogue-story :is(.lesson-epilogue, .lesson-step-content) > * {
+  margin-block: 0;
+}
 .orbit-epilogue-story .lesson-epilogue > p,
 .orbit-epilogue-story .lesson-step-content > p {
-  margin: 0 0 24px;
+  margin: 0;
   font-size: 22px;
   line-height: 1.6;
 }
 .orbit-epilogue-story .lesson-epilogue > p:last-child {
   margin-bottom: 0;
-}
-.orbit-epilogue-story [data-dialogue] {
-  margin: 28px 0;
-  padding: 24px 0;
-  border-block: 1px solid var(--tc-border);
-  max-width: none;
-}
-.orbit-epilogue-story [data-dialogue-row] {
-  grid-template-columns: 44px minmax(0, 1fr);
-  column-gap: 16px;
-}
-.orbit-epilogue-story [data-dialogue-row] > div:last-child > div:first-child {
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-}
-.orbit-epilogue-story [data-dialogue] p {
-  margin: 0;
-  font-size: 22px;
-  line-height: 1.65;
 }
 .orbit-epilogue .orbit-epilogue-story code {
   font-size: 1em;
@@ -106,7 +93,7 @@
     gap: 28px;
   }
   .orbit-epilogue-story {
-    max-width: 65ch;
+    width: 100%;
   }
 }
 @media (max-width: 650px) {

@@ -1,4 +1,4 @@
-/* Approved Deep Orbit takeaways: shared layout, lesson-specific content. */
+/* Deep Orbit takeaways follow the lesson's full-width reading sequence. */
 .orbit-takeaways,
 .orbit-takeaways-nav {
   width: 100%;
@@ -59,19 +59,20 @@
 }
 .orbit-check-row {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
   align-items: start;
-  padding-block: 28px;
+  padding-block: 32px;
 }
 .orbit-check-prompt {
-  padding-top: 12px;
-  font-size: 18px;
+  padding: 0;
+  font-size: 22px;
   font-weight: 600;
-  line-height: 28px;
+  line-height: 1.45;
 }
 .orbit-check-response {
   min-width: 0;
+  width: 100%;
 }
 .orbit-check-input {
   display: block;
@@ -93,7 +94,7 @@
   gap: 12px;
 }
 .orbit-check-options[data-binary="true"] {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 .orbit-check-option {
   display: flex;
@@ -104,7 +105,7 @@
   border-radius: 4px;
   background: var(--tc-surface);
   color: var(--tc-text);
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.5;
   cursor: pointer;
 }
@@ -123,20 +124,20 @@
 }
 .orbit-check-option strong {
   display: block;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 500;
 }
 .orbit-check-option small {
   display: block;
   margin-top: 4px;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.6;
   color: var(--tc-muted);
 }
 .orbit-check-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   gap: 24px;
   padding-top: 22px;
@@ -181,12 +182,16 @@
 }
 .orbit-takeaways .orbit-recap-layout {
   display: grid;
-  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
   align-items: start;
 }
 .orbit-takeaways .orbit-recap-copy {
-  max-width: 38ch;
+  min-width: 0;
+  width: 100%;
+}
+.orbit-takeaways .orbit-recap-copy > p {
+  max-width: 75ch;
 }
 .orbit-takeaways .orbit-recap-intro {
   color: var(--tc-text);
@@ -206,9 +211,11 @@
 }
 .orbit-takeaways .orbit-tensor-figure {
   margin: 0;
-  padding: 0;
+  padding: 28px;
   min-width: 0;
-  max-width: 720px;
+  width: 100%;
+  background: var(--tc-surface);
+  border-radius: 6px;
 }
 .orbit-takeaways .orbit-transform-grid {
   display: grid;
@@ -419,14 +426,18 @@
 }
 .orbit-takeaways .orbit-glossary-body {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
   padding: 32px 0 0;
   align-items: start;
 }
 .orbit-takeaways .orbit-term-copy {
-  max-width: 42ch;
   min-width: 0;
+  width: 100%;
+}
+.orbit-takeaways .orbit-term-copy > p,
+.orbit-takeaways .orbit-term-detail {
+  max-width: 75ch;
 }
 .orbit-takeaways .orbit-term-definition {
   color: var(--tc-text);
@@ -453,6 +464,7 @@
 }
 .orbit-takeaways .orbit-glossary-stage {
   min-width: 0;
+  width: 100%;
   margin: 0;
   padding: 26px 28px 22px;
   background: var(--tc-surface);
@@ -472,6 +484,10 @@
 }
 .orbit-takeaways .orbit-study-object {
   min-width: 0;
+}
+.orbit-takeaways .orbit-study-object + .orbit-study-object {
+  padding-top: 28px;
+  border-top: 1px solid var(--tc-border);
 }
 .orbit-takeaways .orbit-study-title {
   font-size: 16px;
@@ -590,13 +606,13 @@
 .orbit-takeaways
   .orbit-glossary-stage[data-term="dimensions"]
   .orbit-study-comparison {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 .orbit-takeaways
   .orbit-glossary-stage[data-term="dimensions"]
   .orbit-study-values
   span {
-  font-size: 20px;
+  font-size: 28px;
 }
 .orbit-takeaways
   .orbit-glossary-stage[data-term="dimensions"]
@@ -604,13 +620,7 @@
   padding: 12px 5px;
 }
 
-/* Long term lists wrap; terms without a useful illustration keep a readable measure. */
-.orbit-takeaways .orbit-glossary-body:not([data-illustrated]) {
-  grid-template-columns: minmax(0, 1fr);
-}
-.orbit-takeaways .orbit-glossary-body:not([data-illustrated]) .orbit-term-copy {
-  max-width: 65ch;
-}
+/* Every selected term has its own full row, followed by its illustration. */
 .orbit-term-documentation {
   display: flex;
   flex-direction: column;
@@ -626,8 +636,8 @@
 .orbit-takeaways .orbit-recap-summary {
   overflow-wrap: anywhere;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 64px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
   margin-top: 28px;
 }
 .orbit-takeaways .orbit-recap-summary code {
@@ -646,6 +656,13 @@
 }
 .orbit-takeaways .orbit-recap-summary li::marker {
   color: var(--tc-primary);
+}
+.orbit-takeaways .orbit-recap-summary li:last-child {
+  margin-bottom: 0;
+}
+.orbit-takeaways .orbit-recap-application {
+  padding-top: 32px;
+  border-top: 1px solid var(--tc-border);
 }
 .orbit-takeaways .orbit-recap-application h3 {
   font-size: 18px;
@@ -673,26 +690,6 @@
 .orbit-takeaways .orbit-self-assessment :is(textarea, .review-prompt-answer) {
   font-size: 20px;
   line-height: 1.6;
-}
-@media (max-width: 900px) {
-  .orbit-check-row {
-    gap: 28px;
-  }
-  .orbit-check-options[data-binary="true"] {
-    grid-template-columns: 1fr;
-  }
-  .orbit-takeaways
-    :is(.orbit-recap-layout, .orbit-recap-summary, .orbit-glossary-body) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
-  }
-  .orbit-takeaways :is(.orbit-recap-copy, .orbit-term-copy) {
-    max-width: 65ch;
-  }
-  .orbit-takeaways .orbit-tensor-figure {
-    width: 100%;
-    max-width: none;
-  }
 }
 @media (max-width: 650px) {
   .orbit-check-row {
@@ -725,6 +722,9 @@
   }
   .orbit-takeaways .orbit-section-heading {
     font-size: 28px;
+  }
+  .orbit-takeaways .orbit-tensor-figure {
+    padding: 22px 16px;
   }
   .orbit-takeaways .orbit-transform-grid {
     grid-template-columns: minmax(0, 1fr);

@@ -201,7 +201,7 @@ export function ProjectRunRecord() {
               </option>
             </select>
           </label>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div data-project-results="" className="grid gap-4 sm:grid-cols-3">
             {(
               [
                 ["baseline", "Baseline result"],

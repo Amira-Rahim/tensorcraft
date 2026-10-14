@@ -10,13 +10,14 @@ vi.mock("@tensorcraft/ui", () => ({
     children,
   }: {
     speaker: string;
-    layout?: "stack" | "row";
+    layout?: "stack" | "row" | "speech";
     children: React.ReactNode;
   }) => (
     <div data-testid="dialogue" data-layout={layout}>
       {speaker}: {children}
     </div>
   ),
+  AnimatedAvatar: () => <div data-testid="animated-avatar" />,
   BridgeCallout: () => <div data-testid="bridge" />,
   CodeBlock: ({ children }: { children: React.ReactNode }) => (
     <pre>{children}</pre>
@@ -243,6 +244,44 @@ describe("LessonContent, story register", () => {
       "stack",
     );
   });
+
+  it.each([
+    {
+      name: "Briefing",
+      storyRegister: true,
+      layout: undefined,
+      visible: ["Dialogue", "prose"],
+    },
+    {
+      name: "Concept",
+      storyRegister: false,
+      layout: "reading" as const,
+      visible: ["Dialogue", "prose"],
+    },
+    {
+      name: "Epilogue",
+      storyRegister: false,
+      layout: undefined,
+      visible: ["Epilogue"],
+    },
+  ])(
+    "uses the shared Deep Orbit speech treatment on $name",
+    ({ storyRegister, layout, visible }) => {
+      render(
+        <LessonContent
+          lesson={lesson}
+          worldId="deep-orbit"
+          storyRegister={storyRegister}
+          layout={layout}
+          visibleComponents={new Set(visible)}
+        />,
+      );
+      expect(screen.getByTestId("dialogue")).toHaveAttribute(
+        "data-layout",
+        "speech",
+      );
+    },
+  );
 });
 
 describe("LessonContent, reading layout", () => {

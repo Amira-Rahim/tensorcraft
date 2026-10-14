@@ -2,7 +2,7 @@
 import { ProseText } from "@tensorcraft/ui/prose-text";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { AnimatedAvatar, ScenePortrait } from "@tensorcraft/ui";
+import { AnimatedAvatar, Dialogue, ScenePortrait } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { TensorFlowApiLink } from "../mdx/tensorflow-reference";
 import type { LessonVisualSpec } from "./deep-orbit-visuals";
@@ -133,18 +133,14 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
           <p className="tensor-investigation-location">
             Control room aboard the research ship Archimedes
           </p>
-          <div className="tensor-investigation-speaker">
-            <AnimatedAvatar name="Ensign Demir" {...demir} />
-            <p>
-              <strong>
-                <ProseText>Demir</ProseText>
-              </strong>
-              <span>At the signal console</span>
-            </p>
-          </div>
-          <blockquote className="iv-instruction">
-            <ProseText>{spec.action}</ProseText>
-          </blockquote>
+          <Dialogue
+            speaker="Demir"
+            direction="At the signal console"
+            layout="speech"
+            avatarSlot={<AnimatedAvatar name="Ensign Demir" {...demir} />}
+          >
+            {spec.action}
+          </Dialogue>
         </div>
       </div>
 
@@ -254,7 +250,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
             <div
               className="iv-cells iv-cells-muted"
               style={{
-                gridTemplateColumns: `repeat(${packet.length}, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(${packet.length}, minmax(56px, 1fr))`,
               }}
               role="list"
               aria-label={
@@ -342,7 +338,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 <div
                   className="iv-cells"
                   style={{
-                    gridTemplateColumns: `repeat(${result.values.length}, minmax(0, 1fr))`,
+                    gridTemplateColumns: `repeat(${result.values.length}, minmax(56px, 1fr))`,
                   }}
                   role="list"
                   aria-label="Readings returned from the tensor"
@@ -371,17 +367,15 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 )}
               </div>
               <div className="tensor-investigation-interpretation">
-                <div className="tensor-investigation-speaker">
-                  <AnimatedAvatar name="ARIA" {...aria} />
-                  <h3>
-                    <ProseText>ARIA</ProseText>
-                  </h3>
-                </div>
-                <blockquote>
+                <Dialogue
+                  speaker="ARIA"
+                  layout="speech"
+                  avatarSlot={<AnimatedAvatar name="ARIA" {...aria} />}
+                >
                   {readingsPreserved
                     ? `All ${result.values.length} readings match the original array, in the same order. They are now in a tensor that TensorFlow.js can work with.`
                     : "The tensor does not match the original readings. Reset the example and try again."}
-                </blockquote>
+                </Dialogue>
               </div>
               {readingsPreserved && packetId === "mission" && (
                 <div className="tensor-investigation-consequence">
