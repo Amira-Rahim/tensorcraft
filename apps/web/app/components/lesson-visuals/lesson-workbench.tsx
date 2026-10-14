@@ -11,6 +11,15 @@ import { ChannelLayoutExperiment } from "../mdx/channel-layout-experiment";
 import { LessonInvestigation } from "./lesson-investigation";
 import { LESSON_INVESTIGATIONS } from "./lesson-investigations";
 
+const DEEP_ORBIT_LOCATION_CAPTIONS: Record<string, string> = {
+  "Archimedes, Lab": "Inside the science lab on the spaceship Archimedes.",
+  "Archimedes, Bridge": "Inside the control room on the spaceship Archimedes.",
+  "Archimedes, Engineering":
+    "Inside the engineering room on the spaceship Archimedes.",
+  "Bridge, Dashboard Station":
+    "At the dashboard station in the control room on the spaceship Archimedes.",
+};
+
 interface SceneLesson {
   slug: string;
   context: { narrative: string; speaker?: string };
@@ -21,6 +30,7 @@ interface Props {
   worldSlug: string;
   moduleSlug: string;
   compact?: boolean;
+  narrativeFirst?: boolean;
   heading?: string;
   learningGoals?: ReactNode;
 }
@@ -29,16 +39,34 @@ export function LessonMissionScene({
   worldSlug,
   moduleSlug,
   compact = false,
+  narrativeFirst = false,
   heading,
   learningGoals,
 }: Props) {
   const character = resolveCharacter(worldSlug, lesson.context.speaker);
   const portrait = portraitSources(worldSlug, character);
+  const location = lesson.scene?.location;
+  const locationCaption =
+    worldSlug === "deep-orbit"
+      ? location
+        ? (DEEP_ORBIT_LOCATION_CAPTIONS[location] ?? location)
+        : "Aboard the spaceship Archimedes."
+      : (location ?? "Deep Orbit");
+  const narrative = (
+    <p className="mission-context-narrative" data-testid="mission-handoff">
+      <ProseText>
+        {worldSlug === "deep-orbit"
+          ? (LESSON_HANDOFFS[lesson.slug] ?? lesson.context.narrative)
+          : lesson.context.narrative}
+      </ProseText>
+    </p>
+  );
   return (
     <aside
       className={`lesson-mission-scene ${compact ? "lesson-mission-scene-compact" : ""} ${heading ? "challenge-mission-header" : ""}`}
       aria-label="Mission context"
     >
+      {narrativeFirst && narrative}
       <ScenePortrait
         src={`/scenes/${worldSlug}/${moduleSlug}/${lesson.slug}.webp`}
         alt={lesson.scene?.portraitAlt}
@@ -48,13 +76,12 @@ export function LessonMissionScene({
         className="mission-context-image"
       />
       <div className="mission-context-copy">
-        {heading && <h2>{heading}</h2>}
+        {heading && worldSlug !== "deep-orbit" && <h2>{heading}</h2>}
         <p className="mission-context-location">
-          {heading && lesson.scene?.location === "Archimedes, Bridge"
-            ? "Control room aboard the Archimedes"
-            : (lesson.scene?.location ?? "Deep Orbit")}
+          {locationCaption}
           {lesson.scene?.time ? ` · ${lesson.scene.time}` : ""}
         </p>
+        {heading && worldSlug === "deep-orbit" && <h2>{heading}</h2>}
         {!compact && character && (
           <div className="mission-context-crew">
             {portrait.src && (
@@ -66,13 +93,7 @@ export function LessonMissionScene({
             </span>
           </div>
         )}
-        <p className="mission-context-narrative" data-testid="mission-handoff">
-          <ProseText>
-            {worldSlug === "deep-orbit"
-              ? (LESSON_HANDOFFS[lesson.slug] ?? lesson.context.narrative)
-              : lesson.context.narrative}
-          </ProseText>
-        </p>
+        {!narrativeFirst && narrative}
         {learningGoals}
       </div>
     </aside>

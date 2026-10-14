@@ -47,6 +47,7 @@ vi.mock("./lesson-content", async () => {
       layout,
       onRecallPending,
       exerciseWorkspace,
+      challengeScene,
       onHintRevealed,
     }: {
       storyRegister?: boolean;
@@ -56,6 +57,7 @@ vi.mock("./lesson-content", async () => {
       layout?: "reading";
       onRecallPending?: (pending: number) => void;
       exerciseWorkspace?: boolean;
+      challengeScene?: React.ReactNode;
       onHintRevealed?: (level: 1 | 2 | 3) => void;
     }) => {
       React.useEffect(() => {
@@ -77,8 +79,17 @@ vi.mock("./lesson-content", async () => {
               : ""
           }
           data-workspace={exerciseWorkspace ? "true" : undefined}
+          data-challenge-scene={challengeScene ? "true" : undefined}
           data-hint-callback={onHintRevealed ? "true" : undefined}
-        />
+        >
+          {challengeScene && (
+            <>
+              <h2>Challenge</h2>
+              {challengeScene}
+              <p>Task introduction.</p>
+            </>
+          )}
+        </div>
       );
     },
   };
@@ -1041,6 +1052,106 @@ describe("LessonSteps, prose partition (2026-09-04 audit step 2)", () => {
   });
 });
 
+describe("Deep Orbit challenges, story and exercise ownership", () => {
+  const cases = [
+    { slug: "introduction-to-tensors", count: 1, workspace: true },
+    { slug: "tensor-shapes", count: 1, workspace: false },
+    { slug: "launch", count: 3, workspace: false },
+  ];
+
+  function renderChallenge(slug: string, count: number) {
+    localStorage.setItem(`tc_step_v2_deep-orbit_${slug}`, "2");
+    localStorage.setItem(`tc_step_max_v2_deep-orbit_${slug}`, "2");
+    return render(
+      <LessonSteps
+        lesson={{ ...lesson, slug }}
+        exercises={Array.from({ length: count }, (_, index) => ({
+          slug: `${slug}-exercise-${index}`,
+          title: `Exercise ${index + 1}`,
+          instructions: "Finish the supplied code.",
+          starterCode: "const answer = null;",
+          solutionCode: "const answer = 1;",
+          testCode: "",
+          estimatedMinutes: 6,
+          difficulty: "beginner" as const,
+        }))}
+        worldSlug="deep-orbit"
+        moduleSlug={slug === "launch" ? "capstone" : "foundations"}
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+  }
+
+  it.each(cases)(
+    "$slug gives its task the scene and places the editor after it",
+    ({ slug, count, workspace }) => {
+      renderChallenge(slug, count);
+      const [task, editor] = screen.getAllByTestId("lesson-content");
+      const title = screen.getByRole("heading", { level: 1 });
+      expect(title.compareDocumentPosition(task!)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(task!.compareDocumentPosition(editor!)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(task).toHaveAttribute("data-challenge-scene", "true");
+      expect(editor).not.toHaveAttribute("data-challenge-scene");
+      const scene = screen.getByTestId("challenge-scene");
+      expect(task).toContainElement(scene);
+      expect(editor).not.toContainElement(scene);
+      expect(scene).toBeVisible();
+      expect(scene.tagName).toBe("SECTION");
+      expect(scene.closest("details")).toBeNull();
+      expect(task!.dataset.visible?.split(",")).toEqual(
+        workspace
+          ? ["challenge"]
+          : expect.arrayContaining([
+              "challenge",
+              "ExerciseBrief",
+              "HintPanel",
+              "DecisionTask",
+              "TransferAssignment",
+              "IndependentProject",
+            ]),
+      );
+      expect(editor).toHaveAttribute("data-visible", "Exercise");
+      if (count > 1) {
+        expect(screen.getByText(/3 exercises$/i)).toBeInTheDocument();
+      }
+    },
+  );
+
+  it.each(cases)(
+    "$slug retains one editor partition and its existing hint ownership",
+    ({ slug, count, workspace }) => {
+      renderChallenge(slug, count);
+      const contents = screen.getAllByTestId("lesson-content");
+      expect(contents).toHaveLength(2);
+      const editor = contents[1]!;
+      const pane = screen.getByTestId("lesson-right");
+      expect(pane).toContainElement(editor);
+      expect(
+        pane.querySelectorAll("[data-testid='lesson-content']"),
+      ).toHaveLength(1);
+      expect(editor).toHaveAttribute("data-visible", "Exercise");
+      expect(contents[0]).toHaveAttribute("data-challenge-scene", "true");
+      expect(editor).not.toHaveAttribute("data-challenge-scene");
+      if (workspace) {
+        expect(editor).toHaveAttribute("data-workspace", "true");
+        expect(editor).toHaveAttribute("data-hint-callback", "true");
+      } else {
+        expect(editor).not.toHaveAttribute("data-workspace");
+        expect(editor).not.toHaveAttribute("data-hint-callback");
+        expect(screen.getAllByTestId("lesson-content")[0]).toHaveAttribute(
+          "data-hint-callback",
+          "true",
+        );
+      }
+    },
+  );
+});
+
 describe("LessonSteps, URL-addressable steps (2026-09-04 audit step 2)", () => {
   it("pushes a #step-N hash entry per forward step", () => {
     renderSteps();
@@ -1102,16 +1213,21 @@ describe("LessonSteps, skip to the challenge (2026-09-04 audit step 2)", () => {
     );
   }
 
-  it("leaves the workspace's left slot empty and hands the hint hook to the pane", () => {
+  it("keeps the workspace introduction before the pane and hands only the pane the hint hook", () => {
     localStorage.setItem(STEP_KEY, "2");
     localStorage.setItem(MAX_KEY, "2");
     renderWithExercise();
     const contents = screen.getAllByTestId("lesson-content");
-    expect(contents).toHaveLength(1);
-    expect(contents[0]).toHaveAttribute("data-visible", "Exercise");
-    expect(contents[0]).toHaveAttribute("data-workspace", "true");
-    expect(contents[0]).toHaveAttribute("data-hint-callback", "true");
-    expect(screen.getByTestId("lesson-grid").children).toHaveLength(1);
+    expect(contents).toHaveLength(2);
+    expect(contents[0]).toHaveAttribute("data-visible", "challenge");
+    expect(contents[0]).toHaveAttribute("data-challenge-scene", "true");
+    expect(contents[0]).not.toHaveAttribute("data-workspace");
+    expect(contents[0]).not.toHaveAttribute("data-hint-callback");
+    expect(contents[1]).toHaveAttribute("data-visible", "Exercise");
+    expect(contents[1]).not.toHaveAttribute("data-challenge-scene");
+    expect(contents[1]).toHaveAttribute("data-workspace", "true");
+    expect(contents[1]).toHaveAttribute("data-hint-callback", "true");
+    expect(screen.getByTestId("lesson-grid").children).toHaveLength(2);
   });
 
   it("jumps a first visit straight to the Challenge step and unlocks the bar behind it", () => {

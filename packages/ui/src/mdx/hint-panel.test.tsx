@@ -111,6 +111,38 @@ describe("HintPanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("reveals compact hints in order, announces each reveal and keeps focus on the new hint", async () => {
+    const onHintRevealed = vi.fn();
+    render(<HintPanel hints={hints} compact onHintRevealed={onHintRevealed} />);
+
+    expect(screen.queryByText("Need a hint?")).not.toBeInTheDocument();
+    expect(screen.queryByText("Guidance")).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+
+    const labels = ["Get a nudge", "Get more guidance", "Reveal solution"];
+    const announcements = [
+      "Nudge revealed.",
+      "Guidance revealed.",
+      "Solution revealed.",
+    ];
+    for (const [index, hint] of hints.entries()) {
+      fireEvent.click(screen.getByRole("button", { name: labels[index] }));
+      expect(screen.getByRole("status")).toHaveTextContent(
+        announcements[index]!,
+      );
+      expect(onHintRevealed).toHaveBeenNthCalledWith(index + 1, index + 1);
+      await waitFor(() =>
+        expect(document.activeElement).toHaveTextContent(hint.content),
+      );
+    }
+
+    for (const hint of hints) {
+      expect(screen.getByText(hint.content)).toBeInTheDocument();
+    }
+    expect(onHintRevealed).toHaveBeenCalledTimes(3);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
   it("renders one root with its live region inside it", () => {
     // The Challenge instructions column drops its last block's bottom margin
     // with `[data-show-challenge="true"] > :last-child` (apps/web

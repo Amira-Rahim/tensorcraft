@@ -203,6 +203,8 @@ interface ExerciseProps {
    * page sets it when the lesson has more than one exercise.
    */
   titled?: boolean;
+  /** Optional visible editor heading for a lesson's external brief. */
+  editorHeading?: string;
   workspace?: boolean;
 }
 
@@ -876,6 +878,7 @@ export function Exercise({
   hints,
   brief = "inline",
   titled = false,
+  editorHeading,
   workspace = false,
 }: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
@@ -1014,15 +1017,17 @@ export function Exercise({
           when the lesson has more than one exercise, the exercise's name. */}
           <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
             <div className="flex items-center gap-2 whitespace-nowrap">
-              {!workspace && <span className="text-base">⚡</span>}
+              {!workspace && !editorHeading && (
+                <span className="text-base">⚡</span>
+              )}
               <h4
-                className={
-                  workspace
+                className={`exercise-editor-heading ${
+                  workspace || editorHeading
                     ? "challenge-editor-heading"
                     : "text-xs font-mono font-semibold uppercase tracking-widest text-primary"
-                }
+                }`}
               >
-                {workspace ? "Your JavaScript" : "Exercise"}
+                {editorHeading ?? (workspace ? "Your JavaScript" : "Exercise")}
                 {brief === "external" && titled && (
                   <span className="sr-only">: {exercise.title}</span>
                 )}

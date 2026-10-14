@@ -13,6 +13,7 @@ import {
 
 interface ExerciseBriefProps {
   slug: string;
+  compactHints?: boolean;
   /** The exercise's own ladder reports here, like the lesson-level one. */
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
 }
@@ -23,7 +24,11 @@ interface ExerciseBriefProps {
    inside .lesson-prose, so the title pins every property the prose h3
    rule sets, as LearningObjectives does for its heading. The challenge
    workspace's brief is TaskStopsBrief, inside the pane (spec 2026-10-10). */
-export function ExerciseBrief({ slug, onHintRevealed }: ExerciseBriefProps) {
+export function ExerciseBrief({
+  slug,
+  onHintRevealed,
+  compactHints = false,
+}: ExerciseBriefProps) {
   const exercise = useContext(ExerciseDataContext).get(slug);
   const scheme = useScheme();
   if (!exercise) return <ExerciseNotFound slug={slug} />;
@@ -80,7 +85,11 @@ export function ExerciseBrief({ slug, onHintRevealed }: ExerciseBriefProps) {
       />
       {exercise.hints && exercise.hints.length > 0 && (
         <div data-testid="exercise-hints">
-          <HintPanel hints={exercise.hints} onHintRevealed={onHintRevealed} />
+          <HintPanel
+            hints={exercise.hints}
+            onHintRevealed={onHintRevealed}
+            compact={compactHints}
+          />
         </div>
       )}
     </div>

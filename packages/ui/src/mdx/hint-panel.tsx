@@ -10,6 +10,7 @@ export interface Hint {
 
 interface HintPanelProps {
   hints: Hint[] | undefined;
+  compact?: boolean;
   /**
    * Called when the user reveals a hint tier. The consumer wires this up
    * to analytics, kept here as a pure callback so the UI package has no
@@ -144,9 +145,22 @@ function QuestionIcon() {
   );
 }
 
-export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
+export function HintPanel({
+  hints,
+  onHintRevealed,
+  compact = false,
+}: HintPanelProps) {
   const ladder = useHintLadder(hints, onHintRevealed);
   if (ladder.hints.length === 0) return null;
+
+  if (compact) {
+    return (
+      <div className="lesson-hint-help">
+        <HintRungs ladder={ladder} />
+        <HintButton ladder={ladder} />
+      </div>
+    );
+  }
 
   return (
     <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">

@@ -50,6 +50,7 @@ import { SceneHeading, ScenePortrait } from "@tensorcraft/ui";
 import { worlds } from "@tensorcraft/worlds";
 import { LessonDrawer } from "./lesson-drawer";
 import { LessonShell } from "./lesson-shell";
+import { LessonChallengeScene } from "./lesson-challenge-scene";
 import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
 import { LessonEpilogue } from "./lesson-epilogue";
@@ -71,10 +72,7 @@ import {
   stepHash,
   historyStep,
 } from "@/lib/lesson-phases";
-import {
-  LessonMissionScene,
-  LessonConceptWorkbench,
-} from "@/app/components/lesson-visuals/lesson-workbench";
+import { LessonConceptWorkbench } from "@/app/components/lesson-visuals/lesson-workbench";
 
 /**
  * Per-world vocabulary. The reader used to hardcode Deep Orbit's words
@@ -239,6 +237,7 @@ const CHALLENGE_LEFT = new Set([
   "IndependentProject",
 ]);
 const CHALLENGE_RIGHT = new Set(["Exercise"]);
+const CHALLENGE_WORKSPACE_INTRO = new Set(["challenge"]);
 
 // Takeaways: the recall card first, alone; the lesson close (LessonRecap,
 // ProjectMilestone, NextLesson) once every card has left its prompt, so
@@ -263,6 +262,7 @@ export const STEP_VISIBILITY = {
   CONCEPT_INTRO,
   CHALLENGE_LEFT,
   CHALLENGE_RIGHT,
+  CHALLENGE_WORKSPACE_INTRO,
   TAKEAWAYS_RECALL,
   TAKEAWAYS_AFTER,
   CONSEQUENCE_COMPONENTS,
@@ -1196,12 +1196,15 @@ function LessonStepsInner({
     shellLeft = <StepConcept {...sharedContentProps} />;
   } else if (currentStep === PHASE.challenge) {
     rightKind = "pane";
-    // The workspace's brief and help live in its editor pane (spec
-    // 2026-10-10), so its left slot renders nothing.
-    shellLeft = challengeWorkspace ? null : (
+    // Every challenge starts with its authored task. The workspace keeps
+    // its live line instructions and help in the editor pane.
+    shellLeft = (
       <StepChallenge
         {...sharedContentProps}
-        onHintRevealed={handleHintLevelRevealed}
+        workspace={challengeWorkspace}
+        onHintRevealed={
+          challengeWorkspace ? undefined : handleHintLevelRevealed
+        }
       />
     );
     shellRight = (
@@ -1328,18 +1331,6 @@ function LessonStepsInner({
                 moduleSlug={moduleSlug}
                 exercises={exercises}
               />
-              {worldSlug === "deep-orbit" &&
-                currentStep === PHASE.challenge && (
-                  <LessonMissionScene
-                    lesson={lesson}
-                    worldSlug={worldSlug}
-                    moduleSlug={moduleSlug}
-                    compact
-                    heading={
-                      challengeWorkspace ? exercises[0]!.title : undefined
-                    }
-                  />
-                )}
             </>
           }
           paneOpenOnMobile={paneOpen}
@@ -2218,6 +2209,7 @@ function StepChallenge({
   worldSlug,
   moduleSlug,
   lessonSlug,
+  workspace = false,
   onHintRevealed,
 }: {
   lesson: LessonStepsProps["lesson"];
@@ -2225,10 +2217,15 @@ function StepChallenge({
   worldSlug: string;
   moduleSlug: string;
   lessonSlug: string;
+  workspace?: boolean;
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
 }) {
   return (
-    <div>
+    <div
+      className={
+        worldSlug === "deep-orbit" ? "orbit-challenge-start" : undefined
+      }
+    >
       {worldSlug !== "deep-orbit" && (
         <PhaseChip label="Challenge" icon={"\u26A1"} />
       )}
@@ -2244,7 +2241,18 @@ function StepChallenge({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           glossaryTerms={lesson.glossaryTerms}
-          visibleComponents={CHALLENGE_LEFT}
+          visibleComponents={
+            workspace ? CHALLENGE_WORKSPACE_INTRO : CHALLENGE_LEFT
+          }
+          challengeScene={
+            worldSlug === "deep-orbit" ? (
+              <LessonChallengeScene
+                lesson={lesson}
+                worldSlug={worldSlug}
+                moduleSlug={moduleSlug}
+              />
+            ) : undefined
+          }
           onHintRevealed={onHintRevealed}
         />
       </div>
@@ -2492,9 +2500,7 @@ export function LessonDesignPreview({
     ) : phase === "concept" ? (
       <StepConcept {...shared} />
     ) : challenge ? (
-      workspace ? null : (
-        <StepChallenge {...shared} />
-      )
+      <StepChallenge {...shared} workspace={workspace} />
     ) : phase === "takeaways" ? (
       <StepTakeaways {...shared} recallSettled onRecallPending={() => {}} />
     ) : (
@@ -2518,13 +2524,6 @@ export function LessonDesignPreview({
               moduleSlug={shared.moduleSlug}
               exercises={exercises}
             />
-            {challenge && (
-              <LessonMissionScene
-                {...shared}
-                compact
-                heading={workspace ? exercises[0]?.title : undefined}
-              />
-            )}
           </>
         }
         left={left}

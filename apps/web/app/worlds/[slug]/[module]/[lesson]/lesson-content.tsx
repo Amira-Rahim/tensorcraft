@@ -2,6 +2,7 @@
 import { DeepOrbitRecap } from "./deep-orbit-recap";
 import { ProseText } from "@tensorcraft/ui/prose-text";
 import { createElement } from "react";
+import type { ReactNode } from "react";
 import { LessonCharacters } from "@/app/components/lesson-characters";
 
 import {
@@ -103,6 +104,7 @@ interface LessonContentProps {
   moduleId?: string;
   lessonId?: string;
   visibleComponents?: Set<string>;
+  challengeScene?: ReactNode;
   storyRegister?: boolean;
   briefingTakeawayPart?: "idea" | "task";
   /**
@@ -210,6 +212,8 @@ const mdxComponents = {
   TransferAssignment,
 };
 
+const ChallengeSceneContext = createContext<ReactNode>(null);
+
 /**
  * Renders compiled MDX content from Velite.
  * Velite's s.mdx() compiles MDX to a function body string that receives
@@ -222,6 +226,7 @@ export function LessonContent({
   moduleId,
   lessonId,
   visibleComponents,
+  challengeScene,
   storyRegister,
   briefingTakeawayPart,
   layout,
@@ -358,6 +363,7 @@ export function LessonContent({
     !visibleComponents ||
     visibleComponents.size === 0 ||
     visibleComponents.has("prose");
+  const scoped = !!visibleComponents && visibleComponents.size > 0;
   // "challenge" re-reveals the challenge zone when prose is hidden (the
   // Challenge step's left column: brief + hints without the re-read).
   const showChallenge =
@@ -392,18 +398,22 @@ export function LessonContent({
       // Stamps the one heading the hideChallengeOnward CSS rule anchors on
       // (globals.css). All 56 lessons carry exactly one "## Challenge";
       // MDX has no rehype-slug, so headings have no ids to target.
-      h2: ({ children, ...rest }: React.HTMLAttributes<HTMLHeadingElement>) => (
-        <h2
-          {...rest}
-          data-heading={
-            typeof children === "string" && children.trim() === "Challenge"
-              ? "challenge"
-              : undefined
-          }
-        >
-          <ProseText>{children}</ProseText>
-        </h2>
-      ),
+      h2: function LessonHeading({
+        children,
+        ...rest
+      }: React.HTMLAttributes<HTMLHeadingElement>) {
+        const scene = useContext(ChallengeSceneContext);
+        const challenge =
+          typeof children === "string" && children.trim() === "Challenge";
+        return (
+          <>
+            <h2 {...rest} data-heading={challenge ? "challenge" : undefined}>
+              <ProseText>{children}</ProseText>
+            </h2>
+            {challenge && scene}
+          </>
+        );
+      },
       pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
         <pre {...props} tabIndex={0} role="region" aria-label="Code example" />
       ),
@@ -601,7 +611,6 @@ export function LessonContent({
     // today's inline pane and never renders both (spec 2026-09-24, section
     // 3). The count comes from the lesson's exercises prop: a numbered
     // index was rejected because velite lists exercises in file order.
-    const scoped = !!visibleComponents && visibleComponents.size > 0;
     const submit =
       worldId && lessonId
         ? (result: ExerciseSubmitResult) => {
@@ -617,6 +626,7 @@ export function LessonContent({
           <ExerciseBrief
             slug={props.slug}
             onHintRevealed={handleHintRevealed}
+            compactHints={worldId === "deep-orbit" && scoped}
           />
         );
       }
@@ -633,6 +643,9 @@ export function LessonContent({
           onSubmit={submit}
           brief={scoped ? "external" : "inline"}
           titled={scoped && exerciseCount > 1}
+          editorHeading={
+            worldId === "deep-orbit" && scoped ? "Your JavaScript" : undefined
+          }
         />
       );
     };
@@ -691,6 +704,7 @@ export function LessonContent({
     glossaryByTerm,
     exerciseCount,
     visibleComponents,
+    scoped,
     exerciseWorkspace,
     lesson.hints,
   ]);
@@ -735,13 +749,16 @@ export function LessonContent({
           data-hide-teaching={hideTeaching ? "true" : undefined}
           data-hide-story-zone={hideStoryZone ? "true" : undefined}
         >
-          <Content />
+          <ChallengeSceneContext.Provider value={challengeScene ?? null}>
+            <Content />
+          </ChallengeSceneContext.Provider>
           {/* The workspace's ladder lives in its editor footer (spec
               2026-10-10, section 5). */}
           {shouldShow("HintPanel") && lesson.hints && !exerciseWorkspace && (
             <HintPanel
               hints={lesson.hints}
               onHintRevealed={handleHintRevealed}
+              compact={worldId === "deep-orbit" && scoped}
             />
           )}
         </div>

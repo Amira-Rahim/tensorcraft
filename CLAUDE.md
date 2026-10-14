@@ -1,5 +1,29 @@
 # Tensorcraft: Claude Code Instructions
 
+## Story and Interaction (binding, 2026-10-15)
+
+- **Story comes first.** This is a hard rule across every world's learning
+  experience. Scenes, character dialogue, stakes, and narrative handoffs are
+  core lesson content. Keep them visible by default when their section is
+  reached, before the related technical work. Section headings and navigation
+  can come first to orient the reader.
+- Layout changes must support the story. Never remove it, replace it with
+  generic exercise instructions, or hide it behind an optional disclosure to
+  make a page shorter or bring the editor forward. Keep scene artwork visible
+  and give it room alongside readable narrative and consistent dialogue styles.
+- **Make every lesson and section as visual, interactive, and dynamic as
+  possible.** Use explorable diagrams, simulations, predictions, code exercises,
+  and choices where they help learners understand the concept or advance the
+  story. Learner actions should produce immediate, meaningful visual feedback
+  that explains what changed and why. Apply this quality bar across the course.
+- Interactions must use accurate data and outcomes. Do not invent scientific
+  results or change them to reward a choice. Preserve earned endings and reveal
+  recall answers after the learner's attempt. Optional references and help may
+  still use deliberate reveals.
+- Dynamic behavior should respond to the learner and explain the lesson.
+  Maintain keyboard access and reduced-motion support. Avoid decorative motion
+  and extra clicks that do not serve the story or learning.
+
 ## Em Dash Ban (repo-wide, no exceptions)
 
 - **NEVER use the em dash character (U+2014), anywhere** (owner

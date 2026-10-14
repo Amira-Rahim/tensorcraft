@@ -5,6 +5,23 @@ fresh-eyes editorial audit. Every content pass - human or agent - follows
 this document. Where an existing lesson conflicts with it, the lesson is
 wrong.
 
+## Story comes first (binding, 2026-10-15)
+
+The story leads the learning experience. Show the crew's situation, relevant
+dialogue, and scene artwork in the main flow before the related technical work.
+Keep each section's story visible when that section is reached. Never move it
+behind optional controls or remove it to shorten a page. A section heading may
+precede the scene so readers know where they are.
+
+Make every lesson as visual, interactive, and dynamic as possible. Let learners
+explore examples, make predictions and choices, run code, and see explanatory
+feedback. Connect those actions to the story while preserving the canon and
+accurate results. Keep earned epilogues and recall-answer reveals in their
+intended stages.
+
+These requirements also bind layout and component changes. See
+[the project-wide rules](../CLAUDE.md#story-and-interaction-binding-2026-10-15).
+
 ## The season in one line
 
 A crew that runs on rules learns to run on learning - and the signal they

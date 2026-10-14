@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { LessonContent } from "./lesson-content";
+import { LessonChallengeScene } from "./lesson-challenge-scene";
 import { trackHintRequested } from "@/lib/analytics";
 
 vi.mock("@tensorcraft/ui", () => ({
@@ -18,6 +19,9 @@ vi.mock("@tensorcraft/ui", () => ({
     </div>
   ),
   AnimatedAvatar: () => <div data-testid="animated-avatar" />,
+  ScenePortrait: ({ src, alt }: { src: string; alt?: string }) => (
+    <img data-testid="scene-portrait" src={src} alt={alt} />
+  ),
   BridgeCallout: () => <div data-testid="bridge" />,
   CodeBlock: ({ children }: { children: React.ReactNode }) => (
     <pre>{children}</pre>
@@ -39,7 +43,9 @@ vi.mock("@tensorcraft/ui", () => ({
       {children}
     </button>
   ),
-  HintPanel: () => <div data-testid="hint-panel" />,
+  HintPanel: ({ compact }: { compact?: boolean }) => (
+    <div data-testid="hint-panel" data-compact={compact || undefined} />
+  ),
   KeyTakeaways: () => null,
   LearningObjectives: () => null,
   LessonRecap: () => <div>Lesson recap</div>,
@@ -48,12 +54,14 @@ vi.mock("@tensorcraft/ui", () => ({
     brief,
     titled,
     workspace,
+    editorHeading,
     hints,
     onHintRevealed,
   }: {
     brief?: "inline" | "external";
     titled?: boolean;
     workspace?: boolean;
+    editorHeading?: string;
     hints?: Array<{ level: string; content: string }>;
     onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
   }) => (
@@ -62,6 +70,7 @@ vi.mock("@tensorcraft/ui", () => ({
       data-brief={brief ?? "inline"}
       data-titled={titled ? "true" : undefined}
       data-workspace={workspace ? "true" : undefined}
+      data-editor-heading={editorHeading}
       data-hints={hints?.map((hint) => hint.level).join(",")}
     >
       <button type="button" onClick={() => onHintRevealed?.(1)}>
@@ -72,11 +81,16 @@ vi.mock("@tensorcraft/ui", () => ({
   ExerciseBrief: ({
     slug,
     onHintRevealed,
+    compactHints,
   }: {
     slug: string;
     onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
+    compactHints?: boolean;
   }) => (
-    <div data-testid="exercise-brief">
+    <div
+      data-testid="exercise-brief"
+      data-compact-hints={compactHints || undefined}
+    >
       {slug}
       <button type="button" onClick={() => onHintRevealed?.(1)}>
         reveal
@@ -167,10 +181,124 @@ function _createMdxContent(props) {
 }
 return {default: function(props) { return _createMdxContent(props); }};`;
 
+const CHALLENGE_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+return {default: function(props) {
+  const c = props.components;
+  return jsxs(Fragment, {children: [
+    jsx(c.h2, {children: "Challenge"}),
+    jsx(c.p, {children: "Arrange the twelve readings into rows."}),
+    jsx(c.Exercise, {slug: "reshape-tensor"})
+  ]});
+}};`;
+
 const lesson = {
   body: COMPILED_BODY,
   concept: { explanation: "x" },
 };
+
+describe("LessonContent, visible challenge scene", () => {
+  const challengeLesson = {
+    ...lesson,
+    slug: "tensor-shapes",
+    body: CHALLENGE_BODY,
+    context: { narrative: "Farah checks the readings.", speaker: "Dr. Farah" },
+    scene: {
+      location: "Archimedes, Lab",
+      portraitAlt: "Farah examines the sensor readings.",
+    },
+  };
+  const challengeProps = {
+    lesson: challengeLesson,
+    worldId: "deep-orbit",
+    moduleId: "foundations",
+    lessonId: "tensor-shapes",
+    visibleComponents: new Set(["challenge"]),
+  };
+
+  it("shows the scene between the Challenge heading and authored task", () => {
+    render(
+      <LessonContent
+        {...challengeProps}
+        challengeScene={
+          <LessonChallengeScene
+            lesson={challengeLesson}
+            worldSlug="deep-orbit"
+            moduleSlug="foundations"
+          />
+        }
+      />,
+    );
+    const heading = screen.getByRole("heading", { name: "Challenge" });
+    const scene = screen.getByTestId("challenge-scene");
+    const task = screen.getByText("Arrange the twelve readings into rows.");
+    expect(heading).toHaveAttribute("data-heading", "challenge");
+    expect(heading.nextElementSibling).toBe(scene);
+    expect(scene.nextElementSibling).toBe(task);
+    expect(scene).toBeVisible();
+    expect(scene.tagName).toBe("SECTION");
+    expect(scene.closest("details")).toBeNull();
+    expect(scene.querySelector("details, summary")).toBeNull();
+    expect(
+      screen.queryByText("View the mission scene"),
+    ).not.toBeInTheDocument();
+
+    const narrative = screen.getByTestId("mission-handoff");
+    const image = screen.getByRole("img", {
+      name: "Farah examines the sensor readings.",
+    });
+    const caption = screen.getByText(
+      "Inside the science lab on the spaceship Archimedes.",
+    );
+    expect(narrative).toBeVisible();
+    expect(narrative.compareDocumentPosition(image)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(image.compareDocumentPosition(caption)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(image).toHaveAttribute(
+      "src",
+      "/scenes/deep-orbit/foundations/tensor-shapes.webp",
+    );
+  });
+
+  it("does not repeat the scene in a content instance that does not request it", () => {
+    render(<LessonContent {...challengeProps} />);
+    expect(screen.queryByTestId("challenge-scene")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Challenge" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Arrange the twelve readings into rows."),
+    ).toBeInTheDocument();
+  });
+
+  it("updates the scene slot without remounting the exercise brief", () => {
+    const props = {
+      ...challengeProps,
+      visibleComponents: new Set(["challenge", "ExerciseBrief"]),
+    };
+    const { rerender } = render(
+      <LessonContent
+        {...props}
+        challengeScene={<section>First scene.</section>}
+      />,
+    );
+    const brief = screen.getByTestId("exercise-brief");
+    const hintButton = screen.getByRole("button", { name: "reveal" });
+    fireEvent.click(hintButton);
+    rerender(
+      <LessonContent
+        {...props}
+        challengeScene={<section>Updated scene.</section>}
+      />,
+    );
+    expect(screen.queryByText("First scene.")).not.toBeInTheDocument();
+    expect(screen.getByText("Updated scene.")).toBeVisible();
+    expect(screen.getByTestId("exercise-brief")).toBe(brief);
+    expect(screen.getByRole("button", { name: "reveal" })).toBe(hintButton);
+  });
+});
 
 describe("LessonContent, briefing notes", () => {
   it("keeps the idea and task readable once when placed in separate sections", () => {
@@ -522,23 +650,50 @@ describe("LessonContent, prose partition attributes (2026-09-04 audit step 2)", 
     expect(root).toHaveAttribute("data-show-challenge", "true");
   });
 
-  it("renders the hint panel as the content root's last child", () => {
-    // globals.css ends the Challenge instructions column with
-    // `[data-show-challenge="true"] > :last-child { margin-bottom: 0; }`,
-    // which reaches the panel only while it renders inside the root with
-    // nothing after it.
-    const { container } = render(
+  it.each([
+    { worldId: "deep-orbit", compact: true },
+    { worldId: "neon-protocol", compact: false },
+  ])(
+    "keeps $worldId hints last with its own presentation",
+    ({ worldId, compact }) => {
+      // globals.css ends the Challenge instructions column with
+      // `[data-show-challenge="true"] > :last-child { margin-bottom: 0; }`,
+      // which reaches the panel only while it renders inside the root with
+      // nothing after it.
+      const { container } = render(
+        <LessonContent
+          lesson={{
+            ...lesson,
+            hints: [{ level: "nudge", content: "Start from the shape." }],
+          }}
+          worldId={worldId}
+          visibleComponents={new Set(["challenge", "HintPanel"])}
+        />,
+      );
+      const root = container.querySelector(".lesson-step-content")!;
+      expect(root).toHaveAttribute("data-show-challenge", "true");
+      expect(root.lastElementChild).toBe(screen.getByTestId("hint-panel"));
+      if (compact) {
+        expect(root.lastElementChild).toHaveAttribute("data-compact", "true");
+      } else {
+        expect(root.lastElementChild).not.toHaveAttribute("data-compact");
+      }
+    },
+  );
+
+  it("keeps full lesson hints unchanged outside a step partition", () => {
+    render(
       <LessonContent
         lesson={{
           ...lesson,
           hints: [{ level: "nudge", content: "Start from the shape." }],
         }}
-        visibleComponents={new Set(["challenge", "HintPanel"])}
+        worldId="deep-orbit"
       />,
     );
-    const root = container.querySelector(".lesson-step-content")!;
-    expect(root).toHaveAttribute("data-show-challenge", "true");
-    expect(root.lastElementChild).toBe(screen.getByTestId("hint-panel"));
+    expect(screen.getByTestId("hint-panel")).not.toHaveAttribute(
+      "data-compact",
+    );
   });
 
   it("never stamps data-show-challenge while prose is visible", () => {
@@ -700,6 +855,10 @@ describe("LessonContent, the exercise brief and the pane (spec 2026-09-24, secti
     expect(screen.getByTestId("exercise-brief")).toHaveTextContent(
       "create-a-tensor",
     );
+    expect(screen.getByTestId("exercise-brief")).toHaveAttribute(
+      "data-compact-hints",
+      "true",
+    );
     expect(screen.queryByText("Loading editor…")).toBeNull();
     expect(screen.queryByTestId("exercise-pane")).toBeNull();
   });
@@ -737,6 +896,7 @@ describe("LessonContent, the exercise brief and the pane (spec 2026-09-24, secti
     );
     const pane = await screen.findByTestId("exercise-pane");
     expect(pane).toHaveAttribute("data-brief", "external");
+    expect(pane).toHaveAttribute("data-editor-heading", "Your JavaScript");
     expect(pane).not.toHaveAttribute("data-titled");
     expect(screen.queryByTestId("exercise-brief")).toBeNull();
   });
@@ -756,12 +916,31 @@ describe("LessonContent, the exercise brief and the pane (spec 2026-09-24, secti
   });
 
   it("renders the inline pane alone when no set is passed", async () => {
-    render(<LessonContent lesson={lessonBody} exercises={one} />);
-    expect(await screen.findByTestId("exercise-pane")).toHaveAttribute(
-      "data-brief",
-      "inline",
+    render(
+      <LessonContent
+        lesson={lessonBody}
+        exercises={one}
+        worldId="deep-orbit"
+      />,
     );
+    const pane = await screen.findByTestId("exercise-pane");
+    expect(pane).toHaveAttribute("data-brief", "inline");
+    expect(pane).not.toHaveAttribute("data-editor-heading");
     expect(screen.queryByTestId("exercise-brief")).toBeNull();
+  });
+
+  it("keeps the default editor heading for other worlds", async () => {
+    render(
+      <LessonContent
+        lesson={lessonBody}
+        exercises={one}
+        worldId="neon-protocol"
+        visibleComponents={new Set(["Exercise"])}
+      />,
+    );
+    expect(await screen.findByTestId("exercise-pane")).not.toHaveAttribute(
+      "data-editor-heading",
+    );
   });
 
   const ladder = [
