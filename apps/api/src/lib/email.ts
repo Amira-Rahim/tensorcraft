@@ -1,9 +1,9 @@
 // apps/api/src/lib/email.ts
 import { Resend } from "resend";
 import { captureException } from "./error-tracking";
-import { worldDisplayName } from "./world-name";
 import { logger } from "./logger";
 import { withTimeout } from "./with-timeout";
+import { renderPurchaseReceipt } from "./purchase-receipt-template";
 
 let resend: Resend | null = null;
 
@@ -165,53 +165,11 @@ export async function sendPurchaseReceipt(
     return;
   }
 
-  const appUrl = process.env.APP_URL || "https://tensorcraft.app";
-  const support = process.env.SUPPORT_EMAIL || "support@tensorcraft.app";
-  const names = params.worldIds.map(worldDisplayName).join(", ");
-  const amount = `$${params.amount.toFixed(2)}`;
-  const date = params.purchasedAt.toISOString().slice(0, 10);
-
-  const subject = "Your Tensorcraft receipt";
-  const text = [
-    "Thanks for your purchase.",
-    "",
-    `What you bought: ${names}`,
-    `Amount: ${amount}`,
-    `Date: ${date}`,
-    `Order reference: ${params.sessionId}`,
-    "",
-    `Start here: ${appUrl}/dashboard`,
-    "",
-    `Need a refund or have a question? Write to ${support}.`,
-    "Refunds are available for 5 days.",
-  ].join("\n");
-
-  // Server-derived values, but they still land in HTML, so escape them.
-  const eNames = escapeHtml(names);
-  const eSession = escapeHtml(params.sessionId);
-  const eSupport = escapeHtml(support);
-  const html = `
-    <div style="font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color: #1a1a1a; background: #ffffff; padding: 24px; max-width: 560px;">
-      <h1 style="font-size: 18px; margin: 0 0 16px;">Thanks for your purchase.</h1>
-      <table style="border-collapse: collapse; width: 100%; font-size: 14px;">
-        <tr><td style="padding: 6px 12px 6px 0; color: #555;">What you bought</td><td>${eNames}</td></tr>
-        <tr><td style="padding: 6px 12px 6px 0; color: #555;">Amount</td><td>${amount}</td></tr>
-        <tr><td style="padding: 6px 12px 6px 0; color: #555;">Date</td><td>${date}</td></tr>
-        <tr><td style="padding: 6px 12px 6px 0; color: #555;">Order reference</td><td>${eSession}</td></tr>
-      </table>
-      <p style="margin: 20px 0;">
-        <a href="${appUrl}/dashboard" style="background: #1a1a1a; color: #ffffff; padding: 10px 16px; text-decoration: none; display: inline-block;">Start here</a>
-      </p>
-      <hr style="border: 0; border-top: 1px solid #e5e5e5; margin: 20px 0;" />
-      <p style="font-size: 13px; color: #555; margin: 0;">
-        Need a refund or have a question? Write to
-        <a href="mailto:${eSupport}" style="color: #1a1a1a;">${eSupport}</a>.
-        Refunds are available for 5 days.
-      </p>
-    </div>
-  `;
-
   try {
+    const { subject, text, html } = renderPurchaseReceipt(params, {
+      appUrl: process.env.APP_URL || "https://tensorcraft.app",
+      supportEmail: process.env.SUPPORT_EMAIL || "support@tensorcraft.app",
+    });
     // Resend reports failures in the result and does not throw (F1, 2026-07-25).
     const { error: sendError } = await withTimeout(
       client.emails.send({

@@ -1,0 +1,330 @@
+/* A clear payment confirmation, followed by the world and its receipt. */
+.purchase-page {
+  min-height: 80vh;
+  background: var(--tc-bg);
+  color: var(--tc-text);
+}
+.purchase-frame {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1536px;
+  margin-inline: auto;
+  padding: 48px 48px 72px;
+}
+.purchase-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-bottom: 36px;
+  color: var(--tc-muted);
+  font-size: 18px;
+}
+.purchase-back:hover {
+  color: var(--tc-text);
+}
+.purchase-header {
+  margin-bottom: 48px;
+}
+.purchase-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+  font: 600 20px/1.4 var(--font-sans);
+  color: var(--tc-muted);
+}
+.purchase-status-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--tc-border);
+  border-radius: 50%;
+  color: var(--tc-text);
+  background: var(--tc-surface);
+}
+.purchase-status-icon svg {
+  width: 32px;
+  height: 32px;
+}
+.purchase-status[data-state="confirmed"] {
+  color: var(--tc-primary);
+}
+.purchase-status[data-state="confirmed"] .purchase-status-icon {
+  color: var(--tc-on-primary);
+  border-color: var(--tc-primary);
+  background: var(--tc-primary);
+}
+.purchase-status[data-state="failed"] .purchase-status-icon {
+  color: var(--tc-error);
+}
+.purchase-header h1 {
+  max-width: 24ch;
+  margin: 0;
+  font: 650 clamp(36px, 4.5vw, 64px)/1.12 var(--font-sans);
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.purchase-introduction {
+  max-width: 65ch;
+  margin: 24px 0 0;
+  font-size: 22px;
+  line-height: 1.65;
+  color: var(--tc-muted);
+}
+.purchase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+.purchase-actions:empty {
+  display: none;
+}
+.purchase-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-height: 56px;
+  max-width: 100%;
+  padding: 14px 24px;
+  border: 1px solid var(--tc-primary);
+  border-radius: 4px;
+  background: var(--tc-primary);
+  color: var(--tc-on-primary);
+  font: 600 20px/1.4 var(--font-sans);
+  text-align: center;
+  cursor: pointer;
+}
+.purchase-button:hover {
+  filter: brightness(1.08);
+}
+.purchase-button-secondary {
+  border-color: var(--tc-border-interactive);
+  background: var(--tc-surface);
+  color: var(--tc-text);
+}
+.purchase-page :is(a, button):focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 5px;
+}
+.purchase-art {
+  margin: 0 0 56px;
+}
+.purchase-art .tc-art-plate {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  object-position: center 58%;
+  border: 1px solid var(--tc-border);
+  border-radius: 6px;
+  outline: none;
+  box-shadow: none;
+}
+.purchase-page
+  :is(.purchase-receipt, .purchase-access, .purchase-pending-help)
+  h2 {
+  margin: 0 0 24px;
+  font: 600 32px/1.25 var(--font-sans);
+  letter-spacing: -0.02em;
+}
+.purchase-receipt,
+.purchase-access {
+  width: 100%;
+  padding-top: 40px;
+  border-top: 1px solid var(--tc-border);
+}
+.purchase-receipt dl {
+  margin: 0;
+}
+.purchase-receipt dl > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px 32px;
+  padding-block: 20px;
+  border-bottom: 1px solid var(--tc-border);
+}
+.purchase-receipt dt {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--tc-muted);
+}
+.purchase-receipt dd {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.purchase-receipt dd.purchase-receipt-amount {
+  font-size: 28px;
+  font-weight: 600;
+}
+.purchase-receipt-amount > span {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--tc-muted);
+  margin-left: 8px;
+}
+.purchase-receipt .purchase-reference {
+  font-family: var(--font-mono);
+  font-size: 20px;
+}
+.purchase-receipt-note {
+  margin: 24px 0 0;
+  color: var(--tc-muted);
+  font-size: 18px;
+  line-height: 1.6;
+}
+.purchase-help {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 48px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+.purchase-help p {
+  margin: 0;
+  color: var(--tc-muted);
+}
+.purchase-help a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.purchase-access {
+  margin-bottom: 48px;
+}
+.purchase-access ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.purchase-access li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 24px;
+  border-bottom: 1px solid var(--tc-border);
+}
+.purchase-access h3 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+.purchase-access p {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--tc-muted);
+}
+.purchase-pending-help {
+  padding: 32px;
+  border: 1px solid var(--tc-border);
+  border-radius: 6px;
+  background: var(--tc-surface);
+}
+.purchase-pending-help p {
+  max-width: 65ch;
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.65;
+}
+.purchase-loading-title,
+.purchase-loading-line,
+.purchase-loading-action,
+.purchase-loading-art,
+.purchase-loading-receipt {
+  max-width: 100%;
+  border-radius: 4px;
+  background: var(--tc-surface);
+}
+.purchase-loading {
+  padding-top: 80px;
+}
+.purchase-loading-title {
+  width: 700px;
+  height: 64px;
+  margin-bottom: 24px;
+}
+.purchase-loading-line {
+  width: 760px;
+  height: 22px;
+  margin-bottom: 16px;
+}
+.purchase-loading-action {
+  width: 240px;
+  height: 56px;
+  margin: 28px 0 48px;
+}
+.purchase-loading-art {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  margin-bottom: 56px;
+}
+.purchase-loading-receipt {
+  width: 100%;
+  height: 340px;
+}
+@media (max-width: 650px) {
+  .purchase-frame {
+    padding: 24px 20px 48px;
+  }
+  .purchase-back {
+    margin-bottom: 28px;
+  }
+  .purchase-status {
+    font-size: 18px;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .purchase-header {
+    margin-bottom: 32px;
+  }
+  .purchase-introduction {
+    margin-top: 20px;
+  }
+  .purchase-button {
+    width: 100%;
+    padding-inline: 20px;
+  }
+  .purchase-art {
+    margin-bottom: 36px;
+  }
+  .purchase-art .tc-art-plate,
+  .purchase-loading-art {
+    aspect-ratio: 3 / 2;
+  }
+  .purchase-page
+    :is(.purchase-receipt, .purchase-access, .purchase-pending-help)
+    h2 {
+    font-size: 28px;
+  }
+  .purchase-receipt {
+    padding-top: 28px;
+  }
+  .purchase-receipt dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .purchase-pending-help {
+    padding: 24px;
+  }
+  .purchase-pending-help .purchase-button {
+    padding-inline: 12px;
+  }
+  .purchase-help {
+    margin-top: 32px;
+  }
+  .purchase-loading {
+    padding-top: 60px;
+  }
+}

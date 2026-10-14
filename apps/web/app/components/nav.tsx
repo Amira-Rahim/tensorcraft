@@ -62,7 +62,11 @@ export function Nav() {
   if (
     isLessonRoute ||
     (process.env.NODE_ENV === "development" &&
-      pathname === "/design/deep-orbit")
+      [
+        "/design/deep-orbit",
+        "/design/purchase-success",
+        "/design/purchase-email",
+      ].includes(pathname))
   )
     return null;
   const learningNavigation =

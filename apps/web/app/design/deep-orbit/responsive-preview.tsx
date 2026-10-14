@@ -6,9 +6,11 @@ import { useEffect, useRef, useState } from "react";
 export function ResponsiveLessonPreview({
   src,
   width,
+  title,
 }: {
   src: string;
   width: number;
+  title?: string;
 }) {
   const frame = useRef<HTMLIFrameElement>(null);
   const observer = useRef<ResizeObserver | null>(null);
@@ -19,7 +21,7 @@ export function ResponsiveLessonPreview({
       <iframe
         ref={frame}
         src={src}
-        title={`Deep Orbit lesson at ${width}px`}
+        title={title ?? `Deep Orbit lesson at ${width}px`}
         style={{
           width,
           height,

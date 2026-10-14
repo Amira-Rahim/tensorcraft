@@ -62,14 +62,17 @@ describe("sendPurchaseReceipt", () => {
     expect(arg.html).toContain("$49.00");
     // Slugs are not customer-facing.
     expect(arg.text).toContain("Deep Orbit");
-    expect(arg.text).not.toContain("deep-orbit");
+    expect(arg.text).toContain("What you bought: Deep Orbit");
   });
 
   it("carries an order reference so support can find the payment", async () => {
     await sendPurchaseReceipt(PARAMS);
 
-    const arg = sendSpy.mock.calls[0][0] as { text: string };
-    expect(arg.text).toContain("cs_test_123");
+    const arg = sendSpy.mock.calls[0][0] as { text: string; html: string };
+    expect(arg.text).toContain("Order reference: TC-test_123");
+    expect(arg.html).toContain("TC-test_123");
+    expect(arg.text).not.toContain(PARAMS.sessionId);
+    expect(arg.html).not.toContain(PARAMS.sessionId);
   });
 
   /**
@@ -92,6 +95,17 @@ describe("sendPurchaseReceipt", () => {
 
     await expect(sendPurchaseReceipt(PARAMS)).resolves.toBeUndefined();
     expect(captureException).toHaveBeenCalledTimes(1);
+  });
+
+  it("captures a rendering error without sending or failing the webhook", async () => {
+    await expect(
+      sendPurchaseReceipt({ ...PARAMS, purchasedAt: new Date("invalid") }),
+    ).resolves.toBeUndefined();
+    expect(sendSpy).not.toHaveBeenCalled();
+    expect(captureException).toHaveBeenCalledWith(expect.any(RangeError), {
+      source: "payments.receipt",
+      extra: { sessionId: PARAMS.sessionId },
+    });
   });
 
   /**

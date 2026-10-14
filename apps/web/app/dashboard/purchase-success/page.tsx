@@ -1,58 +1,18 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { getModules } from "@tensorcraft/content";
-import { worlds } from "@tensorcraft/worlds";
-import { DEFAULT_WORLD, isLaunched } from "@tensorcraft/shared";
-import { AmbientBackground } from "@/app/components/ambient-background";
-import { ArtPlate } from "@tensorcraft/ui/art-plate";
-import { surfacePlateSrc } from "@/lib/location-art";
 import type { Metadata } from "next";
 import { PurchaseAnalytics } from "./purchase-analytics";
 import { PendingPoller } from "./pending-poller";
+import {
+  PurchaseSuccessView,
+  type PurchaseReceipt,
+} from "./purchase-success-view";
 
 export const metadata: Metadata = {
-  title: "Purchase Confirmed | Tensorcraft",
-  description: "The world is yours: every module is open.",
+  title: "Purchase Confirmation | Tensorcraft",
+  description: "Your Tensorcraft purchase details and course access.",
   robots: { index: false, follow: false },
 };
-
-/**
- * Format a USD amount for the receipt. Purchases are stored in dollars
- * (not cents), so we pass the number directly to Intl.NumberFormat.
- */
-function formatCurrency(amount: number, currency = "USD"): string {
-  try {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  } catch {
-    return `$${amount.toFixed(2)} ${currency}`;
-  }
-}
-
-/**
- * Format a date as `YYYY-MM-DD HH:MM UTC` in mono-friendly ISO-ish form.
- * Falls back to the raw string if parsing fails.
- */
-function formatReceiptDate(raw: string): string {
-  const d = new Date(raw);
-  if (Number.isNaN(d.getTime())) return raw;
-  const pad = (n: number): string => String(n).padStart(2, "0");
-  return (
-    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ` +
-    `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`
-  );
-}
-
-/** Last-8 hash for `stripe_session_id`, safe for display. */
-function shortenSessionId(sessionId: string | null | undefined): string {
-  if (!sessionId) return "–";
-  return sessionId.length <= 8 ? sessionId : sessionId.slice(-8);
-}
 
 export default async function PurchaseSuccessPage({
   searchParams,
@@ -82,13 +42,7 @@ export default async function PurchaseSuccessPage({
   const selectCols =
     "plan_id, world_ids, amount, created_at, stripe_session_id";
 
-  let purchase: {
-    plan_id: string;
-    world_ids: string[];
-    amount: number;
-    created_at: string;
-    stripe_session_id: string | null;
-  } | null = null;
+  let purchase: PurchaseReceipt | null = null;
 
   // A bounced delayed payment (async_payment_failed → status "failed") must
   // not render as "Almost There" with a poller promising "nothing is lost by
@@ -130,267 +84,20 @@ export default async function PurchaseSuccessPage({
     purchase = data ?? null;
   }
 
-  // V1 scope-revert: filter to launched worlds only. A DB anomaly or stale
-  // pre-revert purchase row could otherwise surface a coming-soon world as
-  // owned, breaking the access-card render below.
-  const purchasedWorldIds: string[] = (purchase?.world_ids ?? []).filter(
-    (slug: string) => isLaunched(slug),
-  );
-  const firstWorldSlug = purchasedWorldIds[0] ?? DEFAULT_WORLD;
-  const firstWorld = worlds[firstWorldSlug];
-  const firstWorldModules = firstWorld ? getModules(firstWorldSlug) : [];
-
-  // Build the access-card rows (one per purchased world) so we can
-  // render a "Start Now" CTA for each.
-  const accessWorlds = purchasedWorldIds
-    .map((slug) => ({ slug, manifest: worlds[slug] }))
-    .filter(
-      (
-        entry,
-      ): entry is {
-        slug: string;
-        manifest: (typeof worlds)[string];
-      } => Boolean(entry.manifest),
-    );
-
   return (
-    <main className="min-h-screen bg-page relative overflow-hidden">
-      <AmbientBackground count={220} />
-      <div className="max-w-3xl mx-auto px-6 py-20 relative z-10">
-        {/* ── Hero ─────────────────────────────────── */}
-        <div className="text-center mb-12">
-          <div
-            className="text-5xl mb-6"
-            style={{
-              // Light-mode migration (Task 7): was
-              // `firstWorld?.palette.primary ?? "var(--tc-primary)"`. Under
-              // the current V1 scope only Deep Orbit is launched, so
-              // firstWorld is always the app's DEFAULT_WORLD (== the root
-              // data-world) and this var already matched the old hex
-              // exactly. NOTE for a future multi-world launch: if a second
-              // world ships and someone's first purchase is that world, this
-              // will render the *root* world's primary rather than the
-              // purchased world's brand color - same cross-world-identity
-              // caveat as the /worlds and dashboard grid cards (Task 8
-              // territory), revisit then.
-              color: "var(--tc-primary)",
-            }}
-          >
-            &#10003;
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-bold font-mono uppercase tracking-tight mb-4 text-text-primary">
-            {purchase ? (
-              <>You&apos;re In</>
-            ) : paymentFailed ? (
-              <>Payment Didn&apos;t Go Through</>
-            ) : (
-              <>Almost There</>
-            )}
-          </h1>
-          <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
-            {purchase
-              ? firstWorld
-                ? `${firstWorld.displayName} is yours: all ${firstWorldModules.length} modules are open.`
-                : "Your purchase is confirmed. Everything you bought is open."
-              : paymentFailed
-                ? "Your payment method declined the charge, so nothing was billed and no access was granted. You can try again with a different method."
-                : "We're confirming your payment with Stripe. This usually takes a few seconds; this page updates itself the moment the payment clears."}
-          </p>
-          {paymentFailed && (
-            <Link
-              href="/pricing"
-              data-testid="payment-failed-retry"
-              className="mt-6 inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
-            >
-              Back to pricing &rarr;
-            </Link>
-          )}
-        </div>
-        {!purchase && !paymentFailed && <PendingPoller sessionId={sessionId} />}
-
-        {purchase && (
-          <PurchaseAnalytics
-            planId={purchase.plan_id}
-            amount={purchase.amount}
-          />
-        )}
-
-        {/* Engineering bay plate: systems online. Confirmed purchases only -
-            the pending and failed states keep their unadorned layout. The
-            plate is decorative and optional (ArtPlate renders nothing on a
-            missing asset). */}
-        {purchase && surfacePlateSrc(firstWorldSlug, "purchase-success") && (
-          <div className="mb-10" aria-hidden="true">
-            <ArtPlate
-              src={surfacePlateSrc(firstWorldSlug, "purchase-success")!}
-            />
-          </div>
-        )}
-
-        {/* ── Access Card ──────────────────────────── */}
-        {accessWorlds.length > 0 && (
-          <section
-            aria-labelledby="access-card-heading"
-            className="rounded-none border-2 border-border bg-surface-raised brutalist-shadow p-6 sm:p-8 mb-10"
-          >
-            <div className="flex items-baseline justify-between mb-6">
-              <h2
-                id="access-card-heading"
-                className="text-xs font-semibold font-mono uppercase tracking-widest text-text-muted"
-              >
-                Access Granted
-              </h2>
-              <span className="text-xs font-mono text-text-muted">
-                {accessWorlds.length}
-                {accessWorlds.length === 1 ? " world" : " worlds"}
-              </span>
-            </div>
-            <ul className="space-y-3">
-              {accessWorlds.map(({ slug, manifest }) => {
-                const moduleCount = getModules(slug).length;
-                return (
-                  <li
-                    key={slug}
-                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-border p-4 bg-page"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span
-                        aria-hidden="true"
-                        className="inline-block w-3 h-3 shrink-0"
-                        // Same latent multi-world caveat as the hero
-                        // checkmark above: fine while only one world is
-                        // launched (accessWorlds can only ever contain
-                        // DEFAULT_WORLD today).
-                        style={{ background: "var(--tc-primary)" }}
-                      />
-                      <div className="min-w-0">
-                        <div className="text-sm sm:text-base font-semibold text-text-primary truncate">
-                          {manifest.displayName}
-                        </div>
-                        <div className="text-xs font-mono text-text-muted">
-                          {moduleCount} modules &middot; {slug}
-                        </div>
-                      </div>
-                    </div>
-                    <Link
-                      href={`/worlds/${slug}`}
-                      data-testid={`access-start-${slug}`}
-                      className="inline-flex items-center justify-center h-11 px-5 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
-                    >
-                      Start Now &rarr;
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        )}
-
-        {/* ── Receipt ──────────────────────────────── */}
-        {purchase && (
-          <section
-            aria-labelledby="receipt-heading"
-            data-testid="purchase-receipt"
-            className="rounded-none border-2 border-border bg-surface-raised p-6 sm:p-8 mb-10 font-mono"
-          >
-            <div className="flex items-baseline justify-between mb-5">
-              <h2
-                id="receipt-heading"
-                className="text-xs font-semibold uppercase tracking-widest text-text-muted"
-              >
-                Receipt
-              </h2>
-              <span className="text-xs text-text-muted">
-                TC-{shortenSessionId(purchase.stripe_session_id)}
-              </span>
-            </div>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
-                <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Amount
-                </dt>
-                <dd
-                  data-testid="receipt-amount"
-                  className="text-text-primary sm:mt-1"
-                >
-                  {formatCurrency(purchase.amount)}
-                </dd>
-              </div>
-              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
-                <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Currency
-                </dt>
-                <dd className="text-text-primary sm:mt-1">USD</dd>
-              </div>
-              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
-                <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Plan
-                </dt>
-                <dd className="text-text-primary sm:mt-1">
-                  {purchase.plan_id}
-                </dd>
-              </div>
-              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
-                <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Date
-                </dt>
-                <dd
-                  data-testid="receipt-date"
-                  className="text-text-primary sm:mt-1"
-                >
-                  {formatReceiptDate(purchase.created_at)}
-                </dd>
-              </div>
-              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0 sm:col-span-2">
-                <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Worlds
-                </dt>
-                <dd
-                  data-testid="receipt-worlds"
-                  className="text-text-primary sm:mt-1 break-all"
-                >
-                  {purchase.world_ids.length > 0
-                    ? purchase.world_ids.join(", ")
-                    : "–"}
-                </dd>
-              </div>
-              <div className="flex justify-between sm:block sm:col-span-2">
-                <dt className="text-xs uppercase tracking-wider text-text-muted">
-                  Session
-                </dt>
-                <dd
-                  data-testid="receipt-session"
-                  className="text-text-primary sm:mt-1"
-                >
-                  …{shortenSessionId(purchase.stripe_session_id)}
-                </dd>
-              </div>
-            </dl>
-            <p className="mt-6 pt-5 border-t border-border/50 text-xs text-text-muted">
-              Lifetime access. No subscription. Keep this receipt for your
-              records.
-            </p>
-          </section>
-        )}
-
-        {/* ── CTAs ─────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-          <Link
-            href={`/worlds/${firstWorldSlug}`}
-            data-testid="cta-first-lesson"
-            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-primary bg-primary text-on-primary hover:bg-transparent hover:text-primary transition-colors brutalist-hover brutalist-shadow"
-          >
-            Start your first lesson &rarr;
-          </Link>
-          <Link
-            href="/worlds"
-            data-testid="cta-view-all-worlds"
-            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-border text-text-muted hover:text-text-primary hover:border-primary transition-colors brutalist-hover"
-          >
-            View all worlds
-          </Link>
-        </div>
-      </div>
-    </main>
+    <>
+      {purchase && (
+        <PurchaseAnalytics planId={purchase.plan_id} amount={purchase.amount} />
+      )}
+      <PurchaseSuccessView
+        purchase={purchase}
+        paymentFailed={paymentFailed}
+        pendingContent={
+          !purchase && !paymentFailed ? (
+            <PendingPoller sessionId={sessionId} />
+          ) : undefined
+        }
+      />
+    </>
   );
 }

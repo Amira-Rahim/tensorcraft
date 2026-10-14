@@ -106,16 +106,29 @@ vi.mock("@/app/components/ambient-background", () => ({
   AmbientBackground: () => null,
 }));
 
-// Analytics hook is client-side and fires a network call in real use;
-// rendering it should be a no-op in tests.
+// Mark the component boundary without firing the production analytics hook.
 vi.mock("./purchase-analytics", () => ({
-  PurchaseAnalytics: () => null,
+  PurchaseAnalytics: ({
+    planId,
+    amount,
+  }: {
+    planId: string;
+    amount: number;
+  }) => (
+    <div
+      data-testid="purchase-analytics-stub"
+      data-plan={planId}
+      data-amount={amount}
+    />
+  ),
 }));
 
 // The poller polls through useRouter, which the next/navigation mock above
 // deliberately omits; its own behavior is covered in pending-poller.test.tsx.
 vi.mock("./pending-poller", () => ({
-  PendingPoller: () => <div data-testid="pending-poller-stub" />,
+  PendingPoller: ({ sessionId }: { sessionId?: string }) => (
+    <div data-testid="pending-poller-stub" data-session-id={sessionId} />
+  ),
 }));
 
 function resetState(): void {
@@ -123,252 +136,406 @@ function resetState(): void {
   getUserMock.mockReset();
 }
 
-async function renderPage(searchParams?: Record<string, string>): Promise<{
-  html: string;
-  element: ReactElement;
-}> {
+function completedPurchase(overrides: Partial<PurchaseRow> = {}): PurchaseRow {
+  return {
+    user_id: "u-1",
+    plan_id: "single",
+    world_ids: ["deep-orbit"],
+    amount: 79,
+    created_at: "2026-04-21T10:30:00.000Z",
+    stripe_session_id: "cs_test_abcdefgh12345678",
+    status: "completed",
+    ...overrides,
+  };
+}
+
+async function renderPage(
+  searchParams?: Record<string, string | string[]>,
+): Promise<{ html: string; document: Document }> {
   const { default: PurchaseSuccessPage } = await import("./page");
   const element = (await PurchaseSuccessPage({
     searchParams: searchParams ? Promise.resolve(searchParams) : undefined,
   })) as ReactElement;
   const html = renderToStaticMarkup(element);
-  return { html, element };
+  return {
+    html,
+    document: new DOMParser().parseFromString(html, "text/html"),
+  };
+}
+
+function expectNoConfirmedPurchase(document: Document, html: string) {
+  expect(document.querySelector('[data-testid="purchase-receipt"]')).toBeNull();
+  expect(
+    document.querySelector('[data-testid="purchase-analytics-stub"]'),
+  ).toBeNull();
+  expect(document.querySelector('[data-testid="cta-first-lesson"]')).toBeNull();
+  expect(document.querySelector('[data-testid^="access-start-"]')).toBeNull();
+  expect(document.querySelector('a[href="/worlds/deep-orbit"]')).toBeNull();
+  expect(html).not.toContain("engineering.webp");
 }
 
 describe("dashboard/purchase-success/page", () => {
   beforeEach(() => {
     resetState();
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "u-1", email: "x@example.com" } },
+      error: null,
+    });
   });
 
   it("redirects unauthenticated users to /auth", async () => {
     getUserMock.mockResolvedValue({ data: { user: null }, error: null });
-
     const { default: PurchaseSuccessPage } = await import("./page");
-
     await expect(PurchaseSuccessPage({})).rejects.toMatchObject({
       target: "/auth",
     });
     expect(getUserMock).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the "You\'re In" brutalist headline for an authed user', async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1", email: "x@example.com" } },
-      error: null,
-    });
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "single",
-      world_ids: ["deep-orbit"],
-      amount: 79,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_abcdefgh12345678",
-      status: "completed",
-    });
+  it("confirms purchased access with one mission-map action", async () => {
+    purchaseRows.push(completedPurchase());
+    const { document } = await renderPage();
 
-    const { html } = await renderPage();
-
-    expect(html).toContain("You&#x27;re In");
-    // Mono, uppercase, large hero, key brutalist treatment markers.
-    expect(html).toMatch(/font-mono[^"]*uppercase/);
+    expect(
+      document.querySelector("main")?.getAttribute("data-purchase-state"),
+    ).toBe("confirmed");
+    expect(document.querySelector("h1")?.textContent).toBe(
+      "Deep Orbit is yours.",
+    );
+    expect(
+      document.querySelector('[data-state="confirmed"]')?.textContent,
+    ).toContain("Purchase confirmed");
+    expect(
+      document.querySelector(".purchase-introduction")?.textContent,
+    ).toContain("All 3 modules are open.");
+    const primary = document.querySelector('[data-testid="cta-first-lesson"]');
+    expect(primary?.getAttribute("href")).toBe("/worlds/deep-orbit");
+    expect(primary?.textContent).toContain("Open mission map");
+    expect(
+      document.querySelectorAll('a[href="/worlds/deep-orbit"]'),
+    ).toHaveLength(1);
+    expect(
+      document.querySelector('[data-testid="pending-poller-stub"]'),
+    ).toBeNull();
   });
 
-  it("renders the engineering plate only on a confirmed purchase", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
-    });
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "single",
-      world_ids: ["deep-orbit"],
-      amount: 79,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_abcdefgh12345678",
-      status: "completed",
-    });
-
-    const { html } = await renderPage();
+  it("renders the engineering plate and analytics only after confirmation", async () => {
+    purchaseRows.push(completedPurchase());
+    const { document, html } = await renderPage();
 
     expect(html).toContain("/locations/deep-orbit/engineering.webp");
+    const analytics = document.querySelector(
+      '[data-testid="purchase-analytics-stub"]',
+    );
+    expect(analytics?.getAttribute("data-plan")).toBe("single");
+    expect(analytics?.getAttribute("data-amount")).toBe("79");
   });
 
-  it("keeps the pending 'Almost There' state art-free", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
-    });
+  it("keeps an unknown checkout pending without showing purchased access", async () => {
+    const sessionId = "cs_test_NOTLANDEDYET0000";
+    const { document, html } = await renderPage({ session_id: sessionId });
 
-    const { html } = await renderPage({
-      session_id: "cs_test_NOTLANDEDYET0000",
-    });
-
-    expect(html).toContain("Almost There");
-    expect(html).not.toContain("engineering.webp");
+    expect(
+      document.querySelector("main")?.getAttribute("data-purchase-state"),
+    ).toBe("pending");
+    expect(document.querySelector("h1")?.textContent).toBe(
+      "Confirming your payment.",
+    );
+    expect(
+      document
+        .querySelector('[data-testid="pending-poller-stub"]')
+        ?.getAttribute("data-session-id"),
+    ).toBe(sessionId);
+    expectNoConfirmedPurchase(document, html);
   });
 
-  it("looks up the purchase by stripe session_id when provided", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
-    });
-    // Older purchase (would win the most-recent fallback)…
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "single",
-      world_ids: ["neon-protocol"],
-      amount: 49,
-      created_at: "2026-01-01T00:00:00.000Z",
-      stripe_session_id: "cs_test_OLDOLDOLDOLDOLD0",
-      status: "completed",
-    });
-    // …and the session-specific purchase we expect to be selected.
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "twoBundle",
-      world_ids: ["deep-orbit", "signal-ward"],
-      amount: 79,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_TARGETXYZ9999999",
-      status: "completed",
+  it("does not substitute an older completed receipt for a pending session", async () => {
+    purchaseRows.push(
+      completedPurchase({
+        amount: 49,
+        stripe_session_id: "cs_test_OLDPURCHASE0000",
+      }),
+      completedPurchase({
+        amount: 50,
+        stripe_session_id: "cs_test_CURRENT_PENDING",
+        status: "pending",
+      }),
+    );
+    const { document, html } = await renderPage({
+      session_id: "cs_test_CURRENT_PENDING",
     });
 
-    const { html } = await renderPage({
+    expect(
+      document.querySelector("main")?.getAttribute("data-purchase-state"),
+    ).toBe("pending");
+    expect(
+      document.querySelector('[data-testid="pending-poller-stub"]'),
+    ).not.toBeNull();
+    expectNoConfirmedPurchase(document, html);
+    expect(html).not.toContain("$49.00");
+    expect(html).not.toContain("OLDPURCHASE0000");
+  });
+
+  it("does not confirm another user's matching checkout session", async () => {
+    purchaseRows.push(
+      completedPurchase({ stripe_session_id: "cs_test_OWNOLDERRECEIPT" }),
+      completedPurchase({
+        user_id: "u-2",
+        stripe_session_id: "cs_test_SOMEONEELSE",
+        amount: 225,
+      }),
+    );
+    const { document, html } = await renderPage({
+      session_id: "cs_test_SOMEONEELSE",
+    });
+
+    expect(
+      document.querySelector("main")?.getAttribute("data-purchase-state"),
+    ).toBe("pending");
+    expect(
+      document.querySelector('[data-testid="pending-poller-stub"]'),
+    ).not.toBeNull();
+    expectNoConfirmedPurchase(document, html);
+    expect(html).not.toContain("$225.00");
+    expect(html).not.toContain("$79.00");
+  });
+
+  it("shows a failed-payment recovery path without polling or granting access", async () => {
+    purchaseRows.push(
+      completedPurchase({ stripe_session_id: "cs_test_OLDER_COMPLETED" }),
+      completedPurchase({
+        stripe_session_id: "cs_test_FAILED_PAYMENT",
+        status: "failed",
+      }),
+    );
+    const { document, html } = await renderPage({
+      session_id: "cs_test_FAILED_PAYMENT",
+    });
+
+    expect(
+      document.querySelector("main")?.getAttribute("data-purchase-state"),
+    ).toBe("failed");
+    expect(document.querySelector("h1")?.textContent).toBe(
+      "Payment wasn’t completed.",
+    );
+    expect(
+      document
+        .querySelector('[data-testid="payment-failed-retry"]')
+        ?.getAttribute("href"),
+    ).toBe("/pricing");
+    expect(
+      document.querySelector('[data-testid="pending-poller-stub"]'),
+    ).toBeNull();
+    expectNoConfirmedPurchase(document, html);
+    expect(html).not.toContain("nothing was billed");
+  });
+
+  it("selects the supplied checkout rather than a newer completed purchase", async () => {
+    purchaseRows.push(
+      completedPurchase({
+        amount: 49,
+        created_at: "2026-05-01T00:00:00.000Z",
+        stripe_session_id: "cs_test_NEWER_PURCHASE",
+      }),
+      completedPurchase({
+        plan_id: "twoBundle",
+        world_ids: ["deep-orbit", "signal-ward"],
+        amount: 79,
+        stripe_session_id: "cs_test_TARGETXYZ9999999",
+      }),
+    );
+    const { document, html } = await renderPage({
       session_id: "cs_test_TARGETXYZ9999999",
     });
 
-    // Receipt renders the session-specific purchase.
-    expect(html).toContain("$79.00");
-    expect(html).toContain("twoBundle");
-    expect(html).toContain("deep-orbit, signal-ward");
-    // Last-8 chars of the session id appear; the full id does not.
-    expect(html).toContain("Z9999999");
+    expect(
+      document.querySelector('[data-testid="receipt-amount"]')?.textContent,
+    ).toContain("$79.00");
+    expect(
+      document.querySelector('dd[data-plan="twoBundle"]')?.textContent,
+    ).toBe("Two Worlds");
+    expect(
+      document
+        .querySelector('[data-testid="receipt-worlds"]')
+        ?.getAttribute("data-world-ids"),
+    ).toBe("deep-orbit, signal-ward");
+    expect(
+      document.querySelector('[data-testid="receipt-session"]')?.textContent,
+    ).toBe("TC-Z9999999");
     expect(html).not.toContain("cs_test_TARGETXYZ9999999");
-    // The older purchase did NOT leak through.
-    expect(html).not.toContain("$49.00");
-    expect(html).not.toContain("OLDOLDOLDOLDOLD0");
-  });
-
-  it("falls back to the most recent completed purchase when no session_id is given", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
-    });
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "single",
-      world_ids: ["neon-protocol"],
-      amount: 49,
-      created_at: "2026-01-01T00:00:00.000Z",
-      stripe_session_id: "cs_test_OLD1234567890AB",
-      status: "completed",
-    });
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "twoBundle",
-      world_ids: ["deep-orbit", "signal-ward"],
-      amount: 79,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_NEW9876543210ZZ",
-      status: "completed",
-    });
-
-    const { html } = await renderPage();
-
-    // Most recent purchase wins.
-    expect(html).toContain("$79.00");
-    expect(html).toContain("3210ZZ");
     expect(html).not.toContain("$49.00");
   });
 
-  it("renders one access-card row per purchased launched world with a Start Now CTA", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
+  it("accepts a repeated session query by selecting its first value", async () => {
+    purchaseRows.push(completedPurchase());
+    const { document } = await renderPage({
+      session_id: ["cs_test_abcdefgh12345678", "cs_test_OTHER"],
     });
-    // V1 scope-revert: coming-soon world ids in `world_ids` are stripped from
-    // the access-card list (they still appear in the raw receipt above).
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "twoBundle",
-      world_ids: ["deep-orbit", "signal-ward"],
-      amount: 79,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_abcdefgh12345678",
-      status: "completed",
-    });
-
-    const { html } = await renderPage();
-
-    expect(html).toContain('data-testid="access-start-deep-orbit"');
-    expect(html).toContain('href="/worlds/deep-orbit"');
-    expect(html).toContain("Start Now");
-    // Coming-soon world has no access card at V1.
-    expect(html).not.toContain('data-testid="access-start-signal-ward"');
-    expect(html).not.toContain('href="/worlds/signal-ward"');
+    expect(
+      document.querySelector("main")?.getAttribute("data-purchase-state"),
+    ).toBe("confirmed");
+    expect(
+      document.querySelector('[data-testid="receipt-session"]')?.textContent,
+    ).toBe("TC-12345678");
   });
 
-  it("primary CTA falls back to default world when only coming-soon worlds are owned", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
-    });
-    // V1 scope-revert: only coming-soon worlds purchased (e.g. via stale row)
-    // → access list is empty → primary CTA falls back to DEFAULT_WORLD.
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "single",
-      world_ids: ["signal-ward"],
-      amount: 49,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_abcdefgh12345678",
-      status: "completed",
-    });
-
-    const { html } = await renderPage();
-
-    expect(html).toContain('data-testid="cta-first-lesson"');
-    expect(html).toContain('href="/worlds/deep-orbit"');
-    expect(html).toContain("Start your first lesson");
-
-    expect(html).toContain('data-testid="cta-view-all-worlds"');
-    expect(html).toContain('href="/worlds"');
-    expect(html).toContain("View all worlds");
-  });
-
-  it("renders receipt with amount, plan, worlds, date, and session-id tail (mono)", async () => {
-    getUserMock.mockResolvedValue({
-      data: { user: { id: "u-1" } },
-      error: null,
-    });
-    purchaseRows.push({
-      user_id: "u-1",
-      plan_id: "allFive",
-      world_ids: [
-        "deep-orbit",
-        "neon-protocol",
-        "signal-ward",
-        "nova-canvas",
-        "terra-grid",
-      ],
-      amount: 129,
-      created_at: "2026-04-21T10:30:00.000Z",
-      stripe_session_id: "cs_test_RECEIPTIDLAST8CH",
-      status: "completed",
-    });
-
-    const { html } = await renderPage();
-
-    expect(html).toContain('data-testid="purchase-receipt"');
-    expect(html).toMatch(/data-testid="purchase-receipt"[^>]*font-mono/);
-    expect(html).toContain("$129.00");
-    expect(html).toContain("allFive");
-    expect(html).toContain("LAST8CH");
-    // Worlds list is rendered in a mono block.
-    expect(html).toContain(
-      "deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid",
+  it("without a session, selects the user's newest completed purchase only", async () => {
+    purchaseRows.push(
+      completedPurchase({
+        amount: 49,
+        created_at: "2026-01-01T00:00:00.000Z",
+      }),
+      completedPurchase({
+        amount: 79,
+        stripe_session_id: "cs_test_NEW9876543210ZZ",
+      }),
+      completedPurchase({
+        amount: 90,
+        status: "pending",
+        created_at: "2026-05-01T00:00:00.000Z",
+      }),
+      completedPurchase({
+        amount: 135,
+        status: "failed",
+        created_at: "2026-06-01T00:00:00.000Z",
+      }),
+      completedPurchase({
+        user_id: "u-2",
+        amount: 225,
+        created_at: "2026-07-01T00:00:00.000Z",
+      }),
     );
-    // Date rendered in ISO-ish UTC form (not the raw ISO string).
-    expect(html).toContain("2026-04-21 10:30 UTC");
+    const { document, html } = await renderPage();
+
+    expect(
+      document.querySelector('[data-testid="receipt-amount"]')?.textContent,
+    ).toContain("$79.00");
+    expect(
+      document.querySelector('[data-testid="receipt-session"]')?.textContent,
+    ).toBe("TC-543210ZZ");
+    for (const amount of ["$49.00", "$90.00", "$135.00", "$225.00"]) {
+      expect(html).not.toContain(amount);
+    }
+  });
+
+  it("offers access only for launched purchased worlds while retaining the receipt", async () => {
+    purchaseRows.push(
+      completedPurchase({
+        plan_id: "twoBundle",
+        world_ids: ["deep-orbit", "signal-ward"],
+      }),
+    );
+    const { document } = await renderPage();
+
+    expect(
+      document.querySelector('[data-testid="access-start-deep-orbit"]'),
+    ).not.toBeNull();
+    expect(
+      document.querySelector('[data-testid="access-start-signal-ward"]'),
+    ).toBeNull();
+    expect(document.querySelector('a[href="/worlds/signal-ward"]')).toBeNull();
+    expect(
+      document
+        .querySelector('[data-testid="receipt-worlds"]')
+        ?.getAttribute("data-world-ids"),
+    ).toBe("deep-orbit, signal-ward");
+    expect(
+      document.querySelector('[data-testid="receipt-worlds"]')?.textContent,
+    ).toBe("Deep Orbit, Signal Ward");
+  });
+
+  it("does not claim default-world access for a purchase with no launched worlds", async () => {
+    purchaseRows.push(completedPurchase({ world_ids: ["signal-ward"] }));
+    const { document, html } = await renderPage();
+
+    expect(document.querySelector("h1")?.textContent).toBe(
+      "Your purchase is confirmed.",
+    );
+    expect(
+      document.querySelector('[data-testid="purchase-receipt"]'),
+    ).not.toBeNull();
+    expect(
+      document.querySelector('[data-testid="cta-first-lesson"]'),
+    ).toBeNull();
+    expect(document.querySelector('[data-testid^="access-start-"]')).toBeNull();
+    expect(document.querySelector('a[href="/worlds/deep-orbit"]')).toBeNull();
+    const dashboardActions = [
+      ...document.querySelectorAll('a[href="/dashboard"]'),
+    ];
+    expect(
+      dashboardActions.some(
+        (action) => action.textContent === "Go to dashboard",
+      ),
+    ).toBe(true);
+    expect(html).not.toContain("Deep Orbit is yours");
+    expect(html).not.toContain("engineering.webp");
+  });
+
+  it("renders stored receipt values with friendly names and a shortened reference", async () => {
+    purchaseRows.push(
+      completedPurchase({
+        plan_id: "allFive",
+        world_ids: [
+          "deep-orbit",
+          "neon-protocol",
+          "signal-ward",
+          "nova-canvas",
+          "terra-grid",
+        ],
+        amount: 129,
+        stripe_session_id: "cs_test_RECEIPTIDLAST8CH",
+      }),
+    );
+    const { document, html } = await renderPage();
+
+    expect(
+      document.querySelector('[data-testid="receipt-amount"]')?.textContent,
+    ).toBe("$129.00 USD");
+    expect(document.querySelector('dd[data-plan="allFive"]')?.textContent).toBe(
+      "All 5 Worlds",
+    );
+    expect(
+      document
+        .querySelector('[data-testid="receipt-worlds"]')
+        ?.getAttribute("data-world-ids"),
+    ).toBe("deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid");
+    expect(
+      document.querySelector('[data-testid="receipt-worlds"]')?.textContent,
+    ).toBe("Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid");
+    expect(
+      document.querySelector('[data-testid="receipt-date"]')?.textContent,
+    ).toBe("April 21, 2026 at 10:30 UTC");
+    expect(document.querySelector("time")?.getAttribute("datetime")).toBe(
+      "2026-04-21T10:30:00.000Z",
+    );
+    expect(
+      document.querySelector('[data-testid="receipt-session"]')?.textContent,
+    ).toBe("TC-DLAST8CH");
+    expect(html).not.toContain("cs_test_RECEIPTIDLAST8CH");
+  });
+
+  it("keeps unknown receipt values readable rather than inventing plan or world names", async () => {
+    purchaseRows.push(
+      completedPurchase({
+        plan_id: "legacy-plan",
+        world_ids: ["legacy-world"],
+        created_at: "unknown-date",
+        stripe_session_id: null,
+      }),
+    );
+    const { document } = await renderPage();
+
+    expect(
+      document.querySelector('dd[data-plan="legacy-plan"]')?.textContent,
+    ).toBe("legacy-plan");
+    expect(
+      document.querySelector('[data-testid="receipt-worlds"]')?.textContent,
+    ).toBe("legacy-world");
+    expect(
+      document.querySelector('[data-testid="receipt-date"]')?.textContent,
+    ).toBe("unknown-date");
+    expect(
+      document.querySelector('[data-testid="receipt-session"]')?.textContent,
+    ).toBe("Not available");
   });
 });

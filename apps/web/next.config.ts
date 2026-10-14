@@ -231,25 +231,31 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
-    // The development gallery embeds its own read-only lesson preview.
-    // Keep the exception on this route and out of production headers.
+    // Development galleries embed their own read-only previews.
+    // Keep the exceptions on these exact routes and out of production.
     if (process.env.NODE_ENV === "development") {
       const base = rules.find((rule) => rule.source === "/(.*)")!.headers;
-      rules.push({
-        source: "/design/deep-orbit",
-        headers: base.map((header) => {
-          if (header.key === "X-Frame-Options")
-            return { ...header, value: "SAMEORIGIN" };
-          if (header.key === "Content-Security-Policy")
-            return {
-              ...header,
-              value: header.value
-                .replace("frame-src ", "frame-src 'self' ")
-                .replace("frame-ancestors 'none'", "frame-ancestors 'self'"),
-            };
-          return header;
-        }),
-      });
+      for (const source of [
+        "/design/deep-orbit",
+        "/design/purchase-success",
+        "/design/purchase-email",
+      ]) {
+        rules.push({
+          source,
+          headers: base.map((header) => {
+            if (header.key === "X-Frame-Options")
+              return { ...header, value: "SAMEORIGIN" };
+            if (header.key === "Content-Security-Policy")
+              return {
+                ...header,
+                value: header.value
+                  .replace("frame-src ", "frame-src 'self' ")
+                  .replace("frame-ancestors 'none'", "frame-ancestors 'self'"),
+              };
+            return header;
+          }),
+        });
+      }
     }
     return rules;
   },

@@ -64,10 +64,13 @@ describe("PendingPoller", () => {
   });
 
   it("shows a visible timeout state instead of freezing silently", () => {
-    render(<PendingPoller sessionId="cs_test_123" />);
+    const { container } = render(<PendingPoller sessionId="cs_test_123" />);
+    const liveRegion = container.querySelector('[role="status"]');
     exhaustPolling();
     expect(screen.getByTestId("pending-timeout")).toBeInTheDocument();
     expect(screen.getByText(/taking longer than usual/i)).toBeInTheDocument();
+    expect(container.querySelector('[role="status"]')).toBe(liveRegion);
+    expect(screen.queryByText(/Almost There/)).not.toBeInTheDocument();
   });
 
   it("gives the customer a support path carrying their session reference", () => {

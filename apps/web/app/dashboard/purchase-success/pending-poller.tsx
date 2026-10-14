@@ -1,10 +1,54 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 const MAX_TRIES = 20;
 const INTERVAL_MS = 3000;
+
+export function PendingHelp({
+  sessionId,
+  children,
+  active = true,
+}: {
+  sessionId?: string;
+  children: ReactNode;
+  active?: boolean;
+}) {
+  const mailSubject = encodeURIComponent("Purchase not confirmed");
+  const mailBody = encodeURIComponent(
+    `My payment went through but the confirmation page is still pending.\n` +
+      (sessionId ? `Checkout session: ${sessionId}\n` : ""),
+  );
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      data-testid={active ? "pending-timeout" : undefined}
+      className={active ? "purchase-pending-help" : undefined}
+    >
+      {active && (
+        <>
+          <h2>Taking longer than usual</h2>
+          <p>
+            We&apos;re still waiting for payment confirmation. Some payment
+            methods take a few minutes.
+          </p>
+          <div className="purchase-actions">
+            {children}
+            <a
+              href={`mailto:support@tensorcraft.app?subject=${mailSubject}&body=${mailBody}`}
+              className="purchase-button purchase-button-secondary"
+            >
+              Email support
+            </a>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 /**
  * While the Stripe webhook hasn't confirmed the purchase yet, re-fetch
@@ -43,53 +87,22 @@ export function PendingPoller({ sessionId }: { sessionId?: string }) {
     return () => clearInterval(id);
   }, [router, pollRun, timedOut]);
 
-  const mailSubject = encodeURIComponent("Purchase not confirmed");
-  const mailBody = encodeURIComponent(
-    `My payment went through but the confirmation page is still pending.\n` +
-      (sessionId ? `Checkout session: ${sessionId}\n` : ""),
-  );
-
   // The live region must exist BEFORE it has content: mounting
   // role="status" together with its message announces unreliably across
   // screen readers (same rule as exercise.tsx's TestResultsLiveRegion -
   // the region is always in the tree, the message arrives later).
-  if (!timedOut) return <div role="status" aria-live="polite" />;
-
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      data-testid="pending-timeout"
-      className="max-w-xl mx-auto mb-12 border border-border bg-surface-raised px-6 py-5 text-left"
-    >
-      <p className="font-mono text-xs uppercase tracking-widest text-text-muted mb-2">
-        Taking longer than usual
-      </p>
-      <p className="text-sm leading-relaxed text-text-primary mb-4">
-        Your payment is still being confirmed. That can take a few minutes for
-        some payment methods. Your access unlocks automatically the moment the
-        payment clears, and nothing is lost by waiting. If this page still shows
-        &quot;Almost There&quot; after a few minutes, tell us and we&apos;ll
-        sort it out directly.
-      </p>
-      <div className="flex flex-col sm:flex-row gap-3">
-        <button
-          type="button"
-          onClick={() => {
-            setTimedOut(false);
-            setPollRun((n) => n + 1);
-          }}
-          className="inline-flex items-center justify-center h-10 px-5 text-sm font-mono border-2 border-primary text-primary hover:bg-primary hover:text-on-primary transition-colors"
-        >
-          Check again
-        </button>
-        <a
-          href={`mailto:support@tensorcraft.app?subject=${mailSubject}&body=${mailBody}`}
-          className="inline-flex items-center justify-center h-10 px-5 text-sm font-mono border border-interactive text-text-primary hover:border-primary transition-colors"
-        >
-          Email support
-        </a>
-      </div>
-    </div>
+    <PendingHelp sessionId={sessionId} active={timedOut}>
+      <button
+        type="button"
+        onClick={() => {
+          setTimedOut(false);
+          setPollRun((n) => n + 1);
+        }}
+        className="purchase-button"
+      >
+        Check again
+      </button>
+    </PendingHelp>
   );
 }
