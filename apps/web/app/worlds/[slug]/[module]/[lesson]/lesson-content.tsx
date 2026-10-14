@@ -104,6 +104,7 @@ interface LessonContentProps {
   lessonId?: string;
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
+  briefingTakeawayPart?: "idea" | "task";
   /**
    * "reading" keeps prose and companion cards in one reading column.
    * Only the Concept step passes it.
@@ -222,6 +223,7 @@ export function LessonContent({
   lessonId,
   visibleComponents,
   storyRegister,
+  briefingTakeawayPart,
   layout,
   exerciseWorkspace = false,
   onExerciseComplete,
@@ -405,7 +407,12 @@ export function LessonContent({
       pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
         <pre {...props} tabIndex={0} role="region" aria-label="Code example" />
       ),
-      BriefingTakeaway: wrapVisibility("BriefingTakeaway", BriefingTakeaway),
+      BriefingTakeaway: wrapVisibility(
+        "BriefingTakeaway",
+        (props: React.ComponentProps<typeof BriefingTakeaway>) => (
+          <BriefingTakeaway {...props} part={briefingTakeawayPart} />
+        ),
+      ),
       Concept: wrapVisibility("Concept", Concept),
       ConceptReference: wrapVisibility(
         "ConceptReference",
@@ -448,9 +455,8 @@ export function LessonContent({
             avatarSlot={avatarSlot}
             layout={
               storyRegister ||
-              (insideEpilogue &&
-                worldId === "deep-orbit" &&
-                lessonId === "introduction-to-tensors")
+              (worldId === "deep-orbit" &&
+                (insideEpilogue || layout === "reading"))
                 ? "row"
                 : "stack"
             }
@@ -680,6 +686,8 @@ export function LessonContent({
     shouldShow,
     showProse,
     storyRegister,
+    briefingTakeawayPart,
+    layout,
     onExerciseComplete,
     lesson.concept.bridge,
     glossaryByTerm,

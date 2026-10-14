@@ -59,7 +59,12 @@ export function Nav() {
   const isLessonRoute =
     /^\/worlds\/[^/]+\/[^/]+\/[^/]+$/.test(pathname) &&
     !pathname.endsWith("/capstone");
-  if (isLessonRoute) return null;
+  if (
+    isLessonRoute ||
+    (process.env.NODE_ENV === "development" &&
+      pathname === "/design/deep-orbit")
+  )
+    return null;
   const learningNavigation =
     isAuthenticated || pathname.startsWith("/dashboard");
 

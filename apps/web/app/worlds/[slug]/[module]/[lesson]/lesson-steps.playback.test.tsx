@@ -270,7 +270,7 @@ describe("LessonSteps, scene portrait beat", () => {
 
   it("keeps context readable while the slugline and establishing shot play", () => {
     renderWithScene();
-    // Five beats: slugline + portrait + dialogue + story P + dialogue.
+    // Five beats: slugline, narrated introduction, then the scene image.
     // jsdom never loads images, so the portrait stays mounted.
     expect(screen.getByTestId("scene-context")).toBeVisible();
     expect(screen.getByTestId("scene-context")).not.toHaveAttribute(
@@ -285,7 +285,7 @@ describe("LessonSteps, scene portrait beat", () => {
     const portraitIdx = beats.findIndex(
       (b) => b.getAttribute("data-testid") === "scene-portrait",
     );
-    expect(portraitIdx).toBe(1);
+    expect(portraitIdx).toBe(beats.length - 1);
   });
 
   it("keeps the playback control outside every beat wrapper", () => {

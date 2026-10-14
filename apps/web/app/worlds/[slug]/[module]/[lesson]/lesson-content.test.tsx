@@ -171,6 +171,49 @@ const lesson = {
   concept: { explanation: "x" },
 };
 
+describe("LessonContent, briefing notes", () => {
+  it("keeps the idea and task readable once when placed in separate sections", () => {
+    const briefingLesson = {
+      ...lesson,
+      body: `const {jsx} = arguments[0];
+        return {default: function(props) {
+          return jsx(props.components.BriefingTakeaway, {
+            task: "Arrange the readings into rows.",
+            children: jsx("p", {children: "Shape describes the layout."})
+          });
+        }};`,
+    };
+    const visible = new Set(["BriefingTakeaway"]);
+    const { rerender } = render(
+      <LessonContent lesson={briefingLesson} visibleComponents={visible} />,
+    );
+    expect(screen.getByText("Shape describes the layout.")).toBeVisible();
+    expect(screen.getByText("Arrange the readings into rows.")).toBeVisible();
+    rerender(
+      <>
+        <LessonContent
+          lesson={briefingLesson}
+          visibleComponents={visible}
+          briefingTakeawayPart="idea"
+        />
+        <LessonContent
+          lesson={briefingLesson}
+          visibleComponents={visible}
+          briefingTakeawayPart="task"
+        />
+      </>,
+    );
+    expect(screen.getAllByText("Shape describes the layout.")).toHaveLength(1);
+    expect(screen.getAllByText("Arrange the readings into rows.")).toHaveLength(
+      1,
+    );
+    expect(screen.getByRole("heading", { name: "Key idea" })).toBeVisible();
+    expect(
+      screen.getByRole("heading", { name: "Your first task" }),
+    ).toBeVisible();
+  });
+});
+
 describe("LessonContent, story register", () => {
   it("sets data-story-register and row dialogues only when the flag is passed", () => {
     // One Set for both renders: a fresh Set would rebuild the components

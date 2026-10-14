@@ -95,13 +95,9 @@ describe("Dialogue", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders a hidden, decorative CUT-TO divider", () => {
+  it("omits the scene transition when no destination is provided", () => {
     const { container } = render(<Dialogue speaker="ARIA">Test</Dialogue>);
-    const cut = container.querySelector(".tc-cut-to");
-    expect(cut).toBeInTheDocument();
-    expect(cut).toHaveClass("hidden");
-    expect(cut).toHaveAttribute("aria-hidden", "true");
-    expect(cut).toHaveTextContent(/cut to: briefing/i);
+    expect(container.querySelector(".tc-cut-to")).not.toBeInTheDocument();
   });
 
   it("lays out as a centered screenplay column", () => {
@@ -134,6 +130,11 @@ describe("Dialogue", () => {
     );
     expect(container.querySelector(".tc-cut-to")).toHaveTextContent(
       /cut to: debrief/i,
+    );
+    expect(container.querySelector(".tc-cut-to")).toHaveClass("hidden");
+    expect(container.querySelector(".tc-cut-to")).toHaveAttribute(
+      "aria-hidden",
+      "true",
     );
   });
 });
@@ -237,7 +238,7 @@ describe("Dialogue row layout", () => {
     "keeps the cut-to divider as the root's last direct child in %s layout",
     (layout) => {
       const { container } = render(
-        <Dialogue speaker="ARIA" layout={layout}>
+        <Dialogue speaker="ARIA" layout={layout} cutTo="Debrief">
           Line.
         </Dialogue>,
       );

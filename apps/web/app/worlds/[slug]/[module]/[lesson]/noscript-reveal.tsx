@@ -48,6 +48,9 @@ export function NoscriptReveal() {
 :is([data-script-state="idle"], [data-script-state="playing"]) [data-post-scene] {
   display: revert !important;
 }
+:is([data-script-state="idle"], [data-script-state="playing"]) [data-scene-notes] {
+  display: revert !important;
+}
 .lesson-story-grid {
   grid-template-columns: minmax(0, 820px) !important;
 }

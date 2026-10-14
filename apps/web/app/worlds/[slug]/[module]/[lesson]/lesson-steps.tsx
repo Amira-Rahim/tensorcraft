@@ -54,6 +54,10 @@ import { GuestEmailCapture } from "./guest-email-capture";
 import { LessonTermsList } from "./lesson-terms-list";
 import { LessonEpilogue } from "./lesson-epilogue";
 import { LessonCompleteBanner } from "./lesson-complete-banner";
+import { BriefingTakeaway } from "@/app/components/mdx/briefing-takeaway";
+import { DEEP_ORBIT_VISUALS } from "@/app/components/lesson-visuals/deep-orbit-visuals";
+import { LESSON_INVESTIGATIONS } from "@/app/components/lesson-visuals/lesson-investigations";
+import { BriefingInvestigationVisual } from "@/app/components/lesson-visuals/lesson-investigation";
 import type { GlossaryEntry, LessonReference } from "@tensorcraft/content";
 import {
   PHASE,
@@ -323,10 +327,7 @@ function LessonStepsInner({
   const exerciseScoresRef = useRef<Record<string, number>>({});
   const [mounted, setMounted] = useState(false);
   const openingEpilogue =
-    currentStep === PHASE.epilogue &&
-    worldSlug === "deep-orbit" &&
-    moduleSlug === "foundations" &&
-    lesson.slug === "introduction-to-tensors";
+    currentStep === PHASE.epilogue && worldSlug === "deep-orbit";
   const challengeWorkspace =
     currentStep === PHASE.challenge &&
     worldSlug === "deep-orbit" &&
@@ -1235,7 +1236,7 @@ function LessonStepsInner({
   const mobileControls =
     rightKind === "pane" && !challengeWorkspace ? (
       <div
-        className="lg:hidden mb-6 flex gap-2"
+        className={`${worldSlug === "deep-orbit" ? "xl:hidden" : "lg:hidden"} mb-6 flex gap-2`}
         role="group"
         aria-label="Challenge view"
       >
@@ -1260,7 +1261,8 @@ function LessonStepsInner({
 
   return (
     <div
-      className="lesson-page flex-1 overflow-y-auto"
+      className={`lesson-page flex-1 overflow-y-auto ${worldSlug === "deep-orbit" ? "deep-orbit-lesson" : ""}`}
+      data-step={STEP_EVENT_NAMES[currentStep]}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -1287,6 +1289,7 @@ function LessonStepsInner({
         <LessonShell
           rightKind={rightKind}
           workspace={challengeWorkspace}
+          orbit={worldSlug === "deep-orbit"}
           focusRef={stepRef}
           label={`Step ${currentStep + 1} of ${TOTAL_STEPS}: ${STEP_NAMES[currentStep]}`}
           header={
@@ -1297,15 +1300,18 @@ function LessonStepsInner({
                 moduleSlug={moduleSlug}
                 exercises={exercises}
               />
-              {challengeWorkspace && (
-                <LessonMissionScene
-                  lesson={lesson}
-                  worldSlug={worldSlug}
-                  moduleSlug={moduleSlug}
-                  compact
-                  heading={exercises[0]!.title}
-                />
-              )}
+              {worldSlug === "deep-orbit" &&
+                currentStep === PHASE.challenge && (
+                  <LessonMissionScene
+                    lesson={lesson}
+                    worldSlug={worldSlug}
+                    moduleSlug={moduleSlug}
+                    compact
+                    heading={
+                      challengeWorkspace ? exercises[0]!.title : undefined
+                    }
+                  />
+                )}
             </>
           }
           paneOpenOnMobile={paneOpen}
@@ -1628,6 +1634,54 @@ function StepBriefing({
   clipUrl?: string | null;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const spaciousBriefing = worldSlug === "deep-orbit";
+  const hasAuthoredNote = lesson.body.includes("BriefingTakeaway");
+  const visual = DEEP_ORBIT_VISUALS[lessonSlug];
+  const investigation = LESSON_INVESTIGATIONS[lessonSlug];
+  const briefingNote = (part: "idea" | "task") =>
+    hasAuthoredNote ? (
+      <LessonContent
+        lesson={lesson}
+        worldId={worldSlug}
+        moduleId={moduleSlug}
+        lessonId={lessonSlug}
+        glossaryTerms={lesson.glossaryTerms}
+        visibleComponents={BRIEFING_TAKEAWAY_COMPONENTS}
+        briefingTakeawayPart={part}
+      />
+    ) : (
+      <div className="lesson-prose">
+        <BriefingTakeaway
+          part={part}
+          task={visual?.action ?? lesson.concept.explanation}
+          example={
+            investigation && (
+              <BriefingInvestigationVisual spec={investigation} />
+            )
+          }
+        >
+          <p>
+            {visual?.takeaway ??
+              investigation?.brief ??
+              lesson.concept.explanation}
+          </p>
+        </BriefingTakeaway>
+      </div>
+    );
+  const briefingStory = (
+    <LessonContent
+      lesson={lesson}
+      exercises={exercises}
+      worldId={worldSlug}
+      moduleId={moduleSlug}
+      lessonId={lessonSlug}
+      glossaryTerms={lesson.glossaryTerms}
+      visibleComponents={BRIEFING_COMPONENTS}
+      storyRegister
+      hideChallengeOnward
+      hideTeaching
+    />
+  );
   const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const scrollPendingRef = useRef(false);
   // When the current playback run started; feeds script_skipped's elapsedMs
@@ -1846,6 +1900,7 @@ function StepBriefing({
     // as loading so screen readers know more content is coming. */}
       <div
         ref={rootRef}
+        className={spaciousBriefing ? "lesson-briefing-spacious" : undefined}
         style={scriptState === "idle" ? { visibility: "hidden" } : undefined}
         data-script-state={scriptState}
         aria-busy={scriptState === "playing" ? "true" : undefined}
@@ -1942,6 +1997,10 @@ function StepBriefing({
             <ProseText>{lesson.context.narrative}</ProseText>
           </p>
 
+          {spaciousBriefing && (
+            <div className="briefing-story-intro">{briefingStory}</div>
+          )}
+
           {/* Story grid (spec section 2, item 4): the plate column beside the
           beats. LessonContent's root is the second grid item, unchanged, so
           collectBeats and the register rules keep walking a flat list. */}
@@ -1984,41 +2043,40 @@ function StepBriefing({
             {/* Dialogue, screenplay beats from MDX. hideTeaching: the Briefing is
             the story zone only since the 2026-09-04 prose partition; the
             teaching body reads once, on the Concept step. */}
-            <LessonContent
-              lesson={lesson}
-              exercises={exercises}
-              worldId={worldSlug}
-              moduleId={moduleSlug}
-              lessonId={lessonSlug}
-              glossaryTerms={lesson.glossaryTerms}
-              visibleComponents={BRIEFING_COMPONENTS}
-              storyRegister
-              hideChallengeOnward
-              hideTeaching
-            />
+            {spaciousBriefing ? (
+              <div className="briefing-reading-column">
+                <div data-scene-notes="" className="briefing-integrated-idea">
+                  {briefingNote("idea")}
+                  {briefingNote("task")}
+                </div>
+              </div>
+            ) : (
+              briefingStory
+            )}
           </div>
 
           {/* Learning notes and review follow the story, outside its timeline.
           The authored takeaway gets its own full-width MDX slice so it never
           stretches the dialogue column or appears twice. The no-JS reveal
           also makes these server-rendered notes readable. */}
-          {(lesson.body.includes("BriefingTakeaway") ||
+          {((lesson.body.includes("BriefingTakeaway") && !spaciousBriefing) ||
             !warmupDone ||
             moduleEntry) && (
             <div
               data-post-scene=""
               className="mt-(--l-slot) space-y-(--l-slot)"
             >
-              {lesson.body.includes("BriefingTakeaway") && (
-                <LessonContent
-                  lesson={lesson}
-                  worldId={worldSlug}
-                  moduleId={moduleSlug}
-                  lessonId={lessonSlug}
-                  glossaryTerms={lesson.glossaryTerms}
-                  visibleComponents={BRIEFING_TAKEAWAY_COMPONENTS}
-                />
-              )}
+              {lesson.body.includes("BriefingTakeaway") &&
+                !spaciousBriefing && (
+                  <LessonContent
+                    lesson={lesson}
+                    worldId={worldSlug}
+                    moduleId={moduleSlug}
+                    lessonId={lessonSlug}
+                    glossaryTerms={lesson.glossaryTerms}
+                    visibleComponents={BRIEFING_TAKEAWAY_COMPONENTS}
+                  />
+                )}
               {!warmupDone && (
                 <LessonWarmup
                   userId={reviewUserId}
@@ -2091,7 +2149,7 @@ function StepConcept({
         moduleSlug={moduleSlug}
         learningGoals={visualFirst ? objectives : undefined}
       />
-      <div className="max-w-[820px]">
+      <div className={visualFirst ? "orbit-concept-reading" : "max-w-[820px]"}>
         {!visualFirst && (
           <>
             <PhaseChip label="Concept" icon={"\u25CE"} />
@@ -2145,14 +2203,6 @@ function StepChallenge({
     <div>
       {worldSlug !== "deep-orbit" && (
         <PhaseChip label="Challenge" icon={"\u26A1"} />
-      )}
-      {worldSlug === "deep-orbit" && (
-        <LessonMissionScene
-          lesson={lesson}
-          worldSlug={worldSlug}
-          moduleSlug={moduleSlug}
-          compact
-        />
       )}
       {/* Left column: brief + hints only. The Exercise editor itself renders
           in the right work pane (CHALLENGE_RIGHT) so its submit handler runs
@@ -2252,11 +2302,7 @@ function StepConsequence({
    *  its module; null otherwise (replay, mid-module, no patch art). */
   award?: { src: string; moduleName: string; moduleTerm: string } | null;
 }) {
-  if (
-    worldSlug === "deep-orbit" &&
-    moduleSlug === "foundations" &&
-    lessonSlug === "introduction-to-tensors"
-  ) {
+  if (worldSlug === "deep-orbit") {
     const shared = {
       lesson,
       exercises,
@@ -2284,7 +2330,11 @@ function StepConsequence({
           isFreeModule ? <GuestEmailCapture worldSlug={worldSlug} /> : undefined
         }
       >
-        <LessonContent {...shared} visibleComponents={CONSEQUENCE_COMPONENTS} />
+        <LessonContent
+          {...shared}
+          visibleComponents={CONSEQUENCE_COMPONENTS}
+          showPostRecap={lessonSlug !== "introduction-to-tensors"}
+        />
       </LessonEpilogue>
     );
   }
@@ -2370,6 +2420,130 @@ function PhaseChip({ label, icon }: { label: string; icon: string }) {
       style={{ color: "var(--tc-primary)" }}
     >
       <span>{icon}</span> {label}
+    </div>
+  );
+}
+
+/** Development gallery: render the production sections without completion writes. */
+export function LessonDesignPreview({
+  lesson,
+  exercises,
+  moduleName,
+  moduleSlug,
+  phase,
+}: {
+  lesson: LessonStepsProps["lesson"];
+  exercises: ExerciseData[];
+  moduleName: string;
+  moduleSlug: string;
+  phase: "briefing" | "concept" | "challenge" | "takeaways" | "epilogue";
+}) {
+  const [paneOpen, setPaneOpen] = useState(false);
+  const shared = {
+    lesson,
+    exercises,
+    worldSlug: "deep-orbit",
+    moduleSlug,
+    lessonSlug: lesson.slug,
+  };
+  const workspace =
+    phase === "challenge" &&
+    lesson.slug === "introduction-to-tensors" &&
+    exercises.length === 1;
+  const challenge = phase === "challenge";
+  const left =
+    phase === "briefing" ? (
+      <StepBriefing
+        {...shared}
+        scriptAutoPlay={false}
+        onScriptPlayed={() => {}}
+        reviewUserId={null}
+        dueReviews={[]}
+        freeRecallPrompts={[]}
+        onWarmupDone={() => {}}
+      />
+    ) : phase === "concept" ? (
+      <StepConcept {...shared} />
+    ) : challenge ? (
+      workspace ? null : (
+        <StepChallenge {...shared} />
+      )
+    ) : phase === "takeaways" ? (
+      <StepTakeaways {...shared} recallSettled onRecallPending={() => {}} />
+    ) : (
+      <StepConsequence {...shared} />
+    );
+  return (
+    <div
+      className="lesson-page deep-orbit-lesson"
+      data-step={phase}
+      data-world="deep-orbit"
+    >
+      <LessonShell
+        orbit
+        workspace={workspace}
+        rightKind={challenge ? "pane" : "none"}
+        paneOpenOnMobile={paneOpen}
+        header={
+          <>
+            <LessonTitleHeader
+              lesson={lesson}
+              worldSlug="deep-orbit"
+              moduleSlug={shared.moduleSlug}
+              exercises={exercises}
+            />
+            {challenge && (
+              <LessonMissionScene
+                {...shared}
+                compact
+                heading={workspace ? exercises[0]?.title : undefined}
+              />
+            )}
+          </>
+        }
+        controls={
+          challenge && !workspace ? (
+            <div
+              className="xl:hidden mb-6 flex gap-2"
+              role="group"
+              aria-label="Challenge view"
+            >
+              {[
+                { open: false, label: "Instructions" },
+                { open: true, label: "Editor" },
+              ].map(({ open, label }) => (
+                <button
+                  key={String(label)}
+                  type="button"
+                  aria-pressed={paneOpen === open}
+                  className="min-h-11 flex-1 px-3 text-sm border border-border"
+                  onClick={() => setPaneOpen(Boolean(open))}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          ) : undefined
+        }
+        left={left}
+        right={
+          challenge ? (
+            <LessonContent
+              lesson={lesson}
+              exercises={exercises}
+              worldId="deep-orbit"
+              moduleId={shared.moduleSlug}
+              lessonId={lesson.slug}
+              glossaryTerms={lesson.glossaryTerms}
+              visibleComponents={CHALLENGE_RIGHT}
+              exerciseWorkspace={workspace}
+            />
+          ) : null
+        }
+        chrome={
+          <div className="lesson-frame mb-6 text-text-muted">{moduleName}</div>
+        }
+      />
     </div>
   );
 }

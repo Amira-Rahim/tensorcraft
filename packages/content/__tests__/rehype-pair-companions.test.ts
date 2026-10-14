@@ -20,10 +20,8 @@ import {
 // nothing to pair with, so the build moves it after the first free prose
 // block of its section. This test compiles every built lesson from source
 // and holds the tree before and after the plugin, which the velite output
-// cannot give us. velite also runs a remark plugin that drops {/* */} comment
-// expressions before rehype; this pipeline does not, and no built lesson
-// carries such a comment today. If one ever does, add that plugin here or
-// the printed count can drift from the build.
+// cannot give us. Both pipelines retain MDX expressions through rehype;
+// MDX omits real comment expressions when it produces the rendered output.
 
 const CONTENT = join(__dirname, "..", "content");
 

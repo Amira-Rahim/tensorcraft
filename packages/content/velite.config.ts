@@ -390,6 +390,9 @@ export default defineConfig({
     clean: true,
   },
   mdx: {
+    // Velite's comment remover also deletes code strings containing /* */.
+    // MDX already omits real comment expressions from rendered output.
+    removeComments: false,
     rehypePlugins: [
       [rehypeGlossary, { dictionary: GLOSSARY }],
       // Order is immaterial today: rehype-glossary never enters JSX, so

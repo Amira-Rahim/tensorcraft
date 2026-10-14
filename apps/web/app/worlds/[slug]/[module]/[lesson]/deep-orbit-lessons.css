@@ -1,0 +1,410 @@
+/* One reading scale and frame across the entire Deep Orbit course. */
+.lesson-page.deep-orbit-lesson {
+  --lesson-body-size: 22px;
+  --lesson-task-title-size: 28px;
+  --l-gutter: 56px;
+  --l-row: 32px;
+  --l-slot: 40px;
+  --l-heading: 24px;
+  --l-nav-top: 48px;
+}
+.lesson-page.deep-orbit-lesson .lesson-title-header {
+  margin-bottom: 36px;
+}
+.lesson-page.deep-orbit-lesson [data-testid="course-orientation"] {
+  font-size: 22px;
+  line-height: 1.65;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose p,
+.lesson-page.deep-orbit-lesson .lesson-prose li {
+  font-size: var(--lesson-body-size);
+  line-height: 1.65;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose h2 {
+  font-size: 32px;
+  line-height: 1.25;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose h3 {
+  font-size: 28px;
+  line-height: 1.3;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose :not(pre) > code {
+  font-size: 0.95em;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose :is(th, td) {
+  padding: 16px;
+  border: 1px solid var(--tc-border);
+  text-align: left;
+  vertical-align: top;
+  font-size: 18px;
+  line-height: 1.6;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose th {
+  background: var(--tc-surface);
+  font-weight: 600;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose fieldset {
+  min-width: 0;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose legend {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose :is(p, ul, ol) {
+  max-width: 75ch;
+}
+.lesson-page.deep-orbit-lesson .lesson-step-content[data-layout="reading"] {
+  max-width: none;
+  width: 100%;
+  row-gap: 28px;
+}
+.lesson-page.deep-orbit-lesson
+  .lesson-step-content[data-layout="reading"]
+  > :is(h2, h3) {
+  margin-top: 32px;
+}
+.lesson-page.deep-orbit-lesson
+  .lesson-step-content[data-layout="reading"]
+  > [data-dialogue] {
+  justify-self: start;
+  width: 100%;
+  max-width: 65ch;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose [data-dialogue] p {
+  font-size: 22px;
+}
+.lesson-page.deep-orbit-lesson [data-dialogue-row] {
+  column-gap: 16px;
+}
+.lesson-page.deep-orbit-lesson
+  [data-dialogue-row]
+  > div:last-child
+  > div:first-child {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose [data-code-block] {
+  width: 100%;
+  border-radius: 6px;
+}
+.lesson-page.deep-orbit-lesson [data-code-block] pre code {
+  font-size: 17px;
+  line-height: 1.8;
+}
+.lesson-page.deep-orbit-lesson [data-code-block] > div:first-child {
+  padding: 16px 24px;
+}
+.lesson-page.deep-orbit-lesson
+  [data-code-block]
+  > div:first-child
+  :is(span, button) {
+  font-size: 14px;
+}
+.lesson-page.deep-orbit-lesson [data-code-block] button {
+  min-height: 44px;
+}
+/* Story beats retain their authored order; narrative text spans the row. */
+.lesson-page.deep-orbit-lesson .briefing-story-intro .lesson-step-content > p {
+  grid-column: 1 / -1;
+  font-size: 22px;
+  font-style: normal;
+  color: var(--tc-text);
+  max-width: 75ch;
+}
+.lesson-page.deep-orbit-lesson .briefing-takeaway-definition > p + p {
+  margin-top: 20px;
+}
+.lesson-page.deep-orbit-lesson .briefing-takeaway h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.lesson-page.deep-orbit-lesson
+  .briefing-takeaway
+  .briefing-shape-example
+  > code {
+  font-size: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.lesson-page.deep-orbit-lesson
+  .briefing-takeaway
+  .briefing-takeaway-readings
+  code {
+  font-size: 20px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/* Context and goals sit beside a complete scene, followed by a wide instrument. */
+.lesson-page.deep-orbit-lesson .lesson-workbench {
+  margin-bottom: 48px;
+}
+.lesson-page.deep-orbit-lesson .lesson-workbench-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+  border: 0;
+  background: transparent;
+}
+.lesson-page.deep-orbit-lesson .lesson-mission-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 28px 56px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+}
+.lesson-page.deep-orbit-lesson .mission-context-image img {
+  aspect-ratio: 3 / 2 !important;
+  height: auto;
+  min-height: 0;
+  border: 1px solid var(--tc-border) !important;
+  border-radius: 6px;
+  box-shadow: none;
+}
+.lesson-page.deep-orbit-lesson .mission-context-copy {
+  align-self: start;
+  min-width: 0;
+  padding: 0;
+}
+.lesson-page.deep-orbit-lesson .mission-context-location {
+  font-size: 18px;
+  margin: 0 0 16px;
+  color: var(--tc-muted);
+}
+.lesson-page.deep-orbit-lesson .mission-context-crew {
+  font-size: 18px;
+}
+.lesson-page.deep-orbit-lesson .mission-context-narrative,
+.lesson-page.deep-orbit-lesson .lesson-workbench-introduction {
+  font-size: 22px;
+  line-height: 1.65;
+  max-width: 65ch;
+}
+.lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals {
+  display: block;
+  margin-top: 28px;
+  margin-bottom: 0;
+  padding: 24px 0 0;
+  border-bottom: 0;
+}
+.lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals > h3 {
+  font-size: 28px;
+  margin: 0 0 20px;
+}
+.lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals li {
+  font-size: 22px;
+  line-height: 1.6;
+}
+.lesson-page.deep-orbit-lesson .lesson-workbench > .lesson-goals {
+  margin: 0 0 32px;
+  padding: 28px 0;
+  border-block: 1px solid var(--tc-border);
+}
+.lesson-page.deep-orbit-lesson .lesson-instrument {
+  width: 100%;
+  padding: 32px;
+  border: 1px solid var(--tc-border);
+  border-radius: 6px;
+  background: var(--tc-surface);
+}
+.lesson-page.deep-orbit-lesson
+  .lesson-instrument
+  :is(.iv-instruction, .iv-takeaway, .iv-readout),
+.lesson-page.deep-orbit-lesson .lesson-embedded-experiment > section > p {
+  font-size: 22px;
+  line-height: 1.65;
+  max-width: 75ch;
+}
+.lesson-page.deep-orbit-lesson
+  .lesson-instrument
+  :is(button, label, output, .iv-legend) {
+  font-size: 17px;
+}
+.lesson-page.deep-orbit-lesson .iv-readout pre,
+.lesson-page.deep-orbit-lesson .iv-example-code {
+  font-size: 17px;
+}
+.lesson-page.deep-orbit-lesson .iv-provenance {
+  font-size: 14px;
+  max-width: 75ch;
+}
+.lesson-page.deep-orbit-lesson .iv-plot {
+  width: 100%;
+  max-width: 960px;
+}
+.lesson-page.deep-orbit-lesson .lesson-instrument svg {
+  max-height: 480px;
+}
+.lesson-page.deep-orbit-lesson .iv-stage-detail h3 {
+  font-size: 28px;
+}
+.lesson-page.deep-orbit-lesson .iv-flow strong {
+  font-size: 20px;
+}
+.lesson-page.deep-orbit-lesson .iv-flow small {
+  font-size: 16px;
+}
+/* Challenge gives the mission its own row and keeps the editor uncluttered. */
+.lesson-page.deep-orbit-lesson .lesson-mission-scene-compact {
+  margin-bottom: 40px;
+}
+.lesson-page.deep-orbit-lesson
+  .challenge-mission-header
+  .mission-context-copy
+  h2 {
+  font-size: 32px;
+  line-height: 1.25;
+  margin: 0 0 16px;
+}
+.orbit-challenge-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px 56px;
+  align-items: start;
+}
+.lesson-page.deep-orbit-lesson [data-testid="exercise-brief"] {
+  margin-top: 24px;
+}
+.lesson-page.deep-orbit-lesson [data-testid="exercise-brief"] > h3 {
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.lesson-page.deep-orbit-lesson [data-testid="exercise-pane"] {
+  margin: 0;
+  padding: 24px;
+  border-radius: 6px;
+  box-shadow: none;
+}
+.lesson-page.deep-orbit-lesson [data-editor-frame] {
+  border-radius: 4px;
+}
+.lesson-page.deep-orbit-lesson .cm-content {
+  font-size: 17px;
+  line-height: 1.75;
+}
+.lesson-page.deep-orbit-lesson [data-editor-frame] button {
+  min-height: 44px;
+  font-size: 15px;
+}
+.lesson-page.deep-orbit-lesson [data-editor-frame] p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.lesson-page.deep-orbit-lesson [data-testid="bridge-hint"] p,
+.lesson-page.deep-orbit-lesson [data-testid="test-results-panel"] :is(p, li) {
+  font-size: 18px;
+}
+.lesson-page.deep-orbit-lesson [data-testid="exercise-hints"] button {
+  min-height: 44px;
+  font-size: 16px;
+}
+.lesson-page.deep-orbit-lesson [data-testid="exercise-hints"] p {
+  font-size: 20px;
+}
+.lesson-page.deep-orbit-lesson .challenge-brief .challenge-brief-note p,
+.lesson-page.deep-orbit-lesson .challenge-brief .challenge-stop-instruction p,
+.lesson-page.deep-orbit-lesson .challenge-brief .challenge-stop-result p,
+.lesson-page.deep-orbit-lesson .challenge-hint-content p {
+  font-size: 22px;
+  line-height: 1.6;
+}
+.lesson-page.deep-orbit-lesson .challenge-brief .challenge-stop-title {
+  font-size: 20px;
+  line-height: 1.45;
+}
+.lesson-page.deep-orbit-lesson .challenge-brief code.challenge-stop-code {
+  font-size: 17px;
+}
+.lesson-page.deep-orbit-lesson .challenge-stop-key {
+  font-size: 16px;
+}
+.lesson-page.deep-orbit-lesson .lesson-prose details > summary {
+  font-size: 20px;
+  line-height: 1.5;
+}
+/* Takeaways use the same body scale as the concept and briefing. */
+.lesson-page.deep-orbit-lesson .orbit-check-row {
+  gap: 32px 56px;
+}
+.lesson-page.deep-orbit-lesson .orbit-check-prompt {
+  font-size: 22px;
+  line-height: 1.45;
+}
+.lesson-page.deep-orbit-lesson .orbit-recap :is(p, li) {
+  font-size: 22px;
+  line-height: 1.65;
+}
+.lesson-page.deep-orbit-lesson .orbit-recap :is(h2, h3) {
+  font-size: 28px;
+}
+.lesson-page.deep-orbit-lesson .orbit-epilogue-story .lesson-step-content {
+  max-width: 65ch;
+}
+.lesson-page.deep-orbit-lesson .orbit-epilogue-story blockquote {
+  font-size: 22px;
+  padding: 24px;
+  border-radius: 6px;
+}
+@media (width >= 80rem) {
+  .lesson-page.deep-orbit-lesson .lesson-mission-scene {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  }
+  .lesson-page.deep-orbit-lesson .lesson-mission-scene-compact {
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.45fr);
+    align-items: center;
+  }
+  .lesson-page.deep-orbit-lesson
+    .lesson-mission-scene:not(:has(.mission-context-image)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .orbit-challenge-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr);
+  }
+}
+@media (width < 80rem) {
+  .lesson-page.deep-orbit-lesson .lesson-workbench .channel-worked-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (width < 40rem) {
+  .lesson-page.deep-orbit-lesson {
+    --l-gutter: 28px;
+    --l-row: 28px;
+    --l-slot: 32px;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-title-header {
+    margin-bottom: 28px;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-prose h2,
+  .lesson-page.deep-orbit-lesson
+    .challenge-mission-header
+    .mission-context-copy
+    h2 {
+    font-size: 28px;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-prose h3,
+  .lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals > h3 {
+    font-size: 24px;
+  }
+  .lesson-page.deep-orbit-lesson .lesson-instrument,
+  .lesson-page.deep-orbit-lesson [data-testid="exercise-pane"] {
+    padding: 20px;
+  }
+  .lesson-page.deep-orbit-lesson [data-code-block] pre code,
+  .lesson-page.deep-orbit-lesson .iv-readout pre {
+    font-size: 15px;
+  }
+}

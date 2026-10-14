@@ -9,6 +9,13 @@ import { lessons, exercises, modules } from "../.velite";
 // Validate the actual build as well as fixtures. Exact equality detects fields
 // that Zod would silently strip when the public schemas lag behind Velite.
 describe("Public schemas preserve compiled content", () => {
+  it("keeps the STFT code example, including its explanatory block comment", () => {
+    const lesson = lessons.find((item) => item.slug === "spectrograms");
+    expect(lesson?.body).toContain("function stftMagnitudes");
+    expect(lesson?.body).toContain("Short-Time Fourier Transform (STFT)");
+    expect(lesson?.body).toContain("tf.signal.stft");
+  });
+
   it("preserves every lesson's authored metadata", () => {
     expect(lessons.length).toBeGreaterThan(0);
     for (const lesson of lessons) {

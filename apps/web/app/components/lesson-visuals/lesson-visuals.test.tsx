@@ -214,6 +214,10 @@ describe("the complete Deep Orbit visual curriculum", () => {
         });
       } else fireEvent.click(buttons[1] ?? buttons[0]!);
       if (spec.kind === "tensor" && spec.mode === "create") {
+        if (slider)
+          fireEvent.click(
+            screen.getByRole("button", { name: "Create tensor" }),
+          );
         await waitFor(() =>
           expect(screen.getByRole("status")).toHaveTextContent(
             "All 5 readings match",

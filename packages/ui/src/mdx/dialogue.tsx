@@ -5,8 +5,8 @@ import { CharacterAvatar } from "../character-avatar";
 interface DialogueProps {
   speaker: string;
   direction?: string;
-  /** Label for the scene-transition divider; the divider is hidden unless
-   *  the host app's CSS reveals it (see comment on the element below). */
+  /** Optional scene transition. Omit when no new scene follows the dialogue.
+   *  The host app's CSS controls visibility when explicitly provided. */
   cutTo?: string;
   avatarSrc?: string;
   avatarName?: string;
@@ -34,7 +34,7 @@ interface DialogueProps {
 export function Dialogue({
   speaker,
   direction,
-  cutTo = "Briefing",
+  cutTo,
   avatarSrc,
   avatarName,
   isAI,
@@ -119,29 +119,29 @@ export function Dialogue({
           </div>
         </>
       )}
-      {/* Shown only on the last dialogue of a Briefing story zone; the web
-          app's lesson CSS opts it in under [data-story-register]. Hidden by
-          default so other consumers of @tensorcraft/ui never see it. Must
-          stay the root's last direct child. */}
-      <div
-        className="tc-cut-to hidden items-center gap-3 mt-8"
-        aria-hidden="true"
-      >
-        <span
-          className="h-px flex-1"
-          style={{ background: "var(--tc-border, #2a2a2a)" }}
-        />
-        <span
-          className="font-mono text-[9px] uppercase tracking-[3px]"
-          style={{ color: "var(--tc-muted, #777777)" }}
+      {/* An authored scene transition stays the root's last direct child.
+          Lesson briefings use the following section's heading instead. */}
+      {cutTo && (
+        <div
+          className="tc-cut-to hidden items-center gap-3 mt-8"
+          aria-hidden="true"
         >
-          Cut to: {cutTo}
-        </span>
-        <span
-          className="h-px flex-1"
-          style={{ background: "var(--tc-border, #2a2a2a)" }}
-        />
-      </div>
+          <span
+            className="h-px flex-1"
+            style={{ background: "var(--tc-border, #2a2a2a)" }}
+          />
+          <span
+            className="font-mono text-[9px] uppercase tracking-[3px]"
+            style={{ color: "var(--tc-muted, #777777)" }}
+          >
+            Cut to: {cutTo}
+          </span>
+          <span
+            className="h-px flex-1"
+            style={{ background: "var(--tc-border, #2a2a2a)" }}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -82,7 +82,10 @@ export function CodeBlock({
   }
 
   return (
-    <div className="overflow-hidden my-8 bg-surface border border-border">
+    <div
+      data-code-block=""
+      className="overflow-hidden my-8 bg-surface border border-border"
+    >
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 border-b border-border">
         <div className="flex min-w-0 flex-wrap items-center gap-2">

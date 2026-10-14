@@ -67,7 +67,7 @@ export function ExerciseBrief({ slug, onHintRevealed }: ExerciseBriefProps) {
         style={{
           marginTop: 0,
           marginBottom: "0.5rem",
-          fontSize: "1.125rem",
+          fontSize: "var(--lesson-task-title-size, 1.125rem)",
           fontWeight: 600,
           color: "var(--tc-text)",
         }}

@@ -21,13 +21,27 @@ const aria = portraitSources(
   "deadpan",
 );
 
+type TensorResult = Awaited<ReturnType<typeof runTensorExample>>;
+interface TensorRun {
+  packet: number[];
+  packetLabel: string;
+  prediction: string;
+  result: TensorResult;
+}
+const PRACTICE_PACKET = FIRST_PACKET.slice(0, 3);
+
 /** The opening investigation responds only to a completed TensorFlow.js run. */
 export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
-  const [result, setResult] = useState<Awaited<
-    ReturnType<typeof runTensorExample>
-  > | null>(null);
+  const [packetId, setPacketId] = useState("mission");
+  const [packet, setPacket] = useState<number[]>([...FIRST_PACKET]);
+  const [prediction, setPrediction] = useState("");
+  const [completed, setCompleted] = useState<TensorRun | null>(null);
+  const [previous, setPrevious] = useState<TensorRun | null>(null);
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
+  const result = completed?.result ?? null;
+  const packetLabel =
+    packetId === "mission" ? "Mission packet" : "Practice packet";
   const resultId = useId();
   const response = useRef<HTMLDivElement>(null);
   const runButton = useRef<HTMLButtonElement>(null);
@@ -35,11 +49,33 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
   const readingsPreserved =
     result !== null &&
     result.shape.length === 1 &&
-    result.shape[0] === FIRST_PACKET.length &&
-    result.values.length === FIRST_PACKET.length &&
+    result.shape[0] === completed!.packet.length &&
+    result.values.length === completed!.packet.length &&
     result.values.every(
-      (value, index) => Math.abs(value - FIRST_PACKET[index]!) < 1e-6,
+      (value, index) => Math.abs(value - completed!.packet[index]!) < 1e-6,
     );
+  const shapePredictionMatches =
+    readingsPreserved &&
+    Boolean(completed?.prediction.trim()) &&
+    Number(completed!.prediction) === result?.shape[0];
+
+  function changePacket(nextId: string, nextValues: number[]) {
+    if (pending) return;
+    if (completed) setPrevious(completed);
+    setPacketId(nextId);
+    setPacket(nextValues);
+    setCompleted(null);
+    setFailed(false);
+  }
+
+  function resetExample() {
+    setPacketId("mission");
+    setPacket([...FIRST_PACKET]);
+    setPrediction("");
+    setCompleted(null);
+    setPrevious(null);
+    setFailed(false);
+  }
 
   useEffect(() => {
     // Show the created tensor, but do not pull the reader back if
@@ -57,13 +93,21 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
   async function createTensor() {
     if (pending) return;
     if (result) {
-      setResult(null);
+      resetExample();
       return;
     }
     setPending(true);
     setFailed(false);
+    const capturedPacket = [...packet];
+    const capturedPrediction = prediction;
     try {
-      setResult(await runTensorExample(FIRST_PACKET));
+      const nextResult = await runTensorExample(capturedPacket);
+      setCompleted({
+        packet: capturedPacket,
+        packetLabel,
+        prediction: capturedPrediction,
+        result: nextResult,
+      });
     } catch {
       setFailed(true);
     } finally {
@@ -112,13 +156,80 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
       </section>
 
       <div className="tensor-investigation-workspace">
+        <fieldset className="tensor-investigation-practice" disabled={pending}>
+          <legend>Try the readings yourself</legend>
+          <div className="tensor-investigation-practice-control">
+            <label htmlFor={`${resultId}-packet`}>Choose a packet</label>
+            <select
+              id={`${resultId}-packet`}
+              value={packetId}
+              onChange={(event) => {
+                const nextId = event.target.value;
+                changePacket(nextId, [
+                  ...(nextId === "mission" ? FIRST_PACKET : PRACTICE_PACKET),
+                ]);
+                setPrediction("");
+              }}
+            >
+              <option value="mission">Mission packet: five readings</option>
+              <option value="practice">Practice packet: three readings</option>
+            </select>
+          </div>
+          <div className="tensor-investigation-practice-control">
+            <div className="tensor-investigation-practice-heading">
+              <label htmlFor={`${resultId}-reading`}>First reading</label>
+              <span>{fmt(packet[0]!)}</span>
+            </div>
+            <input
+              id={`${resultId}-reading`}
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={packet[0]}
+              onChange={(event) =>
+                changePacket(packetId, [
+                  Number(event.target.value),
+                  ...packet.slice(1),
+                ])
+              }
+            />
+          </div>
+          <div className="tensor-investigation-practice-control">
+            <label htmlFor={`${resultId}-prediction`}>
+              How many values will the tensor contain?
+            </label>
+            <input
+              id={`${resultId}-prediction`}
+              type="number"
+              min={0}
+              step={1}
+              value={prediction}
+              onChange={(event) => setPrediction(event.target.value)}
+              aria-describedby={`${resultId}-prediction-help`}
+            />
+            <p id={`${resultId}-prediction-help`}>
+              Make a prediction, then create the tensor to check. You can leave
+              this blank.
+            </p>
+          </div>
+          <p className="tensor-investigation-practice-note">
+            {packetId === "mission"
+              ? "Start with the mission's five readings. Change the first value, or try the three-reading practice packet."
+              : "This practice packet starts with three of the mission readings. It lets you compare a shorter list with the five-reading packet."}
+          </p>
+        </fieldset>
         <div className="tensor-investigation-console">
           <figure className="iv-reading-chart tensor-investigation-packet">
             <figcaption>
               <strong>
                 <span className="tensor-stage-number">1</span> JavaScript array
               </strong>
-              <span>Sector 7-G: the first packet</span>
+              <span>
+                {packetId === "mission"
+                  ? "Sector 7-G: the first packet"
+                  : "Practice packet: three readings"}
+              </span>
             </figcaption>
             <svg viewBox="0 0 400 130" aria-hidden="true">
               <text x="0" y="18">
@@ -128,10 +239,10 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                 0
               </text>
               <line x1="0" x2="400" y1="120" y2="120" className="iv-gridline" />
-              {FIRST_PACKET.map((value, index) => (
+              {packet.map((value, index) => (
                 <rect
                   key={index}
-                  x={20 + index * 80}
+                  x={(400 / packet.length) * (index + 0.5) - 20}
                   y={120 - value * 104}
                   width="40"
                   height={value * 104}
@@ -142,18 +253,25 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
             </svg>
             <div
               className="iv-cells iv-cells-muted"
-              style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
+              style={{
+                gridTemplateColumns: `repeat(${packet.length}, minmax(0, 1fr))`,
+              }}
               role="list"
-              aria-label="Five sensor readings in a JavaScript array"
+              aria-label={
+                packetId === "mission"
+                  ? "Five sensor readings in a JavaScript array"
+                  : "Three practice readings in a JavaScript array"
+              }
             >
-              {FIRST_PACKET.map((value, index) => (
+              {packet.map((value, index) => (
                 <span key={index} role="listitem">
                   {fmt(value)}
                 </span>
               ))}
             </div>
             <p className="tensor-packet-note">
-              <code>streamValues</code> holds these five readings.
+              <code>streamValues</code> holds these{" "}
+              {packet.length === 5 ? "five" : "three"} readings.
             </p>
           </figure>
 
@@ -239,6 +357,18 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                   <code>shape [{result.shape.join(", ")}]</code>
                   <span>{result.values.length} numbers in one list.</span>
                 </div>
+                {completed?.prediction.trim() && (
+                  <p
+                    className="tensor-investigation-prediction-feedback"
+                    data-correct={shapePredictionMatches ? "true" : "false"}
+                  >
+                    {!readingsPreserved
+                      ? "The readback did not match the input, so this run cannot confirm your prediction. Reset the example and try again."
+                      : shapePredictionMatches
+                        ? `Your prediction matches. The tensor has ${result.shape[0]} values and shape [${result.shape[0]}].`
+                        : `You predicted ${completed.prediction} values. The tensor returned ${result.shape[0]} values, so its shape is [${result.shape[0]}]. Try the other packet and predict again.`}
+                  </p>
+                )}
               </div>
               <div className="tensor-investigation-interpretation">
                 <div className="tensor-investigation-speaker">
@@ -253,7 +383,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                     : "The tensor does not match the original readings. Reset the example and try again."}
                 </blockquote>
               </div>
-              {readingsPreserved && (
+              {readingsPreserved && packetId === "mission" && (
                 <div className="tensor-investigation-consequence">
                   <p>
                     <ProseText>
@@ -262,6 +392,27 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                     </ProseText>
                   </p>
                 </div>
+              )}
+              {previous && (
+                <details className="tensor-investigation-comparison">
+                  <summary>Compare with the previous packet</summary>
+                  <div className="tensor-investigation-comparison-runs">
+                    <div>
+                      <h4>Previous: {previous.packetLabel}</h4>
+                      <p>Input: [{previous.packet.map(fmt).join(", ")}]</p>
+                      <p>
+                        Returned: [{previous.result.values.map(fmt).join(", ")}]
+                      </p>
+                      <p>Shape: [{previous.result.shape.join(", ")}]</p>
+                    </div>
+                    <div>
+                      <h4>Current: {completed!.packetLabel}</h4>
+                      <p>Input: [{completed!.packet.map(fmt).join(", ")}]</p>
+                      <p>Returned: [{result.values.map(fmt).join(", ")}]</p>
+                      <p>Shape: [{result.shape.join(", ")}]</p>
+                    </div>
+                  </div>
+                </details>
               )}
             </div>
           ) : failed ? (

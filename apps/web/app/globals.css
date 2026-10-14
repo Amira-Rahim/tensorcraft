@@ -3,6 +3,9 @@
 @import "./components/mdx/deep-orbit-takeaways.css";
 @import "./worlds/[slug]/[module]/[lesson]/lesson-complete-banner.css";
 @import "./worlds/[slug]/[module]/[lesson]/lesson-epilogue.css";
+@import "./worlds/[slug]/[module]/[lesson]/lesson-briefing.css";
+@import "./worlds/[slug]/[module]/[lesson]/deep-orbit-lessons.css";
+@import "./components/lesson-visuals/lesson-investigation.css";
 /* Tailwind only auto-scans the app's own source tree; shared UI components
    in packages/ui use utility classes too (incl. arbitrary values like
    max-w-[440px]) and must be scanned explicitly or their utilities are
@@ -979,6 +982,9 @@ body {
    frame of the scene; hold it back exactly as the teaching body is held
    back, and let it appear once the scene is done. */
 [data-script-state="playing"] [data-post-scene] {
+  display: none;
+}
+[data-script-state="playing"] [data-scene-notes] {
   display: none;
 }
 

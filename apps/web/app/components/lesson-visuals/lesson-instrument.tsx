@@ -169,8 +169,10 @@ function Plot({
     high = max ?? Math.max(...all);
   const spread = high - low || 1;
   const x = (i: number, count: number) =>
-    44 + (i / Math.max(1, count - 1)) * 410;
-  const y = (v: number) => 178 - ((v - low) / spread) * 142;
+    Number((44 + (i / Math.max(1, count - 1)) * 410).toFixed(3));
+  // Stable SVG attributes across the server and browser math engines.
+  const y = (v: number) =>
+    Number((178 - ((v - low) / spread) * 142).toFixed(3));
   return (
     <figure className="iv-plot">
       <div className="iv-legend">
@@ -278,7 +280,7 @@ function Bars({
           <div>
             <i
               style={{
-                width: `${(Math.abs(v) / max) * 100}%`,
+                width: `${Number(((Math.abs(v) / max) * 100).toFixed(3))}%`,
                 background: sage,
               }}
             />
@@ -985,7 +987,9 @@ function SignalInstrument({ mode }: { mode: string }) {
                   key={`${row}-${col}`}
                   data-window={window === col || undefined}
                   style={{
-                    opacity: 0.13 + Math.min(1, frame[32 - row]!) * 0.87,
+                    opacity: Number(
+                      (0.13 + Math.min(1, frame[32 - row]!) * 0.87).toFixed(3),
+                    ),
                   }}
                 />
               )),
@@ -1020,9 +1024,9 @@ function SignalInstrument({ mode }: { mode: string }) {
             <rect
               key={i}
               x={40 + i * 12.5}
-              y={128 - Math.min(1.4, m) * 74}
+              y={Number((128 - Math.min(1.4, m) * 74).toFixed(3))}
               width="8"
-              height={Math.min(1.4, m) * 74}
+              height={Number((Math.min(1.4, m) * 74).toFixed(3))}
               fill={sage}
             />
           ))}

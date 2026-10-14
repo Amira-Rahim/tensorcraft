@@ -23,7 +23,6 @@ export function LessonEpilogue({
       <LessonCompleteBanner outcome={outcome} lessonTerm="Mission" />
       {award}
       <div className="orbit-epilogue-scene">
-        <div className="orbit-epilogue-story lesson-prose">{children}</div>
         {scene && (
           <aside className="orbit-epilogue-art" aria-label="Closing scene">
             <ScenePortrait
@@ -35,6 +34,7 @@ export function LessonEpilogue({
             <p>{scene.location}</p>
           </aside>
         )}
+        <div className="orbit-epilogue-story lesson-prose">{children}</div>
       </div>
       {guestCapture && (
         <div className="orbit-epilogue-guest">{guestCapture}</div>

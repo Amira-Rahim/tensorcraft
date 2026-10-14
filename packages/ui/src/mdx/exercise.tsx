@@ -997,6 +997,7 @@ export function Exercise({
 
   return (
     <div
+      data-testid="exercise-pane"
       data-exercise-workspace={workspace || undefined}
       className={`[&_.cm-lineNumbers]:text-xs! p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
         allPassed ? "border-success/30" : "border-border"
@@ -1108,6 +1109,9 @@ export function Exercise({
               files={sandpackFiles}
             >
               <SandpackCodeEditor
+                // Wrapped starters can be taller than the observer threshold.
+                // Initialize directly so the mobile coding view is editable.
+                initMode="immediate"
                 extensions={taskStops?.extensions ?? EXERCISE_EDITOR_EXTENSIONS}
                 showLineNumbers
                 showTabs={false}

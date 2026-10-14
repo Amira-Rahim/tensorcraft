@@ -1,4 +1,4 @@
-/* The opening mission closes in the lesson's existing Inter / sage palette. */
+/* Every Deep Orbit mission closes in the same reading frame. */
 .orbit-epilogue,
 .orbit-epilogue-nav {
   width: 100%;
@@ -8,15 +8,16 @@
 }
 .orbit-epilogue-scene {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  gap: 56px;
   align-items: start;
 }
 .orbit-epilogue-story,
 .orbit-epilogue-art {
   min-width: 0;
 }
-.orbit-epilogue-story .lesson-epilogue > p {
+.orbit-epilogue-story .lesson-epilogue > p,
+.orbit-epilogue-story .lesson-step-content > p {
   margin: 0 0 24px;
   font-size: 22px;
   line-height: 1.6;
@@ -42,7 +43,7 @@
 }
 .orbit-epilogue-story [data-dialogue] p {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.65;
 }
 .orbit-epilogue .orbit-epilogue-story code {
@@ -67,7 +68,7 @@
   display: none;
 }
 .orbit-epilogue-scene:not(:has(figure)) {
-  grid-template-columns: minmax(0, 65ch);
+  grid-template-columns: minmax(0, 1fr);
 }
 .orbit-epilogue-guest [data-testid="guest-email-capture"] {
   margin: 32px 0 0;
@@ -99,16 +100,13 @@
   font-size: 18px;
   line-height: 1.5;
 }
-@media (max-width: 1000px) {
+@media (max-width: 1279px) {
   .orbit-epilogue-scene {
     grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
   .orbit-epilogue-story {
     max-width: 65ch;
-  }
-  .orbit-epilogue-art {
-    max-width: 800px;
   }
 }
 @media (max-width: 650px) {

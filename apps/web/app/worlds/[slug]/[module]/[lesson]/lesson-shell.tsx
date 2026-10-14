@@ -10,6 +10,7 @@ interface LessonShellProps {
   focusRef?: React.Ref<HTMLDivElement>;
   label?: string;
   paneOpenOnMobile?: boolean;
+  orbit?: boolean;
 }
 
 /* The grid's classes per kind, each string whole: Tailwind emits a rule only
@@ -49,6 +50,7 @@ export function LessonShell({
   focusRef,
   label,
   paneOpenOnMobile = false,
+  orbit = false,
 }: LessonShellProps) {
   const single = rightKind === "none";
   const pane = rightKind === "pane";
@@ -68,12 +70,16 @@ export function LessonShell({
         <div
           data-testid="lesson-grid"
           className={
-            workspace ? "challenge-workspace-grid" : GRID_CLASS[rightKind]
+            workspace
+              ? "challenge-workspace-grid"
+              : orbit && pane
+                ? "orbit-challenge-grid"
+                : GRID_CLASS[rightKind]
           }
         >
           {left != null && (
             <div
-              className={`min-w-0 ${!workspace && pane && paneOpenOnMobile ? "hidden lg:block" : ""}`}
+              className={`min-w-0 ${!workspace && pane && paneOpenOnMobile ? (orbit ? "hidden xl:block" : "hidden lg:block") : ""}`}
             >
               {left}
             </div>
@@ -82,7 +88,7 @@ export function LessonShell({
             <div
               data-testid="lesson-right"
               data-kind={rightKind}
-              className={`min-w-0 ${!workspace && pane ? `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block` : ""}`}
+              className={`min-w-0 ${!workspace && pane ? (orbit ? `${paneOpenOnMobile ? "block" : "hidden"} xl:block` : `lg:border-l lg:pl-5 lg:-ml-5 border-border ${paneOpenOnMobile ? "block" : "hidden"} lg:block`) : ""}`}
             >
               {right}
             </div>

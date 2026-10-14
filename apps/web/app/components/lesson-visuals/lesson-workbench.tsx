@@ -8,6 +8,8 @@ import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import { LessonInstrument } from "./lesson-instrument";
 import { LESSON_HANDOFFS } from "./lesson-handoffs";
 import { ChannelLayoutExperiment } from "../mdx/channel-layout-experiment";
+import { LessonInvestigation } from "./lesson-investigation";
+import { LESSON_INVESTIGATIONS } from "./lesson-investigations";
 
 interface SceneLesson {
   slug: string;
@@ -20,6 +22,7 @@ interface Props {
   moduleSlug: string;
   compact?: boolean;
   heading?: string;
+  learningGoals?: ReactNode;
 }
 export function LessonMissionScene({
   lesson,
@@ -27,6 +30,7 @@ export function LessonMissionScene({
   moduleSlug,
   compact = false,
   heading,
+  learningGoals,
 }: Props) {
   const character = resolveCharacter(worldSlug, lesson.context.speaker);
   const portrait = portraitSources(worldSlug, character);
@@ -38,7 +42,9 @@ export function LessonMissionScene({
       <ScenePortrait
         src={`/scenes/${worldSlug}/${moduleSlug}/${lesson.slug}.webp`}
         alt={lesson.scene?.portraitAlt}
-        aspectRatio={compact ? "16 / 7" : "4 / 3"}
+        aspectRatio={
+          worldSlug === "deep-orbit" ? "3 / 2" : compact ? "16 / 7" : "4 / 3"
+        }
         className="mission-context-image"
       />
       <div className="mission-context-copy">
@@ -67,6 +73,7 @@ export function LessonMissionScene({
               : lesson.context.narrative}
           </ProseText>
         </p>
+        {learningGoals}
       </div>
     </aside>
   );
@@ -79,10 +86,11 @@ export function LessonConceptWorkbench({
 }: Props & { learningGoals?: ReactNode }) {
   if (worldSlug !== "deep-orbit") return null;
   const spec = DEEP_ORBIT_VISUALS[lesson.slug];
+  const investigation = LESSON_INVESTIGATIONS[lesson.slug];
   if (!spec) return null;
   return (
     <section
-      className={`lesson-workbench${lesson.slug === "tensor-shapes" ? " lesson-workbench-expanded" : ""}`}
+      className="lesson-workbench lesson-workbench-expanded"
       aria-labelledby={`visual-${lesson.slug}`}
       data-testid="lesson-workbench"
     >
@@ -94,15 +102,18 @@ export function LessonConceptWorkbench({
           <ProseText>{spec.introduction}</ProseText>
         </p>
       )}
-      {learningGoals}
       {spec.kind === "tensor" && spec.mode === "create" ? (
-        <LessonInstrument key={lesson.slug} spec={spec} />
+        <>
+          {learningGoals}
+          <LessonInstrument key={lesson.slug} spec={spec} />
+        </>
       ) : (
         <div className="lesson-workbench-grid">
           <LessonMissionScene
             lesson={lesson}
             worldSlug={worldSlug}
             moduleSlug={moduleSlug}
+            learningGoals={learningGoals}
           />
           {lesson.slug === "tensor-shapes" ? (
             <div
@@ -112,7 +123,19 @@ export function LessonConceptWorkbench({
               <ChannelLayoutExperiment />
             </div>
           ) : (
-            <LessonInstrument key={lesson.slug} spec={spec} />
+            <div className="orbit-investigation-workspace">
+              {investigation && (
+                <LessonInvestigation
+                  key={lesson.slug}
+                  lessonSlug={lesson.slug}
+                  spec={investigation}
+                />
+              )}
+              <details className="orbit-investigation-reference">
+                <summary>Inspect the reference example</summary>
+                <LessonInstrument key={lesson.slug} spec={spec} />
+              </details>
+            </div>
           )}
         </div>
       )}

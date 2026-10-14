@@ -1,0 +1,186 @@
+/* Tensor Shapes: the scene, its meaning, then the learner's task. */
+.lesson-briefing-spacious [data-testid="scene-context"] {
+  margin-bottom: 32px;
+  font-size: 22px;
+  line-height: 1.6;
+}
+.lesson-briefing-spacious .lesson-story-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px 56px;
+  align-items: start;
+}
+.briefing-reading-column {
+  min-width: 0;
+}
+.briefing-story-intro {
+  margin-bottom: 36px;
+}
+.briefing-story-intro > .lesson-step-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px 56px;
+}
+.lesson-briefing-spacious
+  .briefing-story-intro
+  .lesson-prose
+  > blockquote:not([style]),
+.lesson-briefing-spacious .briefing-story-intro [data-dialogue] {
+  margin: 0;
+}
+.lesson-briefing-spacious .lesson-prose > blockquote:not([style]) {
+  margin: 0 0 32px;
+  padding: 0;
+  background: transparent;
+  color: var(--tc-text);
+}
+.lesson-briefing-spacious .lesson-prose > blockquote p {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.6;
+}
+.lesson-briefing-spacious .lesson-prose > blockquote p:first-child {
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--tc-primary);
+}
+.lesson-briefing-spacious [data-dialogue-row] {
+  column-gap: 16px;
+}
+.lesson-briefing-spacious
+  [data-dialogue-row]
+  > div:last-child
+  > div:first-child {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.lesson-briefing-spacious .lesson-prose [data-dialogue] p {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.6;
+}
+.lesson-briefing-spacious [data-post-scene] {
+  margin-top: 40px;
+}
+.lesson-briefing-spacious .briefing-integrated-idea {
+  display: grid;
+  gap: 32px;
+  margin-top: 0;
+}
+.lesson-briefing-spacious .briefing-takeaway {
+  display: block;
+  padding: 28px;
+  border: 1px solid var(--tc-border);
+  border-radius: 6px;
+  background: var(--tc-surface);
+}
+.lesson-briefing-spacious .lesson-prose .briefing-takeaway :is(h2, h3) {
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.lesson-briefing-spacious .lesson-prose .briefing-takeaway p {
+  max-width: 65ch;
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.6;
+  color: var(--tc-text);
+}
+.lesson-briefing-spacious
+  .lesson-prose
+  .briefing-takeaway-definition
+  > p:first-child {
+  max-width: 32ch;
+  font-size: 28px;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+.briefing-shape-examples {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+.briefing-shape-example {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 14px;
+  margin: 0;
+  min-width: 0;
+}
+.briefing-shape-example figcaption {
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--tc-text);
+}
+.briefing-shape-cells {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+.briefing-shape-cells > span {
+  width: 26px;
+  height: 26px;
+  border: 1px solid color-mix(in srgb, var(--tc-primary) 65%, var(--tc-border));
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--tc-primary) 22%, var(--tc-surface));
+}
+.lesson-briefing-spacious .briefing-shape-example > code {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+}
+.lesson-briefing-spacious .briefing-takeaway[data-part="task"] {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.lesson-briefing-spacious .briefing-takeaway-task {
+  display: grid;
+  gap: 12px 56px;
+}
+.lesson-briefing-spacious .lesson-prose .briefing-takeaway-task > h3 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.3;
+  color: var(--tc-text);
+}
+@media (width >= 74rem) {
+  .lesson-briefing-spacious .lesson-story-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  }
+  .lesson-briefing-spacious
+    .lesson-story-grid:not(:has(> .lesson-story-plate > figure)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lesson-briefing-spacious .briefing-takeaway-task {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .briefing-story-intro > .lesson-step-content {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  }
+}
+@media (width < 40rem) {
+  .lesson-briefing-spacious .lesson-story-grid {
+    row-gap: 28px;
+  }
+  .lesson-briefing-spacious .briefing-takeaway {
+    padding: 20px;
+  }
+  .briefing-shape-examples {
+    gap: 16px;
+  }
+  .briefing-shape-cells {
+    gap: 4px;
+  }
+}
+@media (width < 23rem) {
+  .briefing-shape-examples {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
