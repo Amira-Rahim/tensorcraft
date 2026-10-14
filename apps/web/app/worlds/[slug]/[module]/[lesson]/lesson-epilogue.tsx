@@ -31,7 +31,6 @@ export function LessonEpilogue({
               aspectRatio="3 / 2"
               className="orbit-epilogue-portrait"
             />
-            <p>{scene.location}</p>
           </aside>
         )}
         <div className="orbit-epilogue-story lesson-prose">{children}</div>

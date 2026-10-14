@@ -40,7 +40,7 @@
 .lesson-page.deep-orbit-lesson
   [data-dialogue][data-layout="speech"]
   [data-dialogue-direction] {
-  max-width: 75ch;
+  max-width: none;
   margin-bottom: 12px;
   color: var(--tc-muted);
   font: italic 20px/1.6 var(--font-sans);
@@ -48,7 +48,7 @@
 .lesson-page.deep-orbit-lesson
   [data-dialogue][data-layout="speech"]
   [data-dialogue-text] {
-  max-width: 75ch;
+  max-width: none;
   font: 400 24px/1.65 var(--font-sans);
   overflow-wrap: anywhere;
 }

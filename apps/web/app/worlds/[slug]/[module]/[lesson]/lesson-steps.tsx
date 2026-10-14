@@ -1053,10 +1053,36 @@ function LessonStepsInner({
         <button
           type="button"
           onClick={goBack}
-          className="text-sm font-mono px-6 py-3 transition-colors"
-          style={{ color: "var(--tc-muted)" }}
+          className={
+            worldSlug === "deep-orbit"
+              ? "lesson-step-back"
+              : "text-sm font-mono px-6 py-3 transition-colors"
+          }
+          style={
+            worldSlug === "deep-orbit"
+              ? undefined
+              : { color: "var(--tc-muted)" }
+          }
         >
-          &larr; Back
+          {worldSlug === "deep-orbit" ? (
+            <>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M19 12H5m6-6-6 6 6 6" />
+              </svg>
+              <span>Back</span>
+            </>
+          ) : (
+            <>&larr; Back</>
+          )}
         </button>
       ) : exercises.length > 0 && maxStepReached < PHASE.challenge ? (
         // First-visit fast path to the editor; hidden once the Challenge

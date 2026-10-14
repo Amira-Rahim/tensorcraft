@@ -109,7 +109,7 @@ function SelfAssessmentCard({
       ) : (
         <>
           {attempt.trim() && (
-            <div className="mb-3 max-w-[75ch] text-sm text-text-primary">
+            <div className="review-prompt-attempt mb-3 max-w-[75ch] text-sm text-text-primary">
               <strong>Your answer</strong>
               <div className="whitespace-pre-wrap break-words">{attempt}</div>
             </div>

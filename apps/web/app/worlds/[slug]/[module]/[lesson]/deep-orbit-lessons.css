@@ -83,8 +83,26 @@
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.lesson-page.deep-orbit-lesson .lesson-prose :is(p, ul, ol) {
-  max-width: 75ch;
+.lesson-page.deep-orbit-lesson :is(p, ul, ol),
+.lesson-page.deep-orbit-lesson
+  :is(.lesson-prose, .lesson-workbench)
+  :is(p, ul, ol) {
+  max-width: none;
+}
+.lesson-page.deep-orbit-lesson
+  :is(
+    .lesson-prose,
+    [data-testid="course-orientation"],
+    [data-testid="scene-context"],
+    .orbit-term-detail,
+    .review-prompt-attempt,
+    .recall-check-summary
+  ),
+.lesson-page.deep-orbit-lesson .lesson-story-grid > .lesson-step-content {
+  max-width: none;
+}
+.lesson-page.deep-orbit-lesson .review-prompt-answer {
+  padding-inline-end: 16px;
 }
 .lesson-page.deep-orbit-lesson .lesson-step-content[data-layout="reading"] {
   max-width: none;
@@ -129,7 +147,7 @@
   font-size: 22px;
   font-style: normal;
   color: var(--tc-text);
-  max-width: 75ch;
+  max-width: none;
 }
 .lesson-page.deep-orbit-lesson .briefing-takeaway-definition > p + p {
   margin-top: 20px;
@@ -201,7 +219,7 @@
 .lesson-page.deep-orbit-lesson .lesson-workbench-introduction {
   font-size: 22px;
   line-height: 1.65;
-  max-width: 65ch;
+  max-width: none;
 }
 .lesson-page.deep-orbit-lesson .lesson-workbench .lesson-goals {
   display: block;
@@ -236,7 +254,7 @@
 .lesson-page.deep-orbit-lesson .lesson-embedded-experiment > section > p {
   font-size: 22px;
   line-height: 1.65;
-  max-width: 75ch;
+  max-width: none;
 }
 .lesson-page.deep-orbit-lesson
   .lesson-instrument
@@ -249,7 +267,7 @@
 }
 .lesson-page.deep-orbit-lesson .iv-provenance {
   font-size: 14px;
-  max-width: 75ch;
+  max-width: none;
 }
 .lesson-page.deep-orbit-lesson .iv-plot {
   width: 100%;
@@ -361,6 +379,13 @@
   font-size: 28px;
 }
 .lesson-page.deep-orbit-lesson .orbit-epilogue-story .lesson-step-content {
+  max-width: none;
+}
+.lesson-page.deep-orbit-lesson
+  .orbit-epilogue-story
+  :is(.lesson-epilogue, .lesson-step-content)
+  > p {
+  width: 100%;
   max-width: none;
 }
 .lesson-page.deep-orbit-lesson .orbit-epilogue-story blockquote {

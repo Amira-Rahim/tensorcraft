@@ -128,7 +128,6 @@ export function renderPurchaseReceipt(
   <style>
     a:focus-visible { outline: 3px solid #b5d5c5; outline-offset: 4px; }
     @media only screen and (max-width: 480px) {
-      .receipt-shell { padding: 16px 0 !important; }
       .receipt-padding { padding-left: 24px !important; padding-right: 24px !important; }
       .receipt-title { font-size: 32px !important; }
     }
@@ -138,7 +137,7 @@ export function renderPurchaseReceipt(
   <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; color: transparent; mso-hide: all;">${preheader}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; background-color: #181818;">
     <tr>
-      <td class="receipt-shell" align="center" style="padding: 40px 16px;">
+      <td align="center" style="padding: 16px 0;">
         <!--[if mso]><table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 640px; background-color: #222222;">
           <tr>

@@ -292,7 +292,7 @@ export function CheckedRecallCard({
         tabIndex={-1}
         className={
           summary
-            ? "mt-5 text-sm font-medium text-text-primary max-w-[75ch]"
+            ? "recall-check-summary mt-5 text-sm font-medium text-text-primary max-w-[75ch]"
             : "sr-only"
         }
       >

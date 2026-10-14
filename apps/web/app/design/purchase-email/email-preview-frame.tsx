@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function EmailPreviewFrame({
   html,
@@ -11,11 +11,33 @@ export function EmailPreviewFrame({
 }) {
   const frame = useRef<HTMLIFrameElement>(null);
   const observer = useRef<ResizeObserver | null>(null);
-  const [height, setHeight] = useState(1200);
-  useEffect(() => () => observer.current?.disconnect(), []);
+  const [height, setHeight] = useState(1);
+  const syncFrame = useCallback(() => {
+    const doc = frame.current?.contentDocument;
+    if (!doc?.body?.childElementCount) return;
+    observer.current?.disconnect();
+    const resize = () => {
+      const bodyStyle = doc.defaultView?.getComputedStyle(doc.body);
+      const marginTop = parseFloat(bodyStyle?.marginTop ?? "0") || 0;
+      const marginBottom = parseFloat(bodyStyle?.marginBottom ?? "0") || 0;
+      const nextHeight = Math.ceil(
+        doc.body.getBoundingClientRect().height + marginTop + marginBottom,
+      );
+      setHeight((current) => (current === nextHeight ? current : nextHeight));
+    };
+    resize();
+    observer.current = new ResizeObserver(resize);
+    observer.current.observe(doc.body);
+  }, []);
+
+  useEffect(() => {
+    // A server-rendered srcDoc can finish loading before hydration attaches onLoad.
+    syncFrame();
+    return () => observer.current?.disconnect();
+  }, [html, syncFrame]);
 
   return (
-    <div className="lesson-frame flex justify-center pb-8">
+    <div className="lesson-frame pb-8">
       <iframe
         ref={frame}
         title={`Purchase receipt email at ${width}px`}
@@ -24,24 +46,12 @@ export function EmailPreviewFrame({
         style={{
           width,
           height,
-          maxWidth: "100%",
+          maxWidth: "calc(100% - 2px)",
           boxSizing: "content-box",
           border: "1px solid var(--tc-border)",
+          display: "block",
         }}
-        onLoad={() => {
-          observer.current?.disconnect();
-          const doc = frame.current?.contentDocument;
-          if (!doc) return;
-          const resize = () => {
-            const nextHeight = Math.max(600, doc.documentElement.scrollHeight);
-            setHeight((current) =>
-              current === nextHeight ? current : nextHeight,
-            );
-          };
-          resize();
-          observer.current = new ResizeObserver(resize);
-          observer.current.observe(doc.body);
-        }}
+        onLoad={syncFrame}
       />
     </div>
   );
