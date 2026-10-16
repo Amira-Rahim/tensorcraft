@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "First integration of the trained model into the dashboard, first line of red. The 404 is the lesson: a model does not ship as one file."
+  narrative: "Demir tries to load the trained model into the dashboard and gets a 404 error. This model needs a JSON file and the weight files it points to."
   speaker: "Ensign Demir"
 concept:
   explanation: "Loading a pre-trained model in TF.js follows the fetch → parse → use pattern you already know from API data fetching."
@@ -23,12 +23,12 @@ concept:
     tier: structural
     breaks: "fetch resolves to a Response; calling json() parses its body. loadLayersModel resolves to a model with topology and weights, potentially fetched from several shards. Dispose the model when finished to release its backend resources."
 consequence:
-  narrative: "The manifest loads, the shards follow, and Demir caches the model in IndexedDB. Then a notebook and the dashboard disagree about one reading, and caching stops being a performance feature."
+  narrative: "Demir loads the model and saves a copy in IndexedDB. Later, the notebook and dashboard give different scores for the same reading. He needs to check which model version each one loaded."
 hints:
   - level: nudge
-    content: "Loading is one awaited call, and everything loadAndInspect must report is already hanging off the returned model object; no second fetch needed."
+    content: "Await one model-loading call. Read all the requested details from the model it returns."
   - level: guidance
-    content: "The loader resolves to a LayersModel rather than parsed JSON, and it already knows its own architecture: the input spec, the output spec and the layer list are all properties on it, so there is nothing to fetch twice and nothing to write down by hand. Two things to watch. A shape carries the batch dimension in its first entry and that entry arrives as null, and the tests compare against the real model, so pass the shape along as the model gives it. And one inspection is one load: every field comes off the same resolved model."
+    content: "The loader returns a LayersModel with input shapes, output shapes and a list of layers. Copy the shapes exactly, including the null first entry for a variable batch size. Read every field from that same model, then dispose it. Loading again for each field repeats work."
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -62,7 +62,7 @@ skillAxes: [deployment, js_integration]
 
 `Error: Request to /models/deep-scan.json failed with status code 404. Please verify this URL points to the model JSON of the model to load.`
 
-First integration of the trained model into the dashboard, and the console's first word is red. Demir used the wrong manifest URL. This TFJS export ships a JSON manifest and weight shards; other formats can package a model differently. What a model actually ships as, and why the loader wants the URL of a *manifest*, is the whole repair.
+Demir tries to load the trained model into the dashboard and gets the error above. He used the wrong URL. This TensorFlow.js export has a JSON manifest, which describes the model, plus binary files containing its weights. He needs to point the loader at the manifest. Other model formats may package these files differently.
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
 So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.
@@ -154,7 +154,9 @@ A model trained in Python arrives by a different route. `tensorflowjs_converter`
 
 ## Caching with IndexedDB
 
-Large models can cost megabytes per download, which makes caching useful. A URL load requests the manifest and weight shards. HTTP or service-worker caching may satisfy those requests without another full download; IndexedDB gives this application an explicit local model copy. DEEP SCAN's float32 weight shard is 2,692 bytes, excluding its manifest and runtime, so bandwidth is not what caching saves here. What caching saves here is the network itself. Lesson 1 put the dashboard on a console whose link to the compute bay can go down, and a fetch classifies nothing while it is down; a copy in IndexedDB can keep classifying if the page, runtime and other required assets are also available offline. The bill for that arrives at the end of this lesson, when a cached copy and a retrained one disagree about a reading.
+A URL load requests the manifest and weight files. HTTP or service-worker caching may serve those files without another full download. IndexedDB gives the app a model copy it can load explicitly.
+
+DEEP SCAN’s float32 weights take only 2,692 bytes, excluding the manifest and runtime. The main benefit here is working when the compute-bay link fails. The IndexedDB copy can keep predictions running if the page, runtime and all other required files are also available offline. It also needs a versioning plan: later in this lesson, the cached model and retrained model disagree about a reading.
 
 <CodeBlock language="typescript" title="model-caching.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -197,7 +199,9 @@ console.log(savedModels);
 // await tf.io.removeModel('indexeddb://deep-scan-v1');`}
 </CodeBlock>
 
-Check cache first, fall back to network, then try to store for next time. A failed download still prevents loading. A failed cache write does not: the model is already usable in memory. Storage may be cleared or evicted, so test both cache hits and misses. When you ship new weights, bump the version in the key, or users keep loading the old weights out of IndexedDB. Removing the old entry is a second job with its own reason: nothing reads that entry once the key has moved, and its bytes stay in the user's storage until you clear them.
+Try the cache first. If it is missing, download the model and try to save a copy. A failed download prevents loading. A failed cache write does not: the downloaded model is already usable in memory. Browser storage can be cleared or evicted, so test both cache hits and misses.
+
+When the weights change, use a new version in the cache key. Otherwise, users keep loading the old weights. Once the new version is loaded and verified, remove the unused old entry to free storage.
 
 ## Loading States in the UI
 
@@ -249,9 +253,9 @@ async function loadWithProgress(
 
 ## Challenge
 
-The exercise supplies the loader response. It checks awaiting and model inspection; it does not fetch or cache a real model. The independent project later loads actual saved weights in a separate browser app. IndexedDB and hosted network failures need their own integration checks.
+The exercise supplies a loader response so the tests can check your use of await and the model’s properties. It does not download or cache a real model. The later independent project loads saved weights in a separate browser app, where you can also test storage and network failures.
 
-Load a model once and verify its architecture off the model you loaded.
+Load the model once. Return its input shape, output shape and layer count, then release the model’s resources.
 
 <Exercise slug="load-model" />
 
@@ -286,7 +290,7 @@ Load a model once and verify its architecture off the model you loaded.
 
 <Epilogue>
 
-Farah notices it first: her notebook and the bridge dashboard disagree about the same reading, two confidences three points apart. The retrained weights shipped to the server hours ago; the dashboard never heard. Demir reused a cache key after the weights changed. He had treated the filename as if it identified immutable content. The bridge has spent three hours and 10,800 readings running last week's weights while `deep-scan-v1` sat smug in IndexedDB.
+Farah notices that her notebook and the bridge dashboard give scores three percentage points apart for the same reading. The server received the retrained weights hours ago, but the dashboard kept loading its cached copy. Demir reused the cache key after the weights changed. For three hours and 10,800 readings, the bridge has used last week’s weights from `deep-scan-v1` in IndexedDB.
 
 <Dialogue speaker="Chief Nazari">
 Three hours, Ensign. An asset that learns is an asset that ships new versions. Version the key. Then clear out v1, because nothing is going to read it again.

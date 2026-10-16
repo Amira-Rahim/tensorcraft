@@ -12,19 +12,19 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "The capture is gone and the relay slot closed without it. The optimization sprint starts as penance, and it starts with measurement."
+  narrative: "The crew lost the capture and missed the relay slot. Before trying to make DEEP SCAN smaller, they need to measure what it uses."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. Use those measurements to choose what to change."
+  explanation: "Profiling measures how much memory a model uses, how long predictions take, and how many parameters each layer has. Use those measurements to decide what to change."
   bridge:
     jsTitle: "DevTools Performance"
     jsCode: "performance.mark('start'); doWork(); performance.measure('task', 'start')"
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); const y = model.predict(x); await y.data(); const ms = performance.now() - t0;"
     tier: structural
-    breaks: "Both use elapsed-time measurements, but asynchronous work needs an explicit completion boundary. On GPU backends, include tensor readback when timing end-to-end inference. Also inspect memory, operation costs, and disposal; browser applications can have those costs too."
+    breaks: "Both measure elapsed time. With asynchronous work, wait until the work finishes before stopping the clock. For a GPU prediction, include reading the output back. Check memory use and tensor cleanup separately, just as you would in a browser app."
 consequence:
-  narrative: "The profile separates weight storage from inference latency. Nazari asks for a load-peak measurement next."
+  narrative: "The report shows weight-file size and prediction time separately. Nazari next wants to know the highest memory use while the model loads."
 hints:
   - level: nudge
     content: |
@@ -61,8 +61,7 @@ hints:
         const parameterCount = model.countParams();
         const memorySizeMB = (parameterCount * 4) / 1e6;
 
-        // Every layer, not only the ones holding weights: a row reading 0 is
-        // how the report shows a reshape owns nothing.
+        // Include layers with no parameters, such as reshape layers.
         const layerBreakdown = model.layers.map((layer) => ({
           name: layer.name,
           params: layer.countParams(),
@@ -70,9 +69,8 @@ hints:
 
         const before = tf.memory().numTensors;
 
-        // The warmup call pays the one-off compilation cost. It is not timed,
-        // so that cost does not land in the average below, and its pair is
-        // released like every other.
+        // Run one untimed warmup to allow initial compilation.
+        // Release its input and output too.
         const warmInput = createInput();
         let warmOutput;
         try { warmOutput = model.predict(warmInput); await warmOutput.data(); }
@@ -107,7 +105,9 @@ skillAxes: [deployment]
 
 Two nights after the report went out, the bridge dashboard died. ARIA's reboot watchdog kept the last three minutes. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
 
-02:47:00: the ensemble flags the incoming pulse window, the cleanest capture opportunity in nine days. 02:47:26: the dashboard starts loading DEEP SCAN's full 340 MB beside the telemetry suite, and the free-memory line starts falling like an altimeter. 02:49:06: the line touches zero. No exception. No log entry. The render loop dies mid-frame and the last buffered frame just stays there, wrong, on every screen on the bridge. By the time the dashboard reboots, the window has closed. Earth's relay slot closes forty minutes later, without the capture in it.
+At 02:47:00, the ensemble flags an incoming pulse: the best capture opportunity in nine days. At 02:47:26, the dashboard starts loading the full 340 MB DEEP SCAN build alongside the telemetry suite. Free memory falls to zero at 02:49:06.
+
+There is no exception or log entry. The render loop stops mid-frame, leaving the bridge screens frozen. By the time the dashboard reboots, the capture window has closed. Earth's relay slot closes forty minutes later without the data.
 
 The data is gone. Not delayed. Gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
 
@@ -121,11 +121,13 @@ I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabyte
 Profiling first. Same discipline as a slow React app: measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
-The bundle audit Demir filed under "later" is now exhibit one: the crew's trained models total under a megabyte; the pretrained language component and its tables carry almost all of the 340. Start with weight size, inference latency and parameters per layer. Weight bytes are only part of runtime memory: activations, temporary tensors, backend buffers and the application also occupy space. Measure the load peak before deciding what fits.
+Demir opens the bundle audit he had saved for later. The crew's trained models total less than a megabyte. Almost all of the 340 MB comes from the pretrained language component and its tables.
+
+Start by measuring weight size, prediction time, and parameters per layer. The running app also needs memory for activations, temporary tensors, and backend buffers. Measure the highest memory use during loading before deciding whether the model fits.
 
 You will measure completed predictions and distinguish stored weight size from total runtime memory.
 
-<LearningObjectives objectives={["Size a model's weights from its parameter count, and know why a profiling loop has to dispose what it allocates", "Benchmark inference latency with high-resolution timing, mean and tail", "Identify which layers hold the parameters, and know why that is not the same as which layers hold the time", "Establish baseline metrics before optimization"]} />
+<LearningObjectives objectives={["Calculate weight bytes from the parameter count and clean up tensors after profiling", "Measure prediction time, including the average and slower calls", "Count parameters per layer without assuming that the largest layer is the slowest", "Establish baseline metrics before optimization"]} />
 
 ## Measure Everything
 
@@ -142,8 +144,8 @@ interface ModelProfile {
   layerBreakdown: { name: string; params: number; outputShape: (number | null)[] | (number | null)[][] }[];
 }
 
-// createInput is a callback, not a shape: a profiler that builds its own
-// tf.randomNormal only works on models whose first layer takes floats.
+// Let the caller create inputs that match the model.
+// tf.randomNormal would not suit a model that expects integer token IDs.
 async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor): Promise<ModelProfile> {
   // Logical bytes tracked by TFJS, with backend-specific reliability limits. Not the same
   // number as the weight bytes below: tf.memory() counts every tensor
@@ -153,10 +155,8 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
 
   // Parameter count
   const parameterCount = model.countParams();
-  // float32 = 4 bytes. Divide by 1e6, not 1024^2: everyone who will read your
-  // report quotes model size in MB, and 1024^2 gives you MiB wearing an MB
-  // label. It is the difference between reporting 324.2 and 340.0 for the
-  // same weights, and the second one is the number Nazari is holding.
+  // Each float32 weight uses 4 bytes. Divide by 1e6 for MB.
+  // Dividing by 1024^2 gives MiB: these weights are 340.0 MB, or 324.2 MiB.
   const memorySizeMB = (parameterCount * 4) / 1e6;
 
   // Layer breakdown
@@ -166,10 +166,8 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
     outputShape: layer.outputShape,
   }));
 
-  // Inference timing (warm up + 100 iterations). The warmup call pays the
-  // initial compilation cost outside the timed loop. Some backends need
-  // more warmup; inspect timing stability rather than assuming one pass is enough. Read its result back the same way
-  // the timed calls do, then throw the result away.
+  // Warm up before timing 100 calls. Read the warmup output, then dispose it.
+  // Some backends need more warmup. Check that timings have settled.
   const warmupInput = createInput();
   let warmupOutput: tf.Tensor | undefined;
   try {
@@ -186,10 +184,8 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
     try {
       const start = performance.now();
       output = model.predict(input) as tf.Tensor;
-      // Module 4's benchmarking rule applies to profiles too: read the
-      // result back INSIDE the timed region, or on GPU backends you are
-      // profiling how fast you can enqueue GPU kernels, not run them, and
-      // every mean and P95 below is fiction.
+      // Keep readback inside the timed section, as in module 4.
+    // Otherwise GPU timing may only measure how fast work is queued.
       await output.data();
       times.push(performance.now() - start);
     } finally {
@@ -325,7 +321,9 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
 
 <Epilogue>
 
-By evening the profile hangs on the engineering board next to Nazari's handwritten totals: dashboard RAM 512, model 340, reconstruction 9 hours, capture 0, days to the next relay slot 19. Below it sits a line nobody expected: 211 KB of partial telemetry from the crash window, recovered. Demir replays the fragment three times. The last clean reading before the crash puts the pulse interval at 61.2 seconds; it was 73.4 when they first measured it, and nobody has decided what to do about that.
+By evening, the profile hangs beside Nazari's totals: 512 MB of dashboard RAM, a 340 MB model, nine hours of reconstruction, no capture, and nineteen days until the next relay slot.
+
+A new line records 211 KB of partial telemetry recovered from the crash window. It is not the lost capture. Demir replays the fragment three times. The last clean reading puts the pulse interval at 61.2 seconds, down from the first measurement of 73.4. The crew has not decided what to do about that.
 
 The 211 KB came out of ARIA's own store, buffered by a reboot watchdog that has kept the final frames of a failing system since before DEEP SCAN existed. Not the capture. What a rule-based system keeps when nobody asks it to.
 

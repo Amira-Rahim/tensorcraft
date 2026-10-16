@@ -1,7 +1,12 @@
 slug: reconstruction-error
 lessonSlug: reconstruction-error
 title: "Compute Reconstruction Error"
-instructions: "Write a function that takes an autoencoder model and an input array, runs the input through the model, and returns the mean squared error between the input and the reconstruction. The model takes a batch, so one reading goes in as a single row and comes back as a single row. Release the tensors you allocate: the last test warms your function up, then calls it on a reading it has not scored before and checks that the live tensor count did not grow."
+instructions: |
+  Write a function that takes an autoencoder model and an input array. Run the input through the model and return the mean squared error between the input and its reconstruction.
+
+  The model expects a batch. Wrap one reading in a single row, so its shape is [1, numberOfFeatures]. Its reconstruction also has one row.
+
+  Release every temporary tensor you create. The memory check first warms up your function. It then calls it with a new reading and checks that the number of live tensors has not increased.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

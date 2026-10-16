@@ -2,13 +2,35 @@ slug: training-loop-exercise
 lessonSlug: training-loop
 title: "Stop on a Validation Plateau"
 instructions: |
-  Fit the supplied model on trainX/trainY for at most 500 epochs with validationSplit 0.2 and a batch size from 8 to 64 (default 32). Implement makeEarlyStopping() returning tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 }), and attach it to the fit. Store the awaited result in history. A correct run can stop early or reach its epoch limit; neither outcome proves a defect.
+  Help Demir stop the supplied training run when validation loss stops improving.
 
-  Implement diagnose(trainLosses, valLosses) for equally long arrays of finite, nonnegative losses. Reject invalid arrays. With fewer than 20 entries, return 'insufficient-history'. Otherwise compare the mean of each curve's last ten entries with its previous ten. A drop greater than 5% is improvement; a rise greater than 5% is worsening. Exactly 5% lies in the flat band. Compare by multiplication so an earlier mean of zero is handled without division: zero to positive is worsening, zero to zero is flat.
+  1. Write `makeEarlyStopping()` to return
+     `tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5, minDelta: 0 })`.
+  2. Fit the model on `trainX` and `trainY` with at most 500 epochs,
+     `validationSplit: 0.2`, and a batch size from 8 to 64 (default 32).
+     Attach the callback and save the awaited result as `history`.
+     A valid run may stop early or reach the epoch limit.
+  3. Write `diagnose(trainLosses, valLosses)` to describe the recent loss trends.
+     Both arguments must be equally long arrays of finite, nonnegative numbers.
+     Reject invalid arrays. Return `'insufficient-history'` for fewer than 20 entries.
 
-  Apply this order: validation improving -> 'validation-improving'; both curves worsening -> 'both-worsening'; training improving while validation worsens -> 'train-down-validation-up'; any other validation worsening -> 'validation-worsening'; otherwise -> 'plateau'. These labels describe recent trends. They do not establish overfitting, data shift or a learning-rate problem; investigate those possibilities using data and further experiments.
+  For each curve, compare the mean of its last ten values with the mean of
+  the previous ten. A drop greater than 5% is improving. A rise greater than
+  5% is worsening. Exactly 5% is flat. Use multiplication for the comparison,
+  not division: zero to positive is worsening; zero to zero is flat.
+  Allow an absolute tolerance of `1e-12` at the 5% boundaries.
 
-  Allow an absolute 1e-12 comparison tolerance for floating-point arithmetic at the 5% boundaries.
+  Check these rules in order:
+
+  - Validation improves: return `'validation-improving'`.
+  - Both curves worsen: return `'both-worsening'`.
+  - Training improves while validation worsens: return `'train-down-validation-up'`.
+  - Any other validation worsening: return `'validation-worsening'`.
+  - Otherwise: return `'plateau'`.
+
+  These labels describe what the curves did. They cannot tell you why.
+  Investigate the data and run further checks before blaming overfitting,
+  changed data, or the learning rate.
 starterCode: |
   // Synthetic practice rows. Clipping enforces this fixture's [0, 1] range.
   // Labels and distributions illustrate the story, not a real archive.

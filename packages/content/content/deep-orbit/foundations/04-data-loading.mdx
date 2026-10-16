@@ -11,7 +11,7 @@ scene:
   time: "Morning after the crash"
   portraitAlt: "Under a red status lamp in engineering, Demir faces a diagnostic screen where a memory curve climbs and cuts off mid-rise."
 context:
-  narrative: "Ensign Demir sets up the data pipeline for the analysis system."
+  narrative: "Ensign Demir needs to read the sensor archive without filling the computer's memory."
 concept:
   explanation: "Prepare input shapes, batches and splits for the task. Shuffle training examples only when their order is not part of the example."
   bridge:
@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Both APIs can stream data without loading everything at once. tf.data additionally composes transforms, optional shuffling, and batching. Choose those steps for the task: split the archive by time first, then shuffle training rows only when their ordering is not part of the example."
 consequence:
-  narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
+  narrative: "The second attempt reads the archive without using more and more memory. ARIA confirms it is ready."
 hints:
   - level: nudge
     content: |
@@ -70,13 +70,15 @@ The raw sensor data comes in faster than we can process it in one pass. But this
 
 > `RangeError: Array buffer allocation failed`. Engineering rig, overnight: the loop dies 19,204 readings into a 28,800-reading archive and takes ARIA's diagnostic queue down with it.
 
-The post-mortem arithmetic is short. Each reading drags its 33-second raw capture along: 256 Hz across 64 channels, about two megabytes apiece. Two-thirds of the way through the archive, that is forty gigabytes sitting in one array. Cost of the lesson: a four-hour queue rebuild, logged against Ensign Demir.
+Each reading includes a 33-second raw capture: 256 samples per second across 64 channels, about two megabytes per reading. By the time the loop stops, the array holds about forty gigabytes. Demir now owes engineering a four-hour queue rebuild.
 
 <Dialogue speaker="ARIA">
-Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
+Confirmed. I can read the data in small groups without keeping the whole archive in memory. I note that I said the same thing about my parsing rules.
 </Dialogue>
 
-What keeps this pipeline alive on real sensor data is where the readings come from. A lazy source reads records on demand. With bounded buffers and correct disposal, memory need not grow with the archive length. `.batch(32)` sits after that source and sets the model's step size. The model sees 32 readings at a time and asks for the next group when it finishes this one. Demir picked the right analogy and the wrong version of it. A well-built infinite-scroll list keeps the pages it is showing and drops the rest, and a tf.data pipeline does the same with readings.
+Read each record only when it is needed. This is called **lazy loading**. Limit how much data waits in memory, and dispose of tensors after use. That keeps memory use from growing with the archive.
+
+A **batch** is a small group of readings processed together. `.batch(32)` makes groups of 32. The model processes one group, then requests the next. Unlike Demir's failed version, the pipeline does not keep the whole archive in memory.
 
 You will build a pipeline that reads the archive in small batches and keeps training data separate from later readings.
 
@@ -105,8 +107,8 @@ one row; no full archive array is needed.
 }`}
 </CodeBlock>
 
-The label needs its one-element axis: four samples stack into feature shape
-`[4, 3]` and label shape `[4, 1]`.
+Wrap each label in an array, `[row.label]`. Four samples then make feature
+shape `[4, 3]` and label shape `[4, 1]`: four rows, one label per row.
 
 ## Shuffle samples, then form batches
 
@@ -119,10 +121,13 @@ await batches.forEachAsync((group) => {
 });`}
 </CodeBlock>
 
-Shuffle comes first so it mixes individual samples. Batching first would keep
-each original group together. Buffer size 10 means limited mixing, not a
-uniform shuffle of all 16 rows. The challenge asks you to collect these shapes in `batchShapes` instead of logging them. Await the drain before reading that array.
-This full-fixture pipeline demonstrates batching; it does not train a model.
+Shuffle before batching so individual rows can move between groups. A buffer
+of 10 holds ten rows to choose from. This mixes a limited group rather than
+shuffling all 16 rows at once.
+
+In the challenge, save each shape in `batchShapes`. Wait for `forEachAsync()`
+to finish before reading that array. This example reads all 16 practice rows
+to show batching. It does not train a model.
 
 ## Keep the future outside training
 
@@ -145,11 +150,17 @@ windows overlap. Fit preprocessing on training rows only.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You already know half of this pattern. A paginated fetch pulls page 1, hands it off, and never touches page 2 until something asks for it. A tf.data pipeline works the same way, except the thing asking is a model: a generator produces values when the pipeline requests them. Shuffle buffers and prefetching can request records before the model consumes them.
+A paginated fetch reads the next page when it is requested. A `tf.data` generator also produces values on request. The request may come from the model, a shuffle buffer, or prefetching that prepares records before the model needs them.
 
-A **feature** is one number the model reads about a single example. A **label** is what you want predicted about that example, here a 0 or 1 for whether the reading is worth flagging. The `fitDataset` training API accepts examples with `xs` and `ys` for features and targets. A general `tf.data` dataset can hold other structures too. Learning from examples that come with their labels attached has a name, supervised learning, and it is what every model in this course does until module 7, where the model's target is its own input and no human has to label an anomaly for it to learn what normal looks like.
+A **feature** is one measurement the model reads about an example. A **label** is the answer you want it to learn, here 0 or 1 for whether to flag the reading. Learning from labeled examples is called **supervised learning**.
 
-Picking which numbers become features is a decision, and on this ship it is already made. A reading's raw capture is 64 channels of samples, about two megabytes per reading, and none of it reaches the model. Three summary values come off each capture instead: amplitude, frequency (a zero-crossing count, not hertz), and phase. The extraction reads a 64-sample window, a quarter second of one channel at 256 Hz, which is a different 64 from the row's 64 channels. Module 5 writes it and then widens the feature set with FFT bins measured over that same window. The classifier you start building in module 2 reads those three, so `row.features` holds three numbers per reading, not 64 channel values, and `xs` is three wide. Reading a record still touches its two-megabyte capture block, which is why the source has to hand them over one at a time.
+The `fitDataset` training API reads `xs` as features and `ys` as labels. Other `tf.data` pipelines can hold different structures. In module 7, the model will learn to reproduce its own input instead of using human-assigned anomaly labels.
+
+The model does not read the full two-megabyte capture. It reads three summary values: amplitude, a zero-crossing count, and phase. The course calls the zero-crossing feature frequency, but its value is a count, not hertz.
+
+These features come from 64 consecutive samples of one channel. At 256 samples per second, that covers a quarter of a second. This sample count is separate from the ship's 64 sensor channels. Module 5 shows the extraction code and adds frequency measurements from the same time window.
+
+For now, `row.features` and `xs` hold three numbers per reading. Fetching the record still reads its large raw capture, so fetch one at a time.
 
 This integration sketch assumes an async `readArchivedSample(id)` function supplied by your application. It returns one record with `features` and `label`; it must not load the entire archive internally. The exercise uses a synchronous in-memory stand-in.
 
@@ -159,15 +170,8 @@ This integration sketch assumes an async `readArchivedSample(id)` function suppl
 // JS: paginated API fetch
 // const page = await fetch('/api/data?page=1&limit=32');
 
-// ML: a generator that READS LAZILY, one record per yield.
-// Never met "function*"? It declares a GENERATOR: a function that can
-// pause at each "yield" and hand out one value, then resume exactly
-// where it stopped the next time a value is requested. That pause IS
-// the laziness: nothing below the current yield has run yet.
-// Each iteration fetches/derives exactly one row; at no point does
-// the full archive exist in memory. (If you find yourself declaring
-// a giant array inside a generator, you've built eager loading with
-// extra steps.)
+// A generator pauses at yield and resumes when another value is requested.
+// Read one record inside the loop. Do not build a full archive array first.
 async function* sensorDataGenerator() {
   const TOTAL_READINGS = 28_800;  // 11 days of archive: one reading per 33-second capture
 
@@ -191,19 +195,23 @@ await dataset.forEachAsync((batch) => {
 });`}
 </CodeBlock>
 
-For independent training examples, shuffle samples before forming batches. The reason is mechanical. The model adjusts its weights after every batch, and an archive is stored in the order it was recorded. Without a shuffle each batch is one stretch of one day, so consecutive adjustments all pull the same way. A buffer shuffle chooses from a limited pool that is refilled as records leave. It does not provide a uniform permutation of the whole archive. Some records can remain in the buffer longer than others, so buffer size is not an exact bound on their age. Here 100 is a demonstration setting.
+Shuffle independent training examples before batching. Otherwise, neighboring readings stay together, and each update uses a narrow slice of the archive.
 
-Sizing the buffer to the whole archive would sample fairly, but a shuffle buffer fills before it yields anything. The first batch would wait for all 28,800 readings, and the pipeline would stop being a stream. So a buffer shuffle is what you are left with when records arrive as a stream you cannot index. This archive can be read by id, so it has a better option: shuffle a list of indices once, up front, and read in that order. That is a full shuffle with no buffer at all, and the split section below builds it.
+A shuffle buffer picks from a small pool of records and replaces each one it sends out. This gives limited mixing, rather than an equally likely ordering of the whole archive. Some records wait longer than others. The buffer size of 100 here is an example setting.
+
+A buffer large enough for all 28,800 readings would need to load them before sending out the first batch. For a live stream, use a limited buffer.
+
+This archive can be read by ID, so there is another option: shuffle the small list of IDs, then read the records in that order. You get a full shuffle without holding all the records in memory.
 
 ### Why Batching Matters
 
-Batching is virtual-list rendering for model input. A virtual list doesn't render 10,000 DOM nodes at once; it renders a window of visible items. ML models likewise process a window (batch) of data at a time, updating their understanding incrementally.
+A model can train on one small group of examples at a time. That group is a batch. It is similar to a virtual list in a user interface, which renders a small visible group instead of thousands of items at once.
 
-Memory is only half the reason 32 is the number. The other half is training. The model updates its weights once per batch, using that batch as its estimate of the whole archive: a batch of 1 gives a noisy estimate and a jittery update, and a batch of the full archive gives an exact estimate but one update per pass. Module 3 passes this number to `model.fit()` and gives the reasoning for a middle value. For now, know that batch size is a knob you set on purpose, not a number the memory limit hands you.
+Batch size also changes training. The model updates its weights once per batch. A batch of one can give noisy updates. The full archive gives one update per complete pass. A size such as 32 sits between those choices. Module 3 shows how to choose it in `model.fit()`.
 
 ### Splitting Without Leaking
 
-Batching decides what the model sees on each step. The split decides what it never sees while training. Get the second one wrong and your validation score is measuring what the model already memorized, not what it learned.
+The **training set** contains the examples the model learns from. The **validation set** contains separate examples used to check it. Keep those sets separate so the validation score tests something the model has not already seen.
 
 <CodeBlock language="typescript" title="train-test-split.ts">
 {`// Hold out the latest 20% of this time-ordered archive for validation
@@ -232,14 +240,16 @@ const valData = tf.data.generator(() => splitGenerator(valIdx)).batch(32);
 
 Choose the split for the job the model will do. We want to predict future readings, so validation uses a later period. A classifier that reads one row at a time can still exploit similarities between neighboring rows. Randomly mixing those rows across both sets can make the score too optimistic.
 
-Time order is a starting point. If examples share a capture or overlap in time, keep those groups together and leave a gap at the boundary where needed. Module 6 applies this to overlapping windows. A random split can suit independent examples drawn from the same population as deployment. Whichever rule you choose, assign membership once: separate `.shuffle().take()` and `.shuffle().skip()` passes can reshuffle differently and overlap. Fit preprocessing on training rows only; module 3 adds a final test set that stays out of model selection.
+Keep examples from the same capture on the same side of the split. If their time windows overlap, leave a gap between training and validation. Module 6 shows this in detail. A random split can work when examples are independent and come from the same kind of data the model will see later.
+
+Assign each row to a set once. Separate `.shuffle().take()` and `.shuffle().skip()` runs can shuffle differently and put a row in both sets. Compute preprocessing statistics from training rows only. Module 3 adds a final test set that is kept out of model selection.
 
 
 </ConceptReference>
 
 ## Challenge
 
-Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This first pipeline demonstrates batching over the whole fixture; it does not train a model. Separately, assign the earlier readings to training and the later ones to validation. Training can shuffle its own rows after that assignment.
+Help Demir read a small practice archive of 16 rows. Read one row at a time, shuffle the rows, then group them into batches. This shows how batching works without training a model. Separately, choose the earlier rows for training and the later rows for validation, where you check the model on data it did not train on.
 
 <Exercise slug="batch-data" />
 
@@ -247,7 +257,7 @@ Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This
 
 <RecallPrompt
   question="The training split is already fixed. Now prepare its rows for mini-batch training."
-  answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
+  answer="Use shuffle(bufferSize).batch(32). Shuffling first changes which rows go into each batch. Batching first keeps the same neighbors together. Changing their order inside a batch does not change the batch average used for training."
   checks={[
     {
       "kind": "choice",
@@ -263,15 +273,15 @@ Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This
         },
         {
           "text": "shuffle(bufferSize).batch(32)",
-          "feedback": "Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
+          "feedback": "Use shuffle(bufferSize).batch(32). Shuffling first changes which rows go into each batch. Batching first keeps the same neighbors together. Changing their order inside a batch does not change the batch average used for training."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Shuffle first, then batch: shuffle(bufferSize).batch(32). Batching first freezes each batch's membership, so every batch stays a block of consecutive readings and every weight update comes from one narrow slice of one day. Reordering rows inside a batch would change nothing, because the update is the mean over the batch's rows."
+      "explanation": "Use shuffle(bufferSize).batch(32). Shuffling first changes which rows go into each batch. Batching first keeps the same neighbors together. Changing their order inside a batch does not change the batch average used for training."
     },
     {
       "kind": "choice",
-      "question": "Why does shuffling only after batching preserve narrow slices of the stream?",
+      "question": "Why does shuffling after batching keep neighboring readings together?",
       "options": [
         {
           "text": "It increases the number of examples in each batch.",
@@ -321,13 +331,13 @@ Build a lazy pipeline on a 16-row stand-in: generator, shuffle, then batch. This
 
 <LessonRecap
   whatYouLearned={[
-    "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
+    "A lazy generator reads one record when it is requested. Do not load the full archive inside the generator.",
     "Shuffle individual training examples before batching when their order is irrelevant. A streaming buffer mixes a limited window; random access lets you shuffle all record indices.",
     "For future telemetry, hold out later readings. Shuffle only within training after the split; account for overlapping windows and shared captures at the boundary.",
     "Keep raw captures and extracted features distinct. This pipeline passes three features per example; it does not send all raw sensor samples into the model."
   ]}
   bridge="Paged fetching and tf.data can both process data incrementally. Dataset transforms add optional shuffling and batching; prefetching and buffers determine how far the producer reads ahead."
-  youCanNow="Build a tf.data pipeline that reads lazily with a generator and shuffles records before it batches them, and recognize a train/validation split that does not leak."
+  youCanNow="Build a tf.data pipeline that reads on demand, shuffles rows before batching, and keeps later readings out of training."
 />
 
 <Epilogue>

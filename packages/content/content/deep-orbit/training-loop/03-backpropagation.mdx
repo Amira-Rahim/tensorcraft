@@ -11,7 +11,7 @@ scene:
   location: "Archimedes, Engineering"
   portraitAlt: "Demir waits in the green-lit bay as a huge grid of parameter cells fills one by one, ARIA's waveform watching from a side screen."
 context:
-  narrative: "Gradient descent works for a single weight. The network has 673. Demir tries the obvious approach first, and the obvious approach is the lesson."
+  narrative: "Demir can update one weight, but the network has 673. He tries changing them one at a time to measure their gradients."
 concept:
   explanation: "Backpropagation computes gradients for every weight in one backward sweep, applying the chain rule from the loss back to the input."
   bridge:
@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "You never write the backward pass yourself: tf.variableGrads records the forward computation and applies the chain rule backwards for you."
   - level: guidance
-    content: "One call does both halves of the run, and gradOf's job is to hand that call's result straight back. The forward pass produces the loss. The backward pass then walks the recording of that same forward pass and reports, for every variable it touched, how much the loss moves when that variable moves. Both arrive together, the loss under one key and a map of gradients under the other, which is what the starter's last line destructures. Notice what you never write: no derivative appears anywhere in your code. Return the call rather than its numbers, because the grader changes the weight and calls gradOf again, then hands it a loss you never saw. Numbers frozen into an object are right once, for the weight they were copied from."
+    content: "One call returns both the loss and the gradients. gradOf should return that result directly. The forward pass calculates the loss; the backward pass calculates how each variable affects it. Read the loss from value and the gradients from grads. Calculate them again on every call, since the weights and loss function can change."
   - level: solution
     content: |
       const w = tf.tidy(() => tf.variable(tf.scalar(3.0)));
@@ -61,7 +61,7 @@ keywords:
 skillAxes: [training]
 ---
 
-Parameter 500 of 673, twenty seconds into a single training step, and the engineering rig is still going. The method Demir reached for needs no new math, which is exactly why he reached for it: nudge one weight, rerun the network, see how the loss moved. You know how to do that already. So before this lesson hands you anything, do it his way and watch what it costs.
+Twenty seconds into one training step, the rig has reached parameter 500 of 673. Demir changes one weight a little, runs the network again, and checks how much the loss moved. It works, but every weight needs another run. Try his method before comparing it with backpropagation.
 
 You will compare automatic differentiation with estimating a gradient by changing a weight and measuring the effect.
 
@@ -95,7 +95,9 @@ const base = computeLoss();             // forward pass 0
 const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 </CodeBlock>
 
-This forward finite difference approximates a derivative using 673 extra forward passes for this network. The step size trades truncation error against floating-point cancellation. It can help check gradients on a small problem, but its cost grows with the parameter count. The rig's scene timings are fictional; measure your own implementation before making a speed claim.
+This method is called a **forward finite difference**. It estimates a derivative from two nearby values. A large nudge gives a rough estimate. A very small one can lose accuracy when nearly equal floating-point numbers are subtracted.
+
+Checking all 673 weights this way needs 673 extra forward passes. It can help check a small calculation, but becomes costly as the model grows. The scene timings are fictional. Measure your own code to compare speed.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 Estimating the gradient for each of 673 parameters one nudge at a time costs 673 additional forward passes. I have now watched you pay that price once. There exists a procedure that computes all 673 gradients in one backward sweep, reusing the forward computation. It has a name.
@@ -103,7 +105,9 @@ Estimating the gradient for each of 673 parameters one nudge at a time costs 673
 
 ## Working Backwards
 
-The name is **backpropagation**. A call chain already runs in two directions: the calls go down, `main` into `readFile` into `parseRow`, and when `parseRow` throws, the error comes back up the same path it came down, every frame adding its line to the trace. Backpropagation has that same two-pass shape. The forward pass runs input to output computing the loss, then the backward pass runs output back to input, each layer folding what it receives into the gradient it hands to the layer below.
+**Backpropagation** calculates gradients by working backward through the operations used in the forward pass. The forward pass produces the loss. The backward pass uses the chain rule to calculate how each earlier variable affected it.
+
+The direction may remind you of an error traveling from `parseRow` through `readFile` to `main`. The mechanism is different: backpropagation multiplies derivatives rather than throwing an exception.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -159,12 +163,14 @@ L  = ½(ŷ - y)²           ← loss
 
 Each factor is local to one layer. `tf.variableGrads()` builds the computational graph during forward pass, then walks it backward multiplying these local derivatives. **That backward walk is the entire algorithm**: there is no other magic. The "1 backward pass" claim above is exactly this multiplication chain.
 
-**Vanishing gradients = the chain product collapsing.** Twenty successive derivative factors near 0.1 multiply to about 10⁻²⁰. Real vector networks involve Jacobian products and sums over paths, but repeated small factors can still weaken early gradients. A residual block y = x + F(x) has Jacobian I + J_F, adding an identity path. That can help gradient flow; it does not guarantee that gradients never vanish or explode.
+**Vanishing gradients** occur when repeated derivative factors make early gradients very small. Twenty factors near 0.1 multiply to about 10⁻²⁰. For vectors, the derivatives are matrices called **Jacobians**. Backpropagation multiplies them and adds contributions from different paths. Small factors can still weaken the result.
+
+A residual block, `y = x + F(x)`, adds a direct path from input to output. Its Jacobian is `I + J_F`, where `I` is the identity matrix. This can help gradients pass through, but does not guarantee they will never vanish or grow too large.
 </DerivationDrawer>
 
 ## Challenge
 
-Run backpropagation yourself: one call to `tf.variableGrads()`, behind a function the grader can call again with a loss of its own, the last one over three variables at once. The grader supplies different loss functions and checks that each gradient call evaluates its forward function once. This exercise practices automatic differentiation.
+Help Demir compare the two methods. Write a function that calls `tf.variableGrads()` for any supplied loss. The tests use new loss functions, including one with three variables, and check that each gradient call runs its forward calculation once.
 
 <Exercise slug="backprop-chain" />
 

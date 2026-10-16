@@ -1,7 +1,16 @@
 slug: inference-pipeline
 lessonSlug: inference-pipeline
 title: "Build an Inference Pipeline"
-instructions: "Write a classify function that takes a model and one raw signal reading (amplitude, frequency, phase). Normalize each feature to [0, 1] using the RANGES constant, then hand the model one row of three features in the order RANGES declares them. Run model.predict() inside tf.tidy(), so the live tensor count is the same after classify returns as it was before it ran. Call the model's output p. Return class 'anomaly' when p exceeds 0.5, else 'noise'. The confidence field is the chosen class score, not a calibrated reliability estimate. Report p for 'anomaly' and 1 - p for 'noise': a p of 0.12 is noise at 0.88, never anomaly at 0.12."
+instructions: |
+  Write `classify(model, signal)` for one raw reading with amplitude, frequency and phase.
+
+  1. Use RANGES to scale each feature to [0, 1]. Send one row to the model in amplitude, frequency, phase order, with shape [1, 3].
+  2. Run the prediction and read its result inside `tf.tidy()`. The tensor count must return to its starting value before `classify` returns.
+  3. Call the model's output p. Return class 'anomaly' when p is above 0.5, or 'noise' otherwise.
+  4. Return a confidence field containing p for anomaly or 1-p for noise. For example, p = 0.12 means noise with confidence 0.88.
+
+  Confidence is the chosen class's score. It is not a measured probability that the classification is correct.
+
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -15,10 +24,9 @@ starterCode: |
   interface Result { class: 'anomaly' | 'noise'; confidence: number; }
 
   function classify(model: tf.LayersModel, signal: Signal): Result {
-    // The network learned these three features on a common scale and in the
-    // order RANGES declares them. A wrong scale or a swapped order throws
-    // nothing, it just makes the answers wrong. Nothing you allocate here may
-    // still be alive when this returns.
+    // Match the training scale and feature order: amplitude, frequency, phase.
+    // A wrong scale or order can produce wrong predictions without an error.
+    // Release every temporary tensor before returning.
     return null; // your code here
   }
 solutionCode: |
@@ -65,7 +73,7 @@ testCode: |
     // the first Run says what is missing.
     function verdict(model, signal) {
       const r = classify(model, signal);
-      expect(r, 'classify has to return an object with a class and a confidence. The starter returns null until you build that object inside the tidy callback.').toBeDefined();
+      expect(r, 'Return an object with class and confidence from inside the tidy callback.').toBeDefined();
       return r;
     }
 
@@ -112,7 +120,7 @@ testCode: |
     it('leaves no tensors behind (tf.tidy is doing its job)', () => {
       const before = tf.memory().numTensors;
       const r = verdict(probe, { amplitude: 100, frequency: 32, phase: 0 });
-      expect(tf.memory().numTensors, 'The input tensor and the prediction are both still alive after classify returned. Inside a tidy callback they would already be gone.').toBe(before);
+      expect(tf.memory().numTensors, 'Temporary tensors are still alive after classify returned. Create and read them inside a synchronous tidy callback.').toBe(before);
       expect(r.confidence, 'A pipeline that allocates nothing leaks nothing, so this check only means something once a verdict comes back.').toBeGreaterThan(0);
     });
   });

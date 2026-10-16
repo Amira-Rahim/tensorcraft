@@ -11,10 +11,10 @@ scene:
 estimatedMinutes: 13
 difficulty: advanced
 context:
-  narrative: "The crew needs to predict WHEN the anomaly will appear next. Demir builds a forecasting system: predicting future signal behavior from past patterns."
+  narrative: "The crew needs to know when the anomaly will return. Demir builds a model that uses past readings to forecast what comes next."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Time-series forecasting predicts future values from past patterns, and rolling predictions can propagate errors through later inputs. Error need not increase monotonically."
+  explanation: "Forecasting uses past readings to predict future values. If each prediction becomes the next input, an error can affect later predictions too. That does not mean the error grows at every step."
   bridge:
     jsTitle: "Prefetching"
     jsCode: "<link rel='prefetch' href='/next-page' /> // request a resource the app expects to need"
@@ -91,7 +91,7 @@ What observation would distinguish those explanations?
 
 You will compare a forecast that reuses its predictions with one that receives each new observed reading.
 
-<LearningObjectives objectives={["Train a one-step model and roll it forward into a multi-step forecast", "Understand non-stationarity, when past patterns stop predicting the future", "Build the two runs a drift check has to tell apart: a rollout that feeds itself, and a one-step replay re-seeded from the readings that arrived"]} />
+<LearningObjectives objectives={["Train a one-step model and roll it forward into a multi-step forecast", "Understand non-stationarity, when past patterns stop predicting the future", "Compare two runs: one uses its own predictions as inputs, and the other uses the readings that actually arrived"]} />
 
 ## Multi-Step Forecasting
 
@@ -113,13 +113,10 @@ const LIMITS = [
   { min: -Math.PI, max: Math.PI },
 ];
 
-// The step of module 6's version that is easiest to drop, and the module-6
-// exercise fails a submission for dropping it. This model reads and writes
-// the per-channel z-scores it was trained on, so a limit in counts is not a
-// limit its output can be compared against. MEAN and STD are the three
-// per-channel statistics saved at training time; every limit moves into the
-// model's space through them, and the clamp happens there.
-// Integration dependency: savedScaler comes from this model's training rows.
+// The model predicts per-channel z-scores, not raw sensor units.
+// Convert physical limits using the same saved training MEAN and STD
+// before clamping. A count limit cannot be compared directly with a z-score.
+// savedScaler must come from this model's training rows.
 const { mean: MEAN, std: STD } = savedScaler;
 if (MEAN.length !== 3 || STD.length !== 3 || !MEAN.every(Number.isFinite) ||
     !STD.every(v => Number.isFinite(v) && v > 0)) throw new Error('Invalid scaler');
@@ -159,15 +156,14 @@ async function forecast(
   return predictions;
 }
 
-// Forecast 100 steps ahead. Step 1 is one model call from real data; step
-// 100 reads an 80-step window made entirely of earlier predictions. There is no
-// trust number in this function because the model does not have one. A
-// prediction interval needs held-out error quantiles at each horizon and
-// a coverage check. Mean absolute error alone is not an interval.
+// Forecast 100 steps ahead. Step 1 uses observed data. By step 100,
+// all 80 inputs are earlier predictions. The function does not produce
+// a confidence score. A prediction interval needs held-out error quantiles
+// for each horizon and a coverage check. MAE alone is not an interval.
 const predictions = await forecast(model, recentWindow, 100, 80);`}
 </CodeBlock>
 
-## Non-Stationarity: When Predictions Fail
+## When the pattern changes
 
 Non-stationarity means a series' statistical properties change over time. Some forecasting methods explicitly model trend or seasonality, so forecasting does not require a constant mean. The practical question is whether the relationships learned by this model remain useful.
 
@@ -203,10 +199,9 @@ function predictOneStepAhead(
   return predictions;
 }
 
-// Detection: score those one-step errors along the clock, then compare the
-// most recent stretch against the errors before it.
-// Do not compare early and late horizons as though they were the same
-// task. This helper compares two periods of matched one-step errors.
+// Compare one-step errors from recent and earlier time periods.
+// Keep the forecast horizon the same. Comparing short- and long-range
+// errors from one rollout would test a different thing.
 function detectDrift(
   oneStepPredicted: number[][],
   actual: number[][],
@@ -251,7 +246,7 @@ const drift = detectDrift(oneStep, observedReadings.slice(80), 200);`}
 
 ## A Reproducible Feedback Example
 
-Use a deterministic recurrence to isolate feedback from training variability. The real process uses a coefficient of 3.9; the forecaster uses 3.899. The rollout feeds its estimates back, while replay always starts from the preceding observation.
+Use a fixed mathematical rule to see the effect of feeding predictions back without any variation from training. The example process uses 3.9; the forecaster uses 3.899. The rollout reuses each prediction. The replay uses the previous observed value instead.
 
 <CodeBlock language="javascript" title="error-by-horizon.ts">
 {`const processStep = x => 3.9 * x * (1 - x);
@@ -277,17 +272,17 @@ To evaluate a learned model, repeat forecasts from many held-out starting points
 
 ## Challenge
 
-Train a one-step model, then evaluate the same stretch twice: once feeding predictions back, once using the observations that had arrived before each step. The exercise checks fitting and history construction, not forecast quality. The two series may agree, especially for a nearly constant model.
+Train a model to predict one step ahead. Then run the same stretch twice. In the first run, reuse each prediction in the next input. In the second, use the readings that actually arrived. The checks verify training and how you build the input windows. They do not require a forecast quality score. The two runs can agree, especially when the model predicts nearly the same value each time.
 
 <Exercise slug="forecast-signal" />
 
 <RecallPrompt
-  question="Why can a rolling forecast accumulate errors even without distribution change?"
-  answer="The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon."
+  question="Why can errors build up when a forecast reuses its own predictions, even if the data pattern stays the same?"
+  answer="A prediction becomes part of the next input window, so its error can affect later predictions. Replay uses observed readings instead. The effect depends on the model and data: error does not have to grow at every step. A constant forecast can still be wrong, and changing data can affect either method."
   checks={[
     {
       "kind": "choice",
-      "question": "Why can a rolling forecast accumulate errors even without distribution change?",
+      "question": "Why can errors build up when a forecast reuses its own predictions, even if the data pattern stays the same?",
       "options": [
         {
           "text": "One-step replay also replaces all observed history with predictions.",
@@ -295,7 +290,7 @@ Train a one-step model, then evaluate the same stretch twice: once feeding predi
         },
         {
           "text": "Its predictions become inputs to later prediction windows.",
-          "feedback": "The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon."
+          "feedback": "A prediction becomes part of the next input window, so its error can affect later predictions. Replay uses observed readings instead. The effect depends on the model and data: error does not have to grow at every step. A constant forecast can still be wrong, and changing data can affect either method."
         },
         {
           "text": "Every increase in horizon proves data drift.",
@@ -303,7 +298,7 @@ Train a one-step model, then evaluate the same stretch twice: once feeding predi
         }
       ],
       "correctIndex": 1,
-      "explanation": "The rollout feeds predictions into later inputs, so errors can alter subsequent windows and propagate. Replay uses observed history instead. The size and direction of that effect depend on the model and series; rollout error need not increase at every step. A constant forecast can still be wrong, and changing data can affect either method at any horizon."
+      "explanation": "A prediction becomes part of the next input window, so its error can affect later predictions. Replay uses observed readings instead. The effect depends on the model and data: error does not have to grow at every step. A constant forecast can still be wrong, and changing data can affect either method."
     }
   ]}
 />
@@ -337,12 +332,12 @@ Train a one-step model, then evaluate the same stretch twice: once feeding predi
 
 <LessonRecap
   whatYouLearned={[
-    "Rolling prediction extends a one-step model by feeding forecasts back into its input. Measure error by horizon; growth is not necessarily monotonic.",
+    "A rolling forecast feeds each prediction into the next input. Measure error separately for each number of steps ahead. It does not always grow with every step.",
     "Non-stationarity means the statistical properties of the series change over time, which may invalidate relationships a model learned.",
     "Drift detection runs on one-step errors measured along the clock: re-seed the window from real readings, then compare this period's error against an earlier period's. The error-ratio rule is a review heuristic, not a statistical proof of drift."
   ]}
   bridge="Prefetching requests a known resource the app expects to need. Forecasting estimates unknown future values from observations; its uncertainty must be measured at each horizon."
-  youCanNow="Train a one-step forecaster, roll it forward by feeding each prediction back into the window, replay the same stretch from the readings that arrived, and say which of the two a drift check may read."
+  youCanNow="Train a one-step forecaster. Compare a run that reuses predictions with a replay that uses observed readings, and explain which one can help check for changes over time."
 />
 
 <Epilogue>
@@ -350,7 +345,7 @@ Train a one-step model, then evaluate the same stretch twice: once feeding predi
 The forecast said 0312. The pulse came at 0308: four minutes early, and wider than every miss before it. Demir blames the model. Farah pulls every interval measurement since module 5 onto one display and stares at it for a long time.
 
 <Dialogue speaker="Dr. Farah">
-The forecast was wrong, Demir. The interval measurements have also changed; check both the model and the capture pipeline. First measurement: a pulse every 73.4 seconds. The macro-cycle: 47 minutes. Both numbers have been shrinking ever since: not on any curve I can fit cleanly, but always downward, both of them, together. That is drift, and it only runs one way. Call it compression.
+The forecast was wrong, Demir, but the measured intervals changed too. Check the model and the recording process. We first measured 73.4 seconds between pulses and 47 minutes for the larger cycle. Both gaps keep shrinking. I cannot fit a clean curve yet, but both are moving in the same direction. Call it compression.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">

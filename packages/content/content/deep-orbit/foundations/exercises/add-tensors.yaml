@@ -2,21 +2,22 @@ slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
 instructions: |
-  Average two sensor passes, then mix their channels.
+  Help Demir average two sets of sensor readings, then combine their channels.
 
-  - Write `mergePasses(pass1, pass2, gain)` returning `{ merged, boosted }`.
-    `merged` is the element-wise average; `boosted` is that average multiplied
-    by `gain`. Support broadcast-compatible inputs, including `[3, 2]` and `[2]`.
-    Return both tensors. Averaging can reduce independent zero-mean noise;
-    it does not cancel every kind of error.
-  - Write `mixChannels(block, mix)`. `block` has shape `[readings, channels]`
-    and `mix` has shape `[banks, channels]`. Return `[readings, banks]`, with
-    each score equal to one reading's channels weighted by one bank and summed.
-    Decide which axes must change before multiplying.
+  1. Write `mergePasses(pass1, pass2, gain)`. Return `{ merged, boosted }`.
+     `merged` adds matching readings and divides by 2. `boosted` multiplies
+     that average by `gain`. Return both as tensors. Support broadcasting,
+     including a `[3, 2]` set paired with one `[2]` row.
+  2. Write `mixChannels(block, mix)`. Each row of `block` is one reading,
+     with shape `[readings, channels]`. Each row of `mix` is one set of weights,
+     with shape `[banks, channels]`. Return shape `[readings, banks]`.
+     Multiply each reading by each set of channel weights and sum the products.
+     Work out which axes need to swap before the multiplication.
 
   Use tensor operations for the average and gain, and `matMul` or `dot` for
-  the channel mix. This lesson practices those APIs; reconstructing the result
-  with JavaScript loops does not satisfy the task.
+  combining channels. JavaScript loops do not meet this task's requirements.
+  Averaging can reduce independent noise whose mean is zero. It does not
+  remove every kind of error.
 starterCode: |
   function mergePasses(pass1, pass2, gain) {
     // 1. Element-wise average of the two passes
@@ -100,7 +101,7 @@ testCode: |
       );
       expect(
         elementWiseOps() - opsBefore,
-        'mergePasses ran no tensor op. The average and the gain are element-wise operations on the tensors you were handed (add, div, mul, or their tf.* forms); a loop over dataSync() output that re-wraps the answer computes the same numbers on the CPU and skips the thing this lesson teaches.',
+        'Use tensor operations such as add(), div(), and mul() for the average and gain. Do not calculate copied values in JavaScript and wrap them in a new tensor.',
       ).toBeGreaterThan(0);
       const v = Array.from(merged.dataSync());
       const why = 'Averaging pairs each position with the matching position in the other pass, then halves it.';
@@ -145,7 +146,7 @@ testCode: |
         3,
       );
       const shapeWhy =
-        'A block of readings merged with a pass that arrived as a single row keeps the block shape: that one row is reused down every row of the block. A flat result means the two passes were zipped as flat lists instead.';
+        'Broadcast the single row across all rows in the block. The result must keep the block shape.';
       expect(merged.shape, shapeWhy).toEqual([3, 2]);
       expect(
         merged.arraySync(),
@@ -186,7 +187,7 @@ testCode: |
       );
       expect(
         matMulOps() - matMulBefore,
-        'mixChannels ran no matMul. Scoring every reading against every bank is the multiply-and-sum-across-an-axis that matMul (or dot) fuses into one op; a JavaScript loop could reproduce the numbers, but this task practices the tensor matrix operation.',
+        'Use matMul() or dot() to combine each reading with each set of weights. JavaScript loops do not meet this task\'s requirements.',
       ).toBeGreaterThan(0);
       expect(
         out.shape,
@@ -194,7 +195,7 @@ testCode: |
       ).toEqual([3, 3]);
       expect(
         out.arraySync(),
-        'Both arrangements come out [3, 3] in this case, so the shape alone does not settle it. Each score is one reading weighted by one bank: multiply each channel by that bank weight and sum the results. Bank 0 keeps channel 0, bank 1 keeps channel 1, bank 2 adds the two.',
+        'The shape is [3, 3] either way, so check the values too. Each score multiplies one reading by one set of channel weights and adds the products. Bank 0 keeps channel 0, bank 1 keeps channel 1, and bank 2 adds both.',
       ).toEqual([
         [1, 2, 3],
         [3, 4, 7],
@@ -211,7 +212,7 @@ testCode: |
       );
       expect(
         out.shape,
-        'Two readings and one bank this time. The bank count is whatever the caller hands in, so a shape pinned to the case above lands wrong here.',
+        'This case has two readings and one set of weights. Use the supplied shapes rather than a fixed bank count.',
       ).toEqual([2, 1]);
       expect(
         Array.from(out.dataSync()),

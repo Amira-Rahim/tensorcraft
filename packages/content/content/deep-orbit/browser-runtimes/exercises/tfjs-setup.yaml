@@ -14,10 +14,9 @@ starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   async function initTF(preferred?: string): Promise<{ backend: string; version: string }> {
-    // The backend name and the version both live on the runtime. The backend
-    // has nothing to say until the runtime has finished starting up, which a
-    // warm page hides and a fresh tab does not. A preferred name is a request
-    // the runtime can refuse two different ways.
+    // Request the preferred backend, if supplied, then await startup.
+    // Read the actual backend name and version from the ready runtime.
+    // A preferred backend can throw an error or return false.
     return null; // your code here
   }
 solutionCode: |
@@ -105,11 +104,11 @@ testCode: |
 
     it('returns an object', async () => {
       const result = await initTF();
-      expect(result, 'initTF has to resolve to an object carrying a backend and a version. The starter returns null until you build it.').toBeDefined();
+      expect(result, 'Return an object containing the runtime’s backend name and version.').toBeDefined();
     });
     it('reads the backend name off the runtime, and only after ready() resolves', async () => {
       const { cold, result } = await onCold(() => initTF());
-      expect(cold.runtime.getBackend() !== null, 'Nothing awaited the runtime, so it never picked a backend. On a warm page that still answers; on a fresh tab it does not.').toBe(true);
+      expect(cold.runtime.getBackend() !== null, 'Await tf.ready() before reading the backend. A fresh runtime has not selected one yet.').toBe(true);
       expect(result, 'initTF resolved to nothing, so there is no backend name to check.').toBeDefined();
       expect(result.backend, 'This runtime reports a name generated for this run. A name that came from anywhere but the runtime cannot match it.').toBe(cold.tag);
       expect(result.version, 'Same for the version string: read it, do not type it.').toBe(cold.ver);
@@ -123,7 +122,7 @@ testCode: |
     it('a preferred backend that cannot start is not fatal: the runtime settles elsewhere', async () => {
       const { cold, result } = await onCold((c) => initTF(c.bad));
       expect(cold.asked, 'Ask for it first; the refusal comes back as false, not as a throw.').toEqual([cold.bad]);
-      expect(result && result.backend, 'This backend is registered and cannot start. Reading its name right after the refusal reports the name that failed; only after ready() has settled the engine does getBackend() name the one actually running.').toBe(cold.tag);
+      expect(result && result.backend, 'The requested backend could not start. Await ready(), then report the backend the runtime actually selected.').toBe(cold.tag);
     });
     it('propagates failure when no available backend can initialize', async () => {
       let message = null;

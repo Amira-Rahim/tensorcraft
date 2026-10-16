@@ -2,12 +2,8 @@ slug: advanced-time-series
 title: "Advanced Time-Series"
 worldId: deep-orbit
 order: 8
-description: |
-  The forecast says the anomaly repeats on a fixed interval. It does not.
-  Attention, multi-step forecasts, Kalman filters, and validation-weighted
-  ensembles are what the crew builds to chase that miss, and what finally
-  shows that the interval is shrinking.
-summary: "Explore attention, forecasting, Kalman filtering and ensembles. Compare their assumptions, inspect errors and decide what each method can support."
+description: "The forecast assumes the anomaly repeats at a fixed interval. It does not. Help the crew compare attention, multi-step forecasts, Kalman filters, and weighted ensembles as they investigate the shrinking interval."
+summary: "Explore attention, forecasting, Kalman filters, and ensembles. Compare their assumptions and check their errors."
 lessonCount: 5
 prerequisites:
   - foundations

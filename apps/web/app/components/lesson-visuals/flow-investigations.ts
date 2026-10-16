@@ -59,14 +59,14 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "why-the-browser": {
     title: "Can this reading stay on the device?",
     brief:
-      "Follow the input and assets separately. Change the connection and decide where prediction happens.",
+      "Track the readings and model files separately. Change the connection and choose where predictions run.",
     boundary:
-      "This is an asset and data-path simulation. It makes no network requests and runs no model.",
+      "This simulates where readings and model files go. It makes no network requests and runs no model.",
     controls: [
       choice("online", "Connection", ["Offline", "Online"], 1),
       choice(
         "assets",
-        "Model and runtime assets",
+        "Model and runtime files",
         ["Not stored locally", "Stored locally"],
         1,
       ),
@@ -100,12 +100,12 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells(
-            "Configured request",
+            "Current setup",
             [
               `Input: ${count} sensor values`,
               server ? "Prediction: server" : "Prediction: device",
               v.online === 1 ? "Connection: online" : "Connection: offline",
-              v.assets === 1 ? "Local assets: stored" : "Local assets: absent",
+              v.assets === 1 ? "Local files: stored" : "Local files: missing",
             ],
             2,
           ),
@@ -130,10 +130,10 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         explanation: !ready
           ? server
             ? "Server prediction needs a connection. This offline request stops before sending any values."
-            : "Local prediction needs the model and runtime assets. With neither local assets nor a connection, it cannot start."
+            : "Local prediction needs the model and runtime files. If they are not stored on the device and there is no connection to download them, it cannot start."
           : server
             ? "The server receives the whole input record. Moving prediction off the device changes the data path."
-            : "This input stays on the device. Downloading model assets does not require sending these sensor values. Other app requests still need their own review.",
+            : "This input stays on the device. Downloading model files does not require uploading these readings. Check whether other parts of the app send data.",
         code: `const canPredict = ${ready};\nconst sensorValuesSent = ${sent};`,
       };
     },
@@ -149,8 +149,8 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       range("start", "Requested operation time (ms)", 40, 0, 240, 20),
       choice(
         "await",
-        "Readiness handling",
-        ["Start immediately", "Await readiness"],
+        "When to start",
+        ["Start immediately", "Wait until ready"],
         1,
       ),
     ],
@@ -165,7 +165,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "failed",
         label: "Backend fails",
         description:
-          "Initialization rejects. A fallback takes another 40 ms to initialize.",
+          "The selected backend fails to start. The fallback needs another 40 ms to become ready.",
       },
     ],
     prediction: {
@@ -211,7 +211,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: safeAt,
         answerLabel: "Earliest safe start",
-        explanation: `${caseId === "failed" ? "After initialization fails, the fallback must become ready too. " : ""}Readiness finishes at ${readyAt} ms. ${safe ? "This operation starts after that point." : `Starting at ${actual} ms races initialization.`} Awaiting readiness handles the ordering. Production code must also handle a rejected initialization.`,
+        explanation: `${caseId === "failed" ? "After initialization fails, the fallback must become ready too. " : ""}Readiness finishes at ${readyAt} ms. ${safe ? "This operation starts after that point." : `Starting at ${actual} ms is too early.`} Waiting for readiness puts these steps in order. A real app must also handle startup failures.`,
         code: "try {\n  const initialized = await tf.setBackend(preferredBackend);\n  if (!initialized) throw new Error('Preferred backend failed');\n  await tf.ready();\n} catch {\n  const initialized = await tf.setBackend(fallbackBackend);\n  if (!initialized) throw new Error('Fallback backend failed');\n  await tf.ready();\n}",
       };
     },
@@ -224,8 +224,8 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       "These are example asset checks. No files are downloaded and no model is loaded.",
     controls: [
       choice("graph", "model.json request", ["Fails", "Succeeds"], 1),
-      range("shards", "Weight shards available", 2, 0, 4),
-      choice("paths", "Relative shard paths", [
+      range("shards", "Weight files available", 2, 0, 4),
+      choice("paths", "Paths to weight files", [
         "Resolve correctly",
         "Resolve to the wrong folder",
       ]),
@@ -234,12 +234,14 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       {
         id: "small",
         label: "Two-shard model",
-        description: "The manifest names two weight shards, plus model.json.",
+        description:
+          "This model needs model.json and two binary weight files, called shards.",
       },
       {
         id: "large",
         label: "Four-shard model",
-        description: "The manifest names four weight shards, plus model.json.",
+        description:
+          "This model needs model.json and four binary weight files, called shards.",
         values: { shards: 3 },
       },
     ],
@@ -254,7 +256,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells(
-            "Asset request inputs",
+            "Model file setup",
             [
               `Manifest: ${required} shards`,
               v.graph === 1 ? "JSON request: succeeds" : "JSON request: fails",
@@ -269,7 +271,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             [required + 1, loaded + v.graph!, missing],
           ),
           cells(
-            "Required assets",
+            "Required model files",
             [
               v.graph === 1 ? "JSON ready" : "JSON missing",
               ...Array.from({ length: required }, (_, i) =>
@@ -281,7 +283,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: missing,
         answerLabel: "Required files unavailable",
-        explanation: `${loaded} of ${required} shards are available at the resolved URLs. ${v.paths === 1 ? "The wrong folder prevents every shard request from finding its file. " : ""}${missing === 0 ? "The asset check passes. Loading the actual graph and checking its input contract are separate checks." : "The model cannot complete loading until model.json and every referenced shard are available."}`,
+        explanation: `${loaded} of ${required} shards are available at the resolved URLs. ${v.paths === 1 ? "The wrong folder prevents every shard request from finding its file. " : ""}${missing === 0 ? "All required files are available. You still need to load the model and check its required input format." : "The model cannot complete loading until model.json and every referenced shard are available."}`,
         code: `const requiredShards = ${required};\nconst availableShards = ${loaded};\nconst assetsComplete = ${missing === 0};`,
       };
     },
@@ -289,9 +291,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "inference-pipeline": {
     title: "Prepare the exact input",
     brief:
-      "Inspect the values, their order and the batch axis before they reach the model.",
+      "Check the values, feature order and batch axis before sending the input to the model.",
     boundary:
-      "This activity applies a fixed scaler to example readings. It checks an input contract without running a model.",
+      "This scales example readings using fixed training values. It checks the required input format without running a model.",
     controls: [
       choice(
         "scale",
@@ -325,7 +327,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       },
     ],
     prediction: {
-      prompt: "How many input-contract checks pass?",
+      prompt: "How many input requirements does this setup meet?",
       unit: "of 3 checks",
     },
     evaluate: (v, caseId) => {
@@ -357,7 +359,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: passed,
         answerLabel: "Input checks passed",
-        explanation: `The model contract expects scaled temperature, pressure and vibration in that order, with shape [1, 3]. ${passed === 3 ? "This input matches all three requirements." : "A tensor with valid numbers can still violate scaling, feature order or shape."} The scales stay fixed because they come from training.`,
+        explanation: `The model expects scaled temperature, pressure and vibration in that order, with shape [1, 3]. ${passed === 3 ? "This input matches all three requirements." : "Valid numbers can still use the wrong scale, feature order or shape."} The scales stay fixed because they come from training.`,
         code: `const input = tf.tensor${v.batch === 1 ? "2d([" : "1d("}[${prepared.map(round).join(", ")}]${v.batch === 1 ? "]" : ""});`,
       };
     },
@@ -365,7 +367,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "onnx-runtime-web": {
     title: "Check graph and input compatibility",
     brief:
-      "Compare an exported graph with a provider's example support list and its named input contract.",
+      "Check whether the example provider supports the model’s operations. Then check the input name and shape.",
     boundary:
       "The operator support lists below are invented for this exercise. They do not describe current ONNX Runtime providers.",
     controls: [
@@ -405,7 +407,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells(
-            "Graph contract",
+            "Model requirements",
             [
               conv ? "Add + 1D Conv" : "Add + MatMul",
               "readings",
@@ -437,7 +439,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "transformers-js": {
     title: "Choose a pipeline that fits",
     brief:
-      "Compare the requested task, the model's permitted use and the download budget before choosing a pipeline.",
+      "Check whether the model fits the task, its license allows this use, and its files fit the download budget.",
     boundary:
       "These model profiles are invented examples. No pretrained model is downloaded or executed.",
     controls: [
@@ -499,16 +501,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: pass,
         answerLabel: "Selection checks passed",
-        explanation: `${pass === 3 ? "This profile meets the example selection requirements." : "Resolve every failed requirement before loading the pipeline."} Passing these checks does not establish output quality. Test the selected model and its processor on representative inputs.`,
+        explanation: `${pass === 3 ? "This model meets the example’s selection requirements." : "Resolve every failed requirement before loading the pipeline."} Passing these checks does not establish output quality. Test the model and its preprocessing on inputs like the ones your app will receive.`,
       };
     },
   },
   "model-profiling": {
     title: "Measure the complete prediction",
     brief:
-      "Decide whether the timing includes cold start and output readback, then compare repeated calls.",
+      "Choose whether to include startup and waiting for prediction results, then compare repeated calls.",
     boundary:
-      "These fixed timings and tensor counts illustrate measurement scope. They are not a device benchmark.",
+      "These example times and tensor counts show what your timer includes. They are not measurements from your device.",
     controls: [
       choice("cold", "Include cold initialization", [
         "Exclude it",
@@ -517,7 +519,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       choice(
         "read",
         "Timing stops",
-        ["After dispatch", "After output read"],
+        ["After queuing the work", "After reading the result"],
         1,
       ),
       range("runs", "Prediction calls", 5, 1, 10),
@@ -527,7 +529,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "clean",
         label: "Disposed temporaries",
         description:
-          "Each call takes 4 ms dispatch and 16 ms to finish/read. Initialization takes 80 ms. Temporary tensors are released.",
+          "Each call takes 4 ms to queue work and another 16 ms to finish and read the result. Startup takes 80 ms. Temporary tensors are released.",
       },
       {
         id: "leak",
@@ -572,16 +574,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: average,
         answerLabel: "Average measured time",
-        explanation: `${total} counted milliseconds divided by ${v.runs} calls gives ${average} ms per call. ${v.read === 0 ? "Stopping after dispatch misses completion and output readback. " : ""}${v.cold === 1 ? "Report cold start separately when comparing steady-state calls. " : ""}${retained} extra tensors remain. Rising retained counts need investigation even when timing looks stable.`,
+        explanation: `${total} counted milliseconds divided by ${v.runs} calls gives ${average} ms per call. ${v.read === 0 ? "Stopping after queuing work leaves out the time to finish and read the result. " : ""}${v.cold === 1 ? "Report cold start separately when comparing steady-state calls. " : ""}${retained} extra tensors remain. Rising retained counts need investigation even when timing looks stable.`,
       };
     },
   },
   "caching-strategies": {
     title: "Trace valid cache hits",
     brief:
-      "Replay a short request sequence. Change the cache key and storage limit to see valid hits, stale hits and evictions.",
+      "Replay a short list of requests. Change the cache key and capacity to see which saved results are reused, outdated or removed.",
     boundary:
-      "This is an in-memory LRU simulation with fixed requests. It performs no prediction and stores nothing between visits.",
+      "This simulates a cache that removes the least recently used entry when full. It makes no predictions and saves nothing between visits.",
     controls: [
       choice("key", "Cache key", ["Input only", "Input + model + scaler"], 1),
       range("capacity", "Maximum cached entries", 2, 1, 4),
@@ -662,9 +664,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "webgpu-acceleration": {
-    title: "Find the workload crossover",
+    title: "When is the GPU worth the overhead?",
     brief:
-      "Balance faster parallel work against fixed initialization and transfer time.",
+      "Compare faster GPU calculations with the extra time needed to start the GPU and transfer data.",
     boundary:
       "The cost rates are invented examples, not WebGPU measurements. No GPU or browser backend is used.",
     controls: [
@@ -690,7 +692,8 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       {
         id: "large",
         label: "Large transfer",
-        description: "Same compute rates. Transfer and readback cost 30 ms.",
+        description:
+          "Calculation speeds stay the same. Moving the data and reading the result take 30 ms.",
       },
     ],
     prediction: {
@@ -768,7 +771,8 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       },
     ],
     prediction: {
-      prompt: "How many draft claims are supported and traceable?",
+      prompt:
+        "How many draft claims have supporting measurements and a source ID?",
       unit: "claims",
     },
     evaluate: (v, caseId) => {
@@ -815,9 +819,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "prompt-engineering": {
-    title: "Make the output contract checkable",
+    title: "Check what the response must include",
     brief:
-      "Set requirements for a fixed response and inspect the validation failures those requirements expose.",
+      "Choose the required fields and evidence, then check what the example response is missing or gets wrong.",
     boundary:
       "This activity validates two fixed response objects. Prompt settings do not generate text or guarantee that a model follows them.",
     controls: [
@@ -891,9 +895,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "rag-for-signals": {
-    title: "Retrieve evidence for a specific claim",
+    title: "Find evidence for a specific claim",
     brief:
-      "Rank three archive records, then check whether the retrieved passage supports the requested fact.",
+      "Search three archive records, then check whether the returned passage supports the claim.",
     boundary:
       "Retrieval uses a small, fixed keyword score. It does not use embeddings, call a language model or prove a source is true.",
     controls: [
@@ -980,7 +984,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "report-generation": {
     title: "Assemble only checked sections",
     brief:
-      "Review observation, analysis and limits sections independently before releasing a report.",
+      "Check the observations, analysis and limitations separately before releasing the report.",
     boundary:
       "The sections and checks are fixed examples. This activity performs no text generation or report publication.",
     controls: [
@@ -1062,9 +1066,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "multi-model-systems": {
     title: "Validate the handoffs",
     brief:
-      "Follow a detector result into retrieval and a fixed explanation. Check each stage's contract before release.",
+      "Follow a detector result through an evidence search and an example explanation. Check each stage’s requirements before release.",
     boundary:
-      "The detector scores and explanation are example fixtures. No detector, retrieval service or language model runs here.",
+      "The detector scores and explanation are fixed examples. This activity does not run a detector, search service or language model.",
     controls: [
       range("threshold", "Detector alert threshold (%)", 70, 30, 90, 10),
       choice(
@@ -1130,7 +1134,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "system-architecture": {
     title: "Fit the pipeline into its budget",
     brief:
-      "Add stage costs and locate the stage that blocks a traceable report.",
+      "Add the time spent in each stage. Find what prevents a report from being completed or traced back to its input and model.",
     boundary:
       "The stage costs are fixed planning examples. This is not a performance measurement or production pipeline.",
     controls: [
@@ -1201,16 +1205,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         answerLabel: "Pipeline time spent",
         explanation: invalid
           ? "Rejecting a malformed record stops later stages. A missing reading is not an ordinary low model score."
-          : `The stage costs add to ${total} ms against a ${v.budget} ms budget. ${v.metadata === 0 ? "Without input and model IDs, the report cannot be traced back to its source and model version." : "Source and version IDs travel with the result."} Keep validation, resource limits and traceability as separate contracts.`,
+          : `The stage costs add to ${total} ms against a ${v.budget} ms budget. ${v.metadata === 0 ? "Without input and model IDs, the report cannot be traced back to its source and model version." : "Source and version IDs travel with the result."} Check input validity, resource limits and source IDs separately.`,
       };
     },
   },
   "ci-cd-pipeline": {
-    title: "Release the artifact that passed",
+    title: "Release the model bundle you tested",
     brief:
-      "Compare the candidate bundle with the tested bundle, then apply the held-out recall requirement.",
+      "Check that the proposed release matches the tested model bundle. Then check whether it finds enough held-out anomalies.",
     boundary:
-      "These hashes and evaluation results are fixtures. No build, CI job, evaluation or deployment runs here.",
+      "These version IDs and evaluation results are examples. This activity does not build, test or deploy a model.",
     controls: [
       choice("identity", "Candidate bundle", [
         "Same graph, weights and scaler",
@@ -1234,7 +1238,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           "The tested bundle finds 17 of 20 held-out anomalies: 85% recall.",
       },
     ],
-    prediction: { prompt: "How many release gates pass?", unit: "of 3 gates" },
+    prediction: { prompt: "How many release checks pass?", unit: "of 3 gates" },
     evaluate: (v, caseId) => {
       const recall = caseId === "lower" ? 85 : 95;
       const checks = [v.identity === 0, v.contract === 1, recall >= v.minimum!];
@@ -1273,7 +1277,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           ),
         ],
         answer: passed,
-        answerLabel: "Release gates passed",
+        answerLabel: "Release checks passed",
         explanation: `${v.identity !== 0 ? "The evaluation belongs to a different bundle. Test the replacement weights or scaler before releasing it. " : "The candidate is the same bundle that produced this evaluation. "}Recall is ${recall}% against a ${v.minimum}% requirement. A passing application build alone does not check these model requirements.`,
         code: `const release = ${checks[0]} && ${checks[1]} && ${checks[2]};`,
       };
@@ -1284,7 +1288,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Set limits for latency, missing inputs and a changed mean score. See which recorded metrics trigger review.",
     boundary:
-      "These are fixed monitoring windows. The score change is a review signal, not proof of drift, an anomaly or lost accuracy.",
+      "These are fixed monitoring examples. A score change needs investigation; it does not prove a data shift, an anomaly or lower accuracy.",
     controls: [
       range("latency", "Latency limit (ms)", 100, 50, 250, 10),
       range("missing", "Missing-input limit (%)", 5, 0, 20),
@@ -1363,9 +1367,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   documentation: {
     title: "Give the next watch enough context",
     brief:
-      "Complete a model card for a specific handover. Check whether its evaluation and recovery details answer the next watch's questions.",
+      "Complete the model card for the next watch. Include the evaluation results and what to do if the model needs to be rolled back.",
     boundary:
-      "This checks required fields in two example handovers. A complete card does not establish that its claims are correct.",
+      "Check the required fields in two example handovers. A complete card still needs evidence for its claims.",
     controls: [
       choice(
         "scope",
@@ -1449,7 +1453,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Check app files, model files, required services and a known reading at the target location.",
     boundary:
-      "These are fixture checks for a release rehearsal. No live URL, service, device or deployment is contacted.",
+      "These are example checks for a release rehearsal. The activity does not contact a real URL, service, device or deployment.",
     controls: [
       choice("assets", "Deployed assets", [
         "App and model complete",
@@ -1530,7 +1534,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: passed,
         answerLabel: "Target checks passed",
-        explanation: `${!canRun ? "A missing dependency prevents the known reading from completing the deployed path. " : !fixture ? "The complete path runs, but its known result differs from the expected result. " : "The known reading completes the checked path and matches the expected fixture. "}Local success is separate from checks at the deployed asset paths and target console.`,
+        explanation: `${!canRun ? "A missing dependency prevents the known reading from completing the deployed path. " : !fixture ? "The complete path runs, but its known result differs from the expected result. " : "The known reading completes the full path and matches its expected result. "}Local success is separate from checks at the deployed asset paths and target console.`,
         code: `const targetChecks = [${checks.join(", ")}];\nconst canLaunch = targetChecks.every(Boolean);`,
       };
     },

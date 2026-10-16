@@ -165,7 +165,11 @@ You will rehearse training and verify deployment checks, including how the proce
   ]}
 />
 
-The deployment record is fixed. At 0157, DEEP SCAN went to a single bridge console on a live pulse. One console takes the new build first and runs on live data while the rest of the fleet stays on the old one. That is a canary: a bad build reaches one console instead of all of them. The classifier it replaces kept scoring the same captures beside it, its verdicts going to the log and nowhere else; that parallel run is the shadow model. The canary's thirty verdicts all matched it, and fleet-wide followed two minutes later with the window still open. Before the hour closed, ARIA ran the three alternative deployment policies and filed the transcripts, unrequested, under `deploy/counterfactuals`. Her index line reads: simulations, three; deploys, one.
+The recorded deployment stays the same whichever policy you rehearse. At 0157, DEEP SCAN went to one bridge console during a live pulse. The rest of the fleet kept the old build. This is a **canary**: if the new build fails, it initially affects one console.
+
+The previous classifier scored the same captures in parallel, sending its results only to the log. This is a **shadow model**. All thirty canary verdicts matched it. The fleet received the new build two minutes later, while the window was still open.
+
+Before the hour ended, ARIA simulated the other three policies. She filed their transcripts, unrequested, under `deploy/counterfactuals`. Her index reads: simulations, three; deploys, one.
 
 ## Production Build
 
@@ -230,7 +234,9 @@ The inventory separates the small classifier from the fictional language compone
 
 ## Deploy and Verify
 
-Two deployment shapes appear in this lesson. The helper below is one smoke gate after artifact verification. The other is the hot canary from the decision above: ship to ONE console, watch it against live data for a fixed interval, then roll fleet-wide only if it holds. Canaries trade a slice of your window for a bounded blast radius; the suite spends time on specified checks, which can still miss failures. Use pre-release checks before a canary, then define the conditions for wider rollout. Agreement with a shadow model is a regression check, not evidence that both are correct.
+This lesson shows two checks. The helper below runs a small set of smoke tests after verifying the model files. The canary runs the new build on one console with live data for a fixed time. Only expand to the fleet if it passes the agreed conditions.
+
+A canary takes part of the available window but limits how many consoles receive a bad build. Run pre-release checks first, and decide when to stop or expand the canary. Agreement with the shadow model can catch a change in behavior; it does not prove both models are right.
 
 <CodeBlock language="typescript" title="deploy.ts">
 {`interface DeployedPipeline {
@@ -357,7 +363,7 @@ Sample 7741 now triggers the combined rule, but 0.518 and 0.999 come from differ
 
 ## The Interval Train, in Ratios
 
-Farah's decomposition handed the crew a sequence, not a test. The sequence is the sub-pulse gaps, 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it. What a classifier can check is the sequence divided through: each gap over the gap before it, which drops the units and leaves six numbers.
+Farah found gaps of 1, 1, 2, 3, 5, 8, and 13 between the sub-pulses. Each gap after the first two is the sum of the previous two. To check this pattern at different scales, divide each gap by the one before it. The seven gaps become six ratios with no units.
 
 <CodeBlock language="text" title="interval-ratios.txt">
 {`gaps      1     1     2     3     5     8     13
@@ -367,25 +373,27 @@ ratios          1.0   2.0   1.5   1.667 1.6   1.625`}
 
 Three properties of that list are what the finale exercise grades.
 
-Dividing removes the scale. Farah's capture was in seconds and the sequence is unitless, and both decompose to the same six ratios. That is the reason the calibration overlay lined up at all.
+The ratios stay the same if every gap is multiplied by the same number. That is why the gaps measured in seconds line up with the calibration sequence.
 
 Successive Fibonacci ratios approach the golden ratio, about 1.618. This exercise checks only the displayed finite template. It assumes every recording ends at the same final gap, so a shortened recording is a suffix of that template. General recordings can end elsewhere; they need alignment and a minimum evidence length. One matching ratio is weak evidence, not a unique identification of the Fibonacci sequence.
 
-Measured seconds do not divide exactly. Even in the archive's rounded slice, 11.7 over 7.2 comes back as 1.6249999999999998, and a live capture misses by more than that, so a match is a band around each expected ratio rather than an equality. The width of that band is a false-alarm decision like every other cutoff in module 7: too tight and the real train is rejected by rounding, too loose and a metronome starts qualifying.
+Measurements and floating-point arithmetic introduce small differences. In JavaScript, 11.7 / 7.2 gives 1.6249999999999998, and a live capture can differ by more. Allow a band around each expected ratio instead of requiring exact equality. A narrow band can reject real patterns; a wide one can accept unrelated patterns. Choose it with the same care as the alert thresholds in module 7.
 
 ## Challenge
 
-Write the runner under that verification script: every check in order, each one awaited before the next starts, and a deployment that passes only when all of them do.
+Write the verification runner. Run the checks in order and await each one before starting the next. The deployment passes only if every check passes.
 
 A verifier also needs a deadline for each check. On timeout, report the failed check and skip its dependents. An abort signal requests cancellation, but the check must cooperate; a timeout alone cannot stop its work.
 
 <Exercise slug="verify-deployment" />
 
-Then run the rehearsal Nazari would demand before the relay slot, which starts a step earlier than the verification script does. Take the rehearsal candidate, the untrained three-feature binary net standing in for the eleven-feature classifier so the whole chain fits one run, normalize the archive rows the way module 4 does, train it, score the canary set, and gate the result. Preprocess, fit, predict, drift check, verdict. If any stage fails the answer is hold, a single leaked tensor counts as a failure, and the update count the optimizer kept has to agree with the loss trace you report, because a rehearsal nobody can check is a rehearsal that did not happen.
+Next, help Nazari rehearse training before the relay slot. This small exercise uses an untrained three-feature binary model in place of the eleven-feature classifier. Normalize the archive rows using module 4's rule, train the model, score the canary set, and apply the release gate.
+
+If a stage fails, hold the launch. Leave no leaked tensors. Report the loss history from that fit and the optimizer's actual update count so the run can be checked.
 
 <Exercise slug="launch-rehearsal" />
 
-And then the one the whole season was for. The console transcript above is what the bridge SAW at zero hour; this is the decision layer under it, and you write it yourself: the three-detector vote from module 7, the interval decomposition Farah ran the night the anomaly landed, and the final classification record the crew signs their names to. Eleven modules of building. Run the inference.
+Finally, write the decision layer behind the bridge's zero-hour readout. Combine the three detector votes from module 7, check Farah's interval ratios, and return the classification the crew will sign. The supplied scores are fictional mission values; this exercise applies the decision rule to them.
 
 <Exercise slug="classify-anomaly" />
 
@@ -396,12 +404,12 @@ For your own project, choose a labeled task and split by time, person or other r
 <IndependentProject />
 
 <RecallPrompt
-  question="Describe the evidence and compatible artifacts you need to verify a deployed model rollback."
-  answer="Both restore versioned artifacts. Neither automatically undoes database writes, migrations, or external actions. A model rollback must also restore compatible preprocessing and be checked on current data, which may differ from the data used to train the old weights."
+  question="What must you restore and check when rolling back a deployed model?"
+  answer="Restore the previous model and its matching preprocessing. Verify the versioned files and check performance on current data, which may differ from the old training data. A rollback does not automatically undo database writes, migrations, or actions already taken."
 />
 
 <RecallPrompt
-  question="Interpret a detector majority without assuming independent evidence."
+  question="What does a two-out-of-three detector vote tell you?"
   answer="All three score the same capture. The statistical gate reads the amplitude channel min-max normalized, the autoencoder reads that same channel z-scored: one hull sensor read twice. The autoencoder and LSTM draw from the same archive, though the LSTM used its first day. Contamination in both selections can weaken both votes. Read a vote of 2 as two detector thresholds crossed. It is not two independent proofs or a probability of anomaly."
   checks={[
     {
@@ -467,7 +475,7 @@ Calibration's clean. I checked it four times. Those are our harmonics, in a sign
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-Then either the universe loves the same math we do, phyllotaxis, the way a sunflower packs its seeds, and shell spirals and Fibonacci everywhere; or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
+Fibonacci patterns also appear in nature, in sunflower seed layouts and shell spirals. Maybe this signal has a natural explanation. Or something out there heard us and answered in our own voice. The model can't choose between those explanations. That part was never its job.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
@@ -475,7 +483,9 @@ Arithmetic, for the record. The source is 4.2 light-years out; anything arriving
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-One number of my own, while the ledger is open. My reconstruction error was 4.1 times baseline when I measured it, and it has not come down. I am built from the same instrument chain whose ratios this signal is mirroring. And the oldest coincidence aboard is still open, the one Dr. Farah put on a board in module 5 and no one has explained since: the line inside each pulse stands at 73.4 hertz, and the gap between pulses, the first time anyone measured it, came back as the same digits in seconds. A frequency and a period are not the same kind of quantity. They returned the same number anyway. I note both correlations. I resolve neither.
+One measurement of my own: my reconstruction error was 4.1 times baseline, and it has not come down. I am built from the same instrument chain whose ratios match this signal.
+
+Dr. Farah's question from module 5 is also unanswered. The frequency inside each pulse is 73.4 hertz. The first measured gap between pulses had the same digits in seconds. Frequency and time are different quantities. We do not know why the numbers match. I note both correlations. I resolve neither.
 </Dialogue>
 
 <Dialogue speaker="ARIA">

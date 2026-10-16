@@ -2,14 +2,14 @@ slug: prompt-template
 lessonSlug: prompt-engineering
 title: "Build a Prompt Template"
 instructions: |
-  Build a multi-line prompt from signal.amplitude, signal.frequency and signal.phase. Keep these four sections in order:
+  Build a multi-line prompt from signal.amplitude, signal.frequency, and signal.phase. Keep four parts in this order, on separate lines:
 
-  1. A role line naming DEEP SCAN and its job: classify, label or categorize signals.
-  2. A separate reference line naming the natural frequencies 5, 12, 23 and 47 Hz. Keep the current reading off this line.
-  3. One labeled line per signal value: Amplitude, Frequency and Phase, taken from the argument.
-  4. A request for JSON containing classification, confidence and reasoning. You may also ask for no surrounding prose.
+  1. A role line naming DEEP SCAN and its task: classify, label, or categorize signals.
+  2. A reference line listing natural frequencies 5, 12, 23, and 47 Hz. Do not put the current reading on this line.
+  3. The supplied signal values, each on its own line labeled Amplitude, Frequency, or Phase.
+  4. A request for JSON with classification, confidence, and reasoning. You may also ask for no text around the JSON.
 
-  Rebuild the signal section on every call. The grader checks this template's structure and data, with several accepted role wordings. It cannot judge whether an LLM will follow the prompt or whether its answer is correct.
+  Read the signal values from the argument on every call. The checks accept several ways to word the role and verify the prompt's structure and data. They cannot prove an LLM will follow the prompt or produce a correct answer.
 starterCode: |
   interface SignalInput {
     amplitude: number;
@@ -18,9 +18,8 @@ starterCode: |
   }
 
   function buildPrompt(signal: SignalInput): string {
-    // Four parts in a fixed order, and no single line may carry two of them.
-    // What is true of every capture stays apart from what arrived in the
-    // argument. That split is the decision here.
+    // Keep the role, reference facts, current readings, and requested format
+    // on separate lines, in that order.
     return null; // your code here
   }
 solutionCode: |

@@ -12,10 +12,10 @@ scene:
 estimatedMinutes: 14
 difficulty: beginner
 context:
-  narrative: "ARIA's rule-based detection system has failed. Dr. Farah proposes building an adaptive system, starting with a single computational unit."
+  narrative: "ARIA's rules cannot classify the unfamiliar signal. Farah starts with one neuron, a small function the crew can later train."
   speaker: "Dr. Farah"
 concept:
-  explanation: "A neuron is a weighted sum of inputs plus a bias: arithmetic small enough to write by hand, and the unit every network is built from. The activation function that usually gets named in the same breath is deliberately absent here; you meet it in lesson 2, once this lesson has shown you what it is for."
+  explanation: "A neuron multiplies each input by a weight, adds the results, then adds a bias. You will write that calculation here. The next lesson adds an activation function."
   bridge:
     jsTitle: "Array.reduce()"
     jsCode: "inputs.reduce((sum, x, i) => sum + x * weights[i], bias)"
@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "A neuron is one computation: multiply each input by its weight, sum the products, and add the bias."
   - level: guidance
-    content: "The whole vector goes through one tensor operation rather than a loop over its values. The bias reaches the result while it is still a tensor, so nothing has to come out through dataSync(). And the body has to work on arguments it has never seen: the grader calls neuron() again with its own inputs, weights and bias, and it raises a single weight to check that only that weight's own input moves the output."
+    content: "Use one tensor operation to combine all the input-weight pairs. Add the bias while the result is still a tensor. The function must work with new inputs, weights, and bias values, not just the example in the starter."
   - level: solution
     content: "return tf.tidy(() => tf.dot(inputs, weights).add(bias));"
 keywords:
@@ -40,7 +40,9 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-The calibration bench holds the ship's two reference tones, the cleanest labeled data aboard: this one is tone A, that one is tone B, a fresh labeled example every time either plays. ARIA's rules name them perfectly, every time, and have since launch. The stream out of Sector 7-G is the problem: it is neither tone, and the rules aboard do not classify it usefully. A learned model will still need relevant examples and evaluation; changing the implementation does not supply that evidence.
+The calibration bench plays two known signals, tone A and tone B. Each gives the crew an example with a known label. ARIA has named both correctly since launch.
+
+The signal from Sector 7-G matches neither tone. Farah wants to start with a small model they can test on known examples. Success on those tones will not prove it understands the unknown signal.
 
 <Dialogue speaker="Dr. Farah">
 ARIA's current rules miss this pattern. Start with a small function whose parameters training can adjust. We can check the arithmetic on the labeled calibration tones before asking it anything about the unknown signal.
@@ -50,7 +52,7 @@ You will build a neuron that combines several readings into one weighted score.
 
 <LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
 
-## The Simplest Learning Machine
+## Combine inputs into one score
 
 A neuron takes inputs, multiplies each by a weight, sums the products, adds a bias, and emits one number. You've written this exact pattern with `Array.reduce()`.
 
@@ -62,7 +64,7 @@ A neuron takes inputs, multiplies each by a weight, sums the products, adds a bi
 // A neuron with 3 inputs
 const inputs = tf.tensor([0.5, 0.8, 0.2]);   // sensor readings
 const weights = tf.tensor([0.4, -0.2, 0.6]);  // hand-picked weights
-const bias = tf.scalar(0.1);                   // threshold offset
+const bias = tf.scalar(0.1);                   // constant added to the score
 
 // The neuron computation: weighted sum + bias
 const output = tf.tidy(() => tf.dot(inputs, weights).add(bias));
@@ -80,17 +82,23 @@ Each weight scales its own input: a positive weight pushes the output up, a nega
 
 ## Reading the Weights
 
-Those three numbers are hand-picked so the arithmetic stays followable; training will overwrite every one of them in module 3. These weights are easy to interpret because this is one affine function. In a deeper network, later weights and activations also affect the final output. Practice the local reading here, on inputs that mean amplitude, frequency, and phase.
+The three weights were chosen to make the arithmetic easy to check. Module 3 will show how training changes them. Here, one neuron reads amplitude, frequency, and phase. We can trace each input's effect directly. A deeper network has later layers that also affect the result.
 
-Sign is direction. Weight 0.4 on amplitude: louder pushes the verdict up, moderately. Weight -0.2 on frequency says this neuron treats higher frequency as mild evidence AGAINST. Run the flip to feel it: change `-0.2` to `+0.2` in the code above and the same reading scores 0.58 instead of 0.26, identical evidence now arguing for the other side.
+A weight's sign tells you which way its input moves the score. The amplitude weight is `0.4`, so a higher amplitude raises the score. The frequency weight is `-0.2`, so a higher frequency lowers it. Change `-0.2` to `+0.2` above: the same reading scores 0.58 instead of 0.26.
 
-Magnitude is sensitivity, not importance. A weight says how much the output moves per unit of that input, so the vote an input casts is weight times input. Run the row: amplitude contributes `0.5 * 0.4 = 0.20`, frequency `0.8 * -0.2 = -0.16`, phase `0.2 * 0.6 = 0.12`. Per unit of phase, 0.6 is the loudest coefficient here. Phase still cast the smallest vote of the three in size, 0.12 against 0.20 and 0.16, because it read low on this sample. Because all three features were mapped onto the same 0-1 scale, the weights are comparable to each other as per-unit sensitivities. What they cannot tell you is which input drove one particular reading; that is the vote, and the vote changes with the sample.
+A larger weight means the score changes more for each unit of that input. To find the contribution for one reading, multiply input by weight:
+
+- Amplitude: `0.5 * 0.4 = 0.20`.
+- Frequency: `0.8 * -0.2 = -0.16`.
+- Phase: `0.2 * 0.6 = 0.12`.
+
+Phase has the largest weight, but makes the smallest contribution here because its input is small. All three inputs use the same 0-1 scale, so their weights can be compared as sensitivity per unit. The contribution still depends on the reading.
 
 A small coefficient gives this unit low sensitivity to that input in its current units. It does not prove that the feature is globally unimportant, unnecessary or causally unrelated to the target.
 
 ## Challenge
 
-Build your first neuron: the weighted sum behind every verdict this ship will ever make.
+Help Farah build one neuron that combines the readings into a score.
 
 <Exercise slug="implement-neuron" />
 

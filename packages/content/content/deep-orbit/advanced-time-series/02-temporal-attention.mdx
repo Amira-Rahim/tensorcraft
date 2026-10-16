@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 12
 difficulty: advanced
 context:
-  narrative: "Demir applies attention specifically to the temporal dimension: the model learns to 'scroll to' the most relevant time steps in each signal window."
+  narrative: "Demir applies attention across time. The model gives each step in a signal window a weight, then combines the readings using those weights."
   speaker: "Ensign Demir"
 concept:
   explanation: "Temporal attention scores each time step and forms a weighted summary. It still computes every score. The weights double as a map of where the model looked."
@@ -26,10 +26,10 @@ consequence:
 hints:
   - level: nudge
     content: |
-      Two halves. Score every step first (position concatenated onto the readings, then softmax), then collapse [T, d] down to [d] with every timestep contributing in proportion to its weight.
+      Add a position column to the readings and calculate one score per step. Apply softmax to those scores. Use the weights to combine the original [T, d] readings into one [d] summary.
   - level: guidance
     content: |
-      The scorer carries one more row than the readings have columns, and that spare row is what position is worth to it. Two things to keep straight. The scores come out one per step, and softmax needs them flat before it can spread weight over the steps. And what you pool is the readings you were handed, not the widened copy you scored: a summary one number too wide is that mistake.
+      The scorer has d + 1 rows: one for each feature and one for position. Flatten its output before softmax so the weights run across time steps. Use those weights on the original readings, not the copy with the position column. The summary must contain d numbers, not d + 1.
   - level: solution
     content: |
       function temporalAttention(sequence, scorerWeights) {
@@ -60,7 +60,7 @@ The attention weights are like a heatmap over time. I can see exactly WHERE the 
 
 You will add position information to an attention scorer and use its weights to summarize a sequence.
 
-<LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Read the weights back as one number per time step and name the steps that took the most of the budget", "Use attention weights as a where-it-looked map, and state what they do not prove about why", "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"]} />
+<LearningObjectives objectives={["Apply attention across the time steps in a sequence", "Read one weight per step and identify the largest weights", "Explain what an attention plot shows and why it does not prove what caused a prediction", "Build the temporal attention path for the DEEP SCAN analyzer: score every step, softmax, then pool the window"]} />
 
 ## Temporal Attention Layer
 
@@ -69,19 +69,17 @@ You will add position information to an attention scorer and use its weights to 
 <CodeBlock language="typescript" title="temporal-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The scoring function is MODULE STATE, created once. Its weights come
-// from training the surrounding model: an encoder, this scorer and a
-// prediction head, updated together under one loss. That update runs as
-// a manual optimizer.minimize loop over this whole forward pass. It
-// cannot go through model.compile and model.fit as written. Inside a
-// compiled graph scorer.apply hands back a SymbolicTensor, which carries
-// no tensor methods, so the next line stops with "TypeError:
-// scores.squeeze is not a function". Reach for tf.softmax or tf.sum on
-// that same value and you get the refusal one step later, worded as an
-// argument error. Everything below is the forward pass, so the weights it
-// reads out mean something only after that training has happened. A
-// fresh layer inside the function would score every call with brand-new
-// random weights and never learn at all.
+// Create the scorer once and keep it between calls.
+// Train it with the encoder and prediction head under one loss,
+// using a manual optimizer.minimize loop over the full forward pass.
+// This function does not work inside model.compile/model.fit as written.
+// There scorer.apply returns a SymbolicTensor without tensor methods:
+// "TypeError: scores.squeeze is not a function".
+// tf.softmax or tf.sum would also reject that symbolic value.
+//
+// The code below only runs the forward pass. Its weights need training
+// before they can mean anything. Creating a new layer on every call
+// would replace its learned weights with new random ones.
 const scorer = tf.layers.dense({ units: 1 });
 
 // Temporal attention: score each time step's importance
@@ -113,7 +111,11 @@ function temporalAttention(
 // 74 steps apart inside the 80-step window`}
 </CodeBlock>
 
-Three counts run through this lesson and two of them carry the same number, so pin all three before reading a heatmap. A step is one reading, and the dashboard's readings land one per second, so the first and last timestamps in 80 readings are 79 seconds apart. The spike and the frequency shift sit 74 steps apart because the interval measured in module 5 is 73.4 s: on a one-per-second grid the shift lands four tenths of a second past reading 77, so reading 78 is the first one that carries it. Module 6 measured the same 74-step dependency and then sized its window at 80 to hold it, enough room for both sampled events. The 64-sample capture in the next block is not a step count. It is 64 samples of one channel at 256 Hz, a quarter of a second, and that is the stretch a single reading's three features are measured over. The 64 channels from module 1 are a different 64 again: that count says how many sensors report, not how long anything lasts.
+Keep three counts separate. A dashboard time step is one reading, arriving once per second. The first and last timestamps in an 80-reading window are 79 seconds apart.
+
+The spike and frequency shift are 74 steps apart on that grid. Their measured gap is 73.4 s (seconds). The shift arrives 0.4 seconds after step 77, so step 78 is the first reading that includes it. Module 6 chose an 80-step window to hold both events.
+
+A 64-sample capture means something else: 64 samples from one channel at 256 Hz, covering a quarter of a second. We calculate each reading's three features from that capture. The ship's 64 sensor channels are a separate count again. They describe how many streams report, not how much time passes.
 
 ## Interpreting Attention Weights
 
@@ -139,26 +141,24 @@ function topAttentionSteps(
     .slice(0, topK);
 }
 
-// Fictional mission readings, not output from the untrained layer above. Readings are raw
-// sensor values, not normalized ones: amplitude in hull counts (0 to
-// 2048), frequency as a zero-crossing count over the 64-sample capture
-// (0 to 63), phase in radians.
+// Fictional mission readings, not outputs of the untrained layer above.
+// These use raw units: amplitude 0 to 2048 hull counts, frequency as a
+// zero-crossing count from 0 to 63 over 64 samples, and phase in radians.
 // Step 78: weight=0.15, reading=[635, 40, 1.57]   ← frequency shift
 // Step 4:  weight=0.12, reading=[1980, 37, 0.23]  ← amplitude spike
 // Step 40: weight=0.09, reading=[1065, 37, 0.89]  ← mid-pattern
-// A crossing count does not identify a frequency exactly: phase, offset,
-// mixtures, noise and the finite window all matter. Use the FFT and raw
-// waveform to investigate the apparent shift. Blanking a step can measure
-// model sensitivity, but may create unrealistic inputs; it does not prove
-// the physical cause or fully explain a prediction.
+// A crossing count does not uniquely identify frequency. Phase, offset,
+// mixtures, noise, and window length affect it. Check the FFT and waveform.
+// Removing a step tests sensitivity but can create unrealistic inputs.
+// That test alone does not prove a physical cause or explain the prediction.
 `}
 </CodeBlock>
 
 ## Applied: Attention Over a Live Ring Buffer
 
-The heatmaps above assume the model gets the whole window. On the bridge array it gets whatever the capture buffer kept, and storage is tight enough that the tempting move is the browser one: virtualize. Keep the steps around the predicted event, drop the rest, let a viewport stand in for the sequence.
+The heatmaps above assume the model receives the whole window. The bridge only has the data its capture buffer saved. To save storage, it is tempting to keep readings near the predicted event and discard the rest, as a virtualized list keeps only nearby rows on screen.
 
-Attention has a failure mode built exactly for that trick, and one truncated buffer is enough to see it:
+Here is what happens when part of the window is missing:
 
 <CodeBlock language="typescript" title="ring-buffer-attention.ts">
 {`// One full capture cycle from the ring buffer: 80 steps, 3 features.
@@ -186,7 +186,9 @@ Both weight sums are 1. That normalization says nothing about confidence or miss
 
 ## Putting the Position Back
 
-Lesson 1 left a debt. The scorer above reads feature values and nothing else, so two windows holding the same readings in a different order pool to the identical summary: each weight follows its own reading, and the sum does not care what order they arrived in. On this crew's data that is the difference between a spike that precedes a frequency shift and one that follows it, and the model cannot see it. Transformers commonly add position information through embeddings, relative scores or rotations. The cheapest honest version is one extra feature: the step's position, scaled to [0, 1], concatenated onto the readings before scoring.
+The scorer above only sees feature values. If you reorder the same readings, each weight follows its reading and the weighted sum stays the same. It cannot tell whether a spike came before or after a frequency shift.
+
+Give it position information too. This example adds one feature: each step's position scaled to [0, 1]. Transformers can use learned position vectors, relative scores, or rotations. Our extra column is a simpler version.
 
 <CodeBlock language="typescript" title="positional-feature.ts">
 {`// [batch, T, 3] -> [batch, T, 4]: the fourth feature is position / (T - 1)
@@ -226,15 +228,15 @@ Build the temporal attention path with position as a scored feature, then read t
 <Exercise slug="temporal-attention" />
 
 <RecallPrompt
-  question="Use an attention plot as evidence with limits."
-  answer="They form a probability distribution over time steps via softmax, so you can inspect WHERE the model allocated its weight: which positions received the largest coefficients in the pooled representation. Their value vectors also determine each contribution. That is a map of where the model looked, not a verified explanation of WHY it decided. Attention weights can sit on positions whose values barely change the output, and different weightings can yield the same prediction (the attention-is-not-explanation caveat). Use these plots alongside input checks, ablations and error analysis, not as a substitute for them."
+  question="What can an attention plot tell you, and what does it leave uncertain?"
+  answer="The weights sum to one and show which time steps received more weight. A step's contribution also depends on its values. A large weight does not prove that step caused the prediction, and different weights can produce the same result. Check the inputs, compare prediction errors, and try removing parts of the input to see what changes. The plot is a starting point, not a complete explanation."
   checks={[
     {
       "kind": "choice",
       "question": "What can a plot of temporal attention weights directly show?",
       "options": [
         {
-          "text": "Which time steps received larger coefficients in the pooled representation.",
+          "text": "Which time steps received larger weights in the summary.",
           "feedback": "The weights show allocation across time steps; the value vectors also determine their contributions."
         },
         {
@@ -262,7 +264,7 @@ Build the temporal attention path with position as a scored feature, then read t
           "feedback": "Softmax normalizes weights; it does not validate explanations."
         },
         {
-          "text": "Input checks, ablations and error analysis.",
+          "text": "Check inputs and errors, and test what changes when parts of the input are removed.",
           "feedback": "Attention plots are a starting point for investigation, not a substitute for evaluating the decision."
         }
       ],
@@ -286,7 +288,9 @@ Build the temporal attention path with position as a scored feature, then read t
 
 <Epilogue>
 
-Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record around each predicted re-entry (the 47-minute clock) and discards the rest. By the third re-entry the onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
+The bridge is running short of storage. Demir borrows the idea behind a virtualized list: keep only the part he expects to need. He records around each predicted return on the 47-minute cycle and discards the rest.
+
+By the third return, every capture is missing its beginning. The signal keeps arriving earlier than expected, before his recording window starts.
 
 <Dialogue speaker="Chief Nazari">
 Seven captures, six hours, all missing their first thirty-two seconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.

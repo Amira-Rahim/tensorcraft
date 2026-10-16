@@ -2,29 +2,29 @@ slug: verify-deployment
 lessonSlug: launch
 title: "Verify a Deployment"
 instructions: |
-  Write the runner under the launch script. It takes an array of checks and answers with one verdict for the whole deployment.
+  Help Demir run the deployment checks. Write `verifyDeployment(checks, timeoutMs = 1000)` and return one result for the whole run.
 
-  Reject a malformed result as a failed check: require a non-empty string name,
-  a boolean passed and a string message. Truthy strings must not pass a gate.
+  Each check is an async function that receives an `AbortSignal` and returns `{ name, passed, message }`. It can ignore the signal if it has no cancellable work. Require a non-empty string name, a boolean passed, and a string message. Treat malformed results as failures; a truthy string must not pass. Require a finite, positive `timeoutMs`.
 
-  A check is an async function receiving an AbortSignal and returning `{ name, passed, message }`. It may ignore the argument when it has no cancellable work. timeoutMs must be a finite positive number.
+  Run checks one at a time, awaiting each before starting the next. Keep results in call order. If a check throws or rejects, record a failure named `check N`, where N is its 1-based position. Use the error's message, then continue with the next check.
 
-  1. Run the checks one at a time, awaiting each before the next one starts. A later check can depend on work an earlier one finished: load the model, then probe it.
-  2. Collect every result in call order under `checks`.
-  3. A check that throws is a failed check, not a lost run. Catch it, record a check named `check N` for its 1-based position with `passed: false` and the error's message as `message`, then carry on. A rejection has settled; a never-settling promise needs a timeout.
-  4. The deployment passes only when every check passed. A verification with no checks in it measured nothing, so it fails, and its summary reads `0/0 checks passed`.
+  Give each check `timeoutMs` to finish. On timeout:
+
+  - Record a failed `check N` with a message containing "Timed out".
+  - Signal cancellation.
+  - Do not start any remaining checks. Record each as failed with "Skipped after timeout".
+
+  Clear each timer when its check settles. A timeout stops waiting, but `Promise.race` cannot stop the underlying work. A check may ignore cancellation. Ordinary rejections still allow later checks to run.
 
   Return:
 
       {
-        passed: boolean,       // true only when checks ran and every one passed
-        checks: CheckResult[], // one per check, in call order
-        summary: string,       // '2/3 checks passed'
+        passed: boolean,       // true only for a non-empty run where every check passed
+        checks: CheckResult[], // one result per supplied check, in order
+        summary: string,       // for example, '2/3 checks passed'
       }
 
-  The grader runs real TFJS inference probes through your runner: an output-range contract, an anomaly-probe gate, and a calm-probe gate against a live scoring function.
-
-  Give each check timeoutMs to settle. On timeout, record a failed check named check N with a message containing "Timed out", signal cancellation and record all remaining checks as failed with "Skipped after timeout". Do not start them: Promise.race does not stop underlying work, and a check may ignore cancellation. Clear each timer after settlement. Ordinary rejections still allow later checks to run. This is a reporting timeout, not a guarantee that external work stopped.
+  An empty run fails with `0/0 checks passed`. The checks include real TFJS inference: output range, an anomaly input, and a calm input.
 hints:
   - level: nudge
     content: |
@@ -117,8 +117,8 @@ starterCode: |
     //   CheckResult      { name, passed, message }
     //   DeploymentResult { passed, checks, summary }
     //
-    // One of these checks loads the model a later one probes, so when each
-    // one runs is part of the contract, not an implementation detail.
+    // A later check may need the model loaded by an earlier one.
+    // Keep the required order.
     return null; // your code here
   }
 solutionCode: |

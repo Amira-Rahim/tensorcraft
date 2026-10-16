@@ -13,7 +13,7 @@ context:
   narrative: "DEEP SCAN flags a signal that doesn't match any known category. Nazari challenges: is the model broken, or have they found something new?"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Anomaly detection models normality and flags deviation from it. You cannot catalog every possible anomaly. A baseline describes the normal examples you have observed and still needs validation."
+  explanation: "Anomaly detection learns what normal readings look like, then flags readings that differ. You cannot list every possible anomaly in advance. Build a baseline from reviewed normal readings, then check it on separate data."
   bridge:
     jsTitle: "Performance Baseline"
     jsCode: "if (LCP > baseline * 1.5) alert('performance regression')"
@@ -22,14 +22,14 @@ concept:
     tier: structural
     breaks: "Both performance and sensor baselines can shift without a deployment. Network conditions, device mix, or operating conditions may change. Recheck a baseline against recent, independently reviewed data. Crossing a threshold is a decision rule, not a calibrated probability or proof of a fault."
 consequence:
-  narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Demir begins building a model of normality."
+  narrative: "The crew needs to define what a normal reading looks like before deciding which readings to flag. Demir starts with the readings they have already checked."
 hints:
   - level: nudge
     content: |
-      Compare the distance with the supplied spread. What happens when that spread is zero?
+      Compare the reading’s distance from the mean with the supplied standard deviation, std. What should happen when std is zero?
   - level: guidance
     content: |
-      For positive spread, compare the absolute z-score with 3. At zero spread there is no z-score; use the stated equality policy. Reject non-finite values and negative spread.
+      Compare the reading’s distance from the mean with the baseline’s standard deviation. Check both directions. When all baseline readings are identical, there is nothing to divide by, so use the exercise’s exact-equality rule. Check input validity first.
   - level: solution
     content: |
       function isAnomaly(value, mean, std) {
@@ -58,25 +58,27 @@ That is the whole problem, Chief. We trained it to recognize what things are. No
 How do we know which? How do we tell a genuine anomaly from a false alarm?
 </Dialogue>
 
-Monitoring works the same way whatever you ship. You pick a budget for the numbers you care about: for example, Largest Contentful Paint under 2.5s in a browser or p99 response time under 200ms on a Node service. A measured baseline tells you how the system currently behaves; the budget sets what you will accept. Then you alert when a value drifts past it. Anomaly detection makes the same move: define what "normal" looks like, then flag whatever lands outside it.
+Monitoring starts with a limit. For a browser, you might want Largest Contentful Paint below 2.5 seconds. For a Node service, you might want p99 response time below 200 milliseconds. That is the response time that 99% of requests finish within.
+
+A baseline measures how the system currently behaves. A budget sets what you will accept. Anomaly detection uses a similar idea: describe normal readings, then flag readings beyond a chosen cutoff.
 
 You will define a baseline for normal readings and use z-scores to flag readings outside it.
 
-<LearningObjectives objectives={["Understand anomaly detection as modeling normality rather than cataloging every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score gate and evaluate a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
+<LearningObjectives objectives={["Learn what normal readings look like instead of trying to list every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score cutoff and test a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
-  prompt="Tonight Demir builds the training set: eleven days of archive, 28,800 readings, minus every window with a confirmed event label. The filter halts on Sample 7741, which has no event label, so nothing removes it. It sits inside every baseline he has computed, and its earlier classifier score was ambiguous. Train on it, or pull it? Your call, operator."
+  prompt="Demir is preparing 28,800 readings from eleven days of archive for training. He removes every window labeled as a confirmed event. Sample 7741 has no event label, so the filter keeps it. Its values fit every baseline he has checked, but its earlier classifier score was unclear. Should he train on it or leave it out? Your call, operator."
   options={[
     {
       label: "cooperate",
       display: "Give it an event label so the filter drops it with the rest",
-      consequence: "The filter removes it. The flag log now reports a confirmed event on a reading nobody confirmed. Every later pass that screens on that log inherits the guess as a fact, and nothing in the file says a human made a call."
+      consequence: "The filter removes it, but the log now calls it a confirmed event without evidence. Later filters will treat that guess as fact. Nothing in the file records who made the decision."
     },
     {
       label: "defect",
       display: "Pull it out and log the exclusion with your reasons",
-      consequence: "The reading stays out of this fit, with its uncertain status recorded. Exclusion may help if it is anomalous, or remove useful variation if it is normal. The log lets the next reviewer inspect that choice."
+      consequence: "The reading stays out of training, and the log explains that its label is uncertain. Leaving it out may help if it is anomalous. If it is normal, you may lose a useful example. The next reviewer can check your reason."
     },
     {
       label: "random",
@@ -85,13 +87,13 @@ You will define a baseline for normal readings and use z-scores to flag readings
     },
     {
       label: "dominant",
-      display: "Exclude it and register an unlabeled diagnostic probe",
-      consequence: "The reading stays outside training and becomes a named diagnostic probe. Its label remains unknown. Because you selected it after seeing a suspicious score, it is not an unbiased test of generalization. Later replays can compare behavior; accuracy still needs independently labeled examples."
+      display: "Keep it out of training and save it as an unlabeled test case",
+      consequence: "The reading stays out of training and is saved for later checks. Its label is still unknown. You chose it because its score looked suspicious, so it cannot fairly measure performance on new data. You can compare later results, but accuracy still needs separate, independently labeled examples."
     }
   ]}
 />
 
-## Modeling Normality
+## Define what normal looks like
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -142,7 +144,11 @@ console.log(isAnomaly(1.00, baseline));  // true: 3.2 sigmas, the most a spike c
 console.log(isAnomaly(0.00, baseline));  // true: 3.47 sigmas, the far end of the scale`}
 </CodeBlock>
 
-Amplitude arrives here already normalized: module 4 divides the hull sensor's count by its 2048-count full scale, so no reading can come in above 1.00. Against mean 0.52 and std 0.15, a channel pegged at full scale is 3.2 sigma out. A dead channel reading 0.00 is 3.47 sigma, and nothing on this feature reads past those two ends. The gate at 3 sigma therefore fires on amplitudes above 0.97 or below 0.07, the top three and the bottom seven hundredths of the 0-to-1 scale. That is a slice of the scale, not a flag rate. Measure the false-alarm rate on separate, reviewed normal readings. A bounded sensor distribution is not exactly Gaussian. The sigma count stays small however loud the event is. If a sigma count above 3.47 turns up on this feature, look for a units bug before you believe the reading.
+Module 4 divides the hull sensor's count by its physical maximum of 2048. The resulting amplitude stays between 0.00 and 1.00. With mean 0.52 and standard deviation 0.15, the maximum is 3.2 standard deviations above the mean. A dead channel at 0.00 is 3.47 below it.
+
+A 3-sigma cutoff therefore flags amplitudes above 0.97 or below 0.07. Those intervals cover part of the scale. They do not tell you how often readings fall there. Measure false alarms on separate normal readings that people have reviewed. This physically bounded feature does not follow an exact Gaussian distribution.
+
+Even a large event cannot push this feature beyond the sensor's limits. If its z-score has an absolute value above 3.47 against this baseline, check the units before trusting the result.
 
 <DerivationDrawer summary="When does a 3-sigma cutoff imply a probability?">
 A z-score measures distance in units of standard deviation. Computing it does not require a Gaussian distribution. The claim that about 0.27% of normal readings exceed three sigmas does: it uses a Gaussian population and its true mean and standard deviation. Estimates from a small sample add uncertainty.
@@ -156,7 +162,9 @@ Measure both per-channel rates and the distribution of simultaneous flags on rep
 
 ## Precision vs Recall
 
-The sigma count is a dial between two kinds of error, both of which you met in module 3's evaluation drawer: false positives (calm readings flagged, the wolf cried) and false negatives (real anomalies missed, the watch asleep). Loosen the dial to 2 sigma and you catch more anomalies at the price of more false alarms; tighten it to 4 and the alarms go quiet along with some of the real events. Nazari wants zero false positives, because each one is investigation time. Farah wants zero false negatives, because the signal is the mission. When the score distributions overlap, no threshold can eliminate both kinds of error. A perfectly separating sample can exist, but does not guarantee perfect future detection. The right one depends on which error costs more, and lesson 4 works that trade through with numbers. The two ratios that score any threshold are module 3's:
+The cutoff changes two kinds of error: false positives are normal readings flagged as anomalies, and false negatives are anomalies the detector misses. Lowering the cutoff to 2 sigma catches more anomalies but also flags more normal readings. Raising it to 4 reduces alerts but misses more events.
+
+Nazari wants fewer false alarms because each one takes time to investigate. Farah wants fewer misses because finding the signal is the mission. When normal and anomalous scores overlap, one cutoff cannot remove both errors. Even a perfect split on today's sample does not guarantee perfect detection tomorrow. Lesson 4 compares the costs. First, here are precision and recall from module 3:
 
 <CodeBlock language="typescript" title="precision-recall.ts">
 {`interface DetectionResult {
@@ -180,7 +188,7 @@ function recall(r: DetectionResult): number | null {
 
 ## Challenge
 
-Turn a baseline you are handed into a verdict: flag the readings that sit more than three spreads from the mean, in either direction.
+Use the supplied mean and standard deviation to check each reading. Flag it when it is more than three standard deviations above or below the mean.
 
 <Exercise slug="detect-anomaly" />
 
@@ -204,24 +212,24 @@ PAGER, two weeks after go-live: alerts have increased on readings a human review
 
 <LessonRecap
   whatYouLearned={[
-    "Anomaly detection works by modeling what is normal, then flagging anything that deviates beyond a learned or computed threshold.",
+    "Anomaly detection starts with normal readings and flags values beyond a chosen cutoff.",
     "Z-score thresholding is the simplest approach: flag values that fall more than N standard deviations from the mean of normal data.",
-    "Expected flag counts add across channels. The probability of simultaneous flags depends on their dependence, so measure shared disturbances before choosing an alert policy.",
+    "Add the expected flag counts across channels. To estimate how often several channels flag together, also check how they affect each other.",
     "A changed baseline is a candidate for evaluation, not an automatic deployment. Investigate changes in level or spread and check misses as well as false alarms on separate examples.",
     "Raising a fixed-score threshold cannot increase recall, but precision need not improve at every step. Choose the cutoff using measured errors and operational costs."
   ]}
   bridge="Performance and anomaly alerts both compare measurements with a chosen baseline. Either baseline can drift, and crossing a cutoff calls for investigation."
-  youCanNow="Compute baseline statistics from normal data, apply z-score thresholding to flag anomalous signals, and decide, when the baseline drifts under you, whether to roll it forward or investigate."
+  youCanNow="Calculate a baseline, flag readings with z-scores, and decide what to investigate before replacing a baseline that has changed."
 />
 
 <Epilogue>
 
-The filter takes four seconds to strip eleven days down to a training set, then stops on one row and waits for a human.
+The filter takes four seconds to turn eleven days of readings into a training set. Then it stops at one reading and waits for someone to decide.
 
 <Dialogue speaker="Ensign Demir">
 If I leave it in, I ask the model to reconstruct it. If I pull it out, I need a reason the next watch can check.
 </Dialogue>
 
-He attaches the baseline report to the run configuration. The raw capture stays unchanged, so the next watch can audit both the row and the decision.
+He saves the baseline report with the training settings. The original capture stays unchanged, so the next crew can check the reading and see why he kept or removed it.
 
 </Epilogue>

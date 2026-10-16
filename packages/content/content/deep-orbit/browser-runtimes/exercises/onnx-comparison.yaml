@@ -1,14 +1,23 @@
 slug: onnx-comparison
 lessonSlug: onnx-runtime-web
 title: "Compare Runtime Outputs and Timing"
-instructions: "Build `compareRuntimes(model, modelPath, signal)`. Return `{ tfjsMs, onnxMs, outputsAgree }` after sending the same three numbers through both runtimes as a [1, 3] float32 input. The TFJS model is already loaded; create the ONNX session with `executionProviders: ['wasm']`. Exclude loading from inference timings. Read `performance.now()` before inference and after awaiting its output. `outputsAgree` is true when the actual returned scores differ by at most 0.0001. Dispose your TFJS input and prediction, and release the ONNX session after use, including on failure. The supplied model belongs to the caller. This exercise uses an ONNX stand-in and a controlled clock: a single timed call does not choose a backend. Use the real lab for repeated measurements on a target device."
+instructions: |
+  Build `compareRuntimes(model, modelPath, signal)`. Send the same three numbers through both runtimes as a [1, 3] float32 input. Return `{ tfjsMs, onnxMs, outputsAgree }`.
+
+  The TensorFlow.js model is already loaded. Create the ONNX session with `executionProviders: ['wasm']`. Keep loading outside the timers. For each prediction, read `performance.now()` before it starts and after its output has been awaited.
+
+  Set `outputsAgree` to true when the two returned scores differ by at most 0.0001. Compare the actual outputs rather than calculating the answer yourself.
+
+  Dispose your TensorFlow.js input and prediction. Release the ONNX session after use, even if a prediction fails. Keep the supplied model alive; it belongs to the caller.
+
+  The ONNX side and clock are simulated for these tests. Use the real lab for repeated speed measurements on a supported device.
+
 starterCode: |
   import * as ort from 'onnxruntime-web';
 
   async function compareRuntimes(model, modelPath, signal) {
-    // Two runtimes, one reading. Every difference you leave between the two
-    // setups ends up inside the measurement. Report the numbers the runtimes
-    // handed back rather than ones you worked out.
+    // Give both runtimes the same reading.
+    // Time completed predictions, then compare the outputs they returned.
     return { tfjsMs: 0, onnxMs: 0, outputsAgree: false };
   }
 solutionCode: |
@@ -184,7 +193,7 @@ testCode: |
       expect(fed.data[0], sameInput).toBeCloseTo(SIGNAL[0], 5);
       expect(fed.data[1], sameInput).toBeCloseTo(SIGNAL[1], 5);
       expect(fed.data[2], sameInput).toBeCloseTo(SIGNAL[2], 5);
-      expect(out.outputsAgree, 'This session was rigged to answer with a number drawn during this run, far from what TF.js returns, so the two runtimes did NOT agree on this call. Reporting that they did means the comparison used a number your own code produced rather than the one run() resolved to.').toBe(false);
+      expect(out.outputsAgree, 'This test changed the ONNX output so it differs from TensorFlow.js. Compare the value returned by run(), not a score calculated by your own code.').toBe(false);
     });
   });
 estimatedMinutes: 15

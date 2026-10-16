@@ -38,14 +38,13 @@ starterCode: |
   ];
 
   async function trainForecaster(xs, ys, epochs, providedModel) {
-    // Nothing here is a fixed size: the shapes arrive with the tensors.
+    // Read the window and feature dimensions from xs.shape.
     return null; // your code here
   }
 
   function forecastMultiStep(model, seed, windowSize, steps, scaler) {
-    // LIMITS are in raw counts and the model answers in z-scores, so one
-    // side has to move before the two can be compared. What comes back at
-    // each turn is what the next turn reads.
+    // Convert LIMITS to z-scores using the saved scaler.
+    // Clamp each prediction before adding it to the next input window.
     return null; // your code here
   }
 solutionCode: |
@@ -248,7 +247,7 @@ testCode: |
     ).toBeTruthy();
     expect(
       rows && typeof rows.then === 'function',
-      'forecastMultiStep came back as a Promise. The rollout is synchronous: model.predict returns a tensor you read with dataSync(), so nothing in the loop has to be awaited and the function does not have to be async.',
+      'Return the forecast array directly, not a Promise. This loop uses synchronous predict() and dataSync().',
     ).toBe(false);
     expect(Array.isArray(rows), 'The forecast comes back as a list of readings, oldest first.').toBe(
       true,
@@ -430,7 +429,7 @@ testCode: |
       roll(spyModel(), seedRows(), 3, 4, COARSE);
       expect(
         tf.memory().numTensors - before,
-        'Live tensors have to come back to where they started. Each step builds a window tensor and reads a prediction tensor back, and neither is garbage collected: run the tensor work inside tf.tidy, or dispose what you allocate before the next step. Over the 47-step horizon in the lesson a loop that skips this leaks two per step.',
+        'Release each step’s temporary input and output tensors. Use a synchronous tf.tidy callback or explicit disposal so the count returns to its starting value.',
       ).toBe(0);
     });
 
@@ -523,7 +522,7 @@ testCode: |
       const tight = roll(spyModel(), seedRows(), 3, 4, TIGHT);
       expect(
         tight,
-        'Two scalings of one sensor put the same physical limit in two different places, so these two runs cannot come back identical. A forecast that does not move with the scaler is clamping against numbers that were fixed before it read one.',
+        'The same physical limit has different z-score values under different scalers. Calculate bounds using the supplied mean and standard deviation.',
       ).not.toEqual(coarse);
     });
 

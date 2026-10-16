@@ -14,7 +14,7 @@ context:
   narrative: "ARIA flags a concern: 'Deployment is not the end. Model performance can change as inputs and their relationship to labels change. We must watch.' Demir builds the monitoring dashboard."
   speaker: "ARIA"
 concept:
-  explanation: "ML monitoring watches the failures that never throw: confidence decay, latency creep, and inputs drifting quietly away from the training distribution."
+  explanation: "ML monitoring watches changes that may not throw an error: model scores, prediction times, and inputs that differ from the training data. These changes tell you what to investigate."
   bridge:
     jsTitle: "App Monitoring"
     jsCode: "Sentry.captureException(error); // track errors, performance, user impact"
@@ -93,7 +93,7 @@ keywords:
 skillAxes: [deployment, evaluation]
 ---
 
-Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. The 0249 crash made that argument, and nobody has reopened it.
+At 0249, the bridge dashboard ran out of memory and froze mid-frame. It threw no exception and logged no error. The crew's first warning was the screen going dark. They now want DEEP SCAN's monitoring to warn them while there is still time to act.
 
 <Dialogue speaker="ARIA" expression="emphasis">
 Commander, I must flag a concern. The model performs at 91.8% accuracy now. That measurement does not establish future accuracy. The signal characteristics in this region of space are not stationary. Without monitoring, we may miss a failure until someone checks an outcome.
@@ -107,7 +107,7 @@ So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set,
 
 You will track prediction scores, inference times, and input drift to support investigations after deployment.
 
-<LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and the prediction-side class mix", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
+<LearningObjectives objectives={["Track model scores and how often each class is predicted", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
 <BossBeat
   beatId="deep-orbit-drift-response"
@@ -246,7 +246,7 @@ Watch the output distribution too: class proportions and score histograms can ch
 
 ## Challenge
 
-Build the monitor: confidence average, latency percentiles off the recorded inference times, and a drift score against the baseline.
+Build the monitor. Average the recorded confidence scores, calculate percentiles from prediction times, and compare recent feature means with the baseline.
 
 Render an absent measurement as "No data". A measured zero distance only says the means match; it does not rule out changes in spread or class mix.
 
@@ -280,8 +280,8 @@ Render an absent measurement as "No data". A measured zero distance only says th
 />
 
 <RecallPrompt
-  question="Explain how you would investigate a drift alert when trusted labels for recent predictions have not yet arrived."
-  answer="In this mission, recent predictions arrive before their trusted labels. The monitor knows what DEEP SCAN said and how confident it was, not whether it was right, so there is no live accuracy to read. Scores and drift do not replace labels. Evaluate when trusted outcomes arrive, record their coverage and delays, and investigate changes before choosing an intervention."
+  question="How would you investigate a drift alert before the recent predictions have trusted labels?"
+  answer="The monitor knows DEEP SCAN's predictions and scores, but cannot tell whether they are right until trusted labels arrive. Investigate changes in the inputs, sensors, and preprocessing first. When labels arrive, measure accuracy and record how many predictions have labels and how long labeling took. Scores and drift cannot replace that evaluation."
 />
 
 <LessonRecap
@@ -292,14 +292,20 @@ Render an absent measurement as "No data". A measured zero distance only says th
     "Specify the percentile convention and measurement boundary. Render an absent measurement as No data."
   ]}
   bridge="Application monitoring tracks operation and errors. Model monitoring adds data distributions and delayed outcome labels; a shift is a signal to investigate, not proof of failure."
-  youCanNow="Implement a model health monitor that averages prediction confidence, reads a latency percentile off the recorded inference times, and scores data drift as the distance between the recent feature means and a training-time baseline."
+  youCanNow="Build a monitor that averages model scores, reports prediction-time percentiles, and measures the distance between recent feature means and the training baseline."
 />
 
-> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. Last quarter it paged his cell for three straight days, every feature mean shifted at once, score pinned above threshold. Nothing in the world had changed: their own maintenance rotation had recalibrated the camera rig, and the detector was faithfully reporting the distance between the old sensors and the new ones. The check compares means; it cannot identify why they differ. They corrected the preprocessing, checked labeled outcomes and approved a post-calibration baseline. The paging stopped. The line Hassan then added to the runbook travels well: when drift fires, read the maintenance log before you read the sky.
+> **DISPATCH archive · field intercept #19-M:** Hassan's dashboard uses the same drift check. Last quarter, it paged him for three days because every feature mean had shifted. Maintenance had recalibrated the cameras; the scene they recorded had not changed.
+>
+> The check detected different means but could not explain why. His team corrected the preprocessing, checked labeled outcomes, and approved a new post-calibration baseline. The pages stopped. Hassan added a runbook step: check the maintenance log when a drift alert fires.
 
 <Epilogue>
 
-The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the whole shift in one place: fft_5, centered at 72 Hz and receiving energy from the nearby 73.4 Hz component, higher every hour. Both alerts are that same bin, six hours apart, and the pulse interval stamped on the second one reads 37.0 seconds. Under both alerts, the triangulation job posts its overnight fix, the third in a row to land on the same answer: bearing 127.3, stable for a week now, distance estimate settling toward 4.2 light-years.
+On its first night, the monitor pages the bridge twice. Model confidence stays at 0.94 and prediction time at 5 milliseconds. Both alerts concern input drift.
+
+Demir checks the features. The change is in fft_5, centered at 72 Hz, which receives energy from the nearby 73.4 Hz component. Its value rises every hour. The alerts arrive six hours apart, and the second records a pulse interval of 37.0 seconds.
+
+The triangulation job also returns its third matching result: bearing 127.3, stable for a week, with the distance estimate settling toward 4.2 light-years.
 
 <Dialogue speaker="Dr. Farah">
 The input changed. We still need reviewed outcomes to know whether accuracy changed. Keep the raw captures for the next watch.

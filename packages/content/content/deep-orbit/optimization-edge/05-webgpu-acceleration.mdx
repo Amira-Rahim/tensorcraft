@@ -13,7 +13,7 @@ context:
   narrative: "Nazari asks Demir to test another available backend and measure the fallback on the oldest console."
   speaker: "Chief Nazari"
 concept:
-  explanation: "WebGPU exposes compute pipelines. TensorFlow.js can use them for supported tensor operations; performance still depends on the workload and device."
+  explanation: "WebGPU lets TensorFlow.js run supported tensor calculations on the GPU. Whether it is faster depends on the model, browser, and device."
   bridge:
     jsTitle: "Canvas WebGL"
     jsCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
@@ -25,7 +25,7 @@ consequence:
   narrative: "The dashboard survives the rehearsal. The crew records separate hit, miss and backend timings before approving the optimization stack."
 hints:
   - level: nudge
-    content: "Every name in the ladder gets one attempt. A backend that refuses, whichever way it refuses, is a reason to try the next one rather than a reason to stop."
+    content: "Try each backend once, in the supplied order. If it returns false or throws, try the next one. Stop at the first success."
   - level: guidance
     content: |
       Continue after either false or an exception from setBackend. Stop at
@@ -79,7 +79,7 @@ The bridge has another backend available. Time the same model on it, and show me
 So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
 </Dialogue>
 
-A WebGL tensor backend can store values in textures and compute through fragment shaders. WebGPU exposes compute shaders suited to operations such as matrix multiplication and reduction. Both incur dispatch, data-transfer and synchronization costs; the API alone does not determine speed.
+A WebGL backend can store tensor values in textures and calculate results with graphics shaders. WebGPU provides compute shaders for calculations such as matrix multiplication and sums. Both take time to start work, move data, and wait for results. The API name alone does not tell you which is faster.
 
 You will try backends in preference order and check that each one works before selecting it.
 
@@ -145,7 +145,9 @@ console.log('Using backend:', backend);
 // model card keeps the two on separate lines.`}
 </CodeBlock>
 
-Check both resolved values and exceptions. In TFJS 4.22, a registered backend can fail initialization and resolve false; an unregistered name throws. A name reported during a failed transition is not proof that operations work. The function above checks readiness, explicitly tries CPU last and throws if nothing starts. The exercise isolates the selection contract using a controlled runtime; the downloadable lab checks actual backends and predictions.
+Check the returned value as well as errors. In TFJS 4.22, a registered backend can fail to start and resolve false. A backend that was never registered throws. A reported backend name after a failed attempt does not prove it can run operations.
+
+The example checks readiness, tries CPU last, and throws if nothing starts. The exercise tests this selection logic with a controlled runtime. The downloadable lab tests real backends and predictions.
 
 <Dialogue speaker="Dr. Farah">
 A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here; we still have to measure device support, transfer costs and completed inference.
@@ -181,7 +183,7 @@ output.dispose(); // warmInput belongs to the caller
 // execution time; repeat trials and report distributions.`}
 </CodeBlock>
 
-The millisecond figures are fictional scene data. The runtime lab records actual backend, device and model measurements. Run the pattern yourself and the absolutes will move; the discipline is the part that transfers. A GPU benchmark without the readback inside the clock is timing how fast you can ask, and the crew has been burned by that number once already.
+These timings are fictional story values. The runtime lab records real measurements for a named backend, device, and model. Your results will differ. Keep the output readback inside the timed section so you measure a finished prediction. The crew has already paid for trusting a timer that stopped too soon.
 
 ## The Complete Optimization Stack
 
@@ -229,12 +231,12 @@ console.log('part of the bundle carrying a scoreboard.');`}
 
 ## Challenge
 
-Walk a preference order and return the backend that is actually running, reading what each attempt resolves to rather than trusting that it did not throw.
+Try the backends in the supplied order. Check whether each attempt returns true, then return the backend that started. An attempt can fail without throwing.
 
 <Exercise slug="gpu-backend" />
 
 <RecallPrompt
-  question="Treat a backend speedup as a measurement to establish."
+  question="Why might WebGPU help, and how would you check whether it does?"
   answer="WebGPU exposes compute shaders suited to tensor operations. That can help, but operator implementations, transfer and setup costs matter too. Setup can dominate small workloads; the scene’s 3x gain is fictional. Benchmark your actual model and device; WebGPU can also lose."
   checks={[
     {
@@ -281,7 +283,7 @@ Walk a preference order and return the backend that is actually running, reading
 />
 
 <RecallPrompt
-  question="A timer reports 0.4 ms because it stops immediately after predict()."
+  question="A timer stops just after predict() and reports 0.4 ms. What is missing?"
   answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms."
   checks={[
     {
@@ -331,7 +333,9 @@ Walk a preference order and return the backend that is actually running, reading
 
 <Epilogue>
 
-They run the rehearsal at 0247 on purpose, full telemetry suite and live feeds, on the bridge dashboard where the 340 MB build died four nights ago. The first load comes up on WebGL at 15 milliseconds: the dashboard's GPU is hiding behind a disabled flag, and Demir spends twenty minutes finding it before the second load lands on WebGPU at 5. The dashboard holds. Nazari runs the rehearsal from the engineering panel, the wasm seat, stopwatch out, and closes her oldest open ledger line herself. 45 milliseconds at that seat against 5 on the bridge's WebGPU, nine times slower end to end, and within that seat’s stated budget. Nazari records the missed-deadline count separately. The capture from that night is still gone, and stays gone; the rehearsal gives them one checked configuration for the next attempt.
+They deliberately start the rehearsal at 0247, with live feeds and the full telemetry suite. They use the bridge dashboard where the 340 MB build crashed four nights ago. It first runs WebGL at 15 milliseconds. Demir spends twenty minutes finding a disabled GPU flag, then reloads with WebGPU at 5 milliseconds. The dashboard holds.
+
+Nazari times the same rehearsal on the engineering panel using WASM: 45 milliseconds, nine times slower than the bridge's WebGPU, but within that panel's budget. She records the missed-deadline count separately and closes her oldest open ledger entry. The lost capture is still gone. This rehearsal gives them a checked configuration for the next attempt.
 
 <Dialogue speaker="Commander Mirza">
 The relay slot opens in fifteen days. Can you assemble the rest of the system in fourteen?

@@ -2,20 +2,19 @@ slug: generate-report
 lessonSlug: report-generation
 title: "Assemble a Report, Cut What Failed"
 instructions: |
-  Write `assembleReport(title, sections)` for sections with `{ heading, content, validated }`.
+  Write assembleReport(title, sections). Each section has { heading, content, validated }. The validated flag records a person's earlier review decision. Assembling the text does not check its claims.
 
-  Start with `# title` followed by a blank line. Keep validated sections in input order, each formatted as `## heading`, a blank line, then its content.
+  Start with # title followed by a blank line. Keep approved sections in the supplied order. Format each as ## heading, a blank line, and its content.
 
-  If any section is withheld, append one `## Withheld` block with a blank line and one `- heading` line per withheld section, in input order. Never copy withheld content. Omit this block when every section is approved.
+  If any section is not approved, add one ## Withheld block at the end. After a blank line, list each withheld heading as - heading in the original order. Never include its content. Leave out the Withheld block if every section is approved.
 
-  Join blocks with `\n\n---\n\n`, with no trailing separator. An empty sections array returns only the title and its following blank line. These booleans record prior review decisions; assembling markdown does not verify the claims.
+  Put \n\n---\n\n between blocks, with no separator after the last one. If sections is empty, return only the title and its following blank line.
 starterCode: |
   interface Section { heading: string; content: string; validated: boolean; }
 
   function assembleReport(title: string, sections: Section[]): string {
-    // Two kinds of section arrive and only one kind ships its text. The
-    // markdown layout is in the task. The decision here is what the document
-    // ends with when the validator turned something down.
+    // Include approved section text only.
+    // List the headings of any sections that were not approved.
     return null; // your code here
   }
 solutionCode: |

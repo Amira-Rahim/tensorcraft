@@ -2,23 +2,27 @@ slug: simple-network
 lessonSlug: building-a-network
 title: "What a Compiled Network Knows"
 instructions: |
-  Implement buildClassifier(): dense layers of 24 ReLU units with inputShape
-  [8], 12 ReLU units, and 1 sigmoid unit. Keep default initialization.
-  Compile with Adam, binaryCrossentropy and the accuracy metric.
-  This practice model has 529 parameters; the bridge model takes 3 features
-  and has 673.
+  Build two models so you can compare their scores before and after training.
 
-  Build two independent models. Before training, save the first model's
-  weights in initialWeights as one plain number array per weight tensor.
-  Record both models' predictions as number arrays, sweepOne and sweepTwo.
-  Train only the first with await model.fit(readings, labels,
-  { epochs: 50, batchSize: 16 }), then record its trainedSweep.
-  Leave the second model untrained as a control.
+  1. Write `buildClassifier()`. Add dense layers with 24 ReLU units and
+     `inputShape: [8]`, then 12 ReLU units, then 1 sigmoid unit. Keep the default
+     starting weights. Compile with Adam, `binaryCrossentropy`, and `accuracy`.
+  2. Build two independent copies. Before training, save the first model's
+     weights in `initialWeights`, as one JavaScript number array per weight tensor.
+  3. Run both untrained models on `readings`. Save their scores as number
+     arrays named `sweepOne` and `sweepTwo`.
+  4. Train only the first model with `await model.fit(readings, labels,
+     { epochs: 50, batchSize: 16 })`. Run it on the same readings again and
+     save its scores as the number array `trainedSweep`.
 
-  Rows 0-59 are synthetic calm examples and 60-119 are flagged examples.
-  Compare the scores before and after training. The grader verifies their
-  origin and the training schedule, not a required accuracy or score gap.
-  This uses the training rows again, so it cannot measure generalization.
+  Leave the second model untrained for comparison. Rows 0-59 are generated
+  calm examples; rows 60-119 are flagged examples. Report the scores you get.
+  The tests check the models, saved values, and training settings. They do not
+  require a particular accuracy or score gap.
+
+  This practice model has 529 parameters. The bridge model reads 3 features
+  and has 673. These scores reuse the training rows, so they cannot tell you
+  how well the model handles new data.
 starterCode: |
   // Given: Farah's rehearsal batch, 120 readings of eight values each. Rows
   // 0-59 are calm windows and rows 60-119 are flagged ones. The first three
@@ -143,14 +147,14 @@ testCode: |
       expect(model.loss).toBe('binaryCrossentropy');
       expect(
         model.metrics || [],
-        'Nothing is being tracked. The metrics list is the third compile setting, and it is the only one that changes what the training log reports rather than how the model learns.',
+        'Add accuracy to the compile metrics. Metrics change the training log, not the rule used to update the weights.',
       ).toContain('accuracy');
     });
 
     it('draws the second network separately, so there is something to compare against', () => {
       expect(
         second === model,
-        'The second network is the same object as the first. buildClassifier() has to be called twice: once the first one trains, a second name for it cannot show you what an untrained network does.',
+        'Call buildClassifier() twice to create independent models. A second name for the trained model cannot act as the untrained comparison.',
       ).toBe(false);
       expect(
         second.layers.length,
@@ -227,7 +231,7 @@ testCode: |
         );
         expect(
           largest,
-          'The biases in initialWeights are not zero, so the weights were read after fit() had moved them. The starting weights are the ones the initializer drew: read them before the training call.',
+          'Save initialWeights before fit() changes the weights and biases. The starting biases should be zero.',
         ).toBe(0);
       });
       const replica = tf.sequential();
@@ -237,7 +241,7 @@ testCode: |
       replica.setWeights(initialWeights.map((values, i) => tf.tensor(values, shapes[i])));
       expect(
         maxDiff(sweepOf(replica), readSweep('sweepOne', sweepOne)),
-        'Rebuilding the first network from initialWeights and re-running predict() does not reproduce sweepOne, so sweepOne is not that network answering while untrained. The before-picture has to come from the network itself, before fit() runs, with the weights kept from the same moment.',
+        'sweepOne must come from the first model before training, using the same weights saved in initialWeights.',
       ).toBeLessThan(1e-6);
     });
 
@@ -273,11 +277,11 @@ testCode: |
       ).toBe(0);
       expect(
         maxDiff(sweepOf(second), readSweep('sweepTwo', sweepTwo)),
-        'Re-running predict() on the second network does not reproduce sweepTwo, so sweepTwo is not that network answering. An untrained model is not random per call: the weights were drawn once, and every prediction after that is the same arithmetic.',
+        'Save sweepTwo from predict() on the second, untrained model. Its fixed starting weights produce the same scores on each call.',
       ).toBeLessThan(1e-6);
       expect(
         maxDiff(sweepOf(model), readSweep('trainedSweep', trainedSweep)),
-        'Re-running predict() on the trained network does not reproduce trainedSweep. Whatever is in trainedSweep, the model in front of the grader did not produce it.',
+        'Save trainedSweep from predict() on the first model after training. The saved scores must match that model.',
       ).toBeLessThan(1e-6);
     });
 

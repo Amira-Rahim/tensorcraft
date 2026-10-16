@@ -2,21 +2,18 @@ slug: prune-weights
 lessonSlug: pruning
 title: "Measure What Pruning Costs"
 instructions: |
-  Prune the five-class classifier at several sparsity levels and report per-class accuracy at each one, because one accuracy for the whole eval slice cannot tell you which class paid for the pass. Write pruneAndScore(model, samples, labels, levels).
+  Help Demir see which classes pruning hurts. Write `pruneAndScore(model, samples, labels, levels)` and report recall for each class at each requested sparsity level.
 
-  Return one entry per level, in the order you were given them, each shaped { sparsity, perClass }, where perClass[c] is recall for class c: the fraction of captures labelled c predicted as c, and a capture goes to whichever output is largest. perClass carries one entry per class, and the class count comes from the labels you were handed rather than from the number five, because the grader also runs a smaller probe model past this function.
+  Return entries in `levels` order, each shaped `{ sparsity, perClass }`. For class `c`, recall is the fraction of samples labeled `c` whose largest output is also `c`. Include classes 0 through `max(labels)`, using null when a class has no examples. Do not hardcode five classes; the checks also use a smaller model.
 
-  Four rules decide whether your numbers mean anything. (1) Pruning is global across the model: pool every weight from the 2-D kernel tensors in model.getWeights() into one ranking of absolute values, and never prune the 1-D bias tensors.
+  Follow these pruning rules:
 
-  (2) The cutoff is the lesson's: take the value at index floor(count * sparsity) in the sorted absolute values and zero every kernel weight strictly below it, so a level of 0 leaves the model untouched. At level 1, zero every kernel weight. Ties at an interior cutoff stay, so the level is a target rather than a guaranteed fraction removed.
+  1. Rank all weights from the model's 2-D kernel tensors together by absolute value. Leave 1-D bias tensors unchanged.
+  2. For a level below 1, use index `floor(count * sparsity)` in the sorted absolute values as the cutoff. Set weights strictly below it to zero. Level 0 leaves all weights unchanged. At level 1, zero every kernel weight. Ties at an interior cutoff stay, so the actual share removed can differ from the requested level.
+  3. Start every level from the original trained weights. Do not prune the previous level's result.
+  4. Restore the original weights before returning, even if scoring throws. Clone the original tensors first: `model.getWeights()` can share the model's live storage.
 
-  (3) Every level is measured against the ORIGINAL trained weights, not against the level before it.
-
-  (4) The model goes back to its original weights before you return, because the caller keeps using it, and model.getWeights() hands back tensors that share the model's live storage, so clone them before you put any pruned weights on the model, or your copy follows the model down the ladder. Levels are between 0 and 1.
-
-  Inputs contain a non-empty sample set with one nonnegative integer label per sample. Levels are finite and in [0, 1]; reject invalid levels. Report classes 0 through max(labels), using null where a class has no examples. Restore the original weights even if scoring throws. Dispose tensors created for pruning and scoring; the caller owns the model.
-
-  Call model.predict(input) for each level; the largest output chooses the predicted class.
+  The samples are non-empty, with one nonnegative integer label per sample. Reject levels that are not finite or outside [0, 1]. Call `model.predict(input)` at each level and use the largest output to choose the class. Dispose tensors created for pruning and scoring. The caller still owns the model.
 starterCode: |
   interface Classifier {
     getWeights: () => any[];
@@ -35,8 +32,8 @@ starterCode: |
     labels: number[],
     levels: number[],
   ): Promise<LevelReport[]> {
-    // The model holds one set of weights at a time, and every level needs
-    // the trained ones. Decide where those live before you zero anything.
+    // Every trial needs the original trained weights.
+    // Decide how to keep them before changing the model.
     return null; // your code here
   }
 solutionCode: |
@@ -287,7 +284,7 @@ testCode: |
         const commonLoss = commonMean(report[0]) - commonMean(report[3]);
         expect(
           anomalyLoss - commonLoss,
-          'At 80 percent the two lines have to separate: the rare class loses most of what it had while the common classes are still where they started. An aggregate accuracy averages that gap away, which is why this exercise asks for the breakdown.',
+          'At 80 percent pruning, recall falls sharply for the rare class while the common classes stay unchanged. Report each class separately; overall accuracy hides this difference.',
         ).toBeGreaterThanOrEqual(0.6);
       }));
 
@@ -396,7 +393,7 @@ testCode: |
 
         expect(
           report.map((row: any) => row.perClass),
-          'The weights in this probe, the captures, and how many of each the slice holds are drawn fresh on every run. The first two levels leave the model intact and the third takes both of the small weights, so each rare class keeps the captures riding the weight that survived and loses the rest. A ladder that reads the same whatever it was handed was not counted off these predictions.',
+          'Calculate recall from this run’s predictions. The checks vary weights, captures, and class counts. The first two levels leave the model unchanged; the third removes both small weights. Each rare class keeps only examples supported by a surviving weight.',
         ).toEqual([
           [1, 1, 1],
           [1, 1, 1],

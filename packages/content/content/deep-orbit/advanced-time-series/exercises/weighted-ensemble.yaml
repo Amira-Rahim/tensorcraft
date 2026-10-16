@@ -3,17 +3,23 @@ lessonSlug: time-series-ensemble-methods
 title: "Ensemble Gain Over the Best Member"
 mlContent: evaluation
 instructions: |
-  Write `ensembleGain(members, actual)` and report whether the ensemble was worth running.
+  Write ensembleGain(members, actual) to compare the combined predictions with the best individual model.
 
-  What you are given. `members` is an array of `{ name, predictions, heldOutError }`, where `heldOutError` is that member's strictly positive mean absolute error on LAST week's held-out readings. It is a fraction of that channel's range rather than a raw figure, so it is not on the same scale as the errors you compute here, and it is only ever used to build the weights. `actual` holds the true values at the same positions as `predictions`.
+  members contains { name, predictions, heldOutError } for each model. actual holds the true values at the same positions as predictions. heldOutError is that model's positive mean absolute error on last week's separate evaluation data, divided by its channel's range. Use it only to calculate weights. It is not on the same scale as the errors you measure on the current window.
 
-  What to return. `{ perMember, ensemble, weights, weighted, beatsBest }`. `perMember` maps each member name to that member's mean absolute error on this window. `ensemble` is the MAE of the plain average of the members' predictions at each position. `weights` maps each member name to its inverse-squared-error weight built from `heldOutError` alone: `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`, which puts the weights on a scale that totals 1. This is a heuristic: squared MAE is not error variance. `weighted` is the MAE of the blend that uses those weights instead of equal shares. `beatsBest` is about the plain average only: true when `ensemble` is lower than every member's error on this window. A tie is not a win.
+  Return { perMember, ensemble, weights, weighted, beatsBest }:
+  - perMember maps each model name to its mean absolute error on the current window.
+  - ensemble is the MAE when you average the predictions equally at each position.
+  - weights maps each name to w_i = (1 / e_i^2) / sum_j (1 / e_j^2), using heldOutError for e_i. The weights must sum to 1. This rule uses squared MAE, not error variance, so it does not guarantee the lowest possible variance.
+  - weighted is the MAE of predictions combined with those weights.
+  - beatsBest is true only when the equal-weight ensemble has lower MAE than every individual model on this window. A tie is not a win.
 
-  Assume non-empty arrays, unique member names, finite predictions aligned with actual, and finite positive heldOutError values. Use the prior week's errors only for the weights. To avoid overflow for tiny errors, normalize `(minError / e_i)^2`; the shared scale cancels, giving the same weights. Treat member names as ordinary keys, including JavaScript property names. Use the current window to compare the resulting predictions with every member. Shared errors may survive averaging, a weak member may worsen the blend, and an old ranking may no longer hold. Find the best member by score rather than array position.
+  Arrays are non-empty. Names are unique. Predictions are finite and aligned with actual. heldOutError values are finite and positive. To avoid overflow for tiny errors, normalize (minError / e_i)^2. The common scale cancels, so you get the same weights.
+
+  Treat model names as ordinary keys, including JavaScript property names. Find the best model by its score, not its array position. Shared errors may remain after averaging, a weak model can make the blend worse, and last week's best model may no longer be the best.
 starterCode: |
   function ensembleGain(members, actual) {
-    // The verdict is a comparison, so every member and both blends have to
-    // be scored by the same error measure.
+    // Use MAE to score every model and both blends on the same readings.
     return { perMember: {}, ensemble: 0, weights: {}, weighted: 0, beatsBest: false };
   }
 solutionCode: |

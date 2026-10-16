@@ -42,9 +42,8 @@ starterCode: |
     runs: number,
     now: () => number = () => performance.now(),
   ): Promise<ModelProfile> {
-    // avgInferenceMs and leakedTensors are measurements. The other three
-    // come out of the model's own counts, and which calls belong in that
-    // average is the decision.
+    // Measure prediction time and tensor counts.
+    // Read parameter and layer counts from the model.
     return null; // your code here
   }
 solutionCode: |
@@ -75,8 +74,7 @@ solutionCode: |
     const parameterCount = model.countParams();
     const memorySizeMB = (parameterCount * 4) / 1e6;
 
-    // Every layer, not only the ones holding weights: a row reading 0 is
-    // how the report shows a reshape owns nothing.
+    // Include layers with no parameters, such as reshape layers.
     const layerBreakdown = model.layers.map((layer) => ({
       name: layer.name,
       params: layer.countParams(),
@@ -84,9 +82,8 @@ solutionCode: |
 
     const before = tf.memory().numTensors;
 
-    // The warmup call pays the one-off compilation cost. It is not timed,
-    // so that cost does not land in the average below, and its pair is
-    // released like every other.
+    // Run one untimed warmup to allow initial compilation.
+    // Release its input and output too.
     const warmInput = createInput();
     let warmOutput;
     try { warmOutput = model.predict(warmInput); await warmOutput.data(); }
@@ -224,7 +221,7 @@ testCode: |
       // satisfies one model and no other. Two counts, one arithmetic.
       expect(
         small.memorySizeMB,
-        'This figure has to come out of the parameter count you read off the model and the 4 bytes a float32 occupies. A number carried over from the lesson fits one model only. Dividing by 1024 * 1024 gives MiB, which misses by about 5 percent.',
+        'Calculate size from this model’s parameter count at 4 bytes per float32. Divide by 1e6 for MB. Dividing by 1024 * 1024 gives MiB, a different unit.',
       ).toBeCloseTo(6.0, 1);
     });
 
@@ -276,7 +273,7 @@ testCode: |
       ).toBe(8);
       expect(
         calls.readbacks,
-        'Every call this profiler makes has to be read back, the warmup included. A warmup that is enqueued and dropped has warmed nothing: the compilation it was meant to pay for is still waiting for the first timed call, and the mean comes back inflated by it.',
+        'Read every output, including the warmup. In this check, the first readback includes compilation cost. Skipping warmup readback leaves that cost in the timed average.',
       ).toBe(8);
     });
 
@@ -287,7 +284,7 @@ testCode: |
         const profile = await profileOf(model, 2, () => tf.randomNormal([1, 11]));
         expect(
           tf.memory().numTensors - before,
-          'The grader counts live tensors either side of this call, and the loop left some behind: every input createInput() hands you and every output predict() hands back is yours to dispose once its values are out, the warmup pair included.',
+          'The live tensor count grew. Dispose every input from createInput() and every prediction output after readback, including the warmup pair.',
         ).toBe(0);
         expect(
           profile.leakedTensors,

@@ -2,25 +2,26 @@ slug: batch-data
 lessonSlug: data-loading
 title: "Build the Lazy Pipeline"
 instructions: |
-  Repair Demir's pipeline on the same 16-row stand-in as the visual. The supplied
-  readSample(i) returns three features and one label; it counts every read.
+  Help Demir process a small practice archive of 16 rows. The supplied
+  `readSample(i)` returns three features and one label. It counts every read.
 
-  1. Complete `sensorGen` as a lazy generator over IDs 0 through 15. Read each
-     sample inside the loop and yield `{ xs, ys }` tensors. One sample has
-     feature shape `[3]` and label shape `[1]`; do not collect the archive first.
-  2. Implement `makeDataset(source)` with shuffle buffer 10, then batch size 4.
-     Pass `tf.data.generator(sensorGen)` into it. This mixes individual samples;
-     repeated random groupings are allowed to coincide.
-  3. Await `dataset.forEachAsync`, adding each batch's `xs.shape` to the supplied
-     `batchShapes`. Four batches should each have shape `[4, 3]`. Finish the drain
-     before the code ends, and keep the generator reusable for a second pass.
-  4. Set plain arrays `trainIdx` and `valIdx`: earlier IDs 0–11 for training,
-     later IDs 12–15 for validation. Training order may be shuffled with
-     `tf.util.createShuffledIndices(12)`, but membership must stay separate.
+  1. Complete `sensorGen` as a generator for IDs 0 through 15. Read one sample
+     inside the loop, then yield `{ xs, ys }` tensors. Give `xs` shape `[3]`
+     and `ys` shape `[1]`. Do not read the whole archive before yielding.
+  2. Implement `makeDataset(source)`: shuffle with buffer size 10, then batch
+     with size 4. Pass `tf.data.generator(sensorGen)` into it. This shuffles
+     individual samples. Two random runs may happen to produce the same groups.
+  3. Await `dataset.forEachAsync` and add each batch's `xs.shape` to
+     `batchShapes`. There should be four `[4, 3]` batches. Wait until reading
+     finishes before the code ends. The generator must also support a second pass.
+  4. Set JavaScript arrays `trainIdx` and `valIdx`. IDs 0-11 go in training;
+     IDs 12-15 go in validation. You can shuffle the training order with
+     `tf.util.createShuffledIndices(12)`. No ID may belong to both sets.
 
-  The full-fixture pipeline demonstrates batching. A training run would read
-  only `trainIdx`. Feature order is amplitude, zero-crossing count, phase;
-  the supplied values are keyed to each row ID so the checks can trace them.
+  This first pipeline uses all 16 rows to demonstrate batching. A training run
+  would read only `trainIdx`. The three features are amplitude, zero-crossing
+  count, and phase, in that order. The practice values depend on each row's ID
+  so the tests can check which readings reach the pipeline.
 starterCode: |
   // Provided: lazy archive access (do NOT modify)
   let readCount = 0;
@@ -96,7 +97,7 @@ testCode: |
       // 2026-09-08).
       expect(
         batchShapes.length,
-        'There are no shapes to check yet, so this test had nothing to say. Drain the dataset and push each batch xs shape into batchShapes.',
+        'batchShapes is empty. Await the dataset read and add each batch\'s xs.shape.',
       ).toBeGreaterThan(0);
       for (const s of batchShapes) {
         expect(s, 'Four samples, three features each, on every batch including the last.').toEqual([
@@ -136,7 +137,7 @@ testCode: |
         expect(s.xs, 'Four samples, three features each.').toEqual([4, 3]);
         expect(
           s.ys,
-          'The labels stack into a column, one label per row of the batch, so each sample yields its label as a tensor with an axis rather than a bare number.',
+          'Each sample needs a label tensor shaped [1]. The labels then stack into one column, with one label per row.',
         ).toEqual([4, 1]);
       });
       expect(
@@ -185,23 +186,23 @@ testCode: |
         const i = Math.round(xs[0] / 100);
         rowsSeen.push(i);
         const featureWhy =
-          'A batch carried three numbers the archive never handed out. xs is the row readSample returned, in the order it returned it: amplitude in counts, frequency as a zero-crossing count, phase in radians.';
+          'Use the features returned by readSample in their original order: amplitude, zero-crossing count, and phase.';
         expect(xs.length, featureWhy).toBe(3);
         expect(xs[0], featureWhy).toBeCloseTo(i * 100, 3);
         expect(xs[1], featureWhy).toBeCloseTo(i, 5);
         expect(xs[2], featureWhy).toBeCloseTo(i / 10, 5);
         expect(
           ys,
-          'ys has to carry the label that arrived beside those features, for that same row. A label invented in the generator teaches the model nothing about the reading it sits next to.',
+          'Keep each row\'s label paired with its own features. Do not make up a different label in the generator.',
         ).toEqual([i % 2]);
       });
       expect(
         rowsSeen.slice().sort((x, y) => x - y),
-        'Every row the archive holds has to reach the pipeline once, with its own features. A generator that yields the same reading sixteen times reads sixteen rows and passes on none of them.',
+        'Read and yield every archive row exactly once, with its own features. Repeating one row does not meet the task.',
       ).toEqual(Array.from({ length: 16 }, (_, n) => n));
       expect(
         readsAtFirstBatch,
-        'One sample was asked for and the generator read more than one row to answer, so it is buying rows in blocks rather than yielding them as they are read. The whole archive is never supposed to be in flight at once, and neither is a block of it.',
+        'Read only one archive row when one sample is requested. Do not read a group of rows before yielding the first.',
       ).toBe(1);
       expect(bareBatches, 'Sixteen samples, one per batch.').toBe(16);
       expect(readCount - startCount, 'Every sample read once, none read twice.').toBe(16);
@@ -219,7 +220,7 @@ testCode: |
         .sort((a, b) => a - b);
       expect(
         all,
-        'Together the two sides cover every reading exactly once: no index missing, none on both sides. A reading the model trained on has no business in the validation set, and a reading on neither side was thrown away.',
+        'Every row ID must be in exactly one set. No ID may be missing or shared between training and validation.',
       ).toEqual(Array.from({ length: 16 }, (_, i) => i));
       expect(
         train.slice().sort((a, b) => a - b),

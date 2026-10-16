@@ -15,21 +15,21 @@ context:
   narrative: "Demir's first attempt at combining the feeds just crashed the console. Nazari wants it fixed, at sensor speed."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Tensors support element-wise and matrix operations like add, multiply, and matmul."
+  explanation: "Add or multiply values at matching positions, or use matrix multiplication to combine them into weighted sums."
   bridge:
     jsTitle: "Array.map()"
     jsCode: "arr.map((x, i) => x + arr2[i])"
     mlTitle: "tf.add()"
     mlCode: "tf.add(tensor1, tensor2)"
     tier: structural
-    breaks: "Array.map calls JavaScript for each element. tf.add dispatches a tensor operation to the selected backend, which may be CPU or accelerated. Performance depends on tensor size, backend, and data transfers; small operations need not be faster."
+    breaks: "Array.map calls a JavaScript function for each value. tf.add sends the calculation to a backend, the engine TensorFlow.js uses to run it. That engine can use the CPU or GPU. Small calculations may still be faster in plain JavaScript."
 consequence:
-  narrative: "An hour of merged signal scrolls past Nazari's console before she stops it, and what she stops it on is not noise."
+  narrative: "Nazari spots the same ripple repeating in an hour of combined sensor readings."
 hints:
   - level: nudge
-    content: "Averaging and amplifying both work position by position, and those two shapes will not always match. The channel mix is the other multiply, the one the broken line at the top of the lesson reached for."
+    content: "Average and amplify the readings at matching positions. Combining channels needs the other kind of multiplication, the one in the broken line above."
   - level: guidance
-    content: "The first two steps stay element-wise, one op each, and every op hands back a tensor, so the next call can chain off the result instead of a new variable. Where the two passes differ in shape, the op lines them up on its own. The mix is the other multiplication, and the only place the inner-dimension rule applies: read both shapes, decide which tensor is holding its axes the wrong way round, and turn it before the multiply. The averaged pass and the amplified pass are separate values, and the caller reads both."
+    content: "Add matching values, then divide to get the average. Each operation returns a tensor, so you can chain the next call. Broadcasting handles a pass supplied as one row. For the channel mix, check which axes need to swap before matrix multiplication. Return both the average and the amplified result."
   - level: solution
     content: |
       function mergePasses(pass1, pass2, gain) {
@@ -51,7 +51,7 @@ keywords:
 skillAxes: [data_prep]
 ---
 
-Demir's first pass at the amplifier is already on the main console when the shift starts, and so is its output: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` One line of code, one error, sixty-four channels of raw signal going nowhere.
+At the start of the shift, Demir's amplifier has stopped with this error: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` All sixty-four channels are waiting for the fix.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings; call it a million if you must round. I won't. Whatever that red text is, it is not keeping up with 983 thousand.
@@ -63,14 +63,16 @@ You will read the error, compare the two multiplication operations the broken li
 
 ## Repair the merge, then amplify it
 
-Demir used `matMul` to multiply matching positions. The error came from its
-inner-dimension rule: `[1, 64] × [1, 64]` cannot form a matrix product.
-Element-wise `mul` is the operation an amplifier needs.
+Demir wanted to multiply each reading by its matching gain, the number that
+controls how much to amplify it. That is **element-wise multiplication**,
+written `mul`. He used `matMul` instead. Matrix multiplication has a different
+shape rule, and `[1, 64] × [1, 64]` does not meet it.
 
 Use the same two-channel passes as the visual. Add matching values, divide by
 2 to average them, then multiply the average by the gain. Each operation
 creates a tensor. `tf.tidy()` releases the temporary tensors when its
-synchronous callback finishes, while keeping the tensors you return:
+synchronous callback finishes. That callback must finish without `await`.
+The tensors you return are kept for later use:
 
 <CodeBlock language="typescript" title="merge-two-passes.ts">
 {`const pass1 = tf.tensor2d([[2, 10], [4, 12], [6, 14]]);
@@ -87,17 +89,22 @@ const { merged, boosted } = tf.tidy(() => {
 tf.dispose([pass1, pass2, merged, boosted]);`}
 </CodeBlock>
 
-**Broadcasting** lines shapes up from the last axis: each pair must match or
-include a size of 1. The `[2]` row broadcasts across `[3, 2]`; a scalar gain
-reaches every value. Keep both results alive by returning them from `tf.tidy()`.
-Their caller releases them after use. Averaging helps with independent,
-zero-mean noise; it does not remove every error.
+**Broadcasting** lets one row apply to several rows. TensorFlow.js compares
+the shapes from right to left. Each pair of sizes must match, or one must be 1.
+Here, the `[2]` row applies to every row in `[3, 2]`. A scalar is a single
+number, so a scalar gain applies to every reading.
+
+Return both results from `tf.tidy()` and dispose of them after use. Averaging
+can reduce noise when the errors are independent and average to zero. It
+does not fix every kind of error.
 
 ## Mix channels with weighted sums
 
-A matrix product sums the products. Its shape rule is
-`[m, n] × [n, p] → [m, p]`. For the exercise, readings are rows of `block`;
-rows of `mix` are banks of channel weights. Transpose those banks into columns:
+Matrix multiplication multiplies pairs of values and adds the products.
+Its shape rule is `[m, n] × [n, p] → [m, p]`: the middle sizes must match.
+In the exercise, each row of `block` holds a set of readings. Each row of
+`mix` holds weights for combining those channels. Transpose `mix` so those
+weights become columns:
 
 <CodeBlock language="typescript" title="weighted-channel-mix.ts">
 {`// block: [readings, channels], mix: [banks, channels]
@@ -129,7 +136,7 @@ const amplified = gains.matMul(readings);
 // must match.`}
 </CodeBlock>
 
-The error is precise once you can read it: `matMul` multiplies **rows into columns**, so it needs the left tensor's column count (64) to equal the right tensor's row count (1). But matching positions was the intent all along, and that is a different op with no inner-dimension rule at all. TensorFlow.js has both multiplications; the bug is reaching for the wrong one.
+`matMul` needs the left tensor's column count to match the right tensor's row count. Here those counts are 64 and 1. Demir only wanted to multiply matching positions, so he needs `mul` instead.
 
 ### Element-wise Operations: The Repair
 
@@ -159,7 +166,9 @@ const result = tf.tidy(() => sensor1.add(sensor2).mul(2));
 tf.dispose([amplified, gains, readings, sensor1, sensor2, sum, product, diff, result]);`}
 </CodeBlock>
 
-The shapes do not have to be identical. Aligned dimensions must be equal, or one must be 1; otherwise broadcasting fails. When they differ, TensorFlow.js lines the two tensors up from the last axis backwards and stretches any axis of size 1, or any axis the smaller tensor does not have at all, until it matches the larger one. That is why `.mul(tf.scalar(2))` reaches every element, and why subtracting a `[2]` tensor of column means from a `[5, 2]` batch takes each column's mean down its own column. This is called broadcasting, and it is why an element-wise op forgives a shape difference that `matMul` will not.
+Broadcasting compares shapes from right to left. Each pair of sizes must match, or one must be 1. A missing leading axis also acts like size 1.
+
+For example, `.mul(tf.scalar(2))` doubles every value. Subtracting two column means, shape `[2]`, from five rows, shape `[5, 2]`, subtracts the same pair from each row. A size mismatch that meets this rule is valid for an element-wise operation. Matrix multiplication follows its own rule.
 
 Tensor operations are not automatically faster than JavaScript loops. Call overhead and readback can dominate a small array. Acceleration depends on the workload and backend; measure the version you intend to run. This lesson practices shape rules, not a speed guarantee.
 
@@ -188,14 +197,20 @@ output.print();
 tf.dispose([weights, input, output]);`}
 </CodeBlock>
 
-Why care? Every dense layer you'll build is essentially `matMul(input, weights) + bias`, and the shape rule above is the most common source of dimension errors in ML code. The recurrent cells in module 6 reuse the same rows-into-columns rule, wrapped in more machinery. The error that opened this lesson will find you again the day you build your first network layer; next time you'll read it in one pass.
+A dense layer, which you will build next, starts with `matMul(input, weights) + bias`. The same shape rule will help you check its inputs and weights. The time-based models in module 6 use it too.
 
 <DerivationDrawer summary="Why rows into columns: where the inner dimension comes from">
 A matrix turns a list of numbers into another list, one weighted sum per output. Its shape says which sizes: a `[2, 3]` matrix reads three numbers and emits two.
 
-Take `weights.transpose()` from the block above, `[[1, 3, 5], [2, 4, 6]]`. Feed it `[1, 0, 0]` and the answer is its first column, `[1, 2]`. `[0, 1, 0]` gives the second column, `[3, 4]`, and `[0, 0, 1]` gives `[5, 6]`. Each column is what one input slot contributes on its own, so any other input is those columns added up in the amounts you supply: `[1, 1, 1]` gives `[1 + 3 + 5, 2 + 4 + 6]`, which is the `[[9], [12]]` printed above.
+Use `weights.transpose()` from above: `[[1, 3, 5], [2, 4, 6]]`. Try inputs that select one column at a time:
 
-Now run two matrices back to back. The one that goes first emits as many numbers as it has rows; the one that goes next reads as many as it has columns. Those two counts have to be the same number, and in `[m, n] × [n, p]` that number is `n`, sitting on the inside of the pair. That is the whole shape rule.
+- `[1, 0, 0]` selects the first column: `[1, 2]`.
+- `[0, 1, 0]` selects the second: `[3, 4]`.
+- `[0, 0, 1]` selects the third: `[5, 6]`.
+
+Each input scales one column. Add the scaled columns to get the output. For `[1, 1, 1]`, all three columns contribute equally: `[1 + 3 + 5, 2 + 4 + 6]`. That gives the `[[9], [12]]` printed above.
+
+When two matrix operations run back to back, the first output must fit the next input. For column-vector inputs, a matrix produces one value per row and reads one value per column. The connecting sizes must match. In `[m, n] × [n, p]`, that shared size is `n`.
 </DerivationDrawer>
 
 
@@ -203,7 +218,7 @@ Now run two matrices back to back. The one that goes first emits as many numbers
 
 ## Challenge
 
-Repair Demir's amplifier: average the two passes, amplify the average, and let broadcasting handle the pass that arrives as a single row. Then fold the channels into a few weighted mixes, which is what matMul is for.
+Help Demir fix the amplifier. Average the two sets of readings, then amplify that average. Broadcasting lets a single row apply to every row in the other set. Finally, use matrix multiplication to combine the channels using the supplied weights.
 
 <Exercise slug="add-tensors" />
 
@@ -252,7 +267,7 @@ Repair Demir's amplifier: average the two passes, amplify the average, and let b
     "A dense layer starts with a weighted sum, commonly input.matMul(weights).add(bias), then applies its activation."
   ]}
   bridge="Array.map calls a JavaScript function per element. tf.add dispatches a tensor operation to a selected backend; measure whether that backend helps your workload."
-  youCanNow="Perform element-wise and matrix operations on tensors, combine mismatched shapes with broadcasting, chain operations with method syntax, and diagnose dimension errors without silently changing axis meaning."
+  youCanNow="Add and multiply tensor values, use broadcasting, and check the shapes and axis meanings in a matrix multiplication."
 />
 
 <Epilogue>

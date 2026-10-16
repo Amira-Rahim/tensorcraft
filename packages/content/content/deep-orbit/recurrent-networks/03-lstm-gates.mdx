@@ -12,10 +12,10 @@ scene:
 estimatedMinutes: 14
 difficulty: advanced
 context:
-  narrative: "The simple RNN forgets the anomaly pattern; it's too far back in the sequence. Farah introduces LSTMs: networks with gates that decide what to remember and what to forget."
+  narrative: "The simple RNN’s training signal fades before it reaches the distant anomaly pattern. Farah introduces an LSTM, which uses learned gates to control what it keeps."
   speaker: "Dr. Farah"
 concept:
-  explanation: "LSTMs route memory through learned gates that decide, dimension by dimension, what to keep and what to discard."
+  explanation: "An LSTM uses learned gates to control how much of each stored value to keep, add and expose as output."
   bridge:
     jsTitle: "localStorage with TTL"
     jsCode: "if (Date.now() > expiry) localStorage.removeItem(key) // forget stale data"
@@ -27,7 +27,7 @@ consequence:
   narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Recurrent state resets between windows; trained weights remain."
 hints:
   - level: nudge
-    content: "Check the gate curve and packed column order before comparing outputs with the library."
+    content: "Check which activation the gates use and which column holds each gate’s weights before comparing your output with TensorFlow.js."
   - level: guidance
     content: "Use sigmoid for the three gates and tanh for the candidate. Multiply each stored or proposed value by its gate before adding. TFJS packs columns as input, forget, candidate, output; each gate row combines the same column from both kernels and the bias."
   - level: solution
@@ -91,7 +91,11 @@ Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-They can learn longer dependencies, but no fixed reach is guaranteed. Budget roughly four times the parameters of a simple RNN with the same width. And there is no clock in an LSTM anywhere. A forget gate reads the current input together with the previous hidden state. It outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. A gate near one can preserve information across a window. Whether ours learns the pulse is a held-out test, including windows from later days.
+They can learn from more distant readings, but there is no guaranteed range. Budget roughly four times the parameters of a simple RNN with the same width.
+
+The forget gate uses the new input and previous hidden state to calculate a learned keep fraction between 0 and 1 for each stored value. It can keep 90% of one value and discard most of another. Near one can preserve information across a window. There is no timer.
+
+We still need to test whether ours learns the pulse on held-out windows, including later days.
 </Dialogue>
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
@@ -171,9 +175,13 @@ y.dispose();
 model.dispose();`}
 </CodeBlock>
 
-Two things about that layer only turn up when you go looking for its weights. `model.layers[0].getWeights()` returns three tensors for it, not twelve: an input kernel of shape [features, 4 * units], a recurrent kernel of shape [units, 4 * units], and a bias of length 4 * units. The three gates and candidate share those tensors, packed side by side along the last axis in the order input, forget, candidate, output. That is not the order anyone narrates them in, and building the same layer with `unitForgetBias: true` is the quickest way to see it: the bias comes back with ones in the second quarter and zeros in the other three.
+`model.layers[0].getWeights()` returns three tensors: an input kernel [features, 4 * units], a recurrent kernel [units, 4 * units], and a bias [4 * units]. Each holds four groups of weights, in this order: input, forget, candidate, output.
 
-The second thing is which curve the gates run on. Unless overridden as above, TF.js 4.22 leaves `recurrentActivation` at `hardSigmoid`, the clipped straight line `max(0, min(1, 0.2 * z + 0.5))`, while the candidate and the cell output run on `tanh`. Work a step out by hand with a sigmoid, compare it against a layer left on its default, and the two answers do not match. Pass `recurrentActivation: 'sigmoid'` and they agree to about seven decimal places, within the tolerance of this small fixture.
+Read matching columns from the two kernels and the bias to build each gate’s weights. With `unitForgetBias: true`, the forget group, the second quarter of the bias, starts at one. The other groups start at zero.
+
+Check the gates’ activation too. TensorFlow.js 4.22 defaults `recurrentActivation` to `hardSigmoid`: `max(0, min(1, 0.2 * z + 0.5))`. The candidate and cell output still use `tanh`.
+
+Our handwritten step uses sigmoid, so set `recurrentActivation: 'sigmoid'` on the layer too. Otherwise, the calculations differ. With matching activations, this small test agrees to about seven decimal places.
 
 ## GRU: The Lighter Alternative
 
@@ -217,15 +225,15 @@ gruModel.dispose();`}
 
 ## Challenge
 
-Write one step of the cell yourself: the pre-activations, the three sigmoid gates and the one tanh candidate, then the cell update and the hidden output. One of the tests runs your step a hundred times with the forget gate held at 0.99, so the 0.37 above is something you check rather than something you read.
+Calculate one LSTM step: its weighted sums, three sigmoid gates, tanh candidate, updated cell state and hidden output. One test repeats your step 100 times with a forget gate near 0.99 to check the retained state.
 
-Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out of the packed kernels. The grader drives your step across a window with the rows you cut and compares it to what the layer reports at every step. Both halves have to be right for that to line up: the gate arithmetic, and which column each gate came from.
+Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matching kernel columns and bias. The tests use those weights in your function and compare every hidden state with the layer’s output. Both the calculations and column order must match.
 
 <Exercise slug="build-lstm" />
 
 <RecallPrompt
-  question="Compare learned forgetting with a time-based expiry rule."
-  answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, with no clock anywhere in it. A value near 0 discards that dimension; near 1 keeps most of it. Application code can implement a TTL that expires a localStorage entry; localStorage itself has no expiry timer. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
+  question="How does an LSTM forget gate differ from expiring a stored value after a fixed time?"
+  answer="The forget gate calculates a keep fraction between 0 and 1 for each stored value. It uses the current input and previous hidden state. Near 0 discards most of the old value; near 1 keeps most of it. There is no expiry clock. A TTL, or time-to-live rule, instead expires a localStorage entry after a set time. Application code must implement that rule; localStorage has no built-in timer."
   checks={[
     {
       "kind": "choice",
@@ -271,19 +279,21 @@ Then build a one-unit `tf.layers.lstm` and cut its three gates and candidate out
 />
 
 <RecallPrompt
-  question="Explain what a trained LSTM retains between independent windows when its recurrent state resets."
-  answer="The recurrent state resets between these windows. The trained weights persist: the gates learned which input shapes to route into cell state within any single 80-step window. A successful result on later windows would be generalization through those weights, not state carried across the gap. The story reports that outcome; real data still needs evaluation. It does not demonstrate memory across a three-day gap."
+  question="If the LSTM’s state resets between windows, what does it keep from training?"
+  answer="The trained weights remain, while recurrent state starts fresh for each window. Those weights let the model recognize patterns within new 80-step windows. Success three days later would show that the learned weights work on later data, not that hidden state survived for three days. The mission result is fictional; a real model needs evaluation on later data."
 />
 
 <LessonRecap
   whatYouLearned={["An LSTM has three gates and a candidate update. Gates control how much information is kept, added and exposed.", "On the direct cell-state gradient path, forget-gate factors near one reduce decay. Other gradient paths also run through the gates, and learning is not guaranteed.", "A GRU uses fewer parameter blocks than an LSTM. Compare parameter counts for the actual configurations and measure quality on the same evaluation data.", "A stateless recurrent model resets state between windows while retaining its trained weights."]}
   bridge="Application code can add a TTL to localStorage. An LSTM gate instead learns a per-dimension keep ratio from the current input and hidden state."
-  youCanNow="Build a one-unit `tf.layers.lstm`, cut its three gates and candidate out of the kernels the library packs them into, and run the forget, input and output gates by hand closely enough to reproduce the layer's own output."
+  youCanNow="Build a one-unit LSTM, read the gate weights from its kernels and bias, and calculate its cell and hidden-state updates in JavaScript."
 />
 
 <Epilogue>
 
-Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. The 28,800 capture rows are far too coarse for an 80-step window that has to span a 73-second pulse, so Demir uses the raw capture blocks behind them, re-integrated to the dashboard's 1 Hz stream: 950,400 samples end to end. He trains on the first day of it and replays the other ten. Seventy-two hours past the last window it trained on, the network is still catching every pulse inside a single 80-step window. No cell state carried across those three days; none had to. The learned weights persist while each new window starts with empty recurrent state. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+Nazari approves the run with a cost estimate attached. The 28,800 archive summaries are too far apart to show the pulse’s shape, so Demir rebuilds the one-reading-per-second stream from the raw captures: 950,400 samples. He trains on the first day and replays the other ten.
+
+Seventy-two hours beyond the training data, the model still catches each pulse within an 80-step window. Each window starts with fresh state and keeps the trained weights; ARIA stays silent for four seconds before speaking.
 
 <Dialogue speaker="ARIA">
 Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes pulses it was never trained on, three days downstream. Nothing in my tables explains why that works.

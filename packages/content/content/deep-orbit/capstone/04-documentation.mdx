@@ -22,10 +22,10 @@ concept:
     tier: structural
     breaks: "JSDoc describes a software contract, which still needs verification. A model card adds the data, evaluation conditions, and observed limitations of a model. Both kinds of documentation can become stale; empirical model performance is not a promise for every future input."
 consequence:
-  narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook. It goes to exactly one reviewer, and she does not have intuitions."
+  narrative: "Demir writes a Model Card, API reference, and runbook for the next operator. ARIA reviews them and asks for a missing threshold."
 hints:
   - level: nudge
-    content: "A Model Card is a README for a model: render the metadata you are given into fixed sections, never hardcode the values. Two lines are computed rather than copied, the dated accuracy line and the lowest-recall limitation."
+    content: "A Model Card is a README for a model. Fill its sections from the supplied metadata. Format the dated accuracy line and find the class with the lowest recall. Do not hardcode the values."
   - level: guidance
     content: "Render the requested sections from meta. Format fractions as percentages with one decimal place and keep the benchmark label beside accuracy. Find the smallest recall value across all entries; do not assume a particular class or key order."
   - level: solution
@@ -84,7 +84,7 @@ Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could
 Then it needs a Model Card, not just API docs. Training set, split, per-class recall, the input contract, and every limitation I can name, including the ones that make us look bad. If ARIA has to retrain this at 0300 she needs the numbers, not my judgment.
 </Dialogue>
 
-There is a version of the next two weeks in which Demir is not available to run DEEP SCAN. The crew is busy surviving something, the bridge is understaffed, and the only operator still awake is the one who does not sleep. This lesson writes the handover for that scenario: the **Model Card** Demir describes, plus a runbook precise enough that a rule-based system could execute it without you.
+Someone else may need to run DEEP SCAN while Demir is unavailable. On an understaffed night watch, that could be ARIA. Help him write a **Model Card** explaining the model and a runbook with steps she can follow without guessing.
 
 You will turn model metadata into a card that explains its performance, limits, and input conventions.
 
@@ -194,12 +194,9 @@ A production card also needs the artifact and preprocessing versions, label map,
 
 Caching may reduce repeat downloads; it does not remove the first-load cost or guarantee that storage persists. Accepting a larger bundle needs an explicit cold-start and memory budget, with a usable failure path.
 
-The input contract is worth reading twice, because two different 64s run through
-this course. An archive row is a 33-second capture, 256 Hz across 64 channels:
-540,672 samples, a little over two megabytes at float32. The classifier's input is
-a 64-sample window taken from one of those channels, a quarter of a second at
-256 Hz. That window length sets the rest of the contract: 8 selected FFT bins spaced 4 Hz apart,
-and a zero-crossing count that cannot exceed 63. Keep channel count and window length separate in the input schema.
+Two different counts of 64 appear in this course. An archive row records 33 seconds across 64 channels at 256 Hz. That is 540,672 samples, a little over two megabytes in float32.
+
+The classifier uses a much smaller input: 64 samples from one channel, or a quarter of a second at 256 Hz. This gives 8 selected FFT bins spaced 4 Hz apart and at most 63 zero crossings. Label channel count and window length separately in the input schema.
 
 ## Pipeline API Documentation
 
@@ -293,7 +290,7 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <LessonRecap
   whatYouLearned={[
-    "A Model Card is structured documentation for an ML model covering purpose, training data, performance metrics, and known limitations: the same documentation discipline as a README, applied to a statistical artifact rather than deterministic code.",
+    "A Model Card explains a model's purpose, training data, measured performance, and known limitations. Keep it as specific and current as a README.",
     "Describe limitations with evidence: per-class misses, untested data and hardware requirements affect whether someone can use the model.",
     "Runbooks specify checks, thresholds, actions, owners and escalation paths. Some cases require judgment; say who makes the decision.",
     "Select thresholds using representative measurements and the cost of misses and false alarms. A calm-period percentile is one starting point; validate it on separate periods and record window size."
@@ -310,7 +307,9 @@ The runbook's first draft comes together in the dead hours of the night watch, a
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-Demir adds a calibration record: 180 calm windows of 100 samples produce a 99th-percentile score of 0.5. That is a starting cutoff, with little evidence about the tail; he schedules a check on a separate period and records the false-alert cost. The runbook now says to inspect calibration and preprocessing, review recent labeled cases, and evaluate any replacement before release. ARIA accepts the named checks and the escalation owner. The pulse interval reads 31.6 seconds when Demir signs the handover. Tomorrow they deploy.
+Demir adds the calibration record: 180 calm windows, each with 100 samples, give a 99th-percentile score of 0.5. This is a starting cutoff. There are too few unusually high scores to know much about them, so he schedules a check on a separate period and records the cost of false alerts.
+
+The runbook now names the checks: inspect calibration and preprocessing, review recent labeled cases, and evaluate any replacement before release. ARIA accepts the steps and the person responsible for escalation. Demir signs the handover as the pulse interval reaches 31.6 seconds. Tomorrow they deploy.
 
 <StoryConsequence
   beatId="deep-orbit-drift-response"

@@ -14,9 +14,8 @@ starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function extractFeatures(signal: number[], sampleRate: number, loHz: number, hiHz: number): number[] {
-    // The row has to mean the same thing in every capture, so the band in
-    // hertz has to come out of the arguments, not off the numbers the lesson
-    // happens to use.
+    // Calculate bin limits from the supplied band, sample rate and capture length.
+    // Keep those bins in frequency order after the two time-domain features.
     return null; // your code here
   }
 solutionCode: |
@@ -70,7 +69,7 @@ testCode: |
       const out = extractFeatures(samples, sampleRate, loHz, hiHz);
       expect(
         out,
-        'extractFeatures returned nothing to read. It has to hand back one flat row: the two raw features first, then one magnitude per bin in the band.',
+        'Return one flat array: peak amplitude, zero-crossing count, then the magnitudes of bins in the requested band.',
       ).toBeDefined();
       expect(
         Array.isArray(out),
@@ -98,7 +97,7 @@ testCode: |
       // sit at known offsets from it.
       expect(
         features[2],
-        'A 1.0 tone sitting on a bin center puts 64 / 2 = 32 into that bin, and this row reports magnitudes as the transform gives them. A value near 1.0 here is that 32 divided by half the window length, which is amplitude-spectrum scaling. This task returns raw magnitudes; training-set z-score normalization is a separate later operation.',
+        'Return raw FFT magnitudes. This tone has magnitude 32; a value near 1 means it was rescaled. Training-set normalization happens later.',
       ).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
     });
@@ -161,11 +160,11 @@ testCode: |
       const features = featuresOf(drawn, 256, (toneBin - below) * 4, (toneBin + above) * 4);
       expect(
         features,
-        'This band was drawn when the grader ran, so no table of remembered rows covers it. Its width decides how many magnitudes follow the two raw features: two plus one per bin from the low edge to the high edge, both included.',
+        'The test changes the band. Return two time-domain features, then one magnitude for every included bin. Keep both band endpoints.',
       ).toHaveLength(3 + below + above);
       expect(
         features[2 + below],
-        'The tone sits on the center of a bin drawn this run, and a 1.0 tone on a bin center puts 64 / 2 = 32 there. Where that 32 lands in the row depends on which bin the band opened at, so it comes out of the band arithmetic rather than out of a remembered index.',
+        'This test chooses the tone bin during the run. Its position in the returned array depends on the band’s first included bin. Calculate that position instead of using a fixed index.',
       ).toBeCloseTo(32, 0);
     });
   });

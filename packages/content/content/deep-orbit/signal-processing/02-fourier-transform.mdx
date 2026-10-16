@@ -14,7 +14,7 @@ context:
   narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord: the FFT tells you which individual notes make it up.'"
   speaker: "Dr. Farah"
 concept:
-  explanation: "The Fourier Transform decomposes a complex signal into simple sine waves, each with a magnitude and a phase. The same fixed basis decomposes every signal; that universality is the trick."
+  explanation: "The Fourier transform describes a signal using fixed sine and cosine waves. Its results tell you the strength and timing of each frequency component."
   bridge:
     jsTitle: "@keyframes Decomposition"
     jsCode: "@keyframes pulse { 0% { scale: 1 } 50% { scale: 1.2 } 100% { scale: 1 } }"
@@ -30,7 +30,7 @@ hints:
       rfft turns N time samples into floor(N/2)+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone.
   - level: guidance
     content: |
-      The transform hands back a complex coefficient per bin, so reduce each one to its size before you compare anything. Two decisions are left. Bin 0 holds the constant offset of the slice rather than a tone, and the hull channels sit on a large offset, so decide whether bin 0 is eligible to win a search for the loudest tone. Then decide what a winning bin index is worth in hertz. That conversion needs the sample rate and the number of samples that went in, and the lesson works it out above the challenge.
+      Compare the magnitude of each FFT bin. Skip bin 0, which measures the constant offset rather than a repeating tone. Once you find the largest remaining magnitude, convert its index to hertz using the sample rate and input length.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -72,10 +72,14 @@ So the signal is the chord, and the FFT breaks it into individual frequencies? T
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N complex basis functions for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That gives us a common basis for comparing captures; it does not identify a peak's physical source.
+Your keyframes are steps you chose for one animation. The FFT uses the same fixed set of waves for every signal of that length. It calculates how each wave contributes to the samples, including its strength and timing. Those waves are not learned from data. This gives us a consistent way to compare captures, but it does not tell us what physically caused a peak.
 </Dialogue>
 
-One vocabulary check, because "complex" is the wrong scare word: a complex coefficient here is just a PAIR of numbers per frequency, how much of that frequency is present and where its peaks sit in time. `tf.abs()` throws away the where and keeps the how-much, and the how-much is the only half of the transform's output this course reads. DEEP SCAN's third input feature is also called phase, but that one is a time-domain angle taken off the first two samples of a window, not this one; lesson 4 builds it and says so. The full transform of N samples produces N such coefficients, but for a real-valued signal the top half mirrors the bottom half, so `tf.spectral.rfft` returns the floor(N/2)+1 bins that carry unique information.
+Each FFT coefficient is a complex number, stored as real and imaginary parts. From that pair we can calculate magnitude, which measures strength, and phase, which describes alignment in time. `tf.abs()` keeps the magnitude. The frequency plots in this course use those magnitudes.
+
+DEEP SCAN also has an input named phase. That is a separate feature calculated from the first two samples of a window; lesson 4 explains it.
+
+A full transform of N samples produces N coefficients. For real-valued input, half the spectrum mirrors the other half. `tf.spectral.rfft` returns only the floor(N/2)+1 bins needed to keep the unique information.
 
 You will use a Fourier transform to find the strongest eligible frequency in a capture.
 
@@ -179,7 +183,9 @@ console.table(bins.filter((b) => b.magnitude > 1));
 
 ## The FFT for DEEP SCAN
 
-One number to keep straight before reading the ship's spectra: the demo above sampled at 128 Hz because two sine waves need nothing more. That caps its spectrum at a 64 Hz Nyquist ceiling. The hull sensor array samples at 256 Hz, so DEEP SCAN's spectra read out to 128 Hz. A component above the ceiling does not disappear. It folds back down and reports at a lower, wrong frequency, and that folding is called aliasing. Feed the demo's 128 Hz sampling a 73.4 Hz tone and the peak comes back near 54.6 Hz, which is 128 minus 73.4, indistinguishable from a real tone sitting there. Use an anti-alias filter before sampling to remove higher-frequency content. Then choose a rate above twice the highest retained frequency. An under-sampled capture can place a peak at a frequency the original signal did not contain.
+The demo records 128 samples per second, so its Nyquist frequency is 64 Hz, half the sample rate. The hull sensors record at 256 Hz, giving DEEP SCAN a Nyquist frequency of 128 Hz.
+
+A tone above the Nyquist frequency can appear at a lower, incorrect frequency. This is aliasing. At a sample rate of 128 Hz, a 73.4 Hz tone appears near 54.6 Hz: 128 minus 73.4. The spectrum cannot distinguish it from a real tone there. Filter out frequencies above the intended range before sampling, then sample at more than twice the highest frequency you keep.
 
 <CodeBlock language="typescript" title="deep-scan-fft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -257,7 +263,7 @@ The discrete sample vector is reconstructible from its full DFT in exact arithme
 
 Compute the FFT of a signal and find its dominant frequency.
 
-Return the largest measured non-DC bin. For an isolated tone it often lies near the tone's frequency, but phase, neighboring components and leakage can change the winner. Nearest-frequency rounding cannot replace the FFT comparison.
+Skip bin 0, the constant offset. Find the largest magnitude among the remaining bins and return that bin’s frequency. Use the computed magnitudes. Rounding an estimated tone frequency can give a different answer because phase, nearby tones and leakage affect which bin wins.
 
 <Exercise slug="compute-fft" />
 
@@ -296,7 +302,9 @@ Return the largest measured non-DC bin. For an isolated tone it often lies near 
 
 <Epilogue>
 
-Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what the overnight transform of eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist. There is a fifth peak. It stands at 73.5 on the half-hertz grid, magnitude 12.0, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move. Overnight she reruns the capture through a four-times-longer window, and the 0.125 Hz grid places the strongest bin at 73.375 Hz, displayed as 73.4 Hz.
+Four familiar peaks appear on the lab display: 5, 12, 23 and 47 Hz. Demir reaches for the log, but Farah catches his wrist and points to a fifth peak: 73.5 Hz on the half-hertz grid, magnitude 12.0. She checks the background catalog three times; nothing explains it.
+
+Overnight, she reruns the capture with a window four times longer. Its 0.125 Hz grid puts the strongest bin at 73.375 Hz, displayed as 73.4 Hz.
 
 <Dialogue speaker="Dr. Farah">
 That is not stellar background.

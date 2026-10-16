@@ -2,12 +2,8 @@ slug: optimization-edge
 title: "Optimization & Edge"
 worldId: deep-orbit
 order: 10
-description: |
-  A model load crashes the bridge dashboard during a capture window.
-  Measure the costs of profiling, quantization, pruning, caching and backend
-  changes before the next deployment. The mission uses fictional budgets;
-  the runtime lab measures the supplied model on your device.
-summary: "Shrink a model to fit the hardware: profiling, quantization (fewer bytes per weight), pruning (zeroing small weights and measuring the effect), caching, and WebGPU (the math on the GPU), a trade of size against accuracy."
+description: "Loading the full model crashes the bridge dashboard during a capture window. Help the crew measure memory use and prediction time before trying smaller weights, pruning, caching, and different backends. The mission uses fictional budgets; the runtime lab measures its supplied model on your device."
+summary: "Profile a model, reduce weight precision, test pruning, cache predictions, and compare GPU backends. Measure size, speed, memory, and prediction changes separately."
 lessonCount: 5
 prerequisites:
   - foundations

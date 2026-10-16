@@ -13,7 +13,7 @@ context:
   narrative: "No single model handles all aspects of the signal. Demir combines the LSTM, attention model, and Kalman filter into an ensemble: multiple models, one prediction."
   speaker: "Ensign Demir"
 concept:
-  explanation: "An ensemble runs several models on every input and combines their answers. Their errors partly cancel where the members are wrong in different places. Where the members share a mistake, the blend keeps it."
+  explanation: "An ensemble runs several models on the same input and combines their predictions. Some errors can cancel each other. Mistakes shared by all the models stay in the combined result."
   bridge:
     jsTitle: "Promise.all fan-out"
     jsCode: "const [a, b, c] = await Promise.all([svcA(x), svcB(x), svcC(x)])"
@@ -143,22 +143,19 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
   return result;
 }
 
-// DEEP SCAN ensemble. Each member predicts in the z-scores it was trained
-// on; every prediction below has been converted back out of that space into
-// the raw sensor units lesson 3 lists, which is how the log reads them:
-// amplitude in hull counts, frequency as a zero-crossing count over the
-// 64-sample capture, phase in radians. A capture hands over a whole number
-// of crossings. A forecast of the next capture is an estimate of that
-// count, so it lands between whole numbers, which is why the frequency
-// column below reads 37.4 rather than 37.
-// Illustrative weights, rounded from the
-// inverse-squared-MAE weight from that member's error on last week's held-out
-// readings, by the formula below this block.
-// This toy blend assumes three scalar Kalman models predict those targets.
-// Update each filter only with observations available BEFORE the target.
-// An estimate corrected with the target itself would leak the answer.
-// Phase values here occupy one small range; across the +/-pi seam, use a
-// circular representation and a matching circular error instead.
+// Each model predicts z-scores using its own training scaler.
+// Convert those predictions back to raw units before combining them:
+// amplitude in hull counts, frequency as crossings per 64-sample capture,
+// and phase in radians. Actual crossing counts are integers, but a
+// prediction can be fractional, such as 37.4 instead of 37.
+//
+// These example weights are rounded from inverse-squared MAE on last
+// week's held-out readings. The formula follows this block.
+// This example uses three scalar Kalman filters, one per target.
+// Update them only with observations from BEFORE the prediction target.
+// Using the target to correct the estimate would leak the answer.
+// Phase stays within a small range here. Across the +/-pi boundary,
+// use a circular representation and matching circular error.
 const predictions: ModelPrediction[] = [
   { modelName: 'LSTM', prediction: [1140, 37.4, 0.45], weight: 0.333 },
   { modelName: 'Attention', prediction: [1100, 36.9, 0.51], weight: 0.467 },
@@ -169,18 +166,16 @@ const avg = averageEnsemble(predictions);
 const weighted = weightedEnsemble(predictions);
 console.log('Average:', avg);       // [ 1120, 37.3, 0.48 ]
 console.log('Weighted:', weighted); // approximately [1117.32, 37.2065, 0.48402]
-// Floating-point addition can leave small rounding differences.
-// Round for display, not before scoring.
-// On all three channels the weighted blend sits closer to Attention's row
-// than the plain average does, because Attention carries 0.467 of the
-// weight against 0.333 and 0.200.
+// Floating-point sums can differ slightly. Round only for display.
+// Attention has weight 0.467, versus 0.333 and 0.200 for the others,
+// so the weighted result is closer to its row than the equal average
+// on all three channels.
 
-// Integration dependency: supply heldOutWindows, heldOutTargets and
-// three members trained only on an earlier period. predictScalar returns
-// plain numbers for the same target and horizon, with no target leakage.
-// Stacking: the third rung. Instead of hand-picking weights, TRAIN a
-// meta-model on the members' outputs: each meta-feature row is the three
-// members' predictions for one window, the label is the true value.
+// Supply heldOutWindows, heldOutTargets, and three models trained
+// only on an earlier period. predictScalar must return plain numbers
+// for the same target and horizon, without seeing the target.
+// Stacking trains another model on these three predictions per window.
+// The target is the actual observed value.
 const metaX = tf.tensor2d(heldOutWindows.map(w => members.map(m => m.predictScalar(w))));
 const metaY = tf.tensor2d(heldOutTargets, [heldOutTargets.length, 1]);
 const metaModel = tf.sequential();
@@ -192,13 +187,17 @@ try {
 } finally {
   tf.dispose([metaX, metaY]); metaModel.dispose();
 }
-// Fit the meta-model on HELD-OUT predictions, never on the members' own
-// training windows, because in-sample predictions can make a member look unrealistically strong.
-// Fitting spends that slice: the stack carries weights of its own now, so
-// report its score on a further slice neither it nor the members have seen.`}
+// Train the stacking model on predictions for windows its member
+// models did not train on. In-sample predictions can look too accurate.
+// Then evaluate the stack on another period that neither it nor its
+// members used for training.`}
 </CodeBlock>
 
-The `weight` field is a blend coefficient we choose from validation results, not a probability the model reports. Here `e_i` is MAE on a prior held-out week, with each channel's errors divided by its range. We use `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. This is an inverse-squared-error heuristic. Squared MAE is not error variance, so the rule has no minimum-variance guarantee. The example errors 0.045, 0.038 and 0.058 produce weights near 0.333, 0.467 and 0.200. Compare that blend with equal weighting on a separate evaluation week. The exercise supplies strictly positive errors; a real implementation must define what to do with zero or invalid scores.
+We choose each model's `weight` from validation results. It is a share of the blend, not a probability reported by the model. Here e_i is MAE on an earlier held-out week, with each channel's error divided by its range.
+
+The rule is `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. Squared MAE is not error variance, so this rule does not guarantee the lowest-variance blend. Errors 0.045, 0.038, and 0.058 give weights near 0.333, 0.467, and 0.200.
+
+Compare those weights with equal weighting on a separate evaluation week. The exercise supplies positive errors. A real system also needs a policy for zero or invalid errors.
 
 <DerivationDrawer summary="Why squared MAE is not variance">
 Both error arrays below have MAE 1. The first is consistently biased; the second varies around zero. Squaring their MAEs gives the same number, but their variances differ.
@@ -219,7 +218,9 @@ const varying = describeErrors([-1, 1]);  // { mae: 1, variance: 1 }`}
 
 ## Why Ensembles Work
 
-Averaging helps when members make errors that partly cancel. Different architectures, seeds or training samples may create that diversity, but do not guarantee it. Bagging trains members on random resamples of the training data. For this time series, any resampling must preserve the temporal structure needed by the model. In the story's held-out week, the equal blend scores MAE 0.036. We cannot predict that MAE by dividing the mean member MAE by sqrt(3); the variance calculation below describes a different quantity.
+Averaging helps when the models' errors partly cancel. Different architectures, random seeds, or training samples can produce different errors, but do not guarantee it. Bagging trains models on random resamples of the training data. For time-series models, those samples must preserve the time structure the model needs.
+
+The story's equal-weight blend has MAE 0.036 on the held-out week. Dividing the mean model MAE by sqrt(3) would not predict that result. The variance calculation below measures something different.
 
 Compare the blend's 0.036 with 0.038, the best member on the same week. For equal-weight averaging under MAE, the blend's error cannot exceed the arithmetic mean of the members' MAEs, and it can tie it. That bound does not promise a win over the best member. Choose members and weights on validation data, then report the selected system on a final untouched period.
 
@@ -234,17 +235,21 @@ Compare the blend's 0.036 with 0.038, the best member on the same week. For equa
 
 `Var(ensemble error) = σ²/N + ((N-1)/N)·ρσ² = ρσ² + (1-ρ)·σ²/N`
 
-**Read the two terms.** `(1-ρ)·σ²/N` is the part averaging can cancel; it dies as members are added. For a fixed nonnegative correlation, `ρσ²` is the variance floor as N grows. At `ρ = 0` the formula collapses to `σ²/N`: the standard deviation falls by sqrt(N). This does not give a general formula for MAE. At `ρ = 0.5`, three members give `0.5σ² + 0.5σ²/3 ≈ 0.667σ²`: a variance cut of one third, where independent members would have delivered two thirds. And the formula is about variance only; shared bias, like every member training on the same mislabeled batch, passes through the average untouched.
+The term `(1-ρ)·σ²/N` decreases as you add models. With a fixed nonnegative correlation, `ρσ²` is the variance that remains as N grows.
+
+At `ρ = 0`, the variance is `σ²/N`, so the standard deviation falls by sqrt(N). This is not a general formula for MAE. At `ρ = 0.5`, three models give `0.5σ² + 0.5σ²/3 ≈ 0.667σ²`. That reduces variance by one third. Independent models would reduce it by two thirds.
+
+The formula only describes variance. A shared bias, such as all models learning from the same mislabeled batch, remains after averaging.
 </DerivationDrawer>
 
 ## Challenge
 
-Score each member, score both blends (equal shares, then validation-derived shares), and decide whether the ensemble earned the extra inference calls.
+Measure the error of each model. Then compare two blends: equal weights and weights based on earlier validation errors. Did either blend beat the best individual model enough to justify running them all?
 
 <Exercise slug="weighted-ensemble" />
 
 <RecallPrompt
-  question="Evaluate the benefit of an ensemble rather than assuming it."
+  question="When does combining models help, and how should you check?"
   answer="It can reduce errors that cancel across members. A shared bias survives averaging. Different architectures do not guarantee different errors, so compare the blend with the best member on the same held-out examples."
   checks={[
     {
@@ -253,7 +258,7 @@ Score each member, score both blends (equal shares, then validation-derived shar
       "options": [
         {
           "text": "Whenever architectures have different names.",
-          "feedback": "Different architectures do not guarantee complementary errors."
+          "feedback": "Models with different designs can still make the same mistakes."
         },
         {
           "text": "Whenever every member makes the same biased error.",
@@ -261,15 +266,15 @@ Score each member, score both blends (equal shares, then validation-derived shar
         },
         {
           "text": "When some member errors cancel each other.",
-          "feedback": "Complementary errors can cancel; shared errors can persist."
+          "feedback": "Some errors cancel each other. Errors shared by the models remain."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Complementary errors can cancel; shared errors can persist."
+      "explanation": "Some errors cancel each other. Errors shared by the models remain."
     },
     {
       "kind": "choice",
-      "question": "Which baseline should the blend beat to justify an accuracy claim?",
+      "question": "Which individual model should the blend beat to claim an accuracy improvement?",
       "options": [
         {
           "text": "Any member measured on an easier dataset.",
@@ -318,8 +323,8 @@ Score each member, score both blends (equal shares, then validation-derived shar
 />
 
 <RecallPrompt
-  question="Explain why combining errors measured in raw counts and radians can make ensemble weighting depend on channel scale."
-  answer="The scale gap decides the sum. In module 1 temperature near 25 arrived about fifty times larger than signal strength near 0.5, and unscaled error could favor the larger-unit feature. Left raw, amplitude sits near 1120 counts and phase near 0.48 radians, so the combined score, and the blend weights computed from it, could be dominated by amplitude error. It depends on the errors, not just the values."
+  question="Why can raw sensor counts and radians give unbalanced weights when their errors are combined?"
+  answer="The units can give one feature much larger errors than another. Module 1 compared temperatures near 25 with signal strength near 0.5. Here raw amplitude is near 1120 counts, while phase is near 0.48 radians. Amplitude errors could dominate the combined score and the model weights calculated from it. Check the size of the errors, not just the readings."
 />
 
 <LessonRecap
@@ -332,12 +337,14 @@ Score each member, score both blends (equal shares, then validation-derived shar
 
 <Epilogue>
 
-Mirza's 0800 deadline takes Nazari off the next maintenance slot and puts her on transmission contingencies. Farah leaves the forecasters extrapolating overnight from 72.4 seconds, the level the Kalman filter holds for them: the LSTM on short range, the attention model on long. Demir fits the third line by hand off the interval log, roughly a sixth of a second per day. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
+Mirza's 0800 deadline pulls Nazari away from maintenance to prepare backup transmission plans. Farah leaves the forecasting models running overnight from the Kalman filter's estimate of 72.4 seconds. The LSTM predicts the short term and the attention model looks farther ahead. Demir draws a third line from the log, using a fall of roughly a sixth of a second per day.
+
+By morning, the three curves disagree on the date but all reach zero. Nazari asks what a zero interval would mean: a continuous tone, an uninterrupted signal, or an arrival. Nobody answers.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit supports two significant figures. The display can print eleven. The extra digits do not add evidence.
 </Dialogue>
 
-Two forecasters and a line drawn by hand, laid over the same eight readings and running together across them. Demir writes “countdown” beside the plot, then adds “extrapolation” below it. Run them past the end of that log and they part company on the date, and not one of them says what arrives when the count runs out.
+The two models and Demir's line fit the same eight readings. Beyond those readings, they predict different dates. Demir writes “countdown” beside the plot, then adds “extrapolation” below it. None of the lines tells him what happens when the interval reaches zero.
 
 </Epilogue>

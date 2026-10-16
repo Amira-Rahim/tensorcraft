@@ -2,20 +2,20 @@ slug: backprop-chain
 lessonSlug: backpropagation
 title: "Automatic Backpropagation"
 instructions: |
-  Compare automatic differentiation with a numerical estimate.
+  Compare automatic differentiation with a numerical gradient estimate.
 
-  1. Define lossFn to return w squared.
-  2. Implement gradOf(fn) with tf.variableGrads(fn). Return its value and
-     gradients, keeping the variable-name keys.
-  3. Implement numericGradOf(fn, variable) for a scalar variable. Measure fn
-     at the current value and at that value plus 0.001. Divide the loss
-     difference by 0.001, restore the variable, and return a plain number.
-     Restore it even if the second loss evaluation throws.
+  1. Set `lossFn` to return `w` squared.
+  2. Write `gradOf(fn)` using `tf.variableGrads(fn)`. Return its `value` and
+     `grads`, keeping the gradient keys as variable names.
+  3. Write `numericGradOf(fn, variable)` for a scalar variable. Run `fn` at
+     its current value, then at that value plus 0.001. Divide the change in
+     loss by 0.001 and return a JavaScript number. Restore the original
+     variable value, even if the second loss calculation throws an error.
 
-  The grader changes the weights and loss, compares the two methods within
-  a 0.05 tolerance, and counts their forward evaluations. One numerical
-  estimate needs two evaluations; one recorded forward pass can support
-  automatic gradients for several variables together.
+  The tests change the weights and losses, then compare the methods with a
+  0.05 tolerance. They also count forward calculations. One numerical estimate
+  needs two runs. Automatic differentiation uses one forward run to calculate
+  gradients for several variables together.
 starterCode: |
   const w = tf.tidy(() => tf.variable(tf.scalar(3.0)));
 

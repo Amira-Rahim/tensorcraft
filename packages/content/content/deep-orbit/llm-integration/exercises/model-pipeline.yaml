@@ -2,25 +2,17 @@ slug: model-pipeline
 lessonSlug: multi-model-systems
 title: "Wire a Model Pipeline"
 instructions: |
-  Implement `classifierStage(model)` and `pipeline(signal, classify, detectAnomaly, generateAlert)`.
+  Implement classifierStage(model) and pipeline(signal, classify, detectAnomaly, generateAlert).
 
-  The classifier receives three finite raw readings: amplitude in counts,
-  zero-crossing count and phase in radians. Apply the supplied min-max RANGES,
-  predict once on shape [1, 3] and dispose temporary tensors. Reject a wrong
-  length or non-finite input. Require one finite sigmoid value p in [0, 1].
-  Return anomaly when p > 0.5, otherwise noise. The `confidence` field stores
-  p for anomaly and 1-p for noise. This is a chosen-class score, not proven calibration.
+  The classifier receives three raw features: amplitude in counts, zero-crossing count, and phase in radians. Reject an array of the wrong length or any non-finite value. Scale the features with the supplied min-max RANGES. Predict once using shape [1, 3] and release temporary tensors.
 
-  The pipeline passes the raw signal to each stage. Accept only noise or
-  anomaly from the classifier; substitute unknown for another class. Reject
-  a non-finite or out-of-range confidence before calling the detector. The
-  detector must return a boolean. For true, call the alert writer and require
-  a non-empty string; for false, skip it and return null for the alert.
-  Return { classification, confidence, isAnomaly, alert }.
+  The model must return one finite sigmoid value p between 0 and 1 inclusive. Return 'anomaly' when p > 0.5 and 'noise' otherwise. Set confidence to p for anomaly or 1-p for noise. That is the chosen class's model score, not a verified probability of correctness.
 
-  These exercise stages are supplied callbacks, not the lesson's complete
-  autoencoder and forecast helpers. Input/output checks catch malformed data;
-  they cannot establish that a plausible prediction is correct.
+  The pipeline passes the original raw signal to each stage. Keep classifier labels 'noise' and 'anomaly'; replace any other label with 'unknown'. Reject a non-finite or out-of-range confidence before calling the detector.
+
+  The detector must return a boolean. If true, call the alert writer and require a string containing at least one non-whitespace character. If false, skip the writer and return null for alert. Return { classification, confidence, isAnomaly, alert }.
+
+  The exercise supplies stage callbacks rather than the full autoencoder and forecast helpers shown in the lesson. These checks catch invalid data. A plausible prediction can pass them and still be wrong.
 starterCode: |
   interface Verdict {
     class: string;

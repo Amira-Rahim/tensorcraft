@@ -2,35 +2,37 @@ slug: normalize-data
 lessonSlug: normalization
 title: "Normalize, Then Ask the Preview Neuron"
 instructions: |
-  Normalize a batch of four readings, then score them with Farah's fixed preview
-  neuron. Each row has two features: temperature and signal strength. Save the
-  training statistics so a later reading receives the same transformation.
+  Help Farah scale four readings, then run them through her supplied model.
+  Each row has temperature and signal strength. Save the training statistics
+  so you can use them for later readings too.
 
-  1. Implement `fitStats(rows)` for a non-empty `[n, 2]` tensor with finite values. Return `{ mean, std }`
-     as two per-feature tensors. Reduce over axis 0 and use population standard
-     deviation (divide squared deviations by n). `tf.moments` returns variance;
-     take its square root for std. Apply the function to `batch`, saving `mean`
-     and `std`.
-  2. Implement `scaleFeatures(rows, offset, scale)` for a 1D reading or 2D batch.
-     Subtract the per-feature offset and divide by scale. When scale is zero,
-     use divisor 1 without changing the saved statistics. The lesson shows
-     `tf.where` for this choice. Set `normalized` using the saved mean and std.
-  3. Use the supplied `previewModel`. Its two fixed weights and bias are already
-     installed. Model construction is provided; your work is input scaling.
-  4. Predict on `normalized` in one batch. Save the `[4, 1]` output as `scores`.
-  5. Implement `scoreReading(reading)` for a new `[2]` tensor. Reuse the saved
-     mean and std, add a batch axis, and predict with `previewModel`. Return the
-     prediction tensor or its single number. This must work after the original
-     training batch is disposed; do not fit statistics again.
-  6. Implement `minMaxStats(rows)` returning per-feature `{ min, max }` tensors
-     for a non-empty `[n, 2]` batch with finite values. Use `scaleFeatures` with the minimum and range to
-     produce `unitRange` for the original batch. Its nonconstant columns span
-     0 to 1; constant columns become zero.
+  1. Implement `fitStats(rows)` for a non-empty `[n, 2]` tensor of finite values.
+     Return `{ mean, std }`, one value per column in each tensor. Reduce over
+     axis 0. Use population standard deviation, which divides the squared
+     deviations by `n`. `tf.moments` returns variance; take its square root
+     to get `std`. Apply this function to `batch` and save `mean` and `std`.
+  2. Implement `scaleFeatures(rows, offset, scale)` for one reading or a batch.
+     Subtract each column's offset, then divide by its scale. If a scale is
+     zero, divide by 1 instead. Keep the saved statistics unchanged.
+     The lesson shows how to choose the divisor with `tf.where`.
+     Save the scaled `batch` as `normalized`, using the saved mean and std.
+  3. Use the supplied `previewModel`. Model construction is provided.
+     Its weights and bias are already set; your work is scaling the inputs.
+  4. Predict on `normalized` in one call. Save the `[4, 1]` tensor as `scores`.
+  5. Implement `scoreReading(reading)` for a new `[2]` tensor. Scale it using
+     the saved mean and std, add a batch axis, then call `previewModel`.
+     Return the prediction tensor or its one numerical value. This must still
+     work after `batch` is disposed. Do not calculate the statistics again.
+  6. Implement `minMaxStats(rows)` for a non-empty `[n, 2]` tensor of finite
+     values. Return `{ min, max }` tensors with one value per column.
+     Use `scaleFeatures` with the minimum and range (`max - min`) to scale
+     the original batch into `unitRange`. Nonconstant columns should span
+     0 to 1. Constant columns should become zero.
 
-  Both statistics functions must work on new batches of different lengths,
-  including a constant feature. With the zero-scale rule, a changed future
-  value becomes its difference from the saved offset. That is a numerical
-  policy, not evidence that the model learned how to handle the new variation.
+  Both statistics functions must work on batches of different lengths,
+  including columns with only one repeated value. With a zero scale, a changed
+  future reading becomes its difference from the saved offset. This avoids
+  division by zero. It does not prove the model can handle that new variation.
 starterCode: |
   const batch = tf.tensor2d([
     [20, 0.2],
@@ -155,7 +157,7 @@ testCode: |
     it('fitStats returns one statistic per feature, not one for the batch', () => {
       const m = values(mean, 'Step 1 has not run yet: fitStats still returns nulls.');
       const why =
-        'Temperature and signal strength live on different scales, so each column needs its own mean. Reducing the whole batch at once averages the two together.';
+        'Calculate a separate mean for each column. One mean for the whole batch would mix temperature with signal strength.';
       expect(m.length, 'Two features in, two statistics out.').toBe(2);
       expect(m[0], why).toBeCloseTo(23, 4);
       expect(m[1], why).toBeCloseTo(0.5, 4);
@@ -169,10 +171,10 @@ testCode: |
       const m = values(other && other.mean, 'fitStats returned no mean for this batch.');
       const sd = values(other && other.std, 'fitStats returned no std for this batch.');
       const why =
-        'These rows are not the ones printed in the starter, so anything typed in by hand misses them. Compute both statistics from the argument.';
+        'Calculate the statistics from the rows passed into the function. The tests also use batches unlike the starter example.';
       const stdWhy =
         why +
-        ' A std that comes out larger than this by a factor of sqrt(n / (n - 1)) was divided by n - 1: step 1 asks for the population standard deviation, the one divided by n.';
+        ' Use population standard deviation: divide by n, not n - 1.';
       expect(m[0], why).toBeCloseTo(12, 4);
       expect(m[1], why).toBeCloseTo(4, 4);
       expect(sd[0], stdWhy).toBeCloseTo(1.63299, 4);
@@ -201,12 +203,12 @@ testCode: |
       filled(normalized, 'Step 2 is still empty. Z-score the batch with the statistics from step 1.');
       const colMeans = Array.from(normalized.mean(0).dataSync());
       const why =
-        'A z-scored column is centred on its own mean and measured in its own standard deviations, which is what puts both features on one scale.';
+        'Subtract each column\'s mean and divide by its standard deviation. This puts both columns on a comparable scale.';
       expect(Math.abs(colMeans[0]), why).toBeLessThan(1e-5);
       expect(Math.abs(colMeans[1]), why).toBeLessThan(1e-5);
       const stds = Array.from(tf.moments(normalized, 0).variance.sqrt().dataSync());
       const stdWhy =
-        'A column divided by its population std comes out at exactly 1 here. Divided by a sample std, the n - 1 divisor, it lands near 0.87 instead.';
+        'Use population standard deviation. The scaled column has standard deviation 1; using n - 1 gives about 0.87 here.';
       expect(stds[0], stdWhy).toBeCloseTo(1, 4);
       expect(stds[1], stdWhy).toBeCloseTo(1, 4);
     });
@@ -229,7 +231,7 @@ testCode: |
       ).toEqual([2, 1]);
       const k = Array.from(w[0].dataSync());
       const why =
-        'setWeights is positional: the kernel goes first, the bias second, and swapping them or reshaping the kernel changes the neuron Farah handed you.';
+        'Pass the kernel first and the bias second to setWeights(). Keep the supplied kernel shape.';
       expect(k[0], why).toBeCloseTo(0.9, 5);
       expect(k[1], why).toBeCloseTo(-1.4, 5);
       expect(w[1].dataSync()[0], why).toBeCloseTo(-0.3, 5);
@@ -244,7 +246,7 @@ testCode: |
       ).toEqual([4, 1]);
       const s = Array.from(scores.dataSync());
       const why =
-        'Each verdict is the sigmoid of the two normalized features weighted and offset by the bias. Scoring the raw batch instead of the normalized one lands far from this, and statistics fitted with the n - 1 divisor land just beside it.';
+        'Predict on the scaled rows. Check that you used the supplied weights and bias, and population standard deviation with divisor n.';
       expect(s[0], why).toBeCloseTo(0.5917, 3);
       expect(s[1], why).toBeCloseTo(0.0704, 3);
       expect(s[2], why).toBeCloseTo(0.6745, 3);
@@ -302,7 +304,7 @@ testCode: |
       }
       expect(
         typeof archived === 'number' ? archived : archived.dataSync()[0],
-        'Normalized with the SAVED statistics, the archived sample scores just over a half. Statistics refitted from anything else move this number, and so does a std taken over n - 1 rather than n.',
+        'Use the saved training mean and standard deviation for this reading. Do not fit new statistics or use n - 1 for the variance.',
       ).toBeCloseTo(0.51, 3);
     });
     it('minMaxStats returns one min and one max per feature, as tensors', () => {

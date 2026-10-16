@@ -10,23 +10,23 @@ scene:
 estimatedMinutes: 13
 difficulty: beginner
 context:
-  narrative: "The neuron produces an unbounded score. Nazari wants the score format and the rule that turns it into an alert made explicit."
+  narrative: "The neuron can return scores below zero or above one. Nazari wants to know which scores should trigger an alert."
 concept:
-  explanation: "Activation functions bend a network's straight lines. ReLU clips the negative half away, and sigmoid and tanh squash the whole range into fixed bounds."
+  explanation: "An activation function changes a neuron's score before passing it on. ReLU replaces negative values with zero. Sigmoid and tanh keep their outputs within fixed ranges."
   bridge:
     jsTitle: "Math.max(0, x)"
     jsCode: "const clamped = Math.max(0, rawValue)"
     mlTitle: "ReLU Activation"
     mlCode: "const activated = tf.relu(rawOutput)"
     tier: identity
-    breaks: "At inference these are literally the same arithmetic. Training is where they part: tf.relu applies elementwise across whole tensors and carries a gradient definition, and the ReLU derivative is zero for a negative pre-activation. A unit that stays inactive across training examples can stop receiving useful gradient updates (the dying ReLU). Math.max has no story about any of that."
+    breaks: "Math.max(0, x) and ReLU give the same value for one input. tf.relu applies the rule to every value in a tensor. It also tells TensorFlow.js how to calculate gradients during training. A negative input has zero gradient through ReLU, which can leave a unit inactive."
 consequence:
   narrative: "The board shows bounded scores and a separate alert threshold. Neither is evidence of accuracy until the crew evaluates the model."
 hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
   - level: guidance
-    content: "One tensor operation does the whole job, value by value, at any rank and any length, so nothing here needs to read the input's shape or walk over it. Watch which operation you pick: tfjs also ships a bounded version of this activation that clamps the top as well as the bottom, and the grader feeds in a positive value near the largest a float32 can hold."
+    content: "Use one tensor operation for all the values, whatever the input shape. Choose the activation that keeps every positive value unchanged. Some related activations also clip large positive values, which this task must preserve."
   - level: solution
     content: "return preActivation.relu();"
 keywords:
@@ -45,11 +45,11 @@ Any numeric score can be compared with a threshold. A sigmoid adds a useful rang
 
 You will apply ReLU, an activation function that turns negative values into zero and keeps positive values.
 
-<LearningObjectives objectives={["Explain why a stack of affine dense layers needs nonlinearity to gain expressive power", "Implement ReLU and describe sigmoid and tanh ranges", "Distinguish an activation's output range from a decision threshold and calibrated probability"]} />
+<LearningObjectives objectives={["Explain why dense layers need activations to learn more than a straight-line rule", "Implement ReLU and describe sigmoid and tanh ranges", "Distinguish an activation's output range from a decision threshold and calibrated probability"]} />
 
 ## What a Linear Stack Cannot Add
 
-A matrix multiply plus a bias is an **affine** transformation: it can scale, mix and offset inputs. Composing affine transformations gives another affine transformation. More such layers add parameters without adding a new class of functions.
+A matrix multiplication plus a bias is called an **affine** transformation. It scales and combines inputs, then adds a constant. Stacking these calculations still gives one affine transformation. To represent more kinds of patterns, the stack needs a nonlinear operation.
 
 <CodeBlock language="typescript" title="collapse.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -93,7 +93,7 @@ For finite real inputs, sigmoid lies strictly between 0 and 1 and tanh between -
 
 For the two scores Nazari read out, sigmoid gives about 0.485 and 0.739. A threshold of 0.5 alerts on the second. Thresholding the original scores at zero gives the same decisions. The sigmoid changes the score scale, not the ordering.
 
-A sigmoid output can parameterize a binary probability model during training. Its range alone does not establish calibration. Among comparable cases assigned a calibrated probability of 0.8 for the positive class, that class would occur about 80% of the time. Check that behavior on representative data before interpreting the score that way.
+Sigmoid is often used for a model with two possible classes. A score of 0.8 is not automatically a reliable 80% probability. To earn that meaning, about 80% of comparable examples scored 0.8 should belong to the positive class. Checking this agreement is called **calibration**. Test it on data like the model will see in use.
 
 **ReLU** is a common hidden-layer choice. Its derivative, the local rate of change, is 1 for a positive input and 0 for a negative one. That derivative does not shrink a positive branch's gradient by itself; the rest of the network still affects the gradient.
 
@@ -121,7 +121,7 @@ Apply ReLU to every value of a tensor. Preserve positive values, including large
 
 <RecallPrompt
   question="Why can a stack of affine dense layers be replaced by one affine layer?"
-  answer="Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it."
+  answer="Without nonlinear activations, the layers combine into one matrix multiplication and one bias. ReLU lets the stack represent other patterns, such as a V-shaped function. Adding it does not guarantee the model will learn a useful pattern."
   checks={[
     {
       "kind": "choice",
@@ -129,7 +129,7 @@ Apply ReLU to every value of a tensor. Preserve positive values, including large
       "options": [
         {
           "text": "Their matrix multiplications and offsets combine into one matrix and one bias.",
-          "feedback": "Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it."
+          "feedback": "Without nonlinear activations, the layers combine into one matrix multiplication and one bias. ReLU lets the stack represent other patterns, such as a V-shaped function. Adding it does not guarantee the model will learn a useful pattern."
         },
         {
           "text": "Every layer learns identical weights.",
@@ -141,14 +141,14 @@ Apply ReLU to every value of a tensor. Preserve positive values, including large
         }
       ],
       "correctIndex": 0,
-      "explanation": "Their matrix multiplications and biases can be combined into one matrix and one bias. A nonlinear operation such as ReLU lets the stack represent functions that cannot be expressed that way. It permits nonlinear behavior without guaranteeing every trained network will use it."
+      "explanation": "Without nonlinear activations, the layers combine into one matrix multiplication and one bias. ReLU lets the stack represent other patterns, such as a V-shaped function. Adding it does not guarantee the model will learn a useful pattern."
     }
   ]}
 />
 
 <RecallPrompt
   question="Does an untrained sigmoid output of 0.99 establish a reliable 99% probability?"
-  answer="No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes."
+  answer="No. Sigmoid only puts the score between 0 and 1. Train and test the model, then check whether its probabilities match real outcomes. Choosing the alert threshold is a separate decision."
   checks={[
     {
       "kind": "choice",
@@ -164,11 +164,11 @@ Apply ReLU to every value of a tensor. Preserve positive values, including large
         },
         {
           "text": "No. A bounded score still needs training, evaluation and calibration checks.",
-          "feedback": "No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes."
+          "feedback": "No. Sigmoid only puts the score between 0 and 1. Train and test the model, then check whether its probabilities match real outcomes. Choosing the alert threshold is a separate decision."
         }
       ],
       "correctIndex": 2,
-      "explanation": "No. Sigmoid bounds a score; training and evaluation determine whether it is useful, and calibration needs its own check. A decision threshold is a separate policy based on the task and costs of mistakes."
+      "explanation": "No. Sigmoid only puts the score between 0 and 1. Train and test the model, then check whether its probabilities match real outcomes. Choosing the alert threshold is a separate decision."
     }
   ]}
 />
@@ -180,7 +180,7 @@ Apply ReLU to every value of a tensor. Preserve positive values, including large
 Demir adds the alert threshold to the board as a separate setting. Both calibration tones still trigger it with the current hand-picked weights. At 0316, sample 7741 joins the alert list while ARIA's older pipeline calls it nominal.
 
 <Dialogue speaker="ARIA">
-I have checked reading 7741 against all 14,202 of my rules. My 4,096 parsers failed on this stream and continue to fail. Not one of the remaining 10,106 classification rules fires. My rules name both reference tones. They do not name this. The neuron puts the reading above its line, and with these weights it puts 99.7 percent of every reading those three features can describe above that line, both tones included. I hold nominal. I am still running, and I am noting the disagreement.
+I checked reading 7741 against all 14,202 rules. The 4,096 parsing rules still cannot interpret this stream. None of the other 10,106 classification rules flags this reading. They identify both reference tones, but not this signal. The neuron flags 7741. With these weights, it also flags 99.7 percent of the possible readings, including both tones. My status remains normal. I have recorded the disagreement.
 </Dialogue>
 
 The note files itself between two routine humidity alerts.

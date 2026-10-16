@@ -2,11 +2,22 @@ slug: mse-loss
 lessonSlug: loss-functions
 title: "Two Losses, and Cross-Entropy's Two Forms"
 instructions: |
-  Implement three functions. mseLoss(labels, predictions) returns a scalar mean squared error tensor using tf.losses.meanSquaredError. bceLoss(labels, logits) returns scalar binary cross-entropy using tf.losses.sigmoidCrossEntropy, which applies sigmoid to raw logits itself.
+  Help Farah measure prediction errors. Write three functions:
 
-  pickBceForm(outputKind) chooses a BCE form after the task has already established that binary cross-entropy is appropriate. For 'probabilities', return 'binaryCrossentropy'. For 'logits', return 'sigmoidCrossEntropy'. Throw for any other or missing value.
+  1. `mseLoss(labels, predictions)` returns a scalar mean squared error tensor
+     using `tf.losses.meanSquaredError`.
+  2. `bceLoss(labels, logits)` returns a scalar binary cross-entropy tensor
+     using `tf.losses.sigmoidCrossEntropy`. This API takes raw scores called
+     logits and applies sigmoid itself.
+  3. `pickBceForm(outputKind)` chooses the cross-entropy form. For
+     `'probabilities'`, return `'binaryCrossentropy'`. For `'logits'`, return
+     `'sigmoidCrossEntropy'`. Throw an error for any other or missing value.
 
-  The caller must know what the model output represents. An unfamiliar activation name does not establish that its output is a logit. For this binary classifier, sigmoid outputs probabilities; a linear output trained as a logit goes to the logits form.
+  For the third function, the task has already chosen binary cross-entropy.
+  You are choosing which API matches the output. A sigmoid output supplies
+  probabilities. A linear output trained as a logit uses the logits form.
+  If you do not know what an output represents, its activation name alone
+  may not give you enough information to choose.
 starterCode: |
   function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
     return null; // your code here

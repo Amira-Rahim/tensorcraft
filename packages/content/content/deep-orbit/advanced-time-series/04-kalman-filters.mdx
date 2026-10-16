@@ -11,10 +11,10 @@ scene:
   location: "Archimedes, Lab"
   portraitAlt: "On a lab display a descending scatter of interval marks carries two imperfect smoothing curves as two silhouettes confer."
 context:
-  narrative: "The signal's timing is drifting. Demir reaches for a smoothing trick most JavaScript engineers know, and rides it straight into the dilemma this lesson exists to solve."
+  narrative: "The time between pulses keeps changing. Demir tries a moving average to smooth the noisy measurements, but the smoothed value falls behind the change."
   speaker: "Dr. Farah"
 concept:
-  explanation: "A Kalman filter estimates a value under noise by predicting where it should be, then correcting with each new measurement, trusting whichever is currently less uncertain."
+  explanation: "A Kalman filter predicts a value, then updates it when a new measurement arrives. It calculates how much weight to give the prediction and the measurement from their uncertainty."
   bridge:
     jsTitle: "Exponential Moving Average"
     jsCode: "smoothed = alpha * newValue + (1 - alpha) * smoothed"
@@ -28,7 +28,7 @@ hints:
   - level: nudge
     content: "A Kalman filter alternates predict and correct: widen the variance by the process noise, then pull the estimate toward the measurement by exactly the Kalman gain."
   - level: guidance
-    content: "A fixed blend factor matches a Kalman filter on the first measurement and drifts off it by the third. The difference is the variance. It has to survive the call, widen before the next measurement arrives, and shrink again once that measurement is folded in. The weight on the measurement is then recomputed from it every call, which is why it changes step to step instead of holding still."
+    content: "Keep the uncertainty between measurements. It should grow while you wait and shrink after a correction. Work out how that changing uncertainty determines the weight given to the next measurement. Updating only the estimate would lose the information needed for the next call."
   - level: solution
     content: |
       class SimpleKalman {
@@ -62,7 +62,7 @@ skillAxes: [model_arch]
 
 > **PULSE INTERVAL LOG · first cycle of each of the last eight days (seconds):** 73.1 · 72.9 · 73.0 · 72.6 · 72.7 · 72.3 · 72.4 · 72.0
 
-Read the column both ways. The noise says the numbers wander; the trend says they only wander downhill. Before this lesson names its subject, try to track that drift with a tool you already know.
+The numbers move up and down, but the overall trend is downward. Try smoothing those noisy measurements with a tool you already know.
 
 Demir's first move is the usual one when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
 
@@ -153,9 +153,13 @@ for (const m of measurements.slice(1)) {
 // it. The per-day shrink gets read off the raw log, not off this line.`}
 </CodeBlock>
 
-The state here is one number with no term for change, so the gain settles and the estimate behaves like an EMA with a well-chosen alpha. It lags a steady trend for the same reason: the final estimate sits 0.43 behind the final reading. That is worse than the alpha-0.8 line Demir just dismissed, which ends 0.08 behind. Smoother output is not proof of greater accuracy: we do not know the noise-free state here. We chose process variance 0.1 and measurement variance 1, which determine the gain: by the eighth reading the gain is near its limiting value of 0.27, and the filter derived that for a state with no term for change in it. Tracking the trend itself takes a second state, the change per day. The drawer below derives the gain and works through that limit.
+This filter tracks one number, the current level. It does not track how fast the level changes. As the gain settles, it behaves like an EMA with a chosen alpha and falls behind a steady trend.
 
-<DerivationDrawer summary="Where the gain formula comes from: minimize the posterior variance">
+The final estimate differs from the final reading by 0.43. Demir's alpha-0.8 EMA differs by only 0.08. Smoother output does not prove greater accuracy because we do not know the true value without noise.
+
+Here process variance is 0.1 and measurement variance is 1. By the eighth reading, the gain is close to its limiting value of 0.27. To track the downward trend directly, the filter would need a second state: change per day. The drawer below explains the gain calculation.
+
+<DerivationDrawer summary="Why this gain gives the lowest updated uncertainty">
 The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. Why THAT K and not a hand-picked alpha? Because K is the value that minimizes the variance of the blended estimate.
 
 ```
@@ -175,9 +179,13 @@ dV/dK = -2(1-K)·P + 2K·R = 0
       → K = P / (P + R)
 ```
 
-That is line-for-line the `gain` in the code above: `predictedVariance / (predictedVariance + measurementNoise)`. Sanity-check the endpoints: a perfect sensor (R → 0) gives K → 1, trust the measurement; a useless sensor (R → ∞) gives K → 0, keep the prediction. Demir's "alpha that adjusts itself" is this quotient, recomputed every step as P shrinks with each correction. A steady-state Kalman gain can be constant when the model and noise statistics are constant; using that fixed gain is a legitimate design choice.
+The code uses that same formula: `predictedVariance / (predictedVariance + measurementNoise)`. If the sensor is nearly perfect, R → 0 and K → 1, so the update follows the measurement. If sensor uncertainty is very large, R → ∞ and K → 0, so it keeps the prediction.
 
-With this random-walk model and constant noise variances, P settles and the gain converges: about 0.27 at process noise 0.1 and measurement noise 1. After a handful of updates the filter behaves like an EMA with a well-chosen alpha, and it lags a steady drift the same way. The early gains fall from 0.52 to 0.38 to 0.33, reflecting the assumed uncertainty after each correction. This does not remove trend lag. Tracking the drift itself takes a state with velocity in it: the 2-state constant-velocity Kalman, which is exactly this machinery run on `[interval, change-per-day]` instead of a single number.
+This is Demir's changing alpha. The filter recalculates it as corrections reduce P. If the model and noise statistics stay constant, the gain can settle at a constant value. Using that settled gain is a valid design choice.
+
+With this random-walk model and fixed noise variances, P and the gain settle. For process noise 0.1 and measurement noise 1, the limiting gain is about 0.27. The early gains are 0.52, 0.38, and 0.33 as each measurement reduces the assumed uncertainty.
+
+Once settled, the filter behaves like an EMA with a chosen alpha. It still falls behind a steady trend. To track that trend directly, add a second state for the change per day. A two-state constant-velocity filter runs these calculations on `[interval, change-per-day]` instead of one number.
 </DerivationDrawer>
 
 ## Challenge
@@ -235,7 +243,7 @@ Implement a Kalman filter and smooth the anomaly timing.
 
 <RecallPrompt
   question="Why can a one-state level filter lag behind steadily falling measurements?"
-  answer="The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter."
+  answer="The filter tracks the level but not its rate of change. Here the gain settles near 0.27 with process noise 0.1 and measurement noise 1. Each update moves toward the new measurement, but does not predict the continuing fall. Tracking that trend requires a second state for change per day, as in a two-state constant-velocity filter."
   checks={[
     {
       "kind": "choice",
@@ -243,7 +251,7 @@ Implement a Kalman filter and smooth the anomaly timing.
       "options": [
         {
           "text": "It has no state representing the rate of change.",
-          "feedback": "The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter."
+          "feedback": "The filter tracks the level but not its rate of change. Here the gain settles near 0.27 with process noise 0.1 and measurement noise 1. Each update moves toward the new measurement, but does not predict the continuing fall. Tracking that trend requires a second state for change per day, as in a two-state constant-velocity filter."
         },
         {
           "text": "A gain below 1 proves that all measurements are invalid.",
@@ -255,7 +263,7 @@ Implement a Kalman filter and smooth the anomaly timing.
         }
       ],
       "correctIndex": 0,
-      "explanation": "The state is a single number with no term for change. Once the gain converges, 0.27 here at process noise 0.1 and measurement noise 1, the filter can only chase the level, and a level that keeps falling always sits below where the filter last had it. Nothing about the gain fixes that. Tracking the fall takes a second state, the change per day, which is the 2-state constant-velocity filter."
+      "explanation": "The filter tracks the level but not its rate of change. Here the gain settles near 0.27 with process noise 0.1 and measurement noise 1. Each update moves toward the new measurement, but does not predict the continuing fall. Tracking that trend requires a second state for change per day, as in a two-state constant-velocity filter."
     }
   ]}
 />
@@ -273,10 +281,12 @@ Implement a Kalman filter and smooth the anomaly timing.
 
 <Epilogue>
 
-Eight days, one first-cycle measurement each; smoothed estimate 72.4 seconds, down a full second from module 5's first measurement of 73.4. The log under it shrinks roughly a sixth of a second per day. Farah brings the filter's output to the bridge before dawn, with the assumed noise variances printed beside it. Nazari's review note asks which measurements support those assumptions. The slope is the log's own doing, and the log has stopped being flat. Mirza reads the printout twice, writes a time in the margin, and folds it into her jacket without showing anyone.
+The crew has one first-cycle measurement from each of eight days. The smoothed estimate is 72.4 seconds, a full second below module 5's first measurement of 73.4. The recorded intervals are shrinking by roughly a sixth of a second per day.
+
+Farah takes the results to the bridge before dawn, with the assumed noise variances printed beside them. Nazari asks which measurements support those assumptions. Mirza reads the printout twice, writes a time in the margin, and puts it in her jacket without showing anyone.
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
-Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.
+Wake Nazari. Backup transmission plans and a full-thrust course on my console by 0800.
 </Dialogue>
 
 </Epilogue>

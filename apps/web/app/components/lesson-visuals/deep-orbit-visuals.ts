@@ -54,8 +54,7 @@ const flow = (
   kind: "flow",
   mode: "pipeline",
   question,
-  action:
-    "Follow the data. Select a stage to inspect what it needs and what it hands over.",
+  action: "Select a stage to see its input, output, and role in the task.",
   takeaway,
   stages,
 });
@@ -77,9 +76,9 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "foundations",
     "tensor",
     "reshape",
-    "Which readings belong together?",
-    "Change the row width. The six values stay in the same order.",
-    "Reshape changes the grouping. It preserves both the values and their total count.",
+    "How should Farah arrange the readings?",
+    "Choose how many numbers go in each row. All six numbers stay in their original order.",
+    "Reshape puts the same numbers into new rows. It keeps their order and never adds or removes a number.",
   ),
   "tensor-operations": visual(
     "foundations",
@@ -144,7 +143,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "build",
     "Do the layer shapes fit together?",
     "Change the hidden width and follow the shape passed to the output layer.",
-    "The next layer consumes the previous layer's output width. The batch dimension stays in front.",
+    "The next layer takes the previous layer's outputs as its inputs. The batch axis stays first.",
   ),
 
   "loss-functions": visual(
@@ -239,7 +238,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Inspect",
         "Backend name",
-        "Check what this device actually selected. Do not infer it from the browser name.",
+        "Check which backend actually started. The browser name alone does not tell you.",
         "console.log(tf.getBackend());",
       ),
       stage(
@@ -253,7 +252,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   "model-loading": flow(
     "browser-runtimes",
     "Why can model.json load while the model fails?",
-    "The graph and every referenced weight shard must be available at the resolved URLs.",
+    "The model graph and every weight file it lists must be available at the expected URLs.",
     [
       stage(
         "Request graph",
@@ -264,13 +263,13 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Resolve shards",
         "group1-shard1of2.bin",
-        "Shard paths resolve relative to the model location. Inspect the network request when a file is missing.",
+        "Weight-file paths are relative to the model URL. Check the network request to find a missing file.",
         "new URL('group1-shard1of2.bin', location.origin + url);",
       ),
       stage(
         "Load weights",
         "All shards required",
-        "A successful JSON request cannot compensate for a missing binary shard.",
+        "Loading model.json is not enough. The model also needs every binary weight file.",
         "const model = await tf.loadLayersModel(url);",
       ),
       stage(
@@ -289,7 +288,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Prepare",
         "One example",
-        "Validate feature order, apply the fitted scaler and add the batch dimension.",
+        "Check feature order, scale values using the training statistics, and add the batch axis.",
         "const input = tf.tensor2d([scaledFeatures]);",
       ),
       stage(
@@ -315,7 +314,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   "onnx-runtime-web": flow(
     "browser-runtimes",
     "What makes an exported model usable here?",
-    "A file extension does not establish compatibility. Check graph operators, shapes and execution-provider support.",
+    "The file extension alone does not tell you whether a model will run. Check its operations, tensor shapes, and backend support.",
     [
       stage(
         "Inspect graph",
@@ -369,7 +368,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Check outputs",
         "Your examples",
-        "Try representative examples. A returned score does not establish suitability for the ship's data.",
+        "Try representative examples. A returned score does not prove the model suits the ship's data.",
         "const result = await classify(exampleText);",
       ),
     ],
@@ -397,7 +396,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "spectrogram",
     "When did the new frequency appear?",
     "Move the time window across a signal whose second tone begins halfway through.",
-    "A spectrogram puts successive window spectra beside one another so changes have a time location.",
+    "A spectrogram lines up spectra from successive windows, showing when frequencies change.",
   ),
   "fft-as-features": visual(
     "signal-processing",
@@ -412,8 +411,8 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "signal",
     "window",
     "What happens when a window cuts through a cycle?",
-    "Compare a rectangular window with a Hann taper on a non-bin-centered tone.",
-    "Tapering reduces spectral leakage, but it broadens the main peak. Overlap preserves more time coverage.",
+    "Compare a rectangular window with a Hann window. Use a tone between FFT bin centers to see leakage.",
+    "Softening the window edges reduces spectral leakage but widens the main peak. Overlapping windows cover more of the signal.",
   ),
 
   "sequences-matter": visual(
@@ -429,7 +428,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "sequence",
     "rnn",
     "What survives from the previous reading?",
-    "Advance through the sequence and inspect a small recurrent state's update.",
+    "Move through the readings and see how each one updates a small recurrent state.",
     "Each step uses both the current input and the previous state. The weights here are fixed teaching values.",
   ),
   "lstm-gates": visual(
@@ -478,8 +477,8 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "anomaly",
     "error",
     "Which feature contributes most to the mismatch?",
-    "Move one feature away from its reconstruction and inspect the squared residuals.",
-    "Average residuals to get a score for one example. Inspect individual features to understand that score.",
+    "Change one feature and inspect its squared difference from the reconstructed value.",
+    "Average the squared differences to score one example. Check each feature's contribution to understand the score.",
   ),
   "threshold-tuning": visual(
     "anomaly-detection",
@@ -495,7 +494,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "agreement",
     "What does agreement between detectors actually tell us?",
     "Move a candidate reading and inspect three simple screening rules.",
-    "Agreement can justify a closer look. Correlated checks do not establish an unknown reading's true label.",
+    "Agreement is a reason to investigate. Checks that share evidence can also share mistakes, so agreement does not reveal the true label.",
   ),
 
   "beyond-lstm": visual(
@@ -519,7 +518,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "sequence",
     "forecast",
     "What changes when a prediction becomes the next input?",
-    "Extend the recursive forecast and inspect its error at each horizon.",
+    "Feed predictions back into the forecast. Check the error at each future step.",
     "Recursive forecasts feed predictions back in. Errors may accumulate, but they need not grow at every step.",
   ),
   "kalman-filters": visual(
@@ -542,12 +541,12 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   "model-profiling": flow(
     "optimization-edge",
     "Where is the actual cost of one prediction?",
-    "Profile a warmed-up model on the target device. Parameter counts alone do not establish latency.",
+    "Run warmup calls before timing the model on the target device. Parameter count alone cannot tell you prediction time.",
     [
       stage(
         "Warm up",
         "Initialization excluded",
-        "Run a representative input before timing steady-state inference. Report cold start separately.",
+        "Run a typical input before timing warmed-up predictions. Report first-load time separately.",
         "const warmup = model.predict(input);\nawait warmup.data();\nwarmup.dispose();",
       ),
       stage(
@@ -565,7 +564,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Compare",
         "Same device + inputs",
-        "Measure several runs and accuracy before and after a change. This diagram reports no benchmark.",
+        "Measure several calls and evaluate accuracy before and after a change. This diagram does not run a benchmark.",
         "// Record latency distribution and evaluation results.",
       ),
     ],
@@ -576,7 +575,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "quantize",
     "What changes when a weight uses fewer bits?",
     "Reduce the number of representable levels and compare rounded weights with the originals.",
-    "Fewer bits can reduce storage. Actual speed and model accuracy depend on the runtime and must be measured.",
+    "Fewer bits can shrink stored weights. Measure speed on the runtime and device, and evaluate accuracy on labeled data.",
   ),
   pruning: visual(
     "optimization-edge",
@@ -584,7 +583,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "prune",
     "What disappears when small weights become zero?",
     "Raise the magnitude cutoff and inspect which connections remain.",
-    "A small weight is not necessarily unimportant. Zero weights only save runtime work with compatible sparse execution.",
+    "A small weight can still matter. Setting it to zero only saves calculation time if the runtime can skip zero connections.",
   ),
   "caching-strategies": flow(
     "optimization-edge",
@@ -657,7 +656,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Supply evidence",
         "Known observations",
-        "Give the model the measurements and their provenance. Keep unknown values explicitly unknown.",
+        "Give the model measurements with their sources. Mark missing or unknown values clearly.",
         "const context = { observations, sourceIds };",
       ),
       stage(
@@ -723,7 +722,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
         "const records = await retrieve(query);",
       ),
       stage(
-        "Keep provenance",
+        "Keep source details",
         "Stable source IDs",
         "Pass source IDs and text together so claims can be checked against the correct record.",
         "const context = records.map(({ id, text }) => ({ id, text }));",
@@ -731,7 +730,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Generate",
         "Draft + references",
-        "Ask the model to ground claims in the supplied records and identify gaps.",
+        "Ask the model to use the supplied records for its claims and name missing evidence.",
         "const draft = await generateReport(context);",
       ),
       stage(
@@ -787,13 +786,13 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Retrieve",
         "Evidence bundle",
-        "Retrieve relevant records using a validated detection result and preserve provenance.",
+        "Retrieve relevant records from a checked detector result, and keep their source details.",
         "const evidence = await retrieveFor(detection);",
       ),
       stage(
         "Explain",
         "Grounded draft",
-        "The language model receives bounded evidence. It cannot retroactively make the detection correct.",
+        "Give the language model a defined set of evidence. Its explanation cannot make an incorrect detection right.",
         "const draft = await explain(detection, evidence);",
       ),
       stage(
@@ -808,7 +807,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   "system-architecture": flow(
     "capstone",
     "Where can the system fail between sensor and report?",
-    "Explicit contracts make failures diagnosable. Carry versions and provenance across the whole pipeline.",
+    "Clear input and output rules help locate failures. Keep version and source details through every stage.",
     [
       stage(
         "Ingest",
@@ -842,8 +841,8 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "Release the same graph, weights and preprocessing that passed evaluation. A rebuilt artifact needs new checks.",
     [
       stage(
-        "Pin artifacts",
-        "Content hashes",
+        "Pin model files",
+        "File hashes",
         "Identify the graph, weights and scaler as a versioned bundle.",
         "const bundle = { graphHash, weightsHash, scalerHash };",
       ),
@@ -855,14 +854,14 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       ),
       stage(
         "Evaluate",
-        "Held-out criteria",
+        "Evaluation criteria",
         "Apply the agreed evaluation criteria to the exact artifact. Preserve the report alongside it.",
         "const report = await evaluate(bundle, heldOut);",
       ),
       stage(
         "Release gate",
         "Evidence + artifact",
-        "Promote only the checked artifact. A passing application build alone is insufficient.",
+        "Release only the model files that passed the checks. A successful app build does not check the model.",
         "if (passes(report)) promote(bundle);",
       ),
     ],
@@ -870,7 +869,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   monitoring: flow(
     "capstone",
     "What could go wrong without throwing an exception?",
-    "Monitor inputs, performance and outcomes. A drifting score distribution needs investigation, not an automatic new label.",
+    "Monitor inputs, performance and outcomes. A changing score distribution needs investigation before assigning new labels.",
     [
       stage(
         "Input checks",
@@ -911,7 +910,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       ),
       stage(
         "Data",
-        "Training provenance",
+        "Training data sources",
         "Describe the data sources, splits, preprocessing and known gaps.",
         "card.data = { sources, splits, preprocessing };",
       ),

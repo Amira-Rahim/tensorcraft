@@ -2,7 +2,7 @@ slug: write-model-card
 lessonSlug: documentation
 title: "Write a Model Card"
 instructions: |
-  Render a Model Card from structured model metadata: one string whose lines the grader matches literally, in this order.
+  Help Farah prepare the model handover. Render the supplied metadata as one Model Card string, using this exact line order and format:
 
       # {name} v{version}
       ## Performance
@@ -16,18 +16,11 @@ instructions: |
       - Input: {inputFormat}
       - Output: {outputFormat}
 
-  Percentages carry one decimal place, and every bullet sits under its own heading. The size line carries the weight file in bytes, which is the figure that was measured, not a rounded megabyte total for the whole download.
+  Read every value from `meta`. Format percentages with one decimal place. Find the smallest value in `recallByClass`; do not assume a class name or key order. If values tie, you may use the first minimum in insertion order. Keep each bullet under its named heading.
 
-  Keep each bullet under its named heading. Read values from meta. Accuracy
-  is tied to benchmarkedOn; find the minimum of recallByClass rather than
-  relying on key order. Inputs are already validated: metric fractions are
-  finite in [0, 1], sizes and durations are nonnegative, and recallByClass is
-  non-empty. Ties may name the first minimum in insertion order.
+  Inputs are already validated. Metric fractions are finite in [0, 1], sizes and durations are nonnegative, and `recallByClass` is non-empty. `weightBytes` describes the weight file, not the whole download.
 
-  This exercise renders a subset of a model card. A release card also needs
-  purpose, artifact/data identity, split method, per-class sample counts,
-  metric definitions and timing environment. Supplied mission values are
-  fictional; formatting them does not verify them.
+  This is part of a model card. A release card also needs purpose, model and data versions, split method, per-class sample counts, metric definitions, and the timing environment. The supplied mission values are fictional; formatting them does not verify them.
 starterCode: |
   interface ModelMetadata {
     name: string;
@@ -43,8 +36,8 @@ starterCode: |
   }
 
   function generateModelCard(meta: ModelMetadata): string {
-    // Every value on the card is rendered from meta. Two of them are worked
-    // out rather than read straight off it.
+    // Read card values from the supplied metadata.
+    // Some lines need calculations or formatting.
     return null; // your code here
   }
 solutionCode: |

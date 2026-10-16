@@ -10,10 +10,10 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "One neuron can tell two calibration tones apart, and nothing else. Nazari wants stages, and she wants the parameter count quoted first."
+  narrative: "One neuron can separate the two calibration tones. Nazari wants a network that can handle more complex patterns, and a count of the weights and biases it will need."
   speaker: "Chief Nazari"
 concept:
-  explanation: "A network is layers composed in order. Each one transforms its input and passes the result to the next, and the parameter count is the price of every stage you add."
+  explanation: "A sequential network passes values through layers in order. Each layer changes the values before the next one reads them. Count its weights and biases to see how large the network is."
   bridge:
     jsTitle: "Middleware chain"
     jsCode: "app.use(parseBody); app.use(authenticate); app.use(handleRequest)"
@@ -22,12 +22,12 @@ concept:
     tier: structural
     breaks: "Middleware can mutate shared state, stop a request, or schedule later work. A Sequential model connects layers with compatible tensor shapes. Training differentiates the numerical computation to update parameters. Middleware control flow does not supply that gradient calculation."
 consequence:
-  narrative: "Nazari reads the parameter quote twice: 673. Nothing is trained, so the stack knows nothing yet. What the count buys is room for patterns a single neuron could never hold."
+  narrative: "Nazari checks the count: 673 weights and biases. The network is built, but it still needs training."
 hints:
   - level: nudge
     content: "A sequential model is a stack: each dense layer you model.add() feeds the next, and only the first layer needs an inputShape."
   - level: guidance
-    content: "The three stages are spelled out in the instructions; the quote is the part worth working out. Count what one unit owns before you count a stage: a weight for each value that reaches it, and its own bias. Then ask which stage's price changes when the reading gets wider, and which two are fixed by the stage in front of them. That is why predictParams takes a width and cannot be a constant."
+    content: "Each unit has one weight per input and one bias. Use that to count each layer. When the input width changes, only the first layer's count changes. Later layers still receive the same number of outputs from the layer before them. predictParams must calculate the count for the width it receives."
   - level: solution
     content: "model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [4] })); model.add(tf.layers.dense({ units: 8, activation: 'relu' })); model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' })); function predictParams(width) { return (width * 16 + 16) + (16 * 8 + 8) + (8 * 1 + 1); }"
 keywords:
@@ -48,9 +48,17 @@ You will connect layers into a network and calculate how many weights and biases
 
 ## Stages All the Way Down
 
-Three dense layers, 673 trainable parameters. That's the whole system Nazari just asked for: a 32-unit stage reading the three features from lesson 1, a 16-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. Those three are amplitude, frequency, and phase, each mapped to 0-1 against the range its own sensor can physically produce. Module 4 quotes those ranges when the browser pipeline has to apply them. Nazari's sixty-four channels do not arrive as sixty-four inputs. Extraction summarizes a capture into those three numbers before the model sees anything, off a 64-sample window, a quarter second of one channel at 256 Hz. That window is a different sixty-four from the stream's sixty-four channels. The composition logic is a middleware chain: each stage takes what the previous stage produced, transforms it, and hands the result on.
+Nazari's network has three dense layers and 673 trainable parameters, the weights and biases training will change. The first layer has 32 units. The second has 16. The last has one sigmoid unit that returns a score.
 
-Say exactly what a stage is, because "finds patterns" describes the result, not the mechanism. A dense layer with 32 units is 32 copies of the lesson-1 neuron, plus the activation lesson 1 left out. Every one of them reads the same 3 inputs through its own weights and bias. That gives 32 weighted sums, and the layer's relu runs on each one before the next stage sees it. The 16-unit stage is 16 more neurons, and its inputs are those 32 relu outputs. Each later unit forms a weighted sum of the previous layer’s outputs. To represent functions beyond affine transformations, this dense stack needs nonlinearity. Without it, these layers reduce to one affine score; extra parameters do not change that function class.
+The model reads amplitude, frequency, and phase. Each uses a 0-1 scale based on its sensor's physical range, given in module 4. These are three summaries of a raw capture, rather than one input per sensor channel.
+
+Each summary comes from 64 consecutive samples of one channel. At 256 samples per second, that covers a quarter of a second. The 64 samples are separate from the ship's 64 sensor channels.
+
+Like a middleware chain, each layer reads the previous layer's result, changes it, and passes it on.
+
+A **dense layer** with 32 units contains 32 neurons. Each reads all three inputs using its own weights and bias. ReLU then acts on each of the 32 scores.
+
+The next layer has 16 neurons, each reading those 32 outputs. Its ReLU outputs go to the final neuron. The activations let the stack represent nonlinear patterns. Without them, all these layers would still combine into one affine calculation.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -88,13 +96,17 @@ model.summary(); // prints layer shapes and parameter counts
 model.dispose();`}
 </CodeBlock>
 
-Two numbers price a dense layer: how many values arrive, and how many units read them. The layer holds one weight for every incoming value on every unit, plus one bias per unit: `(inputs * units) + units`. Run that down the three stages above and you get Nazari's 673. On the first layer the arriving width is whatever `inputShape` declares, so that setting carries a price too. Every later layer inherits its width from the stage before it, which is why only the first one declares anything. Leave the units at 32/16/1 and change `inputShape` to `[8]`, and the same stack quotes 833.
+To count a dense layer's parameters, use `(inputs * units) + units`. Every unit has one weight per input and one bias. Add the three layer counts to get 673.
+
+Only the first layer needs `inputShape`. Later layers get their input count from the previous layer's output. Change the first input shape to `[8]` while keeping 32/16/1 units, and the count becomes 833.
 
 Demir's first stack ran 96, then 32, then 1: 3,521 parameters, on a 96-unit first stage he picked because it looked like a serious number. Nazari read the quote, said nothing, and went back to her console. The 32/16/1 above is the third version he brought her.
 
 ## What the Count Buys
 
-The stack costs 673 parameters. The lesson-1 neuron, three weights and a bias, costs 4. Here is the smallest case where that difference decides the answer rather than the speed. A reading carries two normalized inputs, so there are four cases to label: 0 and 0, 0 and 1, 1 and 0, 1 and 1. The label fires when exactly one of the two reads high, which makes the middle two 1 and the outer two 0. Plot the four on a square, one axis per input. One weighted sum plus a threshold draws a single straight line on that square. No straight line puts the two cases labeled 1 on one side and the two labeled 0 on the other.
+The stack has 673 parameters. The first lesson's neuron has four: three weights and one bias. More layers can represent patterns that one neuron cannot.
+
+Consider two inputs that can each be 0 or 1. Flag a case only when exactly one input is 1. The four cases are `[0, 0]`, `[0, 1]`, `[1, 0]`, and `[1, 1]`, with labels 0, 1, 1, and 0. Plot them at the corners of a square. One weighted sum and a threshold can only draw one straight dividing line. No such line separates these labels.
 
 That task is XOR: true when exactly one binary input is true. It demonstrates a capacity limit of one affine score with a threshold. More parameters alone do not prove better predictions; the arrangement and nonlinearities matter.
 
@@ -115,13 +127,13 @@ This is a small capacity demonstration, not evidence about the spacecraft data; 
 
 ## Challenge
 
-Build a three-stage stack, then quote its price at a width the grader picks.
+Build three layers, then write a function that counts their parameters for any supplied input width.
 
 <Exercise slug="build-layer" />
 
 <RecallPrompt
-  question="Consider the widths and biases in a sequential dense network."
-  answer="The incoming width and units. units sets the number of neurons (output features) in a layer, and parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape, which is where its incoming width comes from; TFJS infers every later input size from the previous layer's units."
+  question="Count the weights and biases in a dense layer."
+  answer="Each unit has one weight per input and one bias. The count is (inputs × units) + units. Only the first layer needs inputShape. Every later layer gets its input width from the number of units in the previous layer."
   checks={[
     {
       "kind": "number",
@@ -139,7 +151,7 @@ Build a three-stage stack, then quote its price at a width the grader picks.
           "feedback": "Later dense layers also learn weights and biases."
         },
         {
-          "text": "Their incoming width is inferred from the previous layer output.",
+          "text": "They receive the values produced by the previous layer.",
           "feedback": "The first layer declares the input shape; each following layer receives the preceding output."
         },
         {

@@ -24,19 +24,18 @@ starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function runCell(readings, recurrentWeight, inputWeight, bias) {
-    // One number crosses each step boundary, and it belongs to this call
-    // alone.
+    // Start h at zero for this call, then carry each updated state to the next reading.
     return null; // your code here
   }
 
   function buildCellLayer(timeSteps) {
-    // A bare layer has nothing to read off it yet.
+    // Add the one-unit recurrent layer to the model before reading its weights.
     return null; // your code here
   }
 
   function decayFactors(states, recurrentWeight) {
-    // One running product, one entry per state, and the slope of tanh at a
-    // state is a function of the state alone.
+    // Multiply each new derivative factor into the running product.
+    // Return one product per state.
     return null; // your code here
   }
 solutionCode: |
@@ -154,7 +153,7 @@ testCode: |
       expect(states[2]).toBeCloseTo(0.8284, 4);
       expect(
         states[2] - states[0],
-        'These two steps read the identical 0.5. The first one meets an empty cell and the third one meets everything the window has already been through, so the second answer sits well above the first.',
+        'Both steps receive 0.5, but their previous hidden states differ. Use the carried state in each update.',
       ).toBeGreaterThan(0.3);
     });
 
@@ -177,7 +176,7 @@ testCode: |
       const memoryless = cell([0.4, 0.9, 0.4], 0, 1.2, -0.1);
       expect(
         memoryless[2],
-        'With recurrentWeight at 0 nothing survives the step boundary, so two identical readings have to score identically. A cell that still separates them is carrying the state in by some other route.',
+        'A recurrent weight of zero removes the previous state’s contribution. Identical readings must then produce identical states.',
       ).toBeCloseTo(memoryless[0], 8);
       const carrying = cell([0.4, 0.9, 0.4], 0.8, 1.2, -0.1);
       expect(
@@ -345,7 +344,7 @@ testCode: |
       expect(out[peak], 'The direct state derivative reaches about 173 on this fixture.').toBeCloseTo(172.73, 0);
       expect(
         out[59] < 1e-11,
-        'Past step fifteen the settled state pins the factor at 0.393, and forty-five of those undo the burst many times over.',
+        'After the state settles, each factor is about 0.393. Continue multiplying the factors so the earlier growth gives way to decay.',
       ).toBe(true);
     });
     it('is a running product of the weight times the slope of tanh, for any window and any weight', () => {

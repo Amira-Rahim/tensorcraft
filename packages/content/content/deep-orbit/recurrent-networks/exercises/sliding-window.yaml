@@ -1,11 +1,17 @@
 slug: sliding-window
 lessonSlug: sliding-windows
 title: "Split First, Then Window"
-instructions: "The mirror in this lesson scored 97.4 because the stream was windowed before it was split. Build the honest version. `splitThenWindow(series, labels, windowSize, splitAt)` cuts the stream at index splitAt (the first reading that belongs to evaluation), THEN windows each side with stride 1. A window covers readings [i, i + windowSize) and takes the label of its last reading, labels[i + windowSize - 1]. Windows that straddle the boundary belong to neither side and are dropped. Return { train: { xs, ys }, eval: { xs, ys } }. The grader feeds a series whose values are their own indices, so any reading that leaks across the boundary shows up as a number on the wrong side."
+instructions: |
+  Build `splitThenWindow(series, labels, windowSize, splitAt)`. Split at reading index splitAt, which is the first evaluation reading. Create windows within each side with stride 1.
+
+  A window starting at i contains readings from i through i + windowSize - 1. Give it `labels[i + windowSize - 1]`, the label of its last reading. Drop windows that cross the split; they belong to neither set.
+
+  Return `{ train: { xs, ys }, eval: { xs, ys } }`. Keep the windows and their matching labels in order. The tests use values equal to their reading indices, making any shared reading easy to spot.
+
 starterCode: |
   function splitThenWindow(series, labels, windowSize, splitAt) {
-    // series holds one feature row per reading; labels holds one entry per
-    // reading. A span that touches both sides of the cut lies on neither.
+    // Keep windows entirely within training or evaluation.
+    // Drop windows crossing splitAt, and label each by its last reading.
     return null; // your code here
   }
 solutionCode: |
@@ -102,7 +108,7 @@ testCode: |
       expect(train.ys).toEqual(trainYs);
       expect(
         ev.ys,
-        'The evaluation labels come out of the same log the training labels do, read at each window\'s own last reading. Labels invented for that side, or read at an offset, make the eval set unscoreable while every count still looks right.',
+        'Read evaluation labels from the same labels array, at each window\'s last reading. Do not shift or invent them.',
       ).toEqual(evalYs);
     });
     it('follows the parameters on three settings drawn at grade time', () => {

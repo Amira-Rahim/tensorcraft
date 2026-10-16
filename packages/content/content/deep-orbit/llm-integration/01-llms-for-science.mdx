@@ -23,14 +23,14 @@ concept:
     tier: structural
     breaks: "Both generated code and generated scientific prose can contain convincing errors. Running code catches some failures, but plausible wrong logic can pass limited tests. Check scientific statements against their cited measurements; fluent wording and familiar numbers do not establish accuracy."
 consequence:
-  narrative: "Minutes to a full preliminary draft. Farah reviews and corrects: faster than writing from scratch, but only because she knows the data cold."
+  narrative: "The model produces a first draft in minutes. Farah checks and corrects it. That saves time because she knows the data well enough to spot mistakes."
 hints:
   - level: nudge
     content: |
-      An LLM response is untrusted text: the client's job is to parse it and validate every required field before anything downstream sees it.
+      Do not trust the reply just because the API returned it. Parse the text and check every required field before passing it to the next step.
   - level: guidance
     content: |
-      Under this exercise contract, one JSON object is surrounded by text with no other braces. Extract it, parse it and check each field. Zero is a valid score, so avoid truthiness checks. Additional fields are allowed. This simple extraction rule is not a parser for arbitrary model replies.
+      This exercise supplies one JSON object surrounded by text with no other braces. Extract that object, parse it, and check each required field. A score of zero is valid, so check its type and range rather than its truthiness. Extra fields are allowed. This simplified extraction rule will not handle every possible model reply.
   - level: solution
     content: |
       interface Analysis {
@@ -57,7 +57,9 @@ keywords:
 skillAxes: [deployment, js_integration]
 ---
 
-Three weeks pass without a lesson in them. The ensemble Farah left running extrapolates every night of those weeks. The logged pulse interval shortens by seconds while nobody sleeps enough. The long-baseline triangulation job she queued against the relay network grinds through its first pass, still refusing to commit to a bearing. What forces everyone back into one room is the calendar: a transmission window, six hours wide.
+Three weeks pass. Farah's forecasting system runs every night, and the logged pulse interval keeps shrinking. The crew is short on sleep. Her attempt to locate the source using the relay network finishes its first pass, but still gives no clear direction.
+
+Now they have another deadline: a six-hour window to transmit a report.
 
 <Dialogue speaker="Dr. Farah">
 We have 47 days of signal data: 12,000 classified signal events, distilled out of millions of raw dashboard readings, and one unclassified event. I can't finish the report in the 6 hours before the next transmission window. But I can guide a language model to draft one.
@@ -79,9 +81,9 @@ Nazari's skepticism is the right default. A language model will happily invent a
 
 You will parse a language model’s API response and reject fields that do not meet the report’s requirements.
 
-<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Parse an untrusted reply, validate its required fields and reject invalid output", "Define the human-AI workflow: generate → review → correct → approve"]} />
+<LearningObjectives objectives={["Use an LLM to draft analysis that a person can check", "Parse an untrusted reply, validate its required fields and reject invalid output", "Define the human-AI workflow: generate → review → correct → approve"]} />
 
-## LLMs as Developer Tools
+## Use an LLM as a drafting tool
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -90,10 +92,10 @@ You will parse a language model’s API response and reject fields that do not m
   complete(prompt: string, options?: { system?: string; temperature?: number; maxTokens?: number }): Promise<string>;
 }
 
-// Server-side adapter for an endpoint that supports this chat-completions
-// contract. Other APIs need their own adapter. Configure a real model ID.
-// Keep provider credentials on the server. Browser code calls your
-// authenticated server route without receiving the provider key.
+// This server adapter expects the chat-completions contract shown below.
+// Other APIs need their own adapters. Configure an actual model ID.
+// Keep provider keys on the server. The browser calls an authenticated
+// server route and never receives the provider key.
 function createLLMClient(apiKey: string, baseUrl: string, modelId: string): LLMClient {
   return {
     async complete(prompt, options = {}) {
@@ -129,7 +131,7 @@ Do not infer the cause or significance of the unclassified event.\`);`}
 
 ## What You Are Actually Calling
 
-A decoder language model predicts the next token from preceding tokens. Tokens are text pieces; their size depends on the tokenizer and language. The model produces vocabulary logits, and softmax converts them into a distribution. A decoding rule selects a token, appends it and continues until a stop condition.
+A decoder language model predicts the next token from the tokens before it. Tokens are pieces of text, with sizes that depend on the tokenizer and language. The model produces logits, raw scores for the possible next tokens. Softmax turns those scores into probabilities. A decoding rule picks a token, adds it to the text, and repeats until a stop condition is met.
 
 Inference usually has two phases. **Prefill** processes the supplied prompt. **Decoding** generates new tokens, commonly one at a time while reusing cached attention keys and values. It does not normally recompute the entire prompt for every token. Some serving systems generate candidates in larger groups, then verify them. Token count alone therefore does not tell you the number or duration of runtime calls.
 
@@ -205,7 +207,7 @@ console.log(check.unmatched);  // [9]  ← no such cluster in the data
 
 ## Challenge
 
-The client above is typed all the way to its edge. What comes back over that edge is not: a string with no schema and no guarantees. Turn one reply into a typed analysis, or into a thrown error.
+The API returns plain text, even if your client uses TypeScript. Parse one reply and check that its fields match the expected analysis type. Return the checked analysis, or throw an error if it is invalid.
 
 <Exercise slug="llm-client" />
 
@@ -219,11 +221,11 @@ The client above is typed all the way to its edge. What comes back over that edg
       "options": [
         {
           "text": "Publish the first fluent draft as long as it sounds confident.",
-          "feedback": "Fluency and confidence do not establish factual support."
+          "feedback": "An answer can sound confident and still contain false claims."
         },
         {
           "text": "Lower temperature and treat every generated statement as verified.",
-          "feedback": "Reduced sampling variation does not verify claims."
+          "feedback": "Lower temperature changes how tokens are chosen. It does not check facts."
         },
         {
           "text": "Draft, verify claims against evidence, correct errors and obtain review before release.",
@@ -248,7 +250,9 @@ The client above is typed all the way to its edge. What comes back over that edg
 
 <Epilogue>
 
-Five hours, twelve minutes to the transmission window. On the anomaly panel the pulse interval reads 63.1 seconds tonight; it has not stopped shrinking since the ensemble went up. Farah submits the first draft request and the model returns six hundred words in eleven seconds: clean prose, confident structure. The second paragraph describes an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down, and logs one tally mark on Nazari's ledger. ARIA has been parsing the draft from her own console the entire time.
+There are five hours and twelve minutes until the transmission window. Tonight's pulse interval is 63.1 seconds. It has kept shrinking since the ensemble started running.
+
+Farah requests a draft. Eleven seconds later, the model returns six hundred well-written words. The second paragraph describes an "anomaly cluster in Band-3" that no instrument aboard the Archimedes has recorded. She deletes it and records the mistake in Nazari's ledger. ARIA has been reading the draft from her own console.
 
 <Dialogue speaker="ARIA">
 One unsupported claim found. Dr. Farah had already marked it. None of my 14,202 rules explains how the draft selected an instrument we do not carry.

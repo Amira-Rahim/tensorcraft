@@ -1,13 +1,19 @@
 slug: load-pretrained-pipeline
 lessonSlug: transformers-js
 title: "Sentiment Classifier via Transformers.js"
-instructions: "Build `classifyReports(reports, pipelineFactory)`. The first argument is an array of report strings. Return [] immediately for an empty list, without loading a pipeline. The second stands in for `pipeline()`: call it with the name of the task you want, await it once, and it resolves to a callable model for that task. There is no default task. It rejects a name the library does not ship, and a task that is not the one this job needs answers in a shape carrying neither a label nor a score. Return an array of `{ text, label, score }` ordered by score descending, most confident first, whatever the label. Load the pipeline once and pass the whole array to the classifier in one call: reloading per report is the anti-pattern the lesson warns about, and the tests count both calls. The classifier answers positionally, one prediction per report in the order you sent them, so join each report to its own prediction before you reorder anything."
+instructions: |
+  Build `classifyReports(reports, pipelineFactory)`. Return one `{ text, label, score }` result per report, sorted from highest score to lowest, regardless of the label.
+
+  - For an empty reports array, return [] without loading anything.
+  - The supplied `pipelineFactory` simulates the real `pipeline()` loader. Give it the task name and await the classifier it returns. There is no default task.
+  - Choose the task that returns a label and score for each text report. An unknown task throws an error; another supported task returns the wrong kind of result for this job.
+  - Load once, then pass the entire reports array to the classifier in one call. The tests count both calls.
+  - Predictions arrive in the same order as the reports. Pair each report with its prediction before sorting, so the text, label and score stay together.
+
 starterCode: |
   async function classifyReports(reports, pipelineFactory) {
-    // The factory stands in for a model download, so how many times you call
-    // it is part of what this grades. And a prediction knows which report it
-    // belongs to only by its position, so that link has to survive whatever
-    // you do to the order.
+    // Load the classifier once for the whole batch.
+    // Pair each report with its prediction before sorting the results.
     return [];
   }
 solutionCode: |
@@ -42,7 +48,7 @@ testCode: |
     function makeStubPipeline(predictions) {
       return async (task) => {
         if (typeof task !== 'string' || task === '') {
-          throw new Error('pipeline() has no default task. It takes the name of the job you want, and the lesson lists the names this library ships.');
+          throw new Error('Choose a task name from the lesson and pass it to pipeline(). There is no default task.');
         }
         if (TASKS.indexOf(task) === -1) {
           throw new Error('Unsupported pipeline task: ' + task + '. The lesson lists the tasks this library ships.');
@@ -84,7 +90,7 @@ testCode: |
     // here, so the first Run says what is missing.
     async function ranked(reports, stub) {
       const out = await classifyReports(reports, stub);
-      expect(out, 'classifyReports has to resolve to one { text, label, score } row per report. The starter returns an empty array until you build those rows.').toHaveLength(reports.length);
+      expect(out, 'Return one { text, label, score } result for each report.').toHaveLength(reports.length);
       const why = 'Every row needs a label and a numeric score. Rows without them are what comes back when the pipeline was loaded for a task whose output carries neither, and no amount of sorting turns that into a ranking.';
       for (let i = 0; i < out.length; i++) {
         expect(out[i], why).toHaveProperty('label');

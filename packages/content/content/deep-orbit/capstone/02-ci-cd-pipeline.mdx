@@ -27,7 +27,7 @@ consequence:
   narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
   - level: nudge
-    content: "For the export: model.save() never touches a disk it was not given. tf.io.withSaveHandler wraps an async function that receives the serialized artifacts; capture them, then count what the digest covers. (The gate exercise states its own contract in its instructions.)"
+    content: "For the export exercise, pass a save handler to model.save(). The handler receives the serialized model. Keep that data in memory, then count its tensors, parameters, and weight bytes. Follow the gate exercise's separate instructions for its accuracy rule."
   - level: guidance
     content: "Use tf.io.withSaveHandler to make memory the export destination. Capture the artifacts passed to the handler and return modelArtifactsInfo. Count tensors from weightSpecs, multiply each shape to count parameters, and read weightData.byteLength for bytes. Mixed precision means one bytes-per-parameter multiplier may not apply."
   - level: solution
@@ -67,7 +67,7 @@ skillAxes: [deployment]
 
 > **MERGE REQUEST 47 · DEMIR → NAZARI:** “Model checks passed. Requesting release approval.”
 
-Nazari opens the artifact log before the test summary. Both cache entries have valid versioned keys. The report job joined the candidate's artifact manifest to the previous release's evaluation result by filename. Each file is valid; the pair describes different models.
+Nazari opens the saved-model log before the test summary. Both cache entries have valid versioned keys. But the report job matched files by name and paired the new model's manifest with the previous model's evaluation. Each file is valid on its own. Together, they describe different models.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Which model did this run test? Show me the graph and weight fingerprints beside the result.
@@ -77,7 +77,9 @@ Which model did this run test? Show me the graph and weight fingerprints beside 
 The cache keys are different. My report job dropped the release ID when it joined the results. I'll make the artifact fingerprint part of that join and test it with two releases present.
 </Dialogue>
 
-A valid cached result describes the artifact it tested. The release must also prove that this result belongs to the candidate it will publish. CI/CD means continuous integration and delivery: automation that tests changes and prepares or publishes a release. The automation still needs a precise description of the artifact to test.
+A passing result only describes the model it tested. Before release, check that the result belongs to the exact model you plan to publish.
+
+CI/CD means continuous integration and delivery: automation that tests changes and prepares or publishes a release. That automation needs to know exactly which model files to test.
 
 You will build a prediction gate and a model manifest so release checks refer to the artifact being published.
 
@@ -105,7 +107,7 @@ node scripts/check-model-deployment.mjs --origin https://tensorcraft.app
 
 The local check rejects a changed graph, changed weights and a missing shard. It then restores the previous artifact and verifies its bytes and prediction. The hosted option fetches the public model over HTTPS and checks it against the pinned fixture. It does not deploy anything or rehearse a rollback on the production site.
 
-## Gate Identity and Behavior Separately
+## Check Model Identity and Behavior Separately
 
 Once identity is established, evaluate the candidate on data that matches the release question. Track baseline performance, per-class errors and the cost of mistakes. Choose an acceptance rule before inspecting this candidate's results. An accuracy floor can be one gate; it is rarely the entire release decision.
 
@@ -159,7 +161,7 @@ Keep the previous release until the replacement passes on the console. If rollba
 
 ## Challenge
 
-Write the accuracy gate's decision function. This exercise checks supplied label pairs. Missing labels count as unverified rows in its denominator; a separate data-completeness gate should decide whether that batch is suitable for release. It does not configure GitHub permissions, publish a site or establish a device's performance budget.
+Write the function that decides whether the supplied predictions pass the accuracy gate. Rows with missing labels still count in the total, but cannot count as correct. A separate check should decide whether enough labels are available for a release decision. This exercise does not configure GitHub permissions, publish a site, or measure device performance.
 
 <Exercise slug="ci-cd-gate" />
 
@@ -168,8 +170,8 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
 <Exercise slug="export-model-artifact" />
 
 <RecallPrompt
-  question="Explain how you would establish that a green CI run evaluated the exact model artifact intended for release."
-  answer="Its steps can resolve an old cache entry or a mutable URL. Pin and verify the complete intended artifact, including graph, weights and preprocessing, then score those verified bytes. A passing gate describes only the candidate and evaluation it actually ran."
+  question="How would you check that a passing CI run tested the exact model you plan to release?"
+  answer="A CI step can load an old cache entry or a URL whose files have changed. Record and verify the intended graph, weights, and preprocessing. Then evaluate those same verified bytes. A passing result only covers the model and evaluation it actually ran."
 />
 
 <RecallPrompt

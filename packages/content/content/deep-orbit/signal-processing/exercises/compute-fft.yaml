@@ -2,7 +2,7 @@ slug: compute-fft
 lessonSlug: fourier-transform
 title: "Compute FFT and Find Dominant Frequency"
 instructions: |
-  Implement `findDominantFrequency(signal, sampleRate)` using `tf.spectral.rfft()`. Return the frequency in hertz of the largest-magnitude non-DC bin; exclude bin 0. Convert its index using `bin * sampleRate / signal.length`. Keep the lowest eligible index when magnitudes tie.
+  Implement `findDominantFrequency(signal, sampleRate)` using `tf.spectral.rfft()`. Return the frequency in hertz of the bin with the largest magnitude, excluding bin 0, the constant offset. Convert its index using `bin * sampleRate / signal.length`. Keep the lowest eligible index when magnitudes tie.
 
   Return the measured bin center. An isolated off-bin tone often peaks nearby, but phase, leakage and neighboring tones can change the winner. Use the computed magnitudes rather than rounding an estimated frequency.
 
@@ -11,8 +11,7 @@ starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function findDominantFrequency(signal: number[], sampleRate: number): number {
-    // Two decisions live here: which bins are eligible to win the search, and
-    // what a winning index is worth in hertz.
+    // Skip bin 0. Find the largest remaining magnitude and convert its index to Hz.
     return null; // your code here
   }
 solutionCode: |
@@ -87,7 +86,7 @@ testCode: |
       const signal = Array.from({ length: 128 }, (_, i) => Math.sin((2 * Math.PI * 7.3 * i) / 128));
       expect(
         findDominantFrequency(signal, 128),
-        'This answer has to come out of a bin. Timing the wave in the time domain, by its zero crossings or its period, lands closer to the true tone than this spectrum can resolve, and that extra precision is the tell that no transform was involved.',
+        'Return the frequency of the winning FFT bin. Estimating the tone from zero crossings or its period answers a different question.',
       ).toBeCloseTo(7, 1);
     });
     it('magnitude decides the winner, not how often the wave crosses zero', () => {
@@ -113,7 +112,7 @@ testCode: |
       const signal = Array.from({ length: 256 }, (_, i) => Math.sin((2 * Math.PI * hz * i) / 128));
       expect(
         findDominantFrequency(signal, 128),
-        'This tone was drawn when the grader ran, so no table of remembered captures and answers covers it. Its bin is the only one carrying anything, and what that bin is worth in hertz comes from the sample rate and the capture length this run was handed.',
+        'The test chooses a new tone each run. Find its largest eligible FFT magnitude, then convert that index using the supplied sample rate and capture length.',
       ).toBeCloseTo(hz, 1);
     });
   });

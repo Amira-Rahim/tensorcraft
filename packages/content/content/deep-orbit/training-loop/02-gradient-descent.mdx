@@ -13,7 +13,7 @@ context:
   narrative: "Knowing how wrong the network is isn't enough; Chief Nazari wants to know which direction to adjust."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Gradient descent uses local gradients to propose steps toward lower loss, the same update rule as the lerp smoothing behind an easing animation."
+  explanation: "Gradient descent uses the slope of the loss to choose a direction for changing the weights. A small enough step against that slope lowers the loss nearby."
   bridge:
     jsTitle: "Lerp smoothing"
     jsCode: "pos += (target - pos) * 0.1  // ease toward target"
@@ -22,12 +22,12 @@ concept:
     tier: structural
     breaks: "The shown lerp step is gradient descent on half the squared distance to a fixed target. In model fitting, target labels may be known while the best parameters are not. A local gradient supplies an update direction; it is one optimization method, not the only possible one."
 consequence:
-  narrative: "Down is computable for one weight: the slope says which way to move it and how far. The other 672 are still waiting."
+  narrative: "Demir can now update one weight using its gradient. The other 672 still need updates."
 hints:
   - level: nudge
     content: "One descent step, written once inside step(fn): let autograd compute the slope of the loss function you were handed, then move the weight a small step in the opposite direction."
   - level: guidance
-    content: "The differentiation call hands back an object rather than a bare tensor: one entry per variable it differentiated, keyed by that variable's own name and not by position, so this weight's gradient has to be pulled out of it before you can use it. Then the update. The gradient points uphill, so a step of learningRate against it walks downhill. Two things bite here. A tf.variable is a container holding a tensor, so it has to be updated in place; rebinding the name leaves the variable itself untouched. And the loss you differentiate has to be the function step() received, because the grader hands step() a loss of its own later."
+    content: "The gradient result is an object keyed by variable name. Read this weight's gradient from that object. Subtract the gradient multiplied by learningRate. Use assign() to change the variable itself, rather than assigning a new tensor to a local name. Calculate the gradient from the function step() receives, since later calls use different losses."
   - level: solution
     content: |
       const weight = tf.tidy(() => tf.variable(tf.scalar(5.0)));
@@ -55,7 +55,11 @@ keywords:
 skillAxes: [training]
 ---
 
-If you've ever written an easing loop, you have already written this lesson. Every loop that runs `pos += (target - pos) * 0.1` is doing gradient descent on the loss `(target - pos)² / 2`. The derivative of that loss with respect to `pos` is `-(target - pos)`, and stepping opposite the derivative, scaled by 0.1, reproduces the lerp line character for character. Run both from `pos = 2` toward `target = 10` and each lands on 2.8: the easing line because it was written that way, `tf.variableGrads` because it measured the slope (-8) and subtracted a tenth of it. What this lesson adds is only the part lerp never needed: where the slope comes from when the best parameter values are unknown.
+An easing loop such as `pos += (target - pos) * 0.1` moves a value toward a known target. It is also gradient descent on the loss `(target - pos)² / 2`.
+
+Start at `pos = 2` with `target = 10`. The loss slope is -8. Subtract a tenth of that slope and the next position is 2.8, the same result as the easing line.
+
+For a network, we know the labels but not the best weights. Calculating the loss slope tells us which direction to try.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 An easing loop knows where it is going. This has 673 parameters and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
@@ -100,11 +104,15 @@ for (let step = 0; step < 20; step++) {
 x.dispose();`}
 </CodeBlock>
 
-That slope arrives without anyone writing a derivative. `tf.variableGrads` records the operations your loss function runs and replays that recording backwards to get it. The name for the trick is autograd, short for automatic differentiation. The next lesson takes it apart.
+`tf.variableGrads` calculates the slope without you writing the derivative. It records the loss calculation, then works backward through its operations. This is called **automatic differentiation**, or autograd. The next lesson explains it.
 
-Read that trace as distances rather than positions. Each row sits five steps after the one before it, and the distance covered shrinks: 1.614, then 0.528, then 0.174. Nothing in the loop asks it to slow down. The slope of `(x - 3)²` shrinks as x nears 3, and each step is a tenth of the slope, so descent slows near the minimum instead of overshooting it.
+Each row in the trace is five steps after the previous row. The distance covered gets smaller: 1.614, then 0.528, then 0.174.
 
-**Learning rate** is a hyperparameter: a setting you choose rather than a weight fitted by this optimizer. Lerp factors carry the same intuition, and the easing loop is small enough to check the numbers on. Each frame leaves `|1 - r|` of the distance still to cover, so `pos = 2` running toward `target = 10` at 0.001 needs 6,682 frames to close the gap to 0.01.
+The loop does not change the learning rate. The slope of `(x - 3)²` gets smaller as x approaches 3. Each update is a tenth of that slope, so the steps also get smaller.
+
+The **learning rate** scales each update. It is a **hyperparameter**, a setting you choose rather than a weight this optimizer learns.
+
+In the easing example, rate `r` leaves `|1 - r|` of the remaining distance after each frame. A rate of 0.001 moves very slowly: starting at `pos = 2` toward `target = 10` takes 6,682 frames to get within 0.01.
 
 Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error each frame and comes within 0.01 of the target in ten frames. At 2.0 it stops converging and bounces between 18 and 2. Above 2.0 the error grows: at 2.5 the positions are 22, -8 and 37.
 
@@ -115,7 +123,9 @@ The threshold belongs to the loss rather than to the rate. The descent above min
 
 `∇L = [ ∂L/∂w₁, ∂L/∂w₂, ..., ∂L/∂wₙ ]`
 
-Each partial derivative gives the local rate of loss change per unit change in that weight, holding the others fixed. For a small nudge ε, the loss change is approximately ε times that derivative. For a differentiable loss and fixed Euclidean step length, the gradient gives the steepest local ascent direction. Its negative gives local descent when the gradient is nonzero. A finite step still needs a suitable size.
+Each partial derivative asks what happens to the loss if just one weight changes. For a small change ε, the loss changes by about ε times that derivative.
+
+For a differentiable loss, the gradient points toward the steepest local increase at a fixed Euclidean step length. Its negative points toward local decrease if the gradient is nonzero. The step still needs to be small enough.
 
 **Why the update rule `w := w - η·∇L`?** The Taylor expansion of L around the current point, which is the straight-line approximation of the loss right where you are standing:
 
@@ -135,13 +145,13 @@ To minimize the linear approximation, pick Δw opposite to ∇L. The learning ra
 
 ## Challenge
 
-Implement one descent step, written so the grader can hand your step() any loss it likes, including one that is not a polynomial.
+Help Demir update a weight. Write step() so it calculates a fresh gradient from whichever loss function it receives.
 
 <Exercise slug="gradient-step" />
 
 <RecallPrompt
   question="Loss explodes after a few steps. What is a reasonable next step?"
-  answer="An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
+  answer="Try a smaller learning rate. Also check the input scales, invalid numbers, loss calculation, and gradients. Stepping past the minimum does not always make a run fail: this quadratic still converges at 0.6. The loss curve alone cannot tell you the cause."
   checks={[
     {
       "kind": "choice",
@@ -149,7 +159,7 @@ Implement one descent step, written so the grader can hand your step() any loss 
       "options": [
         {
           "text": "Try a smaller learning rate and inspect input scales, non-finite values and gradients.",
-          "feedback": "An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
+          "feedback": "Try a smaller learning rate. Also check the input scales, invalid numbers, loss calculation, and gradients. Stepping past the minimum does not always make a run fail: this quadratic still converges at 0.6. The loss curve alone cannot tell you the cause."
         },
         {
           "text": "Increase the learning rate because large loss always means updates are too small.",
@@ -161,7 +171,7 @@ Implement one descent step, written so the grader can hand your step() any loss 
         }
       ],
       "correctIndex": 0,
-      "explanation": "An excessive learning rate is one possibility. Try a smaller rate and inspect input scale, non-finite values, the loss implementation and gradients. For the quadratic example, crossing the minimum need not cause divergence: a rate of 0.6 still converges. General training failures cannot be diagnosed from the loss trace alone."
+      "explanation": "Try a smaller learning rate. Also check the input scales, invalid numbers, loss calculation, and gradients. Stepping past the minimum does not always make a run fail: this quadratic still converges at 0.6. The loss curve alone cannot tell you the cause."
     }
   ]}
 />

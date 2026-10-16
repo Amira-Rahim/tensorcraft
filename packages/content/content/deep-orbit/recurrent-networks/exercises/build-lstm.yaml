@@ -2,30 +2,37 @@ slug: build-lstm
 lessonSlug: lstm-gates
 title: "One LSTM Step by Hand"
 instructions: |
-  First the arithmetic, then the layer it belongs to.
+  Implement one LSTM step, then compare it with a one-unit TensorFlow.js layer.
 
-  1. Write `lstmStep(prevHidden, prevCell, x, weights)`: one time step of an LSTM cell, computed per dimension. `weights` holds a `forget`, `input`, `output` and `candidate` array, each with one row `[wHidden, wInput, bias]` per dimension, so dimension j's pre-activation is `wHidden * prevHidden[j] + wInput * x[j] + bias`.
-  2. The forget, input and output gates pass their pre-activation through `sigmoid`; the candidate passes through `Math.tanh`.
-  3. Then `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]` and `newHidden[j] = output[j] * Math.tanh(newCell[j])`. Return `{ newCell, newHidden }`. One test runs your step 100 times with the forget gate near 1 and the input gate shut, to check that a candidate which is not zero still cannot reach the cell.
-  4. Then `buildLstmCell(timeSteps)`: a `tf.sequential()` holding one `tf.layers.lstm({ units: 1, inputShape: [timeSteps, 1], recurrentActivation: 'sigmoid', returnSequences: true })`, returned as `{ model, weights }` with `weights` in exactly the shape `lstmStep` reads. One unit and one feature, because a wider layer mixes every dimension through a matrix and a per-dimension step stops describing it.
-  5. Pass `recurrentActivation: 'sigmoid'` yourself: TF.js defaults its gates to `hardSigmoid`, a clipped straight line rather than the curve the lesson uses.
-  6. `model.getWeights()` returns three tensors, the input kernel [1, 4], the recurrent kernel [1, 4] and the bias [4]. The three gates and candidate share those tensors: each one is 1 column wide and they sit side by side in the order INPUT, FORGET, CANDIDATE, OUTPUT, which is not the order the lesson narrates them in. So column 0 of the recurrent kernel, column 0 of the input kernel and bias[0] are the input gate's `[wHidden, wInput, bias]` row, column 1 is the forget gate's, and so on. Build the four one-row arrays that way.
+  First, write `lstmStep(prevHidden, prevCell, x, weights)`. Each of weights.forget, weights.input, weights.output and weights.candidate contains one row per stored value. A row is `[wHidden, wInput, bias]`.
 
-  The grader checks each row against the layer's own columns, then runs your `lstmStep` across a window from `prevHidden` and `prevCell` of [0] and checks its hidden state against what the layer reports at every step.
+  For each position j:
+  1. Calculate each weighted sum as `wHidden * prevHidden[j] + wInput * x[j] + bias`.
+  2. Apply sigmoid to the forget, input and output sums. Apply Math.tanh to the candidate sum.
+  3. Calculate `newCell[j] = forget[j] * prevCell[j] + input[j] * candidate[j]`.
+  4. Calculate `newHidden[j] = output[j] * Math.tanh(newCell[j])`.
+
+  Return `{ newCell, newHidden }`. One test repeats the step 100 times with the forget gate near 1 and input gate closed. A nonzero candidate must not enter through that closed gate.
+
+  Next, write `buildLstmCell(timeSteps)`. Return `{ model, weights }`. The Sequential model must contain one LSTM layer with units 1, inputShape [timeSteps, 1], recurrentActivation 'sigmoid' and returnSequences true. Set the activation explicitly; TensorFlow.js otherwise uses hardSigmoid. This comparison uses one unit and one feature because a wider layer mixes positions through full matrices.
+
+  Read model.getWeights(): input kernel [1, 4], recurrent kernel [1, 4], then bias [4]. Their four columns are INPUT, FORGET, CANDIDATE, OUTPUT. For each column, combine the recurrent value, input value and bias into a `[wHidden, wInput, bias]` row. Put that row inside the corresponding one-row weights array.
+
+  The tests check your extracted weights, then run your step from hidden and cell states [0]. Every resulting hidden state must match the library layer.
+
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
   function lstmStep(prevHidden, prevCell, x, weights) {
-    // All four groups are read the same way. What a group is for decides
-    // which curve it comes out through.
+    // Calculate each weighted sum. Use sigmoid for gates and tanh for the candidate.
     return null; // your code here
   }
 
   function buildLstmCell(timeSteps) {
-    // Three gates and a candidate share two kernels and one bias, in an order the lesson
-    // does not narrate.
+    // Read matching columns from both kernels and the bias.
+    // Column order: input, forget, candidate, output.
     return null; // your code here
   }
 solutionCode: |
@@ -81,7 +88,7 @@ testCode: |
     const out = lstmStep(prevHidden, prevCell, x, weights);
     expect(
       out,
-      'lstmStep handed back nothing, so no gate has run yet. Work out the four pre-activations for each dimension, then return { newCell, newHidden }.',
+      'Calculate the four weighted sums for each position, then return { newCell, newHidden }.',
     ).toBeTruthy();
     expect(
       Array.isArray(out.newCell) && Array.isArray(out.newHidden),
@@ -118,7 +125,7 @@ testCode: |
       expect(newCell[1]).toBeCloseTo(-0.5, 6);
       expect(
         newHidden[0],
-        'The hidden state is the new cell value seen through the output gate, and the cell goes through a tanh on its way out. Multiply the gate by the raw cell and this number comes back too large.',
+        'Apply tanh to the new cell value, then multiply by the output gate.',
       ).toBeCloseTo(0.5 * Math.tanh(1), 6);
       expect(
         newHidden[1],
@@ -164,7 +171,7 @@ testCode: |
       }
       expect(
         cell[0],
-        'A hundred steps of a forget gate at 0.99, with the input gate shut the whole way. The cell should be a decayed copy of what it started with: 0.99 to the hundredth of the 2 it began at. A cell that grew, or that settled somewhere, is taking the candidate in past a closed gate.',
+        'The input gate stays closed, so no candidate can enter. Only the forget factor should change the stored value over these 100 steps.',
       ).toBeCloseTo(2 * Math.pow(sig(FORGET_BIAS), 100), 6);
     });
 
@@ -231,7 +238,7 @@ testCode: |
       ).toBe('LSTM');
       expect(
         model.layers[0].getConfig().recurrentActivation,
-        'Left to itself TF.js runs the gates through a clipped straight line instead of the sigmoid curve your step uses, and the two answers part company. Ask for the curve.',
+        'Set recurrentActivation to sigmoid. The default hardSigmoid differs from the sigmoid used by your step.',
       ).toBe('sigmoid');
       const weights = model.getWeights();
       expect(

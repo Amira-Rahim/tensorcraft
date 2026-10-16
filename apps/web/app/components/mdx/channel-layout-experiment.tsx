@@ -50,7 +50,7 @@ export function ChannelLayoutExperiment() {
       if (raw) setDraft(parseChannelDraft(raw));
     } catch {
       setNotice(
-        "The previous experiment draft could not be read. This packet starts fresh; your lesson and editor progress are unchanged.",
+        "We couldn't load your saved work for this activity, so we're starting it again. Your lesson progress and code haven't changed.",
       );
     }
     setReady(true);
@@ -134,16 +134,21 @@ export function ChannelLayoutExperiment() {
       data-testid="channel-layout-experiment"
     >
       <p className="font-mono text-xs uppercase tracking-wider text-text-muted">
-        Channel experiment
+        Sensor layout activity
       </p>
-      <h3 id={`${uid}-title`}>Give the plotter one row per sensor</h3>
+      <h3 id={`${uid}-title`}>Put each sensor channel in its own row</h3>
       <p>
-        Rows arrive in time order. Each column belongs to one channel. These
-        numbers mark positions in a small teaching packet; they are not signal
-        measurements.
+        A channel is a stream of readings from a sensor. In this table, each row
+        shows one moment in time. Each column shows one channel. Read down a
+        column to follow that channel over time.
+      </p>
+      <p>
+        These example numbers label positions so you can track where they go.
+        They aren&apos;t real sensor measurements. Rows and channels are
+        numbered from 0, like JavaScript array indexes.
       </p>
       <fieldset disabled={!ready} className="min-w-0 space-y-5">
-        <legend className="sr-only">Channel layout controls</legend>
+        <legend className="sr-only">Sensor layout controls</legend>
         {draft.mode === "worked" ? (
           <>
             <div className="channel-worked-grid">
@@ -152,7 +157,7 @@ export function ChannelLayoutExperiment() {
                   className="flex flex-wrap items-center gap-3"
                   htmlFor={`${uid}-channel`}
                 >
-                  Inspect channel
+                  Choose a channel
                   <select
                     id={`${uid}-channel`}
                     className={`${input} !w-auto`}
@@ -167,14 +172,14 @@ export function ChannelLayoutExperiment() {
                   >
                     {[0, 1, 2, 3].map((channel) => (
                       <option key={channel} value={channel}>
-                        {channel}
+                        Channel {channel}
                       </option>
                     ))}
                   </select>
                 </label>
                 <PacketTable
                   packet={WORKED_PACKET}
-                  caption="Input: [3 times, 4 channels]"
+                  caption="Input: 3 moments and 4 channels. Shape [3, 4]"
                   channel={draft.channel}
                 />
                 <form onSubmit={submitPrediction} className="space-y-3">
@@ -182,14 +187,15 @@ export function ChannelLayoutExperiment() {
                     htmlFor={`${uid}-prediction`}
                     className="block font-medium"
                   >
-                    Predict channel {draft.channel}&apos;s values in time order
+                    Which numbers belong to channel {draft.channel}, from
+                    earliest to latest?
                   </label>
                   <input
                     id={`${uid}-prediction`}
                     className={input}
                     autoComplete="off"
                     maxLength={80}
-                    placeholder="Values separated by commas"
+                    placeholder="Enter three numbers, separated by commas"
                     value={draft.prediction}
                     onChange={(event) =>
                       update({
@@ -210,22 +216,22 @@ export function ChannelLayoutExperiment() {
                   <p role="status">
                     {draft.predictionResult
                       ? draft.predictionResult.correct
-                        ? "Those are the channel's readings, in time order. Now compare how each operation arranges them."
-                        : "Follow the selected column from top to bottom. A row contains different channels at one time."
-                      : "A prediction is optional. You can try either operation or open the explanation."}
+                        ? "Yes. Those numbers follow the selected channel from the first moment to the last. Now try both operations."
+                        : "Read down the highlighted column. Each row shows all channels at one moment."
+                      : "You can make a prediction or try an operation first. Viewing a result or explanation counts as using help."}
                   </p>
                 </form>
               </div>
               <div className="min-w-0 space-y-5">
                 <div>
                   <p>
-                    Both operations produce shape [4, 3]. Which keeps a channel
-                    together?
+                    Both operations make 4 rows and 3 columns, shape [4, 3].
+                    Which one puts all numbers from a channel in the same row?
                   </p>
                   <div
                     className="mt-3 flex flex-wrap gap-2"
                     role="group"
-                    aria-label="Compare layout operations"
+                    aria-label="Compare reshape and transpose"
                   >
                     {(["reshape", "transpose"] as const).map((operation) => (
                       <button
@@ -248,16 +254,16 @@ export function ChannelLayoutExperiment() {
                   <div className="space-y-3" data-testid="channel-result">
                     <PacketTable
                       packet={output}
-                      caption={`Output: [4, 3] after ${draft.operation}`}
+                      caption={`After ${draft.operation}: 4 rows and 3 columns. Shape [4, 3]`}
                       channel={draft.channel}
                       operation={draft.operation}
                     />
                     <p role="status">
-                      Plotter row {draft.channel}: [
+                      Output row {draft.channel}: [
                       {output[draft.channel].join(", ")}].{" "}
                       {draft.operation === "transpose"
-                        ? "It contains this channel's readings in time order."
-                        : "It mixes channels. The shape fits, but the values do not."}
+                        ? "This row keeps the channel's numbers in their original time order."
+                        : "This row mixes numbers from different channels. It has the right length, but it doesn't keep one channel together."}
                     </p>
                     <Trace
                       expected={expected}
@@ -268,7 +274,7 @@ export function ChannelLayoutExperiment() {
                       tabIndex={0}
                       aria-label="Equivalent TensorFlow.js operation"
                     >
-                      <code>{`// input shape: [time, channel] = [3, 4]\nconst output = input.${draft.operation === "reshape" ? "reshape([4, 3])" : "transpose()"};\n// plotter reads output.arraySync()[${draft.channel}]\n// [${output[draft.channel].join(", ")}]\noutput.dispose();`}</code>
+                      <code>{`// Input shape: [time, channel] = [3, 4]\nconst output = input.${draft.operation === "reshape" ? "reshape([4, 3])" : "transpose()"};\n// Read output row ${draft.channel}: output.arraySync()[${draft.channel}]\n// [${output[draft.channel].join(", ")}]\noutput.dispose();`}</code>
                     </pre>
                   </div>
                 )}
@@ -284,14 +290,23 @@ export function ChannelLayoutExperiment() {
                   Explain the difference
                 </button>
                 {draft.explanation && (
-                  <p id={`${uid}-explanation`}>
-                    Reshape reads the flat sequence 0 through 11 in the same
-                    order and changes where rows end. Transpose swaps the two
-                    axes: output[channel][time] equals input[time][channel]. For
-                    channel {draft.channel}, that gives [{expected.join(", ")}].
-                    Shape describes axis sizes; you must also know what the axes
-                    mean.
-                  </p>
+                  <div id={`${uid}-explanation`} className="space-y-3">
+                    <p>
+                      Reshape reads the numbers in their original order, left to
+                      right across each row. It starts a new row every 3
+                      numbers. Transpose turns each input column into an output
+                      row. Neither operation changes the numbers themselves.
+                    </p>
+                    <p>
+                      After transpose, channel {draft.channel} has its own row:
+                      [{expected.join(", ")}]. In code, that means
+                      output[channel][time] equals input[time][channel].
+                    </p>
+                    <p>
+                      Shape tells you the size of each axis. You still need to
+                      know what each axis means, such as time or channel.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -300,26 +315,26 @@ export function ChannelLayoutExperiment() {
               className={`${button} block`}
               onClick={() => update({ mode: "check" })}
             >
-              Try a different packet
+              Try a new example
             </button>
           </>
         ) : (
           <>
-            <h4 className="font-semibold">New packet: collect channel 1</h4>
+            <h4 className="font-semibold">New example: find channel 1</h4>
             <p>
-              The input now has two times and three channels. Choose the
-              operation and give channel 1&apos;s two values in time order. The
-              plotter still needs one row per channel.
+              Now there are 2 moments and 3 channels. Choose the operation that
+              gives each channel its own row. Then enter channel 1&apos;s two
+              numbers, from earliest to latest.
             </p>
             <PacketTable
               packet={CHECK_PACKET}
-              caption="New input: [2 times, 3 channels]"
+              caption="New input: 2 moments and 3 channels. Shape [2, 3]"
               channel={1}
             />
             <form onSubmit={submitCheck} className="space-y-4">
               <fieldset className="min-w-0 space-y-2">
                 <legend className="mb-2 font-medium">
-                  Operation for shape [3, 2]
+                  How will you make 3 rows and 2 columns?
                 </legend>
                 {(["reshape", "transpose"] as const).map((operation) => (
                   <label
@@ -338,13 +353,13 @@ export function ChannelLayoutExperiment() {
                     <span>
                       {operation === "reshape"
                         ? "Reshape to [3, 2]"
-                        : "Transpose the axes"}
+                        : "Transpose: turn columns into rows"}
                     </span>
                   </label>
                 ))}
               </fieldset>
               <label className="block font-medium" htmlFor={`${uid}-check`}>
-                Channel 1 values, in time order
+                Channel 1&apos;s two numbers, from earliest to latest
               </label>
               <input
                 id={`${uid}-check`}
@@ -366,19 +381,19 @@ export function ChannelLayoutExperiment() {
                   draft.checkAttempts >= 20
                 }
               >
-                Check new packet
+                Check my answer
               </button>
               <p role="status">
                 {draft.checkResult
                   ? draft.checkResult.correct
-                    ? `Changed case passed${draft.checkResult.assisted ? " with help" : " without opening this check's answer"}. Transpose puts each channel's times in one row.`
+                    ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this example. Transpose keeps each channel's numbers together, in time order.`
                     : checkChannelTransfer(
                           draft.checkOperation,
                           draft.checkValues,
                         ).operationCorrect
-                      ? "The axes are in the right order. Check the values by following channel 1 down the input column."
-                      : "Reshape also produces [3, 2], but keeps the flat order. Follow channel 1's values and check whether they land together."
-                  : "This checks the operation and the values. Dimensions alone cannot pass."}
+                      ? "The operation is right. For the numbers, read channel 1's column from top to bottom."
+                      : "Reshape also makes shape [3, 2], but groups numbers in their original order. Which operation turns the selected column into one row?"
+                  : "We'll check both your operation and channel 1's numbers. Getting the shape alone isn't enough."}
               </p>
             </form>
             <button
@@ -388,44 +403,46 @@ export function ChannelLayoutExperiment() {
               aria-controls={`${uid}-help`}
               onClick={() => update({ checkHelp: true, checkAnswer: true })}
             >
-              Show this check&apos;s answer
+              Show the answer
             </button>
             {draft.checkAnswer && (
               <p id={`${uid}-help`}>
-                Transpose gives [[10, 11], [20, 21], [30, 31]]. Channel 1 is
-                [20, 21]. Reshape gives [[10, 20], [30, 11], [21, 31]]. Using
-                this answer is recorded as help for later attempts.
+                Transpose makes [[10, 11], [20, 21], [30, 31]]. Channel 1&apos;s
+                row is [20, 21]. Reshape makes [[10, 20], [30, 11], [21, 31]],
+                which splits channel 1 across rows. Your next attempts will be
+                marked as using help.
               </p>
             )}
             <p className="text-sm text-text-muted">
-              Returning to the worked packet also records reference use for this
-              check.
+              Going back to the first example also counts as using help on this
+              one.
             </p>
             <button
               type="button"
               className={button}
               onClick={() => update({ mode: "worked", checkHelp: true })}
             >
-              Return to worked packet
+              Back to the first example
             </button>
           </>
         )}
         {(draft.firstPrediction || draft.firstCheck) && (
           <p className="text-sm text-text-muted">
-            First {draft.firstCheck ? "changed-case" : "prediction"} attempt:{" "}
+            Your first{" "}
+            {draft.firstCheck ? "answer on the new example" : "prediction"}:{" "}
             {(draft.firstCheck ?? draft.firstPrediction)!.correct
               ? "correct"
-              : "needs another look"}
+              : "incorrect"}
             {(draft.firstCheck ?? draft.firstPrediction)!.assisted
               ? ", with help"
-              : ", before answer help"}
-            . Retries keep this record.
+              : ", without help"}
+            . This record stays the same when you retry.
           </p>
         )}
         {(draft.predictionAttempts >= 20 || draft.checkAttempts >= 20) && (
           <p>
-            Twenty attempts are recorded for this task. You can keep comparing
-            the packets and use the existing coding challenge.
+            That&apos;s 20 attempts for this task. You can still compare the
+            layouts and continue to the coding challenge.
           </p>
         )}
         <button
@@ -443,17 +460,17 @@ export function ChannelLayoutExperiment() {
             })
           }
         >
-          Reset controls
+          Reset the controls
         </button>
       </fieldset>
       <p className="mt-4 text-sm text-text-muted">
         {ready
           ? saved
-            ? "Saved in this browser tab, including on refresh."
-            : "Tab storage is unavailable; this experiment stays usable until you leave."
-          : "Loading experiment draft…"}{" "}
-        This activity does not mark the lesson complete. Continue through the
-        lesson to its coding challenge.
+            ? "Saved in this tab. Refreshing the page will keep your work."
+            : "We can't save your work in this tab. You can still use the activity, but your work may be lost when you leave."
+          : "Loading your saved work…"}{" "}
+        This practice doesn&apos;t complete the lesson. Continue to the
+        Challenge section for the coding task.
       </p>
       {notice && (
         <p role="status" className="text-sm">
@@ -486,22 +503,22 @@ function PacketTable({
   return (
     <div className="space-y-2">
       <p className="font-medium">
-        {caption}. Selected channel values are marked *.
+        {caption}. Numbers from the chosen channel have a *.
       </p>
       <div
         className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-interactive"
         role="region"
-        aria-label={`${caption}. Scroll horizontally if the table is enlarged.`}
+        aria-label={`${caption}. Scroll sideways to see the full table if needed.`}
         tabIndex={0}
       >
         <table className="w-full min-w-[14rem] table-fixed border-collapse font-mono text-sm">
           <caption className="sr-only">{caption}</caption>
           <thead>
             <tr>
-              <th scope="col">{operation ? "Row" : "Time"}</th>
+              <th scope="col">{operation ? "Row" : "Moment"}</th>
               {packet[0].map((_, c) => (
                 <th scope="col" key={c}>
-                  {operation ? `Col ${c}` : `Ch ${c}`}
+                  {operation ? `Column ${c}` : `Channel ${c}`}
                 </th>
               ))}
             </tr>
@@ -555,7 +572,7 @@ function Trace({
         viewBox="0 0 280 125"
         className="block w-full max-w-sm"
         role="img"
-        aria-label={`Position markers by time. Channel ${channel}: ${expected.join(", ")}. Plotter row ${channel}: ${actual.join(", ")}.`}
+        aria-label={`Compare channel ${channel}'s original numbers, ${expected.join(", ")}, with output row ${channel}, ${actual.join(", ")}.`}
       >
         <path
           d="M40 18V95H250"
@@ -600,13 +617,15 @@ function Trace({
             fontSize="11"
             fill="currentColor"
           >
-            t{t}
+            Position {t}
           </text>
         ))}
       </svg>
       <figcaption className="text-sm text-text-muted">
-        Position markers over time. Solid: selected input channel. Dashed with
-        dots: plotter row. The tables contain the same values.
+        Read from left to right. The solid line follows the selected channel.
+        The dashed line with dots follows the output row with the same number.
+        Matching lines mean the numbers are in the same order. These numbers
+        label positions, not real measurements.
       </figcaption>
     </figure>
   );

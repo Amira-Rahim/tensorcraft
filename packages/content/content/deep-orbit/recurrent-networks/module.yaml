@@ -2,15 +2,8 @@ slug: recurrent-networks
 title: "Recurrent Networks"
 worldId: deep-orbit
 order: 6
-description: |
-  The signals show temporal patterns: a rhythm spanning dozens of time steps.
-  The deployed classifier is fed one reading at a time, so the order never
-  reaches it. A recurrent cell reads the steps in order and applies one
-  learned rule at every one of them, whatever the window length. You'll
-  build RNNs and LSTMs that carry state across time, meet the lighter GRU, and
-  forecast the next reading. You already have the instincts: a reducer folds
-  each step into the state it carries, while an LSTM learns how much state to retain.
-summary: "Recurrent networks that carry state across time: RNNs and LSTMs mapped onto the state-update code you already write, plus the split-by-time rule that keeps a windowed stream from scoring itself."
+description: "The signal has a rhythm across dozens of readings. The deployed classifier sees one reading at a time, so it misses their order. Help the crew build RNNs and LSTMs that carry state from one step to the next, compare them with the smaller GRU, and forecast a later reading. A JavaScript reducer is a useful starting point: each step updates the state for the next."
+summary: "Build recurrent models, inspect memory updates, create time-ordered windows, and split the stream before evaluation to avoid overlap."
 lessonCount: 5
 prerequisites:
   - foundations

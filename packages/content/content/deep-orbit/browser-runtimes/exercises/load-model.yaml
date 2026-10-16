@@ -1,7 +1,13 @@
 slug: load-model
 lessonSlug: model-loading
 title: "Load and Inspect a Model"
-instructions: "Write a function that loads a TensorFlow.js model from a URL and returns an object with the model's input shape, output shape, and total number of layers, shaped `{ inputShape, outputShape, layerCount }`. Load the URL once and read all three fields off the model that one call resolved to. Repeated loads can repeat work even when HTTP caching saves network traffic. Dispose the inspected model after copying its metadata."
+instructions: |
+  Write `loadAndInspect(url)`. Load the TensorFlow.js model once and return `{ inputShape, outputShape, layerCount }`.
+
+  Read all three fields from that model. Copy the input and output shapes, including any null batch-size entry, and count its layers. Then dispose the model, including if inspection fails.
+
+  Do not load again for each field. Repeated loads can repeat work even when the browser caches the downloaded files.
+
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -12,8 +18,7 @@ starterCode: |
   }
 
   async function loadAndInspect(url: string): Promise<ModelInfo> {
-    // inputShape, outputShape and layerCount all hang off the model the
-    // loader resolved to. Load once, copy the metadata and dispose the model.
+    // Which requested details can you read from one completed load?
     return null; // your code here
   }
 solutionCode: |
@@ -44,7 +49,7 @@ testCode: |
     // first Run says what is missing.
     async function inspect(url) {
       const info = await loadAndInspect(url);
-      expect(info, 'loadAndInspect has to resolve to an object carrying inputShape, outputShape and layerCount. The starter returns null until you build that object from the model you loaded.').toBeDefined();
+      expect(info, 'Return inputShape, outputShape and layerCount in an object, using the model you loaded.').toBeDefined();
       return info;
     }
 
@@ -109,7 +114,7 @@ testCode: |
       try {
         expect(() => loaded.predict(probe), 'The metadata is copied, but the inspected model is still alive. Dispose it in a finally block.').toThrow('disposed');
       } finally { probe.dispose(); }
-      expect(loads, 'One inspection is one load. Every field you report hangs off the model the first call resolved to, so awaiting the loader again per field refetches the manifest and the weight shards each time.').toBe(1);
+      expect(loads, 'Load the URL once and read every field from that model. Loading again repeats work.').toBe(1);
     });
   });
 estimatedMinutes: 12

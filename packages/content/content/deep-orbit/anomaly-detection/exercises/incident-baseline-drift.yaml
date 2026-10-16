@@ -3,13 +3,17 @@ lessonSlug: normal-vs-anomalous
 title: "Incident: Baseline Distribution Drifted"
 mlContent: systems
 instructions: |
-  Implement auditBaseline(recentNormalData, currentBaseline, readingsPerDay). The recent readings have been reviewed and labeled normal. The array is non-empty and has positive population standard deviation; currentBaseline has { mean, std } with std > 0. Daily volume is positive.
+  Implement auditBaseline(recentNormalData, currentBaseline, readingsPerDay). People have reviewed the recent readings and labeled them normal. The array is non-empty and has a positive population standard deviation. currentBaseline contains { mean, std }, with std > 0. readingsPerDay is positive.
 
-  Return { oldAlertsPerDay, newAlertsPerDay, expectedPerDay, newBaseline: { mean, std }, spreadRatio, action }. Count flags where absolute z-score is strictly greater than 3. Project each observed flag fraction to the daily volume and round to the nearest integer. Compute the new mean and standard deviation over these readings, dividing variance by n. spreadRatio is new std / current std.
+  Return { oldAlertsPerDay, newAlertsPerDay, expectedPerDay, newBaseline: { mean, std }, spreadRatio, action }.
 
-  expectedPerDay is round(0.0027 * readingsPerDay), the theoretical Gaussian reference with known population parameters. It is not a guaranteed rate for these readings. The recomputed baseline's flag rate is measured on the data used to fit it, so it is descriptive, not independent validation.
+  Flag readings whose absolute z-score is strictly greater than 3. Calculate the recent mean and population standard deviation, dividing the variance by n. Count flags with both the current baseline and this new baseline. For each, multiply the fraction flagged by readingsPerDay and round to the nearest integer. spreadRatio is the new std divided by the current std.
 
-  Follow this triage policy: if the old, unrounded flag fraction is at most 0.0027, action is 'hold'. Otherwise use 'investigate-spread' when spreadRatio > 1.5, and 'evaluate-candidate' for the remaining cases. These actions select follow-up work. Holding does not prove no drift; evaluating a candidate does not authorize rolling it into production. Compare it on separate normal and anomaly examples first.
+  Set expectedPerDay to round(0.0027 * readingsPerDay). This is a reference for a Gaussian distribution with known mean and standard deviation, not a guaranteed rate for these readings. You used the same readings to fit and check the new baseline, so that check is not independent validation.
+
+  Choose action using the old flag fraction before rounding. If it is at most 0.0027, use 'hold'. Otherwise, use 'investigate-spread' when spreadRatio > 1.5, and 'evaluate-candidate' for all remaining cases.
+
+  These actions choose the next investigation step. 'hold' does not prove conditions are unchanged. 'evaluate-candidate' does not mean deploy it. Test the candidate on separate normal readings and known anomalies first.
 hints:
   - level: nudge
     content: |

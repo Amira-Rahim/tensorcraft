@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "E2E tests and model evaluations both check selected cases; neither alone guarantees a safe release. Model metrics summarize a held-out sample. Inspect important classes and operating conditions, account for label quality, and verify that the evaluation matches the deployment question."
 consequence:
-  narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment, but one archived sample refuses to pick a side."
+  narrative: "DEEP SCAN scores 94% on the crew's test readings. Mirza authorizes deployment, but sample 7741 remains hard to classify."
 hints:
   - level: nudge
     content: |
@@ -183,22 +183,31 @@ example, predict the training set's most common class. A large gap can come
 from overfitting, changed data, incorrect labels or mismatched preprocessing.
 Investigate those before choosing a remedy.
 
-Anomaly frequency also matters: a rare anomaly can make most alerts false
-even with apparently good rates. You can reuse sensitivity and false-positive
-rate for a pure frequency change only if the threshold and within-class input
-distributions stay fixed. A new sensor or threshold calls for new measurements.
+How often anomalies occur also matters. When they are rare, most alerts can
+be false even if the detector catches a high share of anomalies. You can
+reuse the measured detection and false-alarm rates only if the threshold and
+the kinds of examples within each class stay the same. A new sensor or
+threshold needs new measurements.
 
 <ConceptReference summary="Reference: the crew's 50-row example, metrics, and base rates">
 
 ### The crew's separate evaluation example
 
-A model can post ninety-five percent training accuracy and sixty percent on signals it has never seen, and if the run held nothing back, nothing in its logs will warn you. Lesson 4's validation curve is the first warning. This lesson adds the second, measured on rows no decision ever touched. Mirza wants that gap investigated. Overfitting is one possible cause; changed data, poor labels or mismatched preprocessing can also lower the held-out score. Like an E2E test, an evaluation checks selected cases. The cases must represent the conditions you intend to deploy into.
+A model can score 95% on training rows and 60% on new signals. Without separate data, the training log would hide that gap. Lesson 4 used validation rows to check progress. This lesson adds untouched test rows after those choices are made.
+
+Mirza wants the gap investigated. It could come from overfitting, changed data, wrong labels, or different preprocessing. As with an E2E test, the selected cases must represent the conditions the system will face.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A validation set is data the training loop is allowed to read so it can make decisions. Those decisions include when to stop in lesson 4, where to put a threshold later, and which settings to keep. Because those decisions were made to look good on it, repeated selection can make its score optimistic; the size of that effect varies. A test set is data no decision ever touched, scored once and reported. Lesson 4's val_loss of 0.081 was spent on the stopping decision, which is exactly why this lesson holds out a fresh slice the loop never saw. That run split coarsely: `validationSplit: 0.2` carved one twenty percent slice and no test slice at all. The capstone's model card records the three-way version, an 80/10/10 split of the archive.
+Use validation data to choose settings, thresholds, and when to stop. Repeatedly choosing what scores best on that set can make its score look better than performance on new data. The size of that effect varies.
 
-Before scoring the network, choose a **baseline**: a simple method it needs to improve on. For a classifier, start by predicting the training set's most common class for every held-out row. Compute that class from training labels only, then evaluate the baseline and network on the same rows. If 90% of test builds succeed, always predicting success scores 90% accuracy while catching no failures. The confusion matrix below makes that limitation visible. A more complex model earns its place through a useful improvement, not simply because it trained.
+Keep the test set separate from those choices. Score it once after the settings are fixed, then report the result.
+
+Lesson 4 used its validation loss of 0.081 to decide when to stop. Its `validationSplit: 0.2` reserved 20% for validation but no separate test set. This lesson adds fresh test rows. The capstone model card records an 80/10/10 split for training, validation, and testing.
+
+Choose a **baseline**, a simple method to compare with the network. For classification, try always predicting the most common training label. Find that label using only training data, then score both methods on the same held-out rows.
+
+If 90% of test builds succeed, always predicting success scores 90% accuracy but catches no failures. The confusion matrix below shows that problem. Check whether the network improves the results that matter before accepting its extra complexity.
 
 <CodeBlock language="typescript" title="evaluation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -288,7 +297,12 @@ The story keeps sample 7741 at a score of 0.518 in the crew's run. That number i
 
 While you are still changing the model, measure the gap against the validation score instead of the test score. The test slice is scored once, after the settings are frozen.
 
-Accuracy hides the shape of the error. For a worked example, the fictional crew's 94.0% splits into four counts on that 50-row slice: 23 of the 26 anomalous rows caught, 3 missed, all 24 calm rows left alone, no false alarms. The three misses are exactly the late-confirmed rows, the ones that read almost calm in these three features. Those four counts are the confusion matrix, and the drawer below turns them into precision, recall and F1.
+The fictional crew scored 94.0% on 50 test rows. Here is what happened:
+
+- Caught 23 of 26 anomalies and missed 3.
+- Left all 24 calm rows alone, with no false alarms.
+
+The three misses were confirmed later. Their three features looked almost calm. These counts form the **confusion matrix**. The reference below uses them to calculate precision, recall, and F1.
 
 <DerivationDrawer summary="Why accuracy alone is not enough: precision, recall, F1">
 **Every prediction lands in one of four buckets:** true positive (TP: real anomaly, flagged), false positive (FP: calm reading, flagged anyway), true negative (TN: calm reading, left alone), false negative (FN: real anomaly, missed). Every metric below is a ratio of these four counts.
@@ -317,10 +331,14 @@ When a denominator is zero, report the metric as undefined or state the conventi
 **ROC and PR curves.** Sweep the threshold and plot the results: a precision-recall (PR) curve shows precision against recall, and an ROC (receiver operating characteristic) curve shows the true-positive rate (the recall you just computed) against the false-positive rate, the fraction of calm rows falsely flagged. One accuracy number from one threshold hides both curves.
 </DerivationDrawer>
 
-One of those four counts deserves suspicion before anyone celebrates: the empty false-alarm cell (precision 1.000, in the drawer above) was measured on a slice where half the rows are anomalous, because the crew built the slice that way. The live stream is not that slice. Balanced sampling can help inspect each class, but it changes the class proportions. Its unweighted accuracy and precision need not describe the live stream; use representative data or an explicitly justified weighting scheme for those estimates.
+The crew chose a test set with almost equal numbers of calm and anomalous rows. That helps inspect both classes, but does not match the live stream, where anomalies are rare.
+
+Its precision of 1.000 and overall accuracy may not apply to live data. To estimate those values, use a representative sample or explain and justify weights that account for the different class proportions.
 
 <DerivationDrawer summary="What an alarm is worth: Bayes' theorem and base rates">
-**Precision depends on how common anomalies are.** Sensitivity and false-positive rate also depend on the decision threshold and the distribution of examples within each class. The calculation below assumes those stay fixed while only the anomaly frequency changes. If sensors, class patterns, or the threshold change, remeasure those rates. The held-out slice (26 anomalous, 24 calm) was assembled to be near balanced; live hull telemetry is overwhelmingly calm.
+**Precision depends on how often anomalies occur.** The crew's test set had 26 anomalous rows and 24 calm rows. Live sensor data is mostly calm.
+
+The calculation below changes only the anomaly frequency. It assumes the threshold and the kinds of examples within each class stay fixed. If sensors, class patterns, or the threshold change, measure sensitivity and false-positive rate again.
 
 **Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), read as: the probability an anomaly is really there, given that the alarm fired. The bar means "given that", not "or". An alarm can happen two ways, a caught anomaly or a false positive:
 
@@ -344,7 +362,7 @@ A cheaper filter can reduce the number of readings reaching an expensive model. 
 
 ## Challenge
 
-Train DEEP SCAN on the seeded archive, then evaluate it on a held-out slice it has never seen. This time you read the train-versus-test gap. The grader reruns the evaluation, calls your gap rule on eleven pairs of its own, and checks that the held-out rows stayed out of the training call.
+Help Mirza check DEEP SCAN on separate test readings. Train on the supplied training rows, evaluate the test rows, then compare the two accuracies. The tests rerun the evaluation, try eleven score pairs, and check that no test rows entered training.
 
 Report the scores this run produced, even when they are disappointing. The grader checks the evaluation procedure without demanding a particular accuracy. The transfer assignment below asks whether the model earns its complexity.
 
@@ -356,7 +374,7 @@ Report the scores this run produced, even when they are disappointing. The grade
 
 <RecallPrompt
   question="Explain what you would investigate before treating a 95% training versus 60% test accuracy gap as overfitting."
-  answer="The gap is consistent with overfitting, but a changed data distribution, label errors, or inconsistent preprocessing can also cause it. Check those first. If overfitting is the cause, compare more representative training data, early stopping, and suitable capacity or regularization changes using validation data."
+  answer="The model may have memorized details of the training set, which is called overfitting. But different data, wrong labels, or different preprocessing can also cause the gap. Check those first. Use validation data to compare possible fixes, such as better training examples, early stopping, or a simpler model."
 />
 
 <RecallPrompt
@@ -408,19 +426,19 @@ Report the scores this run produced, even when they are disappointing. The grade
 
 <RecallPrompt
   question="When can sensitivity and false-positive rate stay valid after anomalies become rarer?"
-  answer="A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
+  answer="You can reuse those rates only if the alert threshold and the kinds of examples within each class stay the same. A new sensor or threshold can change the rates. Measure them again before updating the calculation."
   checks={[
     {
       "kind": "choice",
       "question": "When can sensitivity and false-positive rate stay valid after anomalies become rarer?",
       "options": [
         {
-          "text": "When the threshold and within-class input distributions stay fixed.",
-          "feedback": "A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
+          "text": "When the alert threshold and the kinds of examples within each class stay the same.",
+          "feedback": "You can reuse those rates only if the alert threshold and the kinds of examples within each class stay the same. A new sensor or threshold can change the rates. Measure them again before updating the calculation."
         },
         {
           "text": "Whenever only the reported accuracy changes.",
-          "feedback": "Accuracy alone does not establish stable class-conditional rates."
+          "feedback": "An accuracy score alone cannot show that detection and false-alarm rates stayed the same."
         },
         {
           "text": "Even after changing the threshold or installing a different sensor.",
@@ -428,7 +446,7 @@ Report the scores this run produced, even when they are disappointing. The grade
         }
       ],
       "correctIndex": 0,
-      "explanation": "A pure prevalence change permits the same rates only if the threshold and the within-class input distributions stay fixed. A new threshold or sensor can change those rates. Measure them again rather than changing only the prior in Bayes' formula."
+      "explanation": "You can reuse those rates only if the alert threshold and the kinds of examples within each class stay the same. A new sensor or threshold can change the rates. Measure them again before updating the calculation."
     }
   ]}
 />
@@ -448,7 +466,9 @@ Report the scores this run produced, even when they are disappointing. The grade
 
 <Epilogue>
 
-Deployment authorized, the bridge gone quiet, Farah stays behind with the one number that won't leave her alone. Signal 3: score 0.518. Not normal enough to dismiss, not anomalous enough to alarm: a network that scored 94% on the small test slice, now between the crew's review cutoffs. She traces the reading back through the archive index, already half-certain of what she will find, and the index confirms it: sample 7741. The calibration ghost. Her pencil note still says to check the instrument chain first. The new score has brought her back to the same row without answering that question.
+After Mirza authorizes deployment, Farah stays on the quiet bridge. Signal 3 scored 0.518, between the crew's cutoffs for dismissing a reading and raising an alert. The network scored 94% on the small test set, but it has not settled this case.
+
+She looks up the reading in the archive: sample 7741 again. Her pencil note still says to check the sensors and their calibration first. The new score has brought her back to the same reading without explaining it.
 
 <Dialogue speaker="Dr. Farah">
 Ninety-four percent accurate, and the one reading it can't decide on is the one I couldn't explain by hand. What are you?

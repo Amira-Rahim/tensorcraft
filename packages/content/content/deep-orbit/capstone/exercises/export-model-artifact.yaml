@@ -2,19 +2,18 @@ slug: export-model-artifact
 lessonSlug: ci-cd-pipeline
 title: "Export the Artifact CI Pins"
 instructions: |
-  Serialize the supplied uncompiled 3→16→8→1 LayersModel into memory.
+  Help Nazari identify the saved model that CI will check. Serialize the supplied uncompiled 3→16→8→1 LayersModel into memory.
 
-  1. Use model.save(tf.io.withSaveHandler(...)). Save the handler's argument in artifacts and return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } }.
-  2. Implement describeArtifact(a) returning { tensors, totalParams, weightBytes }. Count entries in weightSpecs, sum the product of each spec's dimensions, and read weightData.byteLength.
-  3. Set manifest to describeArtifact(artifacts).
+  1. Await `model.save(tf.io.withSaveHandler(...))` before reading the saved data. Keep the handler's argument in `artifacts`. From the handler, return `{ modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } }`.
+  2. Write `describeArtifact(a)` to return `{ tensors, totalParams, weightBytes }`. Count entries in `weightSpecs` for tensors. For each spec, multiply its dimensions, then sum those products for totalParams. Read `weightData.byteLength` for weightBytes.
+  3. Set `manifest` to `describeArtifact(artifacts)`.
 
-  The handler supplies one weightData ArrayBuffer. Read its length directly: quantized or mixed-precision files cannot be sized with a universal four-byte multiplier. The grader also supplies a buffer with extra bytes to check measurement; describing its size does not establish that it is a valid model.
+  The handler provides one `weightData` ArrayBuffer. Read its byte length directly. A fixed four-byte multiplier does not work for every quantized or mixed-precision file. One check supplies a buffer with extra bytes: measuring that buffer does not prove it is a valid model.
 
-  The grader reloads your serialized topology and weights and compares predictions. Use the real save handler rather than constructing an artifact by hand. No file is written and no artifact is published by this exercise.
+  Use the real save handler. The checks reload your saved topology and weights and compare predictions, so do not build an artifact by hand. This exercise writes no file and publishes no model.
 starterCode: |
-  // The 85 MB artifact that CI restores from cache had to come from
-  // somewhere. Prove the export path on the bench copy of DEEP SCAN before
-  // anyone points it at the real weights.
+  // Practice exporting with this small DEEP SCAN model
+  // before using the same save path with the mission build.
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [3] }));
   model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
@@ -24,11 +23,10 @@ starterCode: |
   let artifacts = null;
   // your code here
 
-  // Summarize what the committed digest covers.
+  // Describe the saved model.
   function describeArtifact(a) {
-    // Two of the three numbers are counted off what the export declares
-    // about itself. The third is the buffer, and it is measured rather than
-    // worked out from the other two.
+    // Count the tensors and parameters from the saved specifications.
+    // Measure the weight buffer directly.
     return null; // your code here
   }
 
@@ -100,7 +98,7 @@ testCode: |
       // 2026-09-13).
       expect(
         tf.__calls['model.save'] || 0,
-        'No export happened. The artifact has to come out of model.save() through tf.io.withSaveHandler; an object assembled by hand from the model, however faithful, is not the serializer running, and the serializer running is the exercise.',
+        'Export the model with model.save() and tf.io.withSaveHandler. Building a matching object by hand does not run the serializer required by this exercise.',
       ).toBeGreaterThan(0);
       expect(
         artifacts.format,
@@ -235,7 +233,7 @@ testCode: |
       ).toBe(209);
       expect(
         partly.weightBytes,
-        'Part of this export is quantized and part is not, so it is neither four bytes a parameter nor one. weightBytes is the length of the buffer describeArtifact was handed, and this one is 37 bytes longer than any per-parameter width predicts.',
+        'This buffer mixes storage widths and includes 37 extra bytes. Read the supplied buffer’s byteLength directly instead of multiplying the parameter count by a fixed width.',
       ).toBe(mixedBytes + 37);
     });
     it('describeArtifact reads the artifact it is given, not a memorized answer', async () => {

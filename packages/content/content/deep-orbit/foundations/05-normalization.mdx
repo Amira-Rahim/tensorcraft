@@ -15,7 +15,7 @@ context:
   narrative: "Commander Mirza orders all sensor data normalized before the deep scan begins."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Feature scaling changes numeric units using fitted statistics or known bounds. Comparable scales can make neural-network training easier."
+  explanation: "Feature scaling puts measurements on comparable scales. This can make a neural network easier to train."
   bridge:
     jsTitle: "Scroll progress calculation"
     jsCode: "const progress = scrollY / (docHeight - viewportHeight)"
@@ -24,10 +24,10 @@ concept:
     tier: structural
     breaks: "Scroll progress uses page dimensions; sensor scaling uses chosen physical bounds or statistics fitted on training data. New observations can exceed fitted min/max values. Z-score uses a mean and standard deviation instead, but it is not automatically better or immune to drift and outliers."
 consequence:
-  narrative: "The normalized feed goes live. Four sensors, one scale, and one archived sample that refuses to look like the others."
+  narrative: "The four sensor feeds now use a comparable scale. One archived reading still stands out."
 hints:
   - level: nudge
-    content: "Stats first, verdict second. Per COLUMN: each feature gets its own mean and std. Then one dense neuron with sigmoid activation reads each normalized row. Last, the other scaler: a min and a max per column, and the column stretched between them."
+    content: "Start with each column's mean and standard deviation. Use them to scale the readings before the supplied neuron reads them. For min-max scaling, find each column's lowest and highest values."
   - level: guidance
     content: "Use axis 0 to compute one statistic per column. Take the square root of variance for std. scaleFeatures should replace a zero divisor with 1 while keeping the saved statistic at zero. Build the fixed neuron shown in the lesson. A single reading needs a leading batch axis before predict(), and it must reuse the training statistics. For min-max scaling, compute each column's minimum and maximum, then reuse scaleFeatures with the minimum and range."
   - level: solution
@@ -49,7 +49,7 @@ The thermal channel reads in the thirties, signal strength lives under one. If w
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-With comparable starting weights, temperature has the larger numerical contribution. Scaling helps us fit the model; it does not tell us which sensor matters.
+If the starting weights are similar, the larger temperature numbers affect the result more. Scaling makes training easier. We still need to learn which sensor gives useful information.
 </Dialogue>
 
 You will put temperature and signal strength on comparable scales, then pass them to a supplied model.
@@ -113,10 +113,12 @@ The challenge separates this calculation into `fitStats(rows)` and
 first function; use the supplied offset and scale in the second.
 
 For this batch, mean is `[23, 0.5]` and std is approximately `[2.236, 0.224]`.
-Broadcasting applies those two statistics to every row. `tf.where` chooses
-1 for a zero scale so constant training columns become zero, while the saved
-statistics stay unchanged. A changed future value then becomes its difference
-from the saved offset; the model has not learned that new variation.
+Broadcasting applies each column's statistics to every row.
+
+If a column is constant, its scale is zero. `tf.where` chooses divisor 1, so
+the scaled training values become zero. Keep the saved scale unchanged. If a
+future value changes, scaling returns its difference from the saved offset.
+The model has not learned how to handle that new variation.
 
 Fit statistics on training rows only. Reuse them for validation and future
 readings so the same raw value keeps the same meaning.
@@ -209,7 +211,7 @@ statistics printed inside it, then return to the four-row batch in the challenge
 
 ## Challenge
 
-Normalized data exists to be fed to a model, so this challenge ends at one. Farah hands you one frozen neuron off her scratch pad, weights fixed: two features in, one verdict out. That is enough to show why the saved statistics matter. Feed it a reading normalized with different stats and it answers a different question.
+Farah gives you a small model with fixed weights. It reads two measurements and returns one score. Scale each new reading with the same statistics as the training data so the model receives consistent inputs.
 
 Normalize the Archimedes sensor data using z-score normalization, then run every reading through the preview neuron.
 
@@ -217,7 +219,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <RecallPrompt
   question="How can normalizing differently scaled features help training?"
-  answer="Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
+  answer="Inputs with larger numbers can have a larger effect on the model's calculations. Scaling the inputs can make training easier. The model still needs to learn how much each input matters."
   checks={[
     {
       "kind": "choice",
@@ -232,19 +234,19 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
           "feedback": "Normalization prepares inputs; it does not learn the model."
         },
         {
-          "text": "It can make optimization easier by putting input scales on a comparable footing.",
-          "feedback": "Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
+          "text": "It can make training easier by putting inputs on comparable scales.",
+          "feedback": "Inputs with larger numbers can have a larger effect on the model's calculations. Scaling the inputs can make training easier. The model still needs to learn how much each input matters."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Different input scales affect weighted sums and gradients. Normalization puts features on comparable scales, which can make optimization easier. It does not make every feature equally important; the model still has to learn useful weights."
+      "explanation": "Inputs with larger numbers can have a larger effect on the model's calculations. Scaling the inputs can make training easier. The model still needs to learn how much each input matters."
     }
   ]}
 />
 
 <RecallPrompt
   question="The readings have shape [4, 2], and the two column means have shape [2]."
-  answer="Broadcasting. TensorFlow.js lines the two tensors up from the last axis backwards and stretches any axis of size 1, or any axis the smaller tensor does not have at all, until it matches the larger one. Here that takes each column's mean down its own column."
+  answer="Broadcasting lets the same two means apply to every row. TensorFlow.js matches the shapes from right to left. The [2] means act like one row of two values, repeated for all four rows."
   checks={[
     {
       "kind": "choice",
@@ -256,7 +258,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
         },
         {
           "text": "Broadcasting.",
-          "feedback": "Broadcasting aligns shapes from the trailing axis, treating a missing leading dimension as size 1."
+          "feedback": "Broadcasting matches shapes from right to left. The missing row axis acts like size 1, so the same two means apply to every row."
         },
         {
           "text": "Matrix multiplication.",
@@ -264,7 +266,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
         }
       ],
       "correctIndex": 1,
-      "explanation": "Broadcasting aligns shapes from the trailing axis, treating a missing leading dimension as size 1."
+      "explanation": "Broadcasting matches shapes from right to left. The missing row axis acts like size 1, so the same two means apply to every row."
     },
     {
       "kind": "choice",
@@ -305,7 +307,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
 
 <Epilogue>
 
-Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he reaches sample 7741 again, logged eight days ago in the middle of the calm period. It converted like everything else. It still doesn't sit like everything else.
+Demir brings the four scaled feeds onto the bridge displays. He scrolls through the archive to check them and reaches sample 7741, recorded eight days ago during the calm period. Its numbers were scaled correctly. It still looks different from the nearby readings.
 
 Farah brings up a preview classifier, a small demonstration of what the next modules will build and test. She runs it on the archive:
 

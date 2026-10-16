@@ -2,21 +2,23 @@ slug: quantize-weights
 lessonSlug: quantization
 title: "Quantize a Model and Compare Predictions"
 instructions: |
-  Write quantizeModel(model, captures) for the supplied Dense classifier and non-empty capture array. Simulate uint8 storage, apply the decoded weights and compare predictions.
+  Help Nazari check what smaller weight storage changes. Write `quantizeModel(model, captures)` for the supplied Dense classifier and non-empty capture array. Simulate uint8 storage, apply the decoded weights, and compare predictions.
 
-  Work on the 2-D kernel tensors in model.getWeights() and leave the 1-D bias tensors at float32, the way a converter pattern that names only the kernels would. For each kernel, map its values onto the whole numbers 0 to 255 with min-max scaling: scale is (max - min) / 255 and each stored value is Math.round((value - min) / scale), so the smallest weight lands on 0 and the largest on 255.
+  Quantize only the 2-D kernel tensors from `model.getWeights()`. Leave 1-D biases at float32. For each kernel:
 
-  Then do what TensorFlow.js does at load time: restore each weight as stored * scale + min, the two numbers a TensorFlow.js weight manifest carries for a quantized tensor, and put those floats back on the model, because a model still running its trained weights cannot show you what quantizing cost.
+  1. Find its min and max. Set `scale = (max - min) / 255`.
+  2. Store each value as `Math.round((value - min) / scale)`, an integer from 0 to 255.
+  3. Decode each code as `stored * scale + min` and apply those floats to the model before predicting again.
 
-  Return { kernels, maxWeightError, predictionsChanged }:
+  For a constant kernel, use scale 0 and all-zero codes. Decoding then restores `min` exactly.
 
-  - kernels: one { quantized, scale, min, shape } entry per kernel in model order. Keep its flat value order.
-  - maxWeightError: the largest absolute error from the affine decoding, before float32 rounding.
-  - predictionsChanged: the count of captures whose argmax class differs after the pass.
+  Return `{ kernels, maxWeightError, predictionsChanged }`:
 
-  quantized contains integer codes in a number array, not a packed byte file. A changed class is disagreement, not necessarily an error. This pass modifies the supplied model; the caller owns it.
+  - `kernels`: one `{ quantized, scale, min, shape }` per kernel, in model order. Keep each kernel's flat value order.
+  - `maxWeightError`: the largest absolute difference between an original weight and its decoded value, before float32 rounding.
+  - `predictionsChanged`: the number of captures whose largest-output class changes.
 
-  A constant kernel has no spread: use scale 0 and stored values of 0, which restore to min exactly. Quantization can leave weights and predictions unchanged.
+  `quantized` is an array of integer codes, not a packed byte file. This function changes the supplied model; the caller owns it. A changed class means the models disagree, not necessarily that the new prediction is wrong. Quantization can also leave weights and predictions unchanged.
 starterCode: |
   interface QuantizedKernel {
     quantized: number[];
@@ -35,8 +37,8 @@ starterCode: |
     model: any,
     captures: number[][]
   ): Promise<QuantizationReport> {
-    // Once the decoded floats are on the model, the trained verdicts are
-    // gone. Work out when you need to read them.
+    // Compare predictions before and after changing the weights.
+    // Decide when to record the original results.
     return null; // your code here
   }
 solutionCode: |

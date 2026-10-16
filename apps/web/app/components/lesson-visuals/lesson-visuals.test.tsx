@@ -170,7 +170,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Min-max" }));
     expect(screen.getByRole("status")).toHaveTextContent(
-      "different input contract",
+      "differs from z-score scaling",
     );
   });
   it("covers exactly the 56 canonical lessons, their modules and their original artwork", () => {

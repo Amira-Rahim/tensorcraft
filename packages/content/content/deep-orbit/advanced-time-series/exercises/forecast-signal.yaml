@@ -2,27 +2,17 @@ slug: forecast-signal
 lessonSlug: forecasting
 title: "Roll Forward, Then Replay One Step at a Time"
 instructions: |
-  Implement forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel?).
-  trainX is [windows, windowSize, 1], trainY is [windows, 1]. past contains at
-  least windowSize finite readings, oldest first. arrived contains the later
-  readings against which both forecasts will be compared.
+  Implement forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel?). trainX has shape [windows, windowSize, 1], and trainY has shape [windows, 1]. past contains at least windowSize finite readings, oldest first. arrived contains the later readings you will compare both forecasts against.
 
-  Use providedModel as compiled when supplied. Otherwise build an 8-unit LSTM
-  with inputShape [windowSize, 1] and a linear Dense output of 1. Compile with
-  'adam' and 'meanSquaredError'. Await fit(trainX, trainY, { epochs, batchSize: 8 }).
+  Use providedModel as compiled if it is supplied. Otherwise build an 8-unit LSTM with inputShape [windowSize, 1], followed by a linear Dense layer with 1 output. Compile with 'adam' and 'meanSquaredError'. Await fit(trainX, trainY, { epochs, batchSize: 8 }).
 
-  Build arrived.length predictions in each arm. Each predict call reads the
-  last windowSize readings as [1, windowSize, 1] and returns one finite scalar.
-  rollout starts from past and appends each prediction before the next call.
-  oneStep uses past plus only the arrived readings BEFORE the target step.
-  Never append a prediction to oneStep's input history. Keep both input arrays
-  unchanged. Return { model, history, rollout, oneStep }, with the exact fit
-  history and both series as plain number arrays.
+  Create arrived.length predictions in each run. Every predict call takes the last windowSize readings as [1, windowSize, 1] and must return one finite number.
 
-  Free prediction tensors, including on failure. Keep caller-owned inputs and
-  a supplied model alive. Dispose a newly created model if fitting or prediction
-  fails; on success the caller owns it. No fixed improvement or difference
-  between the two series is required: correct code can still forecast poorly.
+  For rollout, start with past and add each prediction to the history before the next call. For oneStep, use past plus only the arrived readings from before the step you are predicting. Never add predictions to oneStep's history. Leave both input arrays unchanged.
+
+  Return { model, history, rollout, oneStep }. Use the exact history returned by fit, and return both prediction series as plain number arrays.
+
+  Dispose prediction tensors even if a call fails. Keep the caller's input tensors and any supplied model alive. If a model you created fails during training or prediction, dispose it. On success, the caller owns that model. The two runs do not have to differ or reach a fixed quality score. Correct code can still make poor forecasts.
 starterCode: |
   async function forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel) {
     // One training run, then the same stretch covered twice. The two passes

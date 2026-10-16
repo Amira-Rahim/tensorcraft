@@ -14,7 +14,7 @@ context:
   narrative: "The model is loaded. Demir wires it into the dashboard's real-time signal feed: every second, a new reading arrives and the model must classify it."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Input arrives, logic runs, the UI updates. Inference slots into that familiar cycle with one new obligation: every tensor you create must be freed."
+  explanation: "Each reading arrives, the model makes a prediction, and the dashboard updates. Your code must also release each temporary tensor when it is no longer needed."
   bridge:
     jsTitle: "Event → Process → Render"
     jsCode: "input.addEventListener('change', e => { const result = process(e); render(result); })"
@@ -26,9 +26,9 @@ consequence:
   narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:
   - level: nudge
-    content: "This ladder is for classify, the pipeline challenge. The whole preprocess-predict-read sequence belongs inside one tf.tidy() callback so intermediate tensors get cleaned up, and the raw signal must be normalized before the model ever sees it. The leak drill after it is a separate job: two tensor counts, the hours between them, and what that rate leaves of the dashboard's budget."
+    content: "These hints are for classify. Normalize the reading before prediction, and keep the calculations and result read inside one synchronous tf.tidy() callback. The later memory drill is separate: use two tensor counts and the elapsed hours to estimate growth and remaining capacity."
   - level: guidance
-    content: "Two things have to be true before predict is worth calling. Each feature has to sit on the same 0-to-1 span the model trained on, so rescale it until its RANGES minimum lands on 0 and its maximum lands on 1. And the three have to arrive as one row in the order RANGES declares them, because the network learned that order and a swap throws nothing. After that, what predict gives back is not a plain number, so the value has to be read out of it, and everything allocated on the way belongs inside the tidy callback. The output is an anomaly score. The existing confidence field reports p for an anomaly verdict or 1-p for noise; neither is a calibrated reliability estimate."
+    content: "Use RANGES to scale each feature from 0 to 1. Send one row to the model in amplitude, frequency, phase order, matching its training data. Read the number from the prediction tensor inside the tidy callback so temporary tensors are released. Call that anomaly score p. Return p as confidence for anomaly, or 1-p for noise. This score does not tell you how often the chosen label is correct."
   - level: solution
     content: "return tf.tidy(() => { const normalized = [ (signal.amplitude - RANGES.amplitude.min) / (RANGES.amplitude.max - RANGES.amplitude.min), (signal.frequency - RANGES.frequency.min) / (RANGES.frequency.max - RANGES.frequency.min), (signal.phase - RANGES.phase.min) / (RANGES.phase.max - RANGES.phase.min), ]; const input = tf.tensor2d([normalized]); const output = model.predict(input) as tf.Tensor; const p = output.dataSync()[0]; return { class: p > 0.5 ? 'anomaly' as const : 'noise' as const, confidence: p > 0.5 ? p : 1 - p, }; });"
 keywords:
@@ -114,7 +114,9 @@ function classify(
 }`}
 </CodeBlock>
 
-Min-max fixes the range at both ends. 2048 counts is the ceiling FEATURE_RANGES declares and also the reading where the hull sensors stop responding, so a normalized amplitude reaches 1.00 and never passes it. Frequency has the same ceiling for a different reason: 63 sign flips is the most a 64-sample window can hold. For this declared sensor contract, a normalized feature above 1.00 needs investigation: check units, preprocessing and invalid sensor input. Min-max scaling in general can produce values outside [0, 1] when new readings exceed the fitted range.
+The hull sensors stop increasing at 2048 counts, the maximum in FEATURE_RANGES. Scaling that amplitude gives 1.00. The feature named frequency counts sign flips: 64 samples can contain at most 63, so that is its declared maximum.
+
+Under these sensor limits, a scaled value above 1.00 needs investigation. Check the units, preprocessing and whether the input is valid. This is a limit of these sensors, not of min-max scaling itself. In general, readings outside a fitted range produce scaled values outside [0, 1].
 
 Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the same angle and min-max tears that seam, sending near-identical readings to 0 and 1. The clean encoding is two features, `sin(phase)` and `cos(phase)`. This model was trained on the 3-input min-max contract, so inference has to match training, seam included.
 
@@ -149,7 +151,9 @@ console.log(tf.memory());
 
 Sustained growth after warmup is a reason to investigate. Lazy initialization or an intentional cache can also increase the count. Track bytes and backend memory as well; a flat tensor count alone does not rule out a leak.
 
-One more dial before the wiring: `dataSync()` blocks the JavaScript thread until the GPU read completes. Measure its effect on the dashboard; even a small output can wait for queued GPU work. Here `classify()` reads inside the `tidy()`: nothing escapes it, so there is nothing left to dispose by hand, and that is the form the challenge grades. The other read is `await tensor.data()`, which returns a Promise and allows asynchronous readback. It does not move all model computation off the main thread or guarantee that a frame renders during the wait. `tf.tidy()` cannot wrap async code, so that form splits in two: the tensor math sits inside `tidy()` and returns ONE tensor, the read happens outside with `await`, and that one tensor is disposed by hand.
+`dataSync()` blocks the JavaScript thread while it waits for the result. Even a small output can wait for earlier GPU work, so measure its effect on the dashboard. The challenge uses this synchronous form inside `tf.tidy()`, which releases all temporary tensors before `classify()` returns.
+
+For asynchronous reading, use `await tensor.data()`. This allows an asynchronous result read, but does not move all computation off the main thread or guarantee a screen update during the wait. `tf.tidy()` cannot run an async callback. Instead, return the prediction tensor from a synchronous tidy callback, await its data outside, then dispose that tensor in a finally block.
 
 <CodeBlock language="typescript" title="classify-async.ts">
 {`// The async variant: same verdict, one tensor deliberately kept alive
@@ -233,7 +237,7 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 <Exercise slug="incident-tensor-leak" />
 
 <RecallPrompt
-  question="Manage tensor lifetimes during repeated inference."
+  question="Which tensors must you release when making repeated predictions?"
   answer="Use a synchronous tf.tidy() for temporary tensors. Dispose returned tensors, variables and explicitly kept tensors when their owner is finished. Check tensor counts and bytes over repeated runs after warmup; stable counts are useful evidence, not proof that every kind of memory is stable."
   checks={[
     {
@@ -320,7 +324,9 @@ PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deplo
 
 <Epilogue>
 
-For a full hour after the 03:10 page the patched pipeline runs clean: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test. The labeled windows light amber on schedule, a roll call of already-known events, a replay check on events the crew already knows. At 14:31 ship-time one more flag lands where no label exists, in the calmest stretch of the tape. The ID on the screen is sample 7741. Farah's calibration ghost, the one she flagged before there was a network to flag it with, now glowing on the bridge dashboard where the whole crew can see it.
+For a full hour after the 03:10 alert, the patched pipeline holds a steady tensor count and takes 3.4 ms per reading. Demir then replays the eleven-day archive to check for problems over a longer run, and known events light up amber.
+
+At 14:31 ship-time, it flags an unlabeled reading from a quiet part of the archive: sample 7741. Farah flagged it before the network existed; now the whole crew can see it on the bridge dashboard.
 
 <Dialogue speaker="Dr. Farah">
 It looks different on a screen than in a spreadsheet, doesn't it.

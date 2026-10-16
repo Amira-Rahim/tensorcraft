@@ -11,10 +11,10 @@ scene:
 estimatedMinutes: 18
 difficulty: advanced
 context:
-  narrative: "Demir orchestrates the full DEEP SCAN system: classifier, autoencoder and LSTM each read the same capture through their own preprocessing, and the LLM reporter reads all three verdicts. Multiple models, one pipeline."
+  narrative: "Demir connects the full DEEP SCAN system. The classifier, autoencoder, and LSTM each process the same capture in their own format. The LLM uses their results to draft a report."
   speaker: "Ensign Demir"
 concept:
-  explanation: "A multi-model system splits the work across specialists: each model handles one stage, and an orchestrator moves the signal from raw bytes to finished report."
+  explanation: "A multi-model system divides the work between models. Pipeline code passes the right input to each model, checks the output, and moves it to the next step."
   bridge:
     jsTitle: "Micro-Services"
     jsCode: "// API gateway routes to auth, products, payments services"
@@ -101,13 +101,15 @@ skillAxes: [deployment, js_integration]
 Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together, like an API gateway routing to micro-services.
 </Dialogue>
 
-Four models, four contracts: a class and a chosen-class score from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together and making failures visible before they reach the report.
+Each model returns something different. The classifier returns a class and its score. The autoencoder returns a reconstruction error. The LSTM predicts the next values. The LLM uses those results to draft prose. Orchestration means connecting these steps and catching failures before they reach the report.
 
-If four stages each have a 95% chance of being correct and those events are independent, the chance that all four are correct is 0.95^4, about 81%. That is not automatically the final system accuracy: stages may recover from errors, and some outputs may not affect the result. Shared inputs can also make errors dependent. Check contracts between stages, then evaluate the complete pipeline against real outcomes. A plausible value can satisfy every type and range check and still be wrong.
+Suppose four stages each have a 95% chance of being correct, independently. The chance that all four are correct is 0.95^4, about 81%.
+
+That is not automatically the final system's accuracy. Some stages may recover from earlier errors, and some outputs may not affect the result. Shared inputs can also link errors across stages. Check each stage's input and output, then test the full pipeline against real outcomes. A plausible value can pass every type and range check and still be wrong.
 
 You will connect the classifier, detector, and alert generator while handling failures between stages.
 
-<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them", "Validate each stage's output against its contract, then decide per stage: substitute a fallback, or stop the run when there is no honest substitute", "Trace one capture through the full DEEP SCAN pipeline, and see why each model needs its own preprocessing rather than one shared array"]} />
+<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them", "Check every stage's output, then use an acceptable fallback or stop if no safe substitute exists", "Follow one capture through DEEP SCAN and explain why each model needs its own input format and scaling"]} />
 
 ## The DEEP SCAN Pipeline
 
@@ -212,7 +214,15 @@ async function processSignal(
 }`}
 </CodeBlock>
 
-Three arrays describe one capture and none of them substitutes for another. The classifier reads module 4's three min-max features. The autoencoder reads module 5's eleven z-scored ones. The LSTM reads a window of module 6's per-channel z-scores. A length mismatch is the cheap mistake: hand the eleven-feature array to the classifier and tfjs throws `expected dense_Dense1_input to have shape [null,3] but got array with shape [1,11]` before the model runs at all. The costly mistake is an array of the right length on the wrong scale. Three z-scores fit the classifier's input shape, so it runs and returns a verdict with a confidence inside the legal 0..1 range. The range check alone finds nothing to object to. These guards cannot establish which scaler produced an array; load each model with its versioned preprocessing metadata. The input contract is part of the stage contract, which is why each stage takes its own argument here.
+Each model needs a different version of the same capture. The classifier takes module 4's three min-max-scaled features. The autoencoder takes module 5's eleven z-scored features. The LSTM takes a window of module 6's per-channel z-scores.
+
+A wrong length is easy to catch. Give the classifier eleven features and TensorFlow.js stops before prediction:
+
+`expected dense_Dense1_input to have shape [null,3] but got array with shape [1,11]`
+
+The right length on the wrong scale is harder to catch. Three z-scores fit the classifier's input shape. It can return a class score inside the valid 0..1 range even though the input is wrong for that model. A range check will not expose the scaling mistake.
+
+Load each model with metadata identifying its preprocessing version. These guards cannot prove which scaler produced an array. Each stage takes its own input because the format and scale are part of that stage's requirements.
 
 ## Error Handling and Fallbacks
 
@@ -259,7 +269,7 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
 <Exercise slug="model-pipeline" />
 
 <RecallPrompt
-  question="Separate valid stage interfaces from correct system predictions."
+  question="Does passing the checks between stages prove the final prediction is correct?"
   answer="Contract checks can catch invalid shapes, missing fields and out-of-range values. They cannot establish that a plausible prediction is correct. Evaluate the whole pipeline against outcomes, including shared failures and fallback paths."
   checks={[
     {
@@ -276,11 +286,11 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
         },
         {
           "text": "Invalid shapes, missing fields and out-of-range values.",
-          "feedback": "Contract checks validate the handoff structure and stated constraints."
+          "feedback": "These checks verify the expected structure, types, and limits of the result."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Contract checks validate the handoff structure and stated constraints."
+      "explanation": "These checks verify the expected structure, types, and limits of the result."
     },
     {
       "kind": "choice",
@@ -288,19 +298,19 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
       "options": [
         {
           "text": "Evaluate only the number of stages.",
-          "feedback": "Pipeline depth does not establish output quality."
+          "feedback": "More stages do not prove a better result."
         },
         {
           "text": "Evaluate the complete pipeline against outcomes, including shared failures and fallbacks.",
-          "feedback": "End-to-end evaluation is needed for correctness beyond the interface contract."
+          "feedback": "Test the full pipeline against real outcomes. Valid fields alone do not prove a prediction is right."
         },
         {
           "text": "Assume they are correct because every field exists.",
-          "feedback": "Structural validity is not predictive accuracy."
+          "feedback": "A result can have valid fields and still make the wrong prediction."
         }
       ],
       "correctIndex": 1,
-      "explanation": "End-to-end evaluation is needed for correctness beyond the interface contract."
+      "explanation": "Test the full pipeline against real outcomes. Valid fields alone do not prove a prediction is right."
     }
   ]}
 />
@@ -326,7 +336,9 @@ How long from signal to report? Make it faster.
 
 Fourteen seconds, Demir tells her. He opens a profiler to separate detection time from drafting time. The signal is accelerating; the pipeline will have to.
 
-Before he leaves the bridge, Demir pulls the bundle audit for the morning build. The crew's own models are featherweights: classifier, autoencoder, LSTM, attention head, less than a megabyte of trained weights between them. It is everything around them that has been gaining mass: the pretrained language component behind the report pipeline, the one lesson 1's client reaches through its loopback route, its tokenizer tables, its internal embedding matrices. The mission build totals 340 MB. He files the number under "later." The bridge dashboard it runs on has 512.
+Before leaving the bridge, Demir checks the size of the morning build. The crew's classifier, autoencoder, LSTM, and attention head have less than a megabyte of trained weights combined. The large part is the pretrained language component behind the report pipeline, including its tokenizer tables and embedding matrices. Lesson 1's client reaches that component through the local service.
+
+The mission build totals 340 MB. The bridge dashboard has 512 MB. Demir files the number under "later."
 
 <StoryConsequence
   beatId="deep-orbit-llm-cut-call"

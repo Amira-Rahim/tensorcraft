@@ -12,7 +12,7 @@ scene:
   time: "Archive playback"
   portraitAlt: "Two lab displays show the same slow swell in a noisy signal while two silhouetted crew compare the frames side by side."
 context:
-  narrative: "An archived frame from the first week resurfaces: the slow swell Farah found in the reshaped stream and never explained. Today she names the view that could explain it."
+  narrative: "Farah reopens a capture from the first week. It shows the slow rise and fall she found when she arranged the readings into rows. She wants to see whether a frequency plot helps explain it."
   speaker: "Dr. Farah"
 concept:
   explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). The full complex transform preserves the sampled information; a magnitude-only view drops phase."
@@ -27,9 +27,9 @@ consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
   - level: nudge
-    content: "Two captures can be near-identical sample by sample and still disagree in one frequency bin. Nothing is transformed for you here, so the disagreement does not exist until both captures have been turned into magnitudes."
+    content: "Two captures can look almost the same over time but have different frequency peaks. Transform both captures before comparing their FFT magnitudes."
   - level: guidance
-    content: "Nothing is precomputed this time, so the first decision is what goes into the transform and what you do with what comes back: two captures go in, two arrays of bin magnitudes come out, and the verdict lives in the comparison BETWEEN those arrays. Reading one spectrum on its own answers a different question, because the loudest bin in this capture belongs to a catalogued component. The second decision is what counts as a gap. A bin can differ because energy arrived in it or because energy drained out of it, and a hull channel that has gone dead is the second kind, so decide which of those your comparison catches before you trust its verdict."
+    content: "Compute an array of FFT magnitudes for each capture, then compare matching bins. Looking for the loudest bin in just one capture does not find the difference between them. Use the size of each difference: either an increase or a decrease can matter, such as a sensor signal disappearing."
   - level: solution
     content: "const timeTwin = baseline.every((v, i) => Math.abs(v - suspect[i]) <= tolerance); const spectrumOf = (samples: number[]) => tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync() as number[]); const magsA = spectrumOf(baseline); const magsB = spectrumOf(suspect); let divergentBin = -1; for (let i = 0; i < magsA.length; i++) { if (Math.abs(magsA[i] - magsB[i]) > threshold) { divergentBin = i; break; } } return { timeTwin, divergentBin };"
 keywords:
@@ -53,7 +53,9 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-As a first sketch, and it breaks where it matters. You cannot compute the CSSOM from the DOM, or the DOM from the CSSOM. They describe different things. Time and frequency are one thing described twice, and the transform runs both ways: keep the full complex spectrum, including phase, and we can reconstruct the samples within numerical precision. A magnitude-only plot drops phase and cannot do that. What costs us happens earlier. We sample at a finite rate and cut finite windows, and both of those throw things away before the transform runs. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, inside what we kept.
+The DOM and CSSOM describe different things. Neither can be calculated from the other. The FFT instead describes the same samples by frequency. Keep its full result, including phase, and we can reconstruct the samples, apart from rounding. Magnitudes alone cannot do that.
+
+Sampling and choosing a recording window already limit what we captured. The time plot shows when values change; the frequency plot helps us see what repeats.
 </Dialogue>
 
 You will compare two captures in time and frequency views to find a difference hidden in the time trace.
@@ -166,13 +168,13 @@ console.log(visibleBins(onBin), visibleBins(betweenBins)); // 1, 33`}
 
 ## Challenge
 
-Transform both captures yourself, then say whether they are twins in time and name the first bin where they part company.
+Compare the captures sample by sample, then compare their FFT magnitudes. Report whether the samples are close enough and the first frequency bin whose magnitudes differ by more than the limit.
 
 <Exercise slug="time-vs-frequency" />
 
 <RecallPrompt
   question="Why can a frequency representation make a weak periodic component easier to see?"
-  answer="The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
+  answer="Each point on a time plot combines all the signal’s components. A weak repeating component can be hidden by stronger ones. A frequency plot separates their contributions, so the weak component may form a visible peak. A tone between bin centers spreads across bins, called spectral leakage. Noise, nearby peaks and the window used still affect what you can see."
   checks={[
     {
       "kind": "choice",
@@ -188,19 +190,19 @@ Transform both captures yourself, then say whether they are twins in time and na
         },
         {
           "text": "It separates contributions by frequency instead of showing only their summed value at each moment.",
-          "feedback": "The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
+          "feedback": "Each point on a time plot combines all the signal’s components. A weak repeating component can be hidden by stronger ones. A frequency plot separates their contributions, so the weak component may form a visible peak. A tone between bin centers spreads across bins, called spectral leakage. Noise, nearby peaks and the window used still affect what you can see."
         }
       ],
       "correctIndex": 2,
-      "explanation": "The time domain shows one number per moment, and that number is the sum of everything present, so a weak component is buried inside the louder ones. The transform sorts the same samples by frequency. A periodic component can form a peak near its frequency, away from the louder tones. A tone between bin centers spreads across many bins through spectral leakage, so visibility depends on windowing, noise and neighboring peaks."
+      "explanation": "Each point on a time plot combines all the signal’s components. A weak repeating component can be hidden by stronger ones. A frequency plot separates their contributions, so the weak component may form a visible peak. A tone between bin centers spreads across bins, called spectral leakage. Noise, nearby peaks and the window used still affect what you can see."
     }
   ]}
 />
 
 <LessonRecap
   whatYouLearned={["A time plot shows sampled values in order; a magnitude spectrum highlights periodic components.", "The full complex transform retains the sampled information within numerical precision. Magnitudes alone discard phase.", "A tone between bin centers leaks across many bins. Windowing and noise affect whether a weak component is visible."]}
-  bridge="`document.querySelector` and `getComputedStyle` read different things, and neither answer can be derived from the other. `rfft(signal)` is not that kind of pair: it returns the same content the time-domain array already holds, which is why `irfft` can turn it straight back into that array."
-  youCanNow="Explain why switching from the time domain to the frequency domain makes a buried periodic signal detectable, and show it on a pair of captures by transforming both and naming the bin where they diverge."
+  bridge="The DOM and computed styles describe different parts of a page. A full FFT instead describes the same recorded samples by frequency; its inverse can recover those samples within rounding limits."
+  youCanNow="Explain how a frequency view can reveal a weak repeating signal. Transform two captures and find the first bin where their magnitudes differ beyond the chosen limit."
 />
 
 <Epilogue>

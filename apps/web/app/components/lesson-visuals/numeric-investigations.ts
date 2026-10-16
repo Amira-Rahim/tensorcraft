@@ -113,9 +113,9 @@ const cases = (
   },
 ];
 const teaching =
-  "Small teaching values. This experiment does not train a model or read mission telemetry.";
+  "Small example values. This activity does not train a model or read the ship’s sensor data.";
 const fixed =
-  "A fixed teaching calculation. The weights are chosen here, rather than learned from data.";
+  "This calculation uses fixed weights chosen for the example. They are not learned from data.";
 
 export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "introduction-to-tensors": {
@@ -155,9 +155,9 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "tensor-shapes": {
-    title: "Place a reading in a new shape",
+    title: "Find a reading after a reshape",
     brief:
-      "Choose the number of columns, then pick a flat position. Follow that value into its row.",
+      "Choose how many numbers go in each row, then pick a number in the list. Find its row in the reshaped grid.",
     boundary: teaching,
     controls: [
       choice(
@@ -167,19 +167,18 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ["2 columns", "3 columns", "6 columns"],
         [2, 3, 6],
       ),
-      range("position", "Flat position (starting at 0)", 4, 0, 5),
+      range("position", "Position in the list (count from 0)", 4, 0, 5),
     ],
     cases: cases(
       "Six readings",
-      "Second capture",
+      "Another list",
       "The original six readings.",
       "Six new readings, still in their original order.",
       { columns: 3, position: 4 },
       { columns: 2, position: 4 },
     ),
     prediction: {
-      prompt:
-        "Which row contains the selected value after reshape? Count rows starting at 0.",
+      prompt: "Which row will contain the selected number? Count rows from 0.",
       tolerance: 0,
     },
     evaluate: ({ columns, position }, caseId) => {
@@ -198,7 +197,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: row,
         answerLabel: "Row index",
-        explanation: `Value ${input[position]} lands at row ${row}, column ${column}. Reshape groups consecutive values and keeps all six.`,
+        explanation: `The number ${input[position]} is now at row ${row}, column ${column}. Reshape fills each row in order and keeps all six numbers. Count rows and columns from 0.`,
         code: `const grid = tf.tensor1d(values).reshape([${6 / columns}, ${columns}]);\n// flat index ${position} becomes [${row}, ${column}]`,
       };
     },
@@ -206,7 +205,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "tensor-operations": {
     title: "Average two sensor passes",
     brief:
-      "Average each channel with the second pass, then apply a gain. Predict the selected output.",
+      "Average matching channels from the two passes, then multiply by the gain. Predict the selected output.",
     boundary: teaching,
     controls: [
       range("gain", "Gain after averaging", 2, 0, 3, 0.25),
@@ -215,8 +214,8 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     cases: cases(
       "Steady second pass",
       "Changed second pass",
-      "Broadcast [4, 8] across three rows.",
-      "Broadcast [8, 4] across a different first pass.",
+      "Add [4, 8] to each of the three rows before averaging.",
+      "Use [8, 4] for every row of a different first pass.",
       { gain: 2, position: 2 },
       { gain: 1, position: 3 },
     ),
@@ -236,9 +235,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells("First pass: three rows, two channels", input, 2, [position]),
-          cells("Second pass broadcasts across rows", second, 2, [
-            position % 2,
-          ]),
+          cells("Second pass, reused for each row", second, 2, [position % 2]),
           cells("Average, then gain", output, 2, [position]),
         ],
         answer: output[position]!,
@@ -251,9 +248,9 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "data-loading": {
     title: "Build the next batch",
     brief:
-      "Choose a batch size and a batch index. Every row keeps its three features together.",
+      "Choose the number of rows per batch, then a batch to inspect. Keep each row’s three features together.",
     boundary:
-      "A 16-row teaching archive with an explicit order. Real shuffling can produce a different order.",
+      "This example has 16 rows in a fixed order. A real shuffle may arrange them differently.",
     controls: [
       choice("size", "Rows per batch", 4, ["2 rows", "4 rows"], [2, 4]),
       range("batch", "Batch index (starting at 0)", 1, 0, 3),
@@ -479,7 +476,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "layers-and-architecture": {
     title: "Count the trainable parameters",
     brief:
-      "Change the hidden width. Count the dense connections and one bias for each unit.",
+      "Change the number of hidden units. Count their connections and one bias per unit.",
     boundary:
       "This counts a dense network's parameters. It does not measure its speed or prediction quality.",
     controls: [range("width", "Hidden units", 3, 1, 8)],
@@ -568,7 +565,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "building-a-network": {
     title: "Connect the next dense layer",
     brief:
-      "Change the hidden width and output count. Work out the output layer's weight shape.",
+      "Change the number of hidden and output units. Work out the shape of the output layer’s weights.",
     boundary:
       "This checks dense-layer shapes and counts. The diagram does not construct or train a model.",
     controls: [
@@ -615,7 +612,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: width * outputs,
         answerLabel: "Output-layer weight count",
-        explanation: `Each of ${outputs} outputs connects to all ${width} hidden units. Its weights have shape [${width}, ${outputs}]. Batch size changes the activations, not the weight count.`,
+        explanation: `Each of ${outputs} outputs connects to all ${width} hidden units. Its weights have shape [${width}, ${outputs}]. Batch size changes how many outputs are calculated, not how many weights the layer has.`,
         code: `model.add(tf.layers.dense({ units: ${width}, inputShape: [${inputs}], activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: ${outputs} }));`,
       };
     },
@@ -632,8 +629,8 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     cases: cases(
       "Targets 2, 4, 6",
       "Targets 1, 3, 5",
-      "Outer predictions are 2 and 7.",
-      "Outer predictions are 0 and 6.",
+      "The first and last predictions are 2 and 7.",
+      "The first and last predictions are 0 and 6.",
       { prediction: 4 },
       { prediction: 5 },
     ),
@@ -674,7 +671,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Choose a starting weight and learning rate on the loss curve (w - 3)².",
     boundary:
-      "One exact gradient step on a simple quadratic. A real model usually has many interacting weights.",
+      "This takes one gradient step on a simple curved loss function. Real models usually have many weights that affect each other.",
     controls: [
       range("weight", "Current weight", 0, -1, 7, 0.5),
       range("rate", "Learning rate", 0.2, 0.05, 1.2, 0.05),
@@ -726,7 +723,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Change the weight. Follow y = w × x into squared loss and back to the weight.",
     boundary:
-      "One scalar computation with an exact derivative. This is a small part of a network's backpropagation.",
+      "This calculates the derivative of one numeric output. A network’s backpropagation combines many such steps.",
     controls: [range("weight", "Weight w", 0.5, -1, 3, 0.25)],
     cases: cases(
       "Input 2, target 3",
@@ -770,9 +767,9 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "training-loop": {
     title: "Choose the checkpoint to keep",
     brief:
-      "Reveal epochs from a recorded teaching run. Compare the latest validation loss with the best one seen so far.",
+      "Choose how many epochs to inspect. Compare the latest validation loss with the lowest one seen so far.",
     boundary:
-      "An illustrative loss trace, not a model training run. The second trace represents a different overfitting pattern.",
+      "These loss curves are examples, not results from training a model here. The second curve shows validation loss worsening earlier.",
     controls: [range("epoch", "Last observed epoch", 16, 1, 24)],
     cases: cases(
       "Late overfitting",
@@ -838,7 +835,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Reverse the readings or keep their order. Compare the first and last values.",
     boundary:
-      "Two short teaching sequences. Endpoint change describes their direction; it does not explain what caused it.",
+      "These are two short example sequences. Comparing the first and last values shows their overall change, not its cause.",
     controls: [
       choice("reverse", "Sequence order", 0, ["Original", "Reversed"]),
     ],
@@ -877,8 +874,8 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           ),
         ],
         answer,
-        answerLabel: "Total endpoint change",
-        explanation: `Last ${values.at(-1)} minus first ${values[0]} is ${answer}. Reversing the order keeps the same values but changes the signs of the time changes.`,
+        answerLabel: "Last reading minus first",
+        explanation: `Last ${values.at(-1)} minus first ${values[0]} is ${answer}. Reversing the order keeps the values but reverses the direction of the changes.`,
         code: `const change = values.at(-1) - values[0];\n// ${values.at(-1)} - ${values[0]}`,
       };
     },
@@ -888,7 +885,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Select a time step and change how much previous state contributes. Start the state at zero.",
     boundary:
-      "One scalar recurrent unit with fixed input weight 0.5 and chosen state weight. No weights are learned here.",
+      "This recurrent unit carries one number as state. Its input weight is fixed at 0.5; you choose the state weight. No training happens here.",
     controls: [
       range("step", "Time step (starting at 0)", 3, 0, 5),
       range("memory", "Weight on previous state", 0.7, 0, 1.2, 0.1),
@@ -944,9 +941,9 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "lstm-gates": {
     title: "Keep and replace cell memory",
     brief:
-      "Adjust the forget and input gates. Calculate retained memory plus the new candidate contribution.",
+      "Adjust the forget and input gates. Add the kept part of the old value to the allowed part of the candidate.",
     boundary:
-      "One scalar LSTM cell update with chosen gate values. A full LSTM learns vector gates and also has an output gate.",
+      "This updates one stored LSTM value using gate values you choose. A full LSTM learns gates for many stored values and also has an output gate.",
     controls: [
       range("forget", "Forget gate", 0.75, 0, 1, 0.05),
       range("input", "Input gate", 0.4, 0, 1, 0.05),
@@ -998,7 +995,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Move the input window and change its length. The following reading is the target.",
     boundary:
-      "A short time-ordered fixture. Real training and validation splits should be separated by time before windows are created.",
+      "This is a short example in time order. For training and validation, split the original stream by time before making windows.",
     controls: [
       range("start", "Window start (starting at 0)", 1, 0, 3),
       choice(
@@ -1057,7 +1054,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Move a candidate reading. Measure its distance in the baseline's standard deviations.",
     boundary:
-      "Five reference values form a small teaching baseline. Distance alone does not prove that a reading is anomalous.",
+      "Five example readings form the reference baseline. Being far from them does not by itself prove that a new reading is anomalous.",
     controls: [range("reading", "Candidate reading", 13, 4, 20, 0.5)],
     cases: cases(
       "Baseline near 10",
@@ -1105,7 +1102,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Move a candidate reading across three rules. Count how many ask for a closer look.",
     boundary:
-      "Three correlated rules on the same reading. Their agreement does not establish an unknown reading's true label.",
+      "These three rules use the same reading, so their results are related. Agreement does not establish the reading’s true label.",
     controls: [range("reading", "Candidate reading", 13, 4, 20, 0.5)],
     cases: cases(
       "Original baseline",
@@ -1172,7 +1169,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Change measurement noise. Calculate how far a new measurement moves the estimate.",
     boundary:
-      "One scalar Kalman measurement update with fixed predicted variance. This does not estimate a full dynamic system.",
+      "This updates one estimated value using a fixed prediction and its variance. It is one Kalman measurement step, not a full system simulation.",
     controls: [
       range("noise", "Measurement variance R", 4, 0.5, 16, 0.5),
       range("measurement", "New measurement", 14, 4, 20, 0.5),
@@ -1278,7 +1275,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   quantization: {
     title: "Round a weight to fewer levels",
     brief:
-      "Choose a bit depth and weight position. Compare the original weight with its rounded representation.",
+      "Choose the bits per weight and a weight to inspect. Compare its original and rounded values.",
     boundary:
       "Uniform quantization over [-1, 1] with fixed bounds. It demonstrates rounding, not a measured runtime or accuracy improvement.",
     controls: [
@@ -1327,7 +1324,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     title: "Remove weights below a cutoff",
     brief: "Raise the magnitude cutoff. Count the weights that remain nonzero.",
     boundary:
-      "Magnitude pruning of six fixed weights. Zeroing weights does not establish model quality or save runtime work without sparse execution support.",
+      "This sets small weights to zero in a six-weight example. Test prediction quality afterward. Zeros save processing work only if the runtime can skip them.",
     controls: [range("cutoff", "Magnitude cutoff", 0.2, 0, 1, 0.05)],
     cases: cases(
       "Spread-out weights",
@@ -1446,7 +1443,7 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
             ),
           ),
           bars(
-            "Confusion counts",
+            "Correct predictions, false alarms and misses",
             [tp, fp, fn, tn],
             [
               "True positive",
@@ -1504,14 +1501,14 @@ function signalSpec(
   return {
     title,
     brief: windowed
-      ? "Compare a rectangular cut with a Hann taper. Inspect the energy that spreads beyond the nearest three bins."
+      ? "Compare an untapered slice with a Hann taper. Measure squared magnitudes outside the nearest three bins."
       : timed
         ? "Move a 64-sample window across a signal. A second tone starts partway through the capture."
         : mode === "features"
           ? "Change a tone's frequency and amplitude. Read its magnitude as one possible model feature."
           : "Change the second tone. The waveform and spectrum describe the same 64 samples.",
     boundary:
-      "A synthetic signal sampled at 64 Hz. The spectrum is a direct discrete Fourier calculation, rather than a benchmark or evidence of model quality.",
+      "This made-up signal is sampled at 64 Hz. A direct Fourier calculation produces the spectrum. It does not measure runtime speed or model quality.",
     controls,
     cases: cases(
       windowed
@@ -1637,7 +1634,7 @@ function signalSpec(
         ],
         answer,
         answerLabel: windowed
-          ? "Energy outside nearest three bins"
+          ? "Squared magnitude outside nearest three bins"
           : timed
             ? "Window samples containing the new tone"
             : mode === "features"
@@ -1667,7 +1664,7 @@ function forecastSpec(recursive: boolean): LessonInvestigationSpec {
       : "Predict the next unseen reading",
     brief: recursive
       ? "Extend a fixed forecast rule. Each prediction becomes the next input."
-      : "Choose a forecast horizon and inspect a fixed rule against observations from later times.",
+      : "Choose how many steps ahead to predict. Compare the fixed rule’s forecast with the later observations.",
     boundary:
       "A fixed rule, next = previous × multiplier + 0.1. No forecasting model is trained in this experiment.",
     controls: [
@@ -1684,7 +1681,7 @@ function forecastSpec(recursive: boolean): LessonInvestigationSpec {
     ),
     prediction: {
       prompt: recursive
-        ? "What is the forecast's absolute error at your selected horizon compared with the later observation?"
+        ? "How far is the forecast from the actual reading at the selected step?"
         : "What value does the fixed rule predict at your selected horizon?",
       tolerance: 0.025,
     },
@@ -1731,10 +1728,10 @@ function reconstructionSpec(error: boolean): LessonInvestigationSpec {
   return {
     title: error ? "Locate reconstruction error" : "See what compression keeps",
     brief: error
-      ? "Change feature C and inspect each squared residual. Average them to score the whole row."
+      ? "Change feature C and square each reconstruction error. Average those errors to score the whole row."
       : "Compress four input features into two averages, then reconstruct by repeating each average.",
     boundary:
-      "A fixed averaging encoder and decoder. A real autoencoder learns its weights; this fixture only demonstrates information loss.",
+      "This example compresses values by averaging and rebuilds them by repeating the averages. It shows information loss; a real autoencoder learns its weights.",
     controls: [range("feature", "Input feature C", 6, 0, 10, 0.5)],
     cases: cases(
       "First input row",
@@ -1776,7 +1773,7 @@ function reconstructionSpec(error: boolean): LessonInvestigationSpec {
           ? "Mean squared reconstruction error"
           : "Reconstructed feature C",
         explanation: error
-          ? `Squared residuals are [${show(residuals)}]. Their average is ${rounded(mean(residuals))}. A high score is a reason to investigate, rather than a confirmed anomaly.`
+          ? `Squared differences are [${show(residuals)}]. Their average is ${rounded(mean(residuals))}. A high score is a reason to investigate, rather than a confirmed anomaly.`
           : `Features C and D become one average, ${rounded(latent[1]!)}. Repeating that value cannot recover their original difference.`,
         code: "const encoded = [(x[0] + x[1]) / 2, (x[2] + x[3]) / 2];\nconst rebuilt = [encoded[0], encoded[0], encoded[1], encoded[1]];",
       };
@@ -1793,7 +1790,7 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
       ? "Change the query and compare five time positions. A more recent position does not automatically receive more weight."
       : "Multiply each key by a query, apply softmax to get weights, then combine the values.",
     boundary:
-      "Five scalar keys and values with a chosen query. Real attention uses learned vector projections; weights do not establish cause.",
+      "This uses five single-number keys and values and a query you choose. Real attention learns vector representations. A large attention weight does not show what caused a result.",
     controls: [range("query", "Query", 0.8, -2, 2, 0.2)],
     cases: cases(
       "Keys rise with time",
@@ -1810,7 +1807,8 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
           tolerance: 0,
         }
       : {
-          prompt: "What weighted value summary does the current query produce?",
+          prompt:
+            "What weighted average of the values does this query produce?",
           tolerance: 0.025,
         },
     evaluate: ({ query }, caseId) => {
@@ -1843,7 +1841,7 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
         answer: temporal ? maximum : sum(contributions),
         answerLabel: temporal
           ? "Position with greatest weight"
-          : "Weighted value summary",
+          : "Weighted average of the values",
         explanation: `The weights sum to 1. Position t${maximum} receives the greatest weight, ${rounded(weights[maximum]!)}. The weighted values sum to ${rounded(sum(contributions))}. ${query === 0 ? "A zero query gives every position equal weight." : "Changing the query can move attention to a different key."}`,
         code: `const weights = softmax(keys.map(key => ${query} * key));\nconst summary = weights.reduce((total, weight, i) => total + weight * values[i], 0);`,
       };

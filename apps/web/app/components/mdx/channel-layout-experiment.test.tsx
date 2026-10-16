@@ -23,7 +23,7 @@ const record = () =>
 it("compares two same-shape layouts, retains state on remount, and does not emit answer text", () => {
   const view = render(<ChannelLayoutExperiment />);
   expect(screen.queryByTestId("channel-result")).not.toBeInTheDocument();
-  fireEvent.change(screen.getByLabelText(/Predict channel/), {
+  fireEvent.change(screen.getByLabelText(/Which numbers belong to channel/), {
     target: { value: "0, 1, 2" },
   });
   click("Check prediction");
@@ -36,12 +36,12 @@ it("compares two same-shape layouts, retains state on remount, and does not emit
   expect(
     within(screen.getByTestId("channel-result")).getByRole("status"),
   ).toHaveTextContent("[0, 4, 8]");
-  fireEvent.change(screen.getByLabelText("Inspect channel"), {
+  fireEvent.change(screen.getByLabelText("Choose a channel"), {
     target: { value: "2" },
   });
   view.unmount();
   render(<ChannelLayoutExperiment />);
-  expect(screen.getByLabelText("Inspect channel")).toHaveValue("2");
+  expect(screen.getByLabelText("Choose a channel")).toHaveValue("2");
   expect(screen.getByRole("button", { name: "Run transpose" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -69,45 +69,53 @@ it("compares two same-shape layouts, retains state on remount, and does not emit
 
 it("tests both operation and values on the changed packet, preserving the first attempt and help through reset", () => {
   render(<ChannelLayoutExperiment />);
-  click("Try a different packet");
+  click("Try a new example");
   expect(
     screen.queryByRole("button", { name: "Run transpose" }),
   ).not.toBeInTheDocument();
   fireEvent.click(screen.getByLabelText("Reshape to [3, 2]"));
-  fireEvent.change(screen.getByLabelText("Channel 1 values, in time order"), {
-    target: { value: "20, 21" },
-  });
-  click("Check new packet");
+  fireEvent.change(
+    screen.getByLabelText("Channel 1's two numbers, from earliest to latest"),
+    {
+      target: { value: "20, 21" },
+    },
+  );
+  click("Check my answer");
   expect(record().firstCheck).toEqual({ correct: false, assisted: false });
-  click("Show this check's answer");
-  click("Reset controls");
+  click("Show the answer");
+  click("Reset the controls");
   expect(record().latestCheck).toEqual({ correct: false, assisted: false });
-  fireEvent.click(screen.getByLabelText("Transpose the axes"));
-  fireEvent.change(screen.getByLabelText("Channel 1 values, in time order"), {
-    target: { value: "20, 21" },
-  });
-  click("Check new packet");
+  fireEvent.click(screen.getByLabelText("Transpose: turn columns into rows"));
+  fireEvent.change(
+    screen.getByLabelText("Channel 1's two numbers, from earliest to latest"),
+    {
+      target: { value: "20, 21" },
+    },
+  );
+  click("Check my answer");
   expect(record().checkResult).toEqual({ correct: true, assisted: true });
   expect(record().firstCheck).toEqual({ correct: false, assisted: false });
   expect(record().checkAttempts).toBe(2);
-  expect(screen.getByText(/Changed case passed with help/)).toBeInTheDocument();
+  expect(
+    screen.getByText(/Both answers are correct. You answered with help/),
+  ).toBeInTheDocument();
 });
 
 it("does not erase observed help by resetting operations or looking back at the worked packet", () => {
   render(<ChannelLayoutExperiment />);
   click("Run transpose");
-  click("Reset controls");
-  fireEvent.change(screen.getByLabelText(/Predict channel/), {
+  click("Reset the controls");
+  fireEvent.change(screen.getByLabelText(/Which numbers belong to channel/), {
     target: { value: "0,4,8" },
   });
   click("Check prediction");
   expect(record().firstPrediction?.assisted).toBe(true);
-  click("Try a different packet");
-  click("Return to worked packet");
-  click("Try a different packet");
+  click("Try a new example");
+  click("Back to the first example");
+  click("Try a new example");
   expect(record().checkHelp).toBe(true);
   expect(record().checkAnswer).toBe(false);
-  expect(screen.queryByText(/Transpose gives \[\[/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/Transpose makes \[\[/)).not.toBeInTheDocument();
 });
 
 it("keeps the activity usable if storage is corrupt or unavailable", () => {
@@ -117,9 +125,11 @@ it("keeps the activity usable if storage is corrupt or unavailable", () => {
   });
   render(<ChannelLayoutExperiment />);
   expect(
-    screen.getByText(/previous experiment draft could not be read/),
+    screen.getByText(/couldn't load your saved work for this activity/),
   ).toBeInTheDocument();
-  expect(screen.getByText(/Tab storage is unavailable/)).toBeInTheDocument();
+  expect(
+    screen.getByText(/can't save your work in this tab/),
+  ).toBeInTheDocument();
   click("Run transpose");
   expect(screen.getByTestId("channel-result")).toBeInTheDocument();
 });

@@ -18,8 +18,8 @@ starterCode: |
     tolerance: number,
     threshold: number,
   ): { timeTwin: boolean; divergentBin: number } {
-    // Two verdicts, and they read different things: one compares the captures
-    // as they came in, the other compares what the transform returns for each.
+    // Compare matching samples for timeTwin.
+    // Compare matching FFT magnitudes for divergentBin.
     return null; // your code here
   }
 solutionCode: |
@@ -79,7 +79,7 @@ testCode: |
       const r = compareViews(baseline, suspect, tolerance, threshold);
       expect(
         r,
-        'compareViews returned nothing to read. It has to hand back an object carrying both verdicts, timeTwin and divergentBin, before any check here can look at them.',
+        'Return an object containing timeTwin and divergentBin.',
       ).toBeDefined();
       expect(
         typeof r.timeTwin,
@@ -114,7 +114,7 @@ testCode: |
       // arriving (b - a > threshold) clears them all and misses this one.
       const dead = generate(catalogued.filter((c) => c.hz !== 47), 512, 256);
       const r = compareViews(background(), dead, 0.05, 5.0);
-      expect(r, 'compareViews returned nothing to read. It has to hand back an object carrying both verdicts, timeTwin and divergentBin, before any check here can look at them.').toBeDefined();
+      expect(r, 'Return an object containing timeTwin and divergentBin.').toBeDefined();
       expect(
         r.divergentBin,
         'The 47 Hz line is in the baseline and gone from the suspect: bin 94 (47 Hz at 0.5 Hz per bin over 512 samples) reads 51.2 on one side and 0 on the other. A gap counts by size, not by direction, so a catalogued line that has gone silent diverges as much as a tone that arrived.',
@@ -126,7 +126,7 @@ testCode: |
       expect(r.timeTwin).toBe(true);
       expect(
         r.divergentBin,
-        'These two spectra are identical bin for bin. A search that reads one spectrum on its own, and reports the first bin that is simply LOUD, answers a different question: the catalogued 5 Hz component alone sits at magnitude 204.8 here, and it is in the catalog.',
+        'These spectra are identical. Compare the difference between matching bins, not the size of a bin in only one spectrum.',
       ).toBe(-1);
     });
 
@@ -179,13 +179,13 @@ testCode: |
       const loud = views(background(), intruder(hz, 0.05), 0.05, 5.0);
       expect(
         loud.divergentBin,
-        'This intruder was drawn at grade time, so no table of remembered inputs and bin indices covers it. The bin it lands in exists only in the comparison between the two spectra this run produced: its gap of 12.8 is the one thing above 5.0, and every other bin agrees to within 0.0001.',
+        'The test chooses a new tone each run. Compare the two spectra to find the first difference above the supplied threshold.',
       ).toBe(bin);
 
       const quiet = views(background(), intruder(hz, 0.01), 0.05, 5.0);
       expect(
         quiet.divergentBin,
-        'The same drawn tone at one fifth the amplitude puts 2.56 into that bin, under the bar of 5.0, so the sentinel is the honest answer. An answer that repeats the bin it just reported, or names the loudest bin it can find, speaks when nothing has cleared the bar.',
+        'The quieter tone leaves no bin difference above the threshold. Return -1 rather than a previously detected or simply loud bin.',
       ).toBe(-1);
     });
 
@@ -225,7 +225,7 @@ testCode: |
       const r = views(samples, lowered, 0.05, 5.0);
       expect(
         r.timeTwin,
-        'Here the suspect sits BELOW the baseline at every sample. A difference that keeps its sign misreads that gap, decides the pair is close enough, and certifies two unlike captures twins.',
+        'The suspect is lower than the baseline at every sample. Compare absolute differences so decreases count too.',
       ).toBe(false);
       expect(
         r.divergentBin,

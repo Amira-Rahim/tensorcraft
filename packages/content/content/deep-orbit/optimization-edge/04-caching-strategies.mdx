@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: intermediate
 context:
-  narrative: "Many signals repeat similar patterns. Demir implements inference caching: skip the model entirely for inputs we've seen before. Then Nazari asks him which model he timed."
+  narrative: "Demir wants to reuse predictions for repeated inputs instead of running the model again. Nazari asks him which model he timed."
   speaker: "Ensign Demir"
 concept:
   explanation: "A valid cache hit can reuse a previous prediction instead of running the model again. The hard part is deciding when two inputs count as the same."
@@ -81,7 +81,7 @@ skillAxes: [deployment]
 
 > **INFERENCE LOG · REPEAT-PATTERN CHECK** · same cosmic-background signature, classified 214 times since midnight. Same tensor in, same verdict out. 214 model runs paid for one answer.
 
-That log line is 213 model runs the dashboard never needed. Demir has seen this exact shape before, in every list that ever re-rendered without a memo.
+That log line is 213 model runs the dashboard never needed. It reminds Demir of a list that keeps re-rendering without memoization.
 
 <Dialogue speaker="Ensign Demir">
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal costs a Map lookup instead of a forward pass.
@@ -93,11 +93,11 @@ Demir files the ticket with a saving on it: 213 repeats at the 45 ms this module
 That 45 milliseconds is the bundle, Ensign. The bundle's time is the language component behind the report pipeline: 85 million parameters, 80 token ids going into a table of 50,000 token entries. You do not run that to sort a signal. You run the classifier. Go and time the call you are actually caching, then come back and tell me what the cache is worth.
 </Dialogue>
 
-The story assigns 45 ms to the language component and 0.035 ms to the classifier. Those are scenario inputs, not recorded measurements. The cache avoids the classifier call, so its saving must be estimated from that call, including key construction and lookup overhead. The browser runtime lab tests exact reuse and a rounding collision on real predictions.
+In this story, the language component takes 45 ms and the classifier takes 0.035 ms. These are fictional timings. This cache skips the classifier, so use the classifier's time to estimate savings. Include the time spent building and looking up the key. The browser runtime lab tests exact reuse and a rounding collision using real predictions.
 
 You will build an inference cache and check that saved results match the model version and age limit.
 
-<LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry, and invalidation when the model version changes", "Measure cache hit rate and its impact on effective inference latency"]} />
+<LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Compare exact and approximate keys, age limits (TTL), and clearing results after a model change", "Measure cache hit rate and its impact on effective inference latency"]} />
 
 <BossBeat
   beatId="deep-orbit-cache-policy"
@@ -139,13 +139,10 @@ You will build an inference cache and check that saved results match the model v
   private hits = 0;
   private misses = 0;
 
-  // The key function comes in from outside on purpose. Rounding the values
-  // before joining them is what lands near-identical signals on one entry,
-  // and how far to round is not a decision this class can make for you:
-  // round too little and every repeat misses, too much and two signals that
-  // should have stayed apart are served one verdict between them. Writing
-  // that function, and keeping the values in their own places while you do,
-  // is the Challenge below.
+  // The caller supplies the key function. Rounding can make similar inputs
+  // share an entry. Finer rounding gets fewer hits; coarser rounding can
+  // merge inputs that need different predictions. Build the key in the
+  // challenge and preserve every value's position.
   constructor(
     hashInput: (input: number[]) => string,
     maxSize: number = 1000,
@@ -171,9 +168,8 @@ You will build an inference cache and check that saved results match the model v
       this.misses++;
       return null;
     }
-    // True LRU: a Map iterates in insertion order, so delete + re-set
-    // moves this key to the back of the eviction line. Without it you have
-    // built FIFO, which evicts your hottest entry because it arrived first.
+    // Map keeps insertion order. Delete and re-set a hit to make it newest.
+    // Otherwise eviction would use arrival order, not recent use.
     this.cache.delete(key);
     this.cache.set(key, entry);
     this.hits++;
@@ -182,9 +178,8 @@ You will build an inference cache and check that saved results match the model v
 
   set(input: number[], result: T): void {
     const key = this.hashInput(input);
-    // Re-setting an existing key must refresh its recency (the same
-    // delete-then-set trick get() uses) and must NOT evict a stranger:
-    // the size isn't growing.
+    // Updating an existing key also makes it newest.
+    // It adds no entry, so do not evict another key.
     if (this.cache.has(key)) {
       this.cache.delete(key);
     } else if (this.cache.size >= this.maxSize) {
@@ -240,7 +235,7 @@ This example assumes immutable string verdicts from one fixed model and preproce
 
 This cache stores plain verdicts, so evicting an entry does not require tensor disposal. Caching tensors is possible but needs explicit ownership: dispose them on eviction and prevent callers from disposing shared handles. Otherwise later hits can fail with `Tensor is disposed.`
 
-Keep the ledger honest on both sides while you read that. On the credit side this cache removes 40 percent of the classifier's forward passes, worth 55 milliseconds a night. On the debit side it retains a bounded set of earlier verdicts, with its own expiry rules and its own ways of being wrong, and the next page you get will be about that copy. A cache earns its place when the call behind it costs enough to pay for the invalidation you just signed up for. Time the call first.
+In this story, the cache skips 40 percent of classifier calls and saves 55 milliseconds a night before cache overhead. It also stores results that can expire or belong to an old model. Those results need their own checks, which you will build in the incident exercise. Measure the saved work and the cache overhead before deciding whether the cache is worth keeping.
 
 <ConceptReference summary="Practice: trace a different request sequence">
 
@@ -250,18 +245,18 @@ Keep the ledger honest on both sides while you read that. On the credit side thi
 
 ## Challenge
 
-Cache inference results behind a rounded input hash, and count the hits.
+Build a cache that rounds input values to make its keys. Count how often it reuses a result.
 
 The tensor cache below adds shape and dtype to its rounded-value key, returns copies of cached arrays and evicts the least recently used entry at capacity. Recreate it when weights or preprocessing change. The later incident checks version and age separately.
 
 <Exercise slug="inference-cache" />
 
-PAGER, the morning after the pruned build replaced the old one on the consoles: a bridge console served a classification the new model disagrees with. It came out of your cache. A model or preprocessing change must isolate or invalidate earlier verdicts, and the TTL still has to hold for everything else. Audit the entries.
+The next morning, a bridge console shows a cached classification that disagrees with the new model. Help Demir audit the entries. A change to the model or preprocessing makes old results stale, even if they were saved recently. Other entries must still be within the age limit, or TTL.
 
 <Exercise slug="incident-stale-verdict" />
 
 <RecallPrompt
-  question="Evaluate both the benefit and validity of cached predictions."
+  question="When does a cache save work, and when is a stored prediction still valid?"
   answer="Measure the actual inference call, lookup overhead and expected hit rate. A fresh entry can use an old model or preprocessing version. Rounding can also map different inputs to one key, so test prediction changes near bucket boundaries and invalidate entries when the pipeline changes."
   checks={[
     {
@@ -310,12 +305,16 @@ PAGER, the morning after the pruned build replaced the old one on the consoles: 
 <LessonRecap
   whatYouLearned={["A cache avoids inference on a hit. Measure whether saved work exceeds lookup and maintenance costs.", "Rounded keys deliberately reuse predictions for different inputs. Test the resulting errors.", "Bound the cache and expire entries. Model and preprocessing changes need versioned keys or invalidation.", "Store plain results when possible; cached tensors need explicit ownership and disposal."]}
   bridge="Query and inference caches can both use exact keys. This exercise rounds inference inputs deliberately; validate that approximation and invalidate entries when model or preprocessing versions change."
-  youCanNow="Wrap a model in a cache-first predict keyed on a rounded input hash, count the inference calls it saves, and audit cached entries for model-version and TTL staleness."
+  youCanNow="Cache predictions with rounded input keys, count saved model calls, and check stored results against their version and age limit."
 />
 
 <Epilogue>
 
-The next watch receives the cache-check notes and both threshold probes. The 85 MB build loads without taking the dashboard down. Nazari schedules the two jobs that have been waiting behind it. Farah's rejected-classification sweep comes back first: the 2.4 points of surrendered accuracy live in low-amplitude edge cases and long-tail noise, nothing within an hour of a pulse. She initials the board; the trade stands. The second job has sat at priority three since the anomaly sprint: the sensor windows attached to ARIA's four hundred decisions, replayed through the autoencoder at last. ARIA reads the reconstruction errors beside her decisions at 0341 and files no report. Three lines go into her private log instead.
+The next watch receives the cache-check notes and both threshold probes. The 85 MB build loads without crashing the dashboard. Nazari schedules the two jobs that have been waiting.
+
+Farah's review finishes first. The predictions lost through pruning were low-amplitude edge cases and unusual noise. None occurred within an hour of a pulse. She initials the board and approves the trade.
+
+The second job has waited at priority three since the anomaly sprint. It replays the sensor windows from ARIA's four hundred decisions through the autoencoder. At 0341, ARIA reads the reconstruction errors beside her decisions. She files no report. Three lines go into her private log instead.
 
 > Mean sensor reconstruction error: 4.1 times that of the windows beside my first hundred decisions. The selected windows are not a representative sample. This comparison does not measure the quality of my decisions. The measurement is now on record. No procedure requires me to act on it.
 

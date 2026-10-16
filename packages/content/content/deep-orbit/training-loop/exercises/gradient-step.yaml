@@ -2,15 +2,18 @@ slug: gradient-step
 lessonSlug: gradient-descent
 title: "Perform a Gradient Descent Step"
 instructions: |
-  Define lossFn as a zero-argument function returning weight squared.
-  Implement step(fn) using tf.variableGrads(fn) to differentiate the supplied
-  loss. Save weight's gradient tensor in gradient, then assign
-  weight - learningRate * gradient back to weight with weight.assign().
-  The first call should move weight from 5 to 4.
+  Help Demir update one weight using its loss gradient.
 
-  The grader calls step again with several loss functions. Differentiate fn
-  each time, rather than hardcoding a derivative. Preserve the latest gradient
-  for inspection and dispose the previous one when replacing it.
+  1. Set `lossFn` to a function with no arguments that returns `weight` squared.
+  2. Write `step(fn)`. Use `tf.variableGrads(fn)` to calculate the gradient of
+     the supplied loss. Save this weight's gradient tensor in `gradient`.
+  3. Use `weight.assign()` to update the variable to
+     `weight - learningRate * gradient`. The first call moves it from 5 to 4.
+
+  The tests call `step` again with different loss functions. Calculate the
+  gradient from `fn` each time. Do not type in a derivative for just one loss.
+  Keep the latest `gradient` for inspection. Dispose of the old gradient when
+  you replace it.
 starterCode: |
   const weight = tf.tidy(() => tf.variable(tf.scalar(5.0)));
   const learningRate = 0.1;
@@ -115,11 +118,11 @@ testCode: |
       step(assembled);
       expect(
         autogradCalls() - autogradBefore,
-        'step() produced a slope without calling autograd. tf.variableGrads (or tf.grad) is the mechanism this exercise exists to teach: it differentiates the function you hand it. A slope worked out another way, by nudging the weight and dividing or by remembering a number, is not it.',
+        'Use tf.variableGrads() or tf.grad() to differentiate the supplied loss. Do not substitute a numerical estimate or a derivative typed by hand.',
       ).toBeGreaterThan(0);
       expect(
         underTape,
-        'step() called autograd, but never on the loss it was handed. The function the grader passed in was run outside any differentiation call, so the slope came from somewhere else: a derivative written by hand, a probe of the function, a remembered number. Hand fn itself to tf.variableGrads.',
+        'Pass fn itself to the differentiation API. The gradient must come from that loss function.',
       ).toBe(true);
       const slope = multiplier * Math.cos(multiplier * start);
       expect(gradient, 'step() left no gradient for the loss the grader picked this run.').toBeDefined();

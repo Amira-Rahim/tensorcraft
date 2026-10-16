@@ -3,13 +3,17 @@ lessonSlug: threshold-tuning
 title: "Incident: False Alarm Storm"
 mlContent: systems
 instructions: |
-  Implement diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) as a triage helper. currentAlerts.alertsPerHour and baselineAlerts.alertsPerHour are nonnegative rates; baselineAlerts.modelAge is days; sensorAuditLog.recentChanges is an array of logged changes.
+  Implement diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) to choose what to investigate first. currentAlerts.alertsPerHour and baselineAlerts.alertsPerHour are nonnegative. baselineAlerts.modelAge is measured in days. sensorAuditLog.recentChanges lists logged sensor changes.
 
-  Return { rate, ratio, nextCheck, action }. Round the reported rate and ratio to one decimal, keeping them numeric. ratio is the current rate divided by baseline rate; use null when baseline is zero because that ratio is undefined. Do not invent a nonzero denominator.
+  Return { rate, ratio, nextCheck, action }. Round the reported rate and ratio to one decimal place and keep them as numbers. ratio is the current alert rate divided by the baseline rate. When the baseline is zero, return null for ratio instead of inventing a denominator.
 
-  Follow this runbook in order. A non-empty change log selects nextCheck 'sensor-change' and action 'inspect-sensor'. Otherwise age over 90 selects 'model-age' and 'evaluate-model'. Otherwise an unrounded ratio from 5 to 20 inclusive selects 'threshold' and 'review-threshold'. All other cases select 'unexplained' and 'escalate'.
+  Check these rules in order and use the first match:
+  1. If the sensor change log is non-empty, return nextCheck 'sensor-change' and action 'inspect-sensor'.
+  2. Otherwise, if modelAge > 90, return 'model-age' and 'evaluate-model'.
+  3. Otherwise, if the unrounded ratio is between 5 and 20 inclusive, return 'threshold' and 'review-threshold'.
+  4. Otherwise, return 'unexplained' and 'escalate'.
 
-  This is a policy for where to investigate first, not root-cause diagnosis. An old model may still work, a sensor change may be unrelated, and any alert storm may contain real events. Continue reviewing alerts while investigating. Neither model age nor alert volume authorizes automatic retraining or threshold changes.
+  This identifies where to look, not what caused the alerts. An old model may still work, and a sensor change may be unrelated. Keep reviewing alerts because some may be real events. Do not automatically retrain or change the cutoff based only on model age or alert volume.
 hints:
   - level: nudge
     content: |

@@ -2,11 +2,15 @@ slug: implement-neuron
 lessonSlug: first-neuron
 title: "Implement a Neuron"
 instructions: |
-  Implement neuron(inputs, weights, bias) as a weighted sum plus bias.
-  Return a rank-0 tensor. Use tensor operations so gradients can flow through
-  the calculation; do not read values into JavaScript inside the function.
-  Keep the returned tensor and clean up intermediates with tf.tidy().
-  The grader calls your function with different values and vector lengths.
+  Help Farah write `neuron(inputs, weights, bias)`.
+  Multiply each input by its matching weight, add the products, then add the bias.
+
+  Return a scalar tensor, with shape `[]` and rank 0. Use tensor operations
+  throughout so TensorFlow.js can calculate gradients during training.
+  Do not copy the values into JavaScript inside the function.
+
+  Use `tf.tidy()` to clean up temporary tensors and keep the tensor you return.
+  The tests call your function with different values and input lengths.
 starterCode: |
   function neuron(inputs: tf.Tensor, weights: tf.Tensor, bias: tf.Scalar): tf.Tensor {
     // weighted sum of inputs, plus bias
@@ -33,15 +37,15 @@ testCode: |
     const readScalar = (result) => {
       expect(
         result,
-        'neuron() handed back nothing. It has to return a tensor: pair every input with the weight at its own index, total those products, and offset the total by the bias.',
+        'neuron() must return a tensor. Multiply matching inputs and weights, add the products, then add the bias.',
       ).toBeDefined();
       expect(
         typeof (result && result.dataSync),
-        'neuron() handed back a plain number. The arithmetic can be right and the type still wrong: keep the bias on the tensor, so the result is a scalar tensor the rest of a network could go on computing with rather than a value that has already left the graph.',
+        'Return a scalar tensor, not a JavaScript number. Add the bias while the sum is still a tensor.',
       ).toBe('function');
       expect(
         result.rank,
-        'neuron() handed back a tensor of rank 1 or higher, which is the number quoted below. A scalar tensor is rank 0, a single value: the products are still sitting side by side, so total them and offset that total by the bias.',
+        'Return a scalar tensor with rank 0. Sum the input-weight products, then add the bias.',
       ).toBe(0);
       return result.dataSync()[0];
     };
@@ -63,28 +67,28 @@ testCode: |
       const result = neuron(inputs, weights, bias);
       expect(
         readbacks() - before,
-        'neuron() pulled values out of the tensors while it ran, and the grader counts every readback, a debug print included. The total can be right and the work still be in the wrong place: a number that has left the tensors carries no gradient, so a neuron built this way can be printed and never trained. Pair the inputs with the weights in one tensor operation, add the bias while the total is still a tensor, and keep any print outside the function.',
+        'Keep the whole calculation in tensor operations so training can compute gradients. Do not use dataSync() or print() inside neuron(). Print the returned tensor outside the function.',
       ).toBe(0);
       return readScalar(result);
     };
     it('computes the starter example from the inputs and weights the starter declares', () => {
       expect(
         readScalar(output),
-        'The starter calls neuron() with inputs [1, 2, 3], weights [0.2, 0.8, -0.5] and a bias of 0.1. Each input meets the weight at its own index, the three products are totalled, and the bias offsets that total. Leaving the bias off lands 0.1 short.',
+        'Multiply each input by the weight at the same index, sum the products, then add the bias. The starter bias is 0.1.',
       ).toBeCloseTo(0.4, 4);
     });
     it('tracks different weights, not a memorized answer', () => {
       const out = callNeuron(tf.tensor([2, 1, 0]), tf.tensor([0.5, -0.5, 1.0]), tf.scalar(0.25));
       expect(
         out,
-        'Same function, different numbers: the grader called neuron() again with inputs [2, 1, 0], weights [0.5, -0.5, 1.0] and a bias of 0.25. The body has to work from the arguments it was handed, not from the starter example.',
+        'The tests also use different inputs, weights, and bias. Calculate from the arguments passed to neuron().',
       ).toBeCloseTo(0.75, 4);
     });
     it('handles a different input width entirely', () => {
       const out = callNeuron(tf.tensor([1, 1, 1, 1]), tf.tensor([0.1, 0.2, 0.3, 0.4]), tf.scalar(-1.0));
       expect(
         out,
-        'This call carries four inputs rather than three. One tensor operation pairs up however many values arrive, so nothing in the body should be counting on a width.',
+        'This case has four inputs. The tensor operation must work for different input lengths.',
       ).toBeCloseTo(0.0, 4);
     });
     it('matches the reduce() equivalent on inputs, weights and a bias drawn at grade time', () => {
@@ -99,7 +103,7 @@ testCode: |
         const out = callNeuron(inputs, weights, tf.scalar(bias));
         expect(
           out,
-          'These inputs and weights were drawn at grade time, so the answer cannot have been worked out in advance. Compute from the arguments the function was handed.',
+          'Calculate from the supplied inputs and weights. A fixed answer for the starter values will not work here.',
         ).toBeCloseTo(expected, 3);
       }
     });
@@ -114,7 +118,7 @@ testCode: |
       const after = callNeuron(inputs, tf.tensor(raised), tf.scalar(0));
       expect(
         after - before,
-        'Moving one weight moved the output by the wrong amount. Each weight scales the one input sitting at its own index, so what an input contributes is weight times input.',
+        'Each weight multiplies only the input at its own index. Check how changing that weight affects the sum.',
       ).toBeCloseTo(0.5 * xs[index], 3);
     });
   });

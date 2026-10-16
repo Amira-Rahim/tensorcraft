@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir's FFT results show spurious frequencies that shouldn't exist. Farah diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
+  narrative: "Demir’s FFT shows peaks where he knows no separate tones were recorded. Farah checks for spectral leakage caused by cutting a finite window. She asks him to test a taper, which gives the edges less weight."
   speaker: "Dr. Farah"
 concept:
   explanation: "A taper reduces distant spectral leakage by giving less weight to samples near the frame edges. It also broadens peaks and changes their heights."
@@ -49,7 +49,7 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum instead of sitting at the expected peaks. It has to be where I cut the slice. Node hits the same thing on byte streams: cut a chunk mid-character and you decode a replacement character nobody sent, so `StringDecoder` holds the split bytes back until the rest arrives and the text comes out whole. Handle the boundary the same way here and the false frequencies go, and the real peaks stay exactly where they are.
+Dr. Farah, the FFT is showing peaks where I know there are no separate tones. Could cutting the slice cause that? In Node, StringDecoder holds incomplete character bytes until the next chunk arrives. If we handle this boundary too, will the extra peaks disappear without changing the real ones?
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
@@ -57,10 +57,12 @@ Your decoder did not file anything overnight. The dashboard did: two anomaly rep
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Spectral leakage, Ensign, and the decoder is where your analogy stops. It hands the held-back bytes over intact. A taper changes the samples: it gives less weight to both edges and reduces distant leakage. It does not remove all leakage. On the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2, but some nearby bins gain magnitude as the peak broadens. Chief, your display reads lower after the fix, on the same signal. That is what the quiet spectrum costs.
+This is spectral leakage, Ensign. StringDecoder returns the original bytes; a taper changes the samples by giving the edges less weight. That reduces distant leakage, but does not remove all of it.
+
+For the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2. Some nearby bins gain magnitude as the peak widens. Chief, the display will read lower even though the recorded signal is the same.
 </Dialogue>
 
-The DFT represents the slice as one period of a repeating signal. An on-bin sinusoid fits a whole number of cycles in that period. An off-bin sinusoid does not: representing the finite slice requires coefficients in many bins. Those coefficients do not prove that the sensor recorded many physical tones. A taper reduces the distant coefficients by changing the samples, at the cost of wider peaks.
+The DFT treats the recorded slice as one period of a repeating signal. A tone at a bin’s center fits a whole number of cycles into that slice. A tone between bin centers does not, so the DFT uses many bins to represent it. Those bins do not mean that many separate tones were recorded. A taper reduces distant leakage by changing the samples, but it also widens the peaks.
 
 You will apply a Hann window to soften a capture’s edges before measuring its frequencies.
 
@@ -216,16 +218,20 @@ console.log('Frequency bins:', spec[0].length); // 33`}
 
 **Constant-overlap-add (COLA):** a convenient condition for overlap-add reconstruction is that shifted windows sum to a constant: `Σ_k w[t - hop·k] = constant`. The window and hop must be chosen as a pair: the periodic Hann satisfies COLA at 50% or 75% overlap, while a Blackman window at 50% overlap does not.
 
-One form-of-the-formula subtlety: the Hann formula above is the **symmetric** form (denominator `W - 1`), which is what the challenge asks you to write; this lesson's code uses the periodic form tfjs ships. Exact COLA at `hop = W/2` holds for the **periodic** form, `w[n] = 0.5 · (1 - cos(2π · n / W))`. Measured at `W = 64, hop = 32`: the periodic window's shifted copies sum to exactly 1.0, while the symmetric form's sum ripples between 0.975 and 0.999. This ripple can affect feature scales. It does not make reconstruction impossible: normalized inverse STFT can use the weaker nonzero-overlap-add (NOLA) condition, where the sum of squared window weights is nonzero at every reconstructed sample. That normalization and complete boundary coverage matter.
+The challenge uses the **symmetric** Hann formula, with denominator `W - 1`. The built-in TensorFlow.js examples use the **periodic** form: `w[n] = 0.5 · (1 - cos(2π · n / W))`. That periodic form satisfies exact COLA at `hop = W/2`.
+
+With `W = 64, hop = 32`, shifted periodic windows sum to 1.0. Symmetric windows sum to between 0.975 and 0.999. That variation can change feature scales.
+
+Reconstruction is still possible under a weaker condition called nonzero-overlap-add (NOLA): the sum of squared window weights must stay nonzero at every reconstructed sample. Normalized inverse STFT can account for those weights, provided the windows also cover the capture boundaries completely.
 
 For real-time inference: a smaller hop produces updates more frequently, at the cost of more FFTs. Waiting for enough samples to fill the analysis window remains a separate delay.
 </DerivationDrawer>
 
 ## Challenge
 
-Build the Hann taper and apply it to a slice. The grader takes the FFT of both the raw and the tapered slice and measures what the taper did to the leakage.
+Build a Hann taper and multiply it by the signal samples. The tests compare FFTs before and after tapering to measure the change in leakage.
 
-The grader's leakage statistic sums magnitudes outside the central seven-bin band. It is not spectral energy, which would involve squared magnitudes and an explicit normalization. The demonstrated reduction belongs to these fixtures.
+For this test, leakage is the sum of magnitudes more than three bins from the rounded tone bin. This is not an energy calculation; energy would use squared magnitudes and a stated normalization. The measured reduction applies to the test signals, not every possible recording.
 
 <Exercise slug="apply-window" />
 
@@ -257,7 +263,7 @@ The grader's leakage statistic sums magnitudes outside the central seven-bin ban
 />
 
 <RecallPrompt
-  question="Adjacent spectrogram windows share 50% of their raw samples."
+  question="What can go wrong if overlapping windows are randomly split into training and validation sets?"
   answer="Random splitting of overlapping windows can leak shared samples across the split and inflate validation results. The severity depends on the task and data. Split by time instead: divide the signal first, then window inside each side."
   checks={[
     {

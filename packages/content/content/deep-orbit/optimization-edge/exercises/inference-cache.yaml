@@ -3,21 +3,21 @@ lessonSlug: caching-strategies
 title: "Inference Result Cache (Quantized Input Hash)"
 mlContent: deployment
 instructions: |
-  Build a cache that hashes input tensors so near-identical inputs hit the same entry. `makeInferenceCache(model, decimals = 2, maxEntries = 100)` returns `{ predict(input), stats }`, and stats counts hits and misses. On a miss, predict runs the model and stores the result; on a hit it returns the stored result and does not run the model.
+  Help Demir reuse predictions for similar inputs. Write `makeInferenceCache(model, decimals = 2, maxEntries = 100)`. Return `{ predict(input), stats }`, where `stats` counts hits and misses.
 
-  What a cache stored is its own: build a second cache over a second model and the same signal is a miss there, because the same values under different weights are a different answer.
+  On a miss, run the model and save the result. On a hit, return the saved result without running the model. Each cache belongs to its own model. The same input must be a miss in a separate cache, even if another cache has seen it.
 
-  Two inputs belong to the same entry only when their shapes and dtypes match and their values agree to `decimals` decimal places position by position, and to nothing coarser than that: signals the cache treats as identical get served one verdict between them, so a key has to keep the values apart from each other as well as keep all of them.
+  Build the key from shape, dtype, and every value rounded to `decimals` decimal places. Keep value positions distinct. Two inputs share a key only when all of these match; do not round more coarsely than requested.
 
-  Keep at most maxEntries entries. Use least-recently-used eviction: a hit makes an entry newest; inserting beyond capacity removes the oldest. maxEntries must be a positive integer. decimals must be an integer from 0 to 10. Reject invalid settings.
+  Keep at most `maxEntries` entries. Use least-recently-used eviction: a hit moves an entry to newest, and inserting beyond capacity removes the oldest. Reject settings unless `maxEntries` is a positive integer and `decimals` is an integer from 0 to 10.
 
-  Store the prediction as plain numbers rather than the tensor it arrived in, because a stored handle stays resident until the tab closes and the first caller to dispose it breaks every later hit on that key. Dispose that tensor once you have read the numbers out of it: this module opened on a dashboard that ran out of memory.
+  Store plain numbers, then dispose the model's prediction tensor. Return a fresh plain array on hits and misses so callers cannot edit the saved result. The caller owns input tensors; the cache owns prediction tensors.
 
-  Return a fresh plain array on both hits and misses so callers cannot edit the cached result. The caller owns input tensors. The cache owns and disposes prediction tensors. Assume finite numeric inputs and unchanged model weights/preprocessing during a cache's lifetime; create a new cache after either changes. Rounding is approximate reuse and needs an application-specific error budget.
+  Assume finite numeric inputs and unchanged model weights and preprocessing. Create a new cache if either changes. Rounding deliberately reuses a prediction for different inputs, so a real application must test whether the resulting errors are acceptable.
 starterCode: |
   function makeInferenceCache(model, decimals = 2, maxEntries = 100) {
-    // A hit and a miss have to hand the caller the same kind of value, and
-    // nothing the cache keeps can be a handle someone else can dispose.
+    // Return the same kind of plain result on hits and misses.
+    // Do not share a tensor handle with callers.
     return {
       predict(input) {
         return model.predict(input);
@@ -173,7 +173,7 @@ testCode: |
       const second = cache.predict(tf.tensor2d([[0.1, 23]]));
       expect(
         probe.counter.calls,
-        "0.12 is not 0.1 and 3 is not 23, so at two decimal places these are two signals and each needs its own forward pass. A key that joins the rounded values with nothing between them reads both of them as 0.123, and then one signal is served the other one's verdict.",
+        "These inputs differ: [0.12, 3] and [0.1, 23]. Joining values without separators makes both keys 0.123. Keep value boundaries so each input runs its own prediction.",
       ).toBe(2);
       expect(cache.stats.hits).toBe(0);
       expect(
@@ -193,7 +193,7 @@ testCode: |
       const second = cache.predict(tf.tensor2d([[0.5, 0.93]]));
       expect(
         probe.counter.calls,
-        'These two signals agree on their first value and disagree on their second, so they are two signals and each needs its own forward pass. A key built from one value ignores every feature after it, and a cache keyed that way answers for signals it has never seen.',
+        'The first values match, but the second values differ. Include every feature in the key so these inputs receive separate predictions.',
       ).toBe(2);
       expect(cache.stats.hits).toBe(0);
       expect(Array.from(first)).toEqual(probe.truth([0.5, 0.12]));
@@ -267,7 +267,7 @@ testCode: |
       const again = cache.predict(tf.tensor2d([[0.21, 0.44]]));
       expect(
         probe.counter.calls,
-        'The last call repeats the first signal with three other signals in between, so it has to find what the first call stored. Holding the last call, or the last few, drops an entry as soon as enough other signals arrive, which hits on a run of duplicates and earns almost nothing on a night of mixed traffic.',
+        'The last call repeats the first input after three different inputs. Its saved result should still be available. Keep entries up to the configured capacity, rather than remembering only the latest calls.',
       ).toBe(4);
       expect(cache.stats.hits).toBe(1);
       expect(cache.stats.misses).toBe(4);

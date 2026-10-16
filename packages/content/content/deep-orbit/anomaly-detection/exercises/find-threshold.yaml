@@ -2,26 +2,19 @@ slug: find-threshold
 lessonSlug: threshold-tuning
 title: "Sweep Candidate Thresholds for the Best F1"
 instructions: |
-  Given equally sized arrays of finite reconstruction errors and boolean labels
-  (true = anomaly), choose from a non-empty array of candidate thresholds.
-  Return `{ threshold, f1 }` for a candidate with the highest F1 on this
-  validation slice. Any maximizing candidate is acceptable when scores tie.
-  If no candidate has a positive F1, return one of the supplied candidates
-  with an F1 of zero.
+  Choose the best cutoff from the supplied candidate thresholds. errors and labels have the same length. Errors are finite numbers, and each label is a boolean: true means anomaly. The candidate list is non-empty.
 
-  A reading is flagged only when its error is strictly greater than the
-  threshold. Use zero for F1 when no true positive is found. Optimize F1 for
-  this exercise, not accuracy, recall alone, or the sum of FP and FN. Those
-  are different objectives, even when both error types cost the same.
-  The final test slice stays out of this sweep.
+  Try every candidate on this validation data. Flag a reading only when its error is strictly greater than the cutoff. Calculate precision, recall, and F1, then return { threshold, f1 } for a candidate with the highest F1. If candidates tie, any tied winner is accepted. If every F1 is zero, return any supplied candidate with f1 set to zero.
+
+  Use zero for F1 when there are no true positives. Choose by F1, not accuracy, recall alone, or the total number of false alarms and misses. Those measures can choose different cutoffs even when each error costs the same. Keep the final test data out of this comparison.
 starterCode: |
   function findBestThreshold(
     errors: number[],
     labels: boolean[],
     candidates: number[],
   ): { threshold: number; f1: number } {
-    // Only the candidates you were handed are in play, and every one of them
-    // has to be scored on the same slice before you can pick the winner.
+    // Score every supplied candidate on the same validation data.
+    // Return a candidate with the highest F1.
     return null; // your code here
   }
 solutionCode: |

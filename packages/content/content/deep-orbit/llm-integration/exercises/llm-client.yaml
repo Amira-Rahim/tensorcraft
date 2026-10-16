@@ -2,11 +2,16 @@ slug: llm-client
 lessonSlug: llms-for-science
 title: "Read the Model's Reply"
 instructions: |
-  Write analyzeSignal(prompt, apiCall). Call the API once with the supplied prompt. Extract and parse its JSON object, then validate the parsed fields before returning it. Throw on invalid JSON or an invalid field.
+  Write analyzeSignal(prompt, apiCall). Call apiCall once with the supplied prompt. Find its JSON object, parse it, and check the required fields before returning the result. Throw an error if the JSON or a required field is invalid.
 
-  The reply contains one JSON object, optionally surrounded by prose without other braces. classification must be 'noise', 'anomaly' or 'unknown'. confidence must be a finite number from 0 to 1 inclusive. reasoning must be a non-empty string after trimming whitespace. Zero is a valid confidence, and additional fields are allowed. Do not coerce strings or null into numbers.
+  For this exercise, the reply contains one JSON object. It may have text around it, but that text contains no other braces.
 
-  These checks establish the response shape. They do not establish factual accuracy or calibrate the model's self-reported confidence.
+  Check these fields:
+  - classification must be 'noise', 'anomaly', or 'unknown'.
+  - confidence must be a finite number from 0 to 1 inclusive. Zero is valid. Do not convert strings or null into numbers.
+  - reasoning must be a string with at least one non-whitespace character.
+
+  Extra fields are allowed. These checks verify the reply's structure. They do not prove its claims are true or that its confidence score is a reliable probability.
 starterCode: |
   interface Analysis {
     classification: string;
@@ -15,8 +20,7 @@ starterCode: |
   }
 
   async function analyzeSignal(prompt: string, apiCall: (p: string) => Promise<string>): Promise<Analysis> {
-    // apiCall answers with text, and text is not an analysis yet. Decide what
-    // has to be true of the reply before this function calls it an analysis.
+    // Parse the reply, then check every required field before returning it.
     return null; // your code here
   }
 solutionCode: |

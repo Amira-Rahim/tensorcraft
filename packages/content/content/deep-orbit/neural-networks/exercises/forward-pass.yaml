@@ -2,17 +2,16 @@ slug: forward-pass
 lessonSlug: forward-pass
 title: "Run a Forward Pass"
 instructions: |
-  Add one dense layer with 3 units and inputShape [2]. Keep the default
-  linear activation and random kernel initialization.
+  Add one dense layer with 3 units and `inputShape: [2]`. Keep its default
+  linear activation and random starting weights.
 
-  Implement forward(batch) with one model.predict() call for the whole batch,
-  returning that call's output tensor. Set prediction = forward(input).
-  The grader checks the result against input times kernel plus bias and tries
-  batches with different numbers of rows.
-
-  Implement asBatch(reading) to add a leading batch axis to a flat reading.
-  Set batched = asBatch(singleReading). Preserve the values and support any
-  input width: shape [n] should become [1, n].
+  1. Write `forward(batch)`. Call `model.predict()` once for the whole batch
+     and return its output tensor. Set `prediction = forward(input)`.
+     The tests use batches with different row counts and check the result
+     against the inputs multiplied by the weights, plus the bias.
+  2. Write `asBatch(reading)` to turn a flat reading into one row.
+     Set `batched = asBatch(singleReading)`. Keep all values unchanged.
+     Any shape `[n]` must become `[1, n]`.
 starterCode: |
   const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);
 
@@ -91,7 +90,7 @@ testCode: |
       const spread = Math.max.apply(null, kernel) - Math.min.apply(null, kernel);
       expect(
         spread,
-        'Every weight in this layer holds the same number. This exercise expects the default random initializer. Leave it at the default so the forward pass has real weights to run through.',
+        'Keep the default random weight initializer. Do not replace it with identical starting weights.',
       ).toBeGreaterThan(1e-6);
     });
     it('prediction is the forward pass: input times kernel plus bias, recomputed from the weights the model holds', () => {
@@ -102,7 +101,7 @@ testCode: |
       for (let i = 0; i < expected.length; i++) {
         expect(
           actual[i],
-          'This is not what the model answers for this input. Either the numbers were written out by hand instead of run through the model, or the layer is bending its output: this check recomputes input times kernel plus bias, so the layer has to keep its default linear activation. relu belongs on a hidden stage whose output feeds more math.',
+          'The output must equal input times weights plus bias. Keep the default linear activation and return the actual prediction.',
         ).toBeCloseTo(expected[i], 3);
       }
     });
@@ -129,11 +128,11 @@ testCode: |
       }
       expect(
         out,
-        'forward() handed back nothing when the grader called it with a stack of its own. It has to work for any batch, not just the one in the starter.',
+        'forward() returned nothing for a new batch. Use the batch passed into the function, not just the starter input.',
       ).toBeDefined();
       expect(
         out.shape,
-        'The stack that went in and the answer that came out disagree about how many rows there are. One row of predictions per reading, however many readings arrive.',
+        'Return one prediction row per input row, whatever the batch size.',
       ).toEqual([height, 3]);
       const weights = layer.getWeights();
       const expected = tf.matMul(stack, weights[0]).add(weights[1]).dataSync();
@@ -143,11 +142,11 @@ testCode: |
       }
       expect(
         calls,
-        'One predict call accepts the whole batch; model.predict can split large batches internally. Feeding the rows in one at a time and stitching the answers together gets the same numbers and misses the point of the lesson.',
+        'Call model.predict() once for the whole batch. Do not loop over rows and join separate predictions.',
       ).toBe(1);
       expect(
         out === answered,
-        'forward() called the model and then handed back a different tensor. This layer is one linear stage, so input times kernel plus bias reproduces its output to the last decimal and no check on the numbers can tell a hand-rolled pass from the model\'s own answer. Hand back what predict() returned: running the stack is the work, and the same API also runs more complex model graphs. A clone counts as a different tensor here, so hand back the call\'s own result.',
+        'Return the tensor from model.predict() itself. Do not return a clone or a separate tensor with matching values.',
       ).toBe(true);
     });
     it('gives one flat reading the batch axis the layer expects', () => {
@@ -161,7 +160,7 @@ testCode: |
       ).toBeDefined();
       expect(
         batched.shape,
-        'A single reading reaches the layer as a stack of one: two features go in as shape [2] and have to come out as [1, 2], the row count first.',
+        'Add one leading axis: a reading shaped [2] must become one row shaped [1, 2].',
       ).toEqual([1, 2]);
       const drawn = tf.randomUniform([4], -1, 1);
       let wider;
@@ -176,7 +175,7 @@ testCode: |
       }
       expect(
         wider.shape,
-        'asBatch() answered the starter reading but not the one the grader drew. Add the axis to the reading it was handed rather than writing a new tensor out.',
+        'Add the axis to the reading passed into asBatch(). It must also work for readings with other widths.',
       ).toEqual([1, 4]);
       const before = Array.from(drawn.dataSync());
       const after = Array.from(wider.dataSync());

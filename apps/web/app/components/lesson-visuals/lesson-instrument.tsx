@@ -317,7 +317,7 @@ function TensorInstrument({ mode }: { mode: string }) {
     after = before;
     width = [3, 2, 6][option]!;
     code = `const grid = tf.tensor1d(values).reshape([${6 / width}, ${width}]);\n// ${6 / width} rows × ${width} columns = 6 values`;
-    note = `${6 / width} rows of ${width} values. Read across each row, then down. Reshape does not transpose the entries.`;
+    note = `${6 / width} rows of ${width} values. Read across each row, then down. Reshape keeps the values in their original order.`;
   }
   if (mode === "operations") {
     before = [2, 10, 4, 12, 6, 14];
@@ -325,7 +325,7 @@ function TensorInstrument({ mode }: { mode: string }) {
     width = 2;
     label = "Boosted average: [3, 2]";
     code = `const merged = pass1.add(pass2).div(2);\nconst boosted = merged.mul(${correction});`;
-    note = `The second pass [4, 8] broadcasts down the two columns. Their average is [3, 9], [4, 10], [5, 11]. Gain ${correction} scales that average without changing channel order.`;
+    note = `The same [4, 8] row is added to each row, then divided by 2. The averages are [3, 9], [4, 10], [5, 11]. Gain ${correction} scales that average without changing channel order.`;
   }
   if (mode === "batch") {
     before = Array.from({ length: 16 }, (_, i) => i);
@@ -336,7 +336,7 @@ function TensorInstrument({ mode }: { mode: string }) {
     code =
       "const dataset = source.shuffle(10).batch(4);\n// xs shape [4, 3], ys shape [4, 1]";
     label = "One batch: amplitude, zero-crossing count, phase";
-    note = `Rows ${rows.join(", ")} in one possible shuffle. Four samples, three features each. This is the exercise's 16-row stand-in; a different shuffle can group them differently.`;
+    note = `Rows ${rows.join(", ")} in one possible shuffle. Four samples, three features each. This practice archive has 16 rows. Another shuffle may put different rows together.`;
   }
   if (mode === "normalize") {
     before = NORMALIZATION_ROWS.flat();
@@ -366,7 +366,7 @@ function TensorInstrument({ mode }: { mode: string }) {
     );
     note =
       option === 2
-        ? "Each training column now spans 0 to 1. These are a different input contract from z-scores; do not switch a deployed model's scaler without evaluating it."
+        ? "Each training column now spans 0 to 1. This differs from z-score scaling. Test the model again before changing how you scale its inputs."
         : `Fixed-neuron scores: ${scores.map((v) => v.toFixed(3)).join(", ")}. The weights stay [0.9, -1.4] and bias -0.3; only the input scale changes.`;
   }
   return (
@@ -1347,8 +1347,9 @@ function AttentionInstrument() {
       >
         Keys are [{keys.join(", ")}]. Similarity is query × key; softmax makes
         the weights sum to 1. The weighted summary is{" "}
-        <strong>{fmt(context)}</strong>. This scalar example omits multi-head
-        projections.
+        <strong>{fmt(context)}</strong>. This small example uses one number per
+        query and key. Full attention models use vectors and may have several
+        heads.
       </Readout>
     </>
   );
@@ -1497,8 +1498,8 @@ function AnomalyInstrument({ mode }: { mode: string }) {
           <strong>{fmt(Math.abs(reading - 10))}</strong>, or {fmt(z)} reference
           standard deviations.{" "}
           {mode === "agreement"
-            ? "These three rules share the same underlying reading, so their agreement is correlated evidence."
-            : "A changed operating condition could also move this reading. Review context before assigning a label."}
+            ? "All three rules use the same reading. Their agreement is not three independent pieces of evidence."
+            : "A change in operating conditions could also change this value. Check the context before deciding it is an anomaly."}
         </Readout>
       </>
     );
@@ -1544,8 +1545,9 @@ function AnomalyInstrument({ mode }: { mode: string }) {
         code={`const latent = [(x[0] + x[1]) / 2, (x[2] + x[3]) / 2];\nconst rebuilt = [latent[0], latent[0], latent[1], latent[1]];`}
       >
         Reconstruction MSE: <strong>{fmt(sum(residuals) / 4)}</strong>. This
-        fixed averaging encoder/decoder makes information loss visible. A real
-        autoencoder learns its encoding and decoding weights.
+        example compresses by averaging, then rebuilds the values to show what
+        information was lost. A real autoencoder learns how to compress and
+        rebuild its inputs.
       </Readout>
     </>
   );
@@ -1606,8 +1608,8 @@ function PrecisionInstrument({ mode }: { mode: string }) {
         {mode === "quantize" ? (
           <>
             {2 ** bits} equally spaced levels in [−1, 1]. Mean absolute weight
-            error: <strong>{fmt(error, 4)}</strong>. This is a teaching
-            quantizer, not a model accuracy measurement.
+            error: <strong>{fmt(error, 4)}</strong>. This example shows how
+            rounding changes weights. It does not measure prediction accuracy.
           </>
         ) : (
           <>
@@ -1711,10 +1713,10 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
       </p>
       <p className="iv-provenance">
         {spec.kind === "flow"
-          ? "Illustrative handoff; code excerpts are not a live system run."
+          ? "These code examples show the steps. They are not running a live system."
           : spec.kind === "tensor" && spec.mode === "create"
             ? "Runs with TensorFlow.js in your browser. Values are rounded for display."
-            : "Practice data for this mechanism. Your challenge runs its own checks."}
+            : "Practice example. Your challenge uses its own data and tests."}
       </p>
     </div>
   );

@@ -2,13 +2,15 @@ slug: model-monitor
 lessonSlug: monitoring
 title: "Build a Model Monitor"
 instructions: |
-  Build ModelMonitor with a baseline mean vector in the same feature order and scale as recent inputs.
+  Help Demir track changes after deployment. Build `ModelMonitor` with a baseline mean vector. Keep its feature order and scale the same as recent inputs.
 
-  1. logPrediction(confidence) records a finite model score in [0, 1] (not demonstrated calibration). avgConfidence returns its arithmetic mean, or null before any prediction is logged.
-  2. logLatency(ms) records a finite nonnegative duration. getLatencyPercentile(p) sorts a copy numerically and returns nearest-rank index max(0, ceil(count * p / 100) - 1), so P0 is the minimum. p must be finite and between 0 and 100 inclusive. Return null when no duration is recorded.
-  3. computeDrift(recentInputs) returns the Euclidean distance between the recent column means and baselineMean. Return null for an empty window. A zero distance means matching means only; a change in spread or shape can still exist.
+  1. `logPrediction(confidence)` records a finite model score in [0, 1]. `avgConfidence` returns the arithmetic mean, or null when no score has been logged. These scores are not proven calibrated probabilities.
+  2. `logLatency(ms)` records a finite, nonnegative duration. `getLatencyPercentile(p)` sorts a copy numerically and returns the value at index `max(0, ceil(count * p / 100) - 1)`. This is the nearest-rank rule; P0 returns the minimum. Require a finite `p` in [0, 100]. Return null when there are no durations.
+  3. `computeDrift(recentInputs)` finds each column's recent mean, then returns the Euclidean distance to `baselineMean`. Return null for an empty window. A zero distance only means the means match; the spread or distribution shape could still have changed.
 
-  Reject invalid scores, durations, percentiles or input rows. The baseline must be a non-empty finite vector. Every recent row must have the same width and finite values. Do not mutate caller arrays. Null means no measurement; it must not appear as a healthy zero on a dashboard. The exercise retains logs for its short session; a production monitor needs a bounded retention window.
+  Reject invalid scores, durations, percentiles, or input rows. The baseline must be a non-empty vector of finite numbers. Each recent row must have that same width and finite values. Do not change caller arrays.
+
+  Null means no measurement. Display it as "No data", not a healthy zero. This short exercise keeps its logs; a production monitor needs a limit on how much history it retains.
 starterCode: |
   class ModelMonitor {
     private confidences: number[] = [];
@@ -32,13 +34,12 @@ starterCode: |
     }
 
     getLatencyPercentile(p: number): number | null {
-      // A percentile is a position in an ordered series, so what has to be
-      // settled is how the series is ordered and which position p names.
+      // Use the requested percentile to choose a sorted position.
       return null; // your code here
     }
 
     computeDrift(recentInputs: number[][]): number | null {
-      // A distance needs two points. The window is not one yet.
+      // Compare recent feature means with the baseline.
       return null; // your code here
     }
   }

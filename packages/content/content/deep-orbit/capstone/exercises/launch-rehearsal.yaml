@@ -3,40 +3,37 @@ lessonSlug: launch
 title: "Launch Rehearsal: Train the Candidate, Then Gate It"
 mlContent: model
 instructions: |
-  A small synthetic training-and-release rehearsal. It does not deploy the full mission system. Two functions.
+  Help Nazari rehearse training and release with a small synthetic model. This does not deploy the full mission system. Write two functions.
 
-  `scoreReadings(model, readings, ranges)` is the inference path, and it is synchronous. Every reading is raw instrument output: `amplitude` in ADC counts, `frequency` as a zero-crossing count, `phase` in radians. Turn each one into a row `[amplitude, frequency, phase]` with module 4's min-max rule, `(value - range.min) / (range.max - range.min)`, reading the limits off `ranges.amplitude`, `ranges.frequency` and `ranges.phase`. Build one `tf.tensor2d` of those rows inside `tf.tidy()`, predict, and return plain numbers in reading order. It must leave no tensor behind: the grader counts live tensors either side of the call and the two counts have to match.
+  `scoreReadings(model, readings, ranges)` is synchronous. Each raw reading has `amplitude` in ADC counts, `frequency` as a zero-crossing count, and `phase` in radians.
 
-  `runLaunchRehearsal(model, archive, canary, config)` is async and runs the rehearsal.
+  - Make rows in `[amplitude, frequency, phase]` order.
+  - Normalize each value with `(value - range.min) / (range.max - range.min)`, using its matching entry in `ranges`.
+  - Inside `tf.tidy()`, build one `tf.tensor2d`, predict, and return plain numbers in reading order.
+  - Leave no tensors behind. The live tensor count must match before and after the call.
 
-  1. Train. The model arrives compiled, so do not compile it again. Normalize the archive rows the way `scoreReadings` does, against `config.ranges`, and build one `tf.tensor2d` of those rows and one of their labels. Then `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })` and dispose both tensors.
-  2. Score the canary set with `scoreReadings` and the model you just trained.
-  3. Gate the run. Validate non-empty archive/canary sets, finite input values,
-     positive range widths, binary labels, positive integer epochs/batchSize,
-     finite [0, 1] baselineMeanScore/minAccuracy and nonnegative driftTolerance.
-     Reject invalid configuration, values that become non-finite when normalized
-     or converted to float32, and non-finite predictions/losses. Dispose
-     training tensors even if fit rejects; the caller still owns the model.
+  `runLaunchRehearsal(model, archive, canary, config)` is async:
 
-  Drift here measures only mean prediction-score change, not input shift or
-  accuracy loss. The fixed synthetic examples demonstrate the policy.
+  1. Normalize archive rows in the same way, using `config.ranges`. Build one `tf.tensor2d` for those rows and one for labels. The model is already compiled; keep its model and optimizer.
+  2. Call `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })`. Dispose both training tensors, even if fit rejects. The caller owns the model.
+  3. Use the trained model and `scoreReadings` to score the canary set, then apply the launch gate below.
+
+  Reject invalid inputs or configuration. Require non-empty archive and canary sets, finite input values, positive range widths, binary labels, and positive integer epochs and batchSize. Require finite baselineMeanScore and minAccuracy in [0, 1], plus finite nonnegative driftTolerance. Reject values that become non-finite after normalization or float32 conversion, and reject non-finite predictions or losses.
 
   Return:
 
       {
-        scores: number[],        // candidate score per canary reading, input order
-        losses: number[],        // history.history.loss, one entry per epoch
-        batchesRun: number,      // model.optimizer.iterations after the fit
+        scores: number[],        // canary scores, in reading order
+        losses: number[],        // history.history.loss, one per epoch
+        batchesRun: number,      // model.optimizer.iterations after fitting
         canaryAccuracy: number,  // fraction where (score > 0.5) matches reading.label
         drift: boolean,          // |mean(scores) - config.baselineMeanScore| > config.driftTolerance
         launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
       }
 
-  Report the optimizer's total update count after fitting, including earlier
-  training on a warm candidate. Return the loss trace from that same fit.
-  The grader varies the schedule and all three scaling ranges, and checks
-  the actual rows passed to fit. These are consistency checks, not a
-  tamper-proof training record.
+  Read the optimizer's total update count, including any training before this rehearsal. Return the loss history from this fit. The checks vary the schedule and all three ranges, and inspect the actual training rows. These checks help verify consistency; they are not a tamper-proof training record.
+
+  Drift here means a change in the mean prediction score. It does not measure input drift or prove accuracy loss. The fixed synthetic examples demonstrate this policy.
 hints:
   - level: nudge
     content: "Every number in the verdict has to come from the same training run, so the order of operations is the exercise: train first, then judge what you trained. Read the optimizer update count and compare it with the fit call, including updates made before this rehearsal."
@@ -178,8 +175,8 @@ starterCode: |
     readings: Reading[],
     ranges: Ranges,
   ): number[] {
-    // Raw instrument output in, plain numbers back. The backend has to be
-    // as empty when this returns as it was when it was called.
+    // Turn raw readings into plain scores.
+    // Leave the live tensor count unchanged.
     return null; // your code here
   }
 
@@ -189,8 +186,8 @@ starterCode: |
     canary: Reading[],
     config: RehearsalConfig,
   ): Promise<RehearsalVerdict> {
-    // Train first, then judge what you trained. Every number in the verdict
-    // belongs to that one training run.
+    // Train first, then evaluate that trained model.
+    // Report measurements from the same run.
     return null; // your code here
   }
 solutionCode: |
@@ -447,7 +444,7 @@ testCode: |
       ).toHaveLength(12);
       expect(
         v.batchesRun,
-        'model.optimizer.iterations counts weight updates. 64 rows in batches of 16 is 4 batches, and 12 epochs of that is 48. The optimizer keeps this number and includes earlier updates, so it and the loss trace have to come from the same fit.',
+        'Read model.optimizer.iterations after fitting. Here, 64 rows in batches of 16 give 4 updates per epoch, or 48 over 12 epochs. The counter also includes earlier training. Report it with the loss history from this fit.',
       ).toBe(48);
       expect(v.batchesRun).toBe(Math.ceil(archive.length / greenConfig.batchSize) * v.losses.length);
       model.dispose();
@@ -539,7 +536,7 @@ testCode: |
         for (let c = 0; c < 3; c++) {
           expect(
             calls[0].rows[i][c],
-            'Row ' + i + ' column ' + c + ' is not the archive value normalized against config.ranges. All three channels are recalibrated on this rehearsal: amplitude offset by 512 counts with 1024 of span, frequency against a 40-crossing ceiling, phase re-zeroed to 0 through 2*PI. A full scale written into the training path instead of read off the config scales the archive wrong and trains the candidate on numbers the scoring path will never see.',
+            'Row ' + i + ' column ' + c + ' does not match normalization with config.ranges. This case changes all three ranges: amplitude starts at 512 with width 1024, frequency has a 40-crossing ceiling, and phase runs from 0 through 2*PI. Read the configured limits for training and scoring; do not hardcode them.',
           ).toBeCloseTo(expectedRows[i][c], 4);
         }
       }
@@ -554,16 +551,16 @@ testCode: |
       for (let i = 0; i < calls[0].loss.length; i++) {
         expect(
           v.losses[i],
-          'Loss ' + i + ' is not the one this fit returned. Report history.history.loss from the call itself rather than a trace assembled beside it: a record the submitting code writes is not evidence that the training happened, which is the whole reason a rehearsal is filed at all.',
+          'Loss ' + i + ' differs from the loss returned by this fit. Report history.history.loss from the actual training call instead of making a separate trace.',
         ).toBeCloseTo(calls[0].loss[i], 6);
       }
       expect(
         v.batchesRun,
-        'This candidate arrived warm, with one update already on the optimizer, and 64 rows in batches of 32 over 6 epochs adds 12 more, so the optimizer reads 13. Batches per epoch times epochs is 12, which is what a count worked out from the schedule reports instead of reading the counter.',
+        'The optimizer already had one update. Training 64 rows in batches of 32 for 6 epochs adds 12, so its counter should read 13. Read that counter instead of calculating only this run’s scheduled updates.',
       ).toBe(13);
       expect(
         v.batchesRun,
-        'batchesRun is the optimizer\'s own count, read off model.optimizer.iterations after the fit. A count the rehearsal works out for itself agrees with the optimizer only until someone compares the two, and comparing them is what makes the record checkable.',
+        'Read batchesRun from model.optimizer.iterations after fitting. Do not replace the optimizer’s actual counter with a number calculated from the schedule.',
       ).toBe(model.optimizer.iterations);
       model.dispose();
     });
@@ -704,7 +701,7 @@ testCode: |
       ).toBe(2);
       expect(
         fitted.map((t) => t && t.isDisposed === true),
-        'The tensors the fit ran on are still on the backend after the rehearsal returned. Dispose both once the fit resolves: tf.tidy cannot hold an await, so nothing else frees them, and the 0249 crash was memory pressure on a console that repeats this loop for as long as the mission lasts.',
+        'Training tensors remain after the rehearsal. Dispose both after fit settles, including on rejection. tf.tidy does not manage tensors across an await.',
       ).toEqual([true, true]);
       model.dispose();
     });

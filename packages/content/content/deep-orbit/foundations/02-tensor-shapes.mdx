@@ -8,25 +8,25 @@ estimatedMinutes: 10
 difficulty: beginner
 scene:
   location: "Archimedes, Lab"
-  portraitAlt: "In the signal lab, Farah studies holo grids that carve a flat data ribbon into candidate layouts, the same waveform echoing at two scales."
+  portraitAlt: "Farah studies a lab display showing the sensor readings in different grids. The same wave pattern appears in small and large groups of readings."
 context:
-  narrative: "Dr. Farah analyzes the dimensional structure of the incoming data."
+  narrative: "Dr. Farah looks for a way to arrange the sensor readings so the crew can see their patterns."
 concept:
-  explanation: "Shape describes the size of each dimension in a tensor."
+  explanation: "A tensor's shape tells you how its values are arranged. For a grid, it gives the number of rows and columns."
   bridge:
     jsTitle: "Array.length"
     jsCode: "const shape = [arr.length, arr[0].length]"
     mlTitle: "Tensor.shape"
     mlCode: "tensor.shape // [3, 4]"
     tier: structural
-    breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. A shape has one entry per axis; broadcasting rules depend on the full shape vector, not a single length."
+    breaks: "For a nested JavaScript array, `arr.length` counts the rows and `arr[0].length` counts the columns. A tensor keeps both counts in `tensor.shape`, such as `[3, 4]`. A shape can also describe more than two axes, as image data needs. You still need to know what each axis represents."
 consequence:
-  narrative: "The layout hunt ends on a grid that does not look accidental."
+  narrative: "Farah arranges the readings into a grid. A repeating wave appears in every column."
 hints:
   - level: nudge
-    content: "Nothing is rearranged on the way in, so the row you want is already sitting in the flat list. The decision is where its four values start."
+    content: "Reshape keeps the readings in order. Where does the second group of four begin?"
   - level: guidance
-    content: "Reshaping moves no numbers. It only changes where the row breaks fall, so read the flat list in its printed order and cut it into rows as wide as the layout Farah proposes. Do that on paper and you know which four values sit in the row you were asked for before you run anything. Getting them out is then ordinary JS indexing, once the grid has handed you its rows as nested JS lists."
+    content: "Read the list from left to right and split it into equal rows. Use Farah's row size to find the row you need. To read it in JavaScript, convert the tensor to nested arrays, then select the row by its index."
   - level: solution
     content: "const grid = flat.reshape([3, 4]); const step1 = grid.arraySync()[1];"
 keywords:
@@ -39,7 +39,7 @@ skillAxes: [data_prep]
 
 > **Archimedes sensor log · Stream 7-G**
 >
-> We spotted repeating patterns in small and large groups of readings. We’re still figuring out how the readings fit together. ARIA tried all 4,096 of its rules, but none helped.
+> We found repeating patterns in small and large groups of readings. We still need to work out how to arrange them. ARIA tried all 4,096 of its rules, but none helped.
 
 <Dialogue speaker="Dr. Farah" expression="delighted">
 There’s a pattern in these readings. Let’s figure out which numbers belong together and how to arrange them.
@@ -57,16 +57,23 @@ A tensor’s **shape** describes its layout.
 
 </BriefingTakeaway>
 
-<LearningObjectives objectives={["Read and interpret tensor shapes", "Predict where each value lands after a reshape (row-major order)", "Choose reshape or transpose from the axis meanings and required values", "Recognize common shapes in ML (batches, sequences, images)"]} />
+<LearningObjectives objectives={["Read a shape and explain what each number means", "Predict which values go in each row after a reshape", "Choose reshape to make rows or transpose to swap rows and columns", "Read the shapes of image groups and time-based readings"]} />
 
-## Carry the layout into JavaScript
+## Read the rows in JavaScript
 
-The plotter above needs `input[time][channel]` to become
-`output[channel][time]`. A transpose swaps those axes. A reshape preserves
-flat order and only changes the row breaks. Matching dimensions alone cannot
-show whether the channels stayed together.
+An **axis** is one direction in a tensor. A grid has two axes: rows and columns.
+For Farah's readings, each row holds one moment in time. Each column holds
+readings from one sensor channel.
 
-Read back the position-marked packet from the visual:
+The chart above needs one row per channel, with time running across the columns.
+Use **transpose** to swap the rows and columns: `input[time][channel]` becomes
+`output[channel][time]`.
+
+Use **reshape** when you want to split a list into rows. It keeps the values in
+their original order. Getting the right shape is only part of the job. Check
+that each row and column still contains the values you expect.
+
+Here is the list from the interactive example, arranged into three rows of four:
 
 <CodeBlock language="typescript" title="read-a-row.ts">
 {`const flat = tf.tensor1d([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
@@ -75,168 +82,202 @@ const secondRow = grid.arraySync()[1]; // [4, 5, 6, 7]
 tf.dispose([flat, grid]);`}
 </CodeBlock>
 
-`arraySync()` copies the grid into nested JavaScript arrays. Row indices start
-at zero. In the challenge, keep `grid` alive for the checks; its copied
-`step1` row is a plain array.
+`arraySync()` copies the tensor's values into nested JavaScript arrays, one
+array per row. JavaScript counts from zero, so `[1]` selects the second row.
+That row is `[4, 5, 6, 7]`.
 
-Farah's archive block is a separate, larger grid: `[450, 64]`, with 450 time
-steps and 64 channels. The same rule applies there. Its plotter needs a
-transpose to `[64, 450]`.
+The example disposes of both tensors when it is done. In the challenge, keep
+`grid` for the tests. The row you save in `step1` is a JavaScript array, so it
+does not need `dispose()`.
 
-<ConceptReference summary="Reference: flat order, reshape code, and the full archive example">
+Farah also has a larger grid from the archive: `[450, 64]`. It has 450 rows,
+one per time step, and 64 columns, one per sensor channel. Transpose changes it
+to `[64, 450]`, so the chart can show each channel over time.
+
+<ConceptReference summary="More examples: reshape, transpose, and Farah's archive">
 
 ### Reshape preserves flat order
 
-Here's the question that actually trips people up when you reshape: not what the new shape *is*, but which value ends up *where*. The answer: reshape fills the new shape **row by row** (row-major order). Watch where each value lands:
+Reshape reads the list from left to right and fills one row at a time. This is
+called **row-major order**. The same list can make two rows of three or three
+rows of two:
 
 <CodeBlock language="typescript" title="tensor-shapes.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Shape [6]: a 1D vector with 6 elements
+// One list of six values has shape [6].
 const flat = tf.tensor([1, 2, 3, 4, 5, 6]);
 console.log(flat.shape);  // [6]
 
-// Reshape to [2, 3]: fills row by row
+// Make two rows of three, keeping the list in order.
 const matrix = flat.reshape([2, 3]);
 matrix.print();
 // [[1, 2, 3],
 //  [4, 5, 6]]
 
-// Reshape to [3, 2]: SAME flat order, different row breaks
+// Make three rows of two from the same list.
 const tall = flat.reshape([3, 2]);
 tall.print();
 // [[1, 2],
 //  [3, 4],
 //  [5, 6]]
 
-// Note what did NOT happen: [3, 2] is not the transpose of [2, 3].
-// matrix.transpose() would give [[1, 4], [2, 5], [3, 6]], different
-// values in different places. Reshape rewraps the line; transpose
-// reorders it.
+// Transpose would swap the rows and columns instead.
+// matrix.transpose() gives [[1, 4], [2, 5], [3, 6]].
+// It has shape [3, 2], but its rows differ from tall's rows.
 
-// The total elements must match: 2*3 = 3*2 = 6
-// This would throw: flat.reshape([2, 4]) (2*4=8 ≠ 6)
+// The number of values must stay the same: 2*3 = 3*2 = 6.
+// flat.reshape([2, 4]) would throw: it needs 8 values, not 6.
 flat.dispose();
 matrix.dispose();
 tall.dispose();`}
 </CodeBlock>
 
-**Reshape preserves the logical order of values.** Read the flattened values as one sequence and place the new row breaks without moving any values. This describes the operation's result; physical storage depends on the backend.
+Reshape keeps the values in the same order. It changes how they are grouped.
+For example, six values can make a `[2, 3]` grid because `2 × 3 = 6`.
+They cannot make a `[2, 4]` grid, which would need eight values.
+
+TensorFlow.js can reuse the original data in memory for these reshapes.
+Other systems may store the data differently. The order of the values stays
+the same either way.
 
 ### Apply the rule to the archive
 
-Here is that rule with the stakes attached. Farah's layout hunt has produced a candidate grid for the first stretch of the stream: `[450, 64]`, 450 readings by 64 channels. The channel plotter wants channels as rows, shape `[64, 450]`, and Demir reaches for the tool he just learned.
+Farah arranges a sample from the archive into `[450, 64]`: 450 time steps,
+with 64 sensor readings at each step. The chart needs one row per channel,
+with shape `[64, 450]`. Demir tries reshape first.
 
 <CodeBlock language="typescript" title="garbled-channels.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Stand-in for the archive block: each value is its own position in the
-// flat stream, so you can see exactly where every number ends up.
-const block = tf.tidy(() => tf.range(0, 450 * 64).reshape([450, 64]));  // [readings, channels]
+// Use each value's position as its number so we can track it.
+const block = tf.tidy(() => tf.range(0, 450 * 64).reshape([450, 64]));  // [time steps, channels]
 
-// WRONG: reshape to [64, 450]. Right shape, garbled data.
+// Reshape gives the right size but mixes the channels.
 const wrong = block.reshape([64, 450]);
 console.log(wrong.arraySync()[0].slice(0, 5));  // [0, 1, 2, 3, 4]
-// "Channel 0" is now the first 450 values of the flat stream: all 64
-// channels of reading 0, then all of reading 1, seven full readings
-// and change (448 = 7 * 64) fused into one fake trace.
+// Row 0 now holds the first 450 values from the list.
+// Those values come from several channels, not just channel 0.
 
-// RIGHT: transpose. Same target shape, values actually reordered.
+// Transpose puts each channel in its own row.
 const right = block.transpose();
 console.log(right.arraySync()[0].slice(0, 5));  // [0, 64, 128, 192, 256]
-// Channel 0 is every 64th value: one per reading, 450 in all.
-// right.arraySync()[1] starts [1, 65, 129, ...]: channel 1, same story.
+// Channel 0 uses every 64th value, one per time step.
+// Channel 1 starts [1, 65, 129, ...].
 
-// Both shapes are [64, 450], but only right preserves channel membership.
+// Both shapes are [64, 450]. Only right keeps each channel together.
 tf.dispose([block, wrong, right]);`}
 </CodeBlock>
 
-The element count is valid in both cases, so no error warns you about the mixed channels. Record the axis meanings with the shape: `block[time][channel]` becomes `right[channel][time]`. Reshape preserves the flat sequence; transpose swaps the two axes.
+Both operations use the right number of values, so neither throws an error.
+But the reshaped rows mix readings from different sensors. The transposed
+rows keep each sensor's readings together. Write down what the axes mean:
+`block[time][channel]` becomes `right[channel][time]`.
 
 
 </ConceptReference>
 
-## Read Other Shapes
+## Read shapes with more axes
 
-The **rank** counts the dimensions in a shape. A list with shape `[5]` has
-rank 1; a grid with shape `[3, 4]` has rank 2.
+The **rank** is the number of axes. A list with shape `[5]` has one axis,
+so it has rank 1. A grid with shape `[3, 4]` has two axes, so it has rank 2.
+An axis is also called a **dimension**.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A list of ten values has shape `[10]`. A batch of 32 RGB images can have shape `[32, 224, 224, 3]`: examples, height, width, and color channels. A batch is a group of examples processed together. Record these axis meanings; the dimensions alone cannot tell you what the data represents.
+A list of ten values has shape `[10]`.
 
-For sequences later in the course, `[32, 5, 3]` means 32 windows, five time steps in each, and three features per step. The same indexing discipline applies: decide what each axis means before transforming the data.
+A **batch** is a group of examples processed together. For 32 color images,
+the shape might be `[32, 224, 224, 3]`:
+
+- `32` images.
+- `224` pixels high per image.
+- `224` pixels wide per image.
+- `3` color channels per pixel: red, green, and blue.
+
+This is a **channel-last** layout because the color channels come last.
+Other systems may put them in a different position. Check what each axis
+means before you change a shape.
+
+For readings taken over time, `[32, 5, 3]` could mean 32 groups of readings.
+Each group covers five time steps, with three measurements at each step.
+Those measurements are called **features**. The shape gives the counts.
+You need to supply their meaning.
 
 ## Challenge
 
-Try a different twelve-value packet. Predict which readings belong in the second row, then reshape the flat tensor and check your prediction.
+Help Farah check the rows using a new set of 12 readings.
 
 <Exercise slug="reshape-tensor" />
 
 <RecallPrompt
-  question="An image batch uses channel-last layout and has shape [8, 224, 224, 3]."
-  answer="The dimensions are [batch, height, width, channels]. The image models in this course use channel-last layout. Some other frameworks put it second, which is why lesson 1's Nova Canvas intercept read [batch, channels, h, w] for the same kind of data."
+  question="A group of images has shape [8, 224, 224, 3]. The color channels come last."
+  answer="Read the shape as [images, height, width, color channels]. It holds 8 images. Each image is 224 pixels high, 224 pixels wide, and has 3 color channels. This course uses channel-last images. Some other systems put channels before height and width, as the Nova Canvas message did in the previous lesson."
   checks={[
     {
       "kind": "number",
-      "question": "How many images are in a batch with shape [8, 224, 224, 3]?",
+      "question": "How many images are in this group?",
       "expected": 8,
-      "hint": "In this channel-last image layout, the first dimension is the batch size.",
-      "explanation": "The leading 8 is the number of images."
+      "hint": "The first number tells you how many images are in the group.",
+      "explanation": "The first number is 8, so there are 8 images."
     },
     {
       "kind": "shape",
-      "question": "What is the shape of one image in that batch?",
+      "question": "What is the shape of one image?",
       "expected": [
         224,
         224,
         3
       ],
-      "hint": "Remove the batch dimension and keep height, width and channels in order.",
-      "explanation": "Each image has shape [224, 224, 3]: height, width, then color channels."
+      "hint": "Leave out the number of images. Keep the height, width, and color channels.",
+      "explanation": "One image has shape [224, 224, 3]: height, width, then color channels."
     },
     {
       "kind": "choice",
-      "question": "In this layout, what do the three dimensions of one image represent, in order?",
+      "question": "What do the three numbers in one image's shape mean, in order?",
       "options": [
         {
           "text": "Channels, height, width.",
-          "feedback": "That is channel-first order. This example uses channel-last order."
+          "feedback": "That would put the color channels first. In this example, they come last."
         },
         {
-          "text": "Batch size, width, channels.",
-          "feedback": "The batch dimension has already been removed; these dimensions describe one image."
+          "text": "Number of images, width, channels.",
+          "feedback": "We are describing one image, so its shape does not include the number of images in the group."
         },
         {
           "text": "Height, width, channels.",
-          "feedback": "The image is 224 pixels high, 224 pixels wide and has 3 color channels."
+          "feedback": "Each image is 224 pixels high, 224 pixels wide, and has 3 color channels."
         }
       ],
       "correctIndex": 2,
-      "explanation": "The image is 224 pixels high, 224 pixels wide and has 3 color channels."
+      "explanation": "Each image is 224 pixels high, 224 pixels wide, and has 3 color channels."
     }
   ]}
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Shape gives the size of each axis. A tensor with three rows and four columns has shape [3, 4].",
-    "Record what each axis means. Shape [3, 4] might mean three time steps of four channels, but the numbers alone do not tell you that.",
-    "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
-    "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
+    "Shape gives the size of each axis. Three rows of four values have shape [3, 4]. Rank counts the axes, so this grid has rank 2.",
+    "Write down what each axis means. The numbers [3, 4] alone cannot tell you whether rows represent time steps or something else.",
+    "Reshape groups values into rows without changing their order. Transpose swaps rows and columns.",
+    "A reshape must use the same number of values. Multiply the sizes in the new shape to check the total."
   ]}
-  bridge="Just as `Array.length` gives one number for a 1D structure, `tensor.shape` returns the full dimension tuple, enabling multi-axis operations like broadcasting that depend on the complete shape vector."
-  youCanNow="Read and interpret tensor shapes, predict where each value lands after a reshape using row-major order, and recognize the shapes ML keeps handing you: an image batch [batch, height, width, channels] and a sequence window [time steps, channels]."
+  bridge="For nested JavaScript arrays, count rows with `arr.length` and columns with `arr[0].length`. A tensor stores those counts together in `tensor.shape`."
+  youCanNow="Read a tensor's shape, predict the rows made by a reshape, and check what each axis means."
 />
 
 <Epilogue>
 
-With the small-packet checks complete, Farah returns to the full archive block and tries the layouts its element count allows. Most layouts are mush. Then `[450, 64]`, and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
+Farah finishes checking the 12 readings and returns to the larger archive
+sample. She tries several layouts, but most show no clear pattern. With shape
+`[450, 64]`, stripes appear on the display. In each of the 64 columns, the
+values rise and fall in a slow, repeating wave.
 
 <Dialogue speaker="Dr. Farah">
-Sixty-four columns. One per hull sensor, so this is our grid, not theirs. Whatever structure they sent is in the swell down each column, not in the shape.
+Sixty-four columns, one for each hull sensor. That tells us how our sensors recorded the signal. To find the pattern in the signal itself, we need to look at how each column changes over time.
 </Dialogue>
 
-Farah pins the [450, 64] layout to the main display and starts numbering channels.
+Farah puts the `[450, 64]` grid on the main display and starts labeling the
+sensor channels. The waves keep repeating.
 
 </Epilogue>

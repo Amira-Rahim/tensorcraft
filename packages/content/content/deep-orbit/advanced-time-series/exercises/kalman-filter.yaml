@@ -2,15 +2,11 @@ slug: kalman-filter
 lessonSlug: kalman-filters
 title: "Implement a Kalman Filter"
 instructions: |
-  Implement update(measurement) in SimpleKalman. Predict with a random-walk
-  state model, compute the Kalman gain, correct this.estimate and this.variance,
-  and return the corrected estimate as a number. The constructor starts
-  variance at 1. processNoise and measureNoise are variances, not standard
-  deviations. Assume finite inputs, processNoise >= 0 and measureNoise > 0.
+  Implement update(measurement) in SimpleKalman. Calculate the predicted variance, then the Kalman gain. Use that gain to update this.estimate and this.variance. Return the updated estimate as a number.
 
-  State persists between calls. The tests compare the update equations and a
-  fictional descending interval series. The one-state model has no velocity;
-  its smooth output can lag the trend. Smoothness alone does not prove accuracy.
+  The prediction assumes the level stays where it was, with added process noise. The constructor starts variance at 1. processNoise and measureNoise are variances, not standard deviations. Inputs are finite, processNoise >= 0, and measureNoise > 0.
+
+  Keep the updated estimate and variance for the next call. The checks compare your calculations with the filter equations and a fictional series of falling pulse intervals. This one-state filter does not track a rate of change, so its smooth output can fall behind the trend. Smoothness alone does not prove accuracy.
 starterCode: |
   class SimpleKalman {
     estimate: number;

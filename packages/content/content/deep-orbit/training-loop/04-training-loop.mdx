@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "Node's setImmediate schedules another event-loop turn; the callback's own work determines how long it blocks. model.fit performs batches and can yield according to yieldEvery. It stops at the epoch limit unless callbacks or other conditions stop it sooner; early stopping must be configured."
 consequence:
-  narrative: "The loop now decides for itself when to stop, reading the validation curve instead of an epoch count Demir picked in advance."
+  narrative: "The training run stops when validation loss stops improving, or when it reaches the epoch limit."
 hints:
   - level: nudge
     content: |
@@ -202,7 +202,7 @@ Ten times the compute and you cannot tell me what it bought. That's coming out o
 
 ### A complete standalone run
 
-`setImmediate(loop)` gives you a loop only because each callback queues the next one: do a pass, check the exit condition, re-schedule, with the event loop free for other work in between. Training has that same self-rescheduling shape, plus one problem a drain loop never has. Nothing hands training its last iteration.
+In Node.js, `setImmediate(loop)` schedules more work on the next event-loop turn. The callback processes a chunk, checks whether to stop, then schedules another call. Training also repeats work, but you must choose its stopping rule.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -264,19 +264,27 @@ const history = await model.fit(trainX, trainY, {
 `}
 </CodeBlock>
 
-These deliberately separated clusters make a small training exercise tractable. They do not represent the full range of a real stream. A high score on another draw from the same generator shows performance on that generator, not on spacecraft telemetry or unknown anomalies.
+These generated groups are easy to separate so you can study training. They do not cover the full range of real sensor data. A high score on more data from this generator shows how the model handles that generator, not real spacecraft signals.
 
 <DerivationDrawer summary="Why identical code lands on different losses: the loss landscape">
 **Loss is a surface over weight space.** A network with n weights defines `L(w)`: one loss value for every point in n-dimensional weight space. Training is descent on that surface, and the epoch trace above is an altitude log.
 
-**Convex vs non-convex.** On a convex objective, every local minimum is global. Ordinary least-squares and unregularized logistic regression have convex objectives, but stable optimization still depends on step sizes, feature scaling and other assumptions. Convexity alone does not guarantee that any gradient-descent run converges. Neural networks give that up: stacking layers with nonlinear activations folds the bowl into many basins separated by ridges and flats.
+**Convex vs non-convex.** For a convex loss, every local minimum is also a global minimum. Ordinary least-squares and unregularized logistic regression have this property. Gradient descent still needs suitable step sizes, input scales, and other conditions to converge.
+
+Neural-network losses are usually non-convex. Nonlinear layers can produce several low regions, ridges, and flat areas in the loss surface.
 
 **Why reruns can disagree.** Initialization, row shuffling and backend arithmetic can change the path. Record those settings when comparing experiments. A different result does not, by itself, identify a particular basin or training defect.
 
 **Saddles and flat regions can also slow training.** A saddle curves upward in some directions and downward in others. Small gradients can occur near saddles or in other flat regions, but a stalled loss trace does not identify which geometry caused it. Adam uses running gradient statistics to adjust updates; it does not guarantee escape or convergence.
 </DerivationDrawer>
 
-Three of the four settings in the `fit()` call above are dials. `epochs` is how many passes over the data. `batchSize` is how many rows the optimizer sees before it updates the weights, 32 here and by default, so one weight update per batch. `validationSplit` is the fraction held back so the run is checked against rows it never trained on. More epochs permit more updates; whether those updates help is a question for evaluation.
+Three settings control the run:
+
+- `epochs`: how many passes to make over the training rows.
+- `batchSize`: how many rows to use for one weight update, 32 here and by default.
+- `validationSplit`: the fraction kept out of training and used to check progress.
+
+More epochs allow more updates. Evaluate the results to see whether those updates help.
 
 Demir gives the run 500 epochs because he does not know when to stop. A larger budget buys more updates, but their value has to be measured. Validation monitoring makes the stopping rule explicit rather than treating an epoch count as proof of learning.
 
@@ -314,7 +322,9 @@ rerun.dispose();
 `}
 </CodeBlock>
 
-Early stopping leaves the final epoch's weights in place in TFJS 4.22.0. With `minDelta: 0` and `patience: 5`, it stops after five epochs that fail to improve the best monitored value, unless the budget ends first. It does not prove convergence or overfitting. This version does not implement `restoreBestWeights: true`. To retain the best checkpoint, clone its weight tensors when validation improves, restore them after fitting, and dispose the snapshots.
+In TFJS 4.22.0, early stopping keeps the final epoch's weights. With `minDelta: 0` and `patience: 5`, it stops after five epochs without a new best monitored value, unless the epoch limit comes first. Stopping alone does not prove convergence or overfitting.
+
+This version does not implement `restoreBestWeights: true`. To keep the best checkpoint, clone its weight tensors when validation improves. Restore them after fitting, then dispose of the saved copies.
 
 
 
@@ -345,9 +355,13 @@ for epoch in 1..N:
       break
 ```
 
-**Step 4 is the one line `optimizer` swaps out.** Under a plain `optimizer: 'sgd'` that line is exactly the rule above. Under `optimizer: 'adam'`, which both networks in this lesson and the exercise below use, it is not. The learning rate lives on the optimizer, so it belongs to `compile()`, and `fit()` silently ignores a `learningRate` option. Both nets here pass the optimizer as a bare string, so each takes its default rate. That is why lesson 2's most important knob appears nowhere in this lesson's code.
+**The optimizer chooses the update in step 4.** `optimizer: 'sgd'` uses the subtraction shown above. Both models here and the exercise use `optimizer: 'adam'`, which adjusts that update.
 
-**What Adam changes.** It tracks moving averages of gradients and squared gradients, corrects their initial bias, and divides the first by the square root of the second plus a small stabilizer. The base learning rate still scales the update. TFJS defaults Adam to 0.001; use `tf.train.adam(lr)` to choose another value. Adaptation does not guarantee stable steps or escape from flat regions.
+Set the learning rate on the optimizer passed to `compile()`. A `learningRate` option in `fit()` is ignored. These examples use the string name `adam`, so they use its default learning rate.
+
+**What Adam changes.** Adam tracks moving averages of gradients and their squares, then corrects their starting bias. It divides the gradient average by the square root of the squared-gradient average plus a small stabilizer. The base learning rate scales the result.
+
+TFJS uses 0.001 by default. Set another rate with `tf.train.adam(lr)`. These adjustments do not guarantee stable training or escape from flat regions.
 
 **Why mini-batches?** They trade memory, throughput and gradient variability. Full-batch training uses the full training objective per update; single-example updates use one row. Neither is universally worse. Try batch sizes that fit the model and device, then compare learning and throughput. There is no universal 32-512 range that saturates every GPU.
 
@@ -359,7 +373,7 @@ for epoch in 1..N:
 
 ## Challenge
 
-Replace the epoch guess with a callback that reads the held-out curve, on the hundred-row archive slice above. The grader reads the trace your run returns, and cross-checks it against the weight updates the optimizer actually applied, so the two have to come from the same fit.
+Help Demir stop training when validation loss stops improving. Use the hundred practice rows above. Return the history from that same training run, so its recorded losses match the weight updates.
 
 The exercise labels observable trends. A short run can provide too little history for its two-window comparison, and a valid run may use its whole epoch budget. Neither case proves a training error.
 
@@ -394,9 +408,9 @@ The exercise labels observable trends. A short run can provide too little histor
 
 <LessonRecap
   whatYouLearned={[
-    "`model.fit()` encapsulates the complete training loop: forward pass, loss computation, backpropagation, and weight update, repeated for every batch of every epoch.",
+    "`model.fit()` repeats the forward pass, loss calculation, backpropagation, and weight update for each training batch.",
     "Falling training loss with rising validation loss is consistent with overfitting. Check data shift, labels and preprocessing too. A halt only records that the callback's improvement condition was not met.",
-    "Batch size affects memory, throughput and gradient variability. For independent examples, shuffling training rows reduces dependence on file order; preserve order inside sequences."
+    "Batch size changes memory use, processing speed, and how much updates vary. Shuffle independent training rows, but keep time-based sequences in order."
   ]}
   bridge="setImmediate and model.fit both support repeated work with stopping conditions. Configure the training epoch limit and any early-stopping callbacks explicitly."
   youCanNow="Replace a guessed epoch count with `tf.callbacks.earlyStopping`, read the training and validation curves together, and describe their trends before investigating why they changed."
@@ -406,6 +420,8 @@ The exercise labels observable trends. A short run can provide too little histor
 
 <Epilogue>
 
-The rerun stops itself at epoch 102, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console, labeled with what each one cost rather than with a verdict: the 500-epoch run spent ten times the compute on a number he guessed, and the rerun stopped after five epochs without a new best validation loss. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, and the hundred clean rows cut from it that are now folded into 673 trained parameters. Somewhere in that archive, he thinks, is at least one reading the network understands and nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue: evaluation next, on signals the network has never seen. Demir reads it twice and keeps walking.
+The rerun stops at epoch 102 with validation loss 0.081, after five epochs without a new best value. Demir tapes both curves above his console. The guessed 500-epoch run used ten times the compute; this run had a rule for stopping.
+
+Before leaving, he checks the archive: 28,800 readings over eleven days. Training used just a hundred selected rows to adjust the network's 673 parameters. He wonders what it would make of the rest. In the corridor, he receives Mirza's next order: evaluate it on signals it has never seen. Demir reads the order twice and keeps walking.
 
 </Epilogue>

@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Three modules spent learning to train models from scratch, and all the bridge wants is a sentiment flag on the crew's daily status reports. Demir asks whether he really has to train one for that."
+  narrative: "The bridge wants positive or negative labels on the crew’s daily status reports. After three modules of training models, Demir asks whether he needs to train another one for this job."
   speaker: "Ensign Demir"
 concept:
   explanation: "Transformers.js ships pretrained Hugging Face models that run in the browser. Use an existing model when its task, license and measured behavior fit your application."
@@ -22,12 +22,12 @@ concept:
     tier: structural
     breaks: "Components and model inference can both be tested with fixed inputs and expected outputs. Numerical tolerances may depend on the backend. A passing fixture does not establish model accuracy on new data. Browser pipelines also download model assets whose size and caching need measurement."
 consequence:
-  narrative: "Ten lines of dependency close the bridge's request. In the lab, the Sector 7-G feed is already back on Farah's screen."
+  narrative: "The pretrained classifier is running. Farah returns to the Sector 7-G readings in the lab."
 hints:
   - level: nudge
-    content: "In the exercise the harness hands you pipelineFactory, a stand-in for the real pipeline() loader. It takes the argument the real one takes, the name of the task, and awaiting it gives you back the classifier. Then call the classifier with the whole reports array."
+    content: "The exercise supplies pipelineFactory in place of the real loader. Give it a task name and await the classifier it returns. Then pass the whole reports array to that classifier."
   - level: guidance
-    content: "The loader has no default, so the first decision is which task you are asking it for. The challenge lead-in lists the names this library ships, and one of those jobs takes nothing but the text and answers with a label and a confidence, which is what you are ranking on. After that, awaiting the factory gives you the classifier, and the classifier takes the whole array at once, so the batch is one load and one call. What comes back is one prediction per report, in the order you sent them, and that position is the only thing tying a score to the report it describes. So build the pairs before you reorder anything: sorting that list on its own leaves every row describing a different report. An empty report list can return immediately without loading a model."
+    content: "Choose a task that reads text and returns a label and score. Await the factory once, then classify the entire reports array in one call. The predictions arrive in the same order as the reports. Pair each report with its prediction before sorting, or the scores will end up beside the wrong text. If there are no reports, return an empty array without loading anything."
   - level: solution
     content: "if (reports.length === 0) return []; const classifier = await pipelineFactory('sentiment-analysis'); const predictions = await classifier(reports); const paired = reports.map((text, i) => ({ text, label: predictions[i].label, score: predictions[i].score, })); paired.sort((a, b) => b.score - a.score); return paired;"
 keywords:
@@ -47,7 +47,7 @@ We spent three modules learning to train models from scratch. But all the bridge
 No. I spent last night reading the Transformers.js docs so you don't spend three weeks not reading them. Pretrained model, with ONNX Runtime underneath. Cost of training your own: three modules, and we both lived them. Cost of this: one dependency and a download I will be auditing. Install it and call it.
 </Dialogue>
 
-The request comes from Mirza, and it is not idle: forty-one crew status reports a day, and she reads all of them before her watch starts. She wants them sorted by how sure the classifier is, whichever way it leans: the confident calls at the top and the hedged ones at the bottom, where her own read is the one that counts.
+Mirza reads forty-one crew status reports before each watch. She wants to try sorting them by the classifier’s score, whether the label is positive or negative. High-scoring reports go first; she will read the low-scoring ones more closely. The score describes the model’s choice, not how urgent the report is.
 
 You will load a sentiment model once and use it to classify several crew reports.
 
@@ -113,7 +113,7 @@ zero-shot-classification    feature-extraction          automatic-speech-recogni
 
 The pipeline supplies task-specific preprocessing, inference and output handling. Not every model supports every pipeline. Inspect the model's supported task and required assets before using it.
 
-That is also the seam between this path and the rest of the ship's work. A Transformers.js model runs as ONNX, so the TFJS tooling does not reach it: no walk over `model.layers`, no quantization flags on `tensorflowjs_converter`. Use tooling for that ONNX model. Converting an arbitrary transformer into a TFJS LayersModel is not a general shortcut. DEEP SCAN was trained in TFJS and stays there.
+This model uses ONNX, so TensorFlow.js tools such as `model.layers` and `tensorflowjs_converter` do not apply. Use tools that support the ONNX model. You cannot assume that any transformer can be converted to a TFJS LayersModel. DEEP SCAN was trained in TensorFlow.js and stays there.
 
 Aboard the Archimedes the download comes from the ship's mirrored model archive, synced at the last relay pass; the live Hub is eleven light-minutes of latency away on a good day. A local mirror changes where the assets come from. It does not remove cache eviction, versioning or cold-start work.
 
@@ -129,9 +129,11 @@ Download size can make browser inference impractical for a target connection. Me
 
 ## Challenge
 
-The exercise injects pipeline output. It checks task selection and result handling without downloading pretrained weights. Actual download size, browser operator support and whether the model suits your text still require a real-model evaluation.
+The exercise supplies simulated pipeline results. It checks your task choice and how you handle those results without downloading a model. Use the real model to check download size, browser support and how well it handles your reports.
 
-Sort the crew's status reports by classifier confidence. The harness stands in for the Transformers.js loader, so what you write is the call and the wiring around it: name the task, load it once, classify the whole batch in one call, sort by score. The names it takes, spelled the way the library spells them: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, `automatic-speech-recognition`. These reports are text, which rules out the image and audio jobs. Of the text jobs, one takes nothing but the text and answers with a label and a confidence; the others answer with generated text, spans, vectors, or scores over candidate labels you have to supply yourself.
+Sort the crew’s reports from highest to lowest classifier score. Choose the task, load its pipeline once, classify all reports in one call, and keep each report paired with its own result while sorting.
+
+The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, and `automatic-speech-recognition`. Choose the text task that returns a label and score. Image and audio tasks need different inputs. Other text tasks return generated text, named entities, numeric features, or scores for labels you supply.
 
 <Exercise slug="load-pretrained-pipeline" />
 
@@ -164,7 +166,7 @@ Sort the crew's status reports by classifier confidence. The harness stands in f
 
 <RecallPrompt
   question="Describe how you would select and label twenty reports for an honest first evaluation of a pretrained pipeline."
-  answer="A test slice is data no decision ever touched, scored once. Label the twenty before you see the pipeline's answers, and draw them the way reports actually arrive. Class-balanced sampling can help inspect each class, but its unweighted accuracy need not estimate performance on incoming reports. Twenty reports can reveal problems; they cannot establish reliable rare-error rates."
+  answer="Choose twenty reports that reflect the reports you expect to receive. Label them before looking at the model’s answers, and keep evaluation examples out of model and threshold decisions. An equal number from each class can help you inspect mistakes, but its overall accuracy may not represent the incoming mix. Twenty reports can expose problems; they cannot reliably measure rare mistakes."
 />
 
 <LessonRecap whatYouLearned={["pipeline() supplies preprocessing and output handling around a supported model", "Pin the model revision, dtype and device for reproducible evaluation", "Measure asset downloads and cached startup separately; cached does not mean instant or permanently available", "Evaluate representative text and inspect errors. Confidence ranking does not establish urgency or task accuracy"]} bridge="A library component saves implementation work. A pretrained model also needs evaluation on the inputs your application will receive." youCanNow="Load a pinned pretrained pipeline, preserve the pairing between inputs and outputs, and investigate whether it suits your text." />
@@ -174,7 +176,7 @@ Sort the crew's status reports by classifier confidence. The harness stands in f
 The sentiment classifier runs in ten lines, and Demir spends a full minute being quietly insulted by that. Across the lab, Farah has the Sector 7-G feed open again: the raw time-domain plot, scrolling like weather.
 
 <Dialogue speaker="Dr. Farah">
-Enjoy the commodity problem while it lasts. The signal we actually came out here for refuses to be one. Tomorrow, bring me everything you know about waves.
+Enjoy having a ready-made model for this one. We still have the signal we came here to study. Tomorrow, bring me everything you know about waves.
 </Dialogue>
 
 He knows almost nothing about waves. He starts a list anyway.

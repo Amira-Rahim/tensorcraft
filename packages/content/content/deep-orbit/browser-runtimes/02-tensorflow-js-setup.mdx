@@ -14,7 +14,7 @@ context:
   narrative: "Demir begins wiring TensorFlow.js into the ship's dashboard. Nazari watches over his shoulder, timing every step."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Install, import, configure: TensorFlow.js enters a project like any npm dependency. The backend check is the one step that isn't routine."
+  explanation: "Add TensorFlow.js as an npm dependency, then wait for it to start. Check which backend, the engine that runs its calculations, is actually available."
   bridge:
     jsTitle: "npm install"
     jsCode: "npm install react react-dom"
@@ -23,12 +23,12 @@ concept:
     tier: identity
     breaks: "Both libraries use ordinary package installation. TF.js also selects a numerical backend at runtime. Check the selected backend and measure the workload on target devices; an import alone establishes neither GPU access nor a particular speedup."
 consequence:
-  narrative: "Demir carries the backend check from station to station. One console answers differently, and Nazari wants the difference in the log."
+  narrative: "Demir checks the backend at every station. One console uses a different backend, and Nazari asks him to record it."
 hints:
   - level: nudge
-    content: "Backend startup is asynchronous: TF.js cannot tell you which backend it is running on until you await its initialization. A preferred name is a request the runtime can refuse, so read the answer after the wait, never before."
+    content: "Wait for TensorFlow.js to finish starting before reading its backend name. A requested backend may fail to start, so report the one that actually runs."
   - level: guidance
-    content: "The one non-routine step is that backend selection is asynchronous. TF.js gives you a promise that resolves once it has picked a backend and initialized it, and until that happens there is no backend name to read: a fresh tab has nothing to answer with. So the await comes first and both reads come after it. The setup block at the top of this lesson has all three calls in it, and neither value belongs in your code as a literal, since the backend depends on the device the page is open on. Asking for a backend by name is the one extra step, and the two refusals differ in shape: a registered backend that cannot start resolves false, while a name no package registered throws, so the request needs a try around it and nothing else, then await ready() and report the actual backend. Initialization can still fail if no registered backend can start."
+    content: "Request the preferred backend first, if one was supplied. A registered backend that cannot start returns false; an unknown name throws an error. Catch an error from that request, then await initialization. Read the backend name and version from the runtime after it is ready. Do not type those values into your answer. If no backend can start, let that initialization error reach the caller."
   - level: solution
     content: |
       if (preferred) {
@@ -167,14 +167,14 @@ async function benchmarkBackend(backendName: string) {
 
 ## Challenge
 
-The editor supplies TensorFlow.js. This task checks initialization and backend selection with controlled runtime responses. Install and run the real dependency in the independent project before treating setup as verified on your own machine.
+TensorFlow.js is supplied in the editor. The tests use a simulated runtime to check how your code handles startup and backend selection. To check your own machine, install and run the real package in the independent project.
 
 Set up TensorFlow.js and verify the active backend.
 
 <Exercise slug="tfjs-setup" />
 
 <RecallPrompt
-  question="Verify the selected backend and its measured behavior."
+  question="How do you check which backend is running and whether it is fast enough?"
   answer="Backends differ in operation support, startup cost, memory use and speed on a given device. Await initialization, call tf.getBackend(), then benchmark the actual workload with output readback included. Do not copy a latency budget from another machine."
   checks={[
     {

@@ -3,14 +3,19 @@ lessonSlug: inference-pipeline
 title: "Incident: numTensors Climbing at 03:10"
 mlContent: systems
 instructions: |
-  PAGER: the dashboard's tensor count has risen since the 01:00 deploy. Estimate capacity while the crew investigates the cause. Growth may come from initialization, caching or a leak; these snapshots do not identify which.
+  The dashboard's tensor count has risen since the 01:00 deploy. Help the crew estimate how much capacity remains while they investigate. Startup, caching and leaks can all raise the count; these readings do not tell you which caused it.
 
-  Build `estimateTensorHeadroom(snapshots, budgetTensors)`. Snapshots contain `{ t, numTensors }`, with time in hours. Use the first and last readings to return `{ growing, ratePerHour, hoursToBudget }`. The rate is their count difference divided by elapsed hours. `growing` is true for a positive rate. Project the hours from the last reading to the budget if that rate continues; use Infinity for a flat or falling count.
+  Build `estimateTensorHeadroom(snapshots, budgetTensors)`. Each snapshot contains `{ t, numTensors }`, where `t` is time in hours. Use the first and last snapshots to return:
 
-  Inputs contain at least two readings at distinct, ascending times, nonnegative counts and a budget above the latest count. This drill uses endpoint growth as a simple estimate. It does not prove a steady trend or diagnose a leak.
+  - `ratePerHour`: the change in tensor count divided by elapsed hours.
+  - `growing`: true when that rate is positive.
+  - `hoursToBudget`: the remaining capacity after the last snapshot divided by the rate, if it is positive. Return Infinity for a flat or falling count.
+
+  Assume the measured rate continues. Inputs always have at least two snapshots with increasing, distinct times and nonnegative counts. The budget is above the latest count. This estimate does not prove a steady trend or identify a leak.
+
 hints:
   - level: nudge
-    content: "A rising tensor count is not yet a deadline. The pager already named the two readings that carry the trend, so what is left to decide is what the hours between them turn that growth into, and what to report when the count is not climbing at all."
+    content: "Start with the first and last counts. How much did the count change, and how many hours passed? Decide what to return if the count stays flat or falls."
   - level: guidance
     content: "Divide the change in count by elapsed hours. For positive growth, divide the capacity remaining after the latest snapshot by that rate. For a flat or falling count, this projection gives no time limit. The sign describes growth; the cause still needs investigation."
   - level: solution
@@ -58,7 +63,7 @@ testCode: |
     // the first Run says what is missing.
     function diagnose(snapshots, budgetTensors) {
       const r = estimateTensorHeadroom(snapshots, budgetTensors);
-      expect(r, 'estimateTensorHeadroom has to return an object with growing, ratePerHour and hoursToBudget. The starter returns null until you build it from the first and last snapshots.').toBeDefined();
+      expect(r, 'Return an object with growing, ratePerHour and hoursToBudget, using the first and last snapshots.').toBeDefined();
       return r;
     }
 
@@ -68,14 +73,14 @@ testCode: |
         10000,
       );
       expect(r.growing).toBe(true);
-      expect(r.ratePerHour, 'A rate is tensors per HOUR, so the growth has to be divided by the hours between the two readings.').toBeCloseTo(120, 5);
+      expect(r.ratePerHour, 'Divide the increase in tensor count by the hours between the first and last readings.').toBeCloseTo(120, 5);
     });
     it('computes hours until the budget is hit', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 400 }, { t: 1, numTensors: 520 }],
         10000,
       );
-      expect(r.hoursToBudget, 'The headroom left is the budget minus the LAST reading, not minus the first: the earlier tensors are already allocated.').toBeCloseTo(79, 1);
+      expect(r.hoursToBudget, 'Subtract the latest tensor count from the budget to find the remaining capacity.').toBeCloseTo(79, 1);
     });
     it('a flat count has no projected growth deadline', () => {
       const r = diagnose(

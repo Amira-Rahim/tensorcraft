@@ -2,30 +2,21 @@ slug: retrieve-signals
 lessonSlug: rag-for-signals
 title: "Retrieve the Rows the Prompt Will Carry"
 instructions: |
-  Write `retrieveSignals(query, db, now)` to select the supplied evidence
-  and report omissions. Retrieval does not erase a model's prior knowledge.
+  Write retrieveSignals(query, db, now). Select matching records and report any matches left out of the result. Adding retrieved records does not remove what a model learned during training.
 
-  Three filters, each applied only when the query carries it. Band:
-  `/band[- ]?(\w+)/i`, keep rows whose `band` equals the captured word, both
-  sides lowercased. Age: `/(\d+)\s*hours/i`, keep rows whose
-  `Date.parse(timestamp)` is strictly newer than `now - hours * 3600 * 1000`,
-  and no later than `now`. Invalid timestamps fail this age filter. Use the supplied clock.
-  Anomalies: `/anomal/i`, keep rows whose `classification` is 'anomaly'. Every
-  filter the query carries has to hold at once, and a query carrying none of
-  the three matches the whole database.
+  Apply each filter only if its pattern appears in query. When several filters appear, a row must pass all of them:
+  - Band: match /band[- ]?(\w+)/i. Keep rows whose band matches the captured word, ignoring case on both sides.
+  - Age: match /(\d+)\s*hours/i. Keep timestamps strictly newer than now - hours * 3600 * 1000 and no later than now. Invalid timestamps fail this filter. Use the supplied now, not the current clock.
+  - Anomalies: match /anomal/i. Keep rows whose classification is 'anomaly'.
 
-  This parser recognizes only those patterns; it does not interpret negation or "overnight".
+  If no pattern appears, every database row matches. This simple parser does not understand general English, negation, or 'overnight'.
 
-  Return `{ rows, matched, truncated }`:
+  Return { rows, matched, truncated }:
+  - rows contains the first 20 matches in database order. Do not sort them.
+  - matched is the total match count before limiting the list.
+  - truncated is true only when at least one matching row was left out.
 
-  - `rows`: the first 20 matches in database order, without sorting.
-  - `matched`: the number of matches before the cap.
-  - `truncated`: true only if at least one matching row was omitted.
-
-  Keep complete row objects: `id`, `timestamp`, `band`, `classification`,
-  `confidence`, `amplitude`, `frequency`, and `anomalyScore`. The scores are
-  supplied metadata, not verified certainty. A row cap does not limit tokens;
-  the application must also check the final prompt size.
+  Keep complete row objects, including id, timestamp, band, classification, confidence, amplitude, frequency, and anomalyScore. The supplied scores do not establish certainty. A 20-row limit is not a token limit, so the application must also check the final prompt size.
 starterCode: |
   interface Signal {
     id: string;
@@ -47,8 +38,8 @@ starterCode: |
   const CONTEXT_ROWS = 20;
 
   function retrieveSignals(query: string, db: Signal[], now: number): Retrieval {
-    // Three filters, and the query decides which of them exist. Only the
-    // capped list travels, so decide where the count comes from.
+    // Apply only the filters named in the query.
+    // Report all matches before limiting the returned rows.
     return null; // your code here
   }
 solutionCode: |

@@ -2,13 +2,15 @@ slug: gpu-backend
 lessonSlug: webgpu-acceleration
 title: "Fall Back Through the Backend Ladder"
 instructions: |
-  Write initBestBackend(preference, runtime) so it returns the name of a backend that is actually running, walking the caller's preference order from the top.
+  Help Demir find a working backend for the console. Write `initBestBackend(preference, runtime)`. Try names in the supplied order and return the first one that starts.
 
-  runtime stands in for the three TensorFlow.js calls the lesson uses, and it keeps their real contract. setBackend(name) resolves true when that backend started, resolves FALSE when the backend is registered and fails to start, and throws when the name was never registered, which is what you get when its package was not imported. Both of those are failures you move past; neither is fatal.
+  `runtime` provides the three TensorFlow.js calls used in the lesson:
 
-  Stop at the first backend that starts, so nothing after the winner is touched. Call runtime.ready() exactly once, after the ladder has settled and before you return. If every name in the ladder fails, call ready() and return runtime.getBackend(), which is the active backend after successful readiness. If ready rejects because none can start, propagate that failure.
+  - `setBackend(name)` resolves true when the backend starts. It resolves false when a registered backend fails to start, and throws when the backend was never registered, such as when its package was not imported. Try the next name after either failure.
+  - `ready()` waits for initialization. Call it exactly once, after the attempts and before returning.
+  - `getBackend()` reports the active name. Do not use it to judge a failed attempt: in TFJS 4.22 it can still report the name that failed.
 
-  Do not read getBackend() as a verdict on a single attempt: right after a failed start it still reports the name that failed, which is what tfjs 4.22 does.
+  Stop trying names after the first success. If every attempt fails, await `ready()` and return `runtime.getBackend()`. If `ready()` rejects because no backend can start, let that error reach the caller.
 starterCode: |
   type BackendName = string;
 
@@ -22,8 +24,8 @@ starterCode: |
     preference: BackendName[],
     runtime: Runtime
   ): Promise<BackendName> {
-    // Not every refusal in this interface arrives as an error, and the name
-    // the runtime reports is not proof that a backend is running.
+    // A failed start may return false instead of throwing.
+    // A reported backend name alone does not prove it works.
     return null; // your code here
   }
 solutionCode: |
@@ -147,7 +149,7 @@ testCode: |
       const { runtime, calls } = makeRuntime({ wasm: false, webgl: true, webgpu: true });
       expect(
         await chosen(['wasm', 'webgpu', 'webgl'], runtime),
-        'A caller who asks for wasm first has a reason, usually a device where the GPU path is the one that breaks, and when wasm fails the next name in THEIR order is the one to try. The preference order is an argument, every rung of it.'
+        'Follow the supplied preference order, including after a failed attempt. The caller may need WASM first because the GPU path does not work on that device.'
       ).toBe('webgpu');
       expect(
         calls,
@@ -160,7 +162,7 @@ testCode: |
       const name = await chosen(LADDER, runtime);
       expect(
         name,
-        'Two registered backends failed to start and one was never registered, so there is no winner to name. ready() settles the engine on a backend that does run, and that name is the honest answer. webgl was the last one tried; it is not running.'
+        'All requested backends failed. Await ready(), then return the backend that actually started. The last attempted name, webgl, is not a working backend.'
       ).toBe('cpu');
       expect(calls).toEqual(['webgpu', 'webgl', 'wasm', 'ready']);
     });

@@ -3,7 +3,16 @@ lessonSlug: caching-strategies
 title: "Incident: Cache Served a Verdict From the Old Model"
 mlContent: systems
 instructions: |
-  PAGER: after this morning's model deploy, the dashboard showed a classification the new model disagrees with. It came from the cache. Build `auditCache(entries, currentVersion, now, ttlSeconds)`: an entry must be REFRESHED if its modelVersion differs from currentVersion (a deploy invalidates every cached verdict, no matter how fresh) OR its age (now - cachedAt, seconds) exceeds ttlSeconds. An age of exactly ttlSeconds has not exceeded it, so that entry is still served. Everything else passes this age/version policy, not a general correctness test. Assume valid timestamps no later than now and nonnegative finite TTL. The version identifies both weights and preprocessing; approximate-key collisions need separate checks. Return { serve, refresh } as arrays of keys, preserving input order.
+  The bridge has shown a cached classification that disagrees with the new model. Help Demir check which entries can still be served.
+
+  Write `auditCache(entries, currentVersion, now, ttlSeconds)`. Refresh an entry if either:
+
+  - Its `modelVersion` differs from `currentVersion`.
+  - Its age, `now - cachedAt` in seconds, is greater than `ttlSeconds`.
+
+  An entry exactly at the age limit can still be served. A version change makes an entry stale even if it was just saved. The version covers both weights and preprocessing.
+
+  Return `{ serve, refresh }` as arrays of keys, keeping input order. Assume valid timestamps no later than `now` and a finite, nonnegative TTL. Passing this check only establishes version and age. Rounded-key collisions need separate checks.
 hints:
   - level: nudge
     content: "Refresh when either the version differs or the entry is too old. Preserve input order."
@@ -33,8 +42,7 @@ starterCode: |
     now: number,
     ttlSeconds: number,
   ): { serve: string[]; refresh: string[] } {
-    // Freshness and trust are two different questions here, and only one of
-    // them is about the clock.
+    // Check both the model version and how old each entry is.
     return null; // your code here
   }
 solutionCode: |
@@ -126,7 +134,7 @@ testCode: |
       );
       expect(
         r.serve,
-        'Both buckets keep the order the batch arrived in, and this one arrived with d before a. Walking the entries once and adding each key to the end of its list is what preserves that; anything that reorders the keys afterwards loses it.',
+        'Keep input order in both result lists. This batch has d before a, so do not sort the keys afterward.',
       ).toEqual(['d', 'a']);
       expect(
         r.refresh,

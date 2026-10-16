@@ -11,8 +11,7 @@ starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function stft(signal: number[], windowSize: number, hopSize: number): number[][] {
-    // Each row sees one window and nothing else. That is the whole reason to
-    // stack them: a single spectrum cannot say when a tone arrived.
+    // Transform each window separately. Return one magnitude row per window.
     return null; // your code here
   }
 solutionCode: |
@@ -55,7 +54,7 @@ testCode: |
       const spec = stft(samples, windowSize, hopSize);
       expect(
         spec,
-        'stft returned nothing to read. It has to hand back the stack of windows, one row per window position.',
+        'Return an array with one FFT magnitude row for each complete window.',
       ).toBeDefined();
       expect(
         Array.isArray(spec),
@@ -95,7 +94,7 @@ testCode: |
         expect(peak).toBe(5);
         expect(
           row[5],
-          'A 1.0 tone on a bin center puts windowSize / 2 = 32 into that bin. Magnitudes arriving at about half their expected height mean the samples were tapered before the transform, which is what tf.signal.stft does unless you hand it your own window.',
+          'This tone should have magnitude 32. A value near 16 suggests that a Hann taper was applied. This task uses raw slices; tf.signal.stft applies Hann by default.',
         ).toBeCloseTo(32, 0);
       });
     });
@@ -108,7 +107,7 @@ testCode: |
         ).toBeCloseTo(32, 0);
         expect(
           row[15],
-          'The second tone is quieter, not missing. A row built by marking one frequency and zeroing the rest can match a peak, but it cannot carry a second component, and carrying every component at once is what a magnitude spectrum is for.',
+          'Keep every FFT magnitude, including the quieter tone. Returning only the strongest bin loses the rest of the spectrum.',
         ).toBeCloseTo(16, 0);
       });
     });
@@ -139,7 +138,7 @@ testCode: |
       const peaks = result.map(row => row.indexOf(Math.max(...row)));
       expect(
         peaks,
-        'The tone changes partway through the capture, so the later rows have to disagree with the earlier ones. One spectrum computed once and repeated cannot.',
+        'The tone changes during the capture. Transform each window separately so later rows show that change.',
       ).toEqual([5, 5, 15, 15]);
       expect(
         result[0][5],

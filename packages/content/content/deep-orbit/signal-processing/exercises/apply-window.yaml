@@ -9,11 +9,10 @@ instructions: |
 
   Use plain JavaScript or tensors. For a tensor implementation, `tf.range(0, n)` creates `[0, 1, ..., n-1]`; dispose temporary tensors after readback. Assume integer `n >= 2` and equal-length signal/window arrays.
 
-  The grader also measures the effect on two off-bin tones. Their summed magnitudes more than three bins from the rounded tone bin fall by over 20x. This fixture-specific statistic is not spectral energy, and the taper also broadens the main peak.
+  The tests also measure two tones between bin centers. Tapering reduces their summed magnitudes more than three bins away from the rounded tone bin by over 20x. This result is specific to those test signals. It is not an energy measurement, and the main peak also becomes wider.
 starterCode: |
   function hannWindow(n) {
-    // The curve is in the instructions. The open question is which samples of
-    // the slice it applies to.
+    // Calculate one Hann weight for every sample using the stated formula.
     return []; // your code here
   }
   function applyWindow(signal, window) {
@@ -34,7 +33,7 @@ testCode: |
     const w = hannWindow(n);
     expect(
       w,
-      'hannWindow has to return one weight per sample. The starter returns an empty list, so there is no taper to inspect yet.',
+      'Return n weights, one for each sample.',
     ).toHaveLength(n);
     return w;
   };
@@ -63,7 +62,7 @@ testCode: |
       const w = windowOf(64);
       expect(
         w[63],
-        "This is the symmetric Hann, the one with n - 1 underneath, and it reaches exactly zero at both ends. The periodic form the lesson's own code uses, tf.signal.hannWindow, divides by n instead and leaves a step of 0.0024 at the last sample. The periodic form is common in spectral analysis and supports useful overlap-add pairs. This exercise explicitly asks for the symmetric form; use the stated formula.",
+        "Use the stated symmetric Hann formula with n - 1 in the denominator. It reaches zero at both ends. The periodic form used by the built-in example has a different last weight.",
       ).toBeCloseTo(0, 4);
     });
     it('reaches full weight at the middle sample', () => {

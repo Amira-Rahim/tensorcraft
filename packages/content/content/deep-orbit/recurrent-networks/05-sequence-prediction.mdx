@@ -15,7 +15,7 @@ context:
   narrative: "Demir trains the LSTM to predict the next signal values. The bridge reports a promising short forecast. Farah asks for the error metric, its units and a baseline before trusting a longer one."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
+  explanation: "Sequence prediction estimates the next values from earlier readings. Check those estimates against later observations and a simple baseline."
   bridge:
     jsTitle: "Autocomplete"
     jsCode: "const hits = INDEX.filter((s) => s.startsWith(q)).slice(0, 5) // suggest from a list"
@@ -28,10 +28,10 @@ consequence:
 hints:
   - level: nudge
     content: |
-      Keep training and rollout separate. The training history records what happened, and the rollout must read its own changing window.
+      Return the history from the actual training call. During forecasting, update the input window after every prediction so the next step reads your earlier predictions.
   - level: guidance
     content: |
-      Fit the supplied tensors and return the history from that call. For rollout, convert physical limits using the frozen scaler, clamp each prediction and feed it back. Release temporary tensors while keeping caller-owned training tensors alive. MAE during training is in z-score coordinates.
+      Train on the supplied tensors and return that fit call’s history. For forecasting, convert the physical limits with the saved mean and standard deviation. Clamp each prediction before feeding it into the next window. Release temporary tensors, but keep the caller’s training tensors alive. Training MAE uses the scaled values, not the original sensor units.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -156,10 +156,16 @@ const history = await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
-Scale the three features before any of this runs. They sit on the tensor's last axis, which is conventionally called the channel axis, so per-channel scaling here means one scaling per feature. The archive's 64 channels are 64 sensors, which is the word's other use. Amplitude is a count that saturates at 2048, the zero-crossing count stops at 63, and phase is an angle in radians. One MSE over all three is a weighted sum whose weights nobody chose: a 100-count amplitude miss adds 10,000 to the squared error, while a full radian of phase adds 1. Large inputs can also push tanh or sigmoid gates into saturation. Scaling often improves conditioning, but it does not guarantee a particular error or useful forecasts. Compare a last-value or seasonal baseline on the same later periods.
+Scale the three features before training. Here, the tensor’s last axis holds features; it is sometimes called the channel axis. Per-channel scaling means scaling each feature separately. The archive’s 64 sensor channels are a different use of that word.
+
+The features have different units: amplitude counts stop at 2048, zero-crossing counts stop at 63, and phase uses radians. Without scaling, a 100-count amplitude error adds 10,000 to squared error, while a one-radian phase error adds only 1. Large inputs can also push gates into nearly flat parts of their activation curves, weakening their gradients. Scaling can help training, but useful forecasts still need testing against a last-value or seasonal baseline on the same later periods.
 
 
-Use the tool from module 1, with one change for the extra dimension. Module 1's batch was a reading table, `[rows, features]`, where `tf.moments(batch, 0)` gave one mean per feature. `trainX` is `[windows, 80, 3]`, so axis 0 there returns one mean per (time step, channel) pair: 240 of them, not 3. If you estimate statistics from training windows, reduce over the window axis and time axis together, `tf.moments(trainX, [0, 1])`, and you get three means and three variances. The standard deviation is `variance.sqrt()`. Nothing warns you if you get this wrong. A `[80, 3]` mean broadcasts against `[N, 80, 3]` without error, so `trainX.sub(mean).div(std)` runs, and every time-step position ends up z-scored against its own statistics. Overlapping windows count some observations more often. Prefer fitting on the unique training observations before windowing, or document that weighting. Replace a zero scale with 1. Save the three means and scales and reuse them at inference. Phase is circular: raw-radian MSE penalizes the -pi/+pi seam; a redesigned model can use sine/cosine encoding with matching targets and metrics.
+In module 1, `tf.moments(batch, 0)` calculated one mean per feature for a [rows, features] table. Here, `trainX` has shape [windows, 80, 3]. Reducing only axis 0 gives 240 means, one for each time-position and feature pair. That is not one mean per feature.
+
+If calculating statistics from these windows, use `tf.moments(trainX, [0, 1])` to reduce both the window and time axes. This returns three means and variances. Take `variance.sqrt()` for standard deviations. A wrongly shaped [80, 3] mean still broadcasts without an error, so check the shape explicitly.
+
+Overlapping windows count some readings repeatedly. Prefer calculating statistics from unique training readings before windowing, or document that repeated weighting. Replace a zero scale with 1. Save the means and scales for inference. Phase also wraps from +pi to -pi, even though those angles match. Raw-angle MSE treats them as far apart. A redesigned model can use sine and cosine features, with matching targets and error metrics.
 
 MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes twice as much. MSE squares errors, so doubling a miss makes its contribution four times larger. This example trains on MSE and reports MAE; that is a choice, not a requirement for every regression task. For multiple outputs, scale features deliberately and also report per-channel errors converted back to their original units.
 
@@ -233,13 +239,15 @@ model.dispose();
 // The caller owns train/validation tensors and disposes them separately.`}
 </CodeBlock>
 
-One unit check before anyone trusts a display. The demo above walks 47 one-second steps, under a minute of horizon. The bridge's 47-minute countdown runs on a different series, the pulse intervals, one value per pulse, where 47 minutes is about 38 steps at the current spacing. Read what one step means before you read a forecast, and when a short forecast lands, credit the signal's regularity before you credit the model.
+Check what one step means. The demo predicts 47 one-second steps, less than a minute ahead. The bridge’s 47-minute countdown uses a separate series with one value per pulse, about 38 steps at the current spacing. A successful short forecast does not establish that a longer forecast will work.
 
 Clamping keeps outputs inside the declared limits; it does not make a forecast accurate. Log how often it activates, reject non-finite outputs and compare errors by horizon. A zero or invalid scaler standard deviation must be handled before rollout.
 
 ## Challenge
 
-Train a forecaster with one output per channel and return its training history. Then implement the rolling loop from `multi-step.ts`. First test it with a stand-in model, a short window and a handful of steps. The two things it grades are the two that are easy to get wrong here. The limits are in counts and the model answers in z-scores, so the bounds have to be converted before anything is compared against them. And the clamp belongs on the reading that goes back into the history, not only on the copy you hand back. The last check runs the loop on the model you trained in the first half.
+Train a forecaster with three outputs and return its training history. Then build the forecasting loop from `multi-step.ts`. The first tests use a simulated model and a short window.
+
+Convert the sensor limits into the model’s z-score units before comparing them with predictions. Clamp each prediction before adding it to both the returned forecast and the next input window. The final test runs this loop with the model you trained.
 
 <Exercise slug="predict-next" />
 
@@ -271,8 +279,8 @@ Train a forecaster with one output per channel and return its training history. 
 />
 
 <RecallPrompt
-  question="The rollout uses a synchronous tf.tidy() without variables or tf.keep()."
-  answer="Both are disposed here, because the callback hands back plain numbers: tf.tidy frees temporary tensors created inside it, except returned tensors, variables and tensors retained with tf.keep(). This loop creates no variables or kept tensors. Return a tensor and tidy keeps that one alive for you, which is how the module-4 loop could return its prediction tensor out of tidy and dispose it by hand one line later. Read the numbers out with dataSync() and return those instead, as this rollout does, and nothing survives, so the example leaves no temporary tensor registered with its backend."
+  question="What does tf.tidy() release when the callback returns only numeric prediction values?"
+  answer="Both the temporary input and prediction tensors are disposed when this callback returns. It returns numeric values and creates no variables or explicitly kept tensors. Returning the prediction tensor itself would keep that tensor alive, and its owner would need to dispose it later."
   checks={[
     {
       "kind": "choice",
@@ -325,7 +333,9 @@ Train a forecaster with one output per channel and return its training history. 
 
 <Epilogue>
 
-The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes; nobody is assigned to watch the countdown, and by 2050 the entire bridge crew is watching it anyway. The display is tuned to the macro-cycle: between episodes the 73-second pulses drop below the noise floor and the anomaly trace reads flat. That flatness is exactly why the return of the full episode will be unmissable when it comes. Nazari kills the room audio. 46:59, then 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01, 47:02. At 47:03 the spike walks onto the display exactly as drawn.
+At 2010, the main bridge display predicts the next episode in 47 minutes; by 2050, the whole crew is watching. Between episodes, the 73-second pulses fall below the noise floor, leaving a flat trace that will make the return easy to spot.
+
+Nazari turns off the room audio as the timer reaches 46:59. At 47:00 the trace is still flat, and Demir watches it hold through 47:01 and 47:02. At 47:03, the predicted spike appears.
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 Log the three seconds. I want to know whose error that is: ours or theirs.

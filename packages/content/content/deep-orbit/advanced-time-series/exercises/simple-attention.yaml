@@ -3,20 +3,17 @@ lessonSlug: beyond-lstm
 title: "Simple Attention Over RNN Hidden States"
 mlContent: model
 instructions: |
-  Implement simpleAttention(query, keys, values). query has shape [d], keys
-  [T, d], and values [T, dv]. T, d and dv are positive; inputs are finite.
-  Score each key with the raw dot product against the query, apply softmax
-  over T, and return the weighted sum of values as a tensor shaped [dv].
-  Do not divide scores by sqrt(d) in this unscaled exercise.
+  Implement simpleAttention(query, keys, values). query has shape [d], keys has shape [T, d], and values has shape [T, dv]. T is the number of steps. d is the key width, and dv is the value width. All dimensions are positive and all inputs are finite.
 
-  Reshape the query to [1, d] for matMul and transpose the key side. Remove
-  only the batch axis from the result, including when dv is 1. Use tf.tidy
-  to free intermediates; inputs belong to the caller and the returned tensor
-  remains alive for the caller to dispose. Keys and values may differ in width.
+  Calculate the dot product of the query with every key. Apply softmax across the T scores, then use those weights to combine the values. Return one tensor with shape [dv]. This exercise uses unscaled scores, so do not divide by sqrt(d).
+
+  Reshape the query to [1, d] for matMul and transpose the keys. Remove only the result's batch axis. Even when dv is 1, the result must have shape [1], not a scalar.
+
+  Use tf.tidy to free temporary tensors. Keep the caller's inputs alive, and leave the returned tensor for the caller to dispose. Keys and values may have different widths, so combine the values rather than the keys.
 starterCode: |
   function simpleAttention(query, keys, values) {
-    // One tensor gets scored and a different one gets summed, and neither
-    // arrives shaped the way the multiply needs.
+    // Compare the query with keys to get weights.
+    // Use those weights to combine values.
     return null;
   }
 solutionCode: |

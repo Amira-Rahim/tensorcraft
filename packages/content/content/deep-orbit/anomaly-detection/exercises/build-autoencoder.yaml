@@ -2,25 +2,13 @@ slug: build-autoencoder
 lessonSlug: autoencoders
 title: "Train an Autoencoder on Normal Data Only"
 instructions: |
-  Implement trainNormalityModel(archive, flagged, providedModel?). The archive
-  contains finite eight-feature rows; flagged has one boolean per row. Keep
-  unflagged rows and fit them against themselves as reconstruction targets.
-  Reject an empty selection or mismatched flag count before allocating a model.
+  Implement trainNormalityModel(archive, flagged, providedModel?). Each archive row has eight finite features. Each entry in flagged says whether to exclude the matching row. Keep unflagged rows, using the same tensor as both training input and reconstruction target. Reject mismatched flag counts or an empty selection before creating a model.
 
-  When providedModel is supplied, use it as compiled. Otherwise build Dense
-  layers 8 -> 4 relu -> 2 relu -> 4 relu -> 8 linear, using inputShape [8].
-  One Sequential or nested encoder and decoder models are both accepted.
-  Compile with 'adam' and 'meanSquaredError'. Await fit with FIT_OPTIONS and
-  return { model, history }, using the exact history from fit.
+  If providedModel is supplied, use it as compiled. Otherwise build Dense layers with sizes 8 -> 4 relu -> 2 relu -> 4 relu -> 8 linear and inputShape [8]. You can use one Sequential model or nested encoder and decoder models. Compile with 'adam' and 'meanSquaredError'. Await fit with FIT_OPTIONS. Return { model, history }, with the exact history returned by fit.
 
-  Dispose temporary training tensors even if fitting fails. Keep a supplied
-  model alive; the caller owns it. If fitting your newly created model fails,
-  dispose that model. On success the caller owns the returned model.
+  Always dispose temporary training tensors, even if training fails. Do not dispose a supplied model: it belongs to the caller. If training a model you created fails, dispose that model. After successful training, the caller owns the returned model.
 
-  The checks use a synthetic 72-row archive, inspect row selection and score
-  a small holdout without requiring a particular error ratio. They do not
-  establish real anomaly-detection performance. A controlled contamination
-  experiment also needs matched initial weights and a fixed fitting schedule.
+  The checks use a synthetic archive of 72 rows. They verify which rows reach training and check errors on separate data. They do not require a fixed error ratio or prove that a real detector works. To test the effect of contaminated data, start both runs with identical weights and use the same training settings.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -32,8 +20,8 @@ starterCode: |
     flagged: boolean[],
     providedModel?: tf.Sequential,
   ): Promise<{ model: tf.Sequential; history: tf.History }> {
-    // Only one of these two arguments decides what this model is allowed to
-    // learn. Everything else about the stack is in the instructions.
+    // Keep rows whose flagged entry is false.
+    // The instructions specify the layers and training settings.
     return null; // your code here
   }
 solutionCode: |

@@ -23,11 +23,11 @@ concept:
     mlCode: "const loss = tf.losses.meanSquaredError(labels, predictions)"
     tier: structural
 consequence:
-  narrative: "Now we can quantify exactly how wrong the network is. The rest of training exists to make that number smaller."
+  narrative: "Farah can now measure the prediction errors. Training will try to reduce that loss."
 hints:
   - level: nudge
     content: |
-      TFJS ships both losses. MSE is the mean of the squared differences between the true labels and the model's predictions. Binary cross-entropy over logits is tf.losses.sigmoidCrossEntropy, which applies the sigmoid for you. The third function is this lesson's form rule, written out. It picks between cross-entropy's two spellings, not between the two losses.
+      TensorFlow.js supplies both losses. MSE averages the squared prediction errors. tf.losses.sigmoidCrossEntropy takes raw scores and applies sigmoid itself. The third function chooses the cross-entropy API that matches the output format.
   - level: guidance
     content: |
       Both TFJS loss calls return one scalar for the batch with their default reduction. A logit is the raw score before sigmoid and can be negative. The logits form applies sigmoid internally, so passing probabilities applies it twice and changes the loss. For the third function, require the caller to declare probabilities or logits; an activation name alone is insufficient.
@@ -64,7 +64,9 @@ You will calculate prediction errors and choose a loss function that matches the
 
 ## How Wrong Are We?
 
-0.52 against a true label of 1.0 means the network is off by 0.48. Square that and you get 0.23, and averaging the squares across every prediction in a batch gives you mean squared error: one number that answers Farah's question. If you've written `expect(actual).toBe(expected)`, you've used the same idea before. A loss supplies a numeric objective instead of a pass/fail assertion. Some losses are not distances in the mathematical sense. A lower value on fixed examples means a better fit under that objective, not necessarily better performance on new data.
+A prediction of 0.52 against a label of 1.0 has an error of 0.48. Square it and you get about 0.23. Average those squared errors across the batch to get **mean squared error**, or MSE.
+
+A test assertion such as `expect(actual).toBe(expected)` tells you pass or fail. A loss gives training a number to reduce. Some losses are not mathematical distances. Compare losses on the same examples using the same rule. A lower training loss alone does not prove the model works on new data.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -94,7 +96,12 @@ console.log('Perfect MSE:', perfectLoss.dataSync()); // 0
 tf.dispose([labels, predictions, mse, logits, bce, perfect, perfectLoss]);`}
 </CodeBlock>
 
-One naming trap before the rest of the module builds on this. A **logit** is the number a neuron emits before any sigmoid touches it: unbounded, positive or negative, the raw weighted sum from module 2. `tf.losses.sigmoidCrossEntropy` takes logits and applies the sigmoid itself. The compile option you will use in lesson 4, `loss: 'binaryCrossentropy'`, takes probabilities, the numbers a sigmoid output layer has already produced. They are the same loss reached from two ends. Your task already picked cross-entropy, so what is left to pick is the form, and the last layer decides that. A sigmoid output layer hands you probabilities, so you call `binaryCrossentropy`. A linear output trained as a logit goes to `sigmoidCrossEntropy`. An unfamiliar activation tells you too little to choose: first establish what the output represents. Mix them up and nothing throws; the network learns the wrong thing quietly, which is the category of bug this course hunts hardest.
+A **logit** is the raw score before sigmoid. It can be negative or positive, with no fixed upper or lower bound. Binary cross-entropy has two API forms:
+
+- `tf.losses.sigmoidCrossEntropy` takes logits and applies sigmoid itself.
+- `loss: 'binaryCrossentropy'` takes probabilities already produced by a sigmoid output layer. You will use it in lesson 4.
+
+Choose the form that matches what the output represents. Do not pass probabilities to the logits API, because it would apply sigmoid again. An unfamiliar activation name is not enough information to choose.
 
 The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 
@@ -116,20 +123,22 @@ What flattens is the sigmoid you put in front of it. Backprop multiplies by `σ'
 - MSE + sigmoid: `2(ŷ - y) · ŷ(1-ŷ) = -1.98 × 0.0099 = -0.0196`
 - BCE + sigmoid: the `log` and the `σ'` cancel exactly, leaving `ŷ - y = -0.99`
 
-For this example, BCE gives a derivative about fifty times larger in magnitude with respect to the output logit. The ideal, unclipped calculation cancels the final sigmoid factor. Gradients with respect to weights still include the derivatives of the earlier operations; hidden layers can still have vanishing or zero gradients. Numerically stable logits-based implementations also avoid taking logs of rounded probabilities.
+Here, the BCE derivative with respect to the output logit is about fifty times larger. In the ideal, unclipped calculation, the final sigmoid derivative cancels out.
+
+Earlier operations still affect the weight gradients. Hidden layers can therefore still have very small or zero gradients. A stable logits API also avoids taking logs of probabilities rounded to zero or one.
 
 Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`.
 </DerivationDrawer>
 
 ## Challenge
 
-Score the DEEP SCAN classifier's first predictions with both losses, then write the rule that picks which of cross-entropy's two forms your model needs.
+Help Farah measure the first prediction errors. Write both loss functions, then choose the cross-entropy form that matches the model output.
 
 <Exercise slug="mse-loss" />
 
 <RecallPrompt
   question="For sigmoid binary classification, what is the ideal unclipped BCE derivative with respect to the output logit?"
-  answer="Not because MSE's own slope goes flat: at a label of 1 and a prediction of 0.01 it is -1.98, close to its largest magnitude for predictions in [0, 1]. The sigmoid in front of it is the problem, with a slope of 0.0099 there, and backprop multiplies the two. In the ideal unclipped BCE-plus-sigmoid calculation, the derivative with respect to the output logit is prediction minus label. Stable logits-based implementations avoid taking logs of rounded probabilities. Earlier layers still contribute their own derivative factors."
+  answer="For the ideal, unclipped calculation, BCE with sigmoid gives prediction minus label as the derivative with respect to the output logit. MSE with sigmoid has an extra sigmoid derivative, which can make the update small when the prediction is confidently wrong. Stable logits APIs also avoid taking logs of rounded probabilities. Earlier layers still affect the gradient."
   checks={[
     {
       "kind": "choice",
@@ -166,7 +175,7 @@ Score the DEEP SCAN classifier's first predictions with both losses, then write 
 
 <Epilogue>
 
-Farah writes 0.6931 on the lab glass, dated and initialed. A model that returns 0.5 on every row has binary crossentropy ln(2), whatever the binary labels are. She puts a second space beside it for the training-label prevalence baseline; a skewed archive may make a constant other than 0.5 a stronger comparison. Demir leaves room for the held-out score too.
+Farah writes 0.6931 on the lab glass, with the date and her initials. That is the binary cross-entropy of a model that predicts 0.5 for every row, whatever its label. She leaves space for another baseline: always predicting the fraction of positive labels in training. That may be a stronger comparison if one class is more common. Demir leaves room for the score on separate test rows too.
 
 <Dialogue speaker="Dr. Farah">
 A falling loss earns another check. It does not earn deployment.

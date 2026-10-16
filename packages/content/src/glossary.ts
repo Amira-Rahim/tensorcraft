@@ -33,14 +33,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "tensor",
     definition:
-      "A multi-dimensional array of numbers with optional GPU acceleration. It is the core data structure in TensorFlow.js.",
+      "An array of numbers that TensorFlow.js uses for calculations and model inputs. Its values can form a list, a grid, or a layout with more axes.",
     aliases: ["tensors"],
     scope: "global",
   },
   {
     term: "rank",
     definition:
-      "The number of dimensions (axes) a tensor has: a scalar is rank 0, a vector is rank 1, a matrix is rank 2. Distinct from matrix rank in linear algebra, which counts the independent directions a matrix preserves.",
+      "The number of axes a tensor has: one number has rank 0, a list has rank 1, and a grid has rank 2. Matrix rank in linear algebra is a different count: the number of independent rows or columns.",
     aliases: ["ranks"],
     scope: "global",
   },
@@ -61,7 +61,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "dimensions",
     definition:
-      "The independent axes of a tensor along which its values are arranged. A 2D tensor has rows and columns.",
+      "The axes along which values are arranged. A list has one axis; a grid has two, rows and columns.",
     aliases: ["dimension"],
     scope: "global",
   },
@@ -75,7 +75,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "row-major",
     definition:
-      "A memory layout where the values of each row are stored next to each other before moving to the next row.",
+      "Reading or arranging values one row at a time, from left to right, before moving to the next row.",
     aliases: ["row major"],
     scope: "deep-orbit",
   },
@@ -84,14 +84,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "matmul",
     definition:
-      "Matrix multiplication, the operation that combines two matrices by taking dot products of rows and columns.",
+      "Matrix multiplication: multiply each value in a row by its matching value in a column, then add the products.",
     aliases: ["matrix multiplication", "matmuls"],
     scope: "global",
   },
   {
     term: "broadcasting",
     definition:
-      "Shapes align from the last axis backwards. Each pair must match or include a size-1 axis; missing axes act as size 1. A [2] tensor subtracts from every row of a [5, 2] batch.",
+      "Applying a smaller tensor across a larger one, such as subtracting the same two means from every row of a [5, 2] grid. Shapes match from right to left: sizes must be equal or one must be 1, with missing axes treated as size 1.",
     scope: "global",
   },
   {
@@ -104,7 +104,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "normalization",
     definition:
-      "Transforming values to a chosen scale, such as a range or number of standard deviations. Fit learned scaling statistics on training data and reuse them at inference.",
+      "Putting values on a chosen scale, such as 0 to 1. Calculate any learned scaling statistics from training data, then reuse them for new readings.",
     aliases: ["normalize", "normalizing"],
     scope: "global",
   },
@@ -138,7 +138,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "classification",
     definition:
-      "Predicting one or more labels from a defined set. Cross-entropy is a common classification loss; the appropriate loss depends on the task and output contract.",
+      "Predicting which label or labels apply to an example. Cross-entropy is a common loss, but the choice depends on the task and output format.",
     aliases: ["classifications"],
     scope: "global",
   },
@@ -202,7 +202,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "activation",
     definition:
-      "A function applied to a layer output. Nonlinear activations such as ReLU or sigmoid let a network represent more than an affine transformation; a linear activation leaves values unchanged.",
+      "A function applied to a layer's output. Nonlinear activations such as ReLU let stacked dense layers represent more than one affine calculation; a linear activation leaves values unchanged.",
     aliases: ["activations", "activation function"],
     scope: "global",
   },
@@ -251,7 +251,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gradient",
     definition:
-      "A vector of partial derivatives showing how a scalar function changes with each parameter. Its negative gives a local direction of steepest decrease under the usual Euclidean distance.",
+      "A list of slopes, one per parameter, showing how each affects a single output such as loss. Under ordinary Euclidean distance, its negative points toward the steepest local decrease; a large step can still increase the loss.",
     aliases: ["gradients"],
     scope: "global",
   },
@@ -265,7 +265,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "chain-rule",
     definition:
-      "The calculus rule for differentiating composed functions, which backpropagation uses to pass gradients through layers.",
+      "The rule for finding how a change passes through nested functions: multiply their local derivatives. Backpropagation applies this rule through the network.",
     aliases: ["chain rule"],
     scope: "global",
   },
@@ -278,7 +278,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "backward-pass",
     definition:
-      "Propagating the loss gradient back through the network so every weight ends up with a gradient. The optimizer is what applies those gradients.",
+      "Working backward from the loss to calculate parameter gradients. The optimizer uses those gradients to change the weights afterward.",
     aliases: ["backward pass"],
     scope: "global",
   },
@@ -299,7 +299,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "mae",
     definition:
-      "Mean absolute error: the average absolute difference between predictions and targets, in target units. Each additional unit of error contributes linearly; MSE instead squares each error.",
+      "Mean absolute error: average the sizes of the prediction errors, ignoring their signs. It uses the target's units; MSE squares the errors instead.",
     aliases: ["MAE", "mean absolute error"],
     scope: "global",
   },
@@ -320,7 +320,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gradient descent",
     definition:
-      "An optimization method that steps parameters opposite the gradient. The step size matters: a finite step can increase the loss or overshoot.",
+      "Updating parameters by taking a step opposite their loss gradients. A step that is too large can overshoot or increase the loss.",
     aliases: ["descent"],
     scope: "global",
   },
@@ -334,7 +334,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "learning-rate",
     definition:
-      "A scale factor for an optimizer update. Too large a value can cause overshoot or divergence; too small a value can make progress slow.",
+      "A setting that scales each optimizer update. Too large can overshoot or make loss grow; too small can make training slow.",
     aliases: ["learning rate"],
     scope: "global",
   },
@@ -348,7 +348,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "batching",
     definition:
-      "Grouping examples so a model processes several together. Batch size affects memory, throughput and gradient estimates; larger batches are not always faster or better.",
+      "Grouping examples so a model processes several together. Batch size changes memory use, speed, and the training updates; larger is not always better.",
     aliases: ["batch", "batches"],
     scope: "global",
   },
@@ -422,14 +422,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "logit",
     definition:
-      "The raw number a neuron emits before any sigmoid or softmax touches it: unbounded, positive or negative. Losses that take logits apply the squashing function themselves; losses that take probabilities expect it already applied.",
+      "A raw model score before sigmoid or softmax, which can be negative or positive without fixed bounds. A loss that expects logits applies the output activation itself; a loss that expects probabilities needs it applied already.",
     aliases: ["logits"],
     scope: "global",
   },
   {
     term: "hyperparameter",
     definition:
-      "A setting governing a model or training procedure, such as layer width or learning rate. It is chosen or scheduled outside ordinary weight updates and may be tuned using validation data.",
+      "A setting you choose for a model or training run, such as layer size or learning rate. It is separate from the weights learned by ordinary training updates and can be tuned using validation data.",
     aliases: ["hyperparameters"],
     scope: "global",
   },
@@ -443,7 +443,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "validation split",
     definition:
-      "Data reserved from weight updates to guide model choices. TFJS validationSplit takes the last rows; choose the split deliberately and preserve time or group boundaries where the task requires them.",
+      "Data kept out of weight updates and used to guide choices such as when to stop training. TensorFlow.js validationSplit takes the last rows, so choose their order carefully and preserve any time or group boundaries.",
     aliases: ["validation set", "validationSplit"],
     scope: "global",
   },
@@ -516,7 +516,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "attention",
     definition:
-      "A mechanism that computes scores between representations and uses derived weights to combine values. A large weight identifies a contribution to that combination, not a physical cause.",
+      "Scoring which input representations to use, then combining their values with weights derived from those scores. A large weight shows a contribution to the combination, not proof of a physical cause.",
     scope: "global",
   },
   {
@@ -646,14 +646,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "fourier-transform",
     definition:
-      "A transform that expresses a signal in complex sinusoidal components. Peaks in a finite recording do not by themselves identify separate physical sources.",
+      "Expressing a signal as a combination of waves at different frequencies, with an amplitude and phase for each. Peaks in a short recording alone do not prove there are separate physical sources.",
     aliases: ["fourier transform"],
     scope: "deep-orbit",
   },
   {
     term: "fft",
     definition:
-      "Fast Fourier Transform: an efficient algorithm for the discrete Fourier transform, mapping a finite sample sequence to frequency bins.",
+      "Fast Fourier Transform: an efficient way to calculate the discrete Fourier transform. It turns a finite list of samples into frequency bins, each representing a frequency in the calculation.",
     aliases: ["FFT"],
     scope: "deep-orbit",
   },
@@ -687,21 +687,21 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "spectral-leakage",
     definition:
-      "Energy from a frequency component appearing across multiple transform bins because a finite observation window spreads its spectrum. A non-integer number of cycles is a common example.",
+      "A tone spreading into several frequency bins when only a short recording is analyzed. It often occurs when the recording does not contain a whole number of cycles.",
     aliases: ["spectral leakage"],
     scope: "deep-orbit",
   },
   {
     term: "main lobe",
     definition:
-      "The cluster of adjacent frequency bins a single tone occupies after windowing. A wider main lobe means coarser frequency resolution.",
+      "The main cluster of frequency bins around a tone after windowing. A wider cluster makes nearby tones harder to tell apart.",
     aliases: ["main lobes", "mainlobe"],
     scope: "deep-orbit",
   },
   {
     term: "sidelobe",
     definition:
-      "A smaller lobe of a window spectrum outside its main lobe. Sidelobe levels and decay describe leakage strength away from a component, not a hard cutoff in frequency.",
+      "A smaller peak in a window's spectrum, away from its main peak. Its height and decay describe how much leakage reaches other frequencies, rather than a cutoff where leakage ends.",
     aliases: ["sidelobes", "side lobe", "side lobes"],
     scope: "deep-orbit",
   },
@@ -764,7 +764,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "kalman-filter",
     definition:
-      "A recursive estimator that predicts a hidden state with a dynamics model, then updates it using measurements and uncertainty estimates. The basic Kalman filter assumes linear state and measurement relationships.",
+      "Estimating an unseen state by predicting it, then combining that prediction with measurements according to their uncertainties. The basic Kalman filter assumes linear relationships for both the state changes and measurements.",
     aliases: ["kalman filter"],
     scope: "deep-orbit",
   },
@@ -806,14 +806,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "quantization",
     definition:
-      "Representing weights or computations at lower numeric precision. TFJS storage-quantized weights decode to floating point at load; download savings do not establish faster inference or lower runtime memory.",
+      "Using fewer bits to represent weights or calculations. TensorFlow.js storage-quantized weights become floating-point values when loaded, so a smaller download does not guarantee faster predictions or lower runtime memory.",
     aliases: ["quantize", "quantized"],
     scope: "global",
   },
   {
     term: "pruning",
     definition:
-      "Removing weights or structural units according to an importance rule, then checking quality. Zeroing dense weights need not reduce stored slots or computation; structured removal can change shapes and runtime cost.",
+      "Removing weights or units, then checking whether predictions remain useful. Setting dense weights to zero alone may leave the same storage and calculations; removing whole units can change both.",
     aliases: ["prune", "pruned"],
     scope: "global",
   },
@@ -834,7 +834,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sparsity",
     definition:
-      "The fraction of entries that are zero. Dense representations retain zero-valued slots; reducing storage or computation requires a format or implementation that can exploit the zeros.",
+      "The fraction of values that are zero. Saving space or work requires storage or code that can skip those zeros; ordinary dense arrays still keep their slots.",
     aliases: ["sparse"],
     scope: "global",
   },
@@ -876,7 +876,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "data-drift",
     definition:
-      "A change in the distribution of incoming data relative to a reference period. It can affect performance, but it does not by itself prove an accuracy decline.",
+      "Incoming data changing from the data in a reference period. This may affect predictions, but the change alone does not prove accuracy has fallen.",
     aliases: ["data drift"],
     scope: "global",
   },
@@ -923,14 +923,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "feature",
     definition:
-      "An input attribute used for prediction, such as amplitude or a category encoded numerically. In this course, the feature tensor is named xs.",
+      "An input measurement or property used for prediction, such as amplitude or a category stored as numbers. This course names the feature tensor xs.",
     aliases: ["features"],
     scope: "global",
   },
   {
     term: "label",
     definition:
-      "The target value used to train or evaluate a prediction, such as a class or future reading. In this course, the target tensor is named ys.",
+      "The answer used to train or check a prediction, such as a class or a later reading. This course names the label tensor ys.",
     aliases: ["labels"],
     scope: "global",
   },

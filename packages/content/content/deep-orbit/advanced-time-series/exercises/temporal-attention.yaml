@@ -3,11 +3,17 @@ lessonSlug: temporal-attention
 title: "Temporal Attention Over a Window"
 mlContent: model
 instructions: |
-  Build `temporalAttention(sequence, scorerWeights)`. `sequence` is a [T, d] tensor of readings; `scorerWeights` is a [d + 1, 1] linear scorer whose last row weights position. Concatenate a position column onto the readings, evenly spaced from 0 at the first step to 1 at the last. Score every step with one matMul, then softmax those scores into `weights`, a [T] tensor holding one weight per step. Pool the ORIGINAL readings under those weights into a [d] `summary`, and return `{ summary, weights }` with both still tensors. Skip the position column and the scorer's shape will not line up.
-  Remove only the batch axis. A value width of one must still return shape [1], not a scalar. The sequence is non-empty; for a single time step its position is 0. Free intermediates with tf.tidy, preserving caller-owned inputs and both returned tensors.
+  Build temporalAttention(sequence, scorerWeights). sequence contains readings with shape [T, d]. scorerWeights has shape [d + 1, 1]. Its last row gives a weight to position.
+
+  Add a position column to sequence. Positions run evenly from 0 at the first step to 1 at the last. For a single step, use position 0. Multiply these extended readings by scorerWeights to get one score per step. Flatten those scores and apply softmax to produce weights with shape [T].
+
+  Use those weights to combine the original readings, without the extra position column. The resulting summary has shape [d]. Return { summary, weights }, keeping both as tensors.
+
+  Remove only the batch axis. When d is 1, summary must still have shape [1], not a scalar. The sequence is non-empty. Use tf.tidy to free temporary tensors while keeping the caller's inputs and both returned tensors alive.
 starterCode: |
   function temporalAttention(sequence, scorerWeights) {
-    // The window you score is wider than the window you pool.
+    // Add position when calculating scores.
+    // Combine the original readings, without the position column.
     return { summary: null, weights: null };
   }
 solutionCode: |

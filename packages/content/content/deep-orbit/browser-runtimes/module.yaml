@@ -2,15 +2,8 @@ slug: browser-runtimes
 title: "Browser ML Runtimes"
 worldId: deep-orbit
 order: 4
-description: |
-  Take your trained model out of the lab and into the browser. Nazari
-  challenges Demir to deploy the DEEP SCAN classifier on the ship's
-  browser-based dashboard, where a new reading arrives every second and
-  the verdict has to be on screen before the next one lands. You'll set
-  up TensorFlow.js, export a trained model, load and cache it, run
-  real-time inference, and compare TF.js, ONNX Runtime Web, and
-  Transformers.js the way a JavaScript engineer compares frameworks.
-summary: "Run a trained model in the browser: TensorFlow.js setup, exporting, loading and caching a model, real-time inference (a prediction per reading), and how TensorFlow.js, ONNX Runtime Web, and Transformers.js compare."
+description: "Nazari wants DEEP SCAN on the ship's browser dashboard. A reading arrives every second, and its prediction must appear before the next one. Help Demir set up TensorFlow.js, export and load a model, cache it, and run repeated predictions. Compare TensorFlow.js, ONNX Runtime Web, and Transformers.js on the tasks they support."
+summary: "Set up a browser runtime, export and load model files, run repeated predictions, and compare three JavaScript ML tools."
 lessonCount: 6
 prerequisites:
   - foundations

@@ -15,7 +15,7 @@ context:
   narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled; the error is 12x the normal maximum. Farah: 'That is our anomaly score.'"
   speaker: "Dr. Farah"
 concept:
-  explanation: "Reconstruction error scores each sample by how badly the autoencoder rebuilds it: one number, high when the input doesn't fit the learned patterns."
+  explanation: "Reconstruction error measures the difference between an input and the autoencoder's rebuilt version. It gives one score per input. A high score means the model rebuilt it poorly."
   bridge:
     jsTitle: "git diff"
     jsCode: "git diff HEAD -- file.ts  // what changed from baseline?"
@@ -29,7 +29,7 @@ hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
   - level: guidance
-    content: "The score is a comparison, so both sides have to be real: push the reading through the model, then measure how far the rebuild landed from what you sent in. Squaring the per-feature gaps and averaging them collapses that to one number, which is what a threshold can be compared against, and also what it costs you: the score says how badly the rebuild missed, never which feature moved. The model expects a batch, so a single reading goes in as one row and comes back as one row. Every step here allocates, and the intermediates are yours to release"
+    content: "Pass the reading through the model. For each feature, square the difference between the input and the rebuilt value, then average those squared differences. That gives one score, but does not tell you which feature caused it. The model expects a batch, so wrap a single reading in one row. Release the temporary tensors when you finish."
   - level: solution
     content: "return tf.tidy(() => { const inputTensor = tf.tensor2d([input]); const reconstructed = model.predict(inputTensor) as tf.Tensor; const mse = tf.losses.meanSquaredError(inputTensor, reconstructed); return mse.dataSync()[0]; });"
 keywords:
@@ -52,13 +52,13 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 Then run your diff, Ensign. And when it fires, tell me which feature it says changed.
 </Dialogue>
 
-The autoencoder's baseline is its learned representation of normal signals, and the error score measures how far a sample lands from it: one number per sample. Hold Farah's question while you build the score; it will not answer her.
+The autoencoder learns patterns from normal signals. Its error score measures how well it rebuilds each reading. You get one number per reading, so Farah's question still needs a separate check: which feature contributed most?
 
 You will measure reconstruction error and inspect which features contributed to a missed anomaly.
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Compare raw and baseline-relative per-feature errors without treating either as a diagnosis"]} />
 
-## Measuring the Diff
+## Measure the reconstruction error
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -72,11 +72,9 @@ function computeAnomalyScores(
 ): number[] {
   return tf.tidy(() => {
     const reconstructed = autoencoder.predict(signals) as tf.Tensor2D;
-    // Per-sample MSE: mean of squared differences across features.
-    // Here is where Demir's git-diff analogy stops paying out: a diff
-    // names the exact lines that changed and you can patch them. This
-    // collapses eleven dimensions into ONE scalar. It says how wrong,
-    // never which feature, which position, which channel.
+    // Average the squared differences across features to get one MSE per sample.
+    // Unlike git diff, this score does not identify individual changes.
+    // It combines all eleven features into one number.
     const errors = tf.mean(tf.square(tf.sub(signals, reconstructed)), 1);
     return Array.from(errors.dataSync());
   });
@@ -116,7 +114,7 @@ const ordinaryNoisyError = mse([0, 0.2]);  // 0.02: an ordinary sensor variation
 
 This is a constructed mapping, not a trained benchmark. It disproves the guarantee that an unseen input must reconstruct badly. The incident exercise below asks you to inspect a detector that missed a confirmed anomaly.
 
-## Feature-Level Error Analysis
+## Check the error for each feature
 
 <CodeBlock language="typescript" title="feature-errors.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -154,12 +152,10 @@ console.log('Top contributors:');
 // Everything else: < 0.1
 // (these rounded components give a mean near 6.2 across eleven features)
 
-// That ranking is not yet an answer. Raw squared error also ranks by how
-// hard each feature is to rebuild. Module 5 z-normalizes all eleven
-// features to mean 0 and std 1, so their INPUT scales match, but their
-// reconstruction errors on NORMAL data may differ: the bins the autoencoder rebuilds worst sit near the top
-// of a calm reading's map too. Divide each feature's error by its own
-// normal error before reading the ranking.
+// Even with all eleven inputs z-scored to mean 0 and std 1, their
+// normal reconstruction errors can differ. A feature that is hard to
+// rebuild may rank highly on normal readings too. Compare each error
+// with that feature's usual normal error before interpreting the ranking.
 function relativeFeatureErrors(
   autoencoder: tf.LayersModel,
   signal: tf.Tensor2D,
@@ -190,7 +186,7 @@ function relativeFeatureErrors(
 `}
 </CodeBlock>
 
-Raw squared errors explain contributions to MSE. Ratios answer a different question: which errors are large relative to their usual size? Inspect both. Neither identifies the physical cause. The incident exercise uses absolute errors and absolute-error baselines instead of squared errors; do not mix these units.
+Squared errors show how much each feature adds to MSE. Error ratios show how large each error is compared with its usual size. Check both, but remember that neither tells you the physical cause. The incident exercise uses absolute errors rather than squared errors. Compare them with absolute-error baselines so the units match.
 
 ## Challenge
 
@@ -203,28 +199,28 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
 <Exercise slug="incident-missed-anomaly" />
 
 <RecallPrompt
-  question="Separate an aggregate reconstruction score from its individual feature contributions."
-  answer="The scalar tells you how far the reconstruction is from the original across all features combined; a high value means this model reconstructed it poorly, which may indicate an anomaly or a model failure. It does not tell you which feature, dimension, or channel caused the deviation. Compute per-feature squared errors to locate the reconstruction mismatch. Those contributions still do not identify its physical cause."
+  question="What can the total reconstruction error tell you, and what needs a separate feature-by-feature check?"
+  answer="The total score combines the reconstruction errors from all features. A high score means the model rebuilt the input poorly. The input may be unusual, or the model may be performing poorly. Calculate the squared error for each feature to see where the biggest differences are. Those differences still do not explain the physical cause."
   checks={[
     {
       "kind": "choice",
-      "question": "What does a high scalar reconstruction MSE establish?",
+      "question": "What does a high reconstruction MSE tell you?",
       "options": [
         {
           "text": "The exact channel responsible for the mismatch.",
-          "feedback": "The aggregate scalar combines feature contributions."
+          "feedback": "The total score combines errors from all features."
         },
         {
           "text": "The model reconstructed that sample poorly across its features.",
-          "feedback": "A large aggregate mismatch may signal an anomaly or a model failure."
+          "feedback": "A large reconstruction error may mean the input is unusual or the model is performing poorly."
         },
         {
           "text": "The physical cause of an anomaly.",
-          "feedback": "Reconstruction error is a mismatch score, not a causal diagnosis."
+          "feedback": "The score measures a difference. It does not explain what caused it."
         }
       ],
       "correctIndex": 1,
-      "explanation": "A large aggregate mismatch may signal an anomaly or a model failure."
+      "explanation": "A large reconstruction error may mean the input is unusual or the model is performing poorly."
     },
     {
       "kind": "choice",
@@ -236,7 +232,7 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
         },
         {
           "text": "Only the same aggregate MSE with more decimal places.",
-          "feedback": "Greater numeric precision does not separate the feature contributions."
+          "feedback": "More decimal places will not show how much each feature contributed."
         },
         {
           "text": "The parameter count alone.",
@@ -256,14 +252,14 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
     "Per-feature errors locate reconstruction mismatches. Aggregate MSE averages them into one number; neither establishes that a particular feature is physically faulty."
   ]}
   bridge="git diff reports edits; reconstruction error measures a numerical gap between an input and its reconstruction. A high gap alone does not identify its cause."
-  youCanNow="Compute per-sample reconstruction error as an anomaly score and run feature-level error analysis to identify which signal dimensions drive the deviation."
+  youCanNow="Calculate a reconstruction score for each reading, then check which features contribute most to the error."
 />
 
 > **DISPATCH archive · field intercept #13-A:** Operator Lin's CV cell logged a similar error spike last quarter: box-overlap error 12x baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
 
 <Epilogue>
 
-Demir pins the per-feature error map to the shared display: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying nearly the entire error on its own, with fft_6 and amplitude a long way behind it and the other eight flat below 0.1. He is still labeling the axes when ARIA speaks up, unprompted.
+Demir puts the error for each feature on the shared display. Almost all of it comes from fft_5, the frequency bin centered at 72 Hz, nearest to the 73.4 Hz component. The errors for fft_6 and amplitude are much smaller. The other eight are below 0.1. He is still labeling the axes when ARIA speaks up.
 
 <Dialogue speaker="ARIA">
 Request. When the pipeline is idle, replay the sensor windows attached to my last 400 decisions through the autoencoder. My rules and the new detector disagree more often. I would like the error scores beside those decisions.

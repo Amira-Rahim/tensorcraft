@@ -2,15 +2,21 @@ slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
 instructions: |
-  Assemble the module's three detectors into one verdict, with the statistical one moved onto a rolling window. A reading pegged at the sensor's 1.00 ceiling scores 3.2 sigma against eleven days of archive and 32 against the eight recent readings you get here, because the sigma count belongs to the spread you divide by. That window of recent normalized amplitudes is what the statistical check gets; the autoencoder's and the LSTM's scores for the latest reading come in beside it. Compute all three verdicts yourself.
+  Combine three detector results into one alert. The statistical detector uses the eight recent normalized amplitudes in window. The autoencoder's reconstruction error and the LSTM's prediction are supplied separately.
 
-  1. Statistical. Take the z-score of `actual` against the window, using `tf.moments` for the window's center and spread. Report it signed, so a reading below the center comes back negative, and flag when |z| > 3.
-  2. Autoencoder. Flag when `reconstructionError` > `reconThreshold`.
-  3. LSTM. Flag when |`predicted` - `actual`| > `predTolerance`, which is quoted on the same 0-to-1 amplitude scale as `actual`, not in sigmas.
+  1. Statistical: use tf.moments to calculate the window's mean and variance. Calculate the signed z-score of actual. Values below the mean have a negative z-score. Flag when its absolute value is greater than 3.
+  2. Autoencoder: flag when reconstructionError > reconThreshold.
+  3. LSTM: flag when Math.abs(predicted - actual) > predTolerance. Both the difference and the tolerance use the 0-to-1 amplitude scale, not z-scores.
 
-  `votes` is how many of the three flagged, and a majority (at least 2 of 3) sets `isAnomaly`. Return `{ zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }`.
+  Count the flagged results in votes. At least 2 votes makes isAnomaly true. Return { zScore, verdicts: { statistical, autoencoder, lstm }, votes, isAnomaly }.
 
-  The window must be non-empty and contain finite readings. All other arguments must be finite, and errors and tolerances must be nonnegative. Reject invalid inputs. Compare against the original window values to identify a constant window before float32 conversion. At zero spread, equality with that constant gives no statistical vote; any difference gives a vote. This exact-reading policy is for the exercise; deployment needs a measurement tolerance. Return null for that undefined z-score. Reject non-finite computed statistics, or a nonconstant window whose spread becomes zero after float32 conversion, rather than treating lost precision as a constant baseline.
+  The window must contain at least one finite reading. All other arguments must be finite. Errors and tolerances must be nonnegative. Reject invalid inputs.
+
+  Before converting to float32, check whether the original window values are all identical. If they are, return null for zScore. The statistical vote is false when actual equals that constant, and true otherwise. This exercise uses exact equality; real sensors need a measurement tolerance.
+
+  Reject non-finite calculated statistics. Also reject a window whose different values lose their variation after float32 conversion. Lost precision does not make the original window constant.
+
+  The baseline matters: a maximum sensor reading of 1.00 scores 3.2 standard deviations above the eleven-day archive mean, but 32 above this quieter window's mean. Always calculate the score from the supplied window.
 starterCode: |
   interface EnsembleVerdict {
     zScore: number | null;

@@ -11,10 +11,10 @@ scene:
 estimatedMinutes: 13
 difficulty: advanced
 context:
-  narrative: "Mirza assembles the crew for the final phase. 'We have all the pieces. Now we assemble them into a production system. Demir, lay out the architecture.' Demir designs the complete DEEP SCAN system."
+  narrative: "Mirza calls the final briefing. 'Assemble the pieces into one production system, Ensign, and show me the architecture.' Demir lays out DEEP SCAN."
   speaker: "Commander Mirza"
 concept:
-  explanation: "System architecture is dependency management at production scale: every component from the last ten modules becomes a typed stage in one pipeline, sharing one unforgiving machine."
+  explanation: "System architecture defines how the parts work together. The crew must connect the components from the last ten modules into one pipeline, all sharing the same limited machine."
   bridge:
     jsTitle: "Package Dependencies"
     jsCode: "// package.json: { dependencies: { react, tfjs, ... } }: declare, install, resolve"
@@ -74,7 +74,7 @@ Ten modules of separate pieces. Assemble them into one system, Ensign, and show 
 It's like setting up a monorepo. Each module is a package with clear inputs and outputs. I connect them with a pipeline: preprocessor, feature extractor, classifier, anomaly detector, reporter. Each stage validates its input before processing. Raw signal in, classified report out.
 </Dialogue>
 
-The deploy target is already chosen, and it is not forgiving: the repaired bridge dashboard, 512 MB of RAM, one dead capture on its record. Every architecture decision in this lesson answers to that box. Each component from the last ten modules becomes a typed stage in one pipeline, every stage sharing the machine.
+DEEP SCAN must run on the repaired bridge dashboard. It has 512 MB of RAM, and its earlier crash cost the crew a capture. Help Demir connect the components from the last ten modules. Each stage needs clear input and output types, and all of them must fit on this machine.
 
 <Dialogue speaker="Chief Nazari">
 Before anyone asks why it doesn't live on my rig: the rig outruns that dashboard three to one, and it rebooted nine times last week because I flash controllers on it. The dashboard sits on the hardened bus with a watch officer in front of it every minute of every shift. A verdict nobody is standing in front of at 0300 is wasted investigation time. It ships to the box with the person attached.
@@ -121,12 +121,9 @@ class Pipeline {
     return this;
   }
 
-  // run() walks the stages in order with one contract per hop. Before a
-  // stage sees the value, the stage's own validate() has to say yes; a
-  // refusal throws with that stage's name in the message, and the refused
-  // value never reaches its process(). A stage may be async, so its result
-  // is awaited before the next stage reads it. What that does to one bad
-  // window, a 63-sample capture handed to a stage that promised 64:
+  // Validate each stage's input before calling process(). On failure,
+  // throw with the stage name. Otherwise await the result before starting
+  // the next stage. A 63-sample window fails a stage that expects 64:
   //   await deepScan.run(shortWindow)
   //   -> Error: Validation failed at: preprocessor
   // The challenge at the end of this lesson builds this method.
@@ -213,15 +210,19 @@ function validateGraph(components: ComponentManifest[]): boolean {
 console.log('Graph valid:', validateGraph(manifest)); // true`}
 </CodeBlock>
 
-The manifest and the runner do not describe the same shape. `run()` carries one `data` value from stage to stage, which is exactly a chain: preprocessor, extractor, classifier, reporter. The manifest declares something wider. Two stages depend on `fft-extractor`, and `reporter` lists two dependencies of its own, so `reporter` needs two upstream values at the same time. A single carried variable can only ever hand it one, which is why the anomaly detector is missing from the assembled chain above.
+Compare the runner with the manifest. The runner passes one `data` value through a chain: preprocessor, extractor, classifier, reporter. The manifest describes branches. Two stages use `fft-extractor`, and `reporter` needs results from two stages. One carried value cannot provide both. That is why the chain above leaves out the anomaly detector.
 
-Running the declared graph takes a scheduler instead of a loop. It walks the manifest in dependency order and keeps each stage's output in a map keyed by stage name. `reporter` then reads both of the inputs it asked for by name. Retaining branch outputs has a memory cost. Its peak depends on scheduling, output sizes, references and buffer reuse. Neither a chain nor a graph automatically releases a TFJS tensor when a variable changes; define who disposes each output. A dependency-name check also cannot validate schemas or detect cycles. The exercise builds the chain runner; implementing the branched scheduler is outside its scope.
+To run the branches, a scheduler must run each stage after its dependencies. It saves outputs in a map by stage name, so `reporter` can read both results.
+
+Keeping those outputs uses memory. The peak depends on their sizes, when stages run, and which buffers remain in use. Reassigning a variable does not dispose a TFJS tensor. Decide which stage owns cleanup. Also check input schemas and dependency cycles; checking names alone cannot catch them.
+
+The exercise builds the chain runner. You do not need to build the scheduler for branches.
 
 The feature interfaces here are a design sketch. The three-feature binary classifier cannot consume the FFT array directly. Supply the preprocessing and model that match each other, including a separately trained eleven-feature classifier where that is the chosen architecture.
 
 ## Challenge
 
-Build the chain runner: stage contracts checked before each stage, `addStage` chaining, and one value walked from raw window to model input. The manifest walk above stays the lesson's; the runner is yours.
+Build a runner that passes one value through the stages in order. Validate each stage's input before processing it, await its result, and let `addStage` calls chain together.
 
 <Exercise slug="pipeline-architecture" />
 
@@ -254,7 +255,7 @@ Build the chain runner: stage contracts checked before each stage, `addStage` ch
 
 <LessonRecap
   whatYouLearned={[
-    "Stage types document contracts, but PipelineStage<any, any>[] erases them at the boundary. Runtime validation must check the incoming values.",
+    "Stage types describe inputs and outputs. PipelineStage<any, any>[] loses those type checks, so runtime validators must check incoming values.",
     "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
     "The manifest check resolves dependency names only. Check cycles, schemas and preprocessing separately.",
     "A single-value loop runs a chain. Multiple dependencies require a scheduler that retains outputs by stage name and runs consumers after their dependencies."
@@ -265,7 +266,11 @@ Build the chain runner: stage contracts checked before each stage, `addStage` ch
 
 <Epilogue>
 
-The diagram stays on the main display after the briefing ends. Five boxes, typed edges, raw signal in at one end and a report out the other. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA). Her calibration-tone checks still work; an unknown reading goes to review. A low classifier score can request that path, but a high score does not certify the reading. Mirza is already gone by then. Nazari stays long enough to write 47.0 in grease pencil on the corner of her board, under the four earlier numbers she has put there this month, and adds no note beside it. ARIA studies the lower corner for 1.4 seconds, which for her is a long time.
+The diagram stays on the main display after the briefing. Five boxes connect the raw signal to a report. A smaller box in the lower corner reads FALLBACK: RULE-BASED (ARIA).
+
+Her calibration-tone checks still work. Unknown readings go to review. A low classifier score can request that path, but a high score does not prove a reading is correct.
+
+Mirza has left. Nazari writes 47.0 in grease pencil beneath the four earlier numbers on her board, then leaves without a note. ARIA studies the small box for 1.4 seconds, a long time for her.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 I have reviewed the architecture. I appear to be the fallback path. It is a smaller box than I had. It is still a box.

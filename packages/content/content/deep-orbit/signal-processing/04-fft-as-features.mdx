@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. He calls it more information. Farah tells him he is right, and not for the reason he thinks."
+  narrative: "Demir adds FFT magnitudes to the classifier’s inputs. In the mission’s evaluation, accuracy rises from 78% to 87%. Farah asks him to explain what those extra inputs tell the model."
   speaker: "Ensign Demir"
 concept:
   explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and may improve performance when those features help the task."
@@ -22,14 +22,14 @@ concept:
     tier: structural
     breaks: "Both transforms derive fields from raw data. A model can combine those fields through learned weights, so their units affect the numerical conditioning of training. Large raw values do not establish feature importance. Fit any scaling on training data and reuse it at inference."
 consequence:
-  narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The FFT added nothing the samples did not already hold, but the network was never shown the samples, only three numbers squeezed out of each window. Eight bins are eight more measurements of that window, and no size of network could have recovered them from three."
+  narrative: "DEEP SCAN 2.0 scores 87% on the mission’s evaluation. Its eight FFT inputs describe differences that the original three summary features could not capture."
 hints:
   - level: nudge
     content: |
       Every bin has a fixed center, at bin index times bin width, and bin width is the sample rate over the number of samples. Work out which bin indices the band covers, then read those bins out of the magnitude array without reordering them.
   - level: guidance
     content: |
-      The feature vector has to mean the same thing in every row, and that constraint decides the rest. Bin k sits at a fixed place in hertz, so a band in hertz picks out a fixed run of k, and the two ends of the band round in opposite directions, because a bin belongs only if its own center falls inside. Work that pair of indices out of the arguments rather than off the numbers the lesson happens to use: the grader moves both the band and the sample rate. Keep the run in the order the transform produced it, and put it after the two time-domain features.
+      Each feature position must represent the same measurement in every row. Use the sample rate and capture length to find the bin spacing. Keep only bins whose centers fall inside the requested band, including its endpoints. Calculate the bounds from the arguments because the tests change them. Keep the bins in frequency order, after the two time-domain features.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -74,14 +74,14 @@ What if we feed the FFT magnitudes directly into the model? Instead of just raw 
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though: you said "more information," and you are right about the model and wrong about the window. The FFT adds nothing the samples did not already hold. But the model never saw the samples. It saw three numbers squeezed out of each window, and eight bins are eight more measurements of the same window. New information, not new data, and I trust a model more when I know which part of the work I did for it.
+That is feature engineering: deriving model inputs from the data we have. I used it to rebuild the signal analyzer on the Kepler mission. The FFT does not add information to the recorded samples. But our model only saw three summaries of those samples. Eight frequency measurements can show it differences those summaries missed. I trust the result more when we can explain what we changed.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
 Eight more measurements are not free either. Eleven inputs instead of three means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
 </Dialogue>
 
-He writes 85 on the board and signs it. He's wrong, but in the direction nobody minds. Strip the story out and what he proposed is `rawData.map(...)`: rows arrive in the shape the source produced, and you hand the consumer the shape it can actually use. Feature engineering is that same map, aimed at a model instead of a render.
+He writes 85 on the board and signs it. The measured score will be higher. His proposal works like `rawData.map(...)`: derive the fields the next part of the program needs. Here, that next part is a model.
 
 You will turn each capture into a consistent set of measurements that a model can use.
 
@@ -250,9 +250,11 @@ enhancedModel.dispose();
 // The caller still owns the supplied label tensors.`}
 </CodeBlock>
 
-Nazari was right that this is a bigger network. `countParams()` reports 673 parameters for the three-input stack and 929 for the eleven-input one, 38% more. All 256 of the added weights sit in the first layer, one for each new input on each of its 32 units. Changing the features also changed the parameter count. This comparison cannot isolate those effects. Use the same held-out rows and training budget, repeat appropriate runs and include a simpler baseline before attributing a gain to the new features. A validation score can exceed or trail a test score because of sampling or distribution differences; neither ordering proves contamination.
+Nazari is right about the size. `countParams()` reports 673 parameters for three inputs and 929 for eleven inputs, 38% more. The 256 added weights all sit in the first layer: eight new inputs times 32 units.
 
-One thing DEEP SCAN 2.0 is not: the build running on the bridge dashboard. That deployment keeps reading module 4's three min-max normalized features, and it keeps reading them for another five modules. The eleven-feature vector does its work off the dashboard first. Module 7's autoencoder trains on exactly this vector, and module 10 is where the shipped classifier is retrained on it, with a five-way head in place of the binary one.
+Both the features and parameter count changed, so this comparison cannot tell you which caused the gain. Keep the held-out rows and training budget the same, repeat runs and include a simpler baseline. Validation can score above or below test because the samples or distributions differ. Neither ordering alone proves that data leaked between the sets.
+
+DEEP SCAN 2.0 is not running on the bridge yet. The dashboard keeps using module 4’s three min-max normalized features for another five modules. The eleven-feature vector is tested separately first. Module 7’s autoencoder uses it; module 10 retrains the deployed classifier with these inputs and five output classes instead of two.
 
 ## Challenge
 
@@ -262,7 +264,7 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
 
 <RecallPrompt
   question="Why might FFT magnitudes help a model that previously received only three summary features?"
-  answer="Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
+  answer="The FFT uses the same recorded samples, but the model previously received only three summary numbers. Two windows can have the same summaries and different frequency patterns. FFT magnitudes can expose those differences to the model. Test on held-out data to find out whether those extra inputs actually improve its predictions."
   checks={[
     {
       "kind": "choice",
@@ -278,24 +280,24 @@ Build DEEP SCAN 2.0's input vector without the phase term: peak amplitude, zero-
         },
         {
           "text": "They can expose spectral differences that the three summaries discarded.",
-          "feedback": "Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
+          "feedback": "The FFT uses the same recorded samples, but the model previously received only three summary numbers. Two windows can have the same summaries and different frequency patterns. FFT magnitudes can expose those differences to the model. Test on held-out data to find out whether those extra inputs actually improve its predictions."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Relative to the recorded window, nothing new: the FFT computes from the samples, and the samples can be rebuilt from it. Relative to what the model was fed, plenty: DEEP SCAN saw three summary numbers per window, and two windows with the same peak amplitude, crossing count and phase can carry different spectra that those three numbers cannot tell apart. The eight magnitudes are more measurements of the same data, so the model has access to distinctions the three summaries may discard. Whether those distinctions improve held-out performance needs measurement."
+      "explanation": "The FFT uses the same recorded samples, but the model previously received only three summary numbers. Two windows can have the same summaries and different frequency patterns. FFT magnitudes can expose those differences to the model. Test on held-out data to find out whether those extra inputs actually improve its predictions."
     }
   ]}
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Feature engineering derives new model inputs from data you already have: no new recordings, more measurements of each one, so the pattern the model needs is in its input rather than buried under it.",
+    "Feature engineering calculates model inputs from the data you already have. Those inputs can reveal differences that earlier summaries left out.",
     "Identical summary statistics can hide different spectra. Adding FFT magnitudes preserves distinctions those summaries discard; held-out improvement still needs testing.",
     "Different feature scales can affect training. When using fitted normalization, compute its statistics on training rows and reuse them at inference.",
     "Evaluation depends on reference labels. In the fictional mission review, correcting those labels lowers the old model score before additional features recover part of the loss."
   ]}
-  bridge="Just as `rawData.map(d => ({ normalized: (d.value - min) / (max - min) }))` turns the rows an API returned into the numbers a component can render, `tf.concat([rawSignal, fftMagnitudes], 1)` hands the model measurements of the window it was never shown, so the pattern it needs is in its input instead of lost upstream of it."
-  youCanNow="Turn a hertz band into fixed bin indices, read those bins out of a signal's spectrum, and return them behind the raw features as one vector a classifier can train on."
+  bridge="Like mapping API rows into fields a component needs, feature engineering turns recorded samples into measurements a model can use."
+  youCanNow="Find the FFT bins inside a requested frequency band and return their magnitudes after the time-domain features."
 />
 
 <Epilogue>
@@ -306,6 +308,6 @@ Nazari reads the before-and-after the only way she reads anything. If the nine-p
 Nine points. That is the first idea of yours that has paid for its own investigation time, Ensign. Do not expect applause for the next one.
 </Dialogue>
 
-It goes to his head anyway, briefly. Farah is already sorting the residue: the readings even the frequency features cannot place. Most of them fall within a minute of a 73.4-second pulse, and the pulses they crowd around are not scattered either: laid on a timeline, those pulses bunch on a rough 47-minute macro-cycle. Farah files both numbers in the anomaly log, next to the entry for sample 7741.
+Demir smiles despite himself. Farah is already checking the readings the model still gets wrong. Most fall within a minute of a 73.4-second pulse. The pulses also cluster on a rough 47-minute cycle. She adds both timings to the anomaly log beside sample 7741.
 
 </Epilogue>

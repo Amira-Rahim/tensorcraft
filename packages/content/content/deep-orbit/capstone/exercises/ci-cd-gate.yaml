@@ -2,20 +2,20 @@ slug: ci-cd-gate
 lessonSlug: ci-cd-pipeline
 title: "Build a CI/CD Validation Gate"
 instructions: |
-  Write the validation gate CI runs before a model ships. It takes an array of predictions, each carrying a `predicted` label and the `actual` label, and a minimum accuracy, finite and in [0, 1]; throw for an invalid floor.
+  Help Nazari check whether the supplied predictions pass the release gate. Write `validateModelAccuracy(predictions, minAccuracy)`.
 
-  Return:
+  `minAccuracy` must be finite and between 0 and 1 inclusive. Throw if it is invalid. Return:
 
       {
-        total: number,    // every row you were handed
-        correct: number,  // rows where the two labels match
-        accuracy: number, // correct over predictions.length
-        passed: boolean,  // accuracy at or above minAccuracy
+        total: number,    // all supplied rows
+        correct: number,  // rows with two valid, matching labels
+        accuracy: number, // correct / total, or 0 for an empty batch
+        passed: boolean,  // non-empty batch with accuracy >= minAccuracy
       }
 
-  A row scores as correct only when the two labels match, so a row that arrived without an actual label is not a correct prediction. Every row still counts in the total, that one included. A score sitting exactly on the floor clears the gate. An empty batch has nothing to report: it fails, and its accuracy reads 0 rather than NaN.
+  A row is correct only when `predicted` and `actual` are both non-empty strings and match. Missing, null, or empty labels never count as correct, even when both are missing. Every row still counts in `total`.
 
-  Labels must both be non-empty strings. Missing, null or empty labels never count as correct, including when both sides are missing. This conservative gate keeps every row in the denominator. It does not measure accuracy on a fully labeled evaluation set.
+  A score exactly at the minimum passes. An empty batch fails with accuracy 0. Because rows without usable labels remain in the total, this conservative score is not accuracy measured on a fully labeled evaluation set.
 hints:
   - level: nudge
     content: |
@@ -70,8 +70,8 @@ starterCode: |
     predictions: Prediction[],
     minAccuracy: number
   ): GateResult {
-    // Two decisions before any arithmetic: what makes a row correct, and
-    // what an ungraded row does to the score.
+    // Decide which rows count as correct.
+    // Rows without usable labels still affect the score.
     return null; // your code here
   }
 solutionCode: |

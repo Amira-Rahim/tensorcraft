@@ -10,10 +10,10 @@ scene:
 estimatedMinutes: 16
 difficulty: advanced
 context:
-  narrative: "The LSTM works, but a warning ripple at step 4 is diluted to nothing by step 80. Farah introduces attention: a direct connection between any two time steps, so the forecast can read earlier representations directly."
+  narrative: "The LSTM misses a warning ripple near the start of an 80-step window. Farah tries attention so the forecast can read earlier hidden states directly."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Attention scores keys against a query and forms a weighted blend of their values. High weights are larger coefficients in that blend, not proof of causal importance."
+  explanation: "Attention compares a query with keys, then uses the resulting weights to combine values. A higher weight gives a value more influence in the blend. It does not prove that input caused the prediction."
   bridge:
     jsTitle: "CSS :focus"
     jsCode: ":focus { outline: 2px solid blue; } // highlight the active element"
@@ -26,10 +26,10 @@ consequence:
 hints:
   - level: nudge
     content: |
-      Attention scores every time step against the query, softmaxes the scores into weights, then blends the hidden states in proportion to those weights.
+      Compare the query with each key. Use softmax to turn the scores into weights, then use those weights to combine the values.
   - level: guidance
     content: |
-      The query only ever meets the keys. That product gives one score per time step, and softmax turns the scores into weights over the steps. Two booleans follow the pair of tensors in the multiply, transposeA and transposeB, and the keys are the side that needs flipping before the inner sizes meet. The values are touched once, at the end, under those weights. Three of the tests hand you keys and values of different widths, so code that pools the keys instead of the values comes back the wrong width.
+      Compare the query with every key to get one score per step. The multiply needs the matching feature dimensions to line up, so transpose the key side. Use the normalized scores to blend the values. Their width can differ from the keys, which is why blending the wrong tensor changes the output shape.
   - level: solution
     content: |
       function simpleAttention(query, keys, values) {
@@ -52,7 +52,9 @@ skillAxes: [model_arch]
 
 > **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · review finding: precursor ripple at window position 4 of 80. The forecast missed its timing.
 
-The first early arrival. The forecast the bridge trusted through two modules just missed by three and a half minutes, and the review finds a warning ripple at step 4. That suggests a hypothesis about the model's use of early evidence, not a measured cause of the miss. The ripple was in the input. This trained LSTM did not use it well enough. Demir attaches the timing worksheet Mirza ordered after the first three-second miss. The capture clocks and window boundaries agree; this check leaves the forecast as the next thing to investigate.
+The pulse arrives three and a half minutes before the forecast. The crew finds a warning ripple at step 4 of the input. Perhaps this trained LSTM did not use that early information well enough. That is something to test, not a proven cause of the miss.
+
+Demir attaches the timing worksheet Mirza requested after the first three-second miss. The capture clocks and window boundaries agree. The forecast is the next part to investigate.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 This run missed the early ripple. An LSTM can retain distant information, but ours did not retain enough of this event. Attention can read earlier hidden states directly instead of relying only on the final state. We still have to test whether that improves the forecast.
@@ -64,7 +66,7 @@ So instead of inheriting whatever survived eighty recurrent updates, the model s
 
 You will calculate attention weights to combine earlier readings according to their relevance to the current query.
 
-<LearningObjectives objectives={["Understand attention as dynamic relevance scoring: focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare direct access to earlier states with the sequential updates of an LSTM", "Implement a simple attention mechanism in TensorFlow.js"]} />
+<LearningObjectives objectives={["Understand how attention scores inputs and combines their values", "Learn the Query-Key-Value framework for computing attention weights", "Compare direct access to earlier states with the sequential updates of an LSTM", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
 ## The Query-Key-Value Framework
 
@@ -82,14 +84,12 @@ You will calculate attention weights to combine earlier readings according to th
 // Weight = softmax(score): normalize to probabilities
 // Output = weighted sum of values: focus on high-weight positions
 
-// softmax, in case this is your first meeting: exponentiate every
-// score, then divide by the sum, turning any scores into positive
-// weights that add to 1. Three numbers, worked:
+// Softmax exponentiates each score and divides by their sum:
 //   softmax([2, 1, 0]) = [e^2, e^1, e^0] / (e^2 + e^1 + e^0)
 //                      = [7.39, 2.72, 1.00] / 11.11
 //                      = [0.665, 0.245, 0.090]
-// With finite unmasked scores, exact-arithmetic weights are positive.
-// Masks or floating-point rounding can produce zero weights in practice.
+// The weights add to 1. Finite, unmasked scores have positive weights
+// in exact arithmetic. Masks or floating-point rounding can give zeros.
 
 function simpleAttention(
   query: tf.Tensor2D,   // [1, dim]: what we're looking for
@@ -97,10 +97,10 @@ function simpleAttention(
   values: tf.Tensor2D,  // [seqLen, valueDim]: information at each time step
 ): { output: tf.Tensor; weights: tf.Tensor } {
   return tf.tidy(() => {
-    // Score each key against the query. The two booleans after the
-    // tensors are transposeA and transposeB, and each one transposes its
-    // own tensor before the multiply. The true reads keys as
-    // [dim, seqLen] instead of [seqLen, dim], so the inner sizes meet.
+    // Score every key against the query.
+    // The final booleans are transposeA and transposeB.
+    // Here transposeB=true reads keys as [dim, seqLen]
+    // instead of [seqLen, dim], so the inner dimensions match.
     const scores = tf.matMul(query, keys, false, true);  // [1, seqLen]
 
     // Normalize to probabilities
@@ -113,19 +113,26 @@ function simpleAttention(
   });
 }
 
-// The weights tell you WHERE the model is "looking"
-// High weight at step 4 and step 78 = the blend leans on those steps
-// These weights are easy to plot by step. They are not a causal explanation;
-// LSTM states can also be inspected, but have a different interpretation.`}
+// A large weight gives that step more weight in the blend.
+// Steps 4 and 78 have high weights here, but this does not prove causation.
+// LSTM states can also be inspected; they have a different meaning.`}
 </CodeBlock>
 
-The worked softmax is the part that vetoes the :focus picture, and it does so with three numbers. Scores of [2, 1, 0] went in; weights of [0.665, 0.245, 0.090] came out. The winner holds two thirds, and the two losers still hold a third between them. In this example all three steps contribute and their weights sum to one. That does not make the weights calibrated relevance probabilities.
+Notice what softmax does in the example: scores [2, 1, 0] become weights [0.665, 0.245, 0.090]. The largest weight is about two thirds, but the other two steps still contribute. All three weights sum to one. That does not make them verified probabilities of relevance.
 
 <Dialogue speaker="Dr. Farah">
 :focus identifies one element. Here all three positions contribute, with different weights. That is a weighted blend, not a selected element. Masked positions can receive zero weight; very small weights can also round to zero.
 </Dialogue>
 
-One argument in that block has not come up before. `tf.matMul` takes two booleans after the two tensors, `transposeA` and `transposeB`, and each one transposes its own tensor on the way into the multiply. Here the query is [1, dim] and the keys are [seqLen, dim], so the inner sizes are dim and seqLen and they do not meet. Drop the flags and the op refuses: with a 3-wide query and 4 keys, `tf.matMul(query, keys)` stops at `Error in matMul: inner shapes (3) and (4) of Tensors with shapes 1,3 and 4,3 and transposeA=false and transposeB=false must match.` Passing true for `transposeB` reads the keys as [dim, seqLen], which is what makes the scores come out [1, seqLen]. It is the same arithmetic as `tf.matMul(query, keys.transpose())`: with the query [1, 2, 3] and the keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]], both calls return the row [1, 2, 3, 6]. The flag expresses the transpose inside the multiplication; whether it saves work depends on the backend.
+The last two arguments of `tf.matMul` are booleans: `transposeA` transposes the first tensor, and `transposeB` transposes the second.
+
+Here the query has shape [1, dim] and the keys have shape [seqLen, dim]. Matrix multiplication needs the inner dimensions to match. Without a transpose, they are dim and seqLen. With a 3-wide query and 4 keys, `tf.matMul(query, keys)` fails:
+
+`Error in matMul: inner shapes (3) and (4) of Tensors with shapes 1,3 and 4,3 and transposeA=false and transposeB=false must match.`
+
+Set `transposeB` to true. The keys are then read as [dim, seqLen], and the result has shape [1, seqLen], one score per key. This gives the same result as `tf.matMul(query, keys.transpose())`.
+
+For example, query [1, 2, 3] and keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]] produce [1, 2, 3, 6] with either form. The flag includes the transpose in the multiplication. Whether that saves work depends on the backend.
 
 <ConceptReference summary="Practice: calculate attention on a new query">
 
@@ -136,16 +143,13 @@ One argument in that block has not come up before. `tf.matMul` takes two boolean
 ## LSTM vs Attention
 
 <CodeBlock language="typescript" title="comparison.ts">
-{`// Recurrent updates depend on earlier states. Attention can connect
-// a query directly to earlier representations. This hybrid still runs
-// its LSTM encoder sequentially. Shorter paths do not guarantee better
-// retention, accuracy or latency. Measure the complete workload.
+{`// Attention reads earlier representations directly, but this example
+// still runs its LSTM encoder sequentially. A shorter path does not
+// guarantee better retention, accuracy, or speed. Measure the whole model.
 
-// Build an attention-enhanced model. tf.layers has no attention layer,
-// so we compose the real mechanism from ops: an LSTM encodes the window
-// (returnSequences keeps ALL 80 step outputs, because attention needs
-// every candidate), and simpleAttention from above decides which steps
-// the prediction actually listens to.
+// Build attention from tensor operations because tf.layers has no
+// attention layer here. The LSTM uses returnSequences to keep all 80
+// hidden states. simpleAttention combines them for the prediction.
 const encoder = tf.sequential();
 encoder.add(tf.layers.lstm({
   units: 32,
@@ -177,23 +181,33 @@ encoder.dispose(); head.dispose();
 // or a serializable custom Layer; it is not a compiled forecasting model.`}
 </CodeBlock>
 
-Those two multiplies are cheap here because the head asks one question per window: the last step is the only query, so the scores are a single row of 80. Full self-attention makes every step a query, which turns that row into 80 rows of 80. That T-by-T term is why attention's cost grows faster with sequence length than an LSTM's, and it is why models built for very long windows swap full attention for cheaper approximations of it.
+This example uses only the last step as its query, so an 80-step window produces one row of 80 scores. Full self-attention uses every step as a query. That produces 80 rows of 80 scores.
 
-Transformer attention usually projects the hidden states first. It multiplies its input by three learned matrices, W_Q, W_K and W_V, to build the query, the keys and the values separately. Those matrices are what training adjusts. They are also what separates a key from a value: the key is what a step offers for matching, the value is what that step hands over once matched. Passing `steps` for both keys and values above is the projection-free shortcut this lesson takes. That leaves the encoder and dense head as the trainable components. This example only executes their forward pass.
+For T steps, the full score matrix has T × T entries. Its cost grows faster with window length than an LSTM's. Models for very long windows may use cheaper attention methods instead.
 
-There is a second shortcut in the same function. Scaled dot-product attention divides the scores by the square root of the key width before the softmax, to control their scale. For independent query and key coordinates with zero mean and unit variance, the dot product has variance equal to that width. Large score differences can concentrate softmax weights and reduce gradients. This lesson omits the divisor to isolate the unscaled operation, and the exercise grades that version. One more term to carry forward: a head is one complete query-key-value computation like this one, and a transformer runs several of them side by side on the same input, each with its own W_Q, W_K and W_V.
+A transformer usually builds queries, keys, and values with three learned matrices: W_Q, W_K, and W_V. Training adjusts those matrices. Keys are used to calculate match scores. Values supply the information those scores will combine.
 
-Hold the query fixed and shuffle the keys and values together. Without position information, each weight follows its key and the weighted sum stays the same, apart from floating-point rounding. If you choose a new query after shuffling, that is a different computation. Our hybrid uses the last LSTM state as its query, and those states already contain sequence context. Transformers that omit recurrence need another way to represent order, such as positional encodings or relative positions. Lesson 2 introduces a positional encoding.
+Our example skips those learned projections and uses `steps` for both keys and values. The encoder and dense head are still trainable, but this example only runs their forward pass. It does not train them.
+
+Standard scaled dot-product attention divides each score by the square root of the key width before softmax. If query and key coordinates are independent, with zero mean and unit variance, their dot product has variance equal to that width. Wider keys can therefore create larger score differences. Softmax may then put almost all the weight on a few positions, reducing gradients.
+
+This lesson leaves out that division to show the unscaled operation. The exercise expects the unscaled version too.
+
+A head is one query-key-value calculation. A transformer runs several heads on the same input, each with its own W_Q, W_K, and W_V.
+
+Keep the query fixed and move each key together with its matching value. Without position information, the weighted sum stays the same, apart from floating-point rounding. Choosing a new query after shuffling would be a different calculation.
+
+Our example uses the last LSTM hidden state as its query. Those states already contain information about the sequence. A transformer without recurrence needs another way to represent order, such as positional encodings or relative positions. Lesson 2 adds position information.
 
 ## Challenge
 
-Implement attention over a sequence, with the keys and the values handed in separately. The exercise's `simpleAttention` is not the one above: its query arrives rank-1 as [d], its values can be a different width from its keys, and it returns the blend on its own rather than a `{ output, weights }` pair. Copy the block above into it and the shapes stop you before the first weight is scored.
+Implement attention with separate keys and values. Check the exercise's input and output shapes before copying the example. Its query is a rank-1 tensor with shape [d]. Values may have a different width from keys. Return only the blended values, not the `{ output, weights }` pair used above.
 
 <Exercise slug="simple-attention" />
 
 <RecallPrompt
-  question="Identify each role in query-key-value attention."
-  answer="Query asks what to look for, Keys are the candidates at each time step, and Values carry the information. The model scores each Key against the Query, normalizes with softmax, then takes a weighted sum of Values to focus on the most relevant steps. In a transformer head, three learned matrices (W_Q, W_K and W_V) build all three from the input, and those matrices are the parameters training adjusts. Keys exist to be matched against; values are what the weighted sum blends."
+  question="What do the query, keys, and values each do?"
+  answer="The query describes what to match. Keys are compared with it to produce scores. Softmax turns those scores into weights, which combine the values into an output. In a transformer head, learned matrices W_Q, W_K, and W_V build the query, keys, and values from the input. Training adjusts those matrices."
   checks={[
     {
       "kind": "choice",
@@ -201,7 +215,7 @@ Implement attention over a sequence, with the keys and the values handed in sepa
       "options": [
         {
           "text": "It is compared with keys to score relevance.",
-          "feedback": "The query expresses what the attention operation is matching against the keys."
+          "feedback": "The query is compared with each key to calculate a score."
         },
         {
           "text": "It is the final weighted sum of the values.",
@@ -209,11 +223,11 @@ Implement attention over a sequence, with the keys and the values handed in sepa
         },
         {
           "text": "It directly replaces the training labels.",
-          "feedback": "Queries are representations used for matching, not labels."
+          "feedback": "Queries help calculate matches. They do not replace training labels."
         }
       ],
       "correctIndex": 0,
-      "explanation": "The query expresses what the attention operation is matching against the keys."
+      "explanation": "The query is compared with each key to calculate a score."
     },
     {
       "kind": "choice",
@@ -225,10 +239,10 @@ Implement attention over a sequence, with the keys and the values handed in sepa
         },
         {
           "text": "They set a hard expiry time for each input.",
-          "feedback": "Keys are matching representations, not clocks."
+          "feedback": "Keys help calculate matches. They do not set an expiry time."
         },
         {
-          "text": "They provide representations that the query is scored against.",
+          "text": "They are compared with the query to calculate scores.",
           "feedback": "Query-key scores are normalized to obtain attention weights."
         }
       ],
@@ -259,14 +273,16 @@ Implement attention over a sequence, with the keys and the values handed in sepa
 />
 
 <LessonRecap
-  whatYouLearned={["Attention scores keys against a query and uses softmax weights to blend their values.", "Reading earlier states directly can help with distant dependencies. Validate the benefit on held-out sequences.", "Full self-attention builds a T-by-T score matrix. This example uses one query and keeps the sequential LSTM encoder.", "With a fixed query and no position information, jointly permuting keys and values leaves the pooled output unchanged."]}
+  whatYouLearned={["Attention scores keys against a query and uses softmax weights to blend their values.", "Reading earlier states directly can help connect distant steps. Test whether it improves predictions on separate sequences.", "Full self-attention builds a T-by-T score matrix. This example uses one query and keeps the sequential LSTM encoder.", "With a fixed query and no position information, moving keys and their matching values together does not change the weighted sum."]}
   bridge="CSS focus styling highlights browser focus state. Attention instead computes a weighted combination of inputs; it need not select a single winning time step."
   youCanNow="Implement attention over a sequence in TensorFlow.js: score every key against the query, turn the scores into softmax weights, and blend the values under them."
 />
 
 <Epilogue>
 
-The freshly validated attention model meets the live feed before anyone logs off, and shows two hotspots in every window: the amplitude spike, then the frequency shift trailing it. On the pre-contact archive, the gap between hotspot centers measures 73.4 seconds. On tonight's feed it measures 73.1. Demir reruns it and gets 73.1 again. Farah, already at the door, asks Demir to compare the raw timestamps and window boundaries before interpreting the hotspots. She adds a repeat on tomorrow's capture. After the lost spectrogram slot, her test plans name what each view can leave out.
+After validation, the crew tries the attention model on the live feed. Every window has two high-weight areas: the amplitude spike and the frequency shift that follows it. In the pre-contact archive, their centers were 73.4 seconds apart. Tonight that gap has fallen to 73.1. Demir repeats the check and gets 73.1 again.
+
+Farah is at the door when she asks him to compare the original timestamps and window boundaries. She wants another check on tomorrow's capture too. Since they lost part of a capture in the spectrogram lesson, she checks what each view might leave out.
 
 He files it under jitter anyway, because the alternative is stranger than he wants to be at two in the morning. The file does not stay closed.
 

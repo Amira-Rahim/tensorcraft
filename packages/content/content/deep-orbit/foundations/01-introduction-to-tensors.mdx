@@ -9,7 +9,7 @@ difficulty: beginner
 scene:
   location: "Archimedes, Bridge"
   time: "Six hours after first contact"
-  portraitAlt: "On the Archimedes bridge, Mirza and Demir face a holo column of unparsed signal noise while ARIA's waveform ripples on a side screen."
+  portraitAlt: "Mirza and Demir study the unfamiliar readings on the bridge display. A side screen shows the signal as a wave."
 context:
   narrative: "The research ship Archimedes has received an unfamiliar signal from Sector 7-G, a region of space the crew is monitoring. Its existing software, ARIA, follows rules written in advance. The crew needs to find patterns those rules have missed."
   speaker: "Commander Mirza"
@@ -76,8 +76,8 @@ const shape = reading.shape; // [5]`}
 </CodeBlock>
 
 For this list, `streamValues.length` and `reading.shape[0]` both give `5`.
-The full **shape** is `[5]`: one length per dimension. Tensors can also have
-rows and columns, so shape is an array.
+The full **shape** is `[5]`: a list with five numbers. Shape is an array
+because a tensor can also have rows and columns, each with its own size.
 
 The starter already copies the readings into a JavaScript array for Farah,
 then releases the tensor's memory. Leave those supplied lines in place.
@@ -110,7 +110,7 @@ the values for Farah and releases memory.
       "options": [
         {
           "text": "Yes, it trains a model on the three numbers.",
-          "feedback": "Creating a container for numbers does not adjust model weights. Training is a separate step."
+          "feedback": "This line only stores the numbers. Training a model is a separate step."
         },
         {
           "text": "No, it only creates a tensor.",

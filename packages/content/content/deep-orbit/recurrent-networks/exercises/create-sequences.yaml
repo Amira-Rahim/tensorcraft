@@ -1,13 +1,26 @@
 slug: create-sequences
 lessonSlug: sequences-matter
 title: "Window a Stream for Prediction"
-instructions: "Write makeWindows(data, windowSize, stride): slide a window of windowSize readings across the data, advancing by stride each time, and pair every window with the reading that comes immediately AFTER it (the prediction target). Windows without a following reading are dropped: you cannot train on a window whose answer the archive does not contain. Then stack what you kept into the shape a recurrent layer reads. Return { xs, ys, xsTensor, ysTensor }, where xs and ys are the arrays and xsTensor is a rank-3 tensor of shape [windows, windowSize, features] built from xs, with ysTensor of shape [windows, features] built from ys. When no window survives, there is nothing to stack: return null for both tensors. Assume positive integer windowSize and stride and equal-width, nonempty finite feature rows. The caller owns any returned tensors and must dispose them."
+instructions: |
+  Write `makeWindows(data, windowSize, stride)`.
+
+  Move a window of windowSize readings through data, advancing by stride each time. Pair each window with the reading immediately after it. Skip windows with no following reading.
+
+  Return `{ xs, ys, xsTensor, ysTensor }`:
+  - `xs`: the input windows as nested arrays, in order.
+  - `ys`: one next-reading target per window.
+  - `xsTensor`: a tensor built from xs, shaped [windows, windowSize, features].
+  - `ysTensor`: a tensor built from ys, shaped [windows, features].
+
+  If no window has a target, return empty arrays and null for both tensors. The caller will dispose any returned tensors.
+
+  Assume positive integer windowSize and stride. Each input row has the same positive number of finite features.
+
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   function makeWindows(data, windowSize, stride) {
-    // data holds one array of feature values per reading. A window is only
-    // usable if the archive also holds the reading that answers it.
+    // Keep a window only when a following reading is available as its target.
     return null; // your code here
   }
 solutionCode: |
@@ -58,7 +71,7 @@ testCode: |
       const { xs, ys, xsTensor, ysTensor } = windows([[1], [2], [3]], 3, 1);
       expect(
         xs,
-        'This call has room for exactly one window, and the reading that would answer it is past the end of the data. A window with no target cannot be trained on, so it does not enter the set.',
+        'No reading follows this window. Skip it because there is no prediction target.',
       ).toEqual([]);
       expect(ys).toEqual([]);
       expect(
@@ -117,11 +130,11 @@ testCode: |
         const { xs, ys, xsTensor, ysTensor } = windows(series, windowSize, stride);
         expect(
           xsTensor,
-          'xs is still an array of arrays. A layers model takes tensors, and this is where the time axis becomes part of the shape rather than a nesting convention.',
+          'Build xsTensor from the nested windows. The recurrent layer needs a tensor with batch, time and feature axes.',
         ).toBeTruthy();
         expect(
           xsTensor instanceof tf.Tensor,
-          'xsTensor reports a shape, but it is not a tensor. tf.tensor3d is what builds one out of the nested arrays, and that is the step where the time axis stops being a nesting convention.',
+          'xsTensor must be a real tensor. Use tf.tensor3d to build it from the windows.',
         ).toBe(true);
         expect(
           ysTensor instanceof tf.Tensor,
@@ -129,7 +142,7 @@ testCode: |
         ).toBe(true);
         expect(
           xsTensor.rank,
-          'A window is a sample with time inside it, so the stack of them is rank 3. This recurrent layer requires explicit time and feature axes. A flattened dense-model baseline would use a different input contract.',
+          'The inputs need three axes: windows, time steps and features. A flattened dense input would have a different shape.',
         ).toBe(3);
         expect(
           xsTensor.shape,

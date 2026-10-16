@@ -10,10 +10,10 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "The signals show a rhythm: a pattern that spans dozens of time steps. The classifier on the dashboard is fed one reading at a time, so the order never reaches it. Farah says they need a model with memory."
+  narrative: "Farah finds a pattern across dozens of readings. The dashboard’s classifier sees only one reading at a time, so it cannot compare that sequence. She wants a model that can use earlier readings."
   speaker: "Dr. Farah"
 concept:
-  explanation: "In sequences, order is part of the meaning: shuffle the readings and the values survive but the signal dies."
+  explanation: "A sequence is a list whose order matters. Rearranging the same readings can change the pattern they show."
   bridge:
     jsTitle: "Stream chunk order"
     jsCode: "for await (const chunk of stream) out.write(chunk) // arrival order is the file"
@@ -55,7 +55,7 @@ skillAxes: [model_arch]
 This isn't random noise. Something is repeating. The pattern spans dozens of time steps, but we hand our network one reading at a time. We need a model with memory.
 </Dialogue>
 
-Memory in a network is the next lesson's answer. Today's problem comes first, and the fastest way to see it is to slice the signal and look at what the current model can and cannot reach.
+The next lesson adds memory to the network. First, group consecutive readings so you can see the pattern that one reading cannot show.
 
 You will arrange consecutive readings into input windows and pair each window with the reading that follows it.
 
@@ -118,7 +118,7 @@ console.log(sequences[0]);
 Flattening a window into a dense input preserves order, making it a useful baseline. It assigns separate weights to each position and fixes the input length. An RNN reuses one transition rule at every step, so longer sequences do not require more recurrent parameters. That reuse can help with patterns at different positions, but does not guarantee identical responses after a time shift: the incoming state and surrounding context still matter.
 
 <Dialogue speaker="Dr. Farah">
-Look at what the slicing bought you. Row for row, nothing changed. The pattern only exists across rows, in the order they arrive: [rising, falling, rising] and [falling, rising, rising] are the same three values telling two different stories. Order carries information, and the model we have throws it away at the door.
+The individual rows have not changed. Now we can compare them in order. Rising, falling, rising is a different pattern from falling, rising, rising. Our current model scores each row alone, so it cannot use that difference.
 </Dialogue>
 
 Consider a byte-forwarding stream with no transform: reassembling its chunks out of order corrupts the file. That example preserves order without learning from it. A sequence model uses ordered values as input to a learned computation. Other JavaScript streams can inspect or transform their contents too; buffering alone is the limited comparison here.
@@ -154,15 +154,15 @@ sequentialInput.dispose();`}
 
 ## Challenge
 
-`createSequences` above stops at the windows. Training needs two more things out of the same loop: a stride, so you choose how far the window jumps between samples, and a forecasting target for every window, the single reading that arrives immediately after it. That target also moves the boundary. A window whose next reading falls past the end of the archive has no answer to train against, so it never enters the set.
+The example above collects windows only. For training, add a stride, the number of readings to advance between windows. Pair each window with the next reading as its prediction target. Skip a window if no reading follows it.
 
-Then stack what survives. The arrays are nested lists to JavaScript and nothing more; the model reads shapes, so the windows go in as one tensor of [batch, timeSteps, features] and the targets as one tensor of [batch, features]. That third axis is the whole difference between this module and the four before it, and this is where you put it.
+Return the arrays and their tensors. Input windows have shape [batch, timeSteps, features]. Targets have shape [batch, features] because each target is one reading. The extra input axis keeps the readings in time order within each window.
 
 <Exercise slug="create-sequences" />
 
 <RecallPrompt
-  question="Distinguish the order of readings from the order of features inside a reading."
-  answer="Each reading keeps the exact score it had; the list of scores just comes back in a different order. The network scores every reading in isolation, so nothing about a reading's score depends on what preceded it. Note the trap in the other direction: shuffling the three numbers INSIDE one reading does change its score, because a dense layer holds a separate weight per input position. Position within a vector matters to it. Position within a sequence does not, because it never sees the sequence at all."
+  question="Does reversing the readings have the same effect as rearranging the features inside each reading?"
+  answer="A stateless model that scores one reading at a time gives that reading the same score regardless of which reading came before it. Reversing the readings only reverses the output list. Rearranging features inside a reading can change its score, because the model learned different weights for each feature position."
   checks={[
     {
       "kind": "choice",
@@ -205,7 +205,7 @@ Then stack what survives. The arrays are nested lists to JavaScript and nothing 
 
 <LessonRecap
   whatYouLearned={["A stateless classifier given one reading at a time cannot use relationships across readings.", "Flattened windows give a dense model ordered inputs. RNNs reuse transition weights across steps, without guaranteeing time-shift invariance.", "The TF.js recurrent layers here take [batch, timeSteps, features] tensors.", "Build windows within each time split so overlapping samples do not leak into evaluation."]}
-  bridge="A stream preserves chunk order because reassembling the bytes out of order corrupts the file; a sequence model goes one step further and reads the order as meaning, so the same values in a different arrangement are a different signal to `model.predict`."
+  bridge="Reassembling stream chunks out of order can corrupt a file. A sequence model also uses order: rearranging its input readings can change the prediction."
   youCanNow="Prepare sequential data by slicing a continuous signal into sliding windows and representing it as a [batch, timeSteps, features] tensor."
 />
 

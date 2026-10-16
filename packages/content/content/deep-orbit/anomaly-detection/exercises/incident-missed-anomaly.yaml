@@ -3,13 +3,13 @@ lessonSlug: reconstruction-error
 title: "Incident: True Anomaly Slipped Through"
 mlContent: systems
 instructions: |
-  A human confirmed that a missed reading was anomalous. Compare its reconstruction with per-feature normal errors to prepare an investigation.
+  A person confirmed that a reading was anomalous, but the detector missed it. Compare the reconstruction errors with their usual sizes to help investigate.
 
-  Implement auditReconstruction(input, reconstruction, perFeatureBaseline). These equally sized, non-empty arrays contain finite numbers; every baseline error is strictly positive. Return { perFeatureError, rankedByRatio, lowErrorFeatures }.
+  Implement auditReconstruction(input, reconstruction, perFeatureBaseline). These arrays are non-empty, equally sized, and contain finite numbers. Each baseline error is strictly positive. Return { perFeatureError, rankedByRatio, lowErrorFeatures }.
 
-  perFeatureError contains absolute reconstruction gaps, in input order. rankedByRatio contains all feature indices, ordered by error / baseline from highest to lowest; break ties by ascending index. lowErrorFeatures contains indices whose error is strictly below half their baseline, in ascending index order.
+  perFeatureError holds Math.abs(input[i] - reconstruction[i]) for each feature, in the original order. rankedByRatio lists every feature index, sorted by error / baseline from largest to smallest. For a tie, put the smaller index first. lowErrorFeatures lists indices whose error is strictly below half their baseline, from smallest index to largest.
 
-  A ratio ranks reconstruction discrepancies relative to normal errors. It does not locate the physical cause. Low reconstruction error can occur on an anomaly even after normal-only training. These numbers cannot establish memorization or choose retraining over a threshold, data or architecture change. Review labeled misses and representative normal examples before changing the detector.
+  These ratios show which errors are unusually large or small. They do not explain the physical cause. An anomaly can have low reconstruction error even when the model trained only on normal data. The scores cannot prove the model memorized it or tell you whether to retrain, change the threshold, change the data, or change the model. Review labeled misses and representative normal readings before deciding.
 hints:
   - level: nudge
     content: |

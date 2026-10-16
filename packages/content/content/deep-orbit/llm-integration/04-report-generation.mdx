@@ -58,11 +58,11 @@ Smaller sections let a reviewer check one claim set against its evidence before 
 
 You will assemble reviewed report sections and identify the sections that must be withheld.
 
-<LearningObjectives objectives={["Structure report generation as section-by-section assembly rather than monolithic generation", "Follow a report pipeline from template to data to generation to validation to assembly, and build the assembly step that decides what ships", "Cut a section that fails its check, and record the gap instead of shipping the guess", "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing"]} />
+<LearningObjectives objectives={["Generate and review the report one section at a time", "Follow the report from template to final review, and build the step that assembles approved sections", "Leave out a section that fails review, and list what was withheld", "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing"]} />
 
 <BossBeat
   beatId="deep-orbit-llm-cut-call"
-  prompt="At 0348, the reviewer rejects two claims in Hypotheses. The relay window opens at 0410. A regeneration takes fifteen minutes and its review takes longer than the seven left. The release gate accepts only reviewed sections. Which standing order should the crew follow?"
+  prompt="At 0348, a reviewer rejects two claims in Hypotheses. The relay window opens at 0410. A new draft takes fifteen minutes, leaving only seven for a review that needs longer. Only approved sections can be sent. What should the crew do?"
   options={[
     {
         "label": "cooperate",
@@ -76,7 +76,7 @@ You will assemble reviewed report sections and identify the sections that must b
     },
     {
         "label": "random",
-        "display": "Regenerate and ask to splice the replacement into this report",
+        "display": "Generate a replacement and ask to add it to this report",
         "consequence": "Demir prepares the splice. The changed text loses its earlier approval and needs a fresh check; a new draft alone cannot satisfy the release gate."
     },
     {
@@ -162,16 +162,20 @@ const marked = await generateReport(reportSections, llm, reviewSection);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
-The pipeline passes `temperature: 0.2` on every section call. For a positive temperature, divide the vocabulary logits by that value before softmax. A low value concentrates the resulting probabilities; the decoding rule then selects a token. This does not establish truth: greedy token selection can still invent an instrument, and serving details can prevent exact repeatability. Farah's Band-3 cluster back in lesson 1 arrived at 0.3. The review step checks claims against the evidence. A number scan alone would miss an invented instrument or a false causal explanation.
+Each section request uses `temperature: 0.2`. At a positive temperature, the model's vocabulary logits are divided by that value before softmax. A low temperature puts more probability on higher-scoring tokens, and the decoding rule chooses the next token.
+
+That choice does not check facts or guarantee identical replies. Even greedy selection can invent an instrument. Farah's fictional Band-3 cluster arrived at temperature 0.3 in lesson 1. Review must check claims against their sources. Matching numbers alone would miss a made-up instrument or an unsupported explanation of its cause.
 
 ## Challenge
 
-The model has written the sections and a reviewer has marked each one. The boolean records that decision; it is not evidence that a numeric matcher proved the prose true. Assemble the document a human can sign: the validated sections in order, and an honest list of what was withheld. The challenge hands each section over as `{ heading, content, validated }`, so what this pipeline stored in `generated` arrives there under the name `content`.
+A reviewer has marked each generated section as approved or not approved. The boolean records that review decision; it does not mean a number-matching script proved the text true.
+
+Assemble the approved sections in order and list the headings that were withheld. Each section arrives as `{ heading, content, validated }`. The text called `generated` in the example is called `content` in this exercise.
 
 <Exercise slug="generate-report" />
 
 <RecallPrompt
-  question="Review both individual sections and the assembled report."
+  question="Why check each section and then check the whole report?"
   answer="Each section can be checked against a smaller evidence set and revised on its own. You can review a full draft too, and splitting it does not guarantee accuracy. Check consistency and missing context again after assembly."
   checks={[
     {
@@ -199,7 +203,7 @@ The model has written the sections and a reviewer has marked each one. The boole
       "question": "What should you check after assembling the approved sections?",
       "options": [
         {
-          "text": "Cross-section consistency and missing context.",
+          "text": "Whether sections contradict each other or leave out needed context.",
           "feedback": "Review the assembled report as well as its individual sections."
         },
         {
@@ -225,12 +229,14 @@ The model has written the sections and a reviewer has marked each one. The boole
 
 <Epilogue>
 
-The transmission window opens at 0410. At 0348 the reviewer flags the Hypotheses section: two claims that trace to no timestamp in any log; the model braided the Fibonacci finding into a causal story nobody can stand behind. The standing order determines what the crew works on next. The release gate keeps the unapproved section aboard. At 0411 the five approved sections leave with an omission notice.
+At 0348, the reviewer finds two unsupported claims in Hypotheses. The model used the Fibonacci finding to invent a cause that no log supports. The crew's standing order decides the next step, but the unapproved section cannot be sent.
+
+The transmission window opens at 0410. At 0411, the five approved sections leave with a note naming the missing section.
 
 <Dialogue speaker="Dr. Farah">
 The omission notice names the two unsupported claims. Whoever reviews the next draft needs to know why this one stayed aboard.
 </Dialogue>
 
-Nazari rules a line under the ledger once the transmission closes. The report cost one section this window. She leaves the next watch's work column open for the follow-up.
+Once the transmission ends, Nazari marks the report as sent. One section stayed aboard. She leaves its follow-up work on the list for the next crew.
 
 </Epilogue>

@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Farah discovers that a clearer prompt can improve the usefulness of an LLM draft. She refines her prompts iteratively, like debugging search queries until they return the right results."
+  narrative: "Farah improves the prompt a little at a time and checks what changes in the draft. She treats it like debugging a search query, while still checking every claim."
   speaker: "Dr. Farah"
 concept:
   explanation: "Specific instructions and relevant context help define the task. Output also depends on the model, decoding settings and supplied evidence."
@@ -27,7 +27,7 @@ consequence:
   narrative: "The new template includes the sector catalogue. Farah tests both versions on held-out readings."
 hints:
   - level: nudge
-    content: "Four parts in this order: role, reference context, the live signal values, then the output contract. The role gets a line of its own and each signal value gets its own labelled line. Every call rebuilds them from the argument it was handed."
+    content: "Use four parts in order: role, reference facts, current signal values, and requested output format. Put the role and each signal value on their own labeled lines. Build the prompt from the supplied argument on every call."
   - level: guidance
     content: "Name the classification task in the role line. Label the supplied catalogue as natural frequencies in Hz. Read each signal value from the argument, then request JSON with the three required fields. A format request does not replace response validation."
   - level: solution
@@ -61,11 +61,11 @@ keywords:
 skillAxes: [deployment, js_integration]
 ---
 
-> **REVIEW REQUEST · FARAH → DEMIR** · Prompt v1 and its output, attached. Before you write a better one, tell me exactly what is wrong with this one. "It's vague" is not a finding; name what is missing.
+> **Farah asks Demir to review prompt v1** · Read the prompt and its reply below. Before improving it, name the instructions or information it is missing.
 >
-> v1: `"Analyze this signal data."` · OUTPUT: three generic paragraphs about signals in the abstract, one recommendation to consult a domain expert, zero numbers from the actual reading.
+> v1: `"Analyze this signal data."` · The reply gives three general paragraphs about signals and suggests asking an expert. It uses none of the numbers from the reading.
 
-Do the review before reading on. What would the model have needed to produce something a scientist could sign? Who is it supposed to be, what situation is it in, which data is it looking at, what shape should the answer take? Every gap you can name is a line the prompt failed to include.
+Before reading on, identify what is missing. What perspective should the model take? What background does it need? Which reading should it analyze? How should it format the answer?
 
 <Dialogue speaker="Dr. Farah">
 My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the draft became specific enough to review against the readings. I still checked its claims before using them. Format matters when code needs to parse the reply; asking for JSON does not guarantee valid JSON.
@@ -73,7 +73,7 @@ My first prompt was 'Analyze this signal data.' The output was useless: generic,
 
 A more specific search query can narrow retrieved results. A prompt instead asks a model to generate an answer. Both benefit from a clear task and relevant context, but precise wording guarantees neither a useful result nor a true claim.
 
-One word does double duty across these two lessons. Lesson 1's client set a `role` on every message it sent, which is the API's label for whose turn it is: the system message that stands behind the whole call, then the user's. The role in Farah's four parts is a line of English inside that user message, naming who the model should answer as. It is the same word at two different layers.
+The word `role` has two meanings here. In lesson 1's API client, it labels the message type, such as system or user. In Farah's checklist, it is an instruction inside the prompt, such as asking the model to answer as a signal analyst. Those are different things.
 
 You will build a prompt that separates the current reading, reference facts, and required output format.
 
@@ -185,12 +185,12 @@ function parseClassification(response: string) {
 
 ## Challenge
 
-Write v9: the template above with the line it is still missing, the reference the model cannot infer on its own, on a line of its own between the role and the reading.
+Write version 9 of the prompt template. Add the missing reference facts on their own line between the role and the current reading. The model cannot know the sector's frequency catalogue unless you supply it.
 
 <Exercise slug="prompt-template" />
 
 <RecallPrompt
-  question="Use a clear prompt and verify the resulting output."
+  question="What do the four prompt parts do, and what still needs checking?"
   answer="Role suggests a perspective, context supplies relevant constraints, data supplies the reading, and format requests a useful output shape. They are a checklist for this task, not four mandatory ingredients for every prompt. Parse the reply and check its claims even when the prompt is clear."
   checks={[
     {
@@ -203,7 +203,7 @@ Write v9: the template above with the line it is still missing, the reference th
         },
         {
           "text": "Role: perspective; context: constraints; data: readings; format: output structure.",
-          "feedback": "These components help specify this task; they are not mandatory ingredients of every prompt."
+          "feedback": "These parts help describe this task. Not every prompt needs all four."
         },
         {
           "text": "Role: output structure; context: readings; data: perspective; format: constraints.",
@@ -211,11 +211,11 @@ Write v9: the template above with the line it is still missing, the reference th
         }
       ],
       "correctIndex": 1,
-      "explanation": "These components help specify this task; they are not mandatory ingredients of every prompt."
+      "explanation": "These parts help describe this task. Not every prompt needs all four."
     },
     {
       "kind": "choice",
-      "question": "Does requesting JSON establish that the response is valid and factually correct?",
+      "question": "Does asking for JSON guarantee a valid and factually correct answer?",
       "options": [
         {
           "text": "Yes. JSON formatting verifies the content automatically.",
@@ -235,11 +235,13 @@ Write v9: the template above with the line it is still missing, the reference th
 <LessonRecap
   whatYouLearned={["Role, context, data and format are a useful checklist for this reporting task.", "Requesting JSON does not guarantee valid JSON. Parse it, validate required fields and review claims against the evidence.", "Test prompt revisions on varied examples. Keep cases that expose errors instead of tuning only to one successful reply."]}
   bridge="Specific queries help retrieval; specific prompts help define a generation task. Neither precise wording nor a structured response guarantees the answer is correct."
-  youCanNow="Write a prompt template that rebuilds role, context, data and format from the reading it was handed, and asks for the JSON your parser will read."
+  youCanNow="Build a prompt from the supplied reading and reference facts, with clear instructions for the JSON reply."
 />
 
 <Epilogue>
 
-Four hours, fifty minutes to the window. Demir diffs v8 against v9: one added line lists the frequencies recorded during the sector's normal period. Farah keeps both prompts and tests them on held-out readings; one improved reply is not enough to choose a version. She commits the reference catalogue alongside the prompt, then opens the next problem: neither version can see the signal database.
+There are four hours and fifty minutes until the window. Demir compares versions 8 and 9. One new line lists the frequencies recorded during the sector's normal period.
+
+Farah keeps both prompts and tests them on separate readings. One better reply is not enough to choose a version. She saves the reference catalogue with the prompt. Then she checks the next problem: neither version can access the signal database.
 
 </Epilogue>

@@ -2,8 +2,8 @@ slug: neural-networks
 title: "Neural Networks: Layers & Architecture"
 worldId: deep-orbit
 order: 2
-description: "ARIA's rules name the two calibration tones perfectly and have since launch. Not one of them names the stream out of Sector 7-G. You'll build the replacement a piece at a time: one neuron, the activation that bends it, layers stacked into an architecture, and a compiled classifier that answers before it has learned anything."
-summary: "Assemble and compile an untrained classifier: a neuron (a weighted sum written with reduce), the activation that keeps stacked layers from collapsing, layers that cost parameters, and the batch axis a reading carries."
+description: "ARIA can identify the two calibration tones, but her rules cannot explain the stream from Sector 7-G. Help Demir build a replacement one piece at a time: a neuron, activation functions, connected layers, and a classifier. See why its first predictions mean little before training."
+summary: "Build a neuron, apply activations, connect layers, count parameters, and prepare input batches for an untrained classifier."
 lessonCount: 5
 prerequisites:
   - foundations

@@ -2,17 +2,16 @@ slug: pipeline-architecture
 lessonSlug: system-architecture
 title: "Build a Typed Pipeline"
 instructions: |
-  Build the Pipeline class the lesson prints. Each stage has a `name`, a `process` function and a `validate` function.
+  Help Demir connect the pipeline. Build the `Pipeline` class shown in the lesson. Each stage has a `name`, a `validate` function, and a `process` function.
 
-  1. `addStage(stage)` appends the stage and returns the pipeline, so calls chain. The any-typed array does not enforce adjacent TypeScript types; runtime validators carry that check.
-  2. `run(input)` is async and returns a Promise, because a real stage does async work: loading weights, reading a tensor back off the GPU.
-  3. Ask the stage's own `validate` about the data arriving at it, and ask before that stage's `process` sees it. The check belongs to the stage, not to `run`: one stage tests a length, the next tests the values it will accept. When validate returns false, throw an Error whose message is `Validation failed at: {stage.name}` and leave that stage's process uncalled. Since run is async, the caller receives that as a rejected promise.
-  4. A stage's process may hand back a value or a Promise, so await what it returns before the next stage sees it.
-  5. run hands back whatever the last stage returned.
+  1. `addStage(stage)` appends a stage and returns the pipeline so calls can chain.
+  2. `run(input)` is async. Pass the input through the stages in order and return the final result.
+  3. Before processing a stage, call its `validate` on the value arriving at that stage. If it returns false, throw an Error with the exact message `Validation failed at: {stage.name}`. Do not call that stage's `process`. The async caller receives a rejected promise.
+  4. Await each `process` result before passing it to the next stage. A stage may return a value or a Promise.
 
-  This small eight-sample example normalizes each window to show composition,
-  removing amplitude information. It is not the production classifier scaler.
-  The grader wires an illustrative feature path through your class: raw window -> z-normalize -> FFT magnitudes -> model-input tensor, with a shape contract between every stage. Async stages appear in the middle of a chain and at the end of one.
+  The any-typed stage array does not enforce matching TypeScript types between stages. Each stage's runtime validator must check the data it accepts.
+
+  The checks use an eight-sample example: raw window -> z-normalize -> FFT magnitudes -> model-input tensor. Some stages are async, including stages in the middle and at the end. Normalizing each window removes amplitude information here; this example demonstrates composition, not the production classifier's scaler.
 starterCode: |
   interface PipelineStage<TIn, TOut> {
     name: string;
@@ -28,8 +27,8 @@ starterCode: |
     }
 
     async run(input: any): Promise<any> {
-      // One value walks the chain. Decide what each stage is handed, and
-      // what has to settle before the next stage sees it.
+      // Each stage receives the previous result.
+      // Wait for it to finish before starting the next.
       return null; // your code here
     }
   }
@@ -137,7 +136,7 @@ testCode: |
         );
       expect(
         settled.ok,
-        'The chain broke at fft-features, which is the stage AFTER the async one: normalize-async handed its promise forward instead of the eight numbers it resolves to. Await what each stage returns before the next stage sees it.',
+        'fft-features received a Promise instead of eight numbers from normalize-async. Await each stage’s result before passing it to the next stage.',
       ).toBe(true);
       const out = settled.value;
       expect(

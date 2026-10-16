@@ -2,12 +2,8 @@ slug: signal-processing
 title: "Signal Processing"
 worldId: deep-orbit
 order: 5
-description: |
-  Dr. Farah discovers hidden structure in the signals that only appears in the
-  frequency domain. The Fourier Transform, spectrograms, and windowing turn
-  raw time-series data into features. The crew must distinguish an unexplained
-  peak from an instrument fault and test whether new features help classification.
-summary: "Use the Fourier Transform (which frequencies a signal contains), spectrograms (those frequencies pictured over time), and windowing (tapering each slice's edges) to turn raw readings into inputs a model learns from."
+description: "Farah finds structure that is hard to see in the raw readings. Help her inspect frequencies with the Fourier transform and spectrograms, then prepare features for the model. Check whether an unexplained peak comes from the signal or the instruments, and whether the new features improve classification."
+summary: "Inspect frequencies, track them over time, taper window edges, and turn signal measurements into model features."
 lessonCount: 5
 prerequisites:
   - foundations

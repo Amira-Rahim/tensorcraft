@@ -14,7 +14,7 @@ context:
   narrative: "Nazari demands precise thresholds. 'If DEEP SCAN cries wolf one more time, the bridge crew will ignore it. Set the sensitivity correctly.'"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Threshold tuning decides what the detector is allowed to wake a human for: set it too low and you buy alert fatigue, too high and you buy missed anomalies."
+  explanation: "The threshold decides which readings trigger an alert. Set it too low and the crew gets too many false alarms. Set it too high and the detector misses more anomalies."
   bridge:
     jsTitle: "Alert Thresholds"
     jsCode: "if (errorRate > 0.05) page('oncall') // too low = alert fatigue"
@@ -27,10 +27,10 @@ consequence:
 hints:
   - level: nudge
     content: |
-      There is no formula for the cutoff here: score every candidate threshold against the labeled validation slice and keep the one with the highest F1
+      Try each candidate cutoff on the labeled validation data. Calculate its F1 score and keep the cutoff with the highest score.
   - level: guidance
     content: |
-      Accuracy is the trap here. Anomalies are rare, so a cutoff that flags nothing scores well on accuracy and catches nothing, which is why the sweep is scored on F1 instead. F1 combines two rates that pull against each other: of the alarms you raised, how many were real, and of the real anomalies, how many you caught. Both come from counting hits, false alarms and misses at each candidate cutoff, so walk the candidates, score each one, and keep the winner. Watch the empty cases: a cutoff that raises no alarm divides zero by zero, and that is not a number until you make it one
+      Anomalies are rare, so a detector can have high accuracy by raising no alerts at all. Use F1 instead. For each cutoff, count correct alerts, false alarms, and missed anomalies. Use those counts to calculate precision, recall, and F1, then keep the highest F1. Follow the exercise rule for cases with no alerts or no true positives: report the undefined ratios and F1 as zero.
   - level: solution
     content: |
       function findBestThreshold(
@@ -117,7 +117,9 @@ function classifySignal(error: number, threshold: number): 'normal' | 'anomaly' 
 }`}
 </CodeBlock>
 
-A percentile estimates a false-alarm rate on the sampled normal data, and what reaches a human is that rate times the volume. If that rate holds in deployment, expected flags are rate times volume. The archive records one reading per 33-second window: 2,618 a day, 18,327 a week. If one percent of future readings are false flags, that is about 26 a day and 183 a week. The week Nazari is angry about had 14. The live dashboard reads faster still, one snapshot a second from module 4, where the same percentile is 864 flags a day.
+A percentile estimates the false-alarm rate on the normal readings you sampled. To estimate the number of alerts, multiply that rate by the number of readings. The estimate only holds if the rate stays the same after deployment.
+
+The archive has one reading per 33-second window: 2,618 a day or 18,327 a week. At a 1% false-alarm rate, that is about 26 false flags a day and 183 a week. Nazari had 14 alerts that week. Module 4's live dashboard reads once per second. At that volume, the same 1% rate would produce 864 false flags a day.
 
 Two false alarms a week among 18,327 normal readings would require a rate near 0.011%. A sample of 2,880 cannot estimate that tail reliably: one observation is already about 0.035% of the sample. Zero observed false alarms is still compatible with a nonzero future rate. Collect more representative data, use an explicit uncertainty bound, and consider grouping repeated flags into incidents. A labeled sweep below helps compare costs; it does not remove this sampling uncertainty.
 
@@ -169,9 +171,13 @@ for (const t of thresholds) {
 // choose the cutoff on validation data in the next section.`}
 </CodeBlock>
 
-One more slice to keep straight. The percentile above was read off calm rows, a tenth of the archive with nothing in it to score recall against. The sweep reads a labelled validation set built for the job: 2,880 rows in which anomalies are about one in twelve, five or six times their share of the archive, because a recall column needs enough of them to count. Module 3 named the cost of building a slice that way, and it applies here: a precision measured on it does not transfer to the live stream, which the next section works through. The sweep and the report read different slices on purpose as well. Six candidates scored on the validation slice are six decisions charged to it, and module 3's rule holds: the test slice stays out of reach until the cutoff is locked. Sweep on the test slice instead and the winning F1 is part measurement, part luck about which candidate suited those particular rows.
+These checks use different datasets. The percentile comes from normal readings, one tenth of the archive. That set has no known anomalies, so it cannot measure recall.
 
-## When the Cost Asymmetry Moves the Cutoff
+The cutoff comparison uses 2,880 labeled validation rows. About one in twelve is an anomaly, five or six times the proportion in the full archive. That gives us enough anomalies to compare recall, but precision from this set will not directly describe the live stream. The next section explains why.
+
+Keep the final test data separate. Comparing six candidates uses information from the validation set to make six choices. After choosing the cutoff, test it once on the untouched test set. Choosing the winner on that test set would make its F1 partly reflect luck on those particular rows.
+
+## Choose a cutoff based on what errors cost
 
 The F1 peak at t=0.4 answers one question: which candidate maximizes F1 on this validation slice? F1 treats precision and recall symmetrically. That does not make it an equal-cost error objective.
 
@@ -200,11 +206,15 @@ For a cost-based decision, define `cost = falseAlarmCost * FP + missCost * FN` a
 
 The crew's two deployments have different costs and constraints.
 
-In the first deployment the detector gates the capture pipeline, so a miss costs the mission: every real event it sleeps through is data the ship never records again. Take t=0.2, recall 1.00 at precision 0.34. Read that precision carefully, because it was measured on a slice holding enough anomalies to score against. Live telemetry is far calmer, so the expected weekly false-alarm count is the false-positive rate times the number of normal readings, and it runs well above what the slice suggests. The capture pipeline can absorb that. A machine reads every flag, and no crew is being taught to ignore anything, so the threshold belongs low here.
+The first detector decides which captures to save. Missing an event loses data the ship cannot record again. At t=0.2, recall is 1.00 and precision is 0.34 on the validation set.
 
-Nazari's week is the second deployment, the one where a false alarm costs the detector its standing with the crew. Fourteen alerts, twelve of them cosmic background: precision 0.14 (2 of 14), and the real cost was never the twelve wasted checks. It was the reflex they were training. A bridge crew that learns the alert is usually noise stops standing up for it, and the miss that finally matters arrives pre-ignored. On the same curve, t=1.0 buys precision 1.00 at recall 0.72: zero wasted checks, and 28 percent of real anomalies missed (1 - 0.72). A capture gate and a crew pager can reasonably choose different cutoffs. The pager still has to account for missed events, not just alert fatigue. Demir locks that one. In the fictional report, zero false alarms across 2,640 normal rows supports further evaluation, not a promise about next week.
+The live stream contains far fewer anomalies, so it can produce many more false alarms than that precision suggests. Estimate the count by multiplying the false-positive rate by the number of normal readings. The automated capture system can handle those extra flags. A low cutoff makes sense when missing a capture costs more.
 
-Both deployments run the same model on the same errors, and the F1 peak sits in the same place. The threshold went down in the first and up in the second. The F1 table cannot tell you which way to move it, because what decides is the cost of a miss against the cost of a false alarm, and neither number is in the error data.
+The second detector wakes the crew. Nazari investigated fourteen alerts, twelve caused by cosmic background radiation. Precision was 0.14, or 2 of 14. Repeated false alarms also make the crew less likely to respond to the next alert.
+
+On this validation curve, t=1.0 gives precision 1.00 and recall 0.72. It produces no false alarms on this set, but misses 28 percent of anomalies. The crew pager can use a different cutoff from the capture system, while still accounting for those missed events. Demir chooses 1.0. The fictional report has zero false alarms across 2,640 normal rows. That supports further testing, not a promise about next week.
+
+Both systems use the same model, errors, and F1 curve. One needs a lower cutoff and the other a higher one because their errors have different costs. The F1 table does not include those costs.
 
 The crew alert has now selected its cutoff using validation data and its alert budget. Evaluate that rule on the test slice once. If the result is inadequate, report the failure; tuning against this test would turn it into another validation set.
 
@@ -216,7 +226,7 @@ console.log({ threshold: chosen, ...held });`}
 
 ## Challenge
 
-Sweep the candidate cutoffs against a labeled validation slice and return the one with the highest F1, together with the score it earned.
+Try every candidate cutoff on the labeled validation data. Return the one with the highest F1, along with that score.
 
 <Exercise slug="find-threshold" />
 
@@ -227,8 +237,8 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 <Exercise slug="incident-false-alarm-storm" />
 
 <RecallPrompt
-  question="Use F1 with a clear understanding of its objective."
-  answer="F1 is the harmonic mean of precision and recall, giving a single number that penalizes both false positives and false negatives. It is useful for threshold comparison because raising a threshold cannot increase recall, but precision may move either way; F1 captures both effects together, so the highest F1 is the winner for that metric on that slice. It need not minimize FP plus FN, even when the errors cost the same. Use an explicit cost or operational constraint when that is the deployment objective."
+  question="What does F1 measure, and when might you choose a different cutoff?"
+  answer="F1 combines precision and recall using their harmonic mean. It gives one score for comparing cutoffs on the same data. Raising a cutoff cannot increase recall, but precision can move either way. The highest F1 does not necessarily give the fewest errors or the lowest cost. If false alarms and misses have different costs, include those costs or an alert limit in your decision."
   checks={[
     {
       "kind": "choice",
@@ -256,22 +266,22 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
       "options": [
         {
           "text": "Yes. F1 accounts for every possible operational cost.",
-          "feedback": "F1 does not encode an arbitrary cost for each type of error."
+          "feedback": "F1 does not know what each false alarm or missed anomaly costs."
         },
         {
           "text": "No. Choose a cutoff using the actual error costs or operational constraints.",
-          "feedback": "The best F1 on a validation slice wins for that metric, not necessarily for the deployment objective."
+          "feedback": "The best F1 wins on that score. Another cutoff may better meet the system's cost or alert limits."
         }
       ],
       "correctIndex": 1,
-      "explanation": "The best F1 on a validation slice wins for that metric, not necessarily for the deployment objective."
+      "explanation": "The best F1 wins on that score. Another cutoff may better meet the system's cost or alert limits."
     }
   ]}
 />
 
 <RecallPrompt
-  question="Explain why a detector that gates irreplaceable captures may need a different threshold from one that pages the crew."
-  answer="F1 weighs precision and recall equally, but the two deployments have opposite cost asymmetries. A capture the ship never gets to repeat makes the miss the expensive error, so that threshold goes down and buys recall with false alarms. An alert channel fails by being tuned out, so a higher threshold may fit its budget. On this fictional validation curve, that increases precision while missing more events; precision is not guaranteed to rise on every dataset. The cutoff follows the cost of each error, not the F1 peak."
+  question="Why might a detector that saves captures need a different cutoff from one that wakes the crew?"
+  answer="Missing a capture may lose data the ship can never record again. A lower cutoff catches more events, even if it also saves more false alarms. Waking the crew too often can make them ignore alerts, so that system may need a higher cutoff. On this fictional curve, raising the cutoff improves precision but misses more events. Precision does not always rise on other datasets. Choose based on what the errors cost, not just the F1 peak."
 />
 
 <RecallPrompt
@@ -317,12 +327,12 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
     "An alert storm gets triaged before the cutoff is touched: read the sensor audit log first, then the model's age, then the ratio, and choose the first applicable investigation step. A storm that matches none of them goes to a human."
   ]}
   bridge="Both alert cutoffs need observed data and an error-cost objective. Reconstruction-error thresholds also depend on feature scaling and the model, so recheck them after changes."
-  youCanNow="Sweep candidate cutoffs against a labeled slice, score each one with precision, recall and F1, say why a deployment may ship a cutoff away from the F1 peak, and triage an alert storm against the known signatures before touching the cutoff, escalating to a human when it matches none of them."
+  youCanNow="Compare cutoffs using precision, recall, and F1. Explain when error costs favor a different cutoff, and use the runbook to investigate too many alerts before changing it."
 />
 
 <Epilogue>
 
-The threshold locks at 1.0 before the watch change, above every normal error in the calm slice, and Nazari replays last week's fourteen alerts through it herself, hunting for the trick. Twelve cosmic-background flags die without a sound. The two survivors are both the signal. There is no trick to find.
+Demir sets the cutoff to 1.0 before the next crew takes over. It is above every error in the normal validation readings. Nazari checks it herself by replaying last week's fourteen alerts. The twelve cosmic-background readings no longer trigger an alert. The other two still do. Both contain the signal.
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
 Two alerts worth reviewing in this replay. Take the next watch's threshold log, Ensign; I have a coolant inspection to finish. Page me if the workload changes.

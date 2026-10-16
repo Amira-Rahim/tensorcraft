@@ -2,14 +2,18 @@ slug: build-layer
 lessonSlug: layers-and-architecture
 title: "Build a 3-Layer Sequential Model"
 instructions: |
-  Build a Sequential model with three dense layers: 16 ReLU units with
-  inputShape [4], then 8 ReLU units, then 1 sigmoid unit.
-  These practice widths differ from the bridge classifier's 32/16/1 stack.
+  Build a Sequential model with three dense layers:
 
-  Implement predictParams(width) to count the parameters in your 16/8/1
-  stack for any positive input width. Use arithmetic, without creating a
-  model or tensor inside the function. Each dense unit owns one weight per
-  incoming feature and one bias. Check your formula against model.countParams().
+  1. 16 ReLU units, with `inputShape: [4]`.
+  2. 8 ReLU units.
+  3. 1 sigmoid unit.
+
+  These practice sizes differ from the bridge model's 32/16/1 layers.
+
+  Write `predictParams(width)` to count the parameters in this 16/8/1 model
+  for any positive input width. Each unit needs one weight per input and one
+  bias. Use arithmetic in the function, without creating a model or tensor.
+  Check your result against `model.countParams()`.
 starterCode: |
   // Build a 3-layer sequential model
   const model = tf.sequential();
@@ -57,7 +61,7 @@ testCode: |
       expect(modelsBuilt() - builtBefore, builtWhileQuoting(width)).toBe(0);
       expect(
         quoted,
-        'predictParams() has not been filled in yet. Count what one unit owns, which is a weight for each value that reaches it plus its own bias, then total the three stages.',
+        'predictParams() is still empty. Count one weight per input and one bias per unit, then add the three layer counts.',
       ).toBeDefined();
       return quoted;
     };
@@ -79,14 +83,14 @@ testCode: |
       const acts = model.layers.map((l) => l.getConfig().activation);
       expect(
         acts,
-        'Read back off the layers, in the order they were added. Both hidden stages bend with relu; the output stage uses sigmoid to bound its score between zero and one.',
+        'Keep the layer order from the instructions. The first two layers use ReLU; the final layer uses sigmoid.',
       ).toEqual(['relu', 'relu', 'sigmoid']);
     });
     it('your quote for the width the first layer declares matches the stack you built', () => {
       const quoted = quoteFor(4);
       expect(
         quoted,
-        'Your quote and the model disagree. Check the first stage: the width it was told to expect is what decides how many weights every one of its units owns.',
+        'The parameter count does not match the model. Check the first layer\'s input width and count one bias per unit.',
       ).toBe(model.countParams());
     });
     it('builds the stack once: a second stack built to measure the price is the measurement this exercise replaces', () => {
@@ -94,7 +98,7 @@ testCode: |
       // top-level code ran and before any test built a reference stack.
       expect(
         (builtAtTopLevel.sequential || 0) + (builtAtTopLevel.model || 0),
-        'The submission built more than one model at top level. One 16/8/1 stack is the exercise; a second stack built at another width to measure the per-value step is exactly the measurement predictParams is meant to replace with arithmetic.',
+        'Build one 16/8/1 model at top level. predictParams() must count using arithmetic, without building another model.',
       ).toBe(1);
       const dense = builtAtTopLevel['layers.dense'] || 0;
       expect(
@@ -134,11 +138,11 @@ testCode: |
       expect(modelsBuilt() - builtBefore, builtWhileQuoting(wide)).toBe(0);
       expect(
         tensorIdNow() - beforeId,
-        'Answering created tensors, so the quote came from building a second stack and reading the count off it. That is a measurement, and disposing the stack afterwards does not change what it cost to take. Nazari asks for the price before anything is built, so work the count out as arithmetic over the widths and the unit counts.',
+        'predictParams() created tensors. Calculate the count using arithmetic on the input width and layer sizes.',
       ).toBe(idleCost);
       expect(
         quoted,
-        'Your quote misses at this width. The grader picks widths nobody has printed a summary for, so counts collected off stacks you already built cover none of them. A formula answers at any width it is handed.',
+        'The count is wrong for this input width. Write a formula that works for any positive width, not a saved count from one model.',
       ).toBe(pricedNarrow + perArrivingValue * (wide - narrow));
     });
     it('prices the first stage from the width that arrives, so the same stack costs more when the reading is wider', () => {
@@ -150,7 +154,7 @@ testCode: |
         reference.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
         expect(
           quoteFor(width),
-          'One number cannot be the right quote at two different widths. Only the first stage changes price when the reading gets wider; the other two are fixed by the stage in front of them.',
+          'The count must change with the input width. Only the first layer\'s weight count changes; the other layers keep their input sizes.',
         ).toBe(reference.countParams());
       }
     });

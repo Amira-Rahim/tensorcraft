@@ -2,26 +2,25 @@ slug: reshape-tensor
 lessonSlug: tensor-shapes
 title: "Find the Signal's Layout"
 instructions: |
-  Twelve readings arrived in `flat`. Farah proposes three time steps with four
-  channels each.
+  `flat` holds 12 sensor readings. Each group of four comes from the same moment.
 
-  Reshape `flat` into a `[3, 4]` tensor called `grid`. Extract its second row
-  (time step index 1) into `step1`, a plain JavaScript array of four numbers.
-  Predict that row from the flat order before running your code.
+  1. Before running the code, work out which four numbers go in the second row.
+  2. Use `reshape()` on `flat` to make a tensor named `grid` with shape `[3, 4]`.
+  3. Read the second row into a JavaScript array named `step1`. The second row
+     is at index `1`, since JavaScript counts from `0`.
 
-  The checks compare all three rows and require `grid` to share `flat`'s
-  buffer in this TFJS runtime. Reshape the supplied tensor rather than
-  building a separate grid by hand. You may dispose `flat` afterward, but
-  retain `grid` for the checks.
+  Use the original `flat` tensor so `grid` shares its data in memory. Do not
+  create a new tensor by typing the readings again.
+
+  The tests check all three rows. Keep `grid` for the tests. You can dispose
+  of `flat` afterward.
 starterCode: |
   const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
 
-  // Row-major fill settles which four readings land in the row you were
-  // asked for. Work that out before you run anything.
+  // Predict the second row before running the code.
   const grid = null; // your code here
 
-  // step1 is a plain JS list of four numbers, which is not what a tensor
-  // hands back.
+  // Save the second row as a JS array, not a tensor.
   const step1 = null;
 solutionCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];"
 testCode: |
@@ -38,7 +37,7 @@ testCode: |
     const isTensor = (value) =>
       expect(
         value instanceof tf.Tensor,
-        'shape, dataId and arraySync are ordinary object properties, so an object literal can carry all three. This asks whether tf produced the grid.',
+        'grid must be a TensorFlow.js tensor, not a JavaScript object with matching properties.',
       ).toBe(true);
     // Rows are read back THROUGH the tensor, not through whatever arraySync()
     // the submission supplies. Before this (round 7, 2026-09-13), an object
@@ -53,10 +52,10 @@ testCode: |
       return out;
     };
     it('grid has shape [3, 4]', () => {
-      filled(grid, 'Step 1 is still empty. Reshape flat into the layout Farah proposes.');
-      expect(grid.shape, 'Three time steps, four channels in each.').toEqual([3, 4]);
+      filled(grid, 'grid is still empty. Reshape flat into three rows of four.');
+      expect(grid.shape, 'grid needs 3 rows and 4 columns.').toEqual([3, 4]);
     });
-    it('grid is a view over flat, which is what makes it a reshape', () => {
+    it('grid reuses the data from flat', () => {
       // Provenance, not values. On tfjs 4.22.0 a reshape hands back a tensor
       // that SHARES its source's data buffer, so grid.dataId === flat.dataId.
       // Measured 2026-09-08: reshape(), tf.reshape(), as2D() and clone() all
@@ -65,45 +64,45 @@ testCode: |
       // tf.tensor2d, or rebuilt from arraySync(), allocates a second buffer,
       // and that is exactly what lets it hold anything at all: before this
       // check, a hand-typed [3, 4] grid cleared every other test in the file.
-      filled(grid, 'Step 1 is still empty.');
+      filled(grid, 'grid is still empty.');
       isTensor(grid);
       expect(
         grid.dataId === flat.dataId,
-        'The numbers may be right, but they were not produced by reshaping flat. A reshape rewraps the same buffer under a new shape, so it cannot say anything the readings do not; a grid built with tf.tensor2d allocates its own buffer and can say whatever you type. Reshape flat itself.',
+        'Use reshape() on flat itself. grid must reuse its data in memory. Creating a new tensor with the same numbers does not meet this requirement.',
       ).toBe(true);
     });
-    it('row-major fill: row 0 holds the first readings in order', () => {
-      filled(grid, 'Step 1 is still empty.');
+    it('the first row keeps the first readings in order', () => {
+      filled(grid, 'grid is still empty.');
       const rows = rowsOf();
       expect(
         rows[0],
-        'A reshape fills the first row before it starts the second, so row 0 is the front of the flat list, in order.',
+        'The first row must hold the first four readings in their original order.',
       ).toEqual(source.slice(0, 4));
     });
     it('middle row lands correctly', () => {
-      filled(grid, 'Step 1 is still empty.');
+      filled(grid, 'grid is still empty.');
       const rows = rowsOf();
       expect(
         rows[1],
-        'Count four values into the flat list and read the next four. Nothing is rearranged on the way in.',
+        'Skip the first four readings, then take the next four in order.',
       ).toEqual(source.slice(4, 8));
     });
     it('last row lands correctly', () => {
-      filled(grid, 'Step 1 is still empty.');
+      filled(grid, 'grid is still empty.');
       const rows = rowsOf();
-      expect(rows[2], 'The tail of the flat list, in the order it arrived.').toEqual(
+      expect(rows[2], 'The last row must hold the final four readings in order.').toEqual(
         source.slice(8, 12),
       );
     });
-    it('step1 holds time step index 1, not a column', () => {
-      filled(step1, 'Step 2 is still empty. Pull row index 1 out of the grid.');
+    it('step1 holds the second row as a JavaScript array', () => {
+      filled(step1, 'step1 is still empty. Read row index 1 from grid.');
       expect(
         Array.isArray(step1),
-        'step1 has to arrive as a plain JS array of four numbers, which is what create-a-tensor asked for in lesson 1 as well. tf.slice returns a tensor. arraySync() returns ordinary nested arrays, from which you can select a row.',
+        'step1 must be a JavaScript array of four numbers. arraySync() gives you nested arrays. Select the second row from those arrays. tf.slice() alone still returns a tensor.',
       ).toBe(true);
       expect(
         step1,
-        'A column takes one value from every time step. This asks for one whole time step, all four of its channels.',
+        'Take the whole second row: all four sensor readings from that time step.',
       ).toEqual(source.slice(4, 8));
     });
   });

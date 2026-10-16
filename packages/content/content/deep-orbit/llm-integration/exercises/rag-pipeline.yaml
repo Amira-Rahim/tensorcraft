@@ -2,39 +2,24 @@ slug: rag-pipeline
 lessonSlug: rag-for-signals
 title: "Check Claims Against Their Sources"
 instructions: |
-  Check structured claims against the exact records they cite. Matching a
-  number anywhere in the evidence does not establish its meaning.
+  Implement verifyClaims(claims, records). Check each structured claim against the exact records it cites. Finding the same number somewhere in the records is not enough.
 
-  Implement `verifyClaims(claims, records)`. Return `{ verified, unverified }`:
-  arrays of claim IDs in input order. Each claim appears in exactly one list.
-  Claim IDs and record IDs are unique strings. Records supply observations for this exercise; validate their numeric types too. The other claim fields may be wrong or absent.
+  Return { verified, unverified }, two arrays of claim IDs in input order. Put each claim in exactly one list. Claim IDs and record IDs are unique strings. Check numeric types in the records too. Other claim fields may be missing or wrong.
 
-  A claim has `{ id, kind, rowIds, field, value, unit }`. A record has `id`
-  and any available numeric fields. Only these field/unit pairs are supported:
+  A claim has { id, kind, rowIds, field, value, unit }. A record has id and any available numeric fields. Support only these field and unit pairs:
+  - eventCount with unit 'events': a nonnegative safe integer, compared exactly.
+  - frequencyHz with unit 'Hz': absolute tolerance 0.05, plus 1e-10 for arithmetic rounding.
+  - intervalSeconds with unit 's': the same tolerance, measured in seconds.
 
-  - `eventCount`, `events`: nonnegative safe integer count, compared exactly.
-  - `frequencyHz`, `Hz`: absolute tolerance 0.05, plus 1e-10 for arithmetic.
-  - `intervalSeconds`, `s`: the same tolerance as frequency, in seconds.
+  For kind 'reading', rowIds must cite exactly one record. Compare the claimed value with its named field. For kind 'sum', add eventCount across one or more distinct cited records. No other calculation is supported. A sum covers only the cited records, not anything left out.
 
-  `kind: 'reading'` cites exactly one record in `rowIds`; compare the claimed
-  value with that record's named field. `kind: 'sum'` may sum `eventCount`
-  across one or more distinct cited records. No other calculation is supported.
-  A sum covers only its cited records; it says nothing about omitted data.
+  Mark a claim unverified if a record or field is missing, its unit is wrong, a citation repeats, a number is non-finite, or its kind or field is unsupported. Text claims such as { id: 'safe', kind: 'text', text: 'The signal is safe' } also remain unverified. With no records, nothing can be verified. With no claims, return two empty lists; that does not approve a report.
 
-  A missing record, missing field, wrong unit, repeated citation, non-finite
-  value, or unsupported kind/field makes the claim unverified. A qualitative
-  claim such as `{ id: 'safe', kind: 'text', text: 'The signal is safe' }` also
-  stays unverified. Empty retrieval supports nothing; empty claims return two
-  empty lists and establish nothing about a report.
+  For counts, the cited values, claimed value, and any sum must all be nonnegative safe integers. Reject fractions, negative counts, and unsafe totals.
 
-  For example, evidence `{ id: 'a', eventCount: 14, frequencyHz: 73.4 }`
-  supports a reading of 14 events from `a`, but not 73.4 events or 14 Hz.
-  These checks establish agreement with evidence, not that the evidence is
-  correct or that generated prose includes every claim. Free-text reports
-  still need review. A display made from verified fields must keep their
-  field names, units, and citations. Do not publish a separate unreviewed draft.
+  For example, { id: 'a', eventCount: 14, frequencyHz: 73.4 } supports a claim of 14 events from 'a'. It does not support 73.4 events or 14 Hz.
 
-  For eventCount, both cited values and the claimed value must be nonnegative safe integers. A summed count must also remain a safe integer. Fractions, negative counts and unsafe totals are unverified.
+  These checks establish agreement with the supplied records. They do not prove the records are correct or that the generated text includes every relevant claim. Keep field names, units, and citations when displaying verified values. A separate free-text report still needs review before publication.
 hints:
   - level: nudge
     content: |

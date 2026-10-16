@@ -2,20 +2,26 @@ slug: deep-scan-eval
 lessonSlug: evaluating-deep-scan
 title: "Train DEEP SCAN, Then Read the Gap"
 instructions: |
-  The supplied tensors contain 100 synthetic training rows and 43 separate
-  evaluation rows: 40 generated examples and three hand-written story cases.
-  Keep the evaluation rows and their labels out of training.
+  Help Mirza check the classifier on data it has not trained on.
+  The supplied tensors hold 100 generated training rows and 43 separate test
+  rows: 40 generated examples and three hand-written story cases.
+  Keep all test rows and labels out of training.
 
-  1. Await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 }) into history.
-  2. Store model.evaluate(testX, testY) in evalResult, an array [loss, accuracy].
-  3. Implement diagnose(trainAcc, testAcc): return 'large-gap' if trainAcc -
-     testAcc > 0.15; otherwise 'low-scores' if both are below 0.7; otherwise
-     'no-gap-warning'. Check the gap first. These labels do not diagnose a cause.
-  4. Set trainAcc from the final history.history.acc entry and testAcc from
-     evalResult[1].dataSync()[0]. Set verdict = diagnose(trainAcc, testAcc).
+  1. Save `await model.fit(trainX, trainY, { epochs: 30, batchSize: 16 })`
+     as `history`.
+  2. Save `model.evaluate(testX, testY)` as `evalResult`. It contains two
+     tensors: `[loss, accuracy]`.
+  3. Write `diagnose(trainAcc, testAcc)`. Check these rules in order:
+     - If `trainAcc - testAcc > 0.15`, return `'large-gap'`.
+     - Otherwise, if both scores are below 0.7, return `'low-scores'`.
+     - Otherwise, return `'no-gap-warning'`.
+  4. Read `trainAcc` from the last entry in `history.history.acc`.
+     Read `testAcc` from `evalResult[1].dataSync()[0]`.
+     Set `verdict = diagnose(trainAcc, testAcc)`.
 
-  Report the measured scores. Passing verifies the exercise procedure, not
-  whether the classifier is suitable for a real deployment.
+  Report the scores the run actually produced. The verdict names a result,
+  not its cause. Passing the tests checks your procedure. It does not prove
+  the model is ready for real use.
 starterCode: |
   // Synthetic practice rows. Clipping enforces this fixture's [0, 1] range.
   // Labels and distributions illustrate the story, not a real archive.
@@ -195,7 +201,7 @@ testCode: |
     it('trained for exactly 30 epochs', () => {
       expect(
         history,
-        'history is still null, so nothing about the run can be read. model.fit returns a promise, so the record it resolves to has to be awaited before it is stored.',
+        'history is empty. Await model.fit() and store the returned training record.',
       ).toBeDefined();
       expect(
         history.history,
@@ -218,7 +224,7 @@ testCode: |
       // accuracy check anywhere can catch it. These two counters can.
       expect(
         history,
-        'history is still null, so there is nothing recording what the training call was given.',
+        'history is empty. Await model.fit() and store the returned training record.',
       ).toBeDefined();
       expect(
         history.params,
@@ -226,11 +232,11 @@ testCode: |
       ).toBeDefined();
       expect(
         history.params.samples,
-        'This is the row count model.fit was given. More than the archive holds means the held-out slice went into training, and every number you report afterwards is then measured on rows the gradients already saw. Fewer means part of the archive was held back inside fit (a validationSplit, say), and this exercise scores its held-out slice itself.',
+        'Train on all 100 supplied training rows. Keep the test rows out and do not hold back an extra validationSplit in this exercise.',
       ).toBe(100);
       expect(
         model.optimizer.iterations,
-        'This is how many weight updates the optimizer applied to this model: one per batch, so 30 sweeps over 100 rows in batches of 16. Zero means fit never ran on this model at all.',
+        'Use 30 epochs over 100 rows, with batch size 16. The model must record the resulting weight updates.',
       ).toBe(210);
     });
     it('the fit used the supplied training values, not an equal-sized mixture with test rows', () => {
@@ -257,7 +263,7 @@ testCode: |
       // stops the round number being restored by trimming it.
       expect(
         testX.shape,
-        'testX is not the 43-row slice the exercise ships: 20 calm, 20 flagged, then the three late-confirmed rows from the lesson. The held-out numbers only mean something on that slice.',
+        'Keep the supplied 43 test rows: 20 calm examples, 20 flagged examples, and the three story cases.',
       ).toEqual([43, 3]);
       expect(testY.shape, 'testY has to carry one label per held-out row, 43 of them.').toEqual([
         43, 1,
@@ -361,7 +367,7 @@ testCode: |
     it('trainAcc and testAcc are the two numbers THIS run produced', () => {
       expect(
         history,
-        'history is still null, so there is no training accuracy to read.',
+        'history is empty. Await model.fit() and store the returned training record.',
       ).toBeDefined();
       expect(
         history.history,

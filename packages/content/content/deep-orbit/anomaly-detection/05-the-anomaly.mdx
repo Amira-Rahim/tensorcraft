@@ -15,7 +15,7 @@ context:
   narrative: "Before the ship's loudest alert, a replay of its quietest moment: sample 7741, logged in the calm period, back when nothing aboard could see it. Then the live feed does the same thing at twelve times the highest error any normal signal produced."
   speaker: "Chief Nazari"
 concept:
-  explanation: "An ensemble alert counts failed checks. Agreement can support investigation, but it does not prove novelty or identify the cause."
+  explanation: "An ensemble combines several detectors. Its alert counts how many checks flagged a reading. That count helps the crew decide what to investigate, but it does not prove the signal is new or explain its cause."
   bridge:
     jsTitle: "uncaughtException"
     jsCode: "process.on('uncaughtException', (err) => { report(err); process.exit(1) })"
@@ -28,10 +28,10 @@ consequence:
 hints:
   - level: nudge
     content: |
-      Compute each detector separately before counting its vote. A constant window needs a separate policy.
+      Calculate each detector's result, then count how many flagged the reading. Handle a window of identical values separately.
   - level: guidance
     content: |
-      Use moments for a varying window. At zero spread, compare against the original constant reading instead of dividing. A matching value contributes no statistical vote; a different value does. Count all three votes before applying the majority rule.
+      Use tf.moments to calculate the mean and variance when the window contains different values. If all values are identical, compare the new reading with that value instead of dividing by zero. A match gives no statistical vote. A difference gives one vote. Add that vote to the other two before checking for a majority.
   - level: solution
     content: |
       interface EnsembleVerdict {
@@ -85,9 +85,13 @@ keywords:
 skillAxes: [model_arch, evaluation]
 ---
 
-> **ARIA ARCHIVE · PLAYBACK: SAMPLE 7741** · Logged mid-calm-period. Rule-engine assessment at the time: nominal. Human assessment at the time: none; nobody was looking. End of frame.
+> **ARIA archive · replaying sample 7741** · Recorded during a quiet period. ARIA's rules marked it as normal. No crew member checked it at the time.
 
-Replayed through the crew's three detectors running side by side, sample 7741 stops looking calm. The z-score gate still clears it, exactly as it did in the archive; the autoencoder and the LSTM both flag it on the first pass, and two votes out of three is all the ensemble needs. Demir is still staring at that, mid-morning, when the live capture does the same thing: the same 73.4 Hz tone, the same two votes, twelve times the highest reconstruction error any normal signal has produced, and the bridge lights up with the loudest alert DEEP SCAN has ever fired. Two captures from here on, then: sample 7741 in the archive and the live capture on the feed, one signature, and every dial on both inside its band.
+The crew replays sample 7741 through all three detectors. The z-score check still calls it normal, but the autoencoder and LSTM both flag it. Two votes are enough to raise an alert.
+
+Mid-morning, a live capture produces the same 73.4 Hz tone and the same two votes. Its reconstruction error is twelve times the highest error seen on a normal signal. DEEP SCAN raises its loudest alert yet.
+
+Now the crew has two captures to compare: sample 7741 from the archive and the new live capture. Both contain the same pattern, even though each individual sensor reading stays within its usual range.
 
 By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
 
@@ -96,7 +100,7 @@ I've checked the sensor calibration twice. No fault found. Keep the raw capture;
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-The reconstruction error is twelve times the highest we have ever logged from a normal signal. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM did not see this reading coming: its forecast for the next reading's three signal features missed by 0.041, four times its gate. Two of three detectors agree, and the one that stayed quiet is the one that reads amplitude alone. Every dial on this capture sits inside its band, exactly as 7741's did. The amplitude is ordinary. The other checks need an explanation.
+The reconstruction error is twelve times our highest normal error. There is a 73.4 Hz component that matches no known stellar phenomenon. The LSTM's forecast error is 0.041, four times its cutoff. Two detectors flagged it. The amplitude-only check stayed quiet because the amplitude is ordinary. The other individual sensor readings are within their usual ranges too, just like 7741. We need to explain why the other checks disagree.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
@@ -107,11 +111,13 @@ What am I looking at, Dr. Farah?
 Two detectors crossed their thresholds, Commander. That does not prove the pattern is new. The archive search and calibration checks give us separate reasons to investigate. We still do not know what caused it.
 </Dialogue>
 
-In Node, `process.on('uncaughtException')` handles a throw that escaped earlier handlers. It can be a familiar bug. The ensemble is also an escalation point, but its triggers are statistical checks that can be wrong. Two fired here while the amplitude check stayed quiet; that tells us which checks failed, not whether the signal is new. That quiet dial is why sample 7741 sat in the archive for eight days. The alert rule is not one cutoff. The autoencoder detector still uses last lesson's locked cutoff of 1.0, and this reading came back at 6.2, twelve times the highest error any normal signal produced. That detector casts one vote of three, and the alert needs two.
+In Node, `process.on('uncaughtException')` receives an error that escaped earlier handlers. It may still be a familiar bug. An ensemble alert also asks for attention, but it comes from statistical checks that can be wrong. Here two checks fired while the amplitude check stayed quiet. That tells us which checks failed, not whether the signal is new.
+
+The quiet amplitude check let sample 7741 sit in the archive for eight days. The ensemble now uses three separate checks. The autoencoder keeps last lesson's cutoff of 1.0. This reading scores 6.2, twelve times the highest normal error. That gives one vote. The alert needs two.
 
 You will calculate three detector verdicts and combine them into one alert decision.
 
-<LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Derive the statistical check yourself, and fold the autoencoder's and the LSTM's scores in beside it", "Interpret ensemble agreement as an evidence count, not a probability: more detectors flagging means the reading failed more kinds of check", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
+<LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Calculate the statistical check, then combine it with the autoencoder and LSTM scores", "Read the vote as a count of failed checks, not the probability that a reading is anomalous", "Read a 2-of-3 majority vote as an agreement level, and state what agreeing detectors can and cannot claim"]} />
 
 ## Ensemble Detection
 
@@ -144,18 +150,13 @@ function detectAnomaly(
       recentWindow.some(row => row.length !== 3 || !row.every(Number.isFinite)) ||
       ![...signal, ...actualLstmFeatures, amplitude, baseline.mean, ...Object.values(thresholds)].every(Number.isFinite) ||
       Object.values(thresholds).some(value => value < 0)) throw new Error('Invalid detector inputs');
-  // Detector 1: Statistical z-score on the capture's amplitude.
-  // Two arrays describe this one capture and they are on different scales.
-  // amplitude is what module 4's preprocess hands the classifier: the raw
-  // count divided by the sensor's 2048-count full scale, so 0 to 1. signal
-  // is what module 5 hands the autoencoder: eleven features z-normalized to
-  // mean 0 and std 1. This detector takes the min-max one as its own
-  // argument, because baseline is amplitude's mean and std in min-max
-  // units, measured over the normal period in this module's first lesson.
-  // Passing signal[0] here would divide a z-score by a min-max spread.
-  // The count is reported signed, so a dip reads negative, and the gate
-  // compares its size: a reading that far below the mean is as far out as one
-  // that far above it.
+  // Detector 1: check the capture's min-max-scaled amplitude.
+  // amplitude is the raw sensor count divided by 2048, giving 0 to 1.
+  // signal instead holds eleven z-scored features with mean 0 and std 1.
+  // Use amplitude because baseline uses the same min-max units.
+  // Using signal[0] would mix incompatible scales.
+  // Report a signed z-score, but compare its absolute value with the cutoff.
+  // Both unusually low and unusually high readings can trigger a vote.
   if (!Number.isFinite(baseline.std) || baseline.std < 0) throw new Error('Invalid baseline spread');
   const zScore = baseline.std === 0 ? null : (amplitude - baseline.mean) / baseline.std;
   const statTriggered = zScore === null ? amplitude !== baseline.mean : Math.abs(zScore) > thresholds.zScore;
@@ -175,11 +176,10 @@ function detectAnomaly(
   // Detector 3: LSTM prediction deviation
   const predError = tf.tidy(() => {
     const input = tf.tensor3d([recentWindow]);
-    // The LSTM (module 6) forecasts the next reading's three raw features,
-    // and it reads and writes the per-feature z-scores it was trained on.
-    // Use its OWN frozen training scaler for both recentWindow and
-    // actualLstmFeatures. The autoencoder may have different training
-    // rows and statistics, even for columns with the same names.
+    // The LSTM predicts three features using its own frozen training scaler.
+    // Apply that scaler to recentWindow and actualLstmFeatures.
+    // The autoencoder may use different training rows and statistics,
+    // even when its feature names match.
     const output = lstm.predict(input) as tf.Tensor;
     if (output.rank !== 2 || output.shape[0] !== 1 || output.shape[1] !== 3) {
       throw new Error('Invalid forecast shape');
@@ -205,42 +205,43 @@ function detectAnomaly(
   };
 }
 
-// The anomalous signal:
+// Fictional mission scores:
 // statistical: z=-0.1 ✗, autoencoder: error=6.2 ✓, lstm: predError=0.041 ✓
-// Agreement: 2 of 3. Two detectors fired; neither says how likely.
-// The statistical vote stays quiet, and that is the tell: the capture's
-// amplitude came in at 0.50, 0.1 sigma under lesson 1's baseline of mean
-// 0.52, std 0.15, so the one dial this gate reads is inside its band. For
-// scale, the gate opens at 3 sigma. A spike pegged at the sensor's
-// full-scale 1.00 is 3.2 sigma, as high as the count goes, because the
-// sensor saturates there; a dead channel reading 0.00 is 3.47 sigma the
-// other way.
+// Two of three checks flag it. This count is not a probability.
+// Amplitude is 0.50, about 0.1 sigma below mean 0.52 with std 0.15.
+// The 3-sigma check therefore stays quiet.
+// At the sensor's maximum of 1.00, the z-score is 3.2.
+// At a dead channel's 0.00, it is 3.47 in the other direction.
 //
-// thresholds.prediction is 0.01 here, set the way lesson 4 set the
-// reconstruction cutoff: above every forecast miss the LSTM made on the
-// calm slice. predError is a mean squared error over the three z-scored
-// features, so this reading's 0.041 is four times the gate.`}
+// thresholds.prediction is 0.01, above every LSTM error in the calm slice.
+// predError is MSE across three z-scored features.
+// This reading's 0.041 is about four times that cutoff.`}
 </CodeBlock>
 
-Separately computed is not the same as independent. All three detectors score the same capture. The statistical gate reads its amplitude channel min-max normalized, and the autoencoder reads that same channel z-scored, as one of the eleven features it is trying to rebuild. That is one hull sensor read twice through two different scalings. If the sensor drifts, both detectors get the drifted number, and neither can tell that the other got it too. Both models draw training rows from the same telemetry archive, although the LSTM run used only its first day. The votes can therefore fail together, which is why a majority is not three odds multiplied.
+The three detectors run separate calculations, but their errors can still be linked. They all read the same capture. The statistical check uses its min-max-scaled amplitude. The autoencoder sees that amplitude again, z-scored, among its eleven features. If the sensor drifts, both receive the changed reading.
 
-Lesson 2's first run shows the shape of it. 412 contaminated rows taught the autoencoder the 73.4 Hz component, so it rebuilt the anomalous signal at 1.4x baseline and the reading walked past the threshold. The LSTM trained on the first day of that archive. Contamination present in both training selections can weaken two votes at once, and the third is reading a channel one of them already saw. Sample 7741's replay was carried by exactly that pair. Lesson 1's drawer made the point about sensors bolted to one hull, which share their noise. Read 2 of 3 as two checks that failed.
+The models also use training rows from the same archive, although the LSTM used only its first day. A problem in shared data can affect several votes. You cannot treat those votes as independent probabilities.
+
+In lesson 2, 412 contaminated rows taught the autoencoder to rebuild the 73.4 Hz component. It returned an error only 1.4 times the baseline, below the cutoff, so it missed the anomaly.
+
+The LSTM trained on the archive's first day. If contaminated examples appear in both training sets, both detectors can learn the unwanted pattern. The amplitude check also shares a sensor with the autoencoder. A majority vote can therefore miss an event too. The later replay of sample 7741 relied on the autoencoder and LSTM, the same pair that could share this weakness. As lesson 1's drawer showed, sensors on one hull can also share noise.
 
 ## The Discovery
 
-While the ensemble votes, Farah runs a script she has been putting off: an interval decomposition. Not the gap between pulses; that number is boring now, 73.4 seconds, steady as a metronome; the crew has known it since the spectrogram lesson. The timing *inside* each pulse. Every pulse, it turns out, is not one event but a train of sub-pulses, and the gaps between them run in Fibonacci proportion: 1, 1, 2, 3, 5, 8, 13, each gap the sum of the two before it.
+While the detectors vote, Farah runs a script to examine the timing inside each pulse. The crew already knows the gap between pulses: 73.4 seconds. She is looking at the smaller pulses within each one.
+
+The gaps follow Fibonacci ratios: 1, 1, 2, 3, 5, 8, 13. Each number is the sum of the two before it.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
-{`// Integration sketch: application supplies models, windows and frozen
-// scalers. actualLstmFeatures and recentWindow use the LSTM scaler;
-// anomalousSignal uses the autoencoder scaler. Mission scores below are
-// fictional examples, not output guaranteed by these functions.
-// Two views of the same capture: the z-scored eleven the autoencoder
-// rebuilds, and the min-max amplitude the statistical gate measures.
-// Module 5's extractFeatures turns the 64 raw samples into those eleven
-// in raw units. Module 4's preprocess normalizes the first three of them
-// from a named feature object. Passing the capture array instead breaks
-// that input contract; preprocessing should reject it.
+{`// The application supplies trained models, windows, and frozen scalers.
+// Use the LSTM scaler for actualLstmFeatures and recentWindow.
+// Use the autoencoder scaler for anomalousSignal's eleven features.
+// The statistical check uses min-max-scaled amplitude instead.
+// Mission scores below are fictional, not guaranteed function outputs.
+//
+// Module 5's extractFeatures makes eleven raw-unit features from 64 samples.
+// Module 4's preprocess takes the first three as a named feature object.
+// Do not pass the capture array where that object is required.
 const [amplitude, zeroCrossings, phase] = extractFeatures(rawCapture);
 const anomalousAmplitude = preprocess({
   amplitude,
@@ -268,19 +269,21 @@ console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(
 
 ## Challenge
 
-Write the verdict layer: derive the z-score yourself from the eight recent amplitudes you are handed, take the autoencoder's and the LSTM's scores as they arrive, and return the 2-of-3 vote as a count of failed checks. The statistical detector moves off lesson 1's eleven-day baseline onto that window, so the same full-scale reading that scored 3.2 sigma there scores 32 here. The LSTM moves too: there it forecasts one amplitude and its miss is compared in 0-to-1 units, not in this lesson's z-space mean squared error.
+Combine the three detector results into one decision. Calculate the z-score from the eight recent amplitudes. Compare the supplied autoencoder and LSTM scores with their cutoffs. Count the failed checks and raise an alert when at least two flag the reading.
 
-A constant window has no standard deviation to divide by. This exercise reports a null z-score and uses an exact equality policy for its statistical vote. Real sensors need a tolerance chosen from their resolution and noise. Reject a nonconstant window if float32 conversion loses its spread; a rounded-away variation is not evidence of a constant baseline.
+This exercise uses a different baseline from lesson 1. The same maximum reading that scored 3.2 sigma against the eleven-day archive scores 32 against this quieter window. The LSTM check also differs from the example above: it predicts one amplitude, and its error uses 0-to-1 amplitude units rather than mean squared error on z-scored features.
+
+When every value in the window is identical, its standard deviation is zero. Return a null z-score. For this exercise, an equal new value gives no statistical vote and a different value gives one vote. Real sensors need a tolerance based on measurement precision and noise. If different window values become identical after float32 conversion, reject the calculation. Rounding away a difference does not make the original readings constant.
 
 <Exercise slug="ensemble-detector" />
 
 <RecallPrompt
-  question="How can a normal-trained autoencoder provide an anomaly score?"
-  answer="It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
+  question="How can an autoencoder trained on normal readings help detect anomalies?"
+  answer="The model learns to rebuild normal readings. Some anomalies then have high reconstruction error, but others do not. Test it on separate normal readings and known anomalies to measure false alarms and misses. Check that its training data is actually normal. Labeled validation data can help choose a cutoff. A percentile of normal errors can estimate a false-alarm rate. Neither guarantees that the detector will recognize every new pattern."
   checks={[
     {
       "kind": "choice",
-      "question": "How can a normal-trained autoencoder provide an anomaly score?",
+      "question": "How can an autoencoder trained on normal readings help detect anomalies?",
       "options": [
         {
           "text": "It guarantees high error for every input not seen in training.",
@@ -288,38 +291,40 @@ A constant window has no standard deviation to divide by. This exercise reports 
         },
         {
           "text": "It learns the correct anomaly label without any evaluation data.",
-          "feedback": "Normal-only training supplies a reconstruction objective, not guaranteed anomaly labels."
+          "feedback": "Training it to rebuild normal readings does not teach it a guaranteed label for every anomaly."
         },
         {
           "text": "Measure reconstruction error; some anomalies may reconstruct poorly.",
-          "feedback": "It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
+          "feedback": "The model learns to rebuild normal readings. Some anomalies then have high reconstruction error, but others do not. Test it on separate normal readings and known anomalies to measure false alarms and misses. Check that its training data is actually normal. Labeled validation data can help choose a cutoff. A percentile of normal errors can estimate a false-alarm rate. Neither guarantees that the detector will recognize every new pattern."
         }
       ],
       "correctIndex": 2,
-      "explanation": "It is trained to reconstruct normal samples with low error. Some anomalies then reconstruct poorly, but others do not. Held-out normal data and known anomalies help measure false alarms and misses. Normal-only training assumes that the training set contains normal cases. A labeled validation set can help choose the cutoff; a normal-data percentile instead estimates a false-alarm rate. Neither makes reconstruction error a guaranteed novelty test."
+      "explanation": "The model learns to rebuild normal readings. Some anomalies then have high reconstruction error, but others do not. Test it on separate normal readings and known anomalies to measure false alarms and misses. Check that its training data is actually normal. Labeled validation data can help choose a cutoff. A percentile of normal errors can estimate a false-alarm rate. Neither guarantees that the detector will recognize every new pattern."
     }
   ]}
 />
 
 <RecallPrompt
-  question="Explain how physical sensor saturation limits the amplitude evidence available to this statistical gate."
-  answer="A fitted min-max range can be exceeded by later observations. Here the scale instead comes from a physical bound: the sensor saturates at its 2048-count full scale, so the stream is not open-ended. The cost sits at the ceiling. A reading pegged at 1.00 is 3.2 sigma off this module's normal-period baseline and can go no higher, while a dead channel at 0.00 reaches 3.47."
+  question="Why does the sensor's maximum reading limit how large this amplitude z-score can get?"
+  answer="New readings can exceed a min-max range learned from data. This sensor has a physical limit instead: it cannot read above 2048 counts, which becomes 1.00 after scaling. Against this module's baseline, that maximum is 3.2 standard deviations above the mean. A dead channel at 0.00 is 3.47 standard deviations below it. This feature cannot produce a larger distance on that scale."
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Ensemble detection combines methods with different assumptions (statistical, learned, and temporal) so that a majority vote, not any single detector, decides; agreement counts how many checks failed and is not a calibrated probability.",
+    "Ensemble detection combines several methods and uses a majority vote. The vote counts failed checks. It is not a probability.",
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error can flag structural deviations, and LSTM prediction error can flag temporal pattern breaks. Each can miss events or flag normal variation.",
     "The detectors share captures, features and training data. Their errors can be correlated: one contaminated archive may silence more than one vote.",
-    "A model's job is detection and quantification; ensemble agreement tells you how many checks fired, and interpretation of what was detected remains a human decision."
+    "The detectors measure differences and raise alerts. People still need to investigate what caused them."
   ]}
   bridge="Both an uncaughtException handler and an ensemble alert escalate a problem. The handler observes an actual throw; detector votes are fallible checks that need investigation."
-  youCanNow="Build the verdict layer of an ensemble detector: compute the statistical check, combine it with the autoencoder's and the LSTM's scores, and read the majority vote as a count of failed checks rather than a probability."
+  youCanNow="Calculate the statistical check, combine the three detector results, and explain what the majority vote tells you."
 />
 
 <Epilogue>
 
-Farah reruns the interval decomposition on a cold copy of the data, on a different machine, and the sequence comes back unchanged: 1, 1, 2, 3, 5, 8, 13. Across the bridge, Nazari pulls the ship's own sensor calibration harmonics and lays them over the pulse train, unasked this time. Correlation: 0.9987. The signal out of Sector 7-G is pulsing in the Archimedes' own ratios, the math the ship hums to itself every time it tunes its sensors.
+Farah repeats the timing check on a fresh copy of the data, using a different machine. The sequence is unchanged: 1, 1, 2, 3, 5, 8, 13.
+
+Across the bridge, Nazari compares it with the frequency patterns used to calibrate the ship's sensors. The correlation is 0.9987. The signal from Sector 7-G follows the same ratios as the Archimedes' sensor calibration.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 Two hypotheses. The calibration path may be leaking into the capture. Or the pattern may be external. We need an independent instrument before we choose between them.

@@ -13,7 +13,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "The LLM doesn't know about DEEP SCAN's specific signals. Farah builds a RAG pipeline: retrieving relevant signal rows from the database and injecting them into the prompt."
+  narrative: "The LLM has not seen DEEP SCAN's current signal data. Farah builds a RAG pipeline that finds matching database records and adds them to the prompt."
   speaker: "Dr. Farah"
 concept:
   explanation: "RAG retrieves the relevant records first and hands them to the model, so answers can cite your data instead of the model's memory."
@@ -25,7 +25,7 @@ concept:
     tier: structural
     breaks: "Server Components run on the server and can still render misleading data. RAG adds generated text conditioned on retrieved material. A model can contradict a passage while citing it. Check the claim against the identified source, field, and scope rather than trusting the presence of a citation."
 consequence:
-  narrative: "The pipeline retrieves fourteen Band-7 rows and the model reports seventeen, so the audit hour buys a checker."
+  narrative: "The database returns fourteen Band-7 records, but the model reports seventeen. Demir spends an hour checking earlier answers and building a claim checker."
 hints:
   - level: nudge
     content: "Apply only the filters named in the query. Count all matches before taking the first twenty. The claim-checking exercise has its own hints."
@@ -87,18 +87,18 @@ skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The model has not received our current signal archive. A fluent answer about Band-7 could still be a guess. We need to retrieve the relevant data first and inject it into the prompt. Retrieval-Augmented Generation.
+The model has not received our current signal archive. A fluent answer about Band-7 could still be a guess. We need to find the relevant records first and add them to the prompt. That is retrieval-augmented generation, or RAG.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
 That's Server Components! Fetch data on the server, then render with it. RAG fetches data from the signal database, then generates a response with it.
 </Dialogue>
 
-Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: component code can mislabel data too, but you can inspect how it maps each field to the output. Generated wording has no such fixed mapping; it needs its own evidence checks.
+Both approaches fetch records before producing output. But rendering code explicitly maps fields to the page, and you can inspect that mapping. Generated prose has no fixed field-to-sentence mapping. It can misstate a record even when the right data was supplied, so check each claim against its source.
 
 You will retrieve relevant records and check each generated claim against the record it cites.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a signal retrieval step from text and metadata matching, with a row cap, that reports how many rows matched before the cap and whether the cap dropped any", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Distinguish metadata filters, keyword search, and embedding search, and state what the retrieval cap leaves out"]} />
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Retrieve matching signal records, limit how many reach the model, and report any records left out", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Compare field filters, keyword search, and embedding search, and explain what the record limit leaves out"]} />
 
 ## The RAG Pipeline
 
@@ -116,19 +116,17 @@ You will retrieve relevant records and check each generated claim against the re
   anomalyScore: number;
 }
 
-// Integration dependencies: implement retrieveSignals and verifyClaims in
-// the exercises below; the application supplies signalDatabase and llm.
-// Step 1: RETRIEVE: find the relevant signals, then cap them.
-//   retrieveSignals(query, db, now): Retrieval
-// Read the filters the question carries (a band, an age in hours, whether it
-// asks for anomalies), apply each one that is there, keep database order,
-// take the first CONTEXT_ROWS survivors. This is the first challenge below.
+// Implement retrieveSignals and verifyClaims in the exercises below.
+// The application supplies signalDatabase and llm.
+// retrieveSignals(query, db, now) returns Retrieval.
+// Apply the filters named in the query: band, age in hours, and anomalies.
+// Keep database order, then return the first CONTEXT_ROWS matches.
 //
-// Limit row count here. Also measure the final prompt token count against
-// the deployed tokenizer and context limit, reserving room for the answer. Nothing is
-// ranked, so the rows past the cap are dropped for arriving late rather than
-// for being irrelevant, and \`rows\` alone cannot show that happened. The
-// other two fields are how the caller finds out.
+// Also check the final prompt's token count with the deployed tokenizer.
+// Reserve room for the answer. The row limit is not a token limit.
+// Rows are not ranked: later matches are left out because of their order,
+// not because they are irrelevant. Report matched and truncated so the
+// caller can see what rows alone would hide.
 const CONTEXT_ROWS = 20;
 
 interface Retrieval {
@@ -207,7 +205,7 @@ The second challenge uses structured claims instead. Each names its source rows,
 This still has limits. Retrieved records may be wrong, a cap may omit important records, and a model may leave a relevant claim out. A checked structured value cannot approve a separate paragraph. Render the verified fields with their labels and citations, or have a reviewer check the complete prose against the evidence.
 ## Challenge
 
-Retrieval runs first. Build the step that decides which rows reach the model, and have it report how many matched before the cap trimmed the list.
+First, choose which records reach the model. Return the matching records up to the limit, the total match count, and whether any matches were left out.
 
 <Exercise slug="retrieve-signals" />
 
@@ -229,7 +227,7 @@ Now check the structured claims against their cited records, including the field
         },
         {
           "text": "Yes, if the response includes any citation.",
-          "feedback": "A citation must support its specific claim; its mere presence is insufficient."
+          "feedback": "The cited record must support that exact claim. Adding a citation is not enough."
         },
         {
           "text": "No. Field meanings, source rows, units and nonnumeric claims still need checking.",
@@ -245,7 +243,7 @@ Now check the structured claims against their cited records, including the field
 <LessonRecap
   whatYouLearned={[
     "RAG retrieves evidence before generation. The answer can still misrepresent that evidence or omit important facts.",
-    "Report how many records matched and whether the context was truncated. A total over cited rows is not automatically a total over all matches.",
+    "Report the total number of matches and whether any were left out. A sum over the cited records may not include every matching record.",
     "Verify a structured claim's source, field, unit, and calculation. Matching a number anywhere in the evidence is insufficient.",
     "Render verified fields with their labels and citations. Free-text interpretations still need review, and checked values do not establish that the source data is correct."
   ]}
@@ -257,12 +255,16 @@ Now check the structured claims against their cited records, including the field
 
 <Epilogue>
 
-Three hours to the window. Demir demos the pipeline on the bridge: data in, render out, same contract as a Server Component, so he doesn't bother checking the output against the context. Nazari asks it for Band-7 anomalies in the last 72 hours. The answer comes back fluent and cited: seventeen signals. The retrieved context, printed right above it, contains fourteen.
+Three hours until the window, Demir demonstrates the pipeline on the bridge. He assumes it works like a Server Component and skips checking the answer against the records.
+
+Nazari asks for Band-7 anomalies from the last 72 hours. The model reports seventeen signals, with citations. The records printed above the answer contain fourteen.
 
 <Dialogue speaker="Chief Nazari">
 Fourteen. I logged them myself. Your pipeline retrieved fourteen and reported seventeen with citations, which means I now audit every answer it has produced today. That's an hour, Ensign, out of three.
 </Dialogue>
 
-Demir spends the audit hour making the generator name a record and field for each numerical claim; the new checker catches two more mismatches before the report is drafted. One of the two sits in a summary Nazari signed off by hand this morning. She initials the correction without comment. Nazari asks him to run it back over the week's reports, then opens the first paragraph to review the claims no field can settle.
+During the audit hour, Demir makes the generator identify the record and field behind each numerical claim. His checker catches two more mismatches before the report is drafted. One is in a summary Nazari approved that morning. She initials the correction without comment.
+
+She asks him to check the week's reports too. Then she opens the first paragraph to review the claims that cannot be checked against a single field.
 
 </Epilogue>
