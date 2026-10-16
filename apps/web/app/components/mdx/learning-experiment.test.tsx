@@ -30,6 +30,42 @@ const record = (id: ExperimentId) =>
   parseExperimentDraft(sessionStorage.getItem(key(id))!, id);
 
 it.each([
+  ["normalization", "1,1"],
+  ["threshold", "4"],
+  ["learning-rate", "2"],
+  ["fft", "4"],
+  ["attention", "1"],
+  ["cache", "2"],
+] as const)(
+  "%s clearly reports incorrect answers in both cases and clears stale errors on edit",
+  (id, correctAnswer) => {
+    render(<LearningExperiment id={id} />);
+    const answer = screen.getByRole("textbox");
+    submit("9999");
+    expect(screen.getByText("Not quite. That’s incorrect.")).toBeVisible();
+    expect(answer).toHaveAttribute("aria-invalid", "true");
+    expect(answer).toHaveAccessibleDescription(/That’s incorrect/);
+    fireEvent.change(answer, { target: { value: correctAnswer } });
+    expect(answer).not.toHaveAttribute("aria-invalid");
+    expect(screen.queryByText(/Not quite/)).not.toBeInTheDocument();
+    click("Check prediction");
+    expect(screen.getByText("Correct!")).toBeVisible();
+    expect(record(id).prediction.first?.correct).toBe(false);
+    expect(record(id).prediction.latest?.correct).toBe(true);
+    click(
+      id === "threshold"
+        ? "Freeze policy and open final test"
+        : "Try a changed case",
+    );
+    expect(screen.queryByText("Correct!")).not.toBeInTheDocument();
+    submit("9999");
+    expect(screen.getByText("Not quite. That’s incorrect.")).toBeVisible();
+    expect(answer).toHaveAttribute("aria-invalid", "true");
+    expect(record(id).changed_case.first?.correct).toBe(false);
+  },
+);
+
+it.each([
   ["normalization", "Same weights, different preprocessing", "1,1"],
   ["threshold", "Validation: threshold 0.4", "4"],
   ["learning-rate", "Four calculated updates", "2"],

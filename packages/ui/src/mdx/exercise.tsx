@@ -310,9 +310,8 @@ const SANDPACK_THEMES: Record<"dark" | "light", SandpackTheme> = {
  * Lives in an always-mounted live region (see TestResultsLiveRegion): a
  * region created in the same commit as its content is not reliably announced,
  * which is exactly what the old markup did by putting aria-live on the
- * conditionally-rendered panel. Named failures are included because the panel
- * itself distinguishes pass from fail with colour and an aria-hidden glyph, so
- * a screen reader user gets nothing from the list.
+ * conditionally-rendered panel. Named failures let the learner hear which
+ * checks still need work without searching through the result list.
  */
 function resultsSummary(results: TestResult[]): string {
   if (results.length === 0) return "";
@@ -322,7 +321,7 @@ function resultsSummary(results: TestResult[]): string {
     return `All ${total} ${total === 1 ? "test" : "tests"} passed.`;
   }
   const failed = results.filter((r) => !r.passed).map((r) => r.name);
-  return `${passed} of ${total} tests passed. Failed: ${failed.join(", ")}.`;
+  return `Challenge not passed. ${passed} of ${total} ${total === 1 ? "test" : "tests"} passed. Failed: ${failed.join(", ")}.`;
 }
 
 /**
@@ -401,7 +400,7 @@ function TestResultsPanel({
         >
           {allPassed
             ? "All tests passed!"
-            : `${passed} of ${total} tests passed`}
+            : `Not passed yet: ${passed} of ${total} ${total === 1 ? "test" : "tests"} passed`}
         </span>
         <span
           className={`text-xs font-mono px-2 py-0.5 rounded-none ${
@@ -425,17 +424,15 @@ function TestResultsPanel({
       <div className="flex flex-col gap-1.5">
         {results.map((result, i) => (
           <div key={i} className="flex items-start gap-2 text-sm">
-            {/* The tick/cross is aria-hidden because "✓" and "✗" read as
-                noise, but that left pass/fail carried by colour alone (WCAG
-                1.4.1). The sr-only word restores it without touching the
-                visual design. */}
+            {/* Visible labels make each outcome clear without relying on
+                colour or the tick/cross. The glyph itself is decorative. */}
             <span
               className={`flex-shrink-0 mt-0.5 font-mono font-bold ${
-                result.passed ? "text-primary" : "text-text-muted"
+                result.passed ? "text-success" : "text-error"
               }`}
             >
               <span aria-hidden="true">{result.passed ? "✓" : "✗"}</span>
-              <span className="sr-only">
+              <span className="ml-1 text-xs">
                 {result.passed ? "Passed: " : "Failed: "}
               </span>
             </span>

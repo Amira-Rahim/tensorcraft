@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState, type ReactNode } from "react";
+import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
 import {
   ActivitySyncStatus,
   type LocalActivityRecord,
@@ -163,10 +164,11 @@ function ExperimentBody({ id }: { id: ExperimentId }) {
             id={`${uid}-answer`}
             value={draft.answer}
             onChange={(e) => update({ answer: e.target.value, result: null })}
-            className={`${input} font-mono`}
+            className={`${input} font-mono aria-invalid:border-error`}
             autoComplete="off"
             maxLength={80}
-            aria-describedby={`${uid}-format`}
+            aria-invalid={draft.result ? !draft.result.correct : undefined}
+            aria-describedby={`${uid}-format ${uid}-feedback`}
           />
           <p id={`${uid}-format`} className="text-sm text-text-muted">
             Enter numbers separated by commas when there is more than one.
@@ -185,7 +187,16 @@ function ExperimentBody({ id }: { id: ExperimentId }) {
             </button>
           </div>
         </form>
-        <div role="status" aria-live="polite">
+        <AnswerFeedback
+          id={`${uid}-feedback`}
+          status={
+            draft.result
+              ? draft.result.correct
+                ? "correct"
+                : "incorrect"
+              : null
+          }
+        >
           {draft.result && (
             <p>
               {draft.result.correct
@@ -196,7 +207,7 @@ function ExperimentBody({ id }: { id: ExperimentId }) {
                 : "Recorded before viewing a calculation in this case."}
             </p>
           )}
-        </div>
+        </AnswerFeedback>
         {(draft.revealed || draft.result) && <Results id={id} draft={draft} />}
         <div className="flex flex-wrap gap-2">
           {!changed && (

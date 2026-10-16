@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useState } from "react";
+import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
 import {
   DECISIONS,
   checkDecision,
@@ -42,8 +43,15 @@ function DecisionTaskBody({ id }: { id: string }) {
       setSaved(false);
     }
   }, [draft, key, ready]);
-  const attempt = draft.attempts.at(-1),
-    result = attempt ? checkDecision(id, attempt) : null;
+  const attempt = draft.attempts.at(-1);
+  const answersChanged = Boolean(
+    attempt &&
+    (["choice", "calculation", "rationale", "help", "minutes"] as const).some(
+      (field) => draft[field] !== attempt[field],
+    ),
+  );
+  const result = attempt && !answersChanged ? checkDecision(id, attempt) : null;
+  const correct = result?.choiceCorrect && result.calculationCorrect;
   const edit = (
     field: "calculation" | "rationale" | "help" | "minutes",
     value: string,
@@ -113,6 +121,8 @@ function DecisionTaskBody({ id }: { id: string }) {
               value={option.id}
               checked={draft.choice === option.id}
               onChange={() => setDraft((d) => ({ ...d, choice: option.id }))}
+              aria-invalid={result ? !result.choiceCorrect : undefined}
+              aria-describedby={`${uid}-feedback`}
             />
             <span>{option.text}</span>
           </label>
@@ -121,10 +131,12 @@ function DecisionTaskBody({ id }: { id: string }) {
           <label className="block">
             {spec.number.label}
             <input
-              className="mt-2 block min-w-0 w-full rounded border border-interactive bg-page p-2"
+              className="mt-2 block min-w-0 w-full rounded border border-interactive bg-page p-2 aria-invalid:border-error"
               type="number"
               value={draft.calculation}
               onChange={(e) => edit("calculation", e.target.value)}
+              aria-invalid={result ? !result.calculationCorrect : undefined}
+              aria-describedby={`${uid}-feedback`}
             />
           </label>
         )}
@@ -206,26 +218,47 @@ function DecisionTaskBody({ id }: { id: string }) {
           </button>
         </div>
       </fieldset>
-      {attempt && result && (
-        <div role="status" className="space-y-2 rounded bg-surface p-3">
+      <AnswerFeedback
+        id={`${uid}-feedback`}
+        status={result ? (correct ? "correct" : "incorrect") : null}
+        title={
+          correct
+            ? spec.number
+              ? "Your choice and calculation are correct!"
+              : "Your choice is correct!"
+            : result?.choiceCorrect
+              ? "Not quite. Your calculation is incorrect."
+              : result?.calculationCorrect
+                ? "Not quite. Your choice is incorrect."
+                : "Not quite. Your choice and calculation are incorrect."
+        }
+      >
+        {result ? (
+          <>
+            <p>
+              Attempt {draft.attempts.length}:{" "}
+              {result.choiceCorrect
+                ? "Your choice matches the stated constraints."
+                : "Recheck the stated constraints before choosing."}{" "}
+              {spec.number &&
+                (result.calculationCorrect
+                  ? "Your cost calculation is correct."
+                  : "Recalculate the cost from false positives and false negatives.")}
+            </p>
+            <p>{spec.explanation}</p>
+            <p className="text-sm">
+              Your explanation is recorded for review. It has not been
+              automatically graded. Later attempts follow revealed feedback; the
+              first attempt is kept in this tab record.
+            </p>
+          </>
+        ) : answersChanged ? (
           <p>
-            Attempt {draft.attempts.length}:{" "}
-            {result.choiceCorrect
-              ? "Choice matches the stated constraints."
-              : "Recheck the stated constraints before choosing."}{" "}
-            {spec.number &&
-              (result.calculationCorrect
-                ? "Cost calculation matches."
-                : "Recalculate the cost from false positives and false negatives.")}
+            Your answers have changed. Submit again to check them. Your previous
+            attempts stay in the record.
           </p>
-          <p>{spec.explanation}</p>
-          <p className="text-sm">
-            Your explanation is recorded for review. It has not been
-            automatically graded. Later attempts follow revealed feedback; the
-            first attempt is kept in this tab record.
-          </p>
-        </div>
-      )}
+        ) : null}
+      </AnswerFeedback>
       <p className="text-sm text-text-muted">
         {saved
           ? "Saved in this tab. Download the record before closing it."

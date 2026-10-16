@@ -1,8 +1,9 @@
 // DEPRECATED: replaced by RecallPrompt/LessonRecap in the lesson close; retained for unbuilt coming-soon world MDX. See docs/superpowers/specs/2026-06-15-end-of-lesson-design.md
 "use client";
 import { ProseText } from "../prose-text";
+import { AnswerFeedback } from "../answer-feedback";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 /**
  * Per-option config. Authors may mark the correct option via either:
@@ -43,6 +44,7 @@ export function Quiz({
   tier,
   onSubmit,
 }: QuizProps) {
+  const feedbackId = useId();
   const [selected, setSelected] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -87,6 +89,8 @@ export function Quiz({
         className="flex flex-col gap-2"
         role="radiogroup"
         aria-label={question}
+        aria-describedby={submitted ? feedbackId : undefined}
+        aria-invalid={submitted && !isCorrect ? true : undefined}
       >
         {options.map((option, i) => {
           let borderClass = "border-interactive";
@@ -139,41 +143,28 @@ export function Quiz({
           >
             Check Answer
           </button>
-        ) : (
-          <>
-            <span
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-              className={`text-sm font-medium ${isCorrect ? "text-primary" : "text-error"}`}
-            >
-              {isCorrect
-                ? "Correct!"
-                : explanation
-                  ? "Wrong answer, see why below"
-                  : "Wrong answer"}
-            </span>
-            {!isCorrect && (
-              <button
-                type="button"
-                onClick={handleReset}
-                className="text-sm underline text-text-muted"
-              >
-                Retry
-              </button>
-            )}
-          </>
-        )}
+        ) : !isCorrect ? (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="text-sm underline text-text-muted"
+          >
+            Retry
+          </button>
+        ) : null}
       </div>
 
-      {submitted && explanation && (
-        <div
-          data-testid="quiz-explanation"
-          className="mt-4 pt-4 border-t border-border text-sm text-text-primary/80 font-sans leading-relaxed"
-        >
-          <ProseText>{explanation}</ProseText>
-        </div>
-      )}
+      <AnswerFeedback
+        id={feedbackId}
+        status={submitted ? (isCorrect ? "correct" : "incorrect") : null}
+        className={submitted ? "mt-4" : undefined}
+      >
+        {submitted && explanation && (
+          <div data-testid="quiz-explanation">
+            <ProseText>{explanation}</ProseText>
+          </div>
+        )}
+      </AnswerFeedback>
     </div>
   );
 }

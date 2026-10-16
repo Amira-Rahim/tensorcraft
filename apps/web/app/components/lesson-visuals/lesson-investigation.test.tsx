@@ -171,7 +171,7 @@ describe("the lesson investigation", () => {
       target: { value: "5" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
-    expect(screen.getByText("Your prediction matches.")).toBeInTheDocument();
+    expect(screen.getByText("Correct!")).toBeInTheDocument();
     expect(
       screen.getByRole("status", { name: "Experiment status" }),
     ).toHaveTextContent("Observed total: 5");
@@ -233,17 +233,38 @@ describe("the lesson investigation", () => {
 
   it("gives retry guidance for a wrong prediction and clears runs on reset", () => {
     render(<LessonInvestigation spec={spec} lessonSlug="test-lesson" />);
-    fireEvent.change(screen.getByLabelText("What total do you expect?"), {
+    const prediction = screen.getByLabelText("What total do you expect?");
+    fireEvent.change(prediction, {
       target: { value: "2" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
-    expect(screen.getByText("Try another prediction.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Not quite. That’s incorrect."),
+    ).toBeInTheDocument();
+    expect(prediction).toHaveAttribute("aria-invalid", "true");
+    expect(prediction).toHaveAccessibleDescription(/Not quite/);
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Incorrect prediction.");
     expect(
       screen.getByRole("region", { name: "What happened" }),
     ).toHaveTextContent("You predicted 2.");
+    fireEvent.change(prediction, { target: { value: "5.005" } });
+    expect(prediction).not.toHaveAttribute("aria-invalid");
+    expect(prediction).not.toHaveAccessibleDescription(/Not quite/);
+    expect(
+      screen.getByRole("region", { name: "Last run (prediction changed)" }),
+    ).toHaveTextContent("You predicted 2.");
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(screen.getByText("Correct!")).toBeInTheDocument();
+    expect(prediction).not.toHaveAttribute("aria-invalid");
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Correct prediction.");
     fireEvent.change(screen.getByLabelText("First reading"), {
       target: { value: "8" },
     });
+    expect(prediction).not.toHaveAttribute("aria-invalid");
     fireEvent.click(screen.getByRole("button", { name: "Reset experiment" }));
     expect(screen.getByLabelText("First reading")).toHaveValue("2");
     expect(screen.getByLabelText("What total do you expect?")).toHaveValue("");
@@ -296,7 +317,7 @@ describe("the lesson investigation", () => {
       target: { value: "5" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
-    expect(screen.getByText("Your prediction matches.")).toBeInTheDocument();
+    expect(screen.getByText("Correct!")).toBeInTheDocument();
     unmount();
     render(<BriefingInvestigationVisual spec={spec} />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
@@ -308,5 +329,18 @@ describe("the lesson investigation", () => {
       screen.getByRole("img", { name: "Output total" }),
     ).toBeInTheDocument();
     expect(screen.queryByText(spec.brief)).not.toBeInTheDocument();
+  });
+
+  it("shows a skipped optional prediction as ungraded", () => {
+    render(<LessonInvestigation spec={spec} lessonSlug="test-lesson" />);
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(screen.getByText("No prediction to check.")).toBeInTheDocument();
+    expect(screen.queryByText("Correct!")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Not quite. That’s incorrect."),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByLabelText("What total do you expect?"),
+    ).not.toHaveAttribute("aria-invalid");
   });
 });

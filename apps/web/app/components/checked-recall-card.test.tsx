@@ -54,6 +54,12 @@ describe.each(["default", "deep-orbit"] as const)(
     it("requires an answer to every part", () => {
       const { onAnswer } = renderCard();
       expect(
+        screen.queryByText("One dimension of length 3."),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("It only creates a tensor."),
+      ).not.toBeInTheDocument();
+      expect(
         screen.getByRole("button", { name: "Check answers" }),
       ).toBeDisabled();
       fireEvent.change(screen.getByRole("textbox"), {
@@ -73,6 +79,14 @@ describe.each(["default", "deep-orbit"] as const)(
       answer("anything", "No");
       fireEvent.click(screen.getByRole("button", { name: "Check answers" }));
       expect(screen.getByRole("status")).toHaveTextContent("1 of 2 correct");
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "1 answer is incorrect.",
+      );
+      expect(screen.getByText("Not quite. That’s incorrect.")).toBeVisible();
+      expect(
+        screen.getByText("Count the three elements and use brackets."),
+      ).toBeVisible();
+      expect(screen.getByText("Correct!")).toBeVisible();
       expect(screen.getByRole("textbox")).toHaveAttribute(
         "aria-invalid",
         "true",
@@ -89,11 +103,23 @@ describe.each(["default", "deep-orbit"] as const)(
       expect(screen.getByRole("status")).toHaveFocus();
       expect(screen.getByRole("status")).toHaveTextContent("1 of 2 correct");
       expect(screen.getByRole("textbox")).toBeDisabled();
+      const incorrectQuestion = screen.getByRole("group", {
+        name: "Does it train a model?",
+      });
+      expect(incorrectQuestion).toHaveAttribute("aria-invalid", "true");
+      expect(screen.getByText("Not quite. That’s incorrect.")).toBeVisible();
       expect(
         screen.getByText("Creating a tensor does not update model weights."),
       ).toBeVisible();
       expect(onAnswer.mock.calls).toEqual([["attempted"]]);
       fireEvent.click(screen.getByRole("radio", { name: "No" }));
+      expect(incorrectQuestion).not.toHaveAttribute("aria-invalid");
+      expect(
+        screen.queryByText("Not quite. That’s incorrect."),
+      ).not.toBeInTheDocument();
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "Answer changed. Check again when you are ready.",
+      );
       fireEvent.click(screen.getByRole("button", { name: "Check again" }));
       expect(screen.getByRole("status")).toHaveTextContent(
         "All answers are correct. You corrected an earlier mistake.",
@@ -131,7 +157,10 @@ describe.each(["default", "deep-orbit"] as const)(
       expect(screen.getByText("Expected answer: No.")).toBeVisible();
       expect(screen.getByRole("status")).toHaveTextContent("Answers revealed.");
       expect(onAnswer).toHaveBeenCalledExactlyOnceWith("bailed");
-      expect(screen.queryByText("Correct.")).not.toBeInTheDocument();
+      expect(screen.queryByText("Correct!")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Not quite. That’s incorrect."),
+      ).not.toBeInTheDocument();
     });
     it("has accessible labels, groups and feedback before and after an incorrect attempt", async () => {
       const { container } = renderCard();

@@ -36,13 +36,32 @@ it("reveals feedback only after submission and retains the first attempt after a
   });
   fireEvent.click(submit);
   expect(
+    screen.getByText("Not quite. Your choice is incorrect."),
+  ).toBeVisible();
+  expect(screen.getByLabelText("Never flag a build")).toHaveAttribute(
+    "aria-invalid",
+    "true",
+  );
+  expect(screen.getByLabelText(/Total error cost/)).toHaveAttribute(
+    "aria-invalid",
+    "false",
+  );
+  expect(
     screen.getByText(/Recheck the stated constraints/),
   ).toBeInTheDocument();
   fireEvent.click(screen.getByLabelText("Use the model"));
+  expect(screen.queryByText(/Not quite/)).not.toBeInTheDocument();
+  expect(screen.getByLabelText("Use the model")).not.toHaveAttribute(
+    "aria-invalid",
+  );
+  expect(screen.getByText(/Your answers have changed/)).toBeVisible();
   fireEvent.change(screen.getByLabelText(/Total error cost/), {
     target: { value: "28" },
   });
   fireEvent.click(submit);
+  expect(
+    screen.getByText("Your choice and calculation are correct!"),
+  ).toBeVisible();
   const draft = parseDecision(
     sessionStorage.getItem("tensorcraft:decision:v1:review-costs")!,
     "review-costs",
@@ -54,6 +73,30 @@ it("reveals feedback only after submission and retains the first attempt after a
   expect(
     screen.getByText(/has not been automatically graded/),
   ).toBeInTheDocument();
+});
+
+it("distinguishes a wrong calculation from a correct choice", () => {
+  render(<DecisionTask id="review-costs" />);
+  fill();
+  fireEvent.click(screen.getByLabelText("Use the model"));
+  const calculation = screen.getByLabelText(/Total error cost/);
+  fireEvent.change(calculation, { target: { value: "80" } });
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: "Submit decision and show feedback",
+    }),
+  );
+  expect(
+    screen.getByText("Not quite. Your calculation is incorrect."),
+  ).toBeVisible();
+  expect(calculation).toHaveAttribute("aria-invalid", "true");
+  expect(screen.getByLabelText("Use the model")).toHaveAttribute(
+    "aria-invalid",
+    "false",
+  );
+  fireEvent.change(calculation, { target: { value: "28" } });
+  expect(calculation).not.toHaveAttribute("aria-invalid");
+  expect(screen.queryByText(/Not quite/)).not.toBeInTheDocument();
 });
 it("keeps different tasks separate when navigation reuses the component", () => {
   const view = render(<DecisionTask id="review-costs" />);

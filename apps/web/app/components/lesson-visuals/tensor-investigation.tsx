@@ -1,5 +1,6 @@
 "use client";
 import { ProseText } from "@tensorcraft/ui/prose-text";
+import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
 
 import { useEffect, useId, useRef, useState } from "react";
 import { AnimatedAvatar, Dialogue, ScenePortrait } from "@tensorcraft/ui";
@@ -58,6 +59,11 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
     readingsPreserved &&
     Boolean(completed?.prediction.trim()) &&
     Number(completed!.prediction) === result?.shape[0];
+  const hasPrediction = Boolean(completed?.prediction.trim());
+  const predictionChanged = Boolean(
+    completed && prediction !== completed.prediction,
+  );
+  const currentPrediction = Boolean(completed && !predictionChanged);
 
   function changePacket(nextId: string, nextValues: number[]) {
     if (pending) return;
@@ -202,7 +208,14 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               step={1}
               value={prediction}
               onChange={(event) => setPrediction(event.target.value)}
-              aria-describedby={`${resultId}-prediction-help`}
+              aria-describedby={`${resultId}-prediction-help${currentPrediction ? ` ${resultId}-prediction-feedback` : ""}`}
+              aria-invalid={
+                (currentPrediction &&
+                  readingsPreserved &&
+                  hasPrediction &&
+                  !shapePredictionMatches) ||
+                undefined
+              }
             />
             <p id={`${resultId}-prediction-help`}>
               Make a prediction, then create the tensor to check. You can leave
@@ -353,18 +366,39 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
                   <code>shape [{result.shape.join(", ")}]</code>
                   <span>{result.values.length} numbers in one list.</span>
                 </div>
-                {completed?.prediction.trim() && (
-                  <p
-                    className="tensor-investigation-prediction-feedback"
-                    data-correct={shapePredictionMatches ? "true" : "false"}
-                  >
+                <AnswerFeedback
+                  id={`${resultId}-prediction-feedback`}
+                  className="tensor-investigation-prediction-feedback"
+                  status={
+                    readingsPreserved && hasPrediction
+                      ? shapePredictionMatches
+                        ? "correct"
+                        : "incorrect"
+                      : "neutral"
+                  }
+                  title={
+                    !readingsPreserved
+                      ? "Prediction not checked."
+                      : !hasPrediction
+                        ? "No prediction to check."
+                        : predictionChanged
+                          ? `Previous prediction: ${shapePredictionMatches ? "correct" : "incorrect"}.`
+                          : undefined
+                  }
+                  announce={false}
+                >
+                  <p>
                     {!readingsPreserved
                       ? "The readback did not match the input, so this run cannot confirm your prediction. Reset the example and try again."
-                      : shapePredictionMatches
-                        ? `Your prediction matches. The tensor has ${result.shape[0]} values and shape [${result.shape[0]}].`
-                        : `You predicted ${completed.prediction} values. The tensor returned ${result.shape[0]} values, so its shape is [${result.shape[0]}]. Try the other packet and predict again.`}
+                      : !hasPrediction
+                        ? `You left the prediction blank. The tensor contains ${result.shape[0]} values.`
+                        : shapePredictionMatches
+                          ? `You predicted ${completed!.prediction} values. The tensor has ${result.shape[0]} values and shape [${result.shape[0]}].`
+                          : `You predicted ${completed!.prediction} values. The tensor returned ${result.shape[0]} values, so its shape is [${result.shape[0]}]. Try the other packet and predict again.`}
+                    {predictionChanged &&
+                      " This result checks the prediction you submitted before editing. Reset the example to make a new prediction."}
                   </p>
-                )}
+                </AnswerFeedback>
               </div>
               <div className="tensor-investigation-interpretation">
                 <Dialogue
@@ -410,10 +444,16 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               )}
             </div>
           ) : failed ? (
-            <p>
-              The tensor could not be created. Select Create tensor to try
-              again.
-            </p>
+            <AnswerFeedback
+              status="neutral"
+              title="Prediction not checked."
+              announce={false}
+            >
+              <p>
+                The tensor could not be created. Select Create tensor to try
+                again.
+              </p>
+            </AnswerFeedback>
           ) : pending ? (
             <p>Loading TensorFlow.js and creating the tensor…</p>
           ) : null}

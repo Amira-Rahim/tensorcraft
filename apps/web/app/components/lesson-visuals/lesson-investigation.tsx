@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useState } from "react";
+import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
 import {
   clampInvestigationValues,
   initialInvestigationValues,
@@ -60,11 +61,13 @@ function RunResult({
   spec,
   label,
   pairedRun,
+  feedbackId,
 }: {
   run: ExperimentRun;
   spec: LessonInvestigationSpec;
   label: string;
   pairedRun?: ExperimentRun;
+  feedbackId?: string;
 }) {
   const titleId = useId();
   const hasPrediction = Boolean(run.prediction.trim());
@@ -109,19 +112,26 @@ function RunResult({
           {resultUnit(spec.prediction.unit, run.result.answer)}
         </strong>
       </p>
-      {hasPrediction && (
-        <p
-          className="orbit-investigation-feedback"
-          data-correct={matched ? "true" : "false"}
-        >
-          <strong>
-            {matched ? "Your prediction matches." : "Try another prediction."}
-          </strong>{" "}
-          You predicted {run.prediction}
-          {resultUnit(spec.prediction.unit, run.prediction)}.
-          {!matched && " Check the result, change an input, and run again."}
+      <AnswerFeedback
+        id={feedbackId}
+        className="orbit-investigation-feedback"
+        status={hasPrediction ? (matched ? "correct" : "incorrect") : "neutral"}
+        title={hasPrediction ? undefined : "No prediction to check."}
+        announce={false}
+      >
+        <p>
+          {hasPrediction ? (
+            <>
+              You predicted {run.prediction}
+              {resultUnit(spec.prediction.unit, run.prediction)}.
+              {!matched &&
+                " Compare your prediction with the result, then run again."}
+            </>
+          ) : (
+            "You ran the experiment without making a prediction."
+          )}
         </p>
-      )}
+      </AnswerFeedback>
       <div className="orbit-investigation-graphics">
         {graphics.map((graphic, index) => {
           const pairedGraphics =
@@ -192,7 +202,28 @@ export function LessonInvestigation({
   const currentCase = spec.cases.find((item) => item.id === caseId)!;
   const latest = runs.at(-1);
   const previous = runs.at(-2);
-  const dirty = Boolean(latest && !sameInputs(latest, caseId, values));
+  const inputsChanged = Boolean(latest && !sameInputs(latest, caseId, values));
+  const predictionChanged = Boolean(latest && latest.prediction !== prediction);
+  const dirty = inputsChanged || predictionChanged;
+  const hasPrediction = Boolean(latest?.prediction.trim());
+  const predictionMatched = Boolean(
+    latest &&
+    hasPrediction &&
+    matchesInvestigationPrediction(
+      latest.prediction,
+      latest.result.answer,
+      spec.prediction.tolerance,
+    ),
+  );
+  const currentFeedback = Boolean(latest && !dirty);
+  const predictionDescription = `${id}-prediction-help${currentFeedback ? ` ${id}-prediction-result` : ""}`;
+  const predictionInvalid =
+    currentFeedback && hasPrediction && !predictionMatched;
+  const resultLabel = inputsChanged
+    ? "Last run (inputs changed)"
+    : predictionChanged
+      ? "Last run (prediction changed)"
+      : "What happened";
   const inputGraphic = preview.graphics[0];
   const inputDomain =
     latest &&
@@ -206,13 +237,15 @@ export function LessonInvestigation({
           ].filter((graphic) => graphic.kind === inputGraphic.kind),
         )
       : undefined;
-  const status = dirty
+  const status = inputsChanged
     ? "Inputs changed. Run again to update the result. The last run below keeps its original inputs."
-    : latest
-      ? `Run ${latest.number} complete. ${latest.result.answerLabel}: ${formatInvestigationValue(latest.result.answer)}${resultUnit(spec.prediction.unit, latest.result.answer)}.`
-      : resetMessage
-        ? "Experiment reset. Choose your inputs and run again."
-        : "Choose your inputs, then run the experiment.";
+    : predictionChanged
+      ? "Prediction changed. Run again to check it. The last run below keeps its original prediction."
+      : latest
+        ? `${hasPrediction ? (predictionMatched ? "Correct prediction. " : "Incorrect prediction. ") : "No prediction to check. "}Run ${latest.number} complete. ${latest.result.answerLabel}: ${formatInvestigationValue(latest.result.answer)}${resultUnit(spec.prediction.unit, latest.result.answer)}.`
+        : resetMessage
+          ? "Experiment reset. Choose your inputs and run again."
+          : "Choose your inputs, then run the experiment.";
 
   const updateValue = (controlId: string, value: number) => {
     setValues((current) =>
@@ -342,7 +375,8 @@ export function LessonInvestigation({
                   id={`${id}-prediction`}
                   value={prediction}
                   onChange={(event) => setPrediction(event.target.value)}
-                  aria-describedby={`${id}-prediction-help`}
+                  aria-describedby={predictionDescription}
+                  aria-invalid={predictionInvalid || undefined}
                 >
                   <option value="">Choose a prediction (optional)</option>
                   {spec.prediction.choices.map((choice) => (
@@ -365,7 +399,8 @@ export function LessonInvestigation({
                   }
                   value={prediction}
                   onChange={(event) => setPrediction(event.target.value)}
-                  aria-describedby={`${id}-prediction-help`}
+                  aria-describedby={predictionDescription}
+                  aria-invalid={predictionInvalid || undefined}
                   autoComplete="off"
                 />
               )}
@@ -426,7 +461,10 @@ export function LessonInvestigation({
                 <RunResult
                   run={latest}
                   spec={spec}
-                  label={dirty ? "Last run (inputs changed)" : "What happened"}
+                  label={resultLabel}
+                  feedbackId={
+                    currentFeedback ? `${id}-prediction-result` : undefined
+                  }
                 />
               )}
             </>
@@ -444,8 +482,9 @@ export function LessonInvestigation({
           <RunResult
             run={latest}
             spec={spec}
-            label={dirty ? "Last run (inputs changed)" : "Latest run"}
+            label={dirty ? resultLabel : "Latest run"}
             pairedRun={previous}
+            feedbackId={currentFeedback ? `${id}-prediction-result` : undefined}
           />
         </div>
       )}

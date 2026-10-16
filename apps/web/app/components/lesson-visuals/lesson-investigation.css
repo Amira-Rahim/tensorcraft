@@ -283,13 +283,7 @@
   margin-bottom: 8px;
 }
 .orbit-investigation-feedback {
-  padding: 16px 20px;
-  border: 1px solid var(--tc-border);
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--tc-primary) 10%, var(--tc-bg));
   margin: 20px 0;
-  font-size: 20px;
-  line-height: 1.6;
 }
 .orbit-investigation-run-values {
   margin: 0 0 20px;
@@ -448,6 +442,10 @@
   outline: 2px solid var(--tc-primary);
   outline-offset: 4px;
 }
+.orbit-investigation-prediction :is(input, select)[aria-invalid="true"],
+.tensor-investigation-practice input[aria-invalid="true"] {
+  border-color: var(--tc-error);
+}
 .tensor-investigation-practice-control > p {
   font-size: 18px;
   margin: 0;
@@ -460,11 +458,7 @@
   line-height: 1.65;
 }
 .tensor-investigation-prediction-feedback {
-  padding-top: 20px;
-  border-top: 1px solid var(--tc-border);
   margin-top: 20px;
-  font-size: 22px;
-  line-height: 1.65;
 }
 .tensor-investigation-comparison {
   grid-column: 1 / -1;

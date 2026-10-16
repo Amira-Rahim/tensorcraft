@@ -29,6 +29,10 @@
   without losing context. Let learners predict, change inputs, run code, and
   inspect meaningful feedback. Explain both the result and its cause. Keep
   keyboard access, reduced-motion support, and story visibility intact.
+- Every graded answer must clearly say whether it is correct or incorrect,
+  using a visible feedback state and useful guidance. Announce the verdict to
+  assistive technology, and clear stale input errors when the answer changes.
+  Keep self-reflection and open-ended story decisions explicitly ungraded.
 - Course audits must cover every lesson's briefing, concept, challenge,
   takeaways, and epilogue, including nested references and secondary exercises.
   Record source review, executed examples, and browser checks separately.

@@ -39,3 +39,4 @@ export {
   getServerSnapshot as getSchemeServerSnapshot,
 } from "./use-scheme";
 export type { ColorScheme } from "./use-scheme";
+export { AnswerFeedback } from "./answer-feedback";

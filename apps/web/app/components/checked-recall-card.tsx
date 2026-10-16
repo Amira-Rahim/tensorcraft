@@ -2,6 +2,7 @@
 
 import { useId, useRef, useState } from "react";
 import { ProseText } from "@tensorcraft/ui/prose-text";
+import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
 import {
   isRecallCheckCorrect,
   recallCheckAnswer,
@@ -69,8 +70,9 @@ export function CheckedRecallCard({
       finish(missed.current ? "review" : "got-it");
     } else {
       missed.current = true;
+      const incorrect = checks.length - correct;
       setSummary(
-        `${correct} of ${checks.length} correct. Review the feedback and try again.`,
+        `${correct} of ${checks.length} correct. ${incorrect} ${incorrect === 1 ? "answer is" : "answers are"} incorrect. Review the feedback and try again.`,
       );
     }
     summaryRef.current?.focus();
@@ -154,6 +156,7 @@ export function CheckedRecallCard({
               key={index}
               className="min-w-0"
               aria-describedby={result ? feedbackId : undefined}
+              aria-invalid={result === "incorrect" || undefined}
             >
               <legend
                 id={questionId}
@@ -255,29 +258,19 @@ export function CheckedRecallCard({
                       </p>
                     </>
                   )}
-                  {result && (
-                    <div
-                      id={feedbackId}
-                      className={`mt-3 border-l-2 pl-3 text-sm text-text-primary ${result === "correct" ? "border-success" : result === "incorrect" ? "border-error" : "border-primary"}`}
-                    >
-                      <strong
-                        className={
-                          result === "correct"
-                            ? "text-success"
-                            : result === "incorrect"
-                              ? "text-error"
-                              : "text-text-primary"
-                        }
-                      >
-                        {result === "correct"
-                          ? "Correct. "
-                          : result === "incorrect"
-                            ? "Not yet. "
-                            : `Expected answer: ${expectedAnswer}${/[.!?]$/.test(expectedAnswer) ? "" : "."} `}
-                      </strong>
-                      <ProseText>{feedback}</ProseText>
-                    </div>
-                  )}
+                  <AnswerFeedback
+                    id={feedbackId}
+                    status={result === "revealed" ? "neutral" : result}
+                    title={
+                      result === "revealed"
+                        ? `Expected answer: ${expectedAnswer}${/[.!?]$/.test(expectedAnswer) ? "" : "."}`
+                        : undefined
+                    }
+                    announce={false}
+                    className={result ? "mt-3" : undefined}
+                  >
+                    {result && <ProseText>{feedback}</ProseText>}
+                  </AnswerFeedback>
                 </div>
               </div>
             </fieldset>

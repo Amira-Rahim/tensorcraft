@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
 import {
   ActivitySyncStatus,
   type LocalActivityRecord,
@@ -73,6 +74,9 @@ export function ChannelLayoutExperiment() {
     ? transformPacket(WORKED_PACKET, draft.operation)
     : null;
   const expected = channelValues(WORKED_PACKET, draft.channel);
+  const checkedTransfer = draft.checkResult
+    ? checkChannelTransfer(draft.checkOperation, draft.checkValues)
+    : null;
   function submitPrediction(event: React.FormEvent) {
     event.preventDefault();
     if (!ready || !draft.prediction.trim() || draft.predictionAttempts >= 20)
@@ -177,7 +181,13 @@ export function ChannelLayoutExperiment() {
                 </label>
                 <input
                   id={`${uid}-prediction`}
-                  className={input}
+                  className={`${input} aria-invalid:border-error`}
+                  aria-invalid={
+                    draft.predictionResult
+                      ? !draft.predictionResult.correct
+                      : undefined
+                  }
+                  aria-describedby={`${uid}-prediction-feedback`}
                   autoComplete="off"
                   maxLength={80}
                   placeholder="Four numbers, separated by commas"
@@ -211,13 +221,35 @@ export function ChannelLayoutExperiment() {
                     Build the table
                   </button>
                 </div>
-                <p role="status">
-                  {draft.predictionResult
-                    ? draft.predictionResult.correct
-                      ? "Yes. The second row is [3, 18, 7, 8]. These are the four sensors’ readings at Time 2."
-                      : "The first four readings make the first row. The next four make the second. Compare your answer with the table below."
-                    : "Have a guess, then check it. You can also build the table first. If you look at the table before answering, we’ll record that you used help."}
-                </p>
+                <AnswerFeedback
+                  id={`${uid}-prediction-feedback`}
+                  status={
+                    draft.predictionResult
+                      ? draft.predictionResult.correct
+                        ? "correct"
+                        : "incorrect"
+                      : null
+                  }
+                  title={
+                    draft.predictionResult?.correct
+                      ? "Correct!"
+                      : "Not quite. That’s not the second row."
+                  }
+                >
+                  {draft.predictionResult ? (
+                    <p>
+                      {draft.predictionResult.correct
+                        ? "The second row is [3, 18, 7, 8]. These are the four sensors’ readings at Time 2."
+                        : "The first four readings make the first row. The next four make the second. Compare your answer with the table below, then try again."}
+                    </p>
+                  ) : (
+                    <p>
+                      Have a guess, then check it. You can also build the table
+                      first. If you look at the table before answering, we’ll
+                      record that you used help.
+                    </p>
+                  )}
+                </AnswerFeedback>
               </form>
               {draft.tableBuilt && (
                 <div
@@ -394,7 +426,15 @@ export function ChannelLayoutExperiment() {
               channel={1}
             />
             <form onSubmit={submitCheck} className="space-y-4">
-              <fieldset className="min-w-0 space-y-2">
+              <fieldset
+                className="min-w-0 space-y-2"
+                aria-invalid={
+                  checkedTransfer
+                    ? !checkedTransfer.operationCorrect
+                    : undefined
+                }
+                aria-describedby={`${uid}-check-feedback`}
+              >
                 <legend className="mb-2 font-medium">
                   Which operation keeps each sensor’s readings together?
                 </legend>
@@ -425,7 +465,11 @@ export function ChannelLayoutExperiment() {
               </label>
               <input
                 id={`${uid}-check`}
-                className={input}
+                className={`${input} aria-invalid:border-error`}
+                aria-invalid={
+                  checkedTransfer ? !checkedTransfer.valuesCorrect : undefined
+                }
+                aria-describedby={`${uid}-check-feedback`}
                 autoComplete="off"
                 maxLength={80}
                 value={draft.checkValues}
@@ -445,18 +489,35 @@ export function ChannelLayoutExperiment() {
               >
                 Check my answer
               </button>
-              <p role="status">
-                {draft.checkResult
-                  ? draft.checkResult.correct
-                    ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this example. Sensor B’s readings stay together and in time order, ready for Farah’s chart.`
-                    : checkChannelTransfer(
-                          draft.checkOperation,
-                          draft.checkValues,
-                        ).operationCorrect
-                      ? "The operation is right. For the readings, follow sensor B’s column from top to bottom."
-                      : "Reshape gives you three rows of two, but mixes the sensors’ readings. Which operation turns a column into a row?"
-                  : "Choose an operation and enter sensor B’s readings. We’ll check both so Farah gets the right readings in her chart."}
-              </p>
+              <AnswerFeedback
+                id={`${uid}-check-feedback`}
+                status={
+                  draft.checkResult
+                    ? draft.checkResult.correct
+                      ? "correct"
+                      : "incorrect"
+                    : null
+                }
+                title={
+                  draft.checkResult?.correct
+                    ? "Both answers are correct!"
+                    : checkedTransfer?.operationCorrect
+                      ? "Not quite. Your sensor readings are incorrect."
+                      : checkedTransfer?.valuesCorrect
+                        ? "Not quite. The operation is incorrect."
+                        : "Not quite. Both answers are incorrect."
+                }
+              >
+                <p>
+                  {draft.checkResult
+                    ? draft.checkResult.correct
+                      ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this example. Sensor B’s readings stay together and in time order, ready for Farah’s chart.`
+                      : checkedTransfer?.operationCorrect
+                        ? "The operation is right. For the readings, follow sensor B’s column from top to bottom, then try again."
+                        : `${checkedTransfer?.valuesCorrect ? "Your sensor readings are correct. " : "For the readings, follow sensor B’s column from top to bottom. "}Reshape gives you three rows of two, but mixes the sensors’ readings. Which operation turns a column into a row?`
+                    : "Choose an operation and enter sensor B’s readings. We’ll check both so Farah gets the right readings in her chart."}
+                </p>
+              </AnswerFeedback>
             </form>
             <button
               type="button"

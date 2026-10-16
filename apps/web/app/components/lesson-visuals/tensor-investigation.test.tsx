@@ -48,9 +48,10 @@ describe("the opening tensor investigation practice", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
-        "Your prediction matches. The tensor has 3 values",
+        "The tensor has 3 values",
       ),
     );
+    expect(screen.getByText("Correct!")).toBeInTheDocument();
     expect(run).toHaveBeenCalledWith(FIRST_PACKET.slice(0, 3));
     expect(screen.getByRole("status")).toHaveTextContent(
       "All 3 readings match",
@@ -89,6 +90,20 @@ describe("the opening tensor investigation practice", () => {
         "You predicted 5 values. The tensor returned 3 values",
       ),
     );
+    const prediction = screen.getByLabelText(
+      "How many values will the tensor contain?",
+    );
+    expect(
+      screen.getByText("Not quite. That’s incorrect."),
+    ).toBeInTheDocument();
+    expect(prediction).toHaveAttribute("aria-invalid", "true");
+    expect(prediction).toHaveAccessibleDescription(/Not quite/);
+    fireEvent.change(prediction, { target: { value: "3" } });
+    expect(prediction).not.toHaveAttribute("aria-invalid");
+    expect(prediction).not.toHaveAccessibleDescription(/incorrect/);
+    expect(
+      screen.getByText("Previous prediction: incorrect."),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("list", { name: "Readings returned from the tensor" }),
     ).toHaveTextContent([0.75, ...FIRST_PACKET.slice(1, 3)].join(""));
@@ -142,11 +157,57 @@ describe("the opening tensor investigation practice", () => {
         "The readback did not match the input",
       ),
     );
-    expect(screen.getByRole("status")).not.toHaveTextContent(
-      "Your prediction matches",
-    );
+    expect(screen.getByRole("status")).not.toHaveTextContent("Correct!");
+    expect(screen.getByText("Prediction not checked.")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("How many values will the tensor contain?"),
+    ).not.toHaveAttribute("aria-invalid");
     expect(run).toHaveBeenCalledTimes(1);
     expect(run).toHaveBeenCalledWith(FIRST_PACKET.slice(0, 3));
     expect(screen.getByLabelText("Choose a packet")).not.toBeDisabled();
+  });
+
+  it("does not grade a missing prediction or a runtime failure", async () => {
+    const run = vi
+      .spyOn(tensorExample, "runTensorExample")
+      .mockResolvedValueOnce({ shape: [5], values: [...FIRST_PACKET] });
+    renderExample();
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
+    await waitFor(() =>
+      expect(screen.getByText("No prediction to check.")).toBeInTheDocument(),
+    );
+    expect(screen.queryByText("Correct!")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Not quite. That’s incorrect."),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
+    fireEvent.change(
+      screen.getByLabelText("How many values will the tensor contain?"),
+      { target: { value: "3" } },
+    );
+    run.mockRejectedValueOnce(new Error("Runtime unavailable"));
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
+    await waitFor(() =>
+      expect(screen.getByText("Prediction not checked.")).toBeInTheDocument(),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "The tensor could not be created",
+    );
+    expect(
+      screen.getByLabelText("How many values will the tensor contain?"),
+    ).not.toHaveAttribute("aria-invalid");
+    expect(
+      screen.queryByText("Not quite. That’s incorrect."),
+    ).not.toBeInTheDocument();
+    run.mockResolvedValueOnce({ shape: [5], values: [...FIRST_PACKET] });
+    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
+    await waitFor(() =>
+      expect(
+        screen.getByText("Not quite. That’s incorrect."),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByLabelText("How many values will the tensor contain?"),
+    ).toHaveAttribute("aria-invalid", "true");
   });
 });

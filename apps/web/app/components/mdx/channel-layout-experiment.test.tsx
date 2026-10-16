@@ -20,6 +20,32 @@ const click = (name: string) =>
 const record = () =>
   parseChannelDraft(sessionStorage.getItem(CHANNEL_STORAGE_KEY)!);
 
+it("clearly marks a wrong prediction, clears the verdict on edit, and confirms a corrected answer", () => {
+  render(<ChannelLayoutExperiment />);
+  const prediction = screen.getByLabelText(
+    "Which four readings go in the second row?",
+  );
+  fireEvent.change(prediction, { target: { value: "2, 20, 5, 8" } });
+  click("Check prediction");
+  const feedback = screen
+    .getByText("Not quite. That’s not the second row.")
+    .closest('[role="status"]')!;
+  expect(feedback).toHaveTextContent("then try again");
+  expect(prediction).toHaveAttribute("aria-invalid", "true");
+  expect(prediction).toHaveAccessibleDescription(
+    /^Not quite\. That’s not the second row\..*then try again\.$/,
+  );
+
+  fireEvent.change(prediction, { target: { value: "3, 18, 7, 8" } });
+  expect(prediction).not.toHaveAttribute("aria-invalid");
+  expect(screen.queryByText(/Not quite/)).not.toBeInTheDocument();
+  click("Check prediction");
+  expect(feedback).toHaveTextContent("Correct!");
+  expect(prediction).toHaveAttribute("aria-invalid", "false");
+  expect(record().firstPrediction?.correct).toBe(false);
+  expect(record().latestPrediction?.correct).toBe(true);
+});
+
 it("compares two same-shape layouts, retains state on remount, and does not emit answer text", () => {
   const view = render(<ChannelLayoutExperiment />);
   expect(screen.queryByTestId("channel-result")).not.toBeInTheDocument();
@@ -85,6 +111,17 @@ it("tests both operation and values on the changed packet, preserving the first 
   );
   click("Check my answer");
   expect(record().firstCheck).toEqual({ correct: false, assisted: false });
+  expect(
+    screen.getByText("Not quite. The operation is incorrect."),
+  ).toBeVisible();
+  expect(
+    screen.getByRole("group", {
+      name: "Which operation keeps each sensor’s readings together?",
+    }),
+  ).toHaveAttribute("aria-invalid", "true");
+  expect(
+    screen.getByLabelText("Sensor B’s two readings, from earliest to latest"),
+  ).toHaveAttribute("aria-invalid", "false");
   click("Show the answer");
   click("Reset the controls");
   expect(record().latestCheck).toEqual({ correct: false, assisted: false });
@@ -97,11 +134,37 @@ it("tests both operation and values on the changed packet, preserving the first 
   );
   click("Check my answer");
   expect(record().checkResult).toEqual({ correct: true, assisted: true });
+  expect(screen.getByText("Both answers are correct!")).toBeVisible();
   expect(record().firstCheck).toEqual({ correct: false, assisted: false });
   expect(record().checkAttempts).toBe(2);
   expect(
     screen.getByText(/Both answers are correct. You answered with help/),
   ).toBeInTheDocument();
+});
+
+it("identifies incorrect sensor values even when the operation is correct", () => {
+  render(<ChannelLayoutExperiment />);
+  click("Try a new example");
+  fireEvent.click(screen.getByLabelText("Transpose: turn columns into rows"));
+  const readings = screen.getByLabelText(
+    "Sensor B’s two readings, from earliest to latest",
+  );
+  fireEvent.change(readings, { target: { value: "10, 11" } });
+  click("Check my answer");
+  expect(
+    screen.getByText("Not quite. Your sensor readings are incorrect."),
+  ).toBeVisible();
+  expect(readings).toHaveAttribute("aria-invalid", "true");
+  expect(
+    screen.getByRole("group", {
+      name: "Which operation keeps each sensor’s readings together?",
+    }),
+  ).toHaveAttribute("aria-invalid", "false");
+  fireEvent.change(readings, { target: { value: "20, 21" } });
+  expect(readings).not.toHaveAttribute("aria-invalid");
+  expect(screen.queryByText(/Not quite/)).not.toBeInTheDocument();
+  click("Check my answer");
+  expect(screen.getByText("Both answers are correct!")).toBeVisible();
 });
 
 it("does not erase observed help by resetting operations or looking back at the worked packet", () => {
