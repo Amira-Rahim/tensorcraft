@@ -26,6 +26,10 @@
   without losing context. Let learners predict, change inputs, run code, and
   inspect meaningful feedback. Explain both the result and its cause. Keep
   keyboard access, reduced-motion support, and story visibility intact.
+- Course audits must cover every lesson's briefing, concept, challenge,
+  takeaways, and epilogue, including nested references and secondary exercises.
+  Record source review, executed examples, and browser checks separately.
+  Passing tests alone does not establish teaching value or story quality.
 
 ## Story and Interaction (binding, 2026-10-15)
 

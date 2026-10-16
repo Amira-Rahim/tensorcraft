@@ -79,7 +79,7 @@ skillAxes: [model_arch]
 Epoch 200 of 200, and the loss has not moved since the first hour. Demir's overnight run is still on the engineering display when Farah walks in with her tablet already open to the fix.
 
 <Dialogue speaker="Dr. Farah">
-In last night's run, the gradients thin out by step twenty and are gone long before step seventy-four, where the pattern lives: the information from the early steps is multiplied through too many small numbers to survive. LSTMs can help with this through gates: learned switches that control what flows through and what gets discarded.
+Last night's gradients became tiny by step twenty. They could not carry a useful update back across the seventy-four-step gap. An LSTM uses learned gates to control what it keeps, which can help it learn from more distant readings.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -291,7 +291,7 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
 
 <Epilogue>
 
-Nazari approves the run with a cost estimate attached. The 28,800 archive summaries are too far apart to show the pulse’s shape, so Demir rebuilds the one-reading-per-second stream from the raw captures: 950,400 samples. He trains on the first day and replays the other ten.
+Nazari approves the run with a cost estimate attached. The 28,800 archive summaries are too far apart to show the pulse’s shape, so Demir returns to the raw captures. He extracts one feature row per second: 950,400 rows over eleven days. He trains on the first day and replays the other ten.
 
 Seventy-two hours beyond the training data, the model still catches each pulse within an 80-step window. Each window starts with fresh state and keeps the trained weights; ARIA stays silent for four seconds before speaking.
 

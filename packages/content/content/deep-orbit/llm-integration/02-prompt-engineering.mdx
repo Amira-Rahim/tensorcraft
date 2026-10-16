@@ -43,7 +43,7 @@ hints:
           'You are DEEP SCAN, a signal classifier for deep space signals.',
           '',
           'Known natural frequencies: 5, 12, 23, 47 Hz.',
-          'Normal amplitude range: 570 to 1560 counts.',
+          'Central 90% normal amplitude band: 570 to 1560 counts.',
           '',
           'Signal data:',
           '- Amplitude: ' + signal.amplitude + ' counts',
@@ -98,7 +98,7 @@ Signal: amplitude=1024 counts, frequency=73.4Hz, phase=0.23rad\`;
 const structuredPrompt = \`You are a deep space signal analyst. Respond in JSON only.
 
 Signal reading (archive sample 7741):
-- Amplitude: 1024 counts (normal band: 570-1560)
+- Amplitude: 1024 counts (central 90% normal band: 570-1560)
 - Frequency: 73.4 Hz (known natural: 5, 12, 23, 47 Hz)
 - Phase: 0.23 rad
 
@@ -116,7 +116,7 @@ Use this JSON shape:
 
 The prompt uses instrument units so a reviewer can check it against the log. The classifier instead receives three scaled features: amplitude divided by 2048, a zero-crossing count divided by 63, and phase mapped from minus-pi-to-pi onto 0 to 1.
 
-Frequency needs special care. The prompt reports the FFT line in hertz. The classifier uses zero crossings over a 64-sample capture, a quarter second at 256 Hz. Those are different measurements; do not substitute one for the other.
+Frequency needs special care. The prompt uses the 73.4 Hz estimate from the crew's longer spectrum measurement. The classifier instead counts zero crossings in 64 samples, a quarter second at 256 Hz. That short window has FFT bins 4 Hz apart, so it does not directly give a 73.4 Hz bin. Keep the frequency estimate and crossing count separate.
 
 <DerivationDrawer summary="Checking the instrument units in this example">
 These are supplied mission measurements, not reproduced experimental results. The fictional normal period has normalized mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Multiplying the percentile endpoints by 2048 gives roughly 570 to 1560 counts. This is the central 90% reference band, not the 3-sigma decision threshold.
@@ -144,7 +144,7 @@ function classificationPrompt(signal: SignalData): string {
 
 ## Context
 You are analyzing signals from deep space Sector 7-G.
-Normal amplitude range: 570 to 1560 counts.
+Central 90% normal amplitude band: 570 to 1560 counts.
 
 ## Signal Data
 - Amplitude: \${signal.amplitude} counts

@@ -63,18 +63,15 @@ async function run(path, titles, prefix = "", suffix = "") {
 
 await run(
   "foundations/01-introduction-to-tensors.mdx",
-  ["inspect-a-packet.ts"],
-  "",
+  ["prepare-readings.js"],
+  "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n",
   `
-assert.deepEqual(shape, [3]);
-assert.ok(Math.abs(total - 1.1) < 1e-6);
+assert.deepEqual(shape, [5]);
+const values = reading.arraySync();
 assert.ok(values.every((value, i) => Math.abs(value - streamValues[i]) < 1e-6));
+reading.dispose();
 `,
 );
-await run("foundations/01-introduction-to-tensors.mdx", [
-  "tensors-are-arrays.ts",
-  "tensor-memory.ts",
-]);
 await run(
   "foundations/02-tensor-shapes.mdx",
   ["arrange-readings.ts"],
@@ -102,15 +99,48 @@ await run(
   ["data-pipeline.ts"],
   "async function readArchivedSample(i) { return { features: [i, i / 10, 0], label: i % 2 }; }\n",
 );
-await run("foundations/05-normalization.mdx", [
-  "normalization.ts",
-  "preview-neuron.ts",
-]);
-await run("neural-networks/01-first-neuron.mdx", ["first-neuron.ts"]);
-await run("neural-networks/02-activation-functions.mdx", [
-  "collapse.ts",
-  "activations.ts",
-]);
+await run(
+  "foundations/05-normalization.mdx",
+  [
+    "fit-and-scale.ts",
+    "supplied-preview-neuron.ts",
+    "score-the-scaled-input.ts",
+    "min-max-columns.ts",
+  ],
+  "const batch = tf.tensor2d([[20, 0.2], [22, 0.8], [24, 0.4], [26, 0.6]]);\n",
+  `
+assert.deepEqual(mean.shape, [2]);
+assert.ok(Math.abs(mean.dataSync()[0] - 23) < 1e-6);
+assert.ok(Math.abs(mean.dataSync()[1] - 0.5) < 1e-6);
+assert.ok(Math.abs(std.dataSync()[0] - Math.sqrt(5)) < 1e-6);
+assert.ok(Math.abs(std.dataSync()[1] - Math.sqrt(0.05)) < 1e-6);
+assert.deepEqual(scores.shape, [4, 1]);
+const expectedScores = [0.5917, 0.0704, 0.6745, 0.5699];
+assert.ok(Array.from(scores.dataSync()).every((value, i) => Math.abs(value - expectedScores[i]) < 0.001));
+tf.dispose([batch, mean, std, normalized, scores, min, max, range]);
+previewModel.dispose();
+`,
+);
+await run(
+  "neural-networks/01-first-neuron.mdx",
+  ["first-neuron.ts"],
+  "const captured = []; console.log = value => captured.push(ArrayBuffer.isView(value) ? Array.from(value) : value);\n",
+  `
+assert.ok(Math.abs(captured[0][0] - 0.26) < 1e-6);
+assert.ok(Math.abs(captured[1] - 0.26) < 1e-12);
+`,
+);
+await run(
+  "neural-networks/02-activation-functions.mdx",
+  ["collapse.ts", "activations.ts"],
+  "const captured = []; console.log = value => captured.push(value);\n",
+  `
+assert.ok(captured[0] < 1e-5);
+assert.deepEqual(captured[1], [0, 0, 0, 1, 2]);
+assert.ok(captured[2].every((value, i) => Math.abs(value - [0.1192, 0.2689, 0.5, 0.7311, 0.8808][i]) < 0.001));
+assert.ok(captured[3].every((value, i) => Math.abs(value - [-0.964, -0.7616, 0, 0.7616, 0.964][i]) < 0.001));
+`,
+);
 await run("neural-networks/03-layers-and-architecture.mdx", [
   "layer-architecture.ts",
 ]);
@@ -119,8 +149,29 @@ await run("neural-networks/04-forward-pass.mdx", [
   "by-hand.ts",
 ]);
 await run("neural-networks/05-building-a-network.mdx", ["complete-network.ts"]);
-await run("training-loop/01-loss-functions.mdx", ["loss-functions.ts"]);
-await run("training-loop/02-gradient-descent.mdx", ["gradient-descent.ts"]);
+await run(
+  "training-loop/01-loss-functions.mdx",
+  ["loss-functions.ts"],
+  "const captured = []; console.log = (label, value) => captured.push(Array.from(value));\n",
+  `
+assert.ok(Math.abs(captured[0][0] - 0.268) < 1e-6);
+assert.ok(Math.abs(captured[1][0] - 0.7177) < 0.001);
+assert.equal(captured[2][0], 0);
+`,
+);
+await run(
+  "training-loop/02-gradient-descent.mdx",
+  ["gradient-descent.ts"],
+  "const captured = []; console.log = value => captured.push(value);\n",
+  `
+assert.deepEqual(captured, [
+  'Step 0: x=0.600, loss=9.000',
+  'Step 5: x=2.214, loss=0.966',
+  'Step 10: x=2.742, loss=0.104',
+  'Step 15: x=2.916, loss=0.011',
+]);
+`,
+);
 await run("training-loop/03-backpropagation.mdx", ["backpropagation.ts"]);
 const training = codeBlocks(
   await readFile(new URL("training-loop/04-training-loop.mdx", base), "utf8"),

@@ -13,7 +13,7 @@ context:
   narrative: "Demir applies attention across time. The model gives each step in a signal window a weight, then combines the readings using those weights."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Temporal attention scores each time step and forms a weighted summary. It still computes every score. The weights double as a map of where the model looked."
+  explanation: "Temporal attention gives each time step a weight, then blends its values into a summary. A larger weight means more influence in that blend, not proof that the step caused a prediction."
   bridge:
     jsTitle: "scrollIntoView()"
     jsCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
@@ -56,7 +56,9 @@ skillAxes: [model_arch]
 The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 4 and the frequency shift at step 78. Seventy-four steps apart.
 </Dialogue>
 
-`scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention scores every step and combines the values under those weights. A high weight does not skip computation on other steps. Lesson 1 read its query off the sequence. Here the scorer's learned weights play that part, the same query on every window, and each step is both its own key and its own value.
+`scrollIntoView()` moves the page toward an element your code chose. Temporal attention instead calculates a weight for every step and blends their values. A large weight does not skip work on the other steps.
+
+The previous lesson took its query from the sequence. Here, learned scorer weights act as the same query for every window. Each reading supplies both the features to score and the values to blend.
 
 You will add position information to an attention scorer and use its weights to summarize a sequence.
 
@@ -113,7 +115,7 @@ function temporalAttention(
 
 Keep three counts separate. A dashboard time step is one reading, arriving once per second. The first and last timestamps in an 80-reading window are 79 seconds apart.
 
-The spike and frequency shift are 74 steps apart on that grid. Their measured gap is 73.4 s (seconds). The shift arrives 0.4 seconds after step 77, so step 78 is the first reading that includes it. Module 6 chose an 80-step window to hold both events.
+In the earlier capture, the spike is at `4 s`. The shift starts at timestamp `77.4 s`, so step 78 is the first one-second reading that includes it. Those displayed steps are 74 positions apart. The raw timestamps give the more precise gap: `77.4 - 4 = 73.4 s`. The 80-step window holds both events.
 
 A 64-sample capture means something else: 64 samples from one channel at 256 Hz, covering a quarter of a second. We calculate each reading's three features from that capture. The ship's 64 sensor channels are a separate count again. They describe how many streams report, not how much time passes.
 
@@ -162,6 +164,7 @@ Here is what happens when part of the window is missing:
 
 <CodeBlock language="typescript" title="ring-buffer-attention.ts">
 {`// One full capture cycle from the ring buffer: 80 steps, 3 features.
+// Integration sketch: bufferWindow supplies one recorded window.
 const full = bufferWindow();                       // [1, 80, 3]
 const { attended, weights } = temporalAttention(full);
 console.log(full.shape, weights.shape, attended.shape);

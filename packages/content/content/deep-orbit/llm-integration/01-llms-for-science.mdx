@@ -129,6 +129,8 @@ Total events: 12,001. Normal: 11,847. Anomalous: 153. Unclassified: 1.
 Do not infer the cause or significance of the unclassified event.\`);`}
 </CodeBlock>
 
+<ConceptReference summary="How a language model generates text">
+
 ## What You Are Actually Calling
 
 A decoder language model predicts the next token from the tokens before it. Tokens are pieces of text, with sizes that depend on the tokenizer and language. The model produces logits, raw scores for the possible next tokens. Softmax turns those scores into probabilities. A decoding rule picks a token, adds it to the text, and repeats until a stop condition is met.
@@ -150,6 +152,8 @@ Next-token training rewards predictions of text in the training distribution. La
 The [original transformer paper](https://arxiv.org/html/1706.03762v7#S3) describes the attention and block structure. Hugging Face’s [cache explanation](https://huggingface.co/docs/transformers/v4.57.1/cache_explanation) shows how cached keys and values are reused during decoding.
 
 The onboard language component and its bundle sizes belong to the fictional mission. This adapter demonstrates the HTTP boundary; it does not download or implement that component. The browser runtime lab measures a separate pretrained sentiment model.
+
+</ConceptReference>
 
 ## The Human-AI Workflow
 

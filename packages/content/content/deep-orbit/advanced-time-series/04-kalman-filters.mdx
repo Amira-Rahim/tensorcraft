@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "EMA blends a single fixed-weight average over past values. Kalman updates jointly track state and uncertainty using a state-transition model and a measurement model, with weights computed dynamically from the current covariance. Same weighted-update shape, very different machinery."
 consequence:
-  narrative: "Read off the log, the interval between anomaly pulses is shrinking by about a sixth of a second per day. The Kalman filter gives the crew a clean, low-variance read that trails the newest measurement by about half a second. The pulse is speeding up."
+  narrative: "The log shows the gap between pulses shrinking by about a sixth of a second per day. The Kalman estimate is smoother, but trails the latest measurement by about 0.43 seconds."
 hints:
   - level: nudge
     content: "A Kalman filter alternates predict and correct: widen the variance by the process noise, then pull the estimate toward the measurement by exactly the Kalman gain."
@@ -85,7 +85,7 @@ What I actually want is an alpha that adjusts itself. Trust the measurement more
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-You have just specified the Kalman filter. The blend weight is called the Kalman gain. The filter predicts state and uncertainty, computes that gain, then corrects both with the measurement. With a correctly specified linear model, a Gaussian initial state and independent zero-mean Gaussian noise, it gives the minimum mean-square-error state estimate.
+A Kalman filter can calculate that weight from an uncertainty model. It predicts a value and its uncertainty, then uses the new measurement to update both. The weight is called the Kalman gain. Whether it is trustworthy depends on the model and noise assumptions we give it.
 </Dialogue>
 
 You will update an estimate and its uncertainty as each noisy measurement arrives.
@@ -153,7 +153,9 @@ for (const m of measurements.slice(1)) {
 // it. The per-day shrink gets read off the raw log, not off this line.`}
 </CodeBlock>
 
-This filter tracks one number, the current level. It does not track how fast the level changes. As the gain settles, it behaves like an EMA with a chosen alpha and falls behind a steady trend.
+This filter tracks one number, the current level. It does not track how fast that level changes. As the gain settles, it behaves like an EMA with a fixed alpha and falls behind a steady trend.
+
+For a correctly specified linear model, a Gaussian initial state and independent zero-mean Gaussian noise, the Kalman estimate minimizes mean squared estimation error. Our noisy mission log does not by itself verify those assumptions.
 
 The final estimate differs from the final reading by 0.43. Demir's alpha-0.8 EMA differs by only 0.08. Smoother output does not prove greater accuracy because we do not know the true value without noise.
 

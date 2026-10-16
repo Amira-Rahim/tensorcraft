@@ -118,7 +118,7 @@ The hull sensors stop increasing at 2048 counts, the maximum in FEATURE_RANGES. 
 
 Under these sensor limits, a scaled value above 1.00 needs investigation. Check the units, preprocessing and whether the input is valid. This is a limit of these sensors, not of min-max scaling itself. In general, readings outside a fitted range produce scaled values outside [0, 1].
 
-Phase is bounded too, but it is circular: it wraps at pi, so -pi and +pi are the same angle and min-max tears that seam, sending near-identical readings to 0 and 1. The clean encoding is two features, `sin(phase)` and `cos(phase)`. This model was trained on the 3-input min-max contract, so inference has to match training, seam included.
+Phase wraps around: -pi and +pi describe the same angle. Min-max scaling sends them to opposite ends of [0, 1], making nearby angles look far apart. Representing phase with `sin(phase)` and `cos(phase)` avoids that boundary. That would change the inputs and require retraining. This model still expects its original three features, scaled exactly as they were during training.
 
 ## Memory Management with tf.tidy()
 

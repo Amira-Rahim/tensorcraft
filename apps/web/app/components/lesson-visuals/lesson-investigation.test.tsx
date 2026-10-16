@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { renderToString } from "react-dom/server";
 import {
   cleanup,
   fireEvent,
@@ -11,6 +12,7 @@ import {
   LessonInvestigation,
 } from "./lesson-investigation";
 import type { LessonInvestigationSpec } from "./investigation-types";
+import { NUMERIC_INVESTIGATIONS } from "./numeric-investigations";
 
 const spec: LessonInvestigationSpec = {
   title: "Check the total",
@@ -79,6 +81,72 @@ const spec: LessonInvestigationSpec = {
 afterEach(cleanup);
 
 describe("the lesson investigation", () => {
+  it("cannot submit a native form before its client handlers are ready", () => {
+    const html = renderToString(
+      <LessonInvestigation spec={spec} lessonSlug="test-lesson" />,
+    );
+    const document = new DOMParser().parseFromString(html, "text/html");
+    expect(
+      document.querySelector('button[type="submit"]')?.matches(":disabled"),
+    ).toBe(true);
+    render(<LessonInvestigation spec={spec} lessonSlug="test-lesson" />);
+    const run = screen.getByRole("button", { name: "Run experiment" });
+    expect(run).toBeEnabled();
+    fireEvent.click(run);
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("Observed total: 5");
+  });
+  it("labels the loss slider and prediction textbox separately", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS["loss-functions"]!}
+        lessonSlug="loss-functions"
+      />,
+    );
+    const slider = screen.getByRole("slider", {
+      name: "Prediction for the middle example",
+    });
+    const answer = screen.getByRole("textbox", {
+      name: "What is the mean squared error across all three current predictions?",
+    });
+    expect(slider.id).not.toBe(answer.id);
+    fireEvent.change(answer, { target: { value: "0.333" } });
+    expect(slider).toHaveValue("4");
+    expect(answer).toHaveValue("0.333");
+  });
+  it("updates dependent range limits and clamps a previously selected batch", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS["data-loading"]!}
+        lessonSlug="data-loading"
+      />,
+    );
+    const size = screen.getByLabelText("Rows per batch");
+    const batch = screen.getByRole("slider", {
+      name: "Batch index (starting at 0)",
+    });
+    expect(batch).toHaveAttribute("max", "3");
+    fireEvent.change(size, { target: { value: "2" } });
+    expect(batch).toHaveAttribute("max", "7");
+    fireEvent.change(batch, { target: { value: "7" } });
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("First row ID in the batch: 14");
+    fireEvent.change(size, { target: { value: "8" } });
+    expect(batch).toHaveAttribute("max", "1");
+    expect(batch).toHaveValue("1");
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(
+      screen.getByRole("status", { name: "Experiment status" }),
+    ).toHaveTextContent("First row ID in the batch: 8");
+    fireEvent.change(screen.getByLabelText("Choose an example"), {
+      target: { value: "changed" },
+    });
+    expect(batch).toHaveAttribute("max", "7");
+    expect(batch).toHaveValue("2");
+  });
   it("shows inputs before running and checks a prediction against the observed result", () => {
     render(<LessonInvestigation spec={spec} lessonSlug="test-lesson" />);
     expect(

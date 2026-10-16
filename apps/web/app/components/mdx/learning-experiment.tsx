@@ -31,9 +31,9 @@ import {
 } from "./learning-experiment-data";
 
 const button =
-  "min-h-11 border border-border px-3 py-2 text-sm font-medium hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-interactive disabled:opacity-50";
+  "min-h-11 border border-border px-3 py-2 text-[length:var(--lesson-body-size,1rem)] font-medium hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-interactive disabled:opacity-50";
 const input =
-  "min-h-11 w-full min-w-0 border border-border bg-background px-3 py-2 text-base text-text focus-visible:outline-2 focus-visible:outline-interactive";
+  "min-h-11 w-full min-w-0 border border-border bg-background px-3 py-2 text-[length:var(--lesson-body-size,1rem)] text-text focus-visible:outline-2 focus-visible:outline-interactive";
 const number = (n: number) => Number(n.toFixed(3)).toString();
 
 export function LearningExperiment({ id }: { id: ExperimentId }) {
@@ -282,7 +282,10 @@ function Select({
   const selectId = useId();
   return (
     <div className="block min-w-0 space-y-2">
-      <label htmlFor={selectId} className="block text-sm font-medium">
+      <label
+        htmlFor={selectId}
+        className="block text-[length:var(--lesson-body-size,1rem)] font-medium"
+      >
         {label}
       </label>
       <select
@@ -644,6 +647,12 @@ function Results({
     case "fft": {
       const r = spectrum(changed ? 64 : a, changed || b === 1);
       const bins = r.bins.filter((v) => v.hz <= 24);
+      const magnitudeMax = Math.max(
+        0.6,
+        Math.ceil(Math.max(...bins.map((bin) => bin.magnitude)) * 10) / 10,
+      );
+      const plotY = (magnitude: number) =>
+        130 - (magnitude / magnitudeMax) * 100;
       result = (
         <>
           <p>
@@ -651,28 +660,55 @@ function Results({
             {r.nativeSpacing} Hz. Displayed grid {r.gridSpacing} Hz.
           </p>
           <figure>
+            <p className="font-medium">Magnitude (|DFT| / observed samples)</p>
             <svg
-              viewBox="0 0 320 130"
+              viewBox="0 0 320 180"
               role="img"
-              aria-label="Magnitude bins from zero to 24 Hz; exact values follow in the table"
+              aria-label={`Frequency bins from zero to 24 Hz. Magnitude axis runs from 0 to ${number(magnitudeMax)} in |DFT| divided by observed samples; exact values follow in the table.`}
               className="w-full text-interactive"
             >
-              <line x1="15" y1="105" x2="310" y2="105" stroke="currentColor" />
+              {[0, magnitudeMax / 2, magnitudeMax].map((value) => (
+                <g key={value}>
+                  <line
+                    x1="50"
+                    y1={plotY(value)}
+                    x2="305"
+                    y2={plotY(value)}
+                    stroke="currentColor"
+                    opacity={value === 0 ? 1 : 0.25}
+                  />
+                  <text
+                    x="42"
+                    y={plotY(value) + 6}
+                    textAnchor="end"
+                    fill="currentColor"
+                    fontSize="18"
+                  >
+                    {number(value)}
+                  </text>
+                </g>
+              ))}
               {bins.map((v) => (
                 <line
                   key={v.hz}
-                  x1={15 + (v.hz / 24) * 295}
-                  x2={15 + (v.hz / 24) * 295}
-                  y1="105"
-                  y2={105 - v.magnitude * 150}
+                  x1={50 + (v.hz / 24) * 255}
+                  x2={50 + (v.hz / 24) * 255}
+                  y1="130"
+                  y2={plotY(v.magnitude)}
                   stroke="currentColor"
                   strokeWidth="3"
                 />
               ))}
-              <text x="15" y="125" fill="currentColor" fontSize="10">
+              <text x="50" y="158" fill="currentColor" fontSize="18">
                 0 Hz
               </text>
-              <text x="280" y="125" fill="currentColor" fontSize="10">
+              <text
+                x="305"
+                y="158"
+                textAnchor="end"
+                fill="currentColor"
+                fontSize="18"
+              >
                 24 Hz
               </text>
             </svg>

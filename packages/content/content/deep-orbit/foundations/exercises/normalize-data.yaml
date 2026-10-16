@@ -8,9 +8,9 @@ instructions: |
 
   1. Implement `fitStats(rows)` for a non-empty `[n, 2]` tensor of finite values.
      Return `{ mean, std }`, one value per column in each tensor. Reduce over
-     axis 0. Use population standard deviation, which divides the squared
-     deviations by `n`. `tf.moments` returns variance; take its square root
-     to get `std`. Apply this function to `batch` and save `mean` and `std`.
+     axis 0. Use population variance, the mean squared difference from the column
+     mean. It divides by `n`. `tf.moments` returns that variance; take its
+     square root to get `std`. Apply this function to `batch` and save `mean` and `std`.
   2. Implement `scaleFeatures(rows, offset, scale)` for one reading or a batch.
      Subtract each column's offset, then divide by its scale. If a scale is
      zero, divide by 1 instead. Keep the saved statistics unchanged.

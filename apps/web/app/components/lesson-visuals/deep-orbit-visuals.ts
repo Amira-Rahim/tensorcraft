@@ -176,7 +176,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "epochs",
     "When does more training stop helping?",
     "Move through an illustrative run. Compare training loss with validation loss.",
-    "Validation can worsen while training loss falls. Keep the best validation checkpoint when using early stopping.",
+    "Validation can worsen while training loss falls. TensorFlow.js early stopping keeps the final weights. Save and restore the best validation weights yourself.",
   ),
   "evaluating-deep-scan": visual(
     "training-loop",
@@ -493,7 +493,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "anomaly",
     "agreement",
     "What does agreement between detectors actually tell us?",
-    "Move a candidate reading and inspect three simple screening rules.",
+    "Change amplitude, reconstruction error and a supplied forecast. Inspect the three detector votes and the two-vote alert rule.",
     "Agreement is a reason to investigate. Checks that share evidence can also share mistakes, so agreement does not reveal the true label.",
   ),
 
@@ -510,8 +510,8 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "attention",
     "time",
     "Does the most recent reading deserve the most weight?",
-    "Change the query and compare weights across five time positions.",
-    "Temporal attention can weight distant observations. Its learned scores need not prefer the latest one.",
+    "Change the query and positional coefficient, then compare weights across five time positions.",
+    "A positional term can change which earlier reading gets the greatest weight. This example uses chosen coefficients rather than learned ones.",
   ),
   forecasting: visual(
     "advanced-time-series",
@@ -553,7 +553,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
         "Measure",
         "Await completion",
         "Time through the output read so asynchronous work is included.",
-        "const start = performance.now();\nawait output.data();",
+        "// This model has one tensor output.\nconst start = performance.now();\nconst output = model.predict(input);\nawait output.data();\nconst elapsedMs = performance.now() - start;\noutput.dispose();",
       ),
       stage(
         "Inspect memory",
@@ -631,7 +631,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
         "Initialize",
         "Selected backend",
         "Attempt backend initialization and handle failure with a supported alternative.",
-        "await tf.setBackend('webgpu');\nawait tf.ready();",
+        "import '@tensorflow/tfjs-backend-webgpu';\nconst initialized = await tf.setBackend('webgpu');\nif (!initialized) throw new Error('WebGPU initialization failed');\nawait tf.ready();\nif (tf.getBackend() !== 'webgpu') throw new Error('WebGPU is not active');\n// On failure, initialize and verify a supported fallback.",
       ),
       stage(
         "Run workload",

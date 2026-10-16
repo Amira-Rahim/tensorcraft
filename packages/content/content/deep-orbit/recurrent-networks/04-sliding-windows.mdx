@@ -157,7 +157,7 @@ Choose the target to match the task. Forecasting predicts the reading after the 
 
 Classification works differently here: use the external log label at the window’s last reading, `labels[end - 1]`. The label is separate from the input features. Check that those features were available at prediction time. The small evaluation example and graded exercise use classification; `makeWindows` above demonstrates forecasting.
 
-For the stateless model here, window size limits the input history. Lesson 2 put the pattern DEEP SCAN needs at a 74-step dependency on the one-sample-per-second feed, so an 80-step window holds it with six steps to spare. Set `windowSize` to 30 and no single sample ever contains the whole pattern, and no amount of training gets it back.
+This stateless model only receives the history inside its window. The two events are 74 steps apart on the one-reading-per-second feed. Including both endpoints needs 75 readings, so an 80-reading window leaves five more for context. A 30-reading window cannot contain both events. More training cannot restore missing input, although a model might learn from other, shorter cues.
 
 ## Real-Time Streaming Buffer
 

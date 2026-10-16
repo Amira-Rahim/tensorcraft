@@ -2,7 +2,7 @@ slug: ensemble-detector
 lessonSlug: the-anomaly
 title: "Build the DEEP SCAN Ensemble"
 instructions: |
-  Combine three detector results into one alert. The statistical detector uses the eight recent normalized amplitudes in window. The autoencoder's reconstruction error and the LSTM's prediction are supplied separately.
+  Combine three detector results into one alert. The statistical detector uses the recent amplitudes in window. The main example has eight readings; your function must also work with other non-empty window lengths. The autoencoder's reconstruction error and the LSTM's prediction are supplied separately.
 
   1. Statistical: use tf.moments to calculate the window's mean and variance. Calculate the signed z-score of actual. Values below the mean have a negative z-score. Flag when its absolute value is greater than 3.
   2. Autoencoder: flag when reconstructionError > reconThreshold.

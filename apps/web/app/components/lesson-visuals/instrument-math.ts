@@ -25,15 +25,9 @@ export const SCREENING_CASES = [
 export function screening(threshold: number) {
   const cells = SCREENING_CASES.map((c) => ({
     ...c,
-    predicted: c.score >= threshold,
+    predicted: c.score > threshold,
     category:
-      c.score >= threshold
-        ? c.anomaly
-          ? "TP"
-          : "FP"
-        : c.anomaly
-          ? "FN"
-          : "TN",
+      c.score > threshold ? (c.anomaly ? "TP" : "FP") : c.anomaly ? "FN" : "TN",
   }));
   const count = (category: string) =>
     cells.filter((c) => c.category === category).length;
@@ -59,6 +53,38 @@ export function softmax(values: number[]) {
   const exps = values.map((v) => Math.exp(v - largest));
   const sum = exps.reduce((a, b) => a + b, 0);
   return exps.map((v) => v / sum);
+}
+
+export const DETECTOR_BASELINE = [0.5, 0.54, 0.51, 0.53, 0.52, 0.52, 0.5, 0.54];
+
+/** The exercise's supplied detector values, not a model inference. */
+export function detectorVoteExample(
+  actual: number,
+  reconstructionError: number,
+  predicted: number,
+) {
+  const mean =
+    DETECTOR_BASELINE.reduce((total, value) => total + value, 0) /
+    DETECTOR_BASELINE.length;
+  const variance =
+    DETECTOR_BASELINE.reduce((total, value) => total + (value - mean) ** 2, 0) /
+    DETECTOR_BASELINE.length;
+  const std = Math.sqrt(variance);
+  const z = Math.abs(actual - mean) / std;
+  const forecastError = Math.abs(predicted - actual);
+  const flags = [z > 3, reconstructionError > 1, forecastError > 0.1];
+  const votes = flags.filter(Boolean).length;
+  return { mean, std, z, forecastError, flags, votes, alert: votes >= 2 };
+}
+
+/** A scalar match plus the lesson's normalized-position scoring feature. */
+export function positionalScores(
+  keys: number[],
+  query: number,
+  positionWeight = 0,
+) {
+  const last = Math.max(1, keys.length - 1);
+  return keys.map((key, t) => query * key + (positionWeight * t) / last);
 }
 export function magnitudeSpectrum(values: number[]) {
   return Array.from({ length: values.length / 2 + 1 }, (_, bin) => {

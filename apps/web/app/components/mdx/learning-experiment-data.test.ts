@@ -239,7 +239,10 @@ it("parses all supported drafts, rejects incompatible versions/settings/frozen s
         parseExperimentDraft(JSON.stringify({ ...d, ...patch }), id),
       ).toThrow();
     d.phase = "changed_case";
-    if (id === "threshold") d.frozen = [0.7, 1, 1];
+    if (id === "threshold") {
+      d.settings = [0.7, 1, 1];
+      d.frozen = [...d.settings];
+    }
     expect(experimentExpected(id, d).every(Number.isFinite)).toBe(true);
   }
   expect(() =>
@@ -251,4 +254,53 @@ it("parses all supported drafts, rejects incompatible versions/settings/frozen s
       "threshold",
     ),
   ).toThrow();
+});
+
+it("rejects contradictory restored feedback and preserves valid assistance history", () => {
+  for (const id of Object.keys(EXPERIMENTS) as ExperimentId[]) {
+    const d = experimentDraft(id);
+    const first = { correct: false, assisted: false };
+    const latest = { correct: true, assisted: true };
+    d.prediction = { first, latest, count: 2, help: true };
+    d.result = latest;
+    expect(parseExperimentDraft(JSON.stringify(d), id).prediction).toEqual({
+      first,
+      latest,
+      count: 2,
+      help: true,
+    });
+    for (const patch of [
+      { prediction: { ...d.prediction, help: false } },
+      { result: first },
+      { result: latest, prediction: experimentDraft(id).prediction },
+      { prediction: { ...d.prediction, count: 1 } },
+    ])
+      expect(() =>
+        parseExperimentDraft(JSON.stringify({ ...d, ...patch }), id),
+      ).toThrow();
+
+    const unattempted = experimentDraft(id);
+    expect(() =>
+      parseExperimentDraft(
+        JSON.stringify({ ...unattempted, revealed: true }),
+        id,
+      ),
+    ).toThrow();
+    unattempted.prediction.help = true;
+    unattempted.revealed = true;
+    expect(parseExperimentDraft(JSON.stringify(unattempted), id)).toEqual(
+      unattempted,
+    );
+  }
+});
+
+it("rejects a changed frozen policy rather than restoring unlocked threshold settings", () => {
+  const d = experimentDraft("threshold");
+  d.frozen = [...d.settings];
+  d.phase = "changed_case";
+  expect(parseExperimentDraft(JSON.stringify(d), "threshold").frozen).toEqual(
+    d.settings,
+  );
+  d.settings = [0.7, 5, 10];
+  expect(() => parseExperimentDraft(JSON.stringify(d), "threshold")).toThrow();
 });

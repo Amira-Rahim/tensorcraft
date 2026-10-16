@@ -655,7 +655,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: hits,
         answerLabel: "Valid cache hits",
-        explanation: `${v.key === 0 ? "An input-only key can return a result produced by a different scaler. " : "Including model and scaler versions separates results with different meanings. "}The least recently used entry is removed when storage exceeds ${v.capacity} entries. A stale hit saves work but returns the wrong cached result.`,
+        explanation: `${v.key === 0 ? "An input-only key can return a result produced by a different scaler. " : "Including model and scaler versions separates results with different meanings. "}The least recently used entry is removed when storage exceeds ${v.capacity} entries. A stale hit reuses a result from the wrong version. Its numerical value might match, but it has not been checked for the current version.`,
         code:
           v.key === 1
             ? "const key = JSON.stringify([input, modelVersion, scalerVersion]);"
@@ -819,78 +819,134 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "prompt-engineering": {
-    title: "Check what the response must include",
+    title: "Build the prompt Farah can review",
     brief:
-      "Choose the required fields and evidence, then check what the example response is missing or gets wrong.",
+      "Add the role, reference facts, current reading and JSON request. Watch each part appear in the prompt.",
     boundary:
-      "This activity validates two fixed response objects. Prompt settings do not generate text or guarantee that a model follows them.",
+      "P1 and P2 are made-up practice readings. The natural-frequency catalogue is supplied context for this example. This activity builds text locally; it calls no language model and does not predict a classification.",
     controls: [
-      choice("sources", "Require source IDs", ["No", "Yes"], 1),
-      choice("unknown", "Require unknowns to stay unknown", ["No", "Yes"], 1),
-      choice("format", "Require a structured object", ["No", "Yes"], 1),
+      choice(
+        "role",
+        "Role and task",
+        ["Missing", "Name DEEP SCAN's classification task"],
+        1,
+      ),
+      choice("catalogue", "Reference facts", [
+        "Missing",
+        "Include the natural-frequency catalogue",
+      ]),
+      choice(
+        "reading",
+        "Current reading",
+        ["Missing", "Include its ID, values and units"],
+        1,
+      ),
+      choice(
+        "format",
+        "Output request",
+        ["Missing", "Request the three JSON fields"],
+        1,
+      ),
     ],
     cases: [
       {
-        id: "loose",
-        label: "Fluent but unverified",
+        id: "practice-a",
+        label: "Practice reading P1",
         description:
-          "Plain text says the signal is artificial. It names no source and fills in an unknown origin.",
+          "P1 has amplitude 1024 counts, frequency 23 Hz and phase 0.23 rad. The supplied natural-frequency catalogue is 5, 12, 23 and 47 Hz.",
       },
       {
-        id: "structured",
-        label: "Structured response",
+        id: "practice-b",
+        label: "Practice reading P2",
         description:
-          "An object includes a summary and source S7, but still claims the unknown origin is artificial.",
+          "P2 has amplitude 768 counts, frequency 73.4 Hz and phase -0.4 rad. Use the same reference catalogue; its absence from that list would not prove an artificial origin.",
       },
     ],
     prediction: {
-      prompt: "How many required checks reject this response?",
-      unit: "checks",
+      prompt: "How many of the four required prompt parts are still missing?",
+      unit: "parts",
     },
     evaluate: (v, caseId) => {
-      const object = caseId === "structured";
-      const missingSources = v.sources === 1 && !object;
-      const inventedOrigin = v.unknown === 1;
-      const wrongFormat = v.format === 1 && !object;
-      const failures =
-        Number(missingSources) + Number(inventedOrigin) + Number(wrongFormat);
+      const reading =
+        caseId === "practice-b"
+          ? { id: "P2", amplitude: 768, frequency: 73.4, phase: -0.4 }
+          : { id: "P1", amplitude: 1024, frequency: 23, phase: 0.23 };
+      const parts = [
+        {
+          included: v.role === 1,
+          label: "Role",
+          lines: [
+            "You are DEEP SCAN, a signal classifier for deep space signals.",
+          ],
+          missing: "The role needs to name the classification task.",
+        },
+        {
+          included: v.catalogue === 1,
+          label: "Reference facts",
+          lines: ["Known natural frequencies: 5, 12, 23, 47 Hz."],
+          missing:
+            "Add the natural-frequency catalogue so the model receives the reference facts.",
+        },
+        {
+          included: v.reading === 1,
+          label: "Current reading",
+          lines: [
+            `Practice reading ${reading.id}:`,
+            `Amplitude: ${reading.amplitude} counts`,
+            `Frequency: ${reading.frequency} Hz`,
+            `Phase: ${reading.phase} rad`,
+          ],
+          missing: `Include ${reading.id}'s values and units. Reference facts alone do not supply the reading.`,
+        },
+        {
+          included: v.format === 1,
+          label: "Output request",
+          lines: [
+            "Respond in JSON with classification (noise, anomaly or unknown), confidence (self-reported score, 0 to 1) and reasoning. The score is not a calibrated probability.",
+          ],
+          missing:
+            "Request JSON and name classification, confidence and reasoning so the reply can be checked.",
+        },
+      ];
+      const missing = parts.filter((part) => !part.included);
+      const included = parts.filter((part) => part.included);
+      const lines = included.flatMap((part) => part.lines);
       return {
         graphics: [
           cells(
-            "Fixed response",
-            object
-              ? [
-                  "summary: artificial signal",
-                  "sources: [S7]",
-                  "origin: artificial",
-                ]
-              : ["Plain text", "No source IDs", "Origin: artificial"],
-            3,
-          ),
-          pipeline(
-            "Active validation",
+            "Supplied practice reading and reference facts",
             [
-              v.sources === 0
-                ? "Sources: not checked"
-                : missingSources
-                  ? "Sources: reject"
-                  : "Sources: present",
-              v.unknown === 0
-                ? "Unknowns: not checked"
-                : "Unknown origin: reject",
-              v.format === 0
-                ? "Format: not checked"
-                : wrongFormat
-                  ? "Format: reject"
-                  : "Format: object",
+              `Reading: ${reading.id} (made up)`,
+              `Amplitude: ${reading.amplitude} counts`,
+              `Frequency: ${reading.frequency} Hz`,
+              `Phase: ${reading.phase} rad`,
+              "Reference catalogue: 5, 12, 23, 47 Hz",
             ],
-            [],
+            1,
+          ),
+          {
+            kind: "pipeline",
+            label: "Assembled prompt",
+            values: lines.length
+              ? lines
+              : ["The prompt is empty. Add a part to begin."],
+            labels: included.length
+              ? included.flatMap((part) => part.lines.map(() => part.label))
+              : ["No content"],
+          },
+          pipeline(
+            "Required prompt parts",
+            parts.map(
+              (part) =>
+                `${part.label}: ${part.included ? "present" : "missing"}`,
+            ),
+            parts.flatMap((part, i) => (part.included ? [i] : [])),
           ),
         ],
-        answer: failures,
-        answerLabel: "Response checks failed",
-        explanation: `Removing a requirement reduces the number of reported failures without making the claim true. ${object ? "The source field exists, but S7 does not establish an artificial origin." : "This draft has neither a structured object nor source IDs."} Check both the returned structure and the evidence behind each claim.`,
-        code: `const required = { sources: ${v.sources === 1}, preserveUnknowns: ${v.unknown === 1}, object: ${v.format === 1} };`,
+        answer: missing.length,
+        answerLabel: "Missing prompt parts",
+        explanation: `${missing.length ? missing.map((part) => part.missing).join(" ") : "All four parts are present."} The catalogue and current reading stay separate. A complete prompt does not guarantee valid JSON or correct claims. Parse the reply and review its claims against the supplied evidence.`,
+        code: `const prompt = ${JSON.stringify(lines, null, 2)}.join('\\n');`,
       };
     },
   },
@@ -1059,7 +1115,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         answer: count,
         answerLabel: "Report sections passed",
         explanation: `${caseId === "partial" ? "The observation section needs its missing amplitude measurement. " : ""}${v.claim === 1 ? "The analysis adds an origin claim that the measurements do not support. " : ""}${v.limits === 0 ? "The report must include the known limit: origin is unknown. " : ""}A complete report requires all three checked sections. Keep failures visible instead of silently dropping a section.`,
-        code: `const sectionsPass = [${checks.join(", ")}];\nconst canAssemble = sectionsPass.every(Boolean);`,
+        code: `const sectionsPass = [${checks.join(", ")}];\nconst completeReportReady = sectionsPass.every(Boolean);\n// Assemble approved sections and list failures under Withheld.`,
       };
     },
   },
@@ -1068,9 +1124,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Follow a detector result through an evidence search and an example explanation. Check each stage’s requirements before release.",
     boundary:
-      "The detector scores and explanation are fixed examples. This activity does not run a detector, search service or language model.",
+      "D2 is a fictional detector with scores from 0 to 1. These are fixed examples, not calibrated probabilities. Other scores, such as reconstruction MSE, can exceed 1. This activity runs no detector, search service or language model.",
     controls: [
-      range("threshold", "Detector alert threshold (%)", 70, 30, 90, 10),
+      range(
+        "threshold",
+        "Detector alert threshold (0 to 1)",
+        0.7,
+        0.3,
+        0.9,
+        0.1,
+      ),
       choice(
         "version",
         "Detector version metadata",
@@ -1089,13 +1152,13 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "strong",
         label: "High detector score",
         description:
-          "Detector D2 gives reading R7 an 80% anomaly score. Its correctness has not been independently established.",
+          "Detector D2 gives reading R7 a score of 0.8. This is a raw score, not a calibrated probability.",
       },
       {
         id: "borderline",
         label: "Borderline detector score",
         description:
-          "Detector D2 gives reading R8 a 60% anomaly score. Its correctness has not been independently established.",
+          "Detector D2 gives reading R8 a score of 0.6. This is a raw score, not a calibrated probability.",
       },
     ],
     prediction: {
@@ -1103,21 +1166,21 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       unit: "of 3 checks",
     },
     evaluate: (v, caseId) => {
-      const score = caseId === "borderline" ? 60 : 80;
-      const alert = score >= v.threshold!;
+      const score = caseId === "borderline" ? 0.6 : 0.8;
+      const alert = score > v.threshold!;
       const checks = [alert, v.version === 1, v.evidence === 1];
       const passed = checks.filter(Boolean).length;
       return {
         graphics: [
           bars(
-            "Detector decision (%)",
+            "Detector decision (raw score)",
             ["Anomaly score", "Alert threshold"],
             [score, v.threshold!],
           ),
           pipeline(
             "Alert-report handoff",
             [
-              alert ? "Alert selected" : "Below alert threshold",
+              alert ? "Alert selected" : "Does not exceed alert threshold",
               v.version === 1 ? "Detector version retained" : "Version missing",
               v.evidence === 1 ? "Reading evidence linked" : "Evidence missing",
               passed === 3 ? "Ready for claim review" : "Handoff blocked",
@@ -1127,7 +1190,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: passed,
         answerLabel: "Alert-report checks passed",
-        explanation: `A score of ${score}% ${alert ? "meets" : "does not meet"} the ${v.threshold}% alert threshold. Version metadata and linked evidence are separate requirements. Passing the handoff only permits claim review; it does not establish that the detector or explanation is correct.`,
+        explanation: `A raw score of ${score} ${alert ? "is above" : "does not exceed"} the ${v.threshold} alert threshold. The rule uses a strict greater-than comparison. This score is not a calibrated probability. Version metadata and linked evidence are separate requirements. Passing the handoff permits claim review; it does not establish that the detector or explanation is correct.`,
       };
     },
   },
@@ -1336,13 +1399,17 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             2,
           ),
           bars(
-            "Metric as a percentage of its limit",
-            ["Latency", "Missing inputs", "Mean-score change"],
+            "Latency and score change as percentages of their limits",
+            ["Latency", "Mean-score change"],
             [
               round((latency / v.latency!) * 100),
-              v.missing === 0 ? 200 : round((missing / v.missing!) * 100),
               round((delta / v.shift!) * 100),
             ],
+          ),
+          bars(
+            "Missing inputs (%)",
+            ["Observed", "Alert limit"],
+            [missing, v.missing!],
           ),
           pipeline(
             "Review signals",
@@ -1360,7 +1427,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: count,
         answerLabel: "Metrics requiring review",
-        explanation: `${latency} ms latency, ${missing}% missing inputs and a ${delta} mean-score change are checked separately. ${v.missing === 0 ? "The missing-input limit is zero, so any missing value triggers review. Its chart bar is capped at 200%. " : ""}Changing limits changes alerts, not the underlying measurements. Reviewed labels are needed to check prediction accuracy.`,
+        explanation: `${latency} ms latency, ${missing}% missing inputs and a ${delta} mean-score change are checked separately. ${v.missing === 0 ? "The missing-input limit is zero, so any missing input triggers review. A percentage of that zero limit would be undefined, so the missing-input chart shows the observed percentage and the limit directly. " : ""}Changing limits changes alerts, not the underlying measurements. Reviewed labels are needed to check prediction accuracy.`,
       };
     },
   },

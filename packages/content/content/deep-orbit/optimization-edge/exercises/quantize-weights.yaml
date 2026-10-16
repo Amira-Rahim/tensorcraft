@@ -2,7 +2,7 @@ slug: quantize-weights
 lessonSlug: quantization
 title: "Quantize a Model and Compare Predictions"
 instructions: |
-  Help Nazari check what smaller weight storage changes. Write `quantizeModel(model, captures)` for the supplied Dense classifier and non-empty capture array. Simulate uint8 storage, apply the decoded weights, and compare predictions.
+  Help Nazari check what smaller weight storage changes. Write `quantizeModel(model, captures)` for the supplied synthetic multiclass Dense classifier and non-empty capture array. Simulate uint8 storage, apply the decoded weights, and compare predictions.
 
   Quantize only the 2-D kernel tensors from `model.getWeights()`. Leave 1-D biases at float32. For each kernel:
 
@@ -92,7 +92,7 @@ solutionCode: |
 
 testCode: |
   describe('quantizeModel', () => {
-    // The five-class classifier, freshly initialized on every call, so the
+    // A synthetic five-class classifier, freshly initialized on every call, so the
     // scales and errors below are numbers no submission can have memorised.
     function classifier() {
       const model = tf.sequential();

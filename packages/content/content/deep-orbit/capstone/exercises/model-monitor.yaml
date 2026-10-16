@@ -270,7 +270,7 @@ testCode: |
       for (const ms of [12, 48, 31, 7]) monitor.logLatency(ms);
       expect(
         monitor.getLatencyPercentile(100),
-        'count * 100 / 100 is the count itself, which is one index past the last element. Clamp it.',
+        'Nearest-rank P100 uses index count - 1, the last value in the sorted array.',
       ).toBe(48);
       expect(monitor.getLatencyPercentile(50)).toBe(12);
       expect(monitor.getLatencyPercentile(25)).toBe(7);

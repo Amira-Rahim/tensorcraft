@@ -16,6 +16,9 @@ import {
   teachingSignal,
   quantize,
   kalmanUpdate,
+  DETECTOR_BASELINE,
+  detectorVoteExample,
+  positionalScores,
 } from "./instrument-math";
 
 const fmt = (n: number, digits = 2) => Number(n.toFixed(digits)).toString();
@@ -89,7 +92,12 @@ function Choices({
 function Readout({ children, code }: { children: ReactNode; code?: string }) {
   return (
     <div className="iv-readout">
-      <div role="status" aria-live="polite" aria-atomic="true">
+      <div
+        role="status"
+        aria-label="Reference result"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {children}
       </div>
       {code && (
@@ -800,7 +808,7 @@ function GradientInstrument({ mode }: { mode: string }) {
         </button>
       </div>
       <Readout
-        code={`const gradient = 2 * (${fmt(w)} - 3);\nconst nextWeight = ${fmt(w)} - ${fmt(rate)} * gradient;\n// ${fmt(gradientStep(w, rate))}`}
+        code={`const gradient = 2 * (${w} - 3);\nconst nextWeight = ${w} - ${rate} * gradient;\n// ${fmt(gradientStep(w, rate))} (rounded)`}
       >
         Weight <strong>{fmt(w)}</strong>; loss{" "}
         <strong>{fmt((w - 3) ** 2)}</strong>.{" "}
@@ -871,7 +879,9 @@ function TrainingInstrument() {
         {epoch === best.epoch
           ? "This is the lowest validation loss seen so far."
           : `Validation was better at epoch ${best.epoch}. The latest weights are not the best checkpoint so far.`}{" "}
-        These curves are illustrative, not a live training run.
+        These curves are illustrative, not a live training run. TFJS 4.22 early
+        stopping keeps the final weights. Save and restore the best checkpoint
+        separately.
       </Readout>
     </>
   );
@@ -938,7 +948,7 @@ function EvaluationInstrument() {
         </div>
       </div>
       <Readout
-        code={`const predictedAnomaly = ${c.score} >= ${fmt(threshold)};\n// ${c.predicted}`}
+        code={`const predictedAnomaly = ${c.score} > ${threshold};\n// ${c.predicted}`}
       >
         Case {selected + 1}: score {c.score}; known label{" "}
         <strong>{c.anomaly ? "anomaly" : "normal"}</strong>. At this threshold:{" "}
@@ -1081,7 +1091,7 @@ function SignalInstrument({ mode }: { mode: string }) {
       <Readout
         code={
           mode === "features"
-            ? `// Magnitude bins at 4, ${frequency}, 20 Hz\nconst features = [${[4, frequency, 20].map((i) => fmt(spectrum[i]!, 3)).join(", ")}];`
+            ? `const fixedBins = [4, 12, 20]; // fixed column meanings in Hz\nconst features = fixedBins.map(bin => magnitudes[bin]);\n// [${[4, 12, 20].map((i) => fmt(spectrum[i]!, 3)).join(", ")}] (rounded)`
             : undefined
         }
       >
@@ -1090,6 +1100,8 @@ function SignalInstrument({ mode }: { mode: string }) {
           : mode === "spectrogram"
             ? `This window starts at ${window / 8} s. The 12 Hz component enters the signal at 1 s, so overlapping windows reveal it gradually.`
             : `The two component frequencies are 4 Hz and ${frequency} Hz. Their amplitudes are 1 and ${fmt(amplitude)}.`}{" "}
+        {mode === "features" &&
+          "Feature columns always read 4, 12 and 20 Hz, even when the second tone moves. Do not move a feature's bin to follow each reading's peak. "}
         This teaching signal uses 64 samples at 64 Hz, separate from the ship's
         sensor data.
       </Readout>
@@ -1282,7 +1294,7 @@ function SequenceInstrument({ mode }: { mode: string }) {
           mode === "windows"
             ? `const input = series.slice(${step}, ${step + 3});\nconst target = series[${step + 3}];`
             : mode === "rnn"
-              ? `const h = Math.tanh(0.5 * ${values[step]! / 10} + 0.7 * ${fmt(step ? states[step - 1]! : 0, 3)});`
+              ? `const h = Math.tanh(0.5 * ${values[step]! / 10} + 0.7 * ${step ? states[step - 1]! : 0});`
               : `const change = values.at(-1) - values[0];\n// ${values[7]! - values[0]!}`
         }
       >
@@ -1309,11 +1321,12 @@ function SequenceInstrument({ mode }: { mode: string }) {
     </>
   );
 }
-function AttentionInstrument() {
+function AttentionInstrument({ temporal }: { temporal: boolean }) {
   const [query, setQuery] = useState(0.8);
+  const [positionWeight, setPositionWeight] = useState(0);
   const keys = [-1, -0.4, 0.2, 0.7, 1.2],
     values = [2, 7, 3, 8, 4],
-    scores = keys.map((k) => query * k),
+    scores = positionalScores(keys, query, temporal ? positionWeight : 0),
     weights = softmax(scores),
     context = sum(weights.map((w, i) => w * values[i]!));
   return (
@@ -1342,14 +1355,28 @@ function AttentionInstrument() {
         step={0.1}
         onChange={setQuery}
       />
+      {temporal && (
+        <Range
+          label="Reference position weight"
+          value={positionWeight}
+          min={-2}
+          max={2}
+          step={0.25}
+          onChange={setPositionWeight}
+        />
+      )}
       <Readout
-        code={`const scores = [${scores.map((v) => fmt(v)).join(", ")}];\nconst weights = softmax(scores);\nconst context = sum(weights.map((w, i) => w * values[i]));`}
+        code={`const scores = keys.map((key, t) => ${query} * key${temporal ? ` + ${positionWeight} * t / (keys.length - 1)` : ""});\nconst weights = softmax(scores);\nconst context = sum(weights.map((w, i) => w * values[i]));`}
       >
-        Keys are [{keys.join(", ")}]. Similarity is query × key; softmax makes
-        the weights sum to 1. The weighted summary is{" "}
-        <strong>{fmt(context)}</strong>. This small example uses one number per
-        query and key. Full attention models use vectors and may have several
-        heads.
+        Keys are [{keys.join(", ")}]; values are [{values.join(", ")}].{" "}
+        {temporal
+          ? "Each score adds position weight × t/4 to query × key. Positive position weight favors later readings; negative favors earlier ones. "
+          : "Similarity is query × key. "}
+        Softmax makes the weights sum to 1. The summary of the original values
+        is <strong>{fmt(context)}</strong>. This small example uses one number
+        per query and key. Full attention models use vectors and may have
+        several heads. A large attention weight does not establish a causal
+        explanation.
       </Readout>
     </>
   );
@@ -1418,13 +1445,79 @@ function KalmanInstrument() {
     </>
   );
 }
+function DetectorAgreementInstrument() {
+  const [actual, setActual] = useState(0.5);
+  const [error, setError] = useState(6.2);
+  const [predicted, setPredicted] = useState(0.2);
+  const result = detectorVoteExample(actual, error, predicted);
+  return (
+    <>
+      <Grid
+        values={DETECTOR_BASELINE}
+        width={4}
+        label="Calm amplitude baseline for the detector votes"
+      />
+      <Range
+        label="Amplitude in this reference"
+        value={actual}
+        min={0}
+        max={1}
+        step={0.01}
+        onChange={setActual}
+      />
+      <Range
+        label="Autoencoder error in this reference"
+        value={error}
+        min={0}
+        max={7}
+        step={0.1}
+        onChange={setError}
+      />
+      <Range
+        label="Forecast amplitude in this reference"
+        value={predicted}
+        min={0}
+        max={1}
+        step={0.01}
+        onChange={setPredicted}
+      />
+      <div className="iv-rule-results">
+        {[
+          "Statistical |z| > 3",
+          "Autoencoder error > 1",
+          "LSTM amplitude error > 0.1",
+        ].map((name, i) => (
+          <p key={name}>
+            <span>{name}</span>
+            <strong>{result.flags[i] ? "Vote" : "No vote"}</strong>
+          </p>
+        ))}
+      </div>
+      <Readout
+        code={`const votes = [Math.abs((actual - mean) / std) > 3, reconstructionError > 1, Math.abs(predicted - actual) > 0.1].filter(Boolean).length;\nconst alert = votes >= 2;`}
+      >
+        Mean {fmt(result.mean, 3)}, population standard deviation{" "}
+        {fmt(result.std, 3)}. Amplitude distance: {fmt(result.z)} standard
+        deviations. Forecast error: {fmt(result.forecastError)} amplitude units.{" "}
+        <strong>
+          {result.votes} of 3 votes:{" "}
+          {result.alert ? "alert selected" : "no alert selected"}.
+        </strong>{" "}
+        The autoencoder error and forecast are supplied values, not model runs.
+        Their errors may be related; a majority is not a probability. This
+        exercise's amplitude forecast gate is separate from the full model's
+        three-feature MSE.
+      </Readout>
+    </>
+  );
+}
 function AnomalyInstrument({ mode }: { mode: string }) {
   const [reading, setReading] = useState(
     mode === "baseline" || mode === "agreement" ? 13 : 6,
   );
-  if (mode === "baseline" || mode === "agreement") {
-    const z = Math.abs(reading - 10) / Math.sqrt(2),
-      flags = [Math.abs(reading - 10) > 3, z > 2, reading < 7 || reading > 12];
+  if (mode === "agreement") return <DetectorAgreementInstrument />;
+  if (mode === "baseline") {
+    const z = Math.abs(reading - 10) / Math.sqrt(2);
     return (
       <>
         <svg
@@ -1479,27 +1572,11 @@ function AnomalyInstrument({ mode }: { mode: string }) {
           step={0.5}
           onChange={setReading}
         />
-        {mode === "agreement" && (
-          <div className="iv-rule-results">
-            {[
-              "Distance > 3",
-              "Standardized distance > 2",
-              "Outside [7, 12]",
-            ].map((rule, i) => (
-              <p key={rule}>
-                <span>{rule}</span>
-                <strong>{flags[i] ? "Flag" : "Clear"}</strong>
-              </p>
-            ))}
-          </div>
-        )}
         <Readout>
           Distance from the reference mean:{" "}
           <strong>{fmt(Math.abs(reading - 10))}</strong>, or {fmt(z)} reference
-          standard deviations.{" "}
-          {mode === "agreement"
-            ? "All three rules use the same reading. Their agreement is not three independent pieces of evidence."
-            : "A change in operating conditions could also change this value. Check the context before deciding it is an anomaly."}
+          standard deviations. A change in operating conditions could also
+          change this value. Check the context before deciding it is an anomaly.
         </Readout>
       </>
     );
@@ -1682,7 +1759,7 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
       content = <SequenceInstrument mode={spec.mode} />;
       break;
     case "attention":
-      content = <AttentionInstrument />;
+      content = <AttentionInstrument temporal={spec.mode === "time"} />;
       break;
     case "kalman":
       content = <KalmanInstrument />;
@@ -1716,7 +1793,7 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
           ? "These code examples show the steps. They are not running a live system."
           : spec.kind === "tensor" && spec.mode === "create"
             ? "Runs with TensorFlow.js in your browser. Values are rounded for display."
-            : "Practice example. Your challenge uses its own data and tests."}
+            : "JavaScript simulation with fixed practice data. It does not run or train the lesson's models. Your challenge uses its own data and tests."}
       </p>
     </div>
   );

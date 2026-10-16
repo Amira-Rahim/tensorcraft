@@ -133,7 +133,7 @@ The loader fetches an asset and creates a LayersModel with predict and evaluate 
 
 ## Where the Two Files Come From
 
-Module 3 trained this network in memory. `model.save()` is the step that turns it into the two files the loader fetches.
+The training module kept this network in memory. `model.save()` exports its architecture and learned weights so another app can load them. These examples write one JSON manifest and one weight file.
 
 <CodeBlock language="typescript" title="export.ts">
 {`// Node, with @tensorflow/tfjs-node installed: writes model.json and

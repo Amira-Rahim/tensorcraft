@@ -1,6 +1,13 @@
 /** Meaningful rewrites must not inherit answers or schedules for old prompts. */
+const DEEP_ORBIT_RECALL_VERSIONS: Record<string, number> = {
+  "tensor-shapes": 2,
+  "loss-functions": 2,
+  "training-loop": 2,
+  "the-anomaly": 2,
+};
+
 export function recallContentVersion(world: string, lesson: string) {
-  return world === "deep-orbit" && lesson === "tensor-shapes" ? 2 : 1;
+  return world === "deep-orbit" ? (DEEP_ORBIT_RECALL_VERSIONS[lesson] ?? 1) : 1;
 }
 
 /** Review queue indices are opaque integer keys. Reserve 32 positions per

@@ -1,8 +1,10 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import {
+  clampInvestigationValues,
   initialInvestigationValues,
+  investigationControlMax,
   matchesInvestigationPrediction,
   type InvestigationResult,
   type LessonInvestigationSpec,
@@ -33,6 +35,9 @@ function resultUnit(unit: string | undefined, value: number | string) {
     samples: "sample",
     frames: "frame",
     steps: "step",
+    parts: "part",
+    requirements: "requirement",
+    alerts: "alert",
     "valid hits": "valid hit",
   };
   return ` ${Number(value) === 1 ? (singular[unit] ?? unit) : unit}`;
@@ -172,6 +177,8 @@ export function LessonInvestigation({
   lessonSlug: string;
 }) {
   const id = useId();
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [caseId, setCaseId] = useState(spec.cases[0]!.id);
   const [values, setValues] = useState(() => initialInvestigationValues(spec));
   const [prediction, setPrediction] = useState("");
@@ -208,7 +215,9 @@ export function LessonInvestigation({
         : "Choose your inputs, then run the experiment.";
 
   const updateValue = (controlId: string, value: number) => {
-    setValues((current) => ({ ...current, [controlId]: value }));
+    setValues((current) =>
+      clampInvestigationValues(spec, { ...current, [controlId]: value }),
+    );
     setResetMessage(false);
   };
 
@@ -248,130 +257,139 @@ export function LessonInvestigation({
             runExperiment();
           }}
         >
-          <div className="orbit-investigation-case">
-            <label htmlFor={`${id}-case`}>Choose an example</label>
-            <select
-              id={`${id}-case`}
-              value={caseId}
-              onChange={(event) => {
-                setCaseId(event.target.value);
-                setValues(initialInvestigationValues(spec, event.target.value));
-                setPrediction("");
-                setResetMessage(false);
-              }}
-            >
-              {spec.cases.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-            <p>{currentCase.description}</p>
-          </div>
-          <div className="orbit-investigation-controls">
-            {spec.controls.map((control) => (
-              <div className="orbit-investigation-control" key={control.id}>
-                <div className="orbit-investigation-control-heading">
-                  <label htmlFor={`${id}-${control.id}`}>{control.label}</label>
-                  {control.kind === "range" && (
-                    <output htmlFor={`${id}-${control.id}`}>
-                      {formatInvestigationValue(values[control.id]!)}
-                    </output>
-                  )}
-                </div>
-                {control.kind === "choice" ? (
-                  <select
-                    id={`${id}-${control.id}`}
-                    value={values[control.id]}
-                    onChange={(event) =>
-                      updateValue(control.id, Number(event.target.value))
-                    }
-                  >
-                    {control.options?.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    id={`${id}-${control.id}`}
-                    type="range"
-                    min={control.min}
-                    max={control.max}
-                    step={control.step ?? 1}
-                    value={values[control.id]}
-                    onChange={(event) =>
-                      updateValue(control.id, Number(event.target.value))
-                    }
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="orbit-investigation-input">
-            <h4>Current inputs</h4>
-            {inputGraphic && (
-              <InvestigationGraphic
-                graphic={inputGraphic}
-                domain={inputDomain}
-              />
-            )}
-          </div>
-          <div className="orbit-investigation-prediction">
-            <label htmlFor={`${id}-prediction`}>{spec.prediction.prompt}</label>
-            {spec.prediction.choices ? (
+          <fieldset disabled={!ready} className="m-0 min-w-0 border-0 p-0">
+            <legend className="sr-only">Experiment controls</legend>
+            <div className="orbit-investigation-case">
+              <label htmlFor={`${id}-case`}>Choose an example</label>
               <select
-                id={`${id}-prediction`}
-                value={prediction}
-                onChange={(event) => setPrediction(event.target.value)}
-                aria-describedby={`${id}-prediction-help`}
+                id={`${id}-case`}
+                value={caseId}
+                onChange={(event) => {
+                  setCaseId(event.target.value);
+                  setValues(
+                    initialInvestigationValues(spec, event.target.value),
+                  );
+                  setPrediction("");
+                  setResetMessage(false);
+                }}
               >
-                <option value="">Choose a prediction (optional)</option>
-                {spec.prediction.choices.map((choice) => (
-                  <option key={choice} value={choice}>
-                    {choice}
+                {spec.cases.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
                   </option>
                 ))}
               </select>
-            ) : (
-              <input
-                id={`${id}-prediction`}
-                type="text"
-                inputMode={
-                  typeof preview.answer === "number" ? "decimal" : "text"
-                }
-                placeholder={
-                  spec.prediction.unit
-                    ? `Your prediction (${spec.prediction.unit})`
-                    : undefined
-                }
-                value={prediction}
-                onChange={(event) => setPrediction(event.target.value)}
-                aria-describedby={`${id}-prediction-help`}
-                autoComplete="off"
-              />
-            )}
-            <p id={`${id}-prediction-help`}>
-              Make a prediction, or run the experiment to see the result.
-            </p>
-          </div>
-          <div className="orbit-investigation-actions">
-            <button type="submit">Run experiment</button>
-            <button
-              type="button"
-              onClick={() => {
-                setCaseId(spec.cases[0]!.id);
-                setValues(initialInvestigationValues(spec));
-                setPrediction("");
-                setRuns([]);
-                setCompare(false);
-                setResetMessage(true);
-              }}
-            >
-              Reset experiment
-            </button>
-          </div>
+              <p>{currentCase.description}</p>
+            </div>
+            <div className="orbit-investigation-controls">
+              {spec.controls.map((control) => (
+                <div className="orbit-investigation-control" key={control.id}>
+                  <div className="orbit-investigation-control-heading">
+                    <label htmlFor={`${id}-control-${control.id}`}>
+                      {control.label}
+                    </label>
+                    {control.kind === "range" && (
+                      <output htmlFor={`${id}-control-${control.id}`}>
+                        {formatInvestigationValue(values[control.id]!)}
+                      </output>
+                    )}
+                  </div>
+                  {control.kind === "choice" ? (
+                    <select
+                      id={`${id}-control-${control.id}`}
+                      value={values[control.id]}
+                      onChange={(event) =>
+                        updateValue(control.id, Number(event.target.value))
+                      }
+                    >
+                      {control.options?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      id={`${id}-control-${control.id}`}
+                      type="range"
+                      min={control.min}
+                      max={investigationControlMax(control, values)}
+                      step={control.step ?? 1}
+                      value={values[control.id]}
+                      onChange={(event) =>
+                        updateValue(control.id, Number(event.target.value))
+                      }
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="orbit-investigation-input">
+              <h4>Current inputs</h4>
+              {inputGraphic && (
+                <InvestigationGraphic
+                  graphic={inputGraphic}
+                  domain={inputDomain}
+                />
+              )}
+            </div>
+            <div className="orbit-investigation-prediction">
+              <label htmlFor={`${id}-prediction`}>
+                {spec.prediction.prompt}
+              </label>
+              {spec.prediction.choices ? (
+                <select
+                  id={`${id}-prediction`}
+                  value={prediction}
+                  onChange={(event) => setPrediction(event.target.value)}
+                  aria-describedby={`${id}-prediction-help`}
+                >
+                  <option value="">Choose a prediction (optional)</option>
+                  {spec.prediction.choices.map((choice) => (
+                    <option key={choice} value={choice}>
+                      {choice}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  id={`${id}-prediction`}
+                  type="text"
+                  inputMode={
+                    typeof preview.answer === "number" ? "decimal" : "text"
+                  }
+                  placeholder={
+                    spec.prediction.unit
+                      ? `Your prediction (${spec.prediction.unit})`
+                      : undefined
+                  }
+                  value={prediction}
+                  onChange={(event) => setPrediction(event.target.value)}
+                  aria-describedby={`${id}-prediction-help`}
+                  autoComplete="off"
+                />
+              )}
+              <p id={`${id}-prediction-help`}>
+                Make a prediction, or run the experiment to see the result.
+              </p>
+            </div>
+            <div className="orbit-investigation-actions">
+              <button type="submit">Run experiment</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCaseId(spec.cases[0]!.id);
+                  setValues(initialInvestigationValues(spec));
+                  setPrediction("");
+                  setRuns([]);
+                  setCompare(false);
+                  setResetMessage(true);
+                }}
+              >
+                Reset experiment
+              </button>
+            </div>
+          </fieldset>
         </form>
         <div
           className="orbit-investigation-results"

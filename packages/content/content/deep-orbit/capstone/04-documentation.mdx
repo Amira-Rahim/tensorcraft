@@ -192,6 +192,11 @@ Keep weight-file bytes, total download bytes, classifier latency and whole-pipel
 
 A production card also needs the artifact and preprocessing versions, label map, evaluation data identity and split method, sample counts, per-class metrics and averaging convention. Report uncertainty where the evaluation supports it, plus the device, backend, timing protocol and date. A single accuracy and a date cannot establish fitness for another use.
 
+The fictional card does not say how its 2,025 labeled evaluation captures were
+selected or how many test captures lack labels. That is a gap in the handover.
+Record the selected capture IDs and label coverage before applying its 91.8%
+score to the whole test period.
+
 Caching may reduce repeat downloads; it does not remove the first-load cost or guarantee that storage persists. Accepting a larger bundle needs an explicit cold-start and memory budget, with a usable failure path.
 
 Two different counts of 64 appear in this course. An archive row records 33 seconds across 64 channels at 256 Hz. That is 540,672 samples, a little over two megabytes in float32.

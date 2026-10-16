@@ -28,6 +28,67 @@ const submit = (answer: string) => {
 const key = (id: ExperimentId) => `tensorcraft:experiment:deep-orbit-${id}:v1`;
 const record = (id: ExperimentId) =>
   parseExperimentDraft(sessionStorage.getItem(key(id))!, id);
+
+it.each([
+  ["normalization", "Same weights, different preprocessing", "1,1"],
+  ["threshold", "Validation: threshold 0.4", "4"],
+  ["learning-rate", "Four calculated updates", "2"],
+  ["fft", "Frequency bins, 0–24 Hz", "4"],
+  ["attention", "Score, normalized weight, and value contribution", "1"],
+  [
+    "cache",
+    "Actual deterministic replay; every row has a fresh-score comparison",
+    "2",
+  ],
+] as const)(
+  "%s keeps worked results hidden before help and preserves that help after reset and remount",
+  (id, caption, correctAnswer) => {
+    const view = render(<LearningExperiment id={id} />);
+    expect(screen.queryByText(caption)).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox")).toHaveAccessibleName();
+    click("Show calculation and help");
+    expect(screen.getByText(caption)).toBeInTheDocument();
+    expect(record(id).prediction).toEqual({
+      first: null,
+      latest: null,
+      count: 0,
+      help: true,
+    });
+    click("Reset controls");
+    expect(screen.queryByText(caption)).not.toBeInTheDocument();
+    submit(correctAnswer);
+    expect(record(id).prediction.first).toEqual({
+      correct: true,
+      assisted: true,
+    });
+    view.unmount();
+    render(<LearningExperiment id={id} />);
+    expect(record(id).prediction).toMatchObject({
+      first: { correct: true, assisted: true },
+      latest: { correct: true, assisted: true },
+      count: 1,
+      help: true,
+    });
+  },
+);
+
+it("labels FFT magnitude units and keeps the full frequency plot within its scale", () => {
+  render(<LearningExperiment id="fft" />);
+  click("Show calculation and help");
+  const graph = screen.getByRole("img", {
+    name: /Frequency bins from zero to 24 Hz.*Magnitude axis runs from 0 to/,
+  });
+  expect(graph).toHaveAttribute("viewBox", "0 0 320 180");
+  expect(
+    screen.getByText("Magnitude (|DFT| / observed samples)"),
+  ).toBeVisible();
+  for (const text of graph.querySelectorAll("text"))
+    expect(Number(text.getAttribute("font-size"))).toBeGreaterThanOrEqual(18);
+  for (const line of graph.querySelectorAll("line")) {
+    for (const name of ["y1", "y2"])
+      expect(Number(line.getAttribute(name))).toBeGreaterThanOrEqual(30);
+  }
+});
 it("keeps first and latest outcomes through feedback, reset, changed case and remount", () => {
   const view = render(<LearningExperiment id="normalization" />);
   submit("24,2");

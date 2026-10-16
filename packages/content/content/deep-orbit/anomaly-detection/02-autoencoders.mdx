@@ -73,7 +73,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The z-score gate cleared a reading this morning that I flagged by eye an hour later. Amplitude normal, frequency normal, phase normal, and the three have never once occurred together in eleven days of archive. A threshold reads one dial at a time. Whatever replaces it has to learn what normal looks like across every dial at once.
+The z-score gate cleared a reading this morning that I flagged by eye an hour later. Amplitude normal, frequency normal, phase normal, and the three have never once occurred together in eleven days of archive. Our z-score check tests each feature on its own. We need a model that can learn how those features fit together.
 </Dialogue>
 
 Gzip restores the original bytes exactly. An autoencoder learns a smaller version of its input, then tries to rebuild the input from it. The small middle layer is called the bottleneck. It encourages the model to learn patterns shared by the training examples. The difference between the input and the rebuilt version is its reconstruction error.
@@ -148,7 +148,7 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 
 ## Challenge
 
-Remove flagged rows from the archive, then train the autoencoder on the remaining rows. The checks verify your row selection and measure errors on a small, separate synthetic dataset. Passing these checks does not validate a real detector. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
+This exercise uses eight made-up features per reading, rather than the mission example's eleven. Remove flagged rows from that practice archive, then train the autoencoder on the remaining rows. The checks verify your row selection and measure errors on a small, separate synthetic dataset. Passing these checks does not validate a real detector. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
 
 <Exercise slug="build-autoencoder" />
 

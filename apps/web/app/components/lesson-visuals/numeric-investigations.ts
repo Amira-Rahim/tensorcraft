@@ -252,8 +252,17 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     boundary:
       "This example has 16 rows in a fixed order. A real shuffle may arrange them differently.",
     controls: [
-      choice("size", "Rows per batch", 4, ["2 rows", "4 rows"], [2, 4]),
-      range("batch", "Batch index (starting at 0)", 1, 0, 3),
+      choice(
+        "size",
+        "Rows per batch",
+        4,
+        ["2 rows", "4 rows", "8 rows"],
+        [2, 4, 8],
+      ),
+      {
+        ...range("batch", "Batch index (starting at 0)", 1, 0, 7),
+        maxFor: ({ size }) => 16 / size! - 1,
+      },
     ],
     cases: cases(
       "Archive order",
@@ -468,7 +477,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           fn === 0
             ? `const output = Math.max(0, ${input});`
             : fn === 1
-              ? `const output = 1 / (1 + Math.exp(-${input}));`
+              ? `const output = 1 / (1 + Math.exp(-(${input})));`
               : `const output = Math.tanh(${input});`,
       };
     },
@@ -769,7 +778,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Choose how many epochs to inspect. Compare the latest validation loss with the lowest one seen so far.",
     boundary:
-      "These loss curves are examples, not results from training a model here. The second curve shows validation loss worsening earlier.",
+      "These curves are illustrative, not measurements. TFJS early stopping keeps the final weights. To use the best observed checkpoint, save its weights during training and restore them yourself.",
     controls: [range("epoch", "Last observed epoch", 16, 1, 24)],
     cases: cases(
       "Late overfitting",
@@ -818,7 +827,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: best.epoch,
         answerLabel: "Best validation checkpoint",
-        explanation: `Epoch ${best.epoch} has the lowest observed validation loss, ${rounded(best.validation)}. The latest epoch ${epoch} has ${rounded(trace[epoch]!.validation)}. Keep the best checkpoint when early stopping uses this metric.`,
+        explanation: `Epoch ${best.epoch} has the lowest observed validation loss, ${rounded(best.validation)}. The latest epoch ${epoch} has ${rounded(trace[epoch]!.validation)}. TFJS early stopping does not restore epoch ${best.epoch}. Save a copy of the best weights during training, then restore it after the run.`,
         code: "const best = history.reduce((a, b) => b.validation < a.validation ? b : a);",
       };
     },
@@ -934,7 +943,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         answer: states[step]!,
         answerLabel: `State at t${step}`,
         explanation: `At t${step}, the input contribution is ${rounded((0.5 * input[step]!) / 10)} and the previous-state contribution is ${rounded(memory * (states[step - 1] ?? 0))}. Tanh produces ${rounded(states[step]!)}.`,
-        code: `const nextState = Math.tanh(0.5 * ${input[step]} / 10 + ${memory} * ${rounded(states[step - 1] ?? 0)});`,
+        code: `const nextState = Math.tanh(0.5 * ${input[step]} / 10 + ${memory} * ${states[step - 1] ?? 0});`,
       };
     },
   },
@@ -997,7 +1006,6 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     boundary:
       "This is a short example in time order. For training and validation, split the original stream by time before making windows.",
     controls: [
-      range("start", "Window start (starting at 0)", 1, 0, 3),
       choice(
         "length",
         "Input window length",
@@ -1005,6 +1013,10 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ["2 readings", "3 readings", "4 readings"],
         [2, 3, 4],
       ),
+      {
+        ...range("start", "Window start (starting at 0)", 1, 0, 5),
+        maxFor: ({ length }) => 8 - length! - 1,
+      },
     ],
     cases: cases(
       "First capture",
@@ -1098,67 +1110,83 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   autoencoders: reconstructionSpec(false),
   "reconstruction-error": reconstructionSpec(true),
   "the-anomaly": {
-    title: "Compare three screening rules",
+    title: "Combine three detector votes",
     brief:
-      "Move a candidate reading across three rules. Count how many ask for a closer look.",
+      "Change the amplitude, reconstruction error and forecast. Count the votes, then apply the two-out-of-three alert rule.",
     boundary:
-      "These three rules use the same reading, so their results are related. Agreement does not establish the reading’s true label.",
-    controls: [range("reading", "Candidate reading", 13, 4, 20, 0.5)],
+      "The baseline and supplied detector outputs are synthetic practice inputs. No autoencoder or LSTM runs here. The statistical vote uses amplitude; reconstruction error has cutoff 1; forecast error has cutoff 0.1 amplitude units. Votes share data and can fail together. They are not independent proofs or a probability.",
+    controls: [
+      range("actual", "Actual amplitude", 0.5, 0, 1, 0.01),
+      range(
+        "reconstructionError",
+        "Supplied autoencoder reconstruction error",
+        6.2,
+        0,
+        7,
+        0.1,
+      ),
+      range("predicted", "Supplied LSTM amplitude forecast", 0.2, 0, 1, 0.01),
+    ],
     cases: cases(
-      "Original baseline",
-      "Shifted baseline",
-      "Mean 10, standard deviation √2, accepted interval [7, 12].",
-      "Mean 14, standard deviation √2, accepted interval [11, 16].",
-      { reading: 13 },
-      { reading: 17 },
+      "Story replay",
+      "Ordinary reading",
+      "Amplitude 0.50, reconstruction error 6.2 and forecast 0.20. Compare against the displayed calm baseline.",
+      "Amplitude 0.52, reconstruction error 0.1 and forecast 0.53. The same baseline and cutoffs apply.",
+      { actual: 0.5, reconstructionError: 6.2, predicted: 0.2 },
+      { actual: 0.52, reconstructionError: 0.1, predicted: 0.53 },
     ),
     prediction: {
-      prompt:
-        "How many of the three current screening rules flag the candidate?",
+      prompt: "How many detectors vote for an alert with these inputs?",
       tolerance: 0,
     },
-    evaluate: ({ reading }, caseId) => {
-      const center = changed(caseId) ? 14 : 10,
-        low = center - 3,
-        high = center + 2;
-      const distance = Math.abs(reading - center),
-        z = distance / Math.sqrt(2);
-      const flags = [distance > 3, z > 2, reading < low || reading > high];
-      const labels = [
-        "Distance > 3",
-        "Standardized distance > 2",
-        `Outside [${low}, ${high}]`,
-      ];
+    evaluate: ({ actual, reconstructionError, predicted }) => {
+      const baseline = [0.5, 0.54, 0.51, 0.53, 0.52, 0.52, 0.5, 0.54];
+      const center = mean(baseline);
+      const spread = Math.sqrt(
+        mean(baseline.map((value) => (value - center) ** 2)),
+      );
+      const z = Math.abs(actual - center) / spread;
+      const forecastError = Math.abs(predicted - actual);
+      const flags = [z > 3, reconstructionError > 1, forecastError > 0.1];
+      const votes = flags.filter(Boolean).length;
       return {
         graphics: [
           cells(
-            "Candidate, baseline and screening rules",
+            "Supplied detector inputs",
             [
-              `Candidate: ${reading}`,
-              `Baseline mean: ${center}`,
-              "Standard deviation: √2",
-              "Rule 1: |reading - mean| > 3",
-              "Rule 2: |reading - mean| / √2 > 2",
-              `Rule 3: outside [${low}, ${high}]`,
+              `Calm amplitudes: ${show(baseline)}`,
+              `Baseline mean: ${rounded(center)}`,
+              `Population standard deviation: ${rounded(spread)}`,
+              `Actual amplitude: ${actual}`,
+              `Reconstruction error: ${reconstructionError}; cutoff 1`,
+              `Forecast: ${predicted}; allowed amplitude error 0.1`,
             ],
             2,
           ),
           bars(
-            "Distances used by the rules",
-            [distance, z],
-            ["Raw distance", "Standard deviations"],
+            "Each score divided by its own cutoff (a vote requires > 1)",
+            [z / 3, reconstructionError, forecastError / 0.1],
+            ["Statistical", "Autoencoder", "LSTM"],
           ),
           cells(
-            "Screening results",
-            flags.map((flag, i) => `${labels[i]}: ${flag ? "flag" : "clear"}`),
+            "Detector votes",
+            [
+              `Statistical |z| > 3: ${flags[0] ? "vote" : "no vote"}`,
+              `Autoencoder error > 1: ${flags[1] ? "vote" : "no vote"}`,
+              `LSTM amplitude error > 0.1: ${flags[2] ? "vote" : "no vote"}`,
+            ],
             1,
             flags.flatMap((flag, i) => (flag ? [i] : [])),
           ),
+          pipe("Majority decision", [
+            `${votes} of 3 detector thresholds crossed`,
+            votes >= 2 ? "Alert selected" : "No alert selected",
+          ]),
         ],
-        answer: flags.filter(Boolean).length,
-        answerLabel: "Rules flagging the candidate",
-        explanation: `The rules flag ${flags.filter(Boolean).length} of 3 checks. Raw distance is ${rounded(distance)} and standardized distance is ${rounded(z)}. All three checks depend on the same value.`,
-        code: `const flags = [Math.abs(x - ${center}) > 3, Math.abs(x - ${center}) / Math.sqrt(2) > 2, x < ${low} || x > ${high}];`,
+        answer: votes,
+        answerLabel: "Detector votes",
+        explanation: `The amplitude is ${rounded(z)} standard deviations from the calm mean. Reconstruction error is ${reconstructionError}; the forecast misses by ${rounded(forecastError)} amplitude units. ${votes} of three detectors vote, so the majority rule ${votes >= 2 ? "selects an alert" : "does not select an alert"}. The supplied error and forecast are not recomputed when amplitude changes. This exercise's amplitude-error gate differs from the full model's three-feature forecast MSE.`,
+        code: `const votes = [Math.abs((actual - mean) / std) > 3, reconstructionError > 1, Math.abs(predicted - actual) > 0.1].filter(Boolean).length;\nconst alert = votes >= 2;`,
       };
     },
   },
@@ -1411,7 +1439,7 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
           : item.score,
       }));
       const category = input.map((item) =>
-        item.score >= threshold
+        item.score > threshold
           ? item.anomaly
             ? "TP"
             : "FP"
@@ -1457,8 +1485,8 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
         answerLabel: costs ? "Total error cost" : "Missed anomalies",
         explanation: costs
           ? `${fp} false alarms × 1 + ${fn} misses × ${missCost} = ${fp + missCost * fn}. A different cost rule can favor a different threshold.`
-          : `At score ≥ ${threshold}, ${fn} anomalies are missed and ${fp} normal cases raise false alarms. Accuracy is ${rounded(((tp + tn) / input.length) * 100)}%, but it hides these different mistakes.`,
-        code: `const predictedAnomaly = score >= ${threshold};\n${costs ? `const cost = falsePositives + ${missCost} * falseNegatives;` : "const misses = cases.filter(c => c.anomaly && c.score < threshold).length;"}`,
+          : `At score > ${threshold}, ${fn} anomalies are missed and ${fp} normal cases raise false alarms. Accuracy is ${rounded(((tp + tn) / input.length) * 100)}%, but it hides these different mistakes.`,
+        code: `const predictedAnomaly = score > ${threshold};\n${costs ? `const cost = falsePositives + ${missCost} * falseNegatives;` : "const misses = cases.filter(c => c.anomaly && c.score <= threshold).length;"}`,
       };
     },
   };
@@ -1496,7 +1524,7 @@ function signalSpec(
       : timed
         ? "How many samples in the current 64-sample window include the new tone? It starts at the onset sample shown in the capture."
         : mode === "features"
-          ? "What magnitude will the bin at your selected second-tone frequency contain?"
+          ? "What magnitude will the fixed 12 Hz feature bin contain after the tone changes?"
           : "What percentage of total squared spectrum magnitude lies outside the three bins nearest the tone?";
   return {
     title,
@@ -1505,7 +1533,7 @@ function signalSpec(
       : timed
         ? "Move a 64-sample window across a signal. A second tone starts partway through the capture."
         : mode === "features"
-          ? "Change a tone's frequency and amplitude. Read its magnitude as one possible model feature."
+          ? "Change a tone's frequency and amplitude. Keep the feature columns fixed at 4, 12 and 20 Hz."
           : "Change the second tone. The waveform and spectrum describe the same 64 samples.",
     boundary:
       "This made-up signal is sampled at 64 Hz. A direct Fourier calculation produces the spectrum. It does not measure runtime speed or model quality.",
@@ -1593,7 +1621,7 @@ function signalSpec(
         : timed
           ? count
           : mode === "features"
-            ? spectrum[frequency]!
+            ? spectrum[12]!
             : frequency;
       return {
         graphics: [
@@ -1638,20 +1666,22 @@ function signalSpec(
           : timed
             ? "Window samples containing the new tone"
             : mode === "features"
-              ? `Magnitude at ${frequency} Hz`
+              ? "Magnitude in the fixed 12 Hz feature"
               : "Second-tone peak bin in Hz",
         explanation: windowed
           ? `${rounded(outside)}% of squared magnitude is outside bins ${selected.join(", ")}. A taper usually reduces distant leakage and broadens the main peak.`
           : timed
             ? `The window covers samples ${start} through ${start + 63}. ${count} of those samples are at or after onset ${onset}. Partial windows spread the new tone across nearby bins.`
             : mode === "features"
-              ? `At ${frequency} Hz the magnitude is ${rounded(answer)}. The feature index identifies a frequency, so every example needs the same sample rate and window size.`
+              ? `The fixed 12 Hz feature is ${rounded(answer)}. Keep columns at the same frequencies, sample rate and window size for every example. Moving the tone changes the feature values, not the columns' meanings.`
               : `With 64 samples at 64 Hz, each bin spans 1 Hz. The second tone appears at bin ${frequency}, with magnitude ${rounded(spectrum[frequency]!)}.`,
         code: windowed
           ? `const windowed = samples.map((x, i) => x * ${taper ? "(0.5 * (1 - Math.cos(2 * Math.PI * i / 63)))" : "1"});\nconst magnitudes = spectrum(windowed);`
           : timed
             ? `const window = samples.slice(${start}, ${start + 64});\n// second tone starts at sample ${onset}`
-            : `const magnitudes = spectrum(samples);\nconst toneFeature = magnitudes[${frequency}];`,
+            : mode === "features"
+              ? "const magnitudes = spectrum(samples);\nconst fixedBins = [4, 12, 20];\nconst features = fixedBins.map(bin => magnitudes[bin]);"
+              : `const magnitudes = spectrum(samples);\nconst toneFeature = magnitudes[${frequency}];`,
       };
     },
   };
@@ -1787,18 +1817,33 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
       ? "Choose which time step gets attention"
       : "Form a weighted summary from a query",
     brief: temporal
-      ? "Change the query and compare five time positions. A more recent position does not automatically receive more weight."
+      ? "Change the query and the weight on time position. Compare which reading receives the most attention."
       : "Multiply each key by a query, apply softmax to get weights, then combine the values.",
-    boundary:
-      "This uses five single-number keys and values and a query you choose. Real attention learns vector representations. A large attention weight does not show what caused a result.",
-    controls: [range("query", "Query", 0.8, -2, 2, 0.2)],
+    boundary: temporal
+      ? "Five fixed keys and values. Each score is query × key + position weight × t/4. Positions run from 0 to 4. Positive position weight favors later readings; negative favors earlier ones. Pool the original values. This is a simple positional scorer, not full self-attention."
+      : "This uses five single-number keys and values and a query you choose. Real attention learns vector representations. A large attention weight does not show what caused a result.",
+    controls: [
+      range("query", "Query", 0.8, -2, 2, 0.2),
+      ...(temporal
+        ? [
+            range(
+              "positionWeight",
+              "Weight on normalized time position",
+              0,
+              -2,
+              2,
+              0.25,
+            ),
+          ]
+        : []),
+    ],
     cases: cases(
       "Keys rise with time",
       "Middle key is strongest",
       "Keys are [-1, -0.4, 0.2, 0.7, 1.2].",
       "Keys are [0.2, -0.5, 1.4, 0.1, 0.6].",
-      { query: 0.8 },
-      { query: -1 },
+      temporal ? { query: 0.8, positionWeight: 0 } : { query: 0.8 },
+      temporal ? { query: -1, positionWeight: 1 } : { query: -1 },
     ),
     prediction: temporal
       ? {
@@ -1811,12 +1856,16 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
             "What weighted average of the values does this query produce?",
           tolerance: 0.025,
         },
-    evaluate: ({ query }, caseId) => {
+    evaluate: ({ query, positionWeight = 0 }, caseId) => {
       const keys = changed(caseId)
         ? [0.2, -0.5, 1.4, 0.1, 0.6]
         : [-1, -0.4, 0.2, 0.7, 1.2];
       const values = changed(caseId) ? [6, 2, 9, 4, 7] : [2, 7, 3, 8, 4];
-      const scores = keys.map((key) => query * key),
+      const scores = keys.map(
+          (key, t) =>
+            query * key +
+            (temporal ? (positionWeight * t) / (keys.length - 1) : 0),
+        ),
         weights = softmax(scores);
       const contributions = weights.map((weight, i) => weight * values[i]!);
       const maximum = weights.indexOf(Math.max(...weights));
@@ -1827,6 +1876,15 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
             keys,
             values.map((value, i) => `t${i}: value ${value}`),
           ),
+          ...(temporal
+            ? [
+                bars(
+                  "Scores after adding time position",
+                  scores,
+                  scores.map((_, i) => `t${i}`),
+                ),
+              ]
+            : []),
           bars(
             "Attention weight at each time position",
             weights,
@@ -1842,8 +1900,10 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
         answerLabel: temporal
           ? "Position with greatest weight"
           : "Weighted average of the values",
-        explanation: `The weights sum to 1. Position t${maximum} receives the greatest weight, ${rounded(weights[maximum]!)}. The weighted values sum to ${rounded(sum(contributions))}. ${query === 0 ? "A zero query gives every position equal weight." : "Changing the query can move attention to a different key."}`,
-        code: `const weights = softmax(keys.map(key => ${query} * key));\nconst summary = weights.reduce((total, weight, i) => total + weight * values[i], 0);`,
+        explanation: `The weights sum to 1. Position t${maximum} receives the greatest weight, ${rounded(weights[maximum]!)}. The original weighted values sum to ${rounded(sum(contributions))}. ${temporal ? `The position coefficient ${positionWeight} adds ${positionWeight} × t/4 to each match before softmax. It changes the scores without adding a feature to the pooled result. A large weight does not establish what caused a prediction.` : query === 0 ? "A zero query gives every position equal weight." : "Changing the query can move attention to a different key."}`,
+        code: temporal
+          ? `const scores = keys.map((key, t) => ${query} * key + ${positionWeight} * t / (keys.length - 1));\nconst weights = softmax(scores);\nconst summary = weights.reduce((total, weight, i) => total + weight * values[i], 0);`
+          : `const weights = softmax(keys.map(key => ${query} * key));\nconst summary = weights.reduce((total, weight, i) => total + weight * values[i], 0);`,
       };
     },
   };

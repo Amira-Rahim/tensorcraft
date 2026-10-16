@@ -63,7 +63,7 @@ You will build a spectrogram by measuring frequencies in successive windows of a
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-An FFT of one frame gives one row: frequency content across that frame's time interval. To see how frequencies change over time, you slide a window across the signal and compute the FFT at each position.
+One FFT measures the frequencies in one short recording. Move that window forward and take another FFT. Stack the results in time order to see when each frequency appears.
 
 <CodeBlock language="typescript" title="stft.ts">
 {`import * as tf from '@tensorflow/tfjs';

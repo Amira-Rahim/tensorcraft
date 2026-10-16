@@ -67,7 +67,7 @@ skillAxes: [data_prep]
 
 Both models read the same captures. The new model receives more measurements from each capture, including frequency information the original three features discarded.
 
-The 78 and the deployment review's 94 are the same three-feature model. That review scored it 47 of 50 against labels that could not see a 73.4 Hz component, so the old scoreboard flattered it. Re-annotate the archive against spectrogram-based review labels, hold out 400 readings instead of 50, and the same model reads 78.0%. Labels are data too, and some of them were wrong.
+The earlier deployment review gave this same three-feature model 94%: 47 correct out of 50. That review used labels that missed the 73.4 Hz component. The crew reviewed the labels using spectrograms, then evaluated on 400 held-out readings. The same model now scores 78%. Both the labels and evaluation rows changed, so the scores answer different questions.
 
 <Dialogue speaker="Ensign Demir">
 What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase, we also give it the spectral decomposition. More information, better decisions.

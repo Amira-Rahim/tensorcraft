@@ -120,8 +120,8 @@ testCode: |
     return result;
   };
   describe('pruneAndScore', () => {
-    // A stand-in for DEEP SCAN's five-class classifier: the same eleven
-    // features and five classes over a smaller hidden layer, frozen here at
+    // A synthetic five-class practice classifier with eleven features.
+    // It is separate from the earlier three-feature binary model, frozen at
     // three decimals so every number below is reproducible. Class order is
     // pulsar, quasar, noise, interference, anomaly. The natural mix the
     // lesson's ladder is scored on holds 500 captures of each common class

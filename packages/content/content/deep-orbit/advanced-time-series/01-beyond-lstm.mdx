@@ -22,7 +22,7 @@ concept:
     tier: intuition
     breaks: "CSS :focus selects elements according to browser focus state; styling does not learn relevance. Attention computes weights over inputs and combines their values. Masks can give positions zero weight, and several heads can learn different combinations."
 consequence:
-  narrative: "The attention head reads all eighty encoded steps at once and shows its work: two weight hotspots, exactly where the evidence lived. The crew still needs to test its forecasts on unseen sequences."
+  narrative: "The attention weights highlight two parts of the eighty-step window. The crew checks those readings and tests the forecasts on separate sequences."
 hints:
   - level: nudge
     content: |
@@ -57,7 +57,7 @@ The pulse arrives three and a half minutes before the forecast. The crew finds a
 Demir attaches the timing worksheet Mirza requested after the first three-second miss. The capture clocks and window boundaries agree. The forecast is the next part to investigate.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
-This run missed the early ripple. An LSTM can retain distant information, but ours did not retain enough of this event. Attention can read earlier hidden states directly instead of relying only on the final state. We still have to test whether that improves the forecast.
+This run missed the early ripple. We need to check whether our LSTM used it. Attention lets a prediction read earlier hidden states directly, instead of relying only on the final state. We still have to test whether that improves the forecast.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -134,11 +134,9 @@ Set `transposeB` to true. The keys are then read as [dim, seqLen], and the resul
 
 For example, query [1, 2, 3] and keys [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]] produce [1, 2, 3, 6] with either form. The flag includes the transpose in the multiplication. Whether that saves work depends on the backend.
 
-<ConceptReference summary="Practice: calculate attention on a new query">
+## Try a Different Query
 
 <LearningExperiment id="attention" />
-
-</ConceptReference>
 
 ## LSTM vs Attention
 

@@ -126,7 +126,7 @@ console.log('Using backend:', backend);
 
 // Fictional mission timings for the 85 MB uint8 build.
 // They are not predictions for your hardware or the downloaded model. These time the whole bundle end to end,
-// the same call lesson 1 profiled, and not the eleven-feature classifier
+// the same call lesson 1 profiled, and not the small classifier
 // lesson 4 puts a cache in front of. That one runs in microseconds and
 // none of these rows describe it:
 // WebGPU:  ~5ms per inference   (3x faster than WebGL)
@@ -138,7 +138,7 @@ console.log('Using backend:', backend);
 // cut the bytes on the wire. Neither reduced the dense operation count.
 // The scenario keeps this timing fixed; real latency still needs measurement.
 //
-// The eleven-feature classifier's own pipeline lands on the same two GPU
+// The cached classifier's own pipeline lands on the same two GPU
 // figures for a different reason: its 5 ms on WebGPU and 15 on WebGL
 // cover feature extraction and readback around the classifier call
 // lesson 4 caches, not the bundle matmuls these rows time. Module 11's

@@ -92,7 +92,7 @@ A larger weight means the score changes more for each unit of that input. To fin
 - Frequency: `0.8 * -0.2 = -0.16`.
 - Phase: `0.2 * 0.6 = 0.12`.
 
-Phase has the largest weight, but makes the smallest contribution here because its input is small. All three inputs use the same 0-1 scale, so their weights can be compared as sensitivity per unit. The contribution still depends on the reading.
+Phase has the largest weight, but its contribution of 0.12 is smaller in magnitude than 0.20 and -0.16 because its input is small. All three inputs use the same 0-1 scale, so their weights can be compared as sensitivity per unit. The contribution still depends on the reading.
 
 A small coefficient gives this unit low sensitivity to that input in its current units. It does not prove that the feature is globally unimportant, unnecessary or causally unrelated to the target.
 

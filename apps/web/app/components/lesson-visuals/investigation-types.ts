@@ -5,6 +5,7 @@ export interface InvestigationControl {
   initial: number;
   min?: number;
   max?: number;
+  maxFor?: (values: Readonly<Record<string, number>>) => number;
   step?: number;
   options?: Array<{ value: number; label: string }>;
 }
@@ -55,12 +56,38 @@ export function initialInvestigationValues(
   spec: LessonInvestigationSpec,
   caseId = spec.cases[0]!.id,
 ): Record<string, number> {
-  return {
+  return clampInvestigationValues(spec, {
     ...Object.fromEntries(
       spec.controls.map((control) => [control.id, control.initial]),
     ),
     ...spec.cases.find((item) => item.id === caseId)?.values,
-  };
+  });
+}
+
+export function investigationControlMax(
+  control: InvestigationControl,
+  values: Readonly<Record<string, number>>,
+): number | undefined {
+  return control.maxFor?.(values) ?? control.max;
+}
+
+export function clampInvestigationValues(
+  spec: LessonInvestigationSpec,
+  values: Record<string, number>,
+): Record<string, number> {
+  const next = { ...values };
+  for (const control of spec.controls) {
+    if (control.kind !== "range") continue;
+    const maximum = investigationControlMax(control, next);
+    const value = Number.isFinite(next[control.id])
+      ? next[control.id]!
+      : control.initial;
+    next[control.id] = Math.min(
+      maximum ?? Infinity,
+      Math.max(control.min ?? -Infinity, value),
+    );
+  }
+  return next;
 }
 
 export function matchesInvestigationPrediction(

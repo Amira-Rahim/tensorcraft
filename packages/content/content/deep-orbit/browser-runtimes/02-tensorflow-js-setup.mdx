@@ -87,7 +87,7 @@ That's it: install, import, await, check. The check is the one Nazari told you n
 
 ## Backends: The Runtime Engine
 
-Think of backends like rendering engines in browsers. Chrome uses Blink, Firefox uses Gecko: same web pages, different performance. TF.js backends work the same way:
+A backend runs the tensor calculations. Different backends can run the same supported operation, but they can differ in speed, precision and which operations they support. Register the backends you plan to use, then check which one actually starts:
 
 <CodeBlock language="typescript" title="backends.ts">
 {`import * as tf from '@tensorflow/tfjs';

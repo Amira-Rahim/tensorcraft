@@ -1,6 +1,10 @@
 "use client";
 
-import { BRIDGES, type BridgeVariant } from "@tensorcraft/shared";
+import {
+  BRIDGES,
+  resolveLessonBridge,
+  type BridgeVariant,
+} from "@tensorcraft/shared";
 
 interface Bridge {
   jsTitle: string;
@@ -30,11 +34,7 @@ const tierLabels: Record<Bridge["tier"], string> = {
 export function BridgeCallout({ bridge }: BridgeCalloutProps) {
   if (!bridge) return null;
 
-  const sharedBridge = BRIDGES.find(
-    (b) =>
-      b.jsConcept.toLowerCase() === bridge.jsTitle.toLowerCase() ||
-      b.mlConcept.toLowerCase() === bridge.mlTitle.toLowerCase(),
-  );
+  const sharedBridge = resolveLessonBridge(bridge.jsTitle, bridge.mlTitle);
 
   // V1 ships React only. Use the registry's react variant when present;
   // otherwise fall back to the generic prose layout from the inline bridge.

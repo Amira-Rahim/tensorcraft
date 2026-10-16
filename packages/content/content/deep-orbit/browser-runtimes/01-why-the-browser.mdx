@@ -59,7 +59,7 @@ TensorFlow.js is not browser-only. `@tensorflow/tfjs-node` binds the same API to
 
 You will choose where a model should run using the console’s privacy, offline, and loading requirements.
 
-<LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Decide between browser and server inference using the CSR-vs-SSR mental model"]} />
+<LearningObjectives objectives={["Check when local predictions help with privacy, network delays or offline use", "Account for model downloads, startup, memory and device speed", "Choose browser or server inference from the application's requirements"]} />
 
 ## Where Inference Runs: Server or Client
 
@@ -116,8 +116,8 @@ Running the model on the user’s device uses that device’s memory and process
 {`// Budget sketch: parameterCount and input are supplied by your app.
 // Browser memory limits vary by device, backend and browser.
 // A model with 10M parameters at float32 = 40MB just for weights:
-// 10,000,000 x 4 bytes / 1e6 = 40 exactly. (Divide by 1e6, not
-// 1024*1024: that gives 38.1 MiB, a different unit wearing MB's name.)
+// 10,000,000 x 4 bytes / 1e6 = 40 MB.
+// Dividing by 1024*1024 instead gives 38.1 MiB, a different unit.
 const modelSizeMB = (parameterCount * 4) / 1e6;
 console.log(\`Model size: \${modelSizeMB}MB\`);
 

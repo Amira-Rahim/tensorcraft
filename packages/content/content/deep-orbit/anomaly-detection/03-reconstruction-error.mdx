@@ -22,7 +22,7 @@ concept:
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
-    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
+    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); a high score means a poor reconstruction, but does not show which feature contributed most. Calculate each feature's error separately to find that mismatch."
 consequence:
   narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the largest contributor: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying almost all of it alone."
 hints:
@@ -41,7 +41,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Feed the signal through. We trained on screened normal data, but that does not guarantee a miss on this pattern. Measure the error before you call it an anomaly.
+Feed the signal through. We trained on screened normal data, but we do not yet know how it will rebuild this reading. Measure the error before you call it an anomaly.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">

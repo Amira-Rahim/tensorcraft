@@ -125,7 +125,7 @@ skillAxes: [training]
 
 > **TRAINING LOG · DEEP SCAN CLASSIFIER** · epoch 1/50 · loss 0.7402 · epoch 2/50 · loss 0.7256 · epoch 3/50 · loss 0.7113 · epoch 4/50 · loss 0.6989 · epoch 5/50 · loss 0.6861
 
-By its fifth line the run is under the number Farah wrote on the glass wall. Every line of that log is one full pass over the dataset, and the machinery behind each line is everything the last three lessons built.
+By its fifth line the run is under the number Farah wrote on the glass wall. Every line of that log is one full pass over the training rows, and the machinery behind each line is everything the last three lessons built.
 
 <Dialogue speaker="Ensign Demir">
 Training sequence initiated. I have run this loop by hand twice this week: forward, loss, backward, step. Tonight model.fit runs it so I don't have to, and I find out whether I actually trust it.
@@ -380,28 +380,68 @@ The exercise labels observable trends. A short run can provide too little histor
 <Exercise slug="training-loop-exercise" />
 
 <RecallPrompt
-  question="What should guide your choice of batch size?"
-  answer="Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
+  question="Read the validation stopping rule and decide what the loss curves can tell you."
+  answer="With monitor val_loss, patience 5 and minDelta 0, five epochs without a new best validation loss stop the run unless its epoch limit comes first. Falling training loss and rising validation loss describe a trend, not its cause. TFJS 4.22.0 keeps the final weights; save and restore the best checkpoint separately."
   checks={[
     {
       "kind": "choice",
-      "question": "What should guide your choice of batch size?",
+      "question": "What does earlyStopping with monitor val_loss, patience 5 and minDelta 0 wait for?",
       "options": [
         {
-          "text": "Measured memory use, throughput and learning behavior on the target workload.",
-          "feedback": "Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
+          "text": "Five epochs without a new best validation loss.",
+          "feedback": "It watches the held-out validation loss. The run can also end sooner at its configured epoch limit."
         },
         {
-          "text": "Always use the largest batch that fits because it guarantees best accuracy.",
-          "feedback": "Fitting in memory does not establish the best learning behavior."
+          "text": "Five epochs without a new best training loss.",
+          "feedback": "monitor val_loss selects validation loss, not the loss on the training rows."
         },
         {
-          "text": "Always use one example because smaller batches guarantee better generalization.",
-          "feedback": "Smaller batches change update frequency and variability, but do not guarantee generalization."
+          "text": "Exactly five epochs, whether validation improves or not.",
+          "feedback": "Patience counts consecutive epochs without improvement. It is not the total training budget."
         }
       ],
       "correctIndex": 0,
-      "explanation": "Compare memory use, throughput and learning behavior on your model and hardware. Smaller batches give more frequent, variable updates; larger ones average more examples per update. Neither choice guarantees better generalization or device utilization."
+      "explanation": "Five consecutive epochs without a new best validation loss trigger the stop, unless the epoch budget ends first."
+    },
+    {
+      "kind": "choice",
+      "question": "Training loss falls while validation loss rises. What can you conclude from those curves alone?",
+      "options": [
+        {
+          "text": "The learning rate is definitely too high.",
+          "feedback": "The curves do not identify one cause. Check the run, data, labels and preprocessing."
+        },
+        {
+          "text": "The model is definitely memorizing every training row.",
+          "feedback": "This trend can be consistent with overfitting, but it does not prove memorization or rule out other causes."
+        },
+        {
+          "text": "The two losses are moving in different directions; investigate why.",
+          "feedback": "Describe the observed trend first. Overfitting, changed data, labels and preprocessing need separate checks."
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "The curves show a training-down, validation-up trend. They do not identify its cause by themselves."
+    },
+    {
+      "kind": "choice",
+      "question": "After TFJS 4.22.0 early stopping, how do you use the weights from the best validation epoch?",
+      "options": [
+        {
+          "text": "They are restored automatically by this callback.",
+          "feedback": "This TFJS version leaves the final epoch's weights in place."
+        },
+        {
+          "text": "Save copies when validation improves, then restore the best saved weights after fitting.",
+          "feedback": "Checkpoint saving and restoration are separate work. Dispose of saved copies when you no longer need them."
+        },
+        {
+          "text": "Call compile() again to recover them.",
+          "feedback": "compile() configures training. It cannot recover weights from an earlier epoch."
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Save and restore the checkpoint yourself. restoreBestWeights: true is not implemented in TFJS 4.22.0."
     }
   ]}
 />
@@ -420,7 +460,7 @@ The exercise labels observable trends. A short run can provide too little histor
 
 <Epilogue>
 
-The rerun stops at epoch 102 with validation loss 0.081, after five epochs without a new best value. Demir tapes both curves above his console. The guessed 500-epoch run used ten times the compute; this run had a rule for stopping.
+The rerun stops at epoch 102 with validation loss 0.081, after five epochs without a new best value. Demir tapes both curves above his console. The guessed 500-epoch run ran nearly five times as many epochs. This run had a rule for stopping.
 
 Before leaving, he checks the archive: 28,800 readings over eleven days. Training used just a hundred selected rows to adjust the network's 673 parameters. He wonders what it would make of the rest. In the corridor, he receives Mirza's next order: evaluate it on signals it has never seen. Demir reads the order twice and keeps walking.
 

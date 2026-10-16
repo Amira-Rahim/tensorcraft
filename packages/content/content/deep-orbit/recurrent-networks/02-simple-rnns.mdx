@@ -153,7 +153,7 @@ model.dispose();`}
 
 Read the recurrent layer’s weights with `model.layers[0].getWeights()`. It returns the input kernel [features, units], recurrent kernel [units, units], then bias [units]. The input kernel comes first, even though the formula above writes the recurrent term first.
 
-The layer creates its weights when it is built, either directly or by adding it to a model. With one unit and one input feature, each tensor contains one number. Those are the drill’s inputWeight, recurrentWeight and bias. The kernels use their initializers; the default bias is zero.
+The layer creates weights when it is built. Adding it to this model builds it for you. With one unit and one input feature, each weight tensor holds one number: inputWeight, recurrentWeight or bias. The default bias starts at zero; the other weights use their configured initializers.
 
 ## How the RNN Processes a Sequence
 

@@ -27,7 +27,12 @@ function GraphicValues({ graphic }: { graphic: Graphic }) {
   return (
     <details className="orbit-investigation-values">
       <summary>Read the values</summary>
-      <div className="orbit-investigation-values-scroll" tabIndex={0}>
+      <div
+        className="orbit-investigation-values-scroll"
+        tabIndex={0}
+        role="region"
+        aria-label={`${graphic.label}: values table`}
+      >
         <table className="orbit-investigation-values-table">
           <caption>{graphic.label}</caption>
           <thead>
@@ -225,6 +230,7 @@ export function InvestigationGraphic({
       {graphic.kind === "cells" ? (
         <ol
           className="orbit-investigation-cells"
+          tabIndex={0}
           style={{
             gridTemplateColumns: `repeat(${Math.max(1, graphic.columns ?? graphic.values.length)}, minmax(52px, 1fr))`,
           }}

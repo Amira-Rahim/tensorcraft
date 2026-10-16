@@ -77,6 +77,7 @@ describe("lesson documentation", () => {
   it("ships references and term links for every built lesson", () => {
     const lessons: Array<{
       slug: string;
+      body: string;
       glossaryTerms: typeof GLOSSARY;
       documentation: LessonReference[];
     }> = JSON.parse(
@@ -85,10 +86,14 @@ describe("lesson documentation", () => {
     expect(lessons.length).toBeGreaterThan(0);
     for (const lesson of lessons) {
       expect(lesson.documentation.length, lesson.slug).toBeGreaterThan(0);
-      expect(
-        lesson.documentation.some((ref) => ref.source === "TensorFlow.js"),
-        lesson.slug,
-      ).toBe(true);
+      // A language-model or deployment lesson may use no TensorFlow.js API.
+      // Require the APIs it actually teaches, rather than an unrelated link.
+      for (const api of findTensorFlowReferences(lesson.body)) {
+        expect(
+          lesson.documentation.some((ref) => ref.href === api.href),
+          `${lesson.slug}: ${api.title}`,
+        ).toBe(true);
+      }
       expect(new Set(lesson.documentation.map((ref) => ref.href)).size).toBe(
         lesson.documentation.length,
       );

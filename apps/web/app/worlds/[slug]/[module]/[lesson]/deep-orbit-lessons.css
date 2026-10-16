@@ -261,15 +261,18 @@
 .lesson-page.deep-orbit-lesson
   .lesson-instrument
   :is(button, label, output, .iv-legend) {
-  font-size: 17px;
+  font-size: 20px;
 }
 .lesson-page.deep-orbit-lesson .iv-readout pre,
 .lesson-page.deep-orbit-lesson .iv-example-code {
   font-size: 17px;
 }
 .lesson-page.deep-orbit-lesson .iv-provenance {
-  font-size: 14px;
+  font-size: 18px;
   max-width: none;
+}
+.lesson-page.deep-orbit-lesson .iv-cells > span {
+  font-size: 20px;
 }
 .lesson-page.deep-orbit-lesson .iv-plot {
   width: 100%;

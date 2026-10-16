@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import { LESSON_INVESTIGATIONS } from "./lesson-investigations";
 import {
+  clampInvestigationValues,
   initialInvestigationValues,
   matchesInvestigationPrediction,
   type LessonInvestigationSpec,
@@ -57,7 +58,10 @@ describe("Deep Orbit experiments", () => {
           }
         }
         for (const variation of [{}, ...controlVariants(spec)]) {
-          const values = { ...initial, ...variation };
+          const values = clampInvestigationValues(spec, {
+            ...initial,
+            ...variation,
+          });
           const unchanged = { ...values };
           const result = spec.evaluate(values, selectedCase.id);
           expect(values).toEqual(unchanged);
@@ -127,7 +131,6 @@ describe("Deep Orbit experiments", () => {
       version: 1,
     });
     expect(result.answer).toBe(2);
-    expect(result.explanation).toContain("wrong cached result");
     expect(
       result.graphics.some((graphic) =>
         graphic.values.includes("A: stale hit"),

@@ -35,6 +35,7 @@ export type {
 
 export {
   BRIDGES,
+  resolveLessonBridge,
   BRIDGE_TIER_COLORS,
   BRIDGE_TIER_LABELS,
   BRIDGE_CATEGORY_LABELS,

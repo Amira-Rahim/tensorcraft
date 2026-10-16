@@ -115,7 +115,9 @@ console.log(sequences[0]);
 //   t=0 reading by t=3 and climbs again from there`}
 </CodeBlock>
 
-Flattening a window into a dense input preserves order, making it a useful baseline. It assigns separate weights to each position and fixes the input length. An RNN reuses one transition rule at every step, so longer sequences do not require more recurrent parameters. That reuse can help with patterns at different positions, but does not guarantee identical responses after a time shift: the incoming state and surrounding context still matter.
+You can also flatten a window into one long array and give it to a dense model. That keeps the order, so it is a useful baseline. Each position gets separate weights, and the input length stays fixed.
+
+An RNN reuses the same update at every step. More steps do not add recurrent parameters, although they still add work. This can help it recognize patterns at different positions. A time shift can still change the output because the earlier state and surrounding readings matter too.
 
 <Dialogue speaker="Dr. Farah">
 The individual rows have not changed. Now we can compare them in order. Rising, falling, rising is a different pattern from falling, rising, rising. Our current model scores each row alone, so it cannot use that difference.

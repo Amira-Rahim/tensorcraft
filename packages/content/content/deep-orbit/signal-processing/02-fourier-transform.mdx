@@ -79,7 +79,7 @@ Each FFT coefficient is a complex number, stored as real and imaginary parts. Fr
 
 DEEP SCAN also has an input named phase. That is a separate feature calculated from the first two samples of a window; lesson 4 explains it.
 
-A full transform of N samples produces N coefficients. For real-valued input, half the spectrum mirrors the other half. `tf.spectral.rfft` returns only the floor(N/2)+1 bins needed to keep the unique information.
+A full transform of N samples produces N coefficients. For real-valued input, the two halves mirror each other. `tf.spectral.rfft` keeps only the floor(N/2)+1 unique bins.
 
 You will use a Fourier transform to find the strongest eligible frequency in a capture.
 
@@ -175,11 +175,9 @@ console.table(bins.filter((b) => b.magnitude > 1));
 // and finding it is the challenge below.`}
 </CodeBlock>
 
-<ConceptReference summary="Practice: predict a different spectrum">
+## Try a Different Spectrum
 
 <LearningExperiment id="fft" />
-
-</ConceptReference>
 
 ## The FFT for DEEP SCAN
 

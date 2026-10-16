@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Training is complete. Commander Mirza demands proof that DEEP SCAN works before authorizing deployment on the Archimedes sensor array."
+  narrative: "Training is complete. Mirza wants results on separate readings before allowing a supervised prototype test. A fleet release still needs the runtime and release checks in later modules."
   speaker: "Commander Mirza"
 concept:
   explanation: "Evaluation tests the model on data it has never seen. Compare held-out performance with a baseline and inspect the kinds of errors it makes."
@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "E2E tests and model evaluations both check selected cases; neither alone guarantees a safe release. Model metrics summarize a held-out sample. Inspect important classes and operating conditions, account for label quality, and verify that the evaluation matches the deployment question."
 consequence:
-  narrative: "DEEP SCAN scores 94% on the crew's test readings. Mirza authorizes deployment, but sample 7741 remains hard to classify."
+  narrative: "DEEP SCAN scores 94% on the crew's test readings. Mirza allows a supervised prototype test, but sample 7741 remains hard to classify."
 hints:
   - level: nudge
     content: |
@@ -466,7 +466,7 @@ Report the scores this run produced, even when they are disappointing. The grade
 
 <Epilogue>
 
-After Mirza authorizes deployment, Farah stays on the quiet bridge. Signal 3 scored 0.518, between the crew's cutoffs for dismissing a reading and raising an alert. The network scored 94% on the small test set, but it has not settled this case.
+After Mirza allows the supervised prototype test, Farah stays on the quiet bridge. Signal 3 scored 0.518, between the crew's cutoffs for dismissing a reading and raising an alert. The network scored 94% on the small test set, but it has not settled this case.
 
 She looks up the reading in the archive: sample 7741 again. Her pencil note still says to check the sensors and their calibration first. The new score has brought her back to the same reading without explaining it.
 

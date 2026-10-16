@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, it, expect } from "vitest";
-import { BRIDGES, WORLD_CONTENT } from "@tensorcraft/shared";
+import { resolveLessonBridge, WORLD_CONTENT } from "@tensorcraft/shared";
 import { BUILT_STORY_WORLDS } from "../src/built-worlds";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- plain .mjs module without type declarations
@@ -18,8 +18,8 @@ import {
  * audit found 7 of 55 bridges rendered no "Where the analogy ends" panel
  * because they had neither an inline `breaks:` nor a registry match carrying
  * one. This gate replays the SAME resolution the component uses
- * (bridge-callout.tsx: inline breaks, else registry entry matched on
- * jsTitle/mlTitle) over every lesson of EVERY built story world - adding a
+ * (bridge-callout.tsx: inline breaks, else an exact or explicitly aliased
+ * JS/ML pair) over every lesson of EVERY built story world - adding a
  * world to BUILT_WORLD_DIRS extends the gate automatically instead of
  * silently exempting the new corpus (the old version hardcoded deep-orbit
  * and the literal 55).
@@ -69,11 +69,7 @@ for (const world of BUILT_STORY_WORLDS) {
       const unlabeled = bridges
         .filter((b) => {
           if (b.inlineBreaks) return false;
-          const shared = BRIDGES.find(
-            (s) =>
-              s.jsConcept.toLowerCase() === b.jsTitle.toLowerCase() ||
-              s.mlConcept.toLowerCase() === b.mlTitle.toLowerCase(),
-          );
+          const shared = resolveLessonBridge(b.jsTitle, b.mlTitle);
           return !shared?.breaks;
         })
         .map((b) => b.lesson);

@@ -98,7 +98,7 @@ skillAxes: [deployment, js_integration]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together, like an API gateway routing to micro-services.
+The classifier returns a class, the autoencoder rebuilds a reading, and the LSTM predicts what comes next. The LLM turns their results into a draft. I need to connect them, like services behind an API gateway.
 </Dialogue>
 
 Each model returns something different. The classifier returns a class and its score. The autoencoder returns a reconstruction error. The LSTM predicts the next values. The LLM uses those results to draft prose. Orchestration means connecting these steps and catching failures before they reach the report.

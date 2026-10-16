@@ -129,6 +129,8 @@ Before signing, test Demir's claim. The example below starts with eight weights 
 
 You will set different shares of the weights to zero and measure recall for each class.
 
+This lesson uses a five-class practice classifier: pulsar, quasar, noise, interference, and anomaly. Its eleven inputs differ from the three-feature binary classifier you connected in the last module. The story's accuracy table is a supplied scenario. The exercise measures a separate small model on made-up readings.
+
 <LearningObjectives objectives={["Distinguish magnitude pruning from behavior-preserving dead-code removal", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Separate what pruning changes on disk from what it changes on the wire"]} />
 
 ## Tree-Shaking Weights
@@ -188,7 +190,7 @@ Read the accuracy table carefully. Its held-out data follows the mix of arriving
 
 Anomalies make up only 0.3 percent of this evaluation set. Getting every anomaly wrong instead of right changes overall accuracy by just 0.3 percentage points. Most visible changes in that column therefore come from the common classes. Even an unchanged total can hide a serious rare-class failure.
 
-Compare recall for each class to see what the total hides. An evaluation set with equal class counts would also give a different overall result. The exercise asks you to report per-class recall.
+Compare recall for each class to see what the total hides. An evaluation set with equal class counts would also give a different overall result. The exercise asks you to report per-class recall: for each true class, the share of its readings the model labels correctly.
 
 Demir sees a tempting trade. At 80 percent sparsity, he expects a download near 25 MB. Overall accuracy falls by only two tenths of a point compared with 60 percent sparsity. He approves the change without checking recall for each class. Before dinner, he sends the build to staging without running the replay suite.
 

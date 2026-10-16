@@ -15,7 +15,7 @@ context:
   narrative: "The network makes its first predictions. They're terrible. Dr. Farah needs a way to measure exactly how wrong they are."
   speaker: "Dr. Farah"
 concept:
-  explanation: "A loss function turns 'how wrong was that prediction' into a single number the network can work to minimize."
+  explanation: "A loss function scores prediction errors with a chosen rule. Training tries to reduce that score."
   bridge:
     jsTitle: "expect().toBe()"
     jsCode: "expect(actual).toBe(expected) // assertion diff"
@@ -137,28 +137,55 @@ Help Farah measure the first prediction errors. Write both loss functions, then 
 <Exercise slug="mse-loss" />
 
 <RecallPrompt
-  question="For sigmoid binary classification, what is the ideal unclipped BCE derivative with respect to the output logit?"
-  answer="For the ideal, unclipped calculation, BCE with sigmoid gives prediction minus label as the derivative with respect to the output logit. MSE with sigmoid has an extra sigmoid derivative, which can make the update small when the prediction is confidently wrong. Stable logits APIs also avoid taking logs of rounded probabilities. Earlier layers still affect the gradient."
+  question="Match the loss to the outputs you have, then check one small squared-error calculation."
+  answer="Use binaryCrossentropy for a sigmoid output and tf.losses.sigmoidCrossEntropy for raw logits. The logits API applies sigmoid itself. For labels [1, 0] and predictions [0.6, 0.2], MSE is (0.16 + 0.04) / 2 = 0.1."
   checks={[
     {
       "kind": "choice",
-      "question": "For sigmoid binary classification, what is the ideal unclipped BCE derivative with respect to the output logit?",
+      "question": "Your binary model already applies sigmoid. Which compile loss matches that output?",
       "options": [
         {
-          "text": "prediction × (1 − prediction)",
-          "feedback": "That is the sigmoid derivative alone; it does not include the loss or label."
+          "text": "Apply sigmoid again, then use the logits API.",
+          "feedback": "The model already applied sigmoid. Applying it again changes the scores and the loss."
         },
         {
-          "text": "prediction − label",
-          "feedback": "BCE with sigmoid gives prediction minus label in the ideal unclipped calculation, avoiding the extra sigmoid factor found with MSE. Stable logits-based implementations avoid logs of rounded probabilities."
+          "text": "binaryCrossentropy, using the sigmoid output.",
+          "feedback": "This form takes the probabilities produced by the sigmoid layer. Their calibration still needs evaluation."
         },
         {
-          "text": "2 × (prediction − label) × prediction × (1 − prediction)",
-          "feedback": "That is the MSE-plus-sigmoid derivative; sigmoid saturation adds the small factor."
+          "text": "Choose only from the layer's unit count.",
+          "feedback": "You also need to know what the output represents. One unit can return a raw logit or a sigmoid score."
         }
       ],
       "correctIndex": 1,
-      "explanation": "BCE with sigmoid gives prediction minus label in the ideal unclipped calculation, avoiding the extra sigmoid factor found with MSE. Stable logits-based implementations avoid logs of rounded probabilities."
+      "explanation": "binaryCrossentropy matches the sigmoid output. Do not apply sigmoid a second time."
+    },
+    {
+      "kind": "choice",
+      "question": "You have binary labels and raw logits, including negative scores. Which TFJS loss takes those scores directly?",
+      "options": [
+        {
+          "text": "tf.losses.sigmoidCrossEntropy(labels, logits)",
+          "feedback": "This API accepts raw logits and applies sigmoid internally."
+        },
+        {
+          "text": "The probability form, treating the negative scores as probabilities.",
+          "feedback": "A negative logit is valid, but a negative probability is not. Use the logits form."
+        },
+        {
+          "text": "No loss can work with a negative score.",
+          "feedback": "Logits can be negative. Their sign is part of the raw score before sigmoid."
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "tf.losses.sigmoidCrossEntropy expects logits. It performs the sigmoid calculation as part of the loss."
+    },
+    {
+      "kind": "number",
+      "question": "Labels are [1, 0] and predictions are [0.6, 0.2]. What is their mean squared error?",
+      "expected": 0.1,
+      "hint": "Square each difference, add the two results, then divide by two.",
+      "explanation": "The squared errors are 0.16 and 0.04. Their mean is 0.1."
     }
   ]}
 />
@@ -169,7 +196,7 @@ Help Farah measure the first prediction errors. Write both loss functions, then 
     "MSE penalizes large errors quadratically. For binary labels, BCE with an output sigmoid avoids the extra sigmoid factor in the derivative with respect to the output logit.",
     "The choice of loss function shapes how the optimizer learns: the wrong loss can stall training even with a correct architecture."
   ]}
-  bridge="`expect().toBe()` tells you whether actual and expected differ; a loss function tells you by how much, returning a number instead of a pass/fail."
+  bridge="A test assertion checks whether a result matches an expectation. A loss assigns prediction errors a numerical score for training to reduce."
   youCanNow="Choose between MSE and binary cross-entropy based on your task type and implement either using `tf.losses`."
 />
 

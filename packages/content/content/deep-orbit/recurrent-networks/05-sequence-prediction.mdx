@@ -165,7 +165,9 @@ In module 1, `tf.moments(batch, 0)` calculated one mean per feature for a [rows,
 
 If calculating statistics from these windows, use `tf.moments(trainX, [0, 1])` to reduce both the window and time axes. This returns three means and variances. Take `variance.sqrt()` for standard deviations. A wrongly shaped [80, 3] mean still broadcasts without an error, so check the shape explicitly.
 
-Overlapping windows count some readings repeatedly. Prefer calculating statistics from unique training readings before windowing, or document that repeated weighting. Replace a zero scale with 1. Save the means and scales for inference. Phase also wraps from +pi to -pi, even though those angles match. Raw-angle MSE treats them as far apart. A redesigned model can use sine and cosine features, with matching targets and error metrics.
+Overlapping windows count some readings more than once. Calculate the statistics from the original training rows before windowing when possible. If you use the windows instead, record that choice. Use 1 in place of a zero standard deviation, then save the means and scales for inference.
+
+Phase needs extra care: +pi and -pi describe the same angle. Squared error treats those numbers as far apart. A redesigned model can represent the angle with sine and cosine, using matching targets and error metrics.
 
 MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes twice as much. MSE squares errors, so doubling a miss makes its contribution four times larger. This example trains on MSE and reports MAE; that is a choice, not a requirement for every regression task. For multiple outputs, scale features deliberately and also report per-channel errors converted back to their original units.
 

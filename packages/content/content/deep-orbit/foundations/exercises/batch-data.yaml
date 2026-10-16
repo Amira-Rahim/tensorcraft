@@ -27,7 +27,7 @@ starterCode: |
   let readCount = 0;
   function readSample(i) {
     readCount++;
-    // [amplitude, frequency, phase], stand-in values keyed to i
+    // [amplitude, zero-crossing count, phase], stand-in values keyed to i
     return { features: [i * 100, i, i / 10], label: i % 2 };
   }
 
@@ -208,8 +208,8 @@ testCode: |
       expect(readCount - startCount, 'Every sample read once, none read twice.').toBe(16);
     });
     it('splits the 16 readings 12 and 4 on indices, disjoint and complete', () => {
-      filled(trainIdx, 'trainIdx is still null. Deal the indices once and cut off the first twelve.');
-      filled(valIdx, 'valIdx is still null. The other four indices are the held-out set.');
+      filled(trainIdx, 'trainIdx is still null. Use IDs 0 through 11 for training.');
+      filled(valIdx, 'valIdx is still null. Use IDs 12 through 15 for validation.');
       const train = Array.from(trainIdx);
       const val = Array.from(valIdx);
       expect(train.length, 'Twelve readings train.').toBe(12);

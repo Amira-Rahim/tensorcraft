@@ -121,7 +121,7 @@ testCode: |
       expect(out.grads[a.name].dataSync()[0], 'The first variable reaches the loss along two routes, through the sine and through the product, so its gradient is the sum of both. That summing is the chain rule doing its work.').toBeCloseTo(Math.cos(1.5) + 0.25, 4);
       expect(out.grads[b.name].dataSync()[0], 'The second variable only ever appears squared.').toBeCloseTo(-1.0, 4);
       expect(out.grads[c.name].dataSync()[0], 'The third variable is multiplied by the first, so its slope is whatever the first one currently holds.').toBeCloseTo(1.5, 4);
-      expect(passes, 'The loss function ran more times than a recorded forward pass needs. Re-running it per parameter is the numeric-gradient method this lesson retires: 673 extra forward passes for DEEP SCAN. The backward pass runs the forward pass once and reads every gradient off that one sweep.').toBeLessThanOrEqual(2);
+      expect(passes, 'Call tf.variableGrads(fn) once. It runs this loss function once and computes all three gradients from that recording.').toBe(1);
     });
     it('the estimate agrees with the recorded pass and costs a forward pass per variable', () => {
       // Where the lesson's claim gets measured rather than asserted. Both
@@ -165,8 +165,25 @@ testCode: |
       expect(est[0], 'The estimate for the first variable misses the slope the backward pass reports for it. That variable reaches the loss along two routes, and a nudge moves both at once, so the estimate carries the sum the same way the chain rule does.').toBeCloseTo(Math.cos(1.5) + 0.25, 1);
       expect(est[1], 'The estimate for the second variable misses its slope. Only one variable may move per estimate: the other two stay where they are, or the difference in loss belongs to more than one of them.').toBeCloseTo(-1.0, 1);
       expect(est[2], 'The estimate for the third variable misses its slope.').toBeCloseTo(1.5, 1);
-      expect(recordedPasses, 'gradOf ran the loss more times than one recording needs, so the two costs below are not being compared on equal terms.').toBeLessThanOrEqual(2);
+      expect(recordedPasses, 'gradOf must run the loss once so the automatic and numerical costs are compared on equal terms.').toBe(1);
       expect(estimatePasses, 'Estimating three slopes ran the forward pass ' + estimatePasses + ' times, against ' + recordedPasses + ' for the recorded pass that produced all three at once. Each estimate needs the loss where the variable stands and the loss with it moved, so three of them cannot cost fewer than six runs. DEEP SCAN has 673 parameters and the same arithmetic applies to every one of them.').toBeGreaterThanOrEqual(6);
+    });
+    it('restores a nudged variable when the second loss calculation fails', () => {
+      w.assign(tf.scalar(2));
+      let passes = 0;
+      const failingLoss = () => {
+        passes += 1;
+        if (passes === 2) throw new Error('Capture unavailable');
+        return w.square();
+      };
+      expect(
+        () => numericGradOf(failingLoss, w),
+        'Let the loss error reach the caller after restoring the variable.',
+      ).toThrow('Capture unavailable');
+      expect(
+        w.dataSync()[0],
+        'Restore the original weight in a finally block, including when the nudged loss fails.',
+      ).toBe(2);
     });
   });
 estimatedMinutes: 15

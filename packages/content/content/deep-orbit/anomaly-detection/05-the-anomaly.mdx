@@ -230,7 +230,7 @@ The LSTM trained on the archive's first day. If contaminated examples appear in 
 
 While the detectors vote, Farah runs a script to examine the timing inside each pulse. The crew already knows the gap between pulses: 73.4 seconds. She is looking at the smaller pulses within each one.
 
-The gaps follow Fibonacci ratios: 1, 1, 2, 3, 5, 8, 13. Each number is the sum of the two before it.
+The gaps have relative lengths of 1, 1, 2, 3, 5, 8, 13. These are Fibonacci numbers: after the first two, each is the sum of the two before it. The numbers describe the pattern of lengths, not seconds or hertz.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
 {`// The application supplies trained models, windows, and frozen scalers.
@@ -278,28 +278,39 @@ When every value in the window is identical, its standard deviation is zero. Ret
 <Exercise slug="ensemble-detector" />
 
 <RecallPrompt
-  question="How can an autoencoder trained on normal readings help detect anomalies?"
-  answer="The model learns to rebuild normal readings. Some anomalies then have high reconstruction error, but others do not. Test it on separate normal readings and known anomalies to measure false alarms and misses. Check that its training data is actually normal. Labeled validation data can help choose a cutoff. A percentile of normal errors can estimate a false-alarm rate. Neither guarantees that the detector will recognize every new pattern."
+  question="The amplitude check stays quiet, but the autoencoder and LSTM both flag a reading. What should the 2-of-3 ensemble report, and what does that result mean?"
+  answer="It reports two votes and raises an alert. Two votes count checks that crossed their cutoffs; they do not mean a 67% chance that the reading is anomalous. The detectors share inputs and training data, so their errors can overlap. Investigate the alert and test the combined detector on separate reviewed readings."
   checks={[
     {
       "kind": "choice",
-      "question": "How can an autoencoder trained on normal readings help detect anomalies?",
+      "question": "The amplitude check stays quiet. The autoencoder and LSTM both flag the reading. What does the 2-of-3 rule return?",
       "options": [
-        {
-          "text": "It guarantees high error for every input not seen in training.",
-          "feedback": "An unfamiliar input can still reconstruct well."
-        },
-        {
-          "text": "It learns the correct anomaly label without any evaluation data.",
-          "feedback": "Training it to rebuild normal readings does not teach it a guaranteed label for every anomaly."
-        },
-        {
-          "text": "Measure reconstruction error; some anomalies may reconstruct poorly.",
-          "feedback": "The model learns to rebuild normal readings. Some anomalies then have high reconstruction error, but others do not. Test it on separate normal readings and known anomalies to measure false alarms and misses. Check that its training data is actually normal. Labeled validation data can help choose a cutoff. A percentile of normal errors can estimate a false-alarm rate. Neither guarantees that the detector will recognize every new pattern."
-        }
+        { "text": "Two votes and an alert.", "feedback": "Any two flagged checks meet the majority rule, even when the amplitude check stays quiet." },
+        { "text": "One vote and no alert.", "feedback": "The autoencoder and LSTM each contribute a vote." },
+        { "text": "No alert unless all three checks flag it.", "feedback": "This policy needs two votes, not all three." }
       ],
-      "correctIndex": 2,
-      "explanation": "The model learns to rebuild normal readings. Some anomalies then have high reconstruction error, but others do not. Test it on separate normal readings and known anomalies to measure false alarms and misses. Check that its training data is actually normal. Labeled validation data can help choose a cutoff. A percentile of normal errors can estimate a false-alarm rate. Neither guarantees that the detector will recognize every new pattern."
+      "correctIndex": 0,
+      "explanation": "Any two flagged checks meet the majority rule, even when the amplitude check stays quiet."
+    },
+    {
+      "kind": "choice",
+      "question": "Does two votes mean the reading has a 67% chance of being anomalous?",
+      "options": [
+        { "text": "Yes. Divide the vote count by three to get the probability.", "feedback": "Agreement is a count, not a calibrated probability." },
+        { "text": "No. It means two checks crossed their cutoffs.", "feedback": "Measure the detector's errors on reviewed data. The vote alone does not give an event probability." }
+      ],
+      "correctIndex": 1,
+      "explanation": "Measure the detector's errors on reviewed data. The vote alone does not give an event probability."
+    },
+    {
+      "kind": "choice",
+      "question": "Why can a majority vote still miss an event?",
+      "options": [
+        { "text": "Three different calculations must make independent errors.", "feedback": "Different calculations can still share bad inputs or contaminated training data." },
+        { "text": "The detectors can share inputs and training data, so several can miss the same pattern.", "feedback": "Test the combined detector as well as each individual check. Agreement does not remove shared blind spots." }
+      ],
+      "correctIndex": 1,
+      "explanation": "Test the combined detector as well as each individual check. Agreement does not remove shared blind spots."
     }
   ]}
 />

@@ -308,7 +308,12 @@ export function parseExperimentDraft(
     outcome(r.first) &&
     outcome(r.latest) &&
     (r.count === 0) === (r.first === null) &&
-    (r.count === 0) === (r.latest === null);
+    (r.count === 0) === (r.latest === null) &&
+    // Every submitted attempt reveals feedback for the next attempt.
+    (r.count === 0 || r.help === true) &&
+    (r.count !== 1 ||
+      (r.first?.correct === r.latest?.correct &&
+        r.first?.assisted === r.latest?.assisted));
   if (
     !d ||
     d.version !== 1 ||
@@ -324,6 +329,18 @@ export function parseExperimentDraft(
     (id === "threshold" && d.phase === "changed_case" && d.frozen === null)
   )
     throw new Error("Incompatible experiment draft");
+  const current = d[d.phase];
+  if (
+    (d.revealed && !current.help) ||
+    (d.result !== null &&
+      (current.count === 0 ||
+        d.result.correct !== current.latest?.correct ||
+        d.result.assisted !== current.latest?.assisted)) ||
+    (id === "threshold" &&
+      d.frozen !== null &&
+      d.settings.some((setting, i) => setting !== d.frozen![i]))
+  )
+    throw new Error("Incompatible experiment feedback or frozen policy");
   return Object.fromEntries(
     Object.keys(experimentDraft(id)).map((k) => [
       k,

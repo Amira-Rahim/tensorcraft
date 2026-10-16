@@ -26,10 +26,10 @@ instructions: |
 starterCode: |
   // Given: Farah's rehearsal batch, 120 readings of eight values each. Rows
   // 0-59 are calm windows and rows 60-119 are flagged ones. The first three
-  // values are the real features (amplitude, frequency, phase, normalized)
-  // and they differ between the two groups. The last five are the features
-  // Farah specced that have no source in the stream yet, so both groups get
-  // the same noise there.
+  // values stand in for amplitude, zero-crossing count, and phase.
+  // They differ between the two groups. The last five are extra practice
+  // features drawn from the same noise distribution for both groups.
+  // These generated numbers are not measurements from the ship.
   const { readings, labels } = tf.tidy(() => {
     const calmReal = tf.clipByValue(tf.randomNormal([60, 3], 0.30, 0.09, 'float32', 11), 0, 1);
     const flaggedReal = tf.clipByValue(tf.randomNormal([60, 3], 0.68, 0.09, 'float32', 23), 0, 1);

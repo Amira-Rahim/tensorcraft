@@ -16,6 +16,18 @@ const DEEP_ORBIT_LOCATION_CAPTIONS: Record<string, string> = {
   "Archimedes, Bridge": "Inside the control room on the spaceship Archimedes.",
   "Archimedes, Engineering":
     "Inside the engineering room on the spaceship Archimedes.",
+  "Archimedes, Shared Display":
+    "At the crew's shared display on the spaceship Archimedes.",
+  "Bridge, Main Displays":
+    "At the main displays in the control room on the spaceship Archimedes.",
+  "Bridge, Main Display":
+    "At the main display in the control room on the spaceship Archimedes.",
+  "Bridge, All Displays":
+    "Inside the control room on the spaceship Archimedes, with every display in use.",
+  "Galley, Spare Monitor":
+    "At a spare monitor in the kitchen on the spaceship Archimedes.",
+  "Lab, Glass Wall":
+    "At the glass wall in the science lab on the spaceship Archimedes.",
   "Bridge, Dashboard Station":
     "At the dashboard station in the control room on the spaceship Archimedes.",
 };
