@@ -15,6 +15,30 @@ export const CHECK_PACKET = [
   [11, 21, 31],
 ];
 
+/**
+ * Authored fixtures for the fictional ship's recording, not live telemetry.
+ * Farah's selections are supplied before this activity. These packets contain
+ * only the selected sensors, not contiguous slices of the full 64-sensor list.
+ * Moment numbers below are local to each excerpt, not global timestamps.
+ */
+export const RECORDING_SOURCE = {
+  id: "demir-recording",
+  sensorCount: 64,
+} as const;
+export const WORKED_EXCERPT = {
+  sourceId: RECORDING_SOURCE.id,
+  sensorIds: ["A", "B", "C", "D"],
+  momentCount: 3,
+  ordering: "moment-then-sensor",
+} as const;
+export const CHECK_EXCERPT = {
+  sourceId: RECORDING_SOURCE.id,
+  sensorIds: ["A", "B", "C"],
+  momentCount: 2,
+  ordering: "moment-then-sensor",
+} as const;
+export type RecordingExcerpt = typeof WORKED_EXCERPT | typeof CHECK_EXCERPT;
+
 /** Only rectangular finite numeric packets have an axis interpretation. */
 export function packetShape(packet: readonly (readonly number[])[]) {
   const width = packet[0]?.length ?? 0;

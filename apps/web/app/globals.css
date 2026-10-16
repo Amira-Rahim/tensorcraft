@@ -187,44 +187,50 @@ body {
   overflow-wrap: anywhere;
 }
 
-.lesson-prose p {
-  margin-bottom: 1.5em;
-  line-height: 1.8;
-  font-size: 1rem;
-}
+/* Prose supplies defaults, not component overrides. Tailwind utilities live
+   in the later utilities layer, so authored spacing and type can replace
+   these values inside activities, cards, and blog content. Keep the layout
+   and visibility rules below outside this layer. */
+@layer components {
+  .lesson-prose p {
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+    font-size: 1rem;
+  }
 
-/* LearningObjectives (packages/ui/src/mdx/learning-objectives.tsx) pins every property this rule sets inline; add any new property here to both places. */
-.lesson-prose h2 {
-  margin-top: 2.5em;
-  margin-bottom: 0.75em;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--tc-text);
-}
+  .lesson-prose h2 {
+    margin-top: 2.5em;
+    margin-bottom: 0.75em;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--tc-text);
+  }
 
-/* ExerciseBrief (packages/ui/src/mdx/exercise-brief.tsx) pins every property this rule sets inline; add any new property here to both places. */
-.lesson-prose h3 {
-  margin-top: 2em;
-  margin-bottom: 0.5em;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--tc-text);
+  .lesson-prose h3 {
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--tc-text);
+  }
 }
 
 /* Experiments keep the question and its controls close together. */
 .learning-experiment {
   overflow-wrap: anywhere;
 }
-.lesson-prose .learning-experiment p {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-.lesson-prose .learning-experiment > p {
-  margin-block: 1rem;
-}
-.lesson-prose .learning-experiment h3 {
-  margin-top: 0;
+@layer components {
+  .lesson-prose .learning-experiment p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .lesson-prose .learning-experiment > p {
+    margin-block: 1rem;
+  }
+  .lesson-prose .learning-experiment h3 {
+    margin-top: 0;
+  }
 }
 .learning-experiment button[aria-pressed="true"] {
   background: var(--tc-accent);
@@ -235,21 +241,23 @@ body {
   background: color-mix(in srgb, var(--tc-primary) 10%, var(--tc-bg));
 }
 
-@media (min-width: 768px) {
-  .lesson-prose p {
-    font-size: 1.125rem;
-  }
+@layer components {
+  @media (min-width: 768px) {
+    .lesson-prose p {
+      font-size: 1.125rem;
+    }
 
-  .lesson-prose h2 {
-    font-size: 1.875rem;
-  }
+    .lesson-prose h2 {
+      font-size: 1.875rem;
+    }
 
-  .lesson-prose h3 {
-    font-size: 1.5rem;
-  }
+    .lesson-prose h3 {
+      font-size: 1.5rem;
+    }
 
-  .lesson-prose li {
-    font-size: 1.0625rem;
+    .lesson-prose li {
+      font-size: 1.0625rem;
+    }
   }
 }
 
@@ -385,17 +393,17 @@ body {
   display: revert;
 }
 
-/* LearningObjectives (packages/ui/src/mdx/learning-objectives.tsx) pins every property this rule sets inline; add any new property here to both places. */
-.lesson-prose ul,
-.lesson-prose ol {
-  margin-bottom: 1.5em;
-  padding-left: 1.5em;
-}
+@layer components {
+  .lesson-prose ul,
+  .lesson-prose ol {
+    margin-bottom: 1.5em;
+    padding-left: 1.5em;
+  }
 
-/* LearningObjectives (packages/ui/src/mdx/learning-objectives.tsx) pins every property this rule sets inline; add any new property here to both places. */
-.lesson-prose li {
-  margin-bottom: 0.5em;
-  line-height: 1.7;
+  .lesson-prose li {
+    margin-bottom: 0.5em;
+    line-height: 1.7;
+  }
 }
 
 /* Only style plain blockquotes (markdown >), not Dialogue components,
@@ -820,10 +828,12 @@ body {
   margin-top: 0;
 }
 
-.lesson-prose pre {
-  margin: 1.5em 0;
-  max-width: 100%;
-  overflow-x: auto;
+@layer components {
+  .lesson-prose pre {
+    margin: 1.5em 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 
 /* Code on phones wraps instead of scrolling (spec 2026-09-24, section 4):
@@ -848,30 +858,32 @@ body {
   }
 }
 
-.lesson-prose strong {
-  color: var(--tc-text);
-  font-weight: 600;
-}
+@layer components {
+  .lesson-prose strong {
+    color: var(--tc-text);
+    font-weight: 600;
+  }
 
-.lesson-prose a {
-  color: var(--tc-primary);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
+  .lesson-prose a {
+    color: var(--tc-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
 
-/* Inline code in prose renders as a bordered chip, distinct from body text
+  /* Inline code in prose renders as a bordered chip, distinct from body text
    and from Shiki code blocks (which live inside <pre>). Token-driven so each
    world recolors automatically. */
-.lesson-prose :not(pre) > code {
-  font-family: var(--font-mono);
-  font-size: 0.85em;
-  background: var(--tc-surface);
-  border: 1px solid var(--tc-border);
-  color: var(--tc-primary);
-  padding: 1px 6px;
-  border-radius: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  .lesson-prose :not(pre) > code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--tc-surface);
+    border: 1px solid var(--tc-border);
+    color: var(--tc-primary);
+    padding: 1px 6px;
+    border-radius: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 /* Fade up animation */

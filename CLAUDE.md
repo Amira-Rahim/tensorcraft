@@ -15,6 +15,13 @@
   challenge, recall, and epilogue to that task. Explain what the learner can do
   afterward and why it helps the crew. Keep supporting topics optional when
   they distract from that purpose.
+- Teach with the ongoing story's task and data. If the full recording is too
+  large, use a clearly identified small excerpt and explain what it contains.
+  Preserve the relevant values, order, axis meanings, and data provenance.
+  Do not replace the crew's work with an unrelated synthetic practice detour.
+  Separate toy examples need a clear teaching purpose, an explicit label, and
+  an optional place in the lesson. Keep fictional or illustrative data
+  identified as such; never turn it into a claim of a real scientific finding.
 - Technical correctness is mandatory throughout. Verify API behavior, examples,
   calculations, axis meanings, units, and exercise checks against the pinned
   runtime and primary documentation. Test plausible wrong answers, including
@@ -33,6 +40,9 @@
   using a visible feedback state and useful guidance. Announce the verdict to
   assistive technology, and clear stale input errors when the answer changes.
   Keep self-reflection and open-ended story decisions explicitly ungraded.
+- Shared prose styles are defaults. Keep them in the appropriate CSS cascade
+  layer so they do not erase a component's authored paragraph spacing or type
+  choices. Preserve intentional compact layouts and explicit grid gaps.
 - Course audits must cover every lesson's briefing, concept, challenge,
   takeaways, and epilogue, including nested references and secondary exercises.
   Record source review, executed examples, and browser checks separately.

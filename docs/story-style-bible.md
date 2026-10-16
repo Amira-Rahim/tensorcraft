@@ -53,11 +53,20 @@ simple and casual while preserving technical requirements and character voices.
 Let learners see and explore what their actions change before explaining a
 result as a story discovery.
 
+Continue with the task and data already in the story. If the full recording is
+too large to teach from, show a clearly identified small excerpt. Say which
+readings, sensors, or times it includes, and keep their relevant values and
+order intact. Do not send the learner into an unrelated synthetic practice
+exercise. A separate toy example belongs in an optional reference, clearly
+labeled and used for a useful comparison or supporting idea.
+
 State how the crew knows the meaning and order of readings, such as a recording
 header or sensor documentation. A tensor's shape cannot identify sensors, units,
-or timestamps. Clearly label made-up practice data and distinguish it from the
-ship's real captures. Do not resolve mysteries early or invent a discovery to
-reward the learner.
+or timestamps. Preserve the data's provenance: fictional ship captures remain
+fictional, and illustrative examples remain illustrative. Do not present them
+as real scientific observations. Keep any optional made-up example distinct
+from the captures established in the story. Do not resolve mysteries early or
+invent a discovery to reward the learner.
 
 ## The season in one line
 

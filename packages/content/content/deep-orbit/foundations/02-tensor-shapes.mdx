@@ -10,7 +10,7 @@ scene:
   location: "Archimedes, Lab"
   portraitAlt: "Farah studies a lab display showing sensor readings in a grid and as lines over time."
 context:
-  narrative: "Farah wants to follow each sensor's readings over time. First, she needs to arrange the list without mixing up the sensors."
+  narrative: "Farah opens the recording Demir sent her. She wants to follow each sensor's readings over time without mixing them up."
 concept:
   explanation: "A grid's shape gives its number of rows and columns. Knowing what those rows and columns mean helps you arrange readings correctly."
   bridge:
@@ -19,9 +19,9 @@ concept:
     mlTitle: "Tensor.shape"
     mlCode: "grid.shape // [3, 4]"
     tier: structural
-    breaks: "For a rectangular array, rows.length gives the number of rows. rows[0].length gives the number of values in each row. A tensor stores those counts in grid.shape. The counts do not tell Farah which row belongs to a time or a sensor. That comes from the recording format."
+    breaks: "For a rectangular array, rows.length gives the number of rows. rows[0].length gives the number of values in each row. A tensor stores those counts in grid.shape. The counts do not tell Farah which row belongs to a time or a sensor. That comes from the recording notes."
 consequence:
-  narrative: "Farah uses the recording header to keep each sensor's readings together. Repeating waves appear when she plots them over time."
+  narrative: "Farah arranges Demir's full recording by sensor. The repeating waves are easier to follow on her chart."
 hints:
   - level: nudge
     content: "The list records all four sensors at the first moment, then all four at the next moment. Which four values make up the second row?"
@@ -40,27 +40,27 @@ skillAxes: [data_prep]
 
 <StoryPassage>
 
-The incoming readings fill one long list on Farah's display. She wants to see
+Demir's recording fills one long list on Farah's display. She wants to see
 how each sensor changes over time, but the list is hard to follow.
 
 </StoryPassage>
 
 <StoryPassage>
 
-Farah opens the recording header. It lists 64 hull sensors, always recorded
-in the same order at each moment.
+Farah opens the recording notes. They list 64 hull sensors and show that each
+moment records them in the same order.
 
 </StoryPassage>
 
 <Dialogue speaker="Dr. Farah" expression="delighted">
-The header tells us which sensor each reading came from. Help me put the readings into rows so we can follow one sensor at a time.
+Demir's notes tell us which sensor each reading came from. Help me put readings from the same moment into a row. Then we can follow one sensor at a time.
 </Dialogue>
 
 <StoryPassage>
 
-For practice, Farah uses a smaller, made-up recording: four sensors, A, B, C,
-and D, recorded at three moments. These example numbers are not measurements
-from the ship.
+Farah takes readings from the first four sensors at three moments in Demir's
+recording. The notes use A, B, C, and D as short labels for those sensors.
+She puts the 12 readings in a short list, ready for you to arrange.
 
 </StoryPassage>
 
@@ -72,7 +72,7 @@ from the ship.
   ]}
 >
 
-A shape gives the sizes. The recording header tells us what they mean.
+A shape gives the sizes. The recording notes tell us what they mean.
 
 </BriefingTakeaway>
 
@@ -88,10 +88,10 @@ A shape gives the sizes. The recording header tells us what they mean.
 
 ## Put Farah’s plan into JavaScript
 
-Farah’s practice grid has three rows and four columns, so its **shape** is
-`[3, 4]`. Each row holds readings taken at the same time. Each column belongs
-to one sensor. The recording header gives that order; the shape only gives
-the counts.
+Farah’s first selection has 12 readings. They fit into three rows of four,
+giving the grid a **shape** of `[3, 4]`. Each row holds readings taken at the
+same time. Each column belongs to one sensor. The recording notes give that
+order; the shape only gives the counts.
 
 Rows and columns are the grid’s two **axes**. An axis is also called a
 **dimension**. The number of axes is the **rank**: this grid has rank 2.
@@ -99,9 +99,10 @@ The original list has just one axis, so it has rank 1.
 
 <StoryPassage>
 
-Farah brings the practice list over to JavaScript. The readings come from
-sensors A, B, C, and D, in that order each time. She needs you to keep that
-order as you build the grid.
+Farah brings that first selection over to JavaScript. It already contains
+just the four selected sensors, in order A, B, C, and D at each moment. She
+leaves the rest of Demir's recording in the archive while you arrange these
+12 readings.
 
 </StoryPassage>
 
@@ -204,13 +205,14 @@ all the axes. Check what each axis means before choosing an order.
 
 ## Challenge
 
-Farah has another practice set of 12 readings in the same recording format. Help her
-arrange them into rows of four, then give the chart one row per sensor.
+Farah takes 12 more readings from Demir's recording: the same four sensors at
+three later moments. Help her arrange them into rows of four, then give the
+chart one row per sensor.
 
 <Exercise slug="reshape-tensor" />
 
 <RecallPrompt
-  question="A different recording has three sensors, A, B, and C, recorded in that order at two moments. Its flat list is [6, 10, 14, 7, 12, 13]."
+  question="Farah checks another short list from Demir's recording: the first three sensors at two more moments. The notes label them A, B, and C, in that order each time. The list is [6, 10, 14, 7, 12, 13]."
   answer="One row per moment gives [[6, 10, 14], [7, 12, 13]], with shape [2, 3]. Transpose gives one row per sensor: [[6, 7], [10, 12], [14, 13]], with shape [3, 2]. Sensor B's readings are [10, 12]. A reshape to [3, 2] would have the same shape but would mix the sensors."
   checks={[
     {
@@ -252,7 +254,7 @@ arrange them into rows of four, then give the chart one row per sensor.
 
 <LessonRecap
   whatYouLearned={[
-    "Shape gives the size of each axis. A recording header or data format tells you what each axis means.",
+    "Shape gives the size of each axis. Recording notes or a data format tell you what each axis means.",
     "Reshape groups the same values into new rows without changing their order or total count.",
     "For a two-dimensional grid, transpose turns columns into rows. It can change a time-by-sensor grid into a sensor-by-time grid.",
     "Check which values belong in each row. The correct shape alone does not guarantee the correct sensor layout."
@@ -263,11 +265,11 @@ arrange them into rows of four, then give the chart one row per sensor.
 
 <Epilogue>
 
-Farah returns to the archive. The recording header lists 450 moments with
-64 sensor readings at each moment, so she arranges the sample as `[450, 64]`.
+Farah returns to Demir's full recording. The notes list 450 moments with
+64 sensor readings at each moment, so she arranges the capture as `[450, 64]`.
 She checks the sensor order, then transposes the grid to give the chart one
-row per sensor. Across the display, the readings rise and fall in slow,
-repeating waves.
+row per sensor. Across the display, the readings rise and fall in repeating
+waves.
 
 <Dialogue speaker="Dr. Farah">
 Now we can follow each sensor through time. We still need to find out what is causing those waves.

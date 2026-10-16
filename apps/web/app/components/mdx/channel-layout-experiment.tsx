@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { AnswerFeedback } from "@tensorcraft/ui/answer-feedback";
+import "./channel-layout-experiment.css";
 import {
   ActivitySyncStatus,
   type LocalActivityRecord,
@@ -14,6 +15,9 @@ import {
   CHANNEL_STORAGE_KEY,
   WORKED_PACKET,
   CHECK_PACKET,
+  RECORDING_SOURCE,
+  WORKED_EXCERPT,
+  CHECK_EXCERPT,
   channelDraft,
   parseChannelDraft,
   channelValues,
@@ -22,12 +26,13 @@ import {
   checkChannelTransfer,
   type ChannelDraft,
   type LayoutOperation,
+  type RecordingExcerpt,
 } from "./channel-layout-data";
 
 const button =
-  "min-h-11 border border-border px-3 py-2 text-base font-medium text-text hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-interactive disabled:opacity-50";
+  "channel-button min-h-11 border border-border px-3 py-2 text-base font-medium text-text hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-interactive disabled:opacity-50";
 const input =
-  "min-h-11 w-full min-w-0 border border-border bg-background px-3 py-2 font-mono text-base text-text focus-visible:outline-2 focus-visible:outline-interactive";
+  "channel-input min-h-11 w-full min-w-0 border border-border bg-background px-3 py-2 font-mono text-base text-text focus-visible:outline-2 focus-visible:outline-interactive";
 const eventBase = {
   worldId: "deep-orbit",
   lessonId: "tensor-shapes",
@@ -135,30 +140,42 @@ export function ChannelLayoutExperiment() {
 
   return (
     <section
-      className="learning-experiment my-8 min-w-0 border border-border bg-surface/40 p-4 sm:p-6"
+      className="learning-experiment channel-activity"
       aria-labelledby={`${uid}-title`}
       data-testid="channel-layout-experiment"
     >
-      <p className="font-mono text-sm uppercase tracking-wider text-text-muted">
-        Farah’s practice recording
-      </p>
-      <h3 id={`${uid}-title`}>Keep each sensor’s readings together</h3>
-      <p>
-        Farah starts with a small, made-up recording. Four sensors took readings
-        at three different times. The header says they were recorded in order:
-        A, B, C, D, then A, B, C, D again.
-      </p>
-      <p>
-        Each sensor sends a series of readings called a <strong>channel</strong>
-        . The ship has 64 channels, but Farah uses just four for this practice.
-      </p>
-      <fieldset disabled={!ready} className="min-w-0 space-y-8">
+      <header className="channel-activity-opening">
+        <h3 id={`${uid}-title`} className="channel-activity-title">
+          Keep each sensor’s readings together
+        </h3>
+        <p data-story-passage="">
+          Farah opens the recording Demir sent her. She wants to see how each
+          sensor changes over time. Help her put the readings into the layout
+          her chart needs.
+        </p>
+        <RecordingNotes
+          excerpt={draft.mode === "worked" ? WORKED_EXCERPT : CHECK_EXCERPT}
+        />
+        <aside className="channel-definition" aria-label="What is a channel?">
+          <p>
+            Each sensor sends a series of readings called a{" "}
+            <strong>channel</strong>. Demir’s recording contains all{" "}
+            {RECORDING_SOURCE.sensorCount} channels. Farah has already pulled
+            out the readings shown here.
+          </p>
+        </aside>
+      </header>
+      <fieldset disabled={!ready} className="channel-activity-controls">
         <legend className="sr-only">Sensor layout controls</legend>
         {draft.mode === "worked" ? (
-          <div className="channel-worked-grid">
-            <div className="min-w-0 space-y-5">
-              <h4 className="!text-2xl font-semibold">
-                1. Group the readings by time
+          <div className="channel-stages">
+            <section
+              className="channel-stage"
+              aria-labelledby={`${uid}-group-title`}
+            >
+              <h4 className="channel-stage-title" id={`${uid}-group-title`}>
+                <span className="channel-step-number">1</span> Group the
+                readings by time
               </h4>
               <p>
                 This list holds 12 readings, so its <strong>shape</strong> is{" "}
@@ -167,15 +184,15 @@ export function ChannelLayoutExperiment() {
               </p>
               <FlatReadings />
               <p>
-                The header tells Farah that each group of four readings was
-                taken at the same time. She puts the first four in the first
-                row, then starts a new row for the next four. Three rows and
-                four columns give her shape <code>[3, 4]</code>.
+                This selection lists the sensors in order: A, B, C, D. Each
+                group of four readings belongs to one moment. Put each group in
+                its own row. You’ll get three rows and four columns: shape{" "}
+                <code>[3, 4]</code>.
               </p>
-              <form onSubmit={submitPrediction} className="space-y-3">
+              <form onSubmit={submitPrediction} className="channel-prediction">
                 <label
                   htmlFor={`${uid}-prediction`}
-                  className="block font-medium"
+                  className="channel-question"
                 >
                   Which four readings go in the second row?
                 </label>
@@ -202,7 +219,7 @@ export function ChannelLayoutExperiment() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="submit"
-                    className={button}
+                    className={`${button} channel-button-primary`}
                     disabled={
                       !draft.prediction.trim() || draft.predictionAttempts >= 20
                     }
@@ -254,7 +271,7 @@ export function ChannelLayoutExperiment() {
               {draft.tableBuilt && (
                 <div
                   id={`${uid}-time-grid`}
-                  className="space-y-3"
+                  className="channel-reveal"
                   data-testid="time-grid"
                 >
                   <PacketTable
@@ -274,11 +291,15 @@ export function ChannelLayoutExperiment() {
                   </p>
                 </div>
               )}
-            </div>
+            </section>
             {draft.tableBuilt && (
-              <div className="min-w-0 space-y-5">
-                <h4 className="!text-2xl font-semibold">
-                  2. Give the chart one row per sensor
+              <section
+                className="channel-stage"
+                aria-labelledby={`${uid}-sensor-title`}
+              >
+                <h4 className="channel-stage-title" id={`${uid}-sensor-title`}>
+                  <span className="channel-step-number">2</span> Give the chart
+                  one row per sensor
                 </h4>
                 <p>
                   Farah is ready to chart how each sensor’s readings change over
@@ -286,58 +307,60 @@ export function ChannelLayoutExperiment() {
                   its readings together. That means four rows and three columns:
                   shape <code>[4, 3]</code>.
                 </p>
-                <label
-                  className="flex flex-wrap items-center gap-3"
-                  htmlFor={`${uid}-channel`}
-                >
-                  Follow a sensor
-                  <select
-                    id={`${uid}-channel`}
-                    className={`${input} !w-auto`}
-                    value={draft.channel}
-                    onChange={(event) =>
-                      update({ channel: Number(event.target.value) })
-                    }
+                <div className="channel-comparison-controls">
+                  <label
+                    className="flex flex-wrap items-center gap-3"
+                    htmlFor={`${uid}-channel`}
                   >
-                    {[0, 1, 2, 3].map((channel) => (
-                      <option key={channel} value={channel}>
-                        Sensor {sensorName(channel)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <p>
-                  Pick a sensor, then try both buttons. Watch where its three
-                  readings end up.
-                </p>
-                <div
-                  className="flex flex-wrap gap-3"
-                  role="group"
-                  aria-label="Compare reshape and transpose"
-                >
-                  {(["reshape", "transpose"] as const).map((operation) => (
-                    <button
-                      type="button"
-                      key={operation}
-                      className={button}
-                      aria-pressed={draft.operation === operation}
-                      onClick={() => update({ operation })}
+                    Follow a sensor
+                    <select
+                      id={`${uid}-channel`}
+                      className={`${input} !w-auto`}
+                      value={draft.channel}
+                      onChange={(event) =>
+                        update({ channel: Number(event.target.value) })
+                      }
                     >
-                      {operation === "reshape"
-                        ? "Run reshape"
-                        : "Run transpose"}
-                    </button>
-                  ))}
+                      {[0, 1, 2, 3].map((channel) => (
+                        <option key={channel} value={channel}>
+                          Sensor {sensorName(channel)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p>
+                    Pick a sensor, then try both buttons. Watch where its three
+                    readings end up.
+                  </p>
+                  <div
+                    className="flex flex-wrap gap-3"
+                    role="group"
+                    aria-label="Compare reshape and transpose"
+                  >
+                    {(["reshape", "transpose"] as const).map((operation) => (
+                      <button
+                        type="button"
+                        key={operation}
+                        className={button}
+                        aria-pressed={draft.operation === operation}
+                        onClick={() => update({ operation })}
+                      >
+                        {operation === "reshape"
+                          ? "Run reshape"
+                          : "Run transpose"}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 {output && draft.operation && (
-                  <div className="space-y-5" data-testid="channel-result">
+                  <div className="channel-reveal" data-testid="channel-result">
                     <PacketTable
                       packet={output}
                       caption={`After ${draft.operation}. Shape [4, 3]`}
                       channel={draft.channel}
                       operation={draft.operation}
                     />
-                    <p role="status">
+                    <p role="status" className="channel-result-note">
                       Row at index {draft.channel}: [
                       {output[draft.channel].join(", ")}].{" "}
                       {draft.operation === "transpose"
@@ -377,7 +400,13 @@ export function ChannelLayoutExperiment() {
                   Explain the difference
                 </button>
                 {draft.explanation && (
-                  <div id={`${uid}-explanation`} className="space-y-3">
+                  <div
+                    id={`${uid}-explanation`}
+                    className="channel-explanation"
+                  >
+                    <h5 className="channel-subheading">
+                      Why the readings differ
+                    </h5>
                     <p>
                       <code>reshape([4, 3])</code> reads the same list again,
                       three values per row. It keeps their original order, so
@@ -392,14 +421,14 @@ export function ChannelLayoutExperiment() {
                     <p>
                       Both results have shape <code>[4, 3]</code>: four rows,
                       three columns. Those numbers cannot tell Farah what each
-                      row means. She needs the header for that, and she still
-                      needs to check the readings before using them.
+                      row means. The recording notes give her the sensor order.
+                      She still needs to check the readings before using them.
                     </p>
                   </div>
                 )}
-              </div>
+              </section>
             )}
-            <div>
+            <div className="channel-next-example">
               <button
                 type="button"
                 className={button}
@@ -410,24 +439,26 @@ export function ChannelLayoutExperiment() {
             </div>
           </div>
         ) : (
-          <>
-            <h4 className="!text-2xl font-semibold">
+          <section
+            className="channel-stage"
+            aria-labelledby={`${uid}-check-title`}
+          >
+            <h4 className="channel-stage-title" id={`${uid}-check-title`}>
               Your turn: follow sensor B
             </h4>
-            <p>
-              Farah opens another practice recording. This time, three sensors
-              took readings at two different times. The header gives the order
-              as A, B, C each time. Help her get one row per sensor ready for
-              the chart.
+            <p data-story-passage="">
+              Farah moves to another part of Demir’s recording. She selects
+              sensors A, B, and C at two other moments. Help her get their
+              readings ready for the same chart.
             </p>
             <PacketTable
               packet={CHECK_PACKET}
-              caption="The new recording, with one row for each time. Shape [2, 3]"
+              caption="Another selection from Demir’s recording, with one row for each time. Shape [2, 3]"
               channel={1}
             />
-            <form onSubmit={submitCheck} className="space-y-4">
+            <form onSubmit={submitCheck} className="channel-prediction">
               <fieldset
-                className="min-w-0 space-y-2"
+                className="channel-operation-options"
                 aria-invalid={
                   checkedTransfer
                     ? !checkedTransfer.operationCorrect
@@ -435,14 +466,11 @@ export function ChannelLayoutExperiment() {
                 }
                 aria-describedby={`${uid}-check-feedback`}
               >
-                <legend className="mb-2 font-medium">
+                <legend className="channel-question">
                   Which operation keeps each sensor’s readings together?
                 </legend>
                 {(["reshape", "transpose"] as const).map((operation) => (
-                  <label
-                    key={operation}
-                    className="flex min-h-11 items-center gap-3"
-                  >
+                  <label key={operation} className="channel-operation-option">
                     <input
                       type="radio"
                       name={`${uid}-operation`}
@@ -460,7 +488,7 @@ export function ChannelLayoutExperiment() {
                   </label>
                 ))}
               </fieldset>
-              <label className="block font-medium" htmlFor={`${uid}-check`}>
+              <label className="channel-question" htmlFor={`${uid}-check`}>
                 Sensor B’s two readings, from earliest to latest
               </label>
               <input
@@ -480,7 +508,7 @@ export function ChannelLayoutExperiment() {
               />
               <button
                 type="submit"
-                className={button}
+                className={`${button} channel-button-primary`}
                 disabled={
                   !draft.checkOperation ||
                   !draft.checkValues.trim() ||
@@ -529,14 +557,14 @@ export function ChannelLayoutExperiment() {
               Show the answer
             </button>
             {draft.checkAnswer && (
-              <p id={`${uid}-help`}>
+              <p id={`${uid}-help`} className="channel-explanation">
                 Transpose makes [[10, 11], [20, 21], [30, 31]]. Sensor B’s row
                 is [20, 21]. Reshape makes [[10, 20], [30, 11], [21, 31]], which
                 puts sensor B’s readings in separate rows. If you try again,
                 we’ll record that you used this help.
               </p>
             )}
-            <p className="text-base text-text-muted">
+            <p className="channel-detail">
               Going back to the first example also counts as help on this one.
             </p>
             <button
@@ -546,53 +574,55 @@ export function ChannelLayoutExperiment() {
             >
               Back to the first example
             </button>
-          </>
+          </section>
         )}
-        {(draft.firstPrediction || draft.firstCheck) && (
-          <p className="text-base text-text-muted">
-            Your first{" "}
-            {draft.firstCheck ? "answer on the new example" : "prediction"}:{" "}
-            {(draft.firstCheck ?? draft.firstPrediction)!.correct
-              ? "correct"
-              : "incorrect"}
-            {(draft.firstCheck ?? draft.firstPrediction)!.assisted
-              ? ", with help"
-              : ", without help"}
-            . This record stays the same when you retry.
-          </p>
-        )}
-        {(draft.predictionAttempts >= 20 || draft.checkAttempts >= 20) && (
-          <p>
-            That’s 20 attempts for this task. You can still compare the layouts
-            and continue to the coding challenge.
-          </p>
-        )}
-        <button
-          type="button"
-          className={button}
-          onClick={() =>
-            update({
-              channel: 0,
-              operation: null,
-              tableBuilt: false,
-              prediction: "",
-              predictionResult: null,
-              checkOperation: null,
-              checkValues: "",
-              checkResult: null,
-            })
-          }
-        >
-          Reset the controls
-        </button>
+        <footer className="channel-activity-footer">
+          {(draft.firstPrediction || draft.firstCheck) && (
+            <p className="channel-detail">
+              Your first{" "}
+              {draft.firstCheck ? "answer on the new example" : "prediction"}:{" "}
+              {(draft.firstCheck ?? draft.firstPrediction)!.correct
+                ? "correct"
+                : "incorrect"}
+              {(draft.firstCheck ?? draft.firstPrediction)!.assisted
+                ? ", with help"
+                : ", without help"}
+              . This record stays the same when you retry.
+            </p>
+          )}
+          {(draft.predictionAttempts >= 20 || draft.checkAttempts >= 20) && (
+            <p>
+              That’s 20 attempts for this task. You can still compare the
+              layouts and continue to the coding challenge.
+            </p>
+          )}
+          <button
+            type="button"
+            className={button}
+            onClick={() =>
+              update({
+                channel: 0,
+                operation: null,
+                tableBuilt: false,
+                prediction: "",
+                predictionResult: null,
+                checkOperation: null,
+                checkValues: "",
+                checkResult: null,
+              })
+            }
+          >
+            Reset the controls
+          </button>
+        </footer>
       </fieldset>
-      <p className="mt-4 text-base text-text-muted">
+      <p className="channel-detail">
         {ready
           ? saved
             ? "Saved in this tab. Refreshing the page will keep your work."
             : "We can’t save your work in this tab. You can still use the activity, but your work may be lost when you leave."
           : "Loading your saved work…"}{" "}
-        This practice does not complete the lesson. Continue to the Challenge
+        This activity does not complete the lesson. Continue to the Challenge
         section for the coding task.
       </p>
       {notice && (
@@ -615,6 +645,39 @@ export function ChannelLayoutExperiment() {
 function sensorName(channel: number) {
   return String.fromCharCode(65 + channel);
 }
+
+function RecordingNotes({ excerpt }: { excerpt: RecordingExcerpt }) {
+  return (
+    <aside
+      className="channel-recording-notes"
+      aria-label="Recording notes for this excerpt"
+    >
+      <h4 className="channel-subheading">Selected from Demir’s recording</h4>
+      <dl>
+        <div>
+          <dt>Sensor order at each moment</dt>
+          <dd>
+            {excerpt.sensorIds.map((sensor) => (
+              <code key={sensor}>{sensor}</code>
+            ))}
+            <span>
+              {excerpt.sensorIds.length} of {RECORDING_SOURCE.sensorCount}{" "}
+              sensors
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt>Moments in this selection</dt>
+          <dd>{excerpt.momentCount}, from earliest to latest</dd>
+        </div>
+      </dl>
+      <p>
+        The other {RECORDING_SOURCE.sensorCount - excerpt.sensorIds.length}{" "}
+        sensors are left out. Time 1 is the first moment in this selection.
+      </p>
+    </aside>
+  );
+}
 const sensorStyles = [
   "bg-interactive/15",
   "bg-interactive/10",
@@ -624,8 +687,8 @@ const sensorStyles = [
 
 function FlatReadings() {
   return (
-    <figure className="m-0 space-y-3">
-      <figcaption className="!text-left !text-base font-medium">
+    <figure className="channel-recording">
+      <figcaption>
         Read from left to right. Each letter shows which sensor the reading came
         from.
       </figcaption>
@@ -636,18 +699,18 @@ function FlatReadings() {
         aria-label="The list of twelve readings. Scroll sideways to see them all."
       >
         <ol
-          className="!m-0 flex w-max list-none gap-2 !p-0"
+          className="channel-reading-values"
           aria-label="Twelve readings in recording order"
         >
           {WORKED_PACKET.flat().map((value, index) => (
             <li
               key={index}
-              className={`!m-0 flex min-w-16 flex-col items-center border border-border px-3 py-2 ${sensorStyles[index % 4]}`}
+              className={`channel-reading border border-border ${sensorStyles[index % 4]}`}
             >
-              <span className="font-mono text-sm text-text-muted">
+              <span className="channel-sensor-name">
                 {sensorName(index % 4)}
               </span>
-              <span className="font-mono text-xl">{value}</span>
+              <span>{value}</span>
             </li>
           ))}
         </ol>
@@ -669,8 +732,8 @@ function PacketTable({
 }) {
   const transposed = operation === "transpose";
   return (
-    <div className="space-y-2">
-      <p className="font-medium">{caption}.</p>
+    <div className="channel-table">
+      <p className="channel-table-title">{caption}.</p>
       <div
         className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-interactive"
         role="region"
@@ -757,7 +820,7 @@ function Trace({
   const points = (values: number[]) =>
     values.map((value, i) => `${x(i)},${y(value)}`).join(" ");
   return (
-    <figure className="m-0 space-y-2">
+    <figure className="channel-trace">
       <svg
         viewBox="0 0 600 225"
         className="block w-full"
@@ -811,13 +874,13 @@ function Trace({
           </text>
         ))}
       </svg>
-      <figcaption className="!text-base">
+      <figcaption>
         The solid line shows sensor {sensorName(channel)}’s readings. The dashed
         line with dots shows the row at index {channel} after your operation.{" "}
         {expected.every((value, i) => value === actual[i])
           ? "The lines match. The sensor’s readings stayed in time order."
           : "The lines differ. This row would give Farah the wrong chart."}{" "}
-        Farah is using made-up readings for this practice.
+        These are the selected readings from Demir’s recording.
       </figcaption>
     </figure>
   );

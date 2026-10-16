@@ -3,6 +3,9 @@ import * as tf from "@tensorflow/tfjs";
 import {
   WORKED_PACKET,
   CHECK_PACKET,
+  RECORDING_SOURCE,
+  WORKED_EXCERPT,
+  CHECK_EXCERPT,
   transformPacket,
   channelValues,
   matchesTrace,
@@ -12,6 +15,24 @@ import {
 } from "./channel-layout-data";
 
 describe("channel layout numerical contract", () => {
+  it("keeps selected sensor and moment counts distinct from the full recording", () => {
+    expect(RECORDING_SOURCE.sensorCount).toBe(64);
+    for (const [metadata, packet] of [
+      [WORKED_EXCERPT, WORKED_PACKET],
+      [CHECK_EXCERPT, CHECK_PACKET],
+    ] as const) {
+      expect(metadata.sourceId).toBe(RECORDING_SOURCE.id);
+      expect(metadata.ordering).toBe("moment-then-sensor");
+      expect(packet).toHaveLength(metadata.momentCount);
+      expect(new Set(metadata.sensorIds).size).toBe(metadata.sensorIds.length);
+      expect(metadata.sensorIds.length).toBeLessThan(
+        RECORDING_SOURCE.sensorCount,
+      );
+      expect(
+        packet.every((row) => row.length === metadata.sensorIds.length),
+      ).toBe(true);
+    }
+  });
   it("matches real TFJS on the worked, changed, and additional rectangular packets without retaining tensors", async () => {
     await tf.setBackend("cpu");
     await tf.ready();

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { compile } from "tailwindcss";
+import { compile, compileAst } from "tailwindcss";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -45,6 +45,56 @@ const CANDIDATES = [
   "font-sans",
 ];
 
+const TYPOGRAPHY_UTILITIES = [
+  "mb-0",
+  "mt-0",
+  "space-y-2",
+  "space-y-3",
+  "text-sm",
+  "leading-relaxed",
+  "font-normal",
+  "no-underline",
+  "p-0",
+  "whitespace-pre",
+  "overflow-x-auto",
+];
+
+type CssNode = Parameters<typeof compileAst>[0][number];
+type CompiledRule = {
+  selector: string;
+  layer: string | null;
+  declarations: Record<string, string | undefined>;
+};
+
+function compiledRules(
+  nodes: CssNode[],
+  layer: string | null = null,
+): CompiledRule[] {
+  return nodes.flatMap((node): CompiledRule[] => {
+    if (node.kind === "rule") {
+      return [
+        {
+          selector: node.selector.replace(/\s+/g, " ").trim(),
+          layer,
+          declarations: Object.fromEntries(
+            node.nodes
+              .filter((child) => child.kind === "declaration")
+              .map((child) => [child.property, child.value]),
+          ),
+        },
+        ...compiledRules(node.nodes, layer),
+      ];
+    }
+    if ("nodes" in node) {
+      return compiledRules(
+        node.nodes,
+        node.kind === "at-rule" && node.name === "@layer" ? node.params : layer,
+      );
+    }
+    return [];
+  });
+}
+
 async function loadStylesheet(id: string, base: string) {
   // Mirrors the resolution the real build performs through node/PostCSS:
   // the bare `tailwindcss` import maps to the package's index.css, package
@@ -69,6 +119,7 @@ async function loadStylesheet(id: string, base: string) {
 
 describe("globals.css compiles the app's colour utilities", () => {
   let built: string;
+  let rules: CompiledRule[];
 
   beforeAll(async () => {
     const globals = fs.readFileSync(path.join(appDir, "globals.css"), "utf8");
@@ -79,7 +130,23 @@ describe("globals.css compiles the app's colour utilities", () => {
         throw new Error(`globals.css should not load JS modules (got ${id})`);
       },
     });
-    built = compiler.build([...CANDIDATES]);
+    built = compiler.build([...CANDIDATES, ...TYPOGRAPHY_UTILITIES]);
+    // Build the same imported CSS as an AST so these checks inspect the
+    // actual cascade layers, including shared lesson component styles.
+    const astCompiler = await compileAst(
+      ["./globals.css", "./components/lesson-visuals/lesson-visuals.css"].map(
+        (stylesheet) => ({
+          kind: "at-rule",
+          name: "@import",
+          params: JSON.stringify(stylesheet),
+          nodes: [],
+        }),
+      ),
+      { base: appDir, loadStylesheet },
+    );
+    rules = compiledRules(
+      astCompiler.build([...CANDIDATES, ...TYPOGRAPHY_UTILITIES]),
+    );
   });
 
   it.each(CANDIDATES)("generates .%s", (candidate) => {
@@ -94,5 +161,123 @@ describe("globals.css compiles the app's colour utilities", () => {
     // itself must be gone from the output.
     expect(built).toContain("--color-primary: var(--tc-primary)");
     expect(built).not.toMatch(/@world\s*\{/);
+  });
+
+  it.each([
+    ".lesson-prose p",
+    ".lesson-prose h2",
+    ".lesson-prose h3",
+    ".lesson-prose ul, .lesson-prose ol",
+    ".lesson-prose li",
+    ".lesson-prose strong",
+    ".lesson-prose a",
+    ".lesson-prose :not(pre) > code",
+    ".lesson-prose .learning-experiment p",
+    ".lesson-prose .learning-experiment > p",
+    ".lesson-prose .learning-experiment h3",
+  ])("lets authored utilities override the %s prose default", (selector) => {
+    const defaults = rules.filter((rule) => rule.selector === selector);
+    expect(defaults.length).toBeGreaterThan(0);
+    expect(defaults.every((rule) => rule.layer === "components")).toBe(true);
+    expect(built).toContain("@layer theme, base, components, utilities;");
+  });
+
+  it.each(TYPOGRAPHY_UTILITIES)(
+    "keeps .%s in the later utilities layer",
+    (candidate) => {
+      expect(
+        rules.some(
+          (rule) =>
+            rule.selector.includes(`.${candidate}`) &&
+            rule.layer === "utilities",
+        ),
+      ).toBe(true);
+    },
+  );
+
+  it("retains prose spacing and readable type when no utility replaces them", () => {
+    const declarations = (selector: string) =>
+      rules
+        .filter((rule) => rule.selector === selector)
+        .map((rule) => rule.declarations);
+    expect(declarations(".lesson-prose p")).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "margin-bottom": "1.5em",
+          "line-height": "1.8",
+          "font-size": "1rem",
+        }),
+        expect.objectContaining({ "font-size": "1.125rem" }),
+      ]),
+    );
+    expect(declarations(".lesson-prose h2")).toContainEqual(
+      expect.objectContaining({
+        "margin-top": "2.5em",
+        "margin-bottom": "0.75em",
+      }),
+    );
+    expect(declarations(".lesson-prose ul, .lesson-prose ol")).toContainEqual(
+      expect.objectContaining({
+        "margin-bottom": "1.5em",
+        "padding-left": "1.5em",
+      }),
+    );
+  });
+
+  it("lets utilities replace code-block margins while preserving phone wrapping", () => {
+    expect(
+      rules.find(
+        (rule) =>
+          rule.selector === ".lesson-prose pre" && rule.declarations.margin,
+      ),
+    ).toMatchObject({
+      layer: "components",
+      declarations: { margin: "1.5em 0" },
+    });
+    expect(
+      rules.find(
+        (rule) =>
+          rule.selector === ".lesson-prose pre" &&
+          rule.declarations["white-space"],
+      ),
+    ).toMatchObject({
+      layer: null,
+      declarations: { "white-space": "pre-wrap", "overflow-x": "visible" },
+    });
+    expect(
+      rules.find((rule) => rule.selector === ".lesson-prose pre .line"),
+    ).toMatchObject({
+      layer: null,
+      declarations: { "padding-left": "2ch", "text-indent": "-2ch" },
+    });
+  });
+
+  it("does not flatten paragraphs inside nested tensor feedback", () => {
+    expect(
+      rules.some((rule) => rule.selector === ".iv-creation-status p"),
+    ).toBe(false);
+    expect(
+      rules.find((rule) => rule.selector === ".iv-creation-status > p")
+        ?.declarations,
+    ).toMatchObject({ margin: "0" });
+  });
+
+  it("keeps multi-paragraph challenge instructions readable without trailing space", () => {
+    for (const section of [
+      ".challenge-stop-instruction",
+      ".challenge-stop-result",
+    ]) {
+      const selector = `.lesson-challenge-workspace .challenge-brief ${section} > p`;
+      expect(
+        rules.find((rule) => rule.selector === selector)?.declarations,
+      ).toMatchObject({ margin: "0 0 0.75rem" });
+    }
+    expect(
+      rules.find(
+        (rule) =>
+          rule.selector ===
+          ".lesson-challenge-workspace .challenge-brief :is(.challenge-stop-instruction, .challenge-stop-result) > p:last-child",
+      )?.declarations,
+    ).toMatchObject({ "margin-bottom": "0" });
   });
 });

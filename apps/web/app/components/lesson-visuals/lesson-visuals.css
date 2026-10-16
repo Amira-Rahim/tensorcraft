@@ -184,7 +184,7 @@
   font-size: 14px;
   line-height: 1.7;
 }
-.iv-creation-status p {
+.iv-creation-status > p {
   margin: 0;
 }
 .iv-creation-status:empty {
@@ -998,8 +998,8 @@
   align-items: baseline;
   gap: 6px 12px;
 }
-.lesson-challenge-workspace .challenge-brief .challenge-stop-instruction p {
-  margin: 0;
+.lesson-challenge-workspace .challenge-brief .challenge-stop-instruction > p {
+  margin: 0 0 0.75rem;
   color: var(--tc-text);
   font-size: 15px;
   line-height: 1.5;
@@ -1024,11 +1024,19 @@
   grid-column: 2;
   grid-row: 3;
 }
-.lesson-challenge-workspace .challenge-brief .challenge-stop-result p {
-  margin: 0;
+.lesson-challenge-workspace .challenge-brief .challenge-stop-result > p {
+  margin: 0 0 0.75rem;
   color: var(--tc-muted);
   font-size: 14px;
   line-height: 1.5;
+}
+/* InstructionText can render several paragraphs. Keep its paragraph gap,
+   while a single paragraph adds no space after the stop's final line. */
+.lesson-challenge-workspace
+  .challenge-brief
+  :is(.challenge-stop-instruction, .challenge-stop-result)
+  > p:last-child {
+  margin-bottom: 0;
 }
 /* Typed: the line holds the code shown. The stop goes quiet and nothing
    moves; Run Tests still decides pass or fail. */

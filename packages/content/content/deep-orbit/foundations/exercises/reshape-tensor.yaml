@@ -2,8 +2,9 @@ slug: reshape-tensor
 lessonSlug: tensor-shapes
 title: "Prepare Farah's Sensor Chart"
 instructions: |
-  Farah has another practice set of 12 readings in `flat`. The recording header says
-  each group of four contains sensors A, B, C, and D, in that order.
+  Farah takes 12 more readings from Demir's recording: the same four sensors
+  at three later moments. They are already in `flat`, ready to arrange.
+  The recording notes label these sensors A, B, C, and D, in that order at each moment.
 
   1. Before running the code, predict which four readings go in the second row.
   2. Use `reshape()` on `flat` to create `grid` with shape `[3, 4]`.
@@ -17,7 +18,8 @@ instructions: |
   Keep `grid` and `bySensor` for the tests. You can dispose of `flat` after
   creating `grid`.
 starterCode: |
-  // Each moment records sensors A, B, C, and D, in that order.
+  // Selected from Demir's recording: sensors A, B, C, D at three moments.
+  // Each group of four keeps the sensor order from the recording notes.
   const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
 
   // Predict the second row, then make one row per moment.

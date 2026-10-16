@@ -20,6 +20,24 @@ const click = (name: string) =>
 const record = () =>
   parseChannelDraft(sessionStorage.getItem(CHANNEL_STORAGE_KEY)!);
 
+it("shows which readings Farah selected from Demir's recording before asking for a prediction", () => {
+  render(<ChannelLayoutExperiment />);
+  const notes = screen.getByRole("complementary", {
+    name: "Recording notes for this excerpt",
+  });
+  expect(notes).toHaveTextContent("4 of 64 sensors");
+  expect(notes).toHaveTextContent("3, from earliest to latest");
+  expect(notes).toHaveTextContent("The other 60 sensors are left out");
+  expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
+  click("Try a new example");
+  expect(notes).toHaveTextContent("3 of 64 sensors");
+  expect(notes).toHaveTextContent("2, from earliest to latest");
+  expect(notes).toHaveTextContent("The other 61 sensors are left out");
+  expect(
+    screen.getByText(/Farah moves to another part of Demir’s recording/),
+  ).toBeVisible();
+});
+
 it("clearly marks a wrong prediction, clears the verdict on edit, and confirms a corrected answer", () => {
   render(<ChannelLayoutExperiment />);
   const prediction = screen.getByLabelText(

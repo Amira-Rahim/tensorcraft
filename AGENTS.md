@@ -11,6 +11,8 @@ learning ML. These are ongoing project requirements, not a one-lesson exception.
 Story comes first in the learning experience. Every lesson must be as visual,
 interactive, and dynamic as possible. Keep the story visible in its intended
 section and preserve its connection to the learner's task.
+Teach through that ongoing task and its data. Use a clearly identified small
+excerpt when the full recording is too large, following the quality contract.
 
 For Deep Orbit narrative work, also follow
 [the story style bible](docs/story-style-bible.md).

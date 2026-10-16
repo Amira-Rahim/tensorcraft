@@ -3,7 +3,7 @@ export const LESSON_HANDOFFS: Record<string, string> = {
   "introduction-to-tensors":
     "Demir pulls up the five sensor readings. “Let’s get these ready for TensorFlow.js. Can you put them into a tensor?”",
   "tensor-shapes":
-    "Farah pulls up the recording header and checks the sensor order. She needs your help to put readings taken at the same time into rows. Then you’ll swap the rows and columns so she can follow each sensor’s readings over time.",
+    "Farah opens the recording Demir sent her. The notes saved with it list the sensors in order. She has selected four sensors at three moments to start with. Help her arrange those readings, then give each sensor its own row for the chart.",
   "tensor-operations":
     "Help Nazari combine the feeds while keeping each channel in place. Average the two passes and adjust the gain. Then combine channels using a weighted sum.",
   "data-loading":
