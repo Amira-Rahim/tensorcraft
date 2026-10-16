@@ -140,13 +140,13 @@ export function ChannelLayoutExperiment() {
       </p>
       <h3 id={`${uid}-title`}>Keep each sensor’s readings together</h3>
       <p>
-        Farah starts with a small, made-up recording: four sensors at three
-        moments. The recording header gives their order: A, B, C, D, then A, B,
-        C, D again.
+        Farah starts with a small, made-up recording. Four sensors took readings
+        at three different times. The header says they were recorded in order:
+        A, B, C, D, then A, B, C, D again.
       </p>
       <p>
-        A sensor’s stream of readings is called a <strong>channel</strong>. The
-        ship has 64 channels. This practice example uses just four.
+        Each sensor sends a series of readings called a <strong>channel</strong>
+        . The ship has 64 channels, but Farah uses just four for this practice.
       </p>
       <fieldset disabled={!ready} className="min-w-0 space-y-8">
         <legend className="sr-only">Sensor layout controls</legend>
@@ -154,18 +154,19 @@ export function ChannelLayoutExperiment() {
           <div className="channel-worked-grid">
             <div className="min-w-0 space-y-5">
               <h4 className="!text-2xl font-semibold">
-                1. Make one row per moment
+                1. Group the readings by time
               </h4>
               <p>
-                A <strong>shape</strong> lists the size of each axis. An axis is
-                one direction, such as rows or columns. This flat list has one
-                axis with 12 values: shape <code>[12]</code>.
+                This list holds 12 readings, so its <strong>shape</strong> is{" "}
+                <code>[12]</code>. Shape tells us the size of each axis. A list
+                has one axis. A grid has two: one for rows and one for columns.
               </p>
               <FlatReadings />
               <p>
-                Farah needs three rows, with four sensors in each row. That
-                gives shape <code>[3, 4]</code>. Read the list from left to
-                right, starting a new row after every four values.
+                The header tells Farah that each group of four readings was
+                taken at the same time. She puts the first four in the first
+                row, then starts a new row for the next four. Three rows and
+                four columns give her shape <code>[3, 4]</code>.
               </p>
               <form onSubmit={submitPrediction} className="space-y-3">
                 <label
@@ -213,9 +214,9 @@ export function ChannelLayoutExperiment() {
                 <p role="status">
                   {draft.predictionResult
                     ? draft.predictionResult.correct
-                      ? "Yes. The second row is [3, 18, 7, 8], one reading from each sensor at the second moment."
-                      : "Take four readings at a time. The first four make the first row; the next four make the second. Compare your prediction with the table below."
-                    : "Predict first, or build the table to explore. Looking at the table counts as help on later predictions."}
+                      ? "Yes. The second row is [3, 18, 7, 8]. These are the four sensors’ readings at Time 2."
+                      : "The first four readings make the first row. The next four make the second. Compare your answer with the table below."
+                    : "Have a guess, then check it. You can also build the table first. If you look at the table before answering, we’ll record that you used help."}
                 </p>
               </form>
               {draft.tableBuilt && (
@@ -226,17 +227,18 @@ export function ChannelLayoutExperiment() {
                 >
                   <PacketTable
                     packet={WORKED_PACKET}
-                    caption="One row per moment. Shape [3, 4]"
+                    caption="Readings taken at the same time share a row. Shape [3, 4]"
                     channel={draft.channel}
                   />
                   <pre tabIndex={0} aria-label="Reshape the flat readings">
                     <code>{`const grid = flat.reshape([3, 4]);\nconst step1 = grid.arraySync()[1]; // [3, 18, 7, 8]`}</code>
                   </pre>
                   <p>
-                    <code>reshape()</code> keeps the values in their original
-                    order. <code>arraySync()</code> reads them into regular
-                    JavaScript arrays. Index <code>1</code> selects the second
-                    row because JavaScript counts from zero.
+                    <code>reshape()</code> makes the rows without changing the
+                    readings’ order. <code>arraySync()</code> gives us regular
+                    JavaScript arrays so we can read the values. Index{" "}
+                    <code>1</code> picks the second row because array indexes
+                    start at zero.
                   </p>
                 </div>
               )}
@@ -247,9 +249,10 @@ export function ChannelLayoutExperiment() {
                   2. Give the chart one row per sensor
                 </h4>
                 <p>
-                  Now Farah wants to chart one sensor over time. Her chart
-                  expects a separate row for each sensor: four rows, with three
-                  moments in each. The shape will be <code>[4, 3]</code>.
+                  Farah is ready to chart how each sensor’s readings change over
+                  time. Her chart needs one row per sensor, with all three of
+                  its readings together. That means four rows and three columns:
+                  shape <code>[4, 3]</code>.
                 </p>
                 <label
                   className="flex flex-wrap items-center gap-3"
@@ -272,8 +275,8 @@ export function ChannelLayoutExperiment() {
                   </select>
                 </label>
                 <p>
-                  Try both operations. Do they keep that sensor’s three readings
-                  together?
+                  Pick a sensor, then try both buttons. Watch where its three
+                  readings end up.
                 </p>
                 <div
                   className="flex flex-wrap gap-3"
@@ -303,10 +306,11 @@ export function ChannelLayoutExperiment() {
                       operation={draft.operation}
                     />
                     <p role="status">
-                      Row {draft.channel}: [{output[draft.channel].join(", ")}].{" "}
+                      Row at index {draft.channel}: [
+                      {output[draft.channel].join(", ")}].{" "}
                       {draft.operation === "transpose"
                         ? `These are sensor ${sensorName(draft.channel)}’s readings, in time order. The chart can use this row.`
-                        : `This row mixes sensors. Sensor ${sensorName(draft.channel)}’s readings are [${expected.join(", ")}]. The shape fits the chart, but these values tell the wrong story.`}
+                        : `This row mixes readings from different sensors. Sensor ${sensorName(draft.channel)}’s readings are [${expected.join(", ")}]. Farah’s chart would show the wrong readings.`}
                     </p>
                     <Trace
                       expected={expected}
@@ -343,20 +347,21 @@ export function ChannelLayoutExperiment() {
                 {draft.explanation && (
                   <div id={`${uid}-explanation`} className="space-y-3">
                     <p>
-                      <code>reshape([4, 3])</code> takes the values in their
-                      existing order and starts a new row after every three. It
-                      does not group readings by sensor.
+                      <code>reshape([4, 3])</code> reads the same list again,
+                      three values per row. It keeps their original order, so
+                      readings from different sensors end up together.
                     </p>
                     <p>
-                      For this two-axis grid, <code>transpose()</code> turns
-                      each column into a row. Each sensor keeps its readings in
-                      time order.
+                      <code>transpose()</code> turns each column into a row.
+                      Sensor A’s column becomes sensor A’s row, and the same
+                      happens for B, C, and D. Their readings stay in time
+                      order.
                     </p>
                     <p>
-                      Both results have shape <code>[4, 3]</code>. Shape gives
-                      the sizes; the recording format tells us what those axes
-                      mean. Check the values before passing them to a chart or
-                      model.
+                      Both results have shape <code>[4, 3]</code>: four rows,
+                      three columns. Those numbers cannot tell Farah what each
+                      row means. She needs the header for that, and she still
+                      needs to check the readings before using them.
                     </p>
                   </div>
                 )}
@@ -378,13 +383,14 @@ export function ChannelLayoutExperiment() {
               Your turn: follow sensor B
             </h4>
             <p>
-              Farah opens a different practice recording: two moments, with
-              sensors A, B, and C in that order at each moment. Help her give
-              the chart one row per sensor.
+              Farah opens another practice recording. This time, three sensors
+              took readings at two different times. The header gives the order
+              as A, B, C each time. Help her get one row per sensor ready for
+              the chart.
             </p>
             <PacketTable
               packet={CHECK_PACKET}
-              caption="New input: one row per moment. Shape [2, 3]"
+              caption="The new recording, with one row for each time. Shape [2, 3]"
               channel={1}
             />
             <form onSubmit={submitCheck} className="space-y-4">
@@ -442,14 +448,14 @@ export function ChannelLayoutExperiment() {
               <p role="status">
                 {draft.checkResult
                   ? draft.checkResult.correct
-                    ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this example. Transpose keeps sensor B’s readings together, in time order.`
+                    ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this example. Sensor B’s readings stay together and in time order, ready for Farah’s chart.`
                     : checkChannelTransfer(
                           draft.checkOperation,
                           draft.checkValues,
                         ).operationCorrect
                       ? "The operation is right. For the readings, follow sensor B’s column from top to bottom."
-                      : "Reshape also makes shape [3, 2], but mixes sensors. Which operation turns a column into a row?"
-                  : "We’ll check both the operation and the readings. Getting the shape alone is not enough."}
+                      : "Reshape gives you three rows of two, but mixes the sensors’ readings. Which operation turns a column into a row?"
+                  : "Choose an operation and enter sensor B’s readings. We’ll check both so Farah gets the right readings in her chart."}
               </p>
             </form>
             <button
@@ -465,8 +471,8 @@ export function ChannelLayoutExperiment() {
               <p id={`${uid}-help`}>
                 Transpose makes [[10, 11], [20, 21], [30, 31]]. Sensor B’s row
                 is [20, 21]. Reshape makes [[10, 20], [30, 11], [21, 31]], which
-                splits sensor B across rows. Later attempts will be marked as
-                using help.
+                puts sensor B’s readings in separate rows. If you try again,
+                we’ll record that you used this help.
               </p>
             )}
             <p className="text-base text-text-muted">
@@ -559,14 +565,14 @@ function FlatReadings() {
   return (
     <figure className="m-0 space-y-3">
       <figcaption className="!text-left !text-base font-medium">
-        The flat recording, in order. The letters identify each reading’s
-        sensor.
+        Read from left to right. Each letter shows which sensor the reading came
+        from.
       </figcaption>
       <div
         className="overflow-x-auto"
         tabIndex={0}
         role="region"
-        aria-label="Flat recording. Scroll sideways to follow all twelve readings."
+        aria-label="The list of twelve readings. Scroll sideways to see them all."
       >
         <ol
           className="!m-0 flex w-max list-none gap-2 !p-0"
@@ -615,14 +621,14 @@ function PacketTable({
           <thead>
             <tr>
               <th scope="col">
-                {transposed ? "Sensor" : operation ? "Row" : "Moment"}
+                {transposed ? "Sensor" : operation ? "Row index" : "Time"}
               </th>
               {packet[0].map((_, c) => (
                 <th scope="col" key={c}>
                   {transposed
-                    ? `Moment ${c + 1}`
+                    ? `Time ${c + 1}`
                     : operation
-                      ? `Col ${c}`
+                      ? `Column ${c}`
                       : sensorName(c)}
                 </th>
               ))}
@@ -695,7 +701,7 @@ function Trace({
         viewBox="0 0 600 225"
         className="block w-full"
         role="img"
-        aria-label={`Sensor ${sensorName(channel)} over time: ${expected.join(", ")}. Output row ${channel}: ${actual.join(", ")}.`}
+        aria-label={`Sensor ${sensorName(channel)} over time: ${expected.join(", ")}. Row at index ${channel} after your operation: ${actual.join(", ")}.`}
       >
         <path
           d="M70 25V175H550"
@@ -740,17 +746,17 @@ function Trace({
             fontSize="16"
             fill="currentColor"
           >
-            Moment {t + 1}
+            Time {t + 1}
           </text>
         ))}
       </svg>
       <figcaption className="!text-base">
-        Solid line: sensor {sensorName(channel)}’s readings. Dashed with dots:
-        output row {channel}.{" "}
+        The solid line shows sensor {sensorName(channel)}’s readings. The dashed
+        line with dots shows the row at index {channel} after your operation.{" "}
         {expected.every((value, i) => value === actual[i])
-          ? "The lines match: the readings stayed in time order."
-          : "The lines differ: this row would give Farah the wrong chart."}{" "}
-        These are made-up practice values.
+          ? "The lines match. The sensor’s readings stayed in time order."
+          : "The lines differ. This row would give Farah the wrong chart."}{" "}
+        Farah is using made-up readings for this practice.
       </figcaption>
     </figure>
   );

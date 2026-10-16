@@ -19,7 +19,7 @@ concept:
     mlTitle: "Tensor.shape"
     mlCode: "grid.shape // [3, 4]"
     tier: structural
-    breaks: "For a rectangular nested array, `rows.length` counts the rows and `rows[0].length` counts the columns. A tensor keeps both counts in `grid.shape`. Neither the array lengths nor the tensor's shape tells you what a row represents. You need that information from the data's format."
+    breaks: "For a rectangular array, rows.length gives the number of rows. rows[0].length gives the number of values in each row. A tensor stores those counts in grid.shape. The counts do not tell Farah which row belongs to a time or a sensor. That comes from the recording format."
 consequence:
   narrative: "Farah uses the recording header to keep each sensor's readings together. Repeating waves appear when she plots them over time."
 hints:
@@ -76,44 +76,52 @@ A shape gives the sizes. The recording header tells us what they mean.
 
 </BriefingTakeaway>
 
-<LearningObjectives objectives={[
-  "Read a grid's shape and explain what its rows and columns represent",
-  "Reshape a flat recording into one row per moment",
-  "Use transpose to put each sensor's readings in its own row",
-  "Check the values as well as the shape before using the result"
-]} />
+<LearningObjectives
+  objectives={[
+    "Read the grid’s shape and figure out what its rows and columns mean.",
+    "Use `reshape()` to group readings taken at the same time into rows.",
+    "Use `transpose()` to give each sensor its own row.",
+    "Check the shape and make sure every reading is in the right place."
+  ]}
+  introduction="Farah wants to see how each sensor’s readings change over time. Together, you’ll:"
+/>
 
-## Use the layout in JavaScript
+## Put Farah’s plan into JavaScript
 
-An **axis** is one direction in a tensor. The grid has two axes: rows and
-columns. Here, rows represent moments and columns represent sensors. The
-recording header establishes that meaning; the shape `[3, 4]` only gives
+Farah’s practice grid has three rows and four columns, so its **shape** is
+`[3, 4]`. Each row holds readings taken at the same time. Each column belongs
+to one sensor. The recording header gives that order; the shape only gives
 the counts.
 
-The **rank** counts the axes. A flat list has one axis, so it has rank 1.
-This grid has two axes, so it has rank 2. An axis is also called a
-**dimension**.
+Rows and columns are the grid’s two **axes**. An axis is also called a
+**dimension**. The number of axes is the **rank**: this grid has rank 2.
+The original list has just one axis, so it has rank 1.
 
-Here are the same practice readings from the activity. Read the list from
-left to right, with sensors A, B, C, and D recorded at each moment:
+<StoryPassage>
+
+Farah brings the practice list over to JavaScript. The readings come from
+sensors A, B, C, and D, in that order each time. She needs you to keep that
+order as you build the grid.
+
+</StoryPassage>
 
 <CodeBlock language="typescript" title="arrange-readings.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
 const flat = tf.tensor1d([2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]);
 
-// One row per moment, with sensors A, B, C, D in the columns.
+// Keep sensors A, B, C, D in that order in each row.
 const grid = flat.reshape([3, 4]);
 console.log(grid.arraySync());
 // [[2, 20, 5, 8],
 //  [3, 18, 7, 8],
 //  [4, 16, 6, 9]]
 
-// Read the second moment as a regular JavaScript array.
+// Read the second row. JavaScript starts counting at 0.
 const step1 = grid.arraySync()[1];
 console.log(step1); // [3, 18, 7, 8]
 
-// The chart needs one row per sensor, with moments in order.
+// Give each sensor its own row, from the first reading to the last.
 const bySensor = grid.transpose();
 console.log(bySensor.arraySync());
 // [[2, 3, 4],     // Sensor A
@@ -121,70 +129,76 @@ console.log(bySensor.arraySync());
 //  [5, 7, 6],     // Sensor C
 //  [8, 8, 9]]     // Sensor D
 
-// Clean up after using the results.
+// Release the tensors when you are done with them.
 tf.dispose([flat, grid, bySensor]);`}
 </CodeBlock>
 
-`reshape([3, 4])` starts a new row every four values. It keeps the values in
-their original order. A reshape must keep the same number of values:
-`3 × 4 = 12`.
+Farah needs four readings in each row. `reshape([3, 4])` takes the list in
+order and starts a new row after every four values. No readings are added or
+removed: `3 × 4 = 12`.
 
-`arraySync()` reads the tensor into regular JavaScript arrays. For this grid,
-it returns one array per row. JavaScript counts from zero, so `[1]` selects
-the second row. Use `grid.arraySync()[1]`, not `grid[1]`, to read that row.
+`arraySync()` gives you regular JavaScript arrays, with one array for each
+row. JavaScript starts counting at `0`, so `grid.arraySync()[1]` gives you
+the second row. `grid[1]` does not read a tensor row.
 
-For this two-dimensional grid, `transpose()` turns each column into a row.
-The result has shape `[4, 3]`: four sensors, with three readings per sensor
-in time order.
+After the reshape, Farah can see all four sensors at each time. Her chart
+needs a different view: one sensor per row. `transpose()` turns the columns
+into rows. The shape becomes `[4, 3]`: four sensors, with three readings each.
 
-Reshaping `grid` to `[4, 3]` also gives four rows of three, but its first row
-would be `[2, 20, 5]`. Those values come from three different sensors. The
-shape is valid, but that row cannot show how sensor A changed over time.
+`reshape([4, 3])` also makes four rows, but its first row is `[2, 20, 5]`.
+That mixes readings from sensors A, B, and C. `transpose()` gives sensor A
+its own row: `[2, 3, 4]`. The two results have the same shape, but only one
+keeps each sensor’s readings together.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-<ConceptReference summary="Optional: more axes, image batches, and memory">
+<ConceptReference summary="Optional: images, extra axes, and memory">
 
-### Shapes can have more than two axes
+### The same idea works for images
 
-A shape lists the size of each axis, in order. A list of ten values has shape
-`[10]`. A grid with three rows and four columns has shape `[3, 4]`.
+A shape gives the size of each axis, in order. A list of ten values has
+shape `[10]`. A grid with three rows and four columns has shape `[3, 4]`.
 
-A **batch** is a group of examples processed together. For 32 color images,
-the shape might be `[32, 224, 224, 3]`:
+You can also group images into a **batch** to process them together.
+Suppose you have 32 color images, each 224 pixels high and 224 pixels wide.
+Their shape could be `[32, 224, 224, 3]`:
 
 - `32` images.
 - `224` pixels high per image.
 - `224` pixels wide per image.
 - `3` color channels per pixel: red, green, and blue.
 
-This is a **channel-last** layout because the color channels come last.
-Other systems may put them in a different position. The image format tells
-you which axis represents height, width, or color channels.
+Here, the color channels come last. This is called a **channels-last**
+layout. Other models expect `[32, 3, 224, 224]`, with color channels before
+height and width. Prepare the images in the order your model expects.
 
-For readings over time, `[32, 5, 3]` could mean 32 examples, each with five
-moments and three measurements per moment. Those measurements are called
-**features**. These are possible meanings, not information stored in the
-shape itself.
+For another example, `[32, 5, 3]` could hold 32 short recordings. Each covers
+five points in time, with three measurements at each point. Those
+measurements are **features**. The shape alone does not tell you this;
+the data’s format does.
 
-### Reshape, transpose, and memory
+### What happens to the data in memory?
 
-Reshape follows the tensor's existing value order, reading across each row
-before moving to the next. This is called **row-major order**.
+Reshape reads across each row before moving down to the next. This is
+called **row-major order**. It makes new rows from that sequence; it does
+not work out which readings belong to a sensor.
 
-In this TensorFlow.js exercise, reshape reuses the original tensor's data in
-memory. The tests check that you reshape the supplied `flat` tensor rather
-than create a new one from copied values. The JavaScript array returned by
-`arraySync()` is a separate copy.
+Here, TensorFlow.js lets `reshape()` reuse the data already stored in
+`flat`. The exercise checks that you reshape `flat`, rather than copy its
+values into a new tensor. The arrays from `arraySync()` are separate
+JavaScript copies.
 
-The worked example disposes of its tensors after reading the results.
-In the challenge, keep `grid` and `bySensor` for the tests. `step1` is a
-regular JavaScript array and does not need `dispose()`.
+The example above releases its tensors after reading the results. In the
+challenge, keep `grid` and `bySensor` so the tests can check them. `step1`
+is a regular JavaScript array, so it does not need `dispose()`.
 
-With more than two axes, you can give transpose an explicit axis order. For
-example, `tensor.transpose([1, 0, 2])` exchanges the first two axes and
-leaves the third in place. Without an argument, TensorFlow.js reverses the
-axis order. Check what each axis represents before choosing that order.
+### Swapping axes in a bigger tensor
+
+With more than two axes, you can tell `transpose()` which order you want.
+Axes are numbered from `0`, just like array indexes.
+`tensor.transpose([1, 0, 2])` puts the second axis first and the first axis
+second. The third stays where it is. With no argument, TensorFlow.js reverses
+all the axes. Check what each axis means before choosing an order.
 
 </ConceptReference>
 
