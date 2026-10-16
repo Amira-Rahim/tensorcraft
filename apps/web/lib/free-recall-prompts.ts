@@ -33,13 +33,14 @@
 
 import { lessons, modules } from "@tensorcraft/content";
 import { DEFAULT_WORLD, type RecallCheck } from "@tensorcraft/shared";
+import { reviewPromptIndex } from "./recall-content-version";
 
 /** One free recall prompt with the key a guest queue entry carries. */
 export interface FreeRecallPrompt {
   question: string;
   answer: string;
   checks?: RecallCheck[];
-  /** Position of the prompt within its lesson, 0-based. Part of the key. */
+  /** Versioned queue key derived from the prompt's position in its lesson. */
   promptIndex: number;
   lessonId: string;
   moduleId: string;
@@ -96,7 +97,7 @@ export const FREE_RECALL_PROMPTS: FreeRecallPrompt[] = lessons
       // the lesson-completion enqueue. This table must not be the one surface
       // that spells it differently, because stage 2's whole job is joining
       // them.
-      promptIndex: index,
+      promptIndex: reviewPromptIndex(l.worldId, l.slug, index),
       lessonId: l.slug,
       // Carried only so the safety test can assert the table holds nothing
       // outside the free module. The lookup below keys on

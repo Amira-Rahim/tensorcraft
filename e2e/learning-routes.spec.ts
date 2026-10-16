@@ -54,7 +54,9 @@ for (const [width, colorScheme] of [
     await expect(
       page.getByRole("button", { name: "Step 2: Concept", exact: true }),
     ).toHaveAttribute("aria-current", "step");
-    await experiment.getByLabel(/Predict channel/).fill("0,1,2");
+    await experiment
+      .getByLabel("Which four readings go in the second row?", { exact: true })
+      .fill("2,20,5,8");
     await experiment
       .getByRole("button", { name: "Check prediction", exact: true })
       .click();
@@ -62,40 +64,51 @@ for (const [width, colorScheme] of [
       .getByRole("button", { name: "Run reshape", exact: true })
       .click();
     await expect(experiment.getByTestId("channel-result")).toContainText(
-      "[0, 1, 2]",
+      "[2, 20, 5]",
     );
     await experiment
       .getByRole("button", { name: "Run transpose", exact: true })
       .click();
     await expect(experiment.getByTestId("channel-result")).toContainText(
-      "[0, 4, 8]",
+      "[2, 3, 4]",
     );
     await experiment
-      .getByRole("button", { name: "Try a different packet", exact: true })
+      .getByRole("button", { name: "Try a new example", exact: true })
       .click();
-    await experiment.getByLabel("Transpose the axes", { exact: true }).check();
     await experiment
-      .getByLabel("Channel 1 values, in time order", { exact: true })
+      .getByLabel("Transpose: turn columns into rows", { exact: true })
+      .check();
+    await experiment
+      .getByLabel("Sensor B’s two readings, from earliest to latest", {
+        exact: true,
+      })
       .fill("20,21");
     await experiment
-      .getByRole("button", { name: "Check new packet", exact: true })
+      .getByRole("button", { name: "Check my answer", exact: true })
       .click();
     await expect(
-      experiment.getByText(/First changed-case attempt: correct/),
+      experiment.getByText(
+        /Your first answer on the new example: correct, without help/,
+      ),
     ).toBeVisible();
     const reference = page.locator("details").filter({
-      has: page.getByText(
-        "Reference: flat order, reshape code, and the full archive example",
-        { exact: true },
-      ),
+      has: page.getByText("Optional: more axes, image batches, and memory", {
+        exact: true,
+      }),
     });
     await reference.locator("summary").click();
     await expect(reference).toHaveAttribute("open", "");
     await expect(
-      reference.getByText("tensor-shapes.ts", { exact: true }),
+      reference.getByRole("heading", {
+        name: "Shapes can have more than two axes",
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(
-      reference.getByText("garbled-channels.ts", { exact: true }),
+      reference.getByRole("heading", {
+        name: "Reshape, transpose, and memory",
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
@@ -115,7 +128,7 @@ for (const [width, colorScheme] of [
       body: JSON.stringify({
         durationMs: Date.now() - started,
         includes:
-          "navigation, project brief, guest paywall, wrong prediction, transforms, changed packet and code reference",
+          "navigation, project brief, guest paywall, wrong prediction, transforms, new sensor example and optional reference",
         excludes: "human reading and thinking time; this is not learner timing",
       }),
       contentType: "application/json",

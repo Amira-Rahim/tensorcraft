@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   activityEvidenceLabel,
+  LEARNING_ACTIVITIES,
   type ActivityPhase,
   type ActivitySnapshot,
   type ActivitySummary,
@@ -77,6 +78,7 @@ export function ActivitySyncStatus({
 }) {
   const userId = useActivityUser(),
     signature = JSON.stringify(records);
+  const contentVersion = LEARNING_ACTIVITIES[activityId].version;
   const meta = useRef<SyncMeta | null>(null);
   const [retry, setRetry] = useState(0),
     [status, setStatus] = useState(""),
@@ -122,7 +124,7 @@ export function ActivitySyncStatus({
           if (cancelled) return;
           await saveActivity(userId, {
             activityId,
-            version: 1,
+            version: contentVersion,
             phase: r.phase,
             streamId: syncMeta.streamId,
             count: r.count,
@@ -152,7 +154,16 @@ export function ActivitySyncStatus({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [activityId, guestKey, ready, retry, signature, storageKey, userId]);
+  }, [
+    activityId,
+    contentVersion,
+    guestKey,
+    ready,
+    retry,
+    signature,
+    storageKey,
+    userId,
+  ]);
   async function importGuest() {
     if (!userId || importing) return;
     setImporting(true);
@@ -165,7 +176,7 @@ export function ActivitySyncStatus({
       for (const r of rows.filter((r) => r.count > 0 || r.assistance))
         await saveActivity(userId, {
           activityId,
-          version: 1,
+          version: contentVersion,
           phase: r.phase,
           streamId: guestMeta.streamId,
           count: r.count,

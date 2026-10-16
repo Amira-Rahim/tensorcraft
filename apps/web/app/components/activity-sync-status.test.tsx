@@ -9,6 +9,10 @@ import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { LearningActivityScope } from "./learning-activity-scope";
 import { LearningExperiment } from "./mdx/learning-experiment";
 import { experimentDraft } from "./mdx/learning-experiment-data";
+import {
+  ActivitySyncStatus,
+  type LocalActivityRecord,
+} from "./activity-sync-status";
 import { saveActivity, readActivities } from "@/lib/learning-activity-client";
 const auth = vi.hoisted(() => ({
   change: null as null | ((event: string, session: unknown) => void),
@@ -188,4 +192,106 @@ it("does not import a corrupt guest draft or overwrite a remote first attempt", 
     ).toBeInTheDocument(),
   );
   expect(saveActivity).not.toHaveBeenCalled();
+});
+
+it("syncs the current channel activity version without importing an earlier guest draft", async () => {
+  const channelKey = "tensorcraft:experiment:deep-orbit-channel-layout:v2";
+  sessionStorage.setItem(channelKey.replace(":v2", ":v1"), '{"version":1}');
+  const rows: LocalActivityRecord[] = [
+    {
+      phase: "prediction",
+      count: 1,
+      first: { correct: true, assisted: false },
+      latest: { correct: true, assisted: false },
+      assistance: false,
+    },
+  ];
+  render(
+    <LearningActivityScope userId="account-a">
+      <ActivitySyncStatus
+        activityId="deep-orbit-channel-layout"
+        storageKey={`${channelKey}:account:account-a`}
+        guestKey={channelKey}
+        ready
+        records={rows}
+        readGuest={() => rows}
+      />
+    </LearningActivityScope>,
+  );
+  await waitFor(() =>
+    expect(saveActivity).toHaveBeenCalledWith(
+      "account-a",
+      expect.objectContaining({
+        activityId: "deep-orbit-channel-layout",
+        version: 2,
+      }),
+    ),
+  );
+  expect(
+    screen.queryByRole("button", { name: "Import this tab’s guest practice" }),
+  ).not.toBeInTheDocument();
+  expect(sessionStorage.getItem(channelKey.replace(":v2", ":v1"))).toBe(
+    '{"version":1}',
+  );
+});
+
+it("imports a current channel guest summary as version two and shows old account work separately", async () => {
+  const channelKey = "tensorcraft:experiment:deep-orbit-channel-layout:v2";
+  const rows: LocalActivityRecord[] = [
+    {
+      phase: "changed_case",
+      count: 2,
+      first: { correct: false, assisted: false },
+      latest: { correct: true, assisted: true },
+      assistance: true,
+    },
+  ];
+  sessionStorage.setItem(channelKey, '{"version":2}');
+  vi.mocked(readActivities).mockResolvedValue([
+    {
+      activity_id: "deep-orbit-channel-layout",
+      content_version: 1,
+      phase: "changed_case",
+      first_correct: false,
+      first_assisted: false,
+      latest_correct: true,
+      latest_assisted: true,
+      attempt_count: 3,
+      assistance_observed: true,
+      completed_at: null,
+      source: "browser_check",
+      updated_at: "2026-10-16T00:00:00Z",
+    },
+  ]);
+  render(
+    <LearningActivityScope userId="account-a">
+      <ActivitySyncStatus
+        activityId="deep-orbit-channel-layout"
+        storageKey={`${channelKey}:account:account-a`}
+        guestKey={channelKey}
+        ready
+        records={[]}
+        readGuest={() => rows}
+      />
+    </LearningActivityScope>,
+  );
+  fireEvent.click(
+    await screen.findByRole("button", {
+      name: "Import this tab’s guest practice",
+    }),
+  );
+  await waitFor(() =>
+    expect(saveActivity).toHaveBeenCalledWith(
+      "account-a",
+      expect.objectContaining({ version: 2, phase: "changed_case", count: 2 }),
+    ),
+  );
+  await waitFor(() =>
+    expect(
+      screen.getByText(
+        /Earlier activity version: Changed case passed with help/,
+      ),
+    ).toBeInTheDocument(),
+  );
+  expect(sessionStorage.getItem(channelKey)).toBe('{"version":2}');
 });

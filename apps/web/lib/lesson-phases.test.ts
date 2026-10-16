@@ -37,6 +37,24 @@ describe("five-phase migration", () => {
       keys.current,
     );
   });
+  it("revises only sensor-lesson recall while preserving its earned progress keys", () => {
+    const revised = lessonStepKeys("deep-orbit", "tensor-shapes", "alice");
+    expect(revised.recall).toBe(
+      "tc_recall_v2_deep-orbit_tensor-shapes:account:alice",
+    );
+    expect(revised.current).toBe(
+      "tc_step_v2_deep-orbit_tensor-shapes:account:alice",
+    );
+    expect(revised.passed).toBe(
+      "tc_step_deep-orbit_tensor-shapes:account:alice-passed",
+    );
+    expect(lessonStepKeys("deep-orbit", "tensor-shapes", null).recall).toBe(
+      "tc_recall_v2_deep-orbit_tensor-shapes",
+    );
+    expect(lessonStepKeys("other-world", "tensor-shapes", null).recall).toBe(
+      "tc_recall_other-world_tensor-shapes",
+    );
+  });
   it("deduplicates old Concept/Code visits without inventing skipped phases", () => {
     expect(
       read({

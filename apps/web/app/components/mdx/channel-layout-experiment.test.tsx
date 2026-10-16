@@ -23,25 +23,28 @@ const record = () =>
 it("compares two same-shape layouts, retains state on remount, and does not emit answer text", () => {
   const view = render(<ChannelLayoutExperiment />);
   expect(screen.queryByTestId("channel-result")).not.toBeInTheDocument();
-  fireEvent.change(screen.getByLabelText(/Which numbers belong to channel/), {
-    target: { value: "0, 1, 2" },
-  });
+  fireEvent.change(
+    screen.getByLabelText(/Which four readings go in the second row/),
+    {
+      target: { value: "2, 20, 5, 8" },
+    },
+  );
   click("Check prediction");
   expect(record().firstPrediction).toEqual({ correct: false, assisted: false });
   click("Run reshape");
   expect(
     within(screen.getByTestId("channel-result")).getByRole("status"),
-  ).toHaveTextContent("[0, 1, 2]");
+  ).toHaveTextContent("[2, 20, 5]");
   click("Run transpose");
   expect(
     within(screen.getByTestId("channel-result")).getByRole("status"),
-  ).toHaveTextContent("[0, 4, 8]");
-  fireEvent.change(screen.getByLabelText("Choose a channel"), {
+  ).toHaveTextContent("[2, 3, 4]");
+  fireEvent.change(screen.getByLabelText("Follow a sensor"), {
     target: { value: "2" },
   });
   view.unmount();
   render(<ChannelLayoutExperiment />);
-  expect(screen.getByLabelText("Choose a channel")).toHaveValue("2");
+  expect(screen.getByLabelText("Follow a sensor")).toHaveValue("2");
   expect(screen.getByRole("button", { name: "Run transpose" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -59,7 +62,7 @@ it("compares two same-shape layouts, retains state on remount, and does not emit
     worldId: "deep-orbit",
     lessonId: "tensor-shapes",
     experimentId: "deep-orbit-channel-layout",
-    contentVersion: 1,
+    contentVersion: 2,
     phase: "prediction",
     attempt: 1,
     correct: false,
@@ -75,7 +78,7 @@ it("tests both operation and values on the changed packet, preserving the first 
   ).not.toBeInTheDocument();
   fireEvent.click(screen.getByLabelText("Reshape to [3, 2]"));
   fireEvent.change(
-    screen.getByLabelText("Channel 1's two numbers, from earliest to latest"),
+    screen.getByLabelText("Sensor B’s two readings, from earliest to latest"),
     {
       target: { value: "20, 21" },
     },
@@ -87,7 +90,7 @@ it("tests both operation and values on the changed packet, preserving the first 
   expect(record().latestCheck).toEqual({ correct: false, assisted: false });
   fireEvent.click(screen.getByLabelText("Transpose: turn columns into rows"));
   fireEvent.change(
-    screen.getByLabelText("Channel 1's two numbers, from earliest to latest"),
+    screen.getByLabelText("Sensor B’s two readings, from earliest to latest"),
     {
       target: { value: "20, 21" },
     },
@@ -103,11 +106,15 @@ it("tests both operation and values on the changed packet, preserving the first 
 
 it("does not erase observed help by resetting operations or looking back at the worked packet", () => {
   render(<ChannelLayoutExperiment />);
+  click("Build the table");
   click("Run transpose");
   click("Reset the controls");
-  fireEvent.change(screen.getByLabelText(/Which numbers belong to channel/), {
-    target: { value: "0,4,8" },
-  });
+  fireEvent.change(
+    screen.getByLabelText(/Which four readings go in the second row/),
+    {
+      target: { value: "3,18,7,8" },
+    },
+  );
   click("Check prediction");
   expect(record().firstPrediction?.assisted).toBe(true);
   click("Try a new example");
@@ -128,8 +135,81 @@ it("keeps the activity usable if storage is corrupt or unavailable", () => {
     screen.getByText(/couldn't load your saved work for this activity/),
   ).toBeInTheDocument();
   expect(
-    screen.getByText(/can't save your work in this tab/),
+    screen.getByText(/can’t save your work in this tab/),
   ).toBeInTheDocument();
+  click("Build the table");
   click("Run transpose");
   expect(screen.getByTestId("channel-result")).toBeInTheDocument();
+});
+
+it("lets learners predict before revealing the table and keeps first evidence independent of feedback", () => {
+  render(<ChannelLayoutExperiment />);
+  expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Run transpose" }),
+  ).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText(/Which four readings/), {
+    target: { value: "3,18,7,8" },
+  });
+  click("Check prediction");
+  expect(record().firstPrediction).toEqual({ correct: true, assisted: false });
+  expect(screen.getByTestId("time-grid")).toBeInTheDocument();
+  expect(record().predictionHelp).toBe(true);
+  click("Check prediction");
+  expect(record().latestPrediction).toEqual({ correct: true, assisted: true });
+  expect(record().firstPrediction).toEqual({ correct: true, assisted: false });
+});
+
+it("preserves source sensor identity for duplicate readings through both layouts and keeps the plot in bounds", () => {
+  render(<ChannelLayoutExperiment />);
+  click("Build the table");
+  click("Run reshape");
+  let table = within(screen.getByTestId("channel-result")).getByRole("table");
+  expect(
+    [...table.querySelectorAll('[data-sensor="D"]')].map((cell) =>
+      cell.textContent?.trim(),
+    ),
+  ).toEqual(["8D", "8D", "9D"]);
+  fireEvent.change(screen.getByLabelText("Follow a sensor"), {
+    target: { value: "1" },
+  });
+  const svg = screen.getByRole("img");
+  expect(svg).toHaveAccessibleName(/20, 18, 16/);
+  for (const point of svg.querySelectorAll("polyline")) {
+    for (const pair of point.getAttribute("points")!.split(" ")) {
+      const [x, y] = pair.split(",").map(Number);
+      expect(x).toBeGreaterThanOrEqual(70);
+      expect(x).toBeLessThanOrEqual(530);
+      expect(y).toBeGreaterThanOrEqual(35);
+      expect(y).toBeLessThanOrEqual(175);
+    }
+  }
+  click("Run transpose");
+  table = within(screen.getByTestId("channel-result")).getByRole("table");
+  const sensorD = within(table)
+    .getByRole("rowheader", { name: "D" })
+    .closest("tr")!;
+  expect(
+    [...sensorD.querySelectorAll("td")].every(
+      (cell) => cell.dataset.sensor === "D",
+    ),
+  ).toBe(true);
+  expect(
+    [...sensorD.querySelectorAll("td")].map((cell) => cell.textContent?.trim()),
+  ).toEqual(["8D", "8D", "9D"]);
+});
+
+it("does not treat older activity work as a prediction on the revised task", () => {
+  sessionStorage.setItem(
+    CHANNEL_STORAGE_KEY.replace(":v2", ":v1"),
+    JSON.stringify({
+      version: 1,
+      prediction: "0,4,8",
+      firstPrediction: { correct: true, assisted: false },
+    }),
+  );
+  render(<ChannelLayoutExperiment />);
+  expect(screen.getByLabelText(/Which four readings/)).toHaveValue("");
+  expect(record().firstPrediction).toBeNull();
+  expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
 });

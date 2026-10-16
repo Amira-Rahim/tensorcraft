@@ -38,6 +38,7 @@ import { dirname, resolve } from "node:path";
 import { createRequire } from "node:module";
 import { randomBytes } from "node:crypto";
 import { FIT_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-fit-recording.mjs";
+import { SHAPE_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-shape-recording.mjs";
 
 // Resolve `@tensorflow/tfjs` from the workspace `packages/ui` package, since
 // pnpm doesn't hoist it to the repo root and the validator script lives at
@@ -51,6 +52,9 @@ const _require = createRequire(
 );
 const realTf = _require("@tensorflow/tfjs");
 const fitRecorder = new Function(`return ${FIT_RECORDING_SOURCE}`)()(realTf);
+const shapeRecorder = new Function(`return ${SHAPE_RECORDING_SOURCE}`)()(
+  realTf,
+);
 
 // Polyfill `inputShape` getter on `LayersModel` (and therefore `Sequential`).
 // Real tfjs only exposes `outputShape`; many exercise tests assert on
@@ -198,6 +202,7 @@ const SPIED_ENTRY_POINTS = new Set([
   "keep",
   "matMul",
   "dot", // the functional twin of tensor.dot (round 7b, 2026-09-14: a gate on matMul-or-dot missed tf.dot)
+  "reshape",
   "transpose",
   "add",
   "sub",
@@ -247,7 +252,7 @@ let liveCalls = Object.create(null);
       if (typeof real !== "function") continue;
       tproto[name] = function (...args) {
         liveCalls[`tensor.${name}`] = (liveCalls[`tensor.${name}`] || 0) + 1;
-        return real.apply(this, args);
+        return shapeRecorder.record(name, this, real.apply(this, args));
       };
     }
     tproto.__tcSpied = true;
@@ -301,6 +306,7 @@ let liveCalls = Object.create(null);
 }
 function spiedTf(base) {
   fitRecorder.reset();
+  shapeRecorder.reset();
   const calls = Object.create(null);
   liveCalls = calls;
   const bump = (name) => {
@@ -328,11 +334,12 @@ function spiedTf(base) {
       if (prop === "__calls")
         return Object.freeze(Object.assign(Object.create(null), calls));
       if (prop === "__fits") return fitRecorder.read();
+      if (prop === "__shapeOf") return shapeRecorder.read;
       const v = target[prop];
       if (SPIED_ENTRY_POINTS.has(prop) && typeof v === "function") {
         return function (...args) {
           bump(prop);
-          return v.apply(target, args);
+          return shapeRecorder.record(prop, args[0], v.apply(target, args));
         };
       }
       // tf.train is a function with members hung off it, not a plain object,

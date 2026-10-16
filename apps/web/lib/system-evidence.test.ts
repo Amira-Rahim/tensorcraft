@@ -60,7 +60,7 @@ it("keeps browser practice, exercise pass, lesson completion and due review dist
 });
 it("does not call unknown assistance independent or an older failed attempt a completion", () => {
   expect(activityEvidenceLabel({ ...summary, content_version: 9 })).toBe(
-    "Earlier completion; assistance not recorded",
+    "Different activity version: Changed case passed with help",
   );
   const stages = buildSystemEvidence({
     lessons,

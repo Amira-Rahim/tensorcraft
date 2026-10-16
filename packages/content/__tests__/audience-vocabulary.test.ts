@@ -5,14 +5,17 @@ import { describe, it, expect } from "vitest";
  * Audience-vocabulary gate (2026-08 rebrand, docs/writing-quality-rubric.md
  * "House vocabulary").
  *
- * The audience is JavaScript engineers. This gate keeps the retired
+ * Published brand copy uses JavaScript engineers. This gate keeps the retired
  * "frontend <audience noun>" phrasing from re-entering through future copy,
  * docs, or the news-bot prompts, the same way the em-dash gate next door
  * pins its sweep. Architectural uses of "frontend" ("Next.js frontend",
  * frontend/backend split) do not match because the ban targets the noun
  * pairing, not the word.
  *
- * ALLOWLIST: files that legitimately carry the old phrasing. Historical
+ * The 2026-10-16 owner directive names frontend developers as the learning
+ * audience. Binding project guidance may state that audience explicitly while
+ * published brand vocabulary stays unchanged.
+ * ALLOWLIST: files that legitimately carry the phrasing. Historical
  * records (docs/audits, docs/superpowers, docs/scripts) are excluded
  * wholesale; the named files below each state the old wording on purpose
  * (rule text, gate history, a podcast's own descriptor, a migration
@@ -24,6 +27,9 @@ import { describe, it, expect } from "vitest";
 const PATTERN = ["front", "-?", "end", " (engineer|developer|dev)s?"].join("");
 
 const ALLOWED_FILES = new Set([
+  "AGENTS.md", // Binding learning-audience directive, 2026-10-16.
+  "CLAUDE.md", // Binding learning-audience directive, 2026-10-16.
+  "packages/content/__tests__/audience-vocabulary.test.ts", // Documents that directive.
   "docs/dev-plan.md",
   "docs/marketing-plan.md",
   "docs/roadmap.md",
@@ -71,7 +77,7 @@ describe("audience vocabulary (JavaScript engineers, repo-wide)", () => {
       .filter((line) => !ALLOWED_FILES.has(line.split(":")[0]));
     expect(
       hits,
-      `Retired audience phrasing found. The audience is JavaScript ` +
+      `Retired published brand phrasing found. The brand register is JavaScript ` +
         `engineers (docs/writing-quality-rubric.md, House vocabulary). ` +
         `Rewrite per the vocabulary table, or extend ALLOWED_FILES in this ` +
         `gate with a stated reason if the mention is a deliberate ` +

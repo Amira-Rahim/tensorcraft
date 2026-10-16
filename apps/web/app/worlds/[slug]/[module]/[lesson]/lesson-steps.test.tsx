@@ -10,6 +10,7 @@ import { LessonSteps } from "./lesson-steps";
 import { trackLessonCompleted, track } from "@/lib/analytics";
 import { markLessonCompleted, emitSkillEvent } from "@/lib/progress-client";
 import { recordGuestCompletion } from "@/lib/guest-progress";
+import { enqueueGuestReviews, getGuestReviews } from "@/lib/review-store-guest";
 
 // Stub next/link so render works without the Next router.
 vi.mock("next/link", () => ({
@@ -1571,6 +1572,95 @@ describe("Takeaways: the recap after the recall (spec 2026-09-24, section 2)", (
     act(() => recallState.report?.(0));
     expect(localStorage.getItem(`${RECALL_KEY}:account:alice`)).toBe("1");
     expect(localStorage.getItem(RECALL_KEY)).toBeNull();
+  });
+});
+
+describe("Tensor Shapes revised recall", () => {
+  const revised = {
+    ...lesson,
+    slug: "tensor-shapes",
+    title: "Understanding Tensor Shapes",
+    recallPrompts: [{ index: 0 }, { index: 1 }],
+  };
+  const oldRecall = "tc_recall_deep-orbit_tensor-shapes";
+  const newRecall = "tc_recall_v2_deep-orbit_tensor-shapes";
+  function openRevised({
+    completed = false,
+    owner = null,
+    phase = 3,
+  }: { completed?: boolean; owner?: string | null; phase?: number } = {}) {
+    const suffix = owner ? `:account:${owner}` : "";
+    localStorage.setItem(
+      `tc_step_v2_deep-orbit_tensor-shapes${suffix}`,
+      String(phase),
+    );
+    localStorage.setItem(
+      `tc_step_max_v2_deep-orbit_tensor-shapes${suffix}`,
+      "4",
+    );
+    return render(
+      <LessonSteps
+        lesson={revised}
+        exercises={[]}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        reviewUserId={owner}
+        lessons={[
+          {
+            slug: revised.slug,
+            title: revised.title,
+            order: 2,
+            locked: false,
+            completed,
+          },
+        ]}
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+  }
+  it("preserves server completion and navigation without treating earlier recall as answered", () => {
+    recallState.pendingOnMount = 1;
+    localStorage.setItem(`${oldRecall}:account:alice`, "1");
+    openRevised({ completed: true, owner: "alice" });
+    expect(screen.getByTestId("takeaways-recall")).toBeInTheDocument();
+    expect(screen.queryByTestId("takeaways-prose")).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Step 5: Epilogue" }),
+    ).not.toBeDisabled();
+    act(() => recallState.report?.(0));
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    expect(localStorage.getItem(`${newRecall}:account:alice`)).toBe("1");
+    expect(localStorage.getItem(`${oldRecall}:account:alice`)).toBe("1");
+  });
+  it("does not settle new recall from an earlier guest completion", () => {
+    recallState.pendingOnMount = 1;
+    recordGuestCompletion("deep-orbit", "foundations", revised.slug);
+    localStorage.setItem(oldRecall, "1");
+    openRevised();
+    expect(screen.queryByTestId("takeaways-prose")).toBeNull();
+    expect(localStorage.getItem(newRecall)).toBeNull();
+  });
+  it("restores a current recall attempt from the matching account only", () => {
+    recallState.pendingOnMount = 1;
+    localStorage.setItem(`${newRecall}:account:alice`, "1");
+    const first = openRevised({ owner: "alice" });
+    expect(screen.getByTestId("takeaways-prose")).toBeInTheDocument();
+    first.unmount();
+    window.history.replaceState(null, "", window.location.pathname);
+    openRevised({ owner: "bob" });
+    expect(screen.queryByTestId("takeaways-prose")).toBeNull();
+  });
+  it("queues fresh review identities while preserving the earlier review history", () => {
+    enqueueGuestReviews("deep-orbit", "foundations", revised.slug, [0]);
+    openRevised({ completed: true, phase: 4 });
+    const prompts = getGuestReviews().filter(
+      (item) => item.lessonId === revised.slug,
+    );
+    expect(
+      prompts.map((item) => item.promptIndex).sort((a, b) => a - b),
+    ).toEqual([0, 32, 33]);
+    expect(prompts.find((item) => item.promptIndex === 32)?.pulls).toBe(0);
   });
 });
 

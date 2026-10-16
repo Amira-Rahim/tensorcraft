@@ -91,6 +91,7 @@ async function browserRun(
 
 for (const slug of [
   "batch-data",
+  "reshape-tensor",
   "normalize-data",
   "rag-pipeline",
   "find-threshold",

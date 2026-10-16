@@ -142,8 +142,11 @@ chattiness ("Let's dive in!", "Great question!"); that is its own slop.
 
 ## House vocabulary (2026-08 rebrand, binding)
 
-The audience is JavaScript engineers, not frontend engineers. Apply these
-exact terms; do not coin variants.
+The learning audience is frontend developers learning ML through JavaScript
+(owner directive, 2026-10-16). Keep explanations simple, casual, practical, and
+connected to familiar frontend work. Preserve technical meaning and exercise
+requirements. The established brand and search terms below still apply to
+published copy; the audience instruction does not request a marketing rebrand.
 
 - Brand register (all human-read prose, legal, emails, lessons, story,
   certificates): "JavaScript engineer(s)". Second person: "You're a
@@ -161,10 +164,9 @@ exact terms; do not coin variants.
 - Skill-genome axis display label: "JS Integration".
 - Maker identity (owner decision 2026-08-18): "a group of JavaScript
   engineers". Collective voice, no personal names, unchanged otherwise.
-- What "frontend" survives: uses that answer "which layer of this system"
-  (litmus: substitute "client layer"; if the sentence still works it is
-  architectural and stays, e.g. "Next.js frontend", frontend/backend
-  split). Uses that answer "who is the reader" change.
+- "Frontend" may describe the learning audience in project guidance and the
+  client layer in technical explanations. Keep the established brand register
+  above for published identity copy.
 - Analogy anchors may be browser or Node, whichever carries the mechanism
   better; a browser-only or Node-only API used as an anchor gets a
   one-clause gloss (see rule 3).

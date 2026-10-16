@@ -76,9 +76,9 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "foundations",
     "tensor",
     "reshape",
-    "How should Farah arrange the readings?",
-    "Choose how many numbers go in each row. All six numbers stay in their original order.",
-    "Reshape puts the same numbers into new rows. It keeps their order and never adds or removes a number.",
+    "How can Farah follow one sensor over time?",
+    "Arrange the readings by moment, then compare two ways to give the chart one row per sensor.",
+    "Reshape keeps the existing value order. For a two-axis grid, transpose turns each column into a row. Check the values as well as the shape.",
   ),
   "tensor-operations": visual(
     "foundations",

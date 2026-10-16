@@ -54,6 +54,7 @@ import { selectDue } from "@tensorcraft/shared";
 import type { ResolvedReviewItem, ReviewItem } from "@tensorcraft/shared";
 import { canAccessWorld } from "@/lib/entitlements";
 import { isEarlierInCourse, type CoursePosition } from "@/lib/course-position";
+import { reviewPromptIndex } from "./recall-content-version";
 import type { getSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
@@ -185,7 +186,8 @@ export async function resolveDueForUser(
       continue;
 
     const prompt = (lesson.recallPrompts ?? []).find(
-      (p) => p.index === item.promptIndex,
+      (p) =>
+        reviewPromptIndex(worldId, lesson.slug, p.index) === item.promptIndex,
     );
     if (!prompt) continue;
 

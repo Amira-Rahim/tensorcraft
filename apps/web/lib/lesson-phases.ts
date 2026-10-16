@@ -1,3 +1,5 @@
+import { recallContentVersion } from "./recall-content-version";
+
 /** Version 2 combines the old Concept and Code phases. */
 export const LESSON_STEPS_VERSION = 2;
 export const PHASE = {
@@ -66,13 +68,14 @@ export function lessonStepKeys(
   owner: string | null,
 ) {
   const suffix = `${world}_${lesson}${owner ? `:account:${owner}` : ""}`;
+  const recallVersion = recallContentVersion(world, lesson);
   return {
     current: `tc_step_v2_${suffix}`,
     max: `tc_step_max_v2_${suffix}`,
     legacyCurrent: `tc_step_${suffix}`,
     legacyMax: `tc_step_max_${suffix}`,
     passed: `tc_step_${suffix}-passed`,
-    recall: `tc_recall_${suffix}`,
+    recall: `tc_recall_${recallVersion > 1 ? `v${recallVersion}_` : ""}${suffix}`,
   };
 }
 type Reader = Pick<Storage, "getItem">;

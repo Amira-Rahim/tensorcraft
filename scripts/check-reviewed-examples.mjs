@@ -1,5 +1,6 @@
 // Execute the actual MDX code strings selected during the internal review.
 // Integration sketches and deliberately broken examples have separate scope.
+// Optional filters: REVIEW_MODULE=foundations or REVIEW_LESSON=tensor-shapes.
 import { readFile } from "node:fs/promises";
 import { transformWithEsbuild } from "vite";
 import assert from "node:assert/strict";
@@ -20,10 +21,16 @@ function codeBlocks(source) {
     code: new Function("return `" + template + "`;")(),
   }));
 }
+let reviewedRuns = 0;
 async function run(path, titles, prefix = "", suffix = "") {
   if (
     process.env.REVIEW_MODULE &&
     !path.startsWith(process.env.REVIEW_MODULE + "/")
+  )
+    return;
+  if (
+    process.env.REVIEW_LESSON &&
+    !path.endsWith(`-${process.env.REVIEW_LESSON}.mdx`)
   )
     return;
   const blocks = codeBlocks(await readFile(new URL(path, base), "utf8"));
@@ -50,6 +57,7 @@ async function run(path, titles, prefix = "", suffix = "") {
     count,
     `${path}: unreleased example tensors`,
   );
+  reviewedRuns++;
   console.log(`PASS ${path}: ${titles.join(", ")}`);
 }
 
@@ -67,10 +75,22 @@ await run("foundations/01-introduction-to-tensors.mdx", [
   "tensors-are-arrays.ts",
   "tensor-memory.ts",
 ]);
-await run("foundations/02-tensor-shapes.mdx", [
-  "tensor-shapes.ts",
-  "garbled-channels.ts",
+await run(
+  "foundations/02-tensor-shapes.mdx",
+  ["arrange-readings.ts"],
+  "const captured = []; console.log = value => captured.push(value);\n",
+  `
+assert.deepEqual(flat.shape, [12]);
+assert.deepEqual(grid.shape, [3, 4]);
+assert.deepEqual(bySensor.shape, [4, 3]);
+assert.deepEqual(step1, [3, 18, 7, 8]);
+assert.deepEqual(captured, [
+  [[2, 20, 5, 8], [3, 18, 7, 8], [4, 16, 6, 9]],
+  [3, 18, 7, 8],
+  [[2, 3, 4], [20, 18, 16], [5, 7, 6], [8, 8, 9]],
 ]);
+`,
+);
 await run(
   "foundations/03-tensor-operations.mdx",
   ["tensor-ops.ts"],
@@ -670,4 +690,9 @@ assert.equal(cancellationReleases, 1);
 
 assert.equal(loaded,2);
 `,
+);
+
+assert.ok(
+  reviewedRuns > 0,
+  "No reviewed code blocks matched the requested filters",
 );

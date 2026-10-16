@@ -9,6 +9,7 @@
  */
 
 import { FIT_RECORDING_SOURCE } from "./exercise-fit-recording.mjs";
+import { SHAPE_RECORDING_SOURCE } from "./exercise-shape-recording.mjs";
 
 export interface TestResult {
   name: string;
@@ -1174,6 +1175,8 @@ function buildFullCode(userCode: string, testCode: string): string {
 const WORKER_BODY = `
   var createFitRecorder = ${FIT_RECORDING_SOURCE};
   var fitRecorder;
+  var createShapeRecorder = ${SHAPE_RECORDING_SOURCE};
+  var shapeRecorder;
 (function() {
   // Seal Math.random before anything else runs (round 7, 2026-09-13). The
   // grader's run-time draws and tf's own generator both read it, so a
@@ -1284,6 +1287,7 @@ const WORKER_BODY = `
     var tf = globalThis.tf;
     if (!tf) return;
     if (!fitRecorder) fitRecorder = createFitRecorder(tf);
+    if (!shapeRecorder) shapeRecorder = createShapeRecorder(tf);
 
     // Part of the call spy above: tensor METHODS (a.add(b), x.matMul(w),
     // t.sum().dataSync()) are prototype calls the proxy cannot see, so the
@@ -1298,7 +1302,8 @@ const WORKER_BODY = `
         tf.Tensor.prototype[name] = function() {
           var c = globalThis.__tcCalls;
           if (c) c['tensor.' + name] = (c['tensor.' + name] || 0) + 1;
-          return real.apply(this, arguments);
+          var output = real.apply(this, arguments);
+          return shapeRecorder.record(name, this, output);
         };
       });
       tf.Tensor.prototype.__tcSpied = true;
@@ -1585,8 +1590,9 @@ const WORKER_BODY = `
         var calls = Object.create(null);
         globalThis.__tcCalls = calls;
         if (fitRecorder) fitRecorder.reset();
+        if (shapeRecorder) shapeRecorder.reset();
         fitsInFlight = 0;
-        var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, dot: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
+        var SPIED = { variableGrads: 1, grad: 1, grads: 1, valueAndGrad: 1, valueAndGrads: 1, customGrad: 1, sequential: 1, model: 1, tidy: 1, dispose: 1, keep: 1, matMul: 1, dot: 1, reshape: 1, transpose: 1, add: 1, sub: 1, mul: 1, div: 1, sum: 1, mean: 1, moments: 1 };
         var NESTED = { layers: 1, io: 1, train: 1, losses: 1 };
         function bump(name) { calls[name] = (calls[name] || 0) + 1; }
         function spyNamespace(ns, prefix) {
@@ -1609,10 +1615,14 @@ const WORKER_BODY = `
                 // (round 7b, 2026-09-14). Same rule as the validator.
                 if (prop === '__calls') return Object.freeze(Object.assign(Object.create(null), calls));
                 if (prop === '__fits') return fitRecorder ? fitRecorder.read() : Object.freeze([]);
+                if (prop === '__shapeOf') return shapeRecorder.read;
                 if (stubs[prop]) return stubs[prop];
                 var v = target[prop];
                 if (SPIED[prop] && typeof v === 'function') {
-                  return function() { bump(prop); return v.apply(target, arguments); };
+                  return function() {
+                    bump(prop);
+                    return shapeRecorder.record(prop, arguments[0], v.apply(target, arguments));
+                  };
                 }
                 // tf.train is a function with members hung off it, not a plain
                 // object, so both shapes are wrapped.

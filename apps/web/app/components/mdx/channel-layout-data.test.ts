@@ -39,8 +39,9 @@ describe("channel layout numerical contract", () => {
       }
     }
     expect(tf.memory().numTensors).toBe(before);
-    expect(transformPacket(WORKED_PACKET, "reshape")[2]).toEqual([6, 7, 8]);
-    expect(transformPacket(WORKED_PACKET, "transpose")[2]).toEqual([2, 6, 10]);
+    expect(transformPacket(WORKED_PACKET, "reshape")[2]).toEqual([7, 8, 4]);
+    expect(transformPacket(WORKED_PACKET, "transpose")[2]).toEqual([5, 7, 6]);
+    expect(transformPacket(WORKED_PACKET, "transpose")[3]).toEqual([8, 8, 9]);
   });
   it("rejects dimensions-only and wrong-value answers", () => {
     expect(checkChannelTransfer("reshape", "20, 21")).toEqual({
@@ -75,7 +76,8 @@ describe("channel layout numerical contract", () => {
     const draft = channelDraft();
     expect(parseChannelDraft(JSON.stringify(draft))).toEqual(draft);
     for (const patch of [
-      { version: 2 },
+      { version: 1 },
+      { tableBuilt: "yes" },
       { channel: 4 },
       { checkAttempts: -1 },
       { checkAttempts: 21 },

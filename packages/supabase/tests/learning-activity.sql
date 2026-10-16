@@ -23,6 +23,15 @@ with removed as (delete from learning_activity_streams returning *) select test_
 select record_learning_activity(auth.uid(),'room-project-run',1,'application','cccccccc-cccc-4ccc-8ccc-cccccccccccc',1,true,false,true,false,false,now());
 select test_assert((select source='learner_report' from learning_activity_progress where activity_id='room-project-run'),'external report distinguished from browser numerical check');
 select test_assert((select count(*)=1 from world_progress where user_id=auth.uid()),'practice grants no lesson credit');
+-- Semantic lesson revisions keep account attempts and first outcomes separate.
+select record_learning_activity(auth.uid(),'deep-orbit-channel-layout',1,'changed_case','eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',1,false,false,false,false,false,null);
+select record_learning_activity(auth.uid(),'deep-orbit-channel-layout',2,'changed_case','eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',1,true,false,true,false,false,now());
+select record_learning_activity(auth.uid(),'deep-orbit-channel-layout',2,'changed_case','eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',1,true,false,true,false,false,now());
+select test_assert((select count(*)=2 from learning_activity_progress where activity_id='deep-orbit-channel-layout'),'old and rebuilt activity summaries remain separate');
+select test_assert((select attempt_count=1 and first_correct=false from learning_activity_progress where activity_id='deep-orbit-channel-layout' and content_version=1),'rebuilt lesson cannot overwrite an earlier first attempt');
+select test_assert((select attempt_count=1 and first_correct=true and completed_at is not null from learning_activity_progress where activity_id='deep-orbit-channel-layout' and content_version=2),'version-two retries are deduplicated independently');
+select test_assert(test_invalid($q$select record_learning_activity(auth.uid(),'deep-orbit-channel-layout',3,'prediction','ffffffff-ffff-4fff-8fff-ffffffffffff',1,true,false,true,false,false,null)$q$),'unsupported future channel version rejected');
+select test_assert(test_invalid($q$select record_learning_activity(auth.uid(),'deep-orbit-channel-layout',null,'prediction','ffffffff-ffff-4fff-8fff-ffffffffffff',1,true,false,true,false,false,null)$q$),'null content version rejected');
 set request.jwt.claim.sub = '22222222-2222-4222-8222-222222222222';
 select test_assert((select count(*)=0 from learning_activity_progress),'other account summaries hidden');
 select test_assert((select count(*)=0 from learning_activity_streams),'other account streams hidden');

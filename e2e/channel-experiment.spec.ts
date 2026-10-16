@@ -25,55 +25,54 @@ for (const [width, colorScheme] of [
     const experiment = page.getByTestId("channel-layout-experiment");
     await expect(experiment).toHaveCount(1);
     await expect(experiment).toBeVisible();
-    await experiment.getByLabel(/Predict channel/).fill("0,4,8");
+    await experiment
+      .getByLabel("Which four readings go in the second row?", { exact: true })
+      .fill("3,18,7,8");
     await experiment
       .getByRole("button", { name: "Check prediction", exact: true })
       .focus();
     await page.keyboard.press("Enter");
-    await expect(
-      experiment.getByText(/Those are the channel's readings/),
-    ).toBeVisible();
+    await expect(experiment.getByText(/Yes\. The second row/)).toBeVisible();
     await experiment
       .getByRole("button", { name: "Run reshape", exact: true })
       .click();
     await expect(
       experiment.getByTestId("channel-result").getByRole("status"),
-    ).toContainText("[0, 1, 2]");
+    ).toContainText("[2, 20, 5]");
     await experiment
       .getByRole("button", { name: "Run transpose", exact: true })
       .click();
     await expect(
       experiment.getByTestId("channel-result").getByRole("status"),
-    ).toContainText("[0, 4, 8]");
-    await experiment.getByLabel("Inspect channel").selectOption("2");
+    ).toContainText("[2, 3, 4]");
+    await experiment.getByLabel("Follow a sensor").selectOption("2");
     if (width === 1440) {
       await page.setViewportSize({ width: 390, height: 900 });
-      await expect(experiment.getByLabel("Inspect channel")).toHaveValue("2");
+      await expect(experiment.getByLabel("Follow a sensor")).toHaveValue("2");
       await page.setViewportSize({ width, height: 900 });
       await page
-        .getByText(
-          "Reference: flat order, reshape code, and the full archive example",
-          { exact: true },
-        )
+        .getByText("Optional: more axes, image batches, and memory", {
+          exact: true,
+        })
         .click();
       const glossaryTerm = page.getByRole("button", {
-        name: "batching",
+        name: "rank",
         exact: true,
       });
       await glossaryTerm.click();
-      await expect(experiment.getByLabel("Inspect channel")).toHaveValue("2");
+      await expect(experiment.getByLabel("Follow a sensor")).toHaveValue("2");
     }
     await page.getByRole("button", { name: "Continue →", exact: true }).click();
     await expect(experiment).toHaveCount(0);
     await page
       .getByRole("button", { name: "Step 2: Concept", exact: true })
       .click();
-    await expect(experiment.getByLabel("Inspect channel")).toHaveValue("2");
+    await expect(experiment.getByLabel("Follow a sensor")).toHaveValue("2");
     await page.reload();
     await expect(
       experiment.getByRole("button", { name: "Run transpose", exact: true }),
     ).toHaveAttribute("aria-pressed", "true");
-    await expect(experiment.getByLabel("Inspect channel")).toHaveValue("2");
+    await expect(experiment.getByLabel("Follow a sensor")).toHaveValue("2");
     const layout = await experiment.evaluate((element) => ({
       width: element.clientWidth,
       scrollWidth: element.scrollWidth,
@@ -90,25 +89,33 @@ for (const [width, colorScheme] of [
       .analyze();
     expect(a11y.violations).toEqual([]);
     await experiment
-      .getByRole("button", { name: "Try a different packet", exact: true })
+      .getByRole("button", { name: "Try a new example", exact: true })
       .click();
     await experiment.getByLabel("Reshape to [3, 2]", { exact: true }).check();
     await experiment
-      .getByLabel("Channel 1 values, in time order", { exact: true })
+      .getByLabel("Sensor B’s two readings, from earliest to latest", {
+        exact: true,
+      })
       .fill("20,21");
     await experiment
-      .getByRole("button", { name: "Check new packet", exact: true })
+      .getByRole("button", { name: "Check my answer", exact: true })
       .click();
-    await expect(experiment.getByText(/Reshape also produces/)).toBeVisible();
-    await experiment.getByLabel("Transpose the axes", { exact: true }).check();
+    await expect(experiment.getByText(/Reshape also makes/)).toBeVisible();
     await experiment
-      .getByRole("button", { name: "Check new packet", exact: true })
+      .getByLabel("Transpose: turn columns into rows", { exact: true })
+      .check();
+    await experiment
+      .getByRole("button", { name: "Check my answer", exact: true })
       .click();
     await expect(
-      experiment.getByText(/Changed case passed without opening/),
+      experiment.getByText(
+        /Both answers are correct\. You answered without help/,
+      ),
     ).toBeVisible();
     await expect(
-      experiment.getByText(/First changed-case attempt: needs another look/),
+      experiment.getByText(
+        /Your first answer on the new example: incorrect, without help/,
+      ),
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),

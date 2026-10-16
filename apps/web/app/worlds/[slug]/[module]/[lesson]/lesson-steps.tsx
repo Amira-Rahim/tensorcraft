@@ -10,6 +10,10 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import type { ResolvedReviewItem } from "@tensorcraft/shared";
 import type { FreeRecallPrompt } from "@/lib/free-recall-prompts";
 import { enqueueReviews } from "@/lib/review-store-api";
+import {
+  recallContentVersion,
+  reviewPromptIndex,
+} from "@/lib/recall-content-version";
 import { LessonWarmup } from "@/app/components/lesson-warmup";
 import { ModuleEntryContext } from "@/app/components/module-entry-context";
 import Link from "next/link";
@@ -301,6 +305,8 @@ function LessonStepsInner({
   freeRecallPrompts = [],
 }: LessonStepsProps) {
   const reviewUserId = useActivityUser();
+  const requiresCurrentRecall =
+    recallContentVersion(worldSlug, lesson.slug) > 1;
   const knownCompleted = !!lessons?.some(
     (item) => item.slug === lesson.slug && item.completed,
   );
@@ -499,9 +505,11 @@ function LessonStepsInner({
     // A guest who finished this lesson is a returning learner too. The
     // server's lessons prop (knownCompleted) never knows a guest, so the
     // local guest record settles the gate, merged the way the completion
-    // effect merges it for the award check.
+    // effect merges it for the award check. A rewritten lesson's new recall
+    // needs its own attempt, while earlier completion and unlocks stay earned.
     try {
       if (
+        !requiresCurrentRecall &&
         getGuestCompletions().some(
           (c) =>
             c.worldId === worldSlug &&
@@ -569,7 +577,7 @@ function LessonStepsInner({
     setMounted(true);
     // exercises identity is stable per lesson page load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storageKey, maxStorageKey, passedKey, recallKey]);
+  }, [storageKey, maxStorageKey, passedKey, recallKey, requiresCurrentRecall]);
 
   // Persist passed exercises as they happen
   useEffect(() => {
@@ -778,7 +786,9 @@ function LessonStepsInner({
         worldSlug,
         moduleSlug,
         lesson.slug,
-        (lesson.recallPrompts ?? []).map((prompt) => prompt.index),
+        (lesson.recallPrompts ?? []).map((prompt) =>
+          reviewPromptIndex(worldSlug, lesson.slug, prompt.index),
+        ),
       );
       markLessonCompleted(worldSlug, moduleSlug, lesson.slug, avgScore, extras)
         .then((result) => {
@@ -1239,7 +1249,9 @@ function LessonStepsInner({
     shellLeft = (
       <StepTakeaways
         {...sharedContentProps}
-        recallSettled={recallSettled || knownCompleted}
+        recallSettled={
+          recallSettled || (knownCompleted && !requiresCurrentRecall)
+        }
         onRecallPending={handleRecallPending}
       />
     );

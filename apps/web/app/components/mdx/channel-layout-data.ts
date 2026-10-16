@@ -1,11 +1,14 @@
+import { LEARNING_ACTIVITIES } from "@tensorcraft/shared";
+
 export const CHANNEL_EXPERIMENT_ID = "deep-orbit-channel-layout";
-export const CHANNEL_EXPERIMENT_VERSION = 1;
+export const CHANNEL_EXPERIMENT_VERSION =
+  LEARNING_ACTIVITIES[CHANNEL_EXPERIMENT_ID].version;
 export const CHANNEL_STORAGE_KEY = `tensorcraft:experiment:${CHANNEL_EXPERIMENT_ID}:v${CHANNEL_EXPERIMENT_VERSION}`;
 export type LayoutOperation = "reshape" | "transpose";
 export const WORKED_PACKET = [
-  [0, 1, 2, 3],
-  [4, 5, 6, 7],
-  [8, 9, 10, 11],
+  [2, 20, 5, 8],
+  [3, 18, 7, 8],
+  [4, 16, 6, 9],
 ];
 export const CHECK_PACKET = [
   [10, 20, 30],
@@ -86,6 +89,7 @@ export interface ChannelDraft {
   version: typeof CHANNEL_EXPERIMENT_VERSION;
   mode: "worked" | "check";
   channel: number;
+  tableBuilt: boolean;
   operation: LayoutOperation | null;
   prediction: string;
   predictionResult: LayoutAttempt | null;
@@ -109,6 +113,7 @@ export function channelDraft(): ChannelDraft {
     version: CHANNEL_EXPERIMENT_VERSION,
     mode: "worked",
     channel: 0,
+    tableBuilt: false,
     operation: null,
     prediction: "",
     predictionResult: null,
@@ -163,6 +168,7 @@ export function parseChannelDraft(raw: string): ChannelDraft {
       d.checkHelp,
       d.checkAnswer,
       d.started,
+      d.tableBuilt,
     ].every((v) => typeof v === "boolean") ||
     ![
       d.predictionResult,

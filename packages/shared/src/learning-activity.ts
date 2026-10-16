@@ -1,7 +1,7 @@
 /** These are browser-reported practice records, never authoritative scores. */
 export const LEARNING_ACTIVITIES = {
   "deep-orbit-channel-layout": {
-    version: 1,
+    version: 2,
     stage: "data",
     module: "foundations",
     lesson: "tensor-shapes",
@@ -129,22 +129,28 @@ export function validActivitySnapshot(
   );
 }
 export function activityEvidenceLabel(row: ActivitySummary) {
-  if (
-    row.content_version !== 1 ||
-    (row.first_assisted === null && row.attempt_count > 0)
-  )
+  if (row.first_assisted === null && row.attempt_count > 0)
     return row.completed_at || row.latest_correct
       ? "Earlier completion; assistance not recorded"
       : "Earlier attempt; assistance not recorded";
+  const spec = Object.prototype.hasOwnProperty.call(
+    LEARNING_ACTIVITIES,
+    row.activity_id,
+  )
+    ? LEARNING_ACTIVITIES[row.activity_id as LearningActivityId]
+    : null;
+  let label: string;
   if (row.source === "learner_report")
-    return row.latest_correct
+    label = row.latest_correct
       ? "External run reported"
       : "External run needs another check";
-  if (row.phase === "changed_case" && row.latest_correct)
-    return row.latest_assisted
+  else if (row.phase === "changed_case" && row.latest_correct)
+    label = row.latest_assisted
       ? "Changed case passed with help"
       : "Changed case passed";
-  if (row.latest_correct)
-    return row.latest_assisted ? "Practised with help" : "Prediction matched";
-  return row.attempt_count ? "Needs another look" : "Reference viewed";
+  else if (row.latest_correct)
+    label = row.latest_assisted ? "Practised with help" : "Prediction matched";
+  else label = row.attempt_count ? "Needs another look" : "Reference viewed";
+  if (spec && row.content_version === spec.version) return label;
+  return `${spec && row.content_version < spec.version ? "Earlier activity version" : "Different activity version"}: ${label}`;
 }

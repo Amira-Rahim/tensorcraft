@@ -139,6 +139,27 @@ beforeEach(() => {
 });
 
 describe("resolveDueForUser", () => {
+  it("keeps a revised sensor prompt separate from the earlier prompt's schedule", async () => {
+    mockCanAccessWorld.mockResolvedValue(false);
+    const revised = required(
+      lessons.find(
+        (lesson) => lesson.worldId === WORLD && lesson.slug === "tensor-shapes",
+      ),
+      "rebuilt sensor lesson",
+    );
+    queueRows = [
+      rowFor(revised, 0, { pulls: 10, successes: 10 }),
+      rowFor(revised, 32),
+    ];
+    const due = await resolveDueForUser(fakeSupabase(), USER, WORLD, 5, NOW);
+    expect(due).toHaveLength(1);
+    expect(due[0]).toMatchObject({
+      promptIndex: 32,
+      pulls: 0,
+      successes: 0,
+      question: revised.recallPrompts[0].question,
+    });
+  });
   it("resolves a free-module key for an unentitled learner", async () => {
     mockCanAccessWorld.mockResolvedValue(false);
     queueRows = [rowFor(freeLesson)];

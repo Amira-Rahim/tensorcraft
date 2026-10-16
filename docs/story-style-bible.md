@@ -22,6 +22,20 @@ intended stages.
 These requirements also bind layout and component changes. See
 [the project-wide rules](../CLAUDE.md#story-and-interaction-binding-2026-10-15).
 
+## Teaching through the story (binding, 2026-10-16)
+
+Each lesson gives the crew one understandable task. The concept activity,
+exercise, recall, and ending should advance that same task. Keep the wording
+simple and casual while preserving technical requirements and character voices.
+Let learners see and explore what their actions change before explaining a
+result as a story discovery.
+
+State how the crew knows the meaning and order of readings, such as a recording
+header or sensor documentation. A tensor's shape cannot identify sensors, units,
+or timestamps. Clearly label made-up practice data and distinguish it from the
+ship's real captures. Do not resolve mysteries early or invent a discovery to
+reward the learner.
+
 ## The season in one line
 
 A crew that runs on rules learns to run on learning - and the signal they

@@ -1,95 +1,90 @@
 slug: reshape-tensor
 lessonSlug: tensor-shapes
-title: "Find the Signal's Layout"
+title: "Prepare Farah's Sensor Chart"
 instructions: |
-  `flat` holds 12 sensor readings. Each group of four comes from the same moment.
+  Farah has another practice set of 12 readings in `flat`. The recording header says
+  each group of four contains sensors A, B, C, and D, in that order.
 
-  1. Before running the code, work out which four numbers go in the second row.
-  2. Use `reshape()` on `flat` to make a tensor named `grid` with shape `[3, 4]`.
-  3. Read the second row into a JavaScript array named `step1`. The second row
-     is at index `1`, since JavaScript counts from `0`.
+  1. Before running the code, predict which four readings go in the second row.
+  2. Use `reshape()` on `flat` to create `grid` with shape `[3, 4]`.
+     Each row is one moment. Each column is one sensor.
+  3. Save the second row as a JavaScript array named `step1`.
+     Use row index `1`, since JavaScript counts from `0`.
+  4. Farah's chart needs one row per sensor, with its readings in time order.
+     Use `transpose()` on `grid` to create `bySensor` with shape `[4, 3]`.
 
-  Use the original `flat` tensor so `grid` shares its data in memory. Do not
-  create a new tensor by typing the readings again.
-
-  The tests check all three rows. Keep `grid` for the tests. You can dispose
-  of `flat` afterward.
+  Use the supplied tensors. Do not type out new tensors containing the answers.
+  Keep `grid` and `bySensor` for the tests. You can dispose of `flat` after
+  creating `grid`.
 starterCode: |
+  // Each moment records sensors A, B, C, and D, in that order.
   const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
 
-  // Predict the second row before running the code.
+  // Predict the second row, then make one row per moment.
   const grid = null; // your code here
 
   // Save the second row as a JS array, not a tensor.
   const step1 = null;
-solutionCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];"
+
+  // Give the chart one row per sensor, in time order.
+  const bySensor = null;
+solutionCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];\n\nconst bySensor = grid.transpose();"
 testCode: |
   describe('Signal Layout', () => {
-    // Expected rows are sliced out of a private copy of the readings, so no
-    // test name hands the learner the row it is asking for. The copy is
-    // private on purpose. Reading `flat.dataSync()` here threw "Tensor is
-    // disposed." for anyone who released `flat` after reshaping, which is the
-    // habit lesson 1 teaches, and it destroyed all five tests from the suite
-    // body. It also let a submission redefine `flat` as twelve zeros and then
-    // satisfy the grader's own expectations (both measured 2026-09-08).
+    // Expected values come from the recording, not a learner-controlled
+    // tensor. This also lets learners dispose of flat after reshaping it.
     const source = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8];
+    // Capture the submitted operation paths before grader readback runs.
+    // These shared runtime records refer to actual input/output tensors,
+    // so a dummy operation cannot validate a separately typed-out answer.
+    const gridOperation = tf.__shapeOf(grid);
+    const sensorOperation = tf.__shapeOf(bySensor);
     const filled = (value, what) => expect(value, what).toBeDefined();
-    const isTensor = (value) =>
+    const isTensor = (value, name) =>
       expect(
         value instanceof tf.Tensor,
-        'grid must be a TensorFlow.js tensor, not a JavaScript object with matching properties.',
+        name + ' must be a TensorFlow.js tensor, not a JavaScript object with matching properties.',
       ).toBe(true);
-    // Rows are read back THROUGH the tensor, not through whatever arraySync()
-    // the submission supplies. Before this (round 7, 2026-09-13), an object
-    // literal carrying shape, flat's dataId and an arraySync() that returned
-    // three slices of flat.dataSync() cleared all six tests without running a
-    // single tensor op.
-    const rowsOf = () => {
-      isTensor(grid);
-      const parts = tf.unstack(grid);
-      const out = parts.map((row) => Array.from(row.dataSync()));
-      parts.forEach((row) => row.dispose());
-      return out;
+    // Read through TensorFlow.js rather than trusting a submitted arraySync
+    // method. Fake objects must not pass by returning the expected arrays.
+    const rowsOf = (tensor, name) => {
+      isTensor(tensor, name);
+      const parts = tf.unstack(tensor);
+      try {
+        return parts.map((row) => Array.from(row.dataSync()));
+      } finally {
+        parts.forEach((row) => row.dispose());
+      }
     };
     it('grid has shape [3, 4]', () => {
       filled(grid, 'grid is still empty. Reshape flat into three rows of four.');
+      isTensor(grid, 'grid');
       expect(grid.shape, 'grid needs 3 rows and 4 columns.').toEqual([3, 4]);
     });
-    it('grid reuses the data from flat', () => {
-      // Provenance, not values. On tfjs 4.22.0 a reshape hands back a tensor
-      // that SHARES its source's data buffer, so grid.dataId === flat.dataId.
-      // Measured 2026-09-08: reshape(), tf.reshape(), as2D() and clone() all
-      // keep the source dataId, and the comparison still holds after `flat`
-      // is disposed, which the instructions allow. A grid typed out with
-      // tf.tensor2d, or rebuilt from arraySync(), allocates a second buffer,
-      // and that is exactly what lets it hold anything at all: before this
-      // check, a hand-typed [3, 4] grid cleared every other test in the file.
-      filled(grid, 'grid is still empty.');
-      isTensor(grid);
+    it('grid comes from reshaping flat', () => {
+      isTensor(flat, 'flat');
+      isTensor(grid, 'grid');
       expect(
-        grid.dataId === flat.dataId,
-        'Use reshape() on flat itself. grid must reuse its data in memory. Creating a new tensor with the same numbers does not meet this requirement.',
+        gridOperation && gridOperation.operation === 'reshape' && gridOperation.input === flat,
+        'Use reshape() on flat itself to create grid. Do not create a new tensor from copied values.',
       ).toBe(true);
     });
     it('the first row keeps the first readings in order', () => {
-      filled(grid, 'grid is still empty.');
-      const rows = rowsOf();
+      const rows = rowsOf(grid, 'grid');
       expect(
         rows[0],
         'The first row must hold the first four readings in their original order.',
       ).toEqual(source.slice(0, 4));
     });
-    it('middle row lands correctly', () => {
-      filled(grid, 'grid is still empty.');
-      const rows = rowsOf();
+    it('the second row keeps the next readings in order', () => {
+      const rows = rowsOf(grid, 'grid');
       expect(
         rows[1],
         'Skip the first four readings, then take the next four in order.',
       ).toEqual(source.slice(4, 8));
     });
-    it('last row lands correctly', () => {
-      filled(grid, 'grid is still empty.');
-      const rows = rowsOf();
+    it('the last row keeps the final readings in order', () => {
+      const rows = rowsOf(grid, 'grid');
       expect(rows[2], 'The last row must hold the final four readings in order.').toEqual(
         source.slice(8, 12),
       );
@@ -98,15 +93,36 @@ testCode: |
       filled(step1, 'step1 is still empty. Read row index 1 from grid.');
       expect(
         Array.isArray(step1),
-        'step1 must be a JavaScript array of four numbers. arraySync() gives you nested arrays. Select the second row from those arrays. tf.slice() alone still returns a tensor.',
+        'step1 must be a JavaScript array. arraySync() gives you nested arrays. Select the second row from those arrays.',
       ).toBe(true);
       expect(
         step1,
-        'Take the whole second row: all four sensor readings from that time step.',
+        'Take the whole second row: all four sensor readings from that moment.',
       ).toEqual(source.slice(4, 8));
     });
+    it('bySensor has shape [4, 3]', () => {
+      isTensor(bySensor, 'bySensor');
+      expect(bySensor.shape, 'The chart needs 4 sensor rows and 3 moments per row.').toEqual([4, 3]);
+    });
+    it('bySensor comes from transposing grid', () => {
+      isTensor(bySensor, 'bySensor');
+      expect(
+        sensorOperation && sensorOperation.operation === 'transpose' && sensorOperation.input === grid,
+        'Use transpose() on grid to create bySensor. Reshape keeps the flat order and mixes sensors in these rows.',
+      ).toBe(true);
+    });
+    it('every sensor row keeps its readings in time order', () => {
+      const rows = rowsOf(bySensor, 'bySensor');
+      const expected = [0, 1, 2, 3].map((sensor) =>
+        [0, 1, 2].map((moment) => source[moment * 4 + sensor]),
+      );
+      expect(
+        rows,
+        'Each row must contain one sensor across all three moments. Keep the moments in their original order.',
+      ).toEqual(expected);
+    });
   });
-estimatedMinutes: 8
+estimatedMinutes: 10
 difficulty: beginner
 mlContent: data
 skillAxis: data_prep

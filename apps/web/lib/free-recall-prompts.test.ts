@@ -28,6 +28,19 @@ describe("FREE_RECALL_PROMPTS", () => {
     const first = FREE_RECALL_PROMPTS[0];
     expect(lookupFreePrompt(first.lessonId, 99)).toBeNull();
   });
+  it("resolves rebuilt sensor prompts only through their new queue keys", () => {
+    const prompts = FREE_RECALL_PROMPTS.filter(
+      (prompt) => prompt.lessonId === "tensor-shapes",
+    );
+    expect(prompts.length).toBeGreaterThan(0);
+    expect(lookupFreePrompt("tensor-shapes", 0)).toBeNull();
+    for (const prompt of prompts) {
+      expect(prompt.promptIndex).toBeGreaterThanOrEqual(32);
+      expect(lookupFreePrompt("tensor-shapes", prompt.promptIndex)).toEqual(
+        prompt,
+      );
+    }
+  });
 });
 
 describe("free-recall-prompts is server-only", () => {

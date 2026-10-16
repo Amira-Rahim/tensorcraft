@@ -1,5 +1,32 @@
 # Tensorcraft: Claude Code Instructions
 
+## Lesson quality contract (binding, 2026-10-16)
+
+- Build for frontend developers learning ML through JavaScript. Lessons should
+  feel fun, entertaining, and easy to follow. Use clear, casual, concise wording
+  and familiar arrays, charts, and UI examples without weakening the technical
+  meaning or removing exercise requirements.
+- Keep the shared lesson layout consistent across every lesson and section:
+  full-width sections flowing from top to bottom, the same header structure,
+  readable typography, recognizable dialogue, centered image captions, and
+  consistent navigation. Improve shared components rather than introducing
+  isolated lesson templates or squeezed columns.
+- Give each lesson one clear practical task. Connect its briefing, concept,
+  challenge, recall, and epilogue to that task. Explain what the learner can do
+  afterward and why it helps the crew. Keep supporting topics optional when
+  they distract from that purpose.
+- Technical correctness is mandatory throughout. Verify API behavior, examples,
+  calculations, axis meanings, units, and exercise checks against the pinned
+  runtime and primary documentation. Test plausible wrong answers, including
+  correct shapes with wrong values. Do not claim certainty beyond the evidence.
+- Continue the story logically in storytelling form. Establish where metadata
+  such as sensor order and timestamps comes from. Shape alone cannot reveal
+  what an axis means. Preserve the canon, unknowns, and earned discoveries.
+- Make information as visual, interactive, and dynamic as the teaching allows
+  without losing context. Let learners predict, change inputs, run code, and
+  inspect meaningful feedback. Explain both the result and its cause. Keep
+  keyboard access, reduced-motion support, and story visibility intact.
+
 ## Story and Interaction (binding, 2026-10-15)
 
 - **Story comes first.** This is a hard rule across every world's learning
