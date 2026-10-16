@@ -187,6 +187,7 @@ interface LessonStepsProps {
    pre-heading CodeBlock the Briefing narrated but nulled; post-heading code
    stays hidden via hideTeaching regardless. */
 const BRIEFING_COMPONENTS = new Set([
+  "StoryPassage",
   "Dialogue",
   "BossBeat",
   "CodeBlock",
@@ -213,6 +214,7 @@ const BRIEFING_TAKEAWAY_COMPONENTS = new Set(["BriefingTakeaway"]);
 // step at all without this). The opening scene does not duplicate here:
 // hideStoryZone hides everything before the first heading on this step.
 const CONCEPT_LEFT = new Set([
+  "StoryPassage",
   "ConceptReference",
   "ChannelLayoutExperiment",
   "LearningExperiment",
@@ -233,6 +235,7 @@ const CONCEPT_INTRO = new Set(["LearningObjectives"]);
 // spec 2026-09-24 section 3), and the hint ladders on the left; the
 // Exercise editor in the right pane.
 const CHALLENGE_LEFT = new Set([
+  "StoryPassage",
   "challenge",
   "ExerciseBrief",
   "HintPanel",
@@ -2022,6 +2025,7 @@ function StepBriefing({
 
           <p
             data-testid="scene-context"
+            data-story-passage={spaciousBriefing ? "" : undefined}
             className="mb-6 text-lg md:text-xl leading-relaxed"
             style={{ color: "var(--tc-text)" }}
           >

@@ -181,6 +181,9 @@ interface LessonContentProps {
  * prose).
  */
 const EpilogueContext = createContext(false);
+// A semantic authoring wrapper with no DOM node, so story paragraphs keep
+// their place in the step partitions and scene playback timeline.
+const StoryPassageContext = createContext(false);
 
 /** MDX components available in lesson content */
 const mdxComponents = {
@@ -395,6 +398,22 @@ export function LessonContent({
       string,
       React.ComponentType</* eslint-disable-line @typescript-eslint/no-explicit-any */ any>
     > = {
+      StoryPassage: ({ children }: { children: ReactNode }) => (
+        <StoryPassageContext.Provider value={worldId === "deep-orbit"}>
+          {children}
+        </StoryPassageContext.Provider>
+      ),
+      p: function LessonParagraph({
+        children,
+        ...props
+      }: React.HTMLAttributes<HTMLParagraphElement>) {
+        const story = useContext(StoryPassageContext);
+        return (
+          <p {...props} data-story-passage={story ? "" : undefined}>
+            <ProseText>{children}</ProseText>
+          </p>
+        );
+      },
       // Stamps the one heading the hideChallengeOnward CSS rule anchors on
       // (globals.css). All 56 lessons carry exactly one "## Challenge";
       // MDX has no rehype-slug, so headings have no ids to target.
@@ -468,7 +487,11 @@ export function LessonContent({
                   ? "row"
                   : "stack"
             }
-          />
+          >
+            <StoryPassageContext.Provider value={false}>
+              {props.children}
+            </StoryPassageContext.Provider>
+          </Dialogue>
         );
       },
       CodeBlock: (props: React.ComponentProps<typeof CodeBlock>) =>
@@ -578,7 +601,6 @@ export function LessonContent({
     };
 
     for (const tag of [
-      "p",
       "li",
       "blockquote",
       "h1",

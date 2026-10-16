@@ -64,7 +64,11 @@ skillAxes: [model_arch]
 
 The numbers move up and down, but the overall trend is downward. Try smoothing those noisy measurements with a tool you already know.
 
+<StoryPassage>
+
 Demir's first move is the usual one when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
+
+</StoryPassage>
 
 <CodeBlock language="typescript" title="ema-two-alphas.ts">
 {`const log = [73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0];

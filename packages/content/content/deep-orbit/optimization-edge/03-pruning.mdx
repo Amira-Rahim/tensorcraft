@@ -192,13 +192,21 @@ Anomalies make up only 0.3 percent of this evaluation set. Getting every anomaly
 
 Compare recall for each class to see what the total hides. An evaluation set with equal class counts would also give a different overall result. The exercise asks you to report per-class recall: for each true class, the share of its readings the model labels correctly.
 
+<StoryPassage>
+
 Demir sees a tempting trade. At 80 percent sparsity, he expects a download near 25 MB. Overall accuracy falls by only two tenths of a point compared with 60 percent sparsity. He approves the change without checking recall for each class. Before dinner, he sends the build to staging without running the replay suite.
+
+</StoryPassage>
 
 <Dialogue speaker="Chief Nazari">
 Staging replay, overnight: 91.6 percent accuracy, the number you signed. Your 80-percent build classified the 0247 salvage fragment as cosmic background. The one fragment we have left from that night, and your model threw it away. Revert to 60. The revalidation costs us three hours, and I'm logging them.
 </Dialogue>
 
+<StoryPassage>
+
 Demir reverts to 60 percent. At 80 percent, the model got none of the anomalies right, down from four. That failure changed overall accuracy by only two tenths of a percentage point. The earlier 2.4-point loss, from the baseline to 60 percent pruning, came almost entirely from common classes.
+
+</StoryPassage>
 
 This run shows why Demir needed a per-class report. It does not prove that rare signals always depend on small weights.
 

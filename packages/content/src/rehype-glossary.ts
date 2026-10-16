@@ -55,7 +55,7 @@ export function rehypeGlossary(options: Options) {
       return out;
     };
 
-    const walk = (node: Element | Root, skip: boolean) => {
+    const walk = (node: { children: RootContent[] }, skip: boolean) => {
       const next: RootContent[] = [];
       for (const child of node.children) {
         if (child.type === "text" && !skip) {
@@ -63,6 +63,22 @@ export function rehypeGlossary(options: Options) {
         } else {
           if (child.type === "element") {
             walk(child, skip || SKIP_TAGS.has(child.tagName));
+          } else {
+            // StoryPassage changes the presentation of ordinary prose. Keep
+            // its first glossary mentions, while leaving spoken dialogue and
+            // other authored components outside glossary matching as before.
+            const flow = child as unknown as {
+              type: string;
+              name?: string;
+              children?: RootContent[];
+            };
+            if (
+              flow.type === "mdxJsxFlowElement" &&
+              flow.name === "StoryPassage" &&
+              flow.children
+            ) {
+              walk(flow as { children: RootContent[] }, skip);
+            }
           }
           next.push(child);
         }

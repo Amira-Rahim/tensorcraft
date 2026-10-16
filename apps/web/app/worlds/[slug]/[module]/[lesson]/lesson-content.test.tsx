@@ -412,6 +412,130 @@ describe("LessonContent, story register", () => {
   );
 });
 
+const STORY_PASSAGE_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+return {default: function(props) {
+  const c = props.components;
+  return jsxs(Fragment, {children: [
+    jsxs(c.StoryPassage, {children: [
+      jsx(c.p, {children: "Demir sends the readings to Farah."}),
+      jsx(c.Dialogue, {
+        speaker: "Dr. Farah",
+        children: jsx(c.p, {children: "Let me check the sensor order."})
+      }),
+      jsxs(c.p, {children: [
+        "Farah opens the ",
+        jsx(c.span, {"data-glossary-term": "tensor", children: "tensor"}),
+        "."
+      ]})
+    ]}),
+    jsx(c.p, {children: "A shape lists the size of each axis."}),
+    jsx(c.h2, {children: "Challenge"}),
+    jsx(c.StoryPassage, {
+      children: jsx(c.p, {children: "Farah sets out the next readings."})
+    }),
+    jsx(c.LessonRecap, {
+      whatYouLearned: ["Shape describes the layout."],
+      bridge: "Array lengths describe each axis.",
+      youCanNow: "Read a tensor's shape."
+    }),
+    jsx(c.StoryPassage, {
+      children: jsx(c.p, {children: "Demir saves their result."})
+    })
+  ]});
+}};`;
+
+describe("LessonContent, third-person story passages", () => {
+  const storyLesson = {
+    body: STORY_PASSAGE_BODY,
+    concept: { explanation: "x" },
+  };
+  const paragraph = (text: string) =>
+    screen.getByText(
+      (_, element) => element?.tagName === "P" && element.textContent === text,
+    );
+
+  it("marks story paragraphs without adding a wrapper, speaker, or visible label", () => {
+    const { container } = render(
+      <LessonContent lesson={storyLesson} worldId="deep-orbit" />,
+    );
+    const root = container.querySelector(".lesson-step-content");
+    for (const text of [
+      "Demir sends the readings to Farah.",
+      "Farah opens the tensor.",
+      "Farah sets out the next readings.",
+      "Demir saves their result.",
+    ]) {
+      const passage = paragraph(text);
+      expect(passage).toHaveAttribute("data-story-passage", "");
+      expect(passage.parentElement).toBe(root);
+    }
+    expect(container.querySelectorAll("[data-story-passage]")).toHaveLength(4);
+    expect(screen.queryByText(/narrator|narration/i)).not.toBeInTheDocument();
+  });
+
+  it("keeps character speech and teaching prose out of the story treatment", () => {
+    render(<LessonContent lesson={storyLesson} worldId="deep-orbit" />);
+    const speech = screen.getByText("Let me check the sensor order.");
+    expect(speech.closest("[data-testid='dialogue']")).not.toBeNull();
+    expect(speech.closest("[data-story-passage]")).toBeNull();
+    expect(
+      screen.getByText("A shape lists the size of each axis."),
+    ).not.toHaveAttribute("data-story-passage");
+    expect(paragraph("Farah opens the tensor.")).toHaveAttribute(
+      "data-story-passage",
+    );
+  });
+
+  it("preserves interactive glossary terms inside a story passage", () => {
+    render(
+      <LessonContent
+        lesson={storyLesson}
+        worldId="deep-orbit"
+        glossaryTerms={[{ term: "tensor", definition: "An array of numbers." }]}
+      />,
+    );
+    const term = screen.getByRole("button", { name: "tensor" });
+    expect(term).toHaveAttribute("data-glossary-term", "tensor");
+    expect(term.closest("p")).toHaveAttribute("data-story-passage");
+  });
+
+  it("does not introduce Deep Orbit's story treatment into another world", () => {
+    const { container } = render(
+      <LessonContent lesson={storyLesson} worldId="neon-logic" />,
+    );
+    expect(
+      screen.getByText("Demir sends the readings to Farah."),
+    ).toBeVisible();
+    expect(container.querySelector("[data-story-passage]")).toBeNull();
+  });
+
+  it("keeps phase boundaries and story paragraphs as siblings for section filtering", () => {
+    const { container } = render(
+      <LessonContent
+        lesson={storyLesson}
+        worldId="deep-orbit"
+        visibleComponents={new Set(["challenge"])}
+        showPostRecap
+      />,
+    );
+    const root = container.querySelector(".lesson-step-content");
+    const heading = screen.getByRole("heading", { name: "Challenge" });
+    const challengeStory = paragraph("Farah sets out the next readings.");
+    const marker = container.querySelector("[data-post-recap-marker]");
+    const closingStory = paragraph("Demir saves their result.");
+    expect(root).toHaveAttribute("data-show-prose", "false");
+    expect(root).toHaveAttribute("data-show-challenge", "true");
+    expect(root).toHaveAttribute("data-show-postrecap", "true");
+    expect(heading).toHaveAttribute("data-heading", "challenge");
+    expect(heading.parentElement).toBe(root);
+    expect(heading.nextElementSibling).toBe(challengeStory);
+    expect(challengeStory.nextElementSibling).toBe(marker);
+    expect(marker).toHaveAttribute("hidden");
+    expect(marker?.parentElement).toBe(root);
+    expect(marker?.nextElementSibling).toBe(closingStory);
+  });
+});
+
 describe("LessonContent, reading layout", () => {
   it("stamps data-layout on the content root only when the layout is passed", () => {
     // globals.css keys the Concept step's two-track grid on
@@ -554,6 +678,7 @@ describe("LessonContent, LessonRecap visibility", () => {
 // lessons that use it. Guard the full production component roster.
 const ALL_COMPONENTS = [
   "Dialogue",
+  "StoryPassage",
   "Epilogue",
   "CodeBlock",
   "BridgeCallout",

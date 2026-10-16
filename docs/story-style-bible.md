@@ -22,6 +22,29 @@ intended stages.
 These requirements also bind layout and component changes. See
 [the project-wide rules](../CLAUDE.md#story-and-interaction-binding-2026-10-15).
 
+## Story passage presentation (binding, 2026-10-16)
+
+Give third-person scene descriptions and character actions a shared, distinct
+visual style across Deep Orbit. Do not add a narrator name, a "Narration" label,
+or another visible explanation of the format. Readers should recognize the
+story voice from its presentation, while character dialogue keeps its own style.
+
+The owner requested a continuously animated sound waveform behind these
+passages, spanning their full width at low opacity so the text stays readable.
+Keep its bars fixed horizontally, pulsing in uneven phrases with brief quiet
+moments, like the rhythm of speech.
+Keep the text still and the waveform decorative, with no microphone icon or
+audio controls. Show a static waveform when reduced motion is enabled.
+
+Outside `<Epilogue>`, wrap actual story paragraphs in `<StoryPassage>` with a
+blank line before and after the paragraph so MDX preserves normal paragraph
+markup. The component is transparent to the lesson's layout and playback.
+Direct story paragraphs inside `<Epilogue>` receive the same style
+automatically. Keep teaching explanations, exercise requirements, and evidence
+caveats in their normal reading style. A character's name alone does not make a
+technical paragraph a story passage. Code-only mission records keep their log
+presentation, including the final operator-note row.
+
 ## Teaching through the story (binding, 2026-10-16)
 
 Each lesson gives the crew one understandable task. The concept activity,

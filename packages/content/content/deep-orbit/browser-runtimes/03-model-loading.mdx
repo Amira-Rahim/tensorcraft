@@ -62,7 +62,11 @@ skillAxes: [deployment, js_integration]
 
 `Error: Request to /models/deep-scan.json failed with status code 404. Please verify this URL points to the model JSON of the model to load.`
 
+<StoryPassage>
+
 Demir tries to load the trained model into the dashboard and gets the error above. He used the wrong URL. This TensorFlow.js export has a JSON manifest, which describes the model, plus binary files containing its weights. He needs to point the loader at the manifest. Other model formats may package these files differently.
+
+</StoryPassage>
 
 <Dialogue speaker="Ensign Demir" expression="breakthrough">
 So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.

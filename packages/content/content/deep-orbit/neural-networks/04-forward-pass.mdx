@@ -39,9 +39,17 @@ keywords:
 skillAxes: [model_arch]
 ---
 
+<StoryPassage>
+
 At 0940, Demir's first network demo stops on a shape error. The model expects batches shaped `[rows, 3]`; he passes a flat `[3]` tensor. In TFJS 4.22.0, the input adapter expands that vector to `[3, 1]`, which still does not match. Three features have become three rows of one feature.
 
+</StoryPassage>
+
+<StoryPassage>
+
 Commander Mirza leaves four minutes into the demo. Demir needs eleven more to find the missing batch axis. He had treated a reading like an event object: one item arrives, one handler receives it. The model's input contract says otherwise.
+
+</StoryPassage>
 
 <Dialogue speaker="Dr. Farah">
 The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.

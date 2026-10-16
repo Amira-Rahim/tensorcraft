@@ -1,0 +1,250 @@
+/* The scene reads like a passage in the ship's story. No byline,
+   quotation marks or character furniture: speech has its own shared surface.
+   Keep the existing full-width frame rather than imposing a reading column.
+   Code-only logs and italic evidence notes retain their original treatment. */
+.lesson-page.deep-orbit-lesson
+  :is(
+    [data-story-passage],
+    .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+    .lesson-step-content[data-show-postrecap="true"]
+      > [data-post-recap-marker]
+      ~ p:not(:has(> :is(code, em):only-child))
+  ) {
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding: 24px 32px;
+  border: 0;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--tc-surface) 65%, var(--tc-bg));
+  color: var(--tc-text);
+  font:
+    400 26px/1.7 Georgia,
+    "Times New Roman",
+    serif;
+  text-align: start;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+/* Alternating bars pulse independently in short phrases with shared pauses.
+   Only the background layers scale; the prose and horizontal position stay still. */
+.lesson-page.deep-orbit-lesson
+  :is(
+    [data-story-passage],
+    .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+    .lesson-step-content[data-show-postrecap="true"]
+      > [data-post-recap-marker]
+      ~ p:not(:has(> :is(code, em):only-child))
+  )::before,
+.lesson-page.deep-orbit-lesson
+  :is(
+    [data-story-passage],
+    .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+    .lesson-step-content[data-show-postrecap="true"]
+      > [data-post-recap-marker]
+      ~ p:not(:has(> :is(code, em):only-child))
+  )::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.1;
+  pointer-events: none;
+  background: var(--tc-primary);
+  mask-size: 384px 144px;
+  mask-repeat: repeat-x;
+  mask-position: 0 50%;
+  transform-origin: center;
+  transform: scaleY(0.4);
+}
+.lesson-page.deep-orbit-lesson
+  :is(
+    [data-story-passage],
+    .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+    .lesson-step-content[data-show-postrecap="true"]
+      > [data-post-recap-marker]
+      ~ p:not(:has(> :is(code, em):only-child))
+  )::before {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox='0%200%20384%20100'%3E%3Cpath%20fill='none'%20stroke='white'%20stroke-width='3'%20stroke-linecap='round'%20d='M6%2046v8M30%2026v48M54%2014v72M78%206v88M102%2036v28M126%2025v50M150%2031v38M174%208v84M198%2040v20M222%2012v76M246%204v92M270%2035v30M294%2042v16M318%2016v68M342%2040v20M366%2043v14'%2F%3E%3C%2Fsvg%3E");
+  animation: orbit-story-phrase-a 6.4s ease-in-out infinite;
+}
+.lesson-page.deep-orbit-lesson
+  :is(
+    [data-story-passage],
+    .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+    .lesson-step-content[data-show-postrecap="true"]
+      > [data-post-recap-marker]
+      ~ p:not(:has(> :is(code, em):only-child))
+  )::after {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox='0%200%20384%20100'%3E%3Cpath%20fill='none'%20stroke='white'%20stroke-width='3'%20stroke-linecap='round'%20d='M18%2038v24M42%2040v20M66%2030v40M90%2021v58M114%2012v76M138%2040v20M162%2018v64M186%2028v44M210%2022v56M234%2031v38M258%2018v64M282%2025v50M306%2030v40M330%2028v44M354%2033v34M378%2047v6'%2F%3E%3C%2Fsvg%3E");
+  animation: orbit-story-phrase-b 6.4s ease-in-out infinite;
+}
+@keyframes orbit-story-phrase-a {
+  0%,
+  5% {
+    transform: scaleY(0.1);
+  }
+  9% {
+    transform: scaleY(0.72);
+  }
+  13% {
+    transform: scaleY(0.3);
+  }
+  17% {
+    transform: scaleY(1);
+  }
+  22% {
+    transform: scaleY(0.46);
+  }
+  27% {
+    transform: scaleY(0.8);
+  }
+  32%,
+  39% {
+    transform: scaleY(0.08);
+  }
+  43% {
+    transform: scaleY(0.82);
+  }
+  48% {
+    transform: scaleY(0.36);
+  }
+  52% {
+    transform: scaleY(1);
+  }
+  57% {
+    transform: scaleY(0.58);
+  }
+  62% {
+    transform: scaleY(0.22);
+  }
+  67% {
+    transform: scaleY(0.74);
+  }
+  72% {
+    transform: scaleY(0.34);
+  }
+  77% {
+    transform: scaleY(0.9);
+  }
+  82%,
+  89% {
+    transform: scaleY(0.07);
+  }
+  93% {
+    transform: scaleY(0.6);
+  }
+  96% {
+    transform: scaleY(0.32);
+  }
+  100% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes orbit-story-phrase-b {
+  0%,
+  5% {
+    transform: scaleY(0.08);
+  }
+  9% {
+    transform: scaleY(0.32);
+  }
+  14% {
+    transform: scaleY(0.84);
+  }
+  18% {
+    transform: scaleY(0.44);
+  }
+  23% {
+    transform: scaleY(1);
+  }
+  28% {
+    transform: scaleY(0.32);
+  }
+  32%,
+  39% {
+    transform: scaleY(0.07);
+  }
+  43% {
+    transform: scaleY(0.42);
+  }
+  47% {
+    transform: scaleY(0.94);
+  }
+  53% {
+    transform: scaleY(0.46);
+  }
+  58% {
+    transform: scaleY(0.86);
+  }
+  63% {
+    transform: scaleY(0.18);
+  }
+  67% {
+    transform: scaleY(0.52);
+  }
+  72% {
+    transform: scaleY(0.96);
+  }
+  77% {
+    transform: scaleY(0.4);
+  }
+  82%,
+  89% {
+    transform: scaleY(0.07);
+  }
+  93% {
+    transform: scaleY(0.88);
+  }
+  96% {
+    transform: scaleY(0.4);
+  }
+  100% {
+    transform: scaleY(0.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lesson-page.deep-orbit-lesson
+    :is(
+      [data-story-passage],
+      .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+      .lesson-step-content[data-show-postrecap="true"]
+        > [data-post-recap-marker]
+        ~ p:not(:has(> :is(code, em):only-child))
+    )::before,
+  .lesson-page.deep-orbit-lesson
+    :is(
+      [data-story-passage],
+      .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+      .lesson-step-content[data-show-postrecap="true"]
+        > [data-post-recap-marker]
+        ~ p:not(:has(> :is(code, em):only-child))
+    )::after {
+    animation: none;
+  }
+}
+.lesson-page.deep-orbit-lesson [data-story-passage] :is(button, a) {
+  font: inherit;
+}
+/* A saved-record service note stays interface text, outside the story voice. */
+.lesson-page.deep-orbit-lesson [data-story-passage] > span.block {
+  margin-top: 16px;
+  font: 400 18px/1.6 var(--font-sans);
+}
+@media (max-width: 650px) {
+  .lesson-page.deep-orbit-lesson
+    :is(
+      [data-story-passage],
+      .lesson-epilogue > p:not(:has(> :is(code, em):only-child)),
+      .lesson-step-content[data-show-postrecap="true"]
+        > [data-post-recap-marker]
+        ~ p:not(:has(> :is(code, em):only-child))
+    ) {
+    padding: 20px;
+    font-size: 24px;
+    line-height: 1.65;
+  }
+}

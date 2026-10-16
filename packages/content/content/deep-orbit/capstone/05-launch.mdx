@@ -130,7 +130,11 @@ skillAxes: [deployment]
 Ten modules, ten weeks of work. Optimized, tested, monitored, documented: nothing left on my list.
 </Dialogue>
 
+<StoryPassage>
+
 Mirza authorizes the deployment and waits for the classification.
+
+</StoryPassage>
 
 For a browser-only application, the publishing step can be: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The local inference model can be a static asset served alongside the app. A server-side language-model adapter, authentication or secret-bearing API needs a separately deployed service; static hosting does not provide one.
 
@@ -165,11 +169,23 @@ You will rehearse training and verify deployment checks, including how the proce
   ]}
 />
 
+<StoryPassage>
+
 The recorded deployment stays the same whichever policy you rehearse. At 0157, DEEP SCAN went to one bridge console during a live pulse. The rest of the fleet kept the old build. This is a **canary**: if the new build fails, it initially affects one console.
+
+</StoryPassage>
+
+<StoryPassage>
 
 The previous classifier scored the same captures in parallel, sending its results only to the log. This is a **shadow model**. All thirty canary verdicts matched it. The fleet received the new build two minutes later, while the window was still open.
 
+</StoryPassage>
+
+<StoryPassage>
+
 Before the hour ended, ARIA simulated the other three policies. She filed their transcripts, unrequested, under `deploy/counterfactuals`. Her index reads: simulations, three; deploys, one.
+
+</StoryPassage>
 
 ## Production Build
 
@@ -299,11 +315,19 @@ async function verifyHostedPipeline(
 // identity beside this result. A rejected check fails the release gate.`}
 </CodeBlock>
 
+<StoryPassage>
+
 Before the final run, Nazari clears her ledger the only way she clears anything: out loud. Nine hours of telemetry reconstruction. Three hours of prune revalidation. Forty minutes of hash-pinned rerun. Then the single credit line, DEEP SCAN, operational, and she wipes the board clean for the first time since the crash. Nobody comments. Everybody notices.
+
+</StoryPassage>
 
 ## The Signal
 
+<StoryPassage>
+
 The bridge console at zero hour, as the mission record kept it:
+
+</StoryPassage>
 
 <CodeBlock language="text" title="bridge-console.log">
 {`=== DEEP SCAN v1.0: Final Classification ===
@@ -355,7 +379,11 @@ Recommendation: Transmit all data to Earth for independent verification.
 DEEP SCAN v1.0: Signal Classified. Mission Continues.`}
 </CodeBlock>
 
+<StoryPassage>
+
 Nazari first asked for a date when the interval read 72.4 seconds. The new projection answers her question, with conditions attached.
+
+</StoryPassage>
 
 These are fictional mission outputs. The date is an extrapolation conditional on a changing trend, not a demonstrated deadline. Agreement between forecasters that share data can preserve the same error. The crew keeps recording the interval instead of treating consensus as certainty.
 

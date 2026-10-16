@@ -22,6 +22,9 @@
 - Continue the story logically in storytelling form. Establish where metadata
   such as sensor order and timestamps comes from. Shape alone cannot reveal
   what an axis means. Preserve the canon, unknowns, and earned discoveries.
+- Give third-person story passages a shared visual voice distinct from
+  dialogue and teaching prose. Keep them full width and readable; never add a
+  visible narrator or narration label, speaker name, or avatar to those passages.
 - Make information as visual, interactive, and dynamic as the teaching allows
   without losing context. Let learners predict, change inputs, run code, and
   inspect meaningful feedback. Explain both the result and its cause. Keep

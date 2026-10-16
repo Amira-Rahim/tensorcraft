@@ -52,9 +52,17 @@ skillAxes: [model_arch]
 
 > **PULSE LOG · 0134 SHIP-TIME** · predicted (LSTM, 80-step window): 0134:55 · observed: 0131:27 · early by 208 seconds · review finding: precursor ripple at window position 4 of 80. The forecast missed its timing.
 
+<StoryPassage>
+
 The pulse arrives three and a half minutes before the forecast. The crew finds a warning ripple at step 4 of the input. Perhaps this trained LSTM did not use that early information well enough. That is something to test, not a proven cause of the miss.
 
+</StoryPassage>
+
+<StoryPassage>
+
 Demir attaches the timing worksheet Mirza requested after the first three-second miss. The capture clocks and window boundaries agree. The forecast is the next part to investigate.
+
+</StoryPassage>
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 This run missed the early ripple. We need to check whether our LSTM used it. Attention lets a prediction read earlier hidden states directly, instead of relying only on the final state. We still have to test whether that improves the forecast.

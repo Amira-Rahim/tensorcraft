@@ -81,13 +81,21 @@ skillAxes: [deployment]
 
 > **INFERENCE LOG · REPEAT-PATTERN CHECK** · same cosmic-background signature, classified 214 times since midnight. Same tensor in, same verdict out. 214 model runs paid for one answer.
 
+<StoryPassage>
+
 That log line is 213 model runs the dashboard never needed. It reminds Demir of a list that keeps re-rendering without memoization.
+
+</StoryPassage>
 
 <Dialogue speaker="Ensign Demir">
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal costs a Map lookup instead of a forward pass.
 </Dialogue>
 
+<StoryPassage>
+
 Demir files the ticket with a saving on it: 213 repeats at the 45 ms this module's first lesson profiled, which is nearly ten seconds of compute given away overnight. Nazari reads the ticket and asks him which model he timed.
+
+</StoryPassage>
 
 <Dialogue speaker="Chief Nazari">
 That 45 milliseconds is the bundle, Ensign. The bundle's time is the language component behind the report pipeline: 85 million parameters, 80 token ids going into a table of 50,000 token entries. You do not run that to sort a signal. You run the classifier. Go and time the call you are actually caching, then come back and tell me what the cache is worth.
@@ -251,7 +259,11 @@ The tensor cache below adds shape and dtype to its rounded-value key, returns co
 
 <Exercise slug="inference-cache" />
 
+<StoryPassage>
+
 The next morning, a bridge console shows a cached classification that disagrees with the new model. Help Demir audit the entries. A change to the model or preprocessing makes old results stale, even if they were saved recently. Other entries must still be within the age limit, or TTL.
+
+</StoryPassage>
 
 <Exercise slug="incident-stale-verdict" />
 

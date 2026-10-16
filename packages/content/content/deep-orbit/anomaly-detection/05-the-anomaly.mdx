@@ -87,13 +87,29 @@ skillAxes: [model_arch, evaluation]
 
 > **ARIA archive · replaying sample 7741** · Recorded during a quiet period. ARIA's rules marked it as normal. No crew member checked it at the time.
 
+<StoryPassage>
+
 The crew replays sample 7741 through all three detectors. The z-score check still calls it normal, but the autoencoder and LSTM both flag it. Two votes are enough to raise an alert.
+
+</StoryPassage>
+
+<StoryPassage>
 
 Mid-morning, a live capture produces the same 73.4 Hz tone and the same two votes. Its reconstruction error is twelve times the highest error seen on a normal signal. DEEP SCAN raises its loudest alert yet.
 
+</StoryPassage>
+
+<StoryPassage>
+
 Now the crew has two captures to compare: sample 7741 from the archive and the new live capture. Both contain the same pattern, even though each individual sensor reading stays within its usual range.
 
+</StoryPassage>
+
+<StoryPassage>
+
 By the time the bridge crew assembles around the display, Nazari has already pulled the sensor calibration suite.
+
+</StoryPassage>
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
 I've checked the sensor calibration twice. No fault found. Keep the raw capture; I want an independent check before we rule the instrument out.
@@ -228,7 +244,11 @@ The LSTM trained on the archive's first day. If contaminated examples appear in 
 
 ## The Discovery
 
+<StoryPassage>
+
 While the detectors vote, Farah runs a script to examine the timing inside each pulse. The crew already knows the gap between pulses: 73.4 seconds. She is looking at the smaller pulses within each one.
+
+</StoryPassage>
 
 The gaps have relative lengths of 1, 1, 2, 3, 5, 8, 13. These are Fibonacci numbers: after the first two, each is the sum of the two before it. The numbers describe the pattern of lengths, not seconds or hertz.
 

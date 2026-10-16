@@ -65,7 +65,11 @@ export function LessonMissionScene({
         : "Aboard the spaceship Archimedes."
       : (location ?? "Deep Orbit");
   const narrative = (
-    <p className="mission-context-narrative" data-testid="mission-handoff">
+    <p
+      className="mission-context-narrative"
+      data-testid="mission-handoff"
+      data-story-passage={worldSlug === "deep-orbit" ? "" : undefined}
+    >
       <ProseText>
         {worldSlug === "deep-orbit"
           ? (LESSON_HANDOFFS[lesson.slug] ?? lesson.context.narrative)

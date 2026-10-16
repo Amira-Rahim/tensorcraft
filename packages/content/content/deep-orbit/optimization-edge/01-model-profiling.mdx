@@ -103,15 +103,35 @@ skillAxes: [deployment]
 ---
 
 
+<StoryPassage>
+
 Two nights after the report went out, the bridge dashboard died. ARIA's reboot watchdog kept the last three minutes. She plays them back at quarter speed on the engineering board, because the crew asked what happened, and this is the only honest answer she has.
+
+</StoryPassage>
+
+<StoryPassage>
 
 At 02:47:00, the ensemble flags an incoming pulse: the best capture opportunity in nine days. At 02:47:26, the dashboard starts loading the full 340 MB DEEP SCAN build alongside the telemetry suite. Free memory falls to zero at 02:49:06.
 
+</StoryPassage>
+
+<StoryPassage>
+
 There is no exception or log entry. The render loop stops mid-frame, leaving the bridge screens frozen. By the time the dashboard reboots, the capture window has closed. Earth's relay slot closes forty minutes later without the data.
+
+</StoryPassage>
+
+<StoryPassage>
 
 The data is gone. Not delayed. Gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
 
+</StoryPassage>
+
+<StoryPassage>
+
 Mirza watches the playback twice, saying nothing. Her own fuel gauge is in the dead frame, frozen mid-read. The second time the line reaches zero she unclips the chronometer, holds it against the frame's timestamp, and clips it back.
+
+</StoryPassage>
 
 <Dialogue speaker="Chief Nazari">
 I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabytes. Your model: 340. The telemetry suite it crashed: 9 hours of reconstruction. The capture we lost: unrecoverable. Make it small, Ensign. Make it small like the mission depends on it, because at 0247 it did.
@@ -121,7 +141,11 @@ I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabyte
 Profiling first. Same discipline as a slow React app: measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
+<StoryPassage>
+
 Demir opens the bundle audit he had saved for later. The crew's trained models total less than a megabyte. Almost all of the 340 MB comes from the pretrained language component and its tables.
+
+</StoryPassage>
 
 Start by measuring weight size, prediction time, and parameters per layer. The running app also needs memory for activations, temporary tensors, and backend buffers. Measure the highest memory use during loading before deciding whether the model fits.
 

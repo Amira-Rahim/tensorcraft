@@ -67,7 +67,11 @@ skillAxes: [data_prep]
 
 Both models read the same captures. The new model receives more measurements from each capture, including frequency information the original three features discarded.
 
+<StoryPassage>
+
 The earlier deployment review gave this same three-feature model 94%: 47 correct out of 50. That review used labels that missed the 73.4 Hz component. The crew reviewed the labels using spectrograms, then evaluated on 400 held-out readings. The same model now scores 78%. Both the labels and evaluation rows changed, so the scores answer different questions.
+
+</StoryPassage>
 
 <Dialogue speaker="Ensign Demir">
 What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase, we also give it the spectral decomposition. More information, better decisions.
@@ -81,7 +85,11 @@ That is feature engineering: deriving model inputs from the data we have. I used
 Eight more measurements are not free either. Eleven inputs instead of three means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
 </Dialogue>
 
+<StoryPassage>
+
 He writes 85 on the board and signs it. The measured score will be higher. His proposal works like `rawData.map(...)`: derive the fields the next part of the program needs. Here, that next part is a model.
+
+</StoryPassage>
 
 You will turn each capture into a consistent set of measurements that a model can use.
 

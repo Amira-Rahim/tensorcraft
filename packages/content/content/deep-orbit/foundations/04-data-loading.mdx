@@ -70,7 +70,11 @@ The raw sensor data comes in faster than we can process it in one pass. But this
 
 > `RangeError: Array buffer allocation failed`. Engineering rig, overnight: the loop dies 19,204 readings into a 28,800-reading archive and takes ARIA's diagnostic queue down with it.
 
+<StoryPassage>
+
 Each reading includes a 33-second raw capture: 256 samples per second across 64 channels, about two megabytes per reading. By the time the loop stops, the array holds about forty gigabytes. Demir now owes engineering a four-hour queue rebuild.
+
+</StoryPassage>
 
 <Dialogue speaker="ARIA">
 Confirmed. I can read the data in small groups without keeping the whole archive in memory. I note that I said the same thing about my parsing rules.

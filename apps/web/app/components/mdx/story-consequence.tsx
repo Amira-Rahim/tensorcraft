@@ -67,7 +67,7 @@ export function StoryConsequence({
     return (
       <div role="alert" className="my-4">
         <p>This scene needs your saved decision. We could not load it.</p>
-        <p>
+        <p data-story-passage="">
           <ProseText>{fallback}</ProseText>
         </p>
         <button
@@ -86,6 +86,7 @@ export function StoryConsequence({
       : STORY_HISTORY[beatId]?.[savedVersion]?.outcomes;
   return (
     <p
+      data-story-passage=""
       data-testid="story-consequence"
       data-beat-id={beatId}
       data-choice-label={state.label ?? "unrecorded"}
