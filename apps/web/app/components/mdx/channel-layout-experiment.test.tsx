@@ -22,20 +22,58 @@ const record = () =>
 
 it("shows which readings Farah selected from Demir's recording before asking for a prediction", () => {
   render(<ChannelLayoutExperiment />);
-  const notes = screen.getByRole("complementary", {
-    name: "Recording notes for this excerpt",
+  let notes = screen.getByRole("complementary", {
+    name: "Recording header for this selection",
   });
   expect(notes).toHaveTextContent("4 of 64 sensors");
   expect(notes).toHaveTextContent("3, from earliest to latest");
   expect(notes).toHaveTextContent("The other 60 sensors are left out");
   expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
-  click("Try a new example");
+  click("Try the next selection");
+  notes = screen.getByRole("complementary", {
+    name: "Recording header for this selection",
+  });
   expect(notes).toHaveTextContent("3 of 64 sensors");
   expect(notes).toHaveTextContent("2, from earliest to latest");
   expect(notes).toHaveTextContent("The other 61 sensors are left out");
   expect(
     screen.getByText(/Farah moves to another part of Demir’s recording/),
   ).toBeVisible();
+});
+
+it("connects each sensor to its first-moment reading and position without answering the prediction", () => {
+  render(<ChannelLayoutExperiment />);
+  const notes = () =>
+    screen.getByRole("complementary", {
+      name: "Recording header for this selection",
+    });
+  const sensorB = within(notes()).getByRole("button", {
+    name: "Inspect sensor B",
+  });
+  fireEvent.click(sensorB);
+  expect(sensorB).toHaveAttribute("aria-pressed", "true");
+  expect(sensorB).toHaveAccessibleDescription("second reading 20");
+  expect(within(notes()).getByRole("status")).toHaveTextContent(
+    "Sensor B recorded 20. Its reading is the second number saved for this moment.",
+  );
+  fireEvent.click(
+    within(notes()).getByRole("button", { name: "Inspect sensor D" }),
+  );
+  expect(within(notes()).getByRole("status")).toHaveTextContent(
+    "Sensor D recorded 8. Its reading is the fourth number saved for this moment.",
+  );
+  expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
+  expect(record().firstPrediction).toBeNull();
+  expect(record().predictionHelp).toBe(false);
+  expect(vi.mocked(track)).not.toHaveBeenCalled();
+
+  click("Try the next selection");
+  expect(
+    within(notes()).queryByRole("button", { name: "Inspect sensor D" }),
+  ).not.toBeInTheDocument();
+  expect(within(notes()).getByRole("status")).toHaveTextContent(
+    "Sensor A recorded 10. Its reading is the first number saved for this moment.",
+  );
 });
 
 it("clearly marks a wrong prediction, clears the verdict on edit, and confirms a corrected answer", () => {
@@ -116,7 +154,7 @@ it("compares two same-shape layouts, retains state on remount, and does not emit
 
 it("tests both operation and values on the changed packet, preserving the first attempt and help through reset", () => {
   render(<ChannelLayoutExperiment />);
-  click("Try a new example");
+  click("Try the next selection");
   expect(
     screen.queryByRole("button", { name: "Run transpose" }),
   ).not.toBeInTheDocument();
@@ -162,7 +200,7 @@ it("tests both operation and values on the changed packet, preserving the first 
 
 it("identifies incorrect sensor values even when the operation is correct", () => {
   render(<ChannelLayoutExperiment />);
-  click("Try a new example");
+  click("Try the next selection");
   fireEvent.click(screen.getByLabelText("Transpose: turn columns into rows"));
   const readings = screen.getByLabelText(
     "Sensor B’s two readings, from earliest to latest",
@@ -198,9 +236,9 @@ it("does not erase observed help by resetting operations or looking back at the 
   );
   click("Check prediction");
   expect(record().firstPrediction?.assisted).toBe(true);
-  click("Try a new example");
-  click("Back to the first example");
-  click("Try a new example");
+  click("Try the next selection");
+  click("Back to the first selection");
+  click("Try the next selection");
   expect(record().checkHelp).toBe(true);
   expect(record().checkAnswer).toBe(false);
   expect(screen.queryByText(/Transpose makes \[\[/)).not.toBeInTheDocument();

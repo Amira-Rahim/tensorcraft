@@ -80,6 +80,73 @@
   border: 1px solid var(--tc-border);
   border-radius: 6px;
 }
+.channel-source-explanation,
+.channel-source-map {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.channel-source-explanation {
+  padding-block: 28px;
+  border-block: 1px solid var(--tc-border);
+}
+.channel-source-map figcaption {
+  font-size: 20px;
+  line-height: 1.6;
+}
+.channel-source-readings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.channel-source-readings > li {
+  min-width: 0;
+  margin: 0;
+}
+.channel-source-sensor {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px 12px;
+  border: 1px solid var(--tc-border);
+  border-radius: 4px;
+  background: var(--tc-bg);
+  color: var(--tc-text);
+  font-size: 22px;
+  cursor: pointer;
+}
+.channel-activity .channel-source-sensor[aria-pressed="true"] {
+  border-color: var(--tc-primary);
+  background: color-mix(in srgb, var(--tc-primary) 10%, var(--tc-bg));
+  color: var(--tc-text);
+}
+.channel-source-sensor:hover {
+  border-color: var(--tc-primary);
+}
+.channel-source-sensor:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
+}
+.channel-source-position {
+  color: var(--tc-muted);
+  font-size: 18px;
+}
+.channel-source-arrow {
+  color: var(--tc-primary);
+  line-height: 1;
+}
+.channel-source-value {
+  font-family: var(--font-mono);
+  font-size: 32px;
+}
+.channel-source-result {
+  padding: 20px 24px;
+  background: var(--tc-surface);
+}
 .channel-recording-notes dl {
   display: grid;
   gap: 24px;
@@ -108,11 +175,6 @@
   place-items: center;
   min-width: 40px;
   min-height: 40px;
-}
-.lesson-page.deep-orbit-lesson .channel-activity .channel-recording-notes > p {
-  color: var(--tc-muted);
-  font-size: 18px;
-  line-height: 1.65;
 }
 .channel-recording {
   display: grid;

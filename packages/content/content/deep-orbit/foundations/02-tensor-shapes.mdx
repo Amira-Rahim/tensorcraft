@@ -10,7 +10,7 @@ scene:
   location: "Archimedes, Lab"
   portraitAlt: "Farah studies a lab display showing sensor readings in a grid and as lines over time."
 context:
-  narrative: "Farah opens the recording Demir sent her. She wants to follow each sensor's readings over time without mixing them up."
+  narrative: "Farah opens the recording Demir sent her. She wants to follow the readings over time without mixing them up."
 concept:
   explanation: "A grid's shape gives its number of rows and columns. Knowing what those rows and columns mean helps you arrange readings correctly."
   bridge:
@@ -40,15 +40,20 @@ skillAxes: [data_prep]
 
 <StoryPassage>
 
-Demir's recording fills one long list on Farah's display. She wants to see
-how each sensor changes over time, but the list is hard to follow.
+Farah opens the recording Demir sent her. One long list of numbers fills her
+display, and she wants to see how those numbers change over time.
 
 </StoryPassage>
 
+The ship collects the incoming signal with measuring devices called
+**sensors**. Each number a sensor records is a **reading**.
+
 <StoryPassage>
 
-Farah opens the recording notes. They list 64 hull sensors and show that each
-moment records them in the same order.
+Farah checks the recording's **header**: notes saved with the numbers. They
+tell her which sensor each position in the list belongs to. The notes list
+64 sensors. At each moment, the recording saves their readings in the same
+order.
 
 </StoryPassage>
 
@@ -83,15 +88,19 @@ A shape gives the sizes. The recording notes tell us what they mean.
     "Use `transpose()` to give each sensor its own row.",
     "Check the shape and make sure every reading is in the right place."
   ]}
-  introduction="Farah wants to see how each sensor’s readings change over time. Together, you’ll:"
+  introduction="Farah wants to see how the readings change over time. Together, you’ll:"
 />
 
 ## Put Farah’s plan into JavaScript
 
-Farah’s first selection has 12 readings. They fit into three rows of four,
-giving the grid a **shape** of `[3, 4]`. Each row holds readings taken at the
-same time. Each column belongs to one sensor. The recording notes give that
-order; the shape only gives the counts.
+Farah’s first selection has 12 readings from sensors A, B, C, and D. Those
+letters are the sensors' short names. At each moment, A's reading comes
+first, then B's, then C's, then D's. That is the **sensor order**.
+
+The readings fit into three rows of four, giving the grid a **shape** of
+`[3, 4]`. Each row holds readings taken at the same time. Each column
+belongs to one sensor. The recording notes give that order; the shape only
+gives the counts.
 
 Rows and columns are the grid’s two **axes**. An axis is also called a
 **dimension**. The number of axes is the **rank**: this grid has rank 2.

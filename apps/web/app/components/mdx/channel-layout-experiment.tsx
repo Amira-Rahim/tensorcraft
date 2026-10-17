@@ -149,19 +149,23 @@ export function ChannelLayoutExperiment() {
           Keep each sensor’s readings together
         </h3>
         <p data-story-passage="">
-          Farah opens the recording Demir sent her. She wants to see how each
-          sensor changes over time. Help her put the readings into the layout
-          her chart needs.
+          Farah starts with a few of the ship’s sensors from Demir’s recording.
+          Help her keep each number with the sensor it came from, so she can see
+          how its readings change over time.
         </p>
         <RecordingNotes
+          key={draft.mode}
           excerpt={draft.mode === "worked" ? WORKED_EXCERPT : CHECK_EXCERPT}
+          firstReadings={
+            draft.mode === "worked" ? WORKED_PACKET[0] : CHECK_PACKET[0]
+          }
         />
         <aside className="channel-definition" aria-label="What is a channel?">
           <p>
-            Each sensor sends a series of readings called a{" "}
-            <strong>channel</strong>. Demir’s recording contains all{" "}
-            {RECORDING_SOURCE.sensorCount} channels. Farah has already pulled
-            out the readings shown here.
+            In this recording, each sensor has its own <strong>channel</strong>:
+            its readings over time. Demir’s recording contains{" "}
+            {RECORDING_SOURCE.sensorCount} channels. Farah has already selected
+            the readings shown here.
           </p>
         </aside>
       </header>
@@ -434,7 +438,7 @@ export function ChannelLayoutExperiment() {
                 className={button}
                 onClick={() => update({ mode: "check" })}
               >
-                Try a new example
+                Try the next selection
               </button>
             </div>
           </div>
@@ -453,7 +457,7 @@ export function ChannelLayoutExperiment() {
             </p>
             <PacketTable
               packet={CHECK_PACKET}
-              caption="Another selection from Demir’s recording, with one row for each time. Shape [2, 3]"
+              caption="Another selection from Demir’s recording, with one row per moment. Shape [2, 3]"
               channel={1}
             />
             <form onSubmit={submitCheck} className="channel-prediction">
@@ -539,7 +543,7 @@ export function ChannelLayoutExperiment() {
                 <p>
                   {draft.checkResult
                     ? draft.checkResult.correct
-                      ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this example. Sensor B’s readings stay together and in time order, ready for Farah’s chart.`
+                      ? `Both answers are correct. You answered ${draft.checkResult.assisted ? "with help" : "without help"} on this selection. Sensor B’s readings stay together and in time order, ready for Farah’s chart.`
                       : checkedTransfer?.operationCorrect
                         ? "The operation is right. For the readings, follow sensor B’s column from top to bottom, then try again."
                         : `${checkedTransfer?.valuesCorrect ? "Your sensor readings are correct. " : "For the readings, follow sensor B’s column from top to bottom. "}Reshape gives you three rows of two, but mixes the sensors’ readings. Which operation turns a column into a row?`
@@ -565,14 +569,14 @@ export function ChannelLayoutExperiment() {
               </p>
             )}
             <p className="channel-detail">
-              Going back to the first example also counts as help on this one.
+              Going back to the first selection also counts as help on this one.
             </p>
             <button
               type="button"
               className={button}
               onClick={() => update({ mode: "worked", checkHelp: true })}
             >
-              Back to the first example
+              Back to the first selection
             </button>
           </section>
         )}
@@ -580,7 +584,8 @@ export function ChannelLayoutExperiment() {
           {(draft.firstPrediction || draft.firstCheck) && (
             <p className="channel-detail">
               Your first{" "}
-              {draft.firstCheck ? "answer on the new example" : "prediction"}:{" "}
+              {draft.firstCheck ? "answer on the next selection" : "prediction"}
+              :{" "}
               {(draft.firstCheck ?? draft.firstPrediction)!.correct
                 ? "correct"
                 : "incorrect"}
@@ -646,24 +651,93 @@ function sensorName(channel: number) {
   return String.fromCharCode(65 + channel);
 }
 
-function RecordingNotes({ excerpt }: { excerpt: RecordingExcerpt }) {
+function RecordingNotes({
+  excerpt,
+  firstReadings,
+}: {
+  excerpt: RecordingExcerpt;
+  firstReadings: readonly number[];
+}) {
+  const uid = useId();
+  const [selectedSensor, setSelectedSensor] = useState(0);
+  const positions = ["first", "second", "third", "fourth"];
+  const sensorOrder = excerpt.sensorIds.join(", then ");
   return (
     <aside
       className="channel-recording-notes"
-      aria-label="Recording notes for this excerpt"
+      aria-label="Recording header for this selection"
     >
-      <h4 className="channel-subheading">Selected from Demir’s recording</h4>
+      <h4 className="channel-subheading">The devices behind the numbers</h4>
+      <p>
+        A sensor is a measuring device, like a thermometer. The ship’s sensors
+        measure the incoming signal. Each number they record is a reading.
+      </p>
+      <section className="channel-source-explanation">
+        <h5 className="channel-subheading">Recording notes (header)</h5>
+        <p>
+          Demir’s recording comes with a note explaining how its numbers were
+          saved. This note is called the header. It tells Farah which sensor
+          each number belongs to.
+        </p>
+        <p>
+          Farah uses letters as short names for the sensors she selected. Their
+          readings are saved in this order: {sensorOrder}. That is what
+          <strong> sensor order</strong> means. The same order repeats at each
+          moment.
+        </p>
+        <figure className="channel-source-map">
+          <figcaption>
+            The first moment in this selection. Select a sensor to follow its
+            reading.
+          </figcaption>
+          <ol className="channel-source-readings">
+            {excerpt.sensorIds.map((sensor, index) => (
+              <li key={sensor}>
+                <button
+                  type="button"
+                  className="channel-source-sensor"
+                  aria-label={`Inspect sensor ${sensor}`}
+                  aria-describedby={`${uid}-${sensor}-position ${uid}-${sensor}-value`}
+                  aria-pressed={selectedSensor === index}
+                  onClick={() => setSelectedSensor(index)}
+                >
+                  <span
+                    id={`${uid}-${sensor}-position`}
+                    className="channel-source-position"
+                  >
+                    {positions[index]} reading
+                  </span>
+                  <strong>Sensor {sensor}</strong>
+                  <span className="channel-source-arrow" aria-hidden="true">
+                    ↓
+                  </span>
+                  <span
+                    id={`${uid}-${sensor}-value`}
+                    className="channel-source-value"
+                  >
+                    {firstReadings[index]}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+          <p role="status" className="channel-source-result">
+            Sensor {excerpt.sensorIds[selectedSensor]} recorded{" "}
+            <strong>{firstReadings[selectedSensor]}</strong>. Its reading is the{" "}
+            <strong>{positions[selectedSensor]}</strong> number saved for this
+            moment.
+          </p>
+        </figure>
+        <p>
+          The letters identify the devices. The numbers are their readings; they
+          are kept in recording order, not sorted by size.
+        </p>
+      </section>
       <dl>
         <div>
-          <dt>Sensor order at each moment</dt>
+          <dt>Sensors in Farah’s selection</dt>
           <dd>
-            {excerpt.sensorIds.map((sensor) => (
-              <code key={sensor}>{sensor}</code>
-            ))}
-            <span>
-              {excerpt.sensorIds.length} of {RECORDING_SOURCE.sensorCount}{" "}
-              sensors
-            </span>
+            {excerpt.sensorIds.length} of {RECORDING_SOURCE.sensorCount} sensors
           </dd>
         </div>
         <div>
@@ -671,7 +745,7 @@ function RecordingNotes({ excerpt }: { excerpt: RecordingExcerpt }) {
           <dd>{excerpt.momentCount}, from earliest to latest</dd>
         </div>
       </dl>
-      <p>
+      <p className="channel-detail">
         The other {RECORDING_SOURCE.sensorCount - excerpt.sensorIds.length}{" "}
         sensors are left out. Time 1 is the first moment in this selection.
       </p>
