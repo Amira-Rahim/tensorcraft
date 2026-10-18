@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord: the FFT tells you which individual notes make it up.'"
+  narrative: "The overnight FFT has finished. Demir sees a peak in its output, but needs the frequency it represents. Farah helps him read the spectrum."
   speaker: "Dr. Farah"
 concept:
   explanation: "The Fourier transform describes a signal using fixed sine and cosine waves. Its results tell you the strength and timing of each frequency component."
@@ -64,7 +64,7 @@ The overnight run finished. Two hundred and fifty-seven numbers per window, and 
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-A note, Ensign. Think of a chord on a piano: you hear one sound, but it's actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and helps us separate the notes and compare their strengths. With a short or noisy recording, nearby notes can be hard to distinguish. Index 10 is the loudest note in yours.
+Each index represents a frequency. We need the sample rate and window length to read it. Think of a chord: the FFT helps us separate the notes and compare their strengths. A short or noisy capture can make nearby notes hard to distinguish.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -259,7 +259,7 @@ The discrete sample vector is reconstructible from its full DFT in exact arithme
 
 ## Challenge
 
-Compute the FFT of a signal and find its dominant frequency.
+Find the strongest eligible frequency so Farah can select a band for closer inspection. Your returned value is a bin center in hertz, with precision limited by the capture's bin spacing.
 
 Skip bin 0, the constant offset. Find the largest magnitude among the remaining bins and return that bin’s frequency. Use the computed magnitudes. Rounding an estimated tone frequency can give a different answer because phase, nearby tones and leakage affect which bin wins.
 

@@ -56,9 +56,9 @@ Six sections, one prompt, one draft: eleven hundred words back in twenty seconds
 
 Smaller sections let a reviewer check one claim set against its evidence before moving on. Each section gets its own data and prompt. The assembled report still needs a consistency check across sections.
 
-You will assemble reviewed report sections and identify the sections that must be withheld.
+You will produce the report Earth can receive: approved sections in order, with a named omission wherever review is unfinished.
 
-<LearningObjectives objectives={["Generate and review the report one section at a time", "Follow the report from template to final review, and build the step that assembles approved sections", "Leave out a section that fails review, and list what was withheld", "Produce a formatted report a human can sign, with the withheld sections named rather than quietly missing"]} />
+<LearningObjectives objectives={["Generate and review each section against its own evidence", "Assemble approved sections in order and name any withheld sections", "Check the assembled report for conflicting claims and missing context before release"]} />
 
 <BossBeat
   beatId="deep-orbit-llm-cut-call"
@@ -172,6 +172,8 @@ A reviewer has marked each generated section as approved or not approved. The bo
 
 Assemble the approved sections in order and list the headings that were withheld. Each section arrives as `{ heading, content, validated }`. The text called `generated` in the example is called `content` in this exercise.
 
+Read the report your function returns. Earth must be able to distinguish an omitted section from a report with no findings. The supplied review flags decide what is included; your assembler does not approve the claims itself.
+
 <Exercise slug="generate-report" />
 
 <RecallPrompt
@@ -183,16 +185,16 @@ Assemble the approved sections in order and list the headings that were withheld
       "question": "What review benefit can section-by-section generation provide?",
       "options": [
         {
-          "text": "It removes the need for reviewers to inspect the source evidence.",
-          "feedback": "Evidence checking is still necessary for each claim."
+          "text": "Approval of individual sections also confirms that the assembled report is consistent.",
+          "feedback": "Sections can pass separate reviews and still contradict each other when assembled."
         },
         {
           "text": "Each section can be checked against a smaller evidence set and revised separately.",
           "feedback": "Smaller sections make local review and revision easier."
         },
         {
-          "text": "Every section becomes factually correct without review.",
-          "feedback": "Smaller drafts can still contain unsupported claims."
+          "text": "A valid JSON response provides enough evidence to approve each section.",
+          "feedback": "A format check does not establish whether the section's claims match its evidence."
         }
       ],
       "correctIndex": 1,
@@ -207,8 +209,8 @@ Assemble the approved sections in order and list the headings that were withheld
           "feedback": "Review the assembled report as well as its individual sections."
         },
         {
-          "text": "Only whether the file opens.",
-          "feedback": "Readable output can still contain conflicting claims or missing context."
+          "text": "Only whether every included section has its own approval.",
+          "feedback": "Keep those approvals, then check how the sections fit together."
         },
         {
           "text": "Nothing, because separate approval guarantees whole-report consistency.",
@@ -234,7 +236,7 @@ At 0348, the reviewer finds two unsupported claims in Hypotheses. The model used
 The transmission window opens at 0410. At 0411, the five approved sections leave with a note naming the missing section.
 
 <Dialogue speaker="Dr. Farah">
-The omission notice names the two unsupported claims. Whoever reviews the next draft needs to know why this one stayed aboard.
+The omission notice names the missing section. I've kept the two unsupported claims in our review notes so whoever picks this up knows why it stayed aboard.
 </Dialogue>
 
 Once the transmission ends, Nazari marks the report as sent. One section stayed aboard. She leaves its follow-up work on the list for the next crew.

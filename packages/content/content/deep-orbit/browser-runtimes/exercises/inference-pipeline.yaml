@@ -116,12 +116,24 @@ testCode: |
       // probe reads amplitude alone, so p is 0.25: noise, reported at 1 - p
       expect(r.class, 'This probe reads amplitude alone, and 512 of 2048 counts normalizes to 0.25, so the verdict is noise. An anomaly here means the three features reached the model in another order.').toBe('noise');
       expect(r.confidence, 'This probe reads amplitude alone, so p is 0.25. The verdict is noise and the confidence in that verdict is 0.75; reporting 0.25 hands back the raw sigmoid instead.').toBeCloseTo(0.75, 4);
+      recordResult({
+        kind: 'table', title: 'What your handler sent to the model',
+        summary: 'Normalized values captured by the existing identity-model probe. This tests preprocessing and routing, not DEEP SCAN accuracy.',
+        columns: ['Amplitude scaled', 'Zero-crossing count scaled', 'Phase scaled', 'Returned class', 'Selected class score'],
+        rows: [[...seen.values, r.class, r.confidence]],
+      });
     });
     it('leaves no tensors behind (tf.tidy is doing its job)', () => {
       const before = tf.memory().numTensors;
       const r = verdict(probe, { amplitude: 100, frequency: 32, phase: 0 });
       expect(tf.memory().numTensors, 'Temporary tensors are still alive after classify returned. Create and read them inside a synchronous tidy callback.').toBe(before);
       expect(r.confidence, 'A pipeline that allocates nothing leaks nothing, so this check only means something once a verdict comes back.').toBeGreaterThan(0);
+      recordResult({
+        kind: 'table', title: 'Tensor count around your prediction',
+        summary: 'Counts for this existing probe call. A matching count checks temporary tensor cleanup here, not all browser memory.',
+        columns: ['Before call', 'After call'],
+        rows: [[before, tf.memory().numTensors]],
+      });
     });
   });
 estimatedMinutes: 15

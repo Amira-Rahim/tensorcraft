@@ -134,7 +134,7 @@ You will test a classifier on readings it has not trained on and compare trainin
 
 ## Read the mistakes behind the score
 
-The visual's twelve cases show why one accuracy number is not enough. A
+The twelve-case alert review shows why one accuracy number is not enough. A
 missed anomaly and a false alarm have different costs. **Precision** is the
 share of alerts that were true anomalies; **recall** is the share of actual
 anomalies caught. Inspect these alongside accuracy and individual errors.
@@ -320,7 +320,7 @@ The three misses were confirmed later. Their three features looked almost calm. 
 | **Actually anomalous (26)** | TP = 23 | FN = 3 |
 | **Actually calm (24)** | FP = 0 | TN = 24 |
 
-Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26 = 0.885. One aggregate number became three, and the three disagree: perfect precision, and a recall hole exactly where the late-confirmed, disguised anomalies live. That is what "aggregate accuracy hides failure modes" looks like in practice.
+Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26 = 0.885. Perfect precision coexists with three missed anomalies. Recall makes those misses visible.
 
 **Tradeoff:** on a fixed dataset, lowering the threshold cannot reduce recall or the false-positive rate. Precision can rise or fall because the newly flagged rows can contain both true and false positives. Measure the tradeoff, then choose a cutoff for the error costs in your domain.
 
@@ -346,7 +346,7 @@ The calculation below changes only the anomaly frequency. It assumes the thresho
 
 Here sens is the sensitivity (the recall from the drawer above), FPR is the false-positive rate (the share of calm readings falsely flagged), and the prior is how common anomalies are before any alarm fires.
 
-**First, honesty about the false-positive rate.** FP = 0 on 24 calm rows says less than it seems: on 24 independent calm trials with the same true 4% FPR, a detector would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make the FPR zero.
+**No false alarms on a small sample.** FP = 0 on 24 calm rows says less than it seems: on 24 independent calm trials with the same true 4% FPR, a detector would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make the FPR zero.
 
 **Worked example.** Take sens = 0.885 (the recall above), assume FPR = 2%, and suppose 1 reading in 1,000 on the live stream is genuinely anomalous (prior = 0.001):
 
@@ -362,9 +362,13 @@ A cheaper filter can reduce the number of readings reaching an expensive model. 
 
 ## Challenge
 
-Help Mirza check DEEP SCAN on separate test readings. Train on the supplied training rows, evaluate the test rows, then compare the two accuracies. The tests rerun the evaluation, try eleven score pairs, and check that no test rows entered training.
+Prepare Mirza's evaluation record. Train on the supplied training rows,
+evaluate the separate test rows, and report the measured accuracies and
+gap label. Inspect your run's results before deciding what needs further
+investigation. The checks also verify that no test rows entered training;
+the fictional crew's 94% is not a target for your run.
 
-Report the scores this run produced, even when they are disappointing. The grader checks the evaluation procedure without demanding a particular accuracy. The transfer assignment below asks whether the model earns its complexity.
+Report the scores this run produced. The grader checks the evaluation procedure without demanding a particular accuracy. The transfer assignment below asks whether the model earns its complexity.
 
 <Exercise slug="deep-scan-eval" />
 
@@ -456,7 +460,7 @@ Report the scores this run produced, even when they are disappointing. The grade
     "model.evaluate() computes loss and configured metrics on the rows you supply. Use untouched test rows to estimate performance on the conditions they represent; that estimate does not guarantee deployment performance.",
     "Train/test gaps help diagnose failures, but do not identify the cause by themselves. Check data shift, labels, preprocessing, and performance against a baseline.",
     "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production.",
-    "Validation data pays for the decisions you make during training, so repeated selection can make its score optimistic. The test slice is scored once, after the settings are frozen, and that is the number you report."
+    "Use validation data for training choices. Repeatedly choosing settings on the same set can make its score optimistic. Score the test slice once, after the settings are frozen, and report that result."
   ]}
   bridge="E2E tests check workflows; held-out evaluation checks model performance beyond training examples. Both need representative cases and clear limits on what passing establishes."
   youCanNow="Train a classifier, run `model.evaluate()` on a held-out slice, and use the train/test gap as an investigation signal alongside data checks and sliced evaluation."

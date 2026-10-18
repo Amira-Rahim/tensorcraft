@@ -135,6 +135,12 @@ testCode: |
         Array.from(drawn.dataSync())[0] / 2,
         'The score gap is drawn fresh on every run, so the matching key\'s share has to come out of a softmax over these two scores.',
       ).toBeCloseTo(1 / (1 + Math.exp(-gap)), 3);
+      recordResult({
+        kind: 'table', title: 'Your weighted attention blend',
+        summary: 'Synthetic query and keys. Values are twice the identity matrix, so dividing each returned component by two reveals its attention weight for this probe. This is an untrained calculation, not an explanation of a forecast.',
+        columns: ['Value row', 'Weight derived from your blend', 'Returned output component'],
+        rows: [[0, first, got[0]], [1, second, got[1]]],
+      });
     });
 
     it('a strong query concentrates the weight, still without erasing the other step', () => {

@@ -76,6 +76,11 @@ testCode: |
         readScalar(output),
         'Multiply each input by the weight at the same index, sum the products, then add the bias. The starter bias is 0.1.',
       ).toBeCloseTo(0.4, 4);
+      recordResult({
+        kind: 'table', title: 'Farah\'s neuron score',
+        summary: 'Your tensor calculation on the supplied three-input arithmetic case. The weights are fixed here; no training has run.',
+        columns: ['Result', 'Value'], rows: [['Weighted score plus bias', readScalar(output)]],
+      });
     });
     it('tracks different weights, not a memorized answer', () => {
       const out = callNeuron(tf.tensor([2, 1, 0]), tf.tensor([0.5, -0.5, 1.0]), tf.scalar(0.25));

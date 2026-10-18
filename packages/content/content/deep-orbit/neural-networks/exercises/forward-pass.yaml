@@ -104,6 +104,12 @@ testCode: |
           'The output must equal input times weights plus bias. Keep the default linear activation and return the actual prediction.',
         ).toBeCloseTo(expected[i], 3);
       }
+      recordResult({
+        kind: 'table', title: 'Your first forward pass',
+        summary: 'Actual outputs from your two-feature, three-unit exercise model. Its random starting weights do not establish prediction accuracy.',
+        columns: ['Reading', 'Input 1', 'Input 2', 'Unit 1', 'Unit 2', 'Unit 3'],
+        rows: input.arraySync().map((row, i) => [i + 1, ...row, ...Array.from(actual).slice(i * 3, i * 3 + 3)]),
+      });
     });
     it('one predict call carries the whole stack, at any height', () => {
       const layer = firstLayer();

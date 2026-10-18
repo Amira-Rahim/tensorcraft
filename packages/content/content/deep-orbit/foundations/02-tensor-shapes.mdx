@@ -10,7 +10,7 @@ scene:
   location: "Archimedes, Lab"
   portraitAlt: "Farah studies a lab display showing sensor readings in a grid and as lines over time."
 context:
-  narrative: "Farah opens the recording Demir sent her. She wants to follow the readings over time without mixing them up."
+  narrative: "The viewer can plot Demir’s recording. Farah checks how it groups the readings so each line follows the right sensor."
 concept:
   explanation: "A grid's shape gives its number of rows and columns. Knowing what those rows and columns mean helps you arrange readings correctly."
   bridge:
@@ -26,7 +26,7 @@ hints:
   - level: nudge
     content: "The list records all four sensors at the first moment, then all four at the next moment. Which four values make up the second row?"
   - level: guidance
-    content: "Split the list into one row per moment. Read the second row as a regular JavaScript array, using JavaScript's zero-based index. For the chart, turn each sensor's column into a row without mixing its readings with other sensors."
+    content: "Split the list into one row per moment. Read the second row as a regular JavaScript array. For the chart, turn each sensor's column into a row without mixing its readings with other sensors."
   - level: solution
     content: "const grid = flat.reshape([3, 4]); const step1 = grid.arraySync()[1]; const bySensor = grid.transpose();"
 keywords:
@@ -40,32 +40,27 @@ skillAxes: [data_prep]
 
 <StoryPassage>
 
-Farah opens the recording Demir sent her. One long list of numbers fills her
-display, and she wants to see how those numbers change over time.
+Farah opens the recording and the chart Demir sent her. The lines are there,
+but she wants to check the grouping before using the viewer on the full capture.
 
 </StoryPassage>
 
-The ship collects the incoming signal with measuring devices called
-**sensors**. Each number a sensor records is a **reading**.
-
 <StoryPassage>
 
-Farah checks the recording's **header**: notes saved with the numbers. They
-tell her which sensor each position in the list belongs to. The notes list
-64 sensors. At each moment, the recording saves their readings in the same
-order.
+Farah opens the header Demir sent with the recording. It lists all 64
+sensors in the order their readings were saved at each moment.
 
 </StoryPassage>
 
 <Dialogue speaker="Dr. Farah" expression="delighted">
-Demir's notes tell us which sensor each reading came from. Help me put readings from the same moment into a row. Then we can follow one sensor at a time.
+Demir has the connection working. Let’s check what goes into each line before we trust the chart with the full recording.
 </Dialogue>
 
 <StoryPassage>
 
-Farah takes readings from the first four sensors at three moments in Demir's
-recording. The notes use A, B, C, and D as short labels for those sensors.
-She puts the 12 readings in a short list, ready for you to arrange.
+Farah keeps Demir’s selection: sensors A, B, C, and D at three moments.
+You’ll take over the grouping code that the viewer supplied last time.
+The readings stay the same, so you can compare your result with his chart.
 
 </StoryPassage>
 
@@ -93,14 +88,9 @@ A shape gives the sizes. The recording notes tell us what they mean.
 
 ## Put Farah’s plan into JavaScript
 
-Farah’s first selection has 12 readings from sensors A, B, C, and D. Those
-letters are the sensors' short names. At each moment, A's reading comes
-first, then B's, then C's, then D's. That is the **sensor order**.
-
-The readings fit into three rows of four, giving the grid a **shape** of
-`[3, 4]`. Each row holds readings taken at the same time. Each column
-belongs to one sensor. The recording notes give that order; the shape only
-gives the counts.
+Demir’s selection has 12 readings. Three rows of four give the grid a
+**shape** of `[3, 4]`. Each row holds one moment, and each column follows
+one sensor.
 
 Rows and columns are the grid’s two **axes**. An axis is also called a
 **dimension**. The number of axes is the **rank**: this grid has rank 2.
@@ -108,10 +98,8 @@ The original list has just one axis, so it has rank 1.
 
 <StoryPassage>
 
-Farah brings that first selection over to JavaScript. It already contains
-just the four selected sensors, in order A, B, C, and D at each moment. She
-leaves the rest of Demir's recording in the archive while you arrange these
-12 readings.
+Farah brings the 12 selected readings over to JavaScript. The full recording
+stays in the archive while you arrange them.
 
 </StoryPassage>
 
@@ -147,9 +135,8 @@ Farah needs four readings in each row. `reshape([3, 4])` takes the list in
 order and starts a new row after every four values. No readings are added or
 removed: `3 × 4 = 12`.
 
-`arraySync()` gives you regular JavaScript arrays, with one array for each
-row. JavaScript starts counting at `0`, so `grid.arraySync()[1]` gives you
-the second row. `grid[1]` does not read a tensor row.
+`arraySync()` copies the tensor's values into nested JavaScript arrays.
+`grid.arraySync()[1]` reads the second row; `grid[1]` does not index a tensor.
 
 After the reshape, Farah can see all four sensors at each time. Her chart
 needs a different view: one sensor per row. `transpose()` turns the columns
@@ -205,7 +192,7 @@ is a regular JavaScript array, so it does not need `dispose()`.
 ### Swapping axes in a bigger tensor
 
 With more than two axes, you can tell `transpose()` which order you want.
-Axes are numbered from `0`, just like array indexes.
+Axes use zero-based indexes.
 `tensor.transpose([1, 0, 2])` puts the second axis first and the first axis
 second. The third stays where it is. With no argument, TensorFlow.js reverses
 all the axes. Check what each axis means before choosing an order.
@@ -214,9 +201,9 @@ all the axes. Check what each axis means before choosing an order.
 
 ## Challenge
 
-Farah takes 12 more readings from Demir's recording: the same four sensors at
-three later moments. Help her arrange them into rows of four, then give the
-chart one row per sensor.
+Farah hands you the same 12 readings. Build the grouping steps yourself:
+one row per moment, then one row per sensor. Run the code to see the chart
+your arrangement produces.
 
 <Exercise slug="reshape-tensor" />
 

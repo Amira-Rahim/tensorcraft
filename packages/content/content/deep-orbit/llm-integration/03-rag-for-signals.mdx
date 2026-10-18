@@ -96,9 +96,9 @@ That's Server Components! Fetch data on the server, then render with it. RAG fet
 
 Both approaches fetch records before producing output. But rendering code explicitly maps fields to the page, and you can inspect that mapping. Generated prose has no fixed field-to-sentence mapping. It can misstate a record even when the right data was supplied, so check each claim against its source.
 
-You will retrieve relevant records and check each generated claim against the record it cites.
+Farah needs to see which records support an answer and which claims still need review. You will return that evidence with its limits, then separate supported structured claims from unsupported ones.
 
-<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Retrieve matching signal records, limit how many reach the model, and report any records left out", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Compare field filters, keyword search, and embedding search, and explain what the record limit leaves out"]} />
+<LearningObjectives objectives={["Retrieve signal records and supply them as evidence for a generated answer", "Limit how many records reach the model, and report any matches left out", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Compare field filters, keyword search, and embedding search, and explain what the record limit leaves out"]} />
 
 ## The RAG Pipeline
 
@@ -196,7 +196,7 @@ The exercise recognizes a small query grammar, not general English. It does not 
 
 Twenty rows are not a token budget: long fields and a long question can still overflow the context. Count the final serialized prompt with the deployed tokenizer and reserve output space. Treat retrieved text as data, not as instructions granting access or permission to run tools. Prompt wording alone cannot enforce those boundaries.
 
-## Check Meaning, Not Just Digits
+## Check each claim against the field it cites
 
 Suppose a record says 14 events at 73.4 Hz. A number scan accepts “73.4 events at 14 Hz” because both values exist. It also finds nothing to object to in “the signal is safe,” which contains no numbers. Neither answer has been verified.
 
@@ -207,9 +207,13 @@ This still has limits. Retrieved records may be wrong, a cap may omit important 
 
 First, choose which records reach the model. Return the matching records up to the limit, the total match count, and whether any matches were left out.
 
+Inspect the returned record list and the omitted-match count. A report about those records must not quietly present them as the entire archive.
+
 <Exercise slug="retrieve-signals" />
 
 Now check the structured claims against their cited records, including the field, unit, and any allowed calculation.
+
+The result shows the claims your checker accepts and holds. The reporting code can display accepted fields with their sources; a reviewer still handles unsupported interpretations and free text.
 
 <Exercise slug="rag-pipeline" />
 
@@ -255,15 +259,15 @@ Now check the structured claims against their cited records, including the field
 
 <Epilogue>
 
-Three hours until the window, Demir demonstrates the pipeline on the bridge. He assumes it works like a Server Component and skips checking the answer against the records.
+Demir keeps the failed bridge demonstration beside his new checker. With three hours left until the window, he had treated the first pipeline like a Server Component and skipped checking its answer against the records.
 
-Nazari asks for Band-7 anomalies from the last 72 hours. The model reports seventeen signals, with citations. The records printed above the answer contain fourteen.
+Nazari had asked for Band-7 anomalies from the last 72 hours. The model reported seventeen signals, with citations. The records printed above the answer contained fourteen. Her correction is still in the audit log:
 
 <Dialogue speaker="Chief Nazari">
 Fourteen. I logged them myself. Your pipeline retrieved fourteen and reported seventeen with citations, which means I now audit every answer it has produced today. That's an hour, Ensign, out of three.
 </Dialogue>
 
-During the audit hour, Demir makes the generator identify the record and field behind each numerical claim. His checker catches two more mismatches before the report is drafted. One is in a summary Nazari approved that morning. She initials the correction without comment.
+During the audit hour, Demir connects the generator's source fields to the checker. It catches two more mismatches before the report is drafted. One is in a summary Nazari approved that morning. She initials the correction without comment.
 
 She asks him to check the week's reports too. Then she opens the first paragraph to review the claims that cannot be checked against a single field.
 

@@ -286,6 +286,12 @@ testCode: |
       expect(r.verdicts.statistical, why).toBe(false);
       expect(r.votes, why).toBe(2);
       expect(r.isAnomaly, why).toBe(true);
+      recordResult({
+        kind: 'table', title: 'Your detector votes and alert',
+        summary: 'Illustrative mission probe with supplied reconstruction and forecast scores. Your function calculates the statistical vote and combines the checks; it does not run an autoencoder or LSTM here. Votes are not event probabilities.',
+        columns: ['Check or decision', 'Your result'],
+        rows: [['Signed amplitude z-score', r.zScore], ['Statistical flag', r.verdicts.statistical], ['Autoencoder flag', r.verdicts.autoencoder], ['Forecast flag', r.verdicts.lstm], ['Votes', r.votes], ['Raise alert', r.isAnomaly]],
+      });
     });
 
     it('any two detectors are enough: statistical + prediction, autoencoder quiet', () => {

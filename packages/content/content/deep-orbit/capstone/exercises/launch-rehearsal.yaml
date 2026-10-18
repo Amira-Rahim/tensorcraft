@@ -615,6 +615,22 @@ testCode: |
       ).toBeGreaterThanOrEqual(0.9);
       expect(v.drift).toBe(false);
       expect(v.launch).toBe(true);
+      recordResult({
+        kind: 'series',
+        title: 'Loss from your rehearsal fit',
+        summary: 'Returned from this training run on the supplied synthetic archive. The optimizer reports ' + v.batchesRun + ' updates; falling training loss alone does not establish performance on new data.',
+        xLabel: 'Epoch',
+        yLabel: 'Training loss',
+        labels: v.losses.slice(0, 64).map((_, i) => String(i + 1)),
+        series: [{ name: 'Training loss', values: v.losses.slice(0, 64) }],
+      });
+      recordResult({
+        kind: 'table',
+        title: 'Canary predictions from the trained candidate',
+        summary: 'Your rehearsal returned accuracy ' + v.canaryAccuracy + ', score drift ' + v.drift + ', and launch ' + v.launch + '. This is a local release-policy rehearsal, not a deployment.',
+        columns: ['Canary case', 'Returned score', 'Supplied label'],
+        rows: v.scores.slice(0, 40).map((value, i) => [i + 1, value, canary[i].label]),
+      });
       model.dispose();
     });
 

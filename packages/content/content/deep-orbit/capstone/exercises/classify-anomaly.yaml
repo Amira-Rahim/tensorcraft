@@ -222,7 +222,7 @@ testCode: |
     it('recognizes the Fibonacci train and rejects a metronome', () => {
       expect(
         isFibonacciTrain(decomposeIntervals([1, 1, 2, 3, 5, 8, 13])),
-        'These six ratios ARE the succession, to the last decimal. The starter answers false until you build it.',
+        'These six ratios match the expected template. Return true.',
       ).toBe(true);
       expect(isFibonacciTrain(decomposeIntervals([1, 1, 1, 1, 1, 1, 1]))).toBe(false);
     });
@@ -467,6 +467,20 @@ testCode: |
       expect(built(result).classification).toBe('confirmed-anomaly');
       expect(result.fibonacciTrain).toBe(true);
       expect(result.scoreDelta).toBeCloseTo(0.481, 3);
+      recordResult({
+        kind: 'table',
+        title: 'The zero-hour decision your code returned',
+        summary: 'Computed from the supplied fictional detector scores. The vote and pattern match support this mission label, not a finding about the source or an accuracy gain.',
+        columns: ['Decision field', 'Returned value'],
+        rows: [['Detector votes', result.votes], ['Anomaly rule passed', result.isAnomaly], ['Interval template matched', result.fibonacciTrain], ['Classification', result.classification], ['Difference between supplied scores', result.scoreDelta]],
+      });
+      recordResult({
+        kind: 'table',
+        title: 'The interval ratios behind that decision',
+        summary: 'Each ratio is returned by your decision layer from adjacent gaps. The template check assumes the recording ends at the same final gap.',
+        columns: ['Gap pair', 'Returned ratio'],
+        rows: result.ratios.slice(0, 6).map((value, i) => [(i + 1) + ' to ' + (i + 2), value]),
+      });
     });
 
     it('an anomalous vote without the Fibonacci train stays "anomaly", not confirmed', () => {

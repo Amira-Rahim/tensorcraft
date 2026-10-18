@@ -197,6 +197,17 @@ testCode: |
       expect(arrivedA.length, 'The arrived readings are evidence, not scratch space.').toBe(
         CASE_A.arrived.length,
       );
+      recordResult({
+        kind: 'series', title: 'Your rollout beside observed-history replay',
+        summary: 'Actual predictions from your trained model on the synthetic series generated for this run. Rollout feeds predictions back; replay receives the observations that have arrived. Compare each horizon without assuming either method must win.',
+        xLabel: 'Steps ahead', yLabel: 'Synthetic scalar value',
+        labels: out.rollout.map((_, i) => String(i + 1)),
+        series: [
+          { name: 'Observed', values: CASE_A.arrived },
+          { name: 'Your rollout', values: out.rollout },
+          { name: 'Your one-step replay', values: out.oneStep },
+        ],
+      });
     });
 
     it('builds the recurrent stack the instructions describe', async () => {

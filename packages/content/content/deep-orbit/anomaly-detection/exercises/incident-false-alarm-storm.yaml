@@ -57,6 +57,12 @@ testCode: |
       const r = run(100, 10, 200, [{ sensorId: 'A' }]);
       expect(r.nextCheck).toBe('sensor-change');
       expect(r.action).toBe('inspect-sensor');
+      recordResult({
+        kind: 'table', title: 'Your alert-storm triage',
+        summary: 'Synthetic incident with a logged sensor change. The first matching runbook rule chooses an investigation; it does not identify the cause.',
+        columns: ['Measurement or action', 'Your result'],
+        rows: [['Alerts per hour', r.rate], ['Ratio to baseline', r.ratio], ['Next check', r.nextCheck], ['Action', r.action]],
+      });
     });
     it('uses the model review age strictly above 90 days', () => {
       expect(run(1000, 10, 90).nextCheck).toBe('unexplained');

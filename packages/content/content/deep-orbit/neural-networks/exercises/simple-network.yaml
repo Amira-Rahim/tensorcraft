@@ -292,6 +292,13 @@ testCode: |
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(1);
       }
+      const selectedRows = [...Array.from({ length: 8 }, (_, i) => i), ...Array.from({ length: 8 }, (_, i) => i + 60)];
+      recordResult({
+        kind: 'table', title: 'Scores from your before-and-after run',
+        summary: 'Sixteen selected rows from the supplied 120-row synthetic rehearsal, eight from each label group. These are training rows, not an evaluation of new data.',
+        columns: ['Row ID', 'Label', 'First model before training', 'Second model untrained', 'First model after training'],
+        rows: selectedRows.map((i) => [i, labels.dataSync()[i], sweepOne[i], sweepTwo[i], trainedSweep[i]]),
+      });
     });
   });
 estimatedMinutes: 15

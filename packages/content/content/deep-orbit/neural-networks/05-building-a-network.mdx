@@ -143,7 +143,10 @@ The compile options have different jobs:
 
 ## Challenge
 
-Build two copies of the DEEP SCAN classifier. Run both on the same 120 readings before training. Then train one copy and run it again. This lets you compare the starting scores with the trained scores. The instructions supply the `fit()` call. Module 3 explains how it works.
+Build two copies of the rehearsal classifier. Run both on the same 120
+generated readings, then train one copy and run it again. Inspect a selected
+set of your before-and-after scores while the second model stays untrained.
+The instructions supply the `fit()` call; module 3 explains its updates.
 
 This practice model reads 8 features through layers of 24, 12, and 1 units. Its parameter count is `(8 × 24 + 24) + (24 × 12 + 12) + (12 + 1) = 529`. The generated inputs have three features that differ by class and five extra noise features.
 

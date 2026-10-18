@@ -47,9 +47,8 @@ starterCode: |
     detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
     generateAlert: (s: number[], cls: string) => Promise<string>,
   ): Promise<PipelineResult> {
-    // Both verdict fields can arrive outside the values the task allows, and
-    // only one of them has an honest replacement. Deciding which is which
-    // settles where this run stops and where it substitutes.
+    // Replace unsupported labels with unknown; reject invalid scores
+    // before calling the detector.
     return null; // your code here
   }
 solutionCode: |
@@ -115,7 +114,7 @@ testCode: |
       const r = await pipeline(signal, classify, detectAnomaly, generateAlert);
       expect(
         r,
-        'pipeline has to return the finished run: the class it settled on, the confidence behind it, whether the detector fired, and the alert text or null. While it returns null the operator on watch has nothing to read.',
+        'Return { classification, confidence, isAnomaly, alert } from the completed pipeline run.',
       ).toBeDefined();
       return r;
     };
@@ -225,7 +224,7 @@ testCode: |
         ).rejects.toThrow();
         expect(
           reached,
-          'The throw comes before the next stage runs. A check that fires after detectAnomaly has already read the verdict is a check on work that has been done.',
+          'Reject the invalid score before calling detectAnomaly.',
         ).toBe(0);
       }
     });
@@ -395,6 +394,13 @@ testCode: |
       }
       expect(stopped, 'A stage 1 that throws ends the run. There is no verdict to carry, so nothing downstream should have run.').toBe(true);
       expect(detectorRuns, 'The detector ran on the run that had no verdict.').toBe(1);
+      recordResult({
+        kind: 'table',
+        title: 'The result carried through your pipeline',
+        summary: 'Your classifier stage ran the supplied model. The detector and alert writer are controlled callbacks, so this checks the handoff rather than a scientific finding.',
+        columns: ['Pipeline result', 'Returned value'],
+        rows: [['Classification', r.classification], ['Chosen-class score', r.confidence], ['Detector flagged', r.isAnomaly], ['Alert', r.alert], ['Invalid input stopped before detector', stopped]],
+      });
     }));
   });
 

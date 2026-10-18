@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import { FLOW_INVESTIGATIONS } from "./flow-investigations";
+import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
 import {
   initialInvestigationValues,
   type InvestigationResult,
@@ -34,11 +35,11 @@ function graphic(result: InvestigationResult, label: string) {
   return found;
 }
 
-// Execute the report assembler learners implement, rather than a test copy.
-function reportAssembler() {
+// Compare activity results with the authored implementation learners build.
+function exerciseFunction(slug: string, name: string) {
   const yaml = readFileSync(
     new URL(
-      "../../../../../packages/content/content/deep-orbit/llm-integration/exercises/generate-report.yaml",
+      `../../../../../packages/content/content/deep-orbit/llm-integration/exercises/${slug}.yaml`,
       import.meta.url,
     ),
     "utf8",
@@ -53,7 +54,11 @@ function reportAssembler() {
       module: ts.ModuleKind.None,
     },
   }).outputText;
-  return new Function(`${javascript}\nreturn assembleReport;`)() as (
+  return new Function(`${javascript}\nreturn ${name};`)();
+}
+
+function reportAssembler() {
+  return exerciseFunction("generate-report", "assembleReport") as (
     title: string,
     sections: Array<{
       heading: string;
@@ -191,42 +196,169 @@ describe("flow activity teaching contracts", () => {
     expect(below.answer).toBe(1);
   });
 
+  it("keeps the reference diagrams on the exercise's fields and stages", () => {
+    const format = DEEP_ORBIT_VISUALS["prompt-engineering"]!.stages!.find(
+      (stage) => stage.name === "Format",
+    )!;
+    expect(new Function(`${format.code}\nreturn required;`)()).toEqual([
+      "classification",
+      "confidence",
+      "reasoning",
+    ]);
+    expect(
+      DEEP_ORBIT_VISUALS["multi-model-systems"]!.stages!.map(
+        (stage) => stage.name,
+      ),
+    ).toEqual(["Classifier", "Detector", "Alert writer"]);
+    expect(
+      DEEP_ORBIT_VISUALS["report-generation"]!.stages!.at(-1)!.code,
+    ).toContain("assembleReport(title, checked)");
+  });
+
+  it("matches the authored pipeline for every controlled stage reply and both raw readings", async () => {
+    const authoredPipeline = exerciseFunction("model-pipeline", "pipeline");
+    for (const caseId of ["calm", "loud"]) {
+      for (let classifier = 0; classifier < 4; classifier++) {
+        for (let detector = 0; detector < 3; detector++) {
+          for (let writer = 0; writer < 2; writer++) {
+            const result = evaluate(
+              "multi-model-systems",
+              { classifier, detector, writer },
+              caseId,
+            );
+            const calls: string[] = [];
+            let original: number[] = [];
+            const tracedPipeline = async (
+              signal: number[],
+              classify: (reading: number[]) => Promise<unknown>,
+              detect: (reading: number[], label: string) => Promise<unknown>,
+              write: (reading: number[], label: string) => Promise<unknown>,
+            ) => {
+              original = signal;
+              return authoredPipeline(
+                signal,
+                async (reading: number[]) => {
+                  expect(reading).toBe(original);
+                  calls.push(`Classifier received [${reading.join(", ")}]`);
+                  return classify(reading);
+                },
+                async (reading: number[], label: string) => {
+                  expect(reading).toBe(original);
+                  calls.push(
+                    `Detector received [${reading.join(", ")}] + ${label}`,
+                  );
+                  return detect(reading, label);
+                },
+                async (reading: number[], label: string) => {
+                  expect(reading).toBe(original);
+                  calls.push(
+                    `Alert writer received [${reading.join(", ")}] + ${label}`,
+                  );
+                  return write(reading, label);
+                },
+              );
+            };
+            const observed = await new Function(
+              "pipeline",
+              `return (async () => { ${result.code}\nreturn result; })();`,
+            )(tracedPipeline).then(
+              (value: {
+                classification: string;
+                confidence: number;
+                isAnomaly: boolean;
+                alert: string | null;
+              }) => ({ value, failed: false }),
+              () => ({ value: null, failed: true }),
+            );
+            expect(original).toEqual(
+              caseId === "loud" ? [1650, 41, -2.4] : [180, 5, 0.3],
+            );
+            expect(graphic(result, "Calls made this run").values).toEqual(
+              calls,
+            );
+            expect(result.answer).toBe(
+              observed.failed
+                ? "Run stopped"
+                : observed.value!.isAnomaly
+                  ? "Alert returned"
+                  : "No alert requested",
+            );
+            const visible = graphic(result, "Pipeline result").values;
+            if (observed.failed) {
+              expect(visible).toContain("No result returned.");
+            } else {
+              expect(visible).toEqual([
+                `classification: ${observed.value!.classification}`,
+                `confidence: ${observed.value!.confidence} (chosen-class score)`,
+                `isAnomaly: ${observed.value!.isAnomaly}`,
+                observed.value!.alert === null
+                  ? "alert: null (writer skipped)"
+                  : `alert: ${observed.value!.alert}`,
+              ]);
+            }
+          }
+        }
+      }
+    }
+  });
+
   it.each([
-    ["strong", 0.8, 0.7, 0.9],
-    ["borderline", 0.6, 0.5, 0.7],
-  ] as const)(
-    "does not alert at exact threshold equality for the %s detector case",
-    (caseId, score, lower, higher) => {
-      const equal = evaluate(
+    [{ classifier: 3 }, 1, "finite number from 0 to 1"],
+    [{ detector: 2 }, 2, "string, not a boolean"],
+    [{ writer: 1 }, 3, "only whitespace"],
+  ])(
+    "explains a failed contract and skips later stages: %o",
+    (changes, calls, reason) => {
+      const result = evaluate(
         "multi-model-systems",
-        { threshold: score },
-        caseId,
+        changes as Record<string, number>,
       );
-      const above = evaluate(
-        "multi-model-systems",
-        { threshold: lower },
-        caseId,
+      expect(result.answer).toBe("Run stopped");
+      expect(graphic(result, "Calls made this run").values).toHaveLength(
+        calls as number,
       );
-      const below = evaluate(
-        "multi-model-systems",
-        { threshold: higher },
-        caseId,
-      );
-      expect(equal.answer).toBe(2);
-      expect(above.answer).toBe(3);
-      expect(below.answer).toBe(2);
-      expect(graphic(equal, "Detector decision (raw score)").values).toEqual([
-        score,
-        score,
-      ]);
-      expect(graphic(equal, "Alert-report handoff").values[0]).toBe(
-        "Does not exceed alert threshold",
-      );
-      expect(equal.explanation).toContain("not a calibrated probability");
+      expect(result.explanation).toContain(reason as string);
     },
   );
 
+  it("lets the detector decide whether to call the writer and carries an unknown class", () => {
+    const noAlert = evaluate("multi-model-systems", {
+      classifier: 1,
+      detector: 0,
+      writer: 1,
+    });
+    expect(noAlert.answer).toBe("No alert requested");
+    expect(graphic(noAlert, "Calls made this run").values).toHaveLength(2);
+    expect(graphic(noAlert, "Pipeline result").values).toContain(
+      "alert: null (writer skipped)",
+    );
+    const unknown = evaluate("multi-model-systems", {
+      classifier: 2,
+      detector: 1,
+    });
+    expect(unknown.answer).toBe("Alert returned");
+    expect(graphic(unknown, "Pipeline result").values).toContain(
+      "classification: unknown",
+    );
+    expect(graphic(unknown, "Calls made this run").values[1]).toContain(
+      "+ unknown",
+    );
+    expect(unknown.explanation).toContain(
+      "unsupported classifier label becomes unknown",
+    );
+    expect(FLOW_INVESTIGATIONS["multi-model-systems"]!.boundary).toContain(
+      "no classifier, detector or language model runs",
+    );
+  });
+
   it.each([
+    {
+      name: "three approved sections",
+      caseId: "full",
+      changes: {},
+      expected: [true, true, true],
+      withheld: [],
+    },
     {
       name: "an incomplete observation",
       caseId: "partial",
@@ -252,30 +384,40 @@ describe("flow activity teaching contracts", () => {
     "assembles approved sections and names omissions after $name",
     ({ caseId, changes, expected, withheld }) => {
       const result = evaluate("report-generation", changes, caseId);
-      const contract = new Function(
-        `${result.code}\nreturn { sectionsPass, completeReportReady };`,
-      )() as { sectionsPass: boolean[]; completeReportReady: boolean };
-      expect(contract.sectionsPass).toEqual(expected);
-      expect(contract.completeReportReady).toBe(false);
-
-      const headings = ["Observations", "Analysis", "Limits"];
-      const report = reportAssembler()(
-        "Review",
-        headings.map((heading, i) => ({
-          heading,
-          content: `Body for ${heading}`,
-          validated: contract.sectionsPass[i]!,
-        })),
+      const assembled = new Function(
+        `${result.code}\nreturn { sections, report };`,
+      )() as {
+        sections: Array<{
+          heading: string;
+          content: string;
+          validated: boolean;
+        }>;
+        report: string;
+      };
+      expect(assembled.sections.map((section) => section.validated)).toEqual(
+        expected,
       );
-      expect(report).toContain("## Withheld");
-      for (const heading of headings) {
-        if (withheld.includes(heading)) {
-          expect(report).toContain(`- ${heading}`);
-          expect(report).not.toContain(`Body for ${heading}`);
+      expect(result.answer).toBe(expected.filter(Boolean).length);
+      const report = reportAssembler()("Relay Report", assembled.sections);
+      expect(assembled.report).toBe(report);
+      const displayed = graphic(result, "Assembled relay report").values;
+      expect(displayed[0]).toBe("# Relay Report");
+      expect(
+        "# Relay Report\n\n" + displayed.slice(1).join("\n\n---\n\n"),
+      ).toBe(report);
+      if (withheld.length) expect(report).toContain("## Withheld");
+      else expect(report).not.toContain("## Withheld");
+      for (const section of assembled.sections) {
+        if (withheld.includes(section.heading)) {
+          expect(report).toContain(`- ${section.heading}`);
+          if (section.content) expect(report).not.toContain(section.content);
         } else {
-          expect(report).toContain(`## ${heading}\n\nBody for ${heading}`);
+          expect(report).toContain(
+            `## ${section.heading}\n\n${section.content}`,
+          );
         }
       }
+      expect(result.explanation).toContain("assembler does not check claims");
     },
   );
 

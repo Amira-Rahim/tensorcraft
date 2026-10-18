@@ -18,7 +18,7 @@ export function BriefingTakeaway({
   task,
   next,
   readings,
-  readingsLabel = "JavaScript array",
+  readingsLabel = "Readings",
   part,
   shapes,
   example,
@@ -71,14 +71,49 @@ export function BriefingTakeaway({
       )}
       {part !== "idea" && (
         <div className="briefing-takeaway-task">
-          <h3>Your first task</h3>
-          <p>
-            <ProseText>{task}</ProseText>
-          </p>
+          <header className="briefing-task-heading">
+            <h3>Your first task</h3>
+            <p>
+              <ProseText>{task}</ProseText>
+            </p>
+          </header>
           {readings && (
             <figure className="briefing-takeaway-readings">
               <figcaption>{readingsLabel}</figcaption>
-              <code>[{readings.join(", ")}]</code>
+              <div
+                className="briefing-readings-scroll"
+                data-no-swipe=""
+                role="region"
+                aria-label={`${readingsLabel}. Scroll horizontally if needed.`}
+                tabIndex={0}
+              >
+                <div className="briefing-readings-array">
+                  <span className="briefing-array-bracket" aria-hidden="true">
+                    [
+                  </span>
+                  <ol aria-label="Readings in array order">
+                    {readings.map((reading, index) => (
+                      <li key={index}>
+                        <span>{reading}</span>
+                        {index < readings.length - 1 && (
+                          <span
+                            className="briefing-array-comma"
+                            aria-hidden="true"
+                          >
+                            ,
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                  <span className="briefing-array-bracket" aria-hidden="true">
+                    ]
+                  </span>
+                </div>
+              </div>
+              <p className="briefing-readings-scroll-hint">
+                Scroll sideways if needed.
+              </p>
             </figure>
           )}
           {next && (

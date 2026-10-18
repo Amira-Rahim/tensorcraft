@@ -1,6 +1,6 @@
 slug: inference-cache
 lessonSlug: caching-strategies
-title: "Inference Result Cache (Quantized Input Hash)"
+title: "Cache Predictions with Rounded Input Keys"
 mlContent: deployment
 instructions: |
   Help Demir reuse predictions for similar inputs. Write `makeInferenceCache(model, decimals = 2, maxEntries = 100)`. Return `{ predict(input), stats }`, where `stats` counts hits and misses.
@@ -110,7 +110,7 @@ testCode: |
       cache.predict(tf.tensor2d([[0.49, 0.5]])); // both round to 0.5
       expect(
         cache.stats.hits,
-        'At one decimal place these two signals are the same signal. A key built from the raw values keeps them apart and these two different inputs would not share the approximate cache entry requested here.',
+        'These different inputs round to the same values at one decimal place. This approximate key should reuse their entry.',
       ).toBe(1);
     });
     it('keys to decimals and no coarser than decimals', () => {
@@ -137,7 +137,7 @@ testCode: |
       cache.predict(tf.tensor2d([[0.9, 0.9]]));
       expect(
         cache.stats.misses,
-        'Rounding to two places leaves these two far apart, so neither can answer for the other.',
+        'These inputs still differ after rounding to two decimal places. Give each its own cache entry.',
       ).toBe(2);
     });
     it('two signals that differ only in the order of their values are two inputs', () => {
@@ -152,7 +152,7 @@ testCode: |
       const second = cache.predict(tf.tensor2d([[0.1, 0.9]]));
       expect(
         probe.counter.calls,
-        'Both of these signals sum to 1, and a key that keeps only the sum merges them. The cache then serves one signal the verdict it computed for the other, which is the incident this lesson pages you about next.',
+        'Both inputs sum to 1 but have different feature values. Keep every value and its position in the key.',
       ).toBe(2);
       expect(cache.stats.hits).toBe(0);
       expect(
@@ -207,7 +207,7 @@ testCode: |
       const hit = cache.predict(tf.tensor2d([[0.2, 0.3]]));
       expect(
         miss instanceof tf.Tensor,
-        'Hand the caller a tensor and the cache has handed out something anyone can dispose. Read the prediction into numbers first.',
+        'Return plain numbers. A caller could dispose a shared tensor and break later cache hits.',
       ).toBe(false);
       expect(Array.from(hit)).toEqual(Array.from(miss));
       // The two input tensors made above are still live. A cached
@@ -215,7 +215,7 @@ testCode: |
       // never be released.
       expect(
         tf.memory().numTensors - before,
-        'Only the two input tensors above should still be live. A prediction the cache is holding, or one nobody disposed, shows up here in this count, in the module that opened on a dashboard running out of memory.',
+        'Only the two caller-owned input tensors should remain. Dispose prediction tensors after reading their values.',
       ).toBe(2);
     });
     it("a miss returns the model's own output and a hit skips the forward pass", () => {
@@ -227,7 +227,7 @@ testCode: |
       // Still 1: the hit is the saved answer, not a second forward pass.
       expect(
         probe.counter.calls,
-        'A hit that runs the model again has saved nothing. The forward pass this hit is meant to skip is the classifier call the lesson timed at 0.035 ms, and skipping it is the only thing a cache ever buys.',
+        'A cache hit must return the stored result without calling model.predict again.',
       ).toBe(1);
       const expected = probe.truth([0.37, 0.81]);
       expect(
@@ -235,6 +235,13 @@ testCode: |
         "This model's weights are randomly initialized per run, so the answer has to come from the model rather than from anything a submission could remember.",
       ).toEqual(expected);
       expect(Array.from(hit)).toEqual(expected);
+      recordResult({
+        kind: 'table',
+        title: 'A repeated request through your cache',
+        summary: 'Two requests caused ' + probe.counter.calls + ' model call. Reuse preserved this model output; lookup overhead and rounded-key errors still need separate measurement.',
+        columns: ['Request', 'Returned model value'],
+        rows: [['First request: cache miss', miss[0]], ['Repeated request: cache hit', hit[0]]],
+      });
     });
     it("a new key runs the model again, on that key's own values", () => {
       const probe = countingModel();
@@ -294,7 +301,7 @@ testCode: |
       expect(cacheB.stats.misses).toBe(1);
       expect(
         Array.from(fromB),
-        'A cache hands back the verdict its own model computed. These two models hold different weights, so one of them answering for the other is a stale verdict arriving before anyone has even deployed.',
+        'Keep each cache tied to its own model. These models have different weights and cannot share prediction entries.',
       ).toEqual(second.truth(values));
       expect(first.counter.calls).toBe(1);
       expect(Array.from(fromA)).toEqual(first.truth(values));

@@ -57,15 +57,30 @@ testCode: |
     });
     it('one step moved the weight downhill by learningRate times the gradient', () => {
       expect(weight.dataSync()[0], 'The weight did not land one descent step from where it started. Subtract learningRate times the gradient, and use weight.assign so the tf.variable itself changes: rebinding the name with = leaves the variable where it was.').toBeCloseTo(4.0, 4);
+      recordResult({
+        kind: 'table', title: 'Your first weight update',
+        summary: 'The supplied squared-loss case after your initial step. This is one scalar optimization test, not a trained spacecraft classifier.',
+        columns: ['Learning rate', 'Stored gradient', 'Updated weight'],
+        rows: [[learningRate, gradient.dataSync()[0], weight.dataSync()[0]]],
+      });
     });
     it('three steps in a row keep walking downhill', () => {
+      const trace = [weight.dataSync()[0]];
       step(lossFn);
       expect(gradient, 'The second call to step() left no gradient behind.').toBeDefined();
       expect(gradient.dataSync()[0], 'The slope has to be recomputed at the new weight. A gradient that repeats the first one means step() is reusing it.').toBeCloseTo(8.0, 4);
       expect(weight.dataSync()[0], 'Each step starts from the weight the step before it produced.').toBeCloseTo(3.2, 4);
+      trace.push(weight.dataSync()[0]);
       step(lossFn);
       expect(gradient.dataSync()[0], 'The slope keeps shrinking on the way down, which is why descent slows near a minimum instead of overshooting it.').toBeCloseTo(6.4, 4);
       expect(weight.dataSync()[0], 'Three steps in, the weight is still moving the same direction.').toBeCloseTo(2.56, 4);
+      trace.push(weight.dataSync()[0]);
+      recordResult({
+        kind: 'series', title: 'The weight after three of your steps',
+        summary: 'Values captured during the existing squared-loss checks, without another optimization run.',
+        xLabel: 'Update', yLabel: 'Weight', labels: ['1', '2', '3'],
+        series: [{ name: 'Weight', values: trace }],
+      });
     });
     it('step() differentiates the function it receives, not the one this exercise defines', () => {
       step(() => weight.square().mul(3).asScalar());

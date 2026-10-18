@@ -601,26 +601,83 @@ body {
   color: var(--tc-muted);
 }
 .briefing-takeaway-readings {
-  margin: 16px 0;
+  container: briefing-readings / inline-size;
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  margin: 0;
 }
 .briefing-takeaway-readings figcaption {
-  margin-bottom: 6px;
-  font-size: 0.8125rem;
+  margin: 0;
+  font-size: 20px;
   line-height: 1.5;
+  color: var(--tc-text);
+}
+.briefing-readings-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--tc-border);
+  border-radius: 6px;
+  background: var(--tc-surface);
+  scrollbar-color: var(--tc-primary) var(--tc-surface);
+  scroll-padding-inline: 24px;
+}
+.briefing-readings-scroll:focus-visible {
+  outline: 2px solid var(--tc-primary);
+  outline-offset: 4px;
+}
+.briefing-readings-array {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: max-content;
+  min-width: 100%;
+  padding: 32px 24px;
+  font-family: var(--font-mono);
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.5;
+  color: var(--tc-text);
+}
+.briefing-readings-array ol {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.briefing-readings-array li {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+.briefing-array-bracket {
+  color: var(--tc-primary);
+  font-size: 1.4em;
+  font-weight: 300;
+}
+.briefing-array-comma {
   color: var(--tc-muted);
 }
-.lesson-prose .briefing-takeaway-readings code {
-  display: block;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: clamp(0.75rem, 3.6vw, 1rem);
-  white-space: nowrap;
-  color: var(--tc-text);
+.lesson-prose .briefing-takeaway .briefing-readings-scroll-hint {
+  display: none;
+  font-size: 18px;
+  color: var(--tc-muted);
 }
 .lesson-prose .briefing-takeaway .briefing-takeaway-next {
   font-size: 0.875rem;
   color: var(--tc-muted);
+}
+@container briefing-readings (width < 40rem) {
+  .lesson-prose .briefing-takeaway .briefing-readings-scroll-hint {
+    display: block;
+  }
 }
 @media (width >= 48rem) {
   .briefing-takeaway {

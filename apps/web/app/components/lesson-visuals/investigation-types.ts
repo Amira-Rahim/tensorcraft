@@ -24,6 +24,7 @@ export interface InvestigationGraphic {
   labels?: string[];
   columns?: number;
   highlight?: number[];
+  layout?: "prose";
 }
 
 export interface InvestigationResult {

@@ -47,7 +47,7 @@ testCode: |
       const result = await analyzeSignal(prompt, api);
       expect(
         result,
-        'The client has to hand back the analysis it read out of the reply. While it returns null there is no classification for anything downstream to act on.',
+        'Return the parsed and validated analysis from apiCall.',
       ).toBeDefined();
       return result;
     };
@@ -80,6 +80,13 @@ testCode: |
         'The analysis has to come from calling apiCall with the prompt you were given, not from a string you kept.',
       ).toEqual(['classify capture 7741']);
       expect(result.classification).toBe('anomaly');
+      recordResult({
+        kind: 'table',
+        title: 'The reply your client accepted',
+        summary: 'Parsed from the supplied mock API reply. The fields can reach the next stage; the reasoning and score still need evidence review.',
+        columns: ['Field', 'Returned value'],
+        rows: [['Classification', result.classification], ['Model score', result.confidence], ['Reasoning', result.reasoning]],
+      });
     });
     it('hands back a numeric confidence', async () => {
       const result = await analysisFrom(mockApi, 'test');
@@ -89,7 +96,7 @@ testCode: |
       const badApi = async () => 'not json';
       await expect(
         analyzeSignal('test', badApi),
-        'A reply with no object in it is not an analysis. Refuse it here, or the caller gets a half-built object wearing the Analysis type.',
+        'No JSON object was found. Reject the reply instead of returning an incomplete analysis.',
       ).rejects.toThrow();
     });
     it('throws on valid JSON that leaves out a required field (validation, not just parsing)', async () => {
@@ -105,7 +112,7 @@ testCode: |
       const renamed = async () => '{"classification":"anomaly","confidence":0.9,"explanation":"High amplitude"}';
       await expect(
         analyzeSignal('test', renamed),
-        'Three fields arrived and one of them is not a field you asked for. Counting keys cannot see that; checking the names can.',
+        'A required field is missing despite the object having three keys. Check each required property by name.',
       ).rejects.toThrow();
     });
     it('treats a confidence of zero like any other reading, not a missing field', async () => {
@@ -125,7 +132,7 @@ testCode: |
       const result = await analysisFrom(verbose, 'test');
       expect(
         result.classification,
-        'A model that volunteers extra fields has still answered the question. Check for the fields you need instead of counting how many arrived.',
+        'Extra fields are allowed. Validate the required properties without rejecting additional ones.',
       ).toBe('unknown');
       expect(result.confidence).toBe(0.11);
       expect(result.reasoning).toBe('Two channels dropped mid-capture');
@@ -136,7 +143,7 @@ testCode: |
       const result = await analysisFrom(chatty, 'test');
       expect(
         result.classification,
-        'Models answer in sentences. The object is in there, with prose on both sides of it.',
+        'This reply contains a JSON object surrounded by prose. Extract and validate the object.',
       ).toBe('anomaly');
       expect(result.confidence).toBe(0.95);
     });
@@ -208,7 +215,7 @@ testCode: |
           const raw = wrap(JSON.stringify(drawn), i);
           await expect(
             analyzeSignal('test', async () => raw),
-            'One of the three fields is gone from this object and the other two are fine. Which one it is changes between runs, so the check has to name all three.',
+            'Check classification, confidence, and reasoning separately. Any required field may be absent.',
           ).rejects.toThrow();
         }
       }

@@ -81,9 +81,9 @@ So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for
 
 A WebGL backend can store tensor values in textures and calculate results with graphics shaders. WebGPU provides compute shaders for calculations such as matrix multiplication and sums. Both take time to start work, move data, and wait for results. The API name alone does not tell you which is faster.
 
-You will try backends in preference order and check that each one works before selecting it.
+Give the dashboard a startup path that can recover when a preferred backend fails. Then Nazari can measure the backend that actually starts.
 
-<LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
+<LearningObjectives objectives={["Explain how WebGPU compute differs from running tensor operations through WebGL shaders", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU, WebGL, and WASM on the same inference workload", "Try the available backends and report when none can start"]} />
 
 ## WebGPU Backend
 
@@ -153,9 +153,9 @@ The example checks readiness, tries CPU last, and throws if nothing starts. The 
 A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here; we still have to measure device support, transfer costs and completed inference.
 </Dialogue>
 
-## Measure the Claim
+## Time the completed prediction
 
-The fictional timing table illustrates a measurement error. Demir's opening timing run at the bridge console put WebGPU at 0.4 milliseconds, a figure that would make it nearly forty times faster than WebGL's 15, not the 3x the table above reports. The figure survived until he applied module 4's own rule to it:
+Demir's first bridge-console run reported 0.4 milliseconds on WebGPU, compared with 15 on WebGL. His timer had stopped before the GPU finished. Including output readback changed the WebGPU result to 5 milliseconds. These are fictional mission timings; compare the two measurement boundaries below.
 
 <CodeBlock language="typescript" title="measure-inference.ts">
 {`// First attempt: start the clock, call predict, stop the clock.
@@ -233,6 +233,8 @@ console.log('part of the bundle carrying a scoreboard.');`}
 
 Try the backends in the supplied order. Check whether each attempt returns true, then return the backend that started. An attempt can fail without throwing.
 
+The result records each attempted backend and the one your selector accepts. This is a controlled failure rehearsal, so it verifies the fallback path rather than your device's GPU support. The runtime lab runs real predictions and timings on available backends.
+
 <Exercise slug="gpu-backend" />
 
 <RecallPrompt
@@ -244,8 +246,8 @@ Try the backends in the supplied order. Check whether each attempt returns true,
       "question": "What can make WebGPU useful for compute-heavy tensor workloads?",
       "options": [
         {
-          "text": "Automatic removal of all model weights.",
-          "feedback": "WebGPU changes execution, not the need for model parameters."
+          "text": "Automatic conversion of the model's calculations to uint8 arithmetic.",
+          "feedback": "Selecting WebGPU does not turn the storage quantization from the earlier lesson into integer inference."
         },
         {
           "text": "Compute shaders suited to parallel tensor operations.",
@@ -272,8 +274,8 @@ Try the backends in the supplied order. Check whether each attempt returns true,
           "feedback": "The story timing is not a universal speedup."
         },
         {
-          "text": "The API name alone determines device performance.",
-          "feedback": "Actual hardware and workload affect the result."
+          "text": "A faster matrix-multiplication benchmark establishes the whole pipeline's speedup.",
+          "feedback": "The pipeline also includes other operations, transfers, and synchronization. Measure it as a whole."
         }
       ],
       "correctIndex": 0,
@@ -333,7 +335,7 @@ Try the backends in the supplied order. Check whether each attempt returns true,
 
 <Epilogue>
 
-They deliberately start the rehearsal at 0247, with live feeds and the full telemetry suite. They use the bridge dashboard where the 340 MB build crashed four nights ago. It first runs WebGL at 15 milliseconds. Demir spends twenty minutes finding a disabled GPU flag, then reloads with WebGPU at 5 milliseconds. The dashboard holds.
+With the fallback path checked, the crew moves to a separate rehearsal on the target devices. They deliberately start at 0247, with live feeds and the full telemetry suite. They use the bridge dashboard where the 340 MB build crashed four nights ago. It first runs WebGL at 15 milliseconds. Demir spends twenty minutes finding a disabled GPU flag, then reloads with WebGPU at 5 milliseconds. The dashboard holds.
 
 Nazari times the same rehearsal on the engineering panel using WASM: 45 milliseconds, nine times slower than the bridge's WebGPU, but within that panel's budget. She records the missed-deadline count separately and closes her oldest open ledger entry. The lost capture is still gone. This rehearsal gives them a checked configuration for the next attempt.
 

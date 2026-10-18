@@ -52,9 +52,11 @@ The thermal channel reads in the thirties, signal strength lives under one. If w
 If the starting weights are similar, the larger temperature numbers affect the result more. Scaling makes training easier. We still need to learn which sensor gives useful information.
 </Dialogue>
 
-You will put temperature and signal strength on comparable scales, then pass them to a supplied model.
+Prepare temperature and signal strength for Farah's supplied preview model.
+Save the scaling statistics so later readings enter that model in the same
+units as the training rows.
 
-<LearningObjectives objectives={["Explain how feature scaling affects neural-network training", "Apply z-score normalization to nonconstant training features", "Apply min-max normalization and explain why later values can exceed 0-1", "Recognize when to use each normalization strategy", "Feed normalized readings through a real dense neuron and read its verdict"]} />
+<LearningObjectives objectives={["Explain how feature scaling affects neural-network training", "Apply z-score normalization to nonconstant training features", "Apply min-max normalization and explain why later values can exceed 0-1", "Recognize when to use each normalization strategy", "Feed normalized readings through the supplied dense neuron and read its score"]} />
 
 <BossBeat
   beatId="deep-orbit-foundations-7741-first-flag"
@@ -88,7 +90,7 @@ You will put temperature and signal strength on comparable scales, then pass the
 
 ## Keep each feature on its own scale
 
-The visual uses the challenge's four rows: `[20, 0.2]`, `[22, 0.8]`,
+Farah's four readings are `[20, 0.2]`, `[22, 0.8]`,
 `[24, 0.4]`, and `[26, 0.6]`. Columns are temperature and signal strength.
 Their units differ, so fit one set of statistics per column.
 
@@ -211,9 +213,11 @@ statistics printed inside it, then return to the four-row batch in the challenge
 
 ## Challenge
 
-Farah gives you a small model with fixed weights. It reads two measurements and returns one score. Scale each new reading with the same statistics as the training data so the model receives consistent inputs.
-
-Normalize the Archimedes sensor data using z-score normalization, then run every reading through the preview neuron.
+Farah gives you a model with fixed weights. Scale the two measurements in
+each row, then run the scaled batch through it. Inspect your saved
+statistics, scaled inputs, and returned scores. The model is supplied;
+your job is to keep its input format consistent for this batch and later
+readings.
 
 <Exercise slug="normalize-data" />
 
@@ -300,7 +304,7 @@ Normalize the Archimedes sensor data using z-score normalization, then run every
     "A fixed dense sigmoid unit shows how scaling changes a prediction. Matching its output checks this example, not the quality of a trained model."
   ]}
   bridge="Scroll progress and min-max scaling use an offset and range. Handle a zero range explicitly; sensor readings outside fitted bounds can normalize below zero or above one."
-  youCanNow="Apply z-score normalization with tf.moments, preserve the training statistics for inference, and run normalized readings through a real dense layer to get a prediction."
+  youCanNow="Apply z-score normalization with tf.moments, preserve the training statistics for inference, and run normalized readings through a dense layer."
 />
 
 <ProjectMilestone stage="data" />

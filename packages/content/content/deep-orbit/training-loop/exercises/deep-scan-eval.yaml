@@ -395,6 +395,17 @@ testCode: |
       expect(typeof trainAcc).toBe('number');
       expect(typeof testAcc).toBe('number');
       expect(verdict).toBe(diagnose(trainAcc, testAcc));
+      recordResult({
+        kind: 'table', title: 'The scores from your evaluation run',
+        summary: 'Training values are the final fit log. Test values come from your held-out evaluation on 43 supplied fixture rows; they are not the story\'s 94% result.',
+        columns: ['Dataset', 'Rows', 'Loss', 'Accuracy'],
+        rows: [['Training', trainX.shape[0], history.history.loss[history.history.loss.length - 1], trainAcc], ['Held-out test', testX.shape[0], evalResult[0].dataSync()[0], testAcc]],
+      });
+      recordResult({
+        kind: 'text', title: 'Your gap check',
+        summary: 'This label describes the measured scores. It does not identify the cause or authorize release.',
+        text: verdict,
+      });
     });
   });
 estimatedMinutes: 20

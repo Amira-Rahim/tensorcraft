@@ -65,7 +65,7 @@ skillAxes: [deployment, js_integration]
 >
 > v1: `"Analyze this signal data."` · The reply gives three general paragraphs about signals and suggests asking an expert. It uses none of the numbers from the reading.
 
-Before reading on, identify what is missing. What perspective should the model take? What background does it need? Which reading should it analyze? How should it format the answer?
+The prompt names neither a reading nor the evidence to check it against. Demir also needs a reply his client can parse. Which instructions would let him use the result?
 
 <Dialogue speaker="Dr. Farah">
 My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the draft became specific enough to review against the readings. I still checked its claims before using them. Format matters when code needs to parse the reply; asking for JSON does not guarantee valid JSON.
@@ -75,26 +75,26 @@ A more specific search query can narrow retrieved results. A prompt instead asks
 
 The word `role` has two meanings here. In lesson 1's API client, it labels the message type, such as system or user. In Farah's checklist, it is an instruction inside the prompt, such as asking the model to answer as a signal analyst. Those are different things.
 
-You will build a prompt that separates the current reading, reference facts, and required output format.
+Demir needs to send each new reading with the same reference facts and response requirements. You will build that prompt and inspect the exact text the client would send.
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
-## From Vague to Precise
+## Give the model a reading and its reference data
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="prompt-evolution.ts">
-{`// Level 1: Vague, like searching for "error"
+{`// Farah's first prompt supplies no reading or reference facts.
 const vaguePrompt = "Analyze this signal data.";
-// Output: generic paragraph about signals (useless)
+// The reply discusses signals without analyzing a reading.
 
-// Level 2: Specific role + context
+// Add the analyst's task and the current reading.
 const betterPrompt = \`You are a deep space signal analyst aboard a research vessel.
 Analyze the following signal reading and classify it as noise or anomaly.
 Signal: amplitude=1024 counts, frequency=73.4Hz, phase=0.23rad\`;
 // Illustrative response in this scene: more specific, still unstructured
 
-// Level 3: Structured with format instructions
+// Add reference facts and request the fields the client needs.
 const structuredPrompt = \`You are a deep space signal analyst. Respond in JSON only.
 
 Signal reading (archive sample 7741):
@@ -129,9 +129,8 @@ The story's classifier score of 51.8% does not establish a calibrated probabilit
 ## Prompt Templates
 
 <CodeBlock language="typescript" title="templates.ts">
-{`// Reusable prompt templates, like React component templates.
-// This is Farah's v8, the last version her red pen still marked up: all
-// four parts are here, and the epilogue names the one line v9 added.
+{`// Farah's v8 includes the amplitude reference but still lacks
+// the sector's frequency catalogue. Keep that omission in view.
 
 interface SignalData {
   amplitude: number;   // hull counts against the sensor's 2048-count full scale
@@ -187,6 +186,8 @@ function parseClassification(response: string) {
 
 Write version 9 of the prompt template. Add the missing reference facts on their own line between the role and the current reading. The model cannot know the sector's frequency catalogue unless you supply it.
 
+Your generated prompt appears after the run. Check that the catalogue describes the reference frequencies and that the current reading remains separate. This prepares a request for Farah to evaluate; it does not establish how a language model will answer it.
+
 <Exercise slug="prompt-template" />
 
 <RecallPrompt
@@ -198,8 +199,8 @@ Write version 9 of the prompt template. Add the missing reference facts on their
       "question": "Which mapping describes this prompt checklist?",
       "options": [
         {
-          "text": "All four parts serve only to select the model temperature.",
-          "feedback": "These prompt components describe the task and desired response, not just sampling settings."
+          "text": "Role: API message type; context: constraints; data: readings; format: output structure.",
+          "feedback": "Here, role means the perspective requested inside the prompt. It is separate from the API's system and user message types."
         },
         {
           "text": "Role: perspective; context: constraints; data: readings; format: output structure.",

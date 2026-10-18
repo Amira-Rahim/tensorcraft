@@ -83,9 +83,9 @@ The cache keys are different. My report job dropped the release ID when it joine
 
 A passing result only describes the model it tested. Before release, check that the result belongs to the exact model you plan to publish.
 
-CI/CD means continuous integration and delivery: automation that tests changes and prepares or publishes a release. That automation needs to know exactly which model files to test.
+Demir's existing CI/CD workflow already tests the app. It now needs to keep each model's evaluation attached to the exact files being released.
 
-You will build a prediction gate and a model manifest so release checks refer to the artifact being published.
+Give Nazari two parts of the release record: a verdict on the candidate's supplied predictions and an inventory of the model files. The release workflow must still attach both to the verified artifact identity.
 
 <LearningObjectives objectives={["Identify model identity and behavior gates in a release workflow", "Implement a conservative evaluation score and an acceptance threshold", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its topology, weight specs and byte count"]} />
 
@@ -167,9 +167,11 @@ Keep the previous release until the replacement passes on the console. If rollba
 
 Write the function that decides whether the supplied predictions pass the accuracy gate. Rows with missing labels still count in the total, but cannot count as correct. A separate check should decide whether enough labels are available for a release decision. This exercise does not configure GitHub permissions, publish a site, or measure device performance.
 
+The result keeps the labeled cases beside the score and shows a candidate the gate holds. That gives Nazari a reason for the decision instead of an unexplained green build.
+
 <Exercise slug="ci-cd-gate" />
 
-Then produce a serialized artifact with an in-memory save handler. Count its named tensors, parameters and actual weight bytes. Serialization is the input to release verification; exporting a model alone does not validate its behavior.
+Then produce a serialized artifact with an in-memory save handler. Count its named tensors, parameters and actual weight bytes. The results include predictions from before and after reloading those saved bytes, so you can check that the round trip preserved the supplied probes. The inventory does not identify a release by itself; the file hashes and preprocessing record still belong in the workflow above.
 
 <Exercise slug="export-model-artifact" />
 
@@ -195,8 +197,8 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
           "feedback": "A successful command alone does not verify the bytes actually being served."
         },
         {
-          "text": "The failed release attempt was removed from the history.",
-          "feedback": "Keep the failed attempt visible; removing it does not verify recovery."
+          "text": "The previous manifest is served, without checking its shards or preprocessing.",
+          "feedback": "A restored manifest can still point to mismatched weights or run with newer preprocessing. Verify the complete release."
         }
       ],
       "correctIndex": 0,
@@ -213,7 +215,7 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
 
 <Epilogue>
 
-Demir keeps the mismatched pair as a regression case; it fails before publication. The correct pair goes green at 2214, with the candidate's fingerprint beside every gate. Nazari gives him the verification handover and checks the restored-release rehearsal herself. On the wall display, the pulse interval reads 44.0 seconds.
+Demir connects the gate and artifact record to the fingerprint check in the release workflow. He keeps the mismatched pair as a regression case; it fails before publication. The correct pair goes green at 2214, with the candidate's fingerprint beside every gate. Nazari gives him the verification handover and checks the restored-release rehearsal herself. On the wall display, the pulse interval reads 44.0 seconds.
 
 <Dialogue speaker="Chief Nazari">
 Three days ago that ticker said 47.0. Put a second operator on the deploy watch.

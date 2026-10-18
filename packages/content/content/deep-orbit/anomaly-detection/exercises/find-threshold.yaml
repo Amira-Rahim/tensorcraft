@@ -128,6 +128,12 @@ testCode: |
         'F1 it actually scored rather than the one you hoped for.';
       expect(r2.f1, why).toBeCloseTo(0.857, 2);
       expect(r2.threshold, why).toBeCloseTo(0.3, 5);
+      recordResult({
+        kind: 'table', title: 'Your selected validation cutoff',
+        summary: 'Six synthetic labeled cases with overlapping scores. This cutoff maximizes F1 among the supplied candidates; it does not establish a deployment cost or future false-alarm rate.',
+        columns: ['Returned measurement', 'Value'],
+        rows: [['Selected cutoff', r2.threshold], ['Validation F1', r2.f1]],
+      });
     });
 
     it('ranks candidates by F1, not by accuracy or recall', () => {

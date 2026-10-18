@@ -228,13 +228,19 @@ The return field is named `confidence` for this exercise's API. It contains the 
 
 ## Challenge
 
-Build a complete inference pipeline with preprocessing and memory management.
+Help Demir classify incoming readings without accumulating temporary
+tensors. Inspect the normalized values your handler sends to the supplied
+identity-model probe, its returned class score, and the tensor count around
+the call. These checks test the handler, not the accuracy of DEEP SCAN.
 
 <Exercise slug="inference-pipeline" />
 
 <StoryPassage>
 
-PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight deploy. Estimate growth and remaining capacity while the crew checks whether allocations are escaping cleanup. State the assumption that the observed rate continues.
+PAGER, 03:10 ship-time: `numTensors` has been climbing since the overnight
+deploy. The watch needs a capacity estimate while it investigates. Use the
+supplied snapshots to project the remaining time, assuming their growth
+rate continues. The estimate cannot tell the crew what caused the growth.
 
 </StoryPassage>
 

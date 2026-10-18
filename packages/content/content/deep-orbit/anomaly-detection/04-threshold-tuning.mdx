@@ -72,10 +72,10 @@ Last week, DEEP SCAN flagged 14 signals. I checked every one. Twelve were cosmic
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Nazari.
+A higher cutoff can also miss more genuine anomalies. Compare those misses with the false alarms before we choose it.
 </Dialogue>
 
-Alert fatigue is real, in production monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore the tracker; Nazari just described the bridge-crew version. The threshold must balance missed anomalies against false alarms.
+Nazari's cost is investigation time, and repeated false alarms can make the crew ignore a real alert. Choose the cutoff using both false alarms and missed anomalies.
 
 You will compare alert thresholds on labeled readings and investigate an incident with too many alerts.
 
@@ -198,7 +198,7 @@ const comparisons = candidates.map((c) => ({
 
 For a cost-based decision, define `cost = falseAlarmCost * FP + missCost * FN` and choose the validation cutoff with the lowest cost. Use data representative of deployment, or adjust estimates for its expected class frequencies. An alert-budget or minimum-recall constraint is another explicit objective. Decide it before comparing candidates, then check the chosen rule on the held-out test.
 
-<ConceptReference summary="Practice: choose a policy and check held-out cases">
+<ConceptReference summary="Optional: compare threshold policies on held-out cases">
 
 <LearningExperiment id="threshold" />
 
@@ -226,7 +226,7 @@ console.log({ threshold: chosen, ...held });`}
 
 ## Challenge
 
-Try every candidate cutoff on the labeled validation data. Return the one with the highest F1, along with that score.
+Compare the candidate cutoffs on labeled validation data. Return the one with the highest F1 and inspect its score before adopting that policy. This selects for F1; Nazari's crew pager still needs the separate decision about false-alarm and miss costs.
 
 <Exercise slug="find-threshold" />
 

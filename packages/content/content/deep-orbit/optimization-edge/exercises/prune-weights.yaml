@@ -212,7 +212,7 @@ testCode: |
       const report = await pruneAndScore(model, slice.samples, slice.labels, levels);
       expect(
         report,
-        'Nothing came back from this call, so there is no ladder to read. pruneAndScore returns null until you build it.',
+        'Return one { sparsity, perClass } result per requested level.',
       ).toBeDefined();
       return report;
     }
@@ -286,6 +286,15 @@ testCode: |
           anomalyLoss - commonLoss,
           'At 80 percent pruning, recall falls sharply for the rare class while the common classes stay unchanged. Report each class separately; overall accuracy hides this difference.',
         ).toBeGreaterThanOrEqual(0.6);
+        recordResult({
+          kind: 'series',
+          title: 'Which classes your pruning pass affects',
+          summary: 'Recall measured by your code on 40 synthetic examples per class. Compare the anomaly curve before choosing a pruning level; these are not the mission archive scores.',
+          xLabel: 'Requested sparsity',
+          yLabel: 'Recall',
+          labels: report.map((row) => (row.sparsity * 100) + '%'),
+          series: ['Pulsar', 'Quasar', 'Noise', 'Interference', 'Anomaly'].map((name, c) => ({ name, values: report.map((row) => row.perClass[c]) })),
+        });
       }));
 
     it('crosses a cliff between 60 and 80 percent rather than sloping', () =>
@@ -296,7 +305,7 @@ testCode: |
         const lastStep = anomaly[2] - anomaly[3];
         expect(
           lastStep - earlyRun,
-          'The first 60 percent of the weights cost the rare class a little; the next 20 cost it the rest. A sparsity ladder is read for where that step sits, not for its average slope.',
+          'This fixture loses all rare-class recall between 60% and 80% sparsity. Report that change for each level.',
         ).toBeGreaterThanOrEqual(0.2);
       }));
 
@@ -412,7 +421,7 @@ testCode: |
         const descending = await ladderOf(classifier(), evalSlice(), [0.8, 0.3]);
         expect(
           descending[1].perClass,
-          'A row has to describe the level it names. Measure each level against the trained weights, or this row carries the damage 0.8 already did and no row in the ladder is one an operator can act on.',
+          'Start each level from the original trained weights. Earlier pruning must not affect later measurements.',
         ).toEqual(ascending[0].perClass);
       }));
 

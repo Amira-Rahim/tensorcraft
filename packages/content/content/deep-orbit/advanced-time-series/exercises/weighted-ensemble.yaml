@@ -112,6 +112,15 @@ testCode: |
         result.beatsBest,
         'This is the case an ensemble is bought for: the blend scores better than every member in it.',
       ).toBe(true);
+      recordResult({
+        kind: 'table', title: 'Your blend compared with its members',
+        summary: 'Four synthetic evaluation targets, shared by every member and blend. MAE uses the target’s arbitrary units. Blend weights come from a separate prior-period score; this result does not guarantee a gain on other periods.',
+        columns: ['Model or blend', 'Your MAE'],
+        rows: [
+          ...Object.entries(result.perMember).map(([name, value]) => [name, value]),
+          ['Equal-weight blend', result.ensemble], ['Prior-error-weighted blend', result.weighted],
+        ],
+      });
     });
     // The held-out errors here are the three the lesson works through, so the
     // weights they produce are the three confidences printed there.

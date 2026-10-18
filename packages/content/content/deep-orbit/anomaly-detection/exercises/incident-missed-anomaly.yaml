@@ -117,6 +117,12 @@ testCode: |
           'feature 1, whose normal error is 0.5. Only features 0 and 2 came ' +
           'in under half their own baseline.',
       ).toEqual([0, 2]);
+      recordResult({
+        kind: 'table', title: 'Your feature-by-feature investigation',
+        summary: 'Synthetic missed-event investigation. Absolute errors and their baseline ratios locate unusual mismatches; neither proves why the detector missed the event.',
+        columns: ['Feature index', 'Your absolute error', 'Normal absolute-error baseline', 'Error / baseline', 'Unusually low error', 'Ratio rank'],
+        rows: r.perFeatureError.map((error, i) => [i, error, baseline[i], error / baseline[i], r.lowErrorFeatures.includes(i), r.rankedByRatio.indexOf(i) + 1]),
+      });
     });
 
     it('reports per-feature errors', () => {

@@ -602,6 +602,12 @@ testCode: |
           expect(value).toBeLessThanOrEqual(bounds[j].max);
         });
       });
+      recordResult({
+        kind: 'table', title: 'Your trained model’s six-step rollout',
+        summary: 'Predictions from the submitted model on the synthetic training series, clamped using the supplied scaler. Values are per-feature z-scores. No future observations are provided here to establish accuracy.',
+        columns: ['Step ahead', 'Amplitude z-score', 'Crossing-count z-score', 'Phase z-score'],
+        rows: rows.map((row, i) => [i + 1, ...row]),
+      });
     });
   });
 

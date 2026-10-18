@@ -9,205 +9,125 @@ import {
 import { TensorInvestigation } from "./tensor-investigation";
 import * as tensorExample from "./tensor-example";
 import { DEEP_ORBIT_VISUALS } from "./deep-orbit-visuals";
-import { FIRST_PACKET } from "./instrument-math";
+import { WORKED_PACKET } from "../mdx/channel-layout-data";
 
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
 });
-
-function renderExample() {
-  return render(
+const renderExample = () =>
+  render(
     <TensorInvestigation
       spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
     />,
   );
-}
 
-describe("the opening tensor investigation practice", () => {
-  it("runs the three-reading practice packet through TensorFlow.js and checks the actual shape prediction", async () => {
+describe("the opening recording viewer", () => {
+  it("selects complete moments from the same recording, without inventing readings", async () => {
     const run = vi
       .spyOn(tensorExample, "runTensorExample")
       .mockImplementation(async (values) => ({
         shape: [values.length],
-        values: Array.from(new Float32Array(values)),
+        values: [...values],
+        chartRows: [0, 1, 2, 3].map((sensor) =>
+          values.filter((_, i) => i % 4 === sensor),
+        ),
       }));
     renderExample();
-    fireEvent.change(screen.getByLabelText("Choose a packet"), {
-      target: { value: "practice" },
-    });
-    expect(
-      screen.getByRole("list", {
-        name: "Three practice readings in a JavaScript array",
-      }),
-    ).toHaveTextContent(FIRST_PACKET.slice(0, 3).join(""));
-    fireEvent.change(
-      screen.getByLabelText("How many values will the tensor contain?"),
-      { target: { value: "3" } },
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Create tensor and open viewer" }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
-        "The tensor has 3 values",
+        "From your latest run",
       ),
     );
-    expect(screen.getByText("Correct!")).toBeInTheDocument();
-    expect(run).toHaveBeenCalledWith(FIRST_PACKET.slice(0, 3));
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "All 3 readings match",
-    );
-    expect(screen.getByText("shape [3]")).toBeInTheDocument();
-    expect(screen.getByRole("status")).not.toHaveTextContent(
-      "Demir records the successful check",
-    );
-  });
-
-  it("preserves a previous packet snapshot while a changed reading creates a new tensor", async () => {
-    vi.spyOn(tensorExample, "runTensorExample").mockImplementation(
-      async (values) => ({ shape: [values.length], values: [...values] }),
-    );
-    renderExample();
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
-    await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "All 5 readings match",
-      ),
-    );
-    fireEvent.change(screen.getByLabelText("Choose a packet"), {
-      target: { value: "practice" },
-    });
-    expect(screen.getByRole("status")).toBeEmptyDOMElement();
-    fireEvent.change(screen.getByLabelText("First reading"), {
-      target: { value: "0.75" },
-    });
-    fireEvent.change(
-      screen.getByLabelText("How many values will the tensor contain?"),
-      { target: { value: "5" } },
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
-    await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "You predicted 5 values. The tensor returned 3 values",
-      ),
-    );
-    const prediction = screen.getByLabelText(
-      "How many values will the tensor contain?",
-    );
     expect(
-      screen.getByText("Not quite. That’s incorrect."),
-    ).toBeInTheDocument();
-    expect(prediction).toHaveAttribute("aria-invalid", "true");
-    expect(prediction).toHaveAccessibleDescription(/Not quite/);
-    fireEvent.change(prediction, { target: { value: "3" } });
-    expect(prediction).not.toHaveAttribute("aria-invalid");
-    expect(prediction).not.toHaveAccessibleDescription(/incorrect/);
+      screen.getByRole("region", { name: "Output from the supplied viewer" }),
+    ).toBeVisible();
     expect(
-      screen.getByText("Previous prediction: incorrect."),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("list", { name: "Readings returned from the tensor" }),
-    ).toHaveTextContent([0.75, ...FIRST_PACKET.slice(1, 3)].join(""));
-    const comparison = screen
-      .getByText("Compare with the previous packet")
-      .closest("details")!;
-    fireEvent.click(screen.getByText("Compare with the previous packet"));
-    expect(comparison).toHaveTextContent(
-      `Previous: Mission packetInput: [${FIRST_PACKET.join(", ")}]`,
-    );
-    expect(comparison).toHaveTextContent("Shape: [5]");
-    expect(comparison).toHaveTextContent("Shape: [3]");
-    fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
-    expect(screen.getByLabelText("Choose a packet")).toHaveValue("mission");
-    expect(screen.getByLabelText("First reading")).toHaveValue(
-      String(FIRST_PACKET[0]),
-    );
-    expect(screen.getByRole("status")).toBeEmptyDOMElement();
-    expect(
-      screen.queryByText("Compare with the previous packet"),
+      screen.queryByRole("region", { name: "Output from your code" }),
     ).not.toBeInTheDocument();
+    expect(run).toHaveBeenCalledWith(WORKED_PACKET.slice(0, 2).flat());
+    expect(screen.getByText("[8]")).toBeInTheDocument();
+    expect(screen.queryByText(/practice packet/i)).not.toBeInTheDocument();
   });
-
-  it("locks controls while running and refuses prediction success for a corrupted readback", async () => {
+  it("locks the excerpt while running and refuses a corrupted chart", async () => {
     let finish!: (
       value: Awaited<ReturnType<typeof tensorExample.runTensorExample>>,
     ) => void;
-    const run = vi.spyOn(tensorExample, "runTensorExample").mockImplementation(
+    vi.spyOn(tensorExample, "runTensorExample").mockImplementation(
       () =>
         new Promise((resolve) => {
           finish = resolve;
         }),
     );
     renderExample();
-    fireEvent.change(screen.getByLabelText("Choose a packet"), {
-      target: { value: "practice" },
-    });
-    fireEvent.change(
-      screen.getByLabelText("How many values will the tensor contain?"),
-      { target: { value: "3" } },
+    fireEvent.click(
+      screen.getByRole("button", { name: "Create tensor and open viewer" }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
-    expect(screen.getByLabelText("Choose a packet")).toBeDisabled();
-    expect(screen.getByLabelText("First reading")).toBeDisabled();
+    expect(screen.getByRole("combobox")).toBeDisabled();
     expect(
-      screen.getByLabelText("How many values will the tensor contain?"),
+      screen.getByRole("button", { name: "Opening the viewer…" }),
     ).toBeDisabled();
-    finish({ shape: [3], values: [...FIRST_PACKET.slice(0, 3)].reverse() });
+    finish({
+      shape: [12],
+      values: WORKED_PACKET.flat(),
+      chartRows: [
+        [2, 20, 5],
+        [8, 3, 18],
+        [7, 8, 4],
+        [16, 6, 9],
+      ],
+    });
     await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "The readback did not match the input",
-      ),
+      expect(screen.getByRole("alert")).toHaveTextContent("could not read"),
     );
-    expect(screen.getByRole("status")).not.toHaveTextContent("Correct!");
-    expect(screen.getByText("Prediction not checked.")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("How many values will the tensor contain?"),
-    ).not.toHaveAttribute("aria-invalid");
-    expect(run).toHaveBeenCalledTimes(1);
-    expect(run).toHaveBeenCalledWith(FIRST_PACKET.slice(0, 3));
-    expect(screen.getByLabelText("Choose a packet")).not.toBeDisabled();
+      screen.queryByRole("region", { name: "Output from the supplied viewer" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox")).not.toBeDisabled();
   });
-
-  it("does not grade a missing prediction or a runtime failure", async () => {
+  it("removes the earlier chart when a rerun of the same excerpt fails", async () => {
+    let fail!: (reason: Error) => void;
     const run = vi
       .spyOn(tensorExample, "runTensorExample")
-      .mockResolvedValueOnce({ shape: [5], values: [...FIRST_PACKET] });
+      .mockResolvedValueOnce({
+        shape: [12],
+        values: WORKED_PACKET.flat(),
+        chartRows: [0, 1, 2, 3].map((sensor) =>
+          WORKED_PACKET.map((row) => row[sensor]!),
+        ),
+      })
+      .mockImplementationOnce(
+        () =>
+          new Promise((_, reject) => {
+            fail = reject;
+          }),
+      );
     renderExample();
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
-    await waitFor(() =>
-      expect(screen.getByText("No prediction to check.")).toBeInTheDocument(),
+    fireEvent.click(
+      screen.getByRole("button", { name: "Create tensor and open viewer" }),
     );
-    expect(screen.queryByText("Correct!")).not.toBeInTheDocument();
+    await screen.findByRole("region", {
+      name: "Output from the supplied viewer",
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Create tensor and open viewer" }),
+    );
+    expect(run).toHaveBeenNthCalledWith(2, WORKED_PACKET.flat());
     expect(
-      screen.queryByText("Not quite. That’s incorrect."),
+      screen.queryByRole("region", { name: "Output from the supplied viewer" }),
     ).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
-    fireEvent.change(
-      screen.getByLabelText("How many values will the tensor contain?"),
-      { target: { value: "3" } },
-    );
-    run.mockRejectedValueOnce(new Error("Runtime unavailable"));
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
+    fail(new Error("backend unavailable"));
     await waitFor(() =>
-      expect(screen.getByText("Prediction not checked.")).toBeInTheDocument(),
-    );
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "The tensor could not be created",
+      expect(screen.getByRole("alert")).toHaveTextContent("could not read"),
     );
     expect(
-      screen.getByLabelText("How many values will the tensor contain?"),
-    ).not.toHaveAttribute("aria-invalid");
-    expect(
-      screen.queryByText("Not quite. That’s incorrect."),
+      screen.queryByRole("region", { name: "Output from the supplied viewer" }),
     ).not.toBeInTheDocument();
-    run.mockResolvedValueOnce({ shape: [5], values: [...FIRST_PACKET] });
-    fireEvent.click(screen.getByRole("button", { name: "Create tensor" }));
-    await waitFor(() =>
-      expect(
-        screen.getByText("Not quite. That’s incorrect."),
-      ).toBeInTheDocument(),
-    );
-    expect(
-      screen.getByLabelText("How many values will the tensor contain?"),
-    ).toHaveAttribute("aria-invalid", "true");
+    expect(screen.queryByText("From your latest run")).not.toBeInTheDocument();
   });
 });

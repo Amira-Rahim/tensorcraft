@@ -13,7 +13,7 @@ scene:
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the signal.' Demir deploys. The signal is classified."
+  narrative: "The crew has one live pulse to check DEEP SCAN on a bridge console before expanding the release. Mirza waits for the verdict."
   speaker: "Commander Mirza"
 concept:
   explanation: "A browser-only ML application can ship to a static host with its model assets. Verify the served files and behavior, and configure any required server services separately."
@@ -138,7 +138,7 @@ Mirza authorizes the deployment and waits for the classification.
 
 For a browser-only application, the publishing step can be: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The local inference model can be a static asset served alongside the app. A server-side language-model adapter, authentication or secret-bearing API needs a separately deployed service; static hosting does not provide one.
 
-You will rehearse training and verify deployment checks, including how the procedure handles failures and timeouts.
+Help Nazari build the record for the launch decision: which checks passed, what the trained candidate did on the canary set, and how the final detector rule classified the supplied reading.
 
 <LearningObjectives objectives={["Package model assets and preprocessing with a standalone JavaScript app", "Follow the static-hosting setup for an ML-powered app", "Verify saved-model inference locally and distinguish it from a hosted deployment check", "Rehearse the whole chain before the deploy: preprocess the archive, train the candidate, score a canary set, gate the launch", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
@@ -195,7 +195,7 @@ Before the hour ended, ARIA simulated the other three policies. She filed their 
 {`// Illustrative mission asset inventory, not a Vite configuration.
 // The sizes below are fictional. These paths do not name downloadable
 // five-class or language artifacts supplied by the course.
-// Model files are static assets; treat them like images or fonts
+// Deploy model manifests and shards with their matching application release.
 
 interface BuildConfig {
   entry: string;
@@ -399,7 +399,7 @@ divide          1/1   2/1   3/2   5/3   8/5   13/8
 ratios          1.0   2.0   1.5   1.667 1.6   1.625`}
 </CodeBlock>
 
-Three properties of that list are what the finale exercise grades.
+Farah needs to compare recordings whose sub-pulse gaps may have different durations.
 
 The ratios stay the same if every gap is multiplied by the same number. That is why the gaps measured in seconds line up with the calibration sequence.
 
@@ -413,15 +413,21 @@ Write the verification runner. Run the checks in order and await each one before
 
 A verifier also needs a deadline for each check. On timeout, report the failed check and skip its dependents. An abort signal requests cancellation, but the check must cooperate; a timeout alone cannot stop its work.
 
+The results keep every completed probe and its verdict in order, including a failed probe that holds the release. These checks run locally against a supplied TFJS model. They do not contact a host or deploy the mission system.
+
 <Exercise slug="verify-deployment" />
 
 Next, help Nazari rehearse training before the relay slot. This small exercise uses an untrained three-feature binary model in place of the eleven-feature classifier. Normalize the archive rows using module 4's rule, train the model, score the canary set, and apply the release gate.
 
 If a stage fails, hold the launch. Leave no leaked tensors. Report the loss history from that fit and the optimizer's actual update count so the run can be checked.
 
+Your fit history and canary predictions stay visible beside the gate decision. Nazari can inspect why this candidate passes or fails instead of accepting a launch flag alone. This is a local rehearsal with supplied synthetic data; it does not establish the mission classifier's performance.
+
 <Exercise slug="launch-rehearsal" />
 
 Finally, write the decision layer behind the bridge's zero-hour readout. Combine the three detector votes from module 7, check Farah's interval ratios, and return the classification the crew will sign. The supplied scores are fictional mission values; this exercise applies the decision rule to them.
+
+The returned detector count and interval ratios form the decision record behind that classification. Farah can check the template match, and Mirza can send the result for review. The rule cannot identify the signal's origin or turn the two model scores into an accuracy gain.
 
 <Exercise slug="classify-anomaly" />
 
@@ -496,7 +502,7 @@ For your own project, choose a labeled task and split by time, person or other r
 
 <Epilogue>
 
-The classification lands on every display on the bridge at once. Nobody speaks. Nazari leans over her console and checks the sensor calibration log a third time tonight. Then, slowly, a fourth.
+The mission record carries the detector verdict and interval-ratio check beside the classification. It lands on every display on the bridge at once. Nobody speaks. Nazari leans over her console and checks the sensor calibration log a third time tonight. Then, slowly, a fourth.
 
 <Dialogue speaker="Chief Nazari" expression="haunted">
 Calibration's clean. I checked it four times. Those are our harmonics, in a signal that left its source before this ship was built.

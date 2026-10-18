@@ -1,0 +1,549 @@
+{
+  "completed": 65,
+  "expected": 65,
+  "tests": 575,
+  "artifacts": 86,
+  "exercises": [
+    {
+      "slug": "forecast-signal",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    },
+    {
+      "slug": "kalman-filter",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    },
+    {
+      "slug": "simple-attention",
+      "tests": 7,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "temporal-attention",
+      "tests": 9,
+      "artifacts": 2,
+      "kinds": [
+        "series",
+        "table"
+      ]
+    },
+    {
+      "slug": "weighted-ensemble",
+      "tests": 11,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "build-autoencoder",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "detect-anomaly",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "ensemble-detector",
+      "tests": 14,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "find-threshold",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "incident-baseline-drift",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "incident-false-alarm-storm",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "incident-missed-anomaly",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "reconstruction-error",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "add-tensors",
+      "tests": 6,
+      "artifacts": 3,
+      "kinds": [
+        "table",
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "batch-data",
+      "tests": 6,
+      "artifacts": 3,
+      "kinds": [
+        "table",
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "create-a-tensor",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    },
+    {
+      "slug": "normalize-data",
+      "tests": 10,
+      "artifacts": 3,
+      "kinds": [
+        "table",
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "reshape-tensor",
+      "tests": 9,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    },
+    {
+      "slug": "ci-cd-gate",
+      "tests": 12,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "classify-anomaly",
+      "tests": 17,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "export-model-artifact",
+      "tests": 9,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "launch-rehearsal",
+      "tests": 17,
+      "artifacts": 2,
+      "kinds": [
+        "series",
+        "table"
+      ]
+    },
+    {
+      "slug": "model-monitor",
+      "tests": 17,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "pipeline-architecture",
+      "tests": 7,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "verify-deployment",
+      "tests": 10,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "write-model-card",
+      "tests": 14,
+      "artifacts": 1,
+      "kinds": [
+        "text"
+      ]
+    },
+    {
+      "slug": "browser-ml-tradeoffs",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "incident-tensor-leak",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "inference-pipeline",
+      "tests": 5,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "load-model",
+      "tests": 3,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "load-pretrained-pipeline",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "onnx-comparison",
+      "tests": 2,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "tfjs-setup",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "generate-report",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "text"
+      ]
+    },
+    {
+      "slug": "llm-client",
+      "tests": 15,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "model-pipeline",
+      "tests": 19,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "prompt-template",
+      "tests": 7,
+      "artifacts": 1,
+      "kinds": [
+        "text"
+      ]
+    },
+    {
+      "slug": "rag-pipeline",
+      "tests": 11,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "retrieve-signals",
+      "tests": 11,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "build-layer",
+      "tests": 7,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "forward-pass",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "implement-neuron",
+      "tests": 5,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "relu-activation",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "simple-network",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "gpu-backend",
+      "tests": 9,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "incident-stale-verdict",
+      "tests": 7,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "inference-cache",
+      "tests": 14,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "profile-model",
+      "tests": 10,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "prune-weights",
+      "tests": 11,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    },
+    {
+      "slug": "quantize-weights",
+      "tests": 8,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "build-lstm",
+      "tests": 10,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "build-rnn",
+      "tests": 12,
+      "artifacts": 2,
+      "kinds": [
+        "series",
+        "series"
+      ]
+    },
+    {
+      "slug": "create-sequences",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "predict-next",
+      "tests": 15,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "sliding-window",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "apply-window",
+      "tests": 13,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "build-spectrogram",
+      "tests": 11,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    },
+    {
+      "slug": "compute-fft",
+      "tests": 9,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "fft-features",
+      "tests": 9,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "time-vs-frequency",
+      "tests": 13,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "backprop-chain",
+      "tests": 8,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "table"
+      ]
+    },
+    {
+      "slug": "deep-scan-eval",
+      "tests": 9,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "text"
+      ]
+    },
+    {
+      "slug": "gradient-step",
+      "tests": 6,
+      "artifacts": 2,
+      "kinds": [
+        "table",
+        "series"
+      ]
+    },
+    {
+      "slug": "mse-loss",
+      "tests": 8,
+      "artifacts": 1,
+      "kinds": [
+        "table"
+      ]
+    },
+    {
+      "slug": "training-loop-exercise",
+      "tests": 6,
+      "artifacts": 1,
+      "kinds": [
+        "series"
+      ]
+    }
+  ]
+}

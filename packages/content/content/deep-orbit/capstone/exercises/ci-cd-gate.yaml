@@ -128,6 +128,13 @@ testCode: |
       ).toBe(0.8);
       expect(result.correct).toBe(4);
       expect(result.total).toBe(5);
+      recordResult({
+        kind: 'table',
+        title: 'The labeled cases behind your release score',
+        summary: 'Your gate counted ' + result.correct + ' correct out of ' + result.total + ', for a score of ' + result.accuracy + '. These supplied predictions do not establish performance beyond this fixture.',
+        columns: ['Case', 'Prediction supplied to your gate', 'Reviewed label', 'Match'],
+        rows: predictions.map((row, i) => [i + 1, row.predicted, row.actual, row.predicted === row.actual]),
+      });
     });
 
     it('passes when accuracy meets threshold', () => {
@@ -140,6 +147,13 @@ testCode: |
       const result = validateModelAccuracy(predictions, 0.9);
       expect(result, 'validateModelAccuracy returns the gate result { accuracy, passed, total, correct }. The starter returns null until you build it.').toBeDefined();
       expect(result.passed).toBe(false);
+      recordResult({
+        kind: 'table',
+        title: 'Your gate holds this candidate',
+        summary: 'The supplied release floor is 0.9. The caller can keep this candidate out of release without changing its measured score.',
+        columns: ['Returned gate field', 'Value'],
+        rows: [['Correct', result.correct], ['Total', result.total], ['Score', result.accuracy], ['Passed', result.passed]],
+      });
     });
 
     it('handles perfect predictions', () => {

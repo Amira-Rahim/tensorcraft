@@ -229,7 +229,7 @@ For real-time inference: a smaller hop produces updates more frequently, at the 
 
 ## Challenge
 
-Build a Hann taper and multiply it by the signal samples. The tests compare FFTs before and after tapering to measure the change in leakage.
+Build a Hann taper and multiply it by the signal samples. Compare the measured far-bin magnitude totals before and after your taper. Farah needs that change alongside the altered peak height before updating the spectral pipeline.
 
 For this test, leakage is the sum of magnitudes more than three bins from the rounded tone bin. This is not an energy calculation; energy would use squared magnitudes and a stated normalization. The measured reduction applies to the test signals, not every possible recording.
 

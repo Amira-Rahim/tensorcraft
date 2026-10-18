@@ -46,6 +46,18 @@ testCode: |
         'The return value here is a number of hertz. The starter returns null, so nothing has been computed yet.',
       ).toBe(true);
       expect(freq).toBeCloseTo(5, 1);
+      recordResult({
+        kind: 'table',
+        title: 'Your strongest eligible frequency',
+        summary: 'Synthetic one-second capture. The returned value is an FFT bin center, not an estimate finer than the bin spacing.',
+        columns: ['Measurement', 'Value'],
+        rows: [
+          ['Samples', signal.length],
+          ['Sample rate (Hz)', 128],
+          ['Bin spacing (Hz)', 128 / signal.length],
+          ['Returned frequency (Hz)', freq],
+        ],
+      });
     });
     it('picks the stronger of two components, not the slower one', () => {
       const signal = Array.from(

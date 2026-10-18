@@ -107,9 +107,9 @@ Commander, I must flag a concern. The model performs at 91.8% accuracy now. That
 Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When a drift alert fires, we check the data and sensors, collect outcome labels where needed, and decide whether to retrain.
 </Dialogue>
 
-So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw. Score changes, latency increases and input drift are investigation signals. A failing model can remain confident, and a distribution shift need not reduce accuracy.
+Demir adds model scores and input distributions beside the dashboard's existing error and latency logs. Changes tell the watch where to investigate. A failing model can remain confident, and a distribution shift need not reduce accuracy.
 
-You will track prediction scores, inference times, and input drift to support investigations after deployment.
+Give the watch a way to spot slow predictions and changing inputs before deciding what to investigate. Track scores too, but keep them separate from evidence that a prediction was right.
 
 <LearningObjectives objectives={["Track model scores and how often each class is predicted", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
@@ -254,6 +254,8 @@ Build the monitor. Average the recorded confidence scores, calculate percentiles
 
 Render an absent measurement as "No data". A measured zero distance only says the means match; it does not rule out changes in spread or class mix.
 
+Your results show the distance between the supplied feature means and the slow end of a supplied latency log. The watch can use those measurements to open an investigation. The durations are scenario inputs, not timings from your device, and neither measurement establishes accuracy.
+
 <Exercise slug="model-monitor" />
 
 <RecallPrompt
@@ -269,8 +271,8 @@ Render an absent measurement as "No data". A measured zero distance only says th
           "feedback": "Infrastructure health does not establish predictive quality."
         },
         {
-          "text": "Only a missing JavaScript import.",
-          "feedback": "A missing import is an execution problem, not the silent prediction failure described here."
+          "text": "A failed backend initialization that prevents every prediction from running.",
+          "feedback": "That failure interrupts execution. The question concerns predictions that return normally but are wrong."
         },
         {
           "text": "Plausible but incorrect predictions.",
@@ -305,7 +307,7 @@ Render an absent measurement as "No data". A measured zero distance only says th
 
 <Epilogue>
 
-On its first night, the monitor pages the bridge twice. Model confidence stays at 0.94 and prediction time at 5 milliseconds. Both alerts concern input drift.
+Demir connects the checked calculations to the mission dashboard and its recorded review thresholds. On its first night, the monitor pages the bridge twice. Model confidence stays at 0.94 and prediction time at 5 milliseconds. Both alerts concern input drift.
 
 Demir checks the features. The change is in fft_5, centered at 72 Hz, which receives energy from the nearby 73.4 Hz component. Its value rises every hour. The alerts arrive six hours apart, and the second records a pulse interval of 37.0 seconds.
 

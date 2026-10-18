@@ -1,6 +1,6 @@
 /** Small deterministic teaching calculations, independent of graded lesson data. */
 export const READING_VALUES = [3, 7, 11, 5, 9, 13];
-/** The first mission's five-reading excerpt, also used by create-a-tensor. */
+/** Small supplied numeric fixture for the later arithmetic instruments. */
 export const FIRST_PACKET = [0.12, 0.94, 0.31, 0.88, 0.47];
 export const NORMALIZATION_ROWS = [
   [20, 0.2],

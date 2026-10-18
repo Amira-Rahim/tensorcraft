@@ -124,7 +124,7 @@ describe("the lesson investigation", () => {
     );
     const size = screen.getByLabelText("Rows per batch");
     const batch = screen.getByRole("slider", {
-      name: "Batch index (starting at 0)",
+      name: "Batch index",
     });
     expect(batch).toHaveAttribute("max", "3");
     fireEvent.change(size, { target: { value: "2" } });

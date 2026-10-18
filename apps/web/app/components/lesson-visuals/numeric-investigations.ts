@@ -124,7 +124,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       "Pick a position in the packet. Check the value at the same position after creating a tensor.",
     boundary:
       "This diagram follows values into a tensor. The lesson's coding activity creates the actual TensorFlow.js tensor.",
-    controls: [range("position", "Reading position (starting at 0)", 2, 0, 4)],
+    controls: [range("position", "Reading index", 2, 0, 4)],
     cases: cases(
       "First packet",
       "New packet",
@@ -167,7 +167,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ["2 columns", "3 columns", "6 columns"],
         [2, 3, 6],
       ),
-      range("position", "Position in the list (count from 0)", 4, 0, 5),
+      range("position", "Input index", 4, 0, 5),
     ],
     cases: cases(
       "Six readings",
@@ -178,7 +178,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       { columns: 2, position: 4 },
     ),
     prediction: {
-      prompt: "Which row will contain the selected number? Count rows from 0.",
+      prompt: "Which row index contains the selected reading?",
       tolerance: 0,
     },
     evaluate: ({ columns, position }, caseId) => {
@@ -197,7 +197,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: row,
         answerLabel: "Row index",
-        explanation: `The number ${input[position]} is now at row ${row}, column ${column}. Reshape fills each row in order and keeps all six numbers. Count rows and columns from 0.`,
+        explanation: `The number ${input[position]} is now at row ${row}, column ${column}. Reshape fills each row in order and keeps all six numbers.`,
         code: `const grid = tf.tensor1d(values).reshape([${6 / columns}, ${columns}]);\n// flat index ${position} becomes [${row}, ${column}]`,
       };
     },
@@ -209,7 +209,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     boundary: teaching,
     controls: [
       range("gain", "Gain after averaging", 2, 0, 3, 0.25),
-      range("position", "Output position (starting at 0)", 2, 0, 5),
+      range("position", "Output index", 2, 0, 5),
     ],
     cases: cases(
       "Steady second pass",
@@ -260,7 +260,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         [2, 4, 8],
       ),
       {
-        ...range("batch", "Batch index (starting at 0)", 1, 0, 7),
+        ...range("batch", "Batch index", 1, 0, 7),
         maxFor: ({ size }) => 16 / size! - 1,
       },
     ],
@@ -790,7 +790,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     ),
     prediction: {
       prompt:
-        "Which observed epoch has the lowest validation loss? Count epochs starting at 0.",
+        "Which epoch index has the lowest validation loss? Use the zero-based index shown on the chart.",
       tolerance: 0,
     },
     evaluate: ({ epoch }, caseId) => {
@@ -896,7 +896,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     boundary:
       "This recurrent unit carries one number as state. Its input weight is fixed at 0.5; you choose the state weight. No training happens here.",
     controls: [
-      range("step", "Time step (starting at 0)", 3, 0, 5),
+      range("step", "Time step index", 3, 0, 5),
       range("memory", "Weight on previous state", 0.7, 0, 1.2, 0.1),
     ],
     cases: cases(
@@ -1014,7 +1014,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         [2, 3, 4],
       ),
       {
-        ...range("start", "Window start (starting at 0)", 1, 0, 5),
+        ...range("start", "Window start index", 1, 0, 5),
         maxFor: ({ length }) => 8 - length! - 1,
       },
     ],
@@ -1314,7 +1314,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ["2 bits", "3 bits", "4 bits", "8 bits"],
         [2, 3, 4, 8],
       ),
-      range("position", "Weight position (starting at 0)", 4, 0, 5),
+      range("position", "Weight index", 4, 0, 5),
     ],
     cases: cases(
       "Mixed weights",
@@ -1848,7 +1848,7 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
     prediction: temporal
       ? {
           prompt:
-            "Which time position gets the greatest attention weight? Count positions starting at 0. If weights tie, choose the earliest position.",
+            "Which time index receives the greatest attention weight? If weights tie, choose the earliest index.",
           tolerance: 0,
         }
       : {

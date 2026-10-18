@@ -5,7 +5,9 @@ import {
   fireEvent,
   act,
   cleanup,
+  within,
 } from "@testing-library/react";
+import type { ExerciseSubmitResult } from "@tensorcraft/ui";
 import { LessonSteps } from "./lesson-steps";
 import { trackLessonCompleted, track } from "@/lib/analytics";
 import { markLessonCompleted, emitSkillEvent } from "@/lib/progress-client";
@@ -34,6 +36,10 @@ const recallState = vi.hoisted(() => ({
   pendingOnMount: 0,
   report: null as null | ((pending: number) => void),
 }));
+const exerciseFeedback = vi.hoisted(() => ({
+  attempt: null as null | ((result: ExerciseSubmitResult) => void),
+  complete: null as null | ((slug: string, score: number) => void),
+}));
 
 // Step content is exercised in lesson-content.test.tsx; stub it here so the
 // suite focuses on step navigation chrome.
@@ -50,6 +56,8 @@ vi.mock("./lesson-content", async () => {
       exerciseWorkspace,
       challengeScene,
       onHintRevealed,
+      onExerciseAttempt,
+      onExerciseComplete,
     }: {
       storyRegister?: boolean;
       hideTeaching?: boolean;
@@ -60,12 +68,19 @@ vi.mock("./lesson-content", async () => {
       exerciseWorkspace?: boolean;
       challengeScene?: React.ReactNode;
       onHintRevealed?: (level: 1 | 2 | 3) => void;
+      onExerciseAttempt?: (result: ExerciseSubmitResult) => void;
+      onExerciseComplete?: (slug: string, score: number) => void;
     }) => {
       React.useEffect(() => {
         if (!onRecallPending) return;
         recallState.report = onRecallPending;
         onRecallPending(recallState.pendingOnMount);
       }, [onRecallPending]);
+      React.useEffect(() => {
+        if (!onExerciseAttempt) return;
+        exerciseFeedback.attempt = onExerciseAttempt;
+        exerciseFeedback.complete = onExerciseComplete ?? null;
+      }, [onExerciseAttempt, onExerciseComplete]);
       return (
         <div
           data-testid="lesson-content"
@@ -182,6 +197,90 @@ const lesson = {
 const STEP_KEY = "tc_step_v2_deep-orbit_introduction-to-tensors";
 const MAX_KEY = "tc_step_max_v2_deep-orbit_introduction-to-tensors";
 
+describe("saved exercise completion and current attempts", () => {
+  function openChallenge(slugs: string[], passedExerciseSlugs = slugs) {
+    return render(
+      <LessonSteps
+        entryStep={2}
+        lesson={lesson}
+        exercises={
+          slugs.map((slug) => ({
+            slug,
+            title: slug,
+            estimatedMinutes: 5,
+          })) as React.ComponentProps<typeof LessonSteps>["exercises"]
+        }
+        passedExerciseSlugs={passedExerciseSlugs}
+        worldSlug="deep-orbit"
+        moduleSlug="foundations"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+  }
+
+  function submit(slug: string, passed: boolean) {
+    act(() => {
+      exerciseFeedback.attempt?.({
+        exerciseSlug: slug,
+        code: passed ? "working code" : "unfinished code",
+        passed,
+        score: passed ? 100 : 0,
+        solutionViewed: false,
+      });
+      if (passed) exerciseFeedback.complete?.(slug, 100);
+    });
+  }
+
+  it("retains earned navigation while a restored exercise's new run fails", () => {
+    openChallenge(["create-a-tensor"]);
+    expect(screen.getByText("Completion saved")).toBeVisible();
+    submit("create-a-tensor", false);
+    const banner = screen.getByTestId("challenge-passed-banner");
+    expect(within(banner).getByText("Completed earlier")).toBeVisible();
+    expect(
+      within(banner).getByText(/latest checked attempt still needs work/i),
+    ).toBeVisible();
+    expect(screen.queryByText(/^exercise passed$/i)).not.toBeInTheDocument();
+    fireEvent.click(within(banner).getByRole("button", { name: /continue/i }));
+    expect(
+      screen.getByRole("group", { name: "Lesson step 4 of 5" }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps first completion gated, then distinguishes a failed retry without remounting the editor", () => {
+    openChallenge(["create-a-tensor"], []);
+    const editor = screen.getAllByTestId("lesson-content")[1];
+    submit("create-a-tensor", false);
+    expect(
+      screen.queryByTestId("challenge-passed-banner"),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Step 4:/ })).toBeDisabled();
+    submit("create-a-tensor", true);
+    expect(screen.getByText("Completion saved")).toBeVisible();
+    expect(screen.getAllByTestId("lesson-content")[1]).toBe(editor);
+    submit("create-a-tensor", false);
+    expect(screen.getByText("Completed earlier")).toBeVisible();
+    expect(screen.getAllByTestId("lesson-content")[1]).toBe(editor);
+  });
+
+  it("does not hide one exercise's failed retry when another exercise passes", () => {
+    openChallenge(["first", "second"]);
+    submit("first", false);
+    submit("second", false);
+    submit("first", true);
+    expect(screen.getByText("Completed earlier")).toBeVisible();
+    submit("second", true);
+    expect(screen.getByText("Completion saved")).toBeVisible();
+    expect(
+      screen.queryByText(/latest checked attempt still needs work/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/^all exercises passed$/i),
+    ).not.toBeInTheDocument();
+  });
+});
+
 function renderSteps(
   entryStep: 0 | 1 | 2 = 0,
   moduleEntry: {
@@ -209,6 +308,8 @@ beforeEach(() => {
   localStorage.clear();
   recallState.pendingOnMount = 0;
   recallState.report = null;
+  exerciseFeedback.attempt = null;
+  exerciseFeedback.complete = null;
   // Steps are URL-addressable (#step-N) since 2026-09-04, and jsdom keeps
   // `location` across tests: a hash left by one test reads as a deep link
   // in the next mount. Reset it like localStorage.

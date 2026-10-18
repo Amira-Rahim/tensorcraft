@@ -34,10 +34,17 @@ testCode: |
 
   describe('isAnomaly (z-score against the spread you were handed)', () => {
     it('flags values far from mean', () => {
+      const flagged = isAnomaly(100, 50, 10);
       expect(
-        isAnomaly(100, 50, 10),
+        flagged,
         'This reading sits five spreads above the mean, which is outside any 3-sigma gate.',
       ).toBe(true);
+      recordResult({
+        kind: 'table', title: 'Your baseline decision',
+        summary: 'Synthetic reading and supplied baseline, not a ship measurement. A flag requests investigation; it does not establish a physical cause.',
+        columns: ['Reading', 'Baseline mean', 'Baseline standard deviation', 'Your flag'],
+        rows: [[100, 50, 10, flagged]],
+      });
     });
     it('does not flag normal values', () => {
       expect(

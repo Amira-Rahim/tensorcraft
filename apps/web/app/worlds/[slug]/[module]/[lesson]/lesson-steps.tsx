@@ -49,7 +49,7 @@ import {
   track,
   EVENTS,
 } from "@/lib/analytics";
-import type { ExerciseData } from "@tensorcraft/ui";
+import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 import { SceneHeading, ScenePortrait } from "@tensorcraft/ui";
 import { worlds } from "@tensorcraft/worlds";
 import { LessonDrawer } from "./lesson-drawer";
@@ -396,6 +396,11 @@ function LessonStepsInner({
   const visitedStepsRef = useRef<Set<number>>(new Set());
   const hintsRevealedRef = useRef<Set<1 | 2 | 3>>(new Set());
   const exerciseAttemptsRef = useRef(0);
+  const attemptScope = `${worldSlug}/${lesson.slug}/${reviewUserId ?? "guest"}`;
+  const [latestExerciseAttempts, setLatestExerciseAttempts] = useState<{
+    scope: string;
+    outcomes: Record<string, boolean>;
+  }>(() => ({ scope: attemptScope, outcomes: {} }));
   // Shared with StepBriefing so goNext can tell "paged past a playing
   // scene" (a skip in all but name) from a normal Continue.
   const scriptStatusRef = useRef<{ playing: boolean; startedAt: number }>({
@@ -414,9 +419,19 @@ function LessonStepsInner({
   const handleHintLevelRevealed = useCallback((level: 1 | 2 | 3) => {
     hintsRevealedRef.current.add(level);
   }, []);
-  const handleExerciseAttempt = useCallback(() => {
-    exerciseAttemptsRef.current += 1;
-  }, []);
+  const handleExerciseAttempt = useCallback(
+    (result: ExerciseSubmitResult) => {
+      exerciseAttemptsRef.current += 1;
+      setLatestExerciseAttempts((previous) => ({
+        scope: attemptScope,
+        outcomes: {
+          ...(previous.scope === attemptScope ? previous.outcomes : {}),
+          [result.exerciseSlug]: result.passed,
+        },
+      }));
+    },
+    [attemptScope],
+  );
   const getHintsUsed = useCallback(() => hintsRevealedRef.current.size, []);
 
   const stepKeys = lessonStepKeys(worldSlug, lesson.slug, reviewUserId);
@@ -1240,7 +1255,14 @@ function LessonStepsInner({
         />
         <ChallengePassedBanner
           compact={challengeWorkspace}
-          passed={canContinue}
+          passed={exercises.length > 0 && canContinue}
+          latestAttemptFailed={
+            latestExerciseAttempts.scope === attemptScope &&
+            exercises.some(
+              (exercise) =>
+                latestExerciseAttempts.outcomes[exercise.slug] === false,
+            )
+          }
           exerciseCount={exercises.length}
           checkedWork={exercises.map((exercise) => exercise.title)}
           onContinue={goNext}

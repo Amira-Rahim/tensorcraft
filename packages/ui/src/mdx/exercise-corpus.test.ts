@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, it, expect } from "vitest";
+import { afterAll, describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,12 +21,14 @@ import { fileURLToPath } from "node:url";
 // webgl flake waiting to happen on the fallback path, and this test will not
 // catch it.
 import { parseAndRunTests } from "./exercise-runner-node";
+import { validateArtifacts } from "./exercise-artifacts.mjs";
 
 /**
  * Semantic corpus check through the SHIPPED runtime path (buildFullCode →
  * worker → real TFJS): every exercise's solution must pass its own tests,
- * and no starter may pass a whole suite. This is the same invariant the CI
- * grader enforces, but through the exact code learners hit in the browser.
+ * no starter may pass a whole suite, and every Deep Orbit solution must
+ * return inspectable output. This is the same grading path learners hit
+ * in the browser, including the bounded artifact transport.
  *
  * Heavy (spawns a worker per exercise), so it is gated behind
  * EXERCISE_CORPUS=1. Run manually or in a scheduled CI job:
@@ -35,6 +37,7 @@ import { parseAndRunTests } from "./exercise-runner-node";
 const here = dirname(fileURLToPath(import.meta.url));
 const exercises: Array<{
   slug: string;
+  lessonSlug: string;
   starterCode?: string;
   solutionCode?: string;
   testCode?: string;
@@ -44,10 +47,41 @@ const exercises: Array<{
     "utf8",
   ),
 );
+const lessons: Array<{ slug: string; worldId: string }> = JSON.parse(
+  readFileSync(resolve(here, "../../../content/.velite/lessons.json"), "utf8"),
+);
+const deepOrbitLessons = new Set(
+  lessons
+    .filter((lesson) => lesson.worldId === "deep-orbit")
+    .map((lesson) => lesson.slug),
+);
 
 describe.runIf(process.env.EXERCISE_CORPUS === "1")(
   "exercise corpus through the shipped runtime",
   () => {
+    const outputEvidence: Array<{
+      slug: string;
+      tests: number;
+      artifacts: number;
+      kinds: string[];
+    }> = [];
+    afterAll(() => {
+      console.info(
+        "DEEP_ORBIT_OUTPUT_CORPUS",
+        JSON.stringify({
+          completed: outputEvidence.length,
+          expected: exercises.filter((ex) =>
+            deepOrbitLessons.has(ex.lessonSlug),
+          ).length,
+          tests: outputEvidence.reduce((sum, row) => sum + row.tests, 0),
+          artifacts: outputEvidence.reduce(
+            (sum, row) => sum + row.artifacts,
+            0,
+          ),
+          exercises: outputEvidence,
+        }),
+      );
+    });
     for (const ex of exercises) {
       it(
         `${ex.slug}: solution passes, starter does not`,
@@ -59,8 +93,31 @@ describe.runIf(process.env.EXERCISE_CORPUS === "1")(
             45_000,
           );
           const failed = sol.results.filter((r) => !r.passed);
+          expect(sol.errored).not.toBe(true);
           expect(failed.map((f) => `${f.name}: ${f.error}`)).toEqual([]);
           expect(sol.results.length).toBeGreaterThan(0);
+
+          if (deepOrbitLessons.has(ex.lessonSlug)) {
+            // A passing badge is not the lesson's result. Check the output
+            // after serialization through the real worker and host. The
+            // shared schema rejects NaN/Infinity, unaligned series, tensors,
+            // oversized strings/tables, and malformed cells.
+            expect(sol.artifacts?.length).toBeGreaterThan(0);
+            const artifacts = validateArtifacts(sol.artifacts);
+            expect(artifacts).toEqual(sol.artifacts);
+            for (const artifact of artifacts) {
+              expect(artifact.title.trim().length).toBeGreaterThan(0);
+              if (artifact.kind === "text") {
+                expect(artifact.text.trim().length).toBeGreaterThan(0);
+              }
+            }
+            outputEvidence.push({
+              slug: ex.slug,
+              tests: sol.results.length,
+              artifacts: artifacts.length,
+              kinds: artifacts.map((artifact) => artifact.kind),
+            });
+          }
 
           const starter = await parseAndRunTests(
             ex.starterCode ?? "",

@@ -68,6 +68,14 @@ as real scientific observations. Keep any optional made-up example distinct
 from the captures established in the story. Do not resolve mysteries early or
 invent a discovery to reward the learner.
 
+Introduce recurring parts of the setting through the crew's actions when they
+first matter. Later lessons should build on that context, with a short reminder
+or the relevant recording details in view. Do not interrupt each lesson with
+standalone definitions of the ship's equipment and file format. The opening
+mission establishes the hull sensors and their numerical readings; it introduces the recording’s header through Demir’s selection. The first two
+missions use the same 12 readings: sensors A–D at three moments. Intro supplies
+the viewer’s grouping code; Tensor Shapes hands that work to the learner.
+
 ## The season in one line
 
 A crew that runs on rules learns to run on learning - and the signal they

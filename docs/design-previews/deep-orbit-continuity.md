@@ -1,5 +1,11 @@
 # Deep Orbit: one investigation per lesson
 
+> Superseded for the opening excerpt and exercise results on 2026-10-18.
+> Follow [the mission purpose contract](../../CLAUDE.md#mission-purpose-and-visible-results-binding-2026-10-18)
+> and the purpose audit. The first two missions now share the 12-reading
+> selection; graded runs return actual displayable output. The older five-value
+> excerpt and no-worker-protocol restriction below are historical.
+
 October 6, 2026. Follow-up to the all-lesson visual rollout.
 
 ## Design before implementation

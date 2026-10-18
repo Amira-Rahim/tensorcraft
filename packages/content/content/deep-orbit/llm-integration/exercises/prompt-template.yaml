@@ -52,7 +52,7 @@ testCode: |
       const prompt = buildPrompt(input);
       expect(
         prompt,
-        'buildPrompt has to return the finished prompt string. While it returns null there is nothing to send the model.',
+        'Return the completed prompt string from buildPrompt.',
       ).toBeDefined();
       return prompt;
     };
@@ -88,6 +88,12 @@ testCode: |
       const prompt = promptFor(signal);
       expect(prompt).toContain('1024');
       expect(prompt).toContain('73.4');
+      recordResult({
+        kind: 'text',
+        title: 'The prompt your builder produced',
+        summary: 'Built from the supplied mission reading. Inspect the reference facts and current reading before sending it. This exercise makes no language-model request.',
+        text: prompt.slice(0, 6000),
+      });
     });
 
     it('states the reference frequencies together on one line, and says what they are', () => {
@@ -100,7 +106,7 @@ testCode: |
         ).toHaveLength(1);
         expect(
           reference[0].toLowerCase(),
-          'Four bare numbers are not context. The line has to say what they are, which is the set of frequencies known to be natural here.',
+          'Label the reference values as the known natural frequencies, in Hz.',
         ).toContain('natural');
         expect(
           reference[0].toLowerCase(),
@@ -121,7 +127,7 @@ testCode: |
       expect(lower).toContain('json');
       expect(
         lower,
-        'Output you cannot parse is output you cannot use. Name every field you intend to read.',
+        'Request classification, confidence, and reasoning in the JSON reply.',
       ).toContain('classification');
       expect(lower).toContain('confidence');
       expect(lower).toContain('reasoning');
@@ -140,7 +146,7 @@ testCode: |
         expect(first).toContain('DEEP SCAN');
         expect(
           first.toLowerCase(),
-          'A name on its own is an address label. The role line has to tell the model what job it is doing here.',
+          'The role line names DEEP SCAN but still needs its task: classifying signals.',
         ).toMatch(/classif|label|categori[sz]/);
         expect(
           first.toLowerCase(),

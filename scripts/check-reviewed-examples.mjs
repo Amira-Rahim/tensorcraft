@@ -64,9 +64,9 @@ async function run(path, titles, prefix = "", suffix = "") {
 await run(
   "foundations/01-introduction-to-tensors.mdx",
   ["prepare-readings.js"],
-  "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n",
+  "const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];\n",
   `
-assert.deepEqual(shape, [5]);
+assert.deepEqual(shape, [12]);
 const values = reading.arraySync();
 assert.ok(values.every((value, i) => Math.abs(value - streamValues[i]) < 1e-6));
 reading.dispose();

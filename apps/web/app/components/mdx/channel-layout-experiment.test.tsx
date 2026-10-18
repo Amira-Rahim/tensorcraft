@@ -23,19 +23,23 @@ const record = () =>
 it("shows which readings Farah selected from Demir's recording before asking for a prediction", () => {
   render(<ChannelLayoutExperiment />);
   let notes = screen.getByRole("complementary", {
-    name: "Recording header for this selection",
+    name: "Selected readings from Demir’s recording",
   });
   expect(notes).toHaveTextContent("4 of 64 sensors");
   expect(notes).toHaveTextContent("3, from earliest to latest");
-  expect(notes).toHaveTextContent("The other 60 sensors are left out");
+  expect(notes).toHaveTextContent(
+    "The other 60 sensors stay in the full recording",
+  );
   expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
   click("Try the next selection");
   notes = screen.getByRole("complementary", {
-    name: "Recording header for this selection",
+    name: "Selected readings from Demir’s recording",
   });
   expect(notes).toHaveTextContent("3 of 64 sensors");
   expect(notes).toHaveTextContent("2, from earliest to latest");
-  expect(notes).toHaveTextContent("The other 61 sensors are left out");
+  expect(notes).toHaveTextContent(
+    "The other 61 sensors stay in the full recording",
+  );
   expect(
     screen.getByText(/Farah moves to another part of Demir’s recording/),
   ).toBeVisible();
@@ -45,7 +49,7 @@ it("connects each sensor to its first-moment reading and position without answer
   render(<ChannelLayoutExperiment />);
   const notes = () =>
     screen.getByRole("complementary", {
-      name: "Recording header for this selection",
+      name: "Selected readings from Demir’s recording",
     });
   const sensorB = within(notes()).getByRole("button", {
     name: "Inspect sensor B",

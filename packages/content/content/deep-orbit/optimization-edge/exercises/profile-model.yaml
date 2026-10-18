@@ -200,7 +200,7 @@ testCode: |
       );
       expect(
         profile,
-        'Nothing came back from this call, so there is no profile to read a measurement off. profileModel has to hand back { parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown }; it returns null until you build it.',
+        'Return the measured profile, including parameterCount, memorySizeMB, avgInferenceMs, layerBreakdown, and leakedTensors.',
       ).toBeDefined();
       return profile;
     }
@@ -253,7 +253,7 @@ testCode: |
       const profile = await profileOf(makeModel(100, 4, 120).model, 5);
       expect(
         profile.avgInferenceMs,
-        'The first call a model runs pays a one-off compilation cost. Averaged in with the rest it multiplies the number you report several times over, and the profile stops describing the model anyone will actually serve.',
+        'This runtime adds compilation cost to its first call. Complete an untimed warmup before measuring the requested runs.',
       ).toBeCloseTo(4, 8);
     });
 
@@ -262,6 +262,13 @@ testCode: |
       const p = await profileOf(model, 5);
       expect(p.avgInferenceMs).toBeCloseTo(24, 8);
       expect(calls.served).toEqual([120, 4, 4, 4, 4, 104]);
+      recordResult({
+        kind: 'table',
+        title: 'Warmup and measured calls',
+        summary: 'Controlled clock values, not device timings. Your reported average is ' + p.avgInferenceMs + ' ms after excluding warmup.',
+        columns: ['Call', 'Supplied duration (ms)', 'Included in average'],
+        rows: calls.served.map((ms, i) => [i === 0 ? 'Warmup' : 'Measured call ' + i, ms, i !== 0]),
+      });
     });
 
     it('warms up once, then runs the timed loop exactly `runs` times', async () => {
@@ -292,7 +299,7 @@ testCode: |
         ).toBe(0);
         expect(
           profile.layerBreakdown.map((row: any) => row.name),
-          'One row per entry in model.layers, in the model order. Two of these four layers hold no weights, and dropping them leaves a reader unable to see that their share is zero.',
+          'Include every model.layers entry in order, including the two layers with no parameters.',
         ).toEqual(model.layers.map((layer: any) => layer.name));
         expect(profile.layerBreakdown.map((row: any) => row.params)).toEqual([144, 0, 0, 65]);
         const summed = profile.layerBreakdown.reduce(
@@ -301,12 +308,19 @@ testCode: |
         );
         expect(
           summed,
-          'The rows are shares of one total, so they add up to the count the model reports. A breakdown that does not is describing some other model.',
+          'The layer parameter counts should sum to this model\'s total parameter count.',
         ).toBe(profile.parameterCount);
         expect(
           profile.memorySizeMB,
           'This model holds 209 parameters, so its weights are 209 * 4 / 1e6 MB. Dividing by 1024 * 1024 gives MiB and misses by about 5 percent.',
         ).toBeCloseTo(0.000836, 6);
+        recordResult({
+          kind: 'table',
+          title: 'Storage in the model you profiled',
+          summary: profile.parameterCount + ' parameters, ' + profile.memorySizeMB + ' MB of float32 weights, and a net tensor-count change of ' + profile.leakedTensors + '. This does not measure peak application memory.',
+          columns: ['Layer', 'Parameters'],
+          rows: profile.layerBreakdown.slice(0, 40).map((row) => [row.name, row.params]),
+        });
       }));
 
     it('reads the breakdown off whichever model it is handed', () =>

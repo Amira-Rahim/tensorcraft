@@ -272,7 +272,7 @@ To evaluate a learned model, repeat forecasts from many held-out starting points
 
 ## Challenge
 
-Train a model to predict one step ahead. Then run the same stretch twice. In the first run, reuse each prediction in the next input. In the second, use the readings that actually arrived. The checks verify training and how you build the input windows. They do not require a forecast quality score. The two runs can agree, especially when the model predicts nearly the same value each time.
+Train a model to predict one step ahead. Run the same stretch twice: once feeding predictions back, and once using the readings that arrived. Inspect both returned series beside those observations to separate rollout behavior from one-step replay before investigating the changing pulse interval. The checks verify training and input construction, not a required forecast quality. The runs can agree, especially when the model predicts nearly the same value each time.
 
 <Exercise slug="forecast-signal" />
 

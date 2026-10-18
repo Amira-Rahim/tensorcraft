@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: beginner
 context:
-  narrative: "The neuron can return scores below zero or above one. Nazari wants to know which scores should trigger an alert."
+  narrative: "Nazari wants an alert rule. Farah first needs to check the activation that will connect the network's hidden layers."
 concept:
   explanation: "An activation function changes a neuron's score before passing it on. ReLU replaces negative values with zero. Sigmoid and tanh keep their outputs within fixed ranges."
   bridge:
@@ -21,7 +21,7 @@ concept:
     tier: identity
     breaks: "Math.max(0, x) and ReLU give the same value for one input. tf.relu applies the rule to every value in a tensor. It also tells TensorFlow.js how to calculate gradients during training. A negative input has zero gradient through ReLU, which can leave a unit inactive."
 consequence:
-  narrative: "The board shows bounded scores and a separate alert threshold. Neither is evidence of accuracy until the crew evaluates the model."
+  narrative: "Farah's hidden-layer activation is checked. The alert threshold remains separate, and the model's scores still need evaluation."
 hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
@@ -43,7 +43,9 @@ One reading is minus 0.06 and another is 1.04. Which one triggers the alert, and
 
 Any numeric score can be compared with a threshold. A sigmoid adds a useful range, from 0 to 1, but it does not choose the threshold or make an untrained score trustworthy. Activations also serve another purpose: they let hidden layers represent functions that a single weighted sum cannot.
 
-You will apply ReLU, an activation function that turns negative values into zero and keeps positive values.
+Test ReLU for the hidden layers Farah will connect next. It changes the
+scores passed between layers, allowing the stack to represent patterns a
+single weighted sum cannot. The alert threshold remains a separate setting.
 
 <LearningObjectives objectives={["Explain why dense layers need activations to learn more than a straight-line rule", "Implement ReLU and describe sigmoid and tanh ranges", "Distinguish an activation's output range from a decision threshold and calibrated probability"]} />
 
@@ -115,7 +117,10 @@ Sigmoid's derivative becomes small in its tails, called **saturation**. Repeated
 
 ## Challenge
 
-Apply ReLU to every value of a tensor. Preserve positive values, including large ones; this activation does not clip the upper end.
+Implement the activation Farah can place between dense layers. Inspect the
+supplied scores beside your ReLU outputs: negative scores become zero,
+and positive scores stay unchanged, including large ones. This operation
+does not choose which scores should trigger the alert.
 
 <Exercise slug="relu-activation" />
 

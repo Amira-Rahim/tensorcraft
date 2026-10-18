@@ -56,8 +56,18 @@ testCode: |
         expect(recommendDeployment(useCase({ modelSizeMB: 50, ...patch }))).toBe('client');
     });
     it('uses the stated inclusive size budget and strict latency preference', () => {
-      expect(recommendDeployment(useCase({ modelSizeMB: 50, latencyBudgetMs: 49 }))).toBe('client');
-      expect(recommendDeployment(useCase({ modelSizeMB: 50, latencyBudgetMs: 50 }))).toBe('server');
+      const below = useCase({ modelSizeMB: 50, latencyBudgetMs: 49 });
+      const at = useCase({ modelSizeMB: 50, latencyBudgetMs: 50 });
+      const belowDecision = recommendDeployment(below);
+      const atDecision = recommendDeployment(at);
+      expect(belowDecision).toBe('client');
+      expect(atDecision).toBe('server');
+      recordResult({
+        kind: 'table', title: 'Your deployment recommendations',
+        summary: 'Two boundary cases from the supplied decision policy. These are requirements checks, not measured device performance.',
+        columns: ['Model MB', 'Latency preference ms', 'Recommendation'],
+        rows: [[below.modelSizeMB, below.latencyBudgetMs, belowDecision], [at.modelSizeMB, at.latencyBudgetMs, atDecision]],
+      });
     });
     it('has no client preference without any of those reasons',()=>{for(const modelSizeMB of [5,10,30,40])expect(recommendDeployment(useCase({modelSizeMB}))).toBe('server');});
   });

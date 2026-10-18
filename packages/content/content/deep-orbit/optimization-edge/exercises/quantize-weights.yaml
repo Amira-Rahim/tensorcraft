@@ -285,6 +285,21 @@ testCode: |
         report.predictionsChanged,
         'On a model and captures drawn for this run, ' + expected + ' verdict(s) moved between the trained weights and the restored ones, read off the model\'s own outputs. The report says ' + report.predictionsChanged + '. A number computed from the bucket width, or carried over from another model, cannot track a draw.'
       ).toBe(expected);
+      recordResult({
+        kind: 'table',
+        title: 'Predictions before and after your quantization pass',
+        summary: 'Your report counted ' + report.predictionsChanged + ' changed classes in ' + captures.length + ' synthetic captures. Without labels, disagreement does not tell us which prediction is right.',
+        columns: ['Capture', 'Original class', 'Decoded-weight class', 'Changed'],
+        rows: before.slice(0, 40).map((value, i) => [i + 1, value, after[i], value !== after[i]]),
+      });
+      const stored = report.kernels[0];
+      recordResult({
+        kind: 'table',
+        title: 'The kernel codes your pass stored',
+        summary: 'Maximum reported weight error: ' + report.maxWeightError + '. These integer codes simulate uint8 storage; this exercise does not write a packed weight file.',
+        columns: ['Weight', 'Supplied value', 'Stored code', 'Decoded value'],
+        rows: kernel.slice(0, 12).map((value, i) => [i + 1, value, stored.quantized[i], stored.quantized[i] * stored.scale + stored.min]),
+      });
     });
   });
 

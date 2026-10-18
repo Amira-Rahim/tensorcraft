@@ -62,11 +62,11 @@ skillAxes: [model_arch]
 
 > **PULSE INTERVAL LOG · first cycle of each of the last eight days (seconds):** 73.1 · 72.9 · 73.0 · 72.6 · 72.7 · 72.3 · 72.4 · 72.0
 
-The numbers move up and down, but the overall trend is downward. Try smoothing those noisy measurements with a tool you already know.
+Demir needs to track the falling interval without following every noisy fluctuation.
 
 <StoryPassage>
 
-Demir's first move is the usual one when a value jitters: exponential moving average, `smoothed = alpha * new + (1 - alpha) * old`, the same trick as smoothing a scroll position. Run it on the log above with two different alphas and the problem introduces itself:
+Demir runs an exponential moving average over the log. He tries two alpha values: one that favors the previous estimate and one that favors the newest measurement.
 
 </StoryPassage>
 
@@ -166,7 +166,7 @@ The final estimate differs from the final reading by 0.43. Demir's alpha-0.8 EMA
 Here process variance is 0.1 and measurement variance is 1. By the eighth reading, the gain is close to its limiting value of 0.27. To track the downward trend directly, the filter would need a second state: change per day. The drawer below explains the gain calculation.
 
 <DerivationDrawer summary="Why this gain gives the lowest updated uncertainty">
-The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. Why THAT K and not a hand-picked alpha? Because K is the value that minimizes the variance of the blended estimate.
+The update blends prediction and measurement: `estimate = prediction + K(z - prediction)`. The Kalman gain minimizes the variance of that blend under the assumptions below.
 
 ```
 Prediction uncertainty:   P   (variance of the prediction)
@@ -196,7 +196,7 @@ Once settled, the filter behaves like an EMA with a chosen alpha. It still falls
 
 ## Challenge
 
-Implement a Kalman filter and smooth the anomaly timing.
+Track the changing pulse interval with a Kalman filter. Compare your returned estimates with the recorded daily measurements. Farah needs to see the lag as well as the smoother curve before using the estimate in another forecast.
 
 <Exercise slug="kalman-filter" />
 

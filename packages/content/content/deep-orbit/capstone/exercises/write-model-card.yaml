@@ -106,6 +106,12 @@ testCode: |
         'generateModelCard returns the whole card as one string, sections and all. The starter returns null until you build it.',
       ).toBe('string');
       expect(card).toContain('# DEEP SCAN v1.0.0');
+      recordResult({
+        kind: 'text',
+        title: 'The handover card your code produced',
+        summary: 'Rendered from supplied fictional metadata. The next watch can inspect the evaluation context, lowest recall, and input requirements; formatting the card does not verify its figures.',
+        text: card.slice(0, 6000),
+      });
     });
 
     it('dates the accuracy number instead of stating it bare', () => {
@@ -123,7 +129,7 @@ testCode: |
       const card = generateModelCard(meta);
       expect(
         card,
-        'Five classes here, and anomaly is the one an operator has to be warned about.',
+        'Anomaly has the lowest recall in this metadata. Include it in the Limitations section.',
       ).toContain('- Lowest recall: anomaly at 84.0%');
     });
 
@@ -148,7 +154,7 @@ testCode: |
         ).toContain('- Lowest recall: anomaly at 84.0%');
         expect(
           card,
-          'pulsar at 96.0% is the strongest class in this card. Nothing about it belongs under Limitations.',
+          'Pulsar has the highest recall here. The requested limitation must name the lowest.',
         ).not.toContain('- Lowest recall: pulsar');
         expect(card).not.toContain('- Lowest recall: interference');
       }
@@ -246,11 +252,11 @@ testCode: |
       const bullets = String(card).split('\n').filter((l) => l.trim().indexOf('- ') === 0);
       expect(
         bullets.length,
-        'Each of the eight bullets is its own line of the string. A card joined into one run-on line carries every substring the grader looks for and files none of them, because a heading with no lines after it holds nothing.',
+        'Put each bullet on its own line beneath the required heading.',
       ).toBeGreaterThanOrEqual(8);
       expect(
         under['## Performance'] || [],
-        'The accuracy line sits under ## Performance. Appearing somewhere in the string is not the same thing: an operator reads the lines beneath a heading, not the whole card.',
+        'Place the accuracy line under ## Performance.',
       ).toContain('- Accuracy: 91.8% (measured at the pruning review)');
       expect(under['## Performance'] || []).toContain('- Size: 3988 bytes');
       expect(
@@ -259,7 +265,7 @@ testCode: |
       ).toContain('- Inference: 0.035ms');
       expect(
         under['## Limitations'] || [],
-        'The weakest class and every entry of meta.limitations make up the Limitations section. Filed under Performance they read like results, which is the one reading this card exists to prevent.',
+        'Place the lowest-recall class and every meta.limitations entry under ## Limitations.',
       ).toContain('- Lowest recall: anomaly at 84.0%');
       expect(under['## Limitations'] || []).toContain('- Only tested on Sector 7-G data');
       expect(under['## Limitations'] || []).toContain('- Requires 64-sample capture window');
@@ -332,7 +338,7 @@ testCode: |
       ).toContain(`# ${drawn.name} v${drawn.version}`);
       expect(
         card,
-        'Every number on the card is rendered from the metadata handed in. These were drawn a moment ago, so a card copied out of an earlier run fits nothing here.',
+        'Render each card from the supplied metadata, including when the values change between calls.',
       ).toContain(`- Accuracy: ${(accTenths / 10).toFixed(1)}% (measured at ${drawn.benchmarkedOn})`);
       expect(
         card,

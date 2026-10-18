@@ -1,6 +1,6 @@
 slug: build-lstm
 lessonSlug: lstm-gates
-title: "One LSTM Step by Hand"
+title: "Trace an LSTM State Update"
 instructions: |
   Implement one LSTM step, then compare it with a one-unit TensorFlow.js layer.
 
@@ -131,6 +131,12 @@ testCode: |
         newHidden[1],
         'Same step, the other dimension: the output gate times the tanh of the new cell, not the gate times the cell.',
       ).toBeCloseTo(0.5 * Math.tanh(-0.5), 6);
+      recordResult({
+        kind: 'table', title: 'Your LSTM state update',
+        summary: 'Two synthetic state dimensions with zero gate pre-activations. Cell state stores information; hidden state is the gated output.',
+        columns: ['State dimension', 'New cell value', 'New hidden value'],
+        rows: newCell.map((value, i) => [i, value, newHidden[i]]),
+      });
     });
 
     it('the candidate is a tanh, so a zero pre-activation stores nothing', () => {

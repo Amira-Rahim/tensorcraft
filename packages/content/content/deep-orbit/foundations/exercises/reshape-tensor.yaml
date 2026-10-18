@@ -2,15 +2,15 @@ slug: reshape-tensor
 lessonSlug: tensor-shapes
 title: "Prepare Farah's Sensor Chart"
 instructions: |
-  Farah takes 12 more readings from Demir's recording: the same four sensors
-  at three later moments. They are already in `flat`, ready to arrange.
+  Farah keeps the 12 readings from Demir’s chart: four sensors at three
+  moments. They are already in `flat`. Now build the viewer’s grouping steps.
   The recording notes label these sensors A, B, C, and D, in that order at each moment.
 
   1. Before running the code, predict which four readings go in the second row.
   2. Use `reshape()` on `flat` to create `grid` with shape `[3, 4]`.
      Each row is one moment. Each column is one sensor.
   3. Save the second row as a JavaScript array named `step1`.
-     Use row index `1`, since JavaScript counts from `0`.
+     Use row index `1`.
   4. Farah's chart needs one row per sensor, with its readings in time order.
      Use `transpose()` on `grid` to create `bySensor` with shape `[4, 3]`.
 
@@ -20,7 +20,7 @@ instructions: |
 starterCode: |
   // Selected from Demir's recording: sensors A, B, C, D at three moments.
   // Each group of four keeps the sensor order from the recording notes.
-  const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
+  const flat = tf.tensor([2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]);
 
   // Predict the second row, then make one row per moment.
   const grid = null; // your code here
@@ -30,12 +30,12 @@ starterCode: |
 
   // Give the chart one row per sensor, in time order.
   const bySensor = null;
-solutionCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];\n\nconst bySensor = grid.transpose();"
+solutionCode: "const flat = tf.tensor([2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];\n\nconst bySensor = grid.transpose();"
 testCode: |
   describe('Signal Layout', () => {
     // Expected values come from the recording, not a learner-controlled
     // tensor. This also lets learners dispose of flat after reshaping it.
-    const source = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8];
+    const source = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];
     // Capture the submitted operation paths before grader readback runs.
     // These shared runtime records refer to actual input/output tensors,
     // so a dummy operation cannot validate a separately typed-out answer.
@@ -122,6 +122,12 @@ testCode: |
         rows,
         'Each row must contain one sensor across all three moments. Keep the moments in their original order.',
       ).toEqual(expected);
+      recordResult({
+        kind: 'series', title: 'Farah’s chart from your arrangement',
+        summary: 'Sensors A–D at three selected moments in Demir’s fictional recording. Each line uses one row of your bySensor tensor.',
+        xLabel: 'Moment in this excerpt', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
+        series: rows.map((values, i) => ({ name: 'Sensor ' + ['A', 'B', 'C', 'D'][i], values })),
+      });
     });
   });
 estimatedMinutes: 10

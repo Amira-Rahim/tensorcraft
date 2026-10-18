@@ -60,6 +60,12 @@ testCode: |
       expect(info.layerCount, 'This is the layer count of the model at that url, so read it off the model you loaded.').toBe(ref.layers.length);
       expect(info.inputShape, shapeNote).toEqual(ref.inputs[0].shape);
       expect(info.outputShape, shapeNote).toEqual(ref.outputs[0].shape);
+      recordResult({
+        kind: 'table', title: 'The loaded model\'s input contract',
+        summary: 'Metadata returned by your function from the simulated loader response. This exercise does not download the bridge model.',
+        columns: ['Property', 'Returned value'],
+        rows: [['Input shape', JSON.stringify(info.inputShape)], ['Output shape', JSON.stringify(info.outputShape)], ['Layers', info.layerCount]],
+      });
     });
     it('inputShape and outputShape are genuine shape arrays from the model', async () => {
       const info = await inspect('/models/deep-scan/model.json');

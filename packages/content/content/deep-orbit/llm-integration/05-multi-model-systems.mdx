@@ -101,13 +101,13 @@ skillAxes: [deployment, js_integration]
 The classifier returns a class, the autoencoder rebuilds a reading, and the LSTM predicts what comes next. The LLM turns their results into a draft. I need to connect them, like services behind an API gateway.
 </Dialogue>
 
-Each model returns something different. The classifier returns a class and its score. The autoencoder returns a reconstruction error. The LSTM predicts the next values. The LLM uses those results to draft prose. Orchestration means connecting these steps and catching failures before they reach the report.
+Demir needs a checked handoff between each stage. The classifier stage supplies a class and score; the autoencoder stage measures reconstruction error; the LSTM supplies a forecast. The reporter needs to know when any of those results is unavailable. Connecting these stages and handling their failures is **model orchestration**.
 
 Suppose four stages each have a 95% chance of being correct, independently. The chance that all four are correct is 0.95^4, about 81%.
 
 That is not automatically the final system's accuracy. Some stages may recover from earlier errors, and some outputs may not affect the result. Shared inputs can also link errors across stages. Check each stage's input and output, then test the full pipeline against real outcomes. A plausible value can pass every type and range check and still be wrong.
 
-You will connect the classifier, detector, and alert generator while handling failures between stages.
+Demir needs one result the watch can use, with failures caught before they reach the alert writer. You will connect the classifier, detector, and alert generator and inspect what each handoff allows through.
 
 <LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them", "Check every stage's output, then use an acceptable fallback or stop if no safe substitute exists", "Follow one capture through DEEP SCAN and explain why each model needs its own input format and scaling"]} />
 
@@ -266,6 +266,8 @@ async function resilientPipeline(
 
 Build the classifier stage with the supplied feature ranges, then connect it to the detector and alert writer. Replace an unsupported class with unknown; reject an invalid score before it reaches the next stage.
 
+Inspect the returned classification, score, detector decision, and alert. The capture uses a real TFJS classifier with controlled detector and writer callbacks. It checks your wiring; running the full system requires the separately evaluated models described above.
+
 <Exercise slug="model-pipeline" />
 
 <RecallPrompt
@@ -274,15 +276,15 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
   checks={[
     {
       "kind": "choice",
-      "question": "What can a contract check between model stages catch?",
+      "question": "What can the shown shape, field, and range checks detect directly?",
       "options": [
         {
           "text": "Every plausible but incorrect prediction.",
           "feedback": "A wrong prediction can satisfy the expected type, shape and range."
         },
         {
-          "text": "All future changes in real-world data.",
-          "feedback": "A structural check cannot establish future predictive behavior."
+          "text": "A scaling mistake that preserves the expected shape and valid value range.",
+          "feedback": "Those checks can pass when inputs came from the wrong scaler. Keep the preprocessing version with the model."
         },
         {
           "text": "Invalid shapes, missing fields and out-of-range values.",
@@ -297,8 +299,8 @@ Build the classifier stage with the supplied feature ranges, then connect it to 
       "question": "How do you assess plausible outputs that pass those checks?",
       "options": [
         {
-          "text": "Evaluate only the number of stages.",
-          "feedback": "More stages do not prove a better result."
+          "text": "Average the separate stages' accuracy scores to estimate the final result.",
+          "feedback": "An average of stage scores does not measure how their errors affect the final decision."
         },
         {
           "text": "Evaluate the complete pipeline against outcomes, including shared failures and fallbacks.",

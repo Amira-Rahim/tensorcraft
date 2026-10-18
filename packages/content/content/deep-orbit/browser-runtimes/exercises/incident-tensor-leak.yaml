@@ -81,6 +81,12 @@ testCode: |
         10000,
       );
       expect(r.hoursToBudget, 'Subtract the latest tensor count from the budget to find the remaining capacity.').toBeCloseTo(79, 1);
+      recordResult({
+        kind: 'table', title: 'Your capacity estimate for the watch',
+        summary: 'Projection from the supplied 400-to-520 tensor snapshot case. It assumes the endpoint growth rate continues and does not identify a leak.',
+        columns: ['Growing', 'Tensors per hour', 'Hours to budget'],
+        rows: [[r.growing, r.ratePerHour, r.hoursToBudget]],
+      });
     });
     it('a flat count has no projected growth deadline', () => {
       const r = diagnose(

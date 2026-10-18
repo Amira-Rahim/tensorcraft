@@ -127,13 +127,13 @@ Tree-shaking. Webpack drops the exports nothing imports; we drop the weights not
 
 Before signing, test Demir's claim. The example below starts with eight weights and sets the four smallest to zero. Check whether the output stays the same.
 
-You will set different shares of the weights to zero and measure recall for each class.
+Give Demir the per-class results his sign-off is missing. Set different shares of the weights to zero and check which kinds of signals the classifier starts missing.
 
-This lesson uses a five-class practice classifier: pulsar, quasar, noise, interference, and anomaly. Its eleven inputs differ from the three-feature binary classifier you connected in the last module. The story's accuracy table is a supplied scenario. The exercise measures a separate small model on made-up readings.
+The mission's classifier distinguishes pulsar, quasar, noise, interference, and anomaly. Its eleven inputs differ from the three-feature binary classifier you connected in the last module. The accuracy table supplies fictional mission results. The exercise uses a separate small model with synthetic readings to measure how pruning changes per-class recall.
 
 <LearningObjectives objectives={["Distinguish magnitude pruning from behavior-preserving dead-code removal", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Separate what pruning changes on disk from what it changes on the wire"]} />
 
-## Tree-Shaking Weights
+## Test Demir's pruning proposal
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -290,6 +290,8 @@ Test each supplied sparsity level and report recall for every class. Sparsity is
 
 At sparsity 1, this exercise removes every kernel weight. An interior cutoff can retain ties, so the requested sparsity is not always the achieved fraction. Return null for a class with no evaluation examples. Restore the original weights even if scoring fails.
 
+The resulting curves let Demir compare each class before signing off a pruning level. The supplied comparison uses 40 synthetic examples per class, so it can expose uneven damage without the mission archive's class imbalance. Its results do not reproduce the fictional 91.8% score or choose a release threshold for the crew.
+
 <Exercise slug="prune-weights" />
 
 <RecallPrompt
@@ -301,8 +303,8 @@ At sparsity 1, this exercise removes every kernel weight. An interior cutoff can
       "question": "Why can zeroing 60% of weights leave an uncompressed dense weight file the same size?",
       "options": [
         {
-          "text": "A zero always takes more bytes than a nonzero weight.",
-          "feedback": "The dense dtype uses the same width for both."
+          "text": "The file stays the same size because pruning changes only activations, not weights.",
+          "feedback": "Pruning changes the weights. Dense storage still keeps a slot for each zeroed value."
         },
         {
           "text": "The export automatically removes every unit containing a zero.",
@@ -355,7 +357,7 @@ At sparsity 1, this exercise removes every kernel weight. An interior cutoff can
 
 <Epilogue>
 
-85 megabytes on disk, 42 over the wire. The combined build sits on the staging dashboard next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
+Demir keeps the per-class comparison with the sign-off this time. The crew's separate mission replay and load test return to the staging board: 85 megabytes on disk, 42 over the wire. The combined build sits next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 Quantization cut the file from 340 to 85 megabytes. We saw no prediction-quality loss on the held-out data. Pruning kept the file at 85 megabytes, cut the compressed download from 70 to 42, and caused all 2.4 points of accuracy loss.

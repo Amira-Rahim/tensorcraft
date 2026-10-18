@@ -8,6 +8,11 @@
  * so Next.js/Vite client builds don't try to resolve `node:worker_threads`.
  */
 
+import {
+  ARTIFACT_COLLECTOR_SOURCE,
+  validateArtifacts,
+  type ExerciseArtifact,
+} from "./exercise-artifacts.mjs";
 import { FIT_RECORDING_SOURCE } from "./exercise-fit-recording.mjs";
 import { SHAPE_RECORDING_SOURCE } from "./exercise-shape-recording.mjs";
 
@@ -25,6 +30,7 @@ export interface ConsoleEntry {
 }
 
 export interface TestRunOutcome {
+  artifacts?: ExerciseArtifact[];
   results: TestResult[];
   logs: ConsoleEntry[];
   /**
@@ -1636,9 +1642,10 @@ const WORKER_BODY = `
               deleteProperty: function() { return false; },
             })
           : globalThis.tf;
-        var fn = new Function('console', 'tf', code);
-        var results = await fn(capturedConsole, tfProxy);
-        post({ ok: true, results: results, logs: logs });
+        var artifactCollector = (${ARTIFACT_COLLECTOR_SOURCE})();
+        var fn = new Function('console', 'tf', 'recordResult', code);
+        var results = await fn(capturedConsole, tfProxy, artifactCollector.record);
+        post({ ok: true, results: results, logs: logs, artifacts: artifactCollector.read() });
       } catch (err) {
         post({ ok: false, error: (err && err.message) || String(err), logs: logs });
       }
@@ -1648,7 +1655,12 @@ const WORKER_BODY = `
 `;
 
 type WorkerReply =
-  | { ok: true; results: TestResult[]; logs: ConsoleEntry[] }
+  | {
+      ok: true;
+      results: TestResult[];
+      logs: ConsoleEntry[];
+      artifacts?: unknown;
+    }
   | { ok: false; error: string; logs: ConsoleEntry[] }
   // Boot signal, sent once after the TFJS runtime finishes loading. Carries
   // no results: it exists so the host can start the execution timeout at the
@@ -1825,7 +1837,26 @@ export async function parseAndRunTestsWith(
       clearTimeout(loadTimer);
       startTimer();
       if (reply.ok) {
-        finish({ results: reply.results, logs: reply.logs });
+        try {
+          finish({
+            results: reply.results,
+            logs: reply.logs,
+            artifacts: validateArtifacts(reply.artifacts ?? []),
+          });
+        } catch (error) {
+          finish({
+            results: [
+              ...reply.results,
+              {
+                name: "Display your result",
+                passed: false,
+                error: error instanceof Error ? error.message : String(error),
+              },
+            ],
+            logs: reply.logs,
+            errored: true,
+          });
+        }
       } else {
         finish({
           results: [

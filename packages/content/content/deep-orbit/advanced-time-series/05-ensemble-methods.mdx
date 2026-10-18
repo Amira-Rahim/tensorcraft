@@ -83,7 +83,7 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model runs, so total computation grows. Elapsed time also depends on whether the hardware can run them concurrently. Different errors may partly cancel, but a shared mistake survives the blend.
 </Dialogue>
 
-`Promise.all([svcA(x), svcB(x), svcC(x)])` is the shape that carries over: one input, three calls that all run, one bill that is the sum of the three. What does not carry over is the reason you fan out. Services can answer the same or different questions. An ensemble needs predictions about the same target, time and units. A third model must justify its compute cost through measured accuracy, robustness or another explicit requirement.
+The fan-out runs every model. Unlike services that may answer different questions, ensemble members must predict the same target, time and units. A third model must justify its compute cost through measured accuracy, robustness or another explicit requirement.
 
 You will combine forecasts using weights based on earlier errors, then compare the result with the best individual model.
 
@@ -244,7 +244,7 @@ The formula only describes variance. A shared bias, such as all models learning 
 
 ## Challenge
 
-Measure the error of each model. Then compare two blends: equal weights and weights based on earlier validation errors. Did either blend beat the best individual model enough to justify running them all?
+Measure each model's error, then inspect both blends: equal weights and weights based on earlier validation errors. Compare their returned MAEs with the best member on the same targets. Farah needs that comparison before adding the extra models to the forecasting pipeline.
 
 <Exercise slug="weighted-ensemble" />
 

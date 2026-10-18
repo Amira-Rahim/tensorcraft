@@ -104,7 +104,7 @@ testCode: |
     for (const stage of stages) {
       expect(
         pipeline.addStage(stage),
-        'addStage has to hand the pipeline back. The starter returns null, so the next .addStage in the chain has nothing to call.',
+        'Return this from addStage so the caller can add the next stage.',
       ).toBeInstanceOf(Pipeline);
     }
     return pipeline;
@@ -153,6 +153,13 @@ testCode: |
         values.every((v) => Number.isFinite(v)),
         'The five FFT magnitudes reached the tensor as numbers, which only happens if each stage saw a settled value.',
       ).toBe(true);
+      recordResult({
+        kind: 'table',
+        title: 'The feature row your pipeline delivered',
+        summary: 'Your runner awaited normalization, FFT, and tensor creation and returned shape [' + out.shape.join(', ') + ']. This eight-sample fixture tests composition, not the production classifier scaler.',
+        columns: ['FFT bin', 'Magnitude from normalized input'],
+        rows: values.slice(0, 5).map((value, i) => [i, value]),
+      });
       out.dispose();
     });
 
@@ -182,7 +189,7 @@ testCode: |
       ).toBeDefined();
       expect(
         refusal,
-        'The refusal came back as a thrown string. A string has no name and no stack, so the CI log shows the operator the message and nothing about where the pipeline gave up. Throw an Error.',
+        'Throw an Error with the stage name, rather than a string.',
       ).toBeInstanceOf(Error);
       expect(
         refusal.message,
@@ -247,7 +254,7 @@ testCode: |
       const pipeline = new Pipeline();
       expect(
         pipeline.addStage(normalizeStage),
-        'Returning this is what lets new Pipeline().addStage(a).addStage(b) parse at all.',
+        'Return the same pipeline instance from each addStage call.',
       ).toBe(pipeline);
     });
   });

@@ -229,10 +229,10 @@ export function InvestigationGraphic({
       </figcaption>
       {graphic.kind === "cells" ? (
         <ol
-          className="orbit-investigation-cells"
+          className={`orbit-investigation-cells${graphic.layout === "prose" ? " orbit-investigation-prose" : ""}`}
           tabIndex={0}
           style={{
-            gridTemplateColumns: `repeat(${Math.max(1, graphic.columns ?? graphic.values.length)}, minmax(52px, 1fr))`,
+            gridTemplateColumns: `repeat(${graphic.layout === "prose" ? 1 : Math.max(1, graphic.columns ?? graphic.values.length)}, minmax(52px, 1fr))`,
           }}
           aria-label={graphic.label}
         >

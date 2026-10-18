@@ -61,7 +61,7 @@ You will fix the input shape so the model can process one reading or a batch of 
 
 ## Data Flows Forward
 
-The forward pass itself is the simple part: data enters the first layer, gets transformed, and flows on until it reaches the output. The part that bit Demir is the shapes.
+The forward pass applies each layer in order. Demir's model needs a batch axis at the start, even when he sends it one reading.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -121,7 +121,10 @@ These operations express the same computation for this dense network. Expect agr
 
 ## Challenge
 
-Run a forward pass, then give one flat reading the batch axis the layer wants.
+Get the demo answering again. Run the supplied batch through your model,
+then make one flat reading fit the same input contract. Inspect the actual
+inputs and unit outputs from your forward pass. Random starting weights
+make this a wiring check, not evidence that the predictions are useful.
 
 <Exercise slug="forward-pass" />
 

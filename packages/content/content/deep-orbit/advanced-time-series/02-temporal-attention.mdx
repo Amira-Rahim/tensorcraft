@@ -20,7 +20,7 @@ concept:
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
-    breaks: "scrollIntoView requests scrolling toward an element chosen by application code. Temporal attention learns soft weights over every prior timestep: the model decides relevance rather than you, and the weights are continuous rather than one target. Cost depends on the scorer, and the usual 'attention is quadratic' line does not apply to what you build here: the per-step linear scorer in this lesson emits one score per step, so it is linear in sequence length. The quadratic cost belongs to the T-by-T self-attention used in transformers, where every step scores against every other."
+    breaks: "scrollIntoView moves toward an element chosen by application code. This attention scorer computes one learned weight per time step, then blends the values. Its scoring cost grows linearly with sequence length. Full self-attention scores every step against every other, creating a T-by-T matrix with quadratic cost."
 consequence:
   narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The crew checks the raw timing separately; weights alone do not confirm a physical pattern."
 hints:
@@ -222,11 +222,11 @@ function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; we
 // because lateness is now a number it multiplies by a weight.`}
 </CodeBlock>
 
-Sinusoidal encodings are one approach used in the original Transformer. Learned positions and relative or rotary schemes are other choices. Our linear position column only lets the scorer favor earlier or later steps; it is not a full transformer position mechanism. Attention only knows what you hand it, and position is a feature like any other.
+Sinusoidal encodings are one approach used in the original Transformer. Learned positions and relative or rotary schemes are other choices. Our linear position column only lets the scorer favor earlier or later steps; it is not a full transformer position mechanism.
 
 ## Challenge
 
-Build the temporal attention path with position as a scored feature, then read the weights back to name the steps it focused on.
+Build the temporal attention path with position as a scored feature. Inspect its weights beside the pooled readings: the position column should affect which steps contribute, while the summary still contains only the original reading features. This gives Farah a summary for the next prediction and weights she can investigate separately.
 
 <Exercise slug="temporal-attention" />
 

@@ -228,6 +228,13 @@ testCode: |
       const result = verdict(await verifyDeployment(checks));
       expect(result.passed).toBe(true);
       expect(result.summary).toBe('3/3 checks passed');
+      recordResult({
+        kind: 'table',
+        title: 'The verification record your runner returned',
+        summary: result.summary + '. These probes ran a small local TFJS scorer. They did not contact or deploy a hosted service.',
+        columns: ['Check', 'Passed', 'Returned evidence'],
+        rows: result.checks.slice(0, 40).map((check) => [check.name, check.passed, check.message]),
+      });
     });
 
     it('fails the whole deployment when one real gate fails (stricter threshold)', async () => {
@@ -242,6 +249,13 @@ testCode: |
       expect(result.passed).toBe(false);
       expect(result.summary).toBe('1/2 checks passed');
       expect(result.checks[1].passed).toBe(false);
+      recordResult({
+        kind: 'table',
+        title: 'A failed probe holds the release',
+        summary: result.summary + '. The stricter threshold changes the release decision; the underlying local scorer is unchanged.',
+        columns: ['Check', 'Passed', 'Returned evidence'],
+        rows: result.checks.slice(0, 40).map((check) => [check.name, check.passed, check.message]),
+      });
     });
 
     it('runs checks in order and collects every result', async () => {

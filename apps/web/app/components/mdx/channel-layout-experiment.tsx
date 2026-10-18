@@ -149,9 +149,9 @@ export function ChannelLayoutExperiment() {
           Keep each sensor’s readings together
         </h3>
         <p data-story-passage="">
-          Farah starts with a few of the ship’s sensors from Demir’s recording.
-          Help her keep each number with the sensor it came from, so she can see
-          how its readings change over time.
+          Farah keeps Demir’s selected readings and opens the header beside
+          them. You’ll use its sensor order to rebuild the grouping behind his
+          chart.
         </p>
         <RecordingNotes
           key={draft.mode}
@@ -160,14 +160,6 @@ export function ChannelLayoutExperiment() {
             draft.mode === "worked" ? WORKED_PACKET[0] : CHECK_PACKET[0]
           }
         />
-        <aside className="channel-definition" aria-label="What is a channel?">
-          <p>
-            In this recording, each sensor has its own <strong>channel</strong>:
-            its readings over time. Demir’s recording contains{" "}
-            {RECORDING_SOURCE.sensorCount} channels. Farah has already selected
-            the readings shown here.
-          </p>
-        </aside>
       </header>
       <fieldset disabled={!ready} className="channel-activity-controls">
         <legend className="sr-only">Sensor layout controls</legend>
@@ -288,10 +280,9 @@ export function ChannelLayoutExperiment() {
                   </pre>
                   <p>
                     <code>reshape()</code> makes the rows without changing the
-                    readings’ order. <code>arraySync()</code> gives us regular
-                    JavaScript arrays so we can read the values. Index{" "}
-                    <code>1</code> picks the second row because array indexes
-                    start at zero.
+                    readings’ order. <code>arraySync()</code> returns the rows
+                    as JavaScript arrays. Use <code>grid.arraySync()[1]</code>{" "}
+                    to read the second row.
                   </p>
                 </div>
               )}
@@ -661,93 +652,71 @@ function RecordingNotes({
   const uid = useId();
   const [selectedSensor, setSelectedSensor] = useState(0);
   const positions = ["first", "second", "third", "fourth"];
-  const sensorOrder = excerpt.sensorIds.join(", then ");
   return (
     <aside
       className="channel-recording-notes"
-      aria-label="Recording header for this selection"
+      aria-label="Selected readings from Demir’s recording"
     >
-      <h4 className="channel-subheading">The devices behind the numbers</h4>
-      <p>
-        A sensor is a measuring device, like a thermometer. The ship’s sensors
-        measure the incoming signal. Each number they record is a reading.
-      </p>
-      <section className="channel-source-explanation">
-        <h5 className="channel-subheading">Recording notes (header)</h5>
-        <p>
-          Demir’s recording comes with a note explaining how its numbers were
-          saved. This note is called the header. It tells Farah which sensor
-          each number belongs to.
-        </p>
-        <p>
-          Farah uses letters as short names for the sensors she selected. Their
-          readings are saved in this order: {sensorOrder}. That is what
-          <strong> sensor order</strong> means. The same order repeats at each
-          moment.
-        </p>
-        <figure className="channel-source-map">
-          <figcaption>
-            The first moment in this selection. Select a sensor to follow its
-            reading.
-          </figcaption>
-          <ol className="channel-source-readings">
-            {excerpt.sensorIds.map((sensor, index) => (
-              <li key={sensor}>
-                <button
-                  type="button"
-                  className="channel-source-sensor"
-                  aria-label={`Inspect sensor ${sensor}`}
-                  aria-describedby={`${uid}-${sensor}-position ${uid}-${sensor}-value`}
-                  aria-pressed={selectedSensor === index}
-                  onClick={() => setSelectedSensor(index)}
-                >
-                  <span
-                    id={`${uid}-${sensor}-position`}
-                    className="channel-source-position"
-                  >
-                    {positions[index]} reading
-                  </span>
-                  <strong>Sensor {sensor}</strong>
-                  <span className="channel-source-arrow" aria-hidden="true">
-                    ↓
-                  </span>
-                  <span
-                    id={`${uid}-${sensor}-value`}
-                    className="channel-source-value"
-                  >
-                    {firstReadings[index]}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-          <p role="status" className="channel-source-result">
-            Sensor {excerpt.sensorIds[selectedSensor]} recorded{" "}
-            <strong>{firstReadings[selectedSensor]}</strong>. Its reading is the{" "}
-            <strong>{positions[selectedSensor]}</strong> number saved for this
-            moment.
-          </p>
-        </figure>
-        <p>
-          The letters identify the devices. The numbers are their readings; they
-          are kept in recording order, not sorted by size.
-        </p>
-      </section>
+      <h4 className="channel-subheading">Selected readings</h4>
       <dl>
         <div>
-          <dt>Sensors in Farah’s selection</dt>
+          <dt>Sensors from Demir’s recording</dt>
           <dd>
             {excerpt.sensorIds.length} of {RECORDING_SOURCE.sensorCount} sensors
           </dd>
         </div>
         <div>
-          <dt>Moments in this selection</dt>
+          <dt>Moments selected</dt>
           <dd>{excerpt.momentCount}, from earliest to latest</dd>
         </div>
       </dl>
+      <figure className="channel-source-map">
+        <figcaption>
+          The first moment, in the order saved in the header. Select a sensor to
+          find its reading.
+        </figcaption>
+        <ol className="channel-source-readings">
+          {excerpt.sensorIds.map((sensor, index) => (
+            <li key={sensor}>
+              <button
+                type="button"
+                className="channel-source-sensor"
+                aria-label={`Inspect sensor ${sensor}`}
+                aria-describedby={`${uid}-${sensor}-position ${uid}-${sensor}-value`}
+                aria-pressed={selectedSensor === index}
+                onClick={() => setSelectedSensor(index)}
+              >
+                <span
+                  id={`${uid}-${sensor}-position`}
+                  className="channel-source-position"
+                >
+                  {positions[index]} reading
+                </span>
+                <strong>Sensor {sensor}</strong>
+                <span className="channel-source-arrow" aria-hidden="true">
+                  ↓
+                </span>
+                <span
+                  id={`${uid}-${sensor}-value`}
+                  className="channel-source-value"
+                >
+                  {firstReadings[index]}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <p role="status" className="channel-source-result">
+          Sensor {excerpt.sensorIds[selectedSensor]} recorded{" "}
+          <strong>{firstReadings[selectedSensor]}</strong>. Its reading is the{" "}
+          <strong>{positions[selectedSensor]}</strong> number saved for this
+          moment.
+        </p>
+      </figure>
       <p className="channel-detail">
         The other {RECORDING_SOURCE.sensorCount - excerpt.sensorIds.length}{" "}
-        sensors are left out. Time 1 is the first moment in this selection.
+        sensors stay in the full recording. This selection keeps the same sensor
+        order at every moment. Time 1 is its first moment.
       </p>
     </aside>
   );
@@ -762,10 +731,7 @@ const sensorStyles = [
 function FlatReadings() {
   return (
     <figure className="channel-recording">
-      <figcaption>
-        Read from left to right. Each letter shows which sensor the reading came
-        from.
-      </figcaption>
+      <figcaption>Demir’s selected readings, in recording order.</figcaption>
       <div
         className="overflow-x-auto"
         tabIndex={0}

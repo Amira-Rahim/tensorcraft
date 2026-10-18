@@ -56,13 +56,14 @@ The signal from Sector 7-G matches neither tone. Farah wants to start with a sma
 ARIA's current rules miss this pattern. Start with a small function whose parameters training can adjust. We can check the arithmetic on the labeled calibration tones before asking it anything about the unknown signal.
 </Dialogue>
 
-You will build a neuron that combines several readings into one weighted score.
+Build the score calculation Farah will put inside a layer. It must keep
+working when the inputs and weights change during training.
 
-<LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
+<LearningObjectives objectives={["Identify a neuron's inputs, weights, and bias", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
 
 ## Combine inputs into one score
 
-A neuron takes inputs, multiplies each by a weight, sums the products, adds a bias, and emits one number. You've written this exact pattern with `Array.reduce()`.
+A neuron multiplies each input by a weight, sums the products, and adds a bias. The `Array.reduce()` expression below computes the same score.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -90,7 +91,7 @@ Each weight scales its own input: a positive weight pushes the output up, a nega
 
 ## Reading the Weights
 
-The three weights were chosen to make the arithmetic easy to check. Module 3 will show how training changes them. Here, one neuron reads amplitude, frequency, and phase. We can trace each input's effect directly. A deeper network has later layers that also affect the result.
+The three weights are fixed for this example. Module 3 will show how training changes them. Here, one neuron reads amplitude, frequency, and phase. We can trace each input's effect directly. A deeper network has later layers that also affect the result.
 
 A weight's sign tells you which way its input moves the score. The amplitude weight is `0.4`, so a higher amplitude raises the score. The frequency weight is `-0.2`, so a higher frequency lowers it. Change `-0.2` to `+0.2` above: the same reading scores 0.58 instead of 0.26.
 
@@ -106,7 +107,9 @@ A small coefficient gives this unit low sensitivity to that input in its current
 
 ## Challenge
 
-Help Farah build one neuron that combines the readings into a score.
+Help Farah combine the supplied inputs into a score. Your result shows the
+scalar returned by that tensor calculation. This step supplies the weighted
+sum; the next lesson tests what an activation can do to such scores.
 
 <Exercise slug="implement-neuron" />
 

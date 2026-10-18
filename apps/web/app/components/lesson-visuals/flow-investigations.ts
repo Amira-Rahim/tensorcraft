@@ -1038,11 +1038,11 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "report-generation": {
-    title: "Assemble only checked sections",
+    title: "Keep approved sections and name the gaps",
     brief:
-      "Check the observations, analysis and limitations separately before releasing the report.",
+      "Farah has reviewed the draft. Change the review conditions, then see which section text reaches the relay report and which headings stay under Withheld.",
     boundary:
-      "The sections and checks are fixed examples. This activity performs no text generation or report publication.",
+      "These fixed drafts have supplied review rules. The activity assembles their text locally; it does not generate prose, verify new claims or send a report.",
     controls: [
       choice("sources", "Observation source links", ["Missing", "Present"], 1),
       choice("claim", "Analysis claim", [
@@ -1061,136 +1061,258 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "full",
         label: "Complete observation",
         description:
-          "The required frequency and amplitude measurements are both present.",
+          "In this draft, the source records an 8 Hz frequency and 0.4 amplitude. Farah approves Observations only when both measurements and their source link are present.",
       },
       {
         id: "partial",
         label: "Incomplete observation",
         description:
-          "The required amplitude measurement is missing. Source links alone cannot fill the gap.",
+          "The source lacks the amplitude measurement claimed by Observations. Farah withholds that section; the other sections keep their own review decisions.",
       },
     ],
     prediction: {
-      prompt: "How many required sections pass their checks?",
-      unit: "of 3 sections",
+      prompt: "How many section bodies will the assembled report include?",
+      unit: "sections",
     },
     evaluate: (v, caseId) => {
-      const checks = [
-        v.sources === 1 && caseId === "full",
-        v.claim === 0,
-        v.limits === 1,
+      const sections = [
+        {
+          heading: "Observations",
+          content:
+            "The capture has frequency 8 Hz and amplitude 0.4. Source: S7.",
+          validated: v.sources === 1 && caseId === "full",
+        },
+        {
+          heading: "Analysis",
+          content:
+            v.claim === 0
+              ? "The recorded frequency is 8 Hz. Its origin is unknown."
+              : "The signal is a reply from an artificial source.",
+          validated: v.claim === 0,
+        },
+        {
+          heading: "Limits",
+          content:
+            v.limits === 1
+              ? "These measurements do not establish the signal's origin."
+              : "",
+          validated: v.limits === 1,
+        },
       ];
-      const count = checks.filter(Boolean).length;
+      const approved = sections.filter((section) => section.validated);
+      const withheld = sections.filter((section) => !section.validated);
+      const blocks = approved.map(
+        (section) => `## ${section.heading}\n\n${section.content}`,
+      );
+      if (withheld.length)
+        blocks.push(
+          `## Withheld\n\n${withheld.map((section) => `- ${section.heading}`).join("\n")}`,
+        );
       return {
         graphics: [
           cells(
-            "Draft section inputs",
+            "Draft and supplied review conditions",
             [
               caseId === "full"
-                ? "Observations: frequency and amplitude"
-                : "Observations: frequency only",
+                ? "Source S7: 8 Hz, amplitude 0.4"
+                : "Source S7: 8 Hz, amplitude missing",
               v.sources === 1
-                ? "Source links: present"
-                : "Source links: absent",
-              v.claim === 0
-                ? "Analysis: measured facts"
-                : "Analysis: unverified origin",
-              v.limits === 1 ? "Limits: origin unknown" : "Limits: absent",
+                ? "Observation source link: present"
+                : "Observation source link: missing",
+              ...sections.map(
+                (section) =>
+                  `${section.heading}: ${section.content || "No draft text"}`,
+              ),
             ],
-            2,
+            1,
           ),
           pipeline(
-            "Section checks",
-            ["Observations", "Analysis", "Limits"].map(
-              (name, i) => `${name}: ${checks[i] ? "pass" : "revise"}`,
+            "Recorded review decisions",
+            sections.map(
+              (section) =>
+                `${section.heading}: ${section.validated ? "approved" : "withheld"}`,
             ),
-            checks.flatMap((ok, i) => (ok ? [i] : [])),
+            sections.flatMap((section, i) => (section.validated ? [i] : [])),
           ),
-          bars(
-            "Release requirements",
-            ["Passed sections", "Required sections"],
-            [count, 3],
-          ),
+          {
+            kind: "cells",
+            layout: "prose",
+            label: "Assembled relay report",
+            values: ["# Relay Report", ...blocks],
+            labels: [
+              "Title",
+              ...approved.map(() => "Approved section"),
+              ...(withheld.length ? ["Omission notice"] : []),
+            ],
+          },
         ],
-        answer: count,
-        answerLabel: "Report sections passed",
-        explanation: `${caseId === "partial" ? "The observation section needs its missing amplitude measurement. " : ""}${v.claim === 1 ? "The analysis adds an origin claim that the measurements do not support. " : ""}${v.limits === 0 ? "The report must include the known limit: origin is unknown. " : ""}A complete report requires all three checked sections. Keep failures visible instead of silently dropping a section.`,
-        code: `const sectionsPass = [${checks.join(", ")}];\nconst completeReportReady = sectionsPass.every(Boolean);\n// Assemble approved sections and list failures under Withheld.`,
+        answer: approved.length,
+        answerLabel: "Section bodies included",
+        explanation: `${withheld.length ? `Withheld: ${withheld.map((section) => section.heading).join(", ")}. Their text is excluded; their headings stay visible.` : "Every section is approved, so there is no Withheld block."} ${approved.length ? "The approved sections remain in their original order." : "The assembled report contains no approved section text."} These flags record the supplied review decisions. The assembler does not check claims, and Farah still reviews the assembled report for consistency before sending it.`,
+        code: `const sections = ${JSON.stringify(sections, null, 2)};\nconst approved = sections.filter(s => s.validated);\nconst withheld = sections.filter(s => !s.validated);\nconst blocks = approved.map(s => '## ' + s.heading + '\\n\\n' + s.content);\nif (withheld.length) blocks.push('## Withheld\\n\\n' + withheld.map(s => '- ' + s.heading).join('\\n'));\nconst report = '# Relay Report\\n\\n' + blocks.join('\\n\\n---\\n\\n');\n// Review this assembled report before sending.`,
       };
     },
   },
   "multi-model-systems": {
-    title: "Validate the handoffs",
+    title: "Keep the handoff intact",
     brief:
-      "Follow a detector result through an evidence search and an example explanation. Check each stage’s requirements before release.",
+      "Demir connects the classifier, detector and alert writer. Change a stage's reply and trace which stages run, what they receive, and what the pipeline returns.",
     boundary:
-      "D2 is a fictional detector with scores from 0 to 1. These are fixed examples, not calibrated probabilities. Other scores, such as reconstruction MSE, can exceed 1. This activity runs no detector, search service or language model.",
+      "These are the exercise's two example readings with controlled stage replies. The activity runs contract checks and formats text locally; no classifier, detector or language model runs. Supplied scores are not calibrated probabilities.",
     controls: [
-      range(
-        "threshold",
-        "Detector alert threshold (0 to 1)",
-        0.7,
-        0.3,
-        0.9,
-        0.1,
-      ),
       choice(
-        "version",
-        "Detector version metadata",
-        ["Missing", "Attached"],
+        "classifier",
+        "Supplied classifier reply",
+        [
+          "noise, score 0.73",
+          "anomaly, score 0.88",
+          "unsupported label, score 0.42",
+          "anomaly, invalid score 1.2",
+        ],
         1,
       ),
       choice(
-        "evidence",
-        "Explanation evidence",
-        ["Missing", "Linked to this reading"],
+        "detector",
+        "Supplied detector reply",
+        [
+          "false: no alert requested",
+          "true: request an alert",
+          "string 'false': invalid reply",
+        ],
         1,
       ),
+      choice("writer", "Supplied writer reply", [
+        "A nonblank alert",
+        "Whitespace only",
+      ]),
     ],
     cases: [
       {
-        id: "strong",
-        label: "High detector score",
+        id: "calm",
+        label: "Lower-amplitude reading",
         description:
-          "Detector D2 gives reading R7 a score of 0.8. This is a raw score, not a calibrated probability.",
+          "The exercise supplies [180, 5, 0.3]: amplitude in counts, zero-crossing count and phase in radians. Each stage must receive this original array.",
       },
       {
-        id: "borderline",
-        label: "Borderline detector score",
+        id: "loud",
+        label: "Higher-amplitude reading",
         description:
-          "Detector D2 gives reading R8 a score of 0.6. This is a raw score, not a calibrated probability.",
+          "The second exercise input is [1650, 41, -2.4], in the same feature order and units. Changing inputs does not run a model here; stage replies remain the values you selected.",
       },
     ],
     prediction: {
-      prompt: "How many handoff requirements for an alert report pass?",
-      unit: "of 3 checks",
+      prompt: "What will this pipeline run produce?",
+      choices: ["Alert returned", "No alert requested", "Run stopped"],
     },
     evaluate: (v, caseId) => {
-      const score = caseId === "borderline" ? 0.6 : 0.8;
-      const alert = score > v.threshold!;
-      const checks = [alert, v.version === 1, v.evidence === 1];
-      const passed = checks.filter(Boolean).length;
+      const signal = caseId === "loud" ? [1650, 41, -2.4] : [180, 5, 0.3];
+      const verdict = [
+        { class: "noise", confidence: 0.73 },
+        { class: "anomaly", confidence: 0.88 },
+        { class: "unsupported", confidence: 0.42 },
+        { class: "anomaly", confidence: 1.2 },
+      ][v.classifier!]!;
+      const detectorReply: unknown = [false, true, "false"][v.detector!];
+      const calls: string[] = [];
+      const classify = (reading: number[]) => {
+        calls.push(`Classifier received [${reading.join(", ")}]`);
+        return verdict;
+      };
+      const detectAnomaly = (reading: number[], classification: string) => {
+        calls.push(
+          `Detector received [${reading.join(", ")}] + ${classification}`,
+        );
+        return detectorReply;
+      };
+      const generateAlert = (reading: number[], classification: string) => {
+        calls.push(
+          `Alert writer received [${reading.join(", ")}] + ${classification}`,
+        );
+        return v.writer === 1
+          ? "   "
+          : `Review requested: ${classification}; reading [${reading.join(", ")}].`;
+      };
+      let result: {
+        classification: string;
+        confidence: number;
+        isAnomaly: boolean;
+        alert: string | null;
+      } | null = null;
+      let failure = "";
+      try {
+        const classified = classify(signal);
+        if (
+          !Number.isFinite(classified.confidence) ||
+          classified.confidence < 0 ||
+          classified.confidence > 1
+        ) {
+          throw new Error(
+            "Classifier score must be a finite number from 0 to 1. The detector and writer were not called.",
+          );
+        }
+        const classification = ["noise", "anomaly"].includes(classified.class)
+          ? classified.class
+          : "unknown";
+        const isAnomaly = detectAnomaly(signal, classification);
+        if (typeof isAnomaly !== "boolean")
+          throw new Error(
+            "The detector returned a string, not a boolean. The writer was not called.",
+          );
+        const alert = isAnomaly ? generateAlert(signal, classification) : null;
+        if (isAnomaly && (typeof alert !== "string" || !alert.trim()))
+          throw new Error(
+            "The writer returned only whitespace. No pipeline result is returned.",
+          );
+        result = {
+          classification,
+          confidence: classified.confidence,
+          isAnomaly,
+          alert,
+        };
+      } catch (error) {
+        failure = (error as Error).message;
+      }
+      const outcome = failure
+        ? "Run stopped"
+        : result!.isAnomaly
+          ? "Alert returned"
+          : "No alert requested";
       return {
         graphics: [
-          bars(
-            "Detector decision (raw score)",
-            ["Anomaly score", "Alert threshold"],
-            [score, v.threshold!],
-          ),
-          pipeline(
-            "Alert-report handoff",
+          cells(
+            "Reading and supplied stage replies",
             [
-              alert ? "Alert selected" : "Does not exceed alert threshold",
-              v.version === 1 ? "Detector version retained" : "Version missing",
-              v.evidence === 1 ? "Reading evidence linked" : "Evidence missing",
-              passed === 3 ? "Ready for claim review" : "Handoff blocked",
+              `Raw reading: [${signal.join(", ")}] (counts, crossings, radians)`,
+              `Classifier reply: ${JSON.stringify(verdict)}`,
+              `Detector reply: ${JSON.stringify(detectorReply)}`,
+              v.writer === 1
+                ? "Writer reply: whitespace only"
+                : "Writer reply: review request using the raw reading and checked class",
             ],
-            checks.flatMap((ok, i) => (ok ? [i] : [])),
+            1,
+          ),
+          pipeline("Calls made this run", calls),
+          cells(
+            "Pipeline result",
+            result
+              ? [
+                  `classification: ${result.classification}`,
+                  `confidence: ${result.confidence} (chosen-class score)`,
+                  `isAnomaly: ${result.isAnomaly}`,
+                  result.alert === null
+                    ? "alert: null (writer skipped)"
+                    : `alert: ${result.alert}`,
+                ]
+              : [failure, "No result returned."],
+            1,
           ),
         ],
-        answer: passed,
-        answerLabel: "Alert-report checks passed",
-        explanation: `A raw score of ${score} ${alert ? "is above" : "does not exceed"} the ${v.threshold} alert threshold. The rule uses a strict greater-than comparison. This score is not a calibrated probability. Version metadata and linked evidence are separate requirements. Passing the handoff permits claim review; it does not establish that the detector or explanation is correct.`,
+        answer: outcome,
+        answerLabel: "Pipeline outcome",
+        explanation:
+          failure ||
+          `${verdict.class === "unsupported" ? "The unsupported classifier label becomes unknown before the next stage. " : ""}${result!.isAnomaly ? "The detector returned true, so the writer ran and its nonblank text was returned." : "The detector returned false, so the writer was skipped and alert is null, even if the classifier said anomaly."} Every called stage received the original raw reading. Valid fields do not establish that a prediction is right; these controlled replies only test the handoff.`,
+        code: `// Pass these controlled callbacks to the exercise's pipeline.\nconst signal = ${JSON.stringify(signal)};\nconst classify = async () => (${JSON.stringify(verdict)});\nconst detectAnomaly = async () => (${JSON.stringify(detectorReply)});\nconst generateAlert = async (reading, classification) => ${v.writer === 1 ? JSON.stringify("   ") : "'Review requested: ' + classification + '; reading [' + reading.join(', ') + '].'"};\nconst result = await pipeline(signal, classify, detectAnomaly, generateAlert);`,
       };
     },
   },

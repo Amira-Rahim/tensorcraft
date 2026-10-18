@@ -126,13 +126,27 @@
 }
 .lesson-briefing-spacious .briefing-takeaway-task {
   display: grid;
-  gap: 12px 56px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
 }
-.lesson-briefing-spacious .lesson-prose .briefing-takeaway-task > h3 {
+.briefing-task-heading {
+  display: grid;
+  gap: 12px;
+}
+.lesson-briefing-spacious .lesson-prose .briefing-task-heading > h3 {
   margin: 0;
-  font-size: 28px;
+  font-size: 32px;
   line-height: 1.3;
   color: var(--tc-text);
+}
+.lesson-briefing-spacious .lesson-prose .briefing-takeaway-next {
+  padding-top: 4px;
+  color: var(--tc-muted);
+  font-size: 20px;
+}
+.lesson-briefing-spacious .lesson-prose .briefing-readings-array ol > li {
+  font-size: inherit;
+  line-height: inherit;
 }
 @media (width < 40rem) {
   .lesson-briefing-spacious .lesson-story-grid {

@@ -82,7 +82,7 @@ You can use reconstruction error as an anomaly score, but you need to test it. A
 
 You will train an autoencoder to reconstruct unflagged readings while keeping flagged readings out of training.
 
-<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on a training set you screened yourself", "Check which rows reach training and measure reconstruction errors on separate data without assuming a fixed error ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
+<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on screened training data", "Check which rows reach training and measure reconstruction errors on separate data without assuming a fixed error ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
 
 ## Encoder → Bottleneck → Decoder
 
@@ -148,7 +148,9 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 
 ## Challenge
 
-This exercise uses eight made-up features per reading, rather than the mission example's eleven. Remove flagged rows from that practice archive, then train the autoencoder on the remaining rows. The checks verify your row selection and measure errors on a small, separate synthetic dataset. Passing these checks does not validate a real detector. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
+Before the crew's next archive fit, check the screening and training workflow on a small synthetic archive. It uses eight features per reading, rather than the mission model's eleven. Remove flagged rows, then train on the remaining rows.
+
+Inspect your model's measured errors on separate synthetic inputs. These checks verify row selection and reconstruction; passing them does not validate a real detector or reproduce the mission's error ratio. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
 
 <Exercise slug="build-autoencoder" />
 

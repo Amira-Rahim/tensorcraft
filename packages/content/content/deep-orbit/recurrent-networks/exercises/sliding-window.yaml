@@ -63,6 +63,15 @@ testCode: |
       expect(train.ys.length).toBe(5);
       expect(ev.xs.length).toBe(1);
       expect(ev.ys.length).toBe(1);
+      recordResult({
+        kind: 'table', title: 'Your split training and evaluation windows',
+        summary: 'All retained windows from a synthetic stream whose values equal reading indices. The cut is before reading 8. Targets are external labels for each window’s last reading.',
+        columns: ['Set', 'Input indices', 'Classification label'],
+        rows: [
+          ...train.xs.map((window, i) => ['Training', JSON.stringify(window.flat()), train.ys[i]]),
+          ...ev.xs.map((window, i) => ['Evaluation', JSON.stringify(window.flat()), ev.ys[i]]),
+        ],
+      });
     });
     it('no train window reaches past the boundary, no eval window reaches before it', () => {
       const { train, eval: ev } = split(series, labels, 4, 8);

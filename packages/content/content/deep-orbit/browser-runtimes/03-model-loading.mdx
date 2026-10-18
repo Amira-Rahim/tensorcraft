@@ -14,7 +14,7 @@ context:
   narrative: "Demir tries to load the trained model into the dashboard and gets a 404 error. This model needs a JSON file and the weight files it points to."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Loading a pre-trained model in TF.js follows the fetch → parse → use pattern you already know from API data fetching."
+  explanation: "Load the model's manifest and weight files, then inspect the input and output shapes the dashboard must use."
   bridge:
     jsTitle: "fetch() → JSON"
     jsCode: "const data = await fetch(url).then(r => r.json())"
@@ -76,9 +76,9 @@ The model's architecture lives in `model.json`; the learned weights live in bina
 
 You will load a saved model and inspect the input and output shapes it expects.
 
-<LearningObjectives objectives={["Implement and inspect a TensorFlow.js model-loading call", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Explain how an IndexedDB cache changes the model-loading path", "Handle loading states and errors gracefully in the UI"]} />
+<LearningObjectives objectives={["Implement and inspect a TensorFlow.js model-loading call", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Explain how an IndexedDB cache changes the model-loading path", "Show loading progress and report model-loading errors in the UI"]} />
 
-## The Fetch Pattern You Already Know
+## Load the manifest and weights
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -259,7 +259,10 @@ async function loadWithProgress(
 
 The exercise supplies a loader response so the tests can check your use of await and the model’s properties. It does not download or cache a real model. The later independent project loads saved weights in a separate browser app, where you can also test storage and network failures.
 
-Load the model once. Return its input shape, output shape and layer count, then release the model’s resources.
+Load the model once and return its input shape, output shape, and layer
+count. Inspect that returned contract before preparing dashboard inputs.
+This inspection helper releases the model after copying its metadata;
+the inference handler in the next lesson keeps its loaded model until teardown.
 
 <Exercise slug="load-model" />
 

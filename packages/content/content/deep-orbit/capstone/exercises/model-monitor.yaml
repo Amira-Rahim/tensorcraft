@@ -104,7 +104,7 @@ testCode: |
       monitor.logPrediction(0.7);
       expect(
         monitor.avgConfidence,
-        'avgConfidence is the mean of every confidence logged so far. The starter returns null, which is not a measurement a dashboard can plot.',
+        'Scores have been logged. Return their arithmetic mean; null is reserved for an empty log.',
       ).toBeCloseTo(0.8, 5);
     });
 
@@ -119,7 +119,7 @@ testCode: |
       // exists to catch.
       expect(
         monitor.avgConfidence,
-        'Every logged prediction moves the average by its share. The middle value ignores two of the three.',
+        'Use the arithmetic mean of all logged scores, not the median.',
       ).toBeCloseTo(0.7, 5);
     });
 
@@ -147,7 +147,7 @@ testCode: |
         sum += score;
         expect(
           monitor.avgConfidence,
-          'The average is the total of every prediction logged so far over how many there have been, and both of those change with each call. After the first prediction the average is that prediction.',
+          'Update the mean after each logged score. With one entry, the mean equals that score.',
         ).toBeCloseTo(sum / (i + 1), 5);
       });
     });
@@ -181,7 +181,7 @@ testCode: |
       expect(Number.isFinite(drift)).toBe(true);
       expect(
         drift,
-        'Both rows sit at [3, 4], so the recent mean is [3, 4] and the distance from [0, 0] is the 3-4-5 triangle.',
+        'The recent mean is [3, 4]. Its Euclidean distance from the [0, 0] baseline is 5.',
       ).toBeCloseTo(5, 5);
     });
 
@@ -229,6 +229,13 @@ testCode: |
         [2, 4],
       ]);
       expect(drift).toBeCloseTo(Math.sqrt(5), 5);
+      recordResult({
+        kind: 'table',
+        title: 'The mean shift your monitor detected',
+        summary: 'This fixture moves the column means from [0, 0] to [1, 2]. The returned distance tells the watch to investigate; it does not measure prediction accuracy.',
+        columns: ['Measurement', 'Your result'],
+        rows: [['Distance between feature means', drift]],
+      });
     });
 
     it('reports the tail, not the average: nearest-rank P50 is 89 here and the mean is 102.65', () => {
@@ -249,6 +256,13 @@ testCode: |
       ).toBe(134);
       expect(monitor.getLatencyPercentile(99)).toBe(400);
       expect(monitor.getLatencyPercentile(0)).toBe(40);
+      recordResult({
+        kind: 'table',
+        title: 'Slow calls in the supplied latency log',
+        summary: 'Your monitor calculated these percentiles from 100 supplied durations. They are scenario inputs, not measurements of this browser.',
+        columns: ['Percentile', 'Duration (ms)'],
+        rows: [[50, monitor.getLatencyPercentile(50)], [95, monitor.getLatencyPercentile(95)], [99, monitor.getLatencyPercentile(99)]],
+      });
     });
 
     it('sorts the times as numbers: a string sort puts 100 before 9', () => {

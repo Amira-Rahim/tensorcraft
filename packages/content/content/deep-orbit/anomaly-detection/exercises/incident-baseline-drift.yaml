@@ -108,6 +108,19 @@ testCode: |
       expect(r.oldAlertsPerDay).toBe(1000);
       expect(r.newAlertsPerDay).toBe(0);
       expect(r.action).toBe('evaluate-candidate');
+      recordResult({
+        kind: 'table', title: 'Your baseline investigation report',
+        summary: 'Synthetic recent readings reviewed as normal, projected to 1,000 readings per day. The candidate is fitted and checked on the same rows; evaluate it separately before deployment.',
+        columns: ['Measurement or next action', 'Your result'],
+        rows: [
+          ['Current-baseline flags per day', r.oldAlertsPerDay],
+          ['Candidate flags per day', r.newAlertsPerDay],
+          ['Gaussian reference per day', r.expectedPerDay],
+          ['Candidate mean', r.newBaseline.mean],
+          ['Candidate standard deviation', r.newBaseline.std],
+          ['Spread ratio', r.spreadRatio], ['Next action', r.action],
+        ],
+      });
     });
     it('investigates increased spread before widening the gate', () => {
       const r = auditBaseline([-10, -5, 0, 5, 10], { mean: 0, std: 1 }, 1000);

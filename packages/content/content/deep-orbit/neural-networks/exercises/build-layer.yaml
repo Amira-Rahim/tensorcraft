@@ -85,6 +85,12 @@ testCode: |
         acts,
         'Keep the layer order from the instructions. The first two layers use ReLU; the final layer uses sigmoid.',
       ).toEqual(['relu', 'relu', 'sigmoid']);
+      recordResult({
+        kind: 'table', title: 'The stack you built for Nazari',
+        summary: 'Your 16/8/1 exercise stack, distinct from the bridge model\'s 32/16/1 layers. These parameters have not been trained.',
+        columns: ['Layer', 'Units', 'Activation', 'Parameters'],
+        rows: model.layers.map((layer, i) => [i + 1, layer.getConfig().units, layer.getConfig().activation, layer.countParams()]),
+      });
     });
     it('your quote for the width the first layer declares matches the stack you built', () => {
       const quoted = quoteFor(4);
@@ -92,6 +98,12 @@ testCode: |
         quoted,
         'The parameter count does not match the model. Check the first layer\'s input width and count one bias per unit.',
       ).toBe(model.countParams());
+      recordResult({
+        kind: 'table', title: 'Your parameter quote',
+        summary: 'The submitted arithmetic quote checked against your constructed model.',
+        columns: ['Input features', 'Quoted parameters', 'Built model parameters'],
+        rows: [[4, quoted, model.countParams()]],
+      });
     });
     it('builds the stack once: a second stack built to measure the price is the measurement this exercise replaces', () => {
       // Snapshotted when this describe registered, after the submission's

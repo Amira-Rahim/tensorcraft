@@ -164,7 +164,7 @@ Measure both per-channel rates and the distribution of simultaneous flags on rep
 
 The cutoff changes two kinds of error: false positives are normal readings flagged as anomalies, and false negatives are anomalies the detector misses. Lowering the cutoff to 2 sigma catches more anomalies but also flags more normal readings. Raising it to 4 reduces alerts but misses more events.
 
-Nazari wants fewer false alarms because each one takes time to investigate. Farah wants fewer misses because finding the signal is the mission. When normal and anomalous scores overlap, one cutoff cannot remove both errors. Even a perfect split on today's sample does not guarantee perfect detection tomorrow. Lesson 4 compares the costs. First, here are precision and recall from module 3:
+Nazari wants fewer false alarms because each one takes time to investigate. Farah wants fewer misses because finding the signal is the mission. When normal and anomalous scores overlap, one cutoff cannot remove both errors. Even a perfect split on today's sample does not guarantee perfect detection tomorrow. Use precision and recall to compare those errors:
 
 <CodeBlock language="typescript" title="precision-recall.ts">
 {`interface DetectionResult {
@@ -188,7 +188,7 @@ function recall(r: DetectionResult): number | null {
 
 ## Challenge
 
-Use the supplied mean and standard deviation to check each reading. Flag it when it is more than three standard deviations above or below the mean.
+Use the supplied mean and standard deviation to decide which readings need review. Flag a reading when it is more than three standard deviations above or below the mean. Inspect the returned flag alongside its baseline before adding it to the review queue.
 
 <Exercise slug="detect-anomaly" />
 

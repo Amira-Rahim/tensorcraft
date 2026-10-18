@@ -58,7 +58,7 @@ skillAxes: [model_arch]
 
 <StoryPassage>
 
-The first pipeline scored in the high nineties on eleven days of archive. Demir windowed the whole stream, shuffled the pairs the way foundations taught him to, and held out every fifth one for evaluation. Farah's response is to make him rebuild the experiment at a scale he can audit by hand, before she reads a single decimal of it.
+The first pipeline scored in the high nineties on eleven days of archive. Demir windowed the whole stream, shuffled the pairs, and held out every fifth one for evaluation. Before trusting the score, Farah asks for a 200-reading run whose training and evaluation windows they can inspect together.
 
 </StoryPassage>
 
@@ -127,7 +127,7 @@ A new reading arrives every second. This LSTM takes the latest 80 readings as on
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A framer drops every byte it emits, which would put each reading in exactly one chunk and never in another. The window steps forward by one and keeps the other seventy-nine, so a single reading turns up in dozens of samples. That reuse is where the training data comes from, and it is the reason the split above had to come first.
+Unlike disjoint stream chunks, adjacent 80-reading windows share 79 readings. That reuse creates overlapping training examples, which can leak readings across a split. Split the stream before creating the windows.
 
 <CodeBlock language="typescript" title="sliding-window.ts">
 {`// The makeWindows you wrote in 'Sequences Matter'. Both of its moving
@@ -204,7 +204,7 @@ signalFeed.addEventListener('reading', (event: CustomEvent) => {
 
 ## Challenge
 
-The first evaluation shared readings with training. Build a split without that overlap: cut the stream first, then create windows within each side. The tests use values that match their reading indices, so a value on the wrong side reveals a leak.
+The first evaluation shared readings with training. Cut the stream first, then create windows within each side. Inspect the returned training and evaluation rows before fitting the next model. The test values equal their reading indices, so a reading on the wrong side of the boundary reveals a leak.
 
 <Exercise slug="sliding-window" />
 
@@ -262,10 +262,10 @@ The first evaluation shared readings with training. Build a split without that o
 
 <Epilogue>
 
-Eighty readings deep: first complete window, first live inference. The dashboard draws the model's output a beat ahead of the incoming trace, and for ten straight minutes the two lines track each other, forecast leading, signal confirming. Demir does not touch anything. He is afraid to.
+Eighty readings fill the buffer. Demir sends the first complete window to the LSTM the crew built earlier, and the dashboard shows its classification beside the signal trace. For ten minutes, it updates as each new reading arrives. Demir keeps the split report open beside it.
 
 <Dialogue speaker="Dr. Farah">
-Good. Now ask it something harder than the next second. Ask it when the pattern comes back.
+We can classify a window. Can we predict when the pattern returns?
 </Dialogue>
 
 </Epilogue>

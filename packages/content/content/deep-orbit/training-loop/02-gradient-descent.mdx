@@ -145,7 +145,10 @@ To minimize the linear approximation, pick Δw opposite to ∇L. The learning ra
 
 ## Challenge
 
-Help Demir update a weight. Write step() so it calculates a fresh gradient from whichever loss function it receives.
+Help Demir move a weight using the loss you give it. Write `step()` so it
+calculates a fresh gradient on every call. The result shows the stored
+gradient, updated weight, and the weight's path through three existing
+checks. It is the update rule the full network will need for every parameter.
 
 <Exercise slug="gradient-step" />
 

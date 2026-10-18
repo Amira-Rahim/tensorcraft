@@ -38,12 +38,19 @@ testCode: |
     const CLAMPED_WHY =
       'ReLU has no upper limit. Keep large positive values unchanged.';
     it('zeros out negatives, keeps positives', () => {
-      const vals = activate(tf.tensor([-2.0, -0.5, 0.0, 1.5, 3.0])).dataSync();
+      const probe = tf.tensor([-2.0, -0.5, 0.0, 1.5, 3.0]);
+      const vals = activate(probe).dataSync();
       expect(vals[0], NEGATIVE_WHY).toBe(0);
       expect(vals[1], NEGATIVE_WHY).toBe(0);
       expect(vals[2], 'ReLU at zero is zero.').toBe(0);
       expect(vals[3], POSITIVE_WHY).toBeCloseTo(1.5, 5);
       expect(vals[4], POSITIVE_WHY).toBeCloseTo(3.0, 5);
+      recordResult({
+        kind: 'table', title: 'Scores before and after your ReLU',
+        summary: 'The supplied activation test inputs. This changes score values; it does not choose an alert threshold.',
+        columns: ['Position', 'Before ReLU', 'After ReLU'],
+        rows: Array.from(probe.dataSync()).map((value, i) => [i + 1, value, vals[i]]),
+      });
     });
     it('works on a second tensor of a different length', () => {
       const vals = activate(tf.tensor([4.2, -7.0, 0.1])).dataSync();

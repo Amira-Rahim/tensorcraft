@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: intermediate
 context:
-  narrative: "Dr. Farah insists on documentation. 'If this crew cannot operate DEEP SCAN without Demir, then it is not a production system. Document everything.' Demir writes docs the way he would write a good README."
+  narrative: "Farah asks who can operate DEEP SCAN when Demir is off watch. He starts a handover covering the model's evidence, limitations, and the decisions the next watch will face."
   speaker: "Dr. Farah"
 concept:
   explanation: "ML system documentation covers the usual ground (API reference, architecture, getting started) plus the model-specific record: training data, performance characteristics, and known limitations."
@@ -25,7 +25,7 @@ consequence:
   narrative: "Demir writes a Model Card, API reference, and runbook for the next operator. ARIA reviews them and asks for a missing threshold."
 hints:
   - level: nudge
-    content: "A Model Card is a README for a model. Fill its sections from the supplied metadata. Format the dated accuracy line and find the class with the lowest recall. Do not hardcode the values."
+    content: "Keep the evaluation date beside its accuracy score, and identify the class with the lowest recall. Read both from the supplied metadata."
   - level: guidance
     content: "Render the requested sections from meta. Format fractions as percentages with one decimal place and keep the benchmark label beside accuracy. Find the smallest recall value across all entries; do not assume a particular class or key order."
   - level: solution
@@ -86,7 +86,7 @@ Then it needs a Model Card, not just API docs. Training set, split, per-class re
 
 Someone else may need to run DEEP SCAN while Demir is unavailable. On an understaffed night watch, that could be ARIA. Help him write a **Model Card** explaining the model and a runbook with steps she can follow without guessing.
 
-You will turn model metadata into a card that explains its performance, limits, and input conventions.
+Give the next operator a card they can use without Demir beside them. Put the evaluation context, weakest class, and input requirements where they can find them.
 
 <LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document the pipeline API and write runbooks for common operational scenarios", "List known limitations and failure modes: what the model cannot do"]} />
 
@@ -97,8 +97,7 @@ You will turn model metadata into a card that explains its performance, limits, 
 <CodeBlock language="typescript" title="model-card.ts">
 {`// Fictional mission card. These scores, timings and bundle sizes are
 // supplied story values, not measurements of the downloadable model.
-// A Model Card is structured documentation for an ML model
-// Think of it as package.json + README + CHANGELOG for your model
+// Keep the evaluation conditions and limitations beside each reported score.
 
 interface ModelCard {
   name: string;
@@ -206,7 +205,7 @@ The classifier uses a much smaller input: 64 samples from one channel, or a quar
 ## Pipeline API Documentation
 
 <CodeBlock language="typescript" title="api-docs.ts">
-{`// API docs: same approach as documenting a REST API or React component library
+{`// The next watch needs the input contract and the failure conditions.
 
 /**
  * DEEP SCAN Pipeline API
@@ -262,7 +261,9 @@ const runbook = {
 
 ## Challenge
 
-Write a Model Card for the DEEP SCAN classifier.
+Prepare the classifier's handover from its recorded metadata. Keep the evaluation context beside the score and make its weakest class visible.
+
+Read the card your function returns as the next watch would. Can they see which evaluation produced the score and where the classifier misses most often? The supplied metadata is fictional; formatting it does not verify its claims. The runbook still needs the separate operator review shown below.
 
 <Exercise slug="write-model-card" />
 
@@ -275,16 +276,16 @@ Write a Model Card for the DEEP SCAN classifier.
       "question": "What evidence should accompany a measured model score?",
       "options": [
         {
-          "text": "Only the repository name and latest branch.",
-          "feedback": "Mutable references do not identify the exact evaluated model and data."
+          "text": "The model's version and aggregate accuracy, without identifying the evaluation data.",
+          "feedback": "The same model can score differently on different data. Record which evaluation produced the score."
         },
         {
           "text": "The exact artifact, split, evaluation protocol, sample counts and limitations.",
           "feedback": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
         },
         {
-          "text": "Only the score and a statement that it will hold on all future data.",
-          "feedback": "A score describes a particular evaluation, not every future input."
+          "text": "The training dataset's size and the final training loss.",
+          "feedback": "Those describe training. They do not identify the held-out evaluation or its limitations."
         }
       ],
       "correctIndex": 1,
@@ -295,7 +296,7 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <LessonRecap
   whatYouLearned={[
-    "A Model Card explains a model's purpose, training data, measured performance, and known limitations. Keep it as specific and current as a README.",
+    "A Model Card records a model's purpose, training data, measured performance, and known limitations. Update it when the model or its evaluation changes.",
     "Describe limitations with evidence: per-class misses, untested data and hardware requirements affect whether someone can use the model.",
     "Runbooks specify checks, thresholds, actions, owners and escalation paths. Some cases require judgment; say who makes the decision.",
     "Select thresholds using representative measurements and the cost of misses and false alarms. A calm-period percentile is one starting point; validate it on separate periods and record window size."
@@ -306,7 +307,7 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Epilogue>
 
-The runbook's first draft comes together in the dead hours of the night watch, and its single assigned reviewer returns comments within ninety seconds.
+Demir saves the generated model card with the handover and turns to the runbook. Its first draft comes together in the dead hours of the night watch, and its single assigned reviewer returns comments within ninety seconds.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.

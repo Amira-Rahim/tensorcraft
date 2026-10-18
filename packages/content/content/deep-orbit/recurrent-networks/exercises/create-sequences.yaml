@@ -61,6 +61,12 @@ testCode: |
         ys,
         'A target is the reading that arrives after its window, so it is never one of the readings inside it.',
       ).toEqual([[4], [5]]);
+      recordResult({
+        kind: 'table', title: 'Your next-reading training pairs',
+        summary: 'All windows from this five-row synthetic stream. The target follows its input window; it is not part of that input.',
+        columns: ['Window index', 'Input readings', 'Next-reading target'],
+        rows: xs.map((window, i) => [i, JSON.stringify(window), JSON.stringify(ys[i])]),
+      });
     });
     it('advances by stride (stride 2)', () => {
       const { xs, ys } = windows([[1], [2], [3], [4], [5], [6], [7]], 2, 2);

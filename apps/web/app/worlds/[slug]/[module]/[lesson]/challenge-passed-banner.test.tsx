@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ChallengePassedBanner } from "./challenge-passed-banner";
 
 /**
- * The "tests passed" moment.
+ * Saved completion and current-attempt feedback remain distinct.
  *
  * Extracted from lesson-steps.tsx on 2026-08-23 to fix an announcement bug:
  * the banner mounted `role="status"` together with its own text. A polite
@@ -50,12 +50,16 @@ describe("ChallengePassedBanner", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("announces and shows the way forward once passed", () => {
+  it("announces saved completion without claiming the current code passed", () => {
     render(
       <ChallengePassedBanner passed exerciseCount={1} onContinue={() => {}} />,
     );
 
-    expect(screen.getByRole("status")).toHaveTextContent(/exercise passed/i);
+    expect(screen.getByRole("status")).toHaveTextContent(/completion saved/i);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /run the checks again after editing your code/i,
+    );
+    expect(screen.queryByText(/^exercise passed$/i)).not.toBeInTheDocument();
     expect(screen.getByTestId("challenge-passed-banner")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /continue/i }),
@@ -68,8 +72,40 @@ describe("ChallengePassedBanner", () => {
     );
 
     expect(screen.getByRole("status")).toHaveTextContent(
-      /all exercises passed/i,
+      /all exercise completions are saved/i,
     );
+  });
+
+  it("keeps the earned route open while announcing a failed retry separately", () => {
+    const { rerender } = render(
+      <ChallengePassedBanner passed exerciseCount={1} onContinue={() => {}} />,
+    );
+    const status = screen.getByRole("status");
+    rerender(
+      <ChallengePassedBanner
+        passed
+        exerciseCount={1}
+        latestAttemptFailed
+        compact
+        onContinue={() => {}}
+      />,
+    );
+    expect(screen.getByRole("status")).toBe(status);
+    expect(status).toHaveTextContent(/completed earlier/i);
+    expect(status).toHaveTextContent(
+      /latest checked attempt still needs work/i,
+    );
+    expect(screen.getByTestId("challenge-passed-banner")).toHaveAttribute(
+      "data-completion-state",
+      "earlier",
+    );
+    expect(
+      within(screen.getByTestId("challenge-passed-banner")).getByText(
+        /your saved progress is unchanged/i,
+      ),
+    ).toBeVisible();
+    expect(screen.getByRole("button", { name: /continue/i })).toBeEnabled();
+    expect(screen.queryByText(/^exercise passed$/i)).not.toBeInTheDocument();
   });
 
   it("continues when the button is pressed", async () => {

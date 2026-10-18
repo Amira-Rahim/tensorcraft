@@ -53,7 +53,7 @@ skillAxes: [data_prep]
 
 <StoryPassage>
 
-At the start of the shift, Demir's amplifier has stopped with this error: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` All sixty-four channels are waiting for the fix.
+At the start of the shift, Demir's amplifier has stopped with this error: `Error in matMul: inner shapes (64) and (1) of Tensors with shapes 1,64 and 1,64 and transposeA=false and transposeB=false must match.` All sixty-four channels, one stream of readings per sensor, are waiting for the fix.
 
 </StoryPassage>
 
@@ -61,7 +61,8 @@ At the start of the shift, Demir's amplifier has stopped with this error: `Error
 Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings; call it a million if you must round. I won't. Whatever that red text is, it is not keeping up with 983 thousand.
 </Dialogue>
 
-You will read the error, compare the two multiplication operations the broken line mixed up, and repair the pipeline.
+Restore the feed to Nazari's console: average the passes, apply the gain,
+and combine channels without changing which readings belong together.
 
 <LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Combine tensors of different shapes using broadcasting", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose when the intended matrix axes are reversed"]} />
 
@@ -142,7 +143,7 @@ const amplified = gains.matMul(readings);
 
 `matMul` needs the left tensor's column count to match the right tensor's row count. Here those counts are 64 and 1. Demir only wanted to multiply matching positions, so he needs `mul` instead.
 
-### Element-wise Operations: The Repair
+### Repair the element-wise calculation
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -176,7 +177,7 @@ For example, `.mul(tf.scalar(2))` doubles every value. Subtracting two column me
 
 Tensor operations are not automatically faster than JavaScript loops. Call overhead and readback can dominate a small array. Acceleration depends on the workload and backend; measure the version you intend to run. This lesson practices shape rules, not a speed guarantee.
 
-### When You DO Want matMul
+### When to use matMul
 
 Dense layers compute weighted sums. `matMul` computes them for every row of its left input against every column of its right input. Element-wise multiplication alone leaves the products unsummed. The matrix operation has a shape rule:
 
@@ -222,7 +223,11 @@ When two matrix operations run back to back, the first output must fit the next 
 
 ## Challenge
 
-Help Demir fix the amplifier. Average the two sets of readings, then amplify that average. Broadcasting lets a single row apply to every row in the other set. Finally, use matrix multiplication to combine the channels using the supplied weights.
+Help Demir fix the amplifier. Average the two sets of readings, then apply
+the gain. Use matrix multiplication to combine channels with the supplied
+weights. The result shows your averaged pass, amplified pass, and bank
+scores from the test cases. Check the values as well as their shapes before
+feeding another capture to the console.
 
 <Exercise slug="add-tensors" />
 
@@ -265,7 +270,7 @@ Help Demir fix the amplifier. Average the two sets of readings, then amplify tha
 
 <LessonRecap
   whatYouLearned={[
-    "mul multiplies matching positions; matMul multiplies rows into columns. Reaching for the wrong one is the classic first tensor bug, and the error message names the op that threw it.",
+    "mul multiplies matching positions; matMul multiplies rows into columns. A shape error identifies the operation and the dimensions that did not match.",
     "Element-wise operations apply matching-position arithmetic on the selected backend. Broadcasting requires aligned dimensions to be equal or one to be 1.",
     "Matrix multiplication follows [m,n] x [n,p] = [m,p]. Transpose reverses axes; use it only when that preserves the intended computation.",
     "A dense layer starts with a weighted sum, commonly input.matMul(weights).add(bias), then applies its activation."

@@ -100,6 +100,16 @@ testCode: |
         'Return raw FFT magnitudes. This tone has magnitude 32; a value near 1 means it was rescaled. Training-set normalization happens later.',
       ).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
+      recordResult({
+        kind: 'table',
+        title: 'Your model input row',
+        summary: 'Synthetic quarter-second capture at 256 Hz. The first two measurements precede eight fixed, unscaled FFT magnitudes. These unit-amplitude samples are not the ship sensor’s ADC counts.',
+        columns: ['Feature', 'Value'],
+        rows: features.map((value, i) => [
+          i === 0 ? 'Peak absolute amplitude' : i === 1 ? 'Zero-crossing count' : `FFT magnitude at ${(i - 2 + 13) * 256 / signal.length} Hz`,
+          value,
+        ]),
+      });
     });
 
     it('keeps the bins in bin order instead of sorting by magnitude', () => {

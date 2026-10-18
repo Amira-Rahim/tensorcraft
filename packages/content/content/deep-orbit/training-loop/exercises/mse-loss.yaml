@@ -78,6 +78,12 @@ testCode: |
       const wrong = wrongLoss.dataSync()[0];
       expect(right, 'Two confident correct calls have to score near nothing.').toBeLessThan(0.1);
       expect(wrong, 'Two confident wrong calls have to be punished hard. For BCE with raw logits, confident wrong predictions incur a large loss. The lesson compares its output-logit gradient with that of MSE followed by sigmoid.').toBeGreaterThan(3);
+      recordResult({
+        kind: 'table', title: 'Farah\'s loss comparison',
+        summary: 'Your binary cross-entropy on the two supplied logit test cases. Both use the same labels; the confident wrong case should cost more.',
+        columns: ['Test case', 'Loss'],
+        rows: [['Confident and correct', right], ['Confident and wrong', wrong]],
+      });
     });
     it('the two loss functions score the same tensors differently, so the one you pick decides what counts', () => {
       const labels = tf.tensor([1, 0, 1, 0, 1]);

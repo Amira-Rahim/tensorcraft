@@ -207,7 +207,7 @@ Our example uses the last LSTM hidden state as its query. Those states already c
 
 ## Challenge
 
-Implement attention with separate keys and values. Check the exercise's input and output shapes before copying the example. Its query is a rank-1 tensor with shape [d]. Values may have a different width from keys. Return only the blended values, not the `{ output, weights }` pair used above.
+Implement attention with separate keys and values so the prediction can combine earlier representations. Inspect the returned blend to check that both value rows contribute, rather than selecting one winner. The exercise uses different shapes from the worked example: its query is a rank-1 tensor with shape [d], and values may have a different width from keys. Return only the blended values, not the `{ output, weights }` pair used above.
 
 <Exercise slug="simple-attention" />
 
@@ -288,7 +288,7 @@ Implement attention with separate keys and values. Check the exercise's input an
 
 After validation, the crew tries the attention model on the live feed. Every window has two high-weight areas: the amplitude spike and the frequency shift that follows it. In the pre-contact archive, their centers were 73.4 seconds apart. Tonight that gap has fallen to 73.1. Demir repeats the check and gets 73.1 again.
 
-Farah is at the door when she asks him to compare the original timestamps and window boundaries. She wants another check on tomorrow's capture too. Since they lost part of a capture in the spectrogram lesson, she checks what each view might leave out.
+Farah is at the door when she asks him to compare the original timestamps and window boundaries. She wants another check on tomorrow's capture too, including what each view might leave out.
 
 He files it under jitter anyway, because the alternative is stranger than he wants to be at two in the morning. The file does not stay closed.
 

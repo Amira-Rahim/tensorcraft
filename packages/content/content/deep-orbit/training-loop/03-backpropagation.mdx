@@ -25,7 +25,7 @@ consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
 hints:
   - level: nudge
-    content: "You never write the backward pass yourself: tf.variableGrads records the forward computation and applies the chain rule backwards for you."
+    content: "tf.variableGrads records the forward computation and applies the chain rule backwards."
   - level: guidance
     content: "One call returns both the loss and the gradients. gradOf should return that result directly. The forward pass calculates the loss; the backward pass calculates how each variable affects it. Read the loss from value and the gradients from grads. Calculate them again on every call, since the weights and loss function can change."
   - level: solution
@@ -71,7 +71,7 @@ You will compare automatic differentiation with estimating a gradient by changin
 
 <LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to an error travelling back up the call stack", "Use tf.variableGrads() for automatic gradient computation"]} />
 
-## The Method You Already Have
+## Estimate a gradient by changing a weight
 
 One weight, one question: if I move this a little, does the loss go down? Nothing stops you from asking it 673 times.
 
@@ -145,7 +145,7 @@ console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 tf.dispose([input, label, loss, ...Object.values(grads), w1, b1, w2, b2]);`}
 </CodeBlock>
 
-No magic involved: `tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below walks the exact multiplication chain by hand. You never have to implement it manually, but you can.
+`tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below traces that calculation through a two-layer network.
 
 <DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand">
 **The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a two-layer scalar example (one unit per layer):
@@ -165,7 +165,7 @@ L  = ½(ŷ - y)²           ← loss
        = (ŷ - y)  · σ'(z₂)  ·   w₂    ·  ReLU'(z₁)  ·  x
 ```
 
-Each factor is local to one layer. `tf.variableGrads()` builds the computational graph during forward pass, then walks it backward multiplying these local derivatives. **That backward walk is the entire algorithm**: there is no other magic. The "1 backward pass" claim above is exactly this multiplication chain.
+Each factor is local to one layer. `tf.variableGrads()` builds the computational graph during the forward pass, then walks it backward multiplying these local derivatives. This is the backward pass referred to above.
 
 **Vanishing gradients** occur when repeated derivative factors make early gradients very small. Twenty factors near 0.1 multiply to about 10⁻²⁰. For vectors, the derivatives are matrices called **Jacobians**. Backpropagation multiplies them and adds contributions from different paths. Small factors can still weaken the result.
 
@@ -174,7 +174,11 @@ A residual block, `y = x + F(x)`, adds a direct path from input to output. Its J
 
 ## Challenge
 
-Help Demir compare the two methods. Write a function that calls `tf.variableGrads()` for any supplied loss. The tests use new loss functions, including one with three variables, and check that each gradient call runs its forward calculation once.
+Help Demir replace the repeated per-weight runs. Implement automatic
+differentiation and a numerical estimate, then inspect their gradients and
+observed forward-pass counts on the supplied three-variable loss. The
+automatic call must obtain all three gradients from one forward calculation.
+These counts explain the saving without pretending to benchmark your device.
 
 <Exercise slug="backprop-chain" />
 
@@ -232,7 +236,7 @@ Help Demir compare the two methods. Write a function that calls `tf.variableGrad
 
 <LessonRecap
   whatYouLearned={[
-    "A gradient can be estimated with no calculus at all: nudge the weight, rerun, divide. It works, and it costs one forward pass per parameter, which is exactly the cost backpropagation was invented to remove.",
+    "Forward finite differences estimate gradients by changing a weight and rerunning the loss. Checking every parameter needs one additional forward pass per parameter.",
     "Backpropagation reuses the forward computation to calculate parameter gradients in a backward sweep. It avoids a separate forward evaluation per parameter; wall-clock speed depends on the graph and runtime.",
     "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
     "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which can help gradient flow without guaranteeing stable gradients."

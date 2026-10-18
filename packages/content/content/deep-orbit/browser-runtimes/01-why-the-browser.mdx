@@ -53,7 +53,7 @@ The bridge crew needs real-time classification in their dashboard. I'm not routi
 But we trained it on the engineering rig, with the rig's GPU behind it. Can a bridge dashboard tab really carry the same model?
 </Dialogue>
 
-Where should the work happen: on the server or on the user’s device? You may know this choice from server-side and client-side rendering. Model predictions raise some of the same questions about speed, downloads and network access.
+Moving predictions from a server to the user’s device changes the network dependency, download size, and local compute cost. The bridge dashboard needs to keep classifying readings when the compute-bay link fails.
 
 TensorFlow.js is not browser-only. `@tensorflow/tfjs-node` binds the same API to the native TensorFlow build and runs on a server, with performance depending on its hardware, model and backend. This module goes to the browser because that is where DEEP SCAN has to land: the bridge dashboard, on the consoles the crew already reads.
 
@@ -97,7 +97,7 @@ async function clientInference(signalData: number[]) {
 
 **When to choose client-side inference:**
 
-| Factor | Server (SSR) | Browser (CSR) |
+| Factor | Server | Browser |
 |--------|-------------|---------------|
 | **Latency** | Network plus server queue/compute | Local preparation, compute and readback |
 | **Privacy** | Inputs reach the service | Inference can stay local; audit uploads and telemetry too |
@@ -145,7 +145,10 @@ DEEP SCAN classifies one reading per second, leaving roughly 1000ms between pred
 
 ## Challenge
 
-Choose whether a model should run in the browser or on a server. Check privacy and offline requirements before applying the size and speed preferences.
+Turn Nazari's requirements into a deployment screening rule. Check privacy
+and offline needs before size and latency preferences. Inspect your
+recommendations on the boundary cases. This policy can rule out an option;
+the runtime still needs measurements on the chosen device.
 
 <Exercise slug="browser-ml-tradeoffs" />
 

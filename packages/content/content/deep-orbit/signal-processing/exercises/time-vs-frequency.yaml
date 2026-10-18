@@ -106,6 +106,17 @@ testCode: |
         r.divergentBin,
         'Two seconds of capture at 256 Hz makes each bin 0.5 Hz wide, so the 73.4 Hz tone lands on the line at 73.5 Hz. Its gap there measures 11.96, the only gap in the spectrum above 5.0.',
       ).toBe(147);
+      recordResult({
+        kind: 'table',
+        title: 'Your capture comparison',
+        summary: 'Synthetic two-second captures at 256 samples per second. A differing bin selects a frequency band to inspect; it does not identify a physical source.',
+        columns: ['Measurement', 'Your result'],
+        rows: [
+          ['Within the sample tolerance', r.timeTwin],
+          ['First differing FFT bin', r.divergentBin],
+          ['Bin center (Hz)', r.divergentBin < 0 ? null : r.divergentBin * 256 / 512],
+        ],
+      });
     });
 
     it('a catalogued line that went dead diverges by size, not by direction', () => {

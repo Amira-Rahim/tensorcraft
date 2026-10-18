@@ -109,6 +109,12 @@ testCode: |
       expect(v[1], why).toBeCloseTo(0.4, 5);
       expect(v[2], why).toBeCloseTo(0.5, 5);
       expect(v[3], why).toBeCloseTo(0.7, 5);
+      recordResult({
+        kind: 'table', title: 'Demir\'s averaged pass',
+        summary: 'Output from your merge function on the supplied four-reading test passes, not the full 64-channel recording.',
+        columns: ['Position', 'Averaged reading'],
+        rows: v.map((value, i) => [i + 1, value]),
+      });
     });
     it('boosted applies the gain', () => {
       const { boosted } = merge(
@@ -120,6 +126,12 @@ testCode: |
       const why = 'boosted is the average scaled by gain, so it amplifies the merged pass rather than either raw pass.';
       expect(v[0], why).toBeCloseTo(0.75, 5);
       expect(v[3], why).toBeCloseTo(1.75, 5);
+      recordResult({
+        kind: 'table', title: 'The amplified pass',
+        summary: 'Your averaged pass after the supplied gain of 2.5.',
+        columns: ['Position', 'Amplified reading'],
+        rows: v.map((value, i) => [i + 1, value]),
+      });
     });
     it('works on a different pair of passes and gain (no memorized outputs)', () => {
       const { merged, boosted } = merge(tf.tensor([1, 2]), tf.tensor([3, 6]), 10);
@@ -201,6 +213,12 @@ testCode: |
         [3, 4, 7],
         [5, 6, 11],
       ]);
+      recordResult({
+        kind: 'table', title: 'Channel-bank scores',
+        summary: 'Your matrix multiplication on the supplied three-reading, three-bank test case.',
+        columns: ['Reading', 'Bank 0', 'Bank 1', 'Bank 2'],
+        rows: out.arraySync().map((row, i) => [i + 1, ...row]),
+      });
     });
     it('mixChannels holds up on a different bank count (no memorized outputs)', () => {
       const out = scored(

@@ -90,6 +90,12 @@ testCode: |
         batchShapes[0],
         'Each batch stacks its samples into one tensor, so a batch carries an axis the samples do not.',
       ).toEqual([4, 3]);
+      recordResult({
+        kind: 'table', title: 'Batches read by your loader',
+        summary: 'Shapes saved by your submitted drain of the 16-row archive stand-in.',
+        columns: ['Batch', 'Readings', 'Features'],
+        rows: batchShapes.map((shape, i) => [i + 1, shape[0], shape[1]]),
+      });
     });
     it('every batch has the [batch, features] shape', () => {
       // An empty batchShapes used to clear this test for free, which handed
@@ -171,6 +177,7 @@ testCode: |
       let readsAtFirstBatch = -1;
       let bareBatches = 0;
       const rowsSeen = [];
+      const previewRows = [];
       // One sample per batch and no shuffle, so every batch here carries one
       // archive row and its first feature says which row that is. This drain
       // is also the only place the file looks at what the features and the
@@ -185,6 +192,7 @@ testCode: |
         const ys = b.ys.arraySync()[0];
         const i = Math.round(xs[0] / 100);
         rowsSeen.push(i);
+        previewRows.push([i, ...xs, ys[0]]);
         const featureWhy =
           'Use the features returned by readSample in their original order: amplitude, zero-crossing count, and phase.';
         expect(xs.length, featureWhy).toBe(3);
@@ -206,6 +214,12 @@ testCode: |
       ).toBe(1);
       expect(bareBatches, 'Sixteen samples, one per batch.').toBe(16);
       expect(readCount - startCount, 'Every sample read once, none read twice.').toBe(16);
+      recordResult({
+        kind: 'table', title: 'Readings yielded by your generator',
+        summary: 'The existing unshuffled verification pass. Values are the supplied ID-based archive stand-in, not measured ship telemetry.',
+        columns: ['Row ID', 'Amplitude', 'Zero-crossing count', 'Phase', 'Label'],
+        rows: previewRows,
+      });
     });
     it('splits the 16 readings 12 and 4 on indices, disjoint and complete', () => {
       filled(trainIdx, 'trainIdx is still null. Use IDs 0 through 11 for training.');
@@ -230,6 +244,12 @@ testCode: |
         val,
         'Validation must represent later readings. Mixing future rows into training defeats this split.',
       ).toEqual([12, 13, 14, 15]);
+      recordResult({
+        kind: 'table', title: 'The saved time split',
+        summary: 'Your training order and later validation IDs. No model has been trained in this task.',
+        columns: ['Split', 'Row ID'],
+        rows: [...train.map((id) => ['Training', id]), ...val.map((id) => ['Validation', id])],
+      });
     });
   });
 

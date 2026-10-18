@@ -37,6 +37,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { createRequire } from "node:module";
 import { randomBytes } from "node:crypto";
+import { createArtifactCollector } from "../packages/ui/src/mdx/exercise-artifacts.mjs";
 import { FIT_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-fit-recording.mjs";
 import { SHAPE_RECORDING_SOURCE } from "../packages/ui/src/mdx/exercise-shape-recording.mjs";
 
@@ -2173,7 +2174,9 @@ async function runSolutionTests(userCode, testCode) {
     ? `${HARNESS}\n(async function(){\n${cleanCode}\n${cleanTestCode}\nawait __awaitPending();\nreturn __results;\n})()`
     : `${HARNESS}\n${cleanCode}\n(async function(){\n${cleanTestCode}\nawait __awaitPending();\nreturn __results;\n})()`;
 
+  const artifactCollector = createArtifactCollector();
   const context = {
+    recordResult: artifactCollector.record,
     console: {
       log: () => {},
       warn: () => {},
@@ -2336,7 +2339,7 @@ async function runSolutionTests(userCode, testCode) {
 
   try {
     const results = await Promise.race([runPromise, timeoutPromise]);
-    return { ok: true, results };
+    return { ok: true, results, artifacts: artifactCollector.read() };
   } catch (err) {
     return { ok: false, error: err.message || String(err) };
   }
@@ -2928,6 +2931,15 @@ async function main() {
       continue;
     }
 
+    if (/\brecordResult\s*\(/.test(ex.testCode) && !run.artifacts?.length) {
+      record(
+        ex,
+        "missing-output",
+        "The solution passed without producing its authored visible result.",
+      );
+      continue;
+    }
+
     // 3. Grader strength: a test suite whose every assertion is
     //    existence-only (toBeDefined/toBeTruthy) passes for ANY code that
     //    declares the right variable names - it grades nothing. Fail loudly
@@ -3060,7 +3072,9 @@ async function main() {
     if (loose) implicitPrecision.push({ slug: ex.slug, count: loose });
 
     passed++;
-    console.log(`  OK    ${label} (${run.results.length} tests)`);
+    console.log(
+      `  OK    ${label} (${run.results.length} tests, ${run.artifacts?.length ?? 0} visible outputs)`,
+    );
   }
 
   console.log(

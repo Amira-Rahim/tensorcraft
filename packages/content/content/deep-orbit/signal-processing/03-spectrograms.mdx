@@ -13,7 +13,7 @@ context:
   narrative: "One FFT shows the frequencies in one window of samples. Farah needs to see how those frequencies change over time, so she asks for a spectrogram."
   speaker: "Dr. Farah"
 concept:
-  explanation: "A spectrogram plots frequency content against time: stack one FFT per window and the signal's behavior becomes a picture you can read."
+  explanation: "A spectrogram shows how frequency content changes over time, using one magnitude spectrum per window."
   bridge:
     jsTitle: "DevTools Waterfall"
     jsCode: "// Performance tab: time on x-axis, event type on y-axis, duration as width"
@@ -61,7 +61,7 @@ Like a DevTools waterfall, this plot puts time on the horizontal axis. The verti
 
 You will build a spectrogram by measuring frequencies in successive windows of a capture.
 
-<LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
+<LearningObjectives objectives={["Use a spectrogram to track frequency changes over time", "Implement the Short-Time Fourier Transform (STFT) by slicing a window across the signal and computing one FFT per position (the taper comes in lesson 5)", "Read spectrogram output: what the axes and values mean", "Explain how window length trades timing detail against frequency detail"]} />
 
 ## From Single FFT to Spectrogram
 
@@ -212,7 +212,7 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 
 ## Challenge
 
-Build the STFT itself: slide a window across a capture, transform each window on its own, and stack the magnitude rows.
+Give Farah the frequency measurements in time order: slide a window across the capture, transform each window, and stack the magnitude rows. Inspect the returned 40 Hz bin across the synthetic burst test to see when it appears. The test covers one second; it cannot measure the mission's much longer pulse interval.
 
 <Exercise slug="build-spectrogram" />
 

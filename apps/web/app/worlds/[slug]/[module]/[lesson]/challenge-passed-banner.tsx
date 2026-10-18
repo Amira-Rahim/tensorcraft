@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * The "tests passed" moment on the challenge step, plus the unlocked
- * Continue.
+ * Saved challenge completion, plus the unlocked Continue. Current test
+ * results belong to the exercise panel; this banner can outlive that code.
  *
  * Extracted from lesson-steps.tsx on 2026-08-23 to fix an announcement bug.
  * The banner used to mount `role="status"` together with its own text, and a
@@ -24,33 +24,42 @@ export function ChallengePassedBanner({
   passed,
   exerciseCount,
   checkedWork = [],
+  latestAttemptFailed = false,
   onContinue,
   compact = false,
 }: {
   passed: boolean;
   exerciseCount: number;
   checkedWork?: string[];
+  latestAttemptFailed?: boolean;
   onContinue: () => void;
   compact?: boolean;
 }) {
-  const message =
-    exerciseCount > 1 ? "All exercises passed" : "Exercise passed";
+  const message = latestAttemptFailed
+    ? "Completed earlier"
+    : "Completion saved";
+  const detail = latestAttemptFailed
+    ? "Your latest checked attempt still needs work. Your saved progress is unchanged."
+    : `${exerciseCount > 1 ? "All exercise completions are saved." : "Your exercise completion is saved."} Run the checks again after editing your code.`;
 
   return (
     <>
       <p role="status" className="sr-only">
-        {passed
-          ? `${message}${checkedWork.length ? `. Checked: ${checkedWork.join("; ")}.` : ""}`
-          : ""}
+        {passed ? `${message}. ${detail}` : ""}
       </p>
 
       {passed && (
         <div
           data-testid="challenge-passed-banner"
+          data-completion-state={latestAttemptFailed ? "earlier" : "saved"}
           className="mt-(--l-row) flex flex-wrap items-center justify-between gap-(--l-nav-inner) border px-5 py-4"
           style={{
-            borderColor: "var(--tc-primary)",
-            background: "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
+            borderColor: latestAttemptFailed
+              ? "var(--tc-border)"
+              : "var(--tc-primary)",
+            background: latestAttemptFailed
+              ? "var(--tc-surface)"
+              : "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
           }}
         >
           <div className="min-w-0 flex-1 basis-48">
@@ -60,29 +69,30 @@ export function ChallengePassedBanner({
                   ? "text-lg font-bold"
                   : "font-mono text-xs uppercase tracking-widest"
               }
-              style={{ color: "var(--tc-primary)" }}
+              style={{
+                color: latestAttemptFailed
+                  ? "var(--tc-text)"
+                  : "var(--tc-primary)",
+              }}
             >
               {message}
             </p>
             {!compact && checkedWork.length > 0 && (
               <ul
                 className="mt-2 space-y-1 text-sm leading-relaxed"
-                aria-label="Checked work"
+                aria-label="Completed exercises"
               >
                 {checkedWork.map((title, index) => (
                   <li key={`${index}-${title}`}>{title}</li>
                 ))}
               </ul>
             )}
-            {!compact && (
-              <p
-                className="mt-2 text-sm leading-relaxed"
-                style={{ color: "var(--tc-muted)" }}
-              >
-                Check your reasoning next, then follow the crew into the next
-                scene.
-              </p>
-            )}
+            <p
+              className="mt-2 text-sm leading-relaxed"
+              style={{ color: "var(--tc-muted)" }}
+            >
+              {detail}
+            </p>
           </div>
           <button
             type="button"

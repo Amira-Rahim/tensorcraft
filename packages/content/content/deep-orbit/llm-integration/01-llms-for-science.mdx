@@ -85,9 +85,9 @@ I want to use it as a tool, Nazari, like Copilot for code. It drafts, I verify. 
 Then we run it with a ledger. Every fabricated claim you catch goes on the board, next to the minutes it cost you to catch it. If verification eats more than two of your six hours, the next report gets written by hand.
 </Dialogue>
 
-Nazari's skepticism is the right default. A language model will happily invent a confident paragraph about an anomaly that never happened, and a fabricated number in a report to Earth Command is worse than no report at all. Farah proposes a review gate: check each claim against its evidence before release. Reviewers can miss errors too, so keep sources, corrections and approval with the report.
+Farah adds a review gate before the report can leave the ship. Every claim needs supporting evidence, including claims without numbers. Reviewers can miss errors too, so she keeps the sources, corrections, and approval with the draft.
 
-You will parse a language model’s API response and reject fields that do not meet the report’s requirements.
+Farah needs a reply the reporting pipeline can read. You will parse the API response and return its checked fields, or stop it before malformed data reaches the report.
 
 <LearningObjectives objectives={["Use an LLM to draft analysis that a person can check", "Parse an untrusted reply, validate its required fields and reject invalid output", "Define the human-AI workflow: generate → review → correct → approve"]} />
 
@@ -139,7 +139,7 @@ Do not infer the cause or significance of the unclassified event.\`);`}
 
 <ConceptReference summary="How a language model generates text">
 
-## What You Are Actually Calling
+## How the model produces a reply
 
 A decoder language model predicts the next token from the tokens before it. Tokens are pieces of text, with sizes that depend on the tokenizer and language. The model produces logits, raw scores for the possible next tokens. Softmax turns those scores into probabilities. A decoding rule picks a token, adds it to the text, and repeats until a stop condition is met.
 
@@ -166,7 +166,7 @@ The onboard language component and its bundle sizes belong to the fictional miss
 ## The Human-AI Workflow
 
 <CodeBlock language="typescript" title="workflow.ts">
-{`// The workflow mirrors Copilot usage:
+{`// Farah's report review:
 // 1. CONTEXT: provide data and instructions
 // 2. GENERATE: LLM produces a draft
 // 3. REVIEW: expert checks for accuracy
@@ -181,9 +181,8 @@ interface AnalysisWorkflow {
   approvedBy: string;   // who verified
 }
 
-// CRITICAL: LLMs can hallucinate, generating plausible but false statements
-// Always verify claims against actual data
-// Like reviewing Copilot suggestions: accept what's correct, fix what's not
+// A hallucination is a plausible but false generated statement.
+// Check claims against the measurements before approving the draft.
 
 function screenNumbers(
   draft: string,
@@ -198,7 +197,7 @@ function screenNumbers(
   const unmatched: number[] = [];
 
   for (const claim of claims) {
-    const n = parseFloat(claim);   // keep the number, not the matched text
+    const n = parseFloat(claim);
     if (values.some((v) => Math.abs(v - n) <= 0.05)) matched.push(n);
     else unmatched.push(n);
   }
@@ -221,6 +220,8 @@ console.log(check.unmatched);  // [9]  ← no such cluster in the data
 
 The API returns plain text, even if your client uses TypeScript. Parse one reply and check that its fields match the expected analysis type. Return the checked analysis, or throw an error if it is invalid.
 
+Inspect the fields your client returns. They are ready for the reporting code to read, but Farah still has to check the reasoning against the measurements. The exercise supplies an API reply; it does not call a language model.
+
 <Exercise slug="llm-client" />
 
 <RecallPrompt
@@ -232,8 +233,8 @@ The API returns plain text, even if your client uses TypeScript. Parse one reply
       "question": "Which workflow supports more trustworthy factual reports?",
       "options": [
         {
-          "text": "Publish the first fluent draft as long as it sounds confident.",
-          "feedback": "An answer can sound confident and still contain false claims."
+          "text": "Publish once the reply passes the JSON schema check.",
+          "feedback": "Valid fields can still contain unsupported claims. Check them against the source evidence."
         },
         {
           "text": "Lower temperature and treat every generated statement as verified.",
@@ -264,7 +265,7 @@ The API returns plain text, even if your client uses TypeScript. Parse one reply
 
 There are five hours and twelve minutes until the transmission window. Tonight's pulse interval is 63.1 seconds. It has kept shrinking since the ensemble started running.
 
-Farah requests a draft. Eleven seconds later, the model returns six hundred well-written words. The second paragraph describes an "anomaly cluster in Band-3" that no instrument aboard the Archimedes has recorded. She deletes it and records the mistake in Nazari's ledger. ARIA has been reading the draft from her own console.
+The client can now reject malformed replies. Farah requests a draft, and eleven seconds later the model returns six hundred well-written words in the expected format. The second paragraph describes an "anomaly cluster in Band-3" that no instrument aboard the Archimedes has recorded. She deletes it and records the mistake in Nazari's ledger. ARIA has been reading the draft from her own console.
 
 <Dialogue speaker="ARIA">
 One unsupported claim found. Dr. Farah had already marked it. None of my 14,202 rules explains how the draft selected an instrument we do not carry.

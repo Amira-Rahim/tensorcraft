@@ -114,6 +114,12 @@ testCode: |
       expect(Number.isFinite(out.tfjsMs) && out.tfjsMs > 0 && out.tfjsMs % step === 0, 'tfjsMs' + rule).toBe(true);
       expect(Number.isFinite(out.onnxMs) && out.onnxMs > 0 && out.onnxMs % step === 0, 'onnxMs' + rule).toBe(true);
       expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or the two sides were fed different inputs.').toBe(true);
+      recordResult({
+        kind: 'table', title: 'Your comparison contract check',
+        summary: 'The ONNX session and clock are simulated. Timer intervals below are generated fixture values, not measured latency. Use the real lab for performance comparisons.',
+        columns: ['Outputs agree', 'TFJS simulated interval', 'ONNX simulated interval'],
+        rows: [[out.outputsAgree, out.tfjsMs, out.onnxMs]],
+      });
     });
 
     it('compares the two numbers the runtimes returned, and feeds both the same input', async () => {

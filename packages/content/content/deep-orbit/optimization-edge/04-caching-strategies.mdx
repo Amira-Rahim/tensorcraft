@@ -103,7 +103,7 @@ That 45 milliseconds is the bundle, Ensign. The bundle's time is the language co
 
 In this story, the language component takes 45 ms and the classifier takes 0.035 ms. These are fictional timings. This cache skips the classifier, so use the classifier's time to estimate savings. Include the time spent building and looking up the key. The browser runtime lab tests exact reuse and a rounding collision using real predictions.
 
-You will build an inference cache and check that saved results match the model version and age limit.
+Help Demir separate useful reuse from stale answers. Build the cache, count the model calls it avoids, then audit which saved results the next watch can still use.
 
 <LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Compare exact and approximate keys, age limits (TTL), and clearing results after a model change", "Measure cache hit rate and its impact on effective inference latency"]} />
 
@@ -245,7 +245,7 @@ This cache stores plain verdicts, so evicting an entry does not require tensor d
 
 In this story, the cache skips 40 percent of classifier calls and saves 55 milliseconds a night before cache overhead. It also stores results that can expire or belong to an old model. Those results need their own checks, which you will build in the incident exercise. Measure the saved work and the cache overhead before deciding whether the cache is worth keeping.
 
-<ConceptReference summary="Practice: trace a different request sequence">
+<ConceptReference summary="Compare cache reuse across request sequences">
 
 <LearningExperiment id="cache" />
 
@@ -253,9 +253,11 @@ In this story, the cache skips 40 percent of classifier calls and saves 55 milli
 
 ## Challenge
 
-Build a cache that rounds input values to make its keys. Count how often it reuses a result.
+Help Demir measure how often rounded input keys let the classifier reuse a result.
 
 The tensor cache below adds shape and dtype to its rounded-value key, returns copies of cached arrays and evicts the least recently used entry at capacity. Recreate it when weights or preprocessing change. The later incident checks version and age separately.
+
+The result shows the prediction from the first call beside the cached reply, with the actual number of model calls. That establishes reuse for this request. Whether the cache saves time still depends on lookup cost and how often inputs repeat.
 
 <Exercise slug="inference-cache" />
 
@@ -264,6 +266,8 @@ The tensor cache below adds shape and dtype to its rounded-value key, returns co
 The next morning, a bridge console shows a cached classification that disagrees with the new model. Help Demir audit the entries. A change to the model or preprocessing makes old results stale, even if they were saved recently. Other entries must still be within the age limit, or TTL.
 
 </StoryPassage>
+
+Your audit returns a list the watch can act on: entries to serve and entries to refresh. Check the version and age beside each decision. This audit handles stale entries; it does not fix collisions caused by rounded input keys.
 
 <Exercise slug="incident-stale-verdict" />
 
@@ -300,8 +304,8 @@ The next morning, a bridge console shows a cached classification that disagrees 
           "feedback": "Recency does not establish that the cached result matches the current input and pipeline."
         },
         {
-          "text": "Cache lookups always retrain the model.",
-          "feedback": "A lookup retrieves a stored result; it does not retrain."
+          "text": "A recent timestamp shows that the prediction used the current model.",
+          "feedback": "Age and model version are separate checks. A newly stored result can still come from an older model."
         },
         {
           "text": "Its key may combine different inputs or refer to an old model or preprocessing version.",

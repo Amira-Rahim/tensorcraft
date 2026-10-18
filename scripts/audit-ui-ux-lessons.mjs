@@ -99,7 +99,7 @@ try {
           process.platform === "darwin" ? "Meta+a" : "Control+a",
         );
         await page.keyboard.insertText(
-          "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\nconst reading = tf.tensor(streamValues);\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\nconst total = tf.tidy(() => reading.sum().dataSync()[0]);\nreading.dispose();",
+          "const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];\nconst reading = tf.tensor(streamValues);\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\nconst chartRows = tf.tidy(() => reading.reshape([3, 4]).transpose().arraySync());\nreading.dispose();",
         );
         await page
           .getByRole("button", { name: "Run Tests", exact: true })

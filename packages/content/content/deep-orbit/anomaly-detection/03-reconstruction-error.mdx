@@ -22,7 +22,7 @@ concept:
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
-    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single squared-distance scalar (the mean of the squared gaps between input and reconstruction across all feature dimensions at once); a high score means a poor reconstruction, but does not show which feature contributed most. Calculate each feature's error separately to find that mismatch."
+    breaks: "git diff names line changes you can patch. Reconstruction MSE averages squared feature differences into one score. A high score means a poor reconstruction, but does not show which feature contributed most. Calculate each feature's error separately to find that mismatch."
 consequence:
   narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the largest contributor: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying almost all of it alone."
 hints:
@@ -190,7 +190,7 @@ Squared errors show how much each feature adds to MSE. Error ratios show how lar
 
 ## Challenge
 
-Score one reading against the autoencoder that rebuilt it, and release what you allocate.
+Give Farah a reconstruction MSE she can use to rank readings for review, while releasing every temporary tensor. Inspect the two offset-model scores: they measure the gap left by reconstruction, even when the input readings differ.
 
 <Exercise slug="reconstruction-error" />
 

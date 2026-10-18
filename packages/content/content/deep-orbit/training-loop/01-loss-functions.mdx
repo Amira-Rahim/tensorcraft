@@ -60,7 +60,7 @@ The network predicts 0.52 for a signal that should be 1.0. Demir calls that pret
 
 You will calculate prediction errors and choose a loss function that matches the model’s output.
 
-<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression (predicting a number on a continuous scale) and binary crossentropy for classification (picking which class a reading belongs to)", "Interpret loss on a fixed dataset and distinguish fitting from generalization"]} />
+<LearningObjectives objectives={["Explain what a loss function measures during training", "Implement MSE for regression (predicting a continuous value) and binary crossentropy for classification", "Interpret loss on a fixed dataset and distinguish fitting from generalization"]} />
 
 ## How Wrong Are We?
 
@@ -106,13 +106,13 @@ Choose the form that matches what the output represents. Do not pass probabiliti
 The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles">
-Three symbols run through this drawer. Σ means add up one term per row in the batch, ŷ (say y-hat) is the model's prediction against the true label y, and a prime mark means the slope of that function, so `σ'` is the slope of the sigmoid.
+Here, Σ sums one term per row in the batch, ŷ is the prediction against the true label y, and a prime mark denotes a derivative. `σ'` is the sigmoid's slope.
 
-**Why squared error?** MSE squares each error so positive and negative errors don't cancel, AND so large errors are penalized more than small ones (a 0.4 error counts 4× more than a 0.2 error). The formula:
+**Why squared error?** MSE squares each error so positive and negative errors don't cancel. Large errors receive a larger penalty: a 0.4 error counts 4× more than a 0.2 error. The formula:
 
 `MSE = (1/n) Σ (yᵢ - ŷᵢ)²`
 
-**Why cross-entropy for classification?** The usual answer is "MSE's gradient goes flat near 0 and 1." That answer is wrong, and it is worth being precise about why, because the real reason is more useful.
+**Why cross-entropy for classification?** With a sigmoid output, MSE and binary cross-entropy send different gradients back through the model.
 
 `BCE = -(1/n) Σ [ yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ) ]`
 
@@ -127,12 +127,15 @@ Here, the BCE derivative with respect to the output logit is about fifty times l
 
 Earlier operations still affect the weight gradients. Hidden layers can therefore still have very small or zero gradients. A stable logits API also avoids taking logs of probabilities rounded to zero or one.
 
-Note where the advantage lives, because the intuition runs backwards from most explanations. At the decision boundary (`ŷ = 0.5`) the two are nearly the same: `-0.25` vs `-0.5`, a factor of 2. The gap only opens as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`.
+At the decision boundary (`ŷ = 0.5`), the two gradients are `-0.25` and `-0.5`, a factor of 2 apart. The gap grows as the model gets *more confidently wrong*: 5.6× at `ŷ = 0.1`, 50× at `ŷ = 0.01`.
 </DerivationDrawer>
 
 ## Challenge
 
-Help Farah measure the first prediction errors. Write both loss functions, then choose the cross-entropy form that matches the model output.
+Give Farah a numerical error signal for training. Write both loss functions
+and choose the cross-entropy form that matches the model output. Compare
+your returned losses for the supplied confident-correct and confident-wrong
+cases before using that loss to guide weight updates.
 
 <Exercise slug="mse-loss" />
 

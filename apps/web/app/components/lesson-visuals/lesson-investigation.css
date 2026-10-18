@@ -178,6 +178,17 @@
   color: var(--tc-muted);
   font-size: 16px;
 }
+.orbit-investigation-prose .orbit-investigation-cell {
+  place-content: normal;
+  gap: 12px;
+  padding: 20px;
+  text-align: left;
+  white-space: pre-wrap;
+}
+.orbit-investigation-prose .orbit-investigation-cell-label {
+  font-weight: 700;
+  color: var(--tc-muted);
+}
 .orbit-investigation-chart {
   display: block;
   width: 100%;

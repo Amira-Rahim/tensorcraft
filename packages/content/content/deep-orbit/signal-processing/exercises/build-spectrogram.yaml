@@ -157,6 +157,15 @@ testCode: |
         result[1][10],
         'The burst fills this window completely, so its bin holds windowSize / 2 = 32. About half that is the height a tapered window returns.',
       ).toBeCloseTo(32, 0);
+      recordResult({
+        kind: 'series',
+        title: 'When the test tone appears',
+        summary: 'Your returned 40 Hz bin across all four non-overlapping frames of a synthetic one-second capture. Each frame spans 0.25 seconds; no taper is applied.',
+        xLabel: 'Frame start (seconds)',
+        yLabel: 'Raw FFT magnitude at 40 Hz',
+        labels: result.map((_, i) => String(i * 64 / 256)),
+        series: [{ name: 'Your 40 Hz magnitudes', values: result.map(row => row[10]) }],
+      });
     });
     it('rows advance by hopSize, so the loud row moves when hopSize changes', () => {
       const hop64 = rowsOf(burst, 64, 64);

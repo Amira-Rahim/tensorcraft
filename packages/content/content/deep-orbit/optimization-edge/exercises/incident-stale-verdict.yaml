@@ -74,7 +74,7 @@ testCode: |
       const audited = auditCache(entries, currentVersion, now, ttlSeconds);
       expect(
         audited,
-        'Nothing came back from this call, so neither bucket exists. auditCache has to return { serve, refresh }; it returns null until you build it.',
+        'Return { serve, refresh } with the audited keys in their original order.',
       ).toBeDefined();
       return audited;
     }
@@ -123,23 +123,28 @@ testCode: |
       // comes out in one. Collect the two sets and sort them afterwards and
       // both lists here come back reversed, which is the refresh queue
       // running in an order the batch never had.
-      const r = auditOf(
-        [
+      const entries = [
           { key: 'd', modelVersion: 'v2', cachedAt: 998 },
           { key: 'c', modelVersion: 'v2', cachedAt: 100 },
           { key: 'a', modelVersion: 'v2', cachedAt: 999 },
           { key: 'b', modelVersion: 'v1', cachedAt: 999 },
-        ],
-        'v2', 1000, 60,
-      );
+      ];
+      const r = auditOf(entries, 'v2', 1000, 60);
       expect(
         r.serve,
         'Keep input order in both result lists. This batch has d before a, so do not sort the keys afterward.',
       ).toEqual(['d', 'a']);
       expect(
         r.refresh,
-        'Same rule on this side: c was audited before b, so it comes back first. A refresh queue in an order the batch never had stops matching the audit it came from.',
+        'Keep input order in refresh: c appeared before b.',
       ).toEqual(['c', 'b']);
+      recordResult({
+        kind: 'table',
+        title: 'The cache entries your audit keeps or refreshes',
+        summary: 'Current version v2, fixture clock 1000 seconds, age limit 60 seconds. Version and age checks do not detect rounded-key collisions.',
+        columns: ['Entry', 'Saved version', 'Age (seconds)', 'Your decision'],
+        rows: entries.map((entry) => [entry.key, entry.modelVersion, 1000 - entry.cachedAt, r.serve.includes(entry.key) ? 'Serve' : 'Refresh']),
+      });
     });
     it('audits a batch that is built here rather than written down', () => {
       // Ten entries and their expected buckets, out of one loop, against a

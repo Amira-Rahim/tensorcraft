@@ -93,7 +93,7 @@ describe("sensor layout through the shipped worker", () => {
   it("rejects a tensor-shaped object with a correct arraySync result", async () => {
     const code = exercise.solutionCode.replace(
       "grid.transpose()",
-      "({ shape: [4, 3], arraySync: () => [[3, 5, 5], [1, 9, 3], [4, 2, 5], [1, 6, 8]] })",
+      "({ shape: [4, 3], arraySync: () => [[2, 3, 4], [20, 18, 16], [5, 7, 6], [8, 8, 9]] })",
     );
     const results = await run(code);
     expect(results.filter((r) => !r.passed)).toHaveLength(3);
@@ -106,9 +106,10 @@ describe("sensor layout through the shipped worker", () => {
 
   it("checks every sensor value against the recording", async () => {
     const code = exercise.solutionCode.replace(
-      "3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8",
-      "3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 99",
+      "2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9",
+      "2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 99",
     );
+    expect(code).not.toBe(exercise.solutionCode);
     const results = await run(code);
     expect(
       results.find((r) =>

@@ -1,6 +1,6 @@
 slug: generate-report
 lessonSlug: report-generation
-title: "Assemble a Report, Cut What Failed"
+title: "Assemble the Approved Report"
 instructions: |
   Write assembleReport(title, sections). Each section has { heading, content, validated }. The validated flag records a person's earlier review decision. Assembling the text does not check its claims.
 
@@ -44,7 +44,7 @@ testCode: |
       const report = assembleReport(title, sections);
       expect(
         report,
-        'assembleReport has to return the finished markdown document. While it returns null there is nothing to put in the transmission window.',
+        'Return the completed Markdown document from assembleReport.',
       ).toBeDefined();
       return report;
     };
@@ -73,7 +73,7 @@ testCode: |
       expect(report).toContain('Detailed analysis.');
       expect(
         report,
-        'Nothing was held back here. A Withheld heading with nothing under it tells Earth a section is missing when none is.',
+        'Every section is approved. Omit the Withheld block.',
       ).not.toContain('Withheld');
     });
     it('a failed section is cut, its content never ships, and its heading is listed under Withheld', () => {
@@ -88,6 +88,12 @@ testCode: |
         'The gap is reported by name. Earth needs to know which section is missing, not just that the report is short.',
       ).toContain('- Hypotheses');
       expect(report).toContain('153 anomalous, 1 unclassified.');
+      recordResult({
+        kind: 'text',
+        title: 'Your report for the relay',
+        summary: 'Assembled from supplied fictional sections and review decisions. The unapproved explanation stays out, and Earth can see which section is missing.',
+        text: report.slice(0, 6000),
+      });
     });
     it('the withheld list is one block at the end: separators equal blocks minus one', () => {
       const report = reportFor('Relay Report', mixed);
@@ -95,7 +101,7 @@ testCode: |
       expect(report.split('\n\n---\n\n').length - 1).toBe(2);
       expect(
         report.trim().endsWith('- Hypotheses'),
-        'One block holds every withheld heading, and it goes last. One Withheld block per cut section would read as several different gaps.',
+        'List all withheld headings in one final Withheld block.',
       ).toBe(true);
     });
     it('when nothing validates, the document is the title and the withheld list alone', () => {

@@ -1,6 +1,6 @@
 slug: kalman-filter
 lessonSlug: kalman-filters
-title: "Implement a Kalman Filter"
+title: "Track the Changing Pulse Interval"
 instructions: |
   Implement update(measurement) in SimpleKalman. Calculate the predicted variance, then the Kalman gain. Use that gain to update this.estimate and this.variance. Return the updated estimate as a number.
 
@@ -131,6 +131,13 @@ testCode: |
         final,
         'The same gap from the other side: the estimate has to have moved down off the first reading. One that has not is ignoring the measurements.',
       ).toBeLessThan(73.1);
+      recordResult({
+        kind: 'series', title: 'Your estimate follows the changing pulse interval',
+        summary: 'Fictional daily first-cycle log. Day 1 initializes the filter; days 2–8 show its returned updates. A smoother curve can lag the measurements and does not establish greater accuracy.',
+        xLabel: 'Day in this log', yLabel: 'Pulse interval (seconds)',
+        labels: estimates.map((_, i) => String(i + 2)),
+        series: [{ name: 'Recorded interval', values: log.slice(1) }, { name: 'Your filter estimate', values: estimates }],
+      });
     });
     it('rederives gain and variance from parameters no fixture pins', () => {
       for (let trial = 0; trial < 4; trial++) {

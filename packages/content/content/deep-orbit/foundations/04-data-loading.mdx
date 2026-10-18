@@ -84,7 +84,9 @@ Read each record only when it is needed. This is called **lazy loading**. Limit 
 
 A **batch** is a small group of readings processed together. `.batch(32)` makes groups of 32. The model processes one group, then requests the next. Unlike Demir's failed version, the pipeline does not keep the whole archive in memory.
 
-You will build a pipeline that reads the archive in small batches and keeps training data separate from later readings.
+Demir needs a loader he can trust before opening the full archive again.
+Use traceable row IDs to check that it reads on demand, keeps features with
+their labels, and leaves later readings out of training.
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle independent training examples while preserving split membership", "Split data into training and validation sets"]} />
 
@@ -95,9 +97,8 @@ Use the exercise's 16-row archive stand-in. Each row has three **features**
 **label** is the target 0 or 1. These small values stand in for the ship's
 28,800 archived readings and their much larger raw captures.
 
-A generator, written `function*`, pauses at `yield`. Put the archive read inside
-that loop so a record is read only when requested. The supplied reader returns
-one row; no full archive array is needed.
+Keep the archive read inside the generator loop so a record is read only when
+requested. The supplied reader returns one row; no full archive array is needed.
 
 <CodeBlock language="typescript" title="one-sample.ts">
 {`function* rowsById(ids) {
@@ -207,9 +208,7 @@ A buffer large enough for all 28,800 readings would need to load them before sen
 
 This archive can be read by ID, so there is another option: shuffle the small list of IDs, then read the records in that order. You get a full shuffle without holding all the records in memory.
 
-### Why Batching Matters
-
-A model can train on one small group of examples at a time. That group is a batch. It is similar to a virtual list in a user interface, which renders a small visible group instead of thousands of items at once.
+### How batch size changes training
 
 Batch size also changes training. The model updates its weights once per batch. A batch of one can give noisy updates. The full archive gives one update per complete pass. A size such as 32 sits between those choices. Module 3 shows how to choose it in `model.fit()`.
 
@@ -253,7 +252,11 @@ Assign each row to a set once. Separate `.shuffle().take()` and `.shuffle().skip
 
 ## Challenge
 
-Help Demir read a small practice archive of 16 rows. Read one row at a time, shuffle the rows, then group them into batches. This shows how batching works without training a model. Separately, choose the earlier rows for training and the later rows for validation, where you check the model on data it did not train on.
+Help Demir test the loader on the 16-row archive stand-in. Read one row at a
+time, shuffle the rows, then form batches. Reserve the earlier rows for
+training and the later rows for validation. Inspect the yielded readings,
+batch shapes, and saved split to check what will reach training. No model is
+trained in this task.
 
 <Exercise slug="batch-data" />
 

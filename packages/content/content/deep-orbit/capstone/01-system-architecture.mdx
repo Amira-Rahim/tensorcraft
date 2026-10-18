@@ -14,7 +14,7 @@ context:
   narrative: "Mirza calls the final briefing. 'Assemble the pieces into one production system, Ensign, and show me the architecture.' Demir lays out DEEP SCAN."
   speaker: "Commander Mirza"
 concept:
-  explanation: "System architecture defines how the parts work together. The crew must connect the components from the last ten modules into one pipeline, all sharing the same limited machine."
+  explanation: "The crew must connect the components from the last ten modules on one memory-limited dashboard. Each handoff needs compatible data, and each retained tensor needs an owner."
   bridge:
     jsTitle: "Package Dependencies"
     jsCode: "// package.json: { dependencies: { react, tfjs, ... } }: declare, install, resolve"
@@ -66,7 +66,7 @@ skillAxes: [deployment]
 
 <StoryPassage>
 
-The main display carries one number now, wherever you stand on the ship: pulse interval, 47.0 seconds. It was 73.4 when Demir could not tell a tensor from a typed array. The bridge goes quiet on its own when Mirza stands up.
+The main display carries one number now, wherever you stand on the ship: pulse interval, 47.0 seconds. It was 73.4 when Demir first brought the recording to the lab. The bridge goes quiet on its own when Mirza stands up.
 
 </StoryPassage>
 
@@ -84,7 +84,7 @@ DEEP SCAN must run on the repaired bridge dashboard. It has 512 MB of RAM, and i
 Before anyone asks why it doesn't live on my rig: the rig outruns that dashboard three to one, and it rebooted nine times last week because I flash controllers on it. The dashboard sits on the hardened bus with a watch officer in front of it every minute of every shift. A verdict nobody is standing in front of at 0300 is wasted investigation time. It ships to the box with the person attached.
 </Dialogue>
 
-You will connect asynchronous pipeline stages, validate their inputs, and identify the stage responsible when a handoff fails.
+Help Demir pass a recording through the stages without losing a result between them. If a handoff fails, the runner must name the stage before the next one starts.
 
 <LearningObjectives objectives={["Assemble the supplied ML pipeline as typed components with explicit dependencies", "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter", "Implement a pipeline runner that validates data flow between stages", "Map the complete DEEP SCAN architecture from raw signal to final report"]} />
 
@@ -94,7 +94,7 @@ You will connect asynchronous pipeline stages, validate their inputs, and identi
 
 <CodeBlock language="typescript" title="pipeline.ts">
 {`// DEEP SCAN Pipeline Architecture
-// Each stage has typed input/output, like React component props
+// Declare the data each stage accepts and returns.
 
 interface PipelineStage<TInput, TOutput> {
   name: string;
@@ -153,7 +153,7 @@ console.log('Confidence:', report.classification.confidence);`}
 ## Component Registry
 
 <CodeBlock language="typescript" title="registry.ts">
-{`// Register all DEEP SCAN components, like a monorepo's package index
+{`// Record each component's version, dependencies, and data contract.
 
 interface ComponentManifest {
   name: string;
@@ -228,6 +228,8 @@ The feature interfaces here are a design sketch. The three-feature binary classi
 
 Build a runner that passes one value through the stages in order. Validate each stage's input before processing it, await its result, and let `addStage` calls chain together.
 
+Your result is the feature row delivered by an eight-sample diagnostic run through the supplied stages. It shows that the asynchronous handoffs complete in order. Demir can use this runner for a linear path; the full architecture still needs the branch scheduler and matching model contracts described above.
+
 <Exercise slug="pipeline-architecture" />
 
 <RecallPrompt
@@ -239,16 +241,16 @@ Build a runner that passes one value through the stages in order. Validate each 
       "question": "Beyond package versions, what must remain compatible between ML pipeline stages?",
       "options": [
         {
-          "text": "Only whether npm install succeeds.",
-          "feedback": "Successful installation does not verify the model input and output meanings."
+          "text": "Tensor shapes and dtypes alone, provided every stage accepts them.",
+          "feedback": "The same shape and dtype can carry swapped features or values on the wrong scale."
         },
         {
           "text": "Feature order, units, preprocessing and data assumptions.",
           "feedback": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
         },
         {
-          "text": "Only the filenames of the installed packages.",
-          "feedback": "Models can produce plausible wrong outputs when feature meanings change despite unchanged filenames."
+          "text": "Output labels alone, provided all stages use the same class names.",
+          "feedback": "Matching labels do not establish that the model received features in the expected order, units, and scale."
         }
       ],
       "correctIndex": 1,
@@ -260,7 +262,7 @@ Build a runner that passes one value through the stages in order. Validate each 
 <LessonRecap
   whatYouLearned={[
     "Stage types describe inputs and outputs. PipelineStage<any, any>[] loses those type checks, so runtime validators must check incoming values.",
-    "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
+    "Validate each handoff before processing. Keep feature order, units, and preprocessing with the stage's input contract.",
     "The manifest check resolves dependency names only. Check cycles, schemas and preprocessing separately.",
     "A single-value loop runs a chain. Multiple dependencies require a scheduler that retains outputs by stage name and runs consumers after their dependencies."
   ]}
@@ -270,7 +272,7 @@ Build a runner that passes one value through the stages in order. Validate each 
 
 <Epilogue>
 
-The diagram stays on the main display after the briefing. Five boxes connect the raw signal to a report. A smaller box in the lower corner reads FALLBACK: RULE-BASED (ARIA).
+Demir attaches the checked chain runner to the architecture notes and leaves the branch scheduler on the work list. The diagram stays on the main display after the briefing. Five boxes connect the raw signal to a report. A smaller box in the lower corner reads FALLBACK: RULE-BASED (ARIA).
 
 Her calibration-tone checks still work. Unknown readings go to review. A low classifier score can request that path, but a high score does not prove a reading is correct.
 

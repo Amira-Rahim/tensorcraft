@@ -40,3 +40,5 @@ export {
 } from "./use-scheme";
 export type { ColorScheme } from "./use-scheme";
 export { AnswerFeedback } from "./answer-feedback";
+
+export { ExerciseOutput } from "./mdx/exercise-output";

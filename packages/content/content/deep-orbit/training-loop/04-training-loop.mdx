@@ -11,7 +11,7 @@ scene:
 estimatedMinutes: 18
 difficulty: advanced
 context:
-  narrative: "All the pieces are in place. Ensign Demir initiates the training sequence; the network will learn from a hundred hand-picked signal examples."
+  narrative: "Demir starts training the network on a hundred hand-picked signal examples."
   speaker: "Ensign Demir"
 concept:
   explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns a hundred labeled examples into learned behavior."
@@ -377,7 +377,10 @@ TFJS uses 0.001 by default. Set another rate with `tf.train.adam(lr)`. These adj
 
 ## Challenge
 
-Help Demir stop training when validation loss stops improving. Use the hundred practice rows above. Return the history from that same training run, so its recorded losses match the weight updates.
+Give Demir a stopping rule for the supplied hundred-row synthetic run.
+Return its actual fit history and inspect the training and validation
+curves from that run. Keep the callback attached to the fit that produced
+those values; a separate curve cannot explain its weight updates.
 
 The exercise labels observable trends. A short run can provide too little history for its two-window comparison, and a valid run may use its whole epoch budget. Neither case proves a training error.
 

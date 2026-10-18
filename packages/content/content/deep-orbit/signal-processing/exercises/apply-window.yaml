@@ -140,6 +140,18 @@ testCode: |
         l.raw / l.windowed,
         'For this half-cycle fixture, the Hann taper reduces summed magnitude outside the seven-bin region around the rounded tone bin. Check the taper values and elementwise application.',
       ).toBeGreaterThan(20);
+      recordResult({
+        kind: 'table',
+        title: 'What your taper changed',
+        summary: 'Synthetic 10.5-cycle, 128-sample capture. Far-bin totals sum magnitudes more than three bins from the rounded tone bin; they are not energy or a universal leakage reduction.',
+        columns: ['Measurement', 'Value'],
+        rows: [
+          ['Far-bin magnitude sum before taper', l.raw],
+          ['Far-bin magnitude sum after your taper', l.windowed],
+          ['Reduction factor', l.raw / l.windowed],
+          ['Largest magnitude after your taper', l.windowedPeak],
+        ],
+      });
     });
     it('cuts far-bin summed magnitude by more than 20x, 20.5 cycles in 64 samples', () => {
       // A second length and a second tone: the window has to be built from

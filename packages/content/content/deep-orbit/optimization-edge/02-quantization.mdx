@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 17
 difficulty: advanced
 context:
-  narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Uint16 uses 2. Uint8 uses 1. Do the math: that's a 4x size reduction.'"
+  narrative: "Nazari proposes storing the weights at lower precision. Uint8 would cut their stored size to a quarter of float32. She wants to see which predictions change."
   speaker: "Chief Nazari"
 concept:
   explanation: "Quantization stores weights in fewer bytes. Measure how it changes your model's predictions, memory use, and speed; smaller files alone cannot tell you those results."
@@ -104,9 +104,9 @@ A reduction in stored bytes is straightforward. The effect on predictions needs 
 Give me the byte count and the changed decisions. Break the errors down by class. An average can hide the one signal we came to find.
 </Dialogue>
 
-You will store weights at lower precision, decode them, and compare the model’s predictions.
+Help Nazari see what the smaller weight file costs: store the kernels at lower precision, decode them, and compare the predicted classes before and after.
 
-<LearningObjectives objectives={["Understand quantization as byte reduction: float32 storage cut to uint16 or uint8", "Quantize a model using TensorFlow.js conversion tools", "Measure prediction changes and evaluate errors on labeled data", "Distinguish smaller stored weights from runtime memory and compute speed", "Use weight-name patterns to quantize selected layers"]} />
+<LearningObjectives objectives={["Compare uint16 and uint8 storage with the original float32 weights", "Quantize a model using TensorFlow.js conversion tools", "Measure prediction changes and evaluate errors on labeled data", "Distinguish smaller stored weights from runtime memory and compute speed", "Use weight-name patterns to quantize selected layers"]} />
 
 ## Precision Reduction
 
@@ -198,6 +198,8 @@ If the verdicts stay the same, write down the inputs you checked. Tomorrow's inp
 
 The coding exercise supplies a separate synthetic classifier with several output classes. Choose a class using the largest output, unlike the browser lab's one-output sigmoid classifier. Store its kernel weights as uint8 codes, decode them, and apply them to the model. Then count how many captures receive a different predicted class.
 
+Your results keep each capture's old and new class side by side, along with the stored codes from one kernel. Nazari can use that comparison to choose what needs closer evaluation. These captures have no trusted labels, so a changed class is a disagreement, not proof that the prediction got worse.
+
 <Exercise slug="quantize-weights" />
 
 <RecallPrompt
@@ -255,7 +257,7 @@ The coding exercise supplies a separate synthetic classifier with several output
 
 <Epilogue>
 
-The crew's uint8 build passes the load test on the engineering rig. Nazari writes its version beside the memory trace. She leaves the bridge-console check unsigned. The relay slot is eighteen days away.
+After reviewing prediction changes, the crew runs a separate load test on the engineering rig. The uint8 mission build passes. Nazari writes its version beside the memory trace. She leaves the bridge-console check unsigned. The relay slot is eighteen days away.
 
 Then, instead of leaving, she does something Demir has never seen her do. She pulls the live feed onto the rig she just certified, raw waveform, no dashboard in between, and stands through a full cycle waiting for the pulse.
 

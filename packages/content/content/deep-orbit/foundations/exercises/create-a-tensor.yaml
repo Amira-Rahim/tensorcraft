@@ -1,15 +1,15 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
-title: "Prepare the Five Readings"
+title: "Connect the Recording to the Viewer"
 instructions: |
   Replace the two `null` values:
 
   1. Create `reading` with `tf.tensor(streamValues)`.
-  2. Save `reading.shape` in `shape`. It should be `[5]`, meaning the tensor holds a list of five numbers.
+  2. Save `reading.shape` in `shape`. It should be `[12]`, meaning the tensor holds a list of 12 numbers.
 
-  TensorFlow.js is already available as `tf`. The supplied lines copy the
-  values for Farah and release the tensor's memory. Leave them in place,
-  then select Run Tests to check that all five readings are present and in order.
+  TensorFlow.js is available as `tf`. The supplied viewer groups these
+  readings for the chart, then releases the tensors. Leave those lines in
+  place and select Run Tests to see the chart from your tensor.
 taskBrief:
   steps:
     - title: "Create the tensor"
@@ -19,37 +19,38 @@ taskBrief:
     - title: "Read its shape"
       instruction: "Set `shape` to:"
       code: "reading.shape"
-      result: "Expect `[5]`: a list of five readings."
+      result: "Expect `[12]`: a list of 12 readings."
       target: shape
   support: "TensorFlow.js is loaded as `tf`. Leave the other lines as they are."
-  expectedTensor:
-    values: [0.12, 0.94, 0.31, 0.88, 0.47]
-    shape: [5]
 starterCode: |
-  const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
+  const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];
 
   // Your work: replace the two nulls.
   const reading = null;
   const shape = null;
 
-  // Supplied: copy the readings into a JavaScript array for Farah.
+  // Supplied: read back the values and prepare the viewer’s chart.
   const values = reading?.arraySync();
-  // Supplied: release memory after copying the values.
+  const chartRows = reading ? tf.tidy(() =>
+    reading.reshape([3, 4]).transpose().arraySync()
+  ) : [];
+  // Supplied: release memory after the viewer has read the values.
   reading?.dispose();
 solutionCode: |
-  const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];
+  const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];
   const reading = tf.tensor(streamValues);
   const shape = reading.shape;
   const values = reading.arraySync();
-  reading?.dispose();
+  const chartRows = tf.tidy(() => reading.reshape([3, 4]).transpose().arraySync());
+  reading.dispose();
 testCode: |
-  describe('Prepare the Five Readings', () => {
+  describe('Connect the Recording to the Viewer', () => {
     // Capture readback calls made by the exercise, before grading begins.
     const reads = (tf.__calls['tensor.arraySync'] || 0)
       + (tf.__calls['tensor.dataSync'] || 0)
       + (tf.__calls['tensor.array'] || 0)
       + (tf.__calls['tensor.data'] || 0);
-    const source = [0.12, 0.94, 0.31, 0.88, 0.47];
+    const source = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];
 
     it('reading is a TensorFlow.js tensor', () => {
       expect(
@@ -57,19 +58,19 @@ testCode: |
         'Replace reading’s null with tf.tensor(streamValues).',
       ).toBe(true);
     });
-    it('the tensor holds a list of five numbers', () => {
-      expect(reading?.size, 'Include all five readings from streamValues.').toBe(5);
-      expect(reading?.shape, 'Pass the flat array directly to tf.tensor.').toEqual([5]);
+    it('the tensor holds a list of 12 numbers', () => {
+      expect(reading?.size, 'Include all 12 readings from streamValues.').toBe(12);
+      expect(reading?.shape, 'Pass the flat array directly to tf.tensor.').toEqual([12]);
     });
-    it('shape is [5]', () => {
-      expect(shape, 'Save reading.shape in shape before the cleanup line.').toEqual([5]);
+    it('shape is [12]', () => {
+      expect(shape, 'Save reading.shape in shape before the cleanup line.').toEqual([12]);
     });
-    it('values contains the five readings in order', () => {
+    it('values contains the 12 readings in order', () => {
       expect(
         Array.isArray(values),
         'Keep the supplied values = reading?.arraySync() line after creating the tensor.',
       ).toBe(true);
-      expect(values.length, 'Keep all five readings.').toBe(5);
+      expect(values.length, 'Keep all 12 readings.').toBe(12);
       for (let i = 0; i < source.length; i++) {
         expect(
           values[i],
@@ -80,6 +81,18 @@ testCode: |
         reads,
         'Keep the supplied readback line so the values come from the tensor.',
       ).toBeGreaterThan(0);
+    });
+    it('the viewer receives each sensor’s readings in time order', () => {
+      const expected = [0, 1, 2, 3].map(sensor =>
+        [0, 1, 2].map(moment => source[moment * 4 + sensor]));
+      expect(chartRows, 'Keep the supplied viewer code after creating reading.').toEqual(expected);
+      expect(reads, 'The chart must read from the tensor.').toBeGreaterThan(0);
+      recordResult({
+        kind: 'series', title: 'Demir’s recording in the viewer',
+        summary: 'The supplied viewer groups the values from your tensor. These are sensors A–D at three selected moments in the fictional recording, not a model prediction.',
+        xLabel: 'Moment in this excerpt', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
+        series: chartRows.map((values, i) => ({ name: 'Sensor ' + ['A', 'B', 'C', 'D'][i], values })),
+      });
     });
     it('the provided cleanup runs after the values are saved', () => {
       expect(reading?.isDisposed, 'Keep the provided cleanup line at the end.').toBe(true);

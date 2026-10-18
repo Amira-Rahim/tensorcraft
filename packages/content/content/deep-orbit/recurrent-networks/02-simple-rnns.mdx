@@ -99,12 +99,12 @@ h.dispose();
 </CodeBlock>
 
 <Dialogue speaker="Dr. Farah">
-The carry is the useful comparison. Both computations can give the same event a different result when the incoming state changes. You wrote the reducer rules; training fits the RNN parameters. The 0.8 and 1.0 here were chosen by hand so you can trace the arithmetic.
+Both updates use the previous state, so the same new input can produce a different result. You wrote the reducer rules; training fits the RNN parameters. The 0.8 and 1.0 here were chosen to make those state changes easy to follow.
 </Dialogue>
 
-You will compute a recurrent network’s hidden state in JavaScript and compare it with TensorFlow.js.
+Run the same readings through a carried state and inspect how an earlier reading changes a later result. Then compare your update with a TensorFlow.js recurrent layer, and measure how the state derivative changes across a longer window.
 
-<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a layer's current weights off the model and check your own arithmetic against what the layer computes"]} />
+<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a recurrent layer's weights and compare its output with the same update written in JavaScript"]} />
 
 ## The Learned Reducer
 
@@ -200,7 +200,7 @@ Archive rows arrive every 33 seconds, only about 2.2 rows per pulse interval. Ea
 
 Write the cell loop using plain JavaScript numbers and Math.tanh, without tensors. Start with zero state for each call and update it for every reading. The tests change the window and weights. They also check that earlier readings affect later state.
 
-Build a one-unit `tf.layers.simpleRNN` and read its three weights. The tests run your loop with those weights and compare every state with the layer’s output. The layer initializes new weights each time, so calculate the states rather than copying the example. This small test uses a close numerical tolerance; other sequences and backends may need a different one.
+Build a one-unit `tf.layers.simpleRNN` and read its three weights. The tests run your loop with those weights and compare every state with the layer’s output. The layer initializes new weights each time, so use the weights you read from that instance. This small test uses a close numerical tolerance; other sequences and backends may need a different one.
 
 <Exercise slug="build-rnn" />
 

@@ -1,6 +1,6 @@
 slug: retrieve-signals
 lessonSlug: rag-for-signals
-title: "Retrieve the Rows the Prompt Will Carry"
+title: "Retrieve Evidence for the Report"
 instructions: |
   Write retrieveSignals(query, db, now). Select matching records and report any matches left out of the result. Adding retrieved records does not remove what a model learned during training.
 
@@ -110,7 +110,7 @@ testCode: |
       const r = retrieveSignals(query, db, now ?? CLOCK);
       expect(
         r,
-        'retrieveSignals has to return the retrieval: the rows the prompt will carry, how many rows matched, and whether the cap dropped any. While it returns null there is no context to ground an answer in.',
+        'Return { rows, matched, truncated } from retrieveSignals.',
       ).toBeDefined();
       return r;
     };
@@ -178,7 +178,7 @@ testCode: |
       const r = retrieve('anomalous signals in Band-7 from the last 72 hours', db);
       expect(
         r.rows.map((s) => s.id),
-        'Each row here fails exactly one of the three filters, except the last. A retrieval that applies only the filter it happened to parse first hands the model rows the question excluded.',
+        'Apply all three active filters together. Only the last row matches the band, age, and classification requirements.',
       ).toEqual(['keeper']);
       expect(r.matched).toBe(1);
     });
@@ -199,7 +199,7 @@ testCode: |
       const r = retrieve('anomalous signals in Band-7', db);
       expect(
         r.rows.map((s) => s.id),
-        'Every matching row sits past the cap in database order. Capping the database first and filtering the remainder empties the context while the question had answers.',
+        'Filter before taking the first 20 matches. In this case, all matching rows occur after the first 20 database entries.',
       ).toEqual(['hit-0', 'hit-1', 'hit-2', 'hit-3', 'hit-4', 'hit-5']);
       expect(r.matched).toBe(6);
       expect(r.truncated).toBe(false);
@@ -254,6 +254,13 @@ testCode: |
         'matched counts rows that passed the filters, before the cap.',
       ).toBe(expected.length);
       expect(r.truncated).toBe(true);
+      recordResult({
+        kind: 'table',
+        title: 'Evidence selected for the prompt',
+        summary: r.matched + ' fixture records matched; your retriever returned ' + r.rows.length + '. Omitted matches: ' + (r.matched - r.rows.length) + '. The report must retain that limit.',
+        columns: ['Record', 'Band', 'Classification', 'Frequency (Hz)', 'Anomaly score'],
+        rows: r.rows.slice(0, 20).map((row) => [row.id, row.band, row.classification, row.frequency, row.anomalyScore]),
+      });
     });
 
     it('at exactly the cap nothing was dropped', () => {
@@ -265,7 +272,7 @@ testCode: |
       expect(r.matched).toBe(20);
       expect(
         r.truncated,
-        'The cap was reached and nothing was lost. A flag that fires on reaching the cap sends the report chasing rows that do not exist.',
+        'Exactly 20 rows matched, and all were returned. Set truncated to false because no match was omitted.',
       ).toBe(false);
     });
 
@@ -290,7 +297,7 @@ testCode: |
       expect(r.rows).toEqual([]);
       expect(
         r.matched,
-        'Nothing matched, and the caller has to be able to see that. This is the case the checker in the next challenge treats as the worst one: no evidence in hand, so no claim in the answer is supported.',
+        'No records matched. Return an empty rows array, matched: 0, and truncated: false.',
       ).toBe(0);
       expect(r.truncated).toBe(false);
     });

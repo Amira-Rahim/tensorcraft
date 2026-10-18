@@ -148,6 +148,13 @@ connected to familiar frontend work. Preserve technical meaning and exercise
 requirements. The established brand and search terms below still apply to
 published copy; the audience instruction does not request a marketing rebrand.
 
+Treat readers as capable JavaScript engineers who are new to ML, not new to
+programming. Captions should identify the crew's data, the comparison, or the
+decision at hand instead of describing an obvious visual format. Introduce new
+ML concepts clearly, but avoid repeated explanations of ordinary arrays,
+indexes, variables, and controls. Keep reminders when they prevent a specific
+mistake. Simple wording must not become patronizing wording.
+
 - Brand register (all human-read prose, legal, emails, lessons, story,
   certificates): "JavaScript engineer(s)". Second person: "You're a
   JavaScript engineer."

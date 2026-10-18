@@ -7,13 +7,13 @@
 //
 // It also fails the source-operation check. A typed-out grid is not the
 // result of reshaping flat, even when all its numbers happen to match.
-const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);
+const flat = tf.tensor([2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]);
 
 const grid = tf.tensor2d([
-  [3, 1, 4, 1],
+  [2, 20, 5, 8],
   [999, 999, 999, 999],
-  [5, 3, 5, 8],
+  [4, 16, 6, 9],
 ]);
 
-const step1 = [5, 9, 2, 6];
+const step1 = [3, 18, 7, 8];
 const bySensor = grid.transpose();

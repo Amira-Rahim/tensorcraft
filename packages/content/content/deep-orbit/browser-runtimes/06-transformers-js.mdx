@@ -71,7 +71,7 @@ Transformers.js adds task-specific preprocessing and output handling around pret
 
 A custom task does not automatically require training from scratch. Check whether an existing model, adaptation or an ordinary rule meets the need. A convenient pipeline API does not establish that the model is suitable.
 
-## Pipeline in Ten Lines
+## Classify the crew's reports
 
 <CodeBlock language="typescript" title="sentiment-pipeline.ts">
 {`// The package moved from '@xenova/transformers' to the official
@@ -135,7 +135,11 @@ Download size can make browser inference impractical for a target connection. Me
 
 The exercise supplies simulated pipeline results. It checks your task choice and how you handle those results without downloading a model. Use the real model to check download size, browser support and how well it handles your reports.
 
-Sort the crew’s reports from highest to lowest classifier score. Choose the task, load its pipeline once, classify all reports in one call, and keep each report paired with its own result while sorting.
+Assemble Mirza's report queue from the supplied sentiment results. Choose
+the task, load once, classify the batch, and keep each report paired with its
+label and score while sorting. Inspect the returned queue to catch a score
+attached to the wrong report. The simulation checks that integration;
+evaluating the real model on crew reports remains separate work.
 
 The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, and `automatic-speech-recognition`. Choose the text task that returns a label and score. Image and audio tasks need different inputs. Other text tasks return generated text, named entities, numeric features, or scores for labels you supply.
 

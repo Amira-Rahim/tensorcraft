@@ -161,6 +161,12 @@ testCode: |
       expect(m.length, 'Two features in, two statistics out.').toBe(2);
       expect(m[0], why).toBeCloseTo(23, 4);
       expect(m[1], why).toBeCloseTo(0.5, 4);
+      recordResult({
+        kind: 'table', title: 'Saved training statistics',
+        summary: 'Your statistics for the supplied four-row temperature and signal-strength batch.',
+        columns: ['Feature', 'Mean', 'Standard deviation'],
+        rows: m.map((value, i) => [i === 0 ? 'Temperature' : 'Signal strength', value, std.dataSync()[i]]),
+      });
     });
     it('fitStats reads the rows it is handed, not a memorized answer', () => {
       // A three-row batch that appears nowhere else in this exercise. Its
@@ -251,6 +257,12 @@ testCode: |
       expect(s[1], why).toBeCloseTo(0.0704, 3);
       expect(s[2], why).toBeCloseTo(0.6745, 3);
       expect(s[3], why).toBeCloseTo(0.5699, 3);
+      recordResult({
+        kind: 'table', title: 'Scaled readings entering Farah\'s preview',
+        summary: 'Your scaled inputs and scores from the supplied fixed neuron. These scores do not measure classifier accuracy.',
+        columns: ['Reading', 'Temperature z-score', 'Signal z-score', 'Model score'],
+        rows: normalized.arraySync().map((row, i) => [i + 1, ...row, s[i]]),
+      });
     });
     function checkModelOnAnotherInput() {
       filled(previewModel, 'Keep the supplied fixed preview model available.');
@@ -343,6 +355,12 @@ testCode: |
       }
       expect(rows[2][0], 'Reading three sits four of the six degrees up the temperature range.').toBeCloseTo(0.6667, 3);
       expect(rows[2][1], 'And a third of the way up the signal range.').toBeCloseTo(0.3333, 3);
+      recordResult({
+        kind: 'table', title: 'The same batch with min-max scaling',
+        summary: 'Your unitRange output, using each feature\'s fitted minimum and maximum.',
+        columns: ['Reading', 'Temperature scaled', 'Signal strength scaled'],
+        rows: rows.map((row, i) => [i + 1, ...row]),
+      });
     });
     it('keeps true zero statistics and handles a constant feature without NaN', () => {
       const rows = tf.tensor2d([[7, 10], [7, 14]]);

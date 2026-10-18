@@ -149,11 +149,11 @@ Demir opens the bundle audit he had saved for later. The crew's trained models t
 
 Start by measuring weight size, prediction time, and parameters per layer. The running app also needs memory for activations, temporary tensors, and backend buffers. Measure the highest memory use during loading before deciding whether the model fits.
 
-You will measure completed predictions and distinguish stored weight size from total runtime memory.
+Give Nazari a baseline she can compare with the next build: weight storage, completed prediction time, and any tensors left behind.
 
 <LearningObjectives objectives={["Calculate weight bytes from the parameter count and clean up tensors after profiling", "Measure prediction time, including the average and slower calls", "Count parameters per layer without assuming that the largest layer is the slowest", "Establish baseline metrics before optimization"]} />
 
-## Measure Everything
+## Find where the build spends memory and time
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -173,8 +173,7 @@ interface ModelProfile {
 async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor): Promise<ModelProfile> {
   // Logical bytes tracked by TFJS, with backend-specific reliability limits. Not the same
   // number as the weight bytes below: tf.memory() counts every tensor
-  // currently allocated, including the ones a sloppy loop forgets to
-  // dispose.
+  // currently allocated, including tensors retained between calls.
   const residentBytesBefore = tf.memory().numBytes;
 
   // Parameter count
@@ -246,7 +245,7 @@ console.log('Parameters:', profile.parameterCount.toLocaleString());
 console.log('Inference mean:', profile.inferenceMeanMs.toFixed(1), 'ms');
 console.log('Inference P95:', profile.inferenceP95Ms.toFixed(1), 'ms');
 
-// A total tells you the model is too big. A share tells you where to cut.
+// Compare each layer's storage cost before choosing what to optimize.
 console.log('Layer breakdown:');
 for (const layer of profile.layerBreakdown) {
   const share = (layer.params / profile.parameterCount) * 100;
@@ -286,7 +285,9 @@ for (const layer of profile.layerBreakdown) {
 
 ## Challenge
 
-Profile a model: how many parameters it holds, the megabytes they occupy, which layers they sit in, and how long one inference takes.
+Give Nazari a baseline: weight storage, parameters per layer, and the average time for a completed prediction. Track tensor cleanup during the measurement too.
+
+Your results show where the supplied model stores its parameters and how your timer handles a slow call. The timing check uses a controlled clock so the averaging rule can be checked exactly. Use the runtime lab for device timings; neither result measures the whole dashboard's peak memory.
 
 <Exercise slug="profile-model" />
 
@@ -345,7 +346,7 @@ Profile a model: how many parameters it holds, the megabytes they occupy, which 
 
 <Epilogue>
 
-By evening, the profile hangs beside Nazari's totals: 512 MB of dashboard RAM, a 340 MB model, nine hours of reconstruction, no capture, and nineteen days until the next relay slot.
+By evening, Nazari has the profiling procedure she needs for the full build. Its weight count and prediction times stay on separate lines; the peak-memory check is still open. The mission profile hangs beside her totals: 512 MB of dashboard RAM, a 340 MB model, nine hours of reconstruction, no capture, and nineteen days until the next relay slot.
 
 A new line records 211 KB of partial telemetry recovered from the crash window. It is not the lost capture. Demir replays the fragment three times. The last clean reading puts the pulse interval at 61.2 seconds, down from the first measurement of 73.4. The crew has not decided what to do about that.
 

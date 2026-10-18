@@ -57,6 +57,12 @@ testCode: |
       expect(Number.isFinite(a), why).toBe(true);
       expect(a, why).toBeCloseTo(0.01, 5);
       expect(b, why).toBeCloseTo(0.01, 5);
+      recordResult({
+        kind: 'table', title: 'Your reconstruction scores',
+        summary: 'A synthetic model adds the same offset to every feature. The score measures reconstruction mismatch, not the input’s size or the cause of an event.',
+        columns: ['Probe', 'Your reconstruction MSE'],
+        rows: [['First eight-feature input', a], ['Different eight-feature input', b]],
+      });
     });
     it('zero-output model: the error is the mean of the squared inputs', () => {
       const r = reconstructionError(zeroModel, sample);

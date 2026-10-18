@@ -12,8 +12,8 @@ instructions: |
 
   Use the real save handler. The checks reload your saved topology and weights and compare predictions, so do not build an artifact by hand. This exercise writes no file and publishes no model.
 starterCode: |
-  // Practice exporting with this small DEEP SCAN model
-  // before using the same save path with the mission build.
+  // Export this supplied model through the same save handler
+  // the release checks will inspect.
   const model = tf.sequential();
   model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [3] }));
   model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
@@ -62,7 +62,7 @@ testCode: |
     it('model.save handed the serialized artifacts to the handler', () => {
       expect(
         artifacts,
-        'artifacts is still null, so the save handler never ran. model.save() calls the function withSaveHandler wraps and passes it the serialized artifacts; stash them there.',
+        'Capture the artifacts received by the save handler, and await model.save before inspecting them.',
       ).toBeDefined();
       expect(artifacts.modelTopology).toBeDefined();
       expect(Array.isArray(artifacts.weightSpecs)).toBe(true);
@@ -132,8 +132,15 @@ testCode: |
       }
       expect(
         worst,
-        'The artifact rebuilt the model and it predicts what the original predicts. An artifact that cannot be loaded back is not an export, whatever the manifest says about it.',
+        'Reload the saved topology and weights. The reloaded model must match the original model\'s predictions.',
       ).toBeLessThan(1e-6);
+      recordResult({
+        kind: 'table',
+        title: 'Predictions from your saved and reloaded artifact',
+        summary: 'The model was reloaded from the artifacts your save handler captured. These three probes check round-trip agreement, not task accuracy or a hosted deployment.',
+        columns: ['Probe', 'Original model score', 'Reloaded model score'],
+        rows: original.slice(0, 3).map((value, i) => [i + 1, value, reloaded[i]]),
+      });
       probe.dispose();
       Object.values(named).forEach(t => t.dispose());
       revived.dispose();
@@ -185,6 +192,13 @@ testCode: |
         'weightBytes is the length of the buffer save() produced. On a float32 export that lands at four bytes a parameter.',
       ).toBe(836);
       expect(manifest.weightBytes).toBe(manifest.totalParams * 4);
+      recordResult({
+        kind: 'table',
+        title: 'The artifact inventory your code returned',
+        summary: 'Counts from the serialized model in memory. A release record still needs file fingerprints, preprocessing, and labels.',
+        columns: ['Manifest field', 'Returned value'],
+        rows: [['Weight tensors', manifest.tensors], ['Parameters', manifest.totalParams], ['Weight bytes', manifest.weightBytes]],
+      });
     });
     it('weightBytes is measured, not derived: a uint8 export is one byte per parameter', () => {
       expect(manifest, 'manifest is the record describeArtifact returns: { tensors, totalParams, weightBytes }.').toBeDefined();
@@ -262,11 +276,11 @@ testCode: |
       ).toBe(weights.length);
       expect(
         m.totalParams,
-        'This export is not the bench copy, so 209 is the wrong answer for it. Multiply each spec shape out and add the results.',
+        'Calculate the parameter count from the supplied artifact: multiply each weight shape, then sum the products.',
       ).toBe(params);
       expect(
         m.weightBytes,
-        'This buffer is a different length from the bench copy. weightBytes comes off the buffer the artifact carries, whichever artifact that is.',
+        'Read weightBytes from this artifact\'s weightData.byteLength.',
       ).toBe(params * 4);
       second.dispose();
     });

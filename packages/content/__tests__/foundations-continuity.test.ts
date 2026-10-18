@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { WORKED_PACKET } from "../../../apps/web/app/components/mdx/channel-layout-data";
 
 const foundations = resolve(
   import.meta.dirname,
@@ -17,7 +18,7 @@ describe("the opening investigation's visible prerequisites", () => {
   it("keeps the first task to creation and shape, with supplied readback and cleanup", () => {
     const read = requiredRead("01-introduction-to-tensors");
     for (const operation of [
-      "[0.12, 0.94, 0.31, 0.88, 0.47]",
+      "[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]",
       "tf.tensor(streamValues)",
       "reading.shape",
     ])
@@ -29,7 +30,7 @@ describe("the opening investigation's visible prerequisites", () => {
     const starter = exercise
       .split("starterCode: |")[1]!
       .split("solutionCode:")[0]!;
-    expect(starter).toContain("[0.12, 0.94, 0.31, 0.88, 0.47]");
+    expect(starter).toContain("[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]");
     expect(starter).toContain("const reading = null;");
     expect(starter).toContain("const shape = null;");
     expect(starter.match(/\bnull\b/g)).toHaveLength(2);
@@ -39,7 +40,7 @@ describe("the opening investigation's visible prerequisites", () => {
       starter.indexOf("reading?.dispose()"),
     );
     expect(lesson("01-introduction-to-tensors")).toContain(
-      "The five readings are returned from the tensor in the original order",
+      "The viewer draws four lines from your tensor",
     );
     for (const deferred of [
       "reading.sum()",
@@ -54,6 +55,25 @@ describe("the opening investigation's visible prerequisites", () => {
       "synchronous callback",
     );
     expect(read).not.toContain("?start=experiment");
+  });
+  it("uses the same selected recording in both delivered exercises and the interactive viewer", () => {
+    const exercises = JSON.parse(
+      readFileSync(
+        resolve(foundations, "../../../.velite/exercises.json"),
+        "utf8",
+      ),
+    );
+    for (const slug of ["create-a-tensor", "reshape-tensor"]) {
+      const exercise = exercises.find(
+        (item: { slug: string }) => item.slug === slug,
+      );
+      for (const field of ["starterCode", "solutionCode", "testCode"]) {
+        expect(exercise[field]).toContain(
+          JSON.stringify(WORKED_PACKET.flat()).replaceAll(",", ", "),
+        );
+      }
+      expect(exercise.testCode).toContain("recordResult(");
+    }
   });
   it("keeps row extraction, sample shapes, lazy iteration and split membership in the visible teaching", () => {
     expect(requiredRead("02-tensor-shapes")).toContain("grid.arraySync()[1]");

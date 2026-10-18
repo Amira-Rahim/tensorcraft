@@ -102,9 +102,9 @@ The forget gate uses the new input and previous hidden state to calculate a lear
 We still need to test whether ours learns the pulse on held-out windows, including later days.
 </Dialogue>
 
-The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Farah said switches, but the [0,1] output makes each one closer to a dimmer: a gate can pass 30% of a value, not just all of it or none.
+The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Each outputs a fraction between 0 and 1, so it can pass part of a value rather than only keeping or discarding all of it.
 
-You will calculate one LSTM update to see how its gates keep, replace, and expose stored information.
+Calculate an LSTM update and inspect both results: the information retained in cell state and the hidden output passed onward. Matching the library's update lets Demir check the gated cell before another training run.
 
 <LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
 

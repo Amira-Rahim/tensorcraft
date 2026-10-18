@@ -150,13 +150,21 @@ testCode: |
       return result;
     };
     it('matches a field in the cited row and keeps claim order', () => {
-      const result = check([
+      const claims = [
         reading('frequency'),
         reading('wrong', { value: 80 }),
         reading('count', { field: 'eventCount', value: 14, unit: 'events' }),
         reading('missing', { rowIds: ['absent'] }),
-      ]);
+      ];
+      const result = check(claims);
       expect(result).toEqual({ verified: ['frequency', 'count'], unverified: ['wrong', 'missing'] });
+      recordResult({
+        kind: 'table',
+        title: 'Claims checked against their sources',
+        summary: 'Your checker accepts matching fields and holds unsupported claims. These supplied records are a fixture; agreement with them does not verify their real-world accuracy.',
+        columns: ['Claim', 'Cited row', 'Field', 'Claimed value', 'Unit', 'Your result'],
+        rows: claims.map((claim) => [claim.id, claim.rowIds.join(', '), claim.field, claim.value, claim.unit, result.verified.includes(claim.id) ? 'Verified against record' : 'Unverified']),
+      });
     });
     it('rejects swapped fields even when both numbers appear in the evidence', () => {
       const result = check([

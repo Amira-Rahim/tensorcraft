@@ -186,6 +186,14 @@ testCode: |
       const batch = history.params.batchSize || 32;
       expect(batch >= 8 && batch <= 64).toBe(true);
       expect(model.optimizer.iterations).toBe(Math.ceil(80 / batch) * loss.length);
+      const shown = Math.min(64, loss.length);
+      const epochs = Array.from({ length: shown }, (_, i) => Math.round(i * (loss.length - 1) / Math.max(1, shown - 1)));
+      recordResult({
+        kind: 'series', title: 'Your training and validation losses',
+        summary: 'Up to 64 evenly spaced epochs from your actual fit history on the supplied synthetic rows. No extra training run was made.',
+        xLabel: 'Epoch', yLabel: 'Loss', labels: epochs.map((i) => String(i + 1)),
+        series: [{ name: 'Training', values: epochs.map((i) => loss[i]) }, { name: 'Validation', values: epochs.map((i) => val[i]) }],
+      });
     });
     it('attaches the validation callback to the fit that produced history', () => {
       const fit = tf.__fits.find((entry) => entry && entry.history === history);

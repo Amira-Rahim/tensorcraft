@@ -1,9 +1,9 @@
 /** Connect each practice view to the authored task, without inventing results. */
 export const LESSON_HANDOFFS: Record<string, string> = {
   "introduction-to-tensors":
-    "Demir pulls up the five sensor readings. “Let’s get these ready for TensorFlow.js. Can you put them into a tensor?”",
+    "Demir needs the recording in his viewer. Create a tensor from the selected readings, save its shape, then inspect the chart prepared by the supplied code.",
   "tensor-shapes":
-    "Small devices on the ship measure the incoming signal. They’re called sensors, and each number they record is a reading. Demir sends those readings to Farah. She needs your help to keep track of which device each number came from.",
+    "Farah checks the grouping behind Demir’s chart. Help her arrange the same readings by moment, then by sensor, before using the viewer on the full recording.",
   "tensor-operations":
     "Help Nazari combine the feeds while keeping each channel in place. Average the two passes and adjust the gain. Then combine channels using a weighted sum.",
   "data-loading":
@@ -87,7 +87,7 @@ export const LESSON_HANDOFFS: Record<string, string> = {
   "prompt-engineering":
     "Demir needs to keep the current reading separate from reference facts. Build a prompt with clear sections, labeled values, and the required response format.",
   "rag-for-signals":
-    "The crew needs to trace each report claim to evidence. Retrieve matching records, list missing ones, and check each structured claim against the record it cites.",
+    "The crew needs to trace each report claim to evidence. Retrieve matching records, report how many matches were left out, and check each structured claim against the record it cites.",
   "report-generation":
     "Help the crew release only sections that passed review. Assemble them in order. Name the withheld sections, but leave their content out.",
   "multi-model-systems":

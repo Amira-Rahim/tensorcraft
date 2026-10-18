@@ -1,5 +1,25 @@
 # Tensorcraft: Claude Code Instructions
 
+## Mission purpose and visible results (binding, 2026-10-18)
+
+- Every Deep Orbit mission must connect a concrete crew problem, the learner's
+  contribution, an inspectable result, and the next story action. Audit all five
+  sections, references, activities, hints, feedback, and secondary exercises.
+- A passing test or decorative success state alone is not the task's payoff.
+  Show the learner's actual calculated output, artifact, comparison, or useful
+  failure. Identify supplied examples separately. Mark old results stale when
+  code changes; never present a reference output as the learner's result.
+- Keep setup proportional to its purpose. Do not invent scientific necessity
+  for arbitrary sample sizes or claim a task requires ML when ordinary code
+  suffices. Explain the honest role of tensors, models, and supplied tooling.
+- Keep one continuous recording or explicitly identify a change of source.
+  Excerpts name their selected sensors/times and preserve ordering and units.
+  Any changed exercise fixture must update its examples, hints, solutions,
+  grading, recall, and story together while retaining the required skill.
+- The shared layout, verified technical meaning, logical storytelling, clear
+  casual wording, and purposeful visual interaction remain mandatory. Build
+  for frontend engineers learning ML through a fun, approachable story.
+
 ## Lesson quality contract (binding, 2026-10-16)
 
 - Build for frontend developers learning ML through JavaScript. Lessons should

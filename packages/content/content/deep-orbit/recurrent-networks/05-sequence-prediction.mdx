@@ -109,7 +109,7 @@ The short forecast landed close to the next reading. I have not compared it with
 Check that timing on later captures, against a simple baseline. A predictable component would be useful evidence. It would not tell us what caused it.
 </Dialogue>
 
-A list-based autocomplete filters known entries from what you typed. Our forecaster instead computes the next sensor values from a window of previous readings. Both propose what comes next, but the forecast is not selected from a fixed list. Its errors need measurement on later observations.
+Our forecaster computes the next sensor values from a window of previous readings. It is not selecting from a fixed list like the autocomplete example. Measure its errors against later observations.
 
 You will train a forecaster and feed its predictions back into the input to estimate later readings.
 
@@ -249,7 +249,7 @@ Clamping keeps outputs inside the declared limits; it does not make a forecast a
 
 Train a forecaster with three outputs and return its training history. Then build the forecasting loop from `multi-step.ts`. The first tests use a simulated model and a short window.
 
-Convert the sensor limits into the model’s z-score units before comparing them with predictions. Clamp each prediction before adding it to both the returned forecast and the next input window. The final test runs this loop with the model you trained.
+Convert the sensor limits into the model’s z-score units before comparing them with predictions. Clamp each prediction before adding it to both the returned forecast and the next input window. Inspect the final test's rollout from your trained model: those rows become the history for later steps. Staying within bounds does not establish that the forecast is accurate.
 
 <Exercise slug="predict-next" />
 

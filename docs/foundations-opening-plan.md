@@ -1,5 +1,11 @@
 # Deep Orbit visual story driven foundations plan
 
+> Superseded for the opening excerpt and exercise results on 2026-10-18.
+> Follow [the mission purpose contract](../CLAUDE.md#mission-purpose-and-visible-results-binding-2026-10-18)
+> and the purpose audit. The first two missions now share the 12-reading
+> selection; graded runs return actual displayable output. The older five-value
+> excerpt and no-worker-protocol restriction below are historical.
+
 Revised October 6, 2026. Status: the shared visual/story reader is implemented in the working tree across all 56 Deep Orbit lessons. The [rollout record](design-previews/deep-orbit-rollout.md) describes the implementation and checks. The [continuity and pacing pass](design-previews/deep-orbit-continuity.md) also implements the five-value excerpt, linked Foundations examples, shorter required reads, named references and exercise scaffolding. The design requirements below describe the implemented opening; separately scoped human and commercial research remains unperformed. This replaces the separate integration-missions proposal and refines the opening work already delivered under P2.
 
 Improve the five free foundations lessons through the existing story and visual teaching. JavaScript engineers should encounter a concrete problem, inspect the relevant data, change it through code, and understand what their work lets the crew do next. Keep one recommended sequence and one obvious next action.

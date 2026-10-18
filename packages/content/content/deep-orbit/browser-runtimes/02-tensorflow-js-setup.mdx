@@ -58,7 +58,7 @@ Installing TensorFlow.js feels exactly like adding any other dependency. npm ins
 Then explain the benchmark on your screen. Check the backend at every station and log what you get. This classifier is small enough to ride out a fallback to plain CPU at one reading a second. The models we ship after it are not, and I want the slow chair named before anyone has to sit in it.
 </Dialogue>
 
-These example timings belong to the story console, not a speed guarantee for your device. The new concept is a backend: the engine that executes TF.js operations. Browser options include WebGL and WebGPU on the GPU, WebAssembly on the CPU, and plain JavaScript on the CPU. Their relative speed depends on the model, device and transfer overhead. Node can also use native TensorFlow through the separate `@tensorflow/tfjs-node` package.
+These example timings belong to the story console, not a speed guarantee for your device. A **backend** executes TF.js operations. Browser options include WebGL and WebGPU on the GPU, WebAssembly on the CPU, and plain JavaScript on the CPU. Their relative speed depends on the model, device and transfer overhead. Node can also use native TensorFlow through the separate `@tensorflow/tfjs-node` package.
 
 You will initialize TensorFlow.js and check which backend is ready to run your calculations.
 
@@ -83,11 +83,9 @@ console.log('Backend:', tf.getBackend());  // 'webgl', 'wasm', or 'cpu'
 console.log('TF.js version:', tf.version.tfjs);`}
 </CodeBlock>
 
-That's it: install, import, await, check. The check is the one Nazari told you not to skip.
-
 ## Backends: The Runtime Engine
 
-A backend runs the tensor calculations. Different backends can run the same supported operation, but they can differ in speed, precision and which operations they support. Register the backends you plan to use, then check which one actually starts:
+Backends can differ in speed, precision and which operations they support. Register the backends you plan to use, then check which one actually starts:
 
 <CodeBlock language="typescript" title="backends.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -169,7 +167,9 @@ async function benchmarkBackend(backendName: string) {
 
 TensorFlow.js is supplied in the editor. The tests use a simulated runtime to check how your code handles startup and backend selection. To check your own machine, install and run the real package in the independent project.
 
-Set up TensorFlow.js and verify the active backend.
+Write the dashboard's startup check. Inspect the backend and version your
+function returns from the simulated cold runtime, including when a requested
+backend cannot start. A real console needs this check before loading its model.
 
 <Exercise slug="tfjs-setup" />
 

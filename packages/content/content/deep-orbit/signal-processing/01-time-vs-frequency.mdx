@@ -24,7 +24,7 @@ concept:
     tier: intuition
     breaks: "The DOM and CSSOM describe different things; neither can be calculated from the other. A full Fourier transform instead describes the same samples by frequency. Its inverse can recover those samples within rounding limits. Magnitudes alone lose phase. Sampling and recording length already limit what was captured."
 consequence:
-  narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
+  narrative: "Farah compares the same samples in time and frequency. A weak repeating component is easier to inspect in the spectrum."
 hints:
   - level: nudge
     content: "Two captures can look almost the same over time but have different frequency peaks. Transform both captures before comparing their FFT magnitudes."
@@ -172,7 +172,7 @@ console.log(visibleBins(onBin), visibleBins(betweenBins)); // 1, 33`}
 
 ## Challenge
 
-Compare the captures sample by sample, then compare their FFT magnitudes. Report whether the samples are close enough and the first frequency bin whose magnitudes differ by more than the limit.
+Compare the captures sample by sample, then compare their FFT magnitudes. Return whether the samples are close enough and the first bin whose magnitudes differ beyond the limit. That bin gives Farah a frequency band to inspect next; it does not identify the source.
 
 <Exercise slug="time-vs-frequency" />
 

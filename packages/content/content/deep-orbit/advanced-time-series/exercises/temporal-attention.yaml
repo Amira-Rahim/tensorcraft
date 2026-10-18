@@ -125,6 +125,19 @@ testCode: |
         Array.from(out.summary.dataSync())[1],
         'The scorer prefers the latest step, so the summary reads that step back.',
       ).toBeCloseTo(5, 3);
+      recordResult({
+        kind: 'series', title: 'Where your positional scorer puts its weight',
+        summary: 'Three synthetic readings, with a supplied scorer that uses position alone. Larger weights show influence in the blend, not a causal explanation or an anomaly verdict.',
+        xLabel: 'Time step index', yLabel: 'Attention weight',
+        labels: Array.from(out.weights.dataSync(), (_, i) => String(i)),
+        series: [{ name: 'Your attention weights', values: Array.from(out.weights.dataSync()) }],
+      });
+      recordResult({
+        kind: 'table', title: 'Your pooled readings',
+        summary: 'The position column affects scores but is not included in the returned feature summary.',
+        columns: ['Reading feature index', 'Your summary value'],
+        rows: Array.from(out.summary.dataSync(), (value, i) => [i, value]),
+      });
     });
     it('a mild scorer leaves the winning step about half the budget', () => {
       // The scores here come out 0, 0.5 and 1. That spread is small enough

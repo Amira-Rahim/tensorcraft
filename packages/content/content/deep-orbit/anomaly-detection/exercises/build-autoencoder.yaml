@@ -162,11 +162,18 @@ testCode: |
 
     it('reports finite reconstruction errors without a required separation ratio', async () => {
       const run = await trainScreened();
+      const measurements = [];
       for (const rows of [HELD_OUT_CALM, HELD_OUT_TAINTED]) {
         const error = meanErrorOn(run.model, rows);
         expect(Number.isFinite(error)).toBe(true);
         expect(error).toBeGreaterThanOrEqual(0);
+        measurements.push([rows === HELD_OUT_CALM ? 'Held-out calm fixture' : 'Held-out suspect fixture', rows.length, error]);
       }
+      recordResult({
+        kind: 'table', title: 'Your screened model’s reconstruction errors',
+        summary: 'Measured mean reconstruction MSE on separate synthetic eight-feature inputs. Training is stochastic; neither a fixed ratio nor real-world detection quality is established.',
+        columns: ['Synthetic evaluation set', 'Rows', 'Mean reconstruction MSE'], rows: measurements,
+      });
     });
 
     it('hands only screened rows to fit as both inputs and reconstruction targets', async () => {

@@ -55,8 +55,6 @@ skillAxes: [model_arch]
 This isn't random noise. Something is repeating. The pattern spans dozens of time steps, but we hand our network one reading at a time. We need a model with memory.
 </Dialogue>
 
-The next lesson adds memory to the network. First, group consecutive readings so you can see the pattern that one reading cannot show.
-
 You will arrange consecutive readings into input windows and pair each window with the reading that follows it.
 
 <LearningObjectives objectives={["Understand why order matters in sequential data: shuffling can remove temporal information", "Recognize why scoring one reading at a time hides temporal patterns", "Prepare sequential input by creating time-step windows from a stream of readings"]} />
@@ -123,7 +121,7 @@ An RNN reuses the same update at every step. More steps do not add recurrent par
 The individual rows have not changed. Now we can compare them in order. Rising, falling, rising is a different pattern from falling, rising, rising. Our current model scores each row alone, so it cannot use that difference.
 </Dialogue>
 
-Consider a byte-forwarding stream with no transform: reassembling its chunks out of order corrupts the file. That example preserves order without learning from it. A sequence model uses ordered values as input to a learned computation. Other JavaScript streams can inspect or transform their contents too; buffering alone is the limited comparison here.
+A byte-forwarding stream preserves chunk order without learning from it. A sequence model uses ordered readings in a learned computation. This comparison is limited to forwarding; other JavaScript streams can inspect or transform their contents too.
 
 ## Sequence Shape: [batch, timeSteps, features]
 
@@ -159,6 +157,8 @@ sequentialInput.dispose();`}
 The example above collects windows only. For training, add a stride, the number of readings to advance between windows. Pair each window with the next reading as its prediction target. Skip a window if no reading follows it.
 
 Return the arrays and their tensors. Input windows have shape [batch, timeSteps, features]. Targets have shape [batch, features] because each target is one reading. The extra input axis keeps the readings in time order within each window.
+
+Inspect the returned input-target pairs before training. Each target must follow its window, so the forecaster cannot read the value it is being asked to predict.
 
 <Exercise slug="create-sequences" />
 

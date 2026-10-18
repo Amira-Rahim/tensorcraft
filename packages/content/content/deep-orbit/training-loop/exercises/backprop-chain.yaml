@@ -155,7 +155,7 @@ testCode: |
       };
       const autoNames = ['variableGrads', 'grad', 'grads', 'valueAndGrad', 'valueAndGrads', 'customGrad'];
       const autoCalls = () => autoNames.reduce((s, k) => s + (tf.__calls[k] || 0), 0);
-      gradOf(composed);
+      const comparison = gradOf(composed);
       const recordedPasses = passes;
       passes = 0;
       const before = autoCalls();
@@ -167,6 +167,18 @@ testCode: |
       expect(est[2], 'The estimate for the third variable misses its slope.').toBeCloseTo(1.5, 1);
       expect(recordedPasses, 'gradOf must run the loss once so the automatic and numerical costs are compared on equal terms.').toBe(1);
       expect(estimatePasses, 'Estimating three slopes ran the forward pass ' + estimatePasses + ' times, against ' + recordedPasses + ' for the recorded pass that produced all three at once. Each estimate needs the loss where the variable stands and the loss with it moved, so three of them cannot cost fewer than six runs. DEEP SCAN has 673 parameters and the same arithmetic applies to every one of them.').toBeGreaterThanOrEqual(6);
+      recordResult({
+        kind: 'table', title: 'Your two gradient methods',
+        summary: 'The supplied three-variable test loss. Gradients come from your automatic and numerical functions during the same verification run.',
+        columns: ['Variable', 'Automatic gradient', 'Numerical estimate'],
+        rows: [a, b, c].map((variable, i) => [variable.name, comparison.grads[variable.name].dataSync()[0], est[i]]),
+      });
+      recordResult({
+        kind: 'table', title: 'Forward calculations needed for those gradients',
+        summary: 'Counts observed by the existing test, not wall-clock timing or an extrapolated benchmark.',
+        columns: ['Method', 'Forward calculations'],
+        rows: [['Automatic differentiation', recordedPasses], ['Numerical estimates', estimatePasses]],
+      });
     });
     it('restores a nudged variable when the second loss calculation fails', () => {
       w.assign(tf.scalar(2));

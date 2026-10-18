@@ -16,6 +16,8 @@ import {
 
 import { useSandpack, type SandpackTheme } from "@codesandbox/sandpack-react";
 import { useScheme } from "../use-scheme";
+import { ExerciseOutput } from "./exercise-output";
+import type { ExerciseArtifact } from "./exercise-artifacts.mjs";
 import { InstructionText } from "./instruction-text";
 import {
   HintButton,
@@ -565,6 +567,8 @@ function ExerciseControls({
   readFailed,
   onResults,
   onLogs,
+  onOutput,
+  onCodeChange,
   onShowSolution,
   onAttempt,
   showSolution,
@@ -577,6 +581,14 @@ function ExerciseControls({
   readFailed: boolean;
   onResults: (results: TestResult[]) => void;
   onLogs: (logs: ConsoleEntry[]) => void;
+  onOutput: (
+    output: {
+      code: string;
+      artifacts: ExerciseArtifact[];
+      complete: boolean;
+    } | null,
+  ) => void;
+  onCodeChange: (code: string) => void;
   onShowSolution: () => void;
   onAttempt?: (result: ExerciseSubmitResult) => void;
   showSolution: boolean;
@@ -595,9 +607,11 @@ function ExerciseControls({
   const [draftNotice, setDraftNotice] = useState(
     readFailed
       ? "The saved draft could not be read. Copy your work before leaving this page."
-      : initialDraft?.starter && initialDraft.starter !== exercise.starterCode
-        ? "The starter has changed since this draft. Your code is preserved; compare it with the current instructions or use Reset."
-        : "",
+      : initialDraft && !initialDraft.starter
+        ? "This saved draft predates the current starter. Compare it with the current instructions or use Reset."
+        : initialDraft && initialDraft.starter !== exercise.starterCode
+          ? "The starter has changed since this draft. Your code is preserved; compare it with the current instructions or use Reset."
+          : "",
   );
   const [saveFailed, setSaveFailed] = useState(false);
   const [storageBlocked, setStorageBlocked] = useState(readFailed);
@@ -614,6 +628,21 @@ function ExerciseControls({
   }, []);
 
   const currentCode = sandpack.files["/index.js"]?.code ?? "";
+  const currentCodeRef = useRef(currentCode);
+  currentCodeRef.current = currentCode;
+  const runSequenceRef = useRef(0);
+  const activeRunRef = useRef<number | null>(null);
+  const runOwnerRef = useRef(draftKey);
+  runOwnerRef.current = draftKey;
+  useEffect(() => {
+    setRunning(false);
+    return () => {
+      activeRunRef.current = null;
+    };
+  }, [draftKey]);
+  useEffect(() => {
+    onCodeChange(currentCode);
+  }, [currentCode, onCodeChange]);
   const saveDraftRef = useRef<() => void>(() => {});
   useEffect(() => {
     if (storageBlocked) return;
@@ -663,20 +692,37 @@ function ExerciseControls({
   }, []);
 
   const handleRun = useCallback(async () => {
+    if (activeRunRef.current !== null) return;
+    const run = ++runSequenceRef.current;
+    activeRunRef.current = run;
+    const isCurrentRun = () =>
+      activeRunRef.current === run && runOwnerRef.current === draftKey;
     setRunning(true);
+    onOutput(null);
+    onResults([]);
+    onLogs([]);
     const code = sandpack.files["/index.js"]?.code ?? "";
 
     try {
       // 30s: each run spawns a fresh worker that importScripts CDN TFJS
       // (~1.4 MB); a cold cache plus model-training exercises can blow a
       // 10s budget, which surfaced as "Timed out" on learners' first run.
-      const { results, logs, errored } = await parseAndRunTests(
+      const {
+        results,
+        logs,
+        errored,
+        artifacts = [],
+      } = await parseAndRunTests(code, exercise.testCode, 30_000);
+      if (!isCurrentRun()) return;
+      onOutput({
         code,
-        exercise.testCode,
-        30_000,
-      );
-      onResults(results);
-      onLogs(logs);
+        artifacts,
+        complete: results.length > 0 && results.every((r) => r.passed),
+      });
+      if (code === currentCodeRef.current) {
+        onResults(results);
+        onLogs(logs);
+      }
       hasAttempted.current = true;
 
       // Report attempt to parent for persistence
@@ -703,14 +749,18 @@ function ExerciseControls({
         });
       }
     } catch (err) {
-      onResults([
-        {
-          name: "Execution",
-          passed: false,
-          error: err instanceof Error ? err.message : String(err),
-        },
-      ]);
-      onLogs([]);
+      if (!isCurrentRun()) return;
+      onOutput(null);
+      if (code === currentCodeRef.current) {
+        onResults([
+          {
+            name: "Execution",
+            passed: false,
+            error: err instanceof Error ? err.message : String(err),
+          },
+        ]);
+        onLogs([]);
+      }
       hasAttempted.current = true;
       // A crashed or timed-out run is still an attempt. Without this
       // branch, the learners who hit the wall hardest left no record
@@ -729,19 +779,26 @@ function ExerciseControls({
       }
     } finally {
       tfjsRuntimeWarm = true;
-      setRunning(false);
+      if (isCurrentRun()) {
+        activeRunRef.current = null;
+        setRunning(false);
+      }
     }
   }, [
     sandpack,
     exercise.testCode,
     exercise.slug,
+    draftKey,
     onResults,
     onLogs,
+    onOutput,
     onAttempt,
     showSolution,
   ]);
 
   const handleReset = useCallback(() => {
+    activeRunRef.current = null;
+    setRunning(false);
     sandpack.updateFile("/index.js", exercise.starterCode);
     try {
       // Reset means reset: drop the saved copy too.
@@ -751,9 +808,10 @@ function ExerciseControls({
     }
     onResults([]);
     onLogs([]);
+    onOutput(null);
     setDraftNotice("");
     setStorageBlocked(false);
-  }, [sandpack, exercise.starterCode, draftKey, onResults, onLogs]);
+  }, [sandpack, exercise.starterCode, draftKey, onResults, onLogs, onOutput]);
 
   const handleShowSolution = useCallback(() => {
     // Stash the learner's attempt before overwriting: peeking at the
@@ -891,17 +949,40 @@ export function Exercise({
     onHintRevealed,
   );
 
+  const draftKey = exerciseDraftKey(slug, draftOwner);
   const [results, setResults] = useState<TestResult[]>([]);
   const [logs, setLogs] = useState<ConsoleEntry[]>([]);
-  const [showSolution, setShowSolution] = useState(false);
+  const [output, setOutput] = useState<{
+    code: string;
+    artifacts: ExerciseArtifact[];
+    complete: boolean;
+  } | null>(null);
+  const [editorCode, setEditorCode] = useState("");
+  const handleCodeChange = useCallback((code: string) => {
+    setEditorCode(code);
+    setResults([]);
+    setLogs([]);
+  }, []);
+  useEffect(() => {
+    setOutput(null);
+    setResults([]);
+    setLogs([]);
+  }, [slug, draftOwner]);
+  const [solutionViewedKey, setSolutionViewedKey] = useState<string | null>(
+    null,
+  );
+  const showSolution = solutionViewedKey === draftKey;
   const [draftState, setDraftState] = useState<{
+    key: string;
     ready: boolean;
     draft: ExerciseDraft | null;
     failed: boolean;
-  }>({ ready: false, draft: null, failed: false });
+  }>({ key: "", ready: false, draft: null, failed: false });
+  const draftReady = draftState.ready && draftState.key === draftKey;
   useEffect(() => {
     try {
       setDraftState({
+        key: draftKey,
         ready: true,
         draft: (() => {
           const stored = readExerciseDraft(
@@ -914,7 +995,7 @@ export function Exercise({
         failed: false,
       });
     } catch {
-      setDraftState({ ready: true, draft: null, failed: true });
+      setDraftState({ key: draftKey, ready: true, draft: null, failed: true });
     }
   }, [slug, draftOwner]);
 
@@ -1102,10 +1183,11 @@ export function Exercise({
           {/* The brief is the column's visible title; the editor keeps its
               name for screen readers (spec 2026-10-10, section 3). */}
           {taskStops && <h4 className="sr-only">Your JavaScript</h4>}
-          {!draftState.ready ? (
+          {!draftReady ? (
             <ExerciseLoadingSkeleton />
           ) : (
             <SandpackProvider
+              key={draftKey}
               template="vanilla"
               theme={SANDPACK_THEMES[scheme]}
               files={sandpackFiles}
@@ -1137,7 +1219,9 @@ export function Exercise({
                   readFailed={draftState.failed}
                   onResults={setResults}
                   onLogs={setLogs}
-                  onShowSolution={() => setShowSolution(true)}
+                  onOutput={setOutput}
+                  onCodeChange={handleCodeChange}
+                  onShowSolution={() => setSolutionViewedKey(draftKey)}
                   onAttempt={onSubmit}
                   showSolution={showSolution}
                   rungs={workspace ? <HintRungs ladder={ladder} /> : undefined}
@@ -1151,16 +1235,27 @@ export function Exercise({
 
       {/* Test Results. The live region is mounted unconditionally so it can
           announce; the panel renders only once there is something to show. */}
+      {output && (
+        <ExerciseOutput
+          artifacts={output.artifacts}
+          stale={output.code !== editorCode}
+          complete={output.complete}
+        />
+      )}
       <TestResultsLiveRegion results={results} />
       {workspace ? (
         <aside
           className="challenge-checks"
-          aria-label="Expected tensor and test results"
+          aria-label={
+            exercise.taskBrief?.expectedTensor
+              ? "Expected tensor and test results"
+              : "Test results"
+          }
         >
           {exercise.taskBrief?.expectedTensor && (
             <figure className="challenge-expected-tensor">
               <figcaption>Expected tensor</figcaption>
-              <p>Keep these five readings in their original order.</p>
+              <p>Keep these readings in their original order.</p>
               <ol aria-label="Expected sensor readings">
                 {exercise.taskBrief.expectedTensor.values.map(
                   (value, index) => (
@@ -1175,7 +1270,9 @@ export function Exercise({
                 <code>
                   [{exercise.taskBrief.expectedTensor.shape.join(", ")}]
                 </code>
-                <span>One list of five readings</span>
+                <span>
+                  {exercise.taskBrief.expectedTensor.values.length} readings
+                </span>
               </p>
             </figure>
           )}
@@ -1183,7 +1280,9 @@ export function Exercise({
             <TestResultsPanel results={results} namePrefix={exercise.title} />
           ) : (
             <p className="challenge-run-prompt">
-              Run Tests checks your tensor against these readings.
+              {exercise.taskBrief?.expectedTensor
+                ? "Run Tests checks your tensor against these readings."
+                : "Run Tests to see your result and check your code."}
             </p>
           )}
           <ConsolePanel logs={logs} />

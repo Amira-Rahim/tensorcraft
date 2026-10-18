@@ -1,6 +1,6 @@
 slug: gpu-backend
 lessonSlug: webgpu-acceleration
-title: "Fall Back Through the Backend Ladder"
+title: "Find a Working Backend"
 instructions: |
   Help Demir find a working backend for the console. Write `initBestBackend(preference, runtime)`. Try names in the supplied order and return the first one that starts.
 
@@ -128,8 +128,16 @@ testCode: |
 
     it('handles both failure modes in one ladder', async () => {
       const { runtime, calls } = makeRuntime({ webgpu: false, wasm: true });
-      expect(await chosen(LADDER, runtime)).toBe('wasm');
+      const selected = await chosen(LADDER, runtime);
+      expect(selected).toBe('wasm');
       expect(calls).toEqual(['webgpu', 'webgl', 'wasm', 'ready']);
+      recordResult({
+        kind: 'table',
+        title: 'How your selector reached a working backend',
+        summary: 'Selected ' + selected + ' in a controlled runtime. This verifies failure handling, not backend support or speed on your device.',
+        columns: ['Observed call', 'Supplied runtime response'],
+        rows: calls.map((name) => [name, name === 'webgpu' ? 'Initialization returned false' : name === 'webgl' ? 'Unregistered backend threw' : name === 'ready' ? 'Initialization settled' : 'Started']),
+      });
     });
 
     it('stops at the winner', async () => {
