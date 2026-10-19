@@ -8,7 +8,7 @@ export function CourseProjectPreview() {
       aria-labelledby="course-project-preview-title"
     >
       <h2 id="course-project-preview-title" className="text-2xl font-semibold">
-        Take the work outside the course
+        Your independent browser project
       </h2>
       <p>
         Start with JavaScript functions, arrays, objects, modules, and async
@@ -30,15 +30,15 @@ export function CourseProjectPreview() {
             Supplied: data and attribution, starter files, evaluation helpers,
             and a local app. You create the training experiment, model artifact,
             evaluation runs, and explanation. Browser lessons need no local
-            installation; this project requires Node.js 22+ and an initial
+            installation. This project requires Node.js 22+ and an initial
             dependency download.
           </p>
         </div>
         <div className="space-y-3">
           <h3 className="font-semibold">A recorded failure to inspect</h3>
           <p className="text-sm text-text-muted">
-            Maintainer demonstration, not learner work. One validation reading
-            from a fixed integration fixture:
+            Here is one validation reading from our demonstration run, separate
+            from the work you’ll do:
           </p>
           <dl className="grid grid-cols-2 gap-2 text-sm">
             <dt>Temperature</dt>
@@ -98,10 +98,10 @@ export function CourseProjectPreview() {
         </a>
       </div>
       <p className="text-sm text-text-muted">
-        The project adds an estimated 4–8 hours, an author estimate awaiting
-        learner timing. Its checks verify selected artifact and evaluation
-        contracts; they do not automatically grade your reasoning or establish
-        independent skill.
+        Allow about 4–8 hours for the project. That is our estimate. We have not
+        yet checked it with learners. Automated checks cover the saved model and
+        parts of the evaluation. A reviewer still needs to assess your reasoning
+        and independent work.
       </p>
     </section>
   );

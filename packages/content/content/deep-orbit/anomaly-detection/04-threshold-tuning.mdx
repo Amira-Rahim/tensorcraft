@@ -21,9 +21,9 @@ concept:
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
-    breaks: "Both thresholds need a purpose and observed data. An error rate has direct units; reconstruction error also depends on feature scaling, model, and loss reduction. Recheck the cutoff after changing any of them. A retrain can change the useful cutoff, but does not necessarily do so."
+    breaks: "Both thresholds need a purpose and observed data. An error rate has direct units. Reconstruction error also depends on feature scaling, model, and loss reduction. Recheck the cutoff after changing any of them. A retrain can change the useful cutoff, but does not necessarily do so."
 consequence:
-  narrative: "Demir does the volume arithmetic before he locks anything: one percent of calm readings is 26 flags a day on this archive. The cutoff goes to 1.0 instead, above every normal error in the calm slice, and the recall it costs goes in the log."
+  narrative: "Demir checks how many alerts the crew would receive: a 1% false-alarm rate means about 26 a day on this archive. He chooses a cutoff of 1.0 and records how many anomalies it misses. None of the normal validation readings crosses it."
 hints:
   - level: nudge
     content: |
@@ -108,7 +108,7 @@ const threshold99 = percentile(normalErrors, 99);
 console.log('99th percentile threshold:', threshold99);
 
 // Aggressive threshold: 95th percentile
-// About 5% flagged on this sample; the lower cutoff can catch more anomalies
+// About 5% flagged on this sample. The lower cutoff can catch more anomalies
 const threshold95 = percentile(normalErrors, 95);
 console.log('95th percentile threshold:', threshold95);
 
@@ -121,11 +121,11 @@ A percentile estimates the false-alarm rate on the normal readings you sampled. 
 
 The archive has one reading per 33-second window: 2,618 a day or 18,327 a week. At a 1% false-alarm rate, that is about 26 false flags a day and 183 a week. Nazari had 14 alerts that week. Module 4's live dashboard reads once per second. At that volume, the same 1% rate would produce 864 false flags a day.
 
-Two false alarms a week among 18,327 normal readings would require a rate near 0.011%. A sample of 2,880 cannot estimate that tail reliably: one observation is already about 0.035% of the sample. Zero observed false alarms is still compatible with a nonzero future rate. Collect more representative data, use an explicit uncertainty bound, and consider grouping repeated flags into incidents. A labeled sweep below helps compare costs; it does not remove this sampling uncertainty.
+Two false alarms a week among 18,327 normal readings would require a rate near 0.011%. A sample of 2,880 cannot estimate that tail reliably: one observation is already about 0.035% of the sample. Zero observed false alarms is still compatible with a nonzero future rate. Collect more representative data, use an explicit uncertainty bound, and consider grouping repeated flags into incidents. A labeled sweep below helps compare costs. It does not remove this sampling uncertainty.
 
 ## Evaluating the Threshold
 
-For this sweep, undefined precision or recall is reported as zero, and F1 is zero when there are no true positives. This is an explicit reporting convention. The earlier helper returned `null` to keep an undefined ratio visible; a dashboard can still show that distinction.
+For this sweep, report undefined precision or recall as zero, and F1 is zero when there are no true positives. This is an explicit reporting convention. The earlier helper returned `null` to keep an undefined ratio visible. A dashboard can still show that distinction.
 
 <CodeBlock language="typescript" title="evaluation.ts">
 {`interface Metrics {
@@ -154,17 +154,17 @@ function evaluate(
 }
 
 // Sweep the candidates on the VALIDATION slice. Choosing a cutoff is
-// choosing a setting, and settings are paid for with validation data.
+// choosing a setting, so use validation data for that comparison.
 const thresholds = [0.2, 0.3, 0.4, 0.5, 0.8, 1.0];
 for (const t of thresholds) {
   const m = evaluate(valErrors, valLabels, t);
   console.log(\`t=\${t}: P=\${m.precision.toFixed(2)} R=\${m.recall.toFixed(2)} F1=\${m.f1.toFixed(2)}\`);
 }
-// Fictional mission report, not output from a supplied dataset:
-// t=0.2: P=0.34 R=1.00 F1=0.51  ← catches everything, many false alarms
-// t=0.4: P=0.89 R=0.95 F1=0.92  ← good balance
-// t=1.0: P=1.00 R=0.72 F1=0.84  ← no false alarms, misses some
-// (three of the six rows shown; 0.3, 0.5 and 0.8 each score between
+// Fictional mission report. The story supplies these results:
+// t=0.2: P=0.34 R=1.00 F1=0.51: catches everything, many false alarms
+// t=0.4: P=0.89 R=0.95 F1=0.92: good balance
+// t=1.0: P=1.00 R=0.72 F1=0.84: no false alarms, misses some
+// (three of the six rows shown. 0.3, 0.5 and 0.8 each score between
 // their neighbours, in this fictional report)
 
 // Do not read the test slice yet. Set the deployment objective and
@@ -177,9 +177,9 @@ The cutoff comparison uses 2,880 labeled validation rows. About one in twelve is
 
 Keep the final test data separate. Comparing six candidates uses information from the validation set to make six choices. After choosing the cutoff, test it once on the untouched test set. Choosing the winner on that test set would make its F1 partly reflect luck on those particular rows.
 
-## Choose a cutoff based on what errors cost
+## Cutoffs and the cost of errors
 
-The F1 peak at t=0.4 answers one question: which candidate maximizes F1 on this validation slice? F1 treats precision and recall symmetrically. That does not make it an equal-cost error objective.
+The F1 peak at t=0.4 answers one question: which candidate maximizes F1 on this validation slice? F1 gives precision and recall the same role in its formula. It does not count each false alarm and missed anomaly as one equally costly mistake.
 
 <CodeBlock language="javascript" title="f1-and-cost.js">
 {`// Two candidate cutoffs on the same 100 labeled examples: 20 anomalies.
@@ -193,7 +193,7 @@ const comparisons = candidates.map((c) => ({
   equalCost: c.fp + c.fn,
 }));
 // A: F1 0.571, 12 errors. B: F1 0.667, 15 errors.
-// F1 prefers B; an equal cost per error prefers A.`}
+// F1 prefers B. An equal cost per error prefers A.`}
 </CodeBlock>
 
 For a cost-based decision, define `cost = falseAlarmCost * FP + missCost * FN` and choose the validation cutoff with the lowest cost. Use data representative of deployment, or adjust estimates for its expected class frequencies. An alert-budget or minimum-recall constraint is another explicit objective. Decide it before comparing candidates, then check the chosen rule on the held-out test.
@@ -212,11 +212,11 @@ The live stream contains far fewer anomalies, so it can produce many more false 
 
 The second detector wakes the crew. Nazari investigated fourteen alerts, twelve caused by cosmic background radiation. Precision was 0.14, or 2 of 14. Repeated false alarms also make the crew less likely to respond to the next alert.
 
-On this validation curve, t=1.0 gives precision 1.00 and recall 0.72. It produces no false alarms on this set, but misses 28 percent of anomalies. The crew pager can use a different cutoff from the capture system, while still accounting for those missed events. Demir chooses 1.0. The fictional report has zero false alarms across 2,640 normal rows. That supports further testing, not a promise about next week.
+On this validation curve, t=1.0 gives precision 1.00 and recall 0.72. It produces no false alarms on this set, but misses 28 percent of anomalies. The crew pager can use a different cutoff from the capture system, while still accounting for those missed events. Demir chooses 1.0. The fictional report has zero false alarms across 2,640 normal rows. The crew still needs to test it on later readings.
 
 Both systems use the same model, errors, and F1 curve. One needs a lower cutoff and the other a higher one because their errors have different costs. The F1 table does not include those costs.
 
-The crew alert has now selected its cutoff using validation data and its alert budget. Evaluate that rule on the test slice once. If the result is inadequate, report the failure; tuning against this test would turn it into another validation set.
+The crew alert has now selected its cutoff using validation data and its alert budget. Evaluate that rule on the test slice once. If the result is inadequate, report the failure. Tuning against this test would turn it into another validation set.
 
 <CodeBlock language="typescript" title="locked-threshold.ts">
 {`const chosen = 1.0; // selected before inspecting the test results
@@ -226,7 +226,7 @@ console.log({ threshold: chosen, ...held });`}
 
 ## Challenge
 
-Compare the candidate cutoffs on labeled validation data. Return the one with the highest F1 and inspect its score before adopting that policy. This selects for F1; Nazari's crew pager still needs the separate decision about false-alarm and miss costs.
+Compare the candidate cutoffs on labeled validation data. Return the one with the highest F1 and inspect its score before adopting that policy. This selects for F1. Nazari's crew pager still needs the separate decision about false-alarm and miss costs.
 
 <Exercise slug="find-threshold" />
 
@@ -234,7 +234,7 @@ Compare the candidate cutoffs on labeled validation data. Return the one with th
 
 <StoryPassage>
 
-PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Keep reviewing the alerts while checking sensor changes, model performance and thresholds. The runbook selects where to investigate first; none of these clues proves the cause. Escalate unexplained cases.
+PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls faster than Demir can read it. Keep reviewing the alerts while checking sensor changes, model performance and thresholds. The runbook selects where to investigate first. None of these clues proves the cause. Escalate unexplained cases.
 
 </StoryPassage>
 
@@ -250,11 +250,11 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
       "options": [
         {
           "text": "The arithmetic mean of accuracy and specificity.",
-          "feedback": "F1 is defined using precision and recall."
+          "feedback": "The F1 formula combines precision and recall."
         },
         {
           "text": "The total number of false positives plus false negatives.",
-          "feedback": "F1 is a ratio-based summary, not an error count."
+          "feedback": "F1 combines precision and recall into a single ratio."
         },
         {
           "text": "The harmonic mean of precision and recall.",
@@ -285,7 +285,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 <RecallPrompt
   question="Why might a detector that saves captures need a different cutoff from one that wakes the crew?"
-  answer="Missing a capture may lose data the ship can never record again. A lower cutoff catches more events, even if it also saves more false alarms. Waking the crew too often can make them ignore alerts, so that system may need a higher cutoff. On this fictional curve, raising the cutoff improves precision but misses more events. Precision does not always rise on other datasets. Choose based on what the errors cost, not just the F1 peak."
+  answer="Missing a capture may lose data the ship can never record again. A lower cutoff catches more events, even if it also saves more false alarms. Waking the crew too often can make them ignore alerts, so that system may need a higher cutoff. On this fictional curve, raising the cutoff improves precision but misses more events. Precision does not always rise on other datasets. Choose based on what the errors cost. The F1 peak alone cannot tell you that."
 />
 
 <RecallPrompt
@@ -301,7 +301,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
     },
     {
       "kind": "choice",
-      "question": "What else is needed to turn a false-alarm rate into an expected alert count?",
+      "question": "What else do you need to turn a false-alarm rate into an expected alert count?",
       "options": [
         {
           "text": "The number of normal readings processed.",
@@ -309,7 +309,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
         },
         {
           "text": "Only the number of model layers.",
-          "feedback": "Model depth does not determine how many readings are processed."
+          "feedback": "Model depth does not determine how many readings the system processes."
         },
         {
           "text": "Only the percentile label.",
@@ -324,11 +324,11 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 
 <LessonRecap
   whatYouLearned={[
-    "Threshold tuning sets the boundary between normal and anomalous by choosing a cutoff on the reconstruction error distribution; setting it too low causes alert fatigue, too high causes missed detections.",
+    "Threshold tuning sets the boundary between normal and anomalous by choosing a cutoff on the reconstruction error distribution. Setting it too low causes alert fatigue, too high causes missed detections.",
     "A percentile estimates a false-alarm rate on sampled normal data. Expected alert volume also depends on traffic and whether that rate holds after deployment.",
-    "F1 score combines precision and recall into one comparison metric, but the optimal threshold depends on the cost asymmetry between false alarms and missed anomalies for the specific system.",
-    "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and the chosen cutoff is scored once on the held-out test slice.",
-    "An alert storm gets triaged before the cutoff is touched: read the sensor audit log first, then the model's age, then the ratio, and choose the first applicable investigation step. A storm that matches none of them goes to a human."
+    "F1 score combines precision and recall into one comparison metric, but the right cutoff depends on what false alarms and missed anomalies cost your system.",
+    "Choosing a threshold is choosing a setting, so the candidate sweep runs on the validation slice and you score the chosen cutoff once on the held-out test slice.",
+    "Investigate an alert storm before changing the cutoff: read the sensor audit log first, then the model's age, then the ratio, and choose the first applicable investigation step. A storm that matches none of them goes to a human."
   ]}
   bridge="Both alert cutoffs need observed data and an error-cost objective. Reconstruction-error thresholds also depend on feature scaling and the model, so recheck them after changes."
   youCanNow="Compare cutoffs using precision, recall, and F1. Explain when error costs favor a different cutoff, and use the runbook to investigate too many alerts before changing it."
@@ -339,7 +339,7 @@ PAGER, 05:12: a thousand anomaly alerts in the last hour. The channel scrolls fa
 Demir sets the cutoff to 1.0 before the next crew takes over. It is above every error in the normal validation readings. Nazari checks it herself by replaying last week's fourteen alerts. The twelve cosmic-background readings no longer trigger an alert. The other two still do. Both contain the signal.
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
-Two alerts worth reviewing in this replay. Take the next watch's threshold log, Ensign; I have a coolant inspection to finish. Page me if the workload changes.
+Two alerts worth reviewing in this replay. Take the next watch's threshold log, Ensign. I have a coolant inspection to finish. Page me if the workload changes.
 </Dialogue>
 
 The lock holds for a day and a half. Then, mid-morning, the dashboard fires the highest-scoring alert DEEP SCAN has ever produced, and this time nobody reaches for the word "false."

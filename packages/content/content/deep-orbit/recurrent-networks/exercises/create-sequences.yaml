@@ -1,6 +1,6 @@
 slug: create-sequences
 lessonSlug: sequences-matter
-title: "Window a Stream for Prediction"
+title: "Input windows and prediction targets"
 instructions: |
   Write `makeWindows(data, windowSize, stride)`.
 
@@ -63,7 +63,7 @@ testCode: |
       ).toEqual([[4], [5]]);
       recordResult({
         kind: 'table', title: 'Your next-reading training pairs',
-        summary: 'All windows from this five-row synthetic stream. The target follows its input window; it is not part of that input.',
+        summary: 'All windows from this five-row synthetic stream. The target follows its input window. It is not part of that input.',
         columns: ['Window index', 'Input readings', 'Next-reading target'],
         rows: xs.map((window, i) => [i, JSON.stringify(window), JSON.stringify(ys[i])]),
       });
@@ -73,7 +73,7 @@ testCode: |
       expect(xs).toEqual([[[1], [2]], [[3], [4]], [[5], [6]]]);
       expect(ys).toEqual([[3], [5], [7]]);
     });
-    it('drops the final window when nothing follows it, and builds no tensor out of nothing', () => {
+    it('skips windows without a target and returns null tensors when no pairs remain', () => {
       const { xs, ys, xsTensor, ysTensor } = windows([[1], [2], [3]], 3, 1);
       expect(
         xs,
@@ -82,7 +82,7 @@ testCode: |
       expect(ys).toEqual([]);
       expect(
         xsTensor,
-        'An empty set has no windows to stack, and a rank-3 tensor cannot be inferred from an empty array. Hand back null instead.',
+        'An empty set has no windows to stack, and TensorFlow.js cannot infer a rank-3 shape from an empty array. Hand back null instead.',
       ).toBeNull();
       expect(ysTensor).toBeNull();
     });
@@ -107,7 +107,7 @@ testCode: |
         const setting = `windowSize ${windowSize}, stride ${stride}, ${length} readings`;
         expect(
           xs.length,
-          `This setting (${setting}) was drawn at grade time, so the number of windows cannot have been worked out in advance. It follows from the three arguments: the first index advances by the stride, and the loop ends while the archive still holds the reading that answers the window.`,
+          `This setting (${setting}) comes from this test run. Calculate the window count from the current arguments. It follows from the three arguments: the first index advances by the stride, and the loop ends while the archive still holds the reading that answers the window.`,
         ).toBe(starts.length);
         expect(
           ys.length,
@@ -156,7 +156,7 @@ testCode: |
         ).toEqual([xs.length, windowSize, features]);
         expect(
           ysTensor.shape,
-          'Each target is one reading, not a window, so the targets stack one axis lower than the inputs.',
+          'Each target contains one reading, so the targets stack one axis lower than the inputs.',
         ).toEqual([ys.length, features]);
         expect(
           xsTensor.arraySync(),

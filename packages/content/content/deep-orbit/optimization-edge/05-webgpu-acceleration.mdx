@@ -31,7 +31,7 @@ hints:
       Continue after either false or an exception from setBackend. Stop at
       the first true result, await ready once and return the selected name.
       If every attempt fails, await ready and read getBackend. Let a failure
-      from ready reach the caller; the engine may have no usable backend.
+      from ready reach the caller. The engine may have no usable backend.
   - level: solution
     content: |
       type BackendName = string;
@@ -76,7 +76,7 @@ The bridge has another backend available. Time the same model on it, and show me
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
+So WebGPU is to WebGL what Web Workers are to the main thread: an API that suits the workload?
 </Dialogue>
 
 A WebGL backend can store tensor values in textures and calculate results with graphics shaders. WebGPU provides compute shaders for calculations such as matrix multiplication and sums. Both take time to start work, move data, and wait for results. The API name alone does not tell you which is faster.
@@ -93,7 +93,7 @@ Give the dashboard a startup path that can recover when a preferred backend fail
 {`import * as tf from '@tensorflow/tfjs';
 // The bundled package registers only cpu and webgl. The two imports below
 // are what put 'webgpu' and 'wasm' in the registry: drop one and setBackend
-// throws on that name instead of resolving false. The 0249 dashboard had
+// throws on that name. It does not resolve false for an unknown backend. The 0249 dashboard had
 // the wasm line and not the webgpu line, which is why its fallback landed
 // on wasm at 45 ms and never on anything faster.
 import '@tensorflow/tfjs-backend-webgpu';
@@ -136,26 +136,26 @@ console.log('Using backend:', backend);
 // The wasm row is the same 45 ms the 340 MB build profiled at in this
 // module's first lesson. Quantization cut the bytes on disk and pruning
 // cut the bytes on the wire. Neither reduced the dense operation count.
-// The scenario keeps this timing fixed; real latency still needs measurement.
+// The scenario keeps this timing fixed. Real latency still needs measurement.
 //
 // The cached classifier's own pipeline lands on the same two GPU
 // figures for a different reason: its 5 ms on WebGPU and 15 on WebGL
 // cover feature extraction and readback around the classifier call
-// lesson 4 caches, not the bundle matmuls these rows time. Module 11's
+// lesson 4 caches. These rows time the bundle matmuls separately. Module 11's
 // model card keeps the two on separate lines.`}
 </CodeBlock>
 
-Check the returned value as well as errors. In TFJS 4.22, a registered backend can fail to start and resolve false. A backend that was never registered throws. A reported backend name after a failed attempt does not prove it can run operations.
+Check the returned value as well as errors. In TFJS 4.22, a registered backend can fail to start and resolve false. Requesting a backend you never registered throws. A reported backend name after a failed attempt does not prove it can run operations.
 
 The example checks readiness, tries CPU last, and throws if nothing starts. The exercise tests this selection logic with a controlled runtime. The downloadable lab tests real backends and predictions.
 
 <Dialogue speaker="Dr. Farah">
-A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here; we still have to measure device support, transfer costs and completed inference.
+A Worker runs JavaScript on a separate thread with its own global context. WebGPU sends work to GPU compute pipelines. Those are different choices, and a program can use both. TF.js handles the shaders here. We still have to measure device support, transfer costs and completed inference.
 </Dialogue>
 
-## Time the completed prediction
+## Timing a completed prediction
 
-Demir's first bridge-console run reported 0.4 milliseconds on WebGPU, compared with 15 on WebGL. His timer had stopped before the GPU finished. Including output readback changed the WebGPU result to 5 milliseconds. These are fictional mission timings; compare the two measurement boundaries below.
+Demir's first bridge-console run reported 0.4 milliseconds on WebGPU, compared with 15 on WebGL. His timer had stopped before the GPU finished. Including output readback changed the WebGPU result to 5 milliseconds. These are fictional mission timings. Compare the two measurement boundaries below.
 
 <CodeBlock language="typescript" title="measure-inference.ts">
 {`// First attempt: start the clock, call predict, stop the clock.
@@ -180,7 +180,7 @@ output.dispose(); // warmInput belongs to the caller
 
 // CPU kernels run synchronously, but readback, scheduling and measurement
 // noise can still change timings. One pair of calls does not isolate GPU
-// execution time; repeat trials and report distributions.`}
+// execution time. Repeat trials and report distributions.`}
 </CodeBlock>
 
 These timings are fictional story values. The runtime lab records real measurements for a named backend, device, and model. Your results will differ. Keep the output readback inside the timed section so you measure a finished prediction. The crew has already paid for trusting a timer that stopped too soon.
@@ -192,18 +192,17 @@ These timings are fictional story values. The runtime lab records real measureme
 //
 // Both halves of the speed win are backend changes. The 45 ms baseline was
 // profiled on the wasm fallback, since the dashboard had no working WebGL
-// context that night; the context came back on its own once the smaller
+// context that night. The context came back on its own once the smaller
 // build stopped exhausting memory. So 45 to 15 is WebGL restored, and
 // 15 to 5 is the WebGPU swap. A separate load test establishes whether
-// the revised build fits; stored bytes alone cannot. Step 3 shrinks nothing on
-// disk, because TF.js writes dense weights; its zeros only make the file
+// the revised build fits. Stored bytes alone cannot. Step 3 shrinks nothing on
+// disk, because TF.js writes dense weights. Its zeros only make the file
 // compress, so it buys a smaller download. Neither touches the
-// arithmetic a call does. Step 4 cuts how many calls happen, not what
-// one call costs.
+// arithmetic a call does. Step 4 reduces the call count. Each call still performs the same work.
 //
 // A kernel microbenchmark does not bound whole-model performance.
 // Shapes, supported operations, transfers and synchronization all matter.
-// Measure the deployed pipeline instead of multiplying claimed speedups.
+// Measure the deployed pipeline to find its actual combined runtime.
 
 console.log('=== DEEP SCAN Optimization Stack ===');
 console.log('');
@@ -233,13 +232,13 @@ console.log('part of the bundle carrying a scoreboard.');`}
 
 Try the backends in the supplied order. Check whether each attempt returns true, then return the backend that started. An attempt can fail without throwing.
 
-The result records each attempted backend and the one your selector accepts. This is a controlled failure rehearsal, so it verifies the fallback path rather than your device's GPU support. The runtime lab runs real predictions and timings on available backends.
+The result records each attempted backend and the one your selector accepts. This is a controlled failure rehearsal, so it verifies the fallback path. Use the runtime lab to check your device’s GPU support. The runtime lab runs real predictions and timings on available backends.
 
 <Exercise slug="gpu-backend" />
 
 <RecallPrompt
   question="Why might WebGPU help, and how would you check whether it does?"
-  answer="WebGPU exposes compute shaders suited to tensor operations. That can help, but operator implementations, transfer and setup costs matter too. Setup can dominate small workloads; the scene’s 3x gain is fictional. Benchmark your actual model and device; WebGPU can also lose."
+  answer="WebGPU exposes compute shaders suited to tensor operations. That can help, but operator implementations, transfer and setup costs matter too. Setup can dominate small workloads. The scene’s 3x gain is fictional. Benchmark your actual model and device. WebGPU may be slower."
   checks={[
     {
       "kind": "choice",
@@ -267,7 +266,7 @@ The result records each attempted backend and the one your selector accepts. Thi
       "options": [
         {
           "text": "Setup, transfers and operator costs can outweigh the compute benefit.",
-          "feedback": "Measure completed inference on the actual model and devices; WebGPU can also lose."
+          "feedback": "Measure completed inference on the actual model and devices. WebGPU may be slower."
         },
         {
           "text": "WebGPU must always be exactly three times faster.",
@@ -279,14 +278,14 @@ The result records each attempted backend and the one your selector accepts. Thi
         }
       ],
       "correctIndex": 0,
-      "explanation": "Measure completed inference on the actual model and devices; WebGPU can also lose."
+      "explanation": "Measure completed inference on the actual model and devices. WebGPU may be slower."
     }
   ]}
 />
 
 <RecallPrompt
   question="A timer stops just after predict() and reports 0.4 ms. What is missing?"
-  answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work, not how fast the GPU does it. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms."
+  answer="Read a tensor back before stopping the clock. GPU backends queue kernels asynchronously, so a clock that stops at the predict call times how fast you can enqueue work. The GPU may still be running when that clock stops. Disposing does not flush the queue. Awaiting output.data() does, and that run then read 5 ms."
   checks={[
     {
       "kind": "choice",
@@ -294,7 +293,7 @@ The result records each attempted backend and the one your selector accepts. Thi
       "options": [
         {
           "text": "Only the synchronous return from predict().",
-          "feedback": "That may measure how quickly work was queued, not how long it took to complete."
+          "feedback": "That may measure how quickly the backend queued the work. Wait for readback to include completion time."
         },
         {
           "text": "Only the call to dispose() on the output.",
@@ -310,11 +309,11 @@ The result records each attempted backend and the one your selector accepts. Thi
     },
     {
       "kind": "choice",
-      "question": "Would disposing the output instead of awaiting readback validate the timing?",
+      "question": "Would disposing the output validate the timing without awaiting readback?",
       "options": [
         {
           "text": "Yes.",
-          "feedback": "Disposal does not provide the required output-completion measurement."
+          "feedback": "Disposing a tensor does not wait for its output to become available."
         },
         {
           "text": "No.",
@@ -329,7 +328,7 @@ The result records each attempted backend and the one your selector accepts. Thi
 
 <LessonRecap
   whatYouLearned={["WebGPU exposes compute pipelines. Whether it beats WebGL depends on the workload and device.", "Check backend initialization and verify the active backend after fallback.", "Include output readback when timing completed inference.", "Measure download size, runtime memory, call count, latency and prediction quality separately after each optimization."]}
-  bridge="WebGL and WebGPU expose different GPU APIs; WebGPU adds compute pipelines. That choice is separate from moving JavaScript work into a Worker."
+  bridge="WebGL and WebGPU expose different GPU APIs. WebGPU adds compute pipelines. That choice is separate from moving JavaScript work into a Worker."
   youCanNow="Select an available backend, handle total initialization failure and measure completed inference on the chosen device."
 />
 
@@ -350,7 +349,7 @@ On the live feed behind the Commander the pulse arrives, then arrives again, 47.
   fallback="Demir runs the backend comparison without cached outputs, then records cache-hit and cache-miss timings separately."
   outcomes={{
     "cooperate": "The uncached rehearsal leaves a longer queue on Nazari's panel. Demir reports those timings separately, then measures an exact-key prototype before proposing any reuse. Nazari keeps the queue watch until both runs finish.",
-    "defect": "The paired threshold probes expose the rounded-key collision: the second input receives the first verdict. Demir disables reuse and repeats the affected captures from the raw log; the earlier cache-hit timings stay out of his backend comparison.",
+    "defect": "The paired threshold probes expose the rounded-key collision: the second input receives the first verdict. Demir disables reuse and repeats the affected captures from the raw log. The earlier cache-hit timings stay out of his backend comparison.",
     "random": "A model swap between watch boundaries returns an old cached verdict in the rehearsal. Demir repeats the run with model and preprocessing versions in each key. Nazari adds that swap case to the next handover.",
     "dominant": "The 64-entry versioned cache rejects the collision and old-model probes. Its near-duplicates still miss, so Demir reports hit, miss and uncached timings separately. Nazari signs the latency budget against misses, where inference still has to run."
 }}

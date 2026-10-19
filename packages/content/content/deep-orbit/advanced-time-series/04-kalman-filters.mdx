@@ -21,7 +21,7 @@ concept:
     mlTitle: "Kalman Update"
     mlCode: "estimate = gain * measurement + (1 - gain) * prediction"
     tier: structural
-    breaks: "EMA blends a single fixed-weight average over past values. Kalman updates jointly track state and uncertainty using a state-transition model and a measurement model, with weights computed dynamically from the current covariance. Same weighted-update shape, very different machinery."
+    breaks: "An EMA uses a fixed weight for each new measurement. A Kalman filter predicts the state and its uncertainty, then uses the measurement to update both. That weight changes with those uncertainties."
 consequence:
   narrative: "The log shows the gap between pulses shrinking by about a sixth of a second per day. The Kalman estimate is smoother, but trails the latest measurement by about 0.43 seconds."
 hints:
@@ -60,7 +60,7 @@ keywords:
 skillAxes: [model_arch]
 ---
 
-> **PULSE INTERVAL LOG · first cycle of each of the last eight days (seconds):** 73.1 · 72.9 · 73.0 · 72.6 · 72.7 · 72.3 · 72.4 · 72.0
+> **PULSE INTERVAL LOG, first cycle of each of the last eight days (seconds):** 73.1, 72.9, 73.0, 72.6, 72.7, 72.3, 72.4, 72.0
 
 Demir needs to track the falling interval without following every noisy fluctuation.
 
@@ -82,21 +82,21 @@ smooth(0.8); // 72.08: right on the drift, but the estimate now bounces
              // with every noisy reading it was supposed to absorb.`}
 </CodeBlock>
 
-A small alpha trusts history and lags the drift. A large alpha trusts the newest reading and inherits its noise. That tradeoff depends on the process and the cost of lag. A tuned EMA can be a useful baseline; a Kalman model makes the uncertainty assumptions explicit.
+A small alpha trusts history and lags the drift. A large alpha trusts the newest reading and inherits its noise. That tradeoff depends on the process and the cost of lag. A tuned EMA can be a useful baseline. A Kalman model makes the uncertainty assumptions explicit.
 
 <Dialogue speaker="Ensign Demir">
 What I actually want is an alpha that adjusts itself. Trust the measurement more when my estimate is shaky. Trust my estimate more when the measurements are noisy.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-A Kalman filter can calculate that weight from an uncertainty model. It predicts a value and its uncertainty, then uses the new measurement to update both. The weight is called the Kalman gain. Whether it is trustworthy depends on the model and noise assumptions we give it.
+A Kalman filter can calculate that weight from an uncertainty model. It predicts a value and its uncertainty, then uses the new measurement to update both. We call this weight the Kalman gain. Whether it is trustworthy depends on the model and noise assumptions we give it.
 </Dialogue>
 
 You will update an estimate and its uncertainty as each noisy measurement arrives.
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter that smooths a noisy timing signal", "Connect Kalman filtering to the exponential moving average pattern", "Smooth a drifting interval and read the lag that motivates a velocity state"]} />
 
-## Predict, Then Correct
+## Prediction and correction
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -152,9 +152,9 @@ for (const m of measurements.slice(1)) {
   const state = kf.update(m);
   console.log(\`Measurement: \${m.toFixed(1)}, Estimate: \${state.estimate.toFixed(2)}\`);
 }
-// Estimate walks 73.1 → 72.43 while the readings end at 72.0: the
-// filter is absorbing the noise and trailing the trend, not following
-// it. The per-day shrink gets read off the raw log, not off this line.`}
+// Estimate walks 73.1 to 72.43 while the readings end at 72.0: the
+// filter smooths the noise but lags behind the decline. Read the daily
+// change from the raw log. This smoothed line cannot estimate that trend directly.`}
 </CodeBlock>
 
 This filter tracks one number, the current level. It does not track how fast that level changes. As the gain settles, it behaves like an EMA with a fixed alpha and falls behind a steady trend.
@@ -185,13 +185,13 @@ dV/dK = -2(1-K)·P + 2K·R = 0
       → K = P / (P + R)
 ```
 
-The code uses that same formula: `predictedVariance / (predictedVariance + measurementNoise)`. If the sensor is nearly perfect, R → 0 and K → 1, so the update follows the measurement. If sensor uncertainty is very large, R → ∞ and K → 0, so it keeps the prediction.
+The code uses that same formula: `predictedVariance / (predictedVariance + measurementNoise)`. If the sensor is nearly perfect, R approaches 0 and K approaches 1, so the update follows the measurement. If sensor uncertainty is very large, R grows without bound and K approaches 0, so it keeps the prediction.
 
 This is Demir's changing alpha. The filter recalculates it as corrections reduce P. If the model and noise statistics stay constant, the gain can settle at a constant value. Using that settled gain is a valid design choice.
 
 With this random-walk model and fixed noise variances, P and the gain settle. For process noise 0.1 and measurement noise 1, the limiting gain is about 0.27. The early gains are 0.52, 0.38, and 0.33 as each measurement reduces the assumed uncertainty.
 
-Once settled, the filter behaves like an EMA with a chosen alpha. It still falls behind a steady trend. To track that trend directly, add a second state for the change per day. A two-state constant-velocity filter runs these calculations on `[interval, change-per-day]` instead of one number.
+Once settled, the filter behaves like an EMA with a chosen alpha. It still falls behind a steady trend. To track that trend directly, add a second state for the change per day. A two-state constant-velocity filter runs these calculations on a two-number state, `[interval, change-per-day]`.
 </DerivationDrawer>
 
 ## Challenge
@@ -202,7 +202,7 @@ Track the changing pulse interval with a Kalman filter. Compare your returned es
 
 <RecallPrompt
   question="Consider the scalar update: estimate = prediction + gain × (measurement − prediction)."
-  answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means measurement variance is large relative to prediction variance so the filter trusts its prediction; near 1 means prediction variance is large relative to measurement variance so the filter defers to the measurement."
+  answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means measurement variance is large relative to prediction variance so the filter trusts its prediction. Near 1 means prediction variance is large relative to measurement variance so the filter defers to the measurement."
   checks={[
     {
       "kind": "choice",
@@ -230,7 +230,7 @@ Track the changing pulse interval with a Kalman filter. Compare your returned es
       "options": [
         {
           "text": "The arithmetic average of all historical measurements.",
-          "feedback": "The gain controls this update, not a direct average of the whole history."
+          "feedback": "The gain controls how much the current measurement changes the prediction."
         },
         {
           "text": "The new measurement.",
@@ -261,7 +261,7 @@ Track the changing pulse interval with a Kalman filter. Compare your returned es
         },
         {
           "text": "A gain below 1 proves that all measurements are invalid.",
-          "feedback": "The gain balances uncertainty; it does not declare measurements invalid."
+          "feedback": "The gain balances uncertainty. It does not declare measurements invalid."
         },
         {
           "text": "It is already predicting the downward velocity explicitly.",
@@ -277,12 +277,12 @@ Track the changing pulse interval with a Kalman filter. Compare your returned es
 <LessonRecap
   whatYouLearned={[
     "A Kalman filter runs a predict-then-correct loop: it projects the current estimate forward, then blends in the new measurement weighted by the Kalman gain.",
-    "The gain is computed dynamically from the current estimate variance and measurement noise, so the blend minimizes error variance under the stated unbiased, uncorrelated-error assumptions.",
+    "The filter calculates the gain from the current estimate variance and measurement noise, so the blend minimizes error variance under the stated unbiased, uncorrelated-error assumptions.",
     "The predict-correct structure generalizes the exponential moving average: EMA uses a fixed alpha, Kalman computes the equivalent weight adaptively.",
     "A one-state filter can lag a steadily drifting signal even after its gain settles. Modeling both the value and its rate of change requires a second state."
   ]}
-  bridge="Like the exponential moving average `smoothed = alpha * newValue + (1 - alpha) * smoothed`, a Kalman update blends `gain * measurement + (1 - gain) * prediction`, but computes `gain` dynamically from current uncertainty rather than holding it fixed."
-  youCanNow="Implement a 1D Kalman filter that reports a smoothed estimate of a noisy value at each step, and read how far that estimate trails a drifting one."
+  bridge="Like the exponential moving average `smoothed = alpha * newValue + (1 - alpha) * smoothed`, a Kalman update blends `gain * measurement + (1 - gain) * prediction`, but computes `gain` dynamically from current uncertainty for each update."
+  youCanNow="Implement a 1D Kalman filter and compare its estimates with noisy measurements to see both smoothing and lag."
 />
 
 <Epilogue>

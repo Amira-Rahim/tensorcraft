@@ -8,7 +8,7 @@ pattern: broken_code_first
 scene:
   location: "Archimedes, Engineering"
   time: "Morning after the flatline run"
-  portraitAlt: "A dead flat training curve glows over an engineering bay; one silhouette slumps at the console as two others arrive."
+  portraitAlt: "A dead flat training curve glows over an engineering bay. One silhouette slumps at the console as two others arrive."
 estimatedMinutes: 14
 difficulty: advanced
 context:
@@ -22,14 +22,14 @@ concept:
     mlTitle: "LSTM Forget Gate"
     mlCode: "forgetGate = sigmoid(W_f * [hidden, input] + b_f) // learn what to discard"
     tier: structural
-    breaks: "localStorage has no built-in expiry; application code can implement a TTL and remove an entry. An LSTM forget gate scales each cell-state dimension with a learned value between zero and one. It does not implement a clock-based expiration policy."
+    breaks: "localStorage has no built-in expiry. Application code can implement a TTL and remove an entry. An LSTM forget gate scales each cell-state dimension with a learned value between zero and one. It does not implement a clock-based expiration policy."
 consequence:
-  narrative: "The LSTM trains on one day of the archive and flags pulses three days past anything it saw, each inside a single window. Recurrent state resets between windows; trained weights remain."
+  narrative: "The LSTM trains on the archive’s first day and detects pulses in windows from three days later. Each window starts with fresh state, using the trained weights."
 hints:
   - level: nudge
     content: "Check which activation the gates use and which column holds each gate’s weights before comparing your output with TensorFlow.js."
   - level: guidance
-    content: "Use sigmoid for the three gates and tanh for the candidate. Multiply each stored or proposed value by its gate before adding. TFJS packs columns as input, forget, candidate, output; each gate row combines the same column from both kernels and the bias."
+    content: "Use sigmoid for the three gates and tanh for the candidate. Multiply each stored or proposed value by its gate before adding. TFJS packs columns as input, forget, candidate, output. Each gate row combines the same column from both kernels and the bias."
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -102,13 +102,13 @@ The forget gate uses the new input and previous hidden state to calculate a lear
 We still need to test whether ours learns the pulse on held-out windows, including later days.
 </Dialogue>
 
-The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Each outputs a fraction between 0 and 1, so it can pass part of a value rather than only keeping or discarding all of it.
+The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. Each outputs a fraction between 0 and 1, so it can scale a value continuously.
 
 Calculate an LSTM update and inspect both results: the information retained in cell state and the hidden output passed onward. Matching the library's update lets Demir check the gated cell before another training run.
 
-<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell with tf.layers.lstm and read its three gates and candidate out of the kernels and bias the library packs them into", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
+<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM cell and find the weights for each gate and the candidate update", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Trace the gradient backward along the cell state and say what the forget gate does to it"]} />
 
-## Three Gates, One Cell
+## LSTM gates and cell state
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -133,7 +133,7 @@ Calculate an LSTM update and inspect both results: the information retained in c
 // state is. Walking backward along that path, the gradient picks up
 // the forget gate factor per step on the direct cell-state path.
 // The full gradient also has paths through the gates. A gate that learns to sit
-// at 0.99 still leaves 0.37 of the signal 100 steps later; at 0.9 only
+// at 0.99 still leaves 0.37 of the signal 100 steps later. At 0.9 only
 // 0.000027 survives, and a gate that learns to close cuts that
 // dimension off on purpose. The decay is learned per dimension here,
 // not forced by the wiring`}
@@ -144,7 +144,7 @@ Calculate an LSTM update and inspect both results: the information retained in c
 <CodeBlock language="typescript" title="lstm-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// LSTM: a gated recurrent layer; compare its quality and cost on your task.
+// LSTM: a gated recurrent layer. Compare its quality and cost on your task.
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,              // hidden state size
@@ -156,9 +156,9 @@ model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Small execution drill, not evidence of long-range learning. These
+// Small execution drill. It cannot demonstrate long-range learning. These
 // independent random labels do not define a useful prediction task.
-// The story's archive result below is fictional, not measured by this fit.
+// The story supplies the fictional archive result below. This fit cannot measure it.
 const x = tf.randomNormal([10, 80, 3]);  // 10 samples, 80 time steps
 const y = tf.tidy(() => tf.randomUniform([10, 1]).round());
 
@@ -193,7 +193,7 @@ Our handwritten step uses sigmoid, so set `recurrentActivation: 'sigmoid'` on th
 {`import * as tf from '@tensorflow/tfjs';
 
 // GRU (Gated Recurrent Unit): one gate fewer, and a quarter fewer weights
-// Two gates instead of three: update gate + reset gate
+// A GRU has two gates, update and reset. An LSTM has three.
 
 // 1. UPDATE GATE: one value per dimension, doing the forget gate's job
 //    and the input gate's job at once
@@ -237,7 +237,7 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
 
 <RecallPrompt
   question="How does an LSTM forget gate differ from expiring a stored value after a fixed time?"
-  answer="The forget gate calculates a keep fraction between 0 and 1 for each stored value. It uses the current input and previous hidden state. Near 0 discards most of the old value; near 1 keeps most of it. There is no expiry clock. A TTL, or time-to-live rule, instead expires a localStorage entry after a set time. Application code must implement that rule; localStorage has no built-in timer."
+  answer="The forget gate calculates a keep fraction between 0 and 1 for each stored value. It uses the current input and previous hidden state. Near 0 discards most of the old value. Near 1 keeps most of it. There is no expiry clock. A TTL, or time-to-live rule, instead expires a localStorage entry after a set time. Application code must implement that rule. localStorage has no built-in timer."
   checks={[
     {
       "kind": "choice",
@@ -245,7 +245,7 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
       "options": [
         {
           "text": "A timestamp saying when the state expires.",
-          "feedback": "The gate is computed from inputs and state, not from an expiry clock."
+          "feedback": "The gate computes a fraction from the input and state. It has no expiry clock."
         },
         {
           "text": "One shared Boolean that deletes the whole state.",
@@ -253,11 +253,11 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
         },
         {
           "text": "A learned value between 0 and 1.",
-          "feedback": "Values near 0 discard most of a dimension; values near 1 retain most of it."
+          "feedback": "Values near 0 discard most of a dimension. Values near 1 retain most of it."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Values near 0 discard most of a dimension; values near 1 retain most of it."
+      "explanation": "Values near 0 discard most of a dimension. Values near 1 retain most of it."
     },
     {
       "kind": "choice",
@@ -265,30 +265,30 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
       "options": [
         {
           "text": "A TTL learns a different fraction for each state dimension.",
-          "feedback": "Learned per-dimension fractions describe the gate, not a time-to-live policy."
+          "feedback": "The gate learns a separate fraction for each dimension. A time-to-live policy uses an expiry time."
         },
         {
-          "text": "The gate scales state continuously; a TTL expires an entry according to time.",
-          "feedback": "A TTL is an application time rule; the forget gate is learned, input-dependent scaling."
+          "text": "The gate scales state continuously. A TTL expires an entry according to time.",
+          "feedback": "A TTL is an application time rule. The forget gate uses trained weights to scale its state according to the input and previous state."
         },
         {
           "text": "Both automatically delete stored data after the same fixed interval.",
-          "feedback": "An LSTM forget gate has no built-in expiry clock; localStorage also needs application logic for TTL."
+          "feedback": "An LSTM forget gate has no built-in expiry clock. localStorage also needs application logic for TTL."
         }
       ],
       "correctIndex": 1,
-      "explanation": "A TTL is an application time rule; the forget gate is learned, input-dependent scaling."
+      "explanation": "A TTL is an application time rule. The forget gate uses trained weights to scale its state according to the input and previous state."
     }
   ]}
 />
 
 <RecallPrompt
   question="If the LSTM’s state resets between windows, what does it keep from training?"
-  answer="The trained weights remain, while recurrent state starts fresh for each window. Those weights let the model recognize patterns within new 80-step windows. Success three days later would show that the learned weights work on later data, not that hidden state survived for three days. The mission result is fictional; a real model needs evaluation on later data."
+  answer="The trained weights remain, while recurrent state starts fresh for each window. Those weights let the model recognize patterns within new 80-step windows. Success three days later would show that the learned weights work on later data. The model still starts fresh state for each window. The mission result is fictional. A real model needs evaluation on later data."
 />
 
 <LessonRecap
-  whatYouLearned={["An LSTM has three gates and a candidate update. Gates control how much information is kept, added and exposed.", "On the direct cell-state gradient path, forget-gate factors near one reduce decay. Other gradient paths also run through the gates, and learning is not guaranteed.", "A GRU uses fewer parameter blocks than an LSTM. Compare parameter counts for the actual configurations and measure quality on the same evaluation data.", "A stateless recurrent model resets state between windows while retaining its trained weights."]}
+  whatYouLearned={["An LSTM has three gates and a candidate update. Gates control how much information the cell keeps, adds and exposes.", "On the direct cell-state gradient path, forget-gate factors near one reduce decay. Other gradient paths also run through the gates, and training can still fail to learn a useful pattern.", "A GRU uses fewer parameter blocks than an LSTM. Compare parameter counts for the actual configurations and measure quality on the same evaluation data.", "A stateless recurrent model resets state between windows while retaining its trained weights."]}
   bridge="Application code can add a TTL to localStorage. An LSTM gate instead learns a per-dimension keep ratio from the current input and hidden state."
   youCanNow="Build a one-unit LSTM, read the gate weights from its kernels and bias, and calculate its cell and hidden-state updates in JavaScript."
 />
@@ -297,14 +297,14 @@ Build a one-unit `tf.layers.lstm` and read each gate’s weights from the matchi
 
 Nazari approves the run with a cost estimate attached. The 28,800 archive summaries are too far apart to show the pulse’s shape, so Demir returns to the raw captures. He extracts one feature row per second: 950,400 rows over eleven days. He trains on the first day and replays the other ten.
 
-Seventy-two hours beyond the training data, the model still catches each pulse within an 80-step window. Each window starts with fresh state and keeps the trained weights; ARIA stays silent for four seconds before speaking.
+Seventy-two hours beyond the training data, the model still catches each pulse within an 80-step window. Each window starts with fresh state and keeps the trained weights. ARIA stays silent for four seconds before speaking.
 
 <Dialogue speaker="ARIA">
-Filed without directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes pulses it was never trained on, three days downstream. Nothing in my tables explains why that works.
+I filed this without a directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes pulses outside its training data, three days downstream. Nothing in my tables explains why that works.
 </Dialogue>
 
 Farah closes the channel and adds the replay to the morning briefing.
 
-*Mission scene: the archive result above is a story value, not measured by the random-label training drill.*
+*Mission scene: the archive result above belongs to the fictional story. The random-label training drill cannot measure it.*
 
 </Epilogue>

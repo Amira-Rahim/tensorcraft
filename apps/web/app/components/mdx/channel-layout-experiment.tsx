@@ -146,7 +146,7 @@ export function ChannelLayoutExperiment() {
     >
       <header className="channel-activity-opening">
         <h3 id={`${uid}-title`} className="channel-activity-title">
-          Keep each sensor’s readings together
+          Each sensor’s readings over time
         </h3>
         <p data-story-passage="">
           Farah keeps Demir’s selected readings and opens the header beside
@@ -170,8 +170,8 @@ export function ChannelLayoutExperiment() {
               aria-labelledby={`${uid}-group-title`}
             >
               <h4 className="channel-stage-title" id={`${uid}-group-title`}>
-                <span className="channel-step-number">1</span> Group the
-                readings by time
+                <span className="channel-step-number">1</span> One row per
+                moment
               </h4>
               <p>
                 This list holds 12 readings, so its <strong>shape</strong> is{" "}
@@ -293,8 +293,8 @@ export function ChannelLayoutExperiment() {
                 aria-labelledby={`${uid}-sensor-title`}
               >
                 <h4 className="channel-stage-title" id={`${uid}-sensor-title`}>
-                  <span className="channel-step-number">2</span> Give the chart
-                  one row per sensor
+                  <span className="channel-step-number">2</span> One row per
+                  sensor
                 </h4>
                 <p>
                   Farah is ready to chart how each sensor’s readings change over
@@ -439,7 +439,7 @@ export function ChannelLayoutExperiment() {
             aria-labelledby={`${uid}-check-title`}
           >
             <h4 className="channel-stage-title" id={`${uid}-check-title`}>
-              Your turn: follow sensor B
+              Sensor B in the next selection
             </h4>
             <p data-story-passage="">
               Farah moves to another part of Demir’s recording. She selects
@@ -615,8 +615,8 @@ export function ChannelLayoutExperiment() {
       <p className="channel-detail">
         {ready
           ? saved
-            ? "Saved in this tab. Refreshing the page will keep your work."
-            : "We can’t save your work in this tab. You can still use the activity, but your work may be lost when you leave."
+            ? "This tab saves your work, including when you refresh the page."
+            : "We can’t save your work in this tab. You can still use the activity, but you may lose your work when you leave."
           : "Loading your saved work…"}{" "}
         This activity does not complete the lesson. Continue to the Challenge
         section for the coding task.
@@ -672,8 +672,8 @@ function RecordingNotes({
       </dl>
       <figure className="channel-source-map">
         <figcaption>
-          The first moment, in the order saved in the header. Select a sensor to
-          find its reading.
+          The first moment, following the header’s sensor order. Select a sensor
+          to find its reading.
         </figcaption>
         <ol className="channel-source-readings">
           {excerpt.sensorIds.map((sensor, index) => (
@@ -709,8 +709,8 @@ function RecordingNotes({
         <p role="status" className="channel-source-result">
           Sensor {excerpt.sensorIds[selectedSensor]} recorded{" "}
           <strong>{firstReadings[selectedSensor]}</strong>. Its reading is the{" "}
-          <strong>{positions[selectedSensor]}</strong> number saved for this
-          moment.
+          <strong>{positions[selectedSensor]}</strong> number in this moment’s
+          recording.
         </p>
       </figure>
       <p className="channel-detail">

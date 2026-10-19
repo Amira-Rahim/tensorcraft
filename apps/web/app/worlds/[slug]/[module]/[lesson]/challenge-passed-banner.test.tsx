@@ -72,7 +72,7 @@ describe("ChallengePassedBanner", () => {
     );
 
     expect(screen.getByRole("status")).toHaveTextContent(
-      /all exercise completions are saved/i,
+      /we saved all exercise completions/i,
     );
   });
 
@@ -101,7 +101,7 @@ describe("ChallengePassedBanner", () => {
     );
     expect(
       within(screen.getByTestId("challenge-passed-banner")).getByText(
-        /your saved progress is unchanged/i,
+        /your saved progress stays the same/i,
       ),
     ).toBeVisible();
     expect(screen.getByRole("button", { name: /continue/i })).toBeEnabled();

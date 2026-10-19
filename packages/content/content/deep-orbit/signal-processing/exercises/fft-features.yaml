@@ -1,6 +1,6 @@
 slug: fft-features
 lessonSlug: fft-as-features
-title: "Extract Fixed-Bin FFT Features"
+title: "Fixed-bin FFT features"
 instructions: |
   Implement `extractFeatures(signal, sampleRate, loHz, hiHz)`. Return one flat array containing:
   1. Peak amplitude: the largest absolute sample value.
@@ -81,7 +81,7 @@ testCode: |
     it('returns the two raw features followed by one magnitude per bin in the band', () => {
       expect(
         featuresOf(signal, 256, 50, 82),
-        'Bin width is 256 / 64 = 4 Hz here, so the 50 to 82 Hz band covers bins 13 through 20 with both endpoints in. That is eight magnitudes behind the two raw features. A slice that stops at the top bin instead of including it returns nine.',
+        'Bin width is 256 / 64 = 4 Hz here, so the 50 to 82 Hz band covers bins 13 through 20 with both endpoints in. That is eight magnitudes behind the two raw features. A slice that excludes the top bin returns only nine features.',
       ).toHaveLength(10);
     });
 
@@ -97,7 +97,7 @@ testCode: |
       // sit at known offsets from it.
       expect(
         features[2],
-        'Return raw FFT magnitudes. This tone has magnitude 32; a value near 1 means it was rescaled. Training-set normalization happens later.',
+        'Return raw FFT magnitudes. This tone has magnitude 32. A value near 1 suggests your code rescaled it. Training-set normalization happens later.',
       ).toBeCloseTo(32, 0);
       expect(features[7]).toBeCloseTo(16, 0);
       recordResult({
@@ -157,7 +157,7 @@ testCode: |
       ).toBe(21);
     });
 
-    it('is an extraction, not a lookup: the band is drawn at grade time', () => {
+    it('extracts the bins for a newly generated frequency band', () => {
       // 64 samples at 256 Hz makes 4 Hz bins. Drawing the tone's bin and both
       // band edges leaves the row's length, and the tone's place in it, decided
       // only by this run.
@@ -174,7 +174,7 @@ testCode: |
       ).toHaveLength(3 + below + above);
       expect(
         features[2 + below],
-        'This test chooses the tone bin during the run. Its position in the returned array depends on the band’s first included bin. Calculate that position instead of using a fixed index.',
+        'This test chooses the tone bin during the run. Its position in the returned array depends on the band’s first included bin. Calculate that position from the current band.',
       ).toBeCloseTo(32, 0);
     });
   });

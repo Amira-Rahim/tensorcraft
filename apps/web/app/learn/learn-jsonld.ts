@@ -42,7 +42,7 @@ export function buildLearnVideo() {
     "@type": "VideoObject" as const,
     name: "How Tensorcraft works",
     description:
-      "How Tensorcraft teaches machine learning to JavaScript developers: ML concepts mapped to code you already write, taught inside the story of the Deep Orbit research station. No Python required.",
+      "ML lessons for JavaScript developers, set aboard the research ship Archimedes. Help the crew investigate a signal while writing and running code in your browser.",
     thumbnailUrl: [`${SITE}/media/learn-trailer-poster.webp`],
     contentUrl: `${SITE}/media/learn-trailer.mp4`,
     uploadDate: "2026-08-27",

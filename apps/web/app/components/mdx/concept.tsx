@@ -44,7 +44,7 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
         {tierLabels[bridge.tier]}
       </span>
 
-      <div className="grid grid-cols-[1fr_24px_1fr] items-center gap-2">
+      <div className="grid grid-cols-2 items-center gap-6">
         {/* JS side */}
         <div>
           <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-1">
@@ -62,11 +62,6 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
             </pre>
           )}
         </div>
-
-        {/* Arrow */}
-        <span className="text-center text-sm font-mono" style={{ color }}>
-          →
-        </span>
 
         {/* ML side */}
         <div>

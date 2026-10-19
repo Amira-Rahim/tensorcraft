@@ -58,13 +58,13 @@ it("connects each sensor to its first-moment reading and position without answer
   expect(sensorB).toHaveAttribute("aria-pressed", "true");
   expect(sensorB).toHaveAccessibleDescription("second reading 20");
   expect(within(notes()).getByRole("status")).toHaveTextContent(
-    "Sensor B recorded 20. Its reading is the second number saved for this moment.",
+    "Sensor B recorded 20. Its reading is the second number in this moment’s recording.",
   );
   fireEvent.click(
     within(notes()).getByRole("button", { name: "Inspect sensor D" }),
   );
   expect(within(notes()).getByRole("status")).toHaveTextContent(
-    "Sensor D recorded 8. Its reading is the fourth number saved for this moment.",
+    "Sensor D recorded 8. Its reading is the fourth number in this moment’s recording.",
   );
   expect(screen.queryByTestId("time-grid")).not.toBeInTheDocument();
   expect(record().firstPrediction).toBeNull();
@@ -76,7 +76,7 @@ it("connects each sensor to its first-moment reading and position without answer
     within(notes()).queryByRole("button", { name: "Inspect sensor D" }),
   ).not.toBeInTheDocument();
   expect(within(notes()).getByRole("status")).toHaveTextContent(
-    "Sensor A recorded 10. Its reading is the first number saved for this moment.",
+    "Sensor A recorded 10. Its reading is the first number in this moment’s recording.",
   );
 });
 

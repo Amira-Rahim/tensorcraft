@@ -100,7 +100,7 @@ export function FiveWorldsSection() {
             the same width math as the hero wall's accent line. One line
             from ~768px up, natural wraps below. */}
         <h2 className="text-[clamp(3rem,calc(10vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] uppercase">
-          Choose Your World
+          The course worlds
         </h2>
       </motion.div>
 
@@ -174,7 +174,7 @@ export function FiveWorldsSection() {
               className="font-mono text-sm tracking-wider group-hover:opacity-80 transition-opacity"
               style={{ color: "var(--tc-primary)" }}
             >
-              Start Module 1 &rarr;
+              Start Module 1
             </span>
           </Link>
         </div>
@@ -243,7 +243,7 @@ export function FiveWorldsSection() {
                 className="font-mono text-xs tracking-wider group-hover:opacity-100 transition-opacity mt-1 self-start text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 style={{ color: "var(--card-active-primary)" }}
               >
-                Notify me &rarr;
+                Notify me
               </button>
             </div>
           </motion.div>

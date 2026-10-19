@@ -22,7 +22,7 @@ concept:
     mlTitle: "Sequence Forecast"
     mlCode: "nextValue = model.predict(recentWindow) // predict next signal"
     tier: structural
-    breaks: "This autocomplete example filters a fixed list. A sequence model instead computes an output from learned parameters; a linear output can exceed the training range, while other activations impose bounds. Check physical constraints and forecast errors rather than assuming a valid-looking number is reliable."
+    breaks: "This autocomplete example filters a fixed list. A sequence model instead computes an output from learned parameters. A linear output can exceed the training range, while other activations impose bounds. Check physical constraints and forecast errors to see whether the numbers fit the task."
 consequence:
   narrative: "The forecast goes up on the main display with a 47-minute countdown, and nobody on the bridge leaves their station."
 hints:
@@ -31,7 +31,7 @@ hints:
       Return the history from the actual training call. During forecasting, update the input window after every prediction so the next step reads your earlier predictions.
   - level: guidance
     content: |
-      Train on the supplied tensors and return that fit call’s history. For forecasting, convert the physical limits with the saved mean and standard deviation. Clamp each prediction before feeding it into the next window. Release temporary tensors, but keep the caller’s training tensors alive. Training MAE uses the scaled values, not the original sensor units.
+      Train on the supplied tensors and return that fit call’s history. For forecasting, convert the physical limits with the saved mean and standard deviation. Clamp each prediction before feeding it into the next window. Release temporary tensors, but keep the caller’s training tensors alive. Training MAE uses scaled values. Convert errors back to the original sensor units when reporting them.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -156,7 +156,7 @@ const history = await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
-Scale the three features before training. Here, the tensor’s last axis holds features; it is sometimes called the channel axis. Per-channel scaling means scaling each feature separately. The archive’s 64 sensor channels are a different use of that word.
+Scale the three features before training. Here, the tensor’s last axis holds features. It is sometimes called the channel axis. Per-channel scaling means scaling each feature separately. The archive’s 64 sensor channels are a different use of that word.
 
 The features have different units: amplitude counts stop at 2048, zero-crossing counts stop at 63, and phase uses radians. Without scaling, a 100-count amplitude error adds 10,000 to squared error, while a one-radian phase error adds only 1. Large inputs can also push gates into nearly flat parts of their activation curves, weakening their gradients. Scaling can help training, but useful forecasts still need testing against a last-value or seasonal baseline on the same later periods.
 
@@ -169,7 +169,7 @@ Overlapping windows count some readings more than once. Calculate the statistics
 
 Phase needs extra care: +pi and -pi describe the same angle. Squared error treats those numbers as far apart. A redesigned model can represent the angle with sine and cosine, using matching targets and error metrics.
 
-MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes twice as much. MSE squares errors, so doubling a miss makes its contribution four times larger. This example trains on MSE and reports MAE; that is a choice, not a requirement for every regression task. For multiple outputs, scale features deliberately and also report per-channel errors converted back to their original units.
+MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes twice as much. MSE squares errors, so doubling a miss makes its contribution four times larger. This example trains on MSE and reports MAE. Other regression tasks may need different losses or metrics. For multiple outputs, scale features deliberately and also report per-channel errors converted back to their original units.
 
 ## Multi-Step Forecasting
 
@@ -182,7 +182,7 @@ MAE averages `Math.abs(predicted - actual)`. An error twice as large contributes
 // window of 64 samples, which at 256 Hz is a quarter of a second, so 63
 // is the most crossings that window can hold. Phase is in radians. The
 // 64 channels of an archive row are a different 64: that is how many
-// sensors report, not how long a window is.
+// sensors report. Window duration needs its sampling interval too.
 const LIMITS = [
   { min: 0, max: 2048 },            // amplitude
   { min: 0, max: 63 },              // frequency
@@ -209,7 +209,7 @@ const clamp = (reading: number[]) =>
 console.log(clamp([2.4, 0.5, 0.1]));  // [2, 0.5, 0.1]
 // 2.4 in these z-scores is 2,253 counts, past anything the sensors report.
 
-// The rolling loop is implemented in the exercise below; supply that
+// The rolling loop is implemented in the exercise below. Supply that
 // forecastMultiStep function before running this integration snippet.
 // The process is: predict one reading, clamp
 // it, push it onto the history, predict again. Each step builds a tensor
@@ -243,19 +243,19 @@ model.dispose();
 
 Check what one step means. The demo predicts 47 one-second steps, less than a minute ahead. The bridge’s 47-minute countdown uses a separate series with one value per pulse, about 38 steps at the current spacing. A successful short forecast does not establish that a longer forecast will work.
 
-Clamping keeps outputs inside the declared limits; it does not make a forecast accurate. Log how often it activates, reject non-finite outputs and compare errors by horizon. A zero or invalid scaler standard deviation must be handled before rollout.
+Clamping keeps outputs inside the declared limits. It does not make a forecast accurate. Log how often it activates, reject non-finite outputs and compare errors by horizon. Check the saved standard deviations before forecasting. Handle zeros and reject invalid values.
 
 ## Challenge
 
 Train a forecaster with three outputs and return its training history. Then build the forecasting loop from `multi-step.ts`. The first tests use a simulated model and a short window.
 
-Convert the sensor limits into the model’s z-score units before comparing them with predictions. Clamp each prediction before adding it to both the returned forecast and the next input window. Inspect the final test's rollout from your trained model: those rows become the history for later steps. Staying within bounds does not establish that the forecast is accurate.
+Convert the sensor limits into the model’s z-score units before comparing them with predictions. Clamp each prediction before adding it to both the returned forecast and the next input window. Inspect the final test’s predictions from your trained model. Each predicted row becomes part of the input for later steps. Staying within bounds does not establish that the forecast is accurate.
 
 <Exercise slug="predict-next" />
 
 <RecallPrompt
   question="Why use a regression loss such as MSE for predicting the next sensor reading?"
-  answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
+  answer="Predicting the next reading is regression: the model outputs continuous values for amplitude, frequency, and phase. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose the loss according to the prediction target and the cost of errors."
   checks={[
     {
       "kind": "choice",
@@ -263,46 +263,46 @@ Convert the sensor limits into the model’s z-score units before comparing them
       "options": [
         {
           "text": "Every LSTM must use MSE, regardless of its target.",
-          "feedback": "The prediction task determines a suitable loss, not the recurrent layer type."
+          "feedback": "Choose a loss that fits the prediction task. An LSTM can serve several tasks."
         },
         {
           "text": "MSE makes the forecast a calibrated class probability.",
           "feedback": "MSE here measures squared numeric prediction errors."
         },
         {
-          "text": "The targets are continuous signal values rather than class labels.",
-          "feedback": "Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
+          "text": "The targets are continuous signal values.",
+          "feedback": "Predicting the next reading is regression: the model outputs continuous values for amplitude, frequency, and phase. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose the loss according to the prediction target and the cost of errors."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase) rather than a yes/no class. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose a loss for the prediction target and task, rather than because the network uses an LSTM."
+      "explanation": "Predicting the next reading is regression: the model outputs continuous values for amplitude, frequency, and phase. MSE averages squared prediction errors. MAE or other regression losses may fit a different error cost. Choose the loss according to the prediction target and the cost of errors."
     }
   ]}
 />
 
 <RecallPrompt
   question="What does tf.tidy() release when the callback returns only numeric prediction values?"
-  answer="Both the temporary input and prediction tensors are disposed when this callback returns. It returns numeric values and creates no variables or explicitly kept tensors. Returning the prediction tensor itself would keep that tensor alive, and its owner would need to dispose it later."
+  answer="tf.tidy() disposes both the temporary input and prediction tensors when this callback returns. It returns numeric values and creates no variables or explicitly kept tensors. Returning the prediction tensor itself would keep that tensor alive, and its owner would need to dispose it later."
   checks={[
     {
       "kind": "choice",
       "question": "A synchronous tf.tidy() creates input and output tensors, then returns only dataSync() values. What happens to those temporary tensors?",
       "options": [
         {
-          "text": "Neither tensor is disposed until the JavaScript array is collected.",
+          "text": "tf.tidy() keeps both tensors until JavaScript collects the array.",
           "feedback": "The returned numeric values are separate from the temporary tensors."
         },
         {
-          "text": "Both are disposed when the callback returns.",
-          "feedback": "With no variables or kept tensors in this callback, both temporary tensors are cleaned up."
+          "text": "tf.tidy() disposes both when the callback returns.",
+          "feedback": "With no variables or kept tensors in this callback, tf.tidy() cleans up both temporary tensors."
         },
         {
-          "text": "The output tensor survives because dataSync() was called.",
+          "text": "The output tensor survives because the callback called dataSync().",
           "feedback": "Reading plain values does not retain the tensor itself."
         }
       ],
       "correctIndex": 1,
-      "explanation": "With no variables or kept tensors in this callback, both temporary tensors are cleaned up."
+      "explanation": "With no variables or kept tensors in this callback, tf.tidy() cleans up both temporary tensors."
     },
     {
       "kind": "choice",
@@ -310,11 +310,11 @@ Convert the sensor limits into the model’s z-score units before comparing them
       "options": [
         {
           "text": "That tensor would survive and its owner would need to dispose it later.",
-          "feedback": "A returned tensor has an ongoing lifetime; plain copied values do not retain it."
+          "feedback": "A returned tensor has an ongoing lifetime. Plain copied values do not retain it."
         },
         {
           "text": "tf.tidy() would dispose the returned tensor before the caller could use it.",
-          "feedback": "Returned tensors are excluded from tidy cleanup."
+          "feedback": "tf.tidy() keeps tensors that the callback returns."
         },
         {
           "text": "The input tensor would also have to survive.",
@@ -322,20 +322,20 @@ Convert the sensor limits into the model’s z-score units before comparing them
         }
       ],
       "correctIndex": 0,
-      "explanation": "A returned tensor has an ongoing lifetime; plain copied values do not retain it."
+      "explanation": "A returned tensor has an ongoing lifetime. Plain copied values do not retain it."
     }
   ]}
 />
 
 <LessonRecap
-  whatYouLearned={["Next-value forecasting is regression. MSE and MAE measure error magnitude; ordinary classification accuracy does not fit continuous outputs.", "Fit per-feature preprocessing on training data and reuse it. Report errors in units the reader understands.", "Rolling forecasts feed predictions back into later inputs. Measure error at each horizon rather than assuming a fixed rate of deterioration.", "Check what one step means before converting a forecast horizon into seconds or minutes."]}
-  bridge="The shown autocomplete filters a known list. A forecast computes a value from learned parameters; check output bounds, physical constraints, and errors at each horizon."
+  whatYouLearned={["Next-value forecasting is regression. MSE and MAE measure error magnitude. Ordinary classification accuracy does not fit continuous outputs.", "Fit per-feature preprocessing on training data and reuse it. Report errors in units the reader understands.", "Rolling forecasts feed predictions back into later inputs. Measure error at each horizon to see how it changes.", "Check what one step means before converting a forecast horizon into seconds or minutes."]}
+  bridge="The shown autocomplete filters a known list. A forecast computes a value from learned parameters. Check output bounds, physical constraints, and errors at each horizon."
   youCanNow="Train an LSTM for next-value regression using MSE loss, evaluate it with MAE, and generate multi-step forecasts by feeding predictions back as input."
 />
 
 <Epilogue>
 
-At 2010, the main bridge display predicts the next episode in 47 minutes; by 2050, the whole crew is watching. Between episodes, the 73-second pulses fall below the noise floor, leaving a flat trace that will make the return easy to spot.
+At 2010, the main bridge display predicts the next episode in 47 minutes. By 2050, the whole crew is watching. Between episodes, the 73-second pulses fall below the noise floor, leaving a flat trace that will make the return easy to spot.
 
 Nazari turns off the room audio as the timer reaches 46:59. At 47:00 the trace is still flat, and Demir watches it hold through 47:01 and 47:02. At 47:03, the predicted spike appears.
 

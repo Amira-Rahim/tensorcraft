@@ -1,10 +1,10 @@
 slug: verify-deployment
 lessonSlug: launch
-title: "Verify a Deployment"
+title: "Deployment verification"
 instructions: |
   Help Demir run the deployment checks. Write `verifyDeployment(checks, timeoutMs = 1000)` and return one result for the whole run.
 
-  Each check is an async function that receives an `AbortSignal` and returns `{ name, passed, message }`. It can ignore the signal if it has no cancellable work. Require a non-empty string name, a boolean passed, and a string message. Treat malformed results as failures; a truthy string must not pass. Require a finite, positive `timeoutMs`.
+  Each check is an async function that receives an `AbortSignal` and returns `{ name, passed, message }`. It can ignore the signal if it has no cancellable work. Require a non-empty string name, a boolean passed, and a string message. Treat malformed results as failures. A truthy string must not pass. Require a finite, positive `timeoutMs`.
 
   Run checks one at a time, awaiting each before starting the next. Keep results in call order. If a check throws or rejects, record a failure named `check N`, where N is its 1-based position. Use the error's message, then continue with the next check.
 
@@ -28,10 +28,10 @@ instructions: |
 hints:
   - level: nudge
     content: |
-      Await each check in order, but bound the wait so a hung probe can be reported.
+      Await each check in order, but bound the wait so you can report a hung probe.
   - level: guidance
     content: |
-      Race each check against a timer and clear the timer after settlement. A timeout only stops waiting: signal cancellation, then skip dependent checks. A settled rejection can be recorded while the ordinary sequence continues.
+      Race each check against a timer and clear the timer after settlement. A timeout only stops waiting: signal cancellation, then skip dependent checks. Record a settled rejection and continue the ordinary sequence.
   - level: solution
     content: |
       interface CheckResult {
@@ -251,8 +251,8 @@ testCode: |
       expect(result.checks[1].passed).toBe(false);
       recordResult({
         kind: 'table',
-        title: 'A failed probe holds the release',
-        summary: result.summary + '. The stricter threshold changes the release decision; the underlying local scorer is unchanged.',
+        title: 'A failed check blocks the release',
+        summary: result.summary + '. The stricter threshold changes the release decision. The underlying local scorer stays the same.',
         columns: ['Check', 'Passed', 'Returned evidence'],
         rows: result.checks.slice(0, 40).map((check) => [check.name, check.passed, check.message]),
       });
@@ -361,7 +361,7 @@ testCode: |
       ).toBe(false);
       expect(
         result.checks[0].name,
-        'A check that throws has no result to read a name off, so it is filed by its position: the first one is check 1.',
+        'A check that throws has no result to read a name off, so use its position as its name: the first one is check 1.',
       ).toBe('check 1');
       expect(
         result.checks[0].message,
@@ -404,11 +404,11 @@ testCode: |
       expect(result.checks).toHaveLength(0);
       expect(
         result.passed,
-        'No check ran, so nothing about this deployment was verified. A verifier that measured nothing cannot report a healthy deploy.',
+        'No checks ran. Return passed: false because there is no verification result.',
       ).toBe(false);
       expect(
         result.summary,
-        'The summary still reports what happened: nothing passed out of nothing run.',
+        'The summary should report 0 passed out of 0 checks.',
       ).toBe('0/0 checks passed');
     });
   });

@@ -39,7 +39,7 @@ export function VisionPreview() {
       className="scroll-mt-24 min-w-0 break-words border border-border bg-surface p-4 sm:p-6 space-y-5"
     >
       <p className="font-mono text-xs uppercase tracking-wider text-primary">
-        Free vision sample · full course forthcoming
+        Free vision sample, full course coming later
       </p>
       <h2 id={`${id}-title`} className="text-2xl font-bold">
         Which edge does this filter see?
@@ -78,8 +78,8 @@ export function VisionPreview() {
         </ul>
         <p className="mt-3 text-sm text-text-muted">
           Spatial neighborhoods and shared kernel weights are the new idea.
-          Finishing Deep Orbit does not establish your ability to evaluate a
-          vision model.
+          Evaluating a vision model brings new questions that the full course
+          will cover.
         </p>
       </details>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -284,7 +284,7 @@ export function VisionPreview() {
           </p>
           <p>
             Try adding 0.1 to every pixel. These values stay in range without
-            clipping, so the response is unchanged. This does not establish
+            clipping, so the response stays the same. This does not establish
             invariance to arbitrary lighting changes.
           </p>
         </div>
@@ -318,8 +318,8 @@ const values = tf.tidy(() => {
           Stride 1 moves one pixel at a time. With no padding, a 3 × 3 kernel
           fits in three positions along each axis of a 5 × 5 image. CNN
           libraries call this convolution, although the unflipped-kernel
-          operation is cross-correlation. Here the weights are fixed; a trained
-          convolutional layer learns its weights.
+          operation is cross-correlation. This example keeps the same weights. A
+          trained convolutional layer learns its weights.
         </p>
         <p className="mt-3">
           A feature response is not an object label or a probability. The full

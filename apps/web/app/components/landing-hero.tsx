@@ -15,11 +15,9 @@ import { ParticleField } from "@tensorcraft/ui/effects";
  *   fluid type wall, with the subhead and CTAs on one baseline row below,
  *   so the type owns the width the panel vacated.
  *
- * The landing headline ("Stories That / Take You From / JavaScript to ML.")
- * is the owner-decided baseline as of 2026-08-31 (story-first, category-clear
- * for cold traffic; the accent line carries the information), do not silently
- * rewrite. Spec: docs/superpowers/specs/2026-08-31-landing-headline-story-first.md.
- * Prior: docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md.
+ * The 2026-10-19 copy audit names the course and audience directly.
+ * The supporting copy introduces the crew's task and browser-based models.
+ * Earlier design: docs/superpowers/specs/2026-08-31-landing-headline-story-first.md.
  */
 export function LandingHero() {
   return (
@@ -36,29 +34,23 @@ export function LandingHero() {
 
       <div className="w-full relative z-10">
         <div>
-          {/* Fluid type wall: the longest line is 17 mono chars at 0.555em
-              per char (0.6em advance minus 0.045em tracking), so 10vw-1rem
-              keeps it inside the md:px-20 gutters at every width. The 3rem
-              floor matches the old mobile size exactly; the 8.5rem ceiling
-              stops ultrawide from going absurd. */}
-          <h1 className="text-[clamp(3rem,calc(10vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-12 uppercase">
-            {/* Explicit line breaks: free wrapping orphans single words
-                ("YOU", "ML.") wherever a line runs out of room, so the stair
-                is three deliberate word groups at every size. Each non-final
-                span keeps a trailing space so the accessibility tree and
-                textContent stay legible across the block boundaries. */}
-            <span className="block">Stories That </span>
-            <span className="block">Take You From </span>
-            <span className="block text-primary">JavaScript to ML.</span>
+          {/* Fluid type keeps the longest line inside the page gutters on
+              mobile and caps the desktop headline at 8.5rem. */}
+          <h1 className="text-[clamp(1.75rem,calc(8.8vw-1rem),8.5rem)] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-12 uppercase">
+            {/* Keep the three word groups on separate lines. Trailing spaces
+                preserve readable text for assistive technology. */}
+            <span className="block">Machine learning </span>
+            <span className="block">for JavaScript </span>
+            <span className="block text-primary">engineers.</span>
           </h1>
 
           {/* One row under the wall: subhead anchors left, CTAs anchor right,
               so the furniture spans the same measure as the headline instead
-              of stacking in the left corner. Stacks below md. */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-16">
+              of stacking in the left corner. Stacks below lg. */}
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-16">
             <p className="text-lg text-text-muted max-w-[520px] leading-relaxed font-sans">
-              Skip Python. Learn machine learning in JavaScript, in the browser.
-              You&apos;ll build a model and ship it.
+              Help the crew of the Archimedes investigate a signal. You’ll build
+              and train the models in JavaScript, then run them in your browser.
             </p>
 
             <div className="flex gap-4 flex-wrap shrink-0">
@@ -67,14 +59,14 @@ export function LandingHero() {
                 data-testid="landing-cta-primary"
                 className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
               >
-                Start Mission: Deep Orbit →
+                Start Mission: Deep Orbit
               </Link>
               <Link
                 href="/learn"
                 data-testid="landing-cta-secondary"
                 className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
               >
-                Discover Tensorcraft
+                About the course
               </Link>
             </div>
           </div>

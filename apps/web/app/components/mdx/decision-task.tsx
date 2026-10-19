@@ -29,7 +29,7 @@ function DecisionTaskBody({ id }: { id: string }) {
       if (raw) setDraft(parseDecision(raw, id));
     } catch {
       setError(
-        "The previous draft could not be loaded. Start a new attempt and download a copy.",
+        "This page could not load the previous draft. Start a new attempt and download a copy.",
       );
     }
     setReady(true);
@@ -247,9 +247,9 @@ function DecisionTaskBody({ id }: { id: string }) {
             </p>
             <p>{spec.explanation}</p>
             <p className="text-sm">
-              Your explanation is recorded for review. It has not been
-              automatically graded. Later attempts follow revealed feedback; the
-              first attempt is kept in this tab record.
+              This tab records your explanation for review without automatically
+              grading it. Later attempts follow feedback you have already seen.
+              The record keeps your first attempt too.
             </p>
           </>
         ) : answersChanged ? (
@@ -261,9 +261,9 @@ function DecisionTaskBody({ id }: { id: string }) {
       </AnswerFeedback>
       <p className="text-sm text-text-muted">
         {saved
-          ? "Saved in this tab. Download the record before closing it."
+          ? "This tab saves your answers. Download the record before closing it."
           : "Tab storage unavailable or loading. Download the record to keep it."}{" "}
-        Up to 20 attempts are kept. This task does not award XP or certify
+        This tab keeps up to 20 attempts. This task does not award XP or certify
         independent mastery.
       </p>
       {error && <p role="alert">{error}</p>}

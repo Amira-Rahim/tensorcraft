@@ -100,7 +100,7 @@ describe("sensor layout through the shipped worker", () => {
     expect(
       results
         .filter((r) => !r.passed)
-        .every((r) => r.error?.includes("must be a TensorFlow.js tensor")),
+        .every((r) => r.error?.includes("must be a real TensorFlow.js tensor")),
     ).toBe(true);
   });
 

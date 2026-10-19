@@ -115,7 +115,7 @@ const cases = (
 const teaching =
   "Small example values. This activity does not train a model or read the ship’s sensor data.";
 const fixed =
-  "This calculation uses fixed weights chosen for the example. They are not learned from data.";
+  "This calculation uses fixed weights chosen for the example. This example performs no training.";
 
 export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "introduction-to-tensors": {
@@ -155,7 +155,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "tensor-shapes": {
-    title: "Find a reading after a reshape",
+    title: "Reading positions after a reshape",
     brief:
       "Choose how many numbers go in each row, then pick a number in the list. Find its row in the reshaped grid.",
     boundary: teaching,
@@ -246,7 +246,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "data-loading": {
-    title: "Build the next batch",
+    title: "The next batch",
     brief:
       "Choose the number of rows per batch, then a batch to inspect. Keep each row’s three features together.",
     boundary:
@@ -303,11 +303,11 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   normalization: {
-    title: "Scale a new sensor row",
+    title: "Scaling a new sensor row",
     brief:
       "Apply saved training statistics to a new reading. Compare its raw and scaled values.",
     boundary:
-      "Statistics come from four fixed training rows. They are reused for the new reading; no statistics are fitted on that reading.",
+      "Statistics come from four fixed training rows. The activity reuses them for the new reading without fitting new statistics.",
     controls: [
       range("temperature", "New temperature reading", 24, 18, 30, 0.5),
       choice("method", "Scaling rule", 1, ["Raw values", "Z-score", "Min-max"]),
@@ -366,7 +366,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "first-neuron": {
-    title: "Trace one weighted sum",
+    title: "A neuron’s weighted sum",
     brief:
       "Change a weight and bias. Follow each input's contribution into the output.",
     boundary: fixed,
@@ -527,7 +527,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "forward-pass": {
-    title: "Follow an input through two layers",
+    title: "A forward pass through two layers",
     brief:
       "Change input A. Apply the hidden layer's weights and ReLU before the output sum.",
     boundary: fixed,
@@ -572,7 +572,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "building-a-network": {
-    title: "Connect the next dense layer",
+    title: "Dense layer shapes and parameters",
     brief:
       "Change the number of hidden and output units. Work out the shape of the output layer’s weights.",
     boundary:
@@ -621,7 +621,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: width * outputs,
         answerLabel: "Output-layer weight count",
-        explanation: `Each of ${outputs} outputs connects to all ${width} hidden units. Its weights have shape [${width}, ${outputs}]. Batch size changes how many outputs are calculated, not how many weights the layer has.`,
+        explanation: `Each of ${outputs} outputs connects to all ${width} hidden units. Its weights have shape [${width}, ${outputs}]. Batch size changes the number of outputs. The layer keeps the same weights.`,
         code: `model.add(tf.layers.dense({ units: ${width}, inputShape: [${inputs}], activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: ${outputs} }));`,
       };
     },
@@ -676,7 +676,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "gradient-descent": {
-    title: "Predict the next weight update",
+    title: "The next weight update",
     brief:
       "Choose a starting weight and learning rate on the loss curve (w - 3)².",
     boundary:
@@ -728,7 +728,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   backpropagation: {
-    title: "Trace the gradient through a product",
+    title: "Gradients through a product",
     brief:
       "Change the weight. Follow y = w × x into squared loss and back to the weight.",
     boundary:
@@ -774,11 +774,11 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "training-loop": {
-    title: "Choose the checkpoint to keep",
+    title: "Validation loss and checkpoints",
     brief:
       "Choose how many epochs to inspect. Compare the latest validation loss with the lowest one seen so far.",
     boundary:
-      "These curves are illustrative, not measurements. TFJS early stopping keeps the final weights. To use the best observed checkpoint, save its weights during training and restore them yourself.",
+      "We chose these curves to illustrate the stopping rule. TFJS early stopping keeps the final weights. To use the best observed checkpoint, save its weights during training and restore them yourself.",
     controls: [range("epoch", "Last observed epoch", 16, 1, 24)],
     cases: cases(
       "Late overfitting",
@@ -840,11 +840,11 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "fft-as-features": signalSpec("features"),
   "windowing-and-overlap": signalSpec("window"),
   "sequences-matter": {
-    title: "Read the direction of a sequence",
+    title: "Change across a sequence",
     brief:
       "Reverse the readings or keep their order. Compare the first and last values.",
     boundary:
-      "These are two short example sequences. Comparing the first and last values shows their overall change, not its cause.",
+      "These are two short example sequences. Comparing the first and last values shows their overall change. Finding its cause requires more evidence.",
     controls: [
       choice("reverse", "Sequence order", 0, ["Original", "Reversed"]),
     ],
@@ -879,7 +879,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           bars(
             "Change from each previous reading",
             differences,
-            differences.map((_, i) => `t${i} → t${i + 1}`),
+            differences.map((_, i) => `t${i} to t${i + 1}`),
           ),
         ],
         answer,
@@ -894,7 +894,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Select a time step and change how much previous state contributes. Start the state at zero.",
     boundary:
-      "This recurrent unit carries one number as state. Its input weight is fixed at 0.5; you choose the state weight. No training happens here.",
+      "This recurrent unit carries one number as state. It uses an input weight of 0.5. You choose the state weight. No training happens here.",
     controls: [
       range("step", "Time step index", 3, 0, 5),
       range("memory", "Weight on previous state", 0.7, 0, 1.2, 0.1),
@@ -903,7 +903,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       "Gradual readings",
       "A brief spike",
       "Inputs rise over six time steps.",
-      "A large early value is followed by smaller readings.",
+      "Smaller readings follow a large early value.",
       { step: 3, memory: 0.7 },
       { step: 4, memory: 0.9 },
     ),
@@ -948,9 +948,9 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "lstm-gates": {
-    title: "Keep and replace cell memory",
+    title: "LSTM cell memory updates",
     brief:
-      "Adjust the forget and input gates. Add the kept part of the old value to the allowed part of the candidate.",
+      "Adjust the forget and input gates. Use each gate to scale its contribution, then add the old memory and new candidate.",
     boundary:
       "This updates one stored LSTM value using gate values you choose. A full LSTM learns gates for many stored values and also has an output gate.",
     controls: [
@@ -1062,7 +1062,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
   "sequence-prediction": forecastSpec(false),
   forecasting: forecastSpec(true),
   "normal-vs-anomalous": {
-    title: "Compare a reading with its baseline",
+    title: "A reading and its baseline",
     brief:
       "Move a candidate reading. Measure its distance in the baseline's standard deviations.",
     boundary:
@@ -1102,7 +1102,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer,
         answerLabel: "Standardized distance",
-        explanation: `The reference mean is ${center}, with population standard deviation √2. |${reading} - ${center}| ÷ √2 = ${rounded(answer)}. Review the operating context before assigning a label.`,
+        explanation: `The reference mean is ${center}, with population standard deviation √2. The absolute difference between ${reading} and ${center}, divided by √2 = ${rounded(answer)}. Review the operating context before assigning a label.`,
         code: `const distance = Math.abs(${reading} - ${center}) / Math.sqrt(2);`,
       };
     },
@@ -1114,7 +1114,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Change the amplitude, reconstruction error and forecast. Count the votes, then apply the two-out-of-three alert rule.",
     boundary:
-      "The baseline and supplied detector outputs are synthetic practice inputs. No autoencoder or LSTM runs here. The statistical vote uses amplitude; reconstruction error has cutoff 1; forecast error has cutoff 0.1 amplitude units. Votes share data and can fail together. They are not independent proofs or a probability.",
+      "The baseline and supplied detector outputs are synthetic practice inputs. No autoencoder or LSTM runs here. The statistical vote uses amplitude. Reconstruction error has cutoff 1. Forecast error has cutoff 0.1 amplitude units. Votes share data and can fail together. They are not independent proofs or a probability.",
     controls: [
       range("actual", "Actual amplitude", 0.5, 0, 1, 0.01),
       range(
@@ -1158,8 +1158,8 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
               `Baseline mean: ${rounded(center)}`,
               `Population standard deviation: ${rounded(spread)}`,
               `Actual amplitude: ${actual}`,
-              `Reconstruction error: ${reconstructionError}; cutoff 1`,
-              `Forecast: ${predicted}; allowed amplitude error 0.1`,
+              `Reconstruction error: ${reconstructionError}. Cutoff 1`,
+              `Forecast: ${predicted}. Allowed amplitude error 0.1`,
             ],
             2,
           ),
@@ -1185,7 +1185,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: votes,
         answerLabel: "Detector votes",
-        explanation: `The amplitude is ${rounded(z)} standard deviations from the calm mean. Reconstruction error is ${reconstructionError}; the forecast misses by ${rounded(forecastError)} amplitude units. ${votes} of three detectors vote, so the majority rule ${votes >= 2 ? "selects an alert" : "does not select an alert"}. The supplied error and forecast are not recomputed when amplitude changes. This exercise's amplitude-error gate differs from the full model's three-feature forecast MSE.`,
+        explanation: `The amplitude is ${rounded(z)} standard deviations from the calm mean. Reconstruction error is ${reconstructionError}. The forecast misses by ${rounded(forecastError)} amplitude units. ${votes} of three detectors vote, so the majority rule ${votes >= 2 ? "selects an alert" : "does not select an alert"}. The supplied error and forecast stay constant when you change amplitude. This exercise's amplitude-error gate differs from the full model's three-feature forecast MSE.`,
         code: `const votes = [Math.abs((actual - mean) / std) > 3, reconstructionError > 1, Math.abs(predicted - actual) > 0.1].filter(Boolean).length;\nconst alert = votes >= 2;`,
       };
     },
@@ -1197,7 +1197,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Change measurement noise. Calculate how far a new measurement moves the estimate.",
     boundary:
-      "This updates one estimated value using a fixed prediction and its variance. It is one Kalman measurement step, not a full system simulation.",
+      "This updates one estimated value using a fixed prediction and its variance. It calculates one Kalman measurement update. A full system also needs prediction and repeated updates.",
     controls: [
       range("noise", "Measurement variance R", 4, 0.5, 16, 0.5),
       range("measurement", "New measurement", 14, 4, 20, 0.5),
@@ -1255,7 +1255,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       "Different forecast errors",
       "Shared forecast errors",
       "A tends high while B tends lower.",
-      "Both forecasts miss upward in the same direction.",
+      "Both forecasts are higher than the observed values.",
       { blend: 0.5 },
       { blend: 0.25 },
     ),
@@ -1295,7 +1295,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: mean(errors),
         answerLabel: "Ensemble mean absolute error",
-        explanation: `A receives weight ${blend}; B receives ${rounded(1 - blend)}. Mean absolute error is ${rounded(mean(errors))}. Shared forecast errors remain after averaging.`,
+        explanation: `A receives weight ${blend}. B receives ${rounded(1 - blend)}. Mean absolute error is ${rounded(mean(errors))}. Shared forecast errors remain after averaging.`,
         code: `const combined = a.map((value, i) => ${blend} * value + ${rounded(1 - blend)} * b[i]);`,
       };
     },
@@ -1305,7 +1305,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Choose the bits per weight and a weight to inspect. Compare its original and rounded values.",
     boundary:
-      "Uniform quantization over [-1, 1] with fixed bounds. It demonstrates rounding, not a measured runtime or accuracy improvement.",
+      "Uniform quantization over [-1, 1] with fixed bounds. It demonstrates rounding. Measure runtime and accuracy separately.",
     controls: [
       choice(
         "bits",
@@ -1349,7 +1349,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   pruning: {
-    title: "Remove weights below a cutoff",
+    title: "Weights below the pruning cutoff",
     brief: "Raise the magnitude cutoff. Count the weights that remain nonzero.",
     boundary:
       "This sets small weights to zero in a six-weight example. Test prediction quality afterward. Zeros save processing work only if the runtime can skip them.",
@@ -1364,7 +1364,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     ),
     prediction: {
       prompt:
-        "How many weights remain nonzero after applying the current cutoff? Weights exactly at the cutoff are kept.",
+        "How many weights remain nonzero after applying the current cutoff? The rule keeps weights exactly at the cutoff.",
       tolerance: 0,
     },
     evaluate: ({ cutoff }, caseId) => {
@@ -1388,7 +1388,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: count,
         answerLabel: "Remaining nonzero weights",
-        explanation: `${6 - count} weights have magnitude below ${cutoff} and become zero. ${count} remain. Check the model's predictions before deciding whether these connections can be removed.`,
+        explanation: `${6 - count} weights have magnitude below ${cutoff} and become zero. ${count} remain. Check the model's predictions before deciding whether you can remove these connections.`,
         code: `const pruned = weights.map(weight => Math.abs(weight) < ${cutoff} ? 0 : weight);`,
       };
     },
@@ -1404,7 +1404,7 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
       ? "Change the threshold and the cost of a miss. Compare false alarms with missed anomalies."
       : "Move the decision threshold across labeled scores. Count the anomalies that fall below it.",
     boundary:
-      "Twelve labeled teaching cases, separate from the graded exercise and any final test set. The scores are fixed fixtures.",
+      "Twelve labeled teaching cases, separate from the graded exercise and any final test set. The activity supplies the example scores.",
     controls: [
       range("threshold", "Anomaly score threshold", 0.5, 0.1, 0.9, 0.05),
       ...(costs
@@ -1421,8 +1421,8 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
     ),
     prediction: {
       prompt: costs
-        ? "What is the total error cost at the current threshold? Each false alarm costs 1; each miss costs your selected amount."
-        : "How many labeled anomalies will be missed at the current threshold?",
+        ? "What is the total error cost at the current threshold? Each false alarm costs 1. Each miss costs your selected amount."
+        : "How many labeled anomalies will this threshold miss?",
       tolerance: 0,
     },
     evaluate: ({ threshold, missCost = 3 }, caseId) => {
@@ -1485,7 +1485,7 @@ function evaluationSpec(costs: boolean): LessonInvestigationSpec {
         answerLabel: costs ? "Total error cost" : "Missed anomalies",
         explanation: costs
           ? `${fp} false alarms × 1 + ${fn} misses × ${missCost} = ${fp + missCost * fn}. A different cost rule can favor a different threshold.`
-          : `At score > ${threshold}, ${fn} anomalies are missed and ${fp} normal cases raise false alarms. Accuracy is ${rounded(((tp + tn) / input.length) * 100)}%, but it hides these different mistakes.`,
+          : `With score > ${threshold}, the rule misses ${fn} anomalies and flags ${fp} normal cases. Accuracy is ${rounded(((tp + tn) / input.length) * 100)}%, but it hides these different mistakes.`,
         code: `const predictedAnomaly = score > ${threshold};\n${costs ? `const cost = falsePositives + ${missCost} * falseNegatives;` : "const misses = cases.filter(c => c.anomaly && c.score <= threshold).length;"}`,
       };
     },
@@ -1536,7 +1536,7 @@ function signalSpec(
           ? "Change a tone's frequency and amplitude. Keep the feature columns fixed at 4, 12 and 20 Hz."
           : "Change the second tone. The waveform and spectrum describe the same 64 samples.",
     boundary:
-      "This made-up signal is sampled at 64 Hz. A direct Fourier calculation produces the spectrum. It does not measure runtime speed or model quality.",
+      "We sample this made-up signal at 64 Hz. A direct Fourier calculation produces the spectrum. It does not measure runtime speed or model quality.",
     controls,
     cases: cases(
       windowed
@@ -1629,7 +1629,7 @@ function signalSpec(
             windowed
               ? `${taper ? "Hann-tapered" : "Rectangular"} time samples`
               : timed
-                ? `Window samples ${start} through ${start + 63}; onset at ${onset}`
+                ? `Window samples ${start} through ${start + 63}. Onset at ${onset}`
                 : `Waveform: ${base} Hz + ${frequency} Hz`,
             window,
             undefined,
@@ -1673,7 +1673,7 @@ function signalSpec(
           : timed
             ? `The window covers samples ${start} through ${start + 63}. ${count} of those samples are at or after onset ${onset}. Partial windows spread the new tone across nearby bins.`
             : mode === "features"
-              ? `The fixed 12 Hz feature is ${rounded(answer)}. Keep columns at the same frequencies, sample rate and window size for every example. Moving the tone changes the feature values, not the columns' meanings.`
+              ? `The fixed 12 Hz feature is ${rounded(answer)}. Keep columns at the same frequencies, sample rate and window size for every example. Moving the tone changes the feature values. Each column still represents the same frequency.`
               : `With 64 samples at 64 Hz, each bin spans 1 Hz. The second tone appears at bin ${frequency}, with magnitude ${rounded(spectrum[frequency]!)}.`,
         code: windowed
           ? `const windowed = samples.map((x, i) => x * ${taper ? "(0.5 * (1 - Math.cos(2 * Math.PI * i / 63)))" : "1"});\nconst magnitudes = spectrum(windowed);`
@@ -1696,7 +1696,7 @@ function forecastSpec(recursive: boolean): LessonInvestigationSpec {
       ? "Extend a fixed forecast rule. Each prediction becomes the next input."
       : "Choose how many steps ahead to predict. Compare the fixed rule’s forecast with the later observations.",
     boundary:
-      "A fixed rule, next = previous × multiplier + 0.1. No forecasting model is trained in this experiment.",
+      "A fixed rule, next = previous × multiplier + 0.1. This experiment trains no forecasting model.",
     controls: [
       range("horizon", "Steps after the last known reading", 2, 1, 4),
       range("multiplier", "Forecast multiplier", 1.15, 0.85, 1.3, 0.05),
@@ -1761,7 +1761,7 @@ function reconstructionSpec(error: boolean): LessonInvestigationSpec {
       ? "Change feature C and square each reconstruction error. Average those errors to score the whole row."
       : "Compress four input features into two averages, then reconstruct by repeating each average.",
     boundary:
-      "This example compresses values by averaging and rebuilds them by repeating the averages. It shows information loss; a real autoencoder learns its weights.",
+      "This example compresses values by averaging and rebuilds them by repeating the averages. It shows information loss. A real autoencoder learns its weights.",
     controls: [range("feature", "Input feature C", 6, 0, 10, 0.5)],
     cases: cases(
       "First input row",
@@ -1788,8 +1788,8 @@ function reconstructionSpec(error: boolean): LessonInvestigationSpec {
         graphics: [
           cells("Input features A, B, C, D", input, 4, [2]),
           pipe("Averaging encoder and repeat decoder", [
-            `Pair A+B → ${rounded(latent[0]!)}`,
-            `Pair C+D → ${rounded(latent[1]!)}`,
+            `Pair A+B${rounded(latent[0]!)}`,
+            `Pair C+D${rounded(latent[1]!)}`,
             "Repeat each average twice",
           ]),
           bars(
@@ -1803,7 +1803,7 @@ function reconstructionSpec(error: boolean): LessonInvestigationSpec {
           ? "Mean squared reconstruction error"
           : "Reconstructed feature C",
         explanation: error
-          ? `Squared differences are [${show(residuals)}]. Their average is ${rounded(mean(residuals))}. A high score is a reason to investigate, rather than a confirmed anomaly.`
+          ? `Squared differences are [${show(residuals)}]. Their average is ${rounded(mean(residuals))}. Investigate a high score to find out whether it indicates an anomaly.`
           : `Features C and D become one average, ${rounded(latent[1]!)}. Repeating that value cannot recover their original difference.`,
         code: "const encoded = [(x[0] + x[1]) / 2, (x[2] + x[3]) / 2];\nconst rebuilt = [encoded[0], encoded[0], encoded[1], encoded[1]];",
       };
@@ -1820,7 +1820,7 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
       ? "Change the query and the weight on time position. Compare which reading receives the most attention."
       : "Multiply each key by a query, apply softmax to get weights, then combine the values.",
     boundary: temporal
-      ? "Five fixed keys and values. Each score is query × key + position weight × t/4. Positions run from 0 to 4. Positive position weight favors later readings; negative favors earlier ones. Pool the original values. This is a simple positional scorer, not full self-attention."
+      ? "Five fixed keys and values. Each score is query × key + position weight × t/4. Positions run from 0 to 4. Positive position weight favors later readings. Negative favors earlier ones. Combine the original values using those weights. This simple scoring rule includes position. A full self-attention model does more."
       : "This uses five single-number keys and values and a query you choose. Real attention learns vector representations. A large attention weight does not show what caused a result.",
     controls: [
       range("query", "Query", 0.8, -2, 2, 0.2),

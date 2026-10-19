@@ -1,6 +1,6 @@
 slug: relu-activation
 lessonSlug: activation-functions
-title: "Apply ReLU Activation"
+title: "ReLU activation"
 instructions: |
   Write `applyRelu(preActivation)` to apply ReLU to every value in a tensor.
   Replace negative values with zero. Keep all positive values unchanged,
@@ -22,12 +22,12 @@ testCode: |
     const activate = (input) => {
       expect(
         typeof applyRelu,
-        'applyRelu is not defined. Keep the function the starter handed you: the grader calls it with tensors of its own.',
+        'Your code does not define applyRelu. Keep the function the starter handed you: the grader calls it with tensors of its own.',
       ).toBe('function');
       const out = applyRelu(input);
       expect(
         out,
-        'applyRelu() handed back nothing. It has to return a tensor shaped like the one it was given, with every negative value replaced by zero.',
+        'applyRelu() handed back nothing. It has to return a tensor with the input shape. Replace each negative value with zero.',
       ).toBeDefined();
       return out;
     };
@@ -47,7 +47,7 @@ testCode: |
       expect(vals[4], POSITIVE_WHY).toBeCloseTo(3.0, 5);
       recordResult({
         kind: 'table', title: 'Scores before and after your ReLU',
-        summary: 'The supplied activation test inputs. This changes score values; it does not choose an alert threshold.',
+        summary: 'The supplied activation test inputs. This changes score values. It does not choose an alert threshold.',
         columns: ['Position', 'Before ReLU', 'After ReLU'],
         rows: Array.from(probe.dataSync()).map((value, i) => [i + 1, value, vals[i]]),
       });

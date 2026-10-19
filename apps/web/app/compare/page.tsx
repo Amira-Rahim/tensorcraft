@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
-  title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera | Course comparison",
+  title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera, Course comparison",
   description:
-    "Honest comparison: where Tensorcraft wins (JavaScript-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
+    "Compare ML courses by language, starting knowledge, math depth, browser support, projects, and credentials.",
   alternates: { canonical: "https://tensorcraft.app/compare" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -14,14 +14,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/compare",
-    title: "Tensorcraft vs fast.ai vs Karpathy | Tensorcraft",
+    title: "Tensorcraft vs fast.ai vs Karpathy, Tensorcraft",
     images: [
       "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&world=deep-orbit&subtitle=An%20honest%20course%20comparison",
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tensorcraft vs fast.ai vs Karpathy | Tensorcraft",
+    title: "Tensorcraft vs fast.ai vs Karpathy, Tensorcraft",
     images: [
       "/api/og?title=Tensorcraft%20vs%20fast.ai%20vs%20Karpathy&world=deep-orbit&subtitle=An%20honest%20course%20comparison",
     ],
@@ -49,36 +49,37 @@ const ROWS: Row[] = [
   {
     feature: "Audience starting point",
     tensorcraft: "JS devs: Array.reduce, async/await, useState",
-    fastai: "Anyone with Python comfort",
+    fastai: "Developers comfortable with Python",
     karpathy: "Anyone willing to read math",
     coursera: "Anyone with college calculus",
   },
   {
     feature: "Analogies labeled where they break",
     tensorcraft: "Yes, every analogy carries a label and a break note",
-    fastai: "Top-down practice; no formal tier system",
+    fastai: "Top-down practice. No formal tier system",
     karpathy: "Bottom-up math; no analogy framing",
     coursera: "Formal definitions, less analogy",
   },
   {
     feature: "Math depth",
     tensorcraft:
-      "The heavy math (chain rule, Fourier transforms, cross-entropy) derived in optional drawers you can skip",
-    fastai: "Pragmatic depth, not paper-grade",
+      "Optional derivations for the chain rule, Fourier transforms, and cross-entropy",
+    fastai: "Math introduced through practical work",
     karpathy: "Paper-grade: autograd from scratch, attention from scratch",
     coursera: "Theory + math, exam-grade",
   },
   {
     feature: "Browser-runtime + deployment",
-    tensorcraft: "Every exercise grades in real TFJS in a worker",
-    fastai: "Notebook-first; deploys free via Hugging Face Spaces / Gradio",
+    tensorcraft:
+      "Code checks run in a browser worker with TensorFlow.js available",
+    fastai: "Notebook-first. Deploys free via Hugging Face Spaces / Gradio",
     karpathy: "Notebook only, no deployment story",
-    coursera: "Theory; deployment in separate specialization",
+    coursera: "Theory. Deployment in separate specialization",
   },
   {
     feature: "Capstone artifact you ship",
     tensorcraft:
-      "Every component of a browser-side ML system, built and graded piece by piece, pushed to your GitHub (one world live today)",
+      "Browser ML exercises saved to GitHub, plus an independent browser-app project (one world available)",
     fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
     karpathy: "Final notebook trained from scratch",
     coursera: "Certificates",
@@ -93,7 +94,7 @@ const ROWS: Row[] = [
   {
     feature: "Credential",
     tensorcraft:
-      "Completion certificate + a GitHub repo of every exercise you solved: a record of work, not an accreditation",
+      "Completion certificate and a GitHub repo of your solved exercises. No academic accreditation",
     fastai: "None",
     karpathy: "None",
     coursera: "Coursera certificate",
@@ -116,7 +117,7 @@ export default function ComparePage() {
     // "Prices checked" line below renders this same date.
     dateModified: "2026-07-14",
     description:
-      "Honest comparison of Tensorcraft against fast.ai, Karpathy zero-to-hero, and Coursera for JavaScript developers learning ML.",
+      "Compare Tensorcraft, fast.ai, Karpathy Zero-to-Hero, and Coursera as options for learning ML.",
     url: "https://tensorcraft.app/compare",
   };
 
@@ -131,24 +132,23 @@ export default function ComparePage() {
           COMPARE
         </p>
         <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-8">
-          Where each course wins.
+          Course comparison
         </h1>
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mb-12">
           <p>
             Tensorcraft is not the right course for everyone. If you want to
-            build the training machinery itself from raw math (paper-grade
-            autograd internals), Karpathy&apos;s Zero-to-Hero is free and
-            excellent. If you want hands-on PyTorch with Hugging Face
-            superpowers, fast.ai is free and excellent. If you want a graded
-            credential for your CV, Coursera does that and we don&apos;t.
+            build a training system from the math up, including automatic
+            differentiation, Karpathy&apos;s Zero-to-Hero is free and excellent.
+            If you want practical work with PyTorch and pretrained models,
+            fast.ai is free and excellent. If you want a graded credential for
+            your CV, Coursera does that and we don&apos;t.
           </p>
           <p>
             Tensorcraft is the right course if you already ship JavaScript, in
-            the browser or on Node, and you want a course that respects what you
-            already know without watering down the ML. Every analogy ships with
-            a label naming where it stops being literal: the bridge-tier system
-            is built directly into each lesson.
+            the browser or on Node, and want to learn ML through familiar code.
+            Each lesson explains both the connection to JavaScript and where
+            that comparison stops working.
           </p>
         </section>
 
@@ -222,7 +222,7 @@ export default function ComparePage() {
 
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mt-12">
           <h2 className="text-2xl font-mono font-bold text-text-primary">
-            What we deliberately did not try to be
+            Topics outside this course
           </h2>
           <ul className="list-disc pl-6 space-y-3">
             <li>
@@ -236,17 +236,18 @@ export default function ComparePage() {
               <span className="text-text-primary font-mono text-sm">
                 A research methodology course.
               </span>{" "}
-              We teach engineering practice, not how to design novel
-              experiments. The Karpathy + d2l.ai combo is your friend.
+              We teach engineering practice. Designing novel experiments falls
+              outside this course. Karpathy’s courses and d2l.ai offer more
+              mathematical detail.
             </li>
             <li>
               <span className="text-text-primary font-mono text-sm">
                 An accredited credential.
               </span>{" "}
-              Your certificate is a completion record, not an accreditation. The
-              proof we believe in is the capstone: a deployable browser-ML app
-              you can show in an interview, plus the GitHub repo of every
-              exercise you solved.
+              Your certificate records course completion. It carries no academic
+              accreditation. The course includes a deployable browser-ML app you
+              can show in an interview, plus the GitHub repo of every exercise
+              you solved.
             </li>
           </ul>
         </section>
@@ -261,7 +262,7 @@ export default function ComparePage() {
             href="/worlds"
             className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
-            Start the course →
+            Start the course
           </Link>
           <Link
             href="/about"

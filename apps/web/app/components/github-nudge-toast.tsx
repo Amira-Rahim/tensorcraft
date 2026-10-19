@@ -50,7 +50,7 @@ export function GithubNudgeToast() {
           href="/settings"
           className="text-xs font-semibold px-4 py-2 bg-primary/20 text-primary border border-primary/30 hover:bg-primary hover:text-on-primary transition-colors"
         >
-          Connect →
+          Connect
         </Link>
       </div>
     </div>

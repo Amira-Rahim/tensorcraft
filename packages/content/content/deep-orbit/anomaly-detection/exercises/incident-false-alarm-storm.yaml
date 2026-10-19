@@ -3,9 +3,9 @@ lessonSlug: threshold-tuning
 title: "Incident: False Alarm Storm"
 mlContent: systems
 instructions: |
-  Implement diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) to choose what to investigate first. currentAlerts.alertsPerHour and baselineAlerts.alertsPerHour are nonnegative. baselineAlerts.modelAge is measured in days. sensorAuditLog.recentChanges lists logged sensor changes.
+  Implement diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) to choose what to investigate first. currentAlerts.alertsPerHour and baselineAlerts.alertsPerHour are nonnegative. baselineAlerts.modelAge gives the age in days. sensorAuditLog.recentChanges lists logged sensor changes.
 
-  Return { rate, ratio, nextCheck, action }. Round the reported rate and ratio to one decimal place and keep them as numbers. ratio is the current alert rate divided by the baseline rate. When the baseline is zero, return null for ratio instead of inventing a denominator.
+  Return { rate, ratio, nextCheck, action }. Round the reported rate and ratio to one decimal place and keep them as numbers. ratio is the current alert rate divided by the baseline rate. When the baseline is zero, return null for ratio. No finite ratio exists for that denominator.
 
   Check these rules in order and use the first match:
   1. If the sensor change log is non-empty, return nextCheck 'sensor-change' and action 'inspect-sensor'.
@@ -13,14 +13,14 @@ instructions: |
   3. Otherwise, if the unrounded ratio is between 5 and 20 inclusive, return 'threshold' and 'review-threshold'.
   4. Otherwise, return 'unexplained' and 'escalate'.
 
-  This identifies where to look, not what caused the alerts. An old model may still work, and a sensor change may be unrelated. Keep reviewing alerts because some may be real events. Do not automatically retrain or change the cutoff based only on model age or alert volume.
+  This identifies where to investigate first. You still need to find the cause. An old model may still work, and a sensor change may be unrelated. Keep reviewing alerts because some may be real events. Do not automatically retrain or change the cutoff based only on model age or alert volume.
 hints:
   - level: nudge
     content: |
       Separate the measured ratio from the investigation priority. Handle a zero baseline before dividing.
   - level: guidance
     content: |
-      Choose the first applicable runbook branch. Compare the unrounded ratio with the band; rounding is only for the report. The return value names a next check, not a proven cause.
+      Choose the first applicable runbook branch. Compare the unrounded ratio with the band. Rounding is only for the report. The return value names the next investigation step.
   - level: solution
     content: |
       function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
@@ -59,7 +59,7 @@ testCode: |
       expect(r.action).toBe('inspect-sensor');
       recordResult({
         kind: 'table', title: 'Your alert-storm triage',
-        summary: 'Synthetic incident with a logged sensor change. The first matching runbook rule chooses an investigation; it does not identify the cause.',
+        summary: 'Synthetic incident with a logged sensor change. The first matching runbook rule chooses an investigation. It does not identify the cause.',
         columns: ['Measurement or action', 'Your result'],
         rows: [['Alerts per hour', r.rate], ['Ratio to baseline', r.ratio], ['Next check', r.nextCheck], ['Action', r.action]],
       });

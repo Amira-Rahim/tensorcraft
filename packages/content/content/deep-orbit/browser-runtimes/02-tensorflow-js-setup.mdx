@@ -21,18 +21,18 @@ concept:
     mlTitle: "TF.js Install"
     mlCode: "npm install @tensorflow/tfjs"
     tier: identity
-    breaks: "Both libraries use ordinary package installation. TF.js also selects a numerical backend at runtime. Check the selected backend and measure the workload on target devices; an import alone establishes neither GPU access nor a particular speedup."
+    breaks: "Both libraries use ordinary package installation. TF.js also selects a numerical backend at runtime. Check the selected backend and measure the workload on target devices. Importing the package does not guarantee GPU access or faster calculations."
 consequence:
   narrative: "Demir checks the backend at every station. One console uses a different backend, and Nazari asks him to record it."
 hints:
   - level: nudge
     content: "Wait for TensorFlow.js to finish starting before reading its backend name. A requested backend may fail to start, so report the one that actually runs."
   - level: guidance
-    content: "Request the preferred backend first, if one was supplied. A registered backend that cannot start returns false; an unknown name throws an error. Catch an error from that request, then await initialization. Read the backend name and version from the runtime after it is ready. Do not type those values into your answer. If no backend can start, let that initialization error reach the caller."
+    content: "Request the preferred backend first, if the caller supplies one. A registered backend that cannot start returns false. An unknown name throws an error. Catch an error from that request, then await initialization. Read the backend name and version from the runtime after it is ready. Do not type those values into your answer. If no backend can start, let that initialization error reach the caller."
   - level: solution
     content: |
       if (preferred) {
-        // A name nobody registered throws; a registered backend that cannot
+        // A name nobody registered throws. A registered backend that cannot
         // start resolves false. Neither is fatal: the runtime settles below.
         try {
           await tf.setBackend(preferred);
@@ -48,7 +48,7 @@ keywords:
 skillAxes: [deployment, js_integration]
 ---
 
-> **BRIDGE CONSOLE · BENCHMARK** · same matMul, same browser tab: webgl 0.5 ms · wasm 3.0 ms · cpu 110.0 ms
+> **BRIDGE CONSOLE, BENCHMARK**, same matMul, same browser tab: webgl 0.5 ms, wasm 3.0 ms, cpu 110.0 ms
 
 <Dialogue speaker="Ensign Demir">
 Installing TensorFlow.js feels exactly like adding any other dependency. npm install, import, configure. I've done this a thousand times.
@@ -58,13 +58,13 @@ Installing TensorFlow.js feels exactly like adding any other dependency. npm ins
 Then explain the benchmark on your screen. Check the backend at every station and log what you get. This classifier is small enough to ride out a fallback to plain CPU at one reading a second. The models we ship after it are not, and I want the slow chair named before anyone has to sit in it.
 </Dialogue>
 
-These example timings belong to the story console, not a speed guarantee for your device. A **backend** executes TF.js operations. Browser options include WebGL and WebGPU on the GPU, WebAssembly on the CPU, and plain JavaScript on the CPU. Their relative speed depends on the model, device and transfer overhead. Node can also use native TensorFlow through the separate `@tensorflow/tfjs-node` package.
+These fictional timings describe the story console. Measure your device separately. A **backend** executes TF.js operations. Browser options include WebGL and WebGPU on the GPU, WebAssembly on the CPU, and plain JavaScript on the CPU. Their relative speed depends on the model, device and transfer overhead. Node can also use native TensorFlow through the separate `@tensorflow/tfjs-node` package.
 
 You will initialize TensorFlow.js and check which backend is ready to run your calculations.
 
 <LearningObjectives objectives={["Read the setup steps and initialize the supplied TensorFlow.js runtime", "Understand TF.js backends (WebGPU, WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
 
-## Install and Import
+## Installation and imports
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -98,17 +98,17 @@ import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
 setWasmPaths('/wasm/'); // copy binaries from this installed package version
 
 // The pure JavaScript CPU backend is a useful fallback. Measure whether
-// it meets your application's budget; production use is not forbidden.
+// it meets your application's budget. Production use is not forbidden.
 
 // WebGPU provides a GPU compute API. Availability is not a speed result.
 // Install this separate package if you want this branch of the example.
 import '@tensorflow/tfjs-backend-webgpu';
 
 // This is an example fallback order. Choose yours after measuring,
-// and fall through on both ways a rung can fail. A name that was never
-// registered makes tf.setBackend throw; a registered backend that cannot
+// and try the next backend if the requested one fails. A name that was never
+// registered makes tf.setBackend throw. A registered backend that cannot
 // START (a lost GPU context, a blocked WebGPU adapter) makes it resolve
-// false instead of throwing. Ignore the boolean and the page runs
+// false without throwing. Ignore the boolean and the page runs
 // somewhere else while your code believes it is on webgpu.
 const ladder = navigator.gpu
   ? ['webgpu', 'webgl', 'wasm', 'cpu']
@@ -117,7 +117,7 @@ for (const name of ladder) {
   try {
     if (await tf.setBackend(name)) break;
   } catch {
-    // not registered on this page: try the next rung
+    // not registered on this page: try the next backend
   }
 }
 await tf.ready();
@@ -125,7 +125,7 @@ await tf.ready();
 // Or let TF.js choose. Its rule: the registered backend with the highest
 // priority wins, webgpu (3) first, then webgl and wasm, which are BOTH
 // registered at priority 2, so that tie goes to whichever package the page
-// imported first, then cpu (1). The tie is why the ladder above is worth
+// imported first, then cpu (1). The tie is why the fallback order above is worth
 // writing: a page that imports the wasm backend before the webgl one gets
 // wasm on a machine with a perfectly good GPU, and nothing warns you.`}
 </CodeBlock>
@@ -165,10 +165,10 @@ async function benchmarkBackend(backendName: string) {
 
 ## Challenge
 
-TensorFlow.js is supplied in the editor. The tests use a simulated runtime to check how your code handles startup and backend selection. To check your own machine, install and run the real package in the independent project.
+The editor supplies TensorFlow.js. The tests use a simulated runtime to check how your code handles startup and backend selection. To check your own machine, install and run the real package in the independent project.
 
 Write the dashboard's startup check. Inspect the backend and version your
-function returns from the simulated cold runtime, including when a requested
+function returns from the simulated runtime during startup, including when a requested
 backend cannot start. A real console needs this check before loading its model.
 
 <Exercise slug="tfjs-setup" />
@@ -187,11 +187,11 @@ backend cannot start. A real console needs this check before loading its model.
         },
         {
           "text": "tf.memory()",
-          "feedback": "This reports memory information, not the selected backend."
+          "feedback": "This reports memory information. Use getBackend() to read the selected backend."
         },
         {
           "text": "model.summary()",
-          "feedback": "This describes model layers and parameters, not the active backend."
+          "feedback": "This describes model layers and parameters. Use getBackend() to read the active backend."
         }
       ],
       "correctIndex": 0,
@@ -224,7 +224,7 @@ backend cannot start. A real console needs this check before loading its model.
 
 <Epilogue>
 
-Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth (the engineering panel, oldest display on the ship) comes back `wasm`: 3.0 ms per matmul instead of 0.5.
+Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth (the engineering panel, oldest display on the ship) comes back `wasm`: 3.0 ms per matmul, compared with 0.5 on the bridge consoles.
 
 <Dialogue speaker="Chief Nazari">
 So the engineering chair runs that matmul six times slower than the helm. Log it. If anyone ever has to watch from that station, I want to know what they are missing and by how much.

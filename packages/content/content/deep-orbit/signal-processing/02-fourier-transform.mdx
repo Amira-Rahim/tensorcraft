@@ -21,16 +21,16 @@ concept:
     mlTitle: "FFT Decomposition"
     mlCode: "const frequencies = tf.spectral.rfft(signal)"
     tier: structural
-    breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a fixed mathematical basis of sinusoids (e^(-2πikn/N) for k = 0..N-1) and returns complex-valued coefficients (magnitude + phase). The basis is universal and not learned from data; the same N sinusoids decompose every signal."
+    breaks: "With @keyframes, you choose the steps of an animation. The FFT uses a fixed set of waves and calculates how each contributes to the signal. Each result gives a magnitude and phase. Signals of the same length use the same set of waves. The FFT does not learn them from data."
 consequence:
   narrative: "A sharp peak at 73.4 Hz, and nothing in the catalog to explain it. 'That is not stellar background,' Farah says quietly."
 hints:
   - level: nudge
     content: |
-      rfft turns N time samples into floor(N/2)+1 frequency bins; the dominant tone is the bin with the largest magnitude, and bin 0 is the DC offset, not a tone.
+      rfft turns N time samples into floor(N/2)+1 frequency bins. The dominant tone is the bin with the largest magnitude, and bin 0 represents the constant DC offset.
   - level: guidance
     content: |
-      Compare the magnitude of each FFT bin. Skip bin 0, which measures the constant offset rather than a repeating tone. Once you find the largest remaining magnitude, convert its index to hertz using the sample rate and input length.
+      Compare the magnitude of each FFT bin. Skip bin 0, which measures the constant offset. Once you find the largest remaining magnitude, convert its index to hertz using the sample rate and input length.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -68,16 +68,16 @@ Each index represents a frequency. We need the sample rate and window length to 
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-So the signal is the chord, and the FFT breaks it into individual frequencies? That's like how a CSS animation is defined as individual keyframes that blend together into smooth motion.
+So the signal is the chord, and the FFT breaks it into individual frequencies? That's like how we define a CSS animation with individual keyframes that blend into smooth motion.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Your keyframes are steps you chose for one animation. The FFT uses the same fixed set of waves for every signal of that length. It calculates how each wave contributes to the samples, including its strength and timing. Those waves are not learned from data. This gives us a consistent way to compare captures, but it does not tell us what physically caused a peak.
+Your keyframes are steps you chose for one animation. The FFT uses the same fixed set of waves for every signal of that length. It calculates how each wave contributes to the samples, including its strength and timing. The Fourier transform fixes those waves mathematically. This gives us a consistent way to compare captures, but it does not tell us what physically caused a peak.
 </Dialogue>
 
 Each FFT coefficient is a complex number, stored as real and imaginary parts. From that pair we can calculate magnitude, which measures strength, and phase, which describes alignment in time. `tf.abs()` keeps the magnitude. The frequency plots in this course use those magnitudes.
 
-DEEP SCAN also has an input named phase. That is a separate feature calculated from the first two samples of a window; lesson 4 explains it.
+DEEP SCAN also has an input named phase. That is a separate feature calculated from the first two samples of a window. Lesson 4 explains it.
 
 A full transform of N samples produces N coefficients. For real-valued input, the two halves mirror each other. `tf.spectral.rfft` keeps only the floor(N/2)+1 unique bins.
 
@@ -115,8 +115,8 @@ const magArray = await magnitudes.array();
 // Each index corresponds to a frequency bin:
 // bin[i] = i * (sampleRate / n) Hz
 // bin[0] = 0 Hz (DC offset)
-// bin[5] = 5 Hz  → magnitude ≈ 64.0 (strong!)
-// bin[20] = 20 Hz → magnitude ≈ 19.2 (weaker)
+// bin[5] = 5 Hz to magnitude ≈ 64.0 (strong!)
+// bin[20] = 20 Hz to magnitude ≈ 19.2 (weaker)
 // All others ≈ 0 (no other frequencies present)
 
 console.log('5 Hz magnitude:', magArray[5].toFixed(1));   // ~64.0
@@ -136,17 +136,17 @@ For a real-valued signal, `rfft` transforms an array of N time-domain samples in
 <CodeBlock language="typescript" title="fft-interpretation.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The key relationship: bin index → frequency
+// The key relationship: bin index to frequency
 function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): number {
   return binIndex * (sampleRate / fftSize);
 }
 
 // For our signal: sampleRate=128, fftSize=128
-// bin 0  → 0 Hz   (DC coefficient: sum of samples, N times their mean)
-// bin 1  → 1 Hz
-// bin 5  → 5 Hz   ← our first sine wave
-// bin 20 → 20 Hz  ← our second sine wave
-// bin 64 → 64 Hz  (Nyquist bin for this even-length input)
+// bin 0 to 0 Hz   (DC coefficient: sum of samples, N times their mean)
+// bin 1 to 1 Hz
+// bin 5 to 5 Hz: our first sine wave
+// bin 20 to 20 Hz: our second sine wave
+// bin 64 to 64 Hz  (Nyquist bin for this even-length input)
 
 // Nyquist frequency: half the sample rate. Unambiguous reconstruction
 // requires the input band to be strictly below it.
@@ -175,7 +175,7 @@ console.table(bins.filter((b) => b.magnitude > 1));
 // and finding it is the challenge below.`}
 </CodeBlock>
 
-## Try a Different Spectrum
+## Another spectrum
 
 <LearningExperiment id="fft" />
 
@@ -198,9 +198,8 @@ function analyzeSignal(signal: number[], sampleRate: number) {
     const naturalFrequencies = new Set([5, 12, 23, 47]);
 
     // Toy detector: use the median magnitude as a robust reference level.
-    // In this noiseless fixture it mostly measures leakage, not physical
-    // noise. The factor 100 is chosen for the example, not calibrated to
-    // a false-alarm rate. Real thresholds need representative validation.
+    // This noiseless fixture mostly measures leakage.
+    // We chose the factor 100 for this example without calibrating it to a false-alarm rate. Real thresholds need representative validation.
     const sorted = [...magnitudes].sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
     const noiseFloor = sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
@@ -230,10 +229,10 @@ analyzeSignal(anomalousSignal, 256);
 //   { frequency: 12,   magnitude: 153.6, natural: true },
 //   { frequency: 23,   magnitude: 102.4, natural: true },
 //   { frequency: 47,   magnitude: 51.2,  natural: true },
-//   { frequency: 73.5, magnitude: 12.0,  natural: false },  // ← ANOMALY
+//   { frequency: 73.5, magnitude: 12.0,  natural: false },  //: ANOMALY
 // ]
 // Each natural magnitude is amplitude x N/2 (0.8 x 256 = 204.8). The
-// intruder reads 73.5, not 73.4: its true frequency sits between bins,
+// intruder peaks at the 73.5 Hz bin. Its true frequency of 73.4 Hz sits between bins,
 // so the grid reports the nearest line, with a small sub-threshold
 // shoulder in bin 146 (73.0 Hz). Lesson 05 gives that smearing its
 // name: spectral leakage.`}
@@ -250,11 +249,11 @@ For each frequency index k, this is a sum of input samples weighted by complex s
 
 `x[n] = (1/N) · Σ_{k=0..N-1} X[k] · e^(2π·i·k·n/N)`
 
-The discrete sample vector is reconstructible from its full DFT in exact arithmetic. This does not undo aliasing or recover data outside the recorded interval.
+In exact arithmetic, the inverse DFT recovers the original samples from the full transform. This does not undo aliasing or recover data outside the recorded interval.
 
-**Why rfft returns floor(N/2)+1 bins:** for real-valued input, `X[N-k]` is the complex conjugate of `X[k]`; the upper half of the spectrum duplicates the lower half. `rfft` keeps only bins 0 through floor(N/2), the unique ones.
+**Why rfft returns floor(N/2)+1 bins:** for real-valued input, `X[N-k]` is the complex conjugate of `X[k]`. The upper half of the spectrum duplicates the lower half. `rfft` keeps only bins 0 through floor(N/2), the unique ones.
 
-**Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT algorithm computes the same result in O(N log N), which is what makes real-time spectrograms (next lesson) possible. This course uses the FFT through `tf.spectral.rfft` and never derives the algorithm itself; if you want the recursion, look up Cooley-Tukey.
+**Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT algorithm computes the same result in O(N log N), which is what makes real-time spectrograms (next lesson) possible. This course uses the FFT through `tf.spectral.rfft` and never derives the algorithm itself. If you want the recursion, look up Cooley-Tukey.
 </DerivationDrawer>
 
 ## Challenge
@@ -291,16 +290,16 @@ Skip bin 0, the constant offset. Find the largest magnitude among the remaining 
   whatYouLearned={[
     "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
     "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz.",
-    "Nyquist is half the sample rate. Band-limit the input below it before sampling; otherwise higher frequencies can alias into the retained band.",
+    "Nyquist is half the sample rate. Band-limit the input below it before sampling. Otherwise higher frequencies can alias into the retained band.",
     "A median can reduce the influence of a few large bins, but is not automatically a noise estimate. Validate a detector's threshold and false-alarm rate on representative captures."
   ]}
-  bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."
+  bridge="With `@keyframes`, you choose animation steps. With `tf.spectral.rfft(signal)`, you measure how a fixed set of waves contributes to the signal. You do not choose those waves for each recording."
   youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and explain why a threshold needs validation on representative captures."
 />
 
 <Epilogue>
 
-Four familiar peaks appear on the lab display: 5, 12, 23 and 47 Hz. Demir reaches for the log, but Farah catches his wrist and points to a fifth peak: 73.5 Hz on the half-hertz grid, magnitude 12.0. She checks the background catalog three times; nothing explains it.
+Four familiar peaks appear on the lab display: 5, 12, 23 and 47 Hz. Demir reaches for the log, but Farah catches his wrist and points to a fifth peak: 73.5 Hz on the half-hertz grid, magnitude 12.0. She checks the background catalog three times. Nothing explains it.
 
 Overnight, she reruns the capture with a window four times longer. Its 0.125 Hz grid puts the strongest bin at 73.375 Hz, displayed as 73.4 Hz.
 

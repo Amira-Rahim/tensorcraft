@@ -12,7 +12,7 @@ scene:
   time: "The alert"
   portraitAlt: "Under alert lighting four crew silhouettes cluster at the holo table as a jagged unknown signal towers on the forward display."
 context:
-  narrative: "Before the ship's loudest alert, a replay of its quietest moment: sample 7741, logged in the calm period, back when nothing aboard could see it. Then the live feed does the same thing at twelve times the highest error any normal signal produced."
+  narrative: "The crew replays sample 7741, a reading marked normal during the quiet period. Then a live capture shows the same pattern, with twelve times the highest reconstruction error seen on normal readings."
   speaker: "Chief Nazari"
 concept:
   explanation: "An ensemble combines several detectors. Its alert counts how many checks flagged a reading. That count helps the crew decide what to investigate, but it does not prove the signal is new or explain its cause."
@@ -22,7 +22,7 @@ concept:
     mlTitle: "Anomaly Alert"
     mlCode: "const votes = [statistical, autoencoder, lstm].filter(Boolean).length;\nif (votes >= 2) alert('UNKNOWN SIGNAL DETECTED')"
     tier: intuition
-    breaks: "Node's uncaughtException event reports a thrown error that escaped ordinary handling. An anomaly alert instead applies a statistical rule to readings. That rule can flag healthy data or miss a real fault; detector agreement does not prove a reading is new."
+    breaks: "Node's uncaughtException event reports a thrown error that escaped ordinary handling. An anomaly alert instead applies a statistical rule to readings. That rule can flag healthy data or miss a real fault. Detector agreement does not prove a reading is new."
 consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
@@ -31,7 +31,7 @@ hints:
       Calculate each detector's result, then count how many flagged the reading. Handle a window of identical values separately.
   - level: guidance
     content: |
-      Use tf.moments to calculate the mean and variance when the window contains different values. If all values are identical, compare the new reading with that value instead of dividing by zero. A match gives no statistical vote. A difference gives one vote. Add that vote to the other two before checking for a majority.
+      Use tf.moments to calculate the mean and variance when the window contains different values. If all values are identical, compare the new reading directly with that value. Division by zero would make the z-score invalid. A match gives no statistical vote. A difference gives one vote. Add that vote to the other two before checking for a majority.
   - level: solution
     content: |
       interface EnsembleVerdict {
@@ -85,7 +85,7 @@ keywords:
 skillAxes: [model_arch, evaluation]
 ---
 
-> **ARIA archive · replaying sample 7741** · Recorded during a quiet period. ARIA's rules marked it as normal. No crew member checked it at the time.
+> **ARIA archive, replaying sample 7741**, Recorded during a quiet period. ARIA's rules marked it as normal. No crew member checked it at the time.
 
 <StoryPassage>
 
@@ -112,7 +112,7 @@ By the time the bridge crew assembles around the display, Nazari has already pul
 </StoryPassage>
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
-I've checked the sensor calibration twice. No fault found. Keep the raw capture; I want an independent check before we rule the instrument out.
+I've checked the sensor calibration twice. No fault found. Keep the raw capture. I want an independent check before we rule the instrument out.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -127,13 +127,13 @@ What am I looking at, Dr. Farah?
 Two detectors crossed their thresholds, Commander. That does not prove the pattern is new. The archive search and calibration checks give us separate reasons to investigate. We still do not know what caused it.
 </Dialogue>
 
-In Node, `process.on('uncaughtException')` receives an error that escaped earlier handlers. It may still be a familiar bug. An ensemble alert also asks for attention, but it comes from statistical checks that can be wrong. Here two checks fired while the amplitude check stayed quiet. That tells us which checks failed, not whether the signal is new.
+In Node, `process.on('uncaughtException')` receives an error that escaped earlier handlers. It may still be a familiar bug. An ensemble alert also asks for attention, but it comes from statistical checks that can be wrong. Here two checks fired while the amplitude check stayed quiet. That identifies the checks that fired. We still need to find out what caused the signal.
 
 The quiet amplitude check let sample 7741 sit in the archive for eight days. The ensemble now uses three separate checks. The autoencoder keeps last lesson's cutoff of 1.0. This reading scores 6.2, twelve times the highest normal error. That gives one vote. The alert needs two.
 
 You will calculate three detector verdicts and combine them into one alert decision.
 
-<LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Calculate the statistical check, then combine it with the autoencoder and LSTM scores", "Read the vote as a count of failed checks, not the probability that a reading is anomalous"]} />
+<LearningObjectives objectives={["Combine detectors with a majority rule and explain how shared blind spots can still cause a miss", "Calculate the statistical check, then combine it with the autoencoder and LSTM scores", "Read the vote as a count of failed checks and explain why it cannot establish a probability"]} />
 
 ## Ensemble Detection
 
@@ -144,7 +144,7 @@ You will calculate three detector verdicts and combine them into one alert decis
 
 interface DetectionResult {
   isAnomaly: boolean;
-  agreement: number;   // detectors that fired, out of 3: evidence, not a probability
+  agreement: number;   // number of detectors that fired, out of 3
   detectors: {
     statistical: { triggered: boolean; zScore: number | null };
     autoencoder: { triggered: boolean; error: number };
@@ -212,7 +212,7 @@ function detectAnomaly(
 
   return {
     isAnomaly: votes >= 2,  // majority vote
-    agreement: votes,       // a count of yeses, not a probability: 2 is not "67% likely"
+    agreement: votes,       // number of checks that fired. This has no calibrated probability meaning
     detectors: {
       statistical: { triggered: statTriggered, zScore },
       autoencoder: { triggered: aeTriggered, error: reconError },
@@ -234,7 +234,7 @@ function detectAnomaly(
 // This reading's 0.041 is about four times that cutoff.`}
 </CodeBlock>
 
-The three detectors run separate calculations, but their errors can still be linked. They all read the same capture. The statistical check uses its min-max-scaled amplitude. The autoencoder sees that amplitude again, z-scored, among its eleven features. If the sensor drifts, both receive the changed reading.
+The three detectors run separate calculations, but they can still make related errors. They all read the same capture. The statistical check uses its min-max-scaled amplitude. The autoencoder sees that amplitude again, z-scored, among its eleven features. If the sensor drifts, both receive the changed reading.
 
 The models also use training rows from the same archive, although the LSTM used only its first day. A problem in shared data can affect several votes. You cannot treat those votes as independent probabilities.
 
@@ -250,14 +250,14 @@ While the detectors vote, Farah runs a script to examine the timing inside each 
 
 </StoryPassage>
 
-The gaps have relative lengths of 1, 1, 2, 3, 5, 8, 13. These are Fibonacci numbers: after the first two, each is the sum of the two before it. The numbers describe the pattern of lengths, not seconds or hertz.
+The gaps have relative lengths of 1, 1, 2, 3, 5, 8, 13. These are Fibonacci numbers: after the first two, each is the sum of the two before it. The numbers describe relative lengths. Measuring the gaps in seconds requires their duration too.
 
 <CodeBlock language="typescript" title="the-discovery.ts">
 {`// The application supplies trained models, windows, and frozen scalers.
 // Use the LSTM scaler for actualLstmFeatures and recentWindow.
 // Use the autoencoder scaler for anomalousSignal's eleven features.
 // The statistical check uses min-max-scaled amplitude instead.
-// Mission scores below are fictional, not guaranteed function outputs.
+// The story supplies these fictional mission scores. Your function can return different scores.
 //
 // Module 5's extractFeatures makes eleven raw-unit features from 64 samples.
 // Module 4's preprocess takes the first three as a named feature object.
@@ -282,7 +282,7 @@ console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)
 console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
 
 // Feature analysis reveals: the anomaly is in the frequency domain
-// A 73.4 Hz component; each pulse carries Fibonacci-ratio SUB-intervals
+// A 73.4 Hz component. Each pulse carries Fibonacci-ratio SUB-intervals
 // (the 73.4-second gap BETWEEN pulses has held steady so far)
 // The same ratios appear in the ship's sensor calibration harmonics`}
 </CodeBlock>
@@ -291,7 +291,7 @@ console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(
 
 Combine the three detector results into one decision. Calculate the z-score from the eight recent amplitudes. Compare the supplied autoencoder and LSTM scores with their cutoffs. Count the failed checks and raise an alert when at least two flag the reading.
 
-This exercise uses a different baseline from lesson 1. The same maximum reading that scored 3.2 sigma against the eleven-day archive scores 32 against this quieter window. The LSTM check also differs from the example above: it predicts one amplitude, and its error uses 0-to-1 amplitude units rather than mean squared error on z-scored features.
+This exercise uses a different baseline from lesson 1. The same maximum reading that scored 3.2 sigma against the eleven-day archive scores 32 against this quieter window. The LSTM check also differs from the example above: it predicts one amplitude, and its error uses 0-to-1 amplitude units. The earlier example measures mean squared error on z-scored features.
 
 When every value in the window is identical, its standard deviation is zero. Return a null z-score. For this exercise, an equal new value gives no statistical vote and a different value gives one vote. Real sensors need a tolerance based on measurement precision and noise. If different window values become identical after float32 conversion, reject the calculation. Rounding away a difference does not make the original readings constant.
 
@@ -299,7 +299,7 @@ When every value in the window is identical, its standard deviation is zero. Ret
 
 <RecallPrompt
   question="The amplitude check stays quiet, but the autoencoder and LSTM both flag a reading. What should the 2-of-3 ensemble report, and what does that result mean?"
-  answer="It reports two votes and raises an alert. Two votes count checks that crossed their cutoffs; they do not mean a 67% chance that the reading is anomalous. The detectors share inputs and training data, so their errors can overlap. Investigate the alert and test the combined detector on separate reviewed readings."
+  answer="It reports two votes and raises an alert. Two votes count checks that crossed their cutoffs. They do not mean a 67% chance that the reading is anomalous. The detectors share inputs and training data, so their errors can overlap. Investigate the alert and test the combined detector on separate reviewed readings."
   checks={[
     {
       "kind": "choice",
@@ -307,7 +307,7 @@ When every value in the window is identical, its standard deviation is zero. Ret
       "options": [
         { "text": "Two votes and an alert.", "feedback": "Any two flagged checks meet the majority rule, even when the amplitude check stays quiet." },
         { "text": "One vote and no alert.", "feedback": "The autoencoder and LSTM each contribute a vote." },
-        { "text": "No alert unless all three checks flag it.", "feedback": "This policy needs two votes, not all three." }
+        { "text": "No alert unless all three checks flag it.", "feedback": "Two votes trigger an alert under this policy." }
       ],
       "correctIndex": 0,
       "explanation": "Any two flagged checks meet the majority rule, even when the amplitude check stays quiet."
@@ -316,7 +316,7 @@ When every value in the window is identical, its standard deviation is zero. Ret
       "kind": "choice",
       "question": "Does two votes mean the reading has a 67% chance of being anomalous?",
       "options": [
-        { "text": "Yes. Divide the vote count by three to get the probability.", "feedback": "Agreement is a count, not a calibrated probability." },
+        { "text": "Yes. Divide the vote count by three to get the probability.", "feedback": "The vote counts how many checks fired. Calculating a calibrated probability would require separate evaluation." },
         { "text": "No. It means two checks crossed their cutoffs.", "feedback": "Measure the detector's errors on reviewed data. The vote alone does not give an event probability." }
       ],
       "correctIndex": 1,
@@ -344,10 +344,10 @@ When every value in the window is identical, its standard deviation is zero. Ret
   whatYouLearned={[
     "Ensemble detection combines several methods and uses a majority vote. The vote counts failed checks. It is not a probability.",
     "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error can flag structural deviations, and LSTM prediction error can flag temporal pattern breaks. Each can miss events or flag normal variation.",
-    "The detectors share captures, features and training data. Their errors can be correlated: one contaminated archive may silence more than one vote.",
+    "The detectors share captures, features and training data. They can make correlated errors: one contaminated archive may silence more than one vote.",
     "The detectors measure differences and raise alerts. People still need to investigate what caused them."
   ]}
-  bridge="Both an uncaughtException handler and an ensemble alert escalate a problem. The handler observes an actual throw; detector votes are fallible checks that need investigation."
+  bridge="Both an uncaughtException handler and an ensemble alert escalate a problem. The handler receives a thrown error. A detector applies a rule that can be wrong, so its alert needs investigation."
   youCanNow="Calculate the statistical check, combine the three detector results, and explain what the majority vote tells you."
 />
 
@@ -361,6 +361,6 @@ Across the bridge, Nazari compares it with the frequency patterns used to calibr
 Two hypotheses. The calibration path may be leaking into the capture. Or the pattern may be external. We need an independent instrument before we choose between them.
 </Dialogue>
 
-Nobody answers her; on the main display the two traces sit one on top of the other, ratio for ratio. The question hanging over the bridge is one no model can score. Not "what is it" anymore: is it answering us?
+Nobody answers her. On the main display the two traces sit one on top of the other, ratio for ratio. The question hanging over the bridge is one no model can score. Not "what is it" anymore: is it answering us?
 
 </Epilogue>

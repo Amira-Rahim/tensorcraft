@@ -85,7 +85,7 @@ export function GuestModuleBanner({
           }}
           data-testid="guest-banner-pricing"
         >
-          Unlock the rest &middot; ${singlePrice}
+          Unlock the rest, ${singlePrice}
         </Link>
       </div>
     </div>

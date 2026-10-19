@@ -333,7 +333,7 @@ function TensorInstrument({ mode }: { mode: string }) {
     width = 2;
     label = "Boosted average: [3, 2]";
     code = `const merged = pass1.add(pass2).div(2);\nconst boosted = merged.mul(${correction});`;
-    note = `The same [4, 8] row is added to each row, then divided by 2. The averages are [3, 9], [4, 10], [5, 11]. Gain ${correction} scales that average without changing channel order.`;
+    note = `Add [4, 8] to each row, then divide each sum by 2. The averages are [3, 9], [4, 10], [5, 11]. Gain ${correction} scales that average without changing channel order.`;
   }
   if (mode === "batch") {
     before = Array.from({ length: 16 }, (_, i) => i);
@@ -375,7 +375,7 @@ function TensorInstrument({ mode }: { mode: string }) {
     note =
       option === 2
         ? "Each training column now spans 0 to 1. This differs from z-score scaling. Test the model again before changing how you scale its inputs."
-        : `Fixed-neuron scores: ${scores.map((v) => v.toFixed(3)).join(", ")}. The weights stay [0.9, -1.4] and bias -0.3; only the input scale changes.`;
+        : `Fixed-neuron scores: ${scores.map((v) => v.toFixed(3)).join(", ")}. The weights stay [0.9, -1.4] and bias -0.3. Only the input scale changes.`;
   }
   return (
     <>
@@ -559,7 +559,7 @@ function NeuronInstrument({ mode }: { mode: string }) {
       >
         {names[fn]}({fmt(input)}) = <strong>{fmt(calculate(input))}</strong>.{" "}
         {fn === 0
-          ? "Negative inputs become zero; positive inputs pass through."
+          ? "Negative inputs become zero. Positive inputs pass through."
           : fn === 1
             ? "The output stays between 0 and 1."
             : "The output stays between −1 and 1."}
@@ -741,7 +741,7 @@ function GradientInstrument({ mode }: { mode: string }) {
         </div>
         <div className="iv-backward">
           <span>dL/dw = {fmt(4 * (y - 6))}</span>
-          <span>← multiply ←</span>
+          <span>multiply</span>
           <span>dL/dy = {fmt(2 * (y - 6))}</span>
         </div>
         <Range
@@ -810,7 +810,7 @@ function GradientInstrument({ mode }: { mode: string }) {
       <Readout
         code={`const gradient = 2 * (${w} - 3);\nconst nextWeight = ${w} - ${rate} * gradient;\n// ${fmt(gradientStep(w, rate))} (rounded)`}
       >
-        Weight <strong>{fmt(w)}</strong>; loss{" "}
+        Weight <strong>{fmt(w)}</strong>. Loss{" "}
         <strong>{fmt((w - 3) ** 2)}</strong>.{" "}
         {weights.length > 1
           ? `Previous loss: ${fmt((weights[weights.length - 2]! - 3) ** 2)}.`
@@ -879,9 +879,9 @@ function TrainingInstrument() {
         {epoch === best.epoch
           ? "This is the lowest validation loss seen so far."
           : `Validation was better at epoch ${best.epoch}. The latest weights are not the best checkpoint so far.`}{" "}
-        These curves are illustrative, not a live training run. TFJS 4.22 early
-        stopping keeps the final weights. Save and restore the best checkpoint
-        separately.
+        We chose these curves to illustrate the stopping rule. They show no live
+        training run. TFJS 4.22 early stopping keeps the final weights. Save and
+        restore the best checkpoint separately.
       </Readout>
     </>
   );
@@ -950,7 +950,7 @@ function EvaluationInstrument() {
       <Readout
         code={`const predictedAnomaly = ${c.score} > ${threshold};\n// ${c.predicted}`}
       >
-        Case {selected + 1}: score {c.score}; known label{" "}
+        Case {selected + 1}: score {c.score}. Known label{" "}
         <strong>{c.anomaly ? "anomaly" : "normal"}</strong>. At this threshold:{" "}
         <strong>{names[c.category].toLowerCase()}</strong>.
       </Readout>
@@ -983,7 +983,7 @@ function SignalInstrument({ mode }: { mode: string }) {
         <div
           className="iv-spectrogram"
           role="img"
-          aria-label={`Spectrogram of nine overlapping windows. A 4 Hz tone persists; a 12 Hz tone starts at one second. Selected window starts at ${window / 8} seconds.`}
+          aria-label={`Spectrogram of nine overlapping windows. A 4 Hz tone persists. A 12 Hz tone starts at one second. Selected window starts at ${window / 8} seconds.`}
         >
           <div className="iv-spectro-axis">
             <span>32 Hz</span>
@@ -1006,7 +1006,7 @@ function SignalInstrument({ mode }: { mode: string }) {
             )}
           </div>
           <span className="iv-spectro-caption">
-            Window start: 0 to 1 s · lighter cells have greater magnitude
+            Window start: 0 to 1 s, lighter cells have greater magnitude
           </span>
         </div>
       ) : (
@@ -1096,7 +1096,7 @@ function SignalInstrument({ mode }: { mode: string }) {
         }
       >
         {mode === "window"
-          ? `${taper ? "Hann taper" : "Rectangular window"}: magnitude at 10 Hz is ${fmt(spectrum[10]!, 3)}. The 10.5 Hz tone falls between bins. Tapering reduces distant leakage and spreads the main peak; these magnitudes are not gain-corrected.`
+          ? `${taper ? "Hann taper" : "Rectangular window"}: magnitude at 10 Hz is ${fmt(spectrum[10]!, 3)}. The 10.5 Hz tone falls between bins. Tapering reduces distant leakage and spreads the main peak. These magnitudes are not gain-corrected.`
           : mode === "spectrogram"
             ? `This window starts at ${window / 8} s. The 12 Hz component enters the signal at 1 s, so overlapping windows reveal it gradually.`
             : `The two component frequencies are 4 Hz and ${frequency} Hz. Their amplitudes are 1 and ${fmt(amplitude)}.`}{" "}
@@ -1147,9 +1147,9 @@ function SequenceInstrument({ mode }: { mode: string }) {
         <Readout
           code={`const nextCell = ${fmt(gate)} * 0.8 + 0.4 * -0.2;\n// ${fmt(memory)}`}
         >
-          The input gate is fixed at 0.4; its candidate is −0.2.{" "}
-          {fmt(gate * 100)}% of the old cell value remains before the new
-          contribution is added. A full LSTM also has an output gate.
+          The input gate stays at 0.4. Its candidate is −0.2. {fmt(gate * 100)}%
+          of the old cell value remains before the input gate adds the new
+          contribution. A full LSTM also has an output gate.
         </Readout>
       </>
     );
@@ -1252,7 +1252,7 @@ function SequenceInstrument({ mode }: { mode: string }) {
     <>
       <Plot
         series={[{ values, color: blue, label: "Readings in time order" }]}
-        label={`Sequence ${values.join(", ")}. ${mode === "windows" ? `Input window ${values.slice(step, step + 3).join(", ")} predicts target ${values[step + 3]}.` : "Order is preserved."}`}
+        label={`Sequence ${values.join(", ")}. ${mode === "windows" ? `Input window ${values.slice(step, step + 3).join(", ")} predicts target ${values[step + 3]}.` : "The values keep their order."}`}
         xLabel="Time index"
         yLabel="Reading"
         selected={mode === "order" ? undefined : selected}
@@ -1306,7 +1306,7 @@ function SequenceInstrument({ mode }: { mode: string }) {
           </>
         ) : mode === "rnn" ? (
           <>
-            Input is scaled by 10 for this example. Previous state{" "}
+            This example multiplies the input by 10. Previous state{" "}
             {fmt(step ? states[step - 1]! : 0, 3)} becomes{" "}
             <strong>{fmt(states[step]!, 3)}</strong> after reading{" "}
             {values[step]}.
@@ -1368,9 +1368,9 @@ function AttentionInstrument({ temporal }: { temporal: boolean }) {
       <Readout
         code={`const scores = keys.map((key, t) => ${query} * key${temporal ? ` + ${positionWeight} * t / (keys.length - 1)` : ""});\nconst weights = softmax(scores);\nconst context = sum(weights.map((w, i) => w * values[i]));`}
       >
-        Keys are [{keys.join(", ")}]; values are [{values.join(", ")}].{" "}
+        Keys are [{keys.join(", ")}]. Values are [{values.join(", ")}].{" "}
         {temporal
-          ? "Each score adds position weight × t/4 to query × key. Positive position weight favors later readings; negative favors earlier ones. "
+          ? "Each score adds position weight × t/4 to query × key. Positive position weight favors later readings. Negative favors earlier ones. "
           : "Similarity is query × key. "}
         Softmax makes the weights sum to 1. The summary of the original values
         is <strong>{fmt(context)}</strong>. This small example uses one number
@@ -1503,10 +1503,10 @@ function DetectorAgreementInstrument() {
           {result.votes} of 3 votes:{" "}
           {result.alert ? "alert selected" : "no alert selected"}.
         </strong>{" "}
-        The autoencoder error and forecast are supplied values, not model runs.
-        Their errors may be related; a majority is not a probability. This
-        exercise's amplitude forecast gate is separate from the full model's
-        three-feature MSE.
+        This example supplies fixed autoencoder error and forecast values. It
+        runs no models. Their errors may be related. A majority is not a
+        probability. This exercise's amplitude forecast gate is separate from
+        the full model's three-feature MSE.
       </Readout>
     </>
   );
@@ -1561,7 +1561,7 @@ function AnomalyInstrument({ mode }: { mode: string }) {
             Candidate {reading}
           </text>
           <text x="240" y="190" textAnchor="middle">
-            Reference mean 10 · population variance 2
+            Reference mean 10, population variance 2
           </text>
         </svg>
         <Range
@@ -1792,7 +1792,7 @@ export function LessonInstrument({ spec }: { spec: LessonVisualSpec }) {
         {spec.kind === "flow"
           ? "These code examples show the steps. They are not running a live system."
           : spec.kind === "tensor" && spec.mode === "create"
-            ? "Runs with TensorFlow.js in your browser. Values are rounded for display."
+            ? "Runs with TensorFlow.js in your browser. The display rounds the values."
             : "JavaScript simulation with fixed practice data. It does not run or train the lesson's models. Your challenge uses its own data and tests."}
       </p>
     </div>

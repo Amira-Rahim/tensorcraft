@@ -1,6 +1,6 @@
 slug: build-rnn
 lessonSlug: simple-rnns
-title: "Carry the Hidden State"
+title: "Hidden state across time steps"
 instructions: |
   Implement three functions:
 
@@ -15,10 +15,10 @@ instructions: |
   - decayFactors(states, recurrentWeight): return the running product of
     recurrentWeight * (1 - h * h), one factor per state. Use plain JS. This
     is the scalar recurrence's derivative of each state with respect to its
-    initial state, not a full training gradient for every parameter.
+    initial state. It does not calculate training gradients for every parameter.
 
   All inputs are finite and timeSteps is a positive integer. The caller owns
-  the returned model. Adding the layer builds its weights; an explicit build
+  the returned model. Adding the layer builds its weights. An explicit build
   can also do so, but this task uses the Sequential model.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
@@ -156,8 +156,8 @@ testCode: |
         'Both steps receive 0.5, but their previous hidden states differ. Use the carried state in each update.',
       ).toBeGreaterThan(0.3);
       recordResult({
-        kind: 'series', title: 'Your carried hidden state',
-        summary: 'Hand-chosen weights, not a trained predictor. Steps 1 and 3 receive the same input, but their incoming states differ.',
+        kind: 'series', title: 'Your hidden state at each step',
+        summary: 'This example uses hand-chosen weights and performs no training. Steps 1 and 3 receive the same input, but their incoming states differ.',
         xLabel: 'Reading step', yLabel: 'Hidden state',
         labels: states.map((_, i) => String(i + 1)),
         series: [{ name: 'Your recurrent states', values: states }],
@@ -188,7 +188,7 @@ testCode: |
       const carrying = cell([0.4, 0.9, 0.4], 0.8, 1.2, -0.1);
       expect(
         Math.abs(carrying[2] - carrying[0]),
-        'Restore the recurrent path and those same two readings must part company.',
+        'With the recurrent weight restored, identical inputs can produce different states because their previous states differ.',
       ).toBeGreaterThan(0.05);
     });
 
@@ -216,14 +216,14 @@ testCode: |
       }
     });
 
-    it('order is information: one window read back to front ends somewhere else', () => {
+    it('reversing a window changes its final hidden state', () => {
       // The same five readings, the first four swapped end for end, both
       // windows finishing on the same 0.4.
       const highFirst = cell([1.2, 1.2, -0.8, -0.8, 0.4], 0.8, 1, 0);
       const lowFirst = cell([-0.8, -0.8, 1.2, 1.2, 0.4], 0.8, 1, 0);
       expect(
         Math.abs(highFirst[4] - lowFirst[4]),
-        'Both windows hold the same five readings and end on the same one. A cell that carries state answers them differently; a cell that scores each reading on its own returns the same final number twice.',
+        'Both windows hold the same five readings and end on the same one. A cell that carries state answers them differently. A cell that scores each reading on its own returns the same final number twice.',
       ).toBeGreaterThan(0.5);
     });
   });
@@ -270,7 +270,7 @@ testCode: |
       ).toBeCloseTo(biasTensor.dataSync()[0], 9);
     });
 
-    it('your loop reproduces the layer, step for step, on weights neither of you chose', () => {
+    it('your loop matches the layer at every step using its initialized weights', () => {
       // The layer initializes its own weights at random, so there is no
       // memorised list to reach for. The only way both sides agree is that
       // the recurrence in runCell is the one the library runs.
@@ -294,7 +294,7 @@ testCode: |
               step +
               ' of ' +
               timeSteps +
-              ': your loop, running on the three numbers you read off this model, does not land where the model itself lands. The two agree to about seven decimal places when the recurrence matches and each weight came out of the right tensor; anything larger is one or the other.',
+              ': your loop, running on the three numbers you read off this model, does not land where the model itself lands. The two agree to about seven decimal places when the recurrence matches and each weight came out of the right tensor. Anything larger is one or the other.',
           ).toBeCloseTo(fromLayer[step], 5);
         });
       }
@@ -335,12 +335,12 @@ testCode: |
       const want = product(states, 0.8);
       expect(
         close(out[59], want[59]),
-        'Sixty factors just under 0.8 each, multiplied together, land near 1.5e-6, and this list does not. Each entry is the product of every factor so far, not the factor at that step alone.',
+        'Sixty factors just under 0.8 each, multiplied together, land near 1.5e-6, and this list does not. Each entry must multiply all factors up to that step.',
       ).toBe(true);
-      expect(out[59] < 1e-5, 'The derivative is very small for this fixture; whether training stalls needs additional evidence.').toBe(true);
+      expect(out[59] < 1e-5, 'The derivative is very small for this fixture. Whether training stalls needs additional evidence.').toBe(true);
       recordResult({
         kind: 'series', title: 'Your state derivative across the window',
-        summary: 'Scalar recurrence with recurrent weight 0.8 and synthetic constant input. This derivative path illustrates decay; it does not diagnose a trained network.',
+        summary: 'Scalar recurrence with recurrent weight 0.8 and synthetic constant input. This derivative path illustrates decay. It does not diagnose a trained network.',
         xLabel: 'Reading step', yLabel: 'Derivative with respect to initial state',
         labels: out.map((_, i) => String(i + 1)),
         series: [{ name: 'Your running derivative', values: out }],

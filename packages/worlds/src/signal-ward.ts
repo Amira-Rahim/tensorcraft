@@ -4,7 +4,7 @@ export const signalWard: WorldManifest = {
   id: "medical",
   slug: "signal-ward",
   displayName: "Signal Ward",
-  tagline: "Where language saves lives",
+  tagline: "Help the hospital team make sense of clinical notes",
   description:
     "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One, a clinical text assistant.",
   palette: {
@@ -67,8 +67,8 @@ export const signalWard: WorldManifest = {
   careerPaths: ["NLP Engineer ($114K-$237K)", "LLM/AI Engineer ($174K-$350K)"],
   preview: {
     statusBoard: {
-      org: "MERIDIAN GENERAL HOSPITAL · EHR STATUS BOARD",
-      status: "SYSTEM OFFLINE · REBUILD PENDING",
+      org: "MERIDIAN GENERAL HOSPITAL, EHR STATUS BOARD",
+      status: "SYSTEM OFFLINE, REBUILD PENDING",
     },
     ctaLabel: "Join the waitlist",
     modules: [

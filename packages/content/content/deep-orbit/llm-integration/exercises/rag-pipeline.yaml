@@ -1,6 +1,6 @@
 slug: rag-pipeline
 lessonSlug: rag-for-signals
-title: "Check Claims Against Their Sources"
+title: "Report claims and source records"
 instructions: |
   Implement verifyClaims(claims, records). Check each structured claim against the exact records it cites. Finding the same number somewhere in the records is not enough.
 
@@ -11,9 +11,9 @@ instructions: |
   - frequencyHz with unit 'Hz': absolute tolerance 0.05, plus 1e-10 for arithmetic rounding.
   - intervalSeconds with unit 's': the same tolerance, measured in seconds.
 
-  For kind 'reading', rowIds must cite exactly one record. Compare the claimed value with its named field. For kind 'sum', add eventCount across one or more distinct cited records. No other calculation is supported. A sum covers only the cited records, not anything left out.
+  For kind 'reading', rowIds must cite exactly one record. Compare the claimed value with its named field. For kind 'sum', add eventCount across one or more distinct cited records. This exercise supports only those calculations. A sum covers the cited records and excludes any other matches.
 
-  Mark a claim unverified if a record or field is missing, its unit is wrong, a citation repeats, a number is non-finite, or its kind or field is unsupported. Text claims such as { id: 'safe', kind: 'text', text: 'The signal is safe' } also remain unverified. With no records, nothing can be verified. With no claims, return two empty lists; that does not approve a report.
+  Mark a claim unverified if a record or field is missing, its unit is wrong, a citation repeats, a number is non-finite, or its kind or field is unsupported. Text claims such as { id: 'safe', kind: 'text', text: 'The signal is safe' } also remain unverified. Without records, the checker can verify no claims. With no claims, return two empty lists. That does not approve a report.
 
   For counts, the cited values, claimed value, and any sum must all be nonnegative safe integers. Reject fractions, negative counts, and unsafe totals.
 
@@ -161,7 +161,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Claims checked against their sources',
-        summary: 'Your checker accepts matching fields and holds unsupported claims. These supplied records are a fixture; agreement with them does not verify their real-world accuracy.',
+        summary: 'Your checker separates supported claims from those it cannot verify. Matching these supplied records does not prove the records themselves are correct.',
         columns: ['Claim', 'Cited row', 'Field', 'Claimed value', 'Unit', 'Your result'],
         rows: claims.map((claim) => [claim.id, claim.rowIds.join(', '), claim.field, claim.value, claim.unit, result.verified.includes(claim.id) ? 'Verified against record' : 'Unverified']),
       });
@@ -185,7 +185,7 @@ testCode: |
         unverified: ['unit'],
       });
     });
-    it('uses each fields tolerance and includes its boundary', () => {
+    it('uses the tolerance for each field, including the boundary', () => {
       const result = check([
         reading('rounded', { value: 73.44 }),
         reading('boundary', { value: 73.45 }),

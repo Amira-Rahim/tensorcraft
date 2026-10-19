@@ -122,10 +122,10 @@ describe("FiveWorldsSection coming-soon interactivity", () => {
 });
 
 describe("FiveWorldsSection (one-section redesign, spec 2026-09-01)", () => {
-  it("promotes Choose Your World to the section h2", () => {
+  it("promotes The course worlds to the section h2", () => {
     render(<FiveWorldsSection />);
     expect(screen.getByRole("heading", { level: 2 }).textContent).toBe(
-      "Choose Your World",
+      "The course worlds",
     );
   });
 

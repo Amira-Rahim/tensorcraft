@@ -4,7 +4,7 @@ export const neonProtocol: WorldManifest = {
   id: "cyberpunk",
   slug: "neon-protocol",
   displayName: "Neon Protocol",
-  tagline: "Where AI watches the city",
+  tagline: "Help restore the city’s camera system",
   description:
     "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel, an urban anomaly detection system.",
   palette: {
@@ -70,8 +70,8 @@ export const neonProtocol: WorldManifest = {
   ],
   preview: {
     statusBoard: {
-      org: "NEURALCORE HQ · SURVEILLANCE GRID",
-      status: "200 CAMERAS DARK · REBUILD PENDING",
+      org: "NEURALCORE HQ, SURVEILLANCE GRID",
+      status: "200 CAMERAS DARK, REBUILD PENDING",
     },
     ctaLabel: "Join the waitlist",
     modules: [

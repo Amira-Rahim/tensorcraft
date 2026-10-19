@@ -1,13 +1,13 @@
 slug: detect-anomaly
 lessonSlug: normal-vs-anomalous
-title: "Detect Anomalies with Z-Score"
+title: "Anomaly detection with z-scores"
 mlContent: arithmetic
 instructions: |
   Write `isAnomaly(value, mean, std)`. Return true when the reading is more than 3 standard deviations above or below the mean. Recalculate the allowed distance on every call because mean and std can change.
 
-  You can use plain arithmetic or tensors. If you use tf.scalar, read the result with .dataSync()[0]. Both approaches are accepted.
+  You can use plain arithmetic or tensors. If you use tf.scalar, read the result with .dataSync()[0]. The checks accept both approaches.
 
-  Reject non-finite inputs and a negative std. When std is zero, return false if value equals mean and true otherwise. There is no z-score in that case. This exercise uses exact equality; a real sensor needs a tolerance based on its measurement precision.
+  Reject non-finite inputs and a negative std. When std is zero, return false if value equals mean and true otherwise. There is no z-score in that case. This exercise uses exact equality. A real sensor needs a tolerance based on its measurement precision.
 starterCode: |
   function isAnomaly(value, mean, std) {
     return null;
@@ -32,16 +32,16 @@ testCode: |
     return seed / 2147483648;
   }
 
-  describe('isAnomaly (z-score against the spread you were handed)', () => {
+  describe('isAnomaly (z-score against the supplied spread)', () => {
     it('flags values far from mean', () => {
       const flagged = isAnomaly(100, 50, 10);
       expect(
         flagged,
-        'This reading sits five spreads above the mean, which is outside any 3-sigma gate.',
+        'This reading is five standard deviations above the mean, beyond the threshold of 3.',
       ).toBe(true);
       recordResult({
         kind: 'table', title: 'Your baseline decision',
-        summary: 'Synthetic reading and supplied baseline, not a ship measurement. A flag requests investigation; it does not establish a physical cause.',
+        summary: 'The exercise supplies this synthetic reading and baseline. A flag requests investigation. It does not establish a physical cause.',
         columns: ['Reading', 'Baseline mean', 'Baseline standard deviation', 'Your flag'],
         rows: [[100, 50, 10, flagged]],
       });
@@ -49,23 +49,23 @@ testCode: |
     it('does not flag normal values', () => {
       expect(
         isAnomaly(52, 50, 10),
-        'This reading is a fifth of a spread from the mean. A gate that fires here fires on everything.',
+        'This reading is only 0.2 standard deviations from the mean. The rule should leave it unflagged.',
       ).toBe(false);
     });
     it('handles boundary z=3', () => {
       expect(
         isAnomaly(80, 50, 10),
-        'Exactly 3 sigma is still normal: the gate opens above 3, not at it.',
+        'A distance of exactly 3 standard deviations does not trigger this rule. Flag only distances greater than 3.',
       ).toBe(false);
       expect(
         isAnomaly(81, 50, 10),
-        'A hair past 3 sigma is anomalous. Check which comparison operator you used.',
+        'The rule should flag a distance just above 3 standard deviations. Check the comparison operator.',
       ).toBe(true);
     });
     it('handles negative deviations symmetrically', () => {
       expect(
         isAnomaly(10, 50, 10),
-        'This reading is 4 sigma BELOW the mean. Compare the size of the z-score, not its signed value.',
+        'This reading is 4 sigma BELOW the mean. Compare the absolute z-score with the threshold.',
       ).toBe(true);
     });
     it('measures deviation in units of std, not absolute distance', () => {
@@ -83,11 +83,11 @@ testCode: |
     it('works on a tenth-scale baseline', () => {
       expect(
         isAnomaly(0.55, 0.5, 0.1),
-        'Half a spread out on a tenth-scale baseline is normal.',
+        'This reading is 0.5 standard deviations from the mean, below the threshold.',
       ).toBe(false);
       expect(
         isAnomaly(0.9, 0.5, 0.1),
-        'Four spreads out on a tenth-scale baseline is anomalous.',
+        'This reading is 4 standard deviations from the mean, above the threshold.',
       ).toBe(true);
     });
     it('derives the verdict from the baseline it is handed, not from a memorised one', () => {
@@ -95,11 +95,8 @@ testCode: |
         const mean = nextUnit() * 200 - 100;
         const std = 0.05 + nextUnit() * 40;
         const why =
-          'The baselines in this sweep are generated at run time, so nothing ' +
-          'about them can be known in advance. Each reading is placed a fixed ' +
-          'number of spreads from its own mean, above and below. If the ' +
-          'earlier cases pass and this one does not, the verdict is coming ' +
-          'from the value instead of from value, mean and std together.';
+          'Calculate each z-score using the supplied value, mean, and standard deviation. ' +
+          'These tests change the baseline and check readings both above and below its mean.';
         expect(isAnomaly(mean + 3.4 * std, mean, std), why).toBe(true);
         expect(isAnomaly(mean - 3.4 * std, mean, std), why).toBe(true);
         expect(isAnomaly(mean + 2.6 * std, mean, std), why).toBe(false);

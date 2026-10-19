@@ -17,11 +17,11 @@ concept:
   explanation: "An LLM generates a draft from instructions and context. Check its structure and claims before using it."
   bridge:
     jsTitle: "AI Code Completion"
-    jsCode: "// Copilot: 'create a fetch wrapper' → generates full function"
+    jsCode: "// Copilot: 'create a fetch wrapper' to generates full function"
     mlTitle: "LLM Analysis"
-    mlCode: "// Prompt: 'summarize anomalies in Band-7' → generates report section"
+    mlCode: "// Prompt: 'summarize anomalies in Band-7' to generates report section"
     tier: structural
-    breaks: "Both generated code and generated scientific prose can contain convincing errors. Running code catches some failures, but plausible wrong logic can pass limited tests. Check scientific statements against their cited measurements; fluent wording and familiar numbers do not establish accuracy."
+    breaks: "Both generated code and generated scientific prose can contain convincing errors. Running code catches some failures, but plausible wrong logic can pass limited tests. Check scientific statements against their cited measurements. Fluent wording and familiar numbers do not establish accuracy."
 consequence:
   narrative: "The model produces a first draft in minutes. Farah checks and corrects it. That saves time because she knows the data well enough to spot mistakes."
 hints:
@@ -30,7 +30,7 @@ hints:
       Do not trust the reply just because the API returned it. Parse the text and check every required field before passing it to the next step.
   - level: guidance
     content: |
-      This exercise supplies one JSON object surrounded by text with no other braces. Extract that object, parse it, and check each required field. A score of zero is valid, so check its type and range rather than its truthiness. Extra fields are allowed. This simplified extraction rule will not handle every possible model reply.
+      This exercise supplies one JSON object surrounded by text with no other braces. Extract that object, parse it, and check each required field. A score of zero is valid, so check its type and range. Accept extra fields. This simplified extraction rule will not handle every possible model reply.
   - level: solution
     content: |
       interface Analysis {
@@ -85,13 +85,13 @@ I want to use it as a tool, Nazari, like Copilot for code. It drafts, I verify. 
 Then we run it with a ledger. Every fabricated claim you catch goes on the board, next to the minutes it cost you to catch it. If verification eats more than two of your six hours, the next report gets written by hand.
 </Dialogue>
 
-Farah adds a review gate before the report can leave the ship. Every claim needs supporting evidence, including claims without numbers. Reviewers can miss errors too, so she keeps the sources, corrections, and approval with the draft.
+Farah makes evidence review a requirement before the report can leave the ship. Every claim needs supporting evidence, including claims without numbers. Reviewers can miss errors too, so she keeps the sources, corrections, and approval with the draft.
 
 Farah needs a reply the reporting pipeline can read. You will parse the API response and return its checked fields, or stop it before malformed data reaches the report.
 
-<LearningObjectives objectives={["Use an LLM to draft analysis that a person can check", "Parse an untrusted reply, validate its required fields and reject invalid output", "Define the human-AI workflow: generate → review → correct → approve"]} />
+<LearningObjectives objectives={["Use an LLM to draft analysis that a person can check", "Parse an untrusted reply, validate its required fields and reject invalid output", "Draft with an LLM, review and correct its claims, then approve only what the evidence supports"]} />
 
-## Use an LLM as a drafting tool
+## Drafting with an LLM
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -125,7 +125,7 @@ function createLLMClient(apiKey: string, baseUrl: string, modelId: string): LLMC
       const data = await response.json();
       const content = data?.choices?.[0]?.message?.content;
       if (typeof content !== 'string' || !content.trim()) throw new Error('Missing text response');
-      return content; // text validated; claims still unchecked
+      return content; // text validated. Claims still unchecked
     },
   };
 }
@@ -145,21 +145,21 @@ A decoder language model predicts the next token from the tokens before it. Toke
 
 Inference usually has two phases. **Prefill** processes the supplied prompt. **Decoding** generates new tokens, commonly one at a time while reusing cached attention keys and values. It does not normally recompute the entire prompt for every token. Some serving systems generate candidates in larger groups, then verify them. Token count alone therefore does not tell you the number or duration of runtime calls.
 
-The connection to next-value prediction is the conditional prediction task. Here the output is a token category instead of three continuous sensor values. The model and decoding procedure differ from the LSTM you built.
+Like the forecaster, this model predicts what comes next. Here it predicts a token. The earlier forecaster predicts three sensor values. It uses a different architecture and a different way of choosing its output from the LSTM you built.
 
 ## What a Transformer Does With the Prompt
 
-In dense self-attention, each token has a query, key and value produced by learned projections. Every query is compared with the allowed keys. A decoder's causal mask blocks access to future tokens. An explicit T-by-T score matrix has 6,400 entries at T = 80 and 25,600 at T = 160. That quadratic scaling matters for dense attention over a full prompt; optimized kernels can avoid storing the entire matrix, and cached decoding has a different cost.
+In dense self-attention, each token has a query, key and value produced by learned projections. The model compares every query with the keys that its mask allows. A decoder's causal mask blocks access to future tokens. An explicit T-by-T score matrix has 6,400 entries at T = 80 and 25,600 at T = 160. That quadratic scaling matters for dense attention over a full prompt. Optimized kernels can avoid storing the entire matrix, and cached decoding has a different cost.
 
-Each head uses its own learned projections. Head outputs are combined, then passed through blocks that also contain feed-forward layers, residual connections and normalization. Attention is one component of a transformer, not the whole architecture. A model's supported context length is a limit on the token sequence; keep room for its answer as well as its prompt.
+Each head uses its own learned projections. The model combines the head outputs. Its blocks also use feed-forward layers, residual connections and normalization alongside attention. A model's supported context length is a limit on the token sequence. Keep room for its answer as well as its prompt.
 
-For positive sampling **temperature** T, divide the vocabulary logits by T before softmax. Smaller values concentrate probability on higher-scoring tokens. Larger values flatten it. A zero-temperature API setting commonly requests greedy selection rather than division by zero; ties and serving details can still affect repeatability. This setting does not change the attention softmax inside the model or verify a claim.
+For positive sampling **temperature** T, divide the vocabulary logits by T before softmax. Smaller values concentrate probability on higher-scoring tokens. Larger values flatten it. A zero-temperature API setting commonly requests greedy selection. Implementations handle that setting separately to avoid dividing by zero. Ties and serving details can still affect repeatability. This setting does not change the attention softmax inside the model or verify a claim.
 
 Next-token training rewards predictions of text in the training distribution. Later training can improve instruction following and factual performance, but neither objective checks a new report against your ship's measurements. A fluent answer still needs evidence.
 
-The [original transformer paper](https://arxiv.org/html/1706.03762v7#S3) describes the attention and block structure. Hugging Face’s [cache explanation](https://huggingface.co/docs/transformers/v4.57.1/cache_explanation) shows how cached keys and values are reused during decoding.
+The [original transformer paper](https://arxiv.org/html/1706.03762v7#S3) describes the attention and block structure. Hugging Face’s [cache explanation](https://huggingface.co/docs/transformers/v4.57.1/cache_explanation) shows how a model reuses cached keys and values during decoding.
 
-The onboard language component and its bundle sizes belong to the fictional mission. This adapter demonstrates the HTTP boundary; it does not download or implement that component. The browser runtime lab measures a separate pretrained sentiment model.
+The onboard language component and its bundle sizes belong to the fictional mission. This adapter demonstrates the HTTP boundary. It does not download or implement that component. The browser runtime lab measures a separate pretrained sentiment model.
 
 </ConceptReference>
 
@@ -188,7 +188,7 @@ function screenNumbers(
   draft: string,
   actualData: Record<string, number>,
 ): { matched: number[]; unmatched: number[] } {
-  // A limited numeric screen, not factual verification. It finds numbers
+  // This screen only compares numbers. It cannot verify facts. It finds numbers
   // absent from the data but ignores source fields, units and meaning.
   // Even a matched value can support a false sentence.
   const claims = draft.replace(/(\\d),(?=\\d)/g, '$1').match(/-?\\d+(?:\\.\\d+)?/g) ?? [];
@@ -211,7 +211,7 @@ const check = screenNumbers(
   { totalEvents: 12001, anomalous: 153, unclassified: 1 },
 );
 console.log(check.matched);    // [12001, 153, 1]
-console.log(check.unmatched);  // [9]  ← no such cluster in the data
+console.log(check.unmatched);  // [9]: no such cluster in the data
 // Lesson 3 checks structured claims against named source fields.
 // Neither this numeric screen nor those field checks can approve free text.`}
 </CodeBlock>
@@ -220,7 +220,7 @@ console.log(check.unmatched);  // [9]  ← no such cluster in the data
 
 The API returns plain text, even if your client uses TypeScript. Parse one reply and check that its fields match the expected analysis type. Return the checked analysis, or throw an error if it is invalid.
 
-Inspect the fields your client returns. They are ready for the reporting code to read, but Farah still has to check the reasoning against the measurements. The exercise supplies an API reply; it does not call a language model.
+Inspect the fields your client returns. They are ready for the reporting code to read, but Farah still has to check the reasoning against the measurements. The exercise supplies an API reply. It does not call a language model.
 
 <Exercise slug="llm-client" />
 
@@ -254,7 +254,7 @@ Inspect the fields your client returns. They are ready for the reporting code to
 <LessonRecap
   whatYouLearned={[
     "Treat generated text as a draft. Validate its fields, check claims against sources and record approval before release.",
-    "A decoder language model predicts tokens. Prefill processes the prompt; cached decoding reuses attention state while generating the response.",
+    "A decoder language model predicts tokens. Prefill processes the prompt. Cached decoding reuses attention state while generating the response.",
     "Lower temperature reduces sampling variation. It does not establish factual accuracy or guarantee identical output."
   ]}
   bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."

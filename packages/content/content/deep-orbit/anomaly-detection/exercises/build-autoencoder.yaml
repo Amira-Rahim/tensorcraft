@@ -1,10 +1,10 @@
 slug: build-autoencoder
 lessonSlug: autoencoders
-title: "Train an Autoencoder on Normal Data Only"
+title: "Autoencoder training on normal readings"
 instructions: |
   Implement trainNormalityModel(archive, flagged, providedModel?). Each archive row has eight finite features. Each entry in flagged says whether to exclude the matching row. Keep unflagged rows, using the same tensor as both training input and reconstruction target. Reject mismatched flag counts or an empty selection before creating a model.
 
-  If providedModel is supplied, use it as compiled. Otherwise build Dense layers with sizes 8 -> 4 relu -> 2 relu -> 4 relu -> 8 linear and inputShape [8]. You can use one Sequential model or nested encoder and decoder models. Compile with 'adam' and 'meanSquaredError'. Await fit with FIT_OPTIONS. Return { model, history }, with the exact history returned by fit.
+  Use providedModel with its existing compilation when the caller supplies it. Otherwise build Dense layers with successive sizes 4, 2, 4, and 8. Use relu on the first three layers and linear on the last. Set inputShape to [8] on the first layer. You can use one Sequential model or nested encoder and decoder models. Compile with 'adam' and 'meanSquaredError'. Await fit with FIT_OPTIONS. Return { model, history }, with the exact history returned by fit.
 
   Always dispose temporary training tensors, even if training fails. Do not dispose a supplied model: it belongs to the caller. If training a model you created fails, dispose that model. After successful training, the caller owns the returned model.
 
@@ -171,7 +171,7 @@ testCode: |
       }
       recordResult({
         kind: 'table', title: 'Your screened model’s reconstruction errors',
-        summary: 'Measured mean reconstruction MSE on separate synthetic eight-feature inputs. Training is stochastic; neither a fixed ratio nor real-world detection quality is established.',
+        summary: 'Measured mean reconstruction MSE on separate synthetic eight-feature inputs. Training is stochastic. This result establishes no fixed error ratio or real-world detection quality.',
         columns: ['Synthetic evaluation set', 'Rows', 'Mean reconstruction MSE'], rows: measurements,
       });
     });

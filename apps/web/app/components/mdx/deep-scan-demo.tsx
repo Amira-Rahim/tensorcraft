@@ -119,7 +119,7 @@ interface DeepScanDemoProps {
 
 export function DeepScanDemo({
   framing = false,
-  headerLabel = "DEEP SCAN · preview build · running live in your tab",
+  headerLabel = "DEEP SCAN, preview build, running live in your tab",
 }: DeepScanDemoProps = {}) {
   const [rows, setRows] = useState<Row[]>(
     STREAM.map((s) => ({ ...s, score: null })),
@@ -225,7 +225,7 @@ export function DeepScanDemo({
         )}
         {status === "error" && (
           <p className="text-text-muted">
-            model failed to load; check your connection and refresh
+            model failed to load. Check your connection and refresh
           </p>
         )}
         {status !== "loading" &&
@@ -256,7 +256,7 @@ export function DeepScanDemo({
                     }
                   >
                     {row.id === "7741"
-                      ? `${verdict(row.score)} · ${(row.score * 100).toFixed(0)}% is not an answer`
+                      ? `${verdict(row.score)}, score ${(row.score * 100).toFixed(0)}%. No trained verdict yet`
                       : verdict(row.score)}
                   </span>
                 </>

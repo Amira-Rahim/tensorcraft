@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 13
 difficulty: advanced
 context:
-  narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder: a network that learns to compress and reconstruct normal signals. High reconstruction error is a reason to investigate, not proof that a signal is new."
+  narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder: a network that learns to compress and reconstruct normal signals. High reconstruction error gives the crew a reason to investigate. They still need to find its cause."
   speaker: "Dr. Farah"
 concept:
   explanation: "An autoencoder learns to compress and rebuild its training data. Reconstruction error can help flag unusual inputs, but it can also miss anomalies or flag normal inputs."
@@ -29,7 +29,7 @@ hints:
       The autoencoder learns to rebuild the rows you give it. Check which rows you selected before judging its errors.
   - level: guidance
     content: |
-      Remove rows named in the flag log, then use the remaining tensor as both input and target. Use providedModel if it is supplied. Otherwise, build and compile the required layers. Return the history returned by fit. To test the effect of contaminated data, start both runs with identical weights and compare their measured errors.
+      Remove rows named in the flag log, then use the remaining tensor as both input and target. Use providedModel when the exercise supplies it. Otherwise, build and compile the required layers. Return the history returned by fit. To test the effect of contaminated data, start both runs with identical weights and compare their measured errors.
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -76,15 +76,15 @@ skillAxes: [model_arch, evaluation]
 The z-score gate cleared a reading this morning that I flagged by eye an hour later. Amplitude normal, frequency normal, phase normal, and the three have never once occurred together in eleven days of archive. Our z-score check tests each feature on its own. We need a model that can learn how those features fit together.
 </Dialogue>
 
-Gzip restores the original bytes exactly. An autoencoder learns a smaller version of its input, then tries to rebuild the input from it. The small middle layer is called the bottleneck. It encourages the model to learn patterns shared by the training examples. The difference between the input and the rebuilt version is its reconstruction error.
+Gzip restores the original bytes exactly. An autoencoder learns a smaller version of its input, then tries to rebuild the input from it. We call the small middle layer the bottleneck. It encourages the model to learn patterns shared by the training examples. The difference between the input and the rebuilt version is its reconstruction error.
 
 You can use reconstruction error as an anomaly score, but you need to test it. An unfamiliar input can still be rebuilt well. A normal input can be rebuilt badly if the model has not learned that pattern. Check both missed anomalies and false alarms before using the score to wake anyone.
 
 You will train an autoencoder to reconstruct unflagged readings while keeping flagged readings out of training.
 
-<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js and fit it on screened training data", "Check which rows reach training and measure reconstruction errors on separate data without assuming a fixed error ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
+<LearningObjectives objectives={["Follow data through an autoencoder’s encoder, bottleneck, and decoder", "Build an autoencoder in TensorFlow.js and fit it on screened training data", "Check which rows reach training and measure reconstruction errors on separate data without assuming a fixed error ratio", "Explain why reconstruction error can miss an anomaly or flag a normal input"]} />
 
-## Encoder → Bottleneck → Decoder
+## Encoder to Bottleneck to Decoder
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -119,7 +119,7 @@ The mission's 412 suspect rows are fictional review findings. A 73.4-second recu
 
 // KEY INSIGHT: train ONLY on normal signals
 // The autoencoder learns to compress and reconstruct normal patterns
-// Some anomalies may still reconstruct well; test for those misses
+// Some anomalies may still reconstruct well. Test for those misses
 
 // Supply separate train and validation tensors, each with 11 columns.
 // Split raw time blocks before making windows. Fit normalization only on
@@ -135,8 +135,8 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
   },
 });
 
-// Log measured losses. Epoch 0 already includes optimizer updates;
-// it is not the loss of an untrained model. A zero reconstruction has MSE 1
+// Log measured losses. Epoch 0 already includes optimizer updates.
+// It is not the loss of an untrained model. A zero reconstruction has MSE 1
 // only when every nonconstant feature has population mean 0 and std 1.
 // Training and validation use different samples, so their losses can differ.
 // A growing gap needs investigation. It does not prove memorization.
@@ -148,9 +148,9 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 
 ## Challenge
 
-Before the crew's next archive fit, check the screening and training workflow on a small synthetic archive. It uses eight features per reading, rather than the mission model's eleven. Remove flagged rows, then train on the remaining rows.
+Before the crew's next archive fit, check the screening and training workflow on a small synthetic archive. It uses eight features per reading. The mission model uses eleven. Remove flagged rows, then train on the remaining rows.
 
-Inspect your model's measured errors on separate synthetic inputs. These checks verify row selection and reconstruction; passing them does not validate a real detector or reproduce the mission's error ratio. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
+Inspect your model's measured errors on separate synthetic inputs. These checks verify row selection and reconstruction. Passing them does not validate a real detector or reproduce the mission's error ratio. A model trained on anomalies may learn to rebuild them well, but an error ratio alone cannot prove that happened. To compare training sets, start both runs with identical weights and use the same training settings.
 
 <Exercise slug="build-autoencoder" />
 
@@ -167,7 +167,7 @@ Inspect your model's measured errors on separate synthetic inputs. These checks 
           "feedback": "A learned mapping can reconstruct unfamiliar inputs too."
         },
         {
-          "text": "Only if the anomaly was labeled during training.",
+          "text": "Only if the training data included a label for that anomaly.",
           "feedback": "Normal-only training does not prevent the mapping from reconstructing some anomalies."
         },
         {
@@ -187,7 +187,7 @@ Inspect your model's measured errors on separate synthetic inputs. These checks 
     "Screen training data for contamination. Training on anomalies can teach the model to reconstruct patterns you wanted it to flag.",
     "Reconstruction error needs testing on data. Anomalies can have low error, and normal inputs can have high error."
   ]}
-  bridge="Both gzip and an autoencoder compress data. Gzip restores exact bytes; an autoencoder learns an approximate reconstruction whose error can be tested as an anomaly score."
+  bridge="Both gzip and an autoencoder compress data. Gzip restores exact bytes. An autoencoder learns an approximate reconstruction whose error we can evaluate as an anomaly score."
   youCanNow="Build an autoencoder with a bottleneck, screen its training rows and measure reconstruction errors without assuming a fixed anomaly ratio."
 />
 
@@ -205,10 +205,10 @@ The second run starts at 0115.
   beatId="deep-orbit-anomaly-7741-training-set"
   fallback="Farah keeps 7741 outside the next fit while its label is unresolved, and records that exclusion for review."
   outcomes={{
-    "cooperate": "Before the second run, Farah catches the confirmed-event label attached to 7741. No instrument confirmed it. Demir corrects the label to unresolved and searches the downstream exports for copies; the run waits for that audit.",
+    "cooperate": "Before the second run, Farah catches the confirmed-event label attached to 7741. No instrument confirmed it. Demir corrects the label to unresolved and searches the downstream exports for copies. The run waits for that audit.",
     "defect": "The exclusion note keeps 7741 out of the second fit. Nazari reviews its stated reason, then asks for a sensitivity run with the row included. The extra run goes on tomorrow's queue.",
-    "random": "The first run included 7741, so its reconstruction score cannot serve as an unseen-case check. Demir prepares a separate fit without it and keeps the original run for comparison; neither run gives the row a ground-truth label.",
-    "dominant": "The probe registry brings up 7741 beside both runs. Farah can compare its reconstruction without searching the archive again, but removes it from the accuracy table: an unresolved, deliberately selected probe cannot supply that estimate."
+    "random": "The first run included 7741, so its reconstruction score cannot serve as an unseen-case check. Demir prepares a separate fit without it and keeps the original run for comparison. Neither run gives the row a ground-truth label.",
+    "dominant": "The saved test case brings up 7741 beside both runs. Farah can compare the reconstructions without searching the archive again. She leaves it out of the accuracy table because its label is still unknown and the crew selected it for looking suspicious."
 }}
 />
 

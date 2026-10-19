@@ -16,12 +16,12 @@ context:
 concept:
   explanation: "Load the model's manifest and weight files, then inspect the input and output shapes the dashboard must use."
   bridge:
-    jsTitle: "fetch() → JSON"
+    jsTitle: "fetch() to JSON"
     jsCode: "const data = await fetch(url).then(r => r.json())"
     mlTitle: "Model Loading"
     mlCode: "const model = await tf.loadLayersModel(url)"
     tier: structural
-    breaks: "fetch resolves to a Response; calling json() parses its body. loadLayersModel resolves to a model with topology and weights, potentially fetched from several shards. Dispose the model when finished to release its backend resources."
+    breaks: "fetch resolves to a Response. Calling json() parses its body. loadLayersModel resolves to a model with topology and weights, potentially fetched from several shards. Dispose the model when finished to release its backend resources."
 consequence:
   narrative: "Demir loads the model and saves a copy in IndexedDB. Later, the notebook and dashboard give different scores for the same reading. He needs to check which model version each one loaded."
 hints:
@@ -72,13 +72,13 @@ Demir tries to load the trained model into the dashboard and gets the error abov
 So the model is not one file at all. That's... exactly like a web font or a spritesheet, isn't it. I was fetching the spritesheet by the name of the folder.
 </Dialogue>
 
-The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the network leg of the trip, and only for that leg.
+The model's architecture lives in `model.json`. The learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Like a font loader, it may fetch several files. It also builds a runnable model from them.
 
 You will load a saved model and inspect the input and output shapes it expects.
 
 <LearningObjectives objectives={["Implement and inspect a TensorFlow.js model-loading call", "Understand the model format: model.json manifest + weight .bin shards", "Export a trained model to that pair with model.save(), in Node and in the browser", "Explain how an IndexedDB cache changes the model-loading path", "Show loading progress and report model-loading errors in the UI"]} />
 
-## Load the manifest and weights
+## The manifest and weights
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -109,7 +109,7 @@ model.summary();
 // __________________________________________________________________________________________
 // The architecture taped to the engineering board in module 2, carrying
 // the weights module 3 trained: the same network, now an asset the
-// dashboard fetches instead of a variable in a notebook.`}
+// dashboard can fetch directly.`}
 </CodeBlock>
 
 This simplified float32 example shows the manifest and weight requests. The real loader also handles multiple shards and supported weight encodings:
@@ -148,13 +148,13 @@ await model.save('file://./models/deep-scan');
 // 'downloads://deep-scan' gives you deep-scan.json and
 // deep-scan.weights.bin. Serve both with those names and load deep-scan.json.
 // If you rename the weight file, update weightsManifest.paths inside the
-// JSON too; renaming the files alone leaves the loader requesting a missing shard.
+// JSON too. Renaming the files alone leaves the loader requesting a missing shard.
 await model.save('downloads://deep-scan');
 
 // For this classifier, the weight shard holds 673 float32 values: 2,692 bytes.`}
 </CodeBlock>
 
-A model trained in Python arrives by a different route. `tensorflowjs_converter` can produce a LayersModel from a supported Keras export or a GraphModel from a supported SavedModel. Both use JSON and weight shards, but load a GraphModel with `tf.loadGraphModel()`, not `tf.loadLayersModel()`. Converters such as `tf2onnx` serve a different route to ONNX; lesson 5 uses a small exporter for this course's exact dense network.
+A model trained in Python arrives by a different route. `tensorflowjs_converter` can produce a LayersModel from a supported Keras export or a GraphModel from a supported SavedModel. Both use JSON and weight shards. Use `tf.loadGraphModel()` for a GraphModel and `tf.loadLayersModel()` for a LayersModel. Converters such as `tf2onnx` serve a different route to ONNX. Lesson 5 uses a small exporter for this course's exact dense network.
 
 ## Caching with IndexedDB
 
@@ -200,12 +200,12 @@ console.log(savedModels);
 // 'indexeddb://deep-scan-v2', and nothing reads the v1 entry after that.
 // After v2 is loaded and verified, removeModel frees the old bytes.
 // Do not delete your current offline copy immediately after saving it.
-// await tf.io.removeModel('indexeddb://deep-scan-v1');`}
+// await tf.io.removeModel('indexeddb://deep-scan-v1').`}
 </CodeBlock>
 
-Try the cache first. If it is missing, download the model and try to save a copy. A failed download prevents loading. A failed cache write does not: the downloaded model is already usable in memory. Browser storage can be cleared or evicted, so test both cache hits and misses.
+Try the cache first. If it is missing, download the model and try to save a copy. A failed download prevents loading. A failed cache write does not: the downloaded model is already usable in memory. Users can clear browser storage, and the browser can evict it. Test both cache hits and misses.
 
-When the weights change, use a new version in the cache key. Otherwise, users keep loading the old weights. Once the new version is loaded and verified, remove the unused old entry to free storage.
+When the weights change, use a new version in the cache key. Otherwise, users keep loading the old weights. Once you load and verify the new version, remove the unused old entry to free storage.
 
 ## Loading States in the UI
 
@@ -250,7 +250,7 @@ async function loadWithProgress(
 //   }).then(model => {
 //     if (cancelled) model.dispose();
 //     else loaded = model;
-//   }).catch(() => { /* error state was reported above */ });
+//   }).catch(() => { /* setState reported the error above */ });
 //   return () => { cancelled = true; loaded?.dispose(); };
 // }, []);`}
 </CodeBlock>
@@ -260,9 +260,9 @@ async function loadWithProgress(
 The exercise supplies a loader response so the tests can check your use of await and the model’s properties. It does not download or cache a real model. The later independent project loads saved weights in a separate browser app, where you can also test storage and network failures.
 
 Load the model once and return its input shape, output shape, and layer
-count. Inspect that returned contract before preparing dashboard inputs.
-This inspection helper releases the model after copying its metadata;
-the inference handler in the next lesson keeps its loaded model until teardown.
+count. Check those shapes before preparing the dashboard’s inputs.
+This inspection helper releases the model after copying its metadata.
+The prediction handler in the next lesson keeps its model while the app needs it.
 
 <Exercise slug="load-model" />
 
@@ -293,7 +293,7 @@ the inference handler in the next lesson keeps its loaded model until teardown.
   ]}
 />
 
-<LessonRecap whatYouLearned={["The manifest describes the model and names its weight shards. The loader needs both.", "IndexedDB stores an explicit local model copy. Version its key when weights change and remove obsolete entries.", "onProgress reports loading progress. A downloaded model still needs to be constructed and warmed up.", "Keep exported filenames and manifest paths consistent. Renaming a weight shard requires updating weightsManifest.paths in the JSON."]} bridge="Just as `fetch(url).then(r => r.json())` loads API data, `tf.loadLayersModel(url)` loads a model: same HTTP fetch shape, but the resolved value is a live compute graph with `predict()` rather than a plain data object." youCanNow="Load a pre-trained TF.js model, read its input and output shapes off the model you loaded, and distinguish HTTP caching from an explicit IndexedDB model copy." />
+<LessonRecap whatYouLearned={["The manifest describes the model and names its weight shards. The loader needs both.", "IndexedDB stores an explicit local model copy. Version its key when weights change and remove obsolete entries.", "onProgress reports loading progress. The runtime still needs to construct the downloaded model and run a warmup prediction.", "Keep exported filenames and manifest paths consistent. Renaming a weight shard requires updating weightsManifest.paths in the JSON."]} bridge="Just as `fetch(url).then(r => r.json())` loads API data, `tf.loadLayersModel(url)` loads a model: same HTTP fetch shape, but the resolved value is a live compute graph with `predict()`. A JSON response alone is a plain data object." youCanNow="Load a pre-trained TF.js model, read its input and output shapes off the model you loaded, and distinguish HTTP caching from an explicit IndexedDB model copy." />
 
 <Epilogue>
 

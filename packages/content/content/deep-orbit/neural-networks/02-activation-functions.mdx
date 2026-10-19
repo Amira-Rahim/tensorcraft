@@ -21,7 +21,7 @@ concept:
     tier: identity
     breaks: "Math.max(0, x) and ReLU give the same value for one input. tf.relu applies the rule to every value in a tensor. It also tells TensorFlow.js how to calculate gradients during training. A negative input has zero gradient through ReLU, which can leave a unit inactive."
 consequence:
-  narrative: "Farah's hidden-layer activation is checked. The alert threshold remains separate, and the model's scores still need evaluation."
+  narrative: "Farah has checked the hidden-layer activation. The alert threshold remains separate, and the model's scores still need evaluation."
 hints:
   - level: nudge
     content: "ReLU zeroes out every negative value and passes positives through unchanged."
@@ -41,7 +41,7 @@ skillAxes: [model_arch]
 One reading is minus 0.06 and another is 1.04. Which one triggers the alert, and where did you choose that rule?
 </Dialogue>
 
-Any numeric score can be compared with a threshold. A sigmoid adds a useful range, from 0 to 1, but it does not choose the threshold or make an untrained score trustworthy. Activations also serve another purpose: they let hidden layers represent functions that a single weighted sum cannot.
+You can compare any numeric score with a threshold. A sigmoid adds a useful range, from 0 to 1, but it does not choose the threshold or make an untrained score trustworthy. Activations also serve another purpose: they let hidden layers represent functions that a single weighted sum cannot.
 
 Test ReLU for the hidden layers Farah will connect next. It changes the
 scores passed between layers, allowing the stack to represent patterns a
@@ -51,7 +51,7 @@ single weighted sum cannot. The alert threshold remains a separate setting.
 
 ## What a Linear Stack Cannot Add
 
-A matrix multiplication plus a bias is called an **affine** transformation. It scales and combines inputs, then adds a constant. Stacking these calculations still gives one affine transformation. To represent more kinds of patterns, the stack needs a nonlinear operation.
+An **affine** transformation combines matrix multiplication with an added bias. It scales and combines inputs, then adds a constant. Stacking these calculations still gives one affine transformation. To represent more kinds of patterns, the stack needs a nonlinear operation.
 
 <CodeBlock language="typescript" title="collapse.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -74,7 +74,7 @@ tf.tidy(() => {
 
 A **nonlinear** activation changes that restriction. ReLU is `Math.max(0, x)`. It keeps positive values and replaces negative values with zero. Two ReLU units can form `relu(x) + relu(-x)`, which equals `Math.abs(x)`. No single affine function matches that V-shaped function across both negative and positive inputs.
 
-Adding ReLU permits nonlinear behavior; it does not guarantee it. If all relevant inputs keep the same units active, the network can act affinely over that region. Other network operations can also introduce nonlinearity. Here we are discussing a stack of dense layers.
+Adding ReLU permits nonlinear behavior. It does not guarantee it. If all relevant inputs keep the same units active, the network can act affinely over that region. Other network operations can also introduce nonlinearity. Here we are discussing a stack of dense layers.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -93,27 +93,27 @@ For finite real inputs, sigmoid lies strictly between 0 and 1 and tanh between -
 
 ## A Score and an Alert Are Different
 
-For the two scores Nazari read out, sigmoid gives about 0.485 and 0.739. A threshold of 0.5 alerts on the second. Thresholding the original scores at zero gives the same decisions. The sigmoid changes the score scale, not the ordering.
+For the two scores Nazari read out, sigmoid gives about 0.485 and 0.739. A threshold of 0.5 alerts on the second. Thresholding the original scores at zero gives the same decisions. Sigmoid changes the scale while keeping the scores in the same order.
 
-Sigmoid is often used for a model with two possible classes. A score of 0.8 is not automatically a reliable 80% probability. To earn that meaning, about 80% of comparable examples scored 0.8 should belong to the positive class. Checking this agreement is called **calibration**. Test it on data like the model will see in use.
+Models with two possible classes often use sigmoid for their output. A score of 0.8 is not automatically a reliable 80% probability. To earn that meaning, about 80% of comparable examples scored 0.8 should belong to the positive class. We check this agreement through **calibration**. Test it on data like the model will see in use.
 
-**ReLU** is a common hidden-layer choice. Its derivative, the local rate of change, is 1 for a positive input and 0 for a negative one. That derivative does not shrink a positive branch's gradient by itself; the rest of the network still affects the gradient.
+**ReLU** is a common hidden-layer choice. Its derivative, the local rate of change, is 1 for a positive input and 0 for a negative one. That derivative does not shrink a positive branch's gradient by itself. The rest of the network still affects the gradient.
 
-**Sigmoid** commonly supplies a binary output score. **Tanh** supplies a bounded signed value, useful when that range fits the model. Range is one consideration; training behavior and the loss function matter too. Module 3 connects those choices to parameter updates.
+**Sigmoid** commonly supplies a binary output score. **Tanh** supplies a bounded signed value, useful when that range fits the model. Range is one consideration. Training behavior and the loss function matter too. Module 3 connects those choices to parameter updates.
 
-<DerivationDrawer summary="Why sigmoid is bounded, and what logistic regression adds">
-Write the mathematical sigmoid as `1 / (1 + exp(-z))` for a finite real score `z`. The exponential is positive, so the denominator is greater than one. At zero, the output is 0.5. As z increases, the output approaches one; as z decreases, it approaches zero.
+<DerivationDrawer summary="Sigmoid bounds and logistic regression">
+Write the mathematical sigmoid as `1 / (1 + exp(-z))` for a finite real score `z`. The exponential is positive, so the denominator is greater than one. At zero, the output is 0.5. As z increases, the output approaches one. As z decreases, it approaches zero.
 
-The symmetry `sigmoid(-z) = 1 - sigmoid(z)` follows by multiplying numerator and denominator by `exp(z)`. This is an arithmetic identity, not a statement about prediction reliability. JavaScript's `Math.exp` has finite precision and can overflow or underflow; use the library operation for tensor work.
+The symmetry `sigmoid(-z) = 1 - sigmoid(z)` follows by multiplying numerator and denominator by `exp(z)`. This identity describes the arithmetic. Prediction reliability still needs evaluation. JavaScript's `Math.exp` has finite precision and can overflow or underflow. Use the library operation for tensor work.
 
-A learned weighted sum followed by sigmoid is a binary logistic-regression model. It is a useful baseline before adding hidden layers. “Regression” in its name does not mean its output task is predicting an unrestricted continuous quantity.
+A learned weighted sum followed by sigmoid is a binary logistic-regression model. It is a useful baseline before adding hidden layers. Despite its name, logistic regression performs classification. Its sigmoid output gives a score between 0 and 1.
 </DerivationDrawer>
 
 ## When Gradients Become Small
 
-A ReLU unit that stays negative on the training examples receives zero gradient through that activation. It can remain inactive, a problem called **dying ReLU**. This is not a claim that every currently negative unit is permanently dead.
+A ReLU unit that stays negative on the training examples receives zero gradient through that activation. It can remain inactive, a problem called **dying ReLU**. A negative value on one example does not mean the unit will stay inactive.
 
-Sigmoid's derivative becomes small in its tails, called **saturation**. Repeated small factors can weaken gradients through hidden layers. The full gradient also depends on the loss and other operations; a confident wrong sigmoid output does not automatically mean the model cannot learn from it.
+Sigmoid's derivative becomes small in its tails, called **saturation**. Repeated small factors can weaken gradients through hidden layers. The full gradient also depends on the loss and other operations. A confident wrong sigmoid output does not automatically mean the model cannot learn from it.
 
 ## Challenge
 
@@ -125,12 +125,12 @@ does not choose which scores should trigger the alert.
 <Exercise slug="relu-activation" />
 
 <RecallPrompt
-  question="Why can a stack of affine dense layers be replaced by one affine layer?"
+  question="Why can one affine layer calculate the same output as a stack of affine dense layers?"
   answer="Without nonlinear activations, the layers combine into one matrix multiplication and one bias. ReLU lets the stack represent other patterns, such as a V-shaped function. Adding it does not guarantee the model will learn a useful pattern."
   checks={[
     {
       "kind": "choice",
-      "question": "Why can a stack of affine dense layers be replaced by one affine layer?",
+      "question": "Why can one affine layer calculate the same output as a stack of affine dense layers?",
       "options": [
         {
           "text": "Their matrix multiplications and offsets combine into one matrix and one bias.",
@@ -161,7 +161,7 @@ does not choose which scores should trigger the alert.
       "options": [
         {
           "text": "Yes. Every number in [0, 1] is a calibrated probability.",
-          "feedback": "Being inside a numeric range says nothing about agreement with real outcome frequencies."
+          "feedback": "A score between 0 and 1 is not necessarily a reliable probability. Check it against actual outcomes."
         },
         {
           "text": "Yes, as long as the classification threshold is 0.5.",
@@ -178,7 +178,7 @@ does not choose which scores should trigger the alert.
   ]}
 />
 
-<LessonRecap whatYouLearned={["Affine dense layers collapse to one affine transformation; nonlinearity permits more expressive functions.", "ReLU keeps positive values and zeroes negatives. Sigmoid and tanh have bounded mathematical ranges, with finite-precision endpoint rounding.", "Activation range, decision threshold and probability calibration are different questions.", "A local activation derivative is only one factor in the full training gradient."]} bridge="Math.max(0, x) and ReLU use the same value-level rule; TensorFlow.js applies it to tensors and defines its training gradient." youCanNow="Apply ReLU, read activation ranges and explain why a bounded score still needs evaluation." />
+<LessonRecap whatYouLearned={["Affine dense layers collapse to one affine transformation. Nonlinearity permits more expressive functions.", "ReLU keeps positive values and zeroes negatives. Sigmoid and tanh have bounded mathematical ranges, with finite-precision endpoint rounding.", "Activation range, decision threshold and probability calibration are different questions.", "A local activation derivative is only one factor in the full training gradient."]} bridge="Math.max(0, x) and ReLU use the same value-level rule. TensorFlow.js applies it to tensors and defines its training gradient." youCanNow="Apply ReLU, read activation ranges and explain why a bounded score still needs evaluation." />
 
 <Epilogue>
 

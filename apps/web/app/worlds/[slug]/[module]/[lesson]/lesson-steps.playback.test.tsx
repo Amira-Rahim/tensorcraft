@@ -392,7 +392,7 @@ describe("structure-variety machinery (P2 gate)", () => {
     expect(tag.closest("[data-testid='lesson-eyebrow']")).not.toBeNull();
     // Module term and slug, lesson term and number, the tag, the duration.
     expect(tag.closest("[data-testid='lesson-eyebrow']")?.textContent).toBe(
-      `SECTOR foundations · MISSION 1 · ${PATTERN_LABELS.broken_code_first} · 10 min`,
+      `SECTOR foundations, MISSION 1, ${PATTERN_LABELS.broken_code_first}, 10 min`,
     );
     expect(screen.getAllByText(/Archimedes, Bridge/i).length).toBeGreaterThan(
       0,

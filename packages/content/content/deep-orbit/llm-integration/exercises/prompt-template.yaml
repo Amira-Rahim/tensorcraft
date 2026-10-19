@@ -1,6 +1,6 @@
 slug: prompt-template
 lessonSlug: prompt-engineering
-title: "Build a Prompt Template"
+title: "The prompt template"
 instructions: |
   Build a multi-line prompt from signal.amplitude, signal.frequency, and signal.phase. Keep four parts in this order, on separate lines:
 
@@ -135,7 +135,7 @@ testCode: |
         if (!line.toLowerCase().includes('json')) continue;
         expect(
           line.toLowerCase(),
-          'Request JSON rather than prohibiting JSON. Asking to omit surrounding prose is allowed.',
+          'Ask for a JSON response. You can also ask the model to leave out surrounding prose.',
         ).not.toMatch(/\b(?:never|not|don't|omit|without)\s+(?:(?:return|produce|output|use|include)\s+|respond\s+(?:in|with)\s+)?json\b/);
       }
     });
@@ -253,7 +253,7 @@ testCode: |
         ).toContain(String(fresh[dial]));
         expect(
           prompt,
-          'This capture no longer holds that value, so no line of its prompt may carry it. Seeing it means the prompt came from a stored string rather than from the argument.',
+          'This capture no longer holds that value, so no line of its prompt may carry it. Seeing it means your code reused a stored value. Build the prompt from the current argument.',
         ).not.toContain(String(signal[dial]));
       }
     });

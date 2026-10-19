@@ -81,7 +81,7 @@ function EvidenceBody({
                   ? `${stage.work.length} linked ${stage.work.length === 1 ? "record" : "records"}`
                   : "No recorded practice yet"}
                 {stage.due.length
-                  ? ` · ${stage.due.length} ${stage.due.length === 1 ? "review" : "reviews"} due`
+                  ? `, ${stage.due.length} ${stage.due.length === 1 ? "review" : "reviews"} due`
                   : ""}
               </span>
             </summary>

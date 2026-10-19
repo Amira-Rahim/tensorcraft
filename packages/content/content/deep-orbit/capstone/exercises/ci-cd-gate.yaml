@@ -1,6 +1,6 @@
 slug: ci-cd-gate
 lessonSlug: ci-cd-pipeline
-title: "Build a CI/CD Validation Gate"
+title: "The CI/CD release check"
 instructions: |
   Help Nazari check whether the supplied predictions pass the release gate. Write `validateModelAccuracy(predictions, minAccuracy)`.
 
@@ -131,7 +131,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'The labeled cases behind your release score',
-        summary: 'Your gate counted ' + result.correct + ' correct out of ' + result.total + ', for a score of ' + result.accuracy + '. These supplied predictions do not establish performance beyond this fixture.',
+        summary: 'Your gate counted ' + result.correct + ' correct out of ' + result.total + ', for a score of ' + result.accuracy + '. These supplied predictions do not establish performance beyond these examples.',
         columns: ['Case', 'Prediction supplied to your gate', 'Reviewed label', 'Match'],
         rows: predictions.map((row, i) => [i + 1, row.predicted, row.actual, row.predicted === row.actual]),
       });
@@ -149,7 +149,7 @@ testCode: |
       expect(result.passed).toBe(false);
       recordResult({
         kind: 'table',
-        title: 'Your gate holds this candidate',
+        title: 'This candidate fails your release check',
         summary: 'The supplied release floor is 0.9. The caller can keep this candidate out of release without changing its measured score.',
         columns: ['Returned gate field', 'Value'],
         rows: [['Correct', result.correct], ['Total', result.total], ['Score', result.accuracy], ['Passed', result.passed]],
@@ -214,11 +214,11 @@ testCode: |
       expect(result.accuracy).toBe(0);
       expect(
         result.passed,
-        'Five rows arrived and none of them could be graded. A gate that clears here merges a model nobody measured.',
+        'None of these five rows has a label. They cannot count as correct, so this batch must fail the release check.',
       ).toBe(false);
     });
 
-    it('ungraded rows stay in the denominator, so a half-stripped batch scores low', () => {
+    it('keeps rows with missing labels in the total', () => {
       // Generated rather than listed, so there is no batch length and no
       // answer to special-case: 40 rows, every eighth one still carrying
       // the label it was scored against and the rest stripped by the same
@@ -236,16 +236,16 @@ testCode: |
       ).toBeDefined();
       expect(
         result.total,
-        'Forty rows were handed to the gate. Five of them carry a label.',
+        'The gate received forty rows. Five of them carry a label.',
       ).toBe(40);
       expect(result.correct).toBe(5);
       expect(
         result.accuracy,
-        'Five correct out of forty rows is 0.125. Five out of the five that could be graded is 1.0, which is the number a gate that filters the batch reports.',
+        'Five correct out of forty rows is 0.125. Filtering to the five labeled rows would report 1.0 and hide the missing labels.',
       ).toBe(0.125);
       expect(
         result.passed,
-        'Thirty-five of these rows were never measured, so nothing here clears a 0.9 floor.',
+        'Thirty-five of these rows lack labels, so nothing here clears a 0.9 floor.',
       ).toBe(false);
     });
 

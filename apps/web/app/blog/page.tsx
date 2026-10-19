@@ -3,11 +3,11 @@ import Link from "next/link";
 import { getPosts } from "@tensorcraft/content";
 
 export const metadata: Metadata = {
-  title: "The Bridge: JavaScript-to-ML Insights | Tensorcraft",
+  title: "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
   description:
     "Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.",
   openGraph: {
-    title: "The Bridge: JavaScript-to-ML Insights | Tensorcraft",
+    title: "The Bridge: JavaScript-to-ML Insights, Tensorcraft",
     description:
       "Weekly browser-ML news, mapped to the lessons that teach the underlying concepts.",
     url: "https://tensorcraft.app/blog",
@@ -46,7 +46,7 @@ export default function BlogIndexPage() {
         {posts.length === 0 ? (
           <div className="border border-border bg-surface p-10">
             <p className="text-base text-text-muted">
-              First post drops once the curator shortlists this week's items.
+              Our first post is coming soon.
             </p>
           </div>
         ) : (

@@ -289,7 +289,7 @@ describe("the lesson investigation", () => {
     expect(screen.getByLabelText("What total do you expect?")).toHaveValue("");
     expect(
       screen.getByRole("region", { name: "Last run (inputs changed)" }),
-    ).toHaveTextContent("Small readings · Run 1");
+    ).toHaveTextContent("Small readings, Run 1");
     fireEvent.change(screen.getByLabelText("Operation"), {
       target: { value: "1" },
     });
@@ -299,7 +299,7 @@ describe("the lesson investigation", () => {
     ).toHaveTextContent("Observed total: 18");
     expect(
       screen.getByRole("region", { name: "What happened" }),
-    ).toHaveTextContent("Large readings · Run 2");
+    ).toHaveTextContent("Large readings, Run 2");
   });
 
   it("supports a choice prediction and keeps the briefing visual free of controls", () => {

@@ -8,7 +8,7 @@ scene:
   location: "Archimedes, Lab"
   epilogueLocation: "Lab, Glass Wall"
   portraitAlt: "In the lamplit lab, Farah measures the gap between two markers on a probability rail beneath a whiteboard parabola."
-  epiloguePortraitAlt: "Seen from the corridor, a small marker scrawl sits reversed on the lab glass; Farah stands inside, marker raised, Demir beside her."
+  epiloguePortraitAlt: "Seen from the corridor, a small marker scrawl sits reversed on the lab glass. Farah stands inside, marker raised, Demir beside her."
 estimatedMinutes: 15
 difficulty: beginner
 context:
@@ -30,7 +30,7 @@ hints:
       TensorFlow.js supplies both losses. MSE averages the squared prediction errors. tf.losses.sigmoidCrossEntropy takes raw scores and applies sigmoid itself. The third function chooses the cross-entropy API that matches the output format.
   - level: guidance
     content: |
-      Both TFJS loss calls return one scalar for the batch with their default reduction. A logit is the raw score before sigmoid and can be negative. The logits form applies sigmoid internally, so passing probabilities applies it twice and changes the loss. For the third function, require the caller to declare probabilities or logits; an activation name alone is insufficient.
+      Both TFJS loss calls return one scalar for the batch with their default reduction. A logit is the raw score before sigmoid and can be negative. The logits form applies sigmoid internally, so passing probabilities applies it twice and changes the loss. For the third function, require the caller to declare probabilities or logits. An activation name alone is insufficient.
   - level: solution
     content: |
       function mseLoss(labels: tf.Tensor, predictions: tf.Tensor): tf.Tensor {
@@ -55,14 +55,14 @@ skillAxes: [training]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The network predicts 0.52 for a signal that should be 1.0. Demir calls that pretty close. I cannot tune on pretty close; I can only trust a number I can watch go down. So: how far from right is 0.52? Not an adjective. A distance.
+The network predicts 0.52 for a signal labeled 1. Demir calls that pretty close. I need a number we can compare from one run to the next. How should we measure that error?
 </Dialogue>
 
 You will calculate prediction errors and choose a loss function that matches the model’s output.
 
 <LearningObjectives objectives={["Explain what a loss function measures during training", "Implement MSE for regression (predicting a continuous value) and binary crossentropy for classification", "Interpret loss on a fixed dataset and distinguish fitting from generalization"]} />
 
-## How Wrong Are We?
+## Prediction error
 
 A prediction of 0.52 against a label of 1.0 has an error of 0.48. Square it and you get about 0.23. Average those squared errors across the batch to get **mean squared error**, or MSE.
 
@@ -84,12 +84,12 @@ const mse = tf.losses.meanSquaredError(labels, predictions);
 console.log('MSE:', mse.dataSync()); // 0.268
 
 // Binary crossentropy: a common objective for binary labels (0 or 1).
-// sigmoidCrossEntropy expects raw logits (pre-sigmoid outputs), not probabilities
+// sigmoidCrossEntropy expects raw logits, before sigmoid converts them to probabilities
 const logits = tf.tensor([0.4, -0.4, -0.8, 0.8, 1.4]);
 const bce = tf.losses.sigmoidCrossEntropy(labels, logits);
 console.log('BCE:', bce.dataSync()); // ~0.718
 
-// Perfect predictions → loss approaches 0
+// As predictions approach the correct labels, loss approaches 0
 const perfect = tf.tensor([1, 0, 1, 0, 1]);
 const perfectLoss = tf.losses.meanSquaredError(labels, perfect);
 console.log('Perfect MSE:', perfectLoss.dataSync()); // 0
@@ -103,7 +103,7 @@ A **logit** is the raw score before sigmoid. It can be negative or positive, wit
 
 Choose the form that matches what the output represents. Do not pass probabilities to the logits API, because it would apply sigmoid again. An unfamiliar activation name is not enough information to choose.
 
-The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
+Next, you’ll use gradients to choose how to change the weights. Backpropagation calculates those gradients, and a training loop repeats the updates.
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles">
 Here, Σ sums one term per row in the batch, ŷ is the prediction against the true label y, and a prime mark denotes a derivative. `σ'` is the sigmoid's slope.
@@ -116,7 +116,7 @@ Here, Σ sums one term per row in the batch, ŷ is the prediction against the tr
 
 `BCE = -(1/n) Σ [ yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ) ]`
 
-Take the label `y = 1` and a model that confidently predicts `ŷ = 0.01`. MSE's gradient **with respect to the prediction** is `2(ŷ - y) = -1.98`: not flat, close to the largest magnitude it reaches for predictions in [0, 1]. Nothing is wrong with MSE's own slope.
+Take the label `y = 1` and a model that confidently predicts `ŷ = 0.01`. MSE's gradient **with respect to the prediction** is `2(ŷ - y) = -1.98`, close to the largest magnitude it reaches for predictions in [0, 1]. Nothing is wrong with MSE's own slope.
 
 What flattens is the sigmoid you put in front of it. Backprop multiplies by `σ'(z) = ŷ(1-ŷ)`, and at `ŷ = 0.01` that factor is `0.0099`. So the gradient that actually reaches the weights is:
 
@@ -195,7 +195,7 @@ cases before using that loss to guide weight updates.
 
 <LessonRecap
   whatYouLearned={[
-    "A loss defines the training objective. Compare values on the same data and objective; a low training loss does not establish generalization.",
+    "A loss gives training a number to reduce. Compare losses using the same data and rule. A low training loss alone does not show that the model works on new examples.",
     "MSE penalizes large errors quadratically. For binary labels, BCE with an output sigmoid avoids the extra sigmoid factor in the derivative with respect to the output logit.",
     "The choice of loss function shapes how the optimizer learns: the wrong loss can stall training even with a correct architecture."
   ]}
@@ -208,7 +208,7 @@ cases before using that loss to guide weight updates.
 Farah writes 0.6931 on the lab glass, with the date and her initials. That is the binary cross-entropy of a model that predicts 0.5 for every row, whatever its label. She leaves space for another baseline: always predicting the fraction of positive labels in training. That may be a stronger comparison if one class is more common. Demir leaves room for the score on separate test rows too.
 
 <Dialogue speaker="Dr. Farah">
-A falling loss earns another check. It does not earn deployment.
+The crew will check the model on separate data before considering deployment.
 </Dialogue>
 
 </Epilogue>

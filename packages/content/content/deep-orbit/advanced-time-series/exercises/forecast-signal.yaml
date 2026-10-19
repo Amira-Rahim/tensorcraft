@@ -1,10 +1,10 @@
 slug: forecast-signal
 lessonSlug: forecasting
-title: "Roll Forward, Then Replay One Step at a Time"
+title: "Recursive forecasts and one-step replay"
 instructions: |
   Implement forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel?). trainX has shape [windows, windowSize, 1], and trainY has shape [windows, 1]. past contains at least windowSize finite readings, oldest first. arrived contains the later readings you will compare both forecasts against.
 
-  Use providedModel as compiled if it is supplied. Otherwise build an 8-unit LSTM with inputShape [windowSize, 1], followed by a linear Dense layer with 1 output. Compile with 'adam' and 'meanSquaredError'. Await fit(trainX, trainY, { epochs, batchSize: 8 }).
+  Use providedModel with its existing compilation when the caller supplies it. Otherwise build an 8-unit LSTM with inputShape [windowSize, 1], followed by a linear Dense layer with 1 output. Compile with 'adam' and 'meanSquaredError'. Await fit(trainX, trainY, { epochs, batchSize: 8 }).
 
   Create arrived.length predictions in each run. Every predict call takes the last windowSize readings as [1, windowSize, 1] and must return one finite number.
 
@@ -127,11 +127,11 @@ testCode: |
     const out = await run;
     expect(
       out,
-      'forecastTwoWays hands back nothing. Train the model, run both arms over the arrived stretch, and return the model, the fit result and the two series.',
+      'forecastTwoWays returned nothing. Train the model, forecast each new reading using both methods, and return the model, training history, and two prediction arrays.',
     ).toBeTruthy();
     expect(
       out.model && typeof out.model.predict,
-      'model is the tf.LayersModel you trained. The grader runs both arms through it itself, so it has to be the model that did the fitting.',
+      'Return the tf.LayersModel you trained. The checks use it to recalculate both prediction arrays.',
     ).toBe('function');
     expect(
       !!(out.history && out.history.history && Array.isArray(out.history.history.loss)),
@@ -170,20 +170,20 @@ testCode: |
   };
 
   describe('forecastTwoWays', () => {
-    it('returns one prediction per arrived reading in each arm, and leaves its inputs alone', async () => {
+    it('returns one prediction per observed reading for both methods without changing the inputs', async () => {
       const out = await outcome(caseA());
       expect(
         out.rollout.length,
-        'The rollout runs for as many steps as there are arrived readings, so the two can be compared position by position.',
+        'Return one rollout prediction per new observation so you can compare matching positions in the arrays.',
       ).toBe(CASE_A.arrived.length);
       expect(
         out.oneStep.length,
-        'The replay runs over the same stretch, one prediction per arrived reading.',
+        'Return one replay prediction per new observation.',
       ).toBe(CASE_A.arrived.length);
       out.rollout.concat(out.oneStep).forEach((value) => {
         expect(
           typeof value,
-          'Every entry is one number. A [1, 1] tensor or a one-element array means the prediction was never read out of the result.',
+          'Every entry is one number. A [1, 1] tensor or a one-element array means your code still needs to read the numeric prediction from the result.',
         ).toBe('number');
         expect(
           Number.isFinite(value),
@@ -192,14 +192,14 @@ testCode: |
       });
       expect(
         pastA.length,
-        'The past readings belong to the caller. Copy that array before you append to it, or the caller gets its own history back with your rollout written onto the end.',
+        'Copy the past readings before appending predictions. Keep the supplied array unchanged.',
       ).toBe(CASE_A.past.length);
-      expect(arrivedA.length, 'The arrived readings are evidence, not scratch space.').toBe(
+      expect(arrivedA.length, 'Keep the supplied observations unchanged.').toBe(
         CASE_A.arrived.length,
       );
       recordResult({
-        kind: 'series', title: 'Your rollout beside observed-history replay',
-        summary: 'Actual predictions from your trained model on the synthetic series generated for this run. Rollout feeds predictions back; replay receives the observations that have arrived. Compare each horizon without assuming either method must win.',
+        kind: 'series', title: 'Predictions using forecast history or observed history',
+        summary: 'Actual predictions from your trained model on the synthetic series generated for this run. Rollout feeds predictions back. Replay receives the observations that have arrived. Compare each horizon without assuming either method must win.',
         xLabel: 'Steps ahead', yLabel: 'Synthetic scalar value',
         labels: out.rollout.map((_, i) => String(i + 1)),
         series: [
@@ -218,7 +218,7 @@ testCode: |
       ).toBe(2);
       expect(
         out.model.layers[0].getClassName(),
-        'The first layer is the one named in the instructions. A flattened dense baseline has a different contract; this exercise requires recurrent updates.',
+        'The first layer is the one named in the instructions. A flattened dense baseline has a different contract. This exercise requires recurrent updates.',
       ).toBe('LSTM');
       expect(
         out.model.layers[0].getConfig().units,
@@ -242,7 +242,7 @@ testCode: |
       ).toBe(EPOCHS_A);
       expect(
         out.model.optimizer.iterations,
-        'The optimizer counts one iteration per batch of training, and assigning to that counter does nothing. It has to equal the batches in one epoch times the epochs in your trace, which is what ties the trace you return to the model you return. A history object built by hand lands somewhere else, and so does a fit at another batch size.',
+        'The optimizer counts one update per training batch. Its count must match batches per epoch times the number of epochs. Use the requested batch size and return the history from this fit.',
       ).toBe(CASE_A.batchesPerEpoch * EPOCHS_A);
       const losses = out.history.history.loss;
       expect(losses.every(Number.isFinite)).toBe(true);
@@ -256,7 +256,7 @@ testCode: |
           value,
           'Step ' +
             step +
-            ' is adrift from the same step rolled out of your own model here. Two mistakes land here: re-reading the same window every step, which predicts one reading over and over, and appending the prediction to the answer but not to the history the next window is cut from.',
+            ' does not match the rollout from your model. After each prediction, append it to the history and use the latest window for the next step.',
         ).toBeCloseTo(beside[step], 6);
       });
     });
@@ -269,12 +269,12 @@ testCode: |
           value,
           'Step ' +
             step +
-            ' of the replay is adrift from the same step recomputed off your own model. Each prediction here reads real readings only: everything up to now, plus the arrived readings before this step, and none of your own output.',
+            ' of the replay does not match your model. Build each window from past observations and the new observations before this step. Do not include predictions.',
         ).toBeCloseTo(beside[step], 6);
       });
     });
 
-    it('starts both arms from the same observed history', async () => {
+    it('starts both forecasts from the same observed history', async () => {
       const out = await outcome(caseA());
       expect(out.rollout[0]).toBeCloseTo(out.oneStep[0], 6);
     });
@@ -283,7 +283,7 @@ testCode: |
       const out = await outcome(caseB());
       expect(
         out.model.inputs[0].shape,
-        'This case trains on a wider window than the first one, and the width comes from trainX rather than from what the last call used.',
+        'This case trains on a wider window than the first one, and trainX determines its width. Read the shape for each call.',
       ).toEqual([null, CASE_B.windowSize, 1]);
       expect(
         out.history.history.loss.length,
@@ -291,7 +291,7 @@ testCode: |
       ).toBe(EPOCHS_B);
       expect(
         out.model.optimizer.iterations,
-        'Same tie as before, on a case with fewer epochs and a different number of windows: the optimizer counter has to match the trace this run returned.',
+        'This run uses fewer epochs and a different number of windows. The optimizer update count must still match the returned training history.',
       ).toBe(CASE_B.batchesPerEpoch * EPOCHS_B);
       const rolled = rollBeside(out.model, CASE_B.past, CASE_B.arrived.length, CASE_B.windowSize);
       const replayed = replayBeside(out.model, CASE_B.past, CASE_B.arrived, CASE_B.windowSize);

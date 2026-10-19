@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Nazari asks for a comparison before the crew commits to a runtime. Demir has a model file and a laptop; she wants results from the bridge consoles."
+  narrative: "Nazari asks for a comparison before the crew commits to a runtime. Demir has a model file and a laptop. She wants results from the bridge consoles."
   speaker: "Chief Nazari"
 concept:
   explanation: "ONNX stores a model’s operations, connections and weights. A runtime can run the model only if it supports the operations and format version the file uses."
@@ -27,7 +27,7 @@ hints:
   - level: nudge
     content: "Build each runtime's input from the same three values. Await the actual output before stopping its clock."
   - level: guidance
-    content: "Keep model loading outside the inference measurement. Pin the ONNX session to WASM, read its named output, and compare that value with TF.js's returned value. Use finally blocks to release tensors and the session even when an inference fails. A single timed call checks the timing code; it does not choose a deployment backend."
+    content: "Keep model loading outside the inference measurement. Pin the ONNX session to WASM, read its named output, and compare that value with TF.js's returned value. Use finally blocks to release tensors and the session even when an inference fails. A single timed call checks the timing code. It does not choose a deployment backend."
   - level: solution
     content: |
       async function compareRuntimes(model, modelPath, signal) {
@@ -82,16 +82,16 @@ ONNX stands for Open Neural Network Exchange. It stores a graph of operations, t
 Compatibility depends on all three: the graph, the runtime version and the provider. An unsupported operation can prevent loading or execution. Options include using a supported provider, changing the export, decomposing an operation or supplying a supported custom implementation. An older opset is useful only if the exported graph still represents the intended computation.
 
 Write a comparison that waits for both runtimes' outputs. The supplied
-simulation checks the input, timing, and cleanup contracts; the downloadable
-lab measures the model on actual browser runtimes.
+simulation checks that you prepare inputs, time completed predictions, and
+release resources correctly. The downloadable lab runs the model in real browsers.
 
 <LearningObjectives objectives={["Explain ONNX model interchange and runtime compatibility limits", "Implement the input and awaited-output contract for an ONNX session", "Compare timing and output agreement in a controlled runtime exercise", "Explain why backend selection requires measurements on the target device"]} />
 
-## Load the Same Weights
+## The same weights in both runtimes
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-The lab exports the shipped 3 → 32 → 16 → 1 classifier to ONNX with the same 673 weights. Its exporter handles this specific dense network, not arbitrary TFJS models. It preserves the two ReLU activations and final sigmoid. Check predictions after conversion; a file that loads can still encode the wrong computation.
+The lab exports the shipped 3 to 32 to 16 to 1 classifier to ONNX with the same 673 weights. Its exporter supports this specific dense architecture. Other TFJS models need an exporter that supports their operations. It preserves the two ReLU activations and final sigmoid. Check predictions after conversion. A file that loads can still encode the wrong computation.
 
 <CodeBlock language="typescript" title="onnx-basics.ts">
 {`import * as ort from 'onnxruntime-web/wasm';
@@ -121,7 +121,7 @@ try {
 
 The paths above are available when serving the runtime lab. For your own application, export and host the model and copy the WASM assets from the same installed runtime version. Session resources need explicit release. GPU tensors may also hold device resources after JavaScript loses its reference.
 
-## Measure a Defined Workload
+## Workload and timing
 
 A useful comparison states what it includes. For inference latency, load the model first, warm up the exact input shape, then time each call through output readback. Reading only the time for a GPU dispatch can miss the work still queued on the device.
 
@@ -148,9 +148,9 @@ The **median** is the middle observed duration. **P95** is the duration at or be
 
 For a runtime comparison, start with the same backend family, thread count, weights, inputs and batch size. Different implementations can still do different work internally. Test output agreement first. A faster result from a different computation is not a runtime improvement.
 
-For **cold start**, use a fresh browser context and time through the first usable prediction. Say whether library loading, WASM compilation, model download and application startup are included. A warm browser cache is a separate experiment. `tf.memory()` counts TFJS tensors; it is not browser process memory or GPU memory usage.
+For **cold start**, use a fresh browser context and time through the first usable prediction. List which parts you timed: library loading, WASM compilation, model download, and application startup. A warm browser cache is a separate experiment. `tf.memory()` counts TFJS tensors. It is not browser process memory or GPU memory usage.
 
-## Run the Real Lab
+## The runtime comparison lab
 
 Download the [browser runtime lab](/assignments/browser-runtime-lab-v1.zip), unzip it and follow its README. From that folder, run:
 
@@ -161,7 +161,7 @@ node scripts/check-runtime-lab.mjs
 # Measurements: test-results/runtime-lab.json`}
 </CodeBlock>
 
-The lab uses pinned TFJS and ONNX Runtime versions in Chromium. It checks 261 fixed inputs, runs 20 warmups and 200 measured calls per runtime, and records the environment. Those inputs check conversion parity, not classification accuracy: they have no ground-truth labels. The lab also tests real IndexedDB persistence and missing model files. Converter verification needs the separate CLI setup in the instructions.
+The lab uses pinned TFJS and ONNX Runtime versions in Chromium. It checks 261 fixed inputs, runs 20 warmups and 200 measured calls per runtime, and records the environment. Those inputs check conversion parity. Classification accuracy requires ground-truth labels, which this test set lacks. The lab also tests real IndexedDB persistence and missing model files. Converter verification needs the separate CLI setup in the instructions.
 
 Treat laptop results as a starting point. Repeat on the supported devices and browser builds with the model you intend to ship. Neither 673 parameters nor a million-parameter cutoff decides whether WASM beats a GPU. Input shape, operation support, batch size, readbacks and device implementation all matter.
 
@@ -194,7 +194,7 @@ before changing what runs on the bridge.
       "question": "WASM runs a small classifier faster on your laptop. What can you conclude?",
       "options": [
         {
-          "text": "This workload favored WASM in that measured environment.",
+          "text": "WASM was faster for this model and workload on that laptop.",
           "feedback": "WASM was faster for that model and workload on that laptop. It may not win on another device or with another model. Repeat the test on supported devices with the intended inputs and batch size. Also check startup time, memory use and whether the outputs agree."
         },
         {
@@ -202,7 +202,7 @@ before changing what runs on the bridge.
           "feedback": "One measurement cannot establish a universal model-size crossover."
         },
         {
-          "text": "The runtime choice is settled for all supported devices.",
+          "text": "The result determines the runtime for every supported device.",
           "feedback": "Repeat the workload on target devices and check more than warm latency."
         }
       ],
@@ -217,9 +217,9 @@ before changing what runs on the bridge.
   answer="Load and run the graph on the target runtime and execution provider. Check operator and opset support, input/output names and shapes, numerical agreement, resource cleanup and deployment budgets. Export success alone does not establish those properties."
 />
 
-<LessonRecap whatYouLearned={["ONNX portability depends on the graph, runtime version and execution provider", "Compare outputs before comparing speed; conversion parity is separate from accuracy on labeled data", "Warm the exact workload and include readback in timed inference; measure cold start separately", "Choose a backend from target-device measurements, not parameter count alone"]} bridge="Browser and model portability both depend on supported features. Test the features your application actually uses." youCanNow="Run an ONNX session, check conversion parity and collect a repeatable latency comparison." />
+<LessonRecap whatYouLearned={["ONNX portability depends on the graph, runtime version and execution provider", "Compare outputs before comparing speed. Conversion parity is separate from accuracy on labeled data", "Warm the exact workload and include readback in timed inference. Measure cold start separately", "Choose a backend using measurements from the target devices. Parameter count alone cannot predict runtime"]} bridge="Browser and model portability both depend on supported features. Test the features your application actually uses." youCanNow="Run an ONNX session, check conversion parity and collect a repeatable latency comparison." />
 
-> **DISPATCH archive · field intercept #07-D:** Lin's vision cell shipped the runtime that won on the lead engineer's laptop. Fleet hardware ran two GPU generations older. Lin added the oldest fleet machine to the release bench.
+> **DISPATCH archive, field intercept #07-D:** Lin's vision cell shipped the runtime that won on the lead engineer's laptop. Fleet hardware ran two GPU generations older. Lin added the oldest fleet machine to the release bench.
 
 <Epilogue>
 

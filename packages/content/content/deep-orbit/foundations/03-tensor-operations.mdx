@@ -12,7 +12,7 @@ scene:
   time: "Second watch"
   portraitAlt: "Nazari leans over Demir's bridge console, where sixty-four channel traces have snarled into a frozen knot."
 context:
-  narrative: "Demir's first attempt at combining the feeds just crashed the console. Nazari wants it fixed, at sensor speed."
+  narrative: "Demir's first attempt at combining the feeds just crashed the console. Nazari needs it fixed before more readings arrive."
   speaker: "Chief Nazari"
 concept:
   explanation: "Add or multiply values at matching positions, or use matrix multiplication to combine them into weighted sums."
@@ -58,15 +58,15 @@ At the start of the shift, Demir's amplifier has stopped with this error: `Error
 </StoryPassage>
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
-Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings; call it a million if you must round. I won't. Whatever that red text is, it is not keeping up with 983 thousand.
+Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. The hull array takes 983 thousand raw samples a minute before integration boils them down to readings. Call it a million if you must round. I won't. Whatever that red text is, it is not keeping up with 983 thousand.
 </Dialogue>
 
 Restore the feed to Nazari's console: average the passes, apply the gain,
 and combine channels without changing which readings belong together.
 
-<LearningObjectives objectives={["Read a shape-mismatch error and identify which op it comes from", "Perform element-wise tensor operations (add, multiply, subtract)", "Combine tensors of different shapes using broadcasting", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose when the intended matrix axes are reversed"]} />
+<LearningObjectives objectives={["Read a shape-mismatch error and find the operation that failed", "Perform element-wise tensor operations (add, multiply, subtract)", "Combine tensors of different shapes using broadcasting", "Understand the matmul shape rule: [m,n] × [n,p] produces [m,p]", "Use transpose when the matrix stores its axes in the opposite order"]} />
 
-## Repair the merge, then amplify it
+## Averaging and amplifying the readings
 
 Demir wanted to multiply each reading by its matching gain, the number that
 controls how much to amplify it. That is **element-wise multiplication**,
@@ -77,7 +77,7 @@ Use the same two-channel passes as the visual. Add matching values, divide by
 2 to average them, then multiply the average by the gain. Each operation
 creates a tensor. `tf.tidy()` releases the temporary tensors when its
 synchronous callback finishes. That callback must finish without `await`.
-The tensors you return are kept for later use:
+TensorFlow.js keeps the tensors you return for later use:
 
 <CodeBlock language="typescript" title="merge-two-passes.ts">
 {`const pass1 = tf.tensor2d([[2, 10], [4, 12], [6, 14]]);
@@ -103,7 +103,7 @@ Return both results from `tf.tidy()` and dispose of them after use. Averaging
 can reduce noise when the errors are independent and average to zero. It
 does not fix every kind of error.
 
-## Mix channels with weighted sums
+## Weighted channel sums
 
 Matrix multiplication multiplies pairs of values and adds the products.
 Its shape rule is `[m, n] × [n, p] → [m, p]`: the middle sizes must match.
@@ -118,14 +118,15 @@ const mixed = tf.tidy(() => block.matMul(mix.transpose()));
 </CodeBlock>
 
 Check axis meanings before transposing. Matching dimensions alone cannot tell
-you whether a multiplication combines the intended channels. Backend speed
-depends on the workload; these checks establish arithmetic and shape behavior.
+you whether a multiplication combines the intended channels. Speed
+depends on the workload and backend. These checks show whether your calculations
+and shapes are correct.
 
 <ConceptReference summary="Reference: the original amplifier and matrix products">
 
-### Read the error first
+### The shape error
 
-Here is the code that produced it. The intent: amplify each of the 64 channels by its own gain factor. Position by position, gain times reading.
+Here is the code that produced the error. Demir wanted to multiply each of the 64 readings by its own gain factor.
 
 <CodeBlock language="typescript" title="amplify-broken.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -143,11 +144,11 @@ const amplified = gains.matMul(readings);
 
 `matMul` needs the left tensor's column count to match the right tensor's row count. Here those counts are 64 and 1. Demir only wanted to multiply matching positions, so he needs `mul` instead.
 
-### Repair the element-wise calculation
+### The element-wise calculation
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addition. `tf.mul`, `tf.add`, and `tf.sub` are the same idea across broadcast-compatible dimensions, on the selected backend. `gains.mul(readings)` is the one-word fix for the broken amplifier:
+When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addition. `tf.mul`, `tf.add`, and `tf.sub` do the same kind of calculation on tensors. Their shapes must follow the broadcasting rules. `gains.mul(readings)` is the one-word fix for the broken amplifier:
 
 <CodeBlock language="typescript" title="tensor-ops.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -175,7 +176,7 @@ Broadcasting compares shapes from right to left. Each pair of sizes must match, 
 
 For example, `.mul(tf.scalar(2))` doubles every value. Subtracting two column means, shape `[2]`, from five rows, shape `[5, 2]`, subtracts the same pair from each row. A size mismatch that meets this rule is valid for an element-wise operation. Matrix multiplication follows its own rule.
 
-Tensor operations are not automatically faster than JavaScript loops. Call overhead and readback can dominate a small array. Acceleration depends on the workload and backend; measure the version you intend to run. This lesson practices shape rules, not a speed guarantee.
+Tensor operations are not automatically faster than JavaScript loops. Call overhead and readback can dominate a small array. Acceleration depends on the workload and backend. Measure the version you intend to run. This lesson checks shape rules. You would need runtime measurements to compare speed.
 
 ### When to use matMul
 
@@ -183,7 +184,7 @@ Dense layers compute weighted sums. `matMul` computes them for every row of its 
 
 **`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
 
-The left tensor's column count must equal the right tensor's row count. If a matrix stores the intended axes in the opposite order, transpose it. A shape error can also mean missing features or an incorrect layout; transposing until code runs can silently change the computation. Here, rows and columns need to swap:
+The left tensor's column count must equal the right tensor's row count. If a matrix stores the intended axes in the opposite order, transpose it. A shape error can also mean missing features or an incorrect layout. Transposing until code runs can silently change the computation. Here, rows and columns need to swap:
 
 <CodeBlock language="typescript" title="matmul.ts">
 {`// weights: [3, 2], input: [3, 1]
@@ -193,18 +194,18 @@ const input = tf.tensor2d([[1], [1], [1]]);               // [3, 1]
 // weights.matMul(input) would throw:
 //   [3, 2] × [3, 1]: inner dims 2 ≠ 3. No deal.
 
-// transpose() flips [3, 2] → [2, 3]. Now the rule is satisfied:
-//   [2, 3] × [3, 1] → [2, 1] ✓
+// transpose() flips [3, 2] to [2, 3]. Now the rule is satisfied:
+//   [2, 3] × [3, 1] to [2, 1] ✓
 const output = tf.tidy(() => weights.transpose().matMul(input));
 output.print();
-// [[9],     ← 1+3+5: first column of weights, summed against input
-//  [12]]    ← 2+4+6: second column
+// [[9],: 1+3+5: first column of weights, summed against input
+//  [12]]: 2+4+6: second column
 tf.dispose([weights, input, output]);`}
 </CodeBlock>
 
 A dense layer, which you will build next, starts with `matMul(input, weights) + bias`. The same shape rule will help you check its inputs and weights. The time-based models in module 6 use it too.
 
-<DerivationDrawer summary="Why rows into columns: where the inner dimension comes from">
+<DerivationDrawer summary="Why the inner dimensions must match">
 A matrix turns a list of numbers into another list, one weighted sum per output. Its shape says which sizes: a `[2, 3]` matrix reads three numbers and emits two.
 
 Use `weights.transpose()` from above: `[[1, 3, 5], [2, 4, 6]]`. Try inputs that select one column at a time:
@@ -233,7 +234,7 @@ feeding another capture to the console.
 
 <RecallPrompt
   question="Check both the dimensions and the meaning of a matrix multiplication."
-  answer="The rule is [m, n] x [n, p] produces [m, p]. Check what each axis represents. Transpose only when those axes are reversed; otherwise fix the input layout or feature count. Matching dimensions alone does not prove the multiplication means what you intended."
+  answer="The rule is [m, n] x [n, p] produces [m, p]. Check what each axis represents. Transpose only when the input has those axes in the opposite order. Otherwise fix the input layout or feature count. Matching dimensions alone does not prove the multiplication means what you intended."
   checks={[
     {
       "kind": "shape",
@@ -242,7 +243,7 @@ feeding another capture to the console.
         2,
         4
       ],
-      "hint": "The inner dimensions must match; the outer dimensions form the result.",
+      "hint": "The inner dimensions must match. The outer dimensions form the result.",
       "explanation": "[m, n] times [n, p] produces [m, p], so this result is [2, 4]."
     },
     {
@@ -250,8 +251,8 @@ feeding another capture to the console.
       "question": "What should you check before transposing a matrix to fix a mismatch?",
       "options": [
         {
-          "text": "Whether its axes are reversed relative to the intended operation.",
-          "feedback": "Transpose when the intended axes are reversed. Otherwise fix the input layout or feature count."
+          "text": "Whether it stores the axes in the opposite order to the intended operation.",
+          "feedback": "Transpose when the input has the intended axes in the opposite order. Otherwise fix the input layout or feature count."
         },
         {
           "text": "Whether transposing makes any two dimensions match.",
@@ -263,25 +264,25 @@ feeding another capture to the console.
         }
       ],
       "correctIndex": 0,
-      "explanation": "Transpose when the intended axes are reversed. Otherwise fix the input layout or feature count."
+      "explanation": "Transpose when the input has the intended axes in the opposite order. Otherwise fix the input layout or feature count."
     }
   ]}
 />
 
 <LessonRecap
   whatYouLearned={[
-    "mul multiplies matching positions; matMul multiplies rows into columns. A shape error identifies the operation and the dimensions that did not match.",
-    "Element-wise operations apply matching-position arithmetic on the selected backend. Broadcasting requires aligned dimensions to be equal or one to be 1.",
-    "Matrix multiplication follows [m,n] x [n,p] = [m,p]. Transpose reverses axes; use it only when that preserves the intended computation.",
+    "mul multiplies matching positions. matMul multiplies rows into columns. A shape error identifies the operation and the dimensions that did not match.",
+    "Element-wise operations calculate with values at matching positions. For broadcasting, compare shapes from right to left: each pair of sizes must match, or one must be 1.",
+    "Matrix multiplication follows [m,n] x [n,p] = [m,p]. Transpose reverses axes. Use it only when that preserves the intended computation.",
     "A dense layer starts with a weighted sum, commonly input.matMul(weights).add(bias), then applies its activation."
   ]}
-  bridge="Array.map calls a JavaScript function per element. tf.add dispatches a tensor operation to a selected backend; measure whether that backend helps your workload."
+  bridge="Array.map calls a JavaScript function for each value. tf.add runs the calculation through a backend such as the CPU or GPU. Measure it on your data before assuming it will be faster."
   youCanNow="Add and multiply tensor values, use broadcasting, and check the shapes and axis meanings in a matrix multiplication."
 />
 
 <Epilogue>
 
-Demir wires the two passes together, add to merge, scale to amplify, and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
+Demir averages the two passes, applies the gain, and sends an hour of combined readings to Nazari's console. She watches it scroll for a long moment.
 
 <Dialogue speaker="Chief Nazari">
 There. Every minute or two, the same ripple across all sixty-four channels at once. Coordinated. Run it again. And Ensign, if this is a math error, I'm taking it out of your coffee ration.

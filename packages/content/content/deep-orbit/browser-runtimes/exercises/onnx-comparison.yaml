@@ -1,16 +1,16 @@
 slug: onnx-comparison
 lessonSlug: onnx-runtime-web
-title: "Compare Runtime Outputs and Timing"
+title: "Runtime outputs and timing"
 instructions: |
   Build `compareRuntimes(model, modelPath, signal)`. Send the same three numbers through both runtimes as a [1, 3] float32 input. Return `{ tfjsMs, onnxMs, outputsAgree }`.
 
-  The TensorFlow.js model is already loaded. Create the ONNX session with `executionProviders: ['wasm']`. Keep loading outside the timers. For each prediction, read `performance.now()` before it starts and after its output has been awaited.
+  The exercise supplies a loaded TensorFlow.js model. Create the ONNX session with `executionProviders: ['wasm']`. Keep loading outside the timers. For each prediction, read `performance.now()` before it starts and after awaiting its output.
 
-  Set `outputsAgree` to true when the two returned scores differ by at most 0.0001. Compare the actual outputs rather than calculating the answer yourself.
+  Set `outputsAgree` to true when the two returned scores differ by at most 0.0001. Compare the scores that the two runtimes return.
 
-  Dispose your TensorFlow.js input and prediction. Release the ONNX session after use, even if a prediction fails. Keep the supplied model alive; it belongs to the caller.
+  Dispose your TensorFlow.js input and prediction. Release the ONNX session after use, even if a prediction fails. Keep the supplied model alive. It belongs to the caller.
 
-  The ONNX side and clock are simulated for these tests. Use the real lab for repeated speed measurements on a supported device.
+  These tests simulate the ONNX side and clock. Use the real lab for repeated speed measurements on a supported device.
 
 starterCode: |
   import * as ort from 'onnxruntime-web';
@@ -113,10 +113,10 @@ testCode: |
       const rule = ' has to be the gap between two readings of performance.now() taken around that call. The starter reports a placeholder instead, and a placeholder is not a measurement.';
       expect(Number.isFinite(out.tfjsMs) && out.tfjsMs > 0 && out.tfjsMs % step === 0, 'tfjsMs' + rule).toBe(true);
       expect(Number.isFinite(out.onnxMs) && out.onnxMs > 0 && out.onnxMs % step === 0, 'onnxMs' + rule).toBe(true);
-      expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or the two sides were fed different inputs.').toBe(true);
+      expect(out.outputsAgree, 'Both runtimes are executing the same network on the same three numbers, so the two outputs differ only by float32 rounding. A false here means one side never ran, or your code sent different inputs to the two sides.').toBe(true);
       recordResult({
-        kind: 'table', title: 'Your comparison contract check',
-        summary: 'The ONNX session and clock are simulated. Timer intervals below are generated fixture values, not measured latency. Use the real lab for performance comparisons.',
+        kind: 'table', title: 'Your runtime comparison',
+        summary: 'The test simulates the ONNX session and clock. These times describe that simulation. They measure no real runtime. Use the real lab for performance comparisons.',
         columns: ['Outputs agree', 'TFJS simulated interval', 'ONNX simulated interval'],
         rows: [[out.outputsAgree, out.tfjsMs, out.onnxMs]],
       });
@@ -180,18 +180,18 @@ testCode: |
         let failed = false;
         try { await report(model, sentinel, SIGNAL); }
         catch (error) { failed = error.message === 'inference failure fixture'; }
-        expect(failed, 'Preserve an inference failure instead of fabricating a score.').toBe(true);
+        expect(failed, 'Propagate the inference failure so the caller can handle it.').toBe(true);
         expect(released, 'Release the session when run() rejects too.').toBe(true);
       } finally {
         ort.InferenceSession.create = orig;
         model.dispose();
       }
       expect(released, 'Release the session after reading its result.').toBe(true);
-      expect(sentinelCalls, 'compareRuntimes never opened a session for the path it was handed.').toBeGreaterThanOrEqual(1);
-      expect(options && options.executionProviders, 'This exercise fixes ONNX to WASM. Create the session with that provider; real comparisons must also report the TFJS backend and distinguish runtime effects from backend effects.').toEqual(['wasm']);
-      expect(feeds, 'The session was created but never run, so the ONNX side produced nothing to compare.').not.toBe(null);
+      expect(sentinelCalls, 'compareRuntimes never opened a session for the supplied path.').toBeGreaterThanOrEqual(1);
+      expect(options && options.executionProviders, 'This exercise fixes ONNX to WASM. Create the session with that provider. Real comparisons must also report the TFJS backend and distinguish runtime effects from backend effects.').toEqual(['wasm']);
+      expect(feeds, 'Your code created the session but never ran it, so the ONNX side produced nothing to compare.').not.toBe(null);
       const fed = feeds[Object.keys(feeds)[0]];
-      const sameInput = 'Both runtimes have to see the same input, as one [1, 3] float32 batch carrying the three numbers you were given, in order.';
+      const sameInput = 'Both runtimes have to see the same input, as one [1, 3] float32 batch carrying the three supplied numbers in order.';
       expect(fed.type, sameInput).toBe('float32');
       expect(fed.dims[0], sameInput).toBe(1);
       expect(fed.dims[1], sameInput).toBe(3);
@@ -199,7 +199,7 @@ testCode: |
       expect(fed.data[0], sameInput).toBeCloseTo(SIGNAL[0], 5);
       expect(fed.data[1], sameInput).toBeCloseTo(SIGNAL[1], 5);
       expect(fed.data[2], sameInput).toBeCloseTo(SIGNAL[2], 5);
-      expect(out.outputsAgree, 'This test changed the ONNX output so it differs from TensorFlow.js. Compare the value returned by run(), not a score calculated by your own code.').toBe(false);
+      expect(out.outputsAgree, 'This test changed the ONNX output so it differs from TensorFlow.js. Compare the value returned by run(). This test deliberately changes that value.').toBe(false);
     });
   });
 estimatedMinutes: 15

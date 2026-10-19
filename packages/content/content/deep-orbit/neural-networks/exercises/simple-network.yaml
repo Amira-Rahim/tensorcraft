@@ -1,6 +1,6 @@
 slug: simple-network
 lessonSlug: building-a-network
-title: "What a Compiled Network Knows"
+title: "Network setup and starting predictions"
 instructions: |
   Build two models so you can compare their scores before and after training.
 
@@ -15,8 +15,7 @@ instructions: |
      { epochs: 50, batchSize: 16 })`. Run it on the same readings again and
      save its scores as the number array `trainedSweep`.
 
-  Leave the second model untrained for comparison. Rows 0-59 are generated
-  calm examples; rows 60-119 are flagged examples. Report the scores you get.
+  Leave the second model untrained for comparison. The generator puts calm examples in rows 0-59 and flagged examples in rows 60-119. Report the scores you get.
   The tests check the models, saved values, and training settings. They do not
   require a particular accuracy or score gap.
 
@@ -40,8 +39,8 @@ starterCode: |
     };
   });
 
-  // Called twice below, so the two networks are independent draws of one
-  // architecture.
+  // Called twice below to create two models with the same layers
+  // but independently initialized weights.
   function buildClassifier() {
     const model = tf.sequential();
     // Add the three layers here
@@ -110,7 +109,7 @@ testCode: |
       expect(
         Array.isArray(value),
         name +
-          ' is not an array of numbers. Read the prediction tensor out with dataSync() and copy it into a plain array, so the answers can be compared reading by reading.',
+          ' is not an array of numbers. Read the prediction tensor out with dataSync() and copy it into a plain array, so the checks can compare the answers reading by reading.',
       ).toBe(true);
       expect(
         value.length,
@@ -134,35 +133,35 @@ testCode: |
       ).toEqual([null, 1]);
       expect(
         model.countParams(),
-        'The parameter total is off, so one of the widths is. The first layer is priced by the eight features Farah specced.',
+        'The parameter count is wrong. Check all layer widths and use eight input features for the first layer.',
       ).toBe(529);
     });
 
     it('compiles with Adam, binary crossentropy and the accuracy metric', () => {
       expect(
         model.optimizer,
-        'Nothing has been compiled yet. compile() is the call that attaches the optimizer and the loss.',
+        'Your code has not compiled the model. compile() is the call that attaches the optimizer and the loss.',
       ).toBeDefined();
       expect(model.optimizer.getClassName()).toBe('Adam');
       expect(model.loss).toBe('binaryCrossentropy');
       expect(
         model.metrics || [],
-        'Add accuracy to the compile metrics. Metrics change the training log, not the rule used to update the weights.',
+        'Add accuracy to the compile metrics. Metrics add measurements to the training log. The loss and optimizer still determine weight updates.',
       ).toContain('accuracy');
     });
 
-    it('draws the second network separately, so there is something to compare against', () => {
+    it('creates a separate second model for comparison', () => {
       expect(
         second === model,
         'Call buildClassifier() twice to create independent models. A second name for the trained model cannot act as the untrained comparison.',
       ).toBe(false);
       expect(
         second.layers.length,
-        'The second network was never built out, so there are three layers on one of these and not the other.',
+        'The second network lacks layers, so there are three layers on one of these and not the other.',
       ).toBe(3);
       expect(
         second.optimizer,
-        'The second network was never compiled. buildClassifier() compiles what it returns, so both draws come back ready.',
+        'Compile both models inside buildClassifier(), including the one kept untrained for comparison.',
       ).toBeDefined();
     });
 
@@ -179,7 +178,7 @@ testCode: |
           spread,
           'Layer ' +
             (index + 1) +
-            ' holds a constant kernel. This exercise asks for the default random initialization. Identically initialized units can remain symmetric when the surrounding weights and updates are symmetric too; a constant kernel in one layer alone does not prove that they can never diverge.',
+            ' holds a constant kernel. This exercise asks for the default random initialization. Identically initialized units can remain symmetric when the surrounding weights and updates are symmetric too. A constant kernel in one layer alone does not prove that they can never diverge.',
         ).toBeGreaterThan(1e-6);
         const biases = Array.from(weights[1].dataSync());
         const largestBias = Math.max.apply(
@@ -192,12 +191,12 @@ testCode: |
           largestBias,
           'The biases in layer ' +
             (index + 1) +
-            ' did not start at zero. The dense layer defaults to zero bias and random kernel weights. Random kernels supply different initial computations; random biases are not required here. If this network was trained, that is why they moved: the starting weights are on the network that stays out of fit().',
+            ' did not start at zero. The dense layer defaults to zero bias and random kernel weights. Random kernels supply different initial computations. Random biases are not required here. If you trained this network, training explains the changed values: the starting weights are on the network that stays out of fit().',
         ).toBe(0);
       });
     });
 
-    it('keeps the starting weights, and sweepOne is the first network answering from them', () => {
+    it('saves the starting weights and the first model’s untrained scores', () => {
       expect(
         Array.isArray(initialWeights),
         "initialWeights is not an array. Read the first network's weights with getWeights() before fit() runs, and copy each tensor into a plain array with Array.from(w.dataSync()).",
@@ -261,19 +260,19 @@ testCode: |
     it('runs the training on the first network and leaves the second one alone', () => {
       expect(
         model.optimizer,
-        'Neither network is compiled, so neither one owns an optimizer and fit() has nothing to run with.',
+        'Neither network has an optimizer. Call compile() on both before training one of them.',
       ).toBeDefined();
       expect(
         second.optimizer,
-        'The second network was never compiled, so there is no way to tell whether it was left out of the training run.',
+        'Compile the second network too, then leave it out of training so the comparison starts with the same setup.',
       ).toBeDefined();
       expect(
         model.optimizer.iterations,
-        'The optimizer on the first network applied no updates, so fit() never ran on it. compile() attaches the optimizer; it does not use it.',
+        'The optimizer on the first network applied no updates, so fit() never ran on it. compile() attaches the optimizer. It does not use it.',
       ).toBeGreaterThan(0);
       expect(
         second.optimizer.iterations,
-        'The second network was trained too, so there is no control left. It has to stay exactly as it was drawn.',
+        'Keep the second model untrained so you can compare its initial predictions with the trained model.',
       ).toBe(0);
       expect(
         maxDiff(sweepOf(second), readSweep('sweepTwo', sweepTwo)),
@@ -295,7 +294,7 @@ testCode: |
       const selectedRows = [...Array.from({ length: 8 }, (_, i) => i), ...Array.from({ length: 8 }, (_, i) => i + 60)];
       recordResult({
         kind: 'table', title: 'Scores from your before-and-after run',
-        summary: 'Sixteen selected rows from the supplied 120-row synthetic rehearsal, eight from each label group. These are training rows, not an evaluation of new data.',
+        summary: 'Sixteen selected rows from the supplied 120-row synthetic rehearsal, eight from each label group. These rows belong to training. Evaluate on separate data to check how the model handles new examples.',
         columns: ['Row ID', 'Label', 'First model before training', 'Second model untrained', 'First model after training'],
         rows: selectedRows.map((i) => [i, labels.dataSync()[i], sweepOne[i], sweepTwo[i], trainedSweep[i]]),
       });

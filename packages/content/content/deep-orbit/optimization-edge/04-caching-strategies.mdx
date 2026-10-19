@@ -10,10 +10,10 @@ scene:
 estimatedMinutes: 13
 difficulty: intermediate
 context:
-  narrative: "Demir wants to reuse predictions for repeated inputs instead of running the model again. Nazari asks him which model he timed."
+  narrative: "Demir wants to reuse earlier predictions when an input repeats. Nazari asks him which model he timed."
   speaker: "Ensign Demir"
 concept:
-  explanation: "A valid cache hit can reuse a previous prediction instead of running the model again. The hard part is deciding when two inputs count as the same."
+  explanation: "A valid cache hit can reuse a previous prediction and skip a model run. The hard part is deciding when two inputs count as the same."
   bridge:
     jsTitle: "Memoized query cache"
     jsCode: "cache.get(key) ?? (await db.query(sql, args)) // cache-first"
@@ -79,7 +79,7 @@ skillAxes: [deployment]
 ---
 
 
-> **INFERENCE LOG · REPEAT-PATTERN CHECK** · same cosmic-background signature, classified 214 times since midnight. Same tensor in, same verdict out. 214 model runs paid for one answer.
+> **INFERENCE LOG, REPEAT-PATTERN CHECK**, same cosmic-background signature, classified 214 times since midnight. Same tensor in, same verdict out. 214 model runs paid for one answer.
 
 <StoryPassage>
 
@@ -88,7 +88,7 @@ That log line is 213 model runs the dashboard never needed. It reminds Demir of 
 </StoryPassage>
 
 <Dialogue speaker="Ensign Demir">
-Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal costs a Map lookup instead of a forward pass.
+Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? Round the features, key on the rounded values, and the second identical signal needs only a Map lookup.
 </Dialogue>
 
 <StoryPassage>
@@ -105,7 +105,7 @@ In this story, the language component takes 45 ms and the classifier takes 0.035
 
 Help Demir separate useful reuse from stale answers. Build the cache, count the model calls it avoids, then audit which saved results the next watch can still use.
 
-<LearningObjectives objectives={["Wrap a model in a cache-first predict that skips inference on a hit", "Hash model inputs for cache key generation", "Compare exact and approximate keys, age limits (TTL), and clearing results after a model change", "Measure cache hit rate and its impact on effective inference latency"]} />
+<LearningObjectives objectives={["Check the cache before running the model, and reuse a matching result", "Hash model inputs for cache key generation", "Compare exact and approximate keys, age limits (TTL), and clearing results after a model change", "Measure cache hit rate and its impact on effective inference latency"]} />
 
 <BossBeat
   beatId="deep-orbit-cache-policy"
@@ -113,7 +113,7 @@ Help Demir separate useful reuse from stale answers. Build the cache, count the 
   options={[
     {
         "label": "cooperate",
-        "display": "Disable reuse until the key and device timings are checked",
+        "display": "Disable reuse until the crew checks the key and device timings",
         "consequence": "Every request runs inference. That avoids cache collisions, but Nazari must keep a longer processing queue under observation during the check."
     },
     {
@@ -128,7 +128,7 @@ Help Demir separate useful reuse from stale answers. Build the cache, count the 
     },
     {
         "label": "dominant",
-        "display": "Use exact inputs, model and preprocessing versions; bound entries",
+        "display": "Use exact inputs and versioned keys, with a limit on saved entries",
         "consequence": "Demir builds a versioned exact key and a 64-entry LRU. More near-duplicates miss the cache, and he must measure whether the remaining reuse pays for the lookup cost."
     }
 ]}
@@ -148,7 +148,7 @@ Help Demir separate useful reuse from stale answers. Build the cache, count the 
   private misses = 0;
 
   // The caller supplies the key function. Rounding can make similar inputs
-  // share an entry. Finer rounding gets fewer hits; coarser rounding can
+  // share an entry. Finer rounding gets fewer hits. Coarser rounding can
   // merge inputs that need different predictions. Build the key in the
   // challenge and preserve every value's position.
   constructor(
@@ -177,7 +177,7 @@ Help Demir separate useful reuse from stale answers. Build the cache, count the 
       return null;
     }
     // Map keeps insertion order. Delete and re-set a hit to make it newest.
-    // Otherwise eviction would use arrival order, not recent use.
+    // Otherwise eviction would follow arrival order and could discard a recently used entry.
     this.cache.delete(key);
     this.cache.set(key, entry);
     this.hits++;
@@ -224,7 +224,7 @@ function cachedClassify(signal: number[]): string {
 
 // Illustrative mean: hitRate * hit + (1 - hitRate) * miss.
 // A real miss includes lookup, key construction, inference and insertion.
-// The following numbers are supplied scenario inputs, not lab measurements. A
+// The story supplies the following fictional numbers. A
 // classification-only time is 0.035 ms, and assumed hit time is 0.0013 ms.
 // Ignoring miss-path overhead gives an optimistic estimate:
 const optimisticMs = 0.4 * 0.0013 + 0.6 * 0.035;
@@ -239,7 +239,7 @@ console.log(optimisticMs.toFixed(4));  // 0.0215
 // keys cover every input and generation setting. Measure the complete path.`}
 </CodeBlock>
 
-This example assumes immutable string verdicts from one fixed model and preprocessing version. For object or array results, copy them on storage and retrieval or enforce immutability. The full exercise tests returned-array mutation.
+This example stores strings from one fixed model and preprocessing version. JavaScript strings are immutable. For object or array results, copy them on storage and retrieval or enforce immutability. The exercise checks that callers can change a returned array without changing the cached result.
 
 This cache stores plain verdicts, so evicting an entry does not require tensor disposal. Caching tensors is possible but needs explicit ownership: dispose them on eviction and prevent callers from disposing shared handles. Otherwise later hits can fail with `Tensor is disposed.`
 
@@ -263,11 +263,11 @@ The result shows the prediction from the first call beside the cached reply, wit
 
 <StoryPassage>
 
-The next morning, a bridge console shows a cached classification that disagrees with the new model. Help Demir audit the entries. A change to the model or preprocessing makes old results stale, even if they were saved recently. Other entries must still be within the age limit, or TTL.
+The next morning, a bridge console shows a cached classification that disagrees with the new model. Help Demir audit the entries. A change to the model or preprocessing makes old results stale, even if the cache saved them recently. Other entries must still be within the age limit, or TTL.
 
 </StoryPassage>
 
-Your audit returns a list the watch can act on: entries to serve and entries to refresh. Check the version and age beside each decision. This audit handles stale entries; it does not fix collisions caused by rounded input keys.
+Your audit returns a list the watch can act on: entries to serve and entries to refresh. Check the version and age beside each decision. This audit handles stale entries. It does not fix collisions caused by rounded input keys.
 
 <Exercise slug="incident-stale-verdict" />
 
@@ -300,7 +300,7 @@ Your audit returns a list the watch can act on: entries to serve and entries to 
       "question": "Why can a recently stored prediction still be wrong for a request?",
       "options": [
         {
-          "text": "Fresh entries are guaranteed correct until they expire.",
+          "text": "Fresh entries always give correct predictions until they expire.",
           "feedback": "Recency does not establish that the cached result matches the current input and pipeline."
         },
         {
@@ -319,8 +319,8 @@ Your audit returns a list the watch can act on: entries to serve and entries to 
 />
 
 <LessonRecap
-  whatYouLearned={["A cache avoids inference on a hit. Measure whether saved work exceeds lookup and maintenance costs.", "Rounded keys deliberately reuse predictions for different inputs. Test the resulting errors.", "Bound the cache and expire entries. Model and preprocessing changes need versioned keys or invalidation.", "Store plain results when possible; cached tensors need explicit ownership and disposal."]}
-  bridge="Query and inference caches can both use exact keys. This exercise rounds inference inputs deliberately; validate that approximation and invalidate entries when model or preprocessing versions change."
+  whatYouLearned={["A cache avoids inference on a hit. Measure whether saved work exceeds lookup and maintenance costs.", "Rounded keys deliberately reuse predictions for different inputs. Test the resulting errors.", "Bound the cache and expire entries. Model and preprocessing changes need versioned keys or invalidation.", "Store plain results when possible. Cached tensors need explicit ownership and disposal."]}
+  bridge="Query and inference caches can both use exact keys. This exercise rounds inference inputs deliberately. Validate that approximation and invalidate entries when model or preprocessing versions change."
   youCanNow="Cache predictions with rounded input keys, count saved model calls, and check stored results against their version and age limit."
 />
 
@@ -337,11 +337,11 @@ The second job has waited at priority three since the anomaly sprint. It replays
 Demir checks the retained cache log for the anomaly. It contains no matching hit.
 
 <Dialogue speaker="Ensign Demir">
-No anomaly cache hits in this log. That tells me the retained keys did not match; it doesn't tell me whether the source repeats. I'll compare the raw captures before drawing that line.
+No anomaly cache hits in this log. That tells me the retained keys did not match. It doesn't tell me whether the source repeats. I'll compare the raw captures before drawing that line.
 </Dialogue>
 
 Sixteen days to the relay slot. He records the model and preprocessing versions beside the captures, then leaves the cache policy in the handover. In his bunk he keeps doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.
 
-*Mission scene: the build size, load result and probe timings above are story values, not measurements.*
+*Mission scene: the build size, load result and probe timings above belong to the fictional story.*
 
 </Epilogue>

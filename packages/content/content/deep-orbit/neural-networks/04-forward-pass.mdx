@@ -21,9 +21,9 @@ concept:
     mlTitle: "Forward Pass"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: intuition
-    breaks: "DOM events have capture, target, and bubbling phases; handlers may stop propagation. A forward pass follows a model's computation graph to produce outputs. The useful overlap is staged processing, not a shared direction or event-routing mechanism."
+    breaks: "DOM events have capture, target, and bubbling phases. Handlers may stop propagation. A forward pass follows a model's computation graph to produce outputs. Both process information in stages. A model graph and DOM event routing follow different rules."
 consequence:
-  narrative: "Rough, untrained numbers, but they emerge: the pipeline works end to end. Now the network needs training."
+  narrative: "The network returns scores. Demir has fixed the input shape. Now he needs to train the model."
 hints:
   - level: nudge
     content: "A forward pass is model.predict(input): data flows through the layers and comes out as a prediction tensor."
@@ -41,7 +41,7 @@ skillAxes: [model_arch]
 
 <StoryPassage>
 
-At 0940, Demir's first network demo stops on a shape error. The model expects batches shaped `[rows, 3]`; he passes a flat `[3]` tensor. In TFJS 4.22.0, the input adapter expands that vector to `[3, 1]`, which still does not match. Three features have become three rows of one feature.
+At 0940, Demir's first network demo stops on a shape error. The model expects batches shaped `[rows, 3]`. He passes a flat `[3]` tensor. In TFJS 4.22.0, the input adapter expands that vector to `[3, 1]`, which still does not match. Three features have become three rows of one feature.
 
 </StoryPassage>
 
@@ -57,7 +57,7 @@ The architecture is fine. The demo wasn't. Run it again, properly this time. Eve
 
 You will fix the input shape so the model can process one reading or a batch of readings.
 
-<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Give a flat reading the batch axis the layer expects, which is the mismatch that killed the demo"]} />
+<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Add the missing batch axis that caused the demo to fail"]} />
 
 ## Data Flows Forward
 
@@ -79,9 +79,9 @@ const sensorReading = tf.tensor2d([[0.5, 0.8, 0.2]]);  // shape: [1, 3]
 // predict() runs the full forward pass
 const prediction = model.predict(sensorReading) as tf.Tensor;
 console.log(prediction.shape);     // [1, 1]
-console.log(prediction.dataSync()); // untrained score; the value depends on initialization
+console.log(prediction.dataSync()); // untrained score. The value depends on initialization
 
-// Shape flow: [1, 3] → [1, 32] → [1, 16] → [1, 1]. Only the last axis changes.
+// Shape flow: [1, 3] to [1, 32] to [1, 16] to [1, 1]. Only the last axis changes.
 
 // The feed hands over one reading at a time, flat. Give it the axis:
 const flat = tf.tensor1d([0.5, 0.8, 0.2]); // shape: [3], which predict() rejects
@@ -89,7 +89,7 @@ const batched = flat.expandDims(0);        // shape: [1, 3]: a stack of one
 const singlePrediction = model.predict(batched) as tf.Tensor; // runs`}
 </CodeBlock>
 
-This model expects a batch axis, even for one reading: `[1, 3]`, not `[3]`. The first number counts readings; the second counts features.
+This model expects a batch axis even for one reading, giving shape `[1, 3]`. A `[3]` tensor lacks that axis. The first number counts readings. The second counts features.
 
 Use `expandDims(0)` to add a leading axis to the flat reading. `reshape([1, 3])` also works when you know its width. Before changing a shape, compare what the error expected with what the model received. Here, the missing batch axis caused the failure.
 
@@ -97,40 +97,40 @@ Use `expandDims(0)` to add a leading axis to the flat reading. `reshape([1, 3])`
 Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
 </Dialogue>
 
-## The Same Pass, by Hand
+## Calculating a forward pass
 
 `predict()` runs the same calculations you have learned. `getWeights()` returns six tensors for these three layers: a weight matrix and a bias for each layer. Multiply by the weights, add the bias, apply the activation, then pass the result to the next layer.
 
 <CodeBlock language="typescript" title="by-hand.ts">
 {`// Continues forward-pass.ts: same model, same reading.
 tf.tidy(() => {
-  // Read the model's existing weights; do not change or dispose the model.
+  // Read the model's existing weights. Do not change or dispose the model.
   const [w1, b1, w2, b2, w3, b3] = model.getWeights();
   const h1 = sensorReading.matMul(w1).add(b1).relu();  // [1, 32]
   const h2 = h1.matMul(w2).add(b2).relu();             // [1, 16]
   const out = h2.matMul(w3).add(b3).sigmoid();         // [1, 1]
   console.log(h1.shape, h2.shape, out.shape);
   console.log(out.sub(prediction).abs().max().dataSync()[0]);
-  // Check a numerical tolerance; fused kernels/backends may round differently.
+  // Check a numerical tolerance. Fused kernels/backends may round differently.
 });
 tf.dispose([sensorReading, prediction, flat, batched, singlePrediction]);
 model.dispose();`}
 </CodeBlock>
 
-These operations express the same computation for this dense network. Expect agreement within a suitable floating-point tolerance, not bit-for-bit equality on every backend. `predict()` manages its internal temporaries and returns output tensors that the caller owns. A hand-written chain also needs temporary-tensor cleanup, which the `tf.tidy()` block supplies.
+These operations express the same computation for this dense network. Compare results using a suitable floating-point tolerance. Backends can round the same calculation differently. `predict()` manages its internal temporaries and returns output tensors that the caller owns. A hand-written chain also needs temporary-tensor cleanup, which the `tf.tidy()` block supplies.
 
 ## Challenge
 
-Get the demo answering again. Run the supplied batch through your model,
+Get Demir’s demo running again. Run the supplied batch through your model,
 then make one flat reading fit the same input contract. Inspect the actual
 inputs and unit outputs from your forward pass. Random starting weights
-make this a wiring check, not evidence that the predictions are useful.
+let you check the connections. Useful predictions require training and evaluation.
 
 <Exercise slug="forward-pass" />
 
 <RecallPrompt
   question="The model input shape is [null, 8]. You have one example with eight features."
-  answer="TFJS throws a shape mismatch error. The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: use tensor.reshape([1, 8]) or tensor.expandDims(0)."
+  answer="TFJS throws a shape mismatch error. The first dimension is the batch axis. Pass a single sample of 8 features as shape [1, 8] using tensor.reshape([1, 8]) or tensor.expandDims(0)."
   checks={[
     {
       "kind": "choice",
@@ -159,7 +159,7 @@ make this a wiring check, not evidence that the predictions are useful.
         1,
         8
       ],
-      "hint": "The first dimension counts examples; the second counts features.",
+      "hint": "The first dimension counts examples. The second counts features.",
       "explanation": "Use [1, 8], for example with reshape([1, 8]) or expandDims(0)."
     }
   ]}
@@ -167,11 +167,11 @@ make this a wiring check, not evidence that the predictions are useful.
 
 <LessonRecap
   whatYouLearned={[
-    "The forward pass flows data through each layer in order; model.predict() runs this in one call and returns the output tensor.",
-    "These dense layers expect a batch dimension even for one sample: shape [1, features] instead of [features].",
-    "A shape mismatch fails loudly, and the message names both the shape the layer wanted and the shape it got. expandDims(0) gives a flat reading the batch axis the layer asked for."
+    "The forward pass flows data through each layer in order. Model.predict() runs this in one call and returns the output tensor.",
+    "These dense layers expect a batch dimension even for one sample: shape [1, features].",
+    "A shape error shows the shape the layer expected and the one it received. expandDims(0) adds a batch axis to a flat reading."
   ]}
-  bridge="Event propagation routes events through DOM phases. A forward pass evaluates a model graph; the shared idea is staged processing, not identical control flow."
+  bridge="Event propagation routes events through DOM phases. A forward pass evaluates a model graph. Both process information in stages, following their own control-flow rules."
   youCanNow="Run a forward pass with model.predict(), read the shapes it produces, and give a single flat reading the batch axis the layer expects."
 />
 

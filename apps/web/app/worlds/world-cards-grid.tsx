@@ -254,7 +254,7 @@ function WorldCard({ card, variant, onNotify }: WorldCardProps) {
                 <span className="text-text-primary font-bold">
                   {card.modulesCount}
                 </span>{" "}
-                modules ·{" "}
+                modules,{" "}
                 <span className="text-text-primary font-bold">
                   {card.lessonsCount}
                 </span>{" "}
@@ -276,7 +276,7 @@ function WorldCard({ card, variant, onNotify }: WorldCardProps) {
               className="font-mono text-xs uppercase tracking-[0.15em] font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               style={{ color: "var(--card-active-primary)" }}
             >
-              Notify me →
+              Notify me
             </button>
           ) : (
             <span
@@ -284,7 +284,7 @@ function WorldCard({ card, variant, onNotify }: WorldCardProps) {
               className="font-mono text-xs uppercase tracking-[0.15em] font-semibold"
               style={{ color: "var(--card-active-primary)" }}
             >
-              {card.owned ? "Continue →" : "Start →"}
+              {card.owned ? "Continue" : "Start"}
             </span>
           )}
         </div>

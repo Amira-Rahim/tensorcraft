@@ -20,7 +20,7 @@ concept:
     mlTitle: "tf.data pipeline"
     mlCode: "tf.data.generator(readRows).shuffle(100).batch(32)"
     tier: structural
-    breaks: "Both APIs can stream data without loading everything at once. tf.data additionally composes transforms, optional shuffling, and batching. Choose those steps for the task: split the archive by time first, then shuffle training rows only when their ordering is not part of the example."
+    breaks: "Both APIs can stream data without loading everything at once. tf.data also lets you transform, shuffle, and batch the records. Choose those steps for the task: split the archive by time first, then shuffle training rows only when their ordering is not part of the example."
 consequence:
   narrative: "The second attempt reads the archive without using more and more memory. ARIA confirms it is ready."
 hints:
@@ -29,7 +29,7 @@ hints:
       A shuffle can only rearrange the items it receives. Decide whether those items should be samples or already formed batches.
   - level: guidance
     content: |
-      Keep sensorGen lazy and pass its dataset into makeDataset. Apply shuffle before batch. Give each label a one-element axis so batching produces a column. Repeated passes need to read all rows again, but random batch memberships need not differ every time.
+      Keep sensorGen lazy and pass its dataset into makeDataset. Apply shuffle before batch. Wrap each label in an array so batching produces a column. The generator must read all rows again on each pass. Random shuffling can produce the same groups more than once.
   - level: solution
     content: |
       let readCount = 0;
@@ -80,9 +80,9 @@ Each reading includes a 33-second raw capture: 256 samples per second across 64 
 Confirmed. I can read the data in small groups without keeping the whole archive in memory. I note that I said the same thing about my parsing rules.
 </Dialogue>
 
-Read each record only when it is needed. This is called **lazy loading**. Limit how much data waits in memory, and dispose of tensors after use. That keeps memory use from growing with the archive.
+With **lazy loading**, the pipeline reads each record when the next stage requests it. Limit how much data waits in memory, and dispose of tensors after use. That keeps memory use from growing with the archive.
 
-A **batch** is a small group of readings processed together. `.batch(32)` makes groups of 32. The model processes one group, then requests the next. Unlike Demir's failed version, the pipeline does not keep the whole archive in memory.
+A **batch** is a small group of readings that the model processes together. `.batch(32)` makes groups of 32. The model processes one group, then requests the next. Unlike Demir's failed version, the pipeline does not keep the whole archive in memory.
 
 Demir needs a loader he can trust before opening the full archive again.
 Use traceable row IDs to check that it reads on demand, keeps features with
@@ -90,15 +90,14 @@ their labels, and leaves later readings out of training.
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle independent training examples while preserving split membership", "Split data into training and validation sets"]} />
 
-## Read one sample when it is requested
+## Reading samples on demand
 
 Use the exercise's 16-row archive stand-in. Each row has three **features**
 (numbers the model reads): amplitude, zero-crossing count, and phase. Its
 **label** is the target 0 or 1. These small values stand in for the ship's
 28,800 archived readings and their much larger raw captures.
 
-Keep the archive read inside the generator loop so a record is read only when
-requested. The supplied reader returns one row; no full archive array is needed.
+Keep the archive read inside the generator loop. Each request then reads one row without loading the full archive into an array.
 
 <CodeBlock language="typescript" title="one-sample.ts">
 {`function* rowsById(ids) {
@@ -115,7 +114,7 @@ requested. The supplied reader returns one row; no full archive array is needed.
 Wrap each label in an array, `[row.label]`. Four samples then make feature
 shape `[4, 3]` and label shape `[4, 1]`: four rows, one label per row.
 
-## Shuffle samples, then form batches
+## Shuffling before batching
 
 <CodeBlock language="typescript" title="batch-and-read.ts">
 {`const ids = Array.from({ length: 16 }, (_, i) => i);
@@ -127,16 +126,15 @@ await batches.forEachAsync((group) => {
 </CodeBlock>
 
 Shuffle before batching so individual rows can move between groups. A buffer
-of 10 holds ten rows to choose from. This mixes a limited group rather than
-shuffling all 16 rows at once.
+of 10 holds ten rows to choose from. This mixes the ten rows currently in the buffer. A full shuffle would consider all 16 rows at once.
 
 In the challenge, save each shape in `batchShapes`. Wait for `forEachAsync()`
 to finish before reading that array. This example reads all 16 practice rows
 to show batching. It does not train a model.
 
-## Keep the future outside training
+## Training and validation periods
 
-For future readings, assign the earlier 12 row IDs to training and the last
+To test predictions on later readings, assign the earlier 12 row IDs to training and the last
 four to validation. Shuffle only inside the training set:
 
 <CodeBlock language="typescript" title="split-membership.ts">
@@ -144,30 +142,30 @@ four to validation. Shuffle only inside the training set:
 const valIdx = Array.from({ length: 4 }, (_, i) => i + 12);`}
 </CodeBlock>
 
-A training pipeline would read only `trainIdx`; validation would read only
+A training pipeline would read only `trainIdx`. Validation would read only
 `valIdx`. Neighboring records can share information, even for a model that
 reads one row at a time. Keep shared captures together and leave a gap when
 windows overlap. Fit preprocessing on training rows only.
 
 <ConceptReference summary="Reference: the full archive, buffers, and split policies">
 
-### From fetch to feed
+### Loading data a page at a time
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A paginated fetch reads the next page when it is requested. A `tf.data` generator also produces values on request. The request may come from the model, a shuffle buffer, or prefetching that prepares records before the model needs them.
+A paginated fetch reads the next page when your code requests it. A `tf.data` generator also produces values on request. The request may come from the model, a shuffle buffer, or prefetching that prepares records before the model needs them.
 
-A **feature** is one measurement the model reads about an example. A **label** is the answer you want it to learn, here 0 or 1 for whether to flag the reading. Learning from labeled examples is called **supervised learning**.
+A **feature** is one measurement the model reads about an example. A **label** is the answer you want it to learn, here 0 or 1 for whether to flag the reading. **Supervised learning** uses these labeled examples to train the model.
 
-The `fitDataset` training API reads `xs` as features and `ys` as labels. Other `tf.data` pipelines can hold different structures. In module 7, the model will learn to reproduce its own input instead of using human-assigned anomaly labels.
+The `fitDataset` training API reads `xs` as features and `ys` as labels. Other `tf.data` pipelines can hold different structures. In module 7, the model will learn to reproduce its own input. That task uses the input itself as the target.
 
-The model does not read the full two-megabyte capture. It reads three summary values: amplitude, a zero-crossing count, and phase. The course calls the zero-crossing feature frequency, but its value is a count, not hertz.
+The model does not read the full two-megabyte capture. It reads three summary values: amplitude, a zero-crossing count, and phase. The course names the zero-crossing feature frequency. Its unit is a count of crossings. Measuring frequency in hertz requires a separate calculation.
 
 These features come from 64 consecutive samples of one channel. At 256 samples per second, that covers a quarter of a second. This sample count is separate from the ship's 64 sensor channels. Module 5 shows the extraction code and adds frequency measurements from the same time window.
 
 For now, `row.features` and `xs` hold three numbers per reading. Fetching the record still reads its large raw capture, so fetch one at a time.
 
-This integration sketch assumes an async `readArchivedSample(id)` function supplied by your application. It returns one record with `features` and `label`; it must not load the entire archive internally. The exercise uses a synchronous in-memory stand-in.
+This integration sketch assumes an async `readArchivedSample(id)` function supplied by your application. It returns one record with `features` and `label`. It must not load the entire archive internally. The exercise uses a synchronous in-memory stand-in.
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -202,11 +200,11 @@ await dataset.forEachAsync((batch) => {
 
 Shuffle independent training examples before batching. Otherwise, neighboring readings stay together, and each update uses a narrow slice of the archive.
 
-A shuffle buffer picks from a small pool of records and replaces each one it sends out. This gives limited mixing, rather than an equally likely ordering of the whole archive. Some records wait longer than others. The buffer size of 100 here is an example setting.
+A shuffle buffer picks from a small pool of records and replaces each one it sends out. This mixes the records currently in the buffer. Some full-archive orderings remain impossible with a small buffer. Some records wait longer than others. The buffer size of 100 here is an example setting.
 
 A buffer large enough for all 28,800 readings would need to load them before sending out the first batch. For a live stream, use a limited buffer.
 
-This archive can be read by ID, so there is another option: shuffle the small list of IDs, then read the records in that order. You get a full shuffle without holding all the records in memory.
+The archive reader accepts a record ID, giving you another option: shuffle the small list of IDs, then read the records in that order. You get a full shuffle without holding all the records in memory.
 
 ### How batch size changes training
 
@@ -222,7 +220,7 @@ const TOTAL = 28_800;  // the whole archive, the same count the generator walks
 const TRAIN_SIZE = Math.floor(TOTAL * 0.8);
 
 // IDs increase with recording time. Assign membership before shuffling.
-// Shuffle only the earlier training IDs; validation stays in time order.
+// Shuffle only the earlier training IDs. Validation stays in time order.
 const trainIdx = tf.util.createShuffledIndices(TRAIN_SIZE);
 const valIdx = Uint32Array.from(
   { length: TOTAL - TRAIN_SIZE }, (_, i) => TRAIN_SIZE + i,
@@ -245,7 +243,7 @@ Choose the split for the job the model will do. We want to predict future readin
 
 Keep examples from the same capture on the same side of the split. If their time windows overlap, leave a gap between training and validation. Module 6 shows this in detail. A random split can work when examples are independent and come from the same kind of data the model will see later.
 
-Assign each row to a set once. Separate `.shuffle().take()` and `.shuffle().skip()` runs can shuffle differently and put a row in both sets. Compute preprocessing statistics from training rows only. Module 3 adds a final test set that is kept out of model selection.
+Assign each row to a set once. Separate `.shuffle().take()` and `.shuffle().skip()` runs can shuffle differently and put a row in both sets. Compute preprocessing statistics from training rows only. In module 3, you will reserve a final test set until after model selection.
 
 
 </ConceptReference>
@@ -263,7 +261,7 @@ trained in this task.
 <DecisionTask id="future-builds" />
 
 <RecallPrompt
-  question="The training split is already fixed. Now prepare its rows for mini-batch training."
+  question="You have chosen the training split. Now prepare its rows for mini-batch training."
   answer="Use shuffle(bufferSize).batch(32). Shuffling first changes which rows go into each batch. Batching first keeps the same neighbors together. Changing their order inside a batch does not change the batch average used for training."
   checks={[
     {
@@ -272,7 +270,7 @@ trained in this task.
       "options": [
         {
           "text": "batch(32).shuffle(bufferSize)",
-          "feedback": "This shuffles already formed batches; it does not change which rows belong to each batch."
+          "feedback": "This shuffles already formed batches. It does not change which rows belong to each batch."
         },
         {
           "text": "batch(32) without shuffling",
@@ -300,7 +298,7 @@ trained in this task.
         },
         {
           "text": "It changes the labels attached to the readings.",
-          "feedback": "Shuffling reorders examples or batches; it should not change their labels."
+          "feedback": "Shuffling reorders examples or batches. It should not change their labels."
         }
       ],
       "correctIndex": 1,
@@ -338,25 +336,25 @@ trained in this task.
 
 <LessonRecap
   whatYouLearned={[
-    "A lazy generator reads one record when it is requested. Do not load the full archive inside the generator.",
-    "Shuffle individual training examples before batching when their order is irrelevant. A streaming buffer mixes a limited window; random access lets you shuffle all record indices.",
-    "For future telemetry, hold out later readings. Shuffle only within training after the split; account for overlapping windows and shared captures at the boundary.",
-    "Keep raw captures and extracted features distinct. This pipeline passes three features per example; it does not send all raw sensor samples into the model."
+    "A lazy generator reads one record per request. Do not load the full archive inside the generator.",
+    "Shuffle individual training examples before batching when their order is irrelevant. A streaming buffer mixes a limited window. Random access lets you shuffle all record indices.",
+    "For future telemetry, hold out later readings. Shuffle only within training after the split. Account for overlapping windows and shared captures at the boundary.",
+    "Keep raw captures and extracted features distinct. This pipeline passes three features per example. It does not send all raw sensor samples into the model."
   ]}
-  bridge="Paged fetching and tf.data can both process data incrementally. Dataset transforms add optional shuffling and batching; prefetching and buffers determine how far the producer reads ahead."
+  bridge="Paged fetching and tf.data both let you read data a little at a time. With tf.data, you can also transform, shuffle, and batch it. Buffers and prefetching control how much data the pipeline reads ahead."
   youCanNow="Build a tf.data pipeline that reads on demand, shuffles rows before batching, and keeps later readings out of training."
 />
 
 <Epilogue>
 
-The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. The tensor count stops growing with the archive. Shuffling indices instead of buffered tensors reduces the retained data further. He allows himself exactly one fist pump, four hours later than he'd planned to.
+The rebuilt pipeline reads eleven days of archived data in four minutes. It works through about twenty-eight thousand readings in batches, and memory use stays steady. Demir saves more memory by shuffling the row IDs and creating tensors only when the pipeline needs them. He raises a fist, four hours later than he'd planned to.
 
 <Dialogue speaker="ARIA" expression="deadpan">
 Pipeline nominal. For reference: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
 </Dialogue>
 
-Demir closes the log and looks at the channel readouts, still stacked at four different scales, the ripple Nazari found buried somewhere under the loudest of them.
+Demir closes the log and looks at the channel readouts. They still use four different scales. The largest readings hide the ripple Nazari found.
 
-*Mission scene: the four-minute rebuild run and ARIA’s nine-second pass are story values, not measured TFJS benchmarks.*
+*Mission scene: the four-minute rebuild run and ARIA’s nine-second pass are fictional timings. Comparing TFJS performance requires a separate benchmark.*
 
 </Epilogue>

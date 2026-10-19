@@ -66,7 +66,7 @@ describe("LearnPage SEO payload", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /Learn Machine Learning with JavaScript/,
+        name: /Machine Learning with JavaScript/,
       }),
     ).toBeInTheDocument();
   });

@@ -53,7 +53,7 @@ export function ProjectExport() {
       setError(
         failure instanceof Error
           ? failure.message
-          : "Project export failed. Retry the same folder; completed snapshots are reused.",
+          : "Project export failed. Retry the same folder. The export reuses completed snapshots.",
       );
     } finally {
       lock.current = false;
@@ -112,9 +112,9 @@ export function ProjectExport() {
           </details>
           <p className="text-sm">
             Included: project files, model artifacts, evaluation JSON and
-            optional src/*.js, *.mjs or *.json helpers. Dependencies, Git
-            metadata and other files are excluded. Check your code and report
-            for personal information or credentials.
+            optional src/*.js, *.mjs or *.json helpers. The export excludes
+            dependencies, Git metadata and other files. Check your code and
+            report for personal information or credentials.
           </p>
           <button
             type="button"
@@ -145,7 +145,7 @@ export function ProjectExport() {
               {target.fullName}
             </a>{" "}
             (
-            {target.private ? "private" : "public; anyone can read these files"}
+            {target.private ? "private" : "public. Anyone can read these files"}
             ). Each changed selection creates a snapshot under
             projects/room-occupancy-v1.
           </p>

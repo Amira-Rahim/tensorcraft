@@ -1,6 +1,6 @@
 slug: quantize-weights
 lessonSlug: quantization
-title: "Quantize a Model and Compare Predictions"
+title: "Quantization and prediction changes"
 instructions: |
   Help Nazari check what smaller weight storage changes. Write `quantizeModel(model, captures)` for the supplied synthetic multiclass Dense classifier and non-empty capture array. Simulate uint8 storage, apply the decoded weights, and compare predictions.
 
@@ -18,7 +18,7 @@ instructions: |
   - `maxWeightError`: the largest absolute difference between an original weight and its decoded value, before float32 rounding.
   - `predictionsChanged`: the number of captures whose largest-output class changes.
 
-  `quantized` is an array of integer codes, not a packed byte file. This function changes the supplied model; the caller owns it. A changed class means the models disagree, not necessarily that the new prediction is wrong. Quantization can also leave weights and predictions unchanged.
+  `quantized` holds integer codes in an array. Packing them into a byte file would require a separate step. This function changes the supplied model. The caller owns it. A changed class means the models disagree. Trusted labels would tell you which prediction is correct. Quantization can also leave weights and predictions unchanged.
 starterCode: |
   interface QuantizedKernel {
     quantized: number[];
@@ -156,7 +156,7 @@ testCode: |
       const report = await quantizeModel(model, captures);
       expect(
         report,
-        'Nothing came back from this call, so there is nothing to read a cost off. quantizeModel returns null until you build it.'
+        'quantizeModel returned nothing. Return the quantized kernels and the requested error and prediction comparisons.'
       ).toBeDefined();
       return report;
     }
@@ -166,7 +166,7 @@ testCode: |
       const report = await reportOf(model, elevenFeatureCaptures(20));
       expect(
         report.kernels.length,
-        'The model holds two kernels and two biases. Only the 2-D kernels are quantized, so only they are reported.'
+        'The model holds two kernels and two biases. Quantize and report only the 2-D kernels.'
       ).toBe(2);
       expect(report.kernels.map((k: any) => k.shape)).toEqual([[11, 12], [12, 5]]);
       for (const kernel of report.kernels) {
@@ -174,7 +174,7 @@ testCode: |
         for (const q of kernel.quantized) {
           expect(
             Number.isInteger(q),
-            'A uint8 holds no fraction. Scaling the range without snapping to a bucket is the step that saves the bytes, and skipping it leaves a float in every slot.'
+            'Each uint8 code must be an integer from 0 to 255. Round the scaled value to the nearest integer.'
           ).toBe(true);
           expect(q).toBeGreaterThanOrEqual(0);
           expect(q).toBeLessThanOrEqual(255);
@@ -193,7 +193,7 @@ testCode: |
       expect(report.kernels[0].scale).toBeCloseTo(1 / 255, 9);
       expect(
         report.kernels[1].scale,
-        'The second kernel spans ten times the range of the first across the same 255 steps, so its buckets are ten times wider. One scale for the whole model would misprice both.'
+        'The second kernel spans ten times the range, so its scale is ten times larger. Calculate a separate scale for each kernel.'
       ).toBeCloseTo(10 / 255, 9);
     });
 
@@ -206,7 +206,7 @@ testCode: |
       kernel.quantized.forEach((q: number, i: number) => {
         expect(
           weights[0][i],
-          'The runtime decodes the stored bytes back to float32 as stored * scale + min and runs those. Quantizing a copy and leaving the trained weights on the model measures a build nobody is shipping.'
+          'Decode each integer code as code * scale + min, then apply those float32 weights to the model for the prediction comparison.'
         ).toBeCloseTo(q * kernel.scale + kernel.min, 6);
       });
       // The two ends of a kernel round-trip exactly (0 decodes to min and 255
@@ -229,7 +229,7 @@ testCode: |
       const crafted = await reportOf(stretchedGrid(), STRETCHED);
       expect(
         crafted.maxWeightError,
-        'Here the worst-hit weight is the 0.05, which restores to 0. Reporting zero error means nothing was ever snapped to a bucket, so no precision was given up and no bytes were saved.'
+        'Here the worst-hit weight is the 0.05, which restores to 0. An error of zero suggests the code skipped rounding to the quantization levels. Compare each original weight with its decoded value.'
       ).toBeCloseTo(0.05, 6);
 
       const report = await reportOf(classifier(), elevenFeatureCaptures(20));
@@ -237,11 +237,11 @@ testCode: |
       expect(report.maxWeightError).toBeGreaterThan(0);
       expect(
         report.maxWeightError,
-        'A restored weight sits on the nearest bucket boundary of the grid its kernel was measured against, so it cannot have drifted further than half a bucket.'
+        'Rounding to the nearest code should change a weight by no more than half the kernel scale.'
       ).toBeLessThanOrEqual(widest / 2 + 1e-12);
     });
 
-    it('counts the captures the quantized build files differently', async () => {
+    it('counts captures whose predicted class changes after quantization', async () => {
       const report = await reportOf(stretchedGrid(), STRETCHED);
       expect(
         report.predictionsChanged,
@@ -249,7 +249,7 @@ testCode: |
       ).toBe(3);
     });
 
-    it('reports nothing moved when the quantized build agrees with the trained one', async () => {
+    it('reports zero changed predictions when both models agree', async () => {
       const report = await reportOf(evenGrid(), EVEN);
       expect(
         report.predictionsChanged,
@@ -279,7 +279,7 @@ testCode: |
       const expected = after.filter((v, i) => v !== before[i]).length;
       expect(
         predictsMade,
-        'quantizeModel made ' + predictsMade + ' predict call(s). The count of changed verdicts is a measurement: the model has to be run once on the trained weights and once on the restored ones, so at least two predict calls happen inside the pass.'
+        'quantizeModel made ' + predictsMade + ' predict call(s). The count of changed verdicts is a measurement: run the model once with the trained weights and once with the decoded weights, so at least two predict calls happen inside the pass.'
       ).toBeGreaterThanOrEqual(2);
       expect(
         report.predictionsChanged,
@@ -296,7 +296,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'The kernel codes your pass stored',
-        summary: 'Maximum reported weight error: ' + report.maxWeightError + '. These integer codes simulate uint8 storage; this exercise does not write a packed weight file.',
+        summary: 'Maximum reported weight error: ' + report.maxWeightError + '. These integer codes simulate uint8 storage. This exercise does not write a packed weight file.',
         columns: ['Weight', 'Supplied value', 'Stored code', 'Decoded value'],
         rows: kernel.slice(0, 12).map((value, i) => [i + 1, value, stored.quantized[i], stored.quantized[i] * stored.scale + stored.min]),
       });

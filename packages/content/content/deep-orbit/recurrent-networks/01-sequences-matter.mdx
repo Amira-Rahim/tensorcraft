@@ -20,14 +20,14 @@ concept:
     mlTitle: "Sequence Order"
     mlCode: "model.predict(tf.tensor3d([[[t1], [t2], [t3], [t4], [t5]]])) // [batch, steps, features]"
     tier: structural
-    breaks: "Streams may preserve, inspect, or transform ordered data. A sequence model learns a function of that order. A shuffled window can still satisfy its shape contract while changing the prediction. Validate timestamps and sequence construction; file integrity alone does not establish a valid example."
+    breaks: "Streams may preserve, inspect, or transform ordered data. A sequence model learns a function of that order. A shuffled window can keep the same shape but produce a different prediction. Check timestamps and the order of readings, even when the file loads correctly."
 consequence:
-  narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. Each reading is processed in isolation; the model has no memory of what came before."
+  narrative: "Demir realizes the classifier is blind to temporal patterns because it reads one row at a time. The model processes each reading on its own. The model has no memory of what came before."
 hints:
   - level: nudge
     content: "A forecast window needs a following target. Find the last start index that leaves that target inside the array."
   - level: guidance
-    content: "Advance start by stride. The input slice ends before start + windowSize; that index holds its target. Stack inputs as [windows, steps, features] and targets as [windows, features]. Return null tensors when there are no pairs."
+    content: "Advance start by stride. The input slice ends before start + windowSize. That index holds its target. Stack inputs as [windows, steps, features] and targets as [windows, features]. Return null tensors when there are no pairs."
   - level: solution
     content: |
       import * as tf from '@tensorflow/tfjs';
@@ -67,15 +67,15 @@ You will arrange consecutive readings into input windows and pair each window wi
 {`import * as tf from '@tensorflow/tfjs';
 
 // This stateless feedforward call scores one reading without prior readings
-// It sees: [0.5, 0.3, 0.7] → classify
-// Then:    [0.8, 0.5, 0.9] → classify (no memory of previous)
+// It sees: [0.5, 0.3, 0.7] to classify
+// Then:    [0.8, 0.5, 0.9] to classify (no memory of previous)
 
 // But the signal has TEMPORAL patterns, and they live in the moves
-// between rows rather than in any one row:
+// across several rows:
 // t=0: [0.5, 0.3, 0.7]
 // t=1: [0.8, 0.5, 0.9]  every feature up from t=0
 // t=2: [0.3, 0.1, 0.4]  every feature down from t=1
-// t=3: [0.5, 0.3, 0.7]  back to the t=0 reading exactly ← THE PATTERN REPEATS
+// t=3: [0.5, 0.3, 0.7]  back to the t=0 reading exactly: THE PATTERN REPEATS
 
 // Hand the model one reading at a time and each row is scored alone
 // It cannot detect: "the signal rises, falls, then rises again"
@@ -121,7 +121,7 @@ An RNN reuses the same update at every step. More steps do not add recurrent par
 The individual rows have not changed. Now we can compare them in order. Rising, falling, rising is a different pattern from falling, rising, rising. Our current model scores each row alone, so it cannot use that difference.
 </Dialogue>
 
-A byte-forwarding stream preserves chunk order without learning from it. A sequence model uses ordered readings in a learned computation. This comparison is limited to forwarding; other JavaScript streams can inspect or transform their contents too.
+A byte-forwarding stream preserves chunk order without learning from it. A sequence model uses ordered readings in a learned computation. This comparison covers forwarding only. Other JavaScript streams can inspect or transform their contents too.
 
 ## Sequence Shape: [batch, timeSteps, features]
 
@@ -158,7 +158,7 @@ The example above collects windows only. For training, add a stride, the number 
 
 Return the arrays and their tensors. Input windows have shape [batch, timeSteps, features]. Targets have shape [batch, features] because each target is one reading. The extra input axis keeps the readings in time order within each window.
 
-Inspect the returned input-target pairs before training. Each target must follow its window, so the forecaster cannot read the value it is being asked to predict.
+Inspect the returned input-target pairs before training. Each target must follow its window, so the forecaster cannot read the value it needs to predict.
 
 <Exercise slug="create-sequences" />
 
@@ -171,7 +171,7 @@ Inspect the returned input-target pairs before training. Each target must follow
       "question": "A stateless feedforward model scores each reading separately. If you reverse the reading order, what happens to each reading score?",
       "options": [
         {
-          "text": "Each reading keeps its score; the output list is reordered.",
+          "text": "Each reading keeps its score. The output list follows the new input order.",
           "feedback": "The model has no sequence state, so the same input reading keeps the same score."
         },
         {
@@ -206,14 +206,14 @@ Inspect the returned input-target pairs before training. Each target must follow
 />
 
 <LessonRecap
-  whatYouLearned={["A stateless classifier given one reading at a time cannot use relationships across readings.", "Flattened windows give a dense model ordered inputs. RNNs reuse transition weights across steps, without guaranteeing time-shift invariance.", "The TF.js recurrent layers here take [batch, timeSteps, features] tensors.", "Build windows within each time split so overlapping samples do not leak into evaluation."]}
+  whatYouLearned={["A stateless classifier given one reading at a time cannot use relationships across readings.", "Flattening a window preserves its order for a dense model. RNNs reuse the same update weights at each step, but moving a pattern to a different position can still change the result.", "The TF.js recurrent layers here take [batch, timeSteps, features] tensors.", "Build windows within each time split so overlapping samples do not leak into evaluation."]}
   bridge="Reassembling stream chunks out of order can corrupt a file. A sequence model also uses order: rearranging its input readings can change the prediction."
   youCanNow="Prepare sequential data by slicing a continuous signal into sliding windows and representing it as a [batch, timeSteps, features] tensor."
 />
 
 <Epilogue>
 
-After the shift, Demir runs one more test. He feeds the classifier an hour of archived stream in order, then again with the readings shuffled into nonsense. The scores come back identical, reading for reading, not a digit of difference. The model never sees order, so destroying it costs nothing.
+After the shift, Demir runs one more test. He feeds the classifier an hour of archived stream in order, then again with the readings shuffled into nonsense. The scores come back identical for every reading. The model scores each reading on its own, so it cannot notice the changed order.
 
 <Dialogue speaker="Ensign Demir">
 It grades the scrambled signal the same as the real one. Everything we actually care about is in the part it can't see.

@@ -11,9 +11,9 @@ import { CrewStrip } from "./crew-strip";
 import { buildLearnBreadcrumbs, buildLearnVideo } from "./learn-jsonld";
 
 export const metadata: Metadata = {
-  title: "Learn Machine Learning with JavaScript | Tensorcraft",
+  title: "Machine Learning with JavaScript, Tensorcraft",
   description:
-    "Machine learning for JavaScript developers. Every lesson is TypeScript that runs in your browser with TensorFlow.js. No Python required. Module 1 is free.",
+    "Machine learning for JavaScript developers. Write JavaScript and run ML experiments in your browser. No Python required. Module 1 is free.",
   alternates: {
     canonical: "https://tensorcraft.app/learn",
   },
@@ -24,14 +24,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/learn",
-    title: "Learn Machine Learning with JavaScript | Tensorcraft",
+    title: "Machine Learning with JavaScript, Tensorcraft",
     images: [
       "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20JavaScript%20developer%27s%20guide",
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Learn Machine Learning with JavaScript | Tensorcraft",
+    title: "Machine Learning with JavaScript, Tensorcraft",
     images: [
       "/api/og?title=Learn%20ML%20with%20JavaScript&world=deep-orbit&subtitle=A%20JavaScript%20developer%27s%20guide",
     ],
@@ -94,7 +94,7 @@ export default function LearnPage() {
               data-testid="learn-cta-hero"
               className={`${PRIMARY_CTA} pointer-events-auto`}
             >
-              Start Module 1 free →
+              Start Module 1 free
             </Link>
           </FreeLessonCtaTracker>
         </div>
@@ -112,15 +112,15 @@ export default function LearnPage() {
             the H1 runs as a single line across the grid on desktop and
             wraps naturally below. */}
         <h1 className="text-[clamp(2.25rem,calc(4.6vw-0.5rem),4.5rem)] font-mono font-black leading-[1.05] tracking-[-0.03em] mb-6">
-          Learn Machine Learning with JavaScript
+          Machine Learning with JavaScript
         </h1>
         <p className="text-lg md:text-2xl text-text-muted font-sans leading-relaxed mb-4 max-w-[70ch] mx-auto">
-          You already think in arrays, state, and async. Machine learning uses
-          the same patterns under different names. Tensorcraft maps those
-          patterns with {WORLD_CONTENT.lessonBridges} JavaScript-to-ML bridges
-          and teaches them through one story: {WORLD_CONTENT.modulesPerWorld}{" "}
-          modules aboard a station in deep orbit. Every lesson is TypeScript
-          that runs in your browser.
+          Your experience with arrays, state, and async code gives you a
+          starting point for ML. Tensorcraft builds on it with{" "}
+          {WORLD_CONTENT.lessonBridges} JavaScript-to-ML comparisons across{" "}
+          {WORLD_CONTENT.modulesPerWorld} modules aboard the research ship
+          Archimedes. Help the crew investigate a signal while writing and
+          running code in your browser.
         </p>
         <p className="text-base md:text-xl text-text-muted font-sans leading-relaxed mb-10 max-w-[70ch] mx-auto">
           Module 1 of{" "}
@@ -149,11 +149,11 @@ export default function LearnPage() {
               data-testid="learn-cta-footer"
               className={PRIMARY_CTA}
             >
-              Start Module 1 free →
+              Start Module 1 free
             </Link>
           </FreeLessonCtaTracker>
           <Link href="/worlds" className={SECONDARY_CTA}>
-            See all 5 courses →
+            See all 5 courses
           </Link>
         </div>
       </section>

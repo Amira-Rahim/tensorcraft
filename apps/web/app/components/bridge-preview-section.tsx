@@ -48,7 +48,7 @@ export function BridgePreviewSection() {
             name would claim an equivalence the data does not support. An
             anchor claims a starting point, which is what a bridge is. */}
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
-          Every ML Concept Has a JavaScript Anchor
+          JavaScript examples for ML concepts
         </h2>
       </div>
 
@@ -86,24 +86,9 @@ export function BridgePreviewSection() {
               boxed treatment read as a toggle and drew dead clicks. */}
           <div className="hidden md:flex items-center justify-center px-2 relative">
             <div className="absolute top-0 bottom-0 w-px bg-border" />
-            <span
-              aria-hidden="true"
-              className="relative z-10 bg-page py-2 font-mono text-lg"
-              style={{ color: tierColor }}
-            >
-              ⇄
-            </span>
           </div>
           {/* Mobile connector */}
-          <div className="md:hidden flex items-center justify-center py-3">
-            <span
-              aria-hidden="true"
-              className="font-mono text-base"
-              style={{ color: tierColor }}
-            >
-              ⇄
-            </span>
-          </div>
+          <div className="md:hidden flex items-center justify-center py-3"></div>
 
           {/* ML side */}
           <div className="px-10 md:px-16 py-10 md:py-12 flex">

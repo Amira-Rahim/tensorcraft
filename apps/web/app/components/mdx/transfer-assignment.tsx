@@ -29,7 +29,7 @@ export function TransferAssignment() {
       if (stored) setDraft(parseDraft(stored));
     } catch {
       setMessage(
-        "The previous tab draft could not be loaded. You can import an exported report.",
+        "This page could not load the previous tab draft. You can import an exported report.",
       );
     }
     setReady(true);
@@ -76,7 +76,7 @@ export function TransferAssignment() {
       );
     } catch {
       setMessage(
-        "That file is not a valid build-triage-v1 report. Your current draft is unchanged.",
+        "That file is not a valid build-triage-v1 report. Your current draft stays the same.",
       );
     }
   }
@@ -100,7 +100,7 @@ export function TransferAssignment() {
       <p>
         The 720 builds are synthetic practice data. Keep your code and explain
         whether the model earns its complexity, even if your baseline wins.
-        Allow 60 to 90 minutes for a first attempt; this is an author estimate.
+        Allow 60 to 90 minutes for a first attempt. This is an author estimate.
       </p>
       <div className="flex flex-wrap gap-3">
         <a
@@ -121,8 +121,8 @@ export function TransferAssignment() {
       </div>
       <p className="text-sm text-text-muted">
         The download includes data, a JavaScript starter, setup instructions and
-        a reuse license. Work in your own editor. No model solution or score
-        target is supplied.
+        a reuse license. Work in your own editor. The download includes no model
+        solution or target score.
       </p>
       <fieldset disabled={!ready} className="space-y-4">
         <legend className="font-semibold">Your experiment report</legend>
@@ -130,7 +130,7 @@ export function TransferAssignment() {
           {!ready
             ? "Loading tab draft…"
             : saved
-              ? "Draft saved in this tab, not your account. Download a copy to keep it after closing the tab."
+              ? "This tab keeps your draft. It does not sync it to your account. Download a copy to keep it after closing the tab."
               : "Tab storage is unavailable. Download your report before navigating away."}
         </p>
         {REPORT_FIELDS.map((field) => (
@@ -186,9 +186,9 @@ export function TransferAssignment() {
           ))}
         </fieldset>
         <p className="text-sm">
-          Status: {draft.selfReviewedAt ? "Self-reviewed" : "Draft"}. This is
-          your own review, not a graded pass or verified independent assessment.
-          It does not award XP or gate the next lesson.
+          Status: {draft.selfReviewedAt ? "Self-reviewed" : "Draft"}. This
+          records your own review. It provides no grade or independent
+          assessment. It does not award XP or gate the next lesson.
         </p>
         <div className="flex flex-wrap gap-3">
           <button
@@ -228,8 +228,9 @@ export function TransferAssignment() {
       <fieldset disabled={!ready} className="space-y-3">
         <legend className="font-semibold">Optional rescue hints</legend>
         <p className="text-sm text-text-muted">
-          Try your own approach first. Revealed hints are recorded in this tab
-          draft and exported report. Also record help from outside this page.
+          Try your own approach first. This tab draft and the exported report
+          record which hints you opened. Also record help from outside this
+          page.
         </p>
         {RESCUES.map((rescue) => (
           <div key={rescue.id}>

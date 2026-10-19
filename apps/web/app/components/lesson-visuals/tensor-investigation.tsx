@@ -141,7 +141,7 @@ const shape = reading.shape;`}
                   kind: "series",
                   title: "Readings over time",
                   summary:
-                    "This chart uses the example’s tensor. Select a sensor to follow its line. The numbers along the bottom show the selected moments in order, not clock times. The readings are part of the ship’s fictional recording.",
+                    "This chart uses the example’s tensor. Select a sensor to follow its line. The numbers along the bottom show the selected moments in order. They carry no clock timestamps. The readings are part of the ship’s fictional recording.",
                   xLabel: "Selected moment",
                   yLabel: "Recorded reading",
                   labels: Array.from({ length: WORKED_PACKET.length }, (_, i) =>

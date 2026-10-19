@@ -1,6 +1,6 @@
 slug: build-layer
 lessonSlug: layers-and-architecture
-title: "Build a 3-Layer Sequential Model"
+title: "A three-layer sequential model"
 instructions: |
   Build a Sequential model with three dense layers:
 
@@ -20,8 +20,8 @@ starterCode: |
 
   // Add layers here
 
-  // Quote the count: how many parameters does the stack above hold when a
-  // reading of `width` values arrives?
+  // Count the parameters for an input with `width` features.
+  // Use arithmetic without building another model.
   function predictParams(width) {
     return null; // your code here
   }
@@ -54,7 +54,7 @@ testCode: |
     const quoteFor = (width) => {
       expect(
         typeof predictParams,
-        'predictParams is not defined. The grader calls it to read your quote back, so keep the function the starter handed you.',
+        'Your code does not define predictParams. The grader calls it to read your quote back, so keep the function the starter handed you.',
       ).toBe('function');
       const builtBefore = modelsBuilt();
       const quoted = predictParams(width);
@@ -76,36 +76,36 @@ testCode: |
       const units = model.layers.map((l) => l.getConfig().units);
       expect(
         units,
-        'These are read back off the layers themselves, one unit count per stage, in the order they were added.',
+        'Read the unit counts from the layers in model order.',
       ).toEqual([16, 8, 1]);
     });
     it('uses relu, relu, sigmoid activations', () => {
       const acts = model.layers.map((l) => l.getConfig().activation);
       expect(
         acts,
-        'Keep the layer order from the instructions. The first two layers use ReLU; the final layer uses sigmoid.',
+        'Keep the layer order from the instructions. The first two layers use ReLU. The final layer uses sigmoid.',
       ).toEqual(['relu', 'relu', 'sigmoid']);
       recordResult({
         kind: 'table', title: 'The stack you built for Nazari',
-        summary: 'Your 16/8/1 exercise stack, distinct from the bridge model\'s 32/16/1 layers. These parameters have not been trained.',
+        summary: 'Your 16/8/1 exercise stack, distinct from the bridge model\'s 32/16/1 layers. This task performs no training.',
         columns: ['Layer', 'Units', 'Activation', 'Parameters'],
         rows: model.layers.map((layer, i) => [i + 1, layer.getConfig().units, layer.getConfig().activation, layer.countParams()]),
       });
     });
-    it('your quote for the width the first layer declares matches the stack you built', () => {
+    it('your parameter calculation matches the model you built', () => {
       const quoted = quoteFor(4);
       expect(
         quoted,
         'The parameter count does not match the model. Check the first layer\'s input width and count one bias per unit.',
       ).toBe(model.countParams());
       recordResult({
-        kind: 'table', title: 'Your parameter quote',
-        summary: 'The submitted arithmetic quote checked against your constructed model.',
+        kind: 'table', title: 'Your parameter count',
+        summary: 'Your calculated count compared with model.countParams().',
         columns: ['Input features', 'Quoted parameters', 'Built model parameters'],
         rows: [[4, quoted, model.countParams()]],
       });
     });
-    it('builds the stack once: a second stack built to measure the price is the measurement this exercise replaces', () => {
+    it('calculates the parameter count without building a second model', () => {
       // Snapshotted when this describe registered, after the submission's
       // top-level code ran and before any test built a reference stack.
       expect(
@@ -117,10 +117,10 @@ testCode: |
         dense,
         dense < 3
           ? 'Only ' + dense + ' dense layer' + (dense === 1 ? '' : 's') + ' went onto the stack at top level. Three model.add() calls make the 16/8/1 stack.'
-          : dense + ' dense layers were built at top level. Three make the stack; more means a second stack was built to read a count off, which is the shortcut this exercise asks you not to take.',
+          : dense + ' dense layers exist at top level. Three make the stack. Extra layers suggest a second stack. Calculate parameter counts from the dimensions without building another model.',
       ).toBe(3);
     });
-    it('quotes a width nobody has priced for you, and quotes it without building anything', () => {
+    it('calculates the count for a new input width without creating models or tensors', () => {
       const stackAt = (width) => {
         const reference = tf.sequential();
         reference.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [width] }));
@@ -134,7 +134,7 @@ testCode: |
       const wide = 20000 + Math.floor(Math.random() * 80000);
       expect(
         typeof predictParams,
-        'predictParams is not defined. The grader calls it to read your quote back, so keep the function the starter handed you.',
+        'Your code does not define predictParams. The grader calls it to read your quote back, so keep the function the starter handed you.',
       ).toBe('function');
       const tensorIdNow = () => {
         const marker = tf.scalar(0);
@@ -154,10 +154,10 @@ testCode: |
       ).toBe(idleCost);
       expect(
         quoted,
-        'The count is wrong for this input width. Write a formula that works for any positive width, not a saved count from one model.',
+        'The count is wrong for this input width. Calculate the count from the input width so it works for every positive width.',
       ).toBe(pricedNarrow + perArrivingValue * (wide - narrow));
     });
-    it('prices the first stage from the width that arrives, so the same stack costs more when the reading is wider', () => {
+    it('updates the first layer’s count when the input width changes', () => {
       for (let trial = 0; trial < 3; trial++) {
         const width = 2 + Math.floor(Math.random() * 30);
         const reference = tf.sequential();
@@ -166,7 +166,7 @@ testCode: |
         reference.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
         expect(
           quoteFor(width),
-          'The count must change with the input width. Only the first layer\'s weight count changes; the other layers keep their input sizes.',
+          'The count must change with the input width. Only the first layer\'s weight count changes. The other layers keep their input sizes.',
         ).toBe(reference.countParams());
       }
     });

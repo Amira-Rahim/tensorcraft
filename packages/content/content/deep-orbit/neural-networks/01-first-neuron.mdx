@@ -22,14 +22,14 @@ concept:
     mlTitle: "Neuron"
     mlCode: "const output = tf.dot(inputs, weights).add(bias)"
     tier: structural
-    breaks: "The reduce expression and dot product compute the same weighted sum. Either can use parameters that change. TensorFlow.js adds tensor operations and automatic differentiation; training is the procedure that adjusts those parameters from examples."
+    breaks: "The reduce expression and dot product compute the same weighted sum. Either can use parameters that change. TensorFlow.js adds tensor operations and automatic differentiation. Training is the procedure that adjusts those parameters from examples."
 consequence:
   narrative: "One neuron separates the two calibration tones. Nazari watches it hold, then asks what sixty-four channels would cost."
 hints:
   - level: nudge
     content: "A neuron is one computation: multiply each input by its weight, sum the products, and add the bias."
   - level: guidance
-    content: "Use one tensor operation to combine all the input-weight pairs. Add the bias while the result is still a tensor. The function must work with new inputs, weights, and bias values, not just the example in the starter."
+    content: "Use one tensor operation to combine all the input-weight pairs. Add the bias while the result is still a tensor. The function must calculate from any supplied inputs, weights, and bias. The checks use several examples."
   - level: solution
     content: "return tf.tidy(() => tf.dot(inputs, weights).add(bias));"
 keywords:
@@ -53,7 +53,7 @@ The signal from Sector 7-G matches neither tone. Farah wants to start with a sma
 </StoryPassage>
 
 <Dialogue speaker="Dr. Farah">
-ARIA's current rules miss this pattern. Start with a small function whose parameters training can adjust. We can check the arithmetic on the labeled calibration tones before asking it anything about the unknown signal.
+ARIA's current rules miss this pattern. Let’s start with one neuron and check its calculations on tones we already know. Later, we’ll train a network to look for patterns in the unknown signal.
 </Dialogue>
 
 Build the score calculation Farah will put inside a layer. It must keep
@@ -61,7 +61,7 @@ working when the inputs and weights change during training.
 
 <LearningObjectives objectives={["Identify a neuron's inputs, weights, and bias", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Read a weight: sign for direction, magnitude for sensitivity per unit of input"]} />
 
-## Combine inputs into one score
+## A weighted sum of inputs
 
 A neuron multiplies each input by a weight, sums the products, and adds a bias. The `Array.reduce()` expression below computes the same score.
 
@@ -83,7 +83,7 @@ console.log(output.dataSync()); // Float32Array(1) [ 0.2600000202655792 ]
 const jsInputs = [0.5, 0.8, 0.2];
 const jsWeights = [0.4, -0.2, 0.6];
 const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
-console.log(jsOutput); // approximately 0.26; JS and float32 rounding may differ
+console.log(jsOutput); // approximately 0.26. JS and float32 rounding may differ
 tf.dispose([inputs, weights, bias, output]);`}
 </CodeBlock>
 
@@ -91,9 +91,9 @@ Each weight scales its own input: a positive weight pushes the output up, a nega
 
 ## Reading the Weights
 
-The three weights are fixed for this example. Module 3 will show how training changes them. Here, one neuron reads amplitude, frequency, and phase. We can trace each input's effect directly. A deeper network has later layers that also affect the result.
+This example uses three fixed weights. Module 3 will show how training changes them. Here, one neuron reads amplitude, frequency, and phase. We can trace each input's effect directly. A deeper network has later layers that also affect the result.
 
-A weight's sign tells you which way its input moves the score. The amplitude weight is `0.4`, so a higher amplitude raises the score. The frequency weight is `-0.2`, so a higher frequency lowers it. Change `-0.2` to `+0.2` above: the same reading scores 0.58 instead of 0.26.
+A weight's sign tells you which way its input moves the score. The amplitude weight is `0.4`, so a higher amplitude raises the score. The frequency weight is `-0.2`, so a higher frequency lowers it. Change `-0.2` to `+0.2` above: the score for the same reading rises from 0.26 to 0.58.
 
 A larger weight means the score changes more for each unit of that input. To find the contribution for one reading, multiply input by weight:
 
@@ -101,21 +101,21 @@ A larger weight means the score changes more for each unit of that input. To fin
 - Frequency: `0.8 * -0.2 = -0.16`.
 - Phase: `0.2 * 0.6 = 0.12`.
 
-Phase has the largest weight, but its contribution of 0.12 is smaller in magnitude than 0.20 and -0.16 because its input is small. All three inputs use the same 0-1 scale, so their weights can be compared as sensitivity per unit. The contribution still depends on the reading.
+Phase has the largest weight, but its contribution of 0.12 is smaller in magnitude than 0.20 and -0.16 because its input is small. All three inputs use the same 0-1 scale, so you can compare their weights as sensitivity per unit. The contribution still depends on the reading.
 
-A small coefficient gives this unit low sensitivity to that input in its current units. It does not prove that the feature is globally unimportant, unnecessary or causally unrelated to the target.
+A weight close to zero means this neuron responds only a little when that input changes by one unit. That does not tell us whether the feature matters elsewhere in the network, or whether it causes the event we want to predict.
 
 ## Challenge
 
 Help Farah combine the supplied inputs into a score. Your result shows the
 scalar returned by that tensor calculation. This step supplies the weighted
-sum; the next lesson tests what an activation can do to such scores.
+sum. The next lesson tests what an activation can do to such scores.
 
 <Exercise slug="implement-neuron" />
 
 <RecallPrompt
   question="Separate the three pieces of a neuron calculation."
-  answer="A neuron computes the dot product of its inputs and weights, then adds a bias: output = dot(inputs, weights) + bias. Weights control how much each input contributes; the bias adds an input-independent offset. A decision threshold is a separate rule applied to the score."
+  answer="A neuron computes the dot product of its inputs and weights, then adds a bias: output = dot(inputs, weights) + bias. Weights control how much each input contributes. The bias adds an input-independent offset. A decision threshold is a separate rule applied to the score."
   checks={[
     {
       "kind": "choice",
@@ -127,11 +127,11 @@ sum; the next lesson tests what an activation can do to such scores.
         },
         {
           "text": "sum(inputs) + sum(weights)",
-          "feedback": "Each input must first be multiplied by its corresponding weight."
+          "feedback": "First multiply each input by its corresponding weight."
         },
         {
           "text": "dot(inputs, weights) * bias",
-          "feedback": "The bias is added as an offset, not multiplied into the weighted sum."
+          "feedback": "Add the bias to the weighted sum as a constant offset."
         }
       ],
       "correctIndex": 0,
@@ -147,7 +147,7 @@ sum; the next lesson tests what an activation can do to such scores.
         },
         {
           "text": "The number of training examples.",
-          "feedback": "Weights affect the computation, not the dataset size."
+          "feedback": "Weights control each input’s contribution to the calculation. The dataset keeps the same number of examples."
         },
         {
           "text": "How much each input contributes to the score.",
@@ -167,7 +167,7 @@ sum; the next lesson tests what an activation can do to such scores.
         },
         {
           "text": "An offset independent of the input values.",
-          "feedback": "The bias is added to the weighted sum."
+          "feedback": "Add the bias to the weighted sum."
         },
         {
           "text": "A separate multiplier for every input.",
@@ -175,7 +175,7 @@ sum; the next lesson tests what an activation can do to such scores.
         }
       ],
       "correctIndex": 1,
-      "explanation": "The bias is added to the weighted sum."
+      "explanation": "Add the bias to the weighted sum."
     }
   ]}
 />
@@ -183,10 +183,10 @@ sum; the next lesson tests what an activation can do to such scores.
 <LessonRecap
   whatYouLearned={[
     "A neuron computes a weighted sum of its inputs plus a bias, producing a single number.",
-    "A weight scales its own input, so what an input contributes is weight times input; bias adds a constant offset.",
+    "A weight scales its own input, so what an input contributes is weight times input. Bias adds a constant offset.",
     "Array.reduce() over inputs is the JavaScript equivalent of tf.dot()."
   ]}
-  bridge="reduce and tf.dot compute the same weighted sum plus bias. A neuron may then apply an activation; training determines its parameter values."
+  bridge="reduce and tf.dot compute the same weighted sum plus bias. A neuron may then apply an activation. Training determines its parameter values."
   youCanNow="Implement a single neuron as a weighted dot product plus bias using tf.dot() and add()."
 />
 
@@ -205,10 +205,10 @@ She watches one more crossover-free minute, pours a coffee, and takes it with he
   contentVersion={2}
   fallback="Farah opens sample 7741 in the raw archive and checks its timestamp before adding the new score. The cause remains unresolved."
   outcomes={{
-  "cooperate": "Nazari hands Farah the reviewed capture and calibration records for 7741. The recorded settings did not change; that does not establish the cause. The deferred channel check takes the rest of Nazari's watch, so Demir owns the neuron demonstration and its result log.",
-  "defect": "Demir finds his removal note instead of a review packet. He restores 7741 from the raw archive and asks Nazari to check its timestamp. The saved channel-check slot now costs him a second search; sensor noise is still only a hypothesis.",
+  "cooperate": "Nazari hands Farah the reviewed capture and calibration records for 7741. The recorded settings did not change. That does not establish the cause. The deferred channel check takes the rest of Nazari's watch, so Demir owns the neuron demonstration and its result log.",
+  "defect": "Demir finds his removal note. He still needs the review packet. He restores 7741 from the raw archive and asks Nazari to check its timestamp. The saved channel-check slot now costs him a second search. Sensor noise is still only a hypothesis.",
   "random": "The handover contains the completed channel check but no 7741 owner. Farah locates the raw row again while Demir reconstructs the active channels. They cannot infer a clean capture from the absence of a review note.",
-  "dominant": "Demir brings the bounded replay: the stored values reproduce, and the timestamp and channel list are attached. Nazari's channel check is complete. Farah places instrument verification on the next watch sheet; matching the replay did not answer that question."
+  "dominant": "Demir brings the results of his 20-minute replay. He got the same values and attached the timestamp and channel list. Nazari's channel check is complete. Farah asks the next watch to check the sensors. Replaying the same values did not establish whether the sensors were working correctly."
 }}
 />
 

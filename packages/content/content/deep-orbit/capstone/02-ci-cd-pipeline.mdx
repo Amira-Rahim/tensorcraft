@@ -22,7 +22,7 @@ concept:
     mlTitle: "ML CI/CD"
     mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
     tier: structural
-    breaks: "Pin the application and model artifacts separately. Training can vary with seeds, data order, and backend operations; a fixed workflow does not identify its output weights. Test the exact exported artifact that will ship and record its preprocessing version."
+    breaks: "Pin the application and model artifacts separately. Training can vary with seeds, data order, and backend operations. A fixed workflow does not identify its output weights. Test the exact exported artifact that will ship and record its preprocessing version."
 consequence:
   narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
@@ -65,7 +65,7 @@ keywords:
 skillAxes: [deployment]
 ---
 
-> **MERGE REQUEST 47 · DEMIR → NAZARI:** “Model checks passed. Requesting release approval.”
+> **MERGE REQUEST 47, DEMIR to NAZARI:** “Model checks passed. Requesting release approval.”
 
 <StoryPassage>
 
@@ -83,19 +83,19 @@ The cache keys are different. My report job dropped the release ID when it joine
 
 A passing result only describes the model it tested. Before release, check that the result belongs to the exact model you plan to publish.
 
-Demir's existing CI/CD workflow already tests the app. It now needs to keep each model's evaluation attached to the exact files being released.
+Demir's existing CI/CD workflow already tests the app. It now needs to keep each model's evaluation attached to the exact files the pipeline releases.
 
 Give Nazari two parts of the release record: a verdict on the candidate's supplied predictions and an inventory of the model files. The release workflow must still attach both to the verified artifact identity.
 
-<LearningObjectives objectives={["Identify model identity and behavior gates in a release workflow", "Implement a conservative evaluation score and an acceptance threshold", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its topology, weight specs and byte count"]} />
+<LearningObjectives objectives={["Check that the release tests the right model and that its predictions meet the requirements", "Implement a conservative evaluation score and an acceptance threshold", "Explain what a device-specific inference benchmark must record", "Trace publication, verification and rollback conditions", "Export a model with model.save() and inspect its architecture, weight specifications, and byte count"]} />
 
-## Pin the Whole Artifact
+## The release artifact
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 A model release includes its graph, weights, preprocessing configuration and output-label order. An application release also includes the code that reads them. A digest of `weights.bin` alone misses a changed activation, a new feature order or a swapped label map.
 
-Record a cryptographic hash for every required file. A SHA-256 hash identifies bytes; it does not prove those bytes describe a good model. Keep the expected hashes in a trusted release record. Verify downloaded files against that record, then load the bytes you verified. Fetching the URL again creates a race if deployment changes the files between verification and inference.
+Record a cryptographic hash for every required file. A SHA-256 hash identifies bytes. It does not prove those bytes describe a good model. Keep the expected hashes in a trusted release record. Verify downloaded files against that record, then load the bytes you verified. Fetching the URL again creates a race if deployment changes the files between verification and inference.
 
 The [downloadable browser runtime lab](/assignments/browser-runtime-lab-v1.zip) provides a runnable example. It fingerprints the JSON manifest and every named shard. It fetches them once, rejects HTTP errors or unexpected bytes, and passes those same bytes to `tf.io.fromMemory()`. This fixture has fixed preprocessing and one sigmoid output. A larger application must include its preprocessing and labels in the release record too.
 
@@ -111,15 +111,15 @@ node scripts/check-model-deployment.mjs --origin https://tensorcraft.app
 
 The local check rejects a changed graph, changed weights and a missing shard. It then restores the previous artifact and verifies its bytes and prediction. The hosted option fetches the public model over HTTPS and checks it against the pinned fixture. It does not deploy anything or rehearse a rollback on the production site.
 
-## Check Model Identity and Behavior Separately
+## Model identity and behavior
 
-Once identity is established, evaluate the candidate on data that matches the release question. Track baseline performance, per-class errors and the cost of mistakes. Choose an acceptance rule before inspecting this candidate's results. An accuracy floor can be one gate; it is rarely the entire release decision.
+Once you establish which artifact you have, evaluate the candidate on data that matches the release question. Track baseline performance, per-class errors and the cost of mistakes. Choose an acceptance rule before inspecting this candidate's results. An accuracy floor can be one gate. It is rarely the entire release decision.
 
 Reusing an evaluation set for many release decisions makes it a validation set. It is no longer an untouched final test. Keep a separate evaluation plan for a final claim, and monitor behavior after release because future data can change.
 
 A latency gate also needs an environment: device, browser, backend, input shape, batch size, warmups and readback boundary. A CPU-only CI runner cannot certify a browser GPU latency budget. Use CI for reproducible correctness checks and a target-device run for the device budget. Weight bytes do not replace a whole-application memory measurement.
 
-This workflow runs the downloaded lab's artifact checks when those files are in your repository root. It is a verification job; publication depends on your host and is a separate step.
+This workflow runs the downloaded lab's artifact checks when those files are in your repository root. It is a verification job. Publication depends on your host and is a separate step.
 
 <CodeBlock language="yaml" title="artifact-check.yml">
 {`name: Model artifact checks
@@ -140,7 +140,7 @@ jobs:
 
 A workflow file does not make a check mandatory. Configure the repository's merge rules to require the job, and verify the rule on a failing change. Publish only the artifact that passed. Rebuilding or retraining after the gate produces a new candidate that needs its own checks.
 
-## Verify Publication and Rollback
+## Publication and rollback
 
 A publish command can finish before every server or browser sees the new version. Deploy versioned, immutable directories when the host supports them, then switch the application to the verified release. Keep a complete known-good release available.
 
@@ -157,21 +157,21 @@ This is the release sequence, expressed as pseudocode because hosts have differe
 8. Keep the attempted release marked failed, even after successful recovery.`}
 </CodeBlock>
 
-Bound the wait and treat a timeout as failure. A 200 response can still contain a stale artifact. Restoring only a manifest can leave it paired with incompatible weights; restoring only weights can leave newer preprocessing in place. Rollback also cannot undo decisions already made by the bad release or reverse a change in the incoming data.
+Bound the wait and treat a timeout as failure. A 200 response can still contain a stale artifact. Restoring only a manifest can leave it paired with incompatible weights. Restoring only weights can leave newer preprocessing in place. Rollback also cannot undo decisions already made by the bad release or reverse a change in the incoming data.
 
 <Dialogue speaker="Chief Nazari">
-Keep the previous release until the replacement passes on the console. If rollback fails, I want the watch notified before another reading is classified.
+Keep the previous release until the replacement passes on the console. If rollback fails, notify the watch before the model classifies another reading.
 </Dialogue>
 
 ## Challenge
 
 Write the function that decides whether the supplied predictions pass the accuracy gate. Rows with missing labels still count in the total, but cannot count as correct. A separate check should decide whether enough labels are available for a release decision. This exercise does not configure GitHub permissions, publish a site, or measure device performance.
 
-The result keeps the labeled cases beside the score and shows a candidate the gate holds. That gives Nazari a reason for the decision instead of an unexplained green build.
+The result shows the labeled cases, the score, and a candidate that fails the release check. Nazari can inspect those results to see why the candidate failed.
 
 <Exercise slug="ci-cd-gate" />
 
-Then produce a serialized artifact with an in-memory save handler. Count its named tensors, parameters and actual weight bytes. The results include predictions from before and after reloading those saved bytes, so you can check that the round trip preserved the supplied probes. The inventory does not identify a release by itself; the file hashes and preprocessing record still belong in the workflow above.
+Then produce a serialized artifact with an in-memory save handler. Count its named tensors, parameters and actual weight bytes. The results include predictions from before and after reloading those saved bytes, so you can check that the round trip preserved the supplied probes. The inventory does not identify a release by itself. The file hashes and preprocessing record still belong in the workflow above.
 
 <Exercise slug="export-model-artifact" />
 
@@ -194,10 +194,10 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
         },
         {
           "text": "The publish command returned a success status.",
-          "feedback": "A successful command alone does not verify the bytes actually being served."
+          "feedback": "A successful command alone does not verify the bytes the server actually serves."
         },
         {
-          "text": "The previous manifest is served, without checking its shards or preprocessing.",
+          "text": "The server serves the previous manifest without checking its shards or preprocessing.",
           "feedback": "A restored manifest can still point to mismatched weights or run with newer preprocessing. Verify the complete release."
         }
       ],
@@ -208,14 +208,14 @@ Then produce a serialized artifact with an in-memory save handler. Count its nam
 />
 
 <LessonRecap
-  whatYouLearned={["Model identity and model quality are separate gates; verify both.", "Pin graph, weights, preprocessing and label order. Load the bytes you verified.", "Benchmark the intended workload on the intended device. A CI runner does not stand in for every browser.", "Verify the served candidate after publication and the complete restored release after rollback.", "model.save() can serialize into memory through tf.io.withSaveHandler; the handler receives topology, weight specs and weight data."]}
+  whatYouLearned={["Model identity and model quality are separate gates. Verify both.", "Pin graph, weights, preprocessing and label order. Load the bytes you verified.", "Benchmark the intended workload on the intended device. A CI runner does not stand in for every browser.", "Verify the served candidate after publication and the complete restored release after rollback.", "model.save() can serialize into memory through tf.io.withSaveHandler. The handler receives topology, weight specs and weight data."]}
   bridge="A lockfile identifies dependencies. A release record must also identify the exact model files and the code that interprets them."
   youCanNow="Implement a model gate, export the artifact it evaluates and inspect a release sequence for stale files or incomplete rollback."
 />
 
 <Epilogue>
 
-Demir connects the gate and artifact record to the fingerprint check in the release workflow. He keeps the mismatched pair as a regression case; it fails before publication. The correct pair goes green at 2214, with the candidate's fingerprint beside every gate. Nazari gives him the verification handover and checks the restored-release rehearsal herself. On the wall display, the pulse interval reads 44.0 seconds.
+Demir connects the gate and artifact record to the fingerprint check in the release workflow. He keeps the mismatched pair as a regression case. It fails before publication. The correct pair goes green at 2214, with the candidate's fingerprint beside every gate. Nazari gives him the verification handover and checks the restored-release rehearsal herself. On the wall display, the pulse interval reads 44.0 seconds.
 
 <Dialogue speaker="Chief Nazari">
 Three days ago that ticker said 47.0. Put a second operator on the deploy watch.

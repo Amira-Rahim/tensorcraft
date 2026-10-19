@@ -1,6 +1,6 @@
 slug: build-lstm
 lessonSlug: lstm-gates
-title: "Trace an LSTM State Update"
+title: "An LSTM state update"
 instructions: |
   Implement one LSTM step, then compare it with a one-unit TensorFlow.js layer.
 
@@ -14,7 +14,7 @@ instructions: |
 
   Return `{ newCell, newHidden }`. One test repeats the step 100 times with the forget gate near 1 and input gate closed. A nonzero candidate must not enter through that closed gate.
 
-  Next, write `buildLstmCell(timeSteps)`. Return `{ model, weights }`. The Sequential model must contain one LSTM layer with units 1, inputShape [timeSteps, 1], recurrentActivation 'sigmoid' and returnSequences true. Set the activation explicitly; TensorFlow.js otherwise uses hardSigmoid. This comparison uses one unit and one feature because a wider layer mixes positions through full matrices.
+  Next, write `buildLstmCell(timeSteps)`. Return `{ model, weights }`. The Sequential model must contain one LSTM layer with units 1, inputShape [timeSteps, 1], recurrentActivation 'sigmoid' and returnSequences true. Set the activation explicitly. TensorFlow.js otherwise uses hardSigmoid. This comparison uses one unit and one feature because a wider layer mixes positions through full matrices.
 
   Read model.getWeights(): input kernel [1, 4], recurrent kernel [1, 4], then bias [4]. Their four columns are INPUT, FORGET, CANDIDATE, OUTPUT. For each column, combine the recurrent value, input value and bias into a `[wHidden, wInput, bias]` row. Put that row inside the corresponding one-row weights array.
 
@@ -96,7 +96,7 @@ testCode: |
     ).toBe(true);
     expect(
       out.newCell.length,
-      'The cell keeps its width, so newCell holds one new value for every value you were handed.',
+      'The cell keeps its width, so newCell holds one new value for every value in the input cell state.',
     ).toBe(prevCell.length);
     return out;
   };
@@ -129,11 +129,11 @@ testCode: |
       ).toBeCloseTo(0.5 * Math.tanh(1), 6);
       expect(
         newHidden[1],
-        'Same step, the other dimension: the output gate times the tanh of the new cell, not the gate times the cell.',
+        'Same step, the other dimension: multiply the output gate by tanh(newCell). Apply tanh before multiplying.',
       ).toBeCloseTo(0.5 * Math.tanh(-0.5), 6);
       recordResult({
         kind: 'table', title: 'Your LSTM state update',
-        summary: 'Two synthetic state dimensions with zero gate pre-activations. Cell state stores information; hidden state is the gated output.',
+        summary: 'Two synthetic state dimensions with zero gate pre-activations. Cell state stores information. Hidden state is the gated output.',
         columns: ['State dimension', 'New cell value', 'New hidden value'],
         rows: newCell.map((value, i) => [i, value, newHidden[i]]),
       });
@@ -145,11 +145,11 @@ testCode: |
       const { newCell } = step([0], [0], [0], w);
       expect(
         newCell[0],
-        'The input gate is wide open here, and the candidate pre-activation is zero. Whatever the gate lets through is a share of a candidate worth nothing.',
+        'The input gate is open, but tanh(0) gives a candidate value of zero. This adds nothing to the cell state.',
       ).toBeCloseTo(0, 6);
     });
 
-    it('a closed forget gate wipes the cell; an open one keeps it', () => {
+    it('a closed forget gate wipes the cell. An open one keeps it', () => {
       const shut = flat(1);
       shut.forget = [[0, 0, -30]];
       expect(step([0], [4], [0], shut).newCell[0]).toBeCloseTo(0, 6);
@@ -158,7 +158,7 @@ testCode: |
       expect(step([0], [4], [0], open).newCell[0]).toBeCloseTo(4, 6);
     });
 
-    it('across 100 steps a shut input gate keeps a live candidate out, and the cell decays by the forget gate alone', () => {
+    it('a closed input gate blocks the candidate while the forget gate scales state over 100 steps', () => {
       const w = flat(1);
       // log(99) as the bias puts the gate at exactly 0.99, so the cell lands
       // on the 0.37 the lesson prints for a hundred steps at that gate.
@@ -210,7 +210,7 @@ testCode: |
       const expected = forget * 1.4 + store * candidate;
       expect(
         newCell[0],
-        'Each row is [wHidden, wInput, bias], and a gate opens on all three. Read the bias alone and the gate answers the same way whatever the step brings it.',
+        'Use all three values in each row: [wHidden, wInput, bias]. Each gate depends on both the previous hidden state and the current input.',
       ).toBeCloseTo(expected, 6);
       expect(newHidden[0]).toBeCloseTo(
         sig(0.5 * 0.6 - 1 * 0.75 + 0.25) * Math.tanh(expected),
@@ -286,7 +286,7 @@ testCode: |
       }
     });
 
-    it('your step reproduces the layer, step for step, on weights neither of you chose', () => {
+    it('your step matches the layer using its initialized weights', () => {
       // The layer initializes its own weights at random, so there is no
       // memorised trajectory to reach for. Both halves have to be right: the
       // gate arithmetic, and which column each gate was cut from.
@@ -312,7 +312,7 @@ testCode: |
               t +
               ' of ' +
               timeSteps +
-              ': your gates and the layer read the same window through the same weights and came back with different hidden states. The two agree to about seven decimal places when the arithmetic and the column order both match; anything larger is a different cell.',
+              ': your gates and the layer read the same window through the same weights and came back with different hidden states. The two agree to about seven decimal places when the arithmetic and the column order both match. Anything larger is a different cell.',
           ).toBeCloseTo(fromLayer[t], 5);
         });
       }

@@ -55,7 +55,7 @@ export function SessionToast() {
           href={`/auth?redirectTo=${redirectTo}`}
           className="text-xs font-semibold px-4 py-2 bg-error/15 text-error border border-error/30 hover:bg-error/30 transition-colors"
         >
-          Sign in →
+          Sign in
         </Link>
       </div>
     </div>

@@ -10,13 +10,13 @@ instructions: |
   Return { perMember, ensemble, weights, weighted, beatsBest }:
   - perMember maps each model name to its mean absolute error on the current window.
   - ensemble is the MAE when you average the predictions equally at each position.
-  - weights maps each name to w_i = (1 / e_i^2) / sum_j (1 / e_j^2), using heldOutError for e_i. The weights must sum to 1. This rule uses squared MAE, not error variance, so it does not guarantee the lowest possible variance.
+  - weights maps each name to w_i = (1 / e_i^2) / sum_j (1 / e_j^2), using heldOutError for e_i. The weights must sum to 1. This rule uses squared MAE. It has no minimum-variance guarantee.
   - weighted is the MAE of predictions combined with those weights.
   - beatsBest is true only when the equal-weight ensemble has lower MAE than every individual model on this window. A tie is not a win.
 
   Arrays are non-empty. Names are unique. Predictions are finite and aligned with actual. heldOutError values are finite and positive. To avoid overflow for tiny errors, normalize (minError / e_i)^2. The common scale cancels, so you get the same weights.
 
-  Treat model names as ordinary keys, including JavaScript property names. Find the best model by its score, not its array position. Shared errors may remain after averaging, a weak model can make the blend worse, and last week's best model may no longer be the best.
+  Treat model names as ordinary keys, including JavaScript property names. Compare all model scores to find the best member. Shared errors may remain after averaging, a weak model can make the blend worse, and last week's best model may no longer be the best.
 starterCode: |
   function ensembleGain(members, actual) {
     // Use MAE to score every model and both blends on the same readings.
@@ -92,7 +92,7 @@ testCode: |
       ).toBeCloseTo(1, 4);
       expect(
         result.perMember.Kalman,
-        'Two of the four predictions from this member are wrong and two are exact, so the mean runs over all four positions rather than over the misses.',
+        'Two of the four predictions from this member are wrong and two are exact, so calculate the mean across all four positions, including the exact predictions.',
       ).toBeCloseTo(1.5, 4);
     });
     it('beats the best member when the errors land in different places', () => {
@@ -110,11 +110,11 @@ testCode: |
       ).toBeCloseTo(0.5, 4);
       expect(
         result.beatsBest,
-        'This is the case an ensemble is bought for: the blend scores better than every member in it.',
+        'In this example, the average prediction has lower MAE than every individual model.',
       ).toBe(true);
       recordResult({
         kind: 'table', title: 'Your blend compared with its members',
-        summary: 'Four synthetic evaluation targets, shared by every member and blend. MAE uses the target’s arbitrary units. Blend weights come from a separate prior-period score; this result does not guarantee a gain on other periods.',
+        summary: 'Four synthetic evaluation targets, shared by every member and blend. MAE uses the target’s arbitrary units. Blend weights come from a separate prior-period score. This result does not guarantee a gain on other periods.',
         columns: ['Model or blend', 'Your MAE'],
         rows: [
           ...Object.entries(result.perMember).map(([name, value]) => [name, value]),
@@ -145,7 +145,7 @@ testCode: |
       ).toBeCloseTo(0.46678, 4);
       expect(
         result.weights.LSTM,
-        'Inverse squared error, not inverse error: squaring first is what spreads these three shares as far apart as they are.',
+        'Square each error before taking its reciprocal. That gives these three weights different proportions from plain inverse error.',
       ).toBeCloseTo(0.332854, 4);
       expect(
         result.weights.Kalman,
@@ -153,7 +153,7 @@ testCode: |
       ).toBeCloseTo(0.200366, 4);
       expect(
         result.weighted,
-        'This is the MAE of the blend those weights produce, scored exactly the way a member is scored: blend position by position first, then take the mean absolute error of the blended series.',
+        'Calculate MAE for the weighted blend just as you do for each member: blend position by position first, then take the mean absolute error of the blended series.',
       ).toBeCloseTo(0.434474, 4);
     });
   });
@@ -197,7 +197,7 @@ testCode: |
       expect(result.ensemble).toBeCloseTo(1, 4);
       expect(
         result.beatsBest,
-        'Averaging a perfect member with two weak ones spoils it. An ensemble is not free.',
+        'One model is exactly right here. Averaging it with two incorrect predictions increases the error.',
       ).toBe(false);
     });
     it('still loses when the blend beats the average member but not the best one', () => {
@@ -211,7 +211,7 @@ testCode: |
       );
       expect(
         result.perMember.LSTM,
-        'Every member is scored on its own first, before anything is blended.',
+        'Score each member separately before blending its predictions.',
       ).toBeCloseTo(0.25, 4);
       expect(result.perMember.Attention).toBeCloseTo(1.75, 4);
       expect(result.perMember.Kalman).toBeCloseTo(1, 4);
@@ -221,7 +221,7 @@ testCode: |
       expect(result.ensemble).toBeCloseTo(0.5, 4);
       expect(
         result.beatsBest,
-        'The blend beat the average member on this window and still lost to the best one. Comparing against the mean member error reports true here, and that is the misconception this case exists to catch.',
+        'The blend has lower error than the average member, but higher error than the best member. Compare the blend with the lowest individual error.',
       ).toBe(false);
     });
     // Member order is the point of this one. The worst member is listed
@@ -241,14 +241,14 @@ testCode: |
       );
       expect(
         result.perMember.Kalman,
-        'The member listed first is the worst one on this window, which is what this case is built to catch.',
+        'The first model has the highest error here. Compare all model scores to find the best one.',
       ).toBeCloseTo(6, 4);
       expect(result.perMember.Attention).toBeCloseTo(3, 4);
       expect(result.perMember.LSTM).toBeCloseTo(2.25, 4);
       expect(result.ensemble).toBeCloseTo(3.25, 4);
       expect(
         result.beatsBest,
-        'The best member is listed last on this window. Comparing the blend against members[0], or against the worst member, reports true here.',
+        'The last member has the lowest error in this window. Comparing the blend against members[0], or against the worst member, reports true here.',
       ).toBe(false);
     });
   });
@@ -266,7 +266,7 @@ testCode: |
       );
       expect(
         result.ensemble,
-        'This is the equal-share blend of the three series, scored with the same mean absolute error every member is scored with.',
+        'This is the equal-share blend of the three series, using the same mean absolute error calculation as the individual members.',
       ).toBeCloseTo(1.75, 4);
       expect(
         result.weighted,
@@ -274,7 +274,7 @@ testCode: |
       ).toBeCloseTo(0.600592, 4);
       expect(
         result.weighted < result.ensemble,
-        "Weighting is supposed to help here: last week's best member is this week's best member too.",
+        "Weighting helps in this example: last week's best member is this week's best member too.",
       ).toBe(true);
       expect(
         result.beatsBest,
@@ -295,12 +295,12 @@ testCode: |
       );
       expect(
         result.perMember.LSTM,
-        "Last week's best member is this week's worst, and it misses by 6 at every position here. Score each member on its own window before any weight is applied.",
+        "Last week's best member is this week's worst, and it misses by 6 at every position here. Score each member on its own window before applying weights.",
       ).toBeCloseTo(6, 4);
       expect(result.ensemble).toBeCloseTo(2.5, 4);
       expect(
         result.weighted,
-        "Last week's scores hand most of this blend to the member that is wrong by 6 this week, so the weighted series scores worse than the equal-share average. Weights built from THIS window's errors instead would land near the best member and miss the point of the case.",
+        "Use the supplied errors from last week to set the weights. The model they favor performs poorly this week, so the weighted blend does worse than the plain average. Do not recalculate weights from the evaluation results.",
       ).toBeCloseTo(5.342809, 4);
       expect(
         result.weighted > result.ensemble,
@@ -372,24 +372,24 @@ testCode: |
         for (const member of members) {
           expect(
             result.perMember[member.name],
-            'These predictions are drawn at run time, so every member error has to be computed from them.',
+            'The test draws these predictions at run time. Calculate each member’s error from the current values.',
           ).toBeCloseTo(expectedPer[member.name], 6);
           expect(
             result.weights[member.name],
-            "The held-out errors are drawn at run time too, and the weight for this member is recomputed from them beside your submission. Weights read off this window's own errors land somewhere else.",
+            "Calculate weights from the supplied held-out errors, which change between runs. Do not use errors from the current evaluation window.",
           ).toBeCloseTo(expectedWeights[member.name], 6);
         }
         expect(
           result.ensemble,
-          'The blend of a window nobody published. Average the members position by position, then score that series the way you scored a member.',
+          'These predictions change between runs. Average them at each position, then calculate the MAE of the resulting series.',
         ).toBeCloseTo(expectedEnsemble, 6);
         expect(
           result.weighted,
-          'The weighted blend of the same window, scored the same way. This one uses the shares above rather than equal thirds.',
+          'The weighted blend of the same window, scored the same way. This one uses the unequal shares above.',
         ).toBeCloseTo(expectedWeighted, 6);
         expect(
           result.beatsBest,
-          'The verdict is recomputed here from the errors above, and on half these trials every member is wrong in the same direction, where averaging cannot help. A verdict that comes from recognising the window instead of comparing the numbers lands on the wrong one.',
+          'Compare the ensemble MAE with the lowest member MAE on every run. Some cases have errors in the same direction, so averaging does not always help.',
         ).toBe(expectedEnsemble < lowest);
       }
     });

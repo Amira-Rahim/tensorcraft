@@ -2,7 +2,7 @@ slug: anomaly-detection
 title: "Anomaly Detection"
 worldId: deep-orbit
 order: 7
-description: "DEEP SCAN flags a signal that fits no known category. Its reconstruction error is twelve times the normal maximum. Help the crew learn a baseline from normal readings, tune alert thresholds, and check which errors an autoencoder can reveal. A high score calls for investigation; it does not explain the signal's source."
+description: "DEEP SCAN flags a signal that fits no known category. Its reconstruction error is twelve times the normal maximum. Help the crew learn a baseline from normal readings, tune alert thresholds, and check which errors an autoencoder can reveal. A high score calls for investigation. It does not explain the signal's source."
 summary: "Define a normal baseline, train an autoencoder, measure reconstruction error, tune thresholds, and combine three detector votes."
 lessonCount: 5
 prerequisites:

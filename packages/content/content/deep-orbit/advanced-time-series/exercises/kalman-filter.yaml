@@ -1,10 +1,10 @@
 slug: kalman-filter
 lessonSlug: kalman-filters
-title: "Track the Changing Pulse Interval"
+title: "The changing pulse interval"
 instructions: |
   Implement update(measurement) in SimpleKalman. Calculate the predicted variance, then the Kalman gain. Use that gain to update this.estimate and this.variance. Return the updated estimate as a number.
 
-  The prediction assumes the level stays where it was, with added process noise. The constructor starts variance at 1. processNoise and measureNoise are variances, not standard deviations. Inputs are finite, processNoise >= 0, and measureNoise > 0.
+  The prediction assumes the level stays where it was, with added process noise. The constructor starts variance at 1. processNoise and measureNoise specify variances. Square a standard deviation to obtain its variance. Inputs are finite, processNoise >= 0, and measureNoise > 0.
 
   Keep the updated estimate and variance for the next call. The checks compare your calculations with the filter equations and a fictional series of falling pulse intervals. This one-state filter does not track a rate of change, so its smooth output can fall behind the trend. Smoothness alone does not prove accuracy.
 starterCode: |
@@ -55,7 +55,7 @@ testCode: |
       const kf = new SimpleKalman(0, 0.1, 1);
       expect(
         typeof kf.update(1),
-        'update() returns the corrected estimate itself, not the object and not a promise.',
+        'update() must return the corrected estimate as a number.',
       ).toBe('number');
     });
     it('moves toward measurement', () => {
@@ -75,7 +75,7 @@ testCode: |
       for (let i = 0; i < 50; i++) kf.update(5);
       expect(
         kf.estimate,
-        'Fifty readings of the same value should pull the estimate onto it. An estimate stuck short of it means the weight stayed too small, which happens when the variance is not widened by the process noise before the weight is built, or is shrunk by more than (1 - weight) after.',
+        'After 50 identical measurements, the estimate should be close to that value. Add process noise to the variance before calculating the gain, then multiply that predicted variance by (1 - gain) after the correction.',
       ).toBeCloseTo(5, 0);
     });
     it('smooths noisy data', () => {
@@ -93,7 +93,7 @@ testCode: |
       const kf = new SimpleKalman(0, 0.1, 1);
       expect(
         kf.update(10),
-        'This is the first correction from a starting variance of 1 and a process noise of 0.1. A weight built from the two noise parameters alone lands well short of it.',
+        'The first correction uses starting variance 1 plus process noise 0.1. Include that predicted variance when calculating the gain.',
       ).toBeCloseTo(5.238, 3);
       expect(
         kf.update(10),
@@ -101,7 +101,7 @@ testCode: |
       ).toBeCloseTo(7.067, 3);
       expect(
         kf.variance,
-        'The variance after two corrections. It has to be the field the corrections wrote to, not the 1 the constructor set.',
+        'Read the variance field after both corrections. It should reflect those updates.',
       ).toBeCloseTo(0.384, 3);
     });
     it('the gain responds to the noise parameters', () => {
@@ -121,11 +121,11 @@ testCode: |
       const final = estimates[estimates.length - 1];
       expect(
         final,
-        'This is the whole run the lesson prints: eight readings, the lesson\'s noise parameters, and the estimate they leave behind.',
+        'Check the final estimate after all eight readings, using the noise parameters from the lesson.',
       ).toBeCloseTo(72.43168, 3);
       expect(
         final,
-        'The readings end at 72.0 and this estimate sits above them. That gap is the lag: the state here is one number with no term for its own change, so a steady drift is something the filter follows late rather than tracks. An estimate that lands on the newest reading means the weight came out at 1 and nothing was smoothed.',
+        'The readings end at 72.0, but the estimate stays above them. This one-state filter lags behind the steady decline because its prediction has no trend term. An estimate equal to the newest reading would mean a gain of 1, which discards the previous estimate.',
       ).toBeGreaterThan(72.0);
       expect(
         final,
@@ -133,13 +133,13 @@ testCode: |
       ).toBeLessThan(73.1);
       recordResult({
         kind: 'series', title: 'Your estimate follows the changing pulse interval',
-        summary: 'Fictional daily first-cycle log. Day 1 initializes the filter; days 2–8 show its returned updates. A smoother curve can lag the measurements and does not establish greater accuracy.',
+        summary: 'Fictional daily first-cycle log. Day 1 initializes the filter. Days 2–8 show its returned updates. A smoother curve can lag the measurements and does not establish greater accuracy.',
         xLabel: 'Day in this log', yLabel: 'Pulse interval (seconds)',
         labels: estimates.map((_, i) => String(i + 2)),
         series: [{ name: 'Recorded interval', values: log.slice(1) }, { name: 'Your filter estimate', values: estimates }],
       });
     });
-    it('rederives gain and variance from parameters no fixture pins', () => {
+    it('calculates gain and variance for different filter parameters', () => {
       for (let trial = 0; trial < 4; trial++) {
         const initial = Math.random() * 20 - 10;
         const processNoise = 0.05 + Math.random();
@@ -155,12 +155,12 @@ testCode: |
           variance = (1 - gain) * predicted;
           expect(
             kf.update(measurement),
-            'The noise parameters and the measurements are drawn at run time here, so this estimate has to be computed from them rather than recognised.',
+            'Calculate the estimate from the supplied measurements and noise parameters. They change between runs.',
           ).toBeCloseTo(estimate, 6);
         }
         expect(
           kf.variance,
-          'The variance is graded too. Four corrections on parameters nobody published, and the stored variance has to match the loop step for step.',
+          'Update the stored variance after each correction. This test checks it after four measurements with different noise parameters.',
         ).toBeCloseTo(variance, 6);
       }
     });

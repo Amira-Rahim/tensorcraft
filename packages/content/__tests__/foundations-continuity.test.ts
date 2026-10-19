@@ -111,6 +111,6 @@ describe("the opening investigation's visible prerequisites", () => {
       .split("solutionCode:")[0]!;
     expect(starter).toContain("const previewModel = tf.sequential()");
     expect(starter).toContain("return { mean: null, std: null }");
-    expect(exercise).toContain("Model construction is provided");
+    expect(exercise).toContain("supplied model");
   });
 });

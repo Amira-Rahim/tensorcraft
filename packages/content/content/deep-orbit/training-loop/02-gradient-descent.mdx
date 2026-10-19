@@ -10,7 +10,7 @@ scene:
 estimatedMinutes: 18
 difficulty: intermediate
 context:
-  narrative: "Knowing how wrong the network is isn't enough; Chief Nazari wants to know which direction to adjust."
+  narrative: "Knowing how wrong the network is isn't enough. Chief Nazari wants to know which direction to adjust."
   speaker: "Chief Nazari"
 concept:
   explanation: "Gradient descent uses the slope of the loss to choose a direction for changing the weights. A small enough step against that slope lowers the loss nearby."
@@ -20,14 +20,14 @@ concept:
     mlTitle: "Gradient descent step"
     mlCode: "weights = weights.sub(grad.mul(0.1))  // ease toward minimum"
     tier: structural
-    breaks: "The shown lerp step is gradient descent on half the squared distance to a fixed target. In model fitting, target labels may be known while the best parameters are not. A local gradient supplies an update direction; it is one optimization method, not the only possible one."
+    breaks: "The shown lerp step is gradient descent on half the squared distance to a fixed target. In model fitting, we may know the target labels while still searching for suitable parameters. A local gradient supplies an update direction. Other optimization methods can choose updates differently."
 consequence:
   narrative: "Demir can now update one weight using its gradient. The other 672 still need updates."
 hints:
   - level: nudge
-    content: "One descent step, written once inside step(fn): let autograd compute the slope of the loss function you were handed, then move the weight a small step in the opposite direction."
+    content: "One descent step, written once inside step(fn): let autograd compute the slope of the supplied loss function, then move the weight a small step in the opposite direction."
   - level: guidance
-    content: "The gradient result is an object keyed by variable name. Read this weight's gradient from that object. Subtract the gradient multiplied by learningRate. Use assign() to change the variable itself, rather than assigning a new tensor to a local name. Calculate the gradient from the function step() receives, since later calls use different losses."
+    content: "The gradient result is an object keyed by variable name. Read this weight's gradient from that object. Subtract the gradient multiplied by learningRate. Use assign() to update the existing variable. Reassigning a local name would leave that variable unchanged. Calculate the gradient from the function step() receives, since later calls use different losses."
   - level: solution
     content: |
       const weight = tf.tidy(() => tf.variable(tf.scalar(5.0)));
@@ -59,7 +59,7 @@ An easing loop such as `pos += (target - pos) * 0.1` moves a value toward a know
 
 Start at `pos = 2` with `target = 10`. The loss slope is -8. Subtract a tenth of that slope and the next position is 2.8, the same result as the easing line.
 
-For a network, we know the labels but not the best weights. Calculating the loss slope tells us which direction to try.
+For a network, we know the labels and need to find suitable weights. Calculating the loss slope tells us which direction to try.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 An easing loop knows where it is going. This has 673 parameters and no target to ease toward. Tell me which of the 673 go up, which go down, and by how much.
@@ -69,7 +69,7 @@ You will calculate the slope of a loss function and use it to update a weight.
 
 <LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Predict what a learning rate that is too high does to the loss", "Read a descent trace and say why the step shrinks near the minimum"]} />
 
-## Finding Downhill
+## Gradient descent updates
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -104,19 +104,19 @@ for (let step = 0; step < 20; step++) {
 x.dispose();`}
 </CodeBlock>
 
-`tf.variableGrads` calculates the slope without you writing the derivative. It records the loss calculation, then works backward through its operations. This is called **automatic differentiation**, or autograd. The next lesson explains it.
+`tf.variableGrads` calculates the slope without you writing the derivative. It records the loss calculation, then works backward through its operations. We call this **automatic differentiation**, or autograd. The next lesson explains it.
 
 Each row in the trace is five steps after the previous row. The distance covered gets smaller: 1.614, then 0.528, then 0.174.
 
 The loop does not change the learning rate. The slope of `(x - 3)²` gets smaller as x approaches 3. Each update is a tenth of that slope, so the steps also get smaller.
 
-The **learning rate** scales each update. It is a **hyperparameter**, a setting you choose rather than a weight this optimizer learns.
+The **learning rate** scales each update. It is a **hyperparameter**, a setting you choose before the optimizer calculates its updates.
 
 In the easing example, rate `r` leaves `|1 - r|` of the remaining distance after each frame. A rate of 0.001 moves very slowly: starting at `pos = 2` toward `target = 10` takes 6,682 frames to get within 0.01.
 
 Overshooting is not the same as diverging. At 1.5 the element jumps past the target to 14, then halves its error each frame and comes within 0.01 of the target in ten frames. At 2.0 it stops converging and bounces between 18 and 2. Above 2.0 the error grows: at 2.5 the positions are 22, -8 and 37.
 
-The threshold belongs to the loss rather than to the rate. The descent above minimizes `(x - 3)²` instead of half of it, so every slope it reads is twice as steep and its own threshold sits at 1.0. The 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
+The largest stable learning rate depends on the loss. The example above minimizes `(x - 3)²`, without dividing by two. Its slopes are twice as steep, so its learning rate must stay below 1.0 to converge. The 1.5 that settles the easing loop in ten frames sends x to 9, then -9, then 27.
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction">
 **The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:
@@ -132,9 +132,9 @@ For a differentiable loss, the gradient points toward the steepest local increas
 `L(w + Δw) ≈ L(w) + ∇L · Δw`
 
 To minimize the linear approximation, pick Δw opposite to ∇L. The learning rate η scales the step:
-- η too large → the local approximation may be poor at the proposed point, and the step can raise the loss
-- η too small → many steps to converge
-- Adaptive optimizers such as Adam scale updates using gradient history; their base learning rate remains a setting.
+- η too large to the local approximation may be poor at the proposed point, and the step can raise the loss
+- η too small to many steps to converge
+- Adaptive optimizers such as Adam scale updates using gradient history. Their base learning rate remains a setting.
 </DerivationDrawer>
 
 <ConceptReference summary="Practice: predict the next loss">
@@ -182,10 +182,10 @@ checks. It is the update rule the full network will need for every parameter.
 <LessonRecap
   whatYouLearned={[
     "A gradient is the slope of the loss with respect to each weight. It points in the direction of steepest ascent, so a sufficiently small step opposite a nonzero gradient lowers a smooth loss locally.",
-    "The learning rate controls step size. The quadratic example has an exact convergence range; a general network does not share that single threshold.",
+    "The learning rate controls step size. The quadratic example has an exact convergence range. A general network does not share that single threshold.",
     "`tf.variableGrads()` computes gradients for every trainable variable your loss function touched, in one call, keyed by variable name."
   ]}
-  bridge="Lerp is gradient descent for a simple squared-distance loss. In model fitting, labels may be known while the best parameters remain unknown."
+  bridge="Lerp is gradient descent for a simple squared-distance loss. In model fitting, we may know the labels while still searching for suitable parameters."
   youCanNow="Implement a manual gradient descent step using `tf.variableGrads()` and predict what a rate that is too high does to the loss."
 />
 

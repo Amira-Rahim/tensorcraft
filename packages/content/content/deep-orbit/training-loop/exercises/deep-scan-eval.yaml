@@ -1,6 +1,6 @@
 slug: deep-scan-eval
 lessonSlug: evaluating-deep-scan
-title: "Train DEEP SCAN, Then Read the Gap"
+title: "DEEP SCAN training and validation results"
 instructions: |
   Help Mirza check the classifier on data it has not trained on.
   The supplied tensors hold 100 generated training rows and 43 separate test
@@ -24,7 +24,7 @@ instructions: |
   the model is ready for real use.
 starterCode: |
   // Synthetic practice rows. Clipping enforces this fixture's [0, 1] range.
-  // Labels and distributions illustrate the story, not a real archive.
+  // These synthetic labels and distributions illustrate the story.
   const { trainX, trainY, testX, testY } = tf.tidy(() => {
     const calm = tf.clipByValue(
       tf.concat(
@@ -242,8 +242,8 @@ testCode: |
     it('the fit used the supplied training values, not an equal-sized mixture with test rows', () => {
       const fit = tf.__fits.find((entry) => entry && entry.history === history);
       expect(fit, 'No recorded model.fit call produced this history. Train the supplied model.').toBeDefined();
-      expect(fit.x && fit.x.complete, 'The training inputs could not be inspected. Use the supplied tensor.').toBe(true);
-      expect(fit.y && fit.y.complete, 'The training labels could not be inspected. Use the supplied tensor.').toBe(true);
+      expect(fit.x && fit.x.complete, 'The check could not inspect the training inputs. Use the supplied tensor.').toBe(true);
+      expect(fit.y && fit.y.complete, 'The check could not inspect the training labels. Use the supplied tensor.').toBe(true);
       expect(fit.x.shape).toEqual(trainX.shape);
       expect(fit.y.shape).toEqual(trainY.shape);
       const pairedRows = (xs, ys) => Array.from({ length: xs.shape[0] }, (_, i) =>
@@ -251,7 +251,7 @@ testCode: |
       const suppliedX = { shape: trainX.shape, values: Array.from(trainX.dataSync()) };
       const suppliedY = { values: Array.from(trainY.dataSync()) };
       expect(pairedRows(fit.x, fit.y),
-        'Keep the supplied training rows and their paired labels. Reordering pairs is valid; substituting test rows is leakage.').toEqual(pairedRows(suppliedX, suppliedY));
+        'Keep the supplied training rows and their paired labels. Reordering pairs is valid. Substituting test rows is leakage.').toEqual(pairedRows(suppliedX, suppliedY));
     });
     it('evaluates the original held-out rows and labels', () => {
 
@@ -317,11 +317,11 @@ testCode: |
     it('diagnose reports a large gap above the stated boundary', () => {
       expect(
         diagnose(0.95, 0.6),
-        'The training score exceeds the held-out score by more than 0.15. Report the gap; its cause needs investigation.',
+        'The training score exceeds the held-out score by more than 0.15. Report the gap. Its cause needs investigation.',
       ).toBe('large-gap');
       expect(
         diagnose(0.99, 0.83),
-        'The gap decides this one, not how high the training number is.',
+        'Compare the training and validation scores. Their gap determines this result.',
       ).toBe('large-gap');
       expect(diagnose(0.9, 0.74), 'This spread clears the cutoff the instructions name.').toBe(
         'large-gap',
@@ -332,7 +332,7 @@ testCode: |
       ).toBe('no-gap-warning');
       expect(
         diagnose(0.93, 0.91),
-        'These scores trigger neither condition. Return no-gap-warning; this is not a release decision.',
+        'These scores trigger neither condition. Return no-gap-warning. This is not a release decision.',
       ).toBe('no-gap-warning');
     });
     it('diagnose reports low scores only after checking the gap', () => {
@@ -397,7 +397,7 @@ testCode: |
       expect(verdict).toBe(diagnose(trainAcc, testAcc));
       recordResult({
         kind: 'table', title: 'The scores from your evaluation run',
-        summary: 'Training values are the final fit log. Test values come from your held-out evaluation on 43 supplied fixture rows; they are not the story\'s 94% result.',
+        summary: 'Training values are the final fit log. Test values come from your held-out evaluation on 43 supplied fixture rows. They are not the story\'s 94% result.',
         columns: ['Dataset', 'Rows', 'Loss', 'Accuracy'],
         rows: [['Training', trainX.shape[0], history.history.loss[history.history.loss.length - 1], trainAcc], ['Held-out test', testX.shape[0], evalResult[0].dataSync()[0], testAcc]],
       });

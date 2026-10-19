@@ -304,7 +304,7 @@ describe("flow activity teaching contracts", () => {
 
   it.each([
     [{ classifier: 3 }, 1, "finite number from 0 to 1"],
-    [{ detector: 2 }, 2, "string, not a boolean"],
+    [{ detector: 2 }, 2, "string. It must return a boolean"],
     [{ writer: 1 }, 3, "only whitespace"],
   ])(
     "explains a failed contract and skips later stages: %o",
@@ -347,7 +347,7 @@ describe("flow activity teaching contracts", () => {
       "unsupported classifier label becomes unknown",
     );
     expect(FLOW_INVESTIGATIONS["multi-model-systems"]!.boundary).toContain(
-      "no classifier, detector or language model runs",
+      "No classifier, detector or language model runs",
     );
   });
 
@@ -440,7 +440,7 @@ describe("flow activity teaching contracts", () => {
       expect(outcomes.labels).toEqual([
         "Valid hits",
         "Stale hits",
-        "Compute misses",
+        "Cache misses",
       ]);
       expect(outcomes.values).toEqual(expected);
       expect(result.answer).toBe(expected[0]);

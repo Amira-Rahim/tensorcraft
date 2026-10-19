@@ -1,12 +1,12 @@
 slug: compute-fft
 lessonSlug: fourier-transform
-title: "Compute FFT and Find Dominant Frequency"
+title: "FFT and dominant frequency"
 instructions: |
   Implement `findDominantFrequency(signal, sampleRate)` using `tf.spectral.rfft()`. Return the frequency in hertz of the bin with the largest magnitude, excluding bin 0, the constant offset. Convert its index using `bin * sampleRate / signal.length`. Keep the lowest eligible index when magnitudes tie.
 
-  Return the measured bin center. An isolated off-bin tone often peaks nearby, but phase, leakage and neighboring tones can change the winner. Use the computed magnitudes rather than rounding an estimated frequency.
+  Return the measured bin center. An isolated off-bin tone often peaks nearby, but phase, leakage and neighboring tones can change the winner. Choose the winning bin from the computed magnitudes.
 
-  Assume finite input with at least two samples and a positive sample rate. For a silent signal, the tie rule returns the first non-DC bin; this is a function convention, not evidence of a tone.
+  Assume finite input with at least two samples and a positive sample rate. For a silent signal, the tie rule returns the first non-DC bin. The function uses this convention for ties. Silence still contains no tone.
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -43,13 +43,13 @@ testCode: |
       const freq = findDominantFrequency(signal, 128);
       expect(
         Number.isFinite(freq),
-        'The return value here is a number of hertz. The starter returns null, so nothing has been computed yet.',
+        'The return value here is a number of hertz. The starter returns null, so your function has calculated no result yet.',
       ).toBe(true);
       expect(freq).toBeCloseTo(5, 1);
       recordResult({
         kind: 'table',
         title: 'Your strongest eligible frequency',
-        summary: 'Synthetic one-second capture. The returned value is an FFT bin center, not an estimate finer than the bin spacing.',
+        summary: 'Synthetic one-second capture. The returned value identifies an FFT bin center. Its precision cannot resolve a frequency between bins.',
         columns: ['Measurement', 'Value'],
         rows: [
           ['Samples', signal.length],
@@ -84,7 +84,7 @@ testCode: |
       const signal = Array.from({ length: 64 }, (_, i) => Math.sin((2 * Math.PI * 12 * i) / 64));
       expect(
         findDominantFrequency(signal, 64),
-        'A different tone at a different capture length, so nothing that worked above can be carried over by hand.',
+        'This case changes both the tone and the capture length. Calculate the bin frequency from the current sample rate and sample count.',
       ).toBeCloseTo(12, 1);
     });
     it('converts the bin to hertz instead of returning the bin index (256 samples at 128 Hz)', () => {

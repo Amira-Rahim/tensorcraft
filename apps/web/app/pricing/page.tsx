@@ -17,30 +17,30 @@ import { AmbientBackground } from "@/app/components/ambient-background";
 // buyable today. What to reinstate when more worlds launch is tracked in
 // docs/post-launch-backlog.md ("Restore the bundle surfaces").
 export const metadata: Metadata = {
-  title: `ML Course Pricing: Free Preview, $${PRICING.single.price} per Course | Tensorcraft`,
-  description: `One payment. Lifetime access. Learn browser-based ML through JavaScript concepts you already know. Free preview, $${PRICING.single.price} per course.`,
+  title: `ML Course Pricing: Free Preview, $${PRICING.single.price} per Course, Tensorcraft`,
+  description: `Learn browser-based ML through familiar JavaScript concepts, with lifetime access for one payment. Free preview, $${PRICING.single.price} per course.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
-    title: "Buy Once. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per course.`,
+    title: "Course pricing, Tensorcraft",
+    description: `Try the free preview. Lifetime access to the full course costs $${PRICING.single.price}.`,
     images: [
       {
-        url: "/api/og?title=Buy%20Once.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
+        url: "/api/og?title=Course%20pricing&subtitle=Lifetime%20access%20with%20one%20payment&world=deep-orbit",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft: Buy Once. Keep It Forever.",
+        alt: "Tensorcraft course pricing",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buy Once. Keep It Forever. | Tensorcraft",
-    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per course.`,
+    title: "Course pricing, Tensorcraft",
+    description: `Try the free preview. Lifetime access to the full course costs $${PRICING.single.price}.`,
     images: [
-      "/api/og?title=Buy%20Once.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&world=deep-orbit",
+      "/api/og?title=Course%20pricing&subtitle=Lifetime%20access%20with%20one%20payment&world=deep-orbit",
     ],
   },
 };
@@ -54,7 +54,7 @@ export default function PricingPage() {
     name: "Tensorcraft course pricing",
     url: "https://tensorcraft.app/pricing",
     description:
-      "One-payment lifetime-access pricing for the Tensorcraft browser-ML course: free preview and one-time course purchase.",
+      "Try Module 1 for free, then pay once for lifetime access to the full course.",
     itemListElement: buildPricingOffers(),
   };
 
@@ -84,23 +84,18 @@ export default function PricingPage() {
             the header-to-title gap is 96px, matched with /worlds and /blog
             (owner, 2026-09-01). */}
         <section className="pt-0 pb-14 px-6 text-center">
-          {/* Two stacked lines (owner, 2026-09-01), which re-derives the
-              clamp: the longest line is now 13 mono chars ("Keep forever.")
-              at 0.575em per char, so 13vw fills the px-6 gutters and the
-              2.25rem floor holds two clean lines even at 320px. Span one
-              keeps a trailing space so textContent reads as one sentence
-              (same a11y contract as the landing wall). */}
+          {/* Keep the established two-line heading and fluid type scale.
+              The trailing space preserves readable text across the spans. */}
           <h1
             data-testid="pricing-heading"
             className="text-[clamp(2.25rem,calc(13vw-0.5rem),9rem)] leading-[1.02] font-bold mb-6 text-text-primary font-mono tracking-tight"
           >
-            <span className="block">Buy once. </span>
-            <span className="block">Keep forever.</span>
+            <span className="block">Course </span>
+            <span className="block">pricing</span>
           </h1>
           <p className="text-lg sm:text-2xl max-w-[70ch] mx-auto text-text-muted font-sans">
-            Each world is a separate ML specialization. Deep Orbit is the one
-            available today: buy once, get lifetime access, no subscription, all
-            updates included.
+            Deep Orbit is available now. One payment gives you lifetime access
+            to the course and all its updates.
           </p>
         </section>
 
@@ -160,7 +155,7 @@ export default function PricingPage() {
         {/* CTA Footer */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
-            your javascript knowledge is the foundation
+            tensors, neural networks, and browser exercises
           </p>
           {/* The "Start with the free module..." line was removed
               2026-09-01 (owner request); the h2 takes its bottom margin so
@@ -169,7 +164,7 @@ export default function PricingPage() {
               px-6 gutters from ~720px up; the 5.5rem ceiling keeps this h2
               subordinate to the 6rem-capped page h1. */}
           <h2 className="text-[clamp(1.5rem,calc(7.5vw-0.25rem),5.5rem)] font-bold mb-10 text-text-primary font-mono tracking-tight">
-            Add ML to your toolkit.
+            The free first module
           </h2>
           {/* The close does what the sentence above says: the free start.
               Was "See All 5 Worlds" pointing at /worlds, four of which are
@@ -179,7 +174,7 @@ export default function PricingPage() {
             href="/worlds/deep-orbit/foundations/introduction-to-tensors"
             className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
           >
-            Start Module 1 &rarr;
+            Start Module 1
           </Link>
         </section>
       </div>

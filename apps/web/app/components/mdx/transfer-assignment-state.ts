@@ -46,8 +46,8 @@ export const REPORT_FIELDS = [
 ] as const;
 export type ReportField = (typeof REPORT_FIELDS)[number]["id"];
 export const REVIEW_CHECKS = [
-  "Every input would exist when a build starts; outcome fields are excluded.",
-  "Preprocessing uses training rows only; the final period did not guide model selection.",
+  "Every input would exist when a build starts. The inputs exclude outcome fields.",
+  "Preprocessing uses training rows only. The final period did not guide model selection.",
   "Baseline and model use the same evaluation rows and metric.",
   "My report includes error cases, limitations and enough detail to rerun the code.",
 ] as const;
@@ -60,7 +60,7 @@ export const RESCUES = [
   {
     id: "baseline",
     title: "I need help with the baseline",
-    body: "Try predicting the training set's majority class for every row. A second baseline could be a rule chosen on training and validation data. Count both missed failures and unnecessary reviews; accuracy alone can hide missed failures.",
+    body: "Try predicting the training set's majority class for every row. A second baseline could be a rule chosen on training and validation data. Count both missed failures and unnecessary reviews. Accuracy alone can hide missed failures.",
   },
   {
     id: "model",

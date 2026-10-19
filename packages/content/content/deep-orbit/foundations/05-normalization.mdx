@@ -10,7 +10,7 @@ scene:
   location: "Archimedes, Bridge"
   epilogueLocation: "Bridge, Main Displays"
   portraitAlt: "The bridge holo table squeezes four mismatched sensor traces onto one shared scale while a lone ringed sample hangs apart."
-  epiloguePortraitAlt: "Bridge displays settle onto one scale; one ringed sample sits beside a half-lit verdict gauge as Demir and Farah watch."
+  epiloguePortraitAlt: "Bridge displays settle onto one scale. One ringed sample sits beside a half-lit verdict gauge as Demir and Farah watch."
 context:
   narrative: "Commander Mirza orders all sensor data normalized before the deep scan begins."
   speaker: "Commander Mirza"
@@ -22,7 +22,7 @@ concept:
     mlTitle: "Min-Max Normalization"
     mlCode: "const normalized = data.sub(min).div(max.sub(min))"
     tier: structural
-    breaks: "Scroll progress uses page dimensions; sensor scaling uses chosen physical bounds or statistics fitted on training data. New observations can exceed fitted min/max values. Z-score uses a mean and standard deviation instead, but it is not automatically better or immune to drift and outliers."
+    breaks: "Scroll progress uses page dimensions. Sensor scaling uses chosen physical bounds or statistics fitted on training data. New observations can exceed fitted min/max values. Z-score uses a mean and standard deviation instead, but it is not automatically better or immune to drift and outliers."
 consequence:
   narrative: "The four sensor feeds now use a comparable scale. One archived reading still stands out."
 hints:
@@ -62,7 +62,7 @@ units as the training rows.
   beatId="deep-orbit-foundations-7741-first-flag"
   contentVersion={2}
   showTimer={false}
-  prompt="The normalization job flags sample 7741. It sits inside every baseline but differs from nearby readings, and its true event label is unknown. One engineer has 40 minutes before handover; the scheduled channel check takes 20. A full capture and calibration review needs all 40. A 20-minute replay can preserve the row and test reproducibility, but cannot rule out an instrument problem. The raw archive is read-only. What goes on the watch sheet?"
+  prompt="The normalization job flags sample 7741. It falls within the expected ranges but differs from nearby readings. The crew does not know what caused it. One engineer has 40 minutes before handover. The scheduled channel check takes 20. A full capture and calibration review needs all 40. A 20-minute replay can preserve the row and test reproducibility, but cannot rule out an instrument problem. The raw archive is read-only. What goes on the watch sheet?"
   options={[
   {
     "label": "cooperate",
@@ -77,18 +77,18 @@ units as the training rows.
   {
     "label": "random",
     "display": "Keep the scheduled check and leave 7741 unassigned",
-    "consequence": "Nazari finishes the channel check. Sample 7741 stays in the archive without an owner or a replay deadline; the next watch must recover its context if it returns."
+    "consequence": "Nazari finishes the channel check. Sample 7741 stays in the archive without an owner or a replay deadline. The next watch must recover its context if it returns."
   },
   {
     "label": "dominant",
     "display": "Give Demir 20 minutes for replay, then finish the channel check",
-    "consequence": "Demir owns the replay and records the timestamp, channels and unresolved label. Nazari gets the remaining 20 minutes for the channel check. Reproducing the row will not clear the instrument chain; that review moves to the next watch."
+    "consequence": "Demir owns the replay and records the timestamp, channels and unresolved label. Nazari gets the remaining 20 minutes for the channel check. Getting the same reading again will not rule out a sensor problem. The next watch will need to check that."
   }
 ]}
 />
 
 
-## Keep each feature on its own scale
+## Scaling each feature
 
 Farah's four readings are `[20, 0.2]`, `[22, 0.8]`,
 `[24, 0.4]`, and `[26, 0.6]`. Columns are temperature and signal strength.
@@ -112,7 +112,7 @@ const normalized = tf.tidy(() => {
 
 The challenge separates this calculation into `fitStats(rows)` and
 `scaleFeatures(rows, offset, scale)`. Return the saved mean and std from the
-first function; use the supplied offset and scale in the second.
+first function. Use the supplied offset and scale in the second.
 
 For this batch, mean is `[23, 0.5]` and std is approximately `[2.236, 0.224]`.
 Broadcasting applies each column's statistics to every row.
@@ -125,7 +125,7 @@ The model has not learned how to handle that new variation.
 Fit statistics on training rows only. Reuse them for validation and future
 readings so the same raw value keeps the same meaning.
 
-## Run the fixed preview neuron
+## The fixed preview neuron
 
 The starter supplies Farah's model: two weights `[0.9, -1.4]`, bias `-0.3`,
 and sigmoid, a function that maps the weighted sum into 0 to 1. You are
@@ -147,11 +147,9 @@ oneScore.dispose();`}
 </CodeBlock>
 
 `predict()` expects a batch. `expandDims(0)` makes one `[2]` reading into a
-`[1, 2]` batch. The returned prediction stays alive for its caller; temporary
-tensors are released. This path uses saved statistics even after the original
-training batch is disposed.
+`[1, 2]` batch. TensorFlow.js keeps the returned prediction for its caller and releases the temporary tensors. This path reuses the saved statistics even after you dispose of the original training batch.
 
-## Compare with min-max scaling
+## Min-max scaling
 
 Min-max uses `(value - min) / (max - min)`. Fit each column's bounds with
 `batch.min(0)` and `batch.max(0)`, then reuse `scaleFeatures` with the minimum
@@ -162,11 +160,11 @@ and range. The same zero-scale rule applies.
 const max = batch.max(0);
 const range = max.sub(min);
 // Pass the minimum and range to your scaleFeatures function.
-// Keep min and max; release range after scaling.`}
+// Keep min and max. Release range after scaling.`}
 </CodeBlock>
 
 Nonconstant training columns span 0 to 1. A later value outside the fitted
-bounds can fall outside that range. Scaling changes numerical units; it does
+bounds can fall outside that range. Scaling changes numerical units. It does
 not decide which feature contains useful information.
 
 <ConceptReference summary="Reference: choosing a scaler and the supplied neuron">
@@ -179,7 +177,7 @@ they change the mean and spread, or stretch the range. Known physical bounds
 can also supply min-max limits.
 
 The population variance used here divides by n. The usual unbiased sample
-variance divides by n minus 1; its square root is not an unbiased estimator
+variance divides by n minus 1. Its square root is not an unbiased estimator
 of standard deviation. Use the population convention required by this task.
 
 The starter builds the fixed neuron this way:
@@ -195,7 +193,7 @@ tf.tidy(() => previewModel.setWeights([
 </CodeBlock>
 
 For `[20, 0.2]`, the scaled row is approximately `[-1.342, -1.342]`.
-The weighted sum is about 0.371; sigmoid returns about 0.592. Without scaling,
+The weighted sum is about 0.371. Sigmoid returns about 0.592. Without scaling,
 the temperature term alone is 18 and the output saturates near 1. The weights
 have not changed. A confident score does not establish that an input is
 familiar or that the answer is correct.
@@ -204,7 +202,7 @@ familiar or that the answer is correct.
 
 <ConceptReference summary="Practice: a different scaler and reading">
 
-This separate practice case changes the dataset and frozen neuron. Use the
+This optional example uses different readings and a model with different fixed weights. Use the
 statistics printed inside it, then return to the four-row batch in the challenge.
 
 <LearningExperiment id="normalization" />
@@ -215,7 +213,7 @@ statistics printed inside it, then return to the four-row batch in the challenge
 
 Farah gives you a model with fixed weights. Scale the two measurements in
 each row, then run the scaled batch through it. Inspect your saved
-statistics, scaled inputs, and returned scores. The model is supplied;
+statistics, scaled inputs, and returned scores. The exercise supplies the model.
 your job is to keep its input format consistent for this batch and later
 readings.
 
@@ -235,7 +233,7 @@ readings.
         },
         {
           "text": "It removes the need to learn weights.",
-          "feedback": "Normalization prepares inputs; it does not learn the model."
+          "feedback": "Normalization prepares inputs. It does not learn the model."
         },
         {
           "text": "It can make training easier by putting inputs on comparable scales.",
@@ -258,7 +256,7 @@ readings.
       "options": [
         {
           "text": "Flattening.",
-          "feedback": "Neither tensor is flattened for this subtraction."
+          "feedback": "Both tensors keep their shapes during this subtraction."
         },
         {
           "text": "Broadcasting.",
@@ -266,7 +264,7 @@ readings.
         },
         {
           "text": "Matrix multiplication.",
-          "feedback": "Subtraction is elementwise; it does not perform a matrix product."
+          "feedback": "Subtraction is elementwise. It does not perform a matrix product."
         }
       ],
       "correctIndex": 1,
@@ -274,7 +272,7 @@ readings.
     },
     {
       "kind": "choice",
-      "question": "Which values are subtracted from each row?",
+      "question": "Which values does this operation subtract from each row?",
       "options": [
         {
           "text": "The first column mean from column 1, and the second from column 2.",
@@ -282,11 +280,11 @@ readings.
         },
         {
           "text": "Both means from every individual value.",
-          "feedback": "The two means align with the two columns, rather than both applying to every value."
+          "feedback": "Each mean applies to its matching column."
         },
         {
           "text": "The first mean from the first two rows, and the second from the last two.",
-          "feedback": "The trailing dimension represents columns, not groups of rows."
+          "feedback": "The trailing dimension counts the values in each row, one per column."
         }
       ],
       "correctIndex": 0,
@@ -298,12 +296,12 @@ readings.
 <LessonRecap
   whatYouLearned={[
     "Comparable input scales can make optimization easier. Scaling does not establish feature importance or replace learning the weights.",
-    "Z-score subtracts the training mean and divides by the training standard deviation. tf.moments() returns mean and variance; take the variance's square root for standard deviation.",
-    "Min-max maps fitted bounds to 0 and 1; later values can exceed them. For a constant training feature, use a divisor of 1.",
-    "Save the training-time mean and standard deviation, computed on the training rows only. Inference data must be normalized with those same statistics; never recompute them from the new batch.",
-    "A fixed dense sigmoid unit shows how scaling changes a prediction. Matching its output checks this example, not the quality of a trained model."
+    "Z-score subtracts the training mean and divides by the training standard deviation. tf.moments() returns mean and variance. Take the variance's square root for standard deviation.",
+    "Min-max maps fitted bounds to 0 and 1. Later values can exceed them. For a constant training feature, use a divisor of 1.",
+    "Save the training-time mean and standard deviation, computed on the training rows only. Normalize inference data with those same statistics. Never recompute them from the new batch.",
+    "The supplied neuron shows how scaling changes its score. Matching that score checks your calculation. It does not tell you how accurate a trained model would be."
   ]}
-  bridge="Scroll progress and min-max scaling use an offset and range. Handle a zero range explicitly; sensor readings outside fitted bounds can normalize below zero or above one."
+  bridge="Scroll progress and min-max scaling use an offset and range. Handle a zero range explicitly. Sensor readings outside fitted bounds can normalize below zero or above one."
   youCanNow="Apply z-score normalization with tf.moments, preserve the training statistics for inference, and run normalized readings through a dense layer."
 />
 
@@ -311,14 +309,14 @@ readings.
 
 <Epilogue>
 
-Demir brings the four scaled feeds onto the bridge displays. He scrolls through the archive to check them and reaches sample 7741, recorded eight days ago during the calm period. Its numbers were scaled correctly. It still looks different from the nearby readings.
+Demir brings the four scaled feeds onto the bridge displays. He scrolls through the archive to check them and reaches sample 7741, recorded eight days ago during the calm period. The pipeline scaled its numbers correctly. It still looks different from the nearby readings.
 
 Farah brings up a preview classifier, a small demonstration of what the next modules will build and test. She runs it on the archive:
 
 <DeepScanDemo />
 
 <Dialogue speaker="Dr. Farah">
-Five firm scores and one near the boundary. That score does not tell us whether the reading is new or why the classifier is unsure. We need more evidence.
+Five scores near either end and one near the boundary. That score does not tell us whether the reading is new or why the classifier is unsure. We need more evidence.
 </Dialogue>
 
 The preview score goes into the raw capture record. It does not settle the review.

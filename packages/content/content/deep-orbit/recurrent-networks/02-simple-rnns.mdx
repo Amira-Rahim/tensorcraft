@@ -7,11 +7,11 @@ order: 2
 scene:
   location: "Archimedes, Engineering"
   time: "Before end of shift"
-  portraitAlt: "At an engineering console a diagram loops a cell's output back into itself; a silhouetted ensign traces it as a scientist points."
+  portraitAlt: "At an engineering console a diagram loops a cell's output back into itself. A silhouetted ensign traces it as a scientist points."
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "Demir builds his first recurrent neural network: a network that maintains hidden state between time steps, processing the signal as a sequence rather than isolated snapshots."
+  narrative: "Demir builds his first recurrent neural network: a network that maintains hidden state between time steps, using earlier readings as it processes the signal."
   speaker: "Ensign Demir"
 concept:
   explanation: "An RNN updates a stored summary, called hidden state, after each reading. Training learns the weights used in that update."
@@ -21,7 +21,7 @@ concept:
     mlTitle: "RNN Cell"
     mlCode: "newHidden = tanh(W_h * prevHidden + W_x * input + bias)"
     tier: structural
-    breaks: "Both carry state through repeated updates. A replay reducer usually has authored transition rules; an RNN learns parameters for its transition. Fixed weights and inputs can give reproducible inference. Different prior states may change the output for the same new input."
+    breaks: "Both carry state through repeated updates. A replay reducer usually has authored transition rules. An RNN learns parameters for its transition. Fixed weights and inputs can give reproducible inference. Different prior states may change the output for the same new input."
 consequence:
   narrative: "Demir leaves the simple RNN training overnight. In the morning, its predictions still do not use the distant pattern."
 hints:
@@ -95,16 +95,16 @@ for (const x of [0.5, 0.9, 0.5]) {
 h.dispose();
 // 0.4621
 // 0.8537
-// 0.8284  ← the same 0.5 that scored 0.4621 two steps ago`}
+// 0.8284: the same 0.5 that scored 0.4621 two steps ago`}
 </CodeBlock>
 
 <Dialogue speaker="Dr. Farah">
-Both updates use the previous state, so the same new input can produce a different result. You wrote the reducer rules; training fits the RNN parameters. The 0.8 and 1.0 here were chosen to make those state changes easy to follow.
+Both updates use the previous state, so the same new input can produce a different result. You wrote the reducer rules. Training fits the RNN parameters. The 0.8 and 1.0 here were chosen to make those state changes easy to follow.
 </Dialogue>
 
-Run the same readings through a carried state and inspect how an earlier reading changes a later result. Then compare your update with a TensorFlow.js recurrent layer, and measure how the state derivative changes across a longer window.
+Update the hidden state with each reading and see how an earlier reading affects a later result. Then compare your update with a TensorFlow.js recurrent layer, and measure how the state derivative changes across a longer window.
 
-<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a recurrent layer's weights and compare its output with the same update written in JavaScript"]} />
+<LearningObjectives objectives={["Understand how an RNN calculates new state from the previous state and current input", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem: why simple RNNs struggle with long sequences", "Read a recurrent layer's weights and compare its output with the same update written in JavaScript"]} />
 
 ## The Learned Reducer
 
@@ -125,7 +125,7 @@ function signalReducer(state: { count: number; trend: string }, action: { value:
 //
 // W_h and W_x are weight matrices learned during training
 // tanh squashes output to [-1, 1]
-// prevHidden is a learned summary influenced by earlier steps, not a lossless log.
+// prevHidden summarizes earlier steps through learned weights. It can lose information.
 
 // Build a simple RNN in TF.js
 const model = tf.sequential();
@@ -142,7 +142,7 @@ const x = tf.randomNormal([32, 5, 3]);
 const y = tf.tidy(() => tf.randomUniform([32, 1]).round());
 
 // Shape drill only. Random labels do not define a generalizable signal.
-// A flexible model may fit them; a falling training loss would not prove
+// A flexible model may fit them. A falling training loss would not prove
 // useful forecasting. Compare against held-out data with meaningful labels.
 await model.fit(x, y, { epochs: 10 });
 
@@ -153,7 +153,7 @@ model.dispose();`}
 
 Read the recurrent layer’s weights with `model.layers[0].getWeights()`. It returns the input kernel [features, units], recurrent kernel [units, units], then bias [units]. The input kernel comes first, even though the formula above writes the recurrent term first.
 
-The layer creates weights when it is built. Adding it to this model builds it for you. With one unit and one input feature, each weight tensor holds one number: inputWeight, recurrentWeight or bias. The default bias starts at zero; the other weights use their configured initializers.
+Adding the layer to this model builds it and creates its weights. With one unit and one input feature, each weight tensor holds one number: inputWeight, recurrentWeight or bias. The default bias starts at zero. The other weights use their configured initializers.
 
 ## How the RNN Processes a Sequence
 
@@ -161,10 +161,10 @@ The layer creates weights when it is built. Adding it to this model builds it fo
 {`// Unrolling the RNN: what happens at each time step:
 
 // Time step 0: hidden = f(zeros, input[0])
-// Time step 1: hidden = f(hidden, input[1])  ← remembers step 0
-// Time step 2: hidden = f(hidden, input[2])  ← remembers steps 0-1
-// Time step 3: hidden = f(hidden, input[3])  ← remembers steps 0-2
-// Time step 4: hidden = f(hidden, input[4])  ← remembers steps 0-3
+// Time step 1: hidden = f(hidden, input[1]): remembers step 0
+// Time step 2: hidden = f(hidden, input[2]): remembers steps 0-1
+// Time step 3: hidden = f(hidden, input[3]): remembers steps 0-2
+// Time step 4: hidden = f(hidden, input[4]): remembers steps 0-3
 
 // The final hidden state is a fixed-size summary of the sequence
 // We pass it to a Dense layer for classification
@@ -174,7 +174,7 @@ const modelAllSteps = tf.sequential();
 modelAllSteps.add(tf.layers.simpleRNN({
   units: 32,
   inputShape: [5, 3],
-  returnSequences: true,  // output shape: [batch, 5, 32] instead of [batch, 32]
+  returnSequences: true,  // output shape: [batch, 5, 32]. Every time step contributes a state
 }));
 // Useful when you need the full temporal output (e.g., for stacking RNN layers)
 modelAllSteps.dispose();`}
@@ -184,29 +184,29 @@ modelAllSteps.dispose();`}
 
 Backpropagation through time works backward through the sequence’s updates. In this one-unit cell, each step multiplies the gradient by the recurrent weight and the local slope of tanh. Factors below one shrink it. With weight 0.8 and states near zero, 60 such factors leave about 1.5e-6.
 
-There is no fixed 10- or 20-step limit. The useful distance depends on weights, states, data and training. Wider networks multiply matrices rather than single numbers, so this example illustrates one path rather than diagnosing a full network.
+There is no fixed 10- or 20-step limit. The useful distance depends on weights, states, data and training. Wider networks multiply matrices. This example illustrates one path through that calculation. Diagnosing a full network requires inspecting its gradients.
 
-The recurrent weight can also exceed one. Change 0.8 to 1.5, start at zero and feed readings near 0.001. The gradient initially grows instead of shrinking. In this example, the derivative of step 14’s state with respect to the starting state reaches about 173.
+The recurrent weight can also exceed one. Change 0.8 to 1.5, start at zero and feed readings near 0.001. The gradient initially grows. In this example, the derivative of step 14’s state with respect to the starting state reaches about 173.
 
 Gradient clipping limits spikes like that. To calculate the gradient’s norm, square each component, add the squares and take the square root. If the norm exceeds your chosen ceiling, scale every component down by the same factor before the optimizer uses them. TensorFlow.js 4.22 has no optimizer clipping option, so you must implement that step.
 
-In this particular constant-input example, tanh eventually saturates. The state approaches 0.8590 and the local factor falls to about 0.393, so the gradient shrinks again. That is not a guarantee for all inputs or weights. For example, an exactly zero state and zero input can remain at zero while a recurrent weight above one amplifies its derivative. Inspect the actual gradient history instead of assuming every explosion will end this way.
+In this particular constant-input example, tanh eventually saturates. The state approaches 0.8590 and the local factor falls to about 0.393, so the gradient shrinks again. That is not a guarantee for all inputs or weights. For example, an exactly zero state and zero input can remain at zero while a recurrent weight above one amplifies its derivative. Inspect the actual gradient history to see whether it keeps growing.
 
 DEEP SCAN’s pulse repeats a little over every 73 seconds. The dashboard receives one reading per second, so an 80-reading window covers slightly more than one interval. The context needed still depends on the task and pulse shape.
 
-Archive rows arrive every 33 seconds, only about 2.2 rows per pulse interval. Each row summarizes a quarter-second sample window within its capture. These rows can suggest repetition without showing the shape inside a pulse. Eighty archive rows span about 44 minutes, not one pulse interval. Gates, introduced next, can help learning across long windows. They cannot restore readings that were never recorded.
+Archive rows arrive every 33 seconds, only about 2.2 rows per pulse interval. Each row summarizes a quarter-second sample window within its capture. These rows can suggest repetition without showing the shape inside a pulse. Eighty archive rows span about 44 minutes, covering many pulse intervals. Gates, introduced next, can help learning across long windows. They cannot recover readings the recorder missed.
 
 ## Challenge
 
 Write the cell loop using plain JavaScript numbers and Math.tanh, without tensors. Start with zero state for each call and update it for every reading. The tests change the window and weights. They also check that earlier readings affect later state.
 
-Build a one-unit `tf.layers.simpleRNN` and read its three weights. The tests run your loop with those weights and compare every state with the layer’s output. The layer initializes new weights each time, so use the weights you read from that instance. This small test uses a close numerical tolerance; other sequences and backends may need a different one.
+Build a one-unit `tf.layers.simpleRNN` and read its three weights. The tests run your loop with those weights and compare every state with the layer’s output. The layer initializes new weights each time, so use the weights you read from that instance. This small test uses a close numerical tolerance. Other sequences and backends may need a different one.
 
 <Exercise slug="build-rnn" />
 
 <RecallPrompt
   question="A simple RNN needs distant readings, but its loss stays near 0.693. What should you investigate?"
-  answer="Vanishing gradients are one possibility, not a diagnosis from the loss alone. A constant 0.5 prediction gives binary cross-entropy ln(2), about 0.693. Inspect labels, predictions and gradient magnitudes; compare with a simple baseline. An LSTM can improve gradient flow over long sequences, but still needs appropriate data and training."
+  answer="Vanishing gradients could explain this result. The loss alone cannot establish the cause. A constant 0.5 prediction gives binary cross-entropy ln(2), about 0.693. Inspect labels, predictions and gradient magnitudes. Compare with a simple baseline. An LSTM can improve gradient flow over long sequences, but still needs appropriate data and training."
   checks={[
     {
       "kind": "choice",
@@ -230,11 +230,11 @@ Build a one-unit `tf.layers.simpleRNN` and read its three weights. The tests run
     },
     {
       "kind": "choice",
-      "question": "If vanishing gradients across long sequences are confirmed, what is a reasonable comparison?",
+      "question": "If gradient measurements confirm vanishing gradients across long sequences, what comparison could help?",
       "options": [
         {
           "text": "Try an LSTM with suitable data and training, then evaluate it.",
-          "feedback": "LSTM gates can improve gradient flow over long sequences; they do not guarantee success."
+          "feedback": "LSTM gates can improve gradient flow over long sequences. They do not guarantee success."
         },
         {
           "text": "Keep the same setup and assume more epochs must solve it.",
@@ -246,14 +246,14 @@ Build a one-unit `tf.layers.simpleRNN` and read its three weights. The tests run
         }
       ],
       "correctIndex": 0,
-      "explanation": "LSTM gates can improve gradient flow over long sequences; they do not guarantee success."
+      "explanation": "LSTM gates can improve gradient flow over long sequences. They do not guarantee success."
     }
   ]}
 />
 
 <LessonRecap
-  whatYouLearned={["An RNN updates carried state using a transition whose parameters are learned.", "returnSequences selects all hidden states or only the final state.", "Repeated gradient factors can shrink or amplify the learning signal. There is no fixed sequence length beyond which every simple RNN fails.", "Inspect predictions and gradients before diagnosing a stalled loss. Clipping limits large updates; it does not restore a vanished gradient."]}
-  bridge="A replay reducer and an RNN both update carried state. The RNN learns transition parameters; identical fixed state and input can still produce reproducible inference."
+  whatYouLearned={["An RNN updates its hidden state with each input, using weights learned during training.", "returnSequences selects all hidden states or only the final state.", "Repeated gradient factors can shrink or amplify the learning signal. There is no fixed sequence length beyond which every simple RNN fails.", "Inspect predictions and gradients before diagnosing a stalled loss. Clipping limits large updates. It does not restore a vanished gradient."]}
+  bridge="A replay reducer and an RNN both update state one step at a time. You write the reducer’s rules. Training adjusts the RNN’s weights. With fixed weights, the same state and input give the same calculation."
   youCanNow="Run an RNN cell's hidden state forward by hand, build the same cell with `tf.layers.simpleRNN`, and explain how repeated gradient factors can make long-range dependencies difficult to learn."
 />
 

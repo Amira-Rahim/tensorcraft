@@ -28,7 +28,7 @@ export function PaymentError() {
       <span className="w-2 h-2 bg-error shrink-0" />
 
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
-        Payment could not be completed. Please try again or{" "}
+        We could not complete your payment. Please try again or{" "}
         <a
           href="mailto:support@tensorcraft.app"
           className="text-error underline underline-offset-2"

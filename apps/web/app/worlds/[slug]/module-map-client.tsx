@@ -123,7 +123,6 @@ export function ModuleMapClient({
         data-testid="continue-cta"
       >
         <span>{continueLabel}</span>
-        <span aria-hidden="true">&rarr;</span>
       </Link>
     </div>
   );
@@ -227,7 +226,7 @@ function ModuleRow({
                   background: "var(--tc-bg)",
                 }}
               >
-                Unlock →
+                Unlock
               </span>
             ) : lockedTeaser && teaserShowsPrice ? (
               <span
@@ -626,9 +625,7 @@ function LessonCard({
           className="flex shrink-0 items-center px-3 font-mono text-base"
           style={{ color: "var(--tc-muted)" }}
           aria-hidden="true"
-        >
-          &rarr;
-        </div>
+        ></div>
       )}
     </div>
   );

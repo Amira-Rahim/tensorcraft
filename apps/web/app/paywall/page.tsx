@@ -23,7 +23,7 @@ import { WhoThisIsFor } from "@/app/components/who-this-is-for";
  */
 
 export const metadata: Metadata = {
-  title: "Module 1 Is Done. The Model Isn't. | Tensorcraft",
+  title: "Deep Orbit course access, Tensorcraft",
   // GitHub push is NOT named here: the comparison table below and the
   // landing "Own" card both say pushing starts free in Module 1, so selling
   // it as a paid unlock would contradict them.
@@ -45,7 +45,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "All 11 modules", free: "Module 1", paid: true },
   { feature: "56 lessons", free: "5 of 56", paid: true },
   { feature: "Code exercises (all)", free: "Module 1's 5", paid: true },
-  { feature: "GitHub push flow", free: "Module 1", paid: true },
+  { feature: "Save exercises to GitHub", free: "Module 1", paid: true },
   { feature: "Capstone project", free: false, paid: true },
   { feature: "Certificate of completion", free: false, paid: true },
   { feature: "Lifetime updates", free: false, paid: true },
@@ -89,21 +89,20 @@ export default function PaywallPage() {
         {/* Hero */}
         <section className="pt-32 pb-16 px-6 text-center">
           <div className="inline-flex px-5 py-2 border border-border font-mono text-[13px] text-text-muted tracking-wider mb-8 rounded-none">
-            module 1 complete &middot; the real work starts here
+            continue with modules 2–11
           </div>
           <h1
             data-testid="paywall-heading"
             className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-text-primary font-mono tracking-tight leading-tight"
           >
-            Module 1 is done. The model isn&rsquo;t.
+            The rest of Deep Orbit
           </h1>
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
-            You&rsquo;ve seen how ML concepts map onto JavaScript you already
-            write. Modules 2-11 are where you stop translating and start
-            shipping: layers stacked into a real network, backpropagation (how
-            the model learns from its own errors), pulling patterns out of noisy
-            signals, recurrent networks (models with memory), and a capstone, a
-            working browser-side ML system you assemble piece by piece.
+            Continue the crew’s investigation in Modules 2–11. Build and train
+            neural networks, find patterns in noisy signals, and work with
+            models that use earlier readings to predict what comes next. Then
+            connect the parts, test them, and prepare a browser ML app for
+            release.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <PaywallCtaTracker>
@@ -112,7 +111,7 @@ export default function PaywallPage() {
                 data-testid="paywall-primary-cta"
                 className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
               >
-                See Plans &rarr;
+                See Plans
               </Link>
             </PaywallCtaTracker>
             <Link
@@ -123,7 +122,7 @@ export default function PaywallPage() {
             </Link>
           </div>
           <p className="mt-6 text-[11px] uppercase tracking-[0.15em] text-text-muted font-mono">
-            {`one payment · lifetime access · from $${PRICING.single.price}`}
+            {`one payment, lifetime access, from $${PRICING.single.price}`}
           </p>
         </section>
 
@@ -231,14 +230,13 @@ export default function PaywallPage() {
           <div className="max-w-3xl mx-auto grid gap-8 md:grid-cols-[1.1fr_1fr] items-start">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold mb-4 text-text-primary font-mono tracking-tight">
-                The proof is the artifact
+                Your code and completion record
               </h2>
               <p className="text-sm text-text-muted leading-relaxed font-sans">
-                This course is new, so there are no testimonials here yet, and
-                we won&apos;t invent any. What it produces instead is
-                verifiable: every solved exercise lands in your GitHub as a
-                commit you can point an interviewer at. Completing all 56
-                lessons issues a certificate with a public, shareable page.
+                Connect GitHub to save your solved exercises to your repository.
+                You can revisit the code, share it, and explain how it works.
+                Completing all 56 lessons issues a certificate with a public,
+                shareable page.
               </p>
             </div>
             <CommitTrail compact />
@@ -248,13 +246,13 @@ export default function PaywallPage() {
         {/* Final CTA */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
-            ready when you are
+            modules 2–11
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
-            Ready for Module 2?
+            Full course access
           </h2>
           <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
-            One payment, lifetime access: no subscriptions, no expiring access.
+            One payment gives you lifetime access to Deep Orbit.
           </p>
           <PaywallCtaTracker>
             <Link
@@ -262,7 +260,7 @@ export default function PaywallPage() {
               data-testid="paywall-footer-cta"
               className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
             >
-              See Plans &rarr;
+              See Plans
             </Link>
           </PaywallCtaTracker>
         </section>

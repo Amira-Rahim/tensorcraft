@@ -9,7 +9,7 @@ instructions: |
 
   Flag readings whose absolute z-score is strictly greater than 3. Calculate the recent mean and population standard deviation, dividing the variance by n. Count flags with both the current baseline and this new baseline. For each, multiply the fraction flagged by readingsPerDay and round to the nearest integer. spreadRatio is the new std divided by the current std.
 
-  Set expectedPerDay to round(0.0027 * readingsPerDay). This is a reference for a Gaussian distribution with known mean and standard deviation, not a guaranteed rate for these readings. You used the same readings to fit and check the new baseline, so that check is not independent validation.
+  Set expectedPerDay to round(0.0027 * readingsPerDay). This reference assumes a Gaussian distribution with known mean and standard deviation. Actual rates can differ. You used the same readings to fit and check the new baseline, so that check is not independent validation.
 
   Choose action using the old flag fraction before rounding. If it is at most 0.0027, use 'hold'. Otherwise, use 'investigate-spread' when spreadRatio > 1.5, and 'evaluate-candidate' for all remaining cases.
 
@@ -20,7 +20,7 @@ hints:
       Compute the observed flag fraction before rounding it to a daily count. Keep the Gaussian reference separate from the measurements.
   - level: guidance
     content: |
-      Recompute the center and population spread. Apply the triage policy to the original flag fraction and the spread ratio. The same readings both fit and score the candidate here; an independent check still has to follow.
+      Calculate the new mean and population standard deviation. Use the original flag fraction and the spread ratio to choose the next check. This example calculates and checks the new baseline on the same readings, so you still need a separate evaluation.
   - level: solution
     content: |
       function auditBaseline(recentNormalData, currentBaseline, readingsPerDay) {
@@ -110,7 +110,7 @@ testCode: |
       expect(r.action).toBe('evaluate-candidate');
       recordResult({
         kind: 'table', title: 'Your baseline investigation report',
-        summary: 'Synthetic recent readings reviewed as normal, projected to 1,000 readings per day. The candidate is fitted and checked on the same rows; evaluate it separately before deployment.',
+        summary: 'Synthetic recent readings reviewed as normal, projected to 1,000 readings per day. You fit and check this candidate on the same rows. Evaluate it separately before deployment.',
         columns: ['Measurement or next action', 'Your result'],
         rows: [
           ['Current-baseline flags per day', r.oldAlertsPerDay],

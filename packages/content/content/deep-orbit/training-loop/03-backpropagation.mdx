@@ -16,18 +16,18 @@ concept:
   explanation: "Backpropagation computes gradients for every weight in one backward sweep, applying the chain rule from the loss back to the input."
   bridge:
     jsTitle: "Error up the call stack"
-    jsCode: "// A throw in parseRow() travels parseRow → readFile → main"
+    jsCode: "// A throw in parseRow() travels parseRow to readFile to main"
     mlTitle: "Backpropagation"
-    mlCode: "// Gradient flows from loss → output → hidden → input"
+    mlCode: "// Gradient flows from loss to output to hidden to input"
     tier: intuition
-    breaks: "Exception propagation transfers control through handlers. Backpropagation applies the chain rule through differentiable operations to compute requested gradients. Frozen or disconnected parameters need not be updated, and a connected parameter can still have zero gradient."
+    breaks: "Exception propagation transfers control through handlers. Backpropagation applies the chain rule through differentiable operations to compute requested gradients. The optimizer can leave frozen or disconnected parameters unchanged. A connected parameter can still have zero gradient."
 consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
 hints:
   - level: nudge
     content: "tf.variableGrads records the forward computation and applies the chain rule backwards."
   - level: guidance
-    content: "One call returns both the loss and the gradients. gradOf should return that result directly. The forward pass calculates the loss; the backward pass calculates how each variable affects it. Read the loss from value and the gradients from grads. Calculate them again on every call, since the weights and loss function can change."
+    content: "One call returns both the loss and the gradients. gradOf should return that result directly. The forward pass calculates the loss. The backward pass calculates how each variable affects it. Read the loss from value and the gradients from grads. Calculate them again on every call, since the weights and loss function can change."
   - level: solution
     content: |
       const w = tf.tidy(() => tf.variable(tf.scalar(3.0)));
@@ -71,13 +71,13 @@ You will compare automatic differentiation with estimating a gradient by changin
 
 <LearningObjectives objectives={["Estimate a gradient numerically and count what that costs at network scale", "Understand how backpropagation works at a high level", "See the connection to an error travelling back up the call stack", "Use tf.variableGrads() for automatic gradient computation"]} />
 
-## Estimate a gradient by changing a weight
+## Estimating a gradient
 
 One weight, one question: if I move this a little, does the loss go down? Nothing stops you from asking it 673 times.
 
 <CodeBlock language="typescript" title="gradient-by-nudging.ts (sketch)">
 {`// Numeric gradient: nudge one weight, rerun, compare. No calculus.
-// A sketch rather than a runnable block: computeLoss() stands in for
+// This sketch omits implementation details: computeLoss() stands in for
 // your own forward pass over the batch and returns a plain number, and
 // w1 is the layer-1 weight variable it reads.
 const EPS = 1e-3;
@@ -99,7 +99,7 @@ const base = computeLoss();             // forward pass 0
 const grad = (nudgedLoss(w1, 0) - base) / EPS;`}
 </CodeBlock>
 
-This method is called a **forward finite difference**. It estimates a derivative from two nearby values. A large nudge gives a rough estimate. A very small one can lose accuracy when nearly equal floating-point numbers are subtracted.
+This method uses a **forward finite difference**. It estimates a derivative from two nearby values. A large nudge gives a rough estimate. A very small one can lose accuracy when you subtract nearly equal floating-point numbers.
 
 Checking all 673 weights this way needs 673 extra forward passes. It can help check a small calculation, but becomes costly as the model grows. The scene timings are fictional. Measure your own code to compare speed.
 
@@ -111,7 +111,7 @@ Estimating the gradient for each of 673 parameters one nudge at a time costs 673
 
 **Backpropagation** calculates gradients by working backward through the operations used in the forward pass. The forward pass produces the loss. The backward pass uses the chain rule to calculate how each earlier variable affected it.
 
-The direction may remind you of an error traveling from `parseRow` through `readFile` to `main`. The mechanism is different: backpropagation multiplies derivatives rather than throwing an exception.
+The direction may remind you of an error traveling from `parseRow` through `readFile` to `main`. The mechanism is different: backpropagation multiplies derivatives along the calculation. Exception handling transfers program control.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -129,7 +129,7 @@ const label = tf.tensor2d([[1]]);
 
 // Forward pass + loss computation + automatic backprop
 const { value: loss, grads } = tf.variableGrads(() => {
-  // Forward: input → layer1 → relu → layer2 (raw logits)
+  // Forward: input to layer1 to relu to layer2 (raw logits)
   // sigmoidCrossEntropy applies the sigmoid itself, so feed it logits
   const hidden = tf.relu(input.matMul(w1).add(b1));
   const logits = hidden.matMul(w2).add(b2);
@@ -141,7 +141,7 @@ console.log('Loss:', loss.dataSync()[0]);
 console.log('w1 gradient shape:', grads[w1.name].shape); // [3, 4]
 console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 
-// Gradients are local slopes, not the optimizer update itself.
+// Gradients give local slopes. The optimizer uses them to choose updates.
 tf.dispose([input, label, loss, ...Object.values(grads), w1, b1, w2, b2]);`}
 </CodeBlock>
 
@@ -178,13 +178,13 @@ Help Demir replace the repeated per-weight runs. Implement automatic
 differentiation and a numerical estimate, then inspect their gradients and
 observed forward-pass counts on the supplied three-variable loss. The
 automatic call must obtain all three gradients from one forward calculation.
-These counts explain the saving without pretending to benchmark your device.
+The counts show how much repeated work each method needs. They do not measure its speed on your device.
 
 <Exercise slug="backprop-chain" />
 
 <RecallPrompt
   question="Separate gradient computation from weight updates."
-  answer="It returns an object with two keys: value (the loss scalar) and grads (a dict of gradient tensors keyed by variable name). You use the grads to update each weight, either via an optimizer or by manual subtraction."
+  answer="It returns value, the scalar loss tensor, and grads, an object that maps variable names to gradient tensors. Use those gradients to update the weights with an optimizer or your own update code."
   checks={[
     {
       "kind": "choice",
@@ -200,11 +200,11 @@ These counts explain the saving without pretending to benchmark your device.
         },
         {
           "text": "A loss scalar in value and gradient tensors in grads.",
-          "feedback": "value is the loss tensor; grads maps variable names to gradient tensors."
+          "feedback": "value is the loss tensor. grads maps variable names to gradient tensors."
         }
       ],
       "correctIndex": 2,
-      "explanation": "value is the loss tensor; grads maps variable names to gradient tensors."
+      "explanation": "value is the loss tensor. grads maps variable names to gradient tensors."
     },
     {
       "kind": "choice",
@@ -220,7 +220,7 @@ These counts explain the saving without pretending to benchmark your device.
         },
         {
           "text": "Call compile() again to apply the gradients.",
-          "feedback": "compile() configures training; it does not apply the computed gradients."
+          "feedback": "compile() configures training. It does not apply the computed gradients."
         }
       ],
       "correctIndex": 1,
@@ -237,8 +237,8 @@ These counts explain the saving without pretending to benchmark your device.
 <LessonRecap
   whatYouLearned={[
     "Forward finite differences estimate gradients by changing a weight and rerunning the loss. Checking every parameter needs one additional forward pass per parameter.",
-    "Backpropagation reuses the forward computation to calculate parameter gradients in a backward sweep. It avoids a separate forward evaluation per parameter; wall-clock speed depends on the graph and runtime.",
-    "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
+    "Backpropagation reuses the forward computation to calculate parameter gradients in a backward sweep. It avoids a separate forward evaluation per parameter. Wall-clock speed depends on the graph and runtime.",
+    "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass. It handles the backward pass.",
     "Vanishing gradients occur when the chain rule product collapses across many layers. A residual connection, a shortcut that adds a layer's input back to its output, makes that link's derivative 1 plus the layer's own slope, which can help gradient flow without guaranteeing stable gradients."
   ]}
   bridge="Exceptions transfer control through handlers. Backpropagation instead applies the chain rule through a computation graph to calculate requested parameter gradients."
@@ -253,6 +253,6 @@ Nazari times it herself, stopwatch against the console, because she doesn't trus
 Twenty-seven seconds against a hundred and twenty milliseconds, a few thousand times per training run. That's the difference between an answer in minutes and an answer thirty-some hours from now. Use the backward pass.
 </Dialogue>
 
-*Mission scene: the 120 milliseconds and 27 seconds above are story values. They illustrate the pass-count difference, not a benchmark for your device.*
+*Mission scene: the 120 milliseconds and 27 seconds above are story values. They illustrate the pass-count difference. Measure your device separately.*
 
 </Epilogue>

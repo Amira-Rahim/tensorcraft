@@ -1,6 +1,6 @@
 slug: normalize-data
 lessonSlug: normalization
-title: "Normalize, Then Ask the Preview Neuron"
+title: "Scaled readings for Farah’s model"
 instructions: |
   Help Farah scale four readings, then run them through her supplied model.
   Each row has temperature and signal strength. Save the training statistics
@@ -9,20 +9,20 @@ instructions: |
   1. Implement `fitStats(rows)` for a non-empty `[n, 2]` tensor of finite values.
      Return `{ mean, std }`, one value per column in each tensor. Reduce over
      axis 0. Use population variance, the mean squared difference from the column
-     mean. It divides by `n`. `tf.moments` returns that variance; take its
+     mean. It divides by `n`. `tf.moments` returns that variance. Take its
      square root to get `std`. Apply this function to `batch` and save `mean` and `std`.
   2. Implement `scaleFeatures(rows, offset, scale)` for one reading or a batch.
      Subtract each column's offset, then divide by its scale. If a scale is
      zero, divide by 1 instead. Keep the saved statistics unchanged.
      The lesson shows how to choose the divisor with `tf.where`.
      Save the scaled `batch` as `normalized`, using the saved mean and std.
-  3. Use the supplied `previewModel`. Model construction is provided.
-     Its weights and bias are already set; your work is scaling the inputs.
+  3. Use the supplied `previewModel`.
+     The example supplies its weights and bias. Your work is scaling the inputs.
   4. Predict on `normalized` in one call. Save the `[4, 1]` tensor as `scores`.
   5. Implement `scoreReading(reading)` for a new `[2]` tensor. Scale it using
      the saved mean and std, add a batch axis, then call `previewModel`.
      Return the prediction tensor or its one numerical value. This must still
-     work after `batch` is disposed. Do not calculate the statistics again.
+     work after the caller disposes `batch`. Do not calculate the statistics again.
   6. Implement `minMaxStats(rows)` for a non-empty `[n, 2]` tensor of finite
      values. Return `{ min, max }` tensors with one value per column.
      Use `scaleFeatures` with the minimum and range (`max - min`) to scale
@@ -42,7 +42,7 @@ starterCode: |
   ]);
 
   // Farah's preview neuron, frozen: one weight per feature, one bias. Both
-  // arrive as plain JS arrays rather than tensors.
+  // arrive as plain JS arrays.
   const KERNEL = [[0.9], [-1.4]];
   const BIAS = [-0.3];
 
@@ -84,9 +84,8 @@ starterCode: |
 
   const unitRange = null;
 
-  // Nothing is measured again in here. A deployed model has no training
-  // rows to measure from, and the neuron still expects a batch for one
-  // reading.
+  // Reuse the saved training statistics. Do not fit them again.
+  // Even one reading needs a batch axis for predict().
   function scoreReading(reading) {
     // your code here
   }
@@ -140,7 +139,7 @@ solutionCode: |
 
   const unitRange = tf.tidy(() => scaleFeatures(batch, min, max.sub(min)));
 testCode: |
-  describe('Normalize, Then Ask the Preview Neuron', () => {
+  describe('Scale the Readings for Farah’s Model', () => {
     const filled = (value, what) => expect(value, what).toBeDefined();
     // Statistics come back as tensors; anything else is not a
     // statistic the batch can broadcast against.
@@ -180,13 +179,13 @@ testCode: |
         'Calculate the statistics from the rows passed into the function. The tests also use batches unlike the starter example.';
       const stdWhy =
         why +
-        ' Use population standard deviation: divide by n, not n - 1.';
+        ' Use population standard deviation: divide by the population count n.';
       expect(m[0], why).toBeCloseTo(12, 4);
       expect(m[1], why).toBeCloseTo(4, 4);
       expect(sd[0], stdWhy).toBeCloseTo(1.63299, 4);
       expect(sd[1], stdWhy).toBeCloseTo(2.44949, 4);
     });
-    it('fitStats holds up on a five-row slice with untidy numbers', () => {
+    it('fitStats works on five rows with decimal values', () => {
       // Five rows, none of them round: mean [26.9, 0.43], std
       // [5.9803843, 0.3209361] on tfjs 4.22.0. A different row count also
       // rules out a divisor pinned to four.
@@ -196,10 +195,10 @@ testCode: |
       const m = values(other && other.mean, 'fitStats returned no mean for this batch.');
       const sd = values(other && other.std, 'fitStats returned no std for this batch.');
       const why =
-        'Five rows this time. A row count baked into the arithmetic, or a divisor of four, lands off here.';
+        'This batch has five rows. Read the row count from the input when calculating the variance.';
       const stdWhy =
         why +
-        ' So does dividing by n - 1 instead of n, which lands high by a factor of sqrt(n / (n - 1)) on any row count.';
+        ' So does using the sample-variance denominator n - 1, which lands high by a factor of sqrt(n / (n - 1)) on any row count.';
       expect(m[0], why).toBeCloseTo(26.9, 3);
       expect(m[1], why).toBeCloseTo(0.43, 4);
       expect(sd[0], stdWhy).toBeCloseTo(5.98038, 3);
@@ -214,7 +213,7 @@ testCode: |
       expect(Math.abs(colMeans[1]), why).toBeLessThan(1e-5);
       const stds = Array.from(tf.moments(normalized, 0).variance.sqrt().dataSync());
       const stdWhy =
-        'Use population standard deviation. The scaled column has standard deviation 1; using n - 1 gives about 0.87 here.';
+        'Use population standard deviation. The scaled column has standard deviation 1. Using n - 1 gives about 0.87 here.';
       expect(stds[0], stdWhy).toBeCloseTo(1, 4);
       expect(stds[1], stdWhy).toBeCloseTo(1, 4);
     });
@@ -242,7 +241,7 @@ testCode: |
       expect(k[1], why).toBeCloseTo(-1.4, 5);
       expect(w[1].dataSync()[0], why).toBeCloseTo(-0.3, 5);
     }
-    it('scores = predict(normalized): one sigmoid verdict per reading', () => {
+    it('scores contains one sigmoid output per normalized reading', () => {
       expect(scores instanceof tf.Tensor, 'Score the normalized batch before checking its fixed model.').toBe(true);
       checkSuppliedModel();
       checkModelOnAnotherInput();
@@ -269,7 +268,7 @@ testCode: |
       const out = previewModel.predict(tf.tensor2d([[1, -1]]));
       expect(
         out.dataSync()[0],
-        'These two numbers are not in the batch. The layer has to do the arithmetic rather than return a stored answer.',
+        'These two numbers are not in the batch. Calculate the output from the supplied inputs.',
       ).toBeCloseTo(0.8808, 3);
     }
     it('scoreReading keeps working after the training rows are gone', () => {
@@ -283,7 +282,7 @@ testCode: |
         centre = scoreReading(tf.tensor([23, 0.5]));
       } catch (err) {
         throw new Error(
-          'scoreReading threw on a single reading. Two features arrive shaped [2], and predict reads a BATCH: it wants a leading axis of one, shape [1, 2], so the reading goes in as a single row. Underlying error: ' +
+          'scoreReading failed on a single reading. Add a batch axis to turn shape [2] into [1, 2] before calling predict(). Underlying error: ' +
             ((err && err.message) || String(err)),
         );
       }
@@ -291,7 +290,7 @@ testCode: |
       const verdict = typeof centre === 'number' ? centre : centre.dataSync()[0];
       expect(
         verdict,
-        'A reading sitting exactly at the training mean normalizes to zeros, so this verdict is the bias alone.',
+        'A reading at the training mean normalizes to zeros. The model output should therefore be sigmoid(bias).',
       ).toBeCloseTo(0.4256, 3);
       // PROVENANCE, and the only route to it. Refitting the statistics off
       // `batch` at call time returns numerically IDENTICAL values, so no
@@ -310,7 +309,7 @@ testCode: |
         archived = scoreReading(tf.tensor([24, 0.51]));
       } catch (err) {
         throw new Error(
-          'The training rows have been released here, and scoreReading reached for them anyway. Fit the statistics once, hold on to them, and normalize each new reading with those. A model in production has no training batch to recompute from. Underlying error: ' +
+          'The test disposed the training batch. Normalize new readings with the saved training statistics. Reading from that batch now fails. Underlying error: ' +
             ((err && err.message) || String(err)),
         );
       }
@@ -338,7 +337,7 @@ testCode: |
       const other = minMaxStats(tf.tensor2d([[10, 1], [12, 4], [14, 7]]));
       const mins = Array.from(other.min.dataSync ? other.min.dataSync() : other.min);
       const maxs = Array.from(other.max.dataSync ? other.max.dataSync() : other.max);
-      const why = 'These rows are not the batch above. The statistics have to come off the argument.';
+      const why = 'Calculate statistics from the batch passed into the function. This batch has different values.';
       expect(mins[0], why).toBeCloseTo(10, 5);
       expect(mins[1], why).toBeCloseTo(1, 5);
       expect(maxs[0], why).toBeCloseTo(14, 5);
@@ -371,7 +370,7 @@ testCode: |
       filled(normalized, 'scaleFeatures must return the scaled tensor.');
       expect(normalized.arraySync()).toEqual([[0, -1], [0, 1]]);
       const future = scaleFeatures(tf.tensor1d([9, 16]), stats.mean, stats.std);
-      expect(future.arraySync(), 'Reuse the saved scale; a zero scale uses divisor 1.').toEqual([2, 2]);
+      expect(future.arraySync(), 'Reuse the saved scale. A zero scale uses divisor 1.').toEqual([2, 2]);
       expect(Array.from(stats.std.dataSync()), 'Do not replace the measured zero in the saved statistics.').toEqual([0, 2]);
       const bounds = minMaxStats(rows);
       const unit = scaleFeatures(rows, bounds.min, bounds.max.sub(bounds.min));

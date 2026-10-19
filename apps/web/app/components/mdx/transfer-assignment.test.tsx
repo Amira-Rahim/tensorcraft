@@ -36,7 +36,7 @@ describe("independent assignment evidence", () => {
     expect(draft.openedRescues).toEqual(["split"]);
     expect(draft.selfReviewedAt).toBeNull();
     expect(
-      screen.getByText(/not a graded pass or verified independent assessment/),
+      screen.getByText(/provides no grade or independent assessment/),
     ).toBeInTheDocument();
   });
 
@@ -69,7 +69,7 @@ describe("independent assignment evidence", () => {
     });
     render(<TransferAssignment />);
     expect(
-      screen.getByText(/previous tab draft could not be loaded/),
+      screen.getByText(/could not load the previous tab draft/),
     ).toBeInTheDocument();
     expect(screen.getByText(/Tab storage is unavailable/)).toBeInTheDocument();
     expect(

@@ -1,6 +1,6 @@
 slug: reshape-tensor
 lessonSlug: tensor-shapes
-title: "Prepare Farah's Sensor Chart"
+title: "Farah’s sensor chart"
 instructions: |
   Farah keeps the 12 readings from Demir’s chart: four sensors at three
   moments. They are already in `flat`. Write the code that keeps each sensor’s
@@ -26,7 +26,7 @@ starterCode: |
   // Predict the second row, then make one row per moment.
   const grid = null; // your code here
 
-  // Save the second row as a JS array, not a tensor.
+  // Read the second row into a regular JS array.
   const step1 = null;
 
   // Give the chart one row per sensor, in time order.
@@ -46,7 +46,7 @@ testCode: |
     const isTensor = (value, name) =>
       expect(
         value instanceof tf.Tensor,
-        name + ' must be a TensorFlow.js tensor, not a JavaScript object with matching properties.',
+        name + ' must be a real TensorFlow.js tensor. An object with matching properties cannot perform tensor operations.',
       ).toBe(true);
     // Read through TensorFlow.js rather than trusting a submitted arraySync
     // method. Fake objects must not pass by returning the expected arrays.

@@ -1,6 +1,6 @@
 slug: mse-loss
 lessonSlug: loss-functions
-title: "Two Losses, and Cross-Entropy's Two Forms"
+title: "MSE and binary cross-entropy"
 instructions: |
   Help Farah measure prediction errors. Write three functions:
 
@@ -28,8 +28,8 @@ starterCode: |
   }
 
   function pickBceForm(outputKind: string): string {
-    // The loss is already settled. What is left to pick is which of its two
-    // forms reads the numbers this model emits.
+    // Binary cross-entropy is already chosen. Pick the API that
+    // matches the model’s output: probabilities or raw logits.
     return null; // your code here
   }
 solutionCode: |
@@ -50,8 +50,8 @@ testCode: |
   describe('two losses and the form rule', () => {
     it('mseLoss comes back reduced: one number for the whole batch, not one per row', () => {
       const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
-      expect(loss, 'mseLoss returned nothing, so there is no loss to grade. The TFJS call hands back a tensor; return it.').toBeDefined();
-      expect(loss.shape, 'A loss is one number for the whole batch, so its shape is the empty list. A shape with a row count in it means the per-row errors were never averaged.').toEqual([]);
+      expect(loss, 'mseLoss returned nothing, so there is no loss to grade. The TFJS call hands back a tensor. Return it.').toBeDefined();
+      expect(loss.shape, 'A loss is one number for the whole batch, so its shape is the empty list. A shape with a row count in it means your code still needs to average the per-row errors.').toEqual([]);
     });
     it('mseLoss squares the differences before it averages them', () => {
       const loss = mseLoss(tf.tensor([3.0, -0.5, 2.0, 1.0]), tf.tensor([2.5, 0.0, 2.1, 1.3]));
@@ -67,7 +67,7 @@ testCode: |
       const loss = bceLoss(tf.tensor([1, 0]), tf.tensor([0, 0]));
       expect(loss, 'bceLoss returned nothing, so there is no loss to grade.').toBeDefined();
       expect(loss.shape, 'Cross-entropy also reduces to one number for the whole batch.').toEqual([]);
-      expect(loss.dataSync()[0], 'A logit of 0 is the fifty-fifty prediction, and the loss of a fifty-fifty guess is a number you can work out on paper. Anything else here means the second argument was treated like a probability and squashed a second time.').toBeCloseTo(0.6931, 3);
+      expect(loss.dataSync()[0], 'A logit of 0 is the fifty-fifty prediction, and the loss of a fifty-fifty guess is a number you can work out on paper. Anything else here means your code treated the second argument as a probability and applied sigmoid again.').toBeCloseTo(0.6931, 3);
     });
     it('bceLoss tracks its inputs: confident and right scores far below confident and wrong', () => {
       const rightLoss = bceLoss(tf.tensor([1, 0]), tf.tensor([3, -3]));
@@ -76,16 +76,16 @@ testCode: |
       expect(wrongLoss, 'bceLoss returned nothing on the confident-and-wrong pair.').toBeDefined();
       const right = rightLoss.dataSync()[0];
       const wrong = wrongLoss.dataSync()[0];
-      expect(right, 'Two confident correct calls have to score near nothing.').toBeLessThan(0.1);
-      expect(wrong, 'Two confident wrong calls have to be punished hard. For BCE with raw logits, confident wrong predictions incur a large loss. The lesson compares its output-logit gradient with that of MSE followed by sigmoid.').toBeGreaterThan(3);
+      expect(right, 'Confident correct predictions should produce a loss close to zero.').toBeLessThan(0.1);
+      expect(wrong, 'Confident wrong predictions should produce a large binary cross-entropy loss. Pass the raw logits to the loss function.').toBeGreaterThan(3);
       recordResult({
         kind: 'table', title: 'Farah\'s loss comparison',
-        summary: 'Your binary cross-entropy on the two supplied logit test cases. Both use the same labels; the confident wrong case should cost more.',
+        summary: 'Your binary cross-entropy on the two supplied logit test cases. Both use the same labels. The confident wrong case should cost more.',
         columns: ['Test case', 'Loss'],
         rows: [['Confident and correct', right], ['Confident and wrong', wrong]],
       });
     });
-    it('the two loss functions score the same tensors differently, so the one you pick decides what counts', () => {
+    it('MSE and binary cross-entropy return their expected losses for the same inputs', () => {
       const labels = tf.tensor([1, 0, 1, 0, 1]);
       const logits = tf.tensor([0.4, -0.4, -0.8, 0.8, 1.4]);
       const mseTensor = mseLoss(labels, logits);
@@ -102,7 +102,7 @@ testCode: |
       expect(pickBceForm('probabilities')).toBe('binaryCrossentropy');
       expect(pickBceForm('logits')).toBe('sigmoidCrossEntropy');
     });
-    it('refuses to infer output semantics from an activation name', () => {
+    it('rejects an activation name when the output format is unknown', () => {
       for (const kind of [
         'sigmoid',
         'softmax',
@@ -114,7 +114,7 @@ testCode: |
       ])
         expect(
           () => pickBceForm(kind),
-          'Declare probabilities or logits explicitly; an activation name alone is not the declared contract.',
+          'Declare probabilities or logits explicitly. An activation name alone is not the declared contract.',
         ).toThrow();
     });
   });

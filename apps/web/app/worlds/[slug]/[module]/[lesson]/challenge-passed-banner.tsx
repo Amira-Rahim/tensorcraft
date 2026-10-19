@@ -39,8 +39,8 @@ export function ChallengePassedBanner({
     ? "Completed earlier"
     : "Completion saved";
   const detail = latestAttemptFailed
-    ? "Your latest checked attempt still needs work. Your saved progress is unchanged."
-    : `${exerciseCount > 1 ? "All exercise completions are saved." : "Your exercise completion is saved."} Run the checks again after editing your code.`;
+    ? "Your latest checked attempt still needs work. Your saved progress stays the same."
+    : `${exerciseCount > 1 ? "We saved all exercise completions." : "We saved your exercise completion."} Run the checks again after editing your code.`;
 
   return (
     <>
@@ -103,7 +103,7 @@ export function ChallengePassedBanner({
               color: "var(--tc-on-primary)",
             }}
           >
-            Continue &rarr;
+            Continue
           </button>
         </div>
       )}

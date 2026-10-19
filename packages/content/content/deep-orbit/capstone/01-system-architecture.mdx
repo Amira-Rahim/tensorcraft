@@ -19,9 +19,9 @@ concept:
     jsTitle: "Package Dependencies"
     jsCode: "// package.json: { dependencies: { react, tfjs, ... } }: declare, install, resolve"
     mlTitle: "Pipeline Dependencies"
-    mlCode: "// pipeline: preprocess → featureExtract → classify → report: declare, connect, validate"
+    mlCode: "// pipeline: preprocess to featureExtract to classify to report: declare, connect, validate"
     tier: structural
-    breaks: "Both software and ML pipelines need versioned interfaces and dependencies. Models add feature order, units, preprocessing, and evaluation assumptions. Some shape errors throw immediately; a valid-shaped input with swapped units may silently change predictions. Test both kinds of contract."
+    breaks: "Both software and ML pipelines need versioned interfaces and dependencies. Models add feature order, units, preprocessing, and evaluation assumptions. Some shape errors throw immediately. A valid-shaped input with swapped units may silently change predictions. Test both kinds of contract."
 consequence:
   narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Behind them the ticker reads 47.0 seconds. Mirza looks at the number, then at the five boxes that have fourteen days to be ready, and says nothing at all."
 hints:
@@ -81,7 +81,7 @@ It's like setting up a monorepo. Each module is a package with clear inputs and 
 DEEP SCAN must run on the repaired bridge dashboard. It has 512 MB of RAM, and its earlier crash cost the crew a capture. Help Demir connect the components from the last ten modules. Each stage needs clear input and output types, and all of them must fit on this machine.
 
 <Dialogue speaker="Chief Nazari">
-Before anyone asks why it doesn't live on my rig: the rig outruns that dashboard three to one, and it rebooted nine times last week because I flash controllers on it. The dashboard sits on the hardened bus with a watch officer in front of it every minute of every shift. A verdict nobody is standing in front of at 0300 is wasted investigation time. It ships to the box with the person attached.
+Before anyone asks why it doesn't live on my rig: the rig outruns that dashboard three to one, and it rebooted nine times last week because I flash controllers on it. The dashboard sits on the hardened bus with a watch officer in front of it every minute of every shift. A verdict nobody is standing in front of at 0300 is wasted investigation time. We’ll deploy it on the bridge dashboard, where the watch can act on its alerts.
 </Dialogue>
 
 Help Demir pass a recording through the stages without losing a result between them. If a handoff fails, the runner must name the stage before the next one starts.
@@ -137,13 +137,13 @@ class Pipeline {
 }
 
 // Integration sketch: implement run in the exercise. The application
-// supplies these stages and rawSignal; this is not a complete classifier.
+// supplies these stages and rawSignal. This is not a complete classifier.
 // Assemble the linear path
 const deepScan = new Pipeline()
-  .addStage(preprocessor)     // RawSignal → ProcessedSignal
-  .addStage(featureExtractor) // ProcessedSignal → SignalFeatures
-  .addStage(classifier)       // SignalFeatures → Classification
-  .addStage(reporter);        // Classification → Report
+  .addStage(preprocessor)     // RawSignal to ProcessedSignal
+  .addStage(featureExtractor) // ProcessedSignal to SignalFeatures
+  .addStage(classifier)       // SignalFeatures to Classification
+  .addStage(reporter);        // Classification to Report
 
 const report = await deepScan.run(rawSignal);
 console.log('Classification:', report.classification.label);
@@ -202,7 +202,7 @@ const manifest: ComponentManifest[] = [
 ];
 
 // Completeness check: every declared dependency resolves to a real component.
-// Cycle detection is a second pass over the same manifest; this one only
+// Cycle detection is a second pass over the same manifest. This one only
 // proves nothing is missing.
 function validateGraph(components: ComponentManifest[]): boolean {
   const names = new Set(components.map(c => c.name));
@@ -218,7 +218,7 @@ Compare the runner with the manifest. The runner passes one `data` value through
 
 To run the branches, a scheduler must run each stage after its dependencies. It saves outputs in a map by stage name, so `reporter` can read both results.
 
-Keeping those outputs uses memory. The peak depends on their sizes, when stages run, and which buffers remain in use. Reassigning a variable does not dispose a TFJS tensor. Decide which stage owns cleanup. Also check input schemas and dependency cycles; checking names alone cannot catch them.
+Keeping those outputs uses memory. The peak depends on their sizes, when stages run, and which buffers remain in use. Reassigning a variable does not dispose a TFJS tensor. Decide which stage owns cleanup. Also check input schemas and dependency cycles. Checking names alone cannot catch them.
 
 The exercise builds the chain runner. You do not need to build the scheduler for branches.
 
@@ -228,13 +228,13 @@ The feature interfaces here are a design sketch. The three-feature binary classi
 
 Build a runner that passes one value through the stages in order. Validate each stage's input before processing it, await its result, and let `addStage` calls chain together.
 
-Your result is the feature row delivered by an eight-sample diagnostic run through the supplied stages. It shows that the asynchronous handoffs complete in order. Demir can use this runner for a linear path; the full architecture still needs the branch scheduler and matching model contracts described above.
+Your result is the feature row delivered by an eight-sample diagnostic run through the supplied stages. It shows that the asynchronous handoffs complete in order. Demir can use this runner for a linear path. The full architecture still needs the branch scheduler and matching model contracts described above.
 
 <Exercise slug="pipeline-architecture" />
 
 <RecallPrompt
   question="Beyond package versions, what must remain compatible between ML pipeline stages?"
-  answer="Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
+  answer="Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately. Others produce plausible but wrong predictions. A lockfile cannot tell you whether those models work correctly together."
   checks={[
     {
       "kind": "choice",
@@ -246,7 +246,7 @@ Your result is the feature row delivered by an eight-sample diagnostic run throu
         },
         {
           "text": "Feature order, units, preprocessing and data assumptions.",
-          "feedback": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
+          "feedback": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately. Others produce plausible but wrong predictions. A lockfile cannot tell you whether those models work correctly together."
         },
         {
           "text": "Output labels alone, provided all stages use the same class names.",
@@ -254,7 +254,7 @@ Your result is the feature row delivered by an eight-sample diagnostic run throu
         }
       ],
       "correctIndex": 1,
-      "explanation": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately; others produce plausible but wrong predictions. A lockfile alone proves neither behavior nor model compatibility."
+      "explanation": "Both need compatible versions and interfaces. Model stages additionally depend on feature order, units, preprocessing and data assumptions. Some violations throw immediately. Others produce plausible but wrong predictions. A lockfile cannot tell you whether those models work correctly together."
     }
   ]}
 />
@@ -266,8 +266,8 @@ Your result is the feature row delivered by an eight-sample diagnostic run throu
     "The manifest check resolves dependency names only. Check cycles, schemas and preprocessing separately.",
     "A single-value loop runs a chain. Multiple dependencies require a scheduler that retains outputs by stage name and runs consumers after their dependencies."
   ]}
-  bridge="Package manifests and pipeline configs both declare dependencies. ML contracts also include feature order, units, and preprocessing; some violations throw while others silently change predictions."
-  youCanNow="Build a validated asynchronous chain and identify where a branched dependency graph needs a scheduler."
+  bridge="Package manifests and pipeline configs both declare dependencies. ML contracts also include feature order, units, and preprocessing. Some violations throw while others silently change predictions."
+  youCanNow="Connect and validate asynchronous stages, and recognize when branches need a scheduler."
 />
 
 <Epilogue>

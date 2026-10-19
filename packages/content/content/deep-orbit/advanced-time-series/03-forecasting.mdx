@@ -21,7 +21,7 @@ concept:
     mlTitle: "Forecasting"
     mlCode: "future = model.predict(pastWindow) // predict what comes next"
     tier: intuition
-    breaks: "A prefetch hint names a resource to fetch in advance. A forecast estimates an unknown future value. Error often grows with horizon, but its shape depends on the process and model. A square-root rule needs assumptions such as independent, zero-mean accumulated errors; measure the horizons you plan to use."
+    breaks: "A prefetch hint names a resource to fetch in advance. A forecast estimates an unknown future value. Error often grows with horizon, but its shape depends on the process and model. A square-root rule needs assumptions such as independent, zero-mean accumulated errors. Measure the horizons you plan to use."
 consequence:
   narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The signal's timing is changing, and not randomly."
 hints:
@@ -30,7 +30,7 @@ hints:
       Both methods start from past. After the first prediction, decide which value enters each next window.
   - level: guidance
     content: |
-      The rollout appends its own prediction. One-step replay appends the next observed reading instead. Use providedModel when supplied and return its exact fit history. Agreement between the two series is possible; check how each window was built.
+      The rollout appends its own prediction. One-step replay appends the next observed reading instead. Use providedModel when the exercise supplies it and return its exact fit history. Agreement between the two series is possible. Check which values each window contains.
   - level: solution
     content: |
       async function forecastTwoWays(trainX, trainY, past, arrived, epochs, providedModel) {
@@ -87,7 +87,7 @@ A repeatable forecast would give us useful structure. It would not tell us wheth
 What observation would distinguish those explanations?
 </Dialogue>
 
-`<link rel="prefetch">` asks the browser to fetch a resource the application expects to need. The application supplies that expectation; the link does not learn or predict the next navigation. Forecasting learns from past observations to estimate a future value. Both can support preparation, but only the forecast here is a learned prediction.
+`<link rel="prefetch">` asks the browser to fetch a resource the application expects to need. The application supplies that expectation. The link does not learn or predict the next navigation. Forecasting learns from past observations to estimate a future value. Both can support preparation, but only the forecast here is a learned prediction.
 
 You will compare a forecast that reuses its predictions with one that receives each new observed reading.
 
@@ -113,7 +113,7 @@ const LIMITS = [
   { min: -Math.PI, max: Math.PI },
 ];
 
-// The model predicts per-channel z-scores, not raw sensor units.
+// The model predicts per-channel z-scores. Convert them to sensor units for reports.
 // Convert physical limits using the same saved training MEAN and STD
 // before clamping. A count limit cannot be compared directly with a z-score.
 // savedScaler must come from this model's training rows.
@@ -167,7 +167,7 @@ const predictions = await forecast(model, recentWindow, 100, 80);`}
 
 Non-stationarity means a series' statistical properties change over time. Some forecasting methods explicitly model trend or seasonality, so forecasting does not require a constant mean. The practical question is whether the relationships learned by this model remain useful.
 
-Rolling forecasts and changes in the data can both affect error. Compare errors at the same horizon across earlier and later periods. One-step replay is a useful starting point because each prediction uses observed history. Rising error is a reason to investigate data quality, preprocessing, operating conditions and the model; it does not establish a cause by itself.
+Rolling forecasts and changes in the data can both affect error. Compare errors at the same horizon across earlier and later periods. One-step replay is a useful starting point because each prediction uses observed history. Rising error is a reason to investigate data quality, preprocessing, operating conditions and the model. It does not establish a cause by itself.
 
 <CodeBlock language="typescript" title="non-stationary.ts">
 {`// The forecast says the anomaly repeats at step 50
@@ -175,7 +175,7 @@ Rolling forecasts and changes in the data can both affect error. Compare errors 
 // The model was wrong. Why?
 
 // NON-STATIONARY DATA: the statistical properties change over time
-// The signal's timing is DRIFTING; it's not perfectly periodic
+// The signal's timing is DRIFTING. It's not perfectly periodic
 // Like a website's traffic patterns shifting after a redesign
 
 // One prediction per reading that actually arrived. The window is re-seeded
@@ -233,12 +233,12 @@ function detectDrift(
   const histMean = historical.reduce((a, b) => a + b, 0) / historical.length;
 
   return {
-    driftDetected: recentMean > histMean * 2, // heuristic review flag, not proof
+    driftDetected: recentMean > histMean * 2, // heuristic flag that requests review
     driftMagnitude: histMean === 0 ? null : recentMean / histMean,
   };
 }
 
-// Observations only, never a forecast. The last 200 errors are this period;
+// Observations only, never a forecast. The last 200 errors are this period.
 // everything before them is the baseline they are judged against.
 const oneStep = predictOneStepAhead(model, observedReadings, 80);
 const drift = detectDrift(oneStep, observedReadings.slice(80), 200);`}
@@ -246,7 +246,7 @@ const drift = detectDrift(oneStep, observedReadings.slice(80), 200);`}
 
 ## A Reproducible Feedback Example
 
-Use a fixed mathematical rule to see the effect of feeding predictions back without any variation from training. The example process uses 3.9; the forecaster uses 3.899. The rollout reuses each prediction. The replay uses the previous observed value instead.
+Use a fixed mathematical rule to see the effect of feeding predictions back without any variation from training. The example process uses 3.9. The forecaster uses 3.899. The rollout reuses each prediction. The replay uses the previous observed value instead.
 
 <CodeBlock language="javascript" title="error-by-horizon.ts">
 {`const processStep = x => 3.9 * x * (1 - x);
@@ -266,13 +266,13 @@ for (let horizon = 1; horizon <= 16; horizon++) {
 console.table(errorsByHorizon);`}
 </CodeBlock>
 
-This is a constructed numerical example, not a trained LSTM benchmark or spacecraft measurement. The replay error is at most 0.00025 here: the coefficient difference is 0.001 and x(1-x) is at most 0.25 on [0, 1]. The rollout can depart much farther as it feeds its errors back. Inspect the table: individual errors need not rise at every horizon.
+We chose this numerical example to make error accumulation visible. It does not measure an LSTM or a spacecraft signal. The replay error is at most 0.00025 here: the coefficient difference is 0.001 and x(1-x) is at most 0.25 on [0, 1]. The rollout can depart much farther as it feeds its errors back. Inspect the table: individual errors need not rise at every horizon.
 
 To evaluate a learned model, repeat forecasts from many held-out starting points, compare a simple baseline, and report each horizon separately. Mean absolute error is not a prediction interval. An interval needs an explicit construction and a coverage check on later data.
 
 ## Challenge
 
-Train a model to predict one step ahead. Run the same stretch twice: once feeding predictions back, and once using the readings that arrived. Inspect both returned series beside those observations to separate rollout behavior from one-step replay before investigating the changing pulse interval. The checks verify training and input construction, not a required forecast quality. The runs can agree, especially when the model predicts nearly the same value each time.
+Train a model to predict one step ahead. Run the same stretch twice: once feeding predictions back, and once using the readings that arrived. Compare both prediction series with the observed readings. This helps you see what changes when predictions become inputs, before you investigate the shrinking pulse interval. The checks verify training and input construction. They set no minimum forecast quality. The runs can agree, especially when the model predicts nearly the same value each time.
 
 <Exercise slug="forecast-signal" />
 
@@ -286,7 +286,7 @@ Train a model to predict one step ahead. Run the same stretch twice: once feedin
       "options": [
         {
           "text": "One-step replay also replaces all observed history with predictions.",
-          "feedback": "One-step replay uses observed history; rollout feeds predictions back."
+          "feedback": "One-step replay uses observed history. Rollout feeds predictions back."
         },
         {
           "text": "Its predictions become inputs to later prediction windows.",
@@ -334,9 +334,9 @@ Train a model to predict one step ahead. Run the same stretch twice: once feedin
   whatYouLearned={[
     "A rolling forecast feeds each prediction into the next input. Measure error separately for each number of steps ahead. It does not always grow with every step.",
     "Non-stationarity means the statistical properties of the series change over time, which may invalidate relationships a model learned.",
-    "Drift detection runs on one-step errors measured along the clock: re-seed the window from real readings, then compare this period's error against an earlier period's. The error-ratio rule is a review heuristic, not a statistical proof of drift."
+    "To check for change over time, make one-step predictions using observed readings. Compare errors in recent and earlier periods. The error-ratio rule tells you when to investigate. It does not prove drift."
   ]}
-  bridge="Prefetching requests a known resource the app expects to need. Forecasting estimates unknown future values from observations; its uncertainty must be measured at each horizon."
+  bridge="Prefetching requests a known resource the app expects to need. Forecasting estimates unknown future values from observations. Measure its uncertainty at each horizon."
   youCanNow="Train a one-step forecaster. Compare a run that reuses predictions with a replay that uses observed readings, and explain which one can help check for changes over time."
 />
 

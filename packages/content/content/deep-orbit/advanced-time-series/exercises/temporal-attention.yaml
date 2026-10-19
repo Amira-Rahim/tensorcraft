@@ -9,7 +9,7 @@ instructions: |
 
   Use those weights to combine the original readings, without the extra position column. The resulting summary has shape [d]. Return { summary, weights }, keeping both as tensors.
 
-  Remove only the batch axis. When d is 1, summary must still have shape [1], not a scalar. The sequence is non-empty. Use tf.tidy to free temporary tensors while keeping the caller's inputs and both returned tensors alive.
+  Remove only the batch axis. When d is 1, summary must keep shape [1]. A scalar would lose the feature axis. The sequence is non-empty. Use tf.tidy to free temporary tensors while keeping the caller's inputs and both returned tensors alive.
 starterCode: |
   function temporalAttention(sequence, scorerWeights) {
     // Add position when calculating scores.
@@ -44,7 +44,7 @@ testCode: |
         const detail = (err && err.message) || String(err);
         if (detail.toLowerCase().indexOf('softmax') !== -1) {
           throw new Error(
-            'tf.softmax normalizes the LAST axis only, so a [T, 1] column of scores puts the steps on an axis it will not touch. Reshape the scores to [T] first, then soften them. tfjs said: ' + detail,
+            'tf.softmax operates along the last axis. Reshape the [T, 1] scores to [T], then apply softmax across the steps. TensorFlow.js error: ' + detail,
           );
         }
         throw new Error(
@@ -53,15 +53,15 @@ testCode: |
       }
       expect(
         out,
-        'temporalAttention returns an object carrying two tensors, a summary and a weights.',
+        'Return an object with two tensors: summary and weights.',
       ).toBeDefined();
       expect(
         out && out.weights,
-        'weights is one softmax weight per time step, and the starter hands it back empty.',
+        'weights is missing. Return one softmax weight per time step.',
       ).toBeDefined();
       expect(
         out && out.summary,
-        'summary is the pooled vector, one number per reading column, and the starter hands it back empty.',
+        'summary is missing. Return the weighted sum of the readings, with one number per feature.',
       ).toBeDefined();
       return out;
     };
@@ -72,7 +72,7 @@ testCode: |
       );
       expect(
         out.summary.shape,
-        'The summary is one number per READING column, so it is as wide as the readings you were handed and not as wide as the copy you scored. A [T] summary means the pooling ran along the wrong axis instead.',
+        'Return one number per original reading column. Leave the position column out of the summary. A [T] result suggests you pooled across features. Pool over time to keep one output per feature.',
       ).toEqual([16]);
       expect(
         out.weights.shape,
@@ -80,7 +80,7 @@ testCode: |
       ).toEqual([10]);
       expect(
         out.weights.sum().dataSync()[0],
-        'Softmax weights are a budget over the steps and always total 1. Raw scores, or a normalization by count, do not.',
+        'The attention weights must add to 1. Apply softmax to the scores. Do not just divide them by the number of steps.',
       ).toBeCloseTo(1, 4);
     });
     it('a zero scorer spreads the weight evenly, so the summary is the column average', () => {
@@ -97,7 +97,7 @@ testCode: |
       ).toBeCloseTo(4.6667, 3);
       expect(
         s[1],
-        'Both columns are pooled under the same weights, so the second one averages too.',
+        'Both columns use the same pooling weights, so the second one averages too.',
       ).toBeCloseTo(3.3333, 3);
     });
     it('the top-weighted index is the step the scorer scores highest', () => {
@@ -119,7 +119,7 @@ testCode: |
       );
       expect(
         out.weights.argMax().dataSync()[0],
-        'This scorer zeroes both reading columns and weights only the last row, the position one. Skip the position column and nothing here can be scored at all.',
+        'This scorer uses only position. Include the position column when calculating scores.',
       ).toBe(2);
       expect(
         Array.from(out.summary.dataSync())[1],
@@ -127,19 +127,19 @@ testCode: |
       ).toBeCloseTo(5, 3);
       recordResult({
         kind: 'series', title: 'Where your positional scorer puts its weight',
-        summary: 'Three synthetic readings, with a supplied scorer that uses position alone. Larger weights show influence in the blend, not a causal explanation or an anomaly verdict.',
+        summary: 'Three synthetic readings, with a supplied scorer that uses position alone. Larger weights give a reading more influence in the blend. They cannot establish a cause or an anomaly verdict.',
         xLabel: 'Time step index', yLabel: 'Attention weight',
         labels: Array.from(out.weights.dataSync(), (_, i) => String(i)),
         series: [{ name: 'Your attention weights', values: Array.from(out.weights.dataSync()) }],
       });
       recordResult({
         kind: 'table', title: 'Your pooled readings',
-        summary: 'The position column affects scores but is not included in the returned feature summary.',
+        summary: 'The position column affects scores but stays out of the returned feature summary.',
         columns: ['Reading feature index', 'Your summary value'],
         rows: Array.from(out.summary.dataSync(), (value, i) => [i, value]),
       });
     });
-    it('a mild scorer leaves the winning step about half the budget', () => {
+    it('moderate scores give the largest weight about half the total', () => {
       // The scores here come out 0, 0.5 and 1. That spread is small enough
       // that the softmax stays soft: the top step takes about half the
       // weight and the other two keep the rest. The other fixtures score
@@ -155,11 +155,11 @@ testCode: |
       const s = Array.from(out.summary.dataSync());
       expect(
         out.summary.shape,
-        'The summary is as wide as the readings you were handed, two columns here, and not as wide as the copy you scored.',
+        'The summary must contain one number for each original reading column, two here. Leave out the position column.',
       ).toEqual([2]);
       expect(
         w[2],
-        'The last step wins by half a point, which is not enough to take the whole budget. A hard pick of the top-scoring step reports 1 here.',
+        'The last step has the highest score, but its softmax weight is below 1. Keep the weighted contributions from the other steps too.',
       ).toBeCloseTo(0.5065, 3);
       expect(
         w[0],
@@ -171,7 +171,7 @@ testCode: |
       ).toBeCloseTo(0.33, 3);
       expect(
         s[1],
-        'This column is never scored, so the losing steps are what carry it. The winning row alone reads 0 here and a flat average reads 2.',
+        'The scorer ignores this column, but its values still contribute to the weighted summary. The winning row alone reads 0 here and a flat average reads 2.',
       ).toBeCloseTo(1.3597, 3);
     });
     it('a window and its reversal no longer summarize the same', () => {
@@ -220,7 +220,7 @@ testCode: |
       ).toEqual([T]);
       expect(
         out.summary.shape,
-        'One number per reading column, three here. A summary one column wider than that is the widened copy being pooled instead of the readings.',
+        'One number per reading column, three here. A summary with an extra column means you pooled the position column too. Apply the weights to the original readings.',
       ).toEqual([d]);
       const gotWeights = Array.from(out.weights.dataSync());
       for (let t = 0; t < T; t++) {
@@ -234,7 +234,7 @@ testCode: |
         const expected = rows.reduce((s, row, t) => s + weights[t] * row[i], 0);
         expect(
           gotSummary[i],
-          'The summary is the weighted sum of these readings. Pooling the widened copy, or pooling with weights of your own, lands somewhere else.',
+          'Calculate the weighted sum of the original readings using the attention weights. Exclude the added position column from the summary.',
         ).toBeCloseTo(expected, 3);
       }
     });

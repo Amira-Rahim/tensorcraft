@@ -153,7 +153,7 @@ Give Nazari a baseline she can compare with the next build: weight storage, comp
 
 <LearningObjectives objectives={["Calculate weight bytes from the parameter count and clean up tensors after profiling", "Measure prediction time, including the average and slower calls", "Count parameters per layer without assuming that the largest layer is the slowest", "Establish baseline metrics before optimization"]} />
 
-## Find where the build spends memory and time
+## Model memory and runtime
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -219,7 +219,7 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
   times.sort((a, b) => a - b);
 
   // Net growth needs investigation. Warmup caches or other page work can
-  // also affect the count; this is not a process-memory measurement.
+  // also affect the count. This is not a process-memory measurement.
   const trackedByteChange = tf.memory().numBytes - residentBytesBefore;
   if (trackedByteChange !== 0) console.warn('Tracked tensor-byte change:', trackedByteChange);
 
@@ -234,9 +234,9 @@ async function profileModel(model: tf.LayersModel, createInput: () => tf.Tensor)
 
 // Integration input: supply model and an input factory matching its contract.
 // The table below uses a size-accounting proxy for the fictional 340 MB
-// component, not a generative language-model architecture. Its layers are:
+// component. It has no generative language-model architecture. Its layers are:
 // embedding [50000, 256], flatten [80 * 256], Dense 3320, Dense 1264.
-// The embedding needs int32 token IDs in [0, 49999], not random floats.
+// The embedding needs int32 token IDs in [0, 49999].
 // Its parameter arithmetic is 12,800,000 + 67,996,920 + 4,197,744.
 // The runtime lab profiles a separate, small classifier.
 const profile = await profileModel(model, () => tf.randomUniform([1, 80], 0, 50000, 'int32'));
@@ -267,33 +267,32 @@ for (const layer of profile.layerBreakdown) {
 // Both supplied timings describe the fictional WASM run: the dashboard had no working
 // WebGL context that night, so the profile ran on the fallback.
 //
-// The flatten row is in there because the loop walks model.layers, not
-// only the layers that hold weights. It reshapes the embedding's 80 by 256
+// The loop visits every entry in model.layers, including flatten, which holds no weights. It reshapes the embedding's 80 by 256
 // output into 20,480 values and owns nothing, so its share is 0.0%.
 // Rounded to millions that is 85 million weights. The profiler prints the
 // exact count, and 84,994,664 float32 weights at 4 bytes each are the
 // 340.0 MB on Nazari's board.
 //
-// Read the shares, not the total. 80% of this model is one Dense layer, so
+// Compare each layer’s share of the total. 80% of this model is one Dense layer, so
 // that layer holds most of the 340 MB. The 45 ms mean and the 112 ms P95 are
-// the latency baseline, not an explanation of the crash: the dashboard died
+// the latency baseline. They cannot explain the crash: the dashboard died
 // with the free-memory line at zero, 340 MB of weights loading into a 512 MB
-// budget. In that baseline the tail is the number to gate on. It is 2.5x the
-// mean, but neither statistic alone gives the fraction exceeding an arbitrary latency budget. Count those violations directly.
-// These scenario values carry into the capstone; they are not reproduced device measurements.`}
+// budget. The P95 is 2.5x the mean. Check slow calls as well as the average,
+// and count how many exceed your latency budget. Neither statistic gives that count.
+// These scenario values carry into the capstone. They are not reproduced device measurements.`}
 </CodeBlock>
 
 ## Challenge
 
 Give Nazari a baseline: weight storage, parameters per layer, and the average time for a completed prediction. Track tensor cleanup during the measurement too.
 
-Your results show where the supplied model stores its parameters and how your timer handles a slow call. The timing check uses a controlled clock so the averaging rule can be checked exactly. Use the runtime lab for device timings; neither result measures the whole dashboard's peak memory.
+Your results show where the supplied model stores its parameters and how your timer handles a slow call. The timing check uses a controlled clock so the test can check the averaging rule exactly. Use the runtime lab for device timings. Neither result measures the whole dashboard's peak memory.
 
 <Exercise slug="profile-model" />
 
 <RecallPrompt
   question="Separate what parameter profiling shows from what still needs measurement."
-  answer="Profiling identifies which layers hold the most parameters, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped. Note what this profile does not give you: parameter share is not time share. A layer holding 80% of the weights dominates parameter storage. It need not dominate execution time or peak runtime memory; those require separate measurements."
+  answer="Parameter counts show which layers use the most weight storage. A layer with 80% of the weights is a candidate for reducing that storage, but it may not be the slowest layer or use the most runtime memory. Measure those separately, and keep the original results to compare with each change."
   checks={[
     {
       "kind": "choice",
@@ -301,7 +300,7 @@ Your results show where the supplied model stores its parameters and how your ti
       "options": [
         {
           "text": "It dominates parameter storage.",
-          "feedback": "Parameter counts locate storage costs; time and peak memory need separate measurements."
+          "feedback": "Parameter counts locate storage costs. Time and peak memory need separate measurements."
         },
         {
           "text": "It must consume 80% of execution time.",
@@ -313,7 +312,7 @@ Your results show where the supplied model stores its parameters and how your ti
         }
       ],
       "correctIndex": 0,
-      "explanation": "Parameter counts locate storage costs; time and peak memory need separate measurements."
+      "explanation": "Parameter counts locate storage costs. Time and peak memory need separate measurements."
     },
     {
       "kind": "choice",
@@ -339,14 +338,14 @@ Your results show where the supplied model stores its parameters and how your ti
 />
 
 <LessonRecap
-  whatYouLearned={["Parameter count estimates weight storage, not peak runtime memory.", "Time completed inference over repeated runs and report both typical and slow calls.", "Warmup reduces startup effects. It does not remove all timing noise.", "Parameter share is not execution-time share. Profile operations before claiming a layer is the latency bottleneck."]}
+  whatYouLearned={["Parameter count estimates weight storage. Measure peak runtime memory separately.", "Time completed inference over repeated runs and report both typical and slow calls.", "Warmup reduces startup effects. It does not remove all timing noise.", "Parameter share is not execution-time share. Profile operations before claiming a layer is the latency bottleneck."]}
   bridge="Use JavaScript timing APIs for inference too. Include output readback when measuring completion on a GPU, and track memory across repeated calls."
   youCanNow="Estimate weight storage, measure inference latency and inspect parameter distribution, then measure runtime memory separately."
 />
 
 <Epilogue>
 
-By evening, Nazari has the profiling procedure she needs for the full build. Its weight count and prediction times stay on separate lines; the peak-memory check is still open. The mission profile hangs beside her totals: 512 MB of dashboard RAM, a 340 MB model, nine hours of reconstruction, no capture, and nineteen days until the next relay slot.
+By evening, Nazari has the profiling procedure she needs for the full build. Its weight count and prediction times stay on separate lines. The peak-memory check is still open. The mission profile hangs beside her totals: 512 MB of dashboard RAM, a 340 MB model, nine hours of reconstruction, no capture, and nineteen days until the next relay slot.
 
 A new line records 211 KB of partial telemetry recovered from the crash window. It is not the lost capture. Demir replays the fragment three times. The last clean reading puts the pulse interval at 61.2 seconds, down from the first measurement of 73.4. The crew has not decided what to do about that.
 

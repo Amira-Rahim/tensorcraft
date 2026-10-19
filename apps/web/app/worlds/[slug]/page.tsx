@@ -38,14 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!world) return {};
   return {
     title: isComingSoon(slug)
-      ? `${world.displayName}: Coming Soon | Tensorcraft`
-      : `${world.displayName}: Module Map | Tensorcraft`,
+      ? `${world.displayName}: Coming Soon, Tensorcraft`
+      : `${world.displayName}: Module Map, Tensorcraft`,
     // Search snippets reach strangers with no framing, so they state what
     // the course is rather than opening on the story (owner bar 2026-08-16;
     // ruled 2026-08-20: the coming-soon PAGES keep their story copy, their
     // metadata does not).
     description: isComingSoon(slug)
-      ? `${world.displayName} is a planned machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Not released yet; join the waitlist.`
+      ? `${world.displayName} is a planned machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Not released yet. Join the waitlist.`
       : `${world.displayName} is a story-driven machine learning course in JavaScript: ${world.specialization.toLowerCase()}, taught in the browser with TensorFlow.js. Module 1 is free.`,
     alternates: { canonical: `https://tensorcraft.app/worlds/${slug}` },
     // Full openGraph + twitter blocks: an images-only openGraph REPLACES the
@@ -54,14 +54,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: `https://tensorcraft.app/worlds/${slug}`,
-      title: `${world.displayName} | Tensorcraft`,
+      title: `${world.displayName}, Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(world.displayName)}&world=${slug}&subtitle=${encodeURIComponent(world.specialization)}`,
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${world.displayName} | Tensorcraft`,
+      title: `${world.displayName}, Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(world.displayName)}&world=${slug}&subtitle=${encodeURIComponent(world.specialization)}`,
       ],
@@ -440,7 +440,7 @@ export default async function WorldDetailPage({ params }: Props) {
                 className="text-sm font-mono font-semibold mt-1"
                 style={{ color: "var(--tc-text)" }}
               >
-                All modules completed; view your capstone &rarr;
+                All modules completed. View your capstone
               </p>
             </div>
             {(() => {
@@ -483,7 +483,7 @@ export default async function WorldDetailPage({ params }: Props) {
             !user
               ? {
                   href: `/pricing?locked=${encodeURIComponent(slug)}`,
-                  label: `From $${PRICING.single.price} · Module 1 free`,
+                  label: `From $${PRICING.single.price}, Module 1 free`,
                 }
               : undefined
           }

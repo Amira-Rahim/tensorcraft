@@ -1,6 +1,6 @@
 slug: llm-client
 lessonSlug: llms-for-science
-title: "Read the Model's Reply"
+title: "The model’s reply"
 instructions: |
   Write analyzeSignal(prompt, apiCall). Call apiCall once with the supplied prompt. Find its JSON object, parse it, and check the required fields before returning the result. Throw an error if the JSON or a required field is invalid.
 
@@ -11,7 +11,7 @@ instructions: |
   - confidence must be a finite number from 0 to 1 inclusive. Zero is valid. Do not convert strings or null into numbers.
   - reasoning must be a string with at least one non-whitespace character.
 
-  Extra fields are allowed. These checks verify the reply's structure. They do not prove its claims are true or that its confidence score is a reliable probability.
+  Accept extra fields. These checks verify the reply's structure. They do not prove its claims are true or that its confidence score is a reliable probability.
 starterCode: |
   interface Analysis {
     classification: string;
@@ -77,13 +77,13 @@ testCode: |
       const result = await analysisFrom(api, 'classify capture 7741');
       expect(
         seen,
-        'The analysis has to come from calling apiCall with the prompt you were given, not from a string you kept.',
+        'The analysis has to come from calling apiCall with the supplied prompt. A stored answer would ignore the current request.',
       ).toEqual(['classify capture 7741']);
       expect(result.classification).toBe('anomaly');
       recordResult({
         kind: 'table',
         title: 'The reply your client accepted',
-        summary: 'Parsed from the supplied mock API reply. The fields can reach the next stage; the reasoning and score still need evidence review.',
+        summary: 'Parsed from the supplied mock API reply. The fields can reach the next stage. The reasoning and score still need evidence review.',
         columns: ['Field', 'Returned value'],
         rows: [['Classification', result.classification], ['Model score', result.confidence], ['Reasoning', result.reasoning]],
       });
@@ -96,7 +96,7 @@ testCode: |
       const badApi = async () => 'not json';
       await expect(
         analyzeSignal('test', badApi),
-        'No JSON object was found. Reject the reply instead of returning an incomplete analysis.',
+        'The reply contains no JSON object. Reject it as an incomplete analysis.',
       ).rejects.toThrow();
     });
     it('throws on valid JSON that leaves out a required field (validation, not just parsing)', async () => {
@@ -121,7 +121,7 @@ testCode: |
       const result = await analysisFrom(flat, 'test');
       expect(
         result.confidence,
-        'A model reporting zero confidence has answered you. A field is missing only when it is absent, so test for absence rather than for truthiness.',
+        'A model reporting zero confidence has answered you. A field is missing only when it is absent, so check whether the field exists. A truthiness check would reject zero.',
       ).toBe(0);
       expect(result.classification).toBe('noise');
       expect(result.reasoning).toBe('Every dial reads inside the natural band');
@@ -132,7 +132,7 @@ testCode: |
       const result = await analysisFrom(verbose, 'test');
       expect(
         result.classification,
-        'Extra fields are allowed. Validate the required properties without rejecting additional ones.',
+        'Accept extra fields. Validate the required properties without rejecting additional ones.',
       ).toBe('unknown');
       expect(result.confidence).toBe(0.11);
       expect(result.reasoning).toBe('Two channels dropped mid-capture');
@@ -151,7 +151,7 @@ testCode: |
       const noConfidence = async () => '{"classification":"anomaly","reasoning":"High amplitude"}';
       await expect(
         analyzeSignal('test', noConfidence),
-        'The contract requires a confidence field. Reject a missing field; a supplied score still needs calibration before probability-based use.',
+        'The contract requires a confidence field. Reject a missing field. A supplied score still needs calibration before probability-based use.',
       ).rejects.toThrow();
     });
     it('checks the parsed object, not the prose around it', async () => {
@@ -177,7 +177,7 @@ testCode: |
         '{"classification":"noise","reasoning":"confidence is low on this one"}';
       await expect(
         analyzeSignal('test', renamedInsideAValue),
-        'Check the confidence property itself, not a mention inside another value.',
+        'Check the confidence property directly. Text inside another value does not supply that field.',
       ).rejects.toThrow();
     });
     it('refuses a reply whose object never parses, however complete it reads', async () => {
@@ -191,7 +191,7 @@ testCode: |
         'Assessment follows.\n{"classification":"noise","confidence":0.2,"reasoning":"Zero crossings sit inside the natural band"';
       await expect(
         analyzeSignal('test', cutOff),
-        'Reject this truncated object rather than scraping its fields from incomplete text.',
+        'Reject this truncated object. Incomplete text cannot satisfy the JSON contract.',
       ).rejects.toThrow();
     });
     it('reads replies built at grade time, field for field', async () => {

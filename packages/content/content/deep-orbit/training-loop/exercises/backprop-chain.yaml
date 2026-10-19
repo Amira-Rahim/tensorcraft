@@ -62,37 +62,37 @@ solutionCode: |
 testCode: |
   describe('Backprop', () => {
     it('the forward-pass value comes back next to the gradients', () => {
-      expect(loss, 'gradOf returned no value, so the forward pass either never ran or its result was dropped. One call returns both halves: the loss the forward pass produced, and the gradients the backward pass found.').toBeDefined();
-      expect(loss.dataSync()[0], 'The value half is the loss at the current weight, computed by running the function rather than copied from anywhere.').toBeCloseTo(9.0, 4);
+      expect(loss, 'gradOf returned no value, so the forward pass either never ran or your function discarded its result. One call returns both halves: the loss the forward pass produced, and the gradients the backward pass found.').toBeDefined();
+      expect(loss.dataSync()[0], 'The value half is the loss at the current weight, which you must calculate by running the supplied function.').toBeCloseTo(9.0, 4);
     });
     it('the backward pass produced a gradient for the variable, not a number you typed', () => {
       expect(grads, 'gradOf returned no gradients.').toBeDefined();
       const keys = Object.keys(grads);
-      expect(keys.length, 'The gradients arrive in an object with one entry per variable the loss touched, so an empty object means nothing was differentiated.').toBeGreaterThanOrEqual(1);
+      expect(keys.length, 'The gradients arrive in an object with one entry per variable the loss touched, so an empty object means autodiff found no connected variables.').toBeGreaterThanOrEqual(1);
       expect(grads[keys[0]].dataSync()[0], 'This is the slope of the loss at the current weight. A zero gradient can also occur at a stationary point or through an operation with zero local derivative.').toBeCloseTo(6.0, 4);
     });
     it('the gradient is registered under the trained variable itself', () => {
       expect(grads, 'gradOf returned no gradients, so there is no key to look under.').toBeDefined();
-      expect(Object.keys(grads), 'The gradients are keyed by variable name, which is how a real model keeps 673 of them apart. This one is filed under a different key.').toContain(w.name);
+      expect(Object.keys(grads), 'Store each gradient under its variable name. The expected key is missing.').toContain(w.name);
     });
     it('gradOf recomputes after the weight changes', () => {
       w.assign(tf.scalar(5.0));
       const second = gradOf(lossFn);
       expect(second, 'The second call returned nothing.').toBeDefined();
-      expect(second.value, 'The second call came back without a value half, so the forward pass result was dropped.').toBeDefined();
+      expect(second.value, 'The second call came back without a value half, so your function discarded the forward pass result.').toBeDefined();
       expect(second.grads, 'The second call came back without a gradients half.').toBeDefined();
-      expect(second.value.dataSync()[0], 'The loss has to be recomputed at the new weight. A number frozen at call one was right only for the old weight.').toBeCloseTo(25.0, 4);
+      expect(second.value.dataSync()[0], 'Recompute the loss at the new weight. A number frozen at call one was right only for the old weight.').toBeCloseTo(25.0, 4);
       const g = second.grads[Object.keys(second.grads)[0]];
       expect(g, 'No gradient came back for the variable on this call.').toBeDefined();
-      expect(g.dataSync()[0], 'The slope moves with the weight. A gradient that repeats the first call means the answer was stored rather than computed.').toBeCloseTo(10.0, 4);
+      expect(g.dataSync()[0], 'The slope moves with the weight. A gradient that repeats the first call suggests your code reused the earlier answer. Calculate the gradient on each call.').toBeCloseTo(10.0, 4);
     });
-    it('gradOf differentiates a loss the grader wrote, which this exercise never shows', () => {
+    it('gradOf calculates gradients for a different loss function', () => {
       w.assign(tf.scalar(0.5));
       const third = gradOf(() => w.square().mul(3).add(w.mul(2)));
       expect(third, 'The call on the loss the grader wrote returned nothing.').toBeDefined();
       expect(third.value, 'That call came back without a value half.').toBeDefined();
       expect(third.grads, 'That call came back without a gradients half.').toBeDefined();
-      expect(third.value.dataSync()[0], 'This loss carries a term the starter never had, so its value has to come from running the function you were handed.').toBeCloseTo(1.75, 4);
+      expect(third.value.dataSync()[0], 'This loss carries a term the starter never had, so its value has to come from running the supplied function.').toBeCloseTo(1.75, 4);
       const g = third.grads[Object.keys(third.grads)[0]];
       expect(g, 'No gradient came back for the variable on the loss the grader wrote.').toBeDefined();
       expect(g.dataSync()[0], 'A derivative written by hand inside gradOf answers for the wrong function here. The call differentiates whatever it records.').toBeCloseTo(5.0, 4);
@@ -115,12 +115,12 @@ testCode: |
       const out = gradOf(composed);
       expect(out, 'The call on the three-variable loss returned nothing.').toBeDefined();
       expect(out.value, 'That call came back without a value half.').toBeDefined();
-      expect(out.grads, 'That call came back without a gradients half, so no variable was differentiated.').toBeDefined();
+      expect(out.grads, 'That call came back without a gradients half, so autodiff returned no variable gradients.').toBeDefined();
       expect(out.value.dataSync()[0], 'The value is this composed loss at the three weights the grader set.').toBeCloseTo(Math.sin(1.5) + 0.25 + 0.25 * 1.5, 4);
       expect(out.grads[a.name], 'Every variable the loss touched gets an entry, keyed by its own name. The first one is missing.').toBeDefined();
       expect(out.grads[a.name].dataSync()[0], 'The first variable reaches the loss along two routes, through the sine and through the product, so its gradient is the sum of both. That summing is the chain rule doing its work.').toBeCloseTo(Math.cos(1.5) + 0.25, 4);
       expect(out.grads[b.name].dataSync()[0], 'The second variable only ever appears squared.').toBeCloseTo(-1.0, 4);
-      expect(out.grads[c.name].dataSync()[0], 'The third variable is multiplied by the first, so its slope is whatever the first one currently holds.').toBeCloseTo(1.5, 4);
+      expect(out.grads[c.name].dataSync()[0], 'The loss multiplies the third variable by the first, so its slope is whatever the first one currently holds.').toBeCloseTo(1.5, 4);
       expect(passes, 'Call tf.variableGrads(fn) once. It runs this loss function once and computes all three gradients from that recording.').toBe(1);
     });
     it('the estimate agrees with the recorded pass and costs a forward pass per variable', () => {
@@ -138,13 +138,13 @@ testCode: |
       // of those, since the learner's browser runs webgl and this harness
       // cannot measure its float arithmetic. Every wrong answer this test
       // exists to catch misses by at least a whole unit.
-      expect(typeof numericGradOf, 'numericGradOf is missing. This exercise asks for the method the lesson retires as well as the one that replaces it, because the cost of the first is the whole argument for the second.').toBe('function');
+      expect(typeof numericGradOf, 'numericGradOf is missing. Implement the numerical estimate so you can compare its number of loss calculations with automatic differentiation.').toBe('function');
       w.assign(tf.scalar(3.0));
       const recorded = gradOf(lossFn).grads[w.name].dataSync()[0];
       const estimate = numericGradOf(lossFn, w);
       expect(typeof estimate, 'numericGradOf hands back a plain number: a change in loss divided by the nudge that caused it. A tensor or an object is the shape the other function returns.').toBe('number');
-      expect(estimate, 'The estimate is nowhere near the slope the backward pass reports at this weight. A nudge of the size the instructions name lands within 0.001 of it on this loss, so a gap this wide is a different calculation rather than a rounding difference.').toBeCloseTo(recorded, 1);
-      expect(w.dataSync()[0], 'The weight came back changed. A nudge that is never undone leaves the model somewhere the optimizer did not put it, and every number read afterwards is read at the wrong place.').toBeCloseTo(3.0, 4);
+      expect(estimate, 'The numerical estimate should be within 0.001 of the automatic gradient in this case. Check the loss difference and use the requested step size.').toBeCloseTo(recorded, 1);
+      expect(w.dataSync()[0], 'Restore the original weight after estimating the gradient. The estimate should not change the model.').toBeCloseTo(3.0, 4);
       const a = tf.variable(tf.scalar(1.5));
       const b = tf.variable(tf.scalar(-0.5));
       const c = tf.variable(tf.scalar(0.25));
@@ -161,11 +161,11 @@ testCode: |
       const before = autoCalls();
       const est = [numericGradOf(composed, a), numericGradOf(composed, b), numericGradOf(composed, c)];
       const estimatePasses = passes;
-      expect(autoCalls() - before, 'numericGradOf called the automatic differentiator. That is the other half of this exercise. This half is the method that needs none, and routing it through the recorded pass reports the cost of the recorded pass, which is the one number the comparison cannot borrow.').toBe(0);
+      expect(autoCalls() - before, 'Implement numericGradOf by comparing loss before and after a small weight change. Do not call automatic differentiation in this function. The task compares the two methods.').toBe(0);
       expect(est[0], 'The estimate for the first variable misses the slope the backward pass reports for it. That variable reaches the loss along two routes, and a nudge moves both at once, so the estimate carries the sum the same way the chain rule does.').toBeCloseTo(Math.cos(1.5) + 0.25, 1);
       expect(est[1], 'The estimate for the second variable misses its slope. Only one variable may move per estimate: the other two stay where they are, or the difference in loss belongs to more than one of them.').toBeCloseTo(-1.0, 1);
       expect(est[2], 'The estimate for the third variable misses its slope.').toBeCloseTo(1.5, 1);
-      expect(recordedPasses, 'gradOf must run the loss once so the automatic and numerical costs are compared on equal terms.').toBe(1);
+      expect(recordedPasses, 'gradOf must run the loss once so the comparison uses the same forward loss calculation for both methods.').toBe(1);
       expect(estimatePasses, 'Estimating three slopes ran the forward pass ' + estimatePasses + ' times, against ' + recordedPasses + ' for the recorded pass that produced all three at once. Each estimate needs the loss where the variable stands and the loss with it moved, so three of them cannot cost fewer than six runs. DEEP SCAN has 673 parameters and the same arithmetic applies to every one of them.').toBeGreaterThanOrEqual(6);
       recordResult({
         kind: 'table', title: 'Your two gradient methods',
@@ -175,7 +175,7 @@ testCode: |
       });
       recordResult({
         kind: 'table', title: 'Forward calculations needed for those gradients',
-        summary: 'Counts observed by the existing test, not wall-clock timing or an extrapolated benchmark.',
+        summary: 'The number of forward calculations each method made in this test. This does not measure elapsed time.',
         columns: ['Method', 'Forward calculations'],
         rows: [['Automatic differentiation', recordedPasses], ['Numerical estimates', estimatePasses]],
       });

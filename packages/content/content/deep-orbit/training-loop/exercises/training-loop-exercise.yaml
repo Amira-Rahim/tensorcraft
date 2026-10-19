@@ -1,6 +1,6 @@
 slug: training-loop-exercise
 lessonSlug: training-loop
-title: "Stop on a Validation Plateau"
+title: "Early stopping on validation loss"
 instructions: |
   Help Demir stop the supplied training run when validation loss stops improving.
 
@@ -17,7 +17,7 @@ instructions: |
   For each curve, compare the mean of its last ten values with the mean of
   the previous ten. A drop greater than 5% is improving. A rise greater than
   5% is worsening. Exactly 5% is flat. Use multiplication for the comparison,
-  not division: zero to positive is worsening; zero to zero is flat.
+  not division: zero to positive is worsening. Zero to zero is flat.
   Allow an absolute tolerance of `1e-12` at the 5% boundaries.
 
   Check these rules in order:
@@ -33,7 +33,7 @@ instructions: |
   changed data, or the learning rate.
 starterCode: |
   // Synthetic practice rows. Clipping enforces this fixture's [0, 1] range.
-  // Labels and distributions illustrate the story, not a real archive.
+  // These synthetic labels and distributions illustrate the story.
   const { trainX, trainY } = tf.tidy(() => {
     const calm = tf.clipByValue(
       tf.concat(
@@ -190,7 +190,7 @@ testCode: |
       const epochs = Array.from({ length: shown }, (_, i) => Math.round(i * (loss.length - 1) / Math.max(1, shown - 1)));
       recordResult({
         kind: 'series', title: 'Your training and validation losses',
-        summary: 'Up to 64 evenly spaced epochs from your actual fit history on the supplied synthetic rows. No extra training run was made.',
+        summary: 'Up to 64 evenly spaced epochs from your actual fit history on the supplied synthetic rows. This summary runs no extra training.',
         xLabel: 'Epoch', yLabel: 'Loss', labels: epochs.map((i) => String(i + 1)),
         series: [{ name: 'Training', values: epochs.map((i) => loss[i]) }, { name: 'Validation', values: epochs.map((i) => val[i]) }],
       });

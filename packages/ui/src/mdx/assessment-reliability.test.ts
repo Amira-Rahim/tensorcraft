@@ -31,7 +31,9 @@ it(
     );
     expect(result.errored).not.toBe(true);
     expect(
-      result.results.some((r) => !r.passed && r.error?.includes("still alive")),
+      result.results.some(
+        (r) => !r.passed && r.error?.includes("remains alive"),
+      ),
     ).toBe(true);
   },
 );

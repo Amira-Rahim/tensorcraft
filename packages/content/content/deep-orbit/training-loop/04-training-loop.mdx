@@ -14,14 +14,14 @@ context:
   narrative: "Demir starts training the network on a hundred hand-picked signal examples."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns a hundred labeled examples into learned behavior."
+  explanation: "A training loop runs predictions, measures their errors, and updates the weights. It repeats those steps on the labeled examples."
   bridge:
     jsTitle: "setImmediate() loop"
     jsCode: "function loop() { processChunk(); if (!done) setImmediate(loop); }"
     mlTitle: "Training Loop"
     mlCode: "await model.fit(trainX, trainY, { epochs: 50 })"
     tier: structural
-    breaks: "Node's setImmediate schedules another event-loop turn; the callback's own work determines how long it blocks. model.fit performs batches and can yield according to yieldEvery. It stops at the epoch limit unless callbacks or other conditions stop it sooner; early stopping must be configured."
+    breaks: "Node's setImmediate schedules another event-loop turn. The callback's own work determines how long it blocks. model.fit performs batches and can yield according to yieldEvery. It stops at the epoch limit unless callbacks or other conditions stop it sooner. Configure early stopping explicitly."
 consequence:
   narrative: "The training run stops when validation loss stops improving, or when it reaches the epoch limit."
 hints:
@@ -123,23 +123,23 @@ skillAxes: [training]
 
 > The training log and mission results in this scene are fictional. Run the code to obtain your own measurements.
 
-> **TRAINING LOG · DEEP SCAN CLASSIFIER** · epoch 1/50 · loss 0.7402 · epoch 2/50 · loss 0.7256 · epoch 3/50 · loss 0.7113 · epoch 4/50 · loss 0.6989 · epoch 5/50 · loss 0.6861
+> **TRAINING LOG, DEEP SCAN CLASSIFIER**, epoch 1/50, loss 0.7402, epoch 2/50, loss 0.7256, epoch 3/50, loss 0.7113, epoch 4/50, loss 0.6989, epoch 5/50, loss 0.6861
 
 <StoryPassage>
 
-By its fifth line the run is under the number Farah wrote on the glass wall. Every line of that log is one full pass over the training rows, and the machinery behind each line is everything the last three lessons built.
+By the fifth epoch, the loss is below the number Farah wrote on the glass. Each line records a full pass over the training rows, using the loss, gradients, and weight updates you’ve just learned.
 
 </StoryPassage>
 
 <Dialogue speaker="Ensign Demir">
-Training sequence initiated. I have run this loop by hand twice this week: forward, loss, backward, step. Tonight model.fit runs it so I don't have to, and I find out whether I actually trust it.
+I’ve worked through the predictions, loss, gradients, and updates twice this week. Tonight I’m letting model.fit repeat them. I still want to watch what happens.
 </Dialogue>
 
 You will run a training loop, read its loss history, and stop when validation stops improving.
 
 <LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Describe recent training and validation trends and identify questions to investigate"]} />
 
-## Give the run a stopping rule
+## Early stopping
 
 An **epoch** is one pass over the training rows. A **batch** is the group used
 for one weight update. `model.fit()` repeats forward pass, loss,
@@ -148,7 +148,7 @@ backpropagation and update for you.
 The visual is an illustrative trace. The challenge supplies a model and 100
 synthetic rows so you can measure your own run. `validationSplit: 0.2` holds
 back the last 20 rows before training. This independent synthetic fixture is
-shuffled in advance; a real time series needs its time or group split first.
+shuffled in advance. A real time series needs its time or group split first.
 
 <CodeBlock language="typescript" title="watch-validation.ts">
 {`function makeEarlyStopping() {
@@ -167,15 +167,15 @@ const validationLoss = history.history.val_loss;`}
 </CodeBlock>
 
 Five epochs without a new best validation loss stop the run, unless the
-500-epoch budget ends first. TFJS 4.22.0 leaves the final weights in place;
+500-epoch budget ends first. TFJS 4.22.0 leaves the final weights in place.
 this callback does not restore the best checkpoint. Saving and restoring that
 checkpoint is separate work, described in the reference.
 
 Batch size trades memory and throughput against update frequency and
-variability. Smaller batches update more often; larger ones average more
+variability. Smaller batches update more often. Larger ones average more
 examples per update. Compare on the actual model and hardware.
 
-## Describe the curves before explaining them
+## Reading the training curves
 
 For the challenge's trend rule, compare the last ten losses with the previous
 ten. Fewer than 20 values means `insufficient-history`. Reject unequal arrays
@@ -193,7 +193,7 @@ Apply the rules in this order: validation improving, both worsening, training
 improving while validation worsens, any other validation worsening, otherwise
 plateau. The instructions give their return strings. Exactly 5% stays in the
 flat band. Handle a zero previous mean explicitly: zero to positive is
-worsening; zero to zero is flat.
+worsening. Zero to zero is flat.
 
 A widening gap is a reason to investigate data, labels, preprocessing and
 model fit. Neither a stopped run nor one curve shape proves the cause.
@@ -220,9 +220,9 @@ model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Synthetic practice data, not spacecraft measurements. Each class has
+// This generator creates synthetic data. Each class has
 // three bounded features drawn from different distributions. Clipping
-// enforces this fixture's chosen range; min-max scaling alone does not
+// enforces this fixture's chosen range. min-max scaling alone does not
 // stop future observations from falling outside a fitted range.
 const { trainX, trainY } = tf.tidy(() => {
 const calm = tf.clipByValue(tf.concat([
@@ -263,12 +263,12 @@ const history = await model.fit(trainX, trainY, {
 });
 
 // Inspect history.history.loss and history.history.val_loss for YOUR run.
-// Initialization and shuffling are random; exact scores are not promised.
+// Initialization and shuffling are random. Exact scores are not promised.
 // Keep model, trainX and trainY for the next two blocks.
 `}
 </CodeBlock>
 
-These generated groups are easy to separate so you can study training. They do not cover the full range of real sensor data. A high score on more data from this generator shows how the model handles that generator, not real spacecraft signals.
+These generated groups are easy to separate so you can study training. They do not cover the full range of real sensor data. A high score on more data from this generator shows how the model handles that generator. Real spacecraft signals would need a separate evaluation.
 
 <DerivationDrawer summary="Why identical code lands on different losses: the loss landscape">
 **Loss is a surface over weight space.** A network with n weights defines `L(w)`: one loss value for every point in n-dimensional weight space. Training is descent on that surface, and the epoch trace above is an altitude log.
@@ -279,7 +279,7 @@ Neural-network losses are usually non-convex. Nonlinear layers can produce sever
 
 **Why reruns can disagree.** Initialization, row shuffling and backend arithmetic can change the path. Record those settings when comparing experiments. A different result does not, by itself, identify a particular basin or training defect.
 
-**Saddles and flat regions can also slow training.** A saddle curves upward in some directions and downward in others. Small gradients can occur near saddles or in other flat regions, but a stalled loss trace does not identify which geometry caused it. Adam uses running gradient statistics to adjust updates; it does not guarantee escape or convergence.
+**Saddles and flat regions can also slow training.** A saddle curves upward in some directions and downward in others. Small gradients can occur near saddles or in other flat regions, but a stalled loss trace does not identify which geometry caused it. Adam uses running gradient statistics to adjust updates. It does not guarantee escape or convergence.
 </DerivationDrawer>
 
 Three settings control the run:
@@ -290,12 +290,12 @@ Three settings control the run:
 
 More epochs allow more updates. Evaluate the results to see whether those updates help.
 
-Demir gives the run 500 epochs because he does not know when to stop. A larger budget buys more updates, but their value has to be measured. Validation monitoring makes the stopping rule explicit rather than treating an epoch count as proof of learning.
+Demir gives the run 500 epochs because he does not know when to stop. A larger budget buys more updates, but he still needs to measure whether they help. Validation monitoring gives him evidence for when to stop.
 
-The fix is a callback that watches the validation loss and halts when it stops improving, so the loop stops itself instead of trusting your epoch guess:
+The fix is a callback that watches the validation loss and halts when it stops improving, so the validation results determine when the loop stops:
 
 <CodeBlock language="typescript" title="early-stopping.ts">
-{`// Continues training-loop.ts. A new model starts a separate experiment;
+{`// Continues training-loop.ts. A new model starts a separate experiment.
 // fitting the existing model would continue from its current weights.
 const rerun = tf.sequential();
 rerun.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
@@ -306,13 +306,13 @@ rerun.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 // Corrupt six TRAINING labels to explore noisy supervision. The final
 // 20 rows used for validation remain untouched. Conflicting nearby
 // examples do not impose a hard loss floor: a flexible model can memorize
-// individual rows. A plateau or halt is an observation, not a guarantee.
+// individual rows. A plateau or halt still needs evaluation on separate data.
 const labels = trainY.arraySync();
 for (const i of [3, 17, 29, 41, 52, 68]) labels[i] = [1 - labels[i][0]];
 
 const noisyY = tf.tensor2d(labels);
 const stopped = await rerun.fit(trainX, noisyY, {
-  epochs: 500,            // an upper bound now, not a target
+  epochs: 500,            // the maximum epoch count. Early stopping may end sooner
   validationSplit: 0.2,
   callbacks: tf.callbacks.earlyStopping({
     monitor: 'val_loss',  // stop when the HELD-OUT loss stops falling
@@ -333,7 +333,7 @@ This version does not implement `restoreBestWeights: true`. To keep the best che
 
 
 <DerivationDrawer summary="The 7-step loop that fit() hides, and what Adam changes in step 4">
-**`model.fit()` is a wrapper around this loop.** Sampling mini-batches instead of the whole dataset is what makes it stochastic gradient descent: each batch is a random sample, so each gradient is only an estimate of the true one. Without early stopping, the inner update runs `epochs × ceil(trainingRows / batchSize)` times, including a partial final batch. Validation rows are excluded:
+**`model.fit()` is a wrapper around this loop.** With randomly sampled mini-batches, this is stochastic gradient descent. Each batch gives an estimate of the gradient across the full training set. Without early stopping, the inner update runs `epochs × ceil(trainingRows / batchSize)` times, including a partial final batch. The update loop uses training rows only:
 
 ```
 for epoch in 1..N:
@@ -361,13 +361,13 @@ for epoch in 1..N:
 
 **The optimizer chooses the update in step 4.** `optimizer: 'sgd'` uses the subtraction shown above. Both models here and the exercise use `optimizer: 'adam'`, which adjusts that update.
 
-Set the learning rate on the optimizer passed to `compile()`. A `learningRate` option in `fit()` is ignored. These examples use the string name `adam`, so they use its default learning rate.
+Set the learning rate on the optimizer passed to `compile()`. `fit()` ignores a `learningRate` option. These examples use the string name `adam`, so they use its default learning rate.
 
 **What Adam changes.** Adam tracks moving averages of gradients and their squares, then corrects their starting bias. It divides the gradient average by the square root of the squared-gradient average plus a small stabilizer. The base learning rate scales the result.
 
 TFJS uses 0.001 by default. Set another rate with `tf.train.adam(lr)`. These adjustments do not guarantee stable training or escape from flat regions.
 
-**Why mini-batches?** They trade memory, throughput and gradient variability. Full-batch training uses the full training objective per update; single-example updates use one row. Neither is universally worse. Try batch sizes that fit the model and device, then compare learning and throughput. There is no universal 32-512 range that saturates every GPU.
+**Why mini-batches?** They trade memory, throughput and gradient variability. Full-batch training uses the full training objective per update. Single-example updates use one row. Neither is universally worse. Try batch sizes that fit the model and device, then compare learning and throughput. There is no universal 32-512 range that saturates every GPU.
 
 **Why shuffle?** For independent examples, it reduces dependence on file ordering. It must preserve features and labels together. Do not shuffle across train/validation boundaries or destroy the temporal order inside a sequence.
 </DerivationDrawer>
@@ -380,7 +380,7 @@ TFJS uses 0.001 by default. Set another rate with `tf.train.adam(lr)`. These adj
 Give Demir a stopping rule for the supplied hundred-row synthetic run.
 Return its actual fit history and inspect the training and validation
 curves from that run. Keep the callback attached to the fit that produced
-those values; a separate curve cannot explain its weight updates.
+those values. A separate curve cannot explain its weight updates.
 
 The exercise labels observable trends. A short run can provide too little history for its two-window comparison, and a valid run may use its whole epoch budget. Neither case proves a training error.
 
@@ -388,7 +388,7 @@ The exercise labels observable trends. A short run can provide too little histor
 
 <RecallPrompt
   question="Read the validation stopping rule and decide what the loss curves can tell you."
-  answer="With monitor val_loss, patience 5 and minDelta 0, five epochs without a new best validation loss stop the run unless its epoch limit comes first. Falling training loss and rising validation loss describe a trend, not its cause. TFJS 4.22.0 keeps the final weights; save and restore the best checkpoint separately."
+  answer="With monitor val_loss, patience 5 and minDelta 0, five epochs without a new best validation loss stop the run unless its epoch limit comes first. Falling training loss and rising validation loss describe a trend. Investigate the run to find its cause. TFJS 4.22.0 keeps the final weights. Save and restore the best checkpoint separately."
   checks={[
     {
       "kind": "choice",
@@ -400,7 +400,7 @@ The exercise labels observable trends. A short run can provide too little histor
         },
         {
           "text": "Five epochs without a new best training loss.",
-          "feedback": "monitor val_loss selects validation loss, not the loss on the training rows."
+          "feedback": "monitor val_loss selects the loss on validation rows. Training loss uses the separate loss key."
         },
         {
           "text": "Exactly five epochs, whether validation improves or not.",
@@ -423,7 +423,7 @@ The exercise labels observable trends. A short run can provide too little histor
           "feedback": "This trend can be consistent with overfitting, but it does not prove memorization or rule out other causes."
         },
         {
-          "text": "The two losses are moving in different directions; investigate why.",
+          "text": "The two losses are moving in different directions. Investigate why.",
           "feedback": "Describe the observed trend first. Overfitting, changed data, labels and preprocessing need separate checks."
         }
       ],
@@ -435,7 +435,7 @@ The exercise labels observable trends. A short run can provide too little histor
       "question": "After TFJS 4.22.0 early stopping, how do you use the weights from the best validation epoch?",
       "options": [
         {
-          "text": "They are restored automatically by this callback.",
+          "text": "The callback restores them automatically.",
           "feedback": "This TFJS version leaves the final epoch's weights in place."
         },
         {
@@ -448,7 +448,7 @@ The exercise labels observable trends. A short run can provide too little histor
         }
       ],
       "correctIndex": 1,
-      "explanation": "Save and restore the checkpoint yourself. restoreBestWeights: true is not implemented in TFJS 4.22.0."
+      "explanation": "Save and restore the checkpoint yourself. TFJS 4.22.0 does not implement restoreBestWeights: true."
     }
   ]}
 />
@@ -456,14 +456,14 @@ The exercise labels observable trends. A short run can provide too little histor
 <LessonRecap
   whatYouLearned={[
     "`model.fit()` repeats the forward pass, loss calculation, backpropagation, and weight update for each training batch.",
-    "Falling training loss with rising validation loss is consistent with overfitting. Check data shift, labels and preprocessing too. A halt only records that the callback's improvement condition was not met.",
+    "Falling training loss with rising validation loss is consistent with overfitting. Check data shift, labels and preprocessing too. Early stopping only tells you that validation did not improve enough within the allowed number of epochs.",
     "Batch size changes memory use, processing speed, and how much updates vary. Shuffle independent training rows, but keep time-based sequences in order."
   ]}
   bridge="setImmediate and model.fit both support repeated work with stopping conditions. Configure the training epoch limit and any early-stopping callbacks explicitly."
   youCanNow="Replace a guessed epoch count with `tf.callbacks.earlyStopping`, read the training and validation curves together, and describe their trends before investigating why they changed."
 />
 
-> **DISPATCH archive · field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation score had been falling for six days; nobody was assigned to read it. Escalation cost: one pulled release, four weeks. Read your second curve.
+> **DISPATCH archive, field intercept #05-C:** Dr. Amara's language cell shipped on a 99.1% training score last cycle. Production caught the model reciting user IDs. The validation score had been falling for six days. Nobody had taken responsibility for reading it. Escalation cost: one pulled release, four weeks. Read your second curve.
 
 <Epilogue>
 

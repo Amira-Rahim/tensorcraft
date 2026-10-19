@@ -1,8 +1,8 @@
 slug: export-model-artifact
 lessonSlug: ci-cd-pipeline
-title: "Export the Artifact CI Pins"
+title: "Model export for CI"
 instructions: |
-  Help Nazari identify the saved model that CI will check. Serialize the supplied uncompiled 3→16→8→1 LayersModel into memory.
+  Help Nazari identify the saved model that CI will check. Serialize the supplied uncompiled LayersModel, with three inputs and dense layers of 16, 8, and 1 units, into memory.
 
   1. Await `model.save(tf.io.withSaveHandler(...))` before reading the saved data. Keep the handler's argument in `artifacts`. From the handler, return `{ modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } }`.
   2. Write `describeArtifact(a)` to return `{ tensors, totalParams, weightBytes }`. Count entries in `weightSpecs` for tensors. For each spec, multiply its dimensions, then sum those products for totalParams. Read `weightData.byteLength` for weightBytes.
@@ -58,7 +58,7 @@ solutionCode: |
 
   const manifest = describeArtifact(artifacts);
 testCode: |
-  describe('Export the Artifact CI Pins', () => {
+  describe('Export the Model for CI', () => {
     it('model.save handed the serialized artifacts to the handler', () => {
       expect(
         artifacts,
@@ -68,7 +68,7 @@ testCode: |
       expect(Array.isArray(artifacts.weightSpecs)).toBe(true);
     });
     it('every weight spec names a tensor the layers registered', () => {
-      expect(artifacts, 'artifacts is still null, so the save handler never ran. model.save() calls the function withSaveHandler wraps and passes it the serialized artifacts; stash them there.').toBeDefined();
+      expect(artifacts, 'artifacts is still null, so the save handler never ran. model.save() calls the function withSaveHandler wraps and passes it the serialized artifacts. Stash them there.').toBeDefined();
       for (const spec of artifacts.weightSpecs) {
         expect(
           spec.name,
@@ -82,7 +82,7 @@ testCode: |
       ).toHaveLength(3);
       expect(
         kernels.map((spec) => spec.shape.length),
-        'A dense kernel is [inputs, units], so the serializer writes a shape with two entries, not a flattened count.',
+        'A dense kernel is [inputs, units], so the serializer must write a shape with two entries.',
       ).toEqual([2, 2, 2]);
     });
     it('the artifacts came out of model.save(), not out of a literal', async () => {
@@ -137,7 +137,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Predictions from your saved and reloaded artifact',
-        summary: 'The model was reloaded from the artifacts your save handler captured. These three probes check round-trip agreement, not task accuracy or a hosted deployment.',
+        summary: 'The test reloaded the model from the artifacts your save handler captured. These three probes check round-trip agreement. They establish no task accuracy and test no hosted deployment.',
         columns: ['Probe', 'Original model score', 'Reloaded model score'],
         rows: original.slice(0, 3).map((value, i) => [i + 1, value, reloaded[i]]),
       });
@@ -146,7 +146,7 @@ testCode: |
       revived.dispose();
     });
     it('weightData holds the weights of the model that was saved, byte for byte', () => {
-      expect(artifacts, 'artifacts is still null, so the save handler never ran. model.save() calls the function withSaveHandler wraps and passes it the serialized artifacts; stash them there.').toBeDefined();
+      expect(artifacts, 'artifacts is still null, so the save handler never ran. model.save() calls the function withSaveHandler wraps and passes it the serialized artifacts. Stash them there.').toBeDefined();
       // This buffer is what the committed digest is computed over, so it
       // has to be the model's own weights rather than a buffer of the
       // right size. A zero-filled ArrayBuffer matches every bias and no
@@ -164,7 +164,7 @@ testCode: |
       }
       expect(
         worst,
-        'Read back as float32, the saved bytes are the live weights. Any gap here means the digest pins something the model does not contain.',
+        'The saved float32 values must match the model weights in weightSpecs order.',
       ).toBeLessThan(1e-6);
       expect(
         saved.some((v) => v !== 0),
@@ -181,7 +181,7 @@ testCode: |
         'weightSpecs has one entry per named weight tensor, and three dense layers carry two each.',
       ).toBe(6);
     });
-    it('the bench copy carries 64 + 136 + 9 = 209 parameters', () => {
+    it('the supplied model has 64 + 136 + 9 = 209 parameters', () => {
       expect(manifest, 'manifest is the record describeArtifact returns: { tensors, totalParams, weightBytes }.').toBeDefined();
       expect(manifest.totalParams).toBe(209);
     });
@@ -243,11 +243,11 @@ testCode: |
       const partly = describeArtifact(mixed);
       expect(
         partly.totalParams,
-        'Quantization changes how wide a parameter is, not how many there are.',
+        'Quantization changes the storage width of each parameter. The parameter count stays the same.',
       ).toBe(209);
       expect(
         partly.weightBytes,
-        'This buffer mixes storage widths and includes 37 extra bytes. Read the supplied buffer’s byteLength directly instead of multiplying the parameter count by a fixed width.',
+        'This buffer mixes storage widths and includes 37 extra bytes. Read the supplied buffer’s byteLength directly. A fixed multiplier would miss those extra bytes.',
       ).toBe(mixedBytes + 37);
     });
     it('describeArtifact reads the artifact it is given, not a memorized answer', async () => {

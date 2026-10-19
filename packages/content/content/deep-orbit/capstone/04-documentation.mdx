@@ -20,14 +20,14 @@ concept:
     mlTitle: "Model Card"
     mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Weights: 3988 bytes */ // model docs"
     tier: structural
-    breaks: "JSDoc describes a software contract, which still needs verification. A model card adds the data, evaluation conditions, and observed limitations of a model. Both kinds of documentation can become stale; empirical model performance is not a promise for every future input."
+    breaks: "JSDoc describes a software contract, which still needs verification. A model card adds the data, evaluation conditions, and observed limitations of a model. Both kinds of documentation can become stale. Empirical model performance is not a promise for every future input."
 consequence:
   narrative: "Demir writes a Model Card, API reference, and runbook for the next operator. ARIA reviews them and asks for a missing threshold."
 hints:
   - level: nudge
     content: "Keep the evaluation date beside its accuracy score, and identify the class with the lowest recall. Read both from the supplied metadata."
   - level: guidance
-    content: "Render the requested sections from meta. Format fractions as percentages with one decimal place and keep the benchmark label beside accuracy. Find the smallest recall value across all entries; do not assume a particular class or key order."
+    content: "Render the requested sections from meta. Format fractions as percentages with one decimal place and keep the benchmark label beside accuracy. Find the smallest recall value across all entries. Do not assume a particular class or key order."
   - level: solution
     content: |
       interface ModelMetadata {
@@ -77,11 +77,11 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could Commander Mirza interpret its output? Could ARIA retrain it? If the answer to any of these is no, then your system is not production-ready. Document everything.
+Demir, suppose you couldn’t come in tomorrow. Could Nazari run DEEP SCAN? Would Mirza know what its results mean? Could ARIA follow the retraining steps? Write down what they’d need before we release it.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Then it needs a Model Card, not just API docs. Training set, split, per-class recall, the input contract, and every limitation I can name, including the ones that make us look bad. If ARIA has to retrain this at 0300 she needs the numbers, not my judgment.
+Then I’ll add a Model Card to the API docs. Training set, split, per-class recall, the input contract, and every limitation I can name, including the ones that make us look bad. If ARIA has to retrain this at 0300 she needs those measurements to decide what to do.
 </Dialogue>
 
 Someone else may need to run DEEP SCAN while Demir is unavailable. On an understaffed night watch, that could be ARIA. Help him write a **Model Card** explaining the model and a runbook with steps she can follow without guessing.
@@ -96,7 +96,7 @@ Give the next operator a card they can use without Demir beside them. Put the ev
 
 <CodeBlock language="typescript" title="model-card.ts">
 {`// Fictional mission card. These scores, timings and bundle sizes are
-// supplied story values, not measurements of the downloadable model.
+// fictional story values. Measure the downloadable model separately.
 // Keep the evaluation conditions and limitations beside each reported score.
 
 interface ModelCard {
@@ -153,7 +153,7 @@ const deepScanCard: ModelCard = {
   },
 
   performance: {
-    accuracy: 1859 / 2025, // 91.8% rounded; distinct from the earlier six-anomaly pruning slice
+    accuracy: 1859 / 2025, // 91.8% rounded. Distinct from the earlier six-anomaly pruning slice
     benchmarkedOn: 'handover evaluation after pruning, 2025 labeled captures',
     perClass: [
       { label: 'pulsar', examples: 500, correct: 470 },
@@ -167,7 +167,7 @@ const deepScanCard: ModelCard = {
     pipelineMs: 5,       // the whole classify() call on WebGPU, 15 on WebGL: feature extraction,
                          // the classifier and the readback, which is what the monitor times
     weightBytes: 3_988,  // final selective export retains this pruned classifier at float32
-    bundleSizeMB: 85,    // rounded weight payload, mainly the quantized language component;
+    bundleSizeMB: 85,    // rounded weight payload, mainly the quantized language component.
                          // transfer compression, JS and metadata are separate
   },
 
@@ -187,16 +187,16 @@ const deepScanCard: ModelCard = {
 };`}
 </CodeBlock>
 
-Keep weight-file bytes, total download bytes, classifier latency and whole-pipeline latency separate. They describe different scopes. The values on this mission card are fictional. The 11→32→16→5 network has 997 parameters: 384 + 528 + 85. The final selective export retains this pruned classifier at float32, giving 3,988 weight bytes, but the course does not ship that five-class artifact or the fictional 85 MB language component. The downloadable runtime lab records measurements for its own named models and device.
+Keep weight-file bytes, total download bytes, classifier latency and whole-pipeline latency separate. They describe different scopes. The values on this mission card are fictional. The 11 to 32 to 16 to 5 network has 997 parameters: 384 + 528 + 85. The final selective export retains this pruned classifier at float32, giving 3,988 weight bytes, but the course does not ship that five-class artifact or the fictional 85 MB language component. The downloadable runtime lab records measurements for its own named models and device.
 
-A production card also needs the artifact and preprocessing versions, label map, evaluation data identity and split method, sample counts, per-class metrics and averaging convention. Report uncertainty where the evaluation supports it, plus the device, backend, timing protocol and date. A single accuracy and a date cannot establish fitness for another use.
+A production card also needs the artifact and preprocessing versions, label map, evaluation data identity and split method, sample counts, per-class metrics and averaging convention. Report uncertainty where the evaluation supports it, plus the device, backend, timing protocol and date. An accuracy score and a date alone cannot tell someone whether the model suits their task.
 
 The fictional card does not say how its 2,025 labeled evaluation captures were
 selected or how many test captures lack labels. That is a gap in the handover.
 Record the selected capture IDs and label coverage before applying its 91.8%
 score to the whole test period.
 
-Caching may reduce repeat downloads; it does not remove the first-load cost or guarantee that storage persists. Accepting a larger bundle needs an explicit cold-start and memory budget, with a usable failure path.
+Caching may reduce repeat downloads. It does not remove the first-load cost or guarantee that storage persists. Accepting a larger bundle needs an explicit cold-start and memory budget, with a usable failure path.
 
 Two different counts of 64 appear in this course. An archive row records 33 seconds across 64 channels at 256 Hz. That is 540,672 samples, a little over two megabytes in float32.
 
@@ -249,8 +249,8 @@ function getHealthMetrics(): HealthSnapshot {
 // Runbook: common operational scenarios. First draft, before review.
 // Review note on the first entry: "if high" is not a threshold, and a
 // retrain needs labels nobody has collected yet. It now reads 'Drift
-// above 0.5 on a 100-sample window → hand-label 100 recent captures
-// → investigate and evaluate a candidate before replacement'.
+// above 0.5 on a 100-sample window to hand-label 100 recent captures
+// to investigate and evaluate a candidate before replacement'.
 const runbook = {
   'Low score trend': 'Check source data and preprocessing versions; review labeled outcomes before retraining',
   'High latency spike': 'Check backend → WebGPU may have fallen back to WebGL',
@@ -263,13 +263,13 @@ const runbook = {
 
 Prepare the classifier's handover from its recorded metadata. Keep the evaluation context beside the score and make its weakest class visible.
 
-Read the card your function returns as the next watch would. Can they see which evaluation produced the score and where the classifier misses most often? The supplied metadata is fictional; formatting it does not verify its claims. The runbook still needs the separate operator review shown below.
+Read the card your function returns as the next watch would. Can they see which evaluation produced the score and where the classifier misses most often? The supplied metadata is fictional. Formatting it does not verify its claims. The runbook still needs the separate operator review shown below.
 
 <Exercise slug="write-model-card" />
 
 <RecallPrompt
   question="What evidence should accompany a measured model score?"
-  answer="Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
+  answer="Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation. Future inputs may differ and need their own evaluation."
   checks={[
     {
       "kind": "choice",
@@ -281,7 +281,7 @@ Read the card your function returns as the next watch would. Can they see which 
         },
         {
           "text": "The exact artifact, split, evaluation protocol, sample counts and limitations.",
-          "feedback": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
+          "feedback": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation. Future inputs may differ and need their own evaluation."
         },
         {
           "text": "The training dataset's size and the final training loss.",
@@ -289,7 +289,7 @@ Read the card your function returns as the next watch would. Can they see which 
         }
       ],
       "correctIndex": 1,
-      "explanation": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation, not all future inputs."
+      "explanation": "Software and model documentation both need verification. Record the exact artifact, data split, evaluation protocol, sample counts and limitations with a measured score. Reproducing that score checks the stated evaluation. Future inputs may differ and need their own evaluation."
     }
   ]}
 />
@@ -298,11 +298,11 @@ Read the card your function returns as the next watch would. Can they see which 
   whatYouLearned={[
     "A Model Card records a model's purpose, training data, measured performance, and known limitations. Update it when the model or its evaluation changes.",
     "Describe limitations with evidence: per-class misses, untested data and hardware requirements affect whether someone can use the model.",
-    "Runbooks specify checks, thresholds, actions, owners and escalation paths. Some cases require judgment; say who makes the decision.",
-    "Select thresholds using representative measurements and the cost of misses and false alarms. A calm-period percentile is one starting point; validate it on separate periods and record window size."
+    "Runbooks specify checks, thresholds, actions, owners and escalation paths. Some cases require judgment. Say who makes the decision.",
+    "Select thresholds using representative measurements and the cost of misses and false alarms. A calm-period percentile is one starting point. Validate it on separate periods and record window size."
   ]}
   bridge="JSDoc records a function contract. A model card also records training data, evaluation conditions, and limitations, so readers can judge where measured performance applies."
-  youCanNow="Render a model card with evaluation context and observed limitations, then write a runbook with named checks and an escalation owner."
+  youCanNow="Write a model card that explains the evaluation and known limits, plus a runbook that says what to check and who to contact."
 />
 
 <Epilogue>
@@ -322,13 +322,13 @@ The runbook now names the checks: inspect calibration and preprocessing, review 
   contentVersion={2}
   fallback="Nazari assigns the next watch to inspect calibration, retained captures and recent outcome labels before proposing a replacement."
   outcomes={{
-  "cooperate": "Nazari attaches the raw fft_5 captures, feature-order check and calibration record. Those checks found no mismatch; they did not establish model quality. Demir takes the remaining label request, and the runbook names the next watch as owner. No shadow comparison was completed in this slot.",
-  "defect": "Demir has a candidate configuration, but the recent stream still lacks the labels needed for a supervised comparison. He records it as unreleased. The watch slot bought preparation, not evidence of improvement; the runbook retains the current model and assigns an evaluation owner.",
-  "random": "The muted interval remains in the alert-review log as unreviewed. Nazari restores paging and assigns the retained captures to the next watch. Its first maintenance task moves back while the missing review is completed.",
-  "dominant": "Demir closes the paired run at the 20-minute limit. Active-model P95 stayed within the 200 ms rehearsal budget; the result log names both artifacts and their disagreements. The runbook assigns the next watch the instrument check and label review. The saved candidate stays shadow-only: disagreement counts do not identify the better model."
+  "cooperate": "Nazari attaches the raw fft_5 captures, feature-order check and calibration record. Those checks found no mismatch. They did not establish model quality. Demir takes the remaining label request, and the runbook names the next watch as owner. The crew did not finish a shadow comparison in this slot.",
+  "defect": "Demir has a candidate configuration, but the recent stream still lacks the labels needed for a supervised comparison. He records it as unreleased. He used the watch slot to prepare the candidate. The crew still needs evidence that it improves predictions. The runbook retains the current model and assigns an evaluation owner.",
+  "random": "The muted interval remains in the alert-review log as unreviewed. Nazari restores paging and assigns the retained captures to the next watch. Its first maintenance task moves back while the watch completes the missing review.",
+  "dominant": "Demir closes the paired run at the 20-minute limit. Active-model P95 stayed within the 200 ms rehearsal budget. The result log names both artifacts and their disagreements. The runbook assigns the next watch the instrument check and label review. The saved candidate stays shadow-only: disagreement counts do not identify the better model."
 }}
 />
 
-*Mission scene: the calibration figures above are story values, not measurements.*
+*Mission scene: the calibration figures above belong to the fictional story.*
 
 </Epilogue>

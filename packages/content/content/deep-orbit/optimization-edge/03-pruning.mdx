@@ -14,23 +14,23 @@ context:
   narrative: "Nazari sends Demir a five-sentence directive marked FOR REVIEW. It makes three assumptions. Help him check them before he signs off."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Magnitude pruning zeros the smallest weights. Their effect on predictions must be measured; a small weight is not necessarily unimportant."
+  explanation: "Magnitude pruning zeros the smallest weights. Measure how that changes predictions. A small weight is not necessarily unimportant."
   bridge:
     jsTitle: "Tree-Shaking"
-    jsCode: "// Webpack removes unused exports → smaller bundle"
+    jsCode: "// Webpack removes unused exports, reducing bundle size"
     mlTitle: "Pruning"
-    mlCode: "// Zero near-zero weights → same dense slots; measure compressed bytes"
+    mlCode: "// Zeroing small weights keeps the same dense slots. Measure compressed bytes"
     tier: structural
-    breaks: "Tree-shaking removes unused code while aiming to preserve behavior. Magnitude pruning changes numerical parameters and may change predictions. Dense weight storage keeps the zeroed slots; compression can reduce transfer size without reducing tensor shapes."
+    breaks: "Tree-shaking removes unused code while aiming to preserve behavior. Magnitude pruning changes numerical parameters and may change predictions. Dense weight storage keeps the zeroed slots. Compression can reduce transfer size without reducing tensor shapes."
 consequence:
-  narrative: "Pruning zeros 60% of weights and holds accuracy at 91.8%, which is the whole 2.4 points this module spends. The 85 MB quantized bundle stays 85 MB; what drops is the download, to 42 MB gzipped. Demir's 80% experiment costs three hours."
+  narrative: "Pruning sets 60% of weights to zero. Accuracy falls from 94.2% to 91.8%, accounting for this module’s full 2.4-point loss. The 85 MB quantized bundle stays 85 MB. What drops is the download, to 42 MB gzipped. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
     content: |
       Save independent copies of the original weights. Each level starts from that same set.
   - level: guidance
     content: |
-      Use the pooled kernel ranking for interior levels and handle full pruning separately. Count correct predictions per class; report null where no class examples exist. Restore weights and release temporary tensors in finally blocks so scoring errors do not leave the model modified.
+      Use the pooled kernel ranking for interior levels and handle full pruning separately. Count correct predictions per class. Report null where no class examples exist. Restore weights and release temporary tensors in finally blocks so scoring errors do not leave the model modified.
   - level: solution
     content: |
       interface Classifier {
@@ -117,12 +117,12 @@ skillAxes: [deployment]
 ---
 
 
-> **ENGINEERING DIRECTIVE 44-C · NAZARI → DEMIR · FLAGGED: FOR REVIEW** · "Weight histogram attached. Half the values are within 0.001 of zero. They contribute nothing and they take up half of our 85 megabytes. Remove them. Sign off or push back by end of watch."
+> **ENGINEERING DIRECTIVE 44-C, NAZARI to DEMIR, FLAGGED: FOR REVIEW**, "Weight histogram attached. Half the values are within 0.001 of zero. They contribute nothing and they take up half of our 85 megabytes. Remove them. Sign off or push back by end of watch."
 
 Help Demir review the directive. It assumes that near-zero weights do nothing, that a dense matrix can simply drop their storage slots, and that removing them will not hurt accuracy. Read the histogram. Which assumptions would you challenge?
 
 <Dialogue speaker="Ensign Demir">
-Tree-shaking. Webpack drops the exports nothing imports; we drop the weights nothing needs. The bundle gets smaller and nobody notices the difference. That's my sign-off draft, anyway.
+Tree-shaking. Webpack drops the exports nothing imports. We drop the weights nothing needs. The bundle gets smaller and nobody notices the difference. That's my sign-off draft, anyway.
 </Dialogue>
 
 Before signing, test Demir's claim. The example below starts with eight weights and sets the four smallest to zero. Check whether the output stays the same.
@@ -131,9 +131,9 @@ Give Demir the per-class results his sign-off is missing. Set different shares o
 
 The mission's classifier distinguishes pulsar, quasar, noise, interference, and anomaly. Its eleven inputs differ from the three-feature binary classifier you connected in the last module. The accuracy table supplies fictional mission results. The exercise uses a separate small model with synthetic readings to measure how pruning changes per-class recall.
 
-<LearningObjectives objectives={["Distinguish magnitude pruning from behavior-preserving dead-code removal", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Separate what pruning changes on disk from what it changes on the wire"]} />
+<LearningObjectives objectives={["Distinguish magnitude pruning from behavior-preserving dead-code removal", "Implement magnitude-based pruning with a configurable sparsity level", "Measure what each pruning level costs, one class at a time", "Compare the stored weight file with the compressed download"]} />
 
-## Test Demir's pruning proposal
+## Demir’s pruning proposal
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -180,15 +180,15 @@ The output changed from 0.994 to 1.000. Tree-shaking should preserve a program's
 
 A small change on this input does not tell us what will happen on others. A small weight can multiply a large activation, and removing several weights can have a combined effect. Test representative data.
 
-This rule is called **magnitude pruning**: rank weights by absolute value and set the smallest to zero. This is unstructured pruning, so every tensor keeps its original shape.
+With **magnitude pruning**, we rank weights by absolute value and set the smallest to zero. This is unstructured pruning, so every tensor keeps its original shape.
 
 For the model, rank all kernel weights together. Do not rank each layer separately. A layer with mostly small weights may lose many more connections than a layer with large weights.
 
-Leave biases unchanged. Each Dense output unit has one bias and `inputWidth` kernel weights. The bias sets the unit's offset; each kernel weight scales one input.
+Leave biases unchanged. Each Dense output unit has one bias and `inputWidth` kernel weights. The bias sets the unit's offset. Each kernel weight scales one input.
 
 Read the accuracy table carefully. Its held-out data follows the mix of arriving captures: 6 labeled anomalies and 500 examples of each ordinary class. These six anomalies are separate from the six used in retraining.
 
-Anomalies make up only 0.3 percent of this evaluation set. Getting every anomaly wrong instead of right changes overall accuracy by just 0.3 percentage points. Most visible changes in that column therefore come from the common classes. Even an unchanged total can hide a serious rare-class failure.
+Anomalies make up only 0.3 percent of this evaluation set. Losing every correct anomaly prediction changes overall accuracy by just 0.3 percentage points. Most visible changes in that column therefore come from the common classes. Even an unchanged total can hide a serious rare-class failure.
 
 Compare recall for each class to see what the total hides. An evaluation set with equal class counts would also give a different overall result. The exercise asks you to report per-class recall: for each true class, the share of its readings the model labels correctly.
 
@@ -210,12 +210,12 @@ Demir reverts to 60 percent. At 80 percent, the model got none of the anomalies 
 
 This run shows why Demir needed a per-class report. It does not prove that rare signals always depend on small weights.
 
-Dense magnitude pruning keeps every weight slot, including zeroed values. With unchanged shapes and dtypes, the TFJS weight payload retains its size. Its dense manifest has no list of nonzero indexes. Repeated stored codes may compress well, but measure the result; an affine uint8 code representing zero need not be byte 0.
+Dense magnitude pruning keeps every weight slot, including zeroed values. With unchanged shapes and dtypes, the TFJS weight payload retains its size. Its dense manifest has no list of nonzero indexes. Repeated stored codes may compress well, but measure the result. An affine uint8 code representing zero need not be byte 0.
 
-Structured pruning removes complete units or channels and changes tensor shapes. It can reduce storage and computation, but the resulting model still needs evaluation. Fine-tuning may recover quality; success is not guaranteed. This lesson uses unstructured pruning.
+Structured pruning removes complete units or channels and changes tensor shapes. It can reduce storage and computation, but the resulting model still needs evaluation. Fine-tuning may recover quality. Some models fail to recover their earlier quality. This lesson uses unstructured pruning.
 
 <DerivationDrawer summary="Why use weight size to estimate importance?">
-A useful importance measure would estimate the change in loss when a weight is zeroed. Near a particular weight vector, a second-order approximation is:
+A useful importance measure would estimate the change in loss when we set a weight to zero. Near a particular weight vector, a second-order approximation is:
 
 ```
 Delta L ≈ g^T Delta w + 0.5 Delta w^T H Delta w
@@ -223,7 +223,7 @@ Delta L ≈ g^T Delta w + 0.5 Delta w^T H Delta w
 
 Here g is the gradient and H is the Hessian, including interactions between weights. If we remove only weight i, the approximation becomes `-g_i*w_i + 0.5*H_ii*w_i^2`. Near a stationary point the first term may be small. Training does not guarantee that condition.
 
-Ranking only by magnitude ignores both curvature and interactions. It is a practical heuristic to test, not a proof that a small weight is safe to remove. The rare-class failures in the scenario do not establish a measured curvature explanation.
+Ranking only by magnitude ignores both curvature and interactions. Test this practical heuristic by measuring the resulting model. A small weight can still matter. The rare-class failures in the scenario do not establish a measured curvature explanation.
 </DerivationDrawer>
 
 ## Combined Optimization
@@ -239,12 +239,12 @@ Ranking only by magnitude ignores both curvature and interactions. It is a pract
 // Quantized to uint8:   85M params  × 1 byte  =  85 MB
 // Pruned to 60% zeros:  85M entries × 1 byte  =  85 MB, unchanged
 
-// The zeros pay on the wire instead, because 51M repeated bytes
-// may compress well. Varied bytes can also compress; measure the artifact.
-// Supplied story values, not the result of a recorded gzip run:
+// The download can get smaller because 51M repeated bytes
+// may compress well. Varied bytes can also compress. Measure the artifact.
+// Fictional story values. This example runs no gzip benchmark:
 //   unpruned:      70 MB served
 //   60% pruned:    42 MB served
-// Accuracy: 94.2% → 91.8% (2.4-point drop, all of it charged to the pruning
+// Accuracy: 94.2% to 91.8% (2.4-point drop, all of it charged to the pruning
 // pass, Nazari approves)
 
 console.log('=== DEEP SCAN Optimization Results ===');
@@ -263,16 +263,16 @@ console.log('Measure peak memory on the dashboard before approving a build.');`}
 </CodeBlock>
 
 <DerivationDrawer summary="Another way to compress a matrix: low-rank approximation">
-A matrix may have an accurate low-rank approximation. For `W = U Sigma V^T`, keeping the largest k singular values gives the best rank-k approximation in Frobenius and spectral norm. The omitted singular values determine matrix approximation error, not task accuracy.
+A matrix may have an accurate low-rank approximation. For `W = U Sigma V^T`, keeping the largest k singular values gives the best rank-k approximation in Frobenius and spectral norm. The omitted singular values determine matrix approximation error. Task accuracy still needs evaluation.
 
 A 512-by-512 matrix stores 262,144 numbers. At k = 40, storing both factors and 40 singular values takes 41,000 numbers, about 6.4 times fewer. This is useful only if the approximation preserves the behavior you need. There is no guarantee that a trained matrix has a small enough rank.
 
 LoRA uses low-rank matrices for a different purpose: it trains an update while freezing the base weights. It does not replace the base matrix with its truncated SVD or automatically shrink the base model at inference.
 </DerivationDrawer>
 
-## Weight Size Is Not Importance
+## Weight size and prediction changes
 
-A weight's effect also depends on the activation it multiplies and the rest of the network. For example, a ReLU unit and its outgoing weight can be rescaled together without changing the function:
+A weight's effect also depends on the activation it multiplies and the rest of the network. For example, you can rescale a ReLU unit and its outgoing weight together without changing the function:
 
 <CodeBlock language="javascript" title="weight-rescaling.js">
 {`const relu = (x) => Math.max(0, x);
@@ -282,7 +282,7 @@ const rescaledOutput = (x) => 2000 * relu(0.001 * x);
 // Removing that 0.001 weight would remove the entire unit's contribution.`}
 </CodeBlock>
 
-Small magnitude is a practical ranking rule, not proof that a connection is dispensable. The rare-class failures above justify measuring each class; they do not show where rare patterns must be stored.
+Small magnitude gives us a practical ranking rule. We still need to measure what happens when we remove those connections. The rare-class failures above justify measuring each class. They do not reveal which weights represent rare patterns.
 
 ## Challenge
 
@@ -296,42 +296,42 @@ The resulting curves let Demir compare each class before signing off a pruning l
 
 <RecallPrompt
   question="Why can zeroing 60% of weights leave an uncompressed dense weight file the same size?"
-  answer="The tensor shapes stay the same, and dense storage writes every weight, including zeros. The manifest records names, shapes, dtypes, and any quantization scale and min. It does not list only nonzero positions. Repeated values may compress better; measure the actual files. The story's 70 MB and 42 MB gzip sizes are fictional examples. Structured pruning can shrink the uncompressed file by removing whole units and changing shapes."
+  answer="The tensor shapes stay the same, and dense storage writes every weight, including zeros. The manifest records names, shapes, dtypes, and any quantization scale and min. It does not list only nonzero positions. Repeated values may compress better. Measure the actual files. The story's 70 MB and 42 MB gzip sizes are fictional examples. Structured pruning can shrink the uncompressed file by removing whole units and changing shapes."
   checks={[
     {
       "kind": "choice",
       "question": "Why can zeroing 60% of weights leave an uncompressed dense weight file the same size?",
       "options": [
         {
-          "text": "The file stays the same size because pruning changes only activations, not weights.",
+          "text": "The file stays the same size because pruning changes activations and leaves weights intact.",
           "feedback": "Pruning changes the weights. Dense storage still keeps a slot for each zeroed value."
         },
         {
           "text": "The export automatically removes every unit containing a zero.",
-          "feedback": "Magnitude pruning zeros values; it does not automatically shrink layer shapes."
+          "feedback": "Magnitude pruning zeros values. It does not automatically shrink layer shapes."
         },
         {
-          "text": "The tensor shapes are unchanged and zero entries still occupy storage.",
-          "feedback": "The tensor shapes stay the same, and dense storage writes every weight, including zeros. The manifest records names, shapes, dtypes, and any quantization scale and min. It does not list only nonzero positions. Repeated values may compress better; measure the actual files. The story's 70 MB and 42 MB gzip sizes are fictional examples. Structured pruning can shrink the uncompressed file by removing whole units and changing shapes."
+          "text": "The tensors keep their shapes and store their zero entries.",
+          "feedback": "The tensor shapes stay the same, and dense storage writes every weight, including zeros. The manifest records names, shapes, dtypes, and any quantization scale and min. It does not list only nonzero positions. Repeated values may compress better. Measure the actual files. The story's 70 MB and 42 MB gzip sizes are fictional examples. Structured pruning can shrink the uncompressed file by removing whole units and changing shapes."
         }
       ],
       "correctIndex": 2,
-      "explanation": "The tensor shapes stay the same, and dense storage writes every weight, including zeros. The manifest records names, shapes, dtypes, and any quantization scale and min. It does not list only nonzero positions. Repeated values may compress better; measure the actual files. The story's 70 MB and 42 MB gzip sizes are fictional examples. Structured pruning can shrink the uncompressed file by removing whole units and changing shapes."
+      "explanation": "The tensor shapes stay the same, and dense storage writes every weight, including zeros. The manifest records names, shapes, dtypes, and any quantization scale and min. It does not list only nonzero positions. Repeated values may compress better. Measure the actual files. The story's 70 MB and 42 MB gzip sizes are fictional examples. Structured pruning can shrink the uncompressed file by removing whole units and changing shapes."
     }
   ]}
 />
 
 <RecallPrompt
-  question="Rare-class accuracy drops after magnitude pruning. Does that prove rare patterns are stored in small weights?"
+  question="Rare-class accuracy drops after magnitude pruning. Does that prove small weights represent rare patterns?"
   answer="No. It shows that this pruning pass hurt the rare class. It does not prove that rare patterns always live in small weights. Weight size only estimates importance. Compare predictions and per-class errors before and after pruning."
   checks={[
     {
       "kind": "choice",
-      "question": "Rare-class accuracy drops after magnitude pruning. Does that prove rare patterns are stored in small weights?",
+      "question": "Rare-class accuracy drops after magnitude pruning. Does that prove small weights represent rare patterns?",
       "options": [
         {
           "text": "Yes. Weight magnitude directly identifies the class stored in each weight.",
-          "feedback": "Magnitude is an importance proxy, not a universal explanation of where a class is represented."
+          "feedback": "Magnitude helps rank candidate weights for pruning. It cannot identify all the weights that represent a class."
         },
         {
           "text": "No. It shows a performance change under this pruning rule.",
@@ -346,18 +346,18 @@ The resulting curves let Demir compare each class before signing off a pruning l
 
 <LessonRecap
   whatYouLearned={[
-    "Magnitude pruning zeros weights below a cutoff. Quality can degrade gradually or abruptly; requested sparsity also differs from achieved sparsity when weights tie.",
-    "Pruning can harm classes unequally. Inspect per-class results; aggregate accuracy can hide a large loss on a rare class.",
+    "Magnitude pruning zeros weights below a cutoff. Quality can degrade gradually or abruptly. Requested sparsity also differs from achieved sparsity when weights tie.",
+    "Pruning can harm classes unequally. Inspect per-class results. Aggregate accuracy can hide a large loss on a rare class.",
     "Storage quantization reduces bytes per weight. Dense pruning preserves weight slots. Measure compressed size and per-class errors before accepting either change.",
     "Compression can target selected layers. Protecting a sensitive classifier may preserve quality at the cost of a larger download."
   ]}
-  bridge="Tree-shaking aims to preserve behavior while removing unused code. Magnitude pruning changes weights and can change predictions; dense storage keeps zeroed slots unless another format removes them."
+  bridge="Tree-shaking aims to preserve behavior while removing unused code. Magnitude pruning changes weights and can change predictions. Dense storage keeps zeroed slots unless another format removes them."
   youCanNow="Prune weights at a chosen sparsity level, measure per-class results, and distinguish stored-file size from compressed-download size."
 />
 
 <Epilogue>
 
-Demir keeps the per-class comparison with the sign-off this time. The crew's separate mission replay and load test return to the staging board: 85 megabytes on disk, 42 over the wire. The combined build sits next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
+Demir keeps the per-class comparison with the sign-off this time. The crew's separate mission replay and load test return to the staging board: 85 megabytes on disk, 42 over the wire. The combined build sits next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost. The board is starting to read like a bill the crew is only half done paying.
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
 Quantization cut the file from 340 to 85 megabytes. We saw no prediction-quality loss on the held-out data. Pruning kept the file at 85 megabytes, cut the compressed download from 70 to 42, and caused all 2.4 points of accuracy loss.

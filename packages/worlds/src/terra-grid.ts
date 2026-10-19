@@ -4,7 +4,7 @@ export const terraGrid: WorldManifest = {
   id: "industrial",
   slug: "terra-grid",
   displayName: "Terra Grid",
-  tagline: "Where models meet the real world",
+  tagline: "Find out why the models fail in the field",
   description:
     "TERRA SYSTEMS' ML models achieve 99.9% accuracy in the lab and 67% in the field. Build Terra Grid Intelligence, an edge-deployed monitoring system.",
   palette: {
@@ -71,8 +71,8 @@ export const terraGrid: WorldManifest = {
   ],
   preview: {
     statusBoard: {
-      org: "TERRA SYSTEMS · GLOBAL OPERATIONS",
-      status: "FIELD ACCURACY 67% · INTERVENTION REQUIRED",
+      org: "TERRA SYSTEMS, GLOBAL OPERATIONS",
+      status: "FIELD ACCURACY 67%, INTERVENTION REQUIRED",
     },
     ctaLabel: "Join the waitlist",
     modules: [

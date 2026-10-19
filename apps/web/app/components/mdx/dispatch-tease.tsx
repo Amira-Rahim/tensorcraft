@@ -50,7 +50,7 @@ export function DispatchTease({
       data-testid="dispatch-tease"
     >
       <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary mb-3">
-        DISPATCH · cross-world intel
+        DISPATCH, cross-world intel
       </p>
       <p className="text-base text-text-primary leading-relaxed mb-5">
         <ProseText>{body}</ProseText>
@@ -60,7 +60,7 @@ export function DispatchTease({
         className="inline-block px-5 py-2 text-xs font-mono font-semibold uppercase tracking-wider bg-primary text-on-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-colors"
         data-testid="dispatch-tease-cta"
       >
-        {ctaLabel ?? `Continue this thread in ${targetName} →`}
+        {ctaLabel ?? `Continue this thread in ${targetName}`}
       </Link>
     </aside>
   );

@@ -1,6 +1,6 @@
 slug: launch-rehearsal
 lessonSlug: launch
-title: "Launch Rehearsal: Train the Candidate, Then Gate It"
+title: "Launch rehearsal and candidate evaluation"
 mlContent: model
 instructions: |
   Help Nazari rehearse training and release with a small synthetic model. This does not deploy the full mission system. Write two functions.
@@ -14,7 +14,7 @@ instructions: |
 
   `runLaunchRehearsal(model, archive, canary, config)` is async:
 
-  1. Normalize archive rows in the same way, using `config.ranges`. Build one `tf.tensor2d` for those rows and one for labels. The model is already compiled; keep its model and optimizer.
+  1. Normalize archive rows in the same way, using `config.ranges`. Build one `tf.tensor2d` for those rows and one for labels. The caller supplies a compiled model. Keep that model and its optimizer.
   2. Call `await model.fit(xs, ys, { epochs: config.epochs, batchSize: config.batchSize, shuffle: false })`. Dispose both training tensors, even if fit rejects. The caller owns the model.
   3. Use the trained model and `scoreReadings` to score the canary set, then apply the launch gate below.
 
@@ -31,12 +31,12 @@ instructions: |
         launch: boolean,         // canaryAccuracy >= config.minAccuracy AND no drift
       }
 
-  Read the optimizer's total update count, including any training before this rehearsal. Return the loss history from this fit. The checks vary the schedule and all three ranges, and inspect the actual training rows. These checks help verify consistency; they are not a tamper-proof training record.
+  Read the optimizer's total update count, including any training before this rehearsal. Return the loss history from this fit. The checks vary the schedule and all three ranges, and inspect the actual training rows. These checks help verify consistency. They are not a tamper-proof training record.
 
   Drift here means a change in the mean prediction score. It does not measure input drift or prove accuracy loss. The fixed synthetic examples demonstrate this policy.
 hints:
   - level: nudge
-    content: "Every number in the verdict has to come from the same training run, so the order of operations is the exercise: train first, then judge what you trained. Read the optimizer update count and compare it with the fit call, including updates made before this rehearsal."
+    content: "Train first, then evaluate that model. Report the scores and loss history from that same run. Read the optimizer update count and compare it with the fit call, including updates made before this rehearsal."
   - level: guidance
     content: |
       Read each feature's min and max from config. For phase, subtracting a
@@ -530,13 +530,13 @@ testCode: |
       ).toBe(32);
       expect(
         calls[0].rows,
-        'The fit is handed one row per archive reading.',
+        'Pass one row per archive reading to fit.',
       ).toHaveLength(archive.length);
       for (let i = 0; i < expectedRows.length; i++) {
         for (let c = 0; c < 3; c++) {
           expect(
             calls[0].rows[i][c],
-            'Row ' + i + ' column ' + c + ' does not match normalization with config.ranges. This case changes all three ranges: amplitude starts at 512 with width 1024, frequency has a 40-crossing ceiling, and phase runs from 0 through 2*PI. Read the configured limits for training and scoring; do not hardcode them.',
+            'Row ' + i + ' column ' + c + ' does not match normalization with config.ranges. This case changes all three ranges: amplitude starts at 512 with width 1024, frequency has a 40-crossing ceiling, and phase runs from 0 through 2*PI. Read the configured limits for training and scoring. Do not hardcode them.',
           ).toBeCloseTo(expectedRows[i][c], 4);
         }
       }
@@ -551,12 +551,12 @@ testCode: |
       for (let i = 0; i < calls[0].loss.length; i++) {
         expect(
           v.losses[i],
-          'Loss ' + i + ' differs from the loss returned by this fit. Report history.history.loss from the actual training call instead of making a separate trace.',
+          'Loss ' + i + ' differs from the loss returned by this fit. Report history.history.loss from the actual training call to keep the reported losses tied to that run.',
         ).toBeCloseTo(calls[0].loss[i], 6);
       }
       expect(
         v.batchesRun,
-        'The optimizer already had one update. Training 64 rows in batches of 32 for 6 epochs adds 12, so its counter should read 13. Read that counter instead of calculating only this run’s scheduled updates.',
+        'The optimizer already had one update. Training 64 rows in batches of 32 for 6 epochs adds 12, so its counter should read 13. Read that counter so the result includes the earlier update.',
       ).toBe(13);
       expect(
         v.batchesRun,
@@ -618,7 +618,7 @@ testCode: |
       recordResult({
         kind: 'series',
         title: 'Loss from your rehearsal fit',
-        summary: 'Returned from this training run on the supplied synthetic archive. The optimizer reports ' + v.batchesRun + ' updates; falling training loss alone does not establish performance on new data.',
+        summary: 'Returned from this training run on the supplied synthetic archive. The optimizer reports ' + v.batchesRun + ' updates. Falling training loss alone does not establish performance on new data.',
         xLabel: 'Epoch',
         yLabel: 'Training loss',
         labels: v.losses.slice(0, 64).map((_, i) => String(i + 1)),
@@ -627,7 +627,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Canary predictions from the trained candidate',
-        summary: 'Your rehearsal returned accuracy ' + v.canaryAccuracy + ', score drift ' + v.drift + ', and launch ' + v.launch + '. This is a local release-policy rehearsal, not a deployment.',
+        summary: 'Your rehearsal returned accuracy ' + v.canaryAccuracy + ', score drift ' + v.drift + ', and launch ' + v.launch + '. This rehearses the release policy locally. It deploys no model.',
         columns: ['Canary case', 'Returned score', 'Supplied label'],
         rows: v.scores.slice(0, 40).map((value, i) => [i + 1, value, canary[i].label]),
       });
@@ -681,11 +681,11 @@ testCode: |
       ).toBeDefined();
       expect(
         v.canaryAccuracy,
-        'Every reading in this set is flagged and every label says otherwise, so no verdict matches.',
+        'The rule flags every reading in this set and every label says otherwise, so no verdict matches.',
       ).toBe(0);
       expect(
         v.drift,
-        'Compare the mean predicted score with the baseline. About 0.997 is within tolerance of 0.99. This mean-only check cannot detect every distribution change; averaging labels checks a different quantity.',
+        'Compare the mean predicted score with the baseline. About 0.997 is within tolerance of 0.99. This mean-only check cannot detect every distribution change. Averaging labels checks a different quantity.',
       ).toBe(false);
       expect(
         v.launch,
@@ -730,11 +730,11 @@ testCode: |
       expect(first.batchesRun, 'The first rehearsal ran 48 updates.').toBe(48);
       expect(
         second.batchesRun,
-        'The same optimizer kept counting through the second rehearsal, so it reports 96. A rehearsal that compiled the model again would reset this to 48 and throw away the training state it was handed.',
+        'The same optimizer kept counting through the second rehearsal, so it reports 96. A rehearsal that compiled the model again would reset this to 48 and throw away its existing training state.',
       ).toBe(96);
       expect(
         second.losses[0],
-        'The second rehearsal starts from where the first one finished, so its opening loss sits near the first one\'s closing loss rather than back near 0.70.',
+        'The second rehearsal starts from where the first one finished, so its opening loss sits near the first one\'s closing loss and stays well below 0.70.',
       ).toBeLessThan(first.losses[0]);
       model.dispose();
     });

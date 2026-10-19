@@ -195,23 +195,23 @@ export function cacheReplay(mode: CacheMode, model: number, scaler: number) {
 
 export const EXPERIMENTS = {
   normalization: {
-    title: "Keep the model and scaler together",
+    title: "The model and its scaler",
     lesson: "normalization",
   },
   threshold: {
-    title: "Choose what an alert costs",
+    title: "Alert costs",
     lesson: "threshold-tuning",
   },
   "learning-rate": {
-    title: "Watch a weight overshoot",
+    title: "Weight updates and overshooting",
     lesson: "gradient-descent",
   },
-  fft: { title: "Change the observation window", lesson: "fourier-transform" },
+  fft: { title: "The observation window", lesson: "fourier-transform" },
   attention: {
-    title: "Follow a query into the value vector",
+    title: "Queries, keys, and values",
     lesson: "beyond-lstm",
   },
-  cache: { title: "Find the cache collision", lesson: "caching-strategies" },
+  cache: { title: "A cache collision", lesson: "caching-strategies" },
 } as const;
 export type ExperimentId = keyof typeof EXPERIMENTS;
 export type ExperimentPhase = "prediction" | "changed_case";

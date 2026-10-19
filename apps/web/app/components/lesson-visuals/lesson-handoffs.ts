@@ -87,7 +87,7 @@ export const LESSON_HANDOFFS: Record<string, string> = {
   "prompt-engineering":
     "Demir needs to keep the current reading separate from reference facts. Build a prompt with clear sections, labeled values, and the required response format.",
   "rag-for-signals":
-    "The crew needs to trace each report claim to evidence. Retrieve matching records, report how many matches were left out, and check each structured claim against the record it cites.",
+    "The crew needs to trace each report claim to evidence. Retrieve matching records, report how many matches the limit excludes, and check each structured claim against the record it cites.",
   "report-generation":
     "Help the crew release only sections that passed review. Assemble them in order. Name the withheld sections, but leave their content out.",
   "multi-model-systems":
@@ -107,7 +107,7 @@ export const LESSON_HANDOFFS: Record<string, string> = {
   "ci-cd-pipeline":
     "Nazari needs to release the same model that passed the tests. Build the prediction gate and export a manifest describing the saved model’s tensors and weight bytes.",
   monitoring:
-    "Help ARIA track changes after deployment. Record model scores, completed prediction times, and input drift. Show when no measurement is available instead of reporting zero.",
+    "Help ARIA track changes after deployment. Record model scores, completed prediction times, and input drift. Show a missing measurement explicitly. A zero would imply an actual measurement.",
   documentation:
     "Farah needs another crew member to operate the model. Turn the supplied metadata into a Model Card that explains performance, limits, and input conventions.",
   launch:

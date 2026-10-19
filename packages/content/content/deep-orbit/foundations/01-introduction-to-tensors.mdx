@@ -73,7 +73,7 @@ the full 64-sensor recording.
 
 <BriefingTakeaway
   task="Help Demir get his readings onto the chart. Create a tensor from his selected readings, then run the code to see one line per sensor."
-  next="The code that groups the readings by sensor is already written. Next mission, you’ll build that part with Farah."
+  next="This mission supplies the code that groups the readings by sensor. Next mission, you’ll build that part with Farah."
   readings={[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]}
   readingsLabel="From Demir’s recording: sensors A–D at three moments"
 >
@@ -95,8 +95,8 @@ The supplied chart code groups the readings by sensor and draws a line for
 each one. In the challenge, you’ll write the tensor creation and shape lines
 yourself. Farah will help you build the grouping steps in the next mission.
 
-You could plot these values with plain JavaScript too. Here you are connecting
-to a TensorFlow.js pipeline that the crew will extend for machine learning.
+You could plot these values with plain JavaScript too. Here, you’re passing
+them to the crew’s TensorFlow.js code, which they’ll later use for machine learning.
 
 ## Challenge
 
@@ -142,10 +142,10 @@ its readings over time.
 <LessonRecap
   whatYouLearned={[
     "TensorFlow.js uses tensors to hold the numbers that models work with.",
-    "tf.tensor(array) creates a tensor from a JavaScript array. Its shape describes how the numbers are arranged: [12] means a list of 12 numbers.",
+    "tf.tensor(array) creates a tensor from a JavaScript array. Its shape describes the arrangement of its numbers: [12] means a list of 12 numbers.",
     "The supplied code groups the tensor’s readings by sensor for the chart. Creating a tensor does not train a model."
   ]}
-  bridge="Your JavaScript array supplies the readings; a tensor holds them in a form TensorFlow.js can work with."
+  bridge="Your JavaScript array supplies the readings. A tensor holds them in a form TensorFlow.js can work with."
   youCanNow="Connect a JavaScript array to a TensorFlow.js pipeline and inspect the result."
 />
 

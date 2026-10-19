@@ -81,7 +81,7 @@ describe("ML learning route", () => {
       />,
     );
     fireEvent.click(challenge());
-    await screen.findByText(/could not be saved/);
+    await screen.findByText(/could not save your preference/);
     expect(guided()).toHaveAttribute("aria-pressed", "true");
     expect(track).not.toHaveBeenCalled();
   });

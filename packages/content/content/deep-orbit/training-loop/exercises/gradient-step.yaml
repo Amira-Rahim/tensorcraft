@@ -1,6 +1,6 @@
 slug: gradient-step
 lessonSlug: gradient-descent
-title: "Perform a Gradient Descent Step"
+title: "A gradient descent step"
 instructions: |
   Help Demir update one weight using its loss gradient.
 
@@ -52,14 +52,14 @@ testCode: |
   describe('Gradient Step', () => {
     it('gradient holds the slope autograd computed for the loss step() was handed', () => {
       expect(gradient, 'step() never stored a gradient. The differentiation call hands back an object of gradients keyed by variable name, and this exercise keeps the one for weight in the module-level gradient.').toBeDefined();
-      expect(gradient.dataSync, 'gradient has to be the tensor autograd produced, not a number already read out of it.').toBeDefined();
-      expect(gradient.dataSync()[0], 'The stored gradient is not the slope of the loss step() received. Autograd computes that slope from the function itself, so the number follows the function rather than any formula written inside step().').toBeCloseTo(10.0, 4);
+      expect(gradient.dataSync, 'Keep the gradient tensor that autograd produces. The caller needs to read it.').toBeDefined();
+      expect(gradient.dataSync()[0], 'The stored gradient is not the slope of the loss step() received. Autograd computes that slope from the function itself, so calculate the derivative of the supplied function on each call.').toBeCloseTo(10.0, 4);
     });
     it('one step moved the weight downhill by learningRate times the gradient', () => {
-      expect(weight.dataSync()[0], 'The weight did not land one descent step from where it started. Subtract learningRate times the gradient, and use weight.assign so the tf.variable itself changes: rebinding the name with = leaves the variable where it was.').toBeCloseTo(4.0, 4);
+      expect(weight.dataSync()[0], 'Update the weight with weight.assign(weight - learningRate * gradient), using tensor operations. Assigning a different value to the JavaScript name does not update the original tf.Variable.').toBeCloseTo(4.0, 4);
       recordResult({
         kind: 'table', title: 'Your first weight update',
-        summary: 'The supplied squared-loss case after your initial step. This is one scalar optimization test, not a trained spacecraft classifier.',
+        summary: 'The supplied squared-loss case after your initial step. This tests one scalar optimization update. It trains no spacecraft classifier.',
         columns: ['Learning rate', 'Stored gradient', 'Updated weight'],
         rows: [[learningRate, gradient.dataSync()[0], weight.dataSync()[0]]],
       });
@@ -68,16 +68,16 @@ testCode: |
       const trace = [weight.dataSync()[0]];
       step(lossFn);
       expect(gradient, 'The second call to step() left no gradient behind.').toBeDefined();
-      expect(gradient.dataSync()[0], 'The slope has to be recomputed at the new weight. A gradient that repeats the first one means step() is reusing it.').toBeCloseTo(8.0, 4);
+      expect(gradient.dataSync()[0], 'Recompute the slope at the new weight. A gradient that repeats the first one means step() is reusing it.').toBeCloseTo(8.0, 4);
       expect(weight.dataSync()[0], 'Each step starts from the weight the step before it produced.').toBeCloseTo(3.2, 4);
       trace.push(weight.dataSync()[0]);
       step(lossFn);
-      expect(gradient.dataSync()[0], 'The slope keeps shrinking on the way down, which is why descent slows near a minimum instead of overshooting it.').toBeCloseTo(6.4, 4);
+      expect(gradient.dataSync()[0], 'For this squared loss and learning rate, each update gets smaller as the weight approaches the minimum.').toBeCloseTo(6.4, 4);
       expect(weight.dataSync()[0], 'Three steps in, the weight is still moving the same direction.').toBeCloseTo(2.56, 4);
       trace.push(weight.dataSync()[0]);
       recordResult({
         kind: 'series', title: 'The weight after three of your steps',
-        summary: 'Values captured during the existing squared-loss checks, without another optimization run.',
+        summary: 'The weight values saved after your three updates on the squared loss.',
         xLabel: 'Update', yLabel: 'Weight', labels: ['1', '2', '3'],
         series: [{ name: 'Weight', values: trace }],
       });
@@ -96,10 +96,10 @@ testCode: |
       weight.assign(tf.scalar(0.5));
       step(() => weight.sin().asScalar());
       expect(gradient, 'step() left no gradient for the sine loss.').toBeDefined();
-      expect(gradient.dataSync()[0], 'The slope of this loss is its cosine, and autograd knows that without being told. A gradient reconstructed from the loss VALUE instead (twice the loss over the weight, say) is right for a squared loss by accident and wrong here.').toBeCloseTo(Math.cos(0.5), 4);
-      expect(weight.dataSync()[0], 'The step itself is unchanged: learningRate against whatever gradient came back.').toBeCloseTo(0.5 - 0.1 * Math.cos(0.5), 4);
+      expect(gradient.dataSync()[0], 'The slope of this loss is its cosine, and autograd calculates it from the supplied function. A gradient reconstructed from the loss VALUE instead (twice the loss over the weight, say) is right for a squared loss by accident and wrong here.').toBeCloseTo(Math.cos(0.5), 4);
+      expect(weight.dataSync()[0], 'The update rule stays the same: learningRate against whatever gradient came back.').toBeCloseTo(0.5 - 0.1 * Math.cos(0.5), 4);
     });
-    it('the slope follows a loss the grader assembles while it runs', () => {
+    it('calculates the gradient for a newly generated loss', () => {
       // Every fixture above is a fixed number, so a submission that
       // differentiates nothing at all can still answer from a table of
       // remembered values keyed by how many times step() has been called. One
@@ -141,7 +141,7 @@ testCode: |
       ).toBe(true);
       const slope = multiplier * Math.cos(multiplier * start);
       expect(gradient, 'step() left no gradient for the loss the grader picked this run.').toBeDefined();
-      expect(gradient.dataSync()[0], 'This loss was assembled while the grader ran, from a multiplier picked on the spot, so a number that was the right answer on an earlier run is wrong here. The slope has to come out of differentiating the function step() received.').toBeCloseTo(slope, 4);
+      expect(gradient.dataSync()[0], 'The test builds this loss using a fresh multiplier, so a number that was the right answer on an earlier run is wrong here. The slope has to come out of differentiating the function step() received.').toBeCloseTo(slope, 4);
       expect(weight.dataSync()[0], 'The update rule does not change with the loss: learningRate against whatever gradient came back, applied with weight.assign.').toBeCloseTo(start - 0.1 * slope, 4);
     });
   });

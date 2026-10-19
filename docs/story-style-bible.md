@@ -179,8 +179,9 @@ language, unnecessary framing). It covers surfaces this bible does not:
 exercise instructions, module.yaml descriptions, glossary definitions, UI
 copy, emails, blog, marketing. The high-precision tier is CI-enforced by
 `packages/content/__tests__/slop-lexicon.test.ts`. Where this bible grants
-dialogue its register, the rubric defers to the bible; everywhere else the
-rubric wins.
+dialogue its register, keep that voice within the rubric's binding construction
+rules. The 2026-10-19 rules apply to dialogue too: active voice, direct phrasing,
+descriptive headings, and no decorative punctuation or staged contrasts.
 
 ## Anti-template rules
 
@@ -201,7 +202,7 @@ rubric wins.
    lesson. They were a tell the moment they became a rhythm.
 6. **Em-dashes are banned** (owner directive, 2026-06-10). The entire app
    (lesson prose, frontmatter, UI copy, code-comment text) carries zero
-   em dashes. Use a comma, colon, semicolon, period, or parentheses
+   em dashes. Use a comma, colon, period, or parentheses
    instead. Same for decorative `//` prefixes on UI labels: dead. Real
    code comments keep their `//` marker; only the text gets repunctuated.
    The repo-wide rule in `CLAUDE.md` permits no literal-character exceptions.

@@ -75,7 +75,7 @@ export function UserMenu() {
         href="/auth"
         className="inline-flex items-center justify-center min-h-11 border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium rounded-none hover:bg-primary/15 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
       >
-        Start now &rarr;
+        Start now
       </Link>
     );
   }

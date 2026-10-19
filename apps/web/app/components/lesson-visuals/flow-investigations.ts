@@ -130,7 +130,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         explanation: !ready
           ? server
             ? "Server prediction needs a connection. This offline request stops before sending any values."
-            : "Local prediction needs the model and runtime files. If they are not stored on the device and there is no connection to download them, it cannot start."
+            : "Local prediction needs the model and runtime files. It cannot start if the device lacks those files and has no connection to download them."
           : server
             ? "The server receives the whole input record. Moving prediction off the device changes the data path."
             : "This input stays on the device. Downloading model files does not require uploading these readings. Check whether other parts of the app send data.",
@@ -211,17 +211,17 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: safeAt,
         answerLabel: "Earliest safe start",
-        explanation: `${caseId === "failed" ? "After initialization fails, the fallback must become ready too. " : ""}Readiness finishes at ${readyAt} ms. ${safe ? "This operation starts after that point." : `Starting at ${actual} ms is too early.`} Waiting for readiness puts these steps in order. A real app must also handle startup failures.`,
+        explanation: `${caseId === "failed" ? "After initialization fails, the fallback must become ready too. " : ""}The backend becomes ready at ${readyAt} ms. ${safe ? "This operation starts after that point." : `Starting at ${actual} ms is too early.`} Waiting for readiness puts these steps in order. A real app must also handle startup failures.`,
         code: "try {\n  const initialized = await tf.setBackend(preferredBackend);\n  if (!initialized) throw new Error('Preferred backend failed');\n  await tf.ready();\n} catch {\n  const initialized = await tf.setBackend(fallbackBackend);\n  if (!initialized) throw new Error('Fallback backend failed');\n  await tf.ready();\n}",
       };
     },
   },
   "model-loading": {
-    title: "Find the missing model file",
+    title: "Missing model files",
     brief:
       "Count the files a model needs. A successful model.json request is only one part of the load.",
     boundary:
-      "These are example asset checks. No files are downloaded and no model is loaded.",
+      "These example asset checks simulate loading. They download no files and load no model.",
     controls: [
       choice("graph", "model.json request", ["Fails", "Succeeds"], 1),
       range("shards", "Weight files available", 2, 0, 4),
@@ -289,7 +289,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "inference-pipeline": {
-    title: "Prepare the exact input",
+    title: "The model’s input contract",
     brief:
       "Check the values, feature order and batch axis before sending the input to the model.",
     boundary:
@@ -365,11 +365,11 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "onnx-runtime-web": {
-    title: "Check graph and input compatibility",
+    title: "Graph and input compatibility",
     brief:
       "Check whether the example provider supports the model’s operations. Then check the input name and shape.",
     boundary:
-      "The operator support lists below are invented for this exercise. They do not describe current ONNX Runtime providers.",
+      "We invented these operator support lists for the exercise. They do not describe current ONNX Runtime providers.",
     controls: [
       choice("provider", "Example provider", [
         "Provider A: Add, MatMul",
@@ -437,11 +437,11 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "transformers-js": {
-    title: "Choose a pipeline that fits",
+    title: "Pipeline requirements",
     brief:
       "Check whether the model fits the task, its license allows this use, and its files fit the download budget.",
     boundary:
-      "These model profiles are invented examples. No pretrained model is downloaded or executed.",
+      "We invented these model profiles for the activity. It downloads and runs no pretrained model.",
     controls: [
       choice("model", "Example model", [
         "Text classifier: 30 MB",
@@ -452,7 +452,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       choice(
         "permission",
         "License review",
-        ["Use is not approved", "Use is approved"],
+        ["No approval for this use", "Approval for this use"],
         1,
       ),
     ],
@@ -529,17 +529,17 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "clean",
         label: "Disposed temporaries",
         description:
-          "Each call takes 4 ms to queue work and another 16 ms to finish and read the result. Startup takes 80 ms. Temporary tensors are released.",
+          "Each call takes 4 ms to queue work and another 16 ms to finish and read the result. Startup takes 80 ms. The simulation releases temporary tensors.",
       },
       {
         id: "leak",
         label: "Retained output",
         description:
-          "Same example timings. One output tensor is retained after every call.",
+          "Same example timings. The simulation retains one output tensor after every call.",
       },
     ],
     prediction: {
-      prompt: "What average time does this timing scope report?",
+      prompt: "What average time will this timer report?",
       unit: "ms per call",
       tolerance: 0.05,
     },
@@ -556,7 +556,11 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           ),
           bars(
             "Counted time (ms)",
-            ["Dispatch total", "Completion/read total", "Cold initialization"],
+            [
+              "Time spent queuing",
+              "Time spent finishing and reading",
+              "Cold initialization",
+            ],
             [
               4 * v.runs!,
               v.read === 1 ? 16 * v.runs! : 0,
@@ -579,9 +583,9 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "caching-strategies": {
-    title: "Trace valid cache hits",
+    title: "Valid and stale cache hits",
     brief:
-      "Replay a short list of requests. Change the cache key and capacity to see which saved results are reused, outdated or removed.",
+      "Replay a short list of requests. Change the cache key and capacity to see which saved results the cache reuses or removes, and when it returns an outdated result.",
     boundary:
       "This simulates a cache that removes the least recently used entry when full. It makes no predictions and saves nothing between visits.",
     controls: [
@@ -649,13 +653,13 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           pipeline("Request trace", trace),
           bars(
             "Outcomes",
-            ["Valid hits", "Stale hits", "Compute misses"],
+            ["Valid hits", "Stale hits", "Cache misses"],
             [hits, stale, misses],
           ),
         ],
         answer: hits,
         answerLabel: "Valid cache hits",
-        explanation: `${v.key === 0 ? "An input-only key can return a result produced by a different scaler. " : "Including model and scaler versions separates results with different meanings. "}The least recently used entry is removed when storage exceeds ${v.capacity} entries. A stale hit reuses a result from the wrong version. Its numerical value might match, but it has not been checked for the current version.`,
+        explanation: `${v.key === 0 ? "An input-only key can return a result produced by a different scaler. " : "Including model and scaler versions separates results with different meanings. "}The cache removes the least recently used entry when storage exceeds ${v.capacity} entries. A stale hit reuses a result from the wrong version. Its numerical value might match, but no check establishes whether it matches the current version.`,
         code:
           v.key === 1
             ? "const key = JSON.stringify([input, modelVersion, scalerVersion]);"
@@ -668,7 +672,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     brief:
       "Compare faster GPU calculations with the extra time needed to start the GPU and transfer data.",
     boundary:
-      "The cost rates are invented examples, not WebGPU measurements. No GPU or browser backend is used.",
+      "We chose these cost rates for the example. This activity uses no GPU or browser backend. Measure WebGPU performance on a real device separately.",
     controls: [
       range("units", "Workload units", 20, 1, 100),
       choice(
@@ -741,11 +745,11 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "llms-for-science": {
-    title: "Check each scientific claim",
+    title: "Scientific claims and their evidence",
     brief:
       "Compare a fixed draft with the supplied observations. Count which claims the evidence actually supports.",
     boundary:
-      "The draft and records are fixed examples. This checks explicit facts without calling a language model.",
+      "This activity uses a fixed draft and records. This checks explicit facts without calling a language model.",
     controls: [
       choice("measurements", "Measurement record", ["Missing", "Attached"], 1),
       choice("source", "Source identity", ["Missing", "Attached"], 1),
@@ -814,16 +818,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: supported,
         answerLabel: "Supported traceable claims",
-        explanation: `${claims.length - supported} claims need removal, qualification or more evidence. ${v.source === 0 ? "Without a source identity, the measurement cannot be traced. " : ""}A plausible explanation is not a new measurement. Neither record establishes the signal's origin.`,
+        explanation: `${claims.length - supported} claims need revision. Remove them, explain their limits, or provide evidence that supports them. ${v.source === 0 ? "Without a source identity, the crew cannot trace the measurement. " : ""}A plausible explanation is not a new measurement. Neither record establishes the signal's origin.`,
       };
     },
   },
   "prompt-engineering": {
-    title: "Build the prompt Farah can review",
+    title: "Farah’s report prompt",
     brief:
       "Add the role, reference facts, current reading and JSON request. Watch each part appear in the prompt.",
     boundary:
-      "P1 and P2 are made-up practice readings. The natural-frequency catalogue is supplied context for this example. This activity builds text locally; it calls no language model and does not predict a classification.",
+      "P1 and P2 are made-up practice readings. The example supplies a natural-frequency catalogue as context. This activity builds text locally. It calls no language model and does not predict a classification.",
     controls: [
       choice(
         "role",
@@ -859,7 +863,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "practice-b",
         label: "Practice reading P2",
         description:
-          "P2 has amplitude 768 counts, frequency 73.4 Hz and phase -0.4 rad. Use the same reference catalogue; its absence from that list would not prove an artificial origin.",
+          "P2 has amplitude 768 counts, frequency 73.4 Hz and phase -0.4 rad. Use the same reference catalogue. Its absence from that list would not prove an artificial origin.",
       },
     ],
     prediction: {
@@ -905,7 +909,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             "Respond in JSON with classification (noise, anomaly or unknown), confidence (self-reported score, 0 to 1) and reasoning. The score is not a calibrated probability.",
           ],
           missing:
-            "Request JSON and name classification, confidence and reasoning so the reply can be checked.",
+            "Request JSON and name classification, confidence and reasoning so the checker knows which fields to expect.",
         },
       ];
       const missing = parts.filter((part) => !part.included);
@@ -951,7 +955,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   "rag-for-signals": {
-    title: "Find evidence for a specific claim",
+    title: "Evidence for a specific claim",
     brief:
       "Search three archive records, then check whether the returned passage supports the claim.",
     boundary:
@@ -1033,16 +1037,16 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: supports,
         answerLabel: "Supporting records with source IDs",
-        explanation: `Record ${required} is the supporting passage for this claim. ${supports === 1 ? "It is in the retrieved set and its ID is preserved." : v.ids === 0 ? "Discarding IDs prevents this activity from tracing the claim to a source." : "The retrieved set does not include the supporting passage."} A high retrieval score only counts matched terms. It does not establish that a passage supports a claim.`,
+        explanation: `Record ${required} is the supporting passage for this claim. ${supports === 1 ? "The retrieved set contains it and keeps its ID." : v.ids === 0 ? "Discarding IDs prevents this activity from tracing the claim to a source." : "The retrieved set does not include the supporting passage."} A high retrieval score only counts matched terms. It does not establish that a passage supports a claim.`,
       };
     },
   },
   "report-generation": {
-    title: "Keep approved sections and name the gaps",
+    title: "Reviewed sections and missing evidence",
     brief:
       "Farah has reviewed the draft. Change the review conditions, then see which section text reaches the relay report and which headings stay under Withheld.",
     boundary:
-      "These fixed drafts have supplied review rules. The activity assembles their text locally; it does not generate prose, verify new claims or send a report.",
+      "These fixed drafts have supplied review rules. The activity assembles their text locally. It does not generate prose, verify new claims or send a report.",
     controls: [
       choice("sources", "Observation source links", ["Missing", "Present"], 1),
       choice("claim", "Analysis claim", [
@@ -1067,7 +1071,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "partial",
         label: "Incomplete observation",
         description:
-          "The source lacks the amplitude measurement claimed by Observations. Farah withholds that section; the other sections keep their own review decisions.",
+          "The source lacks the amplitude measurement claimed by Observations. Farah withholds that section. The other sections keep their own review decisions.",
       },
     ],
     prediction: {
@@ -1148,17 +1152,17 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: approved.length,
         answerLabel: "Section bodies included",
-        explanation: `${withheld.length ? `Withheld: ${withheld.map((section) => section.heading).join(", ")}. Their text is excluded; their headings stay visible.` : "Every section is approved, so there is no Withheld block."} ${approved.length ? "The approved sections remain in their original order." : "The assembled report contains no approved section text."} These flags record the supplied review decisions. The assembler does not check claims, and Farah still reviews the assembled report for consistency before sending it.`,
+        explanation: `${withheld.length ? `Withheld: ${withheld.map((section) => section.heading).join(", ")}. The report omits their text and keeps their headings visible.` : "Every section passed review, so the report needs no Withheld block."} ${approved.length ? "The approved sections remain in their original order." : "The assembled report contains no approved section text."} These flags record the supplied review decisions. The assembler does not check claims, and Farah still reviews the assembled report for consistency before sending it.`,
         code: `const sections = ${JSON.stringify(sections, null, 2)};\nconst approved = sections.filter(s => s.validated);\nconst withheld = sections.filter(s => !s.validated);\nconst blocks = approved.map(s => '## ' + s.heading + '\\n\\n' + s.content);\nif (withheld.length) blocks.push('## Withheld\\n\\n' + withheld.map(s => '- ' + s.heading).join('\\n'));\nconst report = '# Relay Report\\n\\n' + blocks.join('\\n\\n---\\n\\n');\n// Review this assembled report before sending.`,
       };
     },
   },
   "multi-model-systems": {
-    title: "Keep the handoff intact",
+    title: "Model handoff checks",
     brief:
       "Demir connects the classifier, detector and alert writer. Change a stage's reply and trace which stages run, what they receive, and what the pipeline returns.",
     boundary:
-      "These are the exercise's two example readings with controlled stage replies. The activity runs contract checks and formats text locally; no classifier, detector or language model runs. Supplied scores are not calibrated probabilities.",
+      "These are the exercise's two example readings with controlled stage replies. The activity checks the replies and formats text in your browser. No classifier, detector or language model runs. Supplied scores are not calibrated probabilities.",
     controls: [
       choice(
         "classifier",
@@ -1197,7 +1201,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "loud",
         label: "Higher-amplitude reading",
         description:
-          "The second exercise input is [1650, 41, -2.4], in the same feature order and units. Changing inputs does not run a model here; stage replies remain the values you selected.",
+          "The second exercise input is [1650, 41, -2.4], in the same feature order and units. Changing inputs does not run a model here. Stage replies remain the values you selected.",
       },
     ],
     prediction: {
@@ -1230,7 +1234,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         );
         return v.writer === 1
           ? "   "
-          : `Review requested: ${classification}; reading [${reading.join(", ")}].`;
+          : `Review requested: ${classification}. Reading [${reading.join(", ")}].`;
       };
       let result: {
         classification: string;
@@ -1247,7 +1251,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
           classified.confidence > 1
         ) {
           throw new Error(
-            "Classifier score must be a finite number from 0 to 1. The detector and writer were not called.",
+            "Classifier score must be a finite number from 0 to 1. The pipeline stopped before calling the detector or writer.",
           );
         }
         const classification = ["noise", "anomaly"].includes(classified.class)
@@ -1256,12 +1260,12 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         const isAnomaly = detectAnomaly(signal, classification);
         if (typeof isAnomaly !== "boolean")
           throw new Error(
-            "The detector returned a string, not a boolean. The writer was not called.",
+            "The detector returned a string. It must return a boolean, so the pipeline stopped before calling the writer.",
           );
         const alert = isAnomaly ? generateAlert(signal, classification) : null;
         if (isAnomaly && (typeof alert !== "string" || !alert.trim()))
           throw new Error(
-            "The writer returned only whitespace. No pipeline result is returned.",
+            "The writer returned only whitespace. The pipeline returns no result.",
           );
         result = {
           classification,
@@ -1311,15 +1315,15 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         answerLabel: "Pipeline outcome",
         explanation:
           failure ||
-          `${verdict.class === "unsupported" ? "The unsupported classifier label becomes unknown before the next stage. " : ""}${result!.isAnomaly ? "The detector returned true, so the writer ran and its nonblank text was returned." : "The detector returned false, so the writer was skipped and alert is null, even if the classifier said anomaly."} Every called stage received the original raw reading. Valid fields do not establish that a prediction is right; these controlled replies only test the handoff.`,
-        code: `// Pass these controlled callbacks to the exercise's pipeline.\nconst signal = ${JSON.stringify(signal)};\nconst classify = async () => (${JSON.stringify(verdict)});\nconst detectAnomaly = async () => (${JSON.stringify(detectorReply)});\nconst generateAlert = async (reading, classification) => ${v.writer === 1 ? JSON.stringify("   ") : "'Review requested: ' + classification + '; reading [' + reading.join(', ') + '].'"};\nconst result = await pipeline(signal, classify, detectAnomaly, generateAlert);`,
+          `${verdict.class === "unsupported" ? "The unsupported classifier label becomes unknown before the next stage. " : ""}${result!.isAnomaly ? "The detector returned true, so the pipeline ran the writer and returned its nonblank text." : "The detector returned false, so the pipeline skipped the writer and returned null for alert, even if the classifier said anomaly."} Every called stage received the original raw reading. Valid fields do not establish that a prediction is right. These controlled replies only test the handoff.`,
+        code: `// Pass these controlled callbacks to the exercise's pipeline.\nconst signal = ${JSON.stringify(signal)};\nconst classify = async () => (${JSON.stringify(verdict)});\nconst detectAnomaly = async () => (${JSON.stringify(detectorReply)});\nconst generateAlert = async (reading, classification) => ${v.writer === 1 ? JSON.stringify("   ") : "'Review requested: ' + classification + '. Reading [' + reading.join(', ') + '].'"};\nconst result = await pipeline(signal, classify, detectAnomaly, generateAlert);`,
       };
     },
   },
   "system-architecture": {
     title: "Fit the pipeline into its budget",
     brief:
-      "Add the time spent in each stage. Find what prevents a report from being completed or traced back to its input and model.",
+      "Add the time spent in each stage. Find what prevents the crew from completing a report or tracing it to its input and model.",
     boundary:
       "The stage costs are fixed planning examples. This is not a performance measurement or production pipeline.",
     controls: [
@@ -1390,7 +1394,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         answerLabel: "Pipeline time spent",
         explanation: invalid
           ? "Rejecting a malformed record stops later stages. A missing reading is not an ordinary low model score."
-          : `The stage costs add to ${total} ms against a ${v.budget} ms budget. ${v.metadata === 0 ? "Without input and model IDs, the report cannot be traced back to its source and model version." : "Source and version IDs travel with the result."} Check input validity, resource limits and source IDs separately.`,
+          : `The stage costs add to ${total} ms against a ${v.budget} ms budget. ${v.metadata === 0 ? "Without input and model IDs, the crew cannot trace the report to its source and model version." : "Source and version IDs travel with the result."} Check input validity, resource limits and source IDs separately.`,
       };
     },
   },
@@ -1469,11 +1473,11 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
     },
   },
   monitoring: {
-    title: "Inspect alerts without assuming accuracy",
+    title: "Monitoring alerts and prediction accuracy",
     brief:
       "Set limits for latency, missing inputs and a changed mean score. See which recorded metrics trigger review.",
     boundary:
-      "These are fixed monitoring examples. A score change needs investigation; it does not prove a data shift, an anomaly or lower accuracy.",
+      "These are fixed monitoring examples. A score change needs investigation. It does not prove a data shift, an anomaly or lower accuracy.",
     controls: [
       range("latency", "Latency limit (ms)", 100, 50, 250, 10),
       range("missing", "Missing-input limit (%)", 5, 0, 20),
@@ -1549,14 +1553,14 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         ],
         answer: count,
         answerLabel: "Metrics requiring review",
-        explanation: `${latency} ms latency, ${missing}% missing inputs and a ${delta} mean-score change are checked separately. ${v.missing === 0 ? "The missing-input limit is zero, so any missing input triggers review. A percentage of that zero limit would be undefined, so the missing-input chart shows the observed percentage and the limit directly. " : ""}Changing limits changes alerts, not the underlying measurements. Reviewed labels are needed to check prediction accuracy.`,
+        explanation: `${latency} ms latency, ${missing}% missing inputs and a ${delta} mean-score change each have their own check. ${v.missing === 0 ? "The missing-input limit is zero, so any missing input triggers review. A percentage of that zero limit would be undefined, so the missing-input chart shows the observed percentage and the limit directly. " : ""}Changing limits changes which alerts fire. The underlying measurements stay the same. Check prediction accuracy against reviewed labels.`,
       };
     },
   },
   documentation: {
     title: "Give the next watch enough context",
     brief:
-      "Complete the model card for the next watch. Include the evaluation results and what to do if the model needs to be rolled back.",
+      "Complete the model card for the next watch. Include the evaluation results and when and how to roll back the model.",
     boundary:
       "Check the required fields in two example handovers. A complete card still needs evidence for its claims.",
     controls: [
@@ -1590,7 +1594,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "new",
         label: "New sensor handover",
         description:
-          "The card was evaluated on sensor A. The next watch plans to use sensor B, which has no recorded evaluation.",
+          "The card reports evaluation on sensor A. The next watch plans to use sensor B, which has no recorded evaluation.",
       },
     ],
     prediction: {
@@ -1662,7 +1666,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         id: "local",
         label: "Local-only console",
         description:
-          "Prediction and reporting stay on the device. No server service is required for this fixture.",
+          "Prediction and reporting stay on the device. This example needs no server service.",
       },
       {
         id: "connected",
@@ -1686,7 +1690,7 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       return {
         graphics: [
           cells(
-            "Target fixture inputs",
+            "Example release setup",
             [
               v.assets === 1 ? "App script: absent" : "App scripts: present",
               v.assets === 2 ? "Weight shard: absent" : "Model files: present",

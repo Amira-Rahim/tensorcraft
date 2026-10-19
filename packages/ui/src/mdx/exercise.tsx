@@ -610,7 +610,7 @@ function ExerciseControls({
       : initialDraft && !initialDraft.starter
         ? "This saved draft predates the current starter. Compare it with the current instructions or use Reset."
         : initialDraft && initialDraft.starter !== exercise.starterCode
-          ? "The starter has changed since this draft. Your code is preserved; compare it with the current instructions or use Reset."
+          ? "The starter has changed since this draft. Your code stays as you wrote it. Compare it with the current instructions or use Reset."
           : "",
   );
   const [saveFailed, setSaveFailed] = useState(false);
@@ -836,9 +836,9 @@ function ExerciseControls({
         role={saveFailed ? "status" : undefined}
       >
         {storageBlocked
-          ? "The previous draft is preserved. Use Reset to replace it, or copy your code before leaving."
+          ? "Your previous draft stays as you wrote it. Use Reset to replace it, or copy your code before leaving."
           : saveFailed
-            ? "Draft could not be saved. Copy your code before leaving; editing will retry the save."
+            ? "This browser could not save your draft. Copy your code before leaving. Editing will retry the save."
             : "Draft saves on this browser as you edit."}
       </p>
       {draftNotice && (

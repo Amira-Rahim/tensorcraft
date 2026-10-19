@@ -23,7 +23,7 @@ export const DECISIONS: Record<string, DecisionTaskSpec> = {
   "future-builds": {
     title: "Decision: evaluate next week's builds",
     brief:
-      "You will predict failure when a build starts, for the same service next week. You have six weeks of time-stamped records. Duration is recorded only after a build finishes. Choose an evaluation plan before fitting anything.",
+      "You will predict failure when a build starts, for the same service next week. You have six weeks of time-stamped records. The log records duration only after a build finishes. Choose an evaluation plan before fitting anything.",
     options: [
       {
         id: "random",
@@ -42,12 +42,12 @@ export const DECISIONS: Record<string, DecisionTaskSpec> = {
     evidencePrompt:
       "Explain why your plan matches the prediction time. Name one change in the intended deployment that would require a different evaluation design.",
     explanation:
-      "The chronological plan measures performance on later records. Duration is unavailable at prediction time. Using the final period to select a model makes it development data. Predicting for a new service would also need evidence about transfer across services; time order alone cannot establish that.",
+      "The chronological plan measures performance on later records. Duration is unavailable at prediction time. Using the final period to select a model makes it development data. Predicting for a new service would also need evidence about transfer across services. Time order alone cannot establish that.",
   },
   "review-costs": {
     title: "Decision: choose a review policy",
     brief:
-      "Three policies were evaluated on the same 100 validation builds, including 10 failures. A missed failure costs 8 minutes; an unnecessary review costs 1 minute. Count only these two error costs. Choose the lowest-cost policy before evaluating it on the final period.",
+      "We evaluated three policies on the same 100 validation builds, including 10 failures. A missed failure costs 8 minutes. An unnecessary review costs 1 minute. Count only these two error costs. Choose the lowest-cost policy before evaluating it on the final period.",
     options: [
       { id: "baseline", text: "Never flag a build" },
       { id: "model", text: "Use the model" },

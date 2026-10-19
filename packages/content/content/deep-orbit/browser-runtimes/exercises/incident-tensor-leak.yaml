@@ -3,7 +3,7 @@ lessonSlug: inference-pipeline
 title: "Incident: numTensors Climbing at 03:10"
 mlContent: systems
 instructions: |
-  The dashboard's tensor count has risen since the 01:00 deploy. Help the crew estimate how much capacity remains while they investigate. Startup, caching and leaks can all raise the count; these readings do not tell you which caused it.
+  The dashboard's tensor count has risen since the 01:00 deploy. Help the crew estimate how much capacity remains while they investigate. Startup, caching and leaks can all raise the count. These readings do not tell you which caused it.
 
   Build `estimateTensorHeadroom(snapshots, budgetTensors)`. Each snapshot contains `{ t, numTensors }`, where `t` is time in hours. Use the first and last snapshots to return:
 
@@ -17,7 +17,7 @@ hints:
   - level: nudge
     content: "Start with the first and last counts. How much did the count change, and how many hours passed? Decide what to return if the count stays flat or falls."
   - level: guidance
-    content: "Divide the change in count by elapsed hours. For positive growth, divide the capacity remaining after the latest snapshot by that rate. For a flat or falling count, this projection gives no time limit. The sign describes growth; the cause still needs investigation."
+    content: "Divide the change in count by elapsed hours. For positive growth, divide the capacity remaining after the latest snapshot by that rate. For a flat or falling count, this projection gives no time limit. The sign describes growth. The cause still needs investigation."
   - level: solution
     content: |
       function estimateTensorHeadroom(
@@ -94,21 +94,21 @@ testCode: |
         10000,
       );
       expect(r.growing).toBe(false);
-      expect(r.hoursToBudget, 'At this nonpositive rate there is no projected growth deadline; future behavior can change.').toBe(Infinity);
+      expect(r.hoursToBudget, 'At this nonpositive rate there is no projected growth deadline. Future behavior can change.').toBe(Infinity);
     });
     it('ignores noisy middle readings (endpoints define the trend)', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 100 }, { t: 1, numTensors: 900 }, { t: 5, numTensors: 200 }],
         1000,
       );
-      expect(r.ratePerHour, 'This task defines the estimate from the endpoints. The middle spike needs its own investigation; it does not replace the stated interval.').toBeCloseTo(20, 5);
+      expect(r.ratePerHour, 'This task defines the estimate from the endpoints. The middle spike needs its own investigation. It does not replace the stated interval.').toBeCloseTo(20, 5);
     });
     it('a falling count has negative endpoint growth', () => {
       const r = diagnose(
         [{ t: 0, numTensors: 500 }, { t: 2, numTensors: 300 }],
         1000,
       );
-      expect(r.growing, 'The final count is lower than the first. These snapshots report net change, not every allocation and disposal.').toBe(false);
+      expect(r.growing, 'The final count is lower than the first. These snapshots report net change. They cannot show each allocation and disposal between them.').toBe(false);
     });
   });
 estimatedMinutes: 12

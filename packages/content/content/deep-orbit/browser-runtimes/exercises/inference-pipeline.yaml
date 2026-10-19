@@ -1,6 +1,6 @@
 slug: inference-pipeline
 lessonSlug: inference-pipeline
-title: "Build an Inference Pipeline"
+title: "The inference pipeline"
 instructions: |
   Write `classify(model, signal)` for one raw reading with amplitude, frequency and phase.
 
@@ -79,20 +79,20 @@ testCode: |
 
     it('a p above 0.5 is an anomaly, and the confidence reported is p', () => {
       const r = verdict(probe, { amplitude: 1536, frequency: 0, phase: -Math.PI });
-      expect(r.class, 'The model reports an anomaly score, and this probe was handed 1536 of 2048 counts, so p is 0.75. Above 0.5 the verdict is anomaly.').toBe('anomaly');
-      expect(r.confidence, 'Above the bar, the confidence field must contain the anomaly score.').toBeCloseTo(0.75, 4);
+      expect(r.class, 'The model reports an anomaly score, and this probe received 1536 of 2048 counts, so p is 0.75. Above 0.5 the verdict is anomaly.').toBe('anomaly');
+      expect(r.confidence, 'Above the threshold, set confidence to the anomaly score.').toBeCloseTo(0.75, 4);
     });
     it('a p below 0.5 is noise, and the confidence reported is 1 - p', () => {
       const r = verdict(probe, { amplitude: 512, frequency: 0, phase: -Math.PI });
-      expect(r.class, 'This probe was handed 512 of 2048 counts, so p is 0.25. That is not above 0.5, so the verdict is noise.').toBe('noise');
-      expect(r.confidence, 'The model reports an anomaly score. Below the bar the verdict is noise, so the confidence in THAT verdict is the remainder.').toBeCloseTo(0.75, 4);
+      expect(r.class, 'This probe received 512 of 2048 counts, so p is 0.25. That is not above 0.5, so the verdict is noise.').toBe('noise');
+      expect(r.confidence, 'At or below the threshold, the class is noise. Its confidence is 1 minus the anomaly score.').toBeCloseTo(0.75, 4);
     });
     it('a p of exactly 0.5 is not above 0.5, so the verdict is noise and the confidence is 0.5 either way', () => {
       const phaseProbe = tf.sequential();
       phaseProbe.add(tf.layers.dense({ inputShape: [3], units: 1, useBias: false }));
       phaseProbe.layers[0].setWeights([tf.tensor2d([[0], [0], [1]])]);
       const r = verdict(phaseProbe, { amplitude: 0, frequency: 0, phase: 0 });
-      expect(r.class, 'The rule is p ABOVE 0.5. A tie does not clear it.').toBe('noise');
+      expect(r.class, 'Classify as anomaly only when p > 0.5. At exactly 0.5, return noise.').toBe('noise');
       expect(r.confidence).toBeCloseTo(0.5, 4);
     });
     it('hands model.predict one [1, 3] tensor of normalized features, in amplitude, frequency, phase order', () => {
@@ -107,18 +107,18 @@ testCode: |
         },
       };
       const r = verdict(spy, { amplitude: 512, frequency: 21, phase: Math.PI / 2 });
-      expect(seen, 'model.predict was never called, so nothing the model learned reached this answer.').not.toBe(null);
+      expect(seen, 'Call model.predict so the answer comes from the supplied model.').not.toBe(null);
       expect(seen.shape, 'One reading is one row of three features.').toEqual([1, 3]);
-      const order = 'The network learned these three features in the order RANGES declares them. A swap cannot be detected at runtime; it just makes the answers wrong.';
+      const order = 'The network learned these three features in the order RANGES declares them. This runtime accepts swapped features with the same shape, but the changed meanings can produce wrong answers.';
       expect(seen.values[0], order).toBeCloseTo(0.25, 4);      // 512 / 2048
       expect(seen.values[1], order).toBeCloseTo(0.333333, 4);  // 21 / 63
       expect(seen.values[2], order).toBeCloseTo(0.75, 4);      // (Math.PI / 2 + Math.PI) / (2 * Math.PI)
       // probe reads amplitude alone, so p is 0.25: noise, reported at 1 - p
       expect(r.class, 'This probe reads amplitude alone, and 512 of 2048 counts normalizes to 0.25, so the verdict is noise. An anomaly here means the three features reached the model in another order.').toBe('noise');
-      expect(r.confidence, 'This probe reads amplitude alone, so p is 0.25. The verdict is noise and the confidence in that verdict is 0.75; reporting 0.25 hands back the raw sigmoid instead.').toBeCloseTo(0.75, 4);
+      expect(r.confidence, 'This probe reads amplitude alone, so p is 0.25. The verdict is noise and the confidence in that verdict is 0.75. Reporting 0.25 hands back the raw sigmoid instead.').toBeCloseTo(0.75, 4);
       recordResult({
         kind: 'table', title: 'What your handler sent to the model',
-        summary: 'Normalized values captured by the existing identity-model probe. This tests preprocessing and routing, not DEEP SCAN accuracy.',
+        summary: 'The test model echoes the normalized values your handler sends it. This checks input preparation. Evaluating DEEP SCAN accuracy requires separate labeled data.',
         columns: ['Amplitude scaled', 'Zero-crossing count scaled', 'Phase scaled', 'Returned class', 'Selected class score'],
         rows: [[...seen.values, r.class, r.confidence]],
       });
@@ -127,10 +127,10 @@ testCode: |
       const before = tf.memory().numTensors;
       const r = verdict(probe, { amplitude: 100, frequency: 32, phase: 0 });
       expect(tf.memory().numTensors, 'Temporary tensors are still alive after classify returned. Create and read them inside a synchronous tidy callback.').toBe(before);
-      expect(r.confidence, 'A pipeline that allocates nothing leaks nothing, so this check only means something once a verdict comes back.').toBeGreaterThan(0);
+      expect(r.confidence, 'Return a classification before checking tensor cleanup. Skipping inference would avoid allocations without completing the task.').toBeGreaterThan(0);
       recordResult({
         kind: 'table', title: 'Tensor count around your prediction',
-        summary: 'Counts for this existing probe call. A matching count checks temporary tensor cleanup here, not all browser memory.',
+        summary: 'Tensor counts before and after this prediction. Matching counts show that this call released its temporary tensors. They do not measure all browser memory.',
         columns: ['Before call', 'After call'],
         rows: [[before, tf.memory().numTensors]],
       });

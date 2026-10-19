@@ -1,13 +1,13 @@
 slug: browser-ml-tradeoffs
 lessonSlug: why-the-browser
-title: "Evaluate Browser ML Tradeoffs"
+title: "Browser ML tradeoffs"
 instructions: |
   Implement `recommendDeployment(useCase)`. Return 'client', 'server' or 'reconsider'. The input contains `latencyBudgetMs`, `dataSensitive`, `modelSizeMB` and `needsOffline`.
 
   Check these rules in order:
 
   1. `dataSensitive` means all input must stay on the device. `needsOffline` means predictions must work without a connection. Either one requires local predictions.
-  2. The model must fit a 50 MB download budget. If it exceeds 50 MB and local predictions are required, return 'reconsider'. A server would break the requirement. Consider a smaller model or a different download plan instead.
+  2. The model must fit a 50 MB download budget. If it exceeds 50 MB and the caller requires local predictions, return 'reconsider'. A server would break the requirement. Consider a smaller model or a different download plan instead.
   3. If the model exceeds 50 MB without a local requirement, return 'server'.
   4. For models at or below 50 MB, return 'client' if either local requirement applies or `latencyBudgetMs` is below 50. Otherwise, return 'server'.
 
@@ -64,7 +64,7 @@ testCode: |
       expect(atDecision).toBe('server');
       recordResult({
         kind: 'table', title: 'Your deployment recommendations',
-        summary: 'Two boundary cases from the supplied decision policy. These are requirements checks, not measured device performance.',
+        summary: 'Two boundary cases from the supplied decision policy. These check the requirements. Measure device performance separately.',
         columns: ['Model MB', 'Latency preference ms', 'Recommendation'],
         rows: [[below.modelSizeMB, below.latencyBudgetMs, belowDecision], [at.modelSizeMB, at.latencyBudgetMs, atDecision]],
       });
@@ -82,4 +82,4 @@ hints:
       Which inputs are requirements, and which are performance preferences? Check whether the size budget conflicts with a requirement first.
   - level: guidance
     content: |
-      A server cannot provide disconnected inference or keep all input on the device. Report the conflicting requirements explicitly. Once those cases are handled, apply the exercise's size and latency preferences.
+      A server cannot provide disconnected inference or keep all input on the device. Report the conflicting requirements explicitly. After handling those cases, apply the exercise's size and latency preferences.

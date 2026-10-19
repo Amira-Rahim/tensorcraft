@@ -1,6 +1,6 @@
 slug: load-model
 lessonSlug: model-loading
-title: "Load and Inspect a Model"
+title: "Model loading and inspection"
 instructions: |
   Write `loadAndInspect(url)`. Load the TensorFlow.js model once and return `{ inputShape, outputShape, layerCount }`.
 
@@ -118,7 +118,7 @@ testCode: |
       expect(info.outputShape[info.outputShape.length - 1]).toBe(2);
       const probe = realTf.zeros([1, 7]);
       try {
-        expect(() => loaded.predict(probe), 'The metadata is copied, but the inspected model is still alive. Dispose it in a finally block.').toThrow('disposed');
+        expect(() => loaded.predict(probe), 'You have copied the metadata, but the inspected model remains alive. Dispose it in a finally block.').toThrow('disposed');
       } finally { probe.dispose(); }
       expect(loads, 'Load the URL once and read every field from that model. Loading again repeats work.').toBe(1);
     });

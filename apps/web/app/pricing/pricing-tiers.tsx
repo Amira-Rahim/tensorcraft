@@ -260,7 +260,7 @@ export function PricingTiers() {
               href="/worlds/deep-orbit"
               className="flex items-center justify-center w-full h-11 text-[13px] font-medium font-mono uppercase tracking-wider transition-all border border-primary rounded-none text-primary hover:bg-primary hover:text-on-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             >
-              Start Free &rarr;
+              Start Free
             </Link>
           </article>
 
@@ -287,7 +287,7 @@ export function PricingTiers() {
                 ${PRICING.single.price}
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
-                one world · lifetime access
+                one world, lifetime access
               </p>
               {creditLine(
                 PRICING.single.price,
@@ -352,7 +352,7 @@ export function PricingTiers() {
               disabled={!singleWorld}
               disabledReason="Select a world above"
             >
-              Buy Now &rarr;
+              Buy Now
             </CheckoutButton>
           </article>
         </div>

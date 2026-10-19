@@ -88,7 +88,7 @@ function RunResult({
       <div className="orbit-investigation-result-head">
         <h4 id={titleId}>{label}</h4>
         <p>
-          {run.caseLabel} · Run {run.number}
+          {run.caseLabel}, Run {run.number}
         </p>
       </div>
       <dl className="orbit-investigation-run-values">

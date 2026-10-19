@@ -185,7 +185,8 @@ export function BossBeat({
       });
       // First write wins, including a choice submitted from another tab.
       const saved = inserted ? null : await getBossBeatChoice(beatId);
-      if (!inserted && !saved) throw new Error("Saved choice was not returned");
+      if (!inserted && !saved)
+        throw new Error("The server returned no saved choice");
       window.dispatchEvent(
         new CustomEvent(BOSS_BEAT_CHANGED, { detail: beatId }),
       );
@@ -267,8 +268,8 @@ export function BossBeat({
     if (!opt)
       return (
         <aside role="status" className="my-8 border border-border p-6">
-          Your decision is saved with a different version of this scene. Reload
-          to get its matching text. The saved call has not changed.
+          Your saved decision belongs to a different version of this scene.
+          Reload to get its matching text. The saved call has not changed.
         </aside>
       );
     return (
@@ -284,8 +285,8 @@ export function BossBeat({
         </p>
         {historical && (
           <p className="mb-3 text-sm text-text-muted">
-            Your earlier call, from version {savedVersion}. The scene has been
-            revised; your original choice is preserved.
+            Your earlier call, from version {savedVersion}. The scene has
+            changed. Your original choice stays the same.
           </p>
         )}
         <p className="text-sm font-mono text-text-muted mb-3">
@@ -310,8 +311,8 @@ export function BossBeat({
         <p className="text-[10px] font-mono uppercase tracking-[3px] text-primary">
           Decision
           {showTimer
-            ? ` · ${timedOut ? "clock out" : `${secondsLeft}s`}`
-            : " · take your time"}
+            ? `, ${timedOut ? "clock out" : `${secondsLeft}s`}`
+            : ", take your time"}
         </p>
         {showTimer && (
           <div
@@ -350,13 +351,13 @@ export function BossBeat({
         data-testid="boss-beat-silence"
       >
         {timedOut
-          ? `Clock out. Nothing is recorded. The standing proposal is: ${options[silenceIndex].display}. Choose when ready.`
+          ? `Time ran out. This scene recorded no choice. The standing proposal is: ${options[silenceIndex].display}. Choose when ready.`
           : ""}
       </p>
       {saveError && (
         <p role="alert" className="mb-4 text-sm">
-          We could not confirm that your choice was saved. Check your connection
-          and sign-in, then choose again.
+          We could not confirm whether the server saved your choice. Check your
+          connection and sign-in, then choose again.
         </p>
       )}
       <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">

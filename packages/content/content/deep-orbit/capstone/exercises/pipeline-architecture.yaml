@@ -1,6 +1,6 @@
 slug: pipeline-architecture
 lessonSlug: system-architecture
-title: "Build a Typed Pipeline"
+title: "A typed pipeline"
 instructions: |
   Help Demir connect the pipeline. Build the `Pipeline` class shown in the lesson. Each stage has a `name`, a `validate` function, and a `process` function.
 
@@ -11,7 +11,7 @@ instructions: |
 
   The any-typed stage array does not enforce matching TypeScript types between stages. Each stage's runtime validator must check the data it accepts.
 
-  The checks use an eight-sample example: raw window -> z-normalize -> FFT magnitudes -> model-input tensor. Some stages are async, including stages in the middle and at the end. Normalizing each window removes amplitude information here; this example demonstrates composition, not the production classifier's scaler.
+  The checks use an eight-sample example: z-normalize the raw window, calculate FFT magnitudes, then create the model-input tensor. Some stages are async, including stages in the middle and at the end. Normalizing each window removes amplitude information here. This example demonstrates composition. The production classifier uses a separate scaler.
 starterCode: |
   interface PipelineStage<TIn, TOut> {
     name: string;
@@ -136,7 +136,7 @@ testCode: |
         );
       expect(
         settled.ok,
-        'fft-features received a Promise instead of eight numbers from normalize-async. Await each stage’s result before passing it to the next stage.',
+        'fft-features received a Promise. It needs the eight numbers from normalize-async. Await each stage’s result before passing it to the next stage.',
       ).toBe(true);
       const out = settled.value;
       expect(
@@ -145,7 +145,7 @@ testCode: |
       ).toBeDefined();
       expect(
         typeof out.then,
-        'A promise came out of run instead of the tensor. Await each stage before handing its result to the next one.',
+        'The result still contains a promise. It must contain the completed tensor. Await each stage before handing its result to the next one.',
       ).not.toBe('function');
       expect(out.shape).toEqual([1, 5]);
       const values = Array.from(out.dataSync());
@@ -156,7 +156,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'The feature row your pipeline delivered',
-        summary: 'Your runner awaited normalization, FFT, and tensor creation and returned shape [' + out.shape.join(', ') + ']. This eight-sample fixture tests composition, not the production classifier scaler.',
+        summary: 'Your runner awaited normalization, FFT, and tensor creation and returned shape [' + out.shape.join(', ') + ']. This eight-sample example checks how the stages connect. It uses a different scaler from the production classifier.',
         columns: ['FFT bin', 'Magnitude from normalized input'],
         rows: values.slice(0, 5).map((value, i) => [i, value]),
       });
@@ -185,11 +185,11 @@ testCode: |
       );
       expect(
         refusal,
-        'validate is a precondition: a six-sample window never reaches process, so this run has to refuse. run is async, so the refusal arrives as a rejected promise.',
+        'Reject this six-sample window before calling process(). Because run() is async, return the failure as a rejected promise.',
       ).toBeDefined();
       expect(
         refusal,
-        'Throw an Error with the stage name, rather than a string.',
+        'Throw an Error object whose message includes the stage name.',
       ).toBeInstanceOf(Error);
       expect(
         refusal.message,
@@ -197,7 +197,7 @@ testCode: |
       ).toContain('Validation failed at: normalize');
     });
 
-    it('asks the stage its own question, and a refused window never reaches process', async () => {
+    it('calls the stage validator and skips process when validation fails', async () => {
       // A contract no length test can guess: this stage declares that its
       // window arrives already scaled into 0..1, so a window can be the right
       // length and still out of range. Only the stage knows that rule.
@@ -224,7 +224,7 @@ testCode: |
         );
       expect(
         validated.length,
-        "run never called this stage's validate. A length test written inside run fits the fixtures above and nothing else: this stage declares eight samples already scaled into 0..1, and only the stage's own validate knows that.",
+        "Call validate() on each stage. This stage checks both the sample count and the range 0..1. A length check inside run() is not enough.",
       ).toBeGreaterThan(0);
       expect(
         refusal,
@@ -233,7 +233,7 @@ testCode: |
       expect(refusal.message).toContain('Validation failed at: scaled-window');
       expect(
         processed,
-        "process ran on a window validate had already refused. validate is a precondition, not a note filed afterwards: the stage body never sees data that failed the stage's own check.",
+        "Do not call process() when validate() returns false. Reject the run at that stage.",
       ).toHaveLength(0);
     });
 
@@ -246,7 +246,7 @@ testCode: |
       const pipeline = chained(fftStage, badStage);
       await expect(
         pipeline.run([1, 0, 1, 0, 1, 0, 1, 0]),
-        'The input was the right length; the stage before it changed the shape. Validating each stage input is how the break gets named where it happened.',
+        'The input was the right length. The stage before it changed the shape. Validating each stage input is how the break gets named where it happened.',
       ).rejects.toThrow('Validation failed at: expects-raw-window');
     });
 

@@ -121,7 +121,7 @@ describe("DeepScanDemo", () => {
   it("keeps the default header bar inside lessons", () => {
     render(<DeepScanDemo />);
     expect(screen.getByTestId("demo-header").textContent).toMatch(
-      /deep scan · preview build/i,
+      /deep scan, preview build/i,
     );
   });
 });

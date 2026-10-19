@@ -1,18 +1,18 @@
 slug: model-pipeline
 lessonSlug: multi-model-systems
-title: "Wire a Model Pipeline"
+title: "The model pipeline"
 instructions: |
   Implement classifierStage(model) and pipeline(signal, classify, detectAnomaly, generateAlert).
 
   The classifier receives three raw features: amplitude in counts, zero-crossing count, and phase in radians. Reject an array of the wrong length or any non-finite value. Scale the features with the supplied min-max RANGES. Predict once using shape [1, 3] and release temporary tensors.
 
-  The model must return one finite sigmoid value p between 0 and 1 inclusive. Return 'anomaly' when p > 0.5 and 'noise' otherwise. Set confidence to p for anomaly or 1-p for noise. That is the chosen class's model score, not a verified probability of correctness.
+  The model must return one finite sigmoid value p between 0 and 1 inclusive. Return 'anomaly' when p > 0.5 and 'noise' otherwise. Set confidence to p for anomaly or 1-p for noise. That is the chosen class’s model score. Its probability calibration still needs evaluation.
 
-  The pipeline passes the original raw signal to each stage. Keep classifier labels 'noise' and 'anomaly'; replace any other label with 'unknown'. Reject a non-finite or out-of-range confidence before calling the detector.
+  The pipeline passes the original raw signal to each stage. Keep classifier labels 'noise' and 'anomaly'. Replace any other label with 'unknown'. Reject a non-finite or out-of-range confidence before calling the detector.
 
   The detector must return a boolean. If true, call the alert writer and require a string containing at least one non-whitespace character. If false, skip the writer and return null for alert. Return { classification, confidence, isAnomaly, alert }.
 
-  The exercise supplies stage callbacks rather than the full autoencoder and forecast helpers shown in the lesson. These checks catch invalid data. A plausible prediction can pass them and still be wrong.
+  The exercise supplies controlled stage callbacks. The lesson shows the full autoencoder and forecast helpers separately. These checks catch invalid data. A plausible prediction can pass them and still be wrong.
 starterCode: |
   interface Verdict {
     class: string;
@@ -36,7 +36,7 @@ starterCode: |
 
   function classifierStage(model: tf.LayersModel): (s: number[]) => Promise<Verdict> {
     // The reading arrives in module 4's units and the model was trained on
-    // module 4's 0..1 scale. A wrong shape throws on its own; a wrong scale
+    // module 4's 0..1 scale. A wrong shape throws on its own. A wrong scale
     // does not.
     return null; // your code here
   }
@@ -47,7 +47,7 @@ starterCode: |
     detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
     generateAlert: (s: number[], cls: string) => Promise<string>,
   ): Promise<PipelineResult> {
-    // Replace unsupported labels with unknown; reject invalid scores
+    // Replace unsupported labels with unknown. Reject invalid scores
     // before calling the detector.
     return null; // your code here
   }
@@ -74,7 +74,7 @@ solutionCode: |
     const order = [RANGES.amplitude, RANGES.frequency, RANGES.phase];
     return async (reading: number[]) => {
       if (reading.length !== order.length) {
-        throw new Error('the classifier reads ' + order.length + ' features and was handed ' + reading.length);
+        throw new Error('the classifier reads ' + order.length + ' features but received ' + reading.length);
       }
       if (!reading.every(Number.isFinite)) throw new Error('Non-finite reading');
       const features = reading.map((v, i) => (v - order[i].min) / (order[i].max - order[i].min));
@@ -125,7 +125,7 @@ testCode: |
       expect(r.classification).toBe('noise');
       expect(
         r.confidence,
-        'The confidence is the classifier\'s own number and the alert quotes it. Carry it through rather than re-deriving it.',
+        'The confidence is the classifier\'s own number and the alert quotes it. Carry that exact score through to the alert.',
       ).toBe(0.73);
     });
     it('skips the alert for normal signals', async () => {
@@ -156,7 +156,7 @@ testCode: |
       expect(seen).toEqual(['unknown']);
       expect(r.alert).toBe('ALERT!');
     });
-    it('allowlists the two contracted classes instead of blacklisting known-bad ones', async () => {
+    it('accepts only noise and anomaly as classifier labels', async () => {
       // Built, not listed. A blacklist can memorise a handful of literals from a
       // test file; it cannot memorise a generated space, and it cannot know what
       // a real classifier will emit on the day it breaks. The near-misses at the
@@ -180,7 +180,7 @@ testCode: |
         );
         expect(
           r.classification,
-          'Only the exact strings "noise" and "anomaly" are inside the contract. Everything else is a broken contract and has to become "unknown", including a value nobody wrote down in advance.',
+          'Accept only "noise" and "anomaly" as class names. Convert every other value to "unknown".',
         ).toBe('unknown');
         expect(
           seen,
@@ -188,7 +188,7 @@ testCode: |
         ).toEqual(['unknown']);
       }
     });
-    it('passes both contracted classes through untouched', async () => {
+    it('keeps both supported class labels unchanged', async () => {
       for (const reported of ['noise', 'anomaly']) {
         const seen = [];
         const r = await runPipeline(
@@ -201,7 +201,7 @@ testCode: |
         expect(seen).toEqual([reported]);
       }
     });
-    it('stops the run on a confidence the contract does not allow, before the next stage reads it', async () => {
+    it('rejects an invalid confidence before calling the next stage', async () => {
       // Listed edge cases plus draws made at grade time, above the range and
       // below it. Nothing here has an honest stand-in: substituting a number
       // hands the operator a certainty the classifier never reported.
@@ -235,7 +235,7 @@ testCode: |
         const r = await runPipeline([7, 8, 9], verdict('anomaly', confidence), async () => true, async () => 'ALERT!');
         expect(
           r.confidence,
-          'The contract includes both endpoints. Scores of zero and one do not prove certainty; keep the reported value.',
+          'The contract includes both endpoints. Scores of zero and one do not prove certainty. Keep the reported value.',
         ).toBe(confidence);
         expect(r.classification).toBe('anomaly');
       }
@@ -259,11 +259,11 @@ testCode: |
       for (const stage of ['classify', 'detectAnomaly', 'generateAlert']) {
         expect(
           seenBy[stage].length,
-          stage + ' ran ' + seenBy[stage].length + ' time(s) on this run; it has to run exactly once.',
+          stage + ' ran ' + seenBy[stage].length + ' time(s) on this run. It has to run exactly once.',
         ).toBe(1);
         expect(
           seenBy[stage][0],
-          stage + ' received something other than the capture the pipeline was handed. Every stage is handed the raw capture itself and does its own preprocessing on it; the classifier\'s verdict rides along as context, it does not replace the signal.',
+          stage + ' received something other than the capture the pipeline received. Every stage receives the raw capture itself and does its own preprocessing on it. The classifier\'s verdict rides along as context, it does not replace the signal.',
         ).toEqual(capture);
       }
     });
@@ -308,7 +308,7 @@ testCode: |
     const stageOf = (model) => {
       const stage = classifierStage(model);
       expect(stage, 'classifierStage handed back nothing. It returns the classify function the pipeline takes: one that scales a reading, runs the model on one row, and reads the verdict off the sigmoid.').toBeTruthy();
-      expect(typeof stage, 'classifierStage returns a function, the stage itself, not a verdict.').toBe('function');
+      expect(typeof stage, 'classifierStage must return a function that can process each incoming reading.').toBe('function');
       return stage;
     };
 
@@ -336,15 +336,15 @@ testCode: |
       expect(tf.memory().numTensors - before, 'The stage left tensors behind. Run the row and the prediction inside tf.tidy, and hand back plain numbers.').toBe(0);
     }));
 
-    it("reads the verdict off this model's own output, confidence in the verdict", () => serial(async () => {
+    it("returns the predicted class and its score from the model output", () => serial(async () => {
       for (const seed of [11, 23]) {
         const model = realClassifier(seed);
         const stage = stageOf(model);
         for (const reading of [calm, loud]) {
           const want = verdictOf(modelSays(model, minMax(reading)));
           const got = await stage(reading);
-          expect(got.class, 'On this model the sigmoid says ' + (want.class === 'anomaly' ? 'above' : 'at or below') + ' 0.5 for this reading, so the class is ' + want.class + '. A verdict that does not follow this model was read off something else.').toBe(want.class);
-          expect(got.confidence, 'Confidence is chosen-class score: the sigmoid output when the class is anomaly, one minus it when the class is noise. A 0.2 output is noise at 0.8, not noise at 0.2.').toBeCloseTo(want.confidence, 4);
+          expect(got.class, 'On this model the sigmoid says ' + (want.class === 'anomaly' ? 'above' : 'at or below') + ' 0.5 for this reading, so the class is ' + want.class + '. Use the supplied model to calculate the verdict.').toBe(want.class);
+          expect(got.confidence, 'Confidence is chosen-class score: the sigmoid output when the class is anomaly, one minus it when the class is noise. A 0.2 output gives noise a score of 1 - 0.2 = 0.8.').toBeCloseTo(want.confidence, 4);
         }
       }
     }));
@@ -374,7 +374,7 @@ testCode: |
       }
       expect(
         threw,
-        'Eleven values is module 5\'s array, not module 4\'s reading. Handed to this model whole, tfjs throws its own shape error before the model runs; trimmed to three, it runs on the wrong numbers and returns a verdict nobody should trust. Let the wrong length throw.' + (verdict ? ' This stage returned ' + JSON.stringify(verdict) + ' instead.' : ''),
+        'This classifier expects three features. Reject an eleven-value array: those values represent different features.' + (verdict ? ' This stage returned ' + JSON.stringify(verdict) + ' instead.' : ''),
       ).toBe(true);
     }));
 
@@ -397,7 +397,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'The result carried through your pipeline',
-        summary: 'Your classifier stage ran the supplied model. The detector and alert writer are controlled callbacks, so this checks the handoff rather than a scientific finding.',
+        summary: 'Your classifier stage ran the supplied model. The detector and alert writer are controlled callbacks, so this checks stage handoffs. It establishes no scientific finding.',
         columns: ['Pipeline result', 'Returned value'],
         rows: [['Classification', r.classification], ['Chosen-class score', r.confidence], ['Detector flagged', r.isAnomaly], ['Alert', r.alert], ['Invalid input stopped before detector', stopped]],
       });

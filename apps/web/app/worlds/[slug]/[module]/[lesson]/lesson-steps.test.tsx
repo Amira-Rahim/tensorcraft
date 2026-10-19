@@ -526,7 +526,7 @@ describe("LessonSteps, briefing meta line", () => {
         nextLesson={null}
       />,
     );
-    expect(screen.getByText(/40 min · 2 exercises/i)).toBeInTheDocument();
+    expect(screen.getByText(/40 min, 2 exercises/i)).toBeInTheDocument();
   });
 
   it("uses the singular form for one exercise", () => {
@@ -541,7 +541,7 @@ describe("LessonSteps, briefing meta line", () => {
         nextLesson={null}
       />,
     );
-    expect(screen.getByText(/22 min · 1 exercise$/i)).toBeInTheDocument();
+    expect(screen.getByText(/22 min, 1 exercise$/i)).toBeInTheDocument();
   });
 });
 
@@ -1543,7 +1543,9 @@ describe("mid-module catch-up", () => {
     expect(
       screen.getByText("Where the investigation stands"),
     ).toBeInTheDocument();
-    expect(screen.getByText(/DEEP SCAN has been trained/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/crew has trained and evaluated DEEP SCAN/),
+    ).toBeInTheDocument();
     expect(screen.getByText(/Useful prerequisites:/)).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "revisit its lessons" }),
@@ -1555,7 +1557,9 @@ describe("mid-module catch-up", () => {
     expect(
       screen.queryByRole("link", { name: "revisit its lessons" }),
     ).toBeNull();
-    expect(screen.getByText(/DEEP SCAN has been trained/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/crew has trained and evaluated DEEP SCAN/),
+    ).toBeInTheDocument();
   });
 
   it("renders nothing without it, which is every lesson of module 1", () => {

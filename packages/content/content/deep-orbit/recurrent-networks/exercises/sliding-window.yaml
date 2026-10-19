@@ -1,10 +1,10 @@
 slug: sliding-window
 lessonSlug: sliding-windows
-title: "Split First, Then Window"
+title: "Data splits and sliding windows"
 instructions: |
   Build `splitThenWindow(series, labels, windowSize, splitAt)`. Split at reading index splitAt, which is the first evaluation reading. Create windows within each side with stride 1.
 
-  A window starting at i contains readings from i through i + windowSize - 1. Give it `labels[i + windowSize - 1]`, the label of its last reading. Drop windows that cross the split; they belong to neither set.
+  A window starting at i contains readings from i through i + windowSize - 1. Give it `labels[i + windowSize - 1]`, the label of its last reading. Drop windows that cross the split. They belong to neither set.
 
   Return `{ train: { xs, ys }, eval: { xs, ys } }`. Keep the windows and their matching labels in order. The tests use values equal to their reading indices, making any shared reading easy to spot.
 
@@ -151,7 +151,7 @@ testCode: |
         }
         expect(
           train.xs,
-          'The training windows for a setting drawn at grade time (' + setting + ') are wrong. A training window is every span of windowSize readings that ends at or before splitAt, in order; the count follows from the three arguments, not from the length of the series.',
+          'The training windows for a setting drawn at grade time (' + setting + ') are wrong. A training window is every span of windowSize readings that ends at or before splitAt, in order. Use all three arguments to calculate the count. Series length alone cannot determine it.',
         ).toEqual(trainXs);
         expect(
           train.ys,
@@ -159,7 +159,7 @@ testCode: |
         ).toEqual(trainYs);
         expect(
           ev.xs,
-          'The evaluation windows for (' + setting + ') are wrong. An evaluation window starts at or after splitAt and fits inside the series; a span that starts before the cut and ends after it belongs to neither side.',
+          'The evaluation windows for (' + setting + ') are wrong. An evaluation window starts at or after splitAt and fits inside the series. A span that starts before the cut and ends after it belongs to neither side.',
         ).toEqual(evalXs);
         expect(
           ev.ys,

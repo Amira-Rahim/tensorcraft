@@ -20,7 +20,7 @@ concept:
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
-    breaks: "Both performance and sensor baselines can shift without a deployment. Network conditions, device mix, or operating conditions may change. Recheck a baseline against recent, independently reviewed data. Crossing a threshold is a decision rule, not a calibrated probability or proof of a fault."
+    breaks: "Both performance and sensor baselines can shift without a deployment. Network conditions, device mix, or operating conditions may change. Recheck a baseline against recent, independently reviewed data. Crossing the threshold triggers the decision rule. You still need to investigate the cause and measure the rule’s error rates."
 consequence:
   narrative: "The crew needs to define what a normal reading looks like before deciding which readings to flag. Demir starts with the readings they have already checked."
 hints:
@@ -64,7 +64,7 @@ A baseline measures how the system currently behaves. A budget sets what you wil
 
 You will define a baseline for normal readings and use z-scores to flag readings outside it.
 
-<LearningObjectives objectives={["Learn what normal readings look like instead of trying to list every possible anomaly", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score cutoff and test a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
+<LearningObjectives objectives={["Learn what normal readings look like so you can flag unusual ones", "Compute a baseline mean and standard deviation from known-good readings", "Flag readings with a z-score cutoff and test a new baseline when conditions change", "Compare false alarms and misses when normal and anomalous scores overlap"]} />
 
 <BossBeat
   beatId="deep-orbit-anomaly-7741-training-set"
@@ -82,18 +82,18 @@ You will define a baseline for normal readings and use z-scores to flag readings
     },
     {
       label: "random",
-      display: "Include the unconfirmed row in this fit",
+      display: "Include the unlabeled reading in training",
       consequence: "The reading enters training. If it is anomalous, fitting it may reduce the error you hoped would flag it. You can still inspect its score, but it is no longer an unseen evaluation example for this model. Evaluate detection on separate, reviewed cases."
     },
     {
       label: "dominant",
       display: "Keep it out of training and save it as an unlabeled test case",
-      consequence: "The reading stays out of training and is saved for later checks. Its label is still unknown. You chose it because its score looked suspicious, so it cannot fairly measure performance on new data. You can compare later results, but accuracy still needs separate, independently labeled examples."
+      consequence: "The crew keeps the reading out of training and saves it for later checks. Its label is still unknown. You chose it because its score looked suspicious, so it cannot fairly measure performance on new data. You can compare later results, but accuracy still needs separate, independently labeled examples."
     }
   ]}
 />
 
-## Define what normal looks like
+## A baseline for normal readings
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -135,7 +135,7 @@ function isAnomaly(value: number, baseline: SignalStats, sigmas: number = 3): bo
   return zScore > sigmas;  // beyond 3 standard deviations = anomaly
 }
 
-// Worked example using the mission's fictional baseline, not measured data.
+// Worked example using the fictional mission baseline.
 // For your own detector, computeBaseline takes reviewed training rows only.
 const baseline = { mean: 0.52, std: 0.15, p5: 0.28, p95: 0.76 };
 
@@ -157,7 +157,7 @@ The Central Limit Theorem can justify a Gaussian approximation for sums under su
 
 For a Gaussian channel, a two-sigma gate flags about 4.55% of readings. With 64 such channels the expected count is about 2.9 flags per reading, whether or not the channels are independent. Expectation adds. The probability of no flags is different: about 0.9545^64, or 5.1%, only if flags are independent. Shared disturbances can make flags arrive together, changing that distribution without changing its mean.
 
-Measure both per-channel rates and the distribution of simultaneous flags on representative data before choosing a page policy. A cutoff is a decision rule; it is not a probability attached to an individual alert.
+Measure both per-channel rates and the distribution of simultaneous flags on representative data before deciding when to alert the crew. A cutoff is a decision rule. It is not a probability attached to an individual alert.
 </DerivationDrawer>
 
 ## Precision vs Recall
@@ -202,7 +202,7 @@ PAGER, two weeks after go-live: alerts have increased on readings a human review
 
 <RecallPrompt
   question="At a 0.27% false-alarm rate and 100,000 normal readings per hour, about how many flags occur per hour?"
-  answer="About 270 false alarms per hour. P(|Z| > 3) is approximately 0.0027 for a standard normal distribution; multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. That expected count assumes the stated Gaussian distribution and population parameters. The threshold itself is a rule, not a probability; observed rates may differ."
+  answer="About 270 false alarms per hour. A standard normal variable has about a 0.0027 probability of falling more than 3 standard deviations from its mean. Multiplied by 100,000 readings that is ~270 false-positive flags even when nothing is wrong. That expected count assumes the stated Gaussian distribution and population parameters. The threshold defines the rule. This probability comes from the assumed distribution. Observed rates may differ."
   checks={[
     {
       "kind": "number",
@@ -219,7 +219,7 @@ PAGER, two weeks after go-live: alerts have increased on readings a human review
     "Anomaly detection starts with normal readings and flags values beyond a chosen cutoff.",
     "Z-score thresholding is the simplest approach: flag values that fall more than N standard deviations from the mean of normal data.",
     "Add the expected flag counts across channels. To estimate how often several channels flag together, also check how they affect each other.",
-    "A changed baseline is a candidate for evaluation, not an automatic deployment. Investigate changes in level or spread and check misses as well as false alarms on separate examples.",
+    "Evaluate a changed baseline before deployment. Investigate changes in level or spread and check misses as well as false alarms on separate examples.",
     "Raising a fixed-score threshold cannot increase recall, but precision need not improve at every step. Choose the cutoff using measured errors and operational costs."
   ]}
   bridge="Performance and anomaly alerts both compare measurements with a chosen baseline. Either baseline can drift, and crossing a cutoff calls for investigation."

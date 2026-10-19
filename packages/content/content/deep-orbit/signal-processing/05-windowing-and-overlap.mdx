@@ -11,17 +11,17 @@ scene:
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir’s FFT shows peaks where he knows no separate tones were recorded. Farah checks for spectral leakage caused by cutting a finite window. She asks him to test a taper, which gives the edges less weight."
+  narrative: "Demir’s FFT shows peaks where the recorder captured no separate tones. Farah checks for spectral leakage caused by cutting a finite window. She asks him to test a taper, which gives the edges less weight."
   speaker: "Dr. Farah"
 concept:
   explanation: "A taper reduces distant spectral leakage by giving less weight to samples near the frame edges. It also broadens peaks and changes their heights."
   bridge:
     jsTitle: "StringDecoder"
-    jsCode: "decoder.write(chunk) // a character split across chunks is held back, not mangled"
+    jsCode: "decoder.write(chunk) // the decoder waits for the rest of a character split across chunks"
     mlTitle: "Windowing"
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
-    breaks: "StringDecoder carries incomplete encoded characters across chunks. A window function instead changes sample amplitudes to reduce spectral leakage, widening peaks in return. Overlap gives more coverage of boundary samples; exact signal reconstruction requires compatible analysis and synthesis windows and hop size."
+    breaks: "StringDecoder carries incomplete encoded characters across chunks. A window function instead changes sample amplitudes to reduce spectral leakage, widening peaks in return. Overlap gives more coverage of boundary samples. Exact signal reconstruction requires compatible analysis and synthesis windows and hop size."
 consequence:
   narrative: "Hann windowing reduces distant leakage while broadening the main peak. The component near 73.4 Hz remains. Farah whispers: 'That is not noise. That is structure.'"
 hints:
@@ -30,7 +30,7 @@ hints:
       Compute every Hann weight, then multiply corresponding signal and window samples.
   - level: guidance
     content: |
-      The denominator n - 1 makes this symmetric window zero at both endpoints. Check an interior weight too. The leakage demonstration sums far-bin magnitudes; it does not calculate energy.
+      The denominator n - 1 makes this symmetric window zero at both endpoints. Check an interior weight too. The leakage demonstration sums far-bin magnitudes. It does not calculate energy.
   - level: solution
     content: |
       function hannWindow(n) {
@@ -57,12 +57,12 @@ Your decoder did not file anything overnight. The dashboard did: two anomaly rep
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-This is spectral leakage, Ensign. StringDecoder returns the original bytes; a taper changes the samples by giving the edges less weight. That reduces distant leakage, but does not remove all of it.
+This is spectral leakage, Ensign. StringDecoder returns the original bytes. A taper changes the samples by giving the edges less weight. That reduces distant leakage, but does not remove all of it.
 
 For the 10.5 Hz tone below, the tallest bin drops from 41.7 to 27.2. Some nearby bins gain magnitude as the peak widens. Chief, the display will read lower even though the recorded signal is the same.
 </Dialogue>
 
-The DFT treats the recorded slice as one period of a repeating signal. A tone at a bin’s center fits a whole number of cycles into that slice. A tone between bin centers does not, so the DFT uses many bins to represent it. Those bins do not mean that many separate tones were recorded. A taper reduces distant leakage by changing the samples, but it also widens the peaks.
+The DFT treats the recorded slice as one period of a repeating signal. A tone at a bin’s center fits a whole number of cycles into that slice. A tone between bin centers does not, so the DFT uses many bins to represent it. The extra bins can describe leakage from a single tone. A taper reduces distant leakage by changing the samples, but it also widens the peaks.
 
 You will apply a Hann window to soften a capture’s edges before measuring its frequencies.
 
@@ -76,7 +76,7 @@ You will apply a Hann window to soften a capture’s edges before measuring its 
 {`import * as tf from '@tensorflow/tfjs';
 
 // Generate a 10.5 Hz sine wave: ten and a half cycles per 1-second window.
-// A 10 Hz tone would fit exactly and leak nothing; the half cycle is the problem.
+// A 10 Hz tone would fit exactly and leak nothing. The half cycle is the problem.
 const sampleRate = 128;
 const signal: number[] = [];
 for (let i = 0; i < 128; i++) {
@@ -100,7 +100,7 @@ console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));    // ~14.5, despite no s
 console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from the tone`}
 </CodeBlock>
 
-## The Fix: Window Functions
+## Window functions
 
 <CodeBlock language="typescript" title="window-functions.ts">
 {`// A window function smoothly tapers the signal down at the edges, so the
@@ -111,11 +111,11 @@ console.log('Bin 20 (leakage):', rawFFT[20].toFixed(1));  // ~1.6, ten bins from
 // both ends. tfjs ships the periodic variant:
 const hann = tf.tidy(() => Array.from(tf.signal.hannWindow(128).dataSync()));
 // One convention note. For an even n the built-in uses the periodic form,
-// 2*pi*i / n, so at n = 128 its last weight is 0.0006 rather than 0, and it
+// 2*pi*i / n, so at n = 128 its last weight is 0.0006, and it
 // never differs from the n - 1 form by more than 0.019 per sample (0.038 at
 // n = 64). The n - 1 form is the one the challenge asks you to write, and
 // no number below moves by more than a quarter between the two.
-// Hamming stops at 0.08 instead of zero, and that leftover step is why its
+// Hamming stops at 0.08, and that leftover step is why its
 // far sidelobes fall off more slowly (see below).
 
 // Terms for the comparison below. The main lobe is the cluster of bins the
@@ -128,7 +128,7 @@ const hann = tf.tidy(() => Array.from(tf.signal.hannWindow(128).dataSync()));
 // and lower peak sidelobes (about -43 dB vs Hann's -31), but its far
 // sidelobes decay at only ~-6 dB/octave vs Hann's ~-18: much worse
 // far-field leakage. Choose for the spacing and relative strengths of
-// the tones you need to distinguish, rather than one sidelobe number.
+// the tones you need to distinguish. One sidelobe number cannot describe that tradeoff.
 function hammingWindow(n: number): number[] {
   return Array.from({ length: n }, (_, i) =>
     0.54 - 0.46 * Math.cos(2 * Math.PI * i / (n - 1))
@@ -160,15 +160,15 @@ console.log('Bin 30:', windowedFFT[30].toFixed(1));  // ~0.0, far leakage gone
 
 // An on-bin 10 Hz unit sine has peak 64 before this periodic Hann and
 // 32 after it. Its neighbors gain magnitude, reaching 16 at bins 9/11.
-// At 10.5 Hz the peak is about 27.2 rather than 41.7. A window changes
-// the whole spectral shape; multiplying by its mean does not describe
+// At 10.5 Hz the peak drops from about 41.7 to 27.2. A window changes
+// the whole spectral shape. Multiplying by its mean does not describe
 // each bin. Compare like windows or apply a task-appropriate correction.
 `}
 </CodeBlock>
 
 ## Overlapping Windows
 
-A sample near one frame edge can sit near the center of an overlapping frame. This gives it a stronger contribution somewhere in the spectrogram. For an even window length, periodic Hann windows shifted by half a window sum to one in the fully covered interior. Capture boundaries still need handling. The exercise uses the symmetric Hann, whose sum varies slightly; the drawer explains why that does not by itself prevent reconstruction.
+A sample near one frame edge can sit near the center of an overlapping frame. This gives it a stronger contribution somewhere in the spectrogram. For an even window length, periodic Hann windows shifted by half a window sum to one in the fully covered interior. Capture boundaries still need handling. The exercise uses the symmetric Hann, whose sum varies slightly. The drawer explains why that does not by itself prevent reconstruction.
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
@@ -200,7 +200,7 @@ function stftWithWindowing(
   return spectrogram;
 }
 
-// 50% overlap is a common starting point with Hann; choose for the task.
+// 50% overlap is a common starting point with Hann. Choose for the task.
 // Our demo signal is 128 samples, so use a 64-sample window with hop 32
 const spec = stftWithWindowing(signal, 64, 32, (n) => tf.tidy(() => Array.from(tf.signal.hannWindow(n).dataSync())));
 console.log('Windows:', spec.length);          // 3
@@ -229,15 +229,15 @@ For real-time inference: a smaller hop produces updates more frequently, at the 
 
 ## Challenge
 
-Build a Hann taper and multiply it by the signal samples. Compare the measured far-bin magnitude totals before and after your taper. Farah needs that change alongside the altered peak height before updating the spectral pipeline.
+Build a Hann taper and multiply it by the signal samples. Compare the measured far-bin magnitude totals before and after your taper. Farah needs to see how both leakage and peak height change before she adds the taper to her analysis.
 
-For this test, leakage is the sum of magnitudes more than three bins from the rounded tone bin. This is not an energy calculation; energy would use squared magnitudes and a stated normalization. The measured reduction applies to the test signals, not every possible recording.
+For this test, leakage is the sum of magnitudes more than three bins from the rounded tone bin. This is not an energy calculation. Energy would use squared magnitudes and a stated normalization. The measured reduction applies to the test signals. Other recordings may show a different reduction.
 
 <Exercise slug="apply-window" />
 
 <RecallPrompt
   question="What tradeoff comes with applying a Hann window before an FFT?"
-  answer="A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+  answer="A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints. The periodic form used by these even-length TF.js examples does not include the final zero."
   checks={[
     {
       "kind": "choice",
@@ -249,7 +249,7 @@ For this test, leakage is the sum of magnitudes more than three bins from the ro
         },
         {
           "text": "Less distant spectral leakage, but broader peaks and changed magnitudes.",
-          "feedback": "A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+          "feedback": "A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints. The periodic form used by these even-length TF.js examples does not include the final zero."
         },
         {
           "text": "Exact recovery of every physical tone with no tradeoff.",
@@ -257,7 +257,7 @@ For this test, leakage is the sum of magnitudes more than three bins from the ro
         }
       ],
       "correctIndex": 1,
-      "explanation": "A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints; the periodic form used by these even-length TF.js examples does not include the final zero."
+      "explanation": "A finite frame can spread a tone across many bins, especially when it contains a noninteger number of cycles. This spectral leakage does not establish that those extra frequencies came from separate physical sources. A Hann window gives less weight to samples near the frame edges. It reduces distant leakage but broadens peaks and changes magnitudes. The symmetric form reaches zero at both endpoints. The periodic form used by these even-length TF.js examples does not include the final zero."
     }
   ]}
 />
@@ -276,11 +276,11 @@ For this test, leakage is the sum of magnitudes more than three bins from the ro
         },
         {
           "text": "Overlap makes the windows statistically independent.",
-          "feedback": "Overlap creates shared observations rather than removing them."
+          "feedback": "Overlap makes adjacent windows share observations."
         },
         {
           "text": "Random splitting always lowers validation accuracy.",
-          "feedback": "Leakage can inflate validation scores; its exact effect depends on the task."
+          "feedback": "Leakage can inflate validation scores. Its exact effect depends on the task."
         }
       ],
       "correctIndex": 0,
@@ -315,14 +315,14 @@ For this test, leakage is the sum of magnitudes more than three bins from the ro
   youCanNow="Apply a Hann window to a signal slice before computing the FFT, measure what the taper does to the leakage, and say what it costs in resolution and magnitude."
 />
 
-> **DISPATCH archive · field intercept #09-F:** Jin's speech cell spent nine days chasing a phantom tone that appeared in every capture. It was their own rectangular window.
+> **DISPATCH archive, field intercept #09-F:** Jin's speech cell spent nine days chasing a phantom tone that appeared in every capture. It was their own rectangular window.
 
 <Epilogue>
 
-With the Hann window applied, the spectrum goes quiet everywhere it should: the sidelobe smear collapses to near zero, and what remains is a broader peak near 73.4 Hz with much weaker distant sidelobes, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform.
+With the Hann window applied, the distant sidelobes fall close to zero. A broader peak remains near 73.4 Hz, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform.
 
 <Dialogue speaker="Dr. Farah">
-The peak survives the taper. That rules out one explanation, not every instrument fault. If it also survives a second sensor chain, I want to know who expected us to find it.
+The peak survives the taper. That rules out one explanation. We still need to check the instruments. If it also survives a second sensor chain, I want to know who expected us to find it.
 </Dialogue>
 
 Down the hall, ARIA starts re-indexing all eleven days of archive against the new spectral pipeline. She does not announce why.

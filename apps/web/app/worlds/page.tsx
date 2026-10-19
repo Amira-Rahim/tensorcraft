@@ -14,9 +14,9 @@ import { WorldCardsGrid, type WorldCardData } from "./world-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `ML Courses in JavaScript: ${LAUNCHED_WORLDS.length} live, ${WORLD_SLUGS.length - LAUNCHED_WORLDS.length} coming | Tensorcraft`,
+  title: `ML Courses in JavaScript: ${LAUNCHED_WORLDS.length} live, ${WORLD_SLUGS.length - LAUNCHED_WORLDS.length} coming, Tensorcraft`,
   description:
-    "Deep Orbit, a JavaScript course on reading signals and data that arrive over time (time series), is live. Four more story worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) are coming; join the waitlists.",
+    "Deep Orbit, a JavaScript course on reading signals and data that arrive over time (time series), is live. Four more story worlds (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) are coming. Join the waitlists.",
   alternates: { canonical: "https://tensorcraft.app/worlds" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -25,14 +25,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/worlds",
-    title: "Five story courses, one live | Tensorcraft",
+    title: "Five story courses, one live, Tensorcraft",
     images: [
       "/api/og?title=Five%20story%20courses%2C%20one%20live&world=deep-orbit&subtitle=Deep%20Orbit%20is%20live%20now",
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Five story courses, one live | Tensorcraft",
+    title: "Five story courses, one live, Tensorcraft",
     images: [
       "/api/og?title=Five%20story%20courses%2C%20one%20live&world=deep-orbit&subtitle=Deep%20Orbit%20is%20live%20now",
     ],
@@ -84,18 +84,17 @@ export default async function WorldsPage() {
             0.025em) track the max-w-7xl container, whose 1280px cap sets
             the 8rem ceiling; the 2.25rem floor keeps the old mobile size. */}
         <h1 className="text-[clamp(2.25rem,calc(10vw-0.25rem),8rem)] font-mono font-bold text-text-primary mb-4 tracking-tight">
-          Choose Your World
+          The course worlds
         </h1>
         <p className="text-lg md:text-2xl text-text-muted mb-6 max-w-[70ch]">
           Five ML specializations, each told through its own story universe.
-          Deep Orbit is live. The other four have no release dates yet; join a
+          Deep Orbit is live. The other four have no release dates yet. Join a
           waitlist below and we will email you when one opens.
         </p>
         <p className="text-base md:text-lg text-text-muted mb-14 max-w-[70ch] leading-relaxed">
-          Pick the world that maps to the ML problem you actually want to solve.
-          Each world focuses on a different ML problem through JavaScript.
-          Browser lessons need no Python. The optional model-conversion lab uses
-          a Python command-line tool.
+          Choose a world based on the kind of ML problem you want to work on.
+          Each uses JavaScript. Browser lessons need no Python. The optional
+          model-conversion lab uses a Python command-line tool.
         </p>
 
         <WorldCardsGrid cards={cards} />

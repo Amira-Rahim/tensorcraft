@@ -11,7 +11,7 @@ const DEFINITIONS: Record<TensorTerm, string> = {
   shape:
     "The size along each axis, written as a list. This tensor has one axis with three values.",
   dimensions:
-    "Dimensions tell you how many axes a tensor has. A list has one axis; a table has two: rows and columns.",
+    "Dimensions tell you how many axes a tensor has. A list has one axis. A table has two: rows and columns.",
 };
 
 function isTensorTerm(term: string): term is TensorTerm {

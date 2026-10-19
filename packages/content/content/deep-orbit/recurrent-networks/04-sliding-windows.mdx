@@ -21,14 +21,14 @@ concept:
     mlTitle: "Sliding Window"
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
-    breaks: "The shown framer emits disjoint blocks. Sliding windows can overlap when stride is smaller than window size; boundary readings appear in fewer windows. For next-step forecasting, keep the label outside the input window and keep overlapping captures on one side of the train/validation split."
+    breaks: "The shown framer emits disjoint blocks. Sliding windows can overlap when stride is smaller than window size. Boundary readings appear in fewer windows. For next-step forecasting, keep the label outside the input window and keep overlapping captures on one side of the train/validation split."
 consequence:
-  narrative: "The honest split scores 60.6 where the leaked one scored 97.4, and the first 80-reading window goes live on the dashboard."
+  narrative: "With training and evaluation readings kept separate, the score falls from 97.4% to 60.6%. Demir also sends the dashboard its first complete 80-reading window."
 hints:
   - level: nudge
     content: "Split the readings first. Keep a window only if it fits entirely on one side of the boundary. Use the label of its last reading."
   - level: guidance
-    content: "For each possible window, compare its start and end with splitAt. A window entirely before the cut belongs to training. A window starting at or after the cut belongs to evaluation. Drop any window that crosses the cut. Use the reading indices, not the window’s position in an output list."
+    content: "For each possible window, compare its start and end with splitAt. A window entirely before the cut belongs to training. A window starting at or after the cut belongs to evaluation. Drop any window that crosses the cut. Use the reading indices to decide which side of the cut contains the window."
   - level: solution
     content: |
       function splitThenWindow(series, labels, windowSize, splitAt) {
@@ -66,7 +66,7 @@ You will split the stream before creating windows so training and evaluation can
 
 <LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Split a stream by time before windowing it, and recognize the inflated score an every-Nth holdout produces", "Pair each window with a label: the next reading when forecasting, the window's last reading when classifying", "Choose a window size longer than the dependency you need to detect, and read the overlap a stride-1 window produces", "Recognize the fixed-length buffer that turns a live feed into one model-ready window per reading"]} />
 
-## Ninety-Seven Percent, Briefly
+## Overlapping windows and misleading accuracy
 
 A random split can be suitable for independent rows. These windows share readings, so they are not independent. This small example uses 200 readings and 8-step windows to show what goes wrong:
 
@@ -87,7 +87,7 @@ const pairs = Array.from({ length: 193 }, (_, i) => ({
 }));
 
 // A one-nearest-neighbor classifier: copy the label of the closest
-// training window. It stores examples rather than fitting network weights.
+// training window. It stores examples and performs no weight training.
 const predict = (x: number[], train: typeof pairs) =>
   train.reduce(
     (best, p) => {
@@ -133,7 +133,7 @@ Unlike disjoint stream chunks, adjacent 80-reading windows share 79 readings. Th
 {`// The makeWindows you wrote in 'Sequences Matter'. Both of its moving
 // parts came from that exercise: the stride, and the label taken from
 // the reading right after the window. The tensor pair it also returns is
-// left off here; the argument in this lesson is about which reading
+// left off here. The argument in this lesson is about which reading
 // labels a window, and that is settled in the arrays.
 function makeWindows(
   data: number[][],
@@ -153,13 +153,13 @@ function makeWindows(
   return { xs, ys };
 }
 
-// Window 0: [s0, s1, s2, s3] → predict s4
-// Window 1: [s1, s2, s3, s4] → predict s5   (stride 1: windows overlap)`}
+// Window 0: [s0, s1, s2, s3] to predict s4
+// Window 1: [s1, s2, s3, s4] to predict s5   (stride 1: windows overlap)`}
 </CodeBlock>
 
 Choose the target to match the task. Forecasting predicts the reading after the window, `data[i + windowSize]`. Keep that reading outside the input, or the model could see the answer.
 
-Classification works differently here: use the external log label at the window’s last reading, `labels[end - 1]`. The label is separate from the input features. Check that those features were available at prediction time. The small evaluation example and graded exercise use classification; `makeWindows` above demonstrates forecasting.
+Classification works differently here: use the external log label at the window’s last reading, `labels[end - 1]`. The label is separate from the input features. Check that those features were available at prediction time. The small evaluation example and graded exercise use classification. `makeWindows` above demonstrates forecasting.
 
 This stateless model only receives the history inside its window. The two events are 74 steps apart on the one-reading-per-second feed. Including both endpoints needs 75 readings, so an 80-reading window leaves five more for context. A 30-reading window cannot contain both events. More training cannot restore missing input, although a model might learn from other, shorter cues.
 
@@ -189,7 +189,7 @@ class SignalBuffer {
 const buffer = new SignalBuffer(80);
 
 // Integration sketch: the app supplies model, signalFeed and updateDashboard.
-// Remove this handler on teardown; reset the buffer after missing/out-of-order data.
+// Remove this handler on teardown. Reset the buffer after missing/out-of-order data.
 signalFeed.addEventListener('reading', (event: CustomEvent) => {
   const window = buffer.push(event.detail.features);
   if (window) {
@@ -210,7 +210,7 @@ The first evaluation shared readings with training. Cut the stream first, then c
 
 <RecallPrompt
   question="Explain why 97.4% accuracy on randomly split overlapping windows can be misleading for predicting a later period."
-  answer="The arithmetic of 97.4 is correct, but it evaluates heavily overlapping windows instead of future periods. Adjacent 8-step windows share seven readings. A chronological split removes shared observations; its later period can also have a different distribution. Use a split that matches the intended prediction task."
+  answer="The arithmetic of 97.4 is correct, but it evaluates heavily overlapping windows. It tells us little about performance on future periods. Adjacent 8-step windows share seven readings. A chronological split removes shared observations. Its later period can also have a different distribution. Use a split that matches the intended prediction task."
 />
 
 <RecallPrompt
@@ -249,16 +249,16 @@ The first evaluation shared readings with training. Cut the stream first, then c
 
 <LessonRecap
   whatYouLearned={[
-    "A sliding window yields a fixed-size input. Next-step forecasting labels it with the following reading; window classification uses an external event label.",
+    "A sliding window yields a fixed-size input. Next-step forecasting labels it with the following reading. Window classification uses an external event label.",
     "Randomly splitting overlapping windows shares observations across training and evaluation. For forecasting later periods, split the original stream by time before windowing.",
-    "Window size sets the temporal context available to the model; it must exceed the longest dependency you want to detect.",
-    "Stride controls overlap: stride=1 generates the most training samples with maximum overlap; stride=windowSize produces non-overlapping input windows."
+    "The window sets how much history the model can see. To compare two readings, it must include both and any context the task needs.",
+    "Stride controls overlap: stride=1 generates the most training samples with maximum overlap. Stride=windowSize produces non-overlapping input windows."
   ]}
-  bridge="The shown stream framer emits disjoint blocks. Overlapping windows reuse readings when stride is smaller than the window; next-step labels stay outside each input window."
+  bridge="The shown stream framer emits disjoint blocks. Overlapping windows reuse readings when stride is smaller than the window. Next-step labels stay outside each input window."
   youCanNow="Split a stream by time before you window it, so no reading lands on both sides of the boundary, and take each window's label from the task: the next reading when forecasting, the window's last reading when classifying."
 />
 
-> **DISPATCH archive · field intercept #12-A:** Jin's speech cell shipped exactly this mirror at fleet scale, 97% and all. The postmortem runs one line: "we evaluated on our own reflection."
+> **DISPATCH archive, field intercept #12-A:** Jin's speech team released a model with a 97% score from overlapping training and test data. Their review found near-copies of test examples in training.
 
 <Epilogue>
 

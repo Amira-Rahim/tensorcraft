@@ -1,18 +1,18 @@
 slug: predict-next
 lessonSlug: sequence-prediction
-title: "Train It, Then Roll It Forward"
+title: "Training and next-reading forecasts"
 instructions: |
-  Train a forecaster, then roll its predictions forward.
+  Train a forecaster, then use each prediction to help estimate the next reading.
 
   trainForecaster(xs, ys, epochs, providedModel) receives input windows shaped
   [samples, windowSize, 3] and next-reading targets shaped [samples, 3].
-  If no model is supplied, build an 8-unit LSTM with inputShape read from xs,
+  If the caller supplies no model, build an 8-unit LSTM with inputShape read from xs,
   then a linear Dense layer of 3 units. Compile with tf.train.adam(0.01),
   meanSquaredError and ['mae']. If supplied, use providedModel as compiled.
   Await model.fit(xs, ys, { epochs, batchSize: 32 }); return { model, history }
   using that exact history. Keep caller-owned xs and ys alive. The caller
   owns the returned model and optimizer and disposes both when finished.
-  A particular loss reduction is not required. MAE is in z-score units.
+  The checks require no particular loss reduction. MAE is in z-score units.
 
   forecastMultiStep(model, seed, windowSize, steps, scaler) is synchronous.
   Convert the three physical LIMITS into z-scores using scaler.mean/std.
@@ -129,12 +129,12 @@ testCode: |
       predict(input) {
         if (!input || !Array.isArray(input.shape) || typeof input.arraySync !== 'function') {
           throw new Error(
-            'predict was handed something that is not a tensor. One window goes to the model as tf.tensor3d([rows]).',
+            'predict received a non-tensor input. One window goes to the model as tf.tensor3d([rows]).',
           );
         }
         if (input.shape.length !== 3) {
           throw new Error(
-            'predict was handed a rank-' +
+            'predict received a rank-' +
               input.shape.length +
               ' tensor. A sequence model reads ' +
               '[batch, timeSteps, features], so one window arrives as [1, windowSize, 3].',
@@ -247,14 +247,14 @@ testCode: |
     ).toBeTruthy();
     expect(
       rows && typeof rows.then === 'function',
-      'Return the forecast array directly, not a Promise. This loop uses synchronous predict() and dataSync().',
+      'Return the forecast array synchronously. This loop uses synchronous predict() and dataSync().',
     ).toBe(false);
     expect(Array.isArray(rows), 'The forecast comes back as a list of readings, oldest first.').toBe(
       true,
     );
     expect(
       rows.length,
-      'One reading comes back per step. The seed rows are history, not forecast, so they do not belong in this list.',
+      'One reading comes back per step. The seed rows provide history. Return only the new predictions.',
     ).toBe(steps);
     return rows;
   };
@@ -268,11 +268,11 @@ testCode: |
       ).toBe('LSTM');
       expect(
         model.layers[0].getConfig().units,
-        'The cell width is set in the instruction; the head after it is what narrows the output back to three.',
+        'Use the cell width from the instructions. The head after it is what narrows the output back to three.',
       ).toBe(8);
       expect(
         model.layers[0].getConfig().returnSequences,
-        'Forecasting reads one reading out of a whole window, so only the final state is wanted here.',
+        'Forecasting reads one reading out of a whole window, so use only the final state here.',
       ).toBe(false);
       expect(
         model.outputShape,
@@ -280,11 +280,11 @@ testCode: |
       ).toEqual([null, 3]);
       expect(
         typeof model.loss === 'string' ? model.loss : (model.loss && model.loss.name) || '',
-        'Predicting a reading is regression, so the loss is meanSquaredError rather than a cross-entropy.',
+        'Predicting a reading is regression, so this exercise uses meanSquaredError as its loss.',
       ).toContain('eanSquared');
     });
 
-    it('really ran the fit: the trace is the one fit resolved to, and the optimizer counted its updates', async () => {
+    it('returns the actual fit history and runs the expected optimizer updates', async () => {
       const { model, history } = await trained();
       // The identity checks come first: model.fit resolves to a tf.History,
       // which carries the epoch indices the run walked through. An object
@@ -292,7 +292,7 @@ testCode: |
       // the numbers on it look.
       expect(
         history instanceof tf.History,
-        'The object model.fit resolves to is a tf.History, and this is not one. Return what the fit handed back rather than an object assembled to look like it.',
+        'The object model.fit resolves to is a tf.History, and this is not one. Return the tf.History object from the actual fit call.',
       ).toBe(true);
       expect(
         history.epoch,
@@ -300,7 +300,7 @@ testCode: |
       ).toEqual(Array.from({ length: TRAIN_EPOCHS }, (unused, epoch) => epoch));
       expect(
         history.history.loss.length,
-        'One loss per epoch, for as many epochs as you were asked for.',
+        'One loss per epoch, for the requested number of epochs.',
       ).toBe(TRAIN_EPOCHS);
       expect(
         Array.isArray(history.history.mae) && history.history.mae.length === TRAIN_EPOCHS,
@@ -358,21 +358,21 @@ testCode: |
           SECOND_WINDOW +
           ' rows after fitting windows of ' +
           TRAIN_WINDOW +
-          '. A window length typed into inputShape only ever fits the one run it was copied from. Read it off xs.shape and the same call handles both.',
+          '. A window length typed into inputShape only ever fits that one example. Read it off xs.shape and the same call handles both.',
       ).toBe(null);
       expect(
         second && second.model && second.history,
-        'The second call handed back nothing. Every call builds, compiles, fits and returns { model, history }, whatever shape it was given.',
+        'The second call handed back nothing. Every call builds, compiles, fits and returns { model, history }, using the shape of its supplied tensors.',
       ).toBeTruthy();
       expect(
         second.model.inputs[0].shape,
-        'The LSTM was built for a window of a different length than the one it was handed. inputShape reads off the tensor: [xs.shape[1], xs.shape[2]].',
+        'The LSTM expects a different window length from its current input. inputShape reads off the tensor: [xs.shape[1], xs.shape[2]].',
       ).toEqual([null, SECOND_WINDOW, 3]);
       expect(
         second.history && Array.isArray(second.history.epoch) ? second.history.epoch.length : -1,
         'This call asked for ' +
           SECOND_EPOCHS +
-          ' epochs and the history reports a different number. The schedule is the epochs argument, not the count that happened to work on the run before.',
+          ' epochs and the history reports a different number. Use the current epochs argument for the training schedule.',
       ).toBe(SECOND_EPOCHS);
     });
   });
@@ -394,7 +394,7 @@ testCode: |
       });
       expect(
         seed,
-        'The seed is the history you were handed. Copy it before you append to it, or the caller gets its own array back with your forecast written into the end of it.',
+        'The seed contains the supplied history. Copy it before you append to it, or the caller gets its own array back with your forecast written into the end of it.',
       ).toEqual(seedRows());
     });
 
@@ -500,7 +500,7 @@ testCode: |
           row.forEach((value, j) => {
             expect(
               value,
-              'A limit in counts is not a limit in z-scores. Convert each one with the mean and standard deviation the training set was scaled by, then clamp against that. Step ' +
+              'A limit in counts is not a limit in z-scores. Convert each one with the training mean and standard deviation, then clamp against that. Step ' +
                 step +
                 ', channel ' +
                 j +
@@ -515,7 +515,7 @@ testCode: |
       const coarse = roll(spyModel(), seedRows(), 3, 4, COARSE);
       expect(
         Math.max(...coarse.map((row) => row[0])),
-        'The amplitude runs into its ceiling during this run, and the ceiling is the count the hull sensors saturate at, divided through by the scaling the model was trained under.',
+        'The amplitude runs into its ceiling during this run, and the ceiling is the count the hull sensors saturate at, divided through by the scaler from model training.',
       ).toBeCloseTo((2048 - COARSE.mean[0]) / COARSE.std[0], 5);
 
       // Same sensor, same seed, same stand-in model, one scaling apart.
@@ -526,7 +526,7 @@ testCode: |
       ).not.toEqual(coarse);
     });
 
-    it('reads its answer off the model in front of it, so rows carried in from another run do not fit', () => {
+    it('uses predictions from the supplied model on each step', () => {
       // Nothing in this fixture is written down. The stand-in's coefficients,
       // the seed and the scaling are drawn fresh on every run, so these rows
       // exist nowhere until the rollout produces them.
@@ -589,7 +589,7 @@ testCode: |
               step +
               ', channel ' +
               j +
-              ' came back as something that is not a number. The tensor the model returns has to be read out before the row is clamped.',
+              ' came back as something that is not a number. Read the numbers from the returned tensor before clamping the row.',
           ).toBe(true);
           expect(
             value,
@@ -603,8 +603,8 @@ testCode: |
         });
       });
       recordResult({
-        kind: 'table', title: 'Your trained model’s six-step rollout',
-        summary: 'Predictions from the submitted model on the synthetic training series, clamped using the supplied scaler. Values are per-feature z-scores. No future observations are provided here to establish accuracy.',
+        kind: 'table', title: 'Your trained model’s next six predictions',
+        summary: 'Predictions from the submitted model on the synthetic training series, clamped using the supplied scaler. Values are per-feature z-scores. This example supplies no future observations for an accuracy check.',
         columns: ['Step ahead', 'Amplitude z-score', 'Crossing-count z-score', 'Phase z-score'],
         rows: rows.map((row, i) => [i + 1, ...row]),
       });

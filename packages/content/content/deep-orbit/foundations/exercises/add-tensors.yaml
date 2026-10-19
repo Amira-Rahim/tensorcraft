@@ -1,6 +1,6 @@
 slug: add-tensors
 lessonSlug: tensor-operations
-title: "Merge the Sensor Passes"
+title: "The combined sensor passes"
 instructions: |
   Help Demir average two sets of sensor readings, then combine their channels.
 
@@ -111,7 +111,7 @@ testCode: |
       expect(v[3], why).toBeCloseTo(0.7, 5);
       recordResult({
         kind: 'table', title: 'Demir\'s averaged pass',
-        summary: 'Output from your merge function on the supplied four-reading test passes, not the full 64-channel recording.',
+        summary: 'Output from your merge function on the supplied four-reading test passes. This does not process the full 64-channel recording.',
         columns: ['Position', 'Averaged reading'],
         rows: v.map((value, i) => [i + 1, value]),
       });
@@ -123,7 +123,7 @@ testCode: |
         2.5,
       );
       const v = Array.from(boosted.dataSync());
-      const why = 'boosted is the average scaled by gain, so it amplifies the merged pass rather than either raw pass.';
+      const why = 'boosted is the average scaled by gain, so apply it to the merged pass.';
       expect(v[0], why).toBeCloseTo(0.75, 5);
       expect(v[3], why).toBeCloseTo(1.75, 5);
       recordResult({
@@ -141,7 +141,7 @@ testCode: |
       ).toEqual([2, 4]);
       expect(
         Array.from(boosted.dataSync()),
-        'And the gain is whatever the caller passed, not the 2.5 from the case above.',
+        'And use the gain from the current call. The earlier value of 2.5 applies only to that case.',
       ).toEqual([20, 40]);
     });
     it('broadcasts a [3, 2] block against a pass that arrived as a single row and keeps the shape', () => {
@@ -230,7 +230,7 @@ testCode: |
       );
       expect(
         out.shape,
-        'This case has two readings and one set of weights. Use the supplied shapes rather than a fixed bank count.',
+        'This case has two readings and one set of weights. Read the shapes from the supplied tensors.',
       ).toEqual([2, 1]);
       expect(
         Array.from(out.dataSync()),

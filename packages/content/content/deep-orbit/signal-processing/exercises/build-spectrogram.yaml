@@ -1,8 +1,8 @@
 slug: build-spectrogram
 lessonSlug: spectrograms
-title: "Build a Spectrogram"
+title: "The spectrogram"
 instructions: |
-  Implement `stft(signal, windowSize, hopSize)`. Frame i starts at `i * hopSize`; include it only if the entire window fits. Return its FFT magnitudes as one row, keeping rows in time order and columns in bin order.
+  Implement `stft(signal, windowSize, hopSize)`. Frame i starts at `i * hopSize`. Include it only if the entire window fits. Return its FFT magnitudes as one row, keeping rows in time order and columns in bin order.
 
   Use raw slices without tapering. `tf.signal.stft()` applies Hann by default, so its default output differs from this task. Each row has `floor(windowSize / 2) + 1` bins: 33 for a 64-sample frame.
 
@@ -94,7 +94,7 @@ testCode: |
         expect(peak).toBe(5);
         expect(
           row[5],
-          'This tone should have magnitude 32. A value near 16 suggests that a Hann taper was applied. This task uses raw slices; tf.signal.stft applies Hann by default.',
+          'This tone should have magnitude 32. A value near 16 suggests your code applied a Hann taper. This task uses raw slices. tf.signal.stft applies Hann by default.',
         ).toBeCloseTo(32, 0);
       });
     });
@@ -103,7 +103,7 @@ testCode: |
       result.forEach(row => {
         expect(
           row[5],
-          'The loud tone puts windowSize / 2 = 32 into bin 5 here. A row that reads about 16 across the board was tapered before the transform rather than cut straight out of the signal.',
+          'The loud tone puts windowSize / 2 = 32 into bin 5 here. Magnitudes near 16 suggest a taper before the transform. This task uses raw signal slices.',
         ).toBeCloseTo(32, 0);
         expect(
           row[15],
@@ -119,7 +119,7 @@ testCode: |
       result.forEach(row => {
         expect(
           Math.min(row[5], row[6]),
-          'This off-bin tone has magnitude in both neighboring bins and leaks into farther bins too. A row that puts the whole window into one bin and zero everywhere else is a marker, not a spectrum.',
+          'This off-bin tone has magnitude in both neighboring bins and leaks into farther bins too. A row that puts the whole window into one bin and zero everywhere else does not represent this spectrum. Calculate every bin’s magnitude.',
         ).toBeGreaterThan(15);
         expect(
           Math.max(...row),
@@ -160,7 +160,7 @@ testCode: |
       recordResult({
         kind: 'series',
         title: 'When the test tone appears',
-        summary: 'Your returned 40 Hz bin across all four non-overlapping frames of a synthetic one-second capture. Each frame spans 0.25 seconds; no taper is applied.',
+        summary: 'Your returned 40 Hz bin across all four non-overlapping frames of a synthetic one-second capture. Each frame spans 0.25 seconds. This task applies no taper.',
         xLabel: 'Frame start (seconds)',
         yLabel: 'Raw FFT magnitude at 40 Hz',
         labels: result.map((_, i) => String(i * 64 / 256)),

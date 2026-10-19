@@ -69,7 +69,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Props supply inputs to a component. Training examples supply inputs and targets for fitting a model. Changing the examples can change the learned weights, but only when training uses those examples.",
     breaks:
-      "A component can render again with new props. The neural network here predicts with its current weights; replacing the training dataset does not update them automatically. Other systems, such as nearest-neighbor models and retrieval, may still use stored examples at inference.",
+      "A component can render again with new props. The neural network here predicts with its current weights. Replacing the training dataset does not update them automatically. Other systems, such as nearest-neighbor models and retrieval, may still use stored examples at inference.",
     category: "shared",
     variants: {
       react: {
@@ -85,9 +85,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Component state",
     tier: "structural",
     connection:
-      "Component state and model weights are stored values that can change. Application logic updates state; a training optimizer updates model weights. A prediction normally reads the weights without training them.",
+      "Components store state, and models store weights. Both can change. Application logic updates state. A training optimizer updates model weights. A prediction normally reads the weights without training them.",
     breaks:
-      "You choose what each state field means and how it changes. Training fits parameters within the chosen model; their interpretation depends on that model. Updates can be reproducible under a controlled setup, so learned does not mean random at inference.",
+      "You choose what each state field means and how it changes. Training fits parameters within the chosen model. Their interpretation depends on that model. Updates can be reproducible under a controlled setup, so learned does not mean random at inference.",
     category: "shared",
     variants: {
       react: {
@@ -104,7 +104,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A test assertion checks whether a result matches an expectation. A loss scores prediction errors using a chosen rule, such as averaging squared differences. Both compare results with targets, but they report different kinds of evidence.",
     breaks:
-      "Jest toBe passes or throws using Object.is equality. A training loss supplies a numerical objective; MSE and the stable logits loss provide gradients for the examples here. A loss need not be a mathematical distance or be smooth everywhere. For example, absolute-error loss has a corner at zero.",
+      "Jest toBe passes or throws using Object.is equality. A training loss supplies a numerical objective. MSE and the stable logits loss provide gradients for the examples here. A loss need not be a mathematical distance or be smooth everywhere. For example, absolute-error loss has a corner at zero.",
     category: "shared",
     variants: {
       react: {
@@ -122,7 +122,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A state change asks React to update the UI. A gradient step updates model weights using the loss's local derivatives. Both update stored values, but React reconciliation does not minimize a training loss.",
     breaks:
-      "React compares UI trees and applies rendering rules; it does not follow a loss gradient. Gradient descent may use the whole dataset or a sampled batch, and a step can increase loss. Neither this analogy nor a falling training loss guarantees convergence or useful predictions on new data.",
+      "React compares UI trees and applies rendering rules. It does not follow a loss gradient. Gradient descent may use the whole dataset or a sampled batch, and a step can increase loss. Neither this analogy nor a falling training loss guarantees convergence or useful predictions on new data.",
     category: "shared",
     variants: {
       react: {
@@ -138,9 +138,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Bisection / binary-search step halving",
     tier: "intuition",
     connection:
-      "Binary search halves a sorted search interval. A learning-rate schedule can also reduce a number over successive steps, but it changes the size of optimizer updates rather than narrowing a known interval around an answer.",
+      "Binary search halves a sorted search interval. A learning-rate schedule can also reduce a number over successive steps, but it changes the size of optimizer updates. It has no known interval containing the answer.",
     breaks:
-      "Binary search preserves a valid interval when its ordering assumptions hold. A smaller learning rate does not prove that weights are closer to a minimum, and the gradient need not be noisy. Choose and evaluate a schedule; an excessive rate can diverge, while a very small one can make progress slow.",
+      "Binary search preserves a valid interval when its ordering assumptions hold. A smaller learning rate does not prove that weights are closer to a minimum, and the gradient need not be noisy. Choose and evaluate a schedule. An excessive rate can diverge, while a very small one can make progress slow.",
     category: "shared",
     variants: {
       react: {
@@ -158,7 +158,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A self-scheduling Node callback queues another turn with setImmediate(). A training loop also repeats work, but its unit is an epoch: one pass over the training dataset. Repetition alone does not guarantee that loss falls.",
     breaks:
-      "Scheduling another callback does not make expensive work inside it nonblocking. Training stops at a configured epoch limit or another explicit rule, such as early stopping on validation loss. In TensorFlow.js 4.22, save and restore the best weights yourself; its early-stopping callback does not restore them.",
+      "Scheduling another callback does not make expensive work inside it nonblocking. Training stops at a configured epoch limit or another explicit rule, such as early stopping on validation loss. In TensorFlow.js 4.22, save and restore the best weights yourself. Its early-stopping callback does not restore them.",
     category: "shared",
     variants: {
       react: {
@@ -175,7 +175,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Chunk / page size",
     tier: "structural",
     connection:
-      "How much do you process at once? Pagination answers that for UX: whatever fits on a screen. Batch size answers it for training: however many samples per gradient update the memory budget and the throughput target allow.",
+      "Page size controls how many items a UI loads or shows together. Training batch size controls how many examples contribute to one gradient update. Choose it with memory use and training speed in mind.",
     breaks:
       "Page size affects a UI's loading and reading experience. Training batch size affects memory, throughput and the gradient estimate. Smaller batches can add gradient variation, but neither small nor large batches guarantee better generalization.",
     category: "shared",
@@ -192,7 +192,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Overspecialized component",
     tier: "intuition",
     connection:
-      "A component written for a few examples can fail on other inputs. An overfit model also performs much better on its training examples than on new ones. Check both with inputs that were not used to build them.",
+      "A component written for a few examples can fail on other inputs. An overfit model also performs much better on its training examples than on new ones. Check both with inputs outside their development or training examples.",
     breaks:
       "A model can return a plausible score even when it is wrong. Compare training and validation results to investigate overfitting, and reserve an untouched test set for the final evaluation. A performance gap can also reflect different data distributions, so inspect the examples and split.",
     category: "shared",
@@ -210,9 +210,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Code linting / constraints",
     tier: "intuition",
     connection:
-      "A linter constrains how code is written. L2 regularization also discourages a choice, large weight values, by adding a penalty to the training objective. Check whether that improves results on separate data.",
+      "A linter checks whether code follows specified rules. L2 regularization also discourages a choice, large weight values, by adding a penalty to the training objective. Check whether that improves results on separate data.",
     breaks:
-      "A lint rule can pass or fail. L2 adds a soft penalty that the optimizer balances against prediction loss; it does not guarantee better generalization. Dropout is another regularizer, but it uses random activation masks rather than an added weight penalty.",
+      "A lint rule can pass or fail. L2 adds a soft penalty that the optimizer balances against prediction loss. It does not guarantee better generalization. Dropout is another regularizer, but it randomly masks activations during training.",
     category: "shared",
     variants: {
       react: {
@@ -228,7 +228,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Data transformation / mapping",
     tier: "structural",
     connection:
-      "Array.map transforms data for rendering; feature engineering transforms data for modeling. The shared move is shaping raw inputs into more useful representations before anything consumes them.",
+      "Array.map transforms data for rendering. Feature engineering transforms data for modeling. Both prepare raw inputs for the code that uses them.",
     breaks:
       "Feature engineering needs both a useful measurement and a correct implementation. A correctly calculated feature can still hurt predictions. Fit any learned scaling on training data and test the selected features on separate examples.",
     category: "shared",
@@ -247,7 +247,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Separate the examples used to build a model from those used to check it. Training data fits weights, validation data helps choose settings, and an untouched test set checks the selected system.",
     breaks:
-      "Development and production are running environments; a data split separates evidence for different decisions. Test examples can leak into a model through preprocessing or setting choices as well as weight updates. Keep related or overlapping observations together and choose a split that matches the intended use.",
+      "Development and production are running environments. A data split separates evidence for different decisions. Test examples can leak into a model through preprocessing or setting choices as well as weight updates. Keep related or overlapping observations together and choose a split that matches the intended use.",
     category: "shared",
     variants: {
       react: {
@@ -281,9 +281,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Express-style middleware chain",
     tier: "structural",
     connection:
-      "A middleware chain passes a result from one step to the next. A sequential network also composes transformations: each layer receives the previous layer's output. Some layers have learned parameters; others apply fixed operations.",
+      "A middleware chain passes a result from one step to the next. A sequential network also composes transformations: each layer receives the previous layer's output. Some layers have learned parameters. Others apply fixed operations.",
     breaks:
-      "A neural layer has defined mathematics and inspectable parameters; learned does not mean uninspectable or random on each call. Both middleware and layers depend on order and input/output contracts. Reordering them can change behavior or cause a shape error, so it requires checking rather than a blanket rule.",
+      "A neural layer has defined mathematics and inspectable parameters. Learned does not mean uninspectable or random on each call. Both middleware and layers depend on order and input/output contracts. Reordering them can change behavior or cause a shape error, so check the result when you change the order.",
     category: "shared",
     variants: {
       react: {
@@ -302,7 +302,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "ReLU applies the same mathematical rule as Math.max(0, x) to each tensor element: negative values become zero and positive values pass through.",
     breaks:
-      "JavaScript numbers and float32 tensors can round differently. This compares the mathematical operation, not bit-for-bit storage.",
+      "JavaScript numbers and float32 tensors can round differently. This compares the mathematical operation. Storage precision can still change the result.",
     category: "shared",
     variants: {
       react: {
@@ -319,7 +319,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A stack trace follows a failed call back through its callers. Backpropagation also works backward through a computation, using the chain rule to calculate how small changes to parameters affect the loss.",
     breaks:
-      "A stack trace reports a call path, not a numerical contribution. Backpropagation calculates local derivatives along connected paths; some derivatives can be zero. The optimizer and learning rate choose the update, so a derivative alone does not tell you how far to move a weight.",
+      "A stack trace reports a call path. It calculates no numerical contribution. Backpropagation calculates local derivatives along connected paths. Some derivatives can be zero. The optimizer and learning rate choose the update, so a derivative alone does not tell you how far to move a weight.",
     category: "shared",
     variants: {
       react: {
@@ -338,7 +338,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A server-rendered page uses data to produce an output. Model inference also takes prepared input and produces an output through a forward pass, without fitting the model's weights.",
     breaks:
-      "Rendering may depend on time, requests and other application state. Model inference depends on its weights, inputs, preprocessing and any carried state; a stateful recurrent model can update that state without training its weights. Control the runtime and those inputs when checking reproducibility.",
+      "Rendering may depend on time, requests and other application state. Model inference depends on its weights, inputs, preprocessing and any carried state. A stateful recurrent model can update that state without training its weights. Control the runtime and those inputs when checking reproducibility.",
     category: "shared",
     variants: {
       react: {
@@ -373,9 +373,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Randomly hiding team members during practice",
     tier: "intuition",
     connection:
-      "Dropout randomly masks activations during training, so a unit cannot always rely on the same other units being present. Practicing with missing team members is a loose comparison, not a guarantee that units become independent.",
+      "Dropout randomly masks activations during training, so a unit cannot always rely on the same other units being present. Practicing with missing team members offers a loose comparison. Dropout does not guarantee that units become independent.",
     breaks:
-      "TensorFlow.js uses inverted dropout: during training, kept activations are divided by 1 minus the dropout rate. At inference, the dropout layer passes its inputs through unchanged. It masks activations rather than removing units or guaranteeing better evaluation results.",
+      "TensorFlow.js uses inverted dropout: during training, it divides the activations it keeps by 1 minus the dropout rate. At inference, the dropout layer passes its inputs through unchanged. The units stay in the network. Measure whether dropout improves evaluation results.",
     category: "shared",
     variants: {
       react: {
@@ -391,9 +391,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Access-log tally by route and status",
     tier: "structural",
     connection:
-      "An access-log tally groups requests by route and status. A confusion matrix groups labeled examples by actual and predicted class. Off-diagonal cells count mistakes; their importance also depends on the cost of each kind of error.",
+      "An access-log tally groups requests by route and status. A confusion matrix groups labeled examples by actual and predicted class. Off-diagonal cells count mistakes. Their importance also depends on the cost of each kind of error.",
     breaks:
-      "A classifier can return a result without knowing whether it is correct. A confusion matrix needs reference labels, which may be delayed or missing in production. Its counts do not describe confidence or calibration, and the largest error count need not be the most costly one.",
+      "A classifier can return a result without knowing whether it is correct. A confusion matrix needs reference labels. Production systems may receive them late or lack them entirely. Its counts do not describe confidence or calibration, and the largest error count need not be the most costly one.",
     category: "shared",
     variants: {
       react: {
@@ -410,7 +410,7 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "CI/CD pipeline",
     tier: "structural",
     connection:
-      "CI/CD deploys code; model deployment serves a model. The road from development to production runs through the same stations either way: versioning, testing, and monitoring.",
+      "CI/CD deploys code. Model deployment serves a model. Both need versioning, testing, and monitoring.",
     breaks:
       "Rolling back an artifact does not restore changed inputs, dependencies or operating conditions. Model performance can change while its weights stay fixed. Version preprocessing and runtime assets with the model, then monitor both system behavior and labeled prediction quality.",
     category: "shared",
@@ -430,9 +430,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Randomized retry backoff (jitter)",
     tier: "structural",
     connection:
-      "Retry jitter varies delays so clients do not all retry together. Random kernel initialization also breaks a symmetry: identical hidden units can otherwise receive identical updates. Biases often start at zero; not every parameter needs a random value.",
+      "Retry jitter varies delays so clients do not all retry together. Random kernel initialization also breaks a symmetry: identical hidden units can otherwise receive identical updates. Biases often start at zero. Not every parameter needs a random value.",
     breaks:
-      "He initialization chooses its scale from fan-in, the number of inputs per unit; Glorot/Xavier also uses fan-out, the number of outputs. These choices aim to control activation and gradient scale, but do not guarantee stable training. Initialization sets the starting parameters; retry jitter is drawn for each retry.",
+      "He initialization chooses its scale from fan-in, the number of inputs per unit. Glorot/Xavier also uses fan-out, the number of outputs. These choices aim to control activation and gradient scale, but do not guarantee stable training. Initialization sets the starting parameters. Retry jitter is drawn for each retry.",
     category: "deep-orbit",
     mlCode: "tf.initializers.heNormal() // weight init for ReLU layers",
   },
@@ -444,7 +444,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Z-scoring subtracts a mean and divides by a standard deviation. Batch normalization uses a related calculation on activations during training: `(x - mean) / sqrt(variance + epsilon)`, followed by a learned scale and shift.",
     breaks:
-      "Batch normalization calculates training statistics over its configured axes and updates moving statistics. At inference, the layer uses those moving statistics, even when you predict several examples together. Batch size, axes and learned scale/shift affect the result; normalization does not guarantee a fixed output scale or good predictions.",
+      "Batch normalization calculates training statistics over its configured axes and updates moving statistics. At inference, the layer uses those moving statistics, even when you predict several examples together. Batch size, axes and learned scale/shift affect the result. Normalization does not guarantee a fixed output scale or good predictions.",
     category: "deep-orbit",
     mlCode:
       "model.add(tf.layers.batchNormalization()); // normalize activations per mini-batch",
@@ -455,9 +455,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Object spread: { ...state, ...patch }",
     tier: "structural",
     connection:
-      "A reducer returning `{ ...state, ...patch }` gives every field two ways to reach the next state: through the patch if the update touched it, straight from the old object if it did not. A residual block wires that second path into a network with `output = f(x) + x`, so the input still reaches the next layer when the block in between learns to contribute almost nothing.",
+      "In `{ ...state, ...patch }`, unchanged fields carry over from the old object. A residual block also gives the original input a path to the output: `output = f(x) + x`. Even when f(x) is near zero, x still contributes. Unlike object spread, the block adds the two paths together.",
     breaks:
-      "Object spread replaces a value when the patch has the same key. A residual connection adds compatible tensors instead, so both paths contribute and can cancel or reinforce each other. A changed shape needs a compatible shortcut, such as a learned projection; a 1x1 convolution is one option, not a requirement for every model.",
+      "Object spread replaces a value when the patch has the same key. A residual connection adds compatible tensors instead, so both paths contribute and can cancel or reinforce each other. A changed shape needs a compatible shortcut, such as a learned projection. A 1x1 convolution is one option. Other models may need a different shortcut.",
     category: "deep-orbit",
     mlCode:
       "// Integration sketch: attention and layerNorm are supplied functions.\nconst out = layerNorm(input.add(attention(input))); // compatible shapes",
@@ -468,9 +468,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Deeply nested callback hell",
     tier: "intuition",
     connection:
-      "Deeply nested callbacks can make a program hard to follow. Repeated small derivative factors can make a network's gradients tiny. The shared idea is a long chain; the actual problems and remedies differ.",
+      "Deeply nested callbacks can make a program hard to follow. Repeated small derivative factors can make a network's gradients tiny. The shared idea is a long chain. The actual problems and remedies differ.",
     breaks:
-      "Async/await changes code structure, not gradient arithmetic. Vanishing gradients depend on weights, activations, inputs and repeated derivatives, rather than depth alone. Inspect gradients and compare suitable initialization, activations or shorter gradient paths; no one architectural change guarantees a cure.",
+      "Async/await changes code structure. It leaves gradient arithmetic alone. Vanishing gradients depend on weights, activations, inputs and repeated derivatives. Depth alone cannot predict whether they will vanish. Inspect gradients and compare suitable initialization, activations or shorter gradient paths. No one architectural change guarantees a cure.",
     category: "deep-orbit",
     mlCode: "const grad = tf.grad(loss)(weights)",
   },
@@ -480,9 +480,9 @@ export const BRIDGES: Bridge[] = [
     jsConcept: "Animation easing functions",
     tier: "structural",
     connection:
-      "An easing curve changes how an animation moves over time. A learning-rate schedule changes the optimizer's step-size setting over training. Decay is one option; warmup and cyclic schedules can also increase it.",
+      "An easing curve changes how an animation moves over time. A learning-rate schedule changes the optimizer's step-size setting over training. Decay is one option. Warmup and cyclic schedules can also increase it.",
     breaks:
-      "An animation has a chosen endpoint; training does not know the best weights in advance. Schedules can use epoch counts or measured metrics within a finite training budget. A smaller learning rate does not prove convergence, and early stopping is a separate decision.",
+      "An animation has a chosen endpoint. Training does not know the best weights in advance. Schedules can use epoch counts or measured metrics within a finite training budget. A smaller learning rate does not prove convergence, and early stopping is a separate decision.",
     category: "deep-orbit",
     mlCode:
       "const optimizer = tf.train.sgd(0.01);\nmodel.compile({ optimizer, loss: 'meanSquaredError' });\nawait model.fit(x, y, { epochs: 30, callbacks: {\n  onEpochBegin: epoch => optimizer.setLearningRate(0.01 * 0.5 ** Math.floor(epoch / 10)),\n} });",
@@ -495,7 +495,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A classifier maps inputs to classes the way a router maps URLs to views: one input goes in, one of many categories comes out.",
     breaks:
-      "A router follows application matching rules. A softmax classifier returns normalized class scores; those are not automatically calibrated probabilities of correctness. Masking or floating-point underflow can produce zero scores, and a high score does not prove the chosen class is right.",
+      "A router follows application matching rules. A softmax classifier returns normalized class scores. Those are not automatically calibrated probabilities of correctness. Masking or floating-point underflow can produce zero scores, and a high score does not prove the chosen class is right.",
     category: "deep-orbit",
     mlCode:
       "// Apply once to logits; skip this if the model already outputs softmax.\nconst scores = tf.softmax(logits); // rows sum to approximately 1",

@@ -1,12 +1,12 @@
 slug: retrieve-signals
 lessonSlug: rag-for-signals
-title: "Retrieve Evidence for the Report"
+title: "Evidence for the report"
 instructions: |
   Write retrieveSignals(query, db, now). Select matching records and report any matches left out of the result. Adding retrieved records does not remove what a model learned during training.
 
   Apply each filter only if its pattern appears in query. When several filters appear, a row must pass all of them:
   - Band: match /band[- ]?(\w+)/i. Keep rows whose band matches the captured word, ignoring case on both sides.
-  - Age: match /(\d+)\s*hours/i. Keep timestamps strictly newer than now - hours * 3600 * 1000 and no later than now. Invalid timestamps fail this filter. Use the supplied now, not the current clock.
+  - Age: match /(\d+)\s*hours/i. Keep timestamps strictly newer than now - hours * 3600 * 1000 and no later than now. Invalid timestamps fail this filter. Calculate the cutoff from the supplied now value.
   - Anomalies: match /anomal/i. Keep rows whose classification is 'anomaly'.
 
   If no pattern appears, every database row matches. This simple parser does not understand general English, negation, or 'overnight'.
@@ -14,7 +14,7 @@ instructions: |
   Return { rows, matched, truncated }:
   - rows contains the first 20 matches in database order. Do not sort them.
   - matched is the total match count before limiting the list.
-  - truncated is true only when at least one matching row was left out.
+  - truncated is true only when the limit excludes at least one matching row.
 
   Keep complete row objects, including id, timestamp, band, classification, confidence, amplitude, frequency, and anomalyScore. The supplied scores do not establish certainty. A 20-row limit is not a token limit, so the application must also check the final prompt size.
 starterCode: |
@@ -115,7 +115,7 @@ testCode: |
       return r;
     };
 
-    it('a question carrying no filter matches the whole database', () => {
+    it('a query with no filters matches the whole database', () => {
       // One row here would be rejected by each filter the question never
       // raised: b by a band, c by anomalies, d by an age window.
       const db = [
@@ -127,7 +127,7 @@ testCode: |
       const r = retrieve('what did the array log overnight', db);
       expect(
         r.rows.map((s) => s.id),
-        'This parser recognizes none of its filters here. Return all rows before applying the cap; it does not interpret overnight.',
+        'This parser recognizes none of its filters here. Return all rows before applying the cap. It does not interpret overnight.',
       ).toEqual(['a', 'b', 'c', 'd']);
       expect(
         r.rows[0],
@@ -168,7 +168,7 @@ testCode: |
       expect(r.matched).toBe(2);
     });
 
-    it('the filters the question carries all hold at once', () => {
+    it('applies every filter present in the query', () => {
       const db = [
         makeRow('wrong-band', { band: '3' }),
         makeRow('wrong-class', { classification: 'noise' }),
@@ -205,7 +205,7 @@ testCode: |
       expect(r.truncated).toBe(false);
     });
 
-    it('the twenty that travel are the first twenty, not the best twenty', () => {
+    it('returns the first twenty matches in database order', () => {
       const size = 26;
       const db = [];
       for (let i = 0; i < size; i += 1) {
@@ -225,11 +225,11 @@ testCode: |
       const r = retrieve('anomalous signals in Band-7', db);
       expect(
         r.rows.map((s) => s.id),
-        'Preserve database order in this exercise. Metadata or keyword search can be ranked in other systems, but sorting here changes the required subset.',
+        'Preserve database order in this exercise. Other systems can rank metadata or keyword matches, but sorting here changes the required subset.',
       ).toEqual(db.slice(0, 20).map((s) => s.id));
     });
 
-    it('counts the survivors, not the database and not what it sent', () => {
+    it('counts all matching records before limiting the result', () => {
       const db = [];
       for (let i = 0; i < 40; i += 1) {
         // Every row carries a different anomalyScore, and the scores run in a
@@ -247,7 +247,7 @@ testCode: |
       const expected = db.filter((s) => s.band === '7').map((s) => s.id);
       expect(
         r.rows.map((s) => s.id),
-        'The first twenty survivors travel, in database order. Ranking them by anomalyScore first sends a different twenty, and the 21st row is then dropped for scoring low rather than for arriving late.',
+        'Return the first 20 matching records in database order. Sorting by anomalyScore would change which records you return.',
       ).toEqual(expected.slice(0, 20));
       expect(
         r.matched,
@@ -257,7 +257,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Evidence selected for the prompt',
-        summary: r.matched + ' fixture records matched; your retriever returned ' + r.rows.length + '. Omitted matches: ' + (r.matched - r.rows.length) + '. The report must retain that limit.',
+        summary: r.matched + ' supplied records matched. Your retriever returned ' + r.rows.length + '. Omitted matches: ' + (r.matched - r.rows.length) + '. The report must say that the limit excluded some matches.',
         columns: ['Record', 'Band', 'Classification', 'Frequency (Hz)', 'Anomaly score'],
         rows: r.rows.slice(0, 20).map((row) => [row.id, row.band, row.classification, row.frequency, row.anomalyScore]),
       });
@@ -272,7 +272,7 @@ testCode: |
       expect(r.matched).toBe(20);
       expect(
         r.truncated,
-        'Exactly 20 rows matched, and all were returned. Set truncated to false because no match was omitted.',
+        'Exactly 20 rows matched, and the retriever returned all of them. Set truncated to false.',
       ).toBe(false);
     });
 
@@ -286,12 +286,12 @@ testCode: |
       expect(r.rows).toHaveLength(20);
       expect(
         r.matched,
-        'Count matching rows from this database rather than returning a fixed count.',
+        'Count the matching rows in the current database.',
       ).toBe(hits);
       expect(r.truncated).toBe(true);
     });
 
-    it('an empty retrieval is a retrieval', () => {
+    it('returns an empty list when no records match', () => {
       const db = [makeRow('a', { band: '3' }), makeRow('b', { band: '3' })];
       const r = retrieve('anomalous signals in Band-9', db);
       expect(r.rows).toEqual([]);

@@ -1,10 +1,10 @@
 slug: prune-weights
 lessonSlug: pruning
-title: "Measure What Pruning Costs"
+title: "Pruning and class accuracy"
 instructions: |
   Help Demir see which classes pruning hurts. Write `pruneAndScore(model, samples, labels, levels)` and report recall for each class at each requested sparsity level.
 
-  Return entries in `levels` order, each shaped `{ sparsity, perClass }`. For class `c`, recall is the fraction of samples labeled `c` whose largest output is also `c`. Include classes 0 through `max(labels)`, using null when a class has no examples. Do not hardcode five classes; the checks also use a smaller model.
+  Return entries in `levels` order, each shaped `{ sparsity, perClass }`. For class `c`, recall is the fraction of samples labeled `c` whose largest output is also `c`. Include classes 0 through `max(labels)`, using null when a class has no examples. Do not hardcode five classes. The checks also use a smaller model.
 
   Follow these pruning rules:
 
@@ -242,7 +242,7 @@ testCode: |
         }
       }));
 
-    it('scores the unpruned model at the top of the ladder', () =>
+    it('measures the original model at zero sparsity', () =>
       serialPrune(async () => {
         const report = await ladderOf(classifier(), evalSlice(), LEVELS);
         const base = report[0].perClass;
@@ -255,7 +255,7 @@ testCode: |
         ).toBeGreaterThanOrEqual(0.9);
       }));
 
-    it('holds the four common classes flat all the way down the ladder', () =>
+    it('reports unchanged recall for the four common classes at every supplied level', () =>
       serialPrune(async () => {
         const report = await ladderOf(classifier(), evalSlice(), LEVELS);
         for (const row of report) {
@@ -268,7 +268,7 @@ testCode: |
         }
       }));
 
-    it('bills the whole cost to the rare class', () =>
+    it('reports the loss of recall for the rare class', () =>
       serialPrune(async () => {
         const report = await ladderOf(classifier(), evalSlice(), LEVELS);
         const anomaly = report.map((row: any) => row.perClass[ANOMALY]);
@@ -284,12 +284,12 @@ testCode: |
         const commonLoss = commonMean(report[0]) - commonMean(report[3]);
         expect(
           anomalyLoss - commonLoss,
-          'At 80 percent pruning, recall falls sharply for the rare class while the common classes stay unchanged. Report each class separately; overall accuracy hides this difference.',
+          'At 80 percent pruning, recall falls sharply for the rare class while the common classes stay unchanged. Report each class separately. Overall accuracy hides this difference.',
         ).toBeGreaterThanOrEqual(0.6);
         recordResult({
           kind: 'series',
           title: 'Which classes your pruning pass affects',
-          summary: 'Recall measured by your code on 40 synthetic examples per class. Compare the anomaly curve before choosing a pruning level; these are not the mission archive scores.',
+          summary: 'Recall measured by your code on 40 synthetic examples per class. Compare the anomaly curve before choosing a pruning level. These are not the mission archive scores.',
           xLabel: 'Requested sparsity',
           yLabel: 'Recall',
           labels: report.map((row) => (row.sparsity * 100) + '%'),
@@ -297,7 +297,7 @@ testCode: |
         });
       }));
 
-    it('crosses a cliff between 60 and 80 percent rather than sloping', () =>
+    it('detects the sharp recall drop between 60% and 80% sparsity', () =>
       serialPrune(async () => {
         const report = await ladderOf(classifier(), evalSlice(), LEVELS);
         const anomaly = report.map((row: any) => row.perClass[ANOMALY]);
@@ -402,7 +402,7 @@ testCode: |
 
         expect(
           report.map((row: any) => row.perClass),
-          'Calculate recall from this run’s predictions. The checks vary weights, captures, and class counts. The first two levels leave the model unchanged; the third removes both small weights. Each rare class keeps only examples supported by a surviving weight.',
+          'Calculate recall from this run’s predictions. The checks vary weights, captures, and class counts. The first two levels leave the model unchanged. The third removes both small weights. Each rare class keeps only examples supported by a surviving weight.',
         ).toEqual([
           [1, 1, 1],
           [1, 1, 1],
@@ -433,7 +433,7 @@ testCode: |
         const after = model.getWeights().map((w: any) => Array.from(w.dataSync()));
         expect(
           after,
-          'The caller goes on using this model after the measurement, so it cannot be left holding the last level you tried. Measure copies, then put the trained weights back.',
+          'The caller goes on using this model after the measurement, so restore its original weights before returning. Measure copies, then put the trained weights back.',
         ).toEqual(before);
       }));
   });

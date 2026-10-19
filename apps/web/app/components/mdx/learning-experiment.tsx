@@ -57,7 +57,7 @@ function ExperimentBody({ id }: { id: ExperimentId }) {
       if (raw) setDraft(parseExperimentDraft(raw, id));
     } catch {
       setNotice(
-        "This experiment draft could not be read. Start here again; your lesson and editor progress are unchanged.",
+        "This page could not read the experiment draft. Start this activity again. Your lesson and editor progress stay the same.",
       );
     }
     setReady(true);
@@ -150,7 +150,7 @@ function ExperimentBody({ id }: { id: ExperimentId }) {
         )}
         {id === "threshold" && draft.frozen && (
           <p className="font-medium">
-            Frozen policy: alert above {draft.frozen[0]}; false-alarm cost{" "}
+            Frozen policy: alert above {draft.frozen[0]}. False-alarm cost{" "}
             {draft.frozen[1]}, miss cost {draft.frozen[2]}. Controls stay locked
             after viewing the final test, including after refresh or reset.
           </p>
@@ -400,16 +400,16 @@ function Controls({
 function Introduction({ id }: { id: ExperimentId }) {
   const text: Record<ExperimentId, string> = {
     normalization:
-      "These four synthetic training rows fit the scaler. The neuron keeps weights [0.6, -0.8] and bias 0.1 throughout. Change preprocessing or one reading and watch the score change. The weights are supplied, not trained here, and the sigmoid score is not a calibrated probability.",
+      "These four synthetic training rows fit the scaler. The neuron keeps weights [0.6, -0.8] and bias 0.1 throughout. Change preprocessing or one reading and watch the score change. The example supplies the weights and performs no training. The sigmoid score has no established calibration.",
     threshold:
-      "Compare policies on 21 labeled validation examples. Alert only when score > threshold; equality stays quiet. Cost = FP × false-alarm cost + FN × miss cost. True-positive review work is excluded from this particular cost model. The rows are synthetic, with no claim about mission prevalence.",
+      "Compare policies on 21 labeled validation examples. Alert only when score > threshold. Equality stays quiet. Cost = FP × false-alarm cost + FN × miss cost. This particular cost model excludes review work for true positives. These are synthetic examples. Their class proportions do not describe the mission archive.",
     "learning-rate":
       "Use the toy loss L(w) = 0.5 × (w - target)². Its derivative is w - target. One update is w - learningRate × (w - target). The coding exercise uses w² instead, whose derivative is 2w. This convex one-weight example does not predict neural-network convergence.",
-    fft: "Sample a generated 10 Hz sine plus a half-amplitude 12 Hz sine at 128 samples/second. Use a rectangular window. The displayed one-sided magnitude is |DFT| / observed samples, without amplitude doubling. This teaching signal is separate from the ship's capture.",
+    fft: "Sample a generated 10 Hz sine plus a half-amplitude 12 Hz sine at 128 samples/second. Use a rectangular window. The displayed one-sided magnitude is DFT magnitude divided by the observed sample count, without amplitude doubling. This teaching signal is separate from the ship's capture.",
     attention:
-      "Use the lesson's unscaled QKᵀ scores, then softmax across three keys and multiply by V. Shapes: Q [1,2], K [3,2], scores and weights [1,3], V [3,2], output [1,2]. Softmax subtracts the largest score before exponentiation. These weights describe this computation; they do not establish causes or human understanding.",
+      "Use the lesson's unscaled QKᵀ scores, then softmax across three keys and multiply by V. Shapes: Q [1,2], K [3,2], scores and weights [1,3], V [3,2], output [1,2]. Softmax subtracts the largest score before exponentiation. These weights describe this computation. They do not establish causes or human understanding.",
     cache:
-      "Replay four requests through a fresh cache. The toy score is sigmoid(100 × (scaledInput - 0.5) + modelOffset). An alert is score ≥ 0.5. Inspect the expected fresh score beside the cached return. Calls and hits are simulated counts, not measured latency.",
+      "Replay four requests through a fresh cache. The toy score is sigmoid(100 × (scaledInput - 0.5) + modelOffset). An alert is score ≥ 0.5. Inspect the expected fresh score beside the cached return. The simulation counts calls and hits. It does not measure latency.",
   };
   return <p>{text[id]}</p>;
 }
@@ -437,7 +437,7 @@ function Question({ id, changed }: { id: ExperimentId; changed: boolean }) {
     ],
     cache: [
       "How many model calls will these four requests need?",
-      "Use exact input, model and scaler in the key; request 4 changes both versions to v2. How many model calls?",
+      "Use exact input, model and scaler in the key. Request 4 changes both versions to v2. How many model calls?",
     ],
   };
   return text[id][changed ? 1 : 0];
@@ -457,10 +457,10 @@ function GivenData({
           <p>
             Training rows [temperature, signal]: [20, 0], [20, 2], [24, 0], [24,
             2]. Population mean [22, 1], standard deviation [2, 1]. A saved zero
-            standard deviation uses divisor 1; the saved statistic stays zero.
+            standard deviation uses divisor 1. The saved statistic stays zero.
           </p>
           <p className="font-mono text-sm">
-            artifact: demo-neuron-v1 · scaler: training-v1 · features:
+            artifact: demo-neuron-v1, scaler: training-v1, features:
             temperature, signal
           </p>
           {changed && (
@@ -500,8 +500,8 @@ function GivenData({
           </p>
           <p>
             TP: positive alerted. FP: negative alerted. TN: negative quiet. FN:
-            positive missed. Precision, recall and F1 are displayed as 0 when
-            their denominator is 0.
+            positive missed. This activity displays precision, recall and F1 as
+            0 when their denominator is 0.
           </p>
         </div>
       );
@@ -579,7 +579,7 @@ function Results({
             Apply (reading - training mean) / training std in the saved feature
             order. A one-row refit centers that reading to zero and discards its
             distance from training. A different score shows sensitivity to
-            preprocessing; it does not show which reading is truly anomalous.
+            preprocessing. It does not show which reading is truly anomalous.
           </p>
         </>
       );
@@ -624,9 +624,9 @@ function Results({
           )}
           {changed && (
             <p>
-              This is one held-out result for the frozen policy. Report a
-              disappointing result as such. Choosing another cutoff after this
-              view would turn these examples into validation data.
+              This is one held-out result for the frozen policy. Keep the result
+              even if it is worse than you expected. Choosing another cutoff
+              after this view would turn these examples into validation data.
             </p>
           )}
         </>
@@ -649,7 +649,7 @@ function Results({
             The derivative supplies direction and size at the current weight.
             Subtract it times the rate. Here 2.2 crosses the target and
             increases the distance on each update. Overshooting alone does not
-            always mean divergence; for example, a rate of 1.2 crosses and
+            always mean divergence. For example, a rate of 1.2 crosses and
             approaches this target.
           </p>
         </>
@@ -671,11 +671,13 @@ function Results({
             {r.nativeSpacing} Hz. Displayed grid {r.gridSpacing} Hz.
           </p>
           <figure>
-            <p className="font-medium">Magnitude (|DFT| / observed samples)</p>
+            <p className="font-medium">
+              Magnitude (DFT magnitude divided by the observed sample count)
+            </p>
             <svg
               viewBox="0 0 320 180"
               role="img"
-              aria-label={`Frequency bins from zero to 24 Hz. Magnitude axis runs from 0 to ${number(magnitudeMax)} in |DFT| divided by observed samples; exact values follow in the table.`}
+              aria-label={`Frequency bins from zero to 24 Hz. Magnitude axis runs from 0 to ${number(magnitudeMax)} in DFT magnitude divided by the observed sample count. Exact values follow in the table.`}
               className="w-full text-interactive"
             >
               {[0, magnitudeMax / 2, magnitudeMax].map((value) => (
@@ -733,11 +735,11 @@ function Results({
             rows={bins.map((v) => [number(v.hz), number(v.magnitude)])}
           />
           <p>
-            Padding samples this same finite-window spectrum more densely; it
-            adds no observed signal. Two nearby frequencies are not guaranteed
-            to be resolved merely because they occupy different bins. Window
-            duration, window shape and relative strengths matter. A tone between
-            the native bins leaks into neighbors under this rectangular window.
+            Padding samples this same finite-window spectrum more densely. It
+            adds no observed signal. Two nearby frequencies can occupy different
+            bins and still overlap too much to distinguish. Window duration,
+            window shape and relative strengths matter. A tone between the
+            native bins leaks into neighbors under this rectangular window.
           </p>
         </>
       );
@@ -785,7 +787,7 @@ function Results({
       result = (
         <>
           <NumberTable
-            caption="Actual deterministic replay; every row has a fresh-score comparison"
+            caption="Each cached reply beside a fresh calculation"
             headers={["Request / key", "Fresh", "Returned", "Reuse"]}
             rows={r.rows.map((v, i) => [
               `${i + 1}: ${v.key}`,
@@ -795,11 +797,12 @@ function Results({
             ])}
           />
           <p>
-            {r.calls} model calls, {r.hits} cache hits. A rounded key can return
-            a quiet score for an input whose fresh result alerts. Without both
-            versions, replacement artifacts can also reuse a stale score. An
-            exact key preserves this toy function's inputs and versions; its
-            lookup overhead still needs measurement on the actual runtime.
+            {r.calls} model calls, {r.hits} cache hits. A rounded key can reuse
+            a score below the alert threshold when a fresh calculation would
+            trigger an alert. Without both versions, replacement artifacts can
+            also reuse a stale score. An exact key preserves this toy function's
+            inputs and versions. Its lookup overhead still needs measurement on
+            the actual runtime.
           </p>
         </>
       );

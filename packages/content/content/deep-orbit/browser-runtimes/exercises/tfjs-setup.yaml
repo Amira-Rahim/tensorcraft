@@ -1,12 +1,12 @@
 slug: tfjs-setup
 lessonSlug: tensorflow-js-setup
-title: "Initialize TensorFlow.js"
+title: "TensorFlow.js setup"
 instructions: |
   Implement `initTF(preferred?)`, returning the actual `{ backend, version }`.
   Read both values from the runtime after awaiting `tf.ready()`.
 
-  When a preferred name is supplied, request it with `tf.setBackend()` first.
-  An unregistered name throws; a registered backend that cannot start can
+  When the caller supplies a preferred name, request it with `tf.setBackend()` first.
+  An unregistered name throws. A registered backend that cannot start can
   return false. Catch a refused preference, then let `ready()` try the available
   backends. If none starts, let initialization reject so the application can
   show an error. Do not invent a successful backend name.
@@ -24,7 +24,7 @@ solutionCode: |
 
   async function initTF(preferred?: string): Promise<{ backend: string; version: string }> {
     if (preferred) {
-      // A name nobody registered throws; a registered backend that cannot
+      // A name nobody registered throws. A registered backend that cannot
       // start resolves false. Neither is fatal: the runtime settles below.
       try {
         await tf.setBackend(preferred);
@@ -112,10 +112,10 @@ testCode: |
       expect(result, 'initTF resolved to nothing, so there is no backend name to check.').toBeDefined();
       expect(result.backend, 'This runtime reports a name generated for this run. A name that came from anywhere but the runtime cannot match it.').toBe(cold.tag);
       expect(result.version, 'Same for the version string: read it, do not type it.').toBe(cold.ver);
-      expect(cold.asked.length, 'No preference was given, so nothing should have been requested.').toBe(0);
+      expect(cold.asked.length, 'The caller supplied no preference. Keep the current backend without requesting another.').toBe(0);
       recordResult({
         kind: 'table', title: 'The runtime your startup code reported',
-        summary: 'A simulated cold runtime with generated names and version. This checks initialization order, not the backend on your computer.',
+        summary: 'A simulated startup with test backend names and a test version. This checks initialization order. Use the runtime lab to inspect your own backend.',
         columns: ['Backend reported', 'Version reported'],
         rows: [[result.backend, result.version]],
       });
@@ -125,9 +125,9 @@ testCode: |
       expect(cold.asked, 'A preferred name is a request: hand it to tf.setBackend before you wait.').toEqual([cold.good]);
       expect(result && result.backend, 'This one started, so the runtime is running on it and that is the name to report.').toBe(cold.good);
     });
-    it('a preferred backend that cannot start is not fatal: the runtime settles elsewhere', async () => {
+    it('starts another available backend if the preferred one fails', async () => {
       const { cold, result } = await onCold((c) => initTF(c.bad));
-      expect(cold.asked, 'Ask for it first; the refusal comes back as false, not as a throw.').toEqual([cold.bad]);
+      expect(cold.asked, 'Ask for it first. The runtime returns false for this refusal. It throws no exception.').toEqual([cold.bad]);
       expect(result && result.backend, 'The requested backend could not start. Await ready(), then report the backend the runtime actually selected.').toBe(cold.tag);
     });
     it('propagates failure when no available backend can initialize', async () => {
@@ -138,7 +138,7 @@ testCode: |
           return initTF(c.bad);
         });
       } catch (error) { message = error.message; }
-      expect(message, 'A refused preference can fall back; a total initialization failure must reach the caller.').toBe('No backend can start');
+      expect(message, 'A refused preference can fall back. A total initialization failure must reach the caller.').toBe('No backend can start');
     });
     it('a name that was never registered throws, and the call still resolves', async () => {
       const never = 'never-' + Math.floor(Math.random() * 1e9);
@@ -149,8 +149,8 @@ testCode: |
       } catch (err) {
         failed = err;
       }
-      expect(failed, 'A name no package registered throws inside tf.setBackend. That throw is the runtime saying no, not the page failing: catch it and carry on to ready().').toBeNull();
-      expect(out.cold.asked, 'The request is still made; the runtime is what refuses it.').toEqual([never]);
+      expect(failed, 'tf.setBackend throws for an unregistered name. Catch that error, then await tf.ready() to let the runtime select an available backend.').toBeNull();
+      expect(out.cold.asked, 'Request the backend and let the runtime reject it.').toEqual([never]);
       expect(out.result && out.result.backend, 'After a refused request the runtime settles on what works, and that is the name to report.').toBe(out.cold.tag);
     });
   });

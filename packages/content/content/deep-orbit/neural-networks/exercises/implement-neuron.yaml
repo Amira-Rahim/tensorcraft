@@ -1,6 +1,6 @@
 slug: implement-neuron
 lessonSlug: first-neuron
-title: "Implement a Neuron"
+title: "A neuron in JavaScript"
 instructions: |
   Help Farah write `neuron(inputs, weights, bias)`.
   Multiply each input by its matching weight, add the products, then add the bias.
@@ -41,7 +41,7 @@ testCode: |
       ).toBeDefined();
       expect(
         typeof (result && result.dataSync),
-        'Return a scalar tensor, not a JavaScript number. Add the bias while the sum is still a tensor.',
+        'Return the scalar tensor so the caller can use it in tensor operations. Add the bias while the sum is still a tensor.',
       ).toBe('function');
       expect(
         result.rank,
@@ -61,7 +61,7 @@ testCode: |
     const callNeuron = (inputs, weights, bias) => {
       expect(
         typeof neuron,
-        'neuron is not defined. Keep the function the starter handed you: the grader calls it again with arguments of its own.',
+        'Your code does not define neuron. Keep the function the starter handed you: the grader calls it again with arguments of its own.',
       ).toBe('function');
       const before = readbacks();
       const result = neuron(inputs, weights, bias);
@@ -78,7 +78,7 @@ testCode: |
       ).toBeCloseTo(0.4, 4);
       recordResult({
         kind: 'table', title: 'Farah\'s neuron score',
-        summary: 'Your tensor calculation on the supplied three-input arithmetic case. The weights are fixed here; no training has run.',
+        summary: 'Your tensor calculation on the supplied three-input arithmetic case. This case uses fixed weights. No training has run.',
         columns: ['Result', 'Value'], rows: [['Weighted score plus bias', readScalar(output)]],
       });
     });

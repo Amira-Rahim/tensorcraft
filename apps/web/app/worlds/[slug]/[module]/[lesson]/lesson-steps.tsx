@@ -1094,11 +1094,10 @@ function LessonStepsInner({
         >
           {worldSlug === "deep-orbit" ? (
             <>
-              <span aria-hidden="true">&larr;</span>
               <span>Back</span>
             </>
           ) : (
-            <>&larr; Back</>
+            <> Back</>
           )}
         </button>
       ) : exercises.length > 0 && maxStepReached < PHASE.challenge ? (
@@ -1110,7 +1109,7 @@ function LessonStepsInner({
           className="text-sm font-mono px-6 py-3 transition-colors hover:opacity-80"
           style={{ color: "var(--tc-muted)" }}
         >
-          Skip to the challenge &rarr;
+          Skip to the challenge
         </button>
       ) : (
         <span aria-hidden="true" />
@@ -1137,7 +1136,7 @@ function LessonStepsInner({
               audit). */}
             {!canContinue && currentStep === PHASE.challenge
               ? `Pass ${exercises.length - passedExercises.size} more ${exercises.length - passedExercises.size === 1 ? "exercise" : "exercises"} to continue`
-              : "Continue →"}
+              : "Continue"}
           </button>
         )
       ) : nextLesson ? (
@@ -1159,9 +1158,7 @@ function LessonStepsInner({
               {nextLesson.title}
             </span>
           </span>
-          <span aria-hidden="true" className="text-base shrink-0">
-            &rarr;
-          </span>
+          <span aria-hidden="true" className="text-base shrink-0"></span>
         </Link>
       ) : (
         <Link
@@ -1172,7 +1169,7 @@ function LessonStepsInner({
             color: "var(--tc-on-primary)",
           }}
         >
-          Back to {terms(worldSlug).lesson} Map &rarr;
+          Back to {terms(worldSlug).lesson} Map
         </Link>
       )}
     </div>
@@ -1332,8 +1329,8 @@ function LessonStepsInner({
             role="status"
             className="lesson-frame mb-4 text-sm text-text-muted"
           >
-            Saved exercise passes could not be loaded. This browser’s progress
-            is still available.{" "}
+            We could not load your saved exercise passes. This browser’s
+            progress is still available.{" "}
             <button
               type="button"
               className="min-h-11 underline"
@@ -1469,7 +1466,7 @@ function ChromeBar({
           {/* The label is the widest fixed child; drop the words on the
             narrowest screens so the first row still fits. The arrow plus the
             accessible name below keep it unambiguous. */}
-          <span aria-hidden="true">&larr;</span>
+
           <span className="hidden sm:inline">
             {terms(worldSlug).lesson} Map
           </span>
@@ -1588,20 +1585,20 @@ function LessonTitleHeader({
         className="text-xs font-mono uppercase tracking-[3px] mb-3"
         style={{ color: "var(--tc-primary)" }}
       >
-        {terms(worldSlug).module.toUpperCase()} {moduleSlug} &middot;{" "}
+        {terms(worldSlug).module.toUpperCase()} {moduleSlug},{" "}
         {terms(worldSlug).lesson.toUpperCase()} {lesson.order}
         {lesson.pattern && lesson.pattern !== "standard" && (
           <>
-            {" "}
-            &middot;{" "}
+            {", "}
             <span data-testid="pattern-format-tag">
               {PATTERN_LABELS[lesson.pattern]}
             </span>
           </>
-        )}{" "}
-        &middot; {minutes} min
+        )}
+        {", "}
+        {minutes} min
         {exercises.length > 0 &&
-          ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}`}
+          `, ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}`}
       </div>
       <h1
         className="text-4xl md:text-6xl font-bold leading-[1.1] tracking-tight"

@@ -20,7 +20,7 @@ concept:
     mlTitle: "Feature Engineering"
     mlCode: "const features = tf.concat([rawSignal, fftMagnitudes], 1)"
     tier: structural
-    breaks: "Both transforms derive fields from raw data. A model can combine those fields through learned weights, so their units affect the numerical conditioning of training. Large raw values do not establish feature importance. Fit any scaling on training data and reuse it at inference."
+    breaks: "Both transforms derive fields from raw data. A model can combine those fields through learned weights, so their scales can make training easier or harder. Large raw values do not establish feature importance. Fit any scaling on training data and reuse it at inference."
 consequence:
   narrative: "DEEP SCAN 2.0 scores 87% on the mission’s evaluation. Its eight FFT inputs describe differences that the original three summary features could not capture."
 hints:
@@ -63,7 +63,7 @@ skillAxes: [data_prep]
 
 > The mission scores below are fictional examples. The runnable feature transform does not reproduce an accuracy improvement without a labeled dataset and a controlled evaluation.
 
-> **DEEP SCAN · EVALUATION LOG** · archive re-annotated against spectrogram-based review labels · held-out slice: 400 readings · inputs: raw time-domain [3] · accuracy 78.0% (312/400) · rerun with +8 FFT magnitude bins [11] · accuracy 87.0% (348/400) · same slice, same labels, both runs.
+> **DEEP SCAN, EVALUATION LOG**, archive re-annotated against spectrogram-based review labels, held-out slice: 400 readings, inputs: raw time-domain [3], accuracy 78.0% (312/400), rerun with +8 FFT magnitude bins [11], accuracy 87.0% (348/400), same slice, same labels, both runs.
 
 Both models read the same captures. The new model receives more measurements from each capture, including frequency information the original three features discarded.
 
@@ -74,7 +74,7 @@ The earlier deployment review gave this same three-feature model 94%: 47 correct
 </StoryPassage>
 
 <Dialogue speaker="Ensign Demir">
-What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase, we also give it the spectral decomposition. More information, better decisions.
+What if we feed the FFT magnitudes directly into the model? We could add the spectrum to amplitude, frequency, and phase. Would those extra measurements help it classify the signal?
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -82,7 +82,7 @@ That is feature engineering: deriving model inputs from the data we have. I used
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-Eight more measurements are not free either. Eleven inputs instead of three means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
+Eight more measurements are not free either. Increasing from three inputs to eleven means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute.
 </Dialogue>
 
 <StoryPassage>
@@ -93,7 +93,7 @@ He writes 85 on the board and signs it.
 
 You will turn each capture into a consistent set of measurements that a model can use.
 
-<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Combine raw and frequency-domain features, and explain why their scales can affect training", "Read why a held-out score differs from the training and validation numbers, and why re-labelling the archive moved a score without touching the model"]} />
+<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Convert a hertz band into fixed FFT bins and use their magnitudes as model features", "Combine raw and frequency-domain features, and explain why their scales can affect training", "Explain why changing evaluation rows or labels can change a score even when the model stays the same"]} />
 
 ## Mapping Captures into Features
 
@@ -104,11 +104,11 @@ You will turn each capture into a consistent set of measurements that a model ca
 
 // BEFORE: raw signal features only (3 values)
 // The model sees: [amplitude, frequency, phase]
-// Story result, not a benchmark: 78%
+// Fictional story result: 78%
 
 // AFTER: raw + FFT features (3 + N frequency bins)
 // The model sees: [amplitude, frequency, phase, fft_bin_0, fft_bin_1, ..., fft_bin_N]
-// Story result, not a benchmark: 87%
+// Fictional story result: 87%
 
 function extractFeatures(signal: number[], windowSize: number = 64): number[] {
   // The fixed bin band below requires exactly 64 samples at 256 Hz.
@@ -123,7 +123,7 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
 
     // Raw features (the original 3). The "frequency" feature is a raw
     // zero-crossing count over that window. For a clean zero-centered
-    // sinusoid it relates to frequency; mixtures, offsets and noise change
+    // sinusoid it relates to frequency. Mixtures, offsets and noise change
     // that relationship. Exact zeros also need a convention. 64 samples
     // can hold at most 63 crossings, which is the top of the range the
     // classifier's normalizer assumes.
@@ -132,8 +132,7 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
       i > 0 && v * windowSlice[i - 1] < 0 ? sum + 1 : sum, 0
     );
     // "phase" is the angle of the first two samples, atan2(s1, s0): a crude
-    // feature derived from two samples, not a general estimate of
-    // sinusoidal phase. The trained model expects it, so it stays, and it keeps the
+    // feature derived from two samples. It cannot estimate sinusoidal phase generally. The trained model expects it, so it stays, and it keeps the
     // name the contract gave it.
     const phase = Math.atan2(windowSlice[1], windowSlice[0]);
 
@@ -148,7 +147,7 @@ function extractFeatures(signal: number[], windowSize: number = 64): number[] {
     // (256 Hz / 64 samples), bins 13-20 have centers 52-80 Hz and cover
     // 50-82 Hz, above the catalogued background lines. Bin 18 is centered
     // at 72 Hz, nearest to 73.4 Hz. An off-bin tone can contribute to
-    // several of these features; bins are not isolated frequency buckets.
+    // several of these features. Bins are not isolated frequency buckets.
     const fixedBins = magnitudes.slice(13, 21);
 
     // Combine: [raw features..., fixed-bin FFT magnitudes...]
@@ -171,7 +170,7 @@ Features can have very different scales. That can affect initial activations and
 // Integration sketch: trainingFeatures contains only the training split.
 // Each row has the same finite feature columns. No empty or ragged rows.
 // These are population statistics for this training sample. Constant
-// columns use scale 1 and become zero; their standard deviation stays zero.
+// columns use scale 1 and become zero. Their standard deviation stays zero.
 
 function normalizeFeatures(features: number[][]): { normalized: number[][]; stats: { mean: number; std: number }[] } {
   if (!features.length || !features[0].length ||
@@ -179,7 +178,7 @@ function normalizeFeatures(features: number[][]): { normalized: number[][]; stat
     throw new Error('Expected finite, nonempty rectangular feature rows');
   }
   // Z-score normalization: (value - mean) / std
-  // Mean ≈ 0; nonconstant columns have population std ≈ 1.
+  // Mean ≈ 0. Nonconstant columns have population std ≈ 1.
   const stats = features[0].map((_, colIdx) => {
     const column = features.map(row => row[colIdx]);
     const mean = column.reduce((a, b) => a + b, 0) / column.length;
@@ -196,7 +195,7 @@ function normalizeFeatures(features: number[][]): { normalized: number[][]; stat
   return { normalized, stats };
 }
 
-// Save stats from training data; apply the SAME stats during inference
+// Save stats from training data. Apply the SAME stats during inference
 // This is critical: normalize test data with training statistics
 const { normalized: trainNorm, stats } = normalizeFeatures(trainingFeatures);
 
@@ -211,8 +210,8 @@ function normalizeWithStats(features: number[], stats: { mean: number; std: numb
 <CodeBlock language="typescript" title="enhanced-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Original model: 3 inputs → 32 → 16 → 1 (78% accuracy)
-// Enhanced model: 11 inputs → 32 → 16 → 1 (87% accuracy)
+// Original model: 3 inputs to 32 to 16 to 1 (78% accuracy)
+// Enhanced model: 11 inputs to 32 to 16 to 1 (87% accuracy)
 // Integration sketch: split raw captures BEFORE extracting overlapping
 // windows. Supply trainingFeatures, validationFeatures, testFeatures and
 // corresponding label tensors. Fit stats on trainingFeatures only.
@@ -234,7 +233,7 @@ enhancedModel.compile({
   metrics: ['accuracy'],
 });
 
-// Train on the normalized rows from above, not the raw feature vectors.
+// Train on the normalized rows from above, using their fitted scaler.
 const trainingX = tf.tensor2d(trainNorm);
 const validationX = tf.tensor2d(validationFeatures.map(row => normalizeWithStats(row, stats)));
 const history = await enhancedModel.fit(trainingX, trainY, {
@@ -262,11 +261,11 @@ Nazari is right about the size. `countParams()` reports 673 parameters for three
 
 Both the features and parameter count changed, so this comparison cannot tell you which caused the gain. Keep the held-out rows and training budget the same, repeat runs and include a simpler baseline. Validation can score above or below test because the samples or distributions differ. Neither ordering alone proves that data leaked between the sets.
 
-DEEP SCAN 2.0 is not running on the bridge yet. The dashboard keeps using module 4’s three min-max normalized features for another five modules. The eleven-feature vector is tested separately first. Module 7’s autoencoder uses it; module 10 retrains the deployed classifier with these inputs and five output classes instead of two.
+DEEP SCAN 2.0 is not running on the bridge yet. The dashboard keeps using module 4’s three min-max normalized features for another five modules. The crew tests the eleven-feature vector separately first. Module 7’s autoencoder uses it. Module 10 retrains the deployed classifier with these inputs and five output classes.
 
 ## Challenge
 
-Prepare the amplitude, zero-crossing count, and fixed FFT bins for the model's input row. This exercise selects bins inside the requested hertz band and omits the mission model's phase term. Inspect each returned value beside its feature name before scaling or training; every column must keep the same meaning across captures.
+Prepare the amplitude, zero-crossing count, and fixed FFT bins for the model's input row. This exercise selects bins inside the requested hertz band and omits the mission model's phase term. Inspect each returned value beside its feature name before scaling or training. Every column must keep the same meaning across captures.
 
 <Exercise slug="fft-features" />
 
@@ -280,11 +279,11 @@ Prepare the amplitude, zero-crossing count, and fixed FFT bins for the model's i
       "options": [
         {
           "text": "They add information that was never present in the captured window.",
-          "feedback": "The FFT is computed from the original samples."
+          "feedback": "Compute the FFT from the original samples."
         },
         {
           "text": "They guarantee better held-out accuracy regardless of the task.",
-          "feedback": "Whether the extra distinctions help must be measured."
+          "feedback": "Measure whether the extra distinctions help."
         },
         {
           "text": "They can expose spectral differences that the three summaries discarded.",
@@ -300,9 +299,9 @@ Prepare the amplitude, zero-crossing count, and fixed FFT bins for the model's i
 <LessonRecap
   whatYouLearned={[
     "Feature engineering calculates model inputs from the data you already have. Those inputs can reveal differences that earlier summaries left out.",
-    "Identical summary statistics can hide different spectra. Adding FFT magnitudes preserves distinctions those summaries discard; held-out improvement still needs testing.",
+    "Identical summary statistics can hide different spectra. Adding FFT magnitudes preserves distinctions those summaries discard. Held-out improvement still needs testing.",
     "Different feature scales can affect training. When using fitted normalization, compute its statistics on training rows and reuse them at inference.",
-    "Evaluation depends on reference labels. In the fictional mission review, correcting those labels lowers the old model score before additional features recover part of the loss."
+    "Evaluation depends on the labels used as answers. In the mission, corrected labels reveal more mistakes in the old model. Adding frequency features helps the new model catch some of them."
   ]}
   bridge="Like mapping API rows into fields a component needs, feature engineering turns recorded samples into measurements a model can use."
   youCanNow="Find the FFT bins inside a requested frequency band and return their magnitudes after the time-domain features."
@@ -310,7 +309,7 @@ Prepare the amplitude, zero-crossing count, and fixed FFT bins for the model's i
 
 <Epilogue>
 
-If the nine-point gain holds across the full archive, it would mean roughly 2,600 fewer mistakes. Nazari marks the projection as provisional; the cost also depends on which mistakes disappear. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board.
+If the nine-point gain holds across the full archive, it would mean roughly 2,600 fewer mistakes. Nazari marks the projection as provisional. The cost also depends on which mistakes disappear. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board.
 
 <Dialogue speaker="Chief Nazari" expression="grudging-respect">
 Nine points. That is the first idea of yours that has paid for its own investigation time, Ensign. Do not expect applause for the next one.

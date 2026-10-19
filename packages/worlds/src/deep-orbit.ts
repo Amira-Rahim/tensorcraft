@@ -4,7 +4,7 @@ export const deepOrbit: WorldManifest = {
   id: "space",
   slug: "deep-orbit",
   displayName: "Deep Orbit",
-  tagline: "Where signals guide you through the unknown",
+  tagline: "Help the crew investigate an unexplained signal",
   description:
     "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN, a deep-space signal classifier: a model that tells the crew what kind of signal just arrived.",
   palette: {

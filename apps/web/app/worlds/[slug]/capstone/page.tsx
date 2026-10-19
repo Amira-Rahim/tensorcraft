@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // segment's loading.tsx has streamed a 200 shell (soft-404 otherwise).
   if (!isLaunched(slug) || !world) notFound();
   return {
-    title: `${world.terminology.lesson} Complete: ${world.displayName} | Tensorcraft`,
+    title: `${world.terminology.lesson} Complete: ${world.displayName}, Tensorcraft`,
     description: `You've completed every module of ${world.displayName}. View your certificate and stats.`,
     alternates: {
       canonical: `https://tensorcraft.app/worlds/${slug}/capstone`,
@@ -49,14 +49,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: `https://tensorcraft.app/worlds/${slug}/capstone`,
-      title: `${world.terminology.lesson} Complete: ${world.displayName} | Tensorcraft`,
+      title: `${world.terminology.lesson} Complete: ${world.displayName}, Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(`${world.terminology.lesson} Complete`)}&world=${slug}&subtitle=${encodeURIComponent(world.displayName)}`,
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${world.terminology.lesson} Complete: ${world.displayName} | Tensorcraft`,
+      title: `${world.terminology.lesson} Complete: ${world.displayName}, Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(`${world.terminology.lesson} Complete`)}&world=${slug}&subtitle=${encodeURIComponent(world.displayName)}`,
       ],
@@ -342,7 +342,7 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "0.2em",
           }}
         >
-          {world.terminology.lesson.toUpperCase()} COMPLETE &middot;{" "}
+          {world.terminology.lesson.toUpperCase()} COMPLETE,{" "}
           {world.displayName.toUpperCase()}
         </div>
         <h1
@@ -532,7 +532,7 @@ export default async function CapstonePage({ params }: Props) {
                     letterSpacing: "0.03em",
                   }}
                 >
-                  {m.keyBridgeJs} &rarr; {m.keyBridgeMl}
+                  {m.keyBridgeJs} {m.keyBridgeMl}
                 </div>
               )}
             </li>
@@ -611,7 +611,7 @@ export default async function CapstonePage({ params }: Props) {
                 padding: "6px 14px",
               }}
             >
-              Explore &rarr;
+              Explore
             </div>
           </Link>
         ) : ownsAll ? (

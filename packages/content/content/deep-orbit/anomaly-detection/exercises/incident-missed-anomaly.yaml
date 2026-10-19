@@ -108,7 +108,7 @@ testCode: |
         'Raw error ranks these features 3, 2, 1, 0. Each error against that ' +
           'feature\'s own normal error ranks them 3, 1, 2, 0: feature 2 has ' +
           'the bigger raw error, feature 1 sits further from its own normal. ' +
-          'Rank the ratios, not the raw errors.',
+          'Rank each error relative to its own baseline using the ratios.',
       ).toEqual([3, 1, 2, 0]);
       expect(
         r.lowErrorFeatures,
@@ -119,7 +119,7 @@ testCode: |
       ).toEqual([0, 2]);
       recordResult({
         kind: 'table', title: 'Your feature-by-feature investigation',
-        summary: 'Synthetic missed-event investigation. Absolute errors and their baseline ratios locate unusual mismatches; neither proves why the detector missed the event.',
+        summary: 'Synthetic missed-event investigation. Absolute errors and their baseline ratios locate unusual mismatches. Neither proves why the detector missed the event.',
         columns: ['Feature index', 'Your absolute error', 'Normal absolute-error baseline', 'Error / baseline', 'Unusually low error', 'Ratio rank'],
         rows: r.perFeatureError.map((error, i) => [i, error, baseline[i], error / baseline[i], r.lowErrorFeatures.includes(i), r.rankedByRatio.indexOf(i) + 1]),
       });

@@ -18,7 +18,7 @@ export function WorldLearningPreview({ worldSlug }: { worldSlug: WorldSlug }) {
       <h2 className="text-2xl font-bold">What this world adds</h2>
       <p className="font-mono text-xs uppercase text-primary">
         {release.status === "preview"
-          ? "Sample available · full course forthcoming"
+          ? "Sample available, full course coming later"
           : release.courseAvailable
             ? "Course available"
             : "Forthcoming"}
@@ -42,18 +42,18 @@ export function WorldLearningPreview({ worldSlug }: { worldSlug: WorldSlug }) {
           ))}
         </ul>
         <p className="mt-4 text-sm text-text-muted">
-          Use these as refresher links, not a requirement to repeat the course.
-          Later Deep Orbit modules require access. A previous completion record
-          does not establish mastery of this new domain.
+          Use these links to revisit anything you need. You can continue without
+          repeating the course. Later Deep Orbit modules require access.
+          Finishing Deep Orbit gives you a starting point. You’ll still need to
+          learn this world’s new concepts.
         </p>
       </details>
       {worldSlug === "neon-protocol" ? (
         <VisionPreview />
       ) : (
         <p className="text-sm text-text-muted">
-          The full curriculum is being reviewed. This page describes its
-          intended scope; no lessons or checkout are available for this world
-          yet.
+          We are reviewing the full curriculum. This page describes its intended
+          scope. No lessons or checkout are available for this world yet.
         </p>
       )}
     </section>

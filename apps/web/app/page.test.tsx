@@ -79,13 +79,13 @@ vi.mock("framer-motion", () => ({
 
 describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("LandingHero", () => {
-    it("renders the story-first landing headline (owner baseline 2026-08-31)", () => {
+    it("renders the descriptive course headline", () => {
       render(<LandingHero />);
       // The headline is split across spans; the exact combined text also
       // gates the trailing spaces that keep the accessibility tree legible
       // across the block boundaries.
       expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
-        "Stories That Take You From JavaScript to ML.",
+        "Machine learning for JavaScript engineers.",
       );
     });
 
@@ -135,11 +135,12 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       );
     });
 
-    it("subhead carries the Skip Python differentiator instead of pipeline talk", () => {
+    it("subhead connects the crew story to the browser workflow", () => {
       // 2026-08-19 (owner): the eyebrow, stat line, and trust line were cut
       // from the hero; the differentiator now lives only in the subhead.
       const { container } = render(<LandingHero />);
-      expect(container.textContent).toMatch(/skip python/i);
+      expect(container.textContent).toMatch(/crew of the Archimedes/i);
+      expect(container.textContent).toMatch(/models in JavaScript/i);
       expect(container.textContent).not.toMatch(/pipeline/i);
     });
 
@@ -236,19 +237,14 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(container.textContent).not.toMatch(/where it breaks/i);
     });
 
-    it("contains no buttons (the connector is decoration, not a control)", () => {
+    it("keeps the comparison free of decorative arrow controls", () => {
       const { container } = render(<BridgePreviewSection />);
       expect(screen.queryAllByRole("button")).toHaveLength(0);
-      // The pre-redesign connector was a bordered, glowing tile that read
-      // as a toggle; pin the de-buttoning, not just the role.
+      // The comparison uses two labeled columns without a decorative arrow.
       const glyphs = Array.from(
         container.querySelectorAll('[aria-hidden="true"]'),
       ).filter((el) => el.textContent?.includes("⇄"));
-      expect(glyphs.length).toBeGreaterThan(0);
-      for (const glyph of glyphs) {
-        expect(glyph.className).not.toMatch(/border/);
-        expect((glyph as HTMLElement).style.boxShadow).toBe("");
-      }
+      expect(glyphs).toHaveLength(0);
     });
 
     it("renders the ML snippet one statement per line", () => {
@@ -279,8 +275,8 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(FAQ_ITEMS.length).toBeGreaterThanOrEqual(4);
       const all = FAQ_ITEMS.map((i) => `${i.q} ${i.a}`).join(" ");
       expect(all).toMatch(/math/i);
-      expect(all).toMatch(/5-day refund guarantee/i);
-      expect(all).toMatch(/no python required/i);
+      expect(all).toMatch(/full refund within 5 days/i);
+      expect(all).toMatch(/without python/i);
     });
 
     it("carries the objections absorbed from the removed Who This Is For section", async () => {

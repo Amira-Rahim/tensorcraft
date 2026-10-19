@@ -13,7 +13,7 @@ export function ProjectMilestone({ stage }: { stage: "data" | "evaluation" }) {
       <p>
         {stage === "data"
           ? "The starter supplies timestamped room readings. Choose features, document their order and split the data chronologically before fitting the scaler. Save those training statistics with the model. Keep later rows out of fitting."
-          : "Evaluate the rule and model on the same validation rows. Record which mistakes cost more, choose a threshold, then freeze it before reading the final test. Investigate at least one wrong prediction. A lower model score can be a useful result."}
+          : "Evaluate the rule and model on the same validation rows. Record which mistakes cost more, choose a threshold, then freeze it before reading the final test. Investigate at least one wrong prediction. Finding that the model performs worse than the rule is useful too."}
       </p>
       <p className="text-sm text-text-muted">
         This checkpoint links the lesson to your separate project. It awards no

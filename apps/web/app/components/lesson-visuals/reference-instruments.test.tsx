@@ -123,7 +123,9 @@ describe("audited optional reference instruments", () => {
       { target: { value: "0.9" } },
     );
     expect(status).toHaveTextContent("1 of 3 votes: no alert selected");
-    expect(status).toHaveTextContent("supplied values, not model runs");
+    expect(status).toHaveTextContent(
+      "supplies fixed autoencoder error and forecast values",
+    );
   });
 
   it("matches the shared detector baseline to real population moments", () => {

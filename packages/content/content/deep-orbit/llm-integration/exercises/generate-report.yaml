@@ -1,12 +1,12 @@
 slug: generate-report
 lessonSlug: report-generation
-title: "Assemble the Approved Report"
+title: "Assembly of the reviewed report"
 instructions: |
   Write assembleReport(title, sections). Each section has { heading, content, validated }. The validated flag records a person's earlier review decision. Assembling the text does not check its claims.
 
   Start with # title followed by a blank line. Keep approved sections in the supplied order. Format each as ## heading, a blank line, and its content.
 
-  If any section is not approved, add one ## Withheld block at the end. After a blank line, list each withheld heading as - heading in the original order. Never include its content. Leave out the Withheld block if every section is approved.
+  If any section fails review, add one ## Withheld block at the end. After a blank line, list each withheld heading as - heading in the original order. Never include its content. Leave out the Withheld block if every section passes review.
 
   Put \n\n---\n\n between blocks, with no separator after the last one. If sections is empty, return only the title and its following blank line.
 starterCode: |
@@ -57,7 +57,7 @@ testCode: |
       expect(report).toContain('Detailed analysis.');
       expect(
         report,
-        'The rule needs a blank line above it and below it. In markdown a "---" line sitting directly under text is a heading underline, not a rule: that last line of the section renders as a heading and no rule appears at all.',
+        'The rule needs a blank line above it and below it. In markdown a "---" line sitting directly under text creates a heading underline: that last line of the section renders as a heading and no rule appears at all.',
       ).toContain('\n\n---\n\n');
       expect(
         report.split('\n\n---\n\n').length - 1,
@@ -73,7 +73,7 @@ testCode: |
       expect(report).toContain('Detailed analysis.');
       expect(
         report,
-        'Every section is approved. Omit the Withheld block.',
+        'Every section passed review. Omit the Withheld block.',
       ).not.toContain('Withheld');
     });
     it('a failed section is cut, its content never ships, and its heading is listed under Withheld', () => {
@@ -85,7 +85,7 @@ testCode: |
       expect(report).toContain('## Withheld');
       expect(
         report,
-        'The gap is reported by name. Earth needs to know which section is missing, not just that the report is short.',
+        'Name the missing section so Earth knows which part of the report remains incomplete.',
       ).toContain('- Hypotheses');
       expect(report).toContain('153 anomalous, 1 unclassified.');
       recordResult({

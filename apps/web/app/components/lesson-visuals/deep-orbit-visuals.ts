@@ -86,7 +86,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "operations",
     "Can we merge the feeds without mixing the channels?",
     "Average two passes, then adjust the gain. Watch each channel keep its position.",
-    "Broadcasting applies the two-channel row to each reading. Element-wise operations preserve those positions; a matrix product combines them into weighted sums.",
+    "Broadcasting applies the two-channel row to each reading. Element-wise operations preserve those positions. A matrix product combines them into weighted sums.",
   ),
   "data-loading": visual(
     "foundations",
@@ -200,20 +200,20 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       ),
       stage(
         "Read locally",
-        "Sensor → tensor",
+        "Sensor to tensor",
         "The example remains on this device in this design. Privacy depends on every other data path too.",
         "const input = makeTensor(sensorReading);",
       ),
       stage(
         "Infer locally",
-        "Tensor → score",
+        "Tensor to score",
         "The browser executes the model using an available backend. Device resources constrain the model.",
         "const score = model.predict(input);",
       ),
       stage(
         "Show a result",
-        "Score → display",
-        "The UI consumes the result. Decide separately what, if anything, leaves the device.",
+        "Score to display",
+        "The UI displays the result. Decide separately what, if anything, leaves the device.",
         "renderScore(await score.data());",
       ),
     ],
@@ -244,7 +244,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Verify",
         "Small calculation",
-        "A small operation verifies the path before the larger model is involved. Dispose the test tensors.",
+        "A small operation verifies the path before you run the larger model. Dispose the test tensors.",
         "tf.tidy(() => tf.scalar(3).square().print());",
       ),
     ],
@@ -273,7 +273,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
         "const model = await tf.loadLayersModel(url);",
       ),
       stage(
-        "Check contract",
+        "Check input requirements",
         "Shape + preprocessing",
         "A loaded model still needs the input shape and preprocessing used during training.",
         "console.log(model.inputs[0].shape);",
@@ -294,7 +294,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Predict",
         "Output tensor",
-        "Prediction returns tensors. Keep them alive until their data has been read.",
+        "Prediction returns tensors. Keep them alive until you finish reading their data.",
         "const output = model.predict(input);",
       ),
       stage(
@@ -349,7 +349,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     [
       stage(
         "Choose task",
-        "Task contract",
+        "Model task",
         "Select a model trained for the operation you need. A text classifier is not a forecasting model.",
         "const task = 'sentiment-analysis';",
       ),
@@ -404,7 +404,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "features",
     "What would the model see in frequency features?",
     "Change the tone and compare the waveform with its magnitude bins.",
-    "FFT features describe frequency content. Whether they improve predictions must be checked on held-out data.",
+    "FFT features describe frequency content. Check whether they improve predictions on held-out data.",
   ),
   "windowing-and-overlap": visual(
     "signal-processing",
@@ -429,7 +429,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "rnn",
     "What survives from the previous reading?",
     "Move through the readings and see how each one updates a small recurrent state.",
-    "Each step uses both the current input and the previous state. The weights here are fixed teaching values.",
+    "Each step uses both the current input and the previous state. This example keeps the same weights throughout.",
   ),
   "lstm-gates": visual(
     "recurrent-networks",
@@ -462,13 +462,13 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "baseline",
     "How far is this reading from the usual pattern?",
     "Move a new reading relative to a small reference distribution.",
-    "Distance from this baseline is a reason to inspect a reading, not proof of an anomaly.",
+    "A reading far from this baseline needs investigation. Check what caused the difference.",
   ),
   autoencoders: visual(
     "anomaly-detection",
     "anomaly",
     "rebuild",
-    "What gets lost when a reading is compressed?",
+    "What does compression lose from a reading?",
     "Change one input feature and compare a fixed teaching reconstruction.",
     "An autoencoder learns to reconstruct its training data. Reconstruction failure can be evidence, but it is not a verdict.",
   ),
@@ -511,7 +511,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
     "time",
     "Does the most recent reading deserve the most weight?",
     "Change the query and positional coefficient, then compare weights across five time positions.",
-    "A positional term can change which earlier reading gets the greatest weight. This example uses chosen coefficients rather than learned ones.",
+    "A positional term can change which earlier reading gets the greatest weight. We chose the coefficients for this example. It performs no training.",
   ),
   forecasting: visual(
     "advanced-time-series",
@@ -552,13 +552,13 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Measure",
         "Await completion",
-        "Time through the output read so asynchronous work is included.",
+        "Keep the timer running until you finish reading the output, so it includes asynchronous work.",
         "// This model has one tensor output.\nconst start = performance.now();\nconst output = model.predict(input);\nawait output.data();\nconst elapsedMs = performance.now() - start;\noutput.dispose();",
       ),
       stage(
         "Inspect memory",
         "Live tensor count",
-        "Compare retained tensors across repeated calls. Growing counts can reveal a missing disposal.",
+        "Compare retained tensors across repeated calls. A growing count may mean your code has kept a tensor it no longer needs.",
         "const memory = tf.memory();",
       ),
       stage(
@@ -603,13 +603,13 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
         "const cached = results.get(key);",
       ),
       stage(
-        "Compute miss",
+        "Run on a cache miss",
         "Current pipeline",
         "Use current preprocessing and model versions when there is no valid cached entry.",
         "const value = cached ?? await predict(input);",
       ),
       stage(
-        "Bound storage",
+        "Limit saved entries",
         "Eviction policy",
         "Limit entries and invalidate obsolete versions so the cache cannot grow forever.",
         "// Evict the least recently used entry at the limit.",
@@ -636,7 +636,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Run workload",
         "Parallel operations",
-        "Large matrix operations can benefit from parallel execution. Small workloads may be dominated by overhead.",
+        "Large matrix operations can benefit from parallel execution. Overhead can take most of the time for small workloads.",
         "const output = model.predict(input);",
       ),
       stage(
@@ -660,7 +660,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
         "const context = { observations, sourceIds };",
       ),
       stage(
-        "Constrain task",
+        "Define the task",
         "Draft an explanation",
         "State the intended task and the limits of the evidence. Require uncertainty where the evidence is incomplete.",
         "const instruction = 'Draft from the supplied observations.';",
@@ -674,7 +674,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Check claims",
         "Evidence required",
-        "Compare each factual statement with the source. Route unresolved claims for review.",
+        "Compare each factual statement with the source. Send claims without enough evidence to a reviewer.",
         "const checks = verifyClaims(draft, context);",
       ),
     ],
@@ -692,20 +692,20 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       ),
       stage(
         "Evidence",
-        "Bounded context",
+        "Relevant context",
         "Separate supplied records from instructions and avoid treating retrieved text as trusted commands.",
         "const evidence = JSON.stringify(records);",
       ),
       stage(
         "Format",
         "Expected fields",
-        "Specify the required structure. Validate the returned object rather than trusting the request alone.",
+        "Specify the required structure. Validate the returned object to check whether it meets that structure.",
         "const required = ['classification', 'confidence', 'reasoning'];",
       ),
       stage(
         "Check",
         "Actual response",
-        "Check schema and evidence support under the chosen decoding settings.",
+        "Check that the reply has the required fields and that its claims match the evidence.",
         "validateReport(response);",
       ),
     ],
@@ -713,7 +713,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   "rag-for-signals": flow(
     "llm-integration",
     "Can the crew trace this sentence to a source?",
-    "Retrieval supplies context, not guaranteed truth. A citation must support the specific claim beside it.",
+    "Retrieval supplies context. The model can still misread or contradict it. A citation must support the specific claim beside it.",
     [
       stage(
         "Retrieve",
@@ -724,7 +724,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Keep source details",
         "Stable source IDs",
-        "Pass source IDs and text together so claims can be checked against the correct record.",
+        "Pass source IDs and text together so the reviewer can check each claim against the correct record.",
         "const context = records.map(({ id, text }) => ({ id, text }));",
       ),
       stage(
@@ -735,7 +735,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       ),
       stage(
         "Verify support",
-        "Claim → passage",
+        "Claim to passage",
         "An existing source ID is insufficient if the passage does not support the claim.",
         "verifyCitations(draft, records);",
       ),
@@ -744,12 +744,12 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   "report-generation": flow(
     "llm-integration",
     "Which sections are ready to leave the draft?",
-    "Assemble only sections that pass their checks. Surface missing or rejected sections instead of hiding them.",
+    "Assemble only sections that pass their checks. List missing or rejected sections so the reader knows which sections the report omits.",
     [
       stage(
         "Plan sections",
-        "Separate contracts",
-        "Give each section its own evidence and required fields so a failure can be located.",
+        "Section requirements",
+        "Give each section its own evidence and required fields so the reviewer can locate a failure.",
         "const sections = ['observations', 'analysis', 'limits'];",
       ),
       stage(
@@ -761,7 +761,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Validate",
         "Reviewed sections",
-        "A reviewer checks claims against evidence. The validated flag records that decision; the assembler cannot approve a claim.",
+        "A reviewer checks claims against evidence. The validated flag records that decision. The assembler cannot approve a claim.",
         "const checked = [{ heading, content, validated }];",
       ),
       stage(
@@ -774,7 +774,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   ),
   "multi-model-systems": flow(
     "llm-integration",
-    "What must each specialist hand to the next?",
+    "What should each model pass to the next stage?",
     "Pass the original reading to each stage. Check the classifier and detector replies before calling the alert writer.",
     [
       stage(
@@ -786,7 +786,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Detector",
         "Boolean decision",
-        "Give the detector the original raw reading and checked class. Require a boolean; the string 'false' is invalid.",
+        "Give the detector the original raw reading and checked class. Require a boolean. The string 'false' is invalid.",
         "const isAnomaly = await detectAnomaly(signal, classification);\nif (typeof isAnomaly !== 'boolean') throw new Error('Invalid detector reply');",
       ),
       stage(
@@ -831,7 +831,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
   ),
   "ci-cd-pipeline": flow(
     "capstone",
-    "Did the tests check the exact model being released?",
+    "Did the tests check the exact model this release deploys?",
     "Release the same graph, weights and preprocessing that passed evaluation. A rebuilt artifact needs new checks.",
     [
       stage(
@@ -899,7 +899,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       stage(
         "Intended use",
         "Scope + exclusions",
-        "Name the task and conditions where the model has not been validated.",
+        "Name the task and conditions where the crew has yet to evaluate the model.",
         "const card = { task, intendedUse, exclusions };",
       ),
       stage(
@@ -947,7 +947,7 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       ),
       stage(
         "End to end",
-        "Known reading → report",
+        "Known reading to report",
         "Run a known reading through the complete deployed path and compare it with the expected result.",
         "await verifyReleaseFixture();",
       ),

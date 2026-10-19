@@ -7,9 +7,9 @@ instructions: |
 
   Calculate the dot product of the query with every key. Apply softmax across the T scores, then use those weights to combine the values. Return one tensor with shape [dv]. This exercise uses unscaled scores, so do not divide by sqrt(d).
 
-  Reshape the query to [1, d] for matMul and transpose the keys. Remove only the result's batch axis. Even when dv is 1, the result must have shape [1], not a scalar.
+  Reshape the query to [1, d] for matMul and transpose the keys. Remove only the result's batch axis. Even when dv is 1, the result must keep shape [1]. A scalar would lose the value axis.
 
-  Use tf.tidy to free temporary tensors. Keep the caller's inputs alive, and leave the returned tensor for the caller to dispose. Keys and values may have different widths, so combine the values rather than the keys.
+  Use tf.tidy to free temporary tensors. Keep the caller's inputs alive, and leave the returned tensor for the caller to dispose. Keys and values may have different widths, so apply the attention weights to the value rows.
 starterCode: |
   function simpleAttention(query, keys, values) {
     // Compare the query with keys to get weights.
@@ -40,11 +40,11 @@ testCode: |
         const detail = (err && err.message) || String(err);
         if (detail.toLowerCase().indexOf('softmax') !== -1) {
           throw new Error(
-            'tf.softmax normalizes the LAST axis only, so a column of scores puts the steps on an axis it will not touch. Score the query against the keys so the scores arrive as one row of T numbers, then soften that row. tfjs said: ' + detail,
+            'tf.softmax operates along the last axis. Arrange the T scores in one row, then apply softmax across that row. TensorFlow.js error: ' + detail,
           );
         }
         throw new Error(
-          'simpleAttention threw before it returned a blend, so no weights were scored. tfjs said: ' + detail,
+          'simpleAttention failed before returning the weighted sum. TensorFlow.js error: ' + detail,
         );
       }
       expect(
@@ -53,7 +53,7 @@ testCode: |
       ).toBeDefined();
       expect(
         out && typeof out.dataSync,
-        'The tests read the result with dataSync(), so it has to be a tensor rather than a plain array or an object.',
+        'The tests read the result with dataSync(), so return a tensor with that method.',
       ).toBe('function');
       return out;
     };
@@ -68,7 +68,7 @@ testCode: |
       );
       expect(
         out.shape,
-        'The keys are 8 wide here and the values are 3 wide. A result 8 wide means the keys got pooled, and pooling the keys throws the values away.',
+        'Each key has 8 features and each value has 3. Apply the attention weights to the values, so the result has 3 features.',
       ).toEqual([3]);
     });
 
@@ -137,7 +137,7 @@ testCode: |
       ).toBeCloseTo(1 / (1 + Math.exp(-gap)), 3);
       recordResult({
         kind: 'table', title: 'Your weighted attention blend',
-        summary: 'Synthetic query and keys. Values are twice the identity matrix, so dividing each returned component by two reveals its attention weight for this probe. This is an untrained calculation, not an explanation of a forecast.',
+        summary: 'Synthetic query and keys. Values are twice the identity matrix, so dividing each returned component by two reveals its attention weight for this probe. This calculation performs no training and explains no forecast.',
         columns: ['Value row', 'Weight derived from your blend', 'Returned output component'],
         rows: [[0, first, got[0]], [1, second, got[1]]],
       });
@@ -158,7 +158,7 @@ testCode: |
       ).toBeCloseTo(5, 2);
       expect(
         got[1],
-        'Both coordinates come from the same weighted sum, so the second one has to land on the same row.',
+        'Use the same attention weights for both coordinates of the output.',
       ).toBeCloseTo(7, 2);
     });
 
@@ -179,11 +179,11 @@ testCode: |
       const got = Array.from(out.dataSync());
       expect(
         got[1] / 2,
-        'A key is scored by multiplying it against the query coordinate for coordinate and adding the products up, all d of them. Score on one coordinate, or leave one out, and this window ranks the wrong step.',
+        'Score each key by multiplying matching coordinates with the query and adding all d products. Score on one coordinate, or leave one out, and this window ranks the wrong step.',
       ).toBeCloseTo(0.8808, 3);
       expect(
         got[0] / 2,
-        'The losing step keeps the rest of the same softmax budget, so this share is whatever the winner left.',
+        'The two attention weights must add to 1. The second weight is 1 minus the first.',
       ).toBeCloseTo(0.1192, 3);
     });
 
@@ -225,7 +225,7 @@ testCode: |
         const expected = values.reduce((s, row, t) => s + weights[t] * row[i], 0);
         expect(
           got[i],
-          'This window is drawn fresh on every run, so the blend has to be computed from these keys and these values. Scores come from the keys, and the weighted sum runs over the values.',
+          'The test draws a fresh window on every run. Calculate the blend from its keys and values. Scores come from the keys, and the weighted sum runs over the values.',
         ).toBeCloseTo(expected, 3);
       }
     });

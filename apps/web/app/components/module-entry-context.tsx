@@ -8,23 +8,23 @@ export const MODULE_ENTRY_CONTEXT: Record<
     story:
       "The Archimedes has received a structured stream from Sector 7-G. ARIA's existing parsing rules have not explained it.",
     prerequisites:
-      "JavaScript arrays, functions, objects, modules, and async calls. No ML background is assumed.",
+      "JavaScript arrays, functions, objects, modules, and async calls. You can start without prior ML experience.",
   },
   "neural-networks": {
     story:
-      "The crew can read the stream's channels. One archived sample has been flagged for review, but its cause and true label remain unresolved.",
+      "The crew can read the stream's channels. The crew has flagged one archived sample for review, but its cause and true label remain unresolved.",
     prerequisites:
       "Tensor shape, axis meanings, readback, cleanup, and training-only normalization.",
   },
   "training-loop": {
     story:
-      "The crew has a candidate classifier. They need evidence that learning improves its decisions, rather than just changing its scores.",
+      "The crew has a candidate classifier. They need evidence that learning improves its decisions, on data outside its training set.",
     prerequisites:
       "Features, labels, weighted sums, activations, and a forward pass.",
   },
   "browser-runtimes": {
     story:
-      "DEEP SCAN has been trained and evaluated on a limited dataset. The crew now needs to reproduce its behavior on the ship's interfaces.",
+      "The crew has trained and evaluated DEEP SCAN on a limited dataset. The crew now needs to reproduce its behavior on the ship's interfaces.",
     prerequisites:
       "Training versus inference, held-out evaluation, a simple baseline, and saved preprocessing.",
   },
@@ -42,13 +42,13 @@ export const MODULE_ENTRY_CONTEXT: Record<
   },
   "anomaly-detection": {
     story:
-      "The timing pattern merits investigation. An unusual score still does not supply a confirmed event label.",
+      "The timing pattern needs a closer look. An unusual score alone cannot tell the crew what caused it.",
     prerequisites:
-      "Training-only normalization, prediction errors, and validation/test separation. Reconstruction error is introduced in this module.",
+      "Training-only normalization, prediction errors, and validation/test separation. This module introduces reconstruction error.",
   },
   "advanced-time-series": {
     story:
-      "The crew can measure departures from its baseline. It still needs to explain which earlier observations help a forecast and when the forecast fails.",
+      "The crew can measure how readings differ from the baseline. It still needs to explain which earlier observations help a forecast and when the forecast fails.",
     prerequisites:
       "Ordered sequences, persistence baselines, recurrent state, and error analysis.",
   },
@@ -60,13 +60,13 @@ export const MODULE_ENTRY_CONTEXT: Record<
   },
   "optimization-edge": {
     story:
-      "Report drafts now pass through a review gate. The crew also needs inference to fit the bridge's memory and latency constraints.",
+      "The crew must approve report drafts before sending them. The crew also needs inference to fit the bridge's memory and latency constraints.",
     prerequisites:
       "Model artifacts, preprocessing versions, browser backends, and held-out output comparison.",
   },
   capstone: {
     story:
-      "The crew has reduced the system's resource demands after a missed capture. That lost capture remains lost; the next deployment needs an explicit verification and handover plan.",
+      "The crew has reduced the system's resource demands after a missed capture. That lost capture remains lost. The next deployment needs an explicit verification and handover plan.",
     prerequisites:
       "Artifact reload, evaluation, versioned caching, resource measurements, and failure handling.",
   },

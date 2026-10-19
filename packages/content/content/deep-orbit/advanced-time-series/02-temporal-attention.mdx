@@ -13,7 +13,7 @@ context:
   narrative: "Demir applies attention across time. The model gives each step in a signal window a weight, then combines the readings using those weights."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Temporal attention gives each time step a weight, then blends its values into a summary. A larger weight means more influence in that blend, not proof that the step caused a prediction."
+  explanation: "Temporal attention gives each time step a weight, then blends its values into a summary. A larger weight gives that step more influence in the blend. Its value also matters, so the weight alone cannot explain a prediction."
   bridge:
     jsTitle: "scrollIntoView()"
     jsCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
@@ -22,14 +22,14 @@ concept:
     tier: intuition
     breaks: "scrollIntoView moves toward an element chosen by application code. This attention scorer computes one learned weight per time step, then blends the values. Its scoring cost grows linearly with sequence length. Full self-attention scores every step against every other, creating a T-by-T matrix with quadratic cost."
 consequence:
-  narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 74 readings later. The crew checks the raw timing separately; weights alone do not confirm a physical pattern."
+  narrative: "The largest attention weights fall near the amplitude spike and a frequency shift 74 readings later. The crew checks the timestamps too. The weights alone do not confirm a physical pattern."
 hints:
   - level: nudge
     content: |
       Add a position column to the readings and calculate one score per step. Apply softmax to those scores. Use the weights to combine the original [T, d] readings into one [d] summary.
   - level: guidance
     content: |
-      The scorer has d + 1 rows: one for each feature and one for position. Flatten its output before softmax so the weights run across time steps. Use those weights on the original readings, not the copy with the position column. The summary must contain d numbers, not d + 1.
+      The scorer has d + 1 rows: one for each feature and one for position. Flatten its output before softmax so the weights run across time steps. Apply those weights to the original readings. Leave out the added position column so the summary contains d numbers.
   - level: solution
     content: |
       function temporalAttention(sequence, scorerWeights) {
@@ -117,7 +117,7 @@ Keep three counts separate. A dashboard time step is one reading, arriving once 
 
 In the earlier capture, the spike is at `4 s`. The shift starts at timestamp `77.4 s`, so step 78 is the first one-second reading that includes it. Those displayed steps are 74 positions apart. The raw timestamps give the more precise gap: `77.4 - 4 = 73.4 s`. The 80-step window holds both events.
 
-A 64-sample capture means something else: 64 samples from one channel at 256 Hz, covering a quarter of a second. We calculate each reading's three features from that capture. The ship's 64 sensor channels are a separate count again. They describe how many streams report, not how much time passes.
+A 64-sample capture means something else: 64 samples from one channel at 256 Hz, covering a quarter of a second. We calculate each reading's three features from that capture. The ship's 64 sensor channels are a separate count again. They count the streams. The sampling rate and sample count determine the duration.
 
 ## Interpreting Attention Weights
 
@@ -143,12 +143,12 @@ function topAttentionSteps(
     .slice(0, topK);
 }
 
-// Fictional mission readings, not outputs of the untrained layer above.
+// The story supplies these fictional readings. The untrained layer above does not produce them.
 // These use raw units: amplitude 0 to 2048 hull counts, frequency as a
 // zero-crossing count from 0 to 63 over 64 samples, and phase in radians.
-// Step 78: weight=0.15, reading=[635, 40, 1.57]   ← frequency shift
-// Step 4:  weight=0.12, reading=[1980, 37, 0.23]  ← amplitude spike
-// Step 40: weight=0.09, reading=[1065, 37, 0.89]  ← mid-pattern
+// Step 78: weight=0.15, reading=[635, 40, 1.57]: frequency shift
+// Step 4:  weight=0.12, reading=[1980, 37, 0.23]: amplitude spike
+// Step 40: weight=0.09, reading=[1065, 37, 0.89]: mid-pattern
 // A crossing count does not uniquely identify frequency. Phase, offset,
 // mixtures, noise, and window length affect it. Check the FFT and waveform.
 // Removing a step tests sensitivity but can create unrealistic inputs.
@@ -209,7 +209,7 @@ const positionalScorer = tf.layers.dense({ units: 1 });
 
 function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; weights: tf.Tensor2D } {
   return tf.tidy(() => {
-    // Position informs WHERE to look; the pooled value is still the readings.
+    // Position informs WHERE to look. The pooled value is still the readings.
     const scores = (positionalScorer.apply(withPosition(sequence)) as tf.Tensor).squeeze([2]) as tf.Tensor2D;
     const weights = tf.softmax(scores, 1);                                  // [batch, T]
     const attended = tf.sum(tf.mul(sequence, weights.expandDims(2)), 1) as tf.Tensor2D;  // [batch, 3]
@@ -222,7 +222,7 @@ function positionalAttention(sequence: tf.Tensor3D): { attended: tf.Tensor2D; we
 // because lateness is now a number it multiplies by a weight.`}
 </CodeBlock>
 
-Sinusoidal encodings are one approach used in the original Transformer. Learned positions and relative or rotary schemes are other choices. Our linear position column only lets the scorer favor earlier or later steps; it is not a full transformer position mechanism.
+Sinusoidal encodings are one approach used in the original Transformer. Learned positions and relative or rotary schemes are other choices. Our linear position column only lets the scorer favor earlier or later steps. It is not a full transformer position mechanism.
 
 ## Challenge
 
@@ -232,7 +232,7 @@ Build the temporal attention path with position as a scored feature. Inspect its
 
 <RecallPrompt
   question="What can an attention plot tell you, and what does it leave uncertain?"
-  answer="The weights sum to one and show which time steps received more weight. A step's contribution also depends on its values. A large weight does not prove that step caused the prediction, and different weights can produce the same result. Check the inputs, compare prediction errors, and try removing parts of the input to see what changes. The plot is a starting point, not a complete explanation."
+  answer="The weights sum to one and show which time steps received more weight. A step's contribution also depends on its values. A large weight does not prove that step caused the prediction, and different weights can produce the same result. Check the inputs, compare prediction errors, and try removing parts of the input to see what changes. The plot helps you decide what to investigate next."
   checks={[
     {
       "kind": "choice",
@@ -240,7 +240,7 @@ Build the temporal attention path with position as a scored feature. Inspect its
       "options": [
         {
           "text": "Which time steps received larger weights in the summary.",
-          "feedback": "The weights show allocation across time steps; the value vectors also determine their contributions."
+          "feedback": "The weights show allocation across time steps. The value vectors also determine their contributions."
         },
         {
           "text": "A verified causal explanation of the prediction.",
@@ -252,7 +252,7 @@ Build the temporal attention path with position as a scored feature. Inspect its
         }
       ],
       "correctIndex": 0,
-      "explanation": "The weights show allocation across time steps; the value vectors also determine their contributions."
+      "explanation": "The weights show allocation across time steps. The value vectors also determine their contributions."
     },
     {
       "kind": "choice",
@@ -264,15 +264,15 @@ Build the temporal attention path with position as a scored feature. Inspect its
         },
         {
           "text": "No other checks, because softmax already verifies the explanation.",
-          "feedback": "Softmax normalizes weights; it does not validate explanations."
+          "feedback": "Softmax normalizes weights. It does not validate explanations."
         },
         {
-          "text": "Check inputs and errors, and test what changes when parts of the input are removed.",
-          "feedback": "Attention plots are a starting point for investigation, not a substitute for evaluating the decision."
+          "text": "Check inputs and errors, and test what changes when you remove parts of the input.",
+          "feedback": "Use the attention plot to guide an investigation, then evaluate the prediction against the evidence."
         }
       ],
       "correctIndex": 2,
-      "explanation": "Attention plots are a starting point for investigation, not a substitute for evaluating the decision."
+      "explanation": "Use the attention plot to guide an investigation, then evaluate the prediction against the evidence."
     }
   ]}
 />
@@ -281,12 +281,12 @@ Build the temporal attention path with position as a scored feature. Inspect its
   whatYouLearned={[
     "Temporal attention applies a learned scoring function along the time axis, then softmax-normalizes the scores into a probability distribution over time steps.",
     "The weighted sum of time-step features concentrates the model's representation on the highest-scoring positions, which may help prediction after training and evaluation.",
-    "Attention weights are inspectable: one number per time step, which is what a heatmap over the window draws. They show where the model put its weight, and that is a map of where it looked, not a proof of why it decided.",
-    "Softmax renormalizes over whatever window it is handed. A capture that lost its onset still produces weights summing to 1 and an output of the same shape, so output shape and weight sum alone cannot establish that the input was complete.",
-    "This scorer sees raw readings without sequence context, so pooling is order-invariant until position is added. A position column lets it favor earlier or later steps; the previous lesson's LSTM states already contained context."
+    "Plot one attention weight per time step to see which readings received more weight. That helps you investigate the prediction, but does not explain it on its own.",
+    "Softmax renormalizes over the window you supply. A capture that lost its onset still produces weights summing to 1 and an output of the same shape, so output shape and weight sum alone cannot establish that the input was complete.",
+    "This scorer sees raw readings without sequence context, so pooling ignores order until you add position. A position column lets it favor earlier or later steps. The previous lesson's LSTM states already contained context."
   ]}
   bridge="scrollIntoView targets a chosen element. Temporal attention learns weights over time steps and uses them to combine their representations."
-  youCanNow="Score a window's time steps with position included, pool it under the resulting weights, and read those weights as where the model looked."
+  youCanNow="Include position when scoring each step, combine the readings using the resulting weights, and inspect how much weight each step received."
 />
 
 <Epilogue>

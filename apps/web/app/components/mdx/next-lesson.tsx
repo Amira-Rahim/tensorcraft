@@ -21,7 +21,7 @@ export function NextLesson({
       className="group block p-5 my-8 bg-surface-raised border border-border transition-all brutalist-hover hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_var(--tc-primary)]"
     >
       <span className="text-xs font-mono font-semibold uppercase tracking-widest text-text-muted block mb-2">
-        Next Lesson →
+        Next Lesson
       </span>
 
       <span className="text-lg font-semibold text-text-primary block">

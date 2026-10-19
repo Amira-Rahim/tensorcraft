@@ -102,7 +102,7 @@ function LearningRouteBody({
       if (accountId) router.refresh();
     } catch {
       setStatus(
-        "The preference could not be saved. Your previous choice is unchanged. Try again.",
+        "We could not save your preference. Your previous choice stays the same. Try again.",
       );
     } finally {
       setSaving(false);
@@ -114,11 +114,11 @@ function LearningRouteBody({
       className="learning-route-picker my-6 space-y-4 border border-border bg-surface p-5 text-text"
     >
       <h2 id={`${uid}-title`} className="text-xl font-semibold">
-        Choose your way through Deep Orbit
+        Your route through Deep Orbit
       </h2>
       <p className="text-sm text-text-muted">
         This describes your ML background. Your JavaScript experience is a
-        separate preference. Change routes whenever you need to; your completed
+        separate preference. Change routes whenever you need to. Your completed
         work stays recorded.
       </p>
       <div
@@ -148,7 +148,7 @@ function LearningRouteBody({
           onClick={() => void choose("challenge")}
         >
           <span className="block font-semibold">
-            I know the basics; show me the engineering challenges
+            I know the basics. Show me the engineering challenges
           </span>
           <span className="mt-2 block">
             Start with runtime and evaluation work. Keep explanations and story
@@ -158,8 +158,8 @@ function LearningRouteBody({
       </div>
       {unavailable && (
         <p role="status" className="text-sm">
-          Your saved account preference could not be loaded. The guided route is
-          shown as a fallback. Reload to retry before replacing a prior choice.
+          We could not load your account preference. This page currently shows
+          the guided route. Reload to retry before replacing a prior choice.
         </p>
       )}
       {guest && (
@@ -169,7 +169,7 @@ function LearningRouteBody({
             {guest === "challenge"
               ? "engineering challenges"
               : "guided learning"}
-            . Your account preference has been kept.
+            . Your account preference stays the same.
           </p>
           <button
             className={button}
@@ -281,7 +281,7 @@ function ReadinessCheck() {
           <p>
             {gaps.length
               ? "Revisit these ideas before the engineering challenges:"
-              : "These foundations are familiar. Browser runtimes is a reasonable place to start; revisit earlier lessons as needed."}
+              : "These foundations are familiar. Browser runtimes is a reasonable place to start. Revisit earlier lessons as needed."}
           </p>
           {gaps.map(({ id, review }) => (
             <Link

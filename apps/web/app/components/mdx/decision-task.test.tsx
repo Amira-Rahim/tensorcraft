@@ -71,7 +71,7 @@ it("reveals feedback only after submission and retains the first attempt after a
   render(<DecisionTask id="review-costs" />);
   expect(screen.getByText(/Attempt 2:/)).toBeInTheDocument();
   expect(
-    screen.getByText(/has not been automatically graded/),
+    screen.getByText(/without automatically grading it/),
   ).toBeInTheDocument();
 });
 

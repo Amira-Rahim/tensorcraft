@@ -15,14 +15,14 @@ context:
   narrative: "Farah reopens a capture from the first week. It shows the slow rise and fall she found when she arranged the readings into rows. She wants to see whether a frequency plot helps explain it."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). The full complex transform preserves the sampled information; a magnitude-only view drops phase."
+  explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). The full complex transform preserves the sampled information. A magnitude-only view drops phase."
   bridge:
     jsTitle: "DOM vs CSSOM"
     jsCode: "document.querySelector('div') // DOM view of the page"
     mlTitle: "Time vs Frequency"
     mlCode: "fft(signal) // frequency view of the signal"
     tier: intuition
-    breaks: "The DOM and CSSOM describe different things; neither can be calculated from the other. A full Fourier transform instead describes the same samples by frequency. Its inverse can recover those samples within rounding limits. Magnitudes alone lose phase. Sampling and recording length already limit what was captured."
+    breaks: "The DOM and CSSOM describe different things. You need both sources because each contains information the other lacks. A full Fourier transform instead describes the same samples by frequency. Its inverse can recover those samples within rounding limits. Magnitudes alone lose phase. Sampling and recording length already limit what the recorder can capture."
 consequence:
   narrative: "Farah compares the same samples in time and frequency. A weak repeating component is easier to inspect in the spectrum."
 hints:
@@ -40,11 +40,11 @@ keywords:
 skillAxes: [data_prep]
 ---
 
-> **ARIA ARCHIVE · PLAYBACK REQUEST: DR. FARAH** · Lab display, first week of contact. The recording header gives 64 sensor channels in a fixed order. Arranging the readings as `[450, 64]` puts one sensor in each column. A slow, regular swell appears down the columns. End of frame.
+> **ARIA ARCHIVE, PLAYBACK REQUEST: DR. FARAH**, Lab display, first week of contact. The recording header gives 64 sensor channels in a fixed order. Arranging the readings as `[450, 64]` puts one sensor in each column. A slow, regular swell appears down the columns. End of frame.
 
 <StoryPassage>
 
-Farah has kept that frame pinned to the corner of her display since the day she found it: 450 readings down, one column for each of the 64 hull channels. The swell has never gotten a name. Today she drags the old capture to the center of the screen and puts the live plot beside it.
+Farah has kept that frame pinned to the corner of her display since the day she found it: 450 readings down, one column for each of the 64 hull channels. She still doesn’t know what causes the swell. Today she drags the old capture to the center of the screen and puts the live plot beside it.
 
 </StoryPassage>
 
@@ -57,16 +57,16 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-The DOM and CSSOM describe different things. Neither can be calculated from the other. The FFT instead describes the same samples by frequency. Keep its full result, including phase, and we can reconstruct the samples, apart from rounding. Magnitudes alone cannot do that.
+The DOM and CSSOM describe different things. You need both sources because each contains information the other lacks. The FFT instead describes the same samples by frequency. Keep its full result, including phase, and we can reconstruct the samples, apart from rounding. Magnitudes alone cannot do that.
 
-Sampling and choosing a recording window already limit what we captured. The time plot shows when values change; the frequency plot helps us see what repeats.
+Sampling and choosing a recording window already limit what we captured. The time plot shows when values change. The frequency plot helps us see what repeats.
 </Dialogue>
 
 You will compare two captures in time and frequency views to find a difference hidden in the time trace.
 
 <LearningObjectives objectives={["Compare the same capture in time and frequency views", "Use the time plot to inspect changes and the frequency plot to inspect repetition", "Explain why a weak repeating component may be easier to see in a magnitude spectrum"]} />
 
-## Two Views, One Signal
+## Time and frequency views
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -77,7 +77,7 @@ You will compare two captures in time and frequency views to find a difference h
 // Like reading the DOM: what is the value at each point in time?
 // Twelve samples at 12 Hz, so this is one second holding exactly one cycle.
 const timeDomain = [0.5, 0.87, 1.0, 0.87, 0.5, 0.0, -0.5, -0.87, -1.0, -0.87, -0.5, 0.0];
-// ^ This looks like... a wave? Hard to tell from raw numbers.
+// Plot these samples to see the wave over time.
 
 // FREQUENCY DOMAIN: which frequencies are present and how strong.
 // The transform hands back an array, and each slot in it is a bin: one
@@ -87,7 +87,7 @@ const frequencyDomain = tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(timeDo
 console.log(frequencyDomain.map((m) => m.toFixed(1)).join(' '));
 // "0.0 6.0 0.0 0.0 0.0 0.0 0.0": one 1 Hz component and nothing else. The
 // 6.0 is approximately amplitude times N/2 for this on-bin sinusoid.
-// Later examples also use raw FFT magnitudes; off-bin tones and tapering
+// Later examples also use raw FFT magnitudes. Off-bin tones and tapering
 // spread magnitude across bins, so that shortcut does not always apply.
 
 // Generate a time-domain signal from known frequencies
@@ -119,7 +119,7 @@ console.log(complex.slice(0, 10));
 
 ## Why Frequency Matters for DEEP SCAN
 
-The capture is difficult to inspect by eye. Its magnitude spectrum lets Farah look for peaks outside the known background frequencies. An unexpected peak is a candidate for investigation, not proof of an unknown physical source: interference and instrument faults can produce peaks too.
+The capture is difficult to inspect by eye. Its magnitude spectrum lets Farah look for peaks outside the known background frequencies. An unexpected peak gives the crew something to investigate. Interference and instrument faults can produce peaks too, so they still need to identify its source.
 
 <CodeBlock language="typescript" title="why-frequency.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -144,7 +144,7 @@ const anomalousSignal = generateSignal([
 // cosmicNoise[100] = -0.671, anomalousSignal[100] = -0.715
 
 // The transform that makes the difference visible. The challenge below
-// runs this exact call on both captures; lesson 2 explains what it does.
+// runs this exact call on both captures. Lesson 2 explains what it does.
 const mags = tf.tidy(() => tf.abs(tf.spectral.rfft(tf.tensor1d(anomalousSignal))).arraySync() as number[]);
 console.log(mags[94].toFixed(1), mags[146].toFixed(1), mags[147].toFixed(1));
 // "51.2 3.0 12.0": the 47 Hz we authored, then energy at 73-73.5 Hz
@@ -172,7 +172,7 @@ console.log(visibleBins(onBin), visibleBins(betweenBins)); // 1, 33`}
 
 ## Challenge
 
-Compare the captures sample by sample, then compare their FFT magnitudes. Return whether the samples are close enough and the first bin whose magnitudes differ beyond the limit. That bin gives Farah a frequency band to inspect next; it does not identify the source.
+Compare the captures sample by sample, then compare their FFT magnitudes. Return whether the samples are close enough and the first bin whose magnitudes differ beyond the limit. That bin gives Farah a frequency band to inspect next. It does not identify the source.
 
 <Exercise slug="time-vs-frequency" />
 
@@ -193,7 +193,7 @@ Compare the captures sample by sample, then compare their FFT magnitudes. Return
           "feedback": "Visibility still depends on noise, windowing and nearby peaks."
         },
         {
-          "text": "It separates contributions by frequency instead of showing only their summed value at each moment.",
+          "text": "It shows how much each frequency contributes to the samples.",
           "feedback": "Each point on a time plot combines all the signal’s components. A weak repeating component can be hidden by stronger ones. A frequency plot separates their contributions, so the weak component may form a visible peak. A tone between bin centers spreads across bins, called spectral leakage. Noise, nearby peaks and the window used still affect what you can see."
         }
       ],
@@ -204,8 +204,8 @@ Compare the captures sample by sample, then compare their FFT magnitudes. Return
 />
 
 <LessonRecap
-  whatYouLearned={["A time plot shows sampled values in order; a magnitude spectrum highlights periodic components.", "The full complex transform retains the sampled information within numerical precision. Magnitudes alone discard phase.", "A tone between bin centers leaks across many bins. Windowing and noise affect whether a weak component is visible."]}
-  bridge="The DOM and computed styles describe different parts of a page. A full FFT instead describes the same recorded samples by frequency; its inverse can recover those samples within rounding limits."
+  whatYouLearned={["A time plot shows sampled values in order. A magnitude spectrum highlights periodic components.", "The full complex transform retains the sampled information within numerical precision. Magnitudes alone discard phase.", "A tone between bin centers leaks across many bins. Windowing and noise affect whether a weak component is visible."]}
+  bridge="The DOM and computed styles describe different parts of a page. A full FFT instead describes the same recorded samples by frequency. Its inverse can recover those samples within rounding limits."
   youCanNow="Explain how a frequency view can reveal a weak repeating signal. Transform two captures and find the first bin where their magnitudes differ beyond the chosen limit."
 />
 

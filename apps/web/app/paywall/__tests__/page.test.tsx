@@ -28,7 +28,7 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     render(<PaywallPage />);
     const h1 = screen.getByTestId("paywall-heading");
     expect(h1.tagName).toBe("H1");
-    expect(h1).toHaveTextContent(/Module 1 is done\. The model isn[''’]t\./i);
+    expect(h1).toHaveTextContent(/The rest of Deep Orbit/i);
   });
 
   it("renders the primary CTA pointing to /pricing", () => {
@@ -63,7 +63,7 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     const table = screen.getByTestId("comparison-table");
     for (const feature of [
       "All 11 modules",
-      "GitHub push flow",
+      "Save exercises to GitHub",
       "Certificate of completion",
       "Capstone project",
       "Lifetime updates",

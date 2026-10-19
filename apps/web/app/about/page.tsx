@@ -7,9 +7,9 @@ import {
 } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
-  title: "About Tensorcraft | Why this course exists",
+  title: "About Tensorcraft, Why this course exists",
   description:
-    "Why Tensorcraft was built, how it maps ML onto JavaScript, and what we deliberately left out.",
+    "Why we built Tensorcraft, how it maps ML onto JavaScript, and what we deliberately left out.",
   alternates: { canonical: "https://tensorcraft.app/about" },
   // Per-route openGraph/twitter. Without these the route inherited the root
   // layout's block, so og:url pointed at the homepage and every share of
@@ -18,14 +18,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/about",
-    title: "About Tensorcraft | Tensorcraft",
+    title: "About Tensorcraft, Tensorcraft",
     images: [
       "/api/og?title=About%20Tensorcraft&world=deep-orbit&subtitle=Why%20this%20course%20exists",
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Tensorcraft | Tensorcraft",
+    title: "About Tensorcraft, Tensorcraft",
     images: [
       "/api/og?title=About%20Tensorcraft&world=deep-orbit&subtitle=Why%20this%20course%20exists",
     ],
@@ -45,7 +45,7 @@ export default function AboutPage() {
             "@type": "AboutPage",
             name: "About Tensorcraft",
             description:
-              "Why Tensorcraft was built, how it maps ML onto JavaScript, and what we deliberately left out.",
+              "Why we built Tensorcraft, how it maps ML onto JavaScript, and what we deliberately left out.",
             url: "https://tensorcraft.app/about",
             mainEntity: {
               "@type": "EducationalOrganization",
@@ -70,62 +70,53 @@ export default function AboutPage() {
               as a named individual. Do not add a personal name or byline
               here without asking. */}
           <p>
-            Tensorcraft was built by a group of JavaScript engineers who wanted
-            an easy way into machine learning. We looked for a course that spoke
-            our language and did not find one, so we took matters into our own
-            hands.
+            We’re a group of JavaScript engineers who wanted to learn ML through
+            code we already understood. We built Tensorcraft to make that
+            possible.
           </p>
 
           <p>
-            Most ML courses teach you ML. Tensorcraft teaches you ML by mapping
-            it to the JavaScript you already write:{" "}
+            The lessons start with familiar code:{" "}
             <code className="font-mono text-text-primary text-sm">
               useState
             </code>{" "}
-            becomes model parameters,{" "}
+            helps introduce the idea of changing model state,{" "}
             <code className="font-mono text-text-primary text-sm">
               Array.reduce
             </code>{" "}
-            becomes a neuron,{" "}
+            can calculate a neuron’s weighted sum, and{" "}
             <code className="font-mono text-text-primary text-sm">
               Math.max(0, x)
             </code>{" "}
-            literally is ReLU. The bridges aren&apos;t marketing. They&apos;re
-            the curriculum.
+            is ReLU for a single number.
           </p>
 
           <p>
-            Every analogy ships with a label that names where it stops being
-            literal. We call this the bridge-tier system: identity (literally
-            the same), structural (same shape, different domain), intuition
-            (same mental model, different math). Structural and intuition
-            bridges include a note on where the analogy ends so you stop
-            carrying the wrong model into production.
+            Each comparison explains how far it holds. Some are exact, like
+            ReLU. Others share a structure or offer a way to picture the idea.
+            We label those differences and explain where an analogy stops
+            working.
           </p>
 
           <p>
-            Every exercise grades by executing your code, not by string-matching
-            it. {EXERCISE_CONTENT.liveExercises} exercises are live today, each
-            running against real TensorFlow.js in a worker in your browser, with
-            a reference solution that passes its own tests in CI.{" "}
-            {EXERCISE_CONTENT.authoredFiveWorlds} are authored across the
-            five-world roadmap. Only the shipped set has been through our
-            validation gates; we do not claim the rest meet that bar until they
-            ship. Roughly half of the live exercises drive tensor and model APIs
-            directly, and there, a failing test means the model behavior is
-            actually wrong. The other half grade the data preparation and
-            production plumbing around a model, and there, a failing test means
-            that logic is wrong.
+            Exercises run your code and check what it does.{" "}
+            {EXERCISE_CONTENT.liveExercises} exercises are live today. They run
+            in a browser worker with TensorFlow.js available, and we check their
+            reference solutions in CI. We have written{" "}
+            {EXERCISE_CONTENT.authoredFiveWorlds} exercises across the five
+            planned worlds. We have completed release checks for the published
+            exercises. Some use tensors and models directly. Others cover the
+            data preparation, validation, and deployment code around them.
           </p>
 
           <p>
-            Five worlds are planned (Deep Orbit, Neon Protocol, Signal Ward,
-            Nova Canvas, Terra Grid), each wrapping the curriculum in a
-            different story. Deep Orbit is the one open today. Across its
-            modules you assemble a working browser-side ML system, piece by
-            piece. Connect GitHub and every solved exercise pushes to your repo.
-            The story keeps you on the page. What you take to interviews is the
-            ability to explain every layer of what you built.
+            We plan five worlds (Deep Orbit, Neon Protocol, Signal Ward, Nova
+            Canvas, Terra Grid), each with its own story and ML curriculum. Deep
+            Orbit is the one open today. Across its modules you assemble a
+            working browser-side ML system, piece by piece. Connect GitHub and
+            every solved exercise pushes to your repo. The crew’s task gives you
+            a reason to use each concept. Your saved work gives you code to
+            revisit, explain, and share.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">
@@ -143,23 +134,24 @@ export default function AboutPage() {
               <span className="text-text-primary font-mono text-sm">
                 GPU training pipelines.
               </span>{" "}
-              Browser ML lives within the compute budget the user&apos;s device
-              gives you when the model runs. Distributed GPU training is a
-              different sport.
+              A model running in a browser shares the device’s memory and
+              processing power with the rest of the app. Distributed GPU
+              training is outside this course.
             </li>
             <li>
               <span className="text-text-primary font-mono text-sm">
-                Paper-grade math derivations.
+                Research-level mathematics.
               </span>{" "}
-              The math the course needs (chain rule, softmax, KL, cross-entropy)
-              is all derived when it first appears. Beyond that, Karpathy&apos;s
-              Zero-to-Hero is the right course.
+              We derive the math the course needs (chain rule, softmax, KL,
+              cross-entropy) when we first introduce it. Beyond that,
+              Karpathy&apos;s Zero-to-Hero is the right course.
             </li>
             <li>
               <span className="text-text-primary font-mono text-sm">
                 Research methodology.
               </span>{" "}
-              We teach engineering practice, not novel research design.
+              We teach engineering practice. Designing novel research
+              experiments falls outside this course.
             </li>
           </ul>
 
@@ -175,11 +167,9 @@ export default function AboutPage() {
               The blog
             </Link>{" "}
             includes the bridge-tier audit (every lesson, classified), the
-            fast.ai comparison (where they win, where we win), and the exercise
-            mlContent audit (what each exercise actually exercises vs. what its
-            badge claims). Every count on this page is pinned to the content
-            corpus by tests that run in CI. If you find something we got wrong,
-            email{" "}
+            fast.ai comparison, and a review of what each exercise actually
+            teaches. CI checks the counts on this page against the course files.
+            If you find something we got wrong, email{" "}
             <a
               href="mailto:support@tensorcraft.app"
               className="text-primary underline underline-offset-4"
@@ -190,13 +180,13 @@ export default function AboutPage() {
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">
-            Built by JavaScript engineers who shipped ML
+            Our experience with ML
           </h2>
           <p>
             Before writing the curriculum, we shipped ML in production, in
             browsers and on Node servers. We built the course we wish we&apos;d
-            had when we started. Every analogy was tested against our own
-            missed-it-the-first-time mistakes.
+            had when we started. The explanations draw on concepts we struggled
+            with when we were learning.
           </p>
         </section>
 
@@ -205,7 +195,7 @@ export default function AboutPage() {
             href="/worlds"
             className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
-            Start Module 1 →
+            Start Module 1
           </Link>
         </div>
       </article>

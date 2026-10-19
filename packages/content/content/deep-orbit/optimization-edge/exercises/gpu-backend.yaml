@@ -1,12 +1,12 @@
 slug: gpu-backend
 lessonSlug: webgpu-acceleration
-title: "Find a Working Backend"
+title: "Backend selection and fallback"
 instructions: |
   Help Demir find a working backend for the console. Write `initBestBackend(preference, runtime)`. Try names in the supplied order and return the first one that starts.
 
   `runtime` provides the three TensorFlow.js calls used in the lesson:
 
-  - `setBackend(name)` resolves true when the backend starts. It resolves false when a registered backend fails to start, and throws when the backend was never registered, such as when its package was not imported. Try the next name after either failure.
+  - `setBackend(name)` resolves true when the backend starts. It resolves false when a registered backend fails to start, and throws when the registry lacks that backend, such as when your code never imported its package. Try the next name after either failure.
   - `ready()` waits for initialization. Call it exactly once, after the attempts and before returning.
   - `getBackend()` reports the active name. Do not use it to judge a failed attempt: in TFJS 4.22 it can still report the name that failed.
 
@@ -24,7 +24,7 @@ starterCode: |
     preference: BackendName[],
     runtime: Runtime
   ): Promise<BackendName> {
-    // A failed start may return false instead of throwing.
+    // A failed start may return false without throwing.
     // A reported backend name alone does not prove it works.
     return null; // your code here
   }
@@ -95,7 +95,7 @@ testCode: |
       const name = await initBestBackend(preference, runtime);
       expect(
         name,
-        'Nothing came back from this call, so no backend was chosen. initBestBackend returns null until you walk the ladder.'
+        'initBestBackend returned nothing. Try the backends in the supplied order and return the name of the one that starts.'
       ).toBeDefined();
       return name;
     }
@@ -105,7 +105,7 @@ testCode: |
       expect(await chosen(LADDER, runtime)).toBe('webgpu');
       expect(
         calls,
-        'The first name started, so nothing below it is tried, and ready() runs once at the end.'
+        'The first name started, so the selector skips the remaining names, and ready() runs once at the end.'
       ).toEqual(['webgpu', 'ready']);
     });
 
@@ -113,7 +113,7 @@ testCode: |
       const { runtime } = makeRuntime({ webgpu: false, webgl: true, wasm: true });
       expect(
         await chosen(LADDER, runtime),
-        'webgpu is registered here and fails to start, so the call resolves false and throws nothing. A ladder built out of try and catch alone never sees that, reports webgpu, and every inference afterwards runs somewhere else.'
+        'The registry contains webgpu, but it fails to start. setBackend returns false without throwing, so check that result before reporting success.'
       ).toBe('webgl');
     });
 
@@ -121,12 +121,12 @@ testCode: |
       const { runtime, calls } = makeRuntime({ webgl: true, wasm: true });
       expect(
         await chosen(LADDER, runtime),
-        'webgpu is missing from the registry, which is the forgotten-import case, and that one does throw. A missing package is a reason to try the next name, not a reason to give up.'
+        'webgpu is missing from the registry, which is the forgotten-import case, and that one does throw. Try the next backend when a package is missing.'
       ).toBe('webgl');
       expect(calls).toEqual(['webgpu', 'webgl', 'ready']);
     });
 
-    it('handles both failure modes in one ladder', async () => {
+    it('handles false returns and exceptions in the same fallback sequence', async () => {
       const { runtime, calls } = makeRuntime({ webgpu: false, wasm: true });
       const selected = await chosen(LADDER, runtime);
       expect(selected).toBe('wasm');
@@ -134,13 +134,13 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'How your selector reached a working backend',
-        summary: 'Selected ' + selected + ' in a controlled runtime. This verifies failure handling, not backend support or speed on your device.',
+        summary: 'Selected ' + selected + ' in a controlled runtime. This verifies failure handling. Check device support and speed in the runtime lab.',
         columns: ['Observed call', 'Supplied runtime response'],
         rows: calls.map((name) => [name, name === 'webgpu' ? 'Initialization returned false' : name === 'webgl' ? 'Unregistered backend threw' : name === 'ready' ? 'Initialization settled' : 'Started']),
       });
     });
 
-    it('stops at the winner', async () => {
+    it('stops after the first successful backend', async () => {
       const { runtime, calls } = makeRuntime({ webgpu: false, webgl: true, wasm: true });
       expect(await chosen(LADDER, runtime)).toBe('webgl');
       expect(
@@ -161,11 +161,11 @@ testCode: |
       ).toBe('webgpu');
       expect(
         calls,
-        'The trace has to follow the caller\'s order: wasm, then webgpu, then ready. A ladder that fell back to the lesson\'s own list would have tried webgl next and recorded a different trace.'
+        'Follow the supplied order: try wasm, then webgpu, then await ready(). Do not fall back to a fixed list from the lesson.'
       ).toEqual(['wasm', 'webgpu', 'ready']);
     });
 
-    it('reports what the engine settled on when the whole ladder fails', async () => {
+    it('reports the active backend after every attempted backend fails', async () => {
       const { runtime, calls } = makeRuntime({ webgpu: false, webgl: false });
       const name = await chosen(LADDER, runtime);
       expect(
@@ -183,7 +183,7 @@ testCode: |
       expect(started.calls.filter(c => c === 'ready').length).toBe(1);
       expect(
         exhausted.calls.filter(c => c === 'ready').length,
-        'ready() is what finishes the switch. Calling it per attempt makes the engine settle in the middle of the ladder; never calling it leaves the answer ahead of the engine.'
+        'Await ready() once after trying the preferred backends, then read the active backend name.'
       ).toBe(1);
     });
   });

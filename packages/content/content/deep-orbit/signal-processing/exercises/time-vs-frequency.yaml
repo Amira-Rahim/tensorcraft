@@ -1,6 +1,6 @@
 slug: time-vs-frequency
 lessonSlug: time-vs-frequency
-title: "Find the Hidden Tone"
+title: "The hidden tone"
 instructions: |
   Implement `compareViews(baseline, suspect, tolerance, threshold)`. Transform each capture into FFT magnitudes with `tf.abs(tf.spectral.rfft(tf.tensor1d(samples))).arraySync()`.
 
@@ -92,11 +92,11 @@ testCode: |
       return r;
     };
 
-    it('calls the lesson pair twins in time', () => {
+    it('reports that the sample differences stay within the time tolerance', () => {
       const r = views(background(), intruder(73.4, 0.05), 0.05, 5.0);
       expect(
         r.timeTwin,
-        'No sample of these two captures differs by more than 0.05, which is the whole complaint about the time view.',
+        'Every pair of matching samples differs by at most 0.05, so these captures match within the supplied time-domain tolerance.',
       ).toBe(true);
     });
 
@@ -109,7 +109,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Your capture comparison',
-        summary: 'Synthetic two-second captures at 256 samples per second. A differing bin selects a frequency band to inspect; it does not identify a physical source.',
+        summary: 'Synthetic two-second captures at 256 samples per second. A differing bin selects a frequency band to inspect. It does not identify a physical source.',
         columns: ['Measurement', 'Your result'],
         rows: [
           ['Within the sample tolerance', r.timeTwin],
@@ -119,7 +119,7 @@ testCode: |
       });
     });
 
-    it('a catalogued line that went dead diverges by size, not by direction', () => {
+    it('detects a missing frequency component using the absolute difference', () => {
       // The suspect LOST the 47 Hz component. Every other probe in this
       // suite adds energy, so a comparison that only notices energy
       // arriving (b - a > threshold) clears them all and misses this one.
@@ -128,7 +128,7 @@ testCode: |
       expect(r, 'Return an object containing timeTwin and divergentBin.').toBeDefined();
       expect(
         r.divergentBin,
-        'The 47 Hz line is in the baseline and gone from the suspect: bin 94 (47 Hz at 0.5 Hz per bin over 512 samples) reads 51.2 on one side and 0 on the other. A gap counts by size, not by direction, so a catalogued line that has gone silent diverges as much as a tone that arrived.',
+        'The 47 Hz component is missing from the suspect capture. Bin 94 has magnitude 51.2 in the baseline and 0 in the suspect. Compare absolute differences so missing components count too.',
       ).toBe(94);
     });
     it('reports no divergence when the suspect is the same capture', () => {
@@ -137,31 +137,31 @@ testCode: |
       expect(r.timeTwin).toBe(true);
       expect(
         r.divergentBin,
-        'These spectra are identical. Compare the difference between matching bins, not the size of a bin in only one spectrum.',
+        'These spectra are identical. Subtract matching bins and compare the size of each difference.',
       ).toBe(-1);
     });
 
-    it('moves its answer when the tone gets quieter, at the same bar', () => {
+    it('updates the first differing bin when the tone amplitude changes', () => {
       const loud = views(background(), intruder(73.4, 0.05), 0.05, 5.0);
       expect(loud.divergentBin).toBe(147);
 
       const quiet = views(background(), intruder(73.4, 0.01), 0.05, 5.0);
       expect(
         quiet.divergentBin,
-        'Same tone, same bar, one fifth the amplitude. Its largest gap now measures 2.39, so nothing in this spectrum clears 5.0 and the honest answer is the sentinel.',
+        'At one fifth of the amplitude, the largest bin difference is 2.39. None exceeds the threshold of 5.0, so return -1.',
       ).toBe(-1);
       expect(quiet.timeTwin).toBe(true);
     });
 
-    it('reads the threshold argument, so a looser bar catches the shoulder first', () => {
+    it('uses the supplied threshold to find the first differing bin', () => {
       const r = views(background(), intruder(73.4, 0.05), 0.05, 2.0);
       expect(
         r.divergentBin,
-        'The tone sits between two lines, so it leaves 3.01 in bin 146 (73.0 Hz) on its way to 11.96 in bin 147. A bar of 2.0 meets the shoulder first, and a bar of 5.0 steps over it.',
+        'The tone falls between FFT bins. Bin 146 differs by 3.01 and bin 147 by 11.96. With threshold 2.0, return bin 146. With threshold 5.0, return bin 147.',
       ).toBe(146);
     });
 
-    it('a tone loud enough to see in time clears the bar before its own peak', () => {
+    it('returns the first bin above the difference threshold, even before the peak', () => {
       const r = views(background(), intruder(73.4, 0.5), 0.05, 20.0);
       expect(
         r.timeTwin,
@@ -169,7 +169,7 @@ testCode: |
       ).toBe(false);
       expect(
         r.divergentBin,
-        'Its peak gap is 119.59 in bin 147, but the smear around it has grown too: bin 146 now measures 30.09 and clears a bar of 20.0 first.',
+        'Bin 147 has the largest difference, but bin 146 already exceeds the threshold of 20.0. Return the first bin above the threshold, even if a later bin has a larger difference.',
       ).toBe(146);
     });
 
@@ -181,7 +181,7 @@ testCode: |
       ).toBe(80);
     });
 
-    it('is a comparison, not a lookup: the intruder is drawn at grade time', () => {
+    it('compares captures containing a newly generated tone', () => {
       // Bin 100 to 199 of this 512-sample capture, so the tone sits exactly
       // on a line between 50 and 99.5 Hz and carries its whole gap of 12.8
       // into that one bin.
@@ -196,7 +196,7 @@ testCode: |
       const quiet = views(background(), intruder(hz, 0.01), 0.05, 5.0);
       expect(
         quiet.divergentBin,
-        'The quieter tone leaves no bin difference above the threshold. Return -1 rather than a previously detected or simply loud bin.',
+        'The quieter tone leaves no bin difference above the threshold. Return -1 because no bin exceeds the difference threshold.',
       ).toBe(-1);
     });
 
@@ -218,7 +218,7 @@ testCode: |
       ).toBe(false);
       expect(
         r.divergentBin,
-        'A rotation changes when each component peaks, not how much of it is present, so both spectra carry the same four magnitudes and the largest gap between them is 0.0000153. A comparison that walked the raw samples instead of the bins would report a divergence in the first few readings.',
+        'A rotation changes the component phases while preserving their magnitudes, so both spectra carry the same four magnitudes and the largest gap between them is 0.0000153. Comparing raw samples would report a divergence in the first few readings. This task compares spectra.',
       ).toBe(-1);
     });
 
@@ -226,11 +226,11 @@ testCode: |
       const r = views(background(), intruder(73.4, 0.05), 0.04, 5.0);
       expect(
         r.timeTwin,
-        'The largest sample gap in this pair is 0.05. Under a tolerance of 0.04 the pair is not a twin, and the caller sets that number, not the body.',
+        'The largest sample gap in this pair is 0.05. Under a tolerance of 0.04 the pair is not a twin, and use the tolerance from the caller.',
       ).toBe(false);
     });
 
-    it('a capture sitting below its twin is not a twin, and its offset lands in bin 0', () => {
+    it('detects a constant offset in the samples and in bin 0', () => {
       const samples = background();
       const lowered = samples.map((v) => v - 0.5);
       const r = views(samples, lowered, 0.05, 5.0);

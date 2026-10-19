@@ -114,7 +114,7 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     render(<PricingPage />);
     const h1 = screen.getByTestId("pricing-heading");
     expect(h1.tagName).toBe("H1");
-    expect(h1).toHaveTextContent(/Buy once\. Keep forever\./i);
+    expect(h1).toHaveTextContent(/Course pricing/i);
   });
 
   it("no longer renders the Common Questions FAQ block (removed 2026-09-01)", () => {

@@ -1,12 +1,12 @@
 slug: find-threshold
 lessonSlug: threshold-tuning
-title: "Sweep Candidate Thresholds for the Best F1"
+title: "Threshold comparison using F1"
 instructions: |
   Choose the best cutoff from the supplied candidate thresholds. errors and labels have the same length. Errors are finite numbers, and each label is a boolean: true means anomaly. The candidate list is non-empty.
 
-  Try every candidate on this validation data. Flag a reading only when its error is strictly greater than the cutoff. Calculate precision, recall, and F1, then return { threshold, f1 } for a candidate with the highest F1. If candidates tie, any tied winner is accepted. If every F1 is zero, return any supplied candidate with f1 set to zero.
+  Try every candidate on this validation data. Flag a reading only when its error is strictly greater than the cutoff. Calculate precision, recall, and F1, then return { threshold, f1 } for a candidate with the highest F1. If candidates tie, return any tied winner. If every F1 is zero, return any supplied candidate with f1 set to zero.
 
-  Use zero for F1 when there are no true positives. Choose by F1, not accuracy, recall alone, or the total number of false alarms and misses. Those measures can choose different cutoffs even when each error costs the same. Keep the final test data out of this comparison.
+  Use zero for F1 when there are no true positives. Choose the highest F1. Accuracy, recall alone, or the total error count can favor different candidates. Those measures can choose different cutoffs even when each error costs the same. Keep the final test data out of this comparison.
 starterCode: |
   function findBestThreshold(
     errors: number[],
@@ -123,14 +123,13 @@ testCode: |
       const r2 = findBestThreshold(errs2, labs2, [0.3, 0.6]);
       expect(r2, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
       const why =
-        'The classes overlap here, so no cutoff is clean and the two ' +
-        'candidates score differently. Report the better of the two, and the ' +
-        'F1 it actually scored rather than the one you hoped for.';
+        'These classes overlap, so neither cutoff separates them perfectly. ' +
+        'Choose the candidate with the higher F1 and return that score.';
       expect(r2.f1, why).toBeCloseTo(0.857, 2);
       expect(r2.threshold, why).toBeCloseTo(0.3, 5);
       recordResult({
         kind: 'table', title: 'Your selected validation cutoff',
-        summary: 'Six synthetic labeled cases with overlapping scores. This cutoff maximizes F1 among the supplied candidates; it does not establish a deployment cost or future false-alarm rate.',
+        summary: 'Six synthetic labeled cases with overlapping scores. This cutoff maximizes F1 among the supplied candidates. It does not establish a deployment cost or future false-alarm rate.',
         columns: ['Returned measurement', 'Value'],
         rows: [['Selected cutoff', r2.threshold], ['Validation F1', r2.f1]],
       });
@@ -167,11 +166,11 @@ testCode: |
       expect(r, 'findBestThreshold has to return { threshold, f1 }.').toBeDefined();
       const why =
         'The low cutoff here catches every anomaly and five normal readings ' +
-        'with them; the high one catches three of the four and raises no ' +
+        'with them. The high one catches three of the four and raises no ' +
         'false alarm. Their F1 scores are 0.615 and 0.857. A sweep returning 0.5 ' +
         'and an f1 of 0.615 ranked by something that weights recall above ' +
-        'precision, which is a cost decision lesson 4 asks you to make out ' +
-        'loud rather than hide under the name f1.';
+        'precision. This task requires equal weight for both in the F1 formula. ' +
+        'visible. Calculate F1 from precision and recall.';
       expect(r.threshold, why).toBeCloseTo(2, 5);
       expect(r.f1, why).toBeCloseTo(0.857, 3);
     });

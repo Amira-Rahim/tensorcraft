@@ -111,17 +111,66 @@ Flag when setup, repetition, or formatting delays the point.
 Framing that narrows scope, corrects an error, or helps readers navigate
 reference material is fine.
 
-## Do not flag (protected)
+## Construction rules (binding, 2026-10-19)
 
-- Real contrasts and distinctions: "The bug is in the parser, not the
-  tokenizer." "MLM uses both left and right context, not just the tokens
-  that came before it." The test: does the contrast carry information a
-  reader needs, or only rhythm?
-- Concrete lists, real warnings, quoted identified sources.
-- Character dialogue judged by `docs/story-style-bible.md` registers:
-  drama, terseness, and in-voice lines are craft, not slop. The bible's
-  hard rules still apply (one metaphor per lesson for Farah, one fragment
-  triad per lesson, no validated-guess blessing, no em dashes anywhere).
+Review the construction itself, wherever it appears. These owner directives
+supersede older exemptions for factual contrasts and character dialogue.
+
+- Flag every prose semicolon, em dash, decorative vertical bar, textual arrow,
+  inline bullet, and decorative dot separator. Use sentences, descriptive
+  labels, or an ordinary list. Keep valid code syntax, including statement
+  semicolons, arrow functions, and API dot notation such as `model.fit()`.
+  The owner explicitly clarified that the dot ban concerns decorative
+  separators. Preserve required mathematical meaning when spelling out a
+  formula. Do not alter operators or remove a condition to satisfy a prose rule.
+- Rewrite every "It's not X, it's Y", "Do Y, not X", and equivalent staged
+  contrast. Preserve both facts when the distinction matters. Explain each
+  directly, including the limitation or reason.
+- Use active voice. Name the character, learner, model, runtime, or process
+  that performs the action. Avoid inventing an actor when the source does not
+  establish one. Describe the observed result directly in that case.
+- Use descriptive titles and section headings. Command headings fail this
+  rule even when the command sounds useful. Buttons and instructions may use
+  action verbs to describe the action the learner can take.
+- Remove slogan-like phrasing, buzzword-led claims, manufactured triads, and
+  polished abstractions that say little. State what happens and explain why a
+  claimed benefit follows. A concrete list of three necessary items is fine.
+
+Apply these rules to prose, titles, metadata, captions, dialogue, activity
+feedback, exercise instructions, and learner-visible code comments. Preserve
+technical accuracy, exercise contracts, meaningful warnings, and story
+continuity. Character registers still apply within these constraints.
+
+The following examples show the required direction:
+
+- "The proposal was approved by the team" becomes "The team approved the proposal."
+- "The launch was delayed" becomes "The team delayed the launch" when the
+  source establishes that the team made the decision.
+- A command heading such as "Define the integration perimeter" becomes
+  "Integration scope."
+- "Usage-based models turn customer activity into a direct revenue expansion
+  path" becomes "Customers pay more when they use more of the service" if that
+  accurately describes the pricing model.
+
+Code, data identifiers, source quotations, and functional diagram connections
+need contextual review. Never run punctuation replacement across executable
+code or silently change a quotation. The repo-wide literal em dash ban still
+applies everywhere.
+
+## Two questions for every copy review (binding, 2026-10-19)
+
+Ask both questions of each passage, label, hint, and feedback message:
+
+1. **Would a person naturally phrase it this way?** Rewrite awkward phrasing
+   in context, using the voice of the speaker and the reader’s knowledge.
+2. **Does it have words that don’t convey anything meaningful?** Remove filler,
+   empty slogans, redundant framing, and vague benefits. Name the action,
+   result, or limitation instead.
+
+Apply these checks to all mission sections and promotional pages, including
+shared components and metadata. Preserve technical meaning, exercise
+requirements, story continuity, and useful character detail. Concision must
+not remove an explanation the learner needs.
 
 ## The relatability bar
 

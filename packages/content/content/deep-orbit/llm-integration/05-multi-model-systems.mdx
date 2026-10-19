@@ -19,7 +19,7 @@ concept:
     jsTitle: "Micro-Services"
     jsCode: "// API gateway routes to auth, products, payments services"
     mlTitle: "Model Orchestration"
-    mlCode: "// Pipeline: classifier + autoencoder + LSTM → LLM reporter"
+    mlCode: "// Pipeline: classifier + autoencoder + LSTM to LLM reporter"
     tier: structural
     breaks: "Services and models both need input contracts, error handling, and monitoring. In a model chain, plausible but wrong outputs can pass ordinary type checks and affect later stages. Keep provenance and evaluate each stage as well as the combined result."
 consequence:
@@ -30,7 +30,7 @@ hints:
       Scale the three classifier inputs using RANGES and predict one row. Check the returned class and score before running the detector. Call the alert writer only when the detector returns true.
   - level: guidance
     content: |
-      Validate before handing data to the next stage. Use the supplied ranges, one prediction inside tf.tidy, and plain returned values. A wrong class becomes unknown; an invalid score stops the run. Only a boolean true detector result triggers the alert writer. The field called confidence is a model score, not a measured probability of correctness.
+      Validate before handing data to the next stage. Use the supplied ranges, one prediction inside tf.tidy, and plain returned values. A wrong class becomes unknown. An invalid score stops the run. Only a boolean true detector result triggers the alert writer. The field called confidence contains a model score. Evaluation and calibration would need to establish how that score relates to correctness.
   - level: solution
     content: |
       interface Verdict {
@@ -55,7 +55,7 @@ hints:
         const order = [RANGES.amplitude, RANGES.frequency, RANGES.phase];
         return async (reading: number[]) => {
           if (reading.length !== order.length) {
-            throw new Error('the classifier reads ' + order.length + ' features and was handed ' + reading.length);
+            throw new Error('the classifier reads ' + order.length + ' features but received ' + reading.length);
           }
           if (!reading.every(Number.isFinite)) throw new Error('Non-finite reading');
           const features = reading.map((v, i) => (v - order[i].min) / (order[i].max - order[i].min));
@@ -101,7 +101,7 @@ skillAxes: [deployment, js_integration]
 The classifier returns a class, the autoencoder rebuilds a reading, and the LSTM predicts what comes next. The LLM turns their results into a draft. I need to connect them, like services behind an API gateway.
 </Dialogue>
 
-Demir needs a checked handoff between each stage. The classifier stage supplies a class and score; the autoencoder stage measures reconstruction error; the LSTM supplies a forecast. The reporter needs to know when any of those results is unavailable. Connecting these stages and handling their failures is **model orchestration**.
+Demir needs a checked handoff between each stage. The classifier stage supplies a class and score. The autoencoder stage measures reconstruction error. The LSTM supplies a forecast. The reporter needs to know when any of those results is unavailable. Connecting these stages and handling their failures is **model orchestration**.
 
 Suppose four stages each have a 95% chance of being correct, independently. The chance that all four are correct is 0.95^4, about 81%.
 
@@ -109,7 +109,7 @@ That is not automatically the final system's accuracy. Some stages may recover f
 
 Demir needs one result the watch can use, with failures caught before they reach the alert writer. You will connect the classifier, detector, and alert generator and inspect what each handoff allows through.
 
-<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate a classifier, an anomaly detector and an alert writer as stages that pass one checked verdict between them", "Check every stage's output, then use an acceptable fallback or stop if no safe substitute exists", "Follow one capture through DEEP SCAN and explain why each model needs its own input format and scaling"]} />
+<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Connect a classifier, an anomaly detector, and an alert writer, checking each result before passing it on", "Check every stage's output, then use an acceptable fallback or stop if no safe substitute exists", "Follow one capture through DEEP SCAN and explain why each model needs its own input format and scaling"]} />
 
 ## The DEEP SCAN Pipeline
 
@@ -139,7 +139,7 @@ function readClassifier(features: number[], model: tf.LayersModel) {
       throw new Error('Invalid classifier output');
     }
     const p = output[0];
-    // Chosen-class score, not a demonstrated probability of correctness.
+    // Chosen-class score. Its probability calibration needs evaluation.
     return { class: p > 0.5 ? 'anomaly' : 'noise', confidence: p > 0.5 ? p : 1 - p };
   });
 }
@@ -226,13 +226,13 @@ Load each model with metadata identifying its preprocessing version. These guard
 
 ## Error Handling and Fallbacks
 
-The classifier and anomaly-score checks stop the run when their values are invalid. A failed forecast can be omitted. The alert itself uses a fixed template; generated prose stays in draftForReview until a reviewer checks it. If drafting fails, the alert still ships. The resilience sketch below also shows a weaker detector fallback when the autoencoder is unavailable.
+The classifier and anomaly-score checks stop the run when their values are invalid. The pipeline can omit a failed forecast. The alert itself uses a fixed template. Generated prose stays in draftForReview until a reviewer checks it. If drafting fails, the alert still ships. The next example uses a simpler, less capable detector when the autoencoder is unavailable.
 
-The alert identifies the detector, its score type and its threshold. An MSE and a z-score are different quantities; changing detectors silently would mislead the operator. Even a normal fallback result carries its method so the UI can show reduced coverage. These examples share helpers and require the LLMClient interface from lesson 1.
+The alert identifies the detector, its score type and its threshold. An MSE and a z-score are different quantities. Changing detectors silently would mislead the operator. Even a normal fallback result carries its method so the UI can show reduced coverage. These examples share helpers and require the LLMClient interface from lesson 1.
 
 The fallback checks amplitude alone against a fixed normal-period baseline. It cannot detect every relationship the eleven-feature autoencoder might detect. In the fictional baseline, mean 0.52 and standard deviation 0.15 give a 3-sigma boundary at 0.07 and 0.97.
 
-For valid sensor readings scaled into [0, 1], the largest absolute z-score is about 3.47 at zero. That bound depends on the physical range and this fixed baseline, not on min-max scaling alone. The helpers check shape and finite values; an application must also validate sensor ranges.
+For valid sensor readings scaled into [0, 1], the largest absolute z-score is about 3.47 at zero. That bound follows from the physical range and this fixed baseline. A different range or baseline would change it. The helpers check shape and finite values. An application must also validate sensor ranges.
 
 Refitting the baseline changes the score even if the reading stays fixed. Holding the mean at 0.52, a reading of 1.00 scores 342.86 with standard deviation 0.0014, but 2.29 with standard deviation 0.21. Pass the approved baseline explicitly so an unusually quiet or noisy window cannot silently replace it.
 
@@ -244,7 +244,7 @@ async function resilientPipeline(
   baseline: { mean: number; std: number }, // fixed normal-period amplitude stats, min-max units
 ): Promise<PipelineResult> {
   const classification = readClassifier(features, models.classifier);
-  // A bad threshold is a configuration error, not a reason to switch models.
+  // A bad threshold requires a configuration fix. Switching models cannot fix that setting.
   if (!Number.isFinite(thresholds.anomaly) || thresholds.anomaly < 0) throw new Error('Invalid threshold');
   let anomaly: PipelineResult['anomaly'];
   try {
@@ -264,9 +264,9 @@ async function resilientPipeline(
 
 ## Challenge
 
-Build the classifier stage with the supplied feature ranges, then connect it to the detector and alert writer. Replace an unsupported class with unknown; reject an invalid score before it reaches the next stage.
+Build the classifier stage with the supplied feature ranges, then connect it to the detector and alert writer. Replace an unsupported class with unknown. Reject an invalid score before it reaches the next stage.
 
-Inspect the returned classification, score, detector decision, and alert. The capture uses a real TFJS classifier with controlled detector and writer callbacks. It checks your wiring; running the full system requires the separately evaluated models described above.
+Inspect the returned classification, score, detector decision, and alert. The example runs a real TFJS classifier with supplied detector and writer callbacks. It checks how you connected the stages. Running the full system requires the separately evaluated models described above.
 
 <Exercise slug="model-pipeline" />
 
@@ -323,20 +323,20 @@ Inspect the returned classification, score, detector decision, and alert. The ca
 />
 
 <LessonRecap
-  whatYouLearned={["Validate input and output contracts at each stage, including feature order, units and preprocessing.", "Type and range checks catch malformed results. End-to-end evaluation is still needed for plausible but wrong predictions.", "Use a fallback only when its limitations are acceptable. Otherwise stop that path or request review."]}
+  whatYouLearned={["Validate input and output contracts at each stage, including feature order, units and preprocessing.", "Type and range checks catch malformed results. End-to-end evaluation still needs to check plausible but wrong predictions.", "Use a fallback only when its limitations are acceptable. Otherwise stop that path or request review."]}
   bridge="Services and models both need checked contracts. Model stages also need evaluation against real outcomes because a plausible, correctly typed result can still be wrong."
   youCanNow="Connect model stages with explicit preprocessing, checked outputs and documented fallback behavior."
 />
 
 <Epilogue>
 
-The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. The published alert names the measured score and its threshold. The language model's explanation waits in a review queue; it cannot sign its own release. The alert's footer notes the pulse interval: 62.0 seconds, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
+The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. The published alert names the measured score and its threshold. The language model's explanation waits in a review queue. It cannot sign its own release. The alert's footer notes the pulse interval: 62.0 seconds, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
 
 <Dialogue speaker="Commander Mirza" expression="resolved">
 How long from signal to report? Make it faster.
 </Dialogue>
 
-Fourteen seconds, Demir tells her. He opens a profiler to separate detection time from drafting time. The signal is accelerating; the pipeline will have to.
+Fourteen seconds, Demir tells her. He opens a profiler to separate detection time from drafting time. The signal is accelerating. The pipeline will have to.
 
 Before leaving the bridge, Demir checks the size of the morning build. The crew's classifier, autoencoder, LSTM, and attention head have less than a megabyte of trained weights combined. The large part is the pretrained language component behind the report pipeline, including its tokenizer tables and embedding matrices. Lesson 1's client reaches that component through the local service.
 
@@ -347,12 +347,12 @@ The mission build totals 340 MB. The bridge dashboard has 512 MB. Demir files th
   fallback="Nazari records the missing section in the handover. The new alert and the report draft enter separate review queues."
   outcomes={{
     "cooperate": "Farah has a regenerated Hypotheses draft beside the new alert. Finishing that review takes her first watch slot, so Demir records the alert's measurements and leaves its explanation queued for her second slot.",
-    "defect": "The request to release disputed claims is still open. Farah attaches each warning to its source claim and records why release was refused; Demir waits for that handoff before assigning her the new alert.",
+    "defect": "The request to release disputed claims is still open. Farah attaches each warning to its source claim and records why the reviewer refused release. Demir waits for that handoff before assigning her the new alert.",
     "random": "Demir compares the regenerated splice with the approved sections and finds a citation to the report's own summary. He removes the circular citation and opens a new review. The first draft remains in the history.",
-    "dominant": "Nazari carries the explicit omission into the morning handover. Farah takes the new alert first; the missing Hypotheses section stays on a separate research queue for a later relay window."
+    "dominant": "Nazari carries the explicit omission into the morning handover. Farah takes the new alert first. The missing Hypotheses section stays on a separate research queue for a later relay window."
 }}
 />
 
-*Mission scene: the fourteen seconds and the 340 MB build above are story values, not measurements of the model shipped with the course.*
+*Mission scene: the fourteen seconds and the 340 MB build belong to the fictional story. The course supplies a separate, smaller model.*
 
 </Epilogue>

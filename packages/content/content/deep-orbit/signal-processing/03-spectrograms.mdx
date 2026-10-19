@@ -22,12 +22,12 @@ concept:
     tier: intuition
     breaks: "A waterfall draws events on a timeline. A spectrogram displays discrete windowed frequency measurements as colored cells. Depending on the convention, color represents magnitude or power. Window length, overlap, and scale affect what the plot reveals."
 consequence:
-  narrative: "Bursts, not a constant tone. The anomalous frequency pulses, and the gap between pulses measures roughly 73.4 seconds."
+  narrative: "The anomalous frequency appears in bursts, and the gap between pulses measures roughly 73.4 seconds."
 hints:
   - level: nudge
     content: "A spectrogram is many FFTs stacked in time: slice a window, take its magnitude spectrum, hop forward, repeat."
   - level: guidance
-    content: "Transform each window separately and keep its magnitudes as one row. Work out where each window starts from its index and hop size. Include the first window, and stop when a whole window no longer fits. Use the input lengths rather than fixed counts, so changing the capture or hop changes the result correctly."
+    content: "Transform each window separately and keep its magnitudes as one row. Work out where each window starts from its index and hop size. Include the first window, and stop when a whole window no longer fits. Calculate the counts from the input lengths, so changing the capture or hop changes the result correctly."
   - level: solution
     content: "const spectrogram: number[][] = []; const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1; for (let i = 0; i < numWindows; i++) { const start = i * hopSize; const chunk = signal.slice(start, start + windowSize); const magnitudes = tf.tidy(() => { const fft = tf.spectral.rfft(tf.tensor1d(chunk)); return tf.abs(fft).arraySync() as number[]; }); spectrogram.push(magnitudes); } return spectrogram;"
 keywords:
@@ -41,7 +41,7 @@ skillAxes: [data_prep]
 
 <StoryPassage>
 
-Farah has spent fifty minutes of the lab slot comparing whole-capture magnitude spectra. She expected a steady oscillator to explain the peak. The averages keep showing it, but none tells her when it starts or stops. She crosses 'continuous' out of her test plan and brings up the capture timestamps.
+Farah has spent fifty minutes comparing magnitude spectra from whole captures. She expected a steady oscillator to explain the peak. The averages keep showing it, but none tells her when it starts or stops. She crosses 'continuous' out of her test plan and brings up the capture timestamps.
 
 </StoryPassage>
 
@@ -50,14 +50,14 @@ Band report, 68 to 78 hertz, eleven days of archive: no events. My rules evaluat
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-I spent the slot testing the wrong question. A whole-capture magnitude plot shows a peak but hides when it appears. The full complex FFT retains timing information; the magnitude plot drops phase. Next we compare short windows in time order. A spectrogram will let us test whether the tone stays present.
+I spent the slot testing the wrong question. A whole-capture magnitude plot shows a peak but hides when it appears. The full complex FFT retains timing information. The magnitude plot drops phase. Next we compare short windows in time order. A spectrogram will let us test whether the tone stays present.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
 Then we cut the signal into slices, transform each slice, and stack the results left to right. That's a DevTools performance waterfall with frequency on the vertical axis.
 </Dialogue>
 
-Like a DevTools waterfall, this plot puts time on the horizontal axis. The vertical axis shows frequency. A waterfall bar shows an event’s duration; a spectrogram’s color shows a measured magnitude. Even a dark cell contains a value, rather than meaning that no measurement happened.
+Like a DevTools waterfall, this plot puts time on the horizontal axis. The vertical axis shows frequency. A waterfall bar shows an event’s duration. A spectrogram’s color shows a measured magnitude. A dark cell shows a low magnitude. It does not mean the measurement is missing.
 
 You will build a spectrogram by measuring frequencies in successive windows of a capture.
 
@@ -88,7 +88,7 @@ function stftMagnitudes(signal: number[], frameLength: number, frameStep: number
   return tf.tidy(() => {
     const frames = tf.signal.stft(tf.tensor1d(signal), frameLength, frameStep, frameLength);  // complex64
     return tf.abs(frames).arraySync() as number[][];
-    // Explicit FFT length = frameLength; the default may round up.
+    // Explicit FFT length = frameLength. The default may round up.
     // Result shape: [numFrames, floor(frameLength/2) + 1]
     // Each row = one time step
     // Each column = one frequency bin
@@ -107,7 +107,7 @@ const signal = Array.from({ length: 1024 }, (_, i) => {
     + (pulsing ? 0.05 * Math.sin(2 * Math.PI * 73.4 * t) : 0);
 });
 
-// frameLength=256, frameStep=128 → 1 + floor((1024 - 256) / 128) = 7 frames
+// frameLength=256, frameStep=128 to 1 + floor((1024 - 256) / 128) = 7 frames
 const spec = stftMagnitudes(signal, 256, 128);
 console.log('Time steps:', spec.length);          // 7
 console.log('Frequency bins:', spec[0].length);   // 129
@@ -167,8 +167,8 @@ console.log('Anomaly appears at windows:', activeWindows);
 
 <CodeBlock language="typescript" title="window-tradeoff.ts">
 {`// Window size trades the two resolutions against each other:
-// - Large window → better frequency resolution, worse time resolution
-// - Small window → better time resolution, worse frequency resolution
+// - Large window to better frequency resolution, worse time resolution
+// - Small window to better time resolution, worse frequency resolution
 // This is the "Heisenberg uncertainty" of signal processing.
 
 // Same tension as a rolling average over a stream: widen the window and
@@ -197,7 +197,7 @@ A spectrogram is a sequence of FFTs computed on overlapping windows of the signa
 for each window position t:
   windowed = x[t:t+W] · w(W)              // multiply by window function
   X[t, k]  = FFT(windowed)
-spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
+spectrogram[t, k] = |X[t, k]|²            // power convention. The code in
                                           // this module plots |X| (magnitude):
                                           // same picture, squared contrast
 ```
@@ -205,14 +205,14 @@ spectrogram[t, k] = |X[t, k]|²            // power convention; the code in
 **Parameters:**
 - **W (window size):** larger W = better frequency resolution, worse time resolution. A longer frame measures frequency more finely but spreads the measurement over more time.
 - **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
-- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W. The built-in above applies Hann by default; the challenge's hand-rolled version skips it. Lesson 5 builds one.
+- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W. The built-in above applies Hann by default. The challenge's hand-rolled version skips it. Lesson 5 builds one.
 
-**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, bin spacing is `fs / W`. The ability to separate nearby tones also depends on the window and noise. Each row blurs events across the window's span, `W / fs`; consecutive rows advance by `hop / fs`.
+**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, bin spacing is `fs / W`. The ability to separate nearby tones also depends on the window and noise. Each row blurs events across the window's span, `W / fs`. Consecutive rows advance by `hop / fs`.
 </DerivationDrawer>
 
 ## Challenge
 
-Give Farah the frequency measurements in time order: slide a window across the capture, transform each window, and stack the magnitude rows. Inspect the returned 40 Hz bin across the synthetic burst test to see when it appears. The test covers one second; it cannot measure the mission's much longer pulse interval.
+Give Farah the frequency measurements in time order: slide a window across the capture, transform each window, and stack the magnitude rows. Inspect the returned 40 Hz bin across the synthetic burst test to see when it appears. The test covers one second. It cannot measure the mission's much longer pulse interval.
 
 <Exercise slug="build-spectrogram" />
 
@@ -250,7 +250,7 @@ Give Farah the frequency measurements in time order: slide a window across the c
         },
         {
           "text": "Events become localized to a shorter interval.",
-          "feedback": "The larger window spans more time, not less."
+          "feedback": "The larger window spans more time."
         },
         {
           "text": "There is no cost if you use enough overlapping windows.",
@@ -264,8 +264,8 @@ Give Farah the frequency measurements in time order: slide a window across the c
 />
 
 <LessonRecap
-  whatYouLearned={["A spectrogram applies an FFT to each frame and stacks frequency measurements over time.", "Longer frames give finer bin spacing but blur event timing over a longer interval.", "This code displays magnitude. Squaring it produces the corresponding power convention.", "A magnitude spectrogram makes changing frequency content easier to inspect; it is not the only way to recover timing information."]}
-  bridge="A waterfall places events on a timeline. A spectrogram places frequency measurements over time, using color for magnitude or power rather than event duration."
+  whatYouLearned={["A spectrogram applies an FFT to each frame and stacks frequency measurements over time.", "Longer frames give finer bin spacing but blur event timing over a longer interval.", "This code displays magnitude. Squaring it produces the corresponding power convention.", "A magnitude spectrogram makes changing frequency content easier to inspect. It is not the only way to recover timing information."]}
+  bridge="A waterfall places events on a timeline. A spectrogram places frequency measurements over time, using color for magnitude or power. A waterfall uses length to show event duration."
   youCanNow="Implement an STFT by sliding a window across a signal and stacking FFTs, then read the resulting spectrogram to identify when a specific frequency is active."
 />
 
@@ -279,6 +279,6 @@ The same number now appears in two measurements: hertz within a pulse and second
 No rule of mine could have produced this image. Request: store a copy of this spectrogram in my reference partition.
 </Dialogue>
 
-Farah grants the request and adds a timing check to the analysis plan. Her steady-oscillator hypothesis is crossed out beside the fifty minutes it used.
+Farah grants the request and adds a timing check to the analysis plan. She crosses out her steady-oscillator hypothesis beside the fifty minutes it used.
 
 </Epilogue>

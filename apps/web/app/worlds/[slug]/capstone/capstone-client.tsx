@@ -29,7 +29,7 @@ function DashboardButton({ primary, bg }: { primary: string; bg: string }) {
         transition: "all 0.1s ease",
       }}
     >
-      Dashboard &rarr;
+      Dashboard
     </Link>
   );
 }
@@ -292,7 +292,7 @@ function CertificateCard({
         {/* ph-no-capture on the name only: it stays out of PostHog
             replays while the rest of the line stays readable there. */}
         Issued to: <span className="ph-no-capture">{displayName}</span>
-        {issuedLabel && <> &middot; {issuedLabel}</>} &middot; Tensorcraft
+        {issuedLabel && <>, {issuedLabel}</>}, Tensorcraft
       </div>
 
       {/* Cert metadata: square-bordered mono values (brutalist) */}
@@ -417,7 +417,7 @@ function CertificateCard({
           style={{ fontSize: 10, color: muted }}
           data-testid="cert-error"
         >
-          could not load certificate; refresh to retry
+          could not load certificate. Refresh to retry
         </div>
       )}
     </div>

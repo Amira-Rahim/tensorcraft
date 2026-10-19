@@ -25,11 +25,11 @@ describe("ComingSoonStub", () => {
     render(<ComingSoonStub world={signalWard} />);
 
     expect(
-      screen.getByText("MERIDIAN GENERAL HOSPITAL · EHR STATUS BOARD"),
+      screen.getByText("MERIDIAN GENERAL HOSPITAL, EHR STATUS BOARD"),
     ).toBeInTheDocument();
     // Status line lives in the hero scene frame's caption bar.
     expect(
-      screen.getByText("SYSTEM OFFLINE · REBUILD PENDING"),
+      screen.getByText("SYSTEM OFFLINE, REBUILD PENDING"),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("coming-soon-scene-signal-ward"),

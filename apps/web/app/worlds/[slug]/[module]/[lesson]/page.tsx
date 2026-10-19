@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // URLs into soft-404s (bad for crawlers and uptime checks alike).
   if (!isLaunched(slug) || !lesson || !world) notFound();
   return {
-    title: `${lesson.title} | ${world.displayName} | Tensorcraft`,
+    title: `${lesson.title} | ${world.displayName}, Tensorcraft`,
     description: lesson.concept.explanation,
     alternates: {
       canonical: `https://tensorcraft.app/worlds/${slug}/${moduleSlug}/${lessonSlug}`,
@@ -72,14 +72,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "article",
       url: `https://tensorcraft.app/worlds/${slug}/${moduleSlug}/${lessonSlug}`,
-      title: `${lesson.title} | ${world.displayName} | Tensorcraft`,
+      title: `${lesson.title} | ${world.displayName}, Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(lesson.title)}&world=${slug}&subtitle=${encodeURIComponent(world.displayName)}`,
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${lesson.title} | ${world.displayName} | Tensorcraft`,
+      title: `${lesson.title} | ${world.displayName}, Tensorcraft`,
       images: [
         `/api/og?title=${encodeURIComponent(lesson.title)}&world=${slug}&subtitle=${encodeURIComponent(world.displayName)}`,
       ],
@@ -342,7 +342,7 @@ export default async function LessonPage({ params, searchParams }: Props) {
               replays them into world_progress after signup. GuestModuleBanner
               already said the opposite; this notice was both wrong and the
               more prominent of the two. */}
-          Reading as a guest: progress is saved in this browser.{" "}
+          Reading as a guest: this browser saves your progress.{" "}
           <a
             href={`/auth?redirectTo=${encodeURIComponent(`/worlds/${slug}/${moduleSlug}/${lessonSlug}`)}`}
             className="text-primary underline underline-offset-4"

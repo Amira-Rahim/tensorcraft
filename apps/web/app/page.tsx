@@ -20,9 +20,7 @@ export default function Home() {
         <LandingHero />
 
         <h2 className="sr-only">
-          Learn machine learning with TensorFlow.js: browser-based ML courses,
-          TensorFlow.js tutorials, and Transformers.js guides for JavaScript
-          developers.
+          Machine learning in JavaScript through browser exercises.
         </h2>
 
         {/* ===== BRIDGE SYSTEM (client island) ===== */}
@@ -52,7 +50,7 @@ export default function Home() {
                 href="/pricing#curriculum"
                 className="font-mono text-xs uppercase tracking-wider text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
               >
-                Learn more →
+                Learn more
               </Link>
               {/* CommitTrail was cut here 2026-08-16 (owner: unreadable
                   without framing, and it crowded the band). It stays on
@@ -61,20 +59,20 @@ export default function Home() {
             </div>
             {[
               {
-                label: "Train",
+                label: "Training",
                 desc: "Build neural networks layer by layer in TensorFlow.js and train them in your browser.",
               },
               {
-                label: "Detect",
+                label: "Anomaly detection",
                 desc: "Classify readings as normal or anomalous with the network you built yourself.",
               },
               {
-                label: "Deploy",
-                desc: "Run your model live on your laptop, GPU-accelerated through WebGL, 100% client-side.",
+                label: "Browser inference",
+                desc: "Run predictions in your browser, using WebGL for GPU acceleration when it is available.",
               },
               {
-                label: "Own",
-                desc: "Push solved exercises to your GitHub and build your portfolio one module at a time.",
+                label: "Your GitHub repository",
+                desc: "Save solved exercises to your GitHub repository so you can revisit and share your code.",
               },
             ].map((item, i) => (
               <div
@@ -129,12 +127,10 @@ export default function Home() {
             page; closes without a dead half. */}
         <section className="px-10 md:px-20 py-20 flex flex-col items-center text-center gap-8">
           <div className="font-mono text-xs text-text-muted tracking-wider">
-            module 1 · free · no account required
+            module 1, free, no account required
           </div>
           <h2 className="text-5xl md:text-6xl font-mono font-black tracking-[-0.045em] leading-[0.95] uppercase">
-            Bridge
-            <br />
-            <span className="text-primary">the gap.</span>
+            The free <br /> <span className="text-primary">first module.</span>
           </h2>
           <p className="text-base text-text-muted max-w-[420px] leading-relaxed font-sans">
             Open the lesson and start reading. If it clicks, the full world is $
@@ -150,7 +146,7 @@ export default function Home() {
               data-testid="landing-cta-final"
               className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-on-primary font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
-              Start Module 1 →
+              Start Module 1
             </Link>
             <Link
               href="/pricing"

@@ -21,14 +21,14 @@ concept:
     mlTitle: "Report Generation"
     mlCode: "const report = await llm.generate({ sections, signalData, format })"
     tier: structural
-    breaks: "A template places supplied values into chosen slots; its data and schema still need validation. A generated report can introduce unsupported statements. This course keeps generated prose pending review and uses validated measured fields for automated alerts."
+    breaks: "A template places supplied values into chosen slots. Its data and schema still need validation. A generated report can introduce unsupported statements. This course keeps generated prose pending review and uses validated measured fields for automated alerts."
 consequence:
   narrative: "One section fails its own validator with twenty-two minutes left before the window."
 hints:
   - level: nudge
     content: "Keep approved sections in order. List the other headings under Withheld without copying their content."
   - level: guidance
-    content: "Filter on each section’s validated flag. Build one markdown block per approved section, then append one Withheld block if needed. Join blocks with a horizontal rule surrounded by blank lines; do not add a trailing rule."
+    content: "Filter on each section’s validated flag. Build one markdown block per approved section, then append one Withheld block if needed. Join blocks with a horizontal rule surrounded by blank lines. Do not add a trailing rule."
   - level: solution
     content: |
       interface Section { heading: string; content: string; validated: boolean; }
@@ -54,30 +54,30 @@ skillAxes: [deployment, js_integration]
 Six sections, one prompt, one draft: eleven hundred words back in twenty seconds, and the Methodology section cites an instrument this ship does not carry. I'm not reading the other five to find out what else it invented. We generate them one at a time, each with its own data and its own check.
 </Dialogue>
 
-Smaller sections let a reviewer check one claim set against its evidence before moving on. Each section gets its own data and prompt. The assembled report still needs a consistency check across sections.
+Smaller sections give the reviewer fewer claims to check at once. Each section gets its own data and prompt. The assembled report still needs a consistency check across sections.
 
-You will produce the report Earth can receive: approved sections in order, with a named omission wherever review is unfinished.
+Help Farah put the approved sections in order and list any sections still waiting for review. That gives Earth a report it can read without mistaking missing sections for missing findings.
 
 <LearningObjectives objectives={["Generate and review each section against its own evidence", "Assemble approved sections in order and name any withheld sections", "Check the assembled report for conflicting claims and missing context before release"]} />
 
 <BossBeat
   beatId="deep-orbit-llm-cut-call"
-  prompt="At 0348, a reviewer rejects two claims in Hypotheses. The relay window opens at 0410. A new draft takes fifteen minutes, leaving only seven for a review that needs longer. Only approved sections can be sent. What should the crew do?"
+  prompt="At 0348, a reviewer rejects two claims in Hypotheses. The relay window opens at 0410. A new draft takes fifteen minutes, leaving only seven for a review that needs longer. The crew can send only sections that pass review. What should the crew do?"
   options={[
     {
         "label": "cooperate",
         "display": "Regenerate, then finish review before releasing the section",
-        "consequence": "Farah starts a new draft. Approved sections can leave in this window; Hypotheses must wait for another window if its review is unfinished."
+        "consequence": "Farah starts a new draft. The crew can send the sections that passed review in this window. Hypotheses must wait if the reviewer cannot finish in time."
     },
     {
         "label": "defect",
         "display": "Request release of the disputed section with a warning",
-        "consequence": "The release gate holds that request for Farah. She must check whether the warning identifies unsupported claims clearly enough; until she approves it, the section stays aboard."
+        "consequence": "The release gate holds that request for Farah. She must check whether the warning identifies unsupported claims clearly enough. Until she approves it, the section stays aboard."
     },
     {
         "label": "random",
         "display": "Generate a replacement and ask to add it to this report",
-        "consequence": "Demir prepares the splice. The changed text loses its earlier approval and needs a fresh check; a new draft alone cannot satisfy the release gate."
+        "consequence": "Demir prepares the splice. The changed text loses its earlier approval and needs a fresh check. A new draft alone cannot satisfy the release gate."
     },
     {
         "label": "dominant",
@@ -162,23 +162,23 @@ const marked = await generateReport(reportSections, llm, reviewSection);
 // Assembling the marked sections into a signable document is the challenge below.`}
 </CodeBlock>
 
-Each section request uses `temperature: 0.2`. At a positive temperature, the model's vocabulary logits are divided by that value before softmax. A low temperature puts more probability on higher-scoring tokens, and the decoding rule chooses the next token.
+Each section request uses `temperature: 0.2`. At a positive temperature, the sampler divides the model’s vocabulary logits by that value before softmax. A low temperature puts more probability on higher-scoring tokens, and the decoding rule chooses the next token.
 
 That choice does not check facts or guarantee identical replies. Even greedy selection can invent an instrument. Farah's fictional Band-3 cluster arrived at temperature 0.3 in lesson 1. Review must check claims against their sources. Matching numbers alone would miss a made-up instrument or an unsupported explanation of its cause.
 
 ## Challenge
 
-A reviewer has marked each generated section as approved or not approved. The boolean records that review decision; it does not mean a number-matching script proved the text true.
+A reviewer has marked each generated section as approved or not approved. The boolean records that review decision. It does not mean a number-matching script proved the text true.
 
-Assemble the approved sections in order and list the headings that were withheld. Each section arrives as `{ heading, content, validated }`. The text called `generated` in the example is called `content` in this exercise.
+Assemble the approved sections in order and list the headings you leave out. Each section arrives as `{ heading, content, validated }`. The example names the text field `generated`. This exercise names it `content`.
 
-Read the report your function returns. Earth must be able to distinguish an omitted section from a report with no findings. The supplied review flags decide what is included; your assembler does not approve the claims itself.
+Read the report your function returns. Earth must be able to distinguish an omitted section from a report with no findings. The supplied review flags determine which sections your assembler includes. A reviewer must approve the claims first.
 
 <Exercise slug="generate-report" />
 
 <RecallPrompt
   question="Why check each section and then check the whole report?"
-  answer="Each section can be checked against a smaller evidence set and revised on its own. You can review a full draft too, and splitting it does not guarantee accuracy. Check consistency and missing context again after assembly."
+  answer="You can check each section against a smaller evidence set and revise it on its own. You can review a full draft too, and splitting it does not guarantee accuracy. Check consistency and missing context again after assembly."
   checks={[
     {
       "kind": "choice",
@@ -189,7 +189,7 @@ Read the report your function returns. Earth must be able to distinguish an omit
           "feedback": "Sections can pass separate reviews and still contradict each other when assembled."
         },
         {
-          "text": "Each section can be checked against a smaller evidence set and revised separately.",
+          "text": "You can check each section against a smaller evidence set and revise it separately.",
           "feedback": "Smaller sections make local review and revision easier."
         },
         {
@@ -224,14 +224,14 @@ Read the report your function returns. Earth must be able to distinguish an omit
 />
 
 <LessonRecap
-  whatYouLearned={["Generating smaller sections lets reviewers check and revise each claim set separately.", "Low temperature reduces sampling variation; it does not establish truth.", "Assemble approved sections, name omissions and check consistency across the final report."]}
-  bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."
+  whatYouLearned={["Generating smaller sections makes it easier to check the claims and revise one section at a time.", "Low temperature reduces sampling variation. It does not establish truth.", "Assemble approved sections, name omissions and check consistency across the final report."]}
+  bridge="You already give templates a structure and fill in the sections. Here an LLM writes those sections, so a reviewer needs to check each one against the source data before it goes into the report."
   youCanNow="Assemble the sections a reviewer approved, list withheld sections, and send the complete report for a final consistency check."
 />
 
 <Epilogue>
 
-At 0348, the reviewer finds two unsupported claims in Hypotheses. The model used the Fibonacci finding to invent a cause that no log supports. The crew's standing order decides the next step, but the unapproved section cannot be sent.
+At 0348, the reviewer finds two unsupported claims in Hypotheses. The model used the Fibonacci finding to invent a cause that no log supports. The crew's standing order decides the next step, but the crew must hold that section until it passes review.
 
 The transmission window opens at 0410. At 0411, the five approved sections leave with a note naming the missing section.
 

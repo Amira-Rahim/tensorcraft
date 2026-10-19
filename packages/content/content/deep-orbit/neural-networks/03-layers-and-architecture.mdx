@@ -22,7 +22,7 @@ concept:
     tier: structural
     breaks: "Middleware can mutate shared state, stop a request, or schedule later work. A Sequential model connects layers with compatible tensor shapes. Training differentiates the numerical computation to update parameters. Middleware control flow does not supply that gradient calculation."
 consequence:
-  narrative: "Nazari checks the count: 673 weights and biases. The network is built, but it still needs training."
+  narrative: "Nazari checks the count: 673 weights and biases. The network has its layers and still needs training."
 hints:
   - level: nudge
     content: "A sequential model is a stack: each dense layer you model.add() feeds the next, and only the first layer needs an inputShape."
@@ -39,19 +39,19 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari">
-One neuron cleared two calibration tones; Sector 7-G is sixty-four channels and neither tone. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
+One neuron cleared two calibration tones. Sector 7-G is sixty-four channels and neither tone. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
 </Dialogue>
 
-Give Nazari a built network and a parameter quote she can check before
-committing to its size. The quote must also work when the input width changes.
+Build Nazari’s network and calculate how many weights and biases it needs.
+Your calculation must also work when the number of input features changes.
 
 <LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like a middleware chain", "Configure layer sizes (units) and activations", "Count a network's parameters before you build it"]} />
 
-## Connect the three layers
+## The three-layer network
 
 Nazari's network has three dense layers and 673 trainable parameters, the weights and biases training will change. The first layer has 32 units. The second has 16. The last has one sigmoid unit that returns a score.
 
-The model reads amplitude, frequency, and phase. Each uses a 0-1 scale based on its sensor's physical range, given in module 4. These are three summaries of a raw capture, rather than one input per sensor channel.
+The model reads amplitude, frequency, and phase. Each uses a 0-1 scale based on its sensor's physical range, given in module 4. These three values summarize a raw capture. Sensor channel counts and model input counts describe different parts of the pipeline.
 
 Each summary comes from 64 consecutive samples of one channel. At 256 samples per second, that covers a quarter of a second. The 64 samples are separate from the ship's 64 sensor channels.
 
@@ -90,7 +90,7 @@ model.add(tf.layers.dense({
 // Output layer: binary classification
 model.add(tf.layers.dense({
   units: 1,
-  activation: 'sigmoid', // bounded binary score; evaluate before trusting it
+  activation: 'sigmoid', // bounded binary score. Evaluate before trusting it
 }));
 
 model.summary(); // prints layer shapes and parameter counts
@@ -107,13 +107,13 @@ Demir's first stack ran 96, then 32, then 1: 3,521 parameters, on a 96-unit firs
 
 </StoryPassage>
 
-## Check what the network can represent
+## What the network can represent
 
 The stack has 673 parameters. The first lesson's neuron has four: three weights and one bias. More layers can represent patterns that one neuron cannot.
 
 Consider two inputs that can each be 0 or 1. Flag a case only when exactly one input is 1. The four cases are `[0, 0]`, `[0, 1]`, `[1, 0]`, and `[1, 1]`, with labels 0, 1, 1, and 0. Plot them at the corners of a square. One weighted sum and a threshold can only draw one straight dividing line. No such line separates these labels.
 
-This XOR task demonstrates a capacity limit of one affine score with a threshold. More parameters alone do not prove better predictions; the arrangement and nonlinearities matter.
+This XOR task demonstrates a capacity limit of one affine score with a threshold. More parameters alone do not prove better predictions. The arrangement and nonlinearities matter.
 
 Two ReLU units followed by a sum can represent XOR on binary inputs. You can check this construction without training:
 
@@ -126,15 +126,15 @@ const outputs = cases.map(([a, b]) => xor(a, b)); // [0, 1, 1, 0]
 // the same classes at threshold 0.5. These weights are chosen by hand.`}
 </CodeBlock>
 
-Representing a function and learning its weights are different questions. This construction answers the first. A training experiment must answer the second separately; a model can represent a solution yet fail to learn it with a particular initialization and training schedule.
+Representing a function and learning its weights are different questions. This construction answers the first. A training experiment must answer the second separately. A model can represent a solution yet fail to learn it with a particular initialization and training schedule.
 
-This is a small capacity demonstration, not evidence about the spacecraft data; module 5 widens a reading to eleven features, and stages are what read combinations of them.
+This example shows what the layers can represent. It does not test the spacecraft data. In module 5, you’ll give the network eleven features per reading so it can learn from more aspects of the signal.
 
 ## Challenge
 
-Build the exercise's 16/8/1 stack, then quote its parameter count for any
+Build the exercise's 16/8/1 stack, then calculate its parameter count for any
 supplied input width. Your result lists the layers you built and compares
-your quote with their actual count. This is a separate configuration from
+your calculation with their actual count. This is a separate configuration from
 the bridge model's 32/16/1 stack.
 
 <Exercise slug="build-layer" />
@@ -160,7 +160,7 @@ the bridge model's 32/16/1 stack.
         },
         {
           "text": "They receive the values produced by the previous layer.",
-          "feedback": "The first layer declares the input shape; each following layer receives the preceding output."
+          "feedback": "The first layer declares the input shape. Each following layer receives the preceding output."
         },
         {
           "text": "All dense layers must have the same width.",
@@ -168,27 +168,27 @@ the bridge model's 32/16/1 stack.
         }
       ],
       "correctIndex": 1,
-      "explanation": "The first layer declares the input shape; each following layer receives the preceding output."
+      "explanation": "The first layer declares the input shape. Each following layer receives the preceding output."
     }
   ]}
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Neural networks are composed layers, each transforming its input and passing the result forward, the way a middleware chain hands a request from one stage to the next.",
-    "tf.sequential() builds a linear stack of layers; each model.add() call appends one transformation stage.",
-    "units sets the number of neurons in a layer, which is how many values it outputs; inputShape is only required on the first layer, and subsequent shapes are inferred automatically.",
+    "Neural networks connect layers, each transforming its input and passing the result forward, the way a middleware chain hands a request from one stage to the next.",
+    "tf.sequential() builds a linear stack of layers. Each model.add() call appends one transformation stage.",
+    "units sets the number of neurons in a layer and the number of values it outputs. Set inputShape on the first layer. TensorFlow.js infers the remaining shapes.",
     "Use model.summary() to check each layer's output shape and parameter count against your calculation."
   ]}
   bridge="Middleware and sequential layers compose stages. A neural layer has tensor shape and gradient requirements that an ordinary request handler does not."
   youCanNow="Design and build a multi-layer sequential neural network, configuring layer sizes, activations, and input shape, and quote its parameter count at any input width before you build it."
 />
 
-> **DISPATCH archive · field intercept #04-B:** Hassan's edge cell shipped a 40-million-parameter model for a three-class problem. It scored one point above the 60-thousand-parameter baseline and would not fit on the target device. Review board's full comment: "quote the count first."
+> **DISPATCH archive, field intercept #04-B:** Hassan's edge cell shipped a 40-million-parameter model for a three-class problem. It scored one point above the 60-thousand-parameter baseline and would not fit on the target device. Review board's full comment: "quote the count first."
 
 <Epilogue>
 
-Nazari gets her quote: 673 parameters, printed from `model.summary()` and taped to the engineering board next to the duty roster. Demir does the arithmetic in the margin by hand. 128 parameters into the first stage, 528 into the second, 17 for the verdict. The current classifier's learned parameters will fit inside those numbers; the archive, feature extraction and interpretation remain separate.
+Nazari gets her quote: 673 parameters, printed from `model.summary()` and taped to the engineering board next to the duty roster. Demir does the arithmetic in the margin by hand. The first layer needs 128 parameters, the second 528, and the output layer 17. That covers the classifier’s weights and biases. It does not count the archive or the code that prepares its inputs.
 
 <Dialogue speaker="Chief Nazari" expression="skeptical">
 Six hundred seventy-three. I have pumps with more parts. Show me it earns them.

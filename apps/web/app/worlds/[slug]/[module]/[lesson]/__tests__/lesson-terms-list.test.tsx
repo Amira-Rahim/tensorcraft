@@ -59,7 +59,7 @@ describe("LessonTermsList", () => {
     // The label shows "API · TensorFlow.js"; the source on it is hidden from
     // assistive tech because the link already says it.
     const kind = row.querySelector(".lesson-terms-kind")!;
-    expect(kind).toHaveTextContent(/^API\b.*TensorFlow\.js$/);
+    expect(kind).toHaveTextContent(/^API\b.*TensorFlow\.js\)$/);
     expect(kind.querySelector("[aria-hidden='true']")).toHaveTextContent(
       "TensorFlow.js",
     );
@@ -78,7 +78,7 @@ describe("LessonTermsList", () => {
       screen
         .getByTestId("glossary-entry-sum")
         .querySelector(".lesson-terms-kind"),
-    ).toHaveTextContent(/^Related API\b.*TensorFlow\.js$/);
+    ).toHaveTextContent(/^Related API\b.*TensorFlow\.js\)$/);
   });
 
   it("leaves the reading cell out when a term has no documentation", () => {

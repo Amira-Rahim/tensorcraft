@@ -1,6 +1,6 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
-title: "Put Demir’s Readings on the Chart"
+title: "Demir’s readings on the chart"
 instructions: |
   Replace the two `null` values:
 
@@ -21,7 +21,7 @@ taskBrief:
       code: "reading.shape"
       result: "Expect `[12]`: a list of 12 readings."
       target: shape
-  support: "TensorFlow.js is loaded as `tf`. Leave the other lines as they are."
+  support: "The editor provides TensorFlow.js as `tf`. Leave the other lines as they are."
 starterCode: |
   const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];
 
@@ -89,7 +89,7 @@ testCode: |
       expect(reads, 'The chart must read from the tensor.').toBeGreaterThan(0);
       recordResult({
         kind: 'series', title: 'Demir’s readings on the chart',
-        summary: 'Each line shows one sensor’s readings from your tensor, grouped by the supplied code. These are sensors A–D at three selected moments in the fictional recording, not a model prediction.',
+        summary: 'Each line shows one sensor’s readings from your tensor after the supplied code groups them. These are sensors A–D at three selected moments in the fictional recording. The chart shows the readings themselves.',
         xLabel: 'Selected moment', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
         series: chartRows.map((values, i) => ({ name: 'Sensor ' + ['A', 'B', 'C', 'D'][i], values })),
       });

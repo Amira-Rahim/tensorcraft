@@ -1,17 +1,17 @@
 slug: inference-cache
 lessonSlug: caching-strategies
-title: "Cache Predictions with Rounded Input Keys"
+title: "Prediction caching with rounded input keys"
 mlContent: deployment
 instructions: |
   Help Demir reuse predictions for similar inputs. Write `makeInferenceCache(model, decimals = 2, maxEntries = 100)`. Return `{ predict(input), stats }`, where `stats` counts hits and misses.
 
   On a miss, run the model and save the result. On a hit, return the saved result without running the model. Each cache belongs to its own model. The same input must be a miss in a separate cache, even if another cache has seen it.
 
-  Build the key from shape, dtype, and every value rounded to `decimals` decimal places. Keep value positions distinct. Two inputs share a key only when all of these match; do not round more coarsely than requested.
+  Build the key from shape, dtype, and every value rounded to `decimals` decimal places. Keep value positions distinct. Two inputs share a key only when all of these match. Do not round more coarsely than requested.
 
   Keep at most `maxEntries` entries. Use least-recently-used eviction: a hit moves an entry to newest, and inserting beyond capacity removes the oldest. Reject settings unless `maxEntries` is a positive integer and `decimals` is an integer from 0 to 10.
 
-  Store plain numbers, then dispose the model's prediction tensor. Return a fresh plain array on hits and misses so callers cannot edit the saved result. The caller owns input tensors; the cache owns prediction tensors.
+  Store plain numbers, then dispose the model's prediction tensor. Return a fresh plain array on hits and misses so callers cannot edit the saved result. The caller owns input tensors. The cache owns prediction tensors.
 
   Assume finite numeric inputs and unchanged model weights and preprocessing. Create a new cache if either changes. Rounding deliberately reuses a prediction for different inputs, so a real application must test whether the resulting errors are acceptable.
 starterCode: |
@@ -124,7 +124,7 @@ testCode: |
       const second = cache.predict(tf.tensor2d([[0.14, 0.5]]));
       expect(
         cache.stats.misses,
-        "A bucket wider than decimals serves one signal the other one's verdict. Round to the width you were handed rather than to a width of your own, or the parameter the caller tunes changes nothing.",
+        "Round each feature to the supplied number of decimal places. Using fewer places would merge inputs that should have separate entries.",
       ).toBe(2);
       expect(probe.counter.calls).toBe(2);
       expect(Array.from(first)).toEqual(probe.truth([0.12, 0.5]));
@@ -232,13 +232,13 @@ testCode: |
       const expected = probe.truth([0.37, 0.81]);
       expect(
         Array.from(miss),
-        "This model's weights are randomly initialized per run, so the answer has to come from the model rather than from anything a submission could remember.",
+        "Each run initializes fresh random weights. Calculate the answer using that model.",
       ).toEqual(expected);
       expect(Array.from(hit)).toEqual(expected);
       recordResult({
         kind: 'table',
         title: 'A repeated request through your cache',
-        summary: 'Two requests caused ' + probe.counter.calls + ' model call. Reuse preserved this model output; lookup overhead and rounded-key errors still need separate measurement.',
+        summary: 'Two requests caused ' + probe.counter.calls + ' model call. Reuse preserved this model output. Lookup overhead and rounded-key errors still need separate measurement.',
         columns: ['Request', 'Returned model value'],
         rows: [['First request: cache miss', miss[0]], ['Repeated request: cache hit', hit[0]]],
       });
@@ -274,7 +274,7 @@ testCode: |
       const again = cache.predict(tf.tensor2d([[0.21, 0.44]]));
       expect(
         probe.counter.calls,
-        'The last call repeats the first input after three different inputs. Its saved result should still be available. Keep entries up to the configured capacity, rather than remembering only the latest calls.',
+        'The last call repeats the first input after three different inputs. Its saved result should still be available. Keep entries up to the configured capacity, so earlier entries remain available until the cache needs to evict them.',
       ).toBe(4);
       expect(cache.stats.hits).toBe(1);
       expect(cache.stats.misses).toBe(4);
@@ -295,7 +295,7 @@ testCode: |
       const fromB = cacheB.predict(tf.tensor2d([values]));
       expect(
         second.counter.calls,
-        "The second cache has never seen this signal. It was built over its own model, and an entry stored under another model's weights is not an answer for this one, so this call is a miss and the model runs.",
+        "The second cache has never seen this signal. It uses its own model, and an entry stored under another model's weights is not an answer for this one, so this call is a miss and the model runs.",
       ).toBe(1);
       expect(cacheB.stats.hits).toBe(0);
       expect(cacheB.stats.misses).toBe(1);

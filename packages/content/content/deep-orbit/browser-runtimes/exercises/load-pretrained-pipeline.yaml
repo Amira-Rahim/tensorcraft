@@ -6,7 +6,7 @@ instructions: |
 
   - For an empty reports array, return [] without loading anything.
   - The supplied `pipelineFactory` simulates the real `pipeline()` loader. Give it the task name and await the classifier it returns. There is no default task.
-  - Choose the task that returns a label and score for each text report. An unknown task throws an error; another supported task returns the wrong kind of result for this job.
+  - Choose the task that returns a label and score for each text report. An unknown task throws an error. Another supported task returns the wrong kind of result for this job.
   - Load once, then pass the entire reports array to the classifier in one call. The tests count both calls.
   - Predictions arrive in the same order as the reports. Pair each report with its prediction before sorting, so the text, label and score stay together.
 
@@ -68,14 +68,14 @@ testCode: |
             'zero-shot-classification': (r) => ({ sequence: String(r), labels: [], scores: [] }),
             'feature-extraction': (r) => Array.from({ length: 4 }, (_, k) => (String(r).length % (k + 2)) / 10),
             'question-answering': () => {
-              throw new Error('question-answering takes a question and a context, not a bare report string.');
+              throw new Error('question-answering needs both a question and context. A report string alone lacks those fields.');
             },
           };
           if (Object.prototype.hasOwnProperty.call(TEXT_OUT, task)) {
             return async (batch) => batch.map(TEXT_OUT[task]);
           }
           return async () => {
-            throw new Error(task + ' takes an image or audio input, not a string of text. These reports are text, so the job has to be a text job.');
+            throw new Error(task + ' needs an image or audio input. These reports are text, so the job has to be a text job.');
           };
         }
         return async (batch) => batch.map((r, i) => ({
@@ -91,7 +91,7 @@ testCode: |
     async function ranked(reports, stub) {
       const out = await classifyReports(reports, stub);
       expect(out, 'Return one { text, label, score } result for each report.').toHaveLength(reports.length);
-      const why = 'Every row needs a label and a numeric score. Rows without them are what comes back when the pipeline was loaded for a task whose output carries neither, and no amount of sorting turns that into a ranking.';
+      const why = 'Every result needs a label and a numeric score. Choose a text-classification task that returns both.';
       for (let i = 0; i < out.length; i++) {
         expect(out[i], why).toHaveProperty('label');
         expect(typeof out[i].score, why).toBe('number');
@@ -122,11 +122,11 @@ testCode: |
         { label: 'POS', score: 0.7 },
       ]);
       const out = await ranked(reports, stub);
-      const order = 'Most confident first: the rows come back sorted by score, descending. A row out of place means the pairs were never reordered, or were reordered by something other than the score.';
+      const order = 'Most confident first: the rows come back sorted by score, descending. A row out of place means your code did not sort the pairs by their scores.';
       expect(out[0].score, order).toBe(0.99);
       expect(out[1].score, order).toBe(0.7);
       expect(out[2].score, order).toBe(0.5);
-      const why = 'The classifier answered positionally: prediction i belongs to report i. Reorder the pairs, not the predictions, or every row ends up describing a different report.';
+      const why = 'The classifier answered positionally: prediction i belongs to report i. Keep each report paired with its prediction when sorting, so the score still describes the same report.';
       expect(out[0].text, why).toBe('coolant loop warning');
       expect(out[0].label, why).toBe('NEG');
       expect(out[1].text, why).toBe('watch handover clean');
@@ -170,8 +170,8 @@ testCode: |
       };
       const out = await ranked(reports, countingStub);
       expect(out).toHaveLength(3);
-      expect(typeof tasksAsked[0], 'pipeline() has no default. The task name is the argument that decides which model is fetched, so it is not something the harness can supply for you.').toBe('string');
-      expect(tasksAsked.length, 'Each factory call can repeat initialization even when assets are cached. Load once for this batch.').toBe(1);
+      expect(typeof tasksAsked[0], 'Pass the task name to pipeline(). It determines which model to load.').toBe('string');
+      expect(tasksAsked.length, 'Each factory call can repeat initialization even when the cache contains its assets. Load once for this batch.').toBe(1);
       expect(classifierCalls, 'The classifier takes the whole array, so the batch is one call.').toBe(1);
       expect(batchSize, 'The classifier should have received all three reports at once.').toBe(3);
     });

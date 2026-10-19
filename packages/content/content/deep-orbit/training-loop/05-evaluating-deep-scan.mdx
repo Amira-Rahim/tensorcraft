@@ -21,7 +21,7 @@ concept:
     mlTitle: "Model Evaluation"
     mlCode: "const results = model.evaluate(testX, testY)"
     tier: structural
-    breaks: "E2E tests and model evaluations both check selected cases; neither alone guarantees a safe release. Model metrics summarize a held-out sample. Inspect important classes and operating conditions, account for label quality, and verify that the evaluation matches the deployment question."
+    breaks: "E2E tests and model evaluations both check selected cases. Neither alone guarantees a safe release. Model metrics summarize a held-out sample. Inspect important classes and operating conditions, account for label quality, and verify that the evaluation matches the deployment question."
 consequence:
   narrative: "DEEP SCAN scores 94% on the crew's test readings. Mirza allows a supervised prototype test, but sample 7741 remains hard to classify."
 hints:
@@ -30,7 +30,7 @@ hints:
       Train on the training tensors and measure the held-out rows without changing them. Report the numbers the run produced.
   - level: guidance
     content: |
-      Training accuracy is the final acc entry in history; evaluation accuracy is the scalar in evalResult[1]. Apply the gap rule to those values. A large gap or two low scores suggests questions to investigate; no-gap-warning is not a release approval.
+      Training accuracy is the final acc entry in history. Evaluation accuracy is the scalar in evalResult[1]. Apply the gap rule to those values. A large gap or two low scores suggests questions to investigate. No-gap-warning is not a release approval.
   - level: solution
     content: |
       const { trainX, trainY, testX, testY } = tf.tidy(() => {
@@ -130,9 +130,9 @@ Run the evaluation suite. I want real numbers on signals the network has never s
 
 You will test a classifier on readings it has not trained on and compare training accuracy with test accuracy.
 
-<LearningObjectives objectives={["Evaluate on held-out test data and read the train-vs-test gap", "Interpret accuracy, loss, and confusion matrix metrics", "Compare a trained classifier with a simple baseline", "Tell a validation set from a test set and know which one your decisions may touch", "Use the train/validation gap as a clue, then investigate possible causes"]} />
+<LearningObjectives objectives={["Evaluate on held-out test data and read the train-vs-test gap", "Interpret accuracy, loss, and confusion matrix metrics", "Compare a trained classifier with a simple baseline", "Use validation data to choose settings and keep test data for the final evaluation", "Use the train/validation gap as a clue, then investigate possible causes"]} />
 
-## Read the mistakes behind the score
+## The mistakes behind the score
 
 The twelve-case alert review shows why one accuracy number is not enough. A
 missed anomaly and a false alarm have different costs. **Precision** is the
@@ -142,11 +142,11 @@ anomalies caught. Inspect these alongside accuracy and individual errors.
 Mirza's next request is a separate evaluation. The challenge supplies 100
 synthetic training rows and 43 evaluation rows: 40 generated examples and
 three hand-written story cases. Keep those evaluation rows and labels out of
-training. Their scores describe this fixture, not a live spacecraft system.
+training. Their scores describe this fixture. Evaluating a live spacecraft system would require representative measurements.
 
-## Train, then measure separate rows
+## Training and held-out evaluation
 
-The compiled model and tensors are supplied. Fit only the training pair, then
+The exercise supplies a compiled model and tensors. Fit only the training pair, then
 evaluate the separate pair:
 
 <CodeBlock language="typescript" title="measure-the-gap.ts">
@@ -161,22 +161,22 @@ const gap = trainAcc - testAcc;`}
 
 `evaluate()` returns loss followed by the metrics configured at compile time.
 Read accuracy from the second tensor here. The exercise retains `evalResult`
-for inspection; release result tensors after their final use in an application.
+for inspection. Release result tensors after their final use in an application.
 Report your measured scores. The story's 0.518 and 94% belong to the crew's
 fictional run and are not targets for this exercise.
 
 For `diagnose`, check the gap first: greater than 0.15 returns `large-gap`.
-Otherwise, if both scores are below 0.7, return `low-scores`; all other cases
+Otherwise, if both scores are below 0.7, return `low-scores`. All other cases
 return `no-gap-warning`. Set `verdict` from the measured values. These labels
 describe results without identifying a cause or approving deployment.
 
-## Decide what the evidence can support
+## What the evaluation supports
 
 A **validation set** supports choices such as when to stop or which threshold
-to keep. A **test set** stays untouched until those choices are fixed.
+to keep. Reserve a **test set** until you finish those choices.
 Repeatedly tuning on test results turns that set into another validation set.
 For a real time-ordered archive, assign earlier and later groups before
-shuffling; separately shuffled `take()` and `skip()` calls can overlap.
+shuffling. Separately shuffled `take()` and `skip()` calls can overlap.
 
 Compare the network with a simple baseline on the same held-out rows. For
 example, predict the training set's most common class. A large gap can come
@@ -193,7 +193,7 @@ threshold needs new measurements.
 
 ### The crew's separate evaluation example
 
-A model can score 95% on training rows and 60% on new signals. Without separate data, the training log would hide that gap. Lesson 4 used validation rows to check progress. This lesson adds untouched test rows after those choices are made.
+A model can score 95% on training rows and 60% on new signals. Without separate data, the training log would hide that gap. Lesson 4 used validation rows to check progress. This lesson adds untouched test rows after you make those choices.
 
 Mirza wants the gap investigated. It could come from overfitting, changed data, wrong labels, or different preprocessing. As with an E2E test, the selected cases must represent the conditions the system will face.
 
@@ -201,7 +201,7 @@ Mirza wants the gap investigated. It could come from overfitting, changed data, 
 
 Use validation data to choose settings, thresholds, and when to stop. Repeatedly choosing what scores best on that set can make its score look better than performance on new data. The size of that effect varies.
 
-Keep the test set separate from those choices. Score it once after the settings are fixed, then report the result.
+Keep the test set separate from those choices. Score it once after you choose the settings, then report the result.
 
 Lesson 4 used its validation loss of 0.081 to decide when to stop. Its `validationSplit: 0.2` reserved 20% for validation but no separate test set. This lesson adds fresh test rows. The capstone model card records an 80/10/10 split for training, validation, and testing.
 
@@ -218,8 +218,8 @@ If 90% of test builds succeed, always predicting success scores 90% accuracy but
 // different question.
 
 // Synthetic evaluation fixture, built separately from the training rows.
-// The hand-written rows are story examples, not measured archive data.
-// Fresh generator seeds avoid reusing the seeded training draws; they do
+// The story supplies these fictional rows.
+// Fresh generator seeds avoid reusing the seeded training draws. They do
 // not establish realism or independence in a real time-series archive.
 const testX = tf.tidy(() => tf.concat([
   // Eight rows of the slice, annotated, for a feel of the data:
@@ -266,8 +266,8 @@ const testY = tf.tidy(() => tf.concat([
 const [testLoss, testAccuracy] = model.evaluate(testX, testY) as tf.Tensor[];
 console.log('Test Loss:', testLoss.dataSync()[0].toFixed(4));
 console.log('Test Accuracy:', (testAccuracy.dataSync()[0] * 100).toFixed(1) + '%');
-// Print your measured results. The story's 94% is illustrative, not an
-// expected output or a reproduced benchmark for this unseeded model.
+// Print your measured results. The story supplies a fictional 94% score.
+// This unseeded model can produce different results.
 
 // Make predictions on new signals
 const newSignals = tf.tensor2d([
@@ -288,21 +288,21 @@ model.dispose();
 `}
 </CodeBlock>
 
-The story keeps sample 7741 at a score of 0.518 in the crew's run. That number is a fictional plot result, not a reproducible property of the fixture. The earlier untrained scores had no earned interpretation, and this trained score does not prove that the reading is alien, unknowable or uniquely ambiguous. It is a reason to inspect the data and the model's coverage.
+The story keeps sample 7741 at a score of 0.518 in the crew's run. The story assigns that fictional score to this run. Your fixture can produce a different result. The earlier untrained scores had no earned interpretation, and this trained score does not prove that the reading is alien, unknowable or uniquely ambiguous. It is a reason to inspect the data and the model's coverage.
 
 **Interpreting results:**
 - Training accuracy far above validation accuracy can suggest overfitting. Check distribution changes, labels and preprocessing too. If overfitting is the cause, compare early stopping, simpler models or regularization on validation data.
 - Low scores on both sets can reflect underfitting, poor inputs, label noise or a training problem. Compare a baseline and inspect errors before adding layers.
-- High aggregate scores still need inspection by class and operating condition. The exercise reports a large gap, low scores or no gap warning. None of these labels certifies model health.
+- High aggregate scores still need inspection by class and operating condition. The exercise reports a large gap, low scores or no gap warning. None of these labels tells you the model is ready to use.
 
-While you are still changing the model, measure the gap against the validation score instead of the test score. The test slice is scored once, after the settings are frozen.
+While you are still changing the model, measure the gap against the validation score. Score the test slice once, after you finish choosing the settings.
 
 The fictional crew scored 94.0% on 50 test rows. Here is what happened:
 
 - Caught 23 of 26 anomalies and missed 3.
 - Left all 24 calm rows alone, with no false alarms.
 
-The three misses were confirmed later. Their three features looked almost calm. These counts form the **confusion matrix**. The reference below uses them to calculate precision, recall, and F1.
+The crew later confirmed the three missed anomalies. Their three features looked almost calm. These counts form the **confusion matrix**. The reference below uses them to calculate precision, recall, and F1.
 
 <DerivationDrawer summary="Why accuracy alone is not enough: precision, recall, F1">
 **Every prediction lands in one of four buckets:** true positive (TP: real anomaly, flagged), false positive (FP: calm reading, flagged anyway), true negative (TN: calm reading, left alone), false negative (FN: real anomaly, missed). Every metric below is a ratio of these four counts.
@@ -324,7 +324,7 @@ Accuracy = (23 + 24) / 50 = 94.0%. Precision = 23 / 23 = 1.000. Recall = 23 / 26
 
 **Tradeoff:** on a fixed dataset, lowering the threshold cannot reduce recall or the false-positive rate. Precision can rise or fall because the newly flagged rows can contain both true and false positives. Measure the tradeoff, then choose a cutoff for the error costs in your domain.
 
-When a denominator is zero, report the metric as undefined or state the convention your tool uses; do not silently present it as evidence of good performance.
+When a denominator is zero, report the metric as undefined or state the convention your tool uses. Do not silently present it as evidence of good performance.
 
 **F1 score** = `2 · (precision · recall) / (precision + recall)`: harmonic mean. Use when you need a single number that punishes either extreme. For DEEP SCAN, missing a true anomaly might cost a ship. False alarms cost crew time. The right metric depends on which cost you're willing to absorb.
 
@@ -340,21 +340,21 @@ Its precision of 1.000 and overall accuracy may not apply to live data. To estim
 
 The calculation below changes only the anomaly frequency. It assumes the threshold and the kinds of examples within each class stay fixed. If sensors, class patterns, or the threshold change, measure sensitivity and false-positive rate again.
 
-**Bayes' theorem converts between the two.** The number the bridge actually needs is P(anomaly | alarm), read as: the probability an anomaly is really there, given that the alarm fired. The bar means "given that", not "or". An alarm can happen two ways, a caught anomaly or a false positive:
+**Bayes' theorem converts between the two.** The bridge needs the probability of an actual anomaly among the readings that trigger an alarm. An alarm can happen two ways, a caught anomaly or a false positive:
 
 `P(anomaly | alarm) = (sens · prior) / (sens · prior + FPR · (1 - prior))`
 
 Here sens is the sensitivity (the recall from the drawer above), FPR is the false-positive rate (the share of calm readings falsely flagged), and the prior is how common anomalies are before any alarm fires.
 
-**No false alarms on a small sample.** FP = 0 on 24 calm rows says less than it seems: on 24 independent calm trials with the same true 4% FPR, a detector would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely; it does not make the FPR zero.
+**No false alarms on a small sample.** FP = 0 on 24 calm rows says less than it seems: on 24 independent calm trials with the same true 4% FPR, a detector would still print a clean 24-for-24 run about 38% of the time (0.96²⁴ ≈ 0.38). Zero observed false positives bounds the FPR loosely. It does not make the FPR zero.
 
 **Worked example.** Take sens = 0.885 (the recall above), assume FPR = 2%, and suppose 1 reading in 1,000 on the live stream is genuinely anomalous (prior = 0.001):
 
 `(0.885 × 0.001) / (0.885 × 0.001 + 0.02 × 0.999) = 0.000885 / 0.020865 ≈ 0.042`
 
-Under those assumed rates, about 4% of live alarms would be true positives. This is a projection using an assumed 2% FPR, not an estimate established by the small test slice. Every percentage point of FPR is 10 false alarms per 1,000 calm readings, and each one costs crew time.
+Under those assumed rates, about 4% of live alarms would be true positives. This projection assumes a 2% FPR. The small test slice provides too little evidence to establish that rate. Every percentage point of FPR is 10 false alarms per 1,000 calm readings, and each one costs crew time.
 
-A cheaper filter can reduce the number of readings reaching an expensive model. It also changes which examples that model sees. Remeasure sensitivity and FPR on the filtered population; raising its anomaly prevalence does not by itself establish the combined system's performance.
+A cheaper filter can reduce the number of readings reaching an expensive model. It also changes which examples that model sees. Remeasure sensitivity and FPR on the filtered population. Raising its anomaly prevalence does not by itself establish the combined system's performance.
 </DerivationDrawer>
 
 
@@ -365,7 +365,7 @@ A cheaper filter can reduce the number of readings reaching an expensive model. 
 Prepare Mirza's evaluation record. Train on the supplied training rows,
 evaluate the separate test rows, and report the measured accuracies and
 gap label. Inspect your run's results before deciding what needs further
-investigation. The checks also verify that no test rows entered training;
+investigation. The checks also verify that no test rows entered training.
 the fictional crew's 94% is not a target for your run.
 
 Report the scores this run produced. The grader checks the evaluation procedure without demanding a particular accuracy. The transfer assignment below asks whether the model earns its complexity.
@@ -378,12 +378,12 @@ Report the scores this run produced. The grader checks the evaluation procedure 
 
 <RecallPrompt
   question="Explain what you would investigate before treating a 95% training versus 60% test accuracy gap as overfitting."
-  answer="The model may have memorized details of the training set, which is called overfitting. But different data, wrong labels, or different preprocessing can also cause the gap. Check those first. Use validation data to compare possible fixes, such as better training examples, early stopping, or a simpler model."
+  answer="The model may have memorized details of the training set, a form of overfitting. But different data, wrong labels, or different preprocessing can also cause the gap. Check those first. Use validation data to compare possible fixes, such as better training examples, early stopping, or a simpler model."
 />
 
 <RecallPrompt
   question="Keep train and validation membership fixed."
-  answer="The time split tests prediction on later readings and reduces leakage from neighboring observations. Training indices may then be shuffled without changing membership. Separate shuffled iterations can place the same row in both sets; such overlap makes a held-out score misleading."
+  answer="The time split tests prediction on later readings and reduces leakage from neighboring observations. You can then shuffle training indices without changing membership. Separate shuffled iterations can place the same row in both sets. Such overlap makes a held-out score misleading."
   checks={[
     {
       "kind": "choice",
@@ -399,11 +399,11 @@ Report the scores this run produced. The grader checks the evaluation procedure 
         },
         {
           "text": "Assign earlier rows to training and later rows to validation before shuffling training rows.",
-          "feedback": "A time split preserves the future-period evaluation; shuffling within training does not change membership."
+          "feedback": "A time split preserves the future-period evaluation. Shuffling within training does not change membership."
         }
       ],
       "correctIndex": 2,
-      "explanation": "A time split preserves the future-period evaluation; shuffling within training does not change membership."
+      "explanation": "A time split preserves the future-period evaluation. Shuffling within training does not change membership."
     },
     {
       "kind": "choice",
@@ -411,11 +411,11 @@ Report the scores this run produced. The grader checks the evaluation procedure 
       "options": [
         {
           "text": "They necessarily remove all rare examples.",
-          "feedback": "The specific risk is overlapping membership, not guaranteed class removal."
+          "feedback": "The separate shuffles can place a row in both sets. They do not necessarily remove a whole class."
         },
         {
           "text": "The same row can enter both splits.",
-          "feedback": "Fix the split membership first; separate shuffled iterations can overlap."
+          "feedback": "Fix the split membership first. Separate shuffled iterations can overlap."
         },
         {
           "text": "They guarantee identical ordering on every iteration.",
@@ -423,7 +423,7 @@ Report the scores this run produced. The grader checks the evaluation procedure 
         }
       ],
       "correctIndex": 1,
-      "explanation": "Fix the split membership first; separate shuffled iterations can overlap."
+      "explanation": "Fix the split membership first. Separate shuffled iterations can overlap."
     }
   ]}
 />
@@ -457,13 +457,13 @@ Report the scores this run produced. The grader checks the evaluation procedure 
 
 <LessonRecap
   whatYouLearned={[
-    "model.evaluate() computes loss and configured metrics on the rows you supply. Use untouched test rows to estimate performance on the conditions they represent; that estimate does not guarantee deployment performance.",
+    "model.evaluate() computes loss and configured metrics on the rows you supply. Use untouched test rows to estimate performance on the conditions they represent. That estimate does not guarantee deployment performance.",
     "Train/test gaps help diagnose failures, but do not identify the cause by themselves. Check data shift, labels, preprocessing, and performance against a baseline.",
-    "Aggregate accuracy can hide failure modes. Precision, recall, and sliced evaluation (per class or per cohort) are required before trusting a model in production.",
+    "Overall accuracy can hide important mistakes. Check precision and recall, and look at results for each class and relevant group before using the model in production.",
     "Use validation data for training choices. Repeatedly choosing settings on the same set can make its score optimistic. Score the test slice once, after the settings are frozen, and report that result."
   ]}
-  bridge="E2E tests check workflows; held-out evaluation checks model performance beyond training examples. Both need representative cases and clear limits on what passing establishes."
-  youCanNow="Train a classifier, run `model.evaluate()` on a held-out slice, and use the train/test gap as an investigation signal alongside data checks and sliced evaluation."
+  bridge="E2E tests check workflows. Held-out evaluation checks model performance beyond training examples. Both need representative cases and clear limits on what passing establishes."
+  youCanNow="Train a classifier, evaluate it on separate data, and investigate differences between its training and test scores."
 />
 
 <ProjectMilestone stage="evaluation" />

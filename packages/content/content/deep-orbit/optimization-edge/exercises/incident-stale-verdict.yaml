@@ -3,21 +3,21 @@ lessonSlug: caching-strategies
 title: "Incident: Cache Served a Verdict From the Old Model"
 mlContent: systems
 instructions: |
-  The bridge has shown a cached classification that disagrees with the new model. Help Demir check which entries can still be served.
+  The bridge has shown a cached classification that disagrees with the new model. Help Demir check which entries the cache can still serve.
 
   Write `auditCache(entries, currentVersion, now, ttlSeconds)`. Refresh an entry if either:
 
   - Its `modelVersion` differs from `currentVersion`.
   - Its age, `now - cachedAt` in seconds, is greater than `ttlSeconds`.
 
-  An entry exactly at the age limit can still be served. A version change makes an entry stale even if it was just saved. The version covers both weights and preprocessing.
+  The cache can still serve an entry exactly at the age limit. A version change makes an entry stale even if the cache just saved it. The version covers both weights and preprocessing.
 
   Return `{ serve, refresh }` as arrays of keys, keeping input order. Assume valid timestamps no later than `now` and a finite, nonnegative TTL. Passing this check only establishes version and age. Rounded-key collisions need separate checks.
 hints:
   - level: nudge
     content: "Refresh when either the version differs or the entry is too old. Preserve input order."
   - level: guidance
-    content: "Compare version tags for equality, not age: a rollback can make an older tag current. Use a strict greater-than test for TTL expiry; equality is allowed in this contract."
+    content: "Check that version tags match: a rollback can make an older tag current. Use a strict greater-than test for TTL expiry. This contract permits equality."
   - level: solution
     content: |
       function auditCache(
@@ -146,7 +146,7 @@ testCode: |
         rows: entries.map((entry) => [entry.key, entry.modelVersion, 1000 - entry.cachedAt, r.serve.includes(entry.key) ? 'Serve' : 'Refresh']),
       });
     });
-    it('audits a batch that is built here rather than written down', () => {
+    it('checks entries with newly generated versions and timestamps', () => {
       // Ten entries and their expected buckets, out of one loop, against a
       // clock that reads differently on every run. Nothing in this case is
       // a literal a submission could have seen before, so the only way

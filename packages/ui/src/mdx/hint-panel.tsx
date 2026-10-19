@@ -209,7 +209,7 @@ export function HintPanel({
                   style={{ color: config.color }}
                 >
                   <span className="text-xs font-medium">
-                    {`Reveal ${config.label} →`}
+                    {`Reveal ${config.label}`}
                   </span>
                 </button>
               ) : (

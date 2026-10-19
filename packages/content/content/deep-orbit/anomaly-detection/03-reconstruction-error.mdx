@@ -12,7 +12,7 @@ scene:
 estimatedMinutes: 14
 difficulty: intermediate
 context:
-  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled; the error is 12x the normal maximum. Farah: 'That is our anomaly score.'"
+  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction differs sharply from the input. The error is 12x the normal maximum. Farah: 'That is our anomaly score.'"
   speaker: "Dr. Farah"
 concept:
   explanation: "Reconstruction error measures the difference between an input and the autoencoder's rebuilt version. It gives one score per input. A high score means the model rebuilt it poorly."
@@ -24,7 +24,7 @@ concept:
     tier: intuition
     breaks: "git diff names line changes you can patch. Reconstruction MSE averages squared feature differences into one score. A high score means a poor reconstruction, but does not show which feature contributed most. Calculate each feature's error separately to find that mismatch."
 consequence:
-  narrative: "Twelve times the highest error any normal signal produced, and the per-feature map names the largest contributor: fft_5, the 72 Hz-centered bin nearest the 73.4 Hz component, carrying almost all of it alone."
+  narrative: "The error is twelve times the highest normal error. Most comes from fft_5, the bin centered at 72 Hz, nearest to the 73.4 Hz component."
 hints:
   - level: nudge
     content: "Reconstruction error is one number: the mean squared error between what went into the autoencoder and what came back out"
@@ -58,7 +58,7 @@ You will measure reconstruction error and inspect which features contributed to 
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Release the tensors a per-reading score allocates, so a detector running on every reading does not leak", "Compare raw and baseline-relative per-feature errors without treating either as a diagnosis"]} />
 
-## Measure the reconstruction error
+## Measuring reconstruction error
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -93,7 +93,7 @@ console.log('Normal, max error:', Math.max(...normalScores));
 const anomalyScores = computeAnomalyScores(autoencoder, anomalousData);
 console.log('Probe, error:', anomalyScores[0]);
 // The story's normal maximum 0.5 and probe score 6.2 are fictional.
-// Your fitted model will produce its own scores; no ratio is guaranteed.`}
+// Your fitted model will produce its own scores. No ratio is guaranteed.`}
 </CodeBlock>
 
 ## A Detector Can Miss
@@ -112,9 +112,9 @@ const ordinaryNoisyError = mse([0, 0.2]);  // 0.02: an ordinary sensor variation
 // A cutoff of 0.01 misses the anomaly and flags the ordinary variation.`}
 </CodeBlock>
 
-This is a constructed mapping, not a trained benchmark. It disproves the guarantee that an unseen input must reconstruct badly. The incident exercise below asks you to inspect a detector that missed a confirmed anomaly.
+We chose this mapping to demonstrate the calculation. It does not measure a trained model. It disproves the guarantee that an unseen input must reconstruct badly. The incident exercise below asks you to inspect a detector that missed a confirmed anomaly.
 
-## Check the error for each feature
+## Error by feature
 
 <CodeBlock language="typescript" title="feature-errors.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -145,8 +145,8 @@ const analysis = featureErrors(autoencoder, anomalyTensor, [
 ]);
 
 console.log('Top contributors:');
-// Fictional mission output, not values produced by the code above:
-// fft_5: 64.12  ← the 72 Hz-centered bin nearest the 73.4 Hz component, 90x the amplitude row
+// Fictional mission output. The story supplies these values:
+// fft_5: 64.12: the 72 Hz-centered bin nearest the 73.4 Hz component, 90x the amplitude row
 // fft_6: 2.89
 // amplitude: 0.71
 // Everything else: < 0.1
@@ -174,7 +174,7 @@ function relativeFeatureErrors(
       0,
     );
     // Explicit regularization: cap amplification of near-zero baseline error.
-    // Inspect those features separately; this epsilon depends on score units.
+    // Inspect those features separately. This epsilon depends on score units.
     const ratios = tf.div(perFeature, tf.maximum(normalPerFeature, 1e-8)).arraySync()[0] as number[];
     return featureNames
       .map((name, i) => ({ feature: name, ratio: ratios[i] }))
@@ -186,17 +186,17 @@ function relativeFeatureErrors(
 `}
 </CodeBlock>
 
-Squared errors show how much each feature adds to MSE. Error ratios show how large each error is compared with its usual size. Check both, but remember that neither tells you the physical cause. The incident exercise uses absolute errors rather than squared errors. Compare them with absolute-error baselines so the units match.
+Squared errors show how much each feature adds to MSE. Error ratios show how large each error is compared with its usual size. Check both, but remember that neither tells you the physical cause. The incident exercise uses absolute errors. Compare them with absolute-error baselines so the units match.
 
 ## Challenge
 
-Give Farah a reconstruction MSE she can use to rank readings for review, while releasing every temporary tensor. Inspect the two offset-model scores: they measure the gap left by reconstruction, even when the input readings differ.
+Give Farah a reconstruction MSE she can use to rank readings for review, while releasing every temporary tensor. Compare the scores for the two test readings. The test model adds a fixed offset, so the scores measure that reconstruction error even though the readings differ.
 
 <Exercise slug="reconstruction-error" />
 
 <StoryPassage>
 
-PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothing. Compare per-feature errors with their normal baselines. Rank the discrepancies and identify unusually low errors. These measurements guide the investigation; they cannot establish its cause.
+PAGER, 14:47: the crew confirms the 14:33 signal as anomalous, and DEEP SCAN said nothing. Compare per-feature errors with their normal baselines. Rank the discrepancies and identify unusually low errors. These measurements guide the investigation. They cannot establish its cause.
 
 </StoryPassage>
 
@@ -232,7 +232,7 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
       "options": [
         {
           "text": "Per-feature squared reconstruction errors.",
-          "feedback": "Per-feature errors locate contributions to the score; they still do not establish a physical cause."
+          "feedback": "Per-feature errors locate contributions to the score. They still do not establish a physical cause."
         },
         {
           "text": "Only the same aggregate MSE with more decimal places.",
@@ -244,22 +244,22 @@ PAGER, 14:47: the 14:33 signal is confirmed anomalous, and DEEP SCAN said nothin
         }
       ],
       "correctIndex": 0,
-      "explanation": "Per-feature errors locate contributions to the score; they still do not establish a physical cause."
+      "explanation": "Per-feature errors locate contributions to the score. They still do not establish a physical cause."
     }
   ]}
 />
 
 <LessonRecap
   whatYouLearned={[
-    "Reconstruction error is computed as the MSE between an input and the autoencoder's reconstruction of it; one scalar per sample serves as the anomaly score.",
-    "Error distributions depend on the model and data. The story shows separation; the constructed mapping shows why low error cannot rule out an anomaly.",
-    "Per-feature errors locate reconstruction mismatches. Aggregate MSE averages them into one number; neither establishes that a particular feature is physically faulty."
+    "Here we calculate reconstruction error as the MSE between an input and the autoencoder’s reconstruction of it. One scalar per sample serves as the anomaly score.",
+    "Error distributions depend on the model and data. The story shows separation. The constructed mapping shows why low error cannot rule out an anomaly.",
+    "Per-feature errors locate reconstruction mismatches. Aggregate MSE averages them into one number. Neither establishes that a particular feature is physically faulty."
   ]}
-  bridge="git diff reports edits; reconstruction error measures a numerical gap between an input and its reconstruction. A high gap alone does not identify its cause."
+  bridge="git diff reports edits. Reconstruction error measures a numerical gap between an input and its reconstruction. A high gap alone does not identify its cause."
   youCanNow="Calculate a reconstruction score for each reading, then check which features contribute most to the error."
 />
 
-> **DISPATCH archive · field intercept #13-A:** Operator Lin's CV cell logged a similar error spike last quarter: box-overlap error 12x baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
+> **DISPATCH archive, field intercept #13-A:** Operator Lin's CV cell logged a similar error spike last quarter: box-overlap error 12x baseline on a feed they marked 'unremarkable'. The model caused the error spike. They retrained. The escalation never reached us.
 
 <Epilogue>
 

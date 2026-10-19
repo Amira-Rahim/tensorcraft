@@ -1,6 +1,6 @@
 slug: profile-model
 lessonSlug: model-profiling
-title: "Profile a Model"
+title: "Model profiling"
 instructions: |
   Implement profileModel(model, createInput, runs, now = () => performance.now()).
   runs must be a positive integer. Return parameterCount from countParams(),
@@ -230,7 +230,7 @@ testCode: |
       expect(typeof profile.avgInferenceMs).toBe('number');
       expect(
         profile.avgInferenceMs,
-        'predict() returns before the work is done. A clock that stops there times the enqueue, and the average collapses towards zero.',
+        'Wait for output data before stopping the timer. predict() can return before the backend finishes the calculation.',
       ).toBeCloseTo(6, 8);
     });
 
@@ -265,7 +265,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Warmup and measured calls',
-        summary: 'Controlled clock values, not device timings. Your reported average is ' + p.avgInferenceMs + ' ms after excluding warmup.',
+        summary: 'The test supplies controlled clock values. These measure no device performance. Your reported average is ' + p.avgInferenceMs + ' ms after excluding warmup.',
         columns: ['Call', 'Supplied duration (ms)', 'Included in average'],
         rows: calls.served.map((ms, i) => [i === 0 ? 'Warmup' : 'Measured call ' + i, ms, i !== 0]),
       });
@@ -276,7 +276,7 @@ testCode: |
       await profileModel(model, createInput, 7, model.clock);
       expect(
         calls.predict,
-        'The warmup is a call the model makes and the average ignores, so the count is one more than `runs`.',
+        'Run one untimed warmup, then the requested number of timed predictions. The total call count is runs + 1.',
       ).toBe(8);
       expect(
         calls.readbacks,
@@ -284,7 +284,7 @@ testCode: |
       ).toBe(8);
     });
 
-    it('walks every layer of a real model, including the ones that own nothing', () =>
+    it('reports every layer, including layers with no parameters', () =>
       serial(async () => {
         const model = realModel();
         const before = tf.memory().numTensors;

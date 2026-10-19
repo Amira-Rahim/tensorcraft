@@ -1,6 +1,6 @@
 slug: write-model-card
 lessonSlug: documentation
-title: "Write a Model Card"
+title: "The model card"
 instructions: |
   Help Farah prepare the model handover. Render the supplied metadata as one Model Card string, using this exact line order and format:
 
@@ -16,11 +16,11 @@ instructions: |
       - Input: {inputFormat}
       - Output: {outputFormat}
 
-  Read every value from `meta`. Format percentages with one decimal place. Find the smallest value in `recallByClass`; do not assume a class name or key order. If values tie, you may use the first minimum in insertion order. Keep each bullet under its named heading.
+  Read every value from `meta`. Format percentages with one decimal place. Find the smallest value in `recallByClass`. Do not assume a class name or key order. If values tie, you may use the first minimum in insertion order. Keep each bullet under its named heading.
 
-  Inputs are already validated. Metric fractions are finite in [0, 1], sizes and durations are nonnegative, and `recallByClass` is non-empty. `weightBytes` describes the weight file, not the whole download.
+  The caller supplies validated inputs. Metric fractions are finite in [0, 1], sizes and durations are nonnegative, and `recallByClass` is non-empty. `weightBytes` describes the weight file. Other download assets add to that size.
 
-  This is part of a model card. A release card also needs purpose, model and data versions, split method, per-class sample counts, metric definitions, and the timing environment. The supplied mission values are fictional; formatting them does not verify them.
+  This is part of a model card. A release card also needs purpose, model and data versions, split method, per-class sample counts, metric definitions, and the timing environment. The supplied mission values are fictional. Formatting them does not verify them.
 starterCode: |
   interface ModelMetadata {
     name: string;
@@ -109,7 +109,7 @@ testCode: |
       recordResult({
         kind: 'text',
         title: 'The handover card your code produced',
-        summary: 'Rendered from supplied fictional metadata. The next watch can inspect the evaluation context, lowest recall, and input requirements; formatting the card does not verify its figures.',
+        summary: 'Rendered from supplied fictional metadata. The next watch can inspect the evaluation context, lowest recall, and input requirements. Formatting the card does not verify its figures.',
         text: card.slice(0, 6000),
       });
     });
@@ -150,7 +150,7 @@ testCode: |
         const card = generateModelCard(variant);
         expect(
           card,
-          'The limitation line names the minimum recall in the object, which means comparing the values rather than trusting their order.',
+          'The limitation line names the minimum recall in the object, which means comparing all the values.',
         ).toContain('- Lowest recall: anomaly at 84.0%');
         expect(
           card,
@@ -175,7 +175,7 @@ testCode: |
       const card = generateModelCard(weather);
       expect(
         card,
-        'drift at 41.0% is the lowest recall in this object. Finding it means comparing the values, not matching a class name or reading the last key.',
+        'drift at 41.0% is the lowest recall in this object. Finding it means comparing all the values, regardless of class name or key order.',
       ).toContain('- Lowest recall: drift at 41.0%');
       expect(
         card,
@@ -196,7 +196,7 @@ testCode: |
       const card = generateModelCard(busy);
       expect(
         card,
-        'anomaly at 55.0% is the lowest recall in this object. The line names the minimum of recallByClass, which takes a comparison across all five, not the first class to fall under a bar.',
+        'anomaly at 55.0% is the lowest recall in this object. The line names the minimum of recallByClass, so compare all five values to find it.',
       ).toContain('- Lowest recall: anomaly at 55.0%');
       expect(
         card,
@@ -261,7 +261,7 @@ testCode: |
       expect(under['## Performance'] || []).toContain('- Size: 3988 bytes');
       expect(
         under['## Performance'] || [],
-        'Inference speed is a performance number, so it belongs with the other two rather than further down the card.',
+        'Inference speed is a performance number, so put it alongside the other performance measurements.',
       ).toContain('- Inference: 0.035ms');
       expect(
         under['## Limitations'] || [],
@@ -293,7 +293,7 @@ testCode: |
       expect(card).toContain('# SENTINEL v2.3.1');
       expect(
         card,
-        'Every number on the card is read off the metadata argument, so a second model renders a second card.',
+        'Read every number on the card from the metadata argument, so a second model renders a second card.',
       ).toContain('- Accuracy: 87.4% (measured at the v2.3 handover)');
       expect(card).toContain('- Size: 9248 bytes');
       expect(card).toContain('- Lowest recall: storm at 62.0%');
@@ -342,7 +342,7 @@ testCode: |
       ).toContain(`- Accuracy: ${(accTenths / 10).toFixed(1)}% (measured at ${drawn.benchmarkedOn})`);
       expect(
         card,
-        'The size line carries weightBytes as it arrived, a whole number of bytes, not a rounded total.',
+        'The size line carries weightBytes as it arrived, as an exact whole number of bytes.',
       ).toContain(`- Size: ${bytes} bytes`);
       expect(
         card,

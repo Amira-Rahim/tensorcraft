@@ -61,7 +61,7 @@ it("keeps selection local until preview and sends files only after explicit publ
   fireEvent.click(
     screen.getByRole("button", { name: "Preview GitHub destination" }),
   );
-  await screen.findByText(/public; anyone can read these files/);
+  await screen.findByText(/public. Anyone can read these files/);
   expect(vi.mocked(apiFetch).mock.calls[0][1]!.body).toBeUndefined();
   const publish = screen.getByRole("button", {
     name: "Publish project snapshot",

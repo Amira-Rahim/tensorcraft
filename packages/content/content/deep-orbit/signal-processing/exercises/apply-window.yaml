@@ -1,13 +1,13 @@
 slug: apply-window
 lessonSlug: windowing-and-overlap
-title: "Build and Apply a Hann Window"
+title: "The Hann window"
 mlContent: data
 instructions: |
   Implement two functions returning JavaScript number arrays:
   - `hannWindow(n)`: n weights using `w[i] = 0.5 * (1 - cos(2*pi*i / (n-1)))`. This is the symmetric Hann, zero at both ends.
   - `applyWindow(signal, window)`: multiply corresponding values without reordering them.
 
-  Use plain JavaScript or tensors. For a tensor implementation, `tf.range(0, n)` creates `[0, 1, ..., n-1]`; dispose temporary tensors after readback. Assume integer `n >= 2` and equal-length signal/window arrays.
+  Use plain JavaScript or tensors. For a tensor implementation, `tf.range(0, n)` creates `[0, 1, ..., n-1]`. Dispose temporary tensors after readback. Assume integer `n >= 2` and equal-length signal/window arrays.
 
   The tests also measure two tones between bin centers. Tapering reduces their summed magnitudes more than three bins away from the rounded tone bin by over 20x. This result is specific to those test signals. It is not an energy measurement, and the main peak also becomes wider.
 starterCode: |
@@ -69,7 +69,7 @@ testCode: |
       const w = windowOf(65);
       expect(
         w[32],
-        'An odd length has one middle sample and the curve peaks there at 1. A window that peaks somewhere else is not centered on the slice it weights.',
+        'An odd length has one middle sample and the curve peaks there at 1. A window that peaks somewhere else does not center its peak on the slice it weights.',
       ).toBeCloseTo(1, 4);
     });
     it('tapers through the interior instead of jumping to full weight', () => {
@@ -143,7 +143,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'What your taper changed',
-        summary: 'Synthetic 10.5-cycle, 128-sample capture. Far-bin totals sum magnitudes more than three bins from the rounded tone bin; they are not energy or a universal leakage reduction.',
+        summary: 'Synthetic 10.5-cycle, 128-sample capture. Far-bin totals sum magnitudes more than three bins from the rounded tone bin. They are not energy or a universal leakage reduction.',
         columns: ['Measurement', 'Value'],
         rows: [
           ['Far-bin magnitude sum before taper', l.raw],

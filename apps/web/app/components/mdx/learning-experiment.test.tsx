@@ -71,11 +71,7 @@ it.each([
   ["learning-rate", "Four calculated updates", "2"],
   ["fft", "Frequency bins, 0–24 Hz", "4"],
   ["attention", "Score, normalized weight, and value contribution", "1"],
-  [
-    "cache",
-    "Actual deterministic replay; every row has a fresh-score comparison",
-    "2",
-  ],
+  ["cache", "Each cached reply beside a fresh calculation", "2"],
 ] as const)(
   "%s keeps worked results hidden before help and preserves that help after reset and remount",
   (id, caption, correctAnswer) => {
@@ -116,7 +112,9 @@ it("labels FFT magnitude units and keeps the full frequency plot within its scal
   });
   expect(graph).toHaveAttribute("viewBox", "0 0 320 180");
   expect(
-    screen.getByText("Magnitude (|DFT| / observed samples)"),
+    screen.getByText(
+      "Magnitude (DFT magnitude divided by the observed sample count)",
+    ),
   ).toBeVisible();
   for (const text of graph.querySelectorAll("text"))
     expect(Number(text.getAttribute("font-size"))).toBeGreaterThanOrEqual(18);
@@ -217,7 +215,9 @@ it.each([
 it("recovers corrupt drafts and blocked storage while preserving the in-memory activity", () => {
   sessionStorage.setItem(key("cache"), "{broken");
   render(<LearningExperiment id="cache" />);
-  expect(screen.getByText(/draft could not be read/)).toBeInTheDocument();
+  expect(
+    screen.getByText(/could not read the experiment draft/),
+  ).toBeInTheDocument();
   vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
     throw new Error("blocked");
   });

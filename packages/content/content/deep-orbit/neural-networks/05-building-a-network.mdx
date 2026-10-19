@@ -20,13 +20,13 @@ concept:
     mlTitle: "Model Compilation"
     mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
     tier: structural
-    breaks: "Creating a server wires up a handler; compiling a model configures its training objective, optimizer, and metrics. Compilation does not train or reset its weights. A newly initialized model still needs fitting; an already trained model may already make useful predictions."
+    breaks: "Creating a server wires up a handler. Compiling a model configures its training objective, optimizer, and metrics. Compilation does not train or reset its weights. A newly initialized model still needs fitting. An already trained model may already make useful predictions."
 consequence:
-  narrative: "The DEEP SCAN network is assembled and compiled. Its starting scores are recorded, ready for comparison after training."
+  narrative: "Demir has assembled and compiled DEEP SCAN. He saves its starting scores for comparison after training."
 hints:
   - level: nudge
     content: |
-      compile() chooses how training will update the weights and measure errors. It does not change the starting weights. You can already call predict() once the layers are built.
+      compile() chooses how training will update the weights and measure errors. It does not change the starting weights. You can call predict() as soon as you build the layers.
   - level: guidance
     content: |
       Save the initial weights and predictions before training the first network. Leave the second network untrained so you can compare it with the trained one. Its predictions may still be confident: confidence alone cannot tell you whether training happened.
@@ -78,13 +78,13 @@ You will build a classifier and compare its predictions before and after trainin
 
 <LearningObjectives objectives={["Build and compile a complete neural network from scratch", "Understand what each compilation option controls", "Verify the network by its parameter count, and read its predictions before and after training", "Explain why a new layer starts with random weights and zero biases"]} />
 
-## Assembly Required
+## Network setup
 
-Assemble the network and call `model.predict()`. Prediction does not require compilation. `compile()` configures the optimizer, loss and metrics used by training; it does not fit or reset the weights. A newly initialized model can emit confident scores without having learned anything useful.
+Assemble the network and call `model.predict()`. Prediction does not require compilation. `compile()` configures the optimizer, loss and metrics used by training. It does not fit or reset the weights. A newly initialized model can emit confident scores without having learned anything useful.
 
 Hidden units need different starting points so they can learn different features. If all their weights start the same, they can keep receiving the same updates. Random starting weights help avoid this. These TensorFlow.js dense layers use Glorot-normal weights and zero biases by default. Change those settings with `kernelInitializer` and `biasInitializer`.
 
-Glorot sets the size of the random weights using the layer's input and output counts. This helps keep values from growing or shrinking too much as they pass through layers. It is a starting rule, not a guarantee. Watch what happens during training.
+Glorot sets the size of the random weights using the layer's input and output counts. This helps keep values from growing or shrinking too much as they pass through layers. Training can still become unstable, so check the values as the run progresses. Watch what happens during training.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -111,7 +111,7 @@ model.compile({
 });
 
 // 4. Verify with summary. TFJS names layers className + counter
-// (dense_Dense1, not dense_1) and prints four columns:
+// (such as dense_Dense1) and prints four columns:
 model.summary();
 // __________________________________________________________________________________________
 // Layer (type)                Input Shape               Output shape              Param #
@@ -138,7 +138,7 @@ model.dispose();`}
 The compile options have different jobs:
 
 - `optimizer: 'adam'` chooses how to adjust the weights. Adam uses recent gradients and their squares to scale the updates. You still choose a base learning rate.
-- `loss: 'binaryCrossentropy'` chooses how to measure errors. This loss is often used for two-class probability models. Mean squared error, or MSE, is often used to predict numerical values. Choose the loss for the task and output format.
+- `loss: 'binaryCrossentropy'` chooses how to measure errors. Two-class probability models often use this loss. Models that predict numerical values often use mean squared error, or MSE. Choose the loss for the task and output format.
 - `metrics: ['accuracy']` logs the share of predictions that are correct. It does not choose the training updates.
 
 ## Challenge
@@ -146,7 +146,7 @@ The compile options have different jobs:
 Build two copies of the rehearsal classifier. Run both on the same 120
 generated readings, then train one copy and run it again. Inspect a selected
 set of your before-and-after scores while the second model stays untrained.
-The instructions supply the `fit()` call; module 3 explains its updates.
+The instructions supply the `fit()` call. Module 3 explains its updates.
 
 This practice model reads 8 features through layers of 24, 12, and 1 units. Its parameter count is `(8 × 24 + 24) + (24 × 12 + 12) + (12 + 1) = 529`. The generated inputs have three features that differ by class and five extra noise features.
 
@@ -164,7 +164,7 @@ Compare this model's own scores before and after training. It differs from the b
       "options": [
         {
           "text": "The learned weights from the training examples.",
-          "feedback": "Weights are learned during training, not during compile()."
+          "feedback": "Training learns the weights. compile() sets up how that training will run."
         },
         {
           "text": "Predictions for every row in the dataset.",
@@ -184,7 +184,7 @@ Compare this model's own scores before and after training. It differs from the b
       "options": [
         {
           "text": "Yes.",
-          "feedback": "Compilation configures training; it does not run training updates."
+          "feedback": "Compilation configures training. It does not run training updates."
         },
         {
           "text": "No.",
@@ -224,12 +224,12 @@ Compare this model's own scores before and after training. It differs from the b
 <LessonRecap
   whatYouLearned={[
     "Create and connect layers to run predict(). Compile before using fit() to train them.",
-    "model.compile() is configuration, not training: it wires up the optimizer, loss function, and metrics for the later fit() call.",
-    "Adam scales updates using gradient statistics; its base learning rate is still a setting. Choose a loss that matches the task and output format.",
-    "Dense layers here default to Glorot-normal kernel weights and zero biases. Random initialization helps break symmetry; it does not guarantee good predictions or stable training."
+    "model.compile() configures the optimizer, loss function, and metrics. A later fit() call uses those settings to train the model.",
+    "Adam scales updates using gradient statistics. Its base learning rate is still a setting. Choose a loss that matches the task and output format.",
+    "Dense layers here default to Glorot-normal kernel weights and zero biases. Random initialization helps break symmetry. It does not guarantee good predictions or stable training."
   ]}
-  bridge="createServer wires a request handler. model.compile configures training without changing existing weights; fitting performs the parameter updates."
-  youCanNow="Assemble, compile, and verify a complete sequential neural network, run an initial prediction to confirm the pipeline is wired correctly, and say where its starting weights come from."
+  bridge="createServer wires a request handler. model.compile configures training without changing existing weights. Fitting performs the parameter updates."
+  youCanNow="Build and compile a sequential network, check its parameter count, and compare its scores before and after training."
 />
 
 <Epilogue>
@@ -237,7 +237,7 @@ Compare this model's own scores before and after training. It differs from the b
 End of watch, as ordered. Farah runs the untrained network over the archive, then initializes a second copy. Sample 7741 changes position in the sorted results. She removes the alert colors from both displays and saves the starting weights beside each run.
 
 <Dialogue speaker="Dr. Farah">
-Keep the tag on the reading. These scores have not earned an interpretation yet.
+Keep the reading flagged. We can’t trust these scores until we’ve trained and tested the model.
 </Dialogue>
 
 <Dialogue speaker="ARIA">

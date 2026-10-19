@@ -81,7 +81,7 @@ describe("BossBeat answer-key resistance", () => {
     );
     await screen.findByText("Compare the evidence");
     expect(screen.queryByRole("progressbar")).toBeNull();
-    expect(screen.getByText("Decision · take your time")).toBeInTheDocument();
+    expect(screen.getByText("Decision, take your time")).toBeInTheDocument();
     expect(screen.getAllByTestId(/^boss-beat-option-/)).toHaveLength(4);
   });
   it.each([0, 1, 2, 3])(
@@ -220,13 +220,13 @@ describe("BossBeat failure paths", () => {
         timeoutSeconds={1}
       />,
     );
-    await screen.findByText("Decision · 1s");
+    await screen.findByText("Decision, 1s");
     // The note's node is always mounted (a live region), so wait for its
     // text rather than its presence.
     await waitFor(
       () => {
         expect(screen.getByTestId("boss-beat-silence").textContent).toContain(
-          "Clock out.",
+          "Time ran out.",
         );
       },
       { timeout: 4000 },
@@ -238,7 +238,7 @@ describe("BossBeat failure paths", () => {
     expect(screen.getByTestId("boss-beat-silence").textContent).toContain(
       "standing proposal",
     );
-    expect(screen.getByText("Decision · clock out")).toBeInTheDocument();
+    expect(screen.getByText("Decision, clock out")).toBeInTheDocument();
     expect(recordBossBeatChoice).not.toHaveBeenCalled();
     // The note names the standing option by its display text, not by its
     // stance enum: "goes with random" read as a coin flip (round 7).

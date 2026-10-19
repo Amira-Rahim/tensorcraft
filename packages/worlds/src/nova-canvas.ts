@@ -4,7 +4,7 @@ export const novaCanvas: WorldManifest = {
   id: "creative",
   slug: "nova-canvas",
   displayName: "Nova Canvas",
-  tagline: "Where AI learns to imagine",
+  tagline: "Help the studio build tools for its next exhibition",
   description:
     "NOVA LABS' AI co-creation system crashed during a major exhibition. Build Nova Canvas, a multimodal creative assistant.",
   palette: {
@@ -70,7 +70,7 @@ export const novaCanvas: WorldManifest = {
   ],
   preview: {
     statusBoard: {
-      org: "NOVA LABS · INSTALLATION CONTROL",
+      org: "NOVA LABS, INSTALLATION CONTROL",
       status: "CO-CREATION SYSTEM OFFLINE",
     },
     ctaLabel: "Join the waitlist",

@@ -20,7 +20,7 @@ concept:
     mlTitle: "Transformers.js pipeline"
     mlCode: "import { pipeline } from '@huggingface/transformers'\nconst classifier = await pipeline('sentiment-analysis')"
     tier: structural
-    breaks: "Components and model inference can both be tested with fixed inputs and expected outputs. Numerical tolerances may depend on the backend. A passing fixture does not establish model accuracy on new data. Browser pipelines also download model assets whose size and caching need measurement."
+    breaks: "You can test components and model inference with fixed inputs and expected outputs. Numerical tolerances may depend on the backend. A passing fixture does not establish model accuracy on new data. Browser pipelines also download model assets whose size and caching need measurement."
 consequence:
   narrative: "The pretrained classifier is running. Farah returns to the Sector 7-G readings in the lab."
 hints:
@@ -49,17 +49,17 @@ No. I spent last night reading the Transformers.js docs so you don't spend three
 
 <StoryPassage>
 
-Mirza reads forty-one crew status reports before each watch. She wants to try sorting them by the classifier’s score, whether the label is positive or negative. High-scoring reports go first; she will read the low-scoring ones more closely. The score describes the model’s preference between its labels. It does not measure urgency or prove the label is correct.
+Mirza reads forty-one crew status reports before each watch. She wants to try sorting them by the classifier’s score, whether the label is positive or negative. High-scoring reports go first. She will read the low-scoring ones more closely. The score describes the model’s preference between its labels. It does not measure urgency or prove the label is correct.
 
 </StoryPassage>
 
 You will load a sentiment model once and use it to classify several crew reports.
 
-<LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Implement the task, loading and output contract around `pipeline()`", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
+<LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Implement the task, loading and output contract around `pipeline()`", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, automatic speech recognition)", "Check how model downloads and prediction time affect the app"]} />
 
-## Three Browser ML Runtimes, Three Jobs
+## Browser ML runtimes
 
-Transformers.js adds task-specific preprocessing and output handling around pretrained models. Its browser inference uses ONNX Runtime. The tools overlap; choose based on the model and application you need.
+Transformers.js adds task-specific preprocessing and output handling around pretrained models. Its browser inference uses ONNX Runtime. The tools overlap. Choose based on the model and application you need.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -71,11 +71,11 @@ Transformers.js adds task-specific preprocessing and output handling around pret
 
 A custom task does not automatically require training from scratch. Check whether an existing model, adaptation or an ordinary rule meets the need. A convenient pipeline API does not establish that the model is suitable.
 
-## Classify the crew's reports
+## Classification of the crew’s reports
 
 <CodeBlock language="typescript" title="sentiment-pipeline.ts">
 {`// The package moved from '@xenova/transformers' to the official
-// '@huggingface/transformers' at v3; old tutorials cite the former.
+// '@huggingface/transformers' at v3. Old tutorials cite the former.
 import { pipeline } from '@huggingface/transformers';
 
 // Pin model, revision, dtype and device when reproducing results.
@@ -104,7 +104,7 @@ try {
 
 The first load may download model weights, tokenizer assets and the runtime. Browser Cache Storage can retain model assets, but quota, eviction and browser settings affect it. A cache hit still needs asset reads, initialization and inference. TFJS's `indexeddb://` model storage uses a different browser API.
 
-The real lab runs this revision with both `q8` and `fp32`, records exact asset sizes and scores, and reloads the q8 pipeline with the network disabled after initialization. Run `node scripts/check-runtime-lab.mjs --pretrained`; setup and measurement limits are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). Do not expect scores from different dtypes or runtimes to match exactly.
+The real lab runs this revision with both `q8` and `fp32`, records exact asset sizes and scores, and reloads the q8 pipeline with the network disabled after initialization. Run `node scripts/check-runtime-lab.mjs --pretrained`. Setup and measurement limits are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). Do not expect scores from different dtypes or runtimes to match exactly.
 
 ## Tasks the Pipeline Handles Out of the Box
 
@@ -117,19 +117,19 @@ zero-shot-classification    feature-extraction          automatic-speech-recogni
 
 The pipeline supplies task-specific preprocessing, inference and output handling. Not every model supports every pipeline. Inspect the model's supported task and required assets before using it.
 
-This model uses ONNX, so TensorFlow.js tools such as `model.layers` and `tensorflowjs_converter` do not apply. Use tools that support the ONNX model. You cannot assume that any transformer can be converted to a TFJS LayersModel. DEEP SCAN was trained in TensorFlow.js and stays there.
+This model uses ONNX, so TensorFlow.js tools such as `model.layers` and `tensorflowjs_converter` do not apply. Use tools that support the ONNX model. A transformer needs a compatible architecture and conversion path to run as a TFJS LayersModel. The crew trained DEEP SCAN in TensorFlow.js and keeps it there.
 
-Aboard the Archimedes the download comes from the ship's mirrored model archive, synced at the last relay pass; the live Hub is eleven light-minutes of latency away on a good day. A local mirror changes where the assets come from. It does not remove cache eviction, versioning or cold-start work.
+Aboard the Archimedes the download comes from the ship's mirrored model archive, synced at the last relay pass. The live Hub is eleven light-minutes of latency away on a good day. A local mirror changes where the assets come from. It does not remove cache eviction, versioning or cold-start work.
 
-## Check the Model Against the Task
+## Model suitability
 
-The selected sentiment model was fine-tuned on SST-2 movie-review sentences. Crew status reports are operational text. Its labels are POSITIVE and NEGATIVE; it has no neutral or “needs human attention” label. A high softmax score expresses the model's preference among its trained labels, not a calibrated probability that a report has been understood correctly.
+The model authors fine-tuned this sentiment classifier on SST-2 movie-review sentences. Crew status reports are operational text. Its labels are POSITIVE and NEGATIVE. It has no neutral or “needs human attention” label. A high softmax score expresses a preference among those trained labels. Reliable use on crew reports requires evaluation and calibration on representative reports.
 
-Label representative reports before inspecting the model's predictions. Compare mistakes and the current manual process. Keep an untouched evaluation set if you use earlier examples to choose prompts, models or thresholds. Twenty reports can reveal an obvious mismatch; they cannot establish a reliable rare-error rate.
+Label representative reports before inspecting the model's predictions. Compare mistakes and the current manual process. Keep an untouched evaluation set if you use earlier examples to choose prompts, models or thresholds. Twenty reports can reveal an obvious mismatch. They cannot establish a reliable rare-error rate.
 
-Mirza's confidence ordering is a workflow experiment. Test whether it helps her find reports needing attention. It is not a measure of crew morale, severity or urgency.
+Mirza is trying out this way of sorting reports. Test whether it helps her find reports needing attention. It is not a measure of crew morale, severity or urgency.
 
-Download size can make browser inference impractical for a target connection. Measure the selected files and startup on that connection. Prefetching may reduce waiting later, but cannot guarantee a cold-start deadline when assets are missing or the network is unavailable. Transformers.js provides inference, not a browser training loop; fine-tuning needs separate tooling and a compatible export.
+Download size can make browser inference impractical for a target connection. Measure the selected files and startup on that connection. Prefetching may reduce waiting later, but cannot guarantee a cold-start deadline when assets are missing or the network is unavailable. Transformers.js runs inference in the browser. Fine-tuning needs separate tooling and a compatible export.
 
 ## Challenge
 
@@ -138,7 +138,7 @@ The exercise supplies simulated pipeline results. It checks your task choice and
 Assemble Mirza's report queue from the supplied sentiment results. Choose
 the task, load once, classify the batch, and keep each report paired with its
 label and score while sorting. Inspect the returned queue to catch a score
-attached to the wrong report. The simulation checks that integration;
+attached to the wrong report. The simulation checks that integration.
 evaluating the real model on crew reports remains separate work.
 
 The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answering`, `translation`, `summarization`, `text-generation`, `image-classification`, `image-segmentation`, `image-to-text`, `zero-shot-classification`, `feature-extraction`, and `automatic-speech-recognition`. Choose the text task that returns a label and score. Image and audio tasks need different inputs. Other text tasks return generated text, named entities, numeric features, or scores for labels you supply.
@@ -147,7 +147,7 @@ The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answ
 
 <RecallPrompt
   question="When is a supported pretrained Transformers.js model a reasonable starting point?"
-  answer="When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch."
+  answer="When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule. It does not automatically require training from scratch."
   checks={[
     {
       "kind": "choice",
@@ -155,7 +155,7 @@ The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answ
       "options": [
         {
           "text": "Whenever the task uses text, regardless of its labels or license.",
-          "feedback": "Check task fit, label meanings, license and representative performance."
+          "feedback": "Check the task the model learned during training, what its labels mean, its license, and how well it handles your reports."
         },
         {
           "text": "Only when you plan to train every parameter from scratch.",
@@ -163,21 +163,21 @@ The loader accepts these task names: `sentiment-analysis`, `ner`, `question-answ
         },
         {
           "text": "When it fits the task and passes representative quality and deployment checks.",
-          "feedback": "When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch."
+          "feedback": "When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule. It does not automatically require training from scratch."
         }
       ],
       "correctIndex": 2,
-      "explanation": "When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule; it does not automatically require training from scratch."
+      "explanation": "When a supported pretrained model fits the task and performs adequately on representative data. Check its labels, license, download size and device performance. A custom task may need adaptation, another model or a rule. It does not automatically require training from scratch."
     }
   ]}
 />
 
 <RecallPrompt
   question="Describe how you would select and label twenty reports for an honest first evaluation of a pretrained pipeline."
-  answer="Choose twenty reports that reflect the reports you expect to receive. Label them before looking at the model’s answers, and keep evaluation examples out of model and threshold decisions. An equal number from each class can help you inspect mistakes, but its overall accuracy may not represent the incoming mix. Twenty reports can expose problems; they cannot reliably measure rare mistakes."
+  answer="Choose twenty reports that reflect the reports you expect to receive. Label them before looking at the model’s answers, and keep evaluation examples out of model and threshold decisions. An equal number from each class can help you inspect mistakes, but its overall accuracy may not represent the incoming mix. Twenty reports can expose problems. They cannot reliably measure rare mistakes."
 />
 
-<LessonRecap whatYouLearned={["pipeline() supplies preprocessing and output handling around a supported model", "Pin the model revision, dtype and device for reproducible evaluation", "Measure asset downloads and cached startup separately; cached does not mean instant or permanently available", "Evaluate representative text and inspect errors. Confidence ranking does not establish urgency or task accuracy"]} bridge="A library component saves implementation work. A pretrained model also needs evaluation on the inputs your application will receive." youCanNow="Load a pinned pretrained pipeline, preserve the pairing between inputs and outputs, and investigate whether it suits your text." />
+<LessonRecap whatYouLearned={["pipeline() supplies preprocessing and output handling around a supported model", "Pin the model revision, dtype and device for reproducible evaluation", "Measure asset downloads and cached startup separately. Cached does not mean instant or permanently available", "Evaluate representative text and inspect errors. Confidence ranking does not establish urgency or task accuracy"]} bridge="A library component saves implementation work. A pretrained model also needs evaluation on the inputs your application will receive." youCanNow="Load a pinned pretrained pipeline, preserve the pairing between inputs and outputs, and investigate whether it suits your text." />
 
 <Epilogue>
 

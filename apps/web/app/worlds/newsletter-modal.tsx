@@ -140,7 +140,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
                   data-testid="newsletter-submit"
                   className="mt-5 w-full inline-flex items-center justify-center font-mono px-6 py-3 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border-2 border-primary rounded-none brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-60"
                 >
-                  {status === "submitting" ? "Submitting..." : "Notify me →"}
+                  {status === "submitting" ? "Submitting..." : "Notify me"}
                 </button>
               </form>
             )}

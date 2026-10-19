@@ -118,6 +118,11 @@
 
 ## Writing Rules
 
+- Follow the binding 2026-10-19 construction rules in the writing rubric:
+  active voice, descriptive headings, direct claims, and no staged contrasts,
+  prose semicolons, decorative bars, arrows, inline bullets, or dot separators.
+  Preserve valid code syntax and mathematical meaning. Apply this review to
+  dialogue and feedback as well as lesson prose and promotional pages.
 - **All prose is held to `docs/writing-quality-rubric.md`** (owner
   directive, 2026-08-12). Before writing or editing ANY user-visible text
   (lessons, exercise instructions, module descriptions, glossary, UI copy,

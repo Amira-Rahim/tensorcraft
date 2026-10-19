@@ -63,7 +63,7 @@ export function LessonTermsList({ terms, worldId }: LessonTermsListProps) {
                     tf.tensor") and nothing is announced twice. */}
                 <span className="lesson-terms-kind">
                   {DOCUMENTATION_KIND_LABEL[documentation.kind]}
-                  <span aria-hidden="true"> · {documentation.source}</span>
+                  <span aria-hidden="true"> ({documentation.source})</span>
                 </span>
                 <DocumentationLink reference={documentation}>
                   {/* The space sits outside the hidden span: a name computed

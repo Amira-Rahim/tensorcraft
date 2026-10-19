@@ -23,11 +23,15 @@ it("requires an explicit local-run report, accepts a baseline win, and preserves
         "Later dates held out; the scaler used earlier training rows only.",
     },
   });
-  fireEvent.change(screen.getByLabelText(/What did you observe/), {
-    target: {
-      value: "Reload returned the same score; dark occupied rooms were missed.",
+  fireEvent.change(
+    screen.getByLabelText(/What happened when you reloaded the saved model/),
+    {
+      target: {
+        value:
+          "Reload returned the same score; dark occupied rooms were missed.",
+      },
     },
-  });
+  );
   fireEvent.change(screen.getByLabelText(/Help beyond/), {
     target: { value: "used" },
   });

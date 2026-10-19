@@ -21,18 +21,18 @@ concept:
     jsTitle: "Static Site Deploy"
     jsCode: "npm run build && gh-pages -d dist // bundle, optimize, ship"
     mlTitle: "ML App Deploy"
-    mlCode: "npm run build && gh-pages -d dist // same; model is a static asset"
+    mlCode: "npm run build && gh-pages -d dist // same. Model is a static asset"
     tier: structural
-    breaks: "Both rollbacks restore versioned artifacts, not every external effect. Web rollback may leave database writes and migrations in place. Model rollback also needs matching preprocessing and evaluation on current data; old weights may no longer fit that data."
+    breaks: "Both rollbacks restore versioned artifacts. They can leave external effects in place. Web rollback may leave database writes and migrations in place. Model rollback also needs matching preprocessing and evaluation on current data. Old weights may no longer fit that data."
 consequence:
-  narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
+  narrative: "DEEP SCAN goes live. It classifies the anomalous signal. The result appears on every display on the bridge."
 hints:
   - level: nudge
     content: |
       Compute each detector separately before counting its vote. A constant window needs a separate policy.
   - level: guidance
     content: |
-      Use moments for a varying window. At zero spread, compare against the original constant reading instead of dividing. A matching value contributes no statistical vote; a different value does. Count all three votes before applying the majority rule.
+      Use moments for a varying window. At zero spread, compare against the original constant reading directly. A matching value contributes no statistical vote. A different value does. Count all three votes before applying the majority rule.
   - level: solution
     content: |
       function decomposeIntervals(intervals) {
@@ -49,7 +49,7 @@ hints:
       function isFibonacciTrain(ratios) {
         if (ratios.length === 0) return false;
         const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
-        // The reading's first ratio may be the 1:1 opener or start at the 2;
+        // The reading's first ratio may be the 1:1 opener or start at the 2.
         // align on length from the tail, where the train converges on phi.
         const expected = fibonacciRatios.slice(fibonacciRatios.length - ratios.length);
         if (expected.length !== ratios.length) return false;
@@ -136,7 +136,7 @@ Mirza authorizes the deployment and waits for the classification.
 
 </StoryPassage>
 
-For a browser-only application, the publishing step can be: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The local inference model can be a static asset served alongside the app. A server-side language-model adapter, authentication or secret-bearing API needs a separately deployed service; static hosting does not provide one.
+For a browser-only application, the publishing step can be: `npm run build`, push the output, watch the deploy. DEEP SCAN ships that way too. The local inference model can be a static asset served alongside the app. A server-side language-model adapter, authentication or secret-bearing API needs a separately deployed service. Static hosting does not provide one.
 
 Help Nazari build the record for the launch decision: which checks passed, what the trained candidate did on the canary set, and how the final detector rule classified the supplied reading.
 
@@ -144,27 +144,27 @@ Help Nazari build the record for the launch decision: which checks passed, what 
 
 <BossBeat
   beatId="deep-orbit-launch-deploy-call"
-  prompt="ARIA has the 0157 canary record and three alternative deployment simulations. Choose which policy the crew should rehearse and carry into the handover. This choice changes the follow-up work; the recorded canary deployment stays the same."
+  prompt="ARIA has the 0157 canary record and three alternative deployment simulations. Choose which policy the crew should rehearse and carry into the handover. This choice changes the follow-up work. The recorded canary deployment stays the same."
   options={[
     {
       label: "cooperate",
       display: "Hold and let Demir's verification suite run one more pass",
-      consequence: "Demir reruns. The suite passes; the pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' In this simulation the extra pass finds no new defect; another run could."
+      consequence: "Demir reruns. The suite passes. The pulse window closes. DEEP SCAN deploys to a steady-state target two minutes late, and the cleanest classification of the night goes uncaptured. Mirza nods anyway: 'Good operators wait.' In this simulation the extra pass finds no new defect. Another run could."
     },
     {
       label: "defect",
       display: "Override Demir, push deploy now while the pulse window is open",
-      consequence: "DEEP SCAN ships. Classification lands inside the pulse window: sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated Demir as a constraint rather than a teammate. The science wins; the next deploy will be slower."
+      consequence: "DEEP SCAN captures and classifies the pulse. Demir goes quiet. Mirza signs off, but Demir asks for more review time on the next deploy after the crew overruled his concerns."
     },
     {
       label: "random",
-      display: "Deploy fleet-wide now; keep the old model warm as instant rollback",
-      consequence: "Fleet-wide in one motion, window captured, and the safety net is the part that fails inspection: the rollback build shares the new deploy's preprocessing path, so the bug class a canary would have caught rides both models equally. Restoring weights does not test the shared preprocessing path. It restores yesterday's weights in seconds; it cannot tell you whether tonight's inputs are being mangled on the way in."
+      display: "Deploy fleet-wide now. Keep the old model warm as instant rollback",
+      consequence: "The fleet-wide release captures the window. Then Nazari finds that the rollback build shares the new release’s preprocessing path. A bug in that path would affect both models, and the crew skipped the canary check that could have caught it. Restoring weights does not test the shared preprocessing path. It restores yesterday's weights in seconds. It cannot tell you whether the preprocessing code changes tonight’s inputs incorrectly."
     },
     {
       label: "dominant",
       display: "Hot canary: deploy to one console for 30 seconds on the live pulse, then fleet-wide if it holds",
-      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model; full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. The follow-up must define a stop condition before anyone repeats the rollout."
+      consequence: "Canary on the live pulse clears: all thirty verdicts match the shadow model. Full deploy clears two minutes later, window captured, rerun honored. Say the cost out loud: the canary spent thirty seconds of a window that had none to spare, and had it tripped, tonight would have lost both the pulse and the rerun. The follow-up must define a stop condition before anyone repeats the rollout."
     }
   ]}
 />
@@ -183,7 +183,7 @@ The previous classifier scored the same captures in parallel, sending its result
 
 <StoryPassage>
 
-Before the hour ended, ARIA simulated the other three policies. She filed their transcripts, unrequested, under `deploy/counterfactuals`. Her index reads: simulations, three; deploys, one.
+Before the hour ended, ARIA simulated the other three policies. She filed their transcripts, unrequested, under `deploy/counterfactuals`. Her index reads: simulations, three. Deploys, one.
 
 </StoryPassage>
 
@@ -192,7 +192,7 @@ Before the hour ended, ARIA simulated the other three policies. She filed their 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="build-config.ts">
-{`// Illustrative mission asset inventory, not a Vite configuration.
+{`// Illustrative mission asset inventory. A runnable Vite build needs its own configuration.
 // The sizes below are fictional. These paths do not name downloadable
 // five-class or language artifacts supplied by the course.
 // Deploy model manifests and shards with their matching application release.
@@ -231,7 +231,7 @@ const config: BuildConfig = {
   optimization: {
     minify: true,
     treeshake: true,
-    splitChunks: true,   // Split JavaScript; schedule model fetches separately
+    splitChunks: true,   // Split JavaScript. Schedule model fetches separately
   },
 };
 
@@ -246,13 +246,13 @@ const config: BuildConfig = {
 //     └── validation-sample.json  (~50 KB)`}
 </CodeBlock>
 
-The inventory separates the small classifier from the fictional language component. It documents the intended architecture; it does not produce a build. Use the independent project below for a runnable app with its own supplied model and build command. Use the runtime lab for actual model-file identity and hosted-fixture verification.
+The inventory separates the small classifier from the fictional language component. It documents the intended architecture. It does not produce a build. Use the independent project below for a runnable app with its own supplied model and build command. Use the runtime lab for actual model-file identity and hosted-fixture verification.
 
-## Deploy and Verify
+## Deployment checks
 
 This lesson shows two checks. The helper below runs a small set of smoke tests after verifying the model files. The canary runs the new build on one console with live data for a fixed time. Only expand to the fleet if it passes the agreed conditions.
 
-A canary takes part of the available window but limits how many consoles receive a bad build. Run pre-release checks first, and decide when to stop or expand the canary. Agreement with the shadow model can catch a change in behavior; it does not prove both models are right.
+A canary takes part of the available window but limits how many consoles receive a bad build. Run pre-release checks first, and decide when to stop or expand the canary. Agreement with the shadow model can catch a change in behavior. It does not prove both models are right.
 
 <CodeBlock language="typescript" title="deploy.ts">
 {`interface DeployedPipeline {
@@ -285,7 +285,7 @@ async function verifyHostedPipeline(
       if (result.label === probe.label) correct++;
     }
     // Warmup and repeated timing on the same workload. These repetitions
-    // measure latency; they are not additional independent accuracy cases.
+    // measure latency. They are not additional independent accuracy cases.
     for (let i=0; i<10; i++) {
       signal.throwIfAborted();
       const result = await pipeline.classify(new Float32Array(probes[i%probes.length].input), signal);
@@ -385,9 +385,9 @@ Nazari first asked for a date when the interval read 72.4 seconds. The new proje
 
 </StoryPassage>
 
-These are fictional mission outputs. The date is an extrapolation conditional on a changing trend, not a demonstrated deadline. Agreement between forecasters that share data can preserve the same error. The crew keeps recording the interval instead of treating consensus as certainty.
+These are fictional mission outputs. The projected date assumes the trend continues. That trend is changing, so the date is still uncertain. Agreement between forecasters that share data can preserve the same error. The crew keeps recording the interval to check those forecasts.
 
-Sample 7741 now triggers the combined rule, but 0.518 and 0.999 come from different systems. Their numerical difference is not an improvement in accuracy or a calibrated probability gain. The earlier untrained scores remain in the log as unexplained outputs of random weights, not advance knowledge of the signal.
+Sample 7741 now triggers the combined rule, but 0.518 and 0.999 come from different systems. Their numerical difference is not an improvement in accuracy or a calibrated probability gain. The earlier untrained scores remain in the log as unexplained outputs of random weights. They gave the crew no reliable advance knowledge of the signal.
 
 ## The Interval Train, in Ratios
 
@@ -401,31 +401,31 @@ ratios          1.0   2.0   1.5   1.667 1.6   1.625`}
 
 Farah needs to compare recordings whose sub-pulse gaps may have different durations.
 
-The ratios stay the same if every gap is multiplied by the same number. That is why the gaps measured in seconds line up with the calibration sequence.
+The ratios stay the same if you multiply every gap by the same number. That is why the gaps measured in seconds line up with the calibration sequence.
 
-Successive Fibonacci ratios approach the golden ratio, about 1.618. This exercise checks only the displayed finite template. It assumes every recording ends at the same final gap, so a shortened recording is a suffix of that template. General recordings can end elsewhere; they need alignment and a minimum evidence length. One matching ratio is weak evidence, not a unique identification of the Fibonacci sequence.
+Successive Fibonacci ratios approach the golden ratio, about 1.618. This exercise checks only the displayed finite template. It assumes every recording ends at the same final gap, so a shortened recording is a suffix of that template. General recordings can end elsewhere. They need alignment and a minimum evidence length. One matching ratio provides weak evidence. Many other sequences can contain the same ratio.
 
-Measurements and floating-point arithmetic introduce small differences. In JavaScript, 11.7 / 7.2 gives 1.6249999999999998, and a live capture can differ by more. Allow a band around each expected ratio instead of requiring exact equality. A narrow band can reject real patterns; a wide one can accept unrelated patterns. Choose it with the same care as the alert thresholds in module 7.
+Measurements and floating-point arithmetic introduce small differences. In JavaScript, 11.7 / 7.2 gives 1.6249999999999998, and a live capture can differ by more. Allow a band around each expected ratio to accommodate those differences. A narrow band can reject real patterns. A wide one can accept unrelated patterns. Choose it with the same care as the alert thresholds in module 7.
 
 ## Challenge
 
 Write the verification runner. Run the checks in order and await each one before starting the next. The deployment passes only if every check passes.
 
-A verifier also needs a deadline for each check. On timeout, report the failed check and skip its dependents. An abort signal requests cancellation, but the check must cooperate; a timeout alone cannot stop its work.
+A verifier also needs a deadline for each check. On timeout, report the failed check and skip its dependents. An abort signal requests cancellation, but the check must cooperate. A timeout alone cannot stop its work.
 
-The results keep every completed probe and its verdict in order, including a failed probe that holds the release. These checks run locally against a supplied TFJS model. They do not contact a host or deploy the mission system.
+The results list each completed check in order, including the failed check that blocks the release. These checks run locally against a supplied TFJS model. They do not contact a host or deploy the mission system.
 
 <Exercise slug="verify-deployment" />
 
 Next, help Nazari rehearse training before the relay slot. This small exercise uses an untrained three-feature binary model in place of the eleven-feature classifier. Normalize the archive rows using module 4's rule, train the model, score the canary set, and apply the release gate.
 
-If a stage fails, hold the launch. Leave no leaked tensors. Report the loss history from that fit and the optimizer's actual update count so the run can be checked.
+If a stage fails, hold the launch. Leave no leaked tensors. Report the loss history from that fit and the optimizer's actual update count so Nazari can check the run.
 
-Your fit history and canary predictions stay visible beside the gate decision. Nazari can inspect why this candidate passes or fails instead of accepting a launch flag alone. This is a local rehearsal with supplied synthetic data; it does not establish the mission classifier's performance.
+Your fit history and canary predictions stay visible beside the gate decision. Nazari can inspect why this candidate passes or fails using the evidence from the run. This is a local rehearsal with supplied synthetic data. It does not establish the mission classifier's performance.
 
 <Exercise slug="launch-rehearsal" />
 
-Finally, write the decision layer behind the bridge's zero-hour readout. Combine the three detector votes from module 7, check Farah's interval ratios, and return the classification the crew will sign. The supplied scores are fictional mission values; this exercise applies the decision rule to them.
+Finally, write the decision layer behind the bridge's zero-hour readout. Combine the three detector votes from module 7, check Farah's interval ratios, and return the classification the crew will sign. The supplied scores are fictional mission values. This exercise applies the decision rule to them.
 
 The returned detector count and interval ratios form the decision record behind that classification. Farah can check the template match, and Mirza can send the result for review. The rule cannot identify the signal's origin or turn the two model scores into an accuracy gain.
 
@@ -479,7 +479,7 @@ For your own project, choose a labeled task and split by time, person or other r
           "feedback": "Counting votes does not establish a calibrated probability."
         },
         {
-          "text": "Two detector thresholds were crossed.",
+          "text": "Two detectors produced scores above their thresholds.",
           "feedback": "Treat the vote as a decision rule and evaluate its joint errors."
         }
       ],
@@ -491,13 +491,13 @@ For your own project, choose a labeled task and split by time, person or other r
 
 <LessonRecap
   whatYouLearned={[
-    "A browser-only inference app can use static hosting. Any required server route must be deployed separately.",
+    "A browser-only inference app can use static hosting. Deploy any required server route separately.",
     "Verify the exact hosted artifacts, labeled-probe results and latency budget separately. Passing known probes does not establish accuracy on all future inputs.",
-    "Rollback restores artifacts, not external state. Restore compatible model and preprocessing versions, then check performance on current data.",
-    "Record the actual fit history and optimizer update count, then evaluate the trained candidate. These cross-checks support reproducibility; they are not tamper-proof evidence or proof of generalization."
+    "Rollback restores artifacts. External state may still reflect the newer release. Restore compatible model and preprocessing versions, then check performance on current data.",
+    "Record the actual fit history and optimizer update count, then evaluate the trained candidate. These cross-checks support reproducibility. They are not tamper-proof evidence or proof of generalization."
   ]}
-  bridge="Both applications and models can ship as versioned assets. Rollback restores selected artifacts; it does not reverse earlier side effects or establish accuracy on current data."
-  youCanNow="Package a model with its preprocessing, verify a served release, and run the rehearsal and final decision rule with their stated evidence limits."
+  bridge="Both applications and models can ship as versioned assets. Rollback restores selected artifacts. It does not reverse earlier side effects or establish accuracy on current data."
+  youCanNow="Package a model with its preprocessing, check the hosted files, and rehearse the release. Explain what the final decision rule can and cannot tell the crew."
 />
 
 <Epilogue>
@@ -505,7 +505,7 @@ For your own project, choose a labeled task and split by time, person or other r
 The mission record carries the detector verdict and interval-ratio check beside the classification. It lands on every display on the bridge at once. Nobody speaks. Nazari leans over her console and checks the sensor calibration log a third time tonight. Then, slowly, a fourth.
 
 <Dialogue speaker="Chief Nazari" expression="haunted">
-Calibration's clean. I checked it four times. Those are our harmonics, in a signal that left its source before this ship was built.
+Calibration's clean. I checked it four times. Those are our harmonics, in a signal that left its source before the Archimedes existed.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah" expression="absorbed">
@@ -513,13 +513,13 @@ Fibonacci counts can appear in sunflower seed layouts. Maybe this signal has a n
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Arithmetic, for the record. The source is 4.2 light-years out; anything arriving tonight left it years before this vessel first tuned the harmonics it is mirroring. If the distance and dates are correct, this cannot be a reply to those transmissions. A correlation of 0.9987 does not establish origin. The log has a match and no verified explanation.
+Arithmetic, for the record. The source is 4.2 light-years out. Anything arriving tonight left it years before this vessel first tuned the harmonics it is mirroring. If the distance and dates are correct, this cannot be a reply to those transmissions. A correlation of 0.9987 does not establish origin. The log has a match and no verified explanation.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
 One measurement of my own: my reconstruction error was 4.1 times baseline, and it has not come down. I am built from the same instrument chain whose ratios match this signal.
 
-Dr. Farah's question from module 5 is also unanswered. The frequency inside each pulse is 73.4 hertz. The first measured gap between pulses had the same digits in seconds. Frequency and time are different quantities. We do not know why the numbers match. I note both correlations. I resolve neither.
+We still cannot answer Dr. Farah’s question from module 5. The frequency inside each pulse is 73.4 hertz. The first measured gap between pulses had the same digits in seconds. Frequency and time are different quantities. We do not know why the numbers match. I note both correlations. I resolve neither.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
@@ -536,10 +536,10 @@ She stays at the viewport after the bridge empties, watching a point of black sk
   beatId="deep-orbit-launch-deploy-call"
   fallback="Before the 0213 log entry, Nazari files the canary and rollback checklists for the next watch."
   outcomes={{
-    "cooperate": "Before the 0213 log entry, Demir adds a deadline to the verification checklist. The hold rehearsal showed a missed pulse window, so the next operator must record what another pass is expected to resolve before requesting it.",
+    "cooperate": "Before the 0213 log entry, Demir adds a deadline to the verification checklist. The hold rehearsal showed a missed pulse window, so the next operator must record what they expect another pass to resolve before requesting it.",
     "defect": "Before the 0213 log entry, Demir and Mirza write an override handoff with a named reviewer. The immediate-deploy rehearsal captured the pulse but left the next operator without a completed verification record.",
-    "random": "Before the 0213 log entry, Nazari asks Demir to restore preprocessing with the old weights in a separate rehearsal. The warm-rollback simulation exposed their shared dependency; keeping two models loaded had not isolated it.",
-    "dominant": "Before the 0213 log entry, Nazari adds stop conditions and a rollback owner to the canary checklist. Thirty matching verdicts covered one pulse; the next watch must also inspect cases where both models could agree and be wrong."
+    "random": "Before the 0213 log entry, Nazari asks Demir to restore preprocessing with the old weights in a separate rehearsal. The warm-rollback simulation exposed their shared dependency. Keeping two models loaded had not isolated it.",
+    "dominant": "Before the 0213 log entry, Nazari adds stop conditions and a rollback owner to the canary checklist. Thirty matching verdicts covered one pulse. The next watch must also inspect cases where both models could agree and be wrong."
 }}
 />
 

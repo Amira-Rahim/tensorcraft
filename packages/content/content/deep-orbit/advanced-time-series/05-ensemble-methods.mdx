@@ -20,7 +20,7 @@ concept:
     mlTitle: "Model Ensemble"
     mlCode: "prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))"
     tier: structural
-    breaks: "Promise.all gathers results from several calls and rejects if one rejects. Those calls may answer the same or different questions. An ensemble combines predictions about the same target; its members can fail at runtime or return plausible but inaccurate values. Measure whether their combined errors improve on the best member."
+    breaks: "Promise.all gathers results from several calls and rejects if one rejects. Those calls may answer the same or different questions. An ensemble combines predictions about the same target. Its members can fail at runtime or return plausible but inaccurate values. Measure whether their combined errors improve on the best member."
 consequence:
   narrative: "The blend beats its best single member on the held-out week, 0.036 against 0.038. Demir keeps all three models and still fits the compression line by hand."
 hints:
@@ -87,7 +87,7 @@ The fan-out runs every model. Unlike services that may answer different question
 
 You will combine forecasts using weights based on earlier errors, then compare the result with the best individual model.
 
-<LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain when averaging cancels error and when it cannot: member mistakes have to land in different places", "Train a stacking model on predictions from rows the base models did not fit, then evaluate on another period", "Score an ensemble against its best single member, not against the average member"]} />
+<LearningObjectives objectives={["Blend members two ways: equal shares, and shares weighted by each member's validation score", "Explain which errors averaging can cancel and which errors all members share", "Train a stacking model on predictions from rows the base models did not fit, then evaluate on another period", "Compare the ensemble’s error with its best single member’s error"]} />
 
 ## Combining Models
 
@@ -99,7 +99,7 @@ You will combine forecasts using weights based on earlier errors, then compare t
 interface ModelPrediction {
   modelName: string;
   prediction: number[];
-  weight: number; // nonnegative blend weight, not a probability
+  weight: number; // nonnegative share of the blend
 }
 
 function validatePredictions(rows: ModelPrediction[]) {
@@ -147,7 +147,7 @@ function weightedEnsemble(predictions: ModelPrediction[]): number[] {
 // Convert those predictions back to raw units before combining them:
 // amplitude in hull counts, frequency as crossings per 64-sample capture,
 // and phase in radians. Actual crossing counts are integers, but a
-// prediction can be fractional, such as 37.4 instead of 37.
+// prediction can be fractional, such as 37.4.
 //
 // These example weights are rounded from inverse-squared MAE on last
 // week's held-out readings. The formula follows this block.
@@ -193,14 +193,14 @@ try {
 // members used for training.`}
 </CodeBlock>
 
-We choose each model's `weight` from validation results. It is a share of the blend, not a probability reported by the model. Here e_i is MAE on an earlier held-out week, with each channel's error divided by its range.
+We choose each model's `weight` from validation results. It determines that model’s share of the blend. It carries no probability interpretation. Here e_i is MAE on an earlier held-out week, with each channel's error divided by its range.
 
 The rule is `w_i = (1 / e_i^2) / sum_j (1 / e_j^2)`. Squared MAE is not error variance, so this rule does not guarantee the lowest-variance blend. Errors 0.045, 0.038, and 0.058 give weights near 0.333, 0.467, and 0.200.
 
 Compare those weights with equal weighting on a separate evaluation week. The exercise supplies positive errors. A real system also needs a policy for zero or invalid errors.
 
 <DerivationDrawer summary="Why squared MAE is not variance">
-Both error arrays below have MAE 1. The first is consistently biased; the second varies around zero. Squaring their MAEs gives the same number, but their variances differ.
+Both error arrays below have MAE 1. The first is consistently biased. The second varies around zero. Squaring their MAEs gives the same number, but their variances differ.
 
 <CodeBlock language="javascript" title="mae-is-not-variance.js">
 {`const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
@@ -227,7 +227,7 @@ Compare the blend's 0.036 with 0.038, the best member on the same week. For equa
 <DerivationDrawer summary="Where the sqrt(N) error cut comes from, and the correlation floor">
 **A variance calculation with explicit assumptions.** Model each member's error on a given input as a random variable `eᵢ` with variance `σ²`, the same spread for every member. The ensemble averages predictions, so its error is the mean of the N member errors.
 
-**Variance of a sum runs through covariance.** For two variables, `Var(x + y) = Var(x) + Var(y) + 2·Cov(x, y)`; the covariance term measures how the two move together. Write each pairwise covariance through the correlation `ρ = Cov(eᵢ, eⱼ) / σ²`. Summing the N member errors picks up one `σ²` per member plus one `ρσ²` per ordered pair, and there are `N(N-1)` ordered pairs:
+**Variance of a sum runs through covariance.** For two variables, `Var(x + y) = Var(x) + Var(y) + 2·Cov(x, y)`. The covariance term measures how the two move together. Write each pairwise covariance through the correlation `ρ = Cov(eᵢ, eⱼ) / σ²`. Summing the N member errors picks up one `σ²` per member plus one `ρσ²` per ordered pair, and there are `N(N-1)` ordered pairs:
 
 `Var(sum of the N errors) = Nσ² + N(N-1)·ρσ²`
 
@@ -262,7 +262,7 @@ Measure each model's error, then inspect both blends: equal weights and weights 
         },
         {
           "text": "Whenever every member makes the same biased error.",
-          "feedback": "A shared bias remains when predictions are averaged."
+          "feedback": "Averaging preserves a bias that all members share."
         },
         {
           "text": "When some member errors cancel each other.",
@@ -296,12 +296,12 @@ Measure each model's error, then inspect both blends: equal weights and weights 
 />
 
 <RecallPrompt
-  question="An ensemble has MAE 0.041; its members have 0.052, 0.036 and 0.050. Did it beat the best member?"
+  question="An ensemble has MAE 0.041. Its members have 0.052, 0.036 and 0.050. Did it beat the best member?"
   answer="It lost to the best member, which scored 0.036. Under MAE, equal averaging can tie or beat the mean member score without beating the best member. The extra computation needs a better result or another measured benefit."
   checks={[
     {
       "kind": "choice",
-      "question": "An ensemble has MAE 0.041; its members have 0.052, 0.036 and 0.050. Did it beat the best member?",
+      "question": "An ensemble has MAE 0.041. Its members have 0.052, 0.036 and 0.050. Did it beat the best member?",
       "options": [
         {
           "text": "No. The member with MAE 0.036 performed better.",
@@ -309,11 +309,11 @@ Measure each model's error, then inspect both blends: equal weights and weights 
         },
         {
           "text": "Yes. 0.041 is lower than two of the member scores.",
-          "feedback": "The comparison is against the best member, not most of the members."
+          "feedback": "The ensemble needs to beat the best member in this comparison."
         },
         {
           "text": "Yes. A larger MAE indicates better predictions.",
-          "feedback": "MAE is an error measure; smaller is better."
+          "feedback": "MAE is an error measure. Smaller is better."
         }
       ],
       "correctIndex": 0,
@@ -323,17 +323,17 @@ Measure each model's error, then inspect both blends: equal weights and weights 
 />
 
 <RecallPrompt
-  question="Why can raw sensor counts and radians give unbalanced weights when their errors are combined?"
-  answer="The units can give one feature much larger errors than another. Module 1 compared temperatures near 25 with signal strength near 0.5. Here raw amplitude is near 1120 counts, while phase is near 0.48 radians. Amplitude errors could dominate the combined score and the model weights calculated from it. Check the size of the errors, not just the readings."
+  question="Why can raw sensor counts and radians give unbalanced weights when we combine their errors?"
+  answer="The units can give one feature much larger errors than another. Module 1 compared temperatures near 25 with signal strength near 0.5. Here raw amplitude is near 1120 counts, while phase is near 0.48 radians. Amplitude errors could dominate the combined score and the model weights calculated from it. Compare the errors in each feature as well as the readings."
 />
 
 <LessonRecap
-  whatYouLearned={["Averaging can cancel some member errors. Shared bias survives.", "The inverse-squared-MAE weights here are a heuristic, not inverse-variance weights or calibrated probabilities.", "Different seeds, architectures or samples do not guarantee uncorrelated errors.", "Compare blends with the best member, select on validation data, and keep a final evaluation period untouched."]}
-  bridge="`Promise.all([svcA(x), svcB(x), svcC(x)])` runs every call on the same input and hands back all three results; `prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))` runs the same fan-out and then collapses the three into one, so evaluate the combined predictions as well as runtime failures. A weaker member can help or hurt depending on how its errors interact with the others."
+  whatYouLearned={["Averaging can cancel some member errors. Shared bias survives.", "We choose inverse-squared-MAE weights as a heuristic. They have no inverse-variance or probability interpretation.", "Different seeds, architectures or samples do not guarantee uncorrelated errors.", "Compare blends with the best member, select on validation data, and keep a final evaluation period untouched."]}
+  bridge="Promise.all collects results from several calls. This ensemble runs each model and combines their predictions. Check both runtime failures and prediction errors: adding another model can help or hurt the result."
   youCanNow="Score every member on one window, blend them by equal shares and by inverse-squared-error weights, and say whether the blend beat the best single member."
 />
 
-> **DISPATCH archive · field intercept #16-C:** Hassan's edge cell averaged three models and celebrated the agreement. All three had trained on the same mislabeled batch; the ensemble was three copies of one mistake voting unanimously. The fix was not a fourth model. It was a second dataset.
+> **DISPATCH archive, field intercept #16-C:** Hassan's edge cell averaged three models and celebrated the agreement. All three had trained on the same mislabeled batch. The ensemble was three copies of one mistake voting unanimously. They needed independently reviewed data before adding more models.
 
 <Epilogue>
 

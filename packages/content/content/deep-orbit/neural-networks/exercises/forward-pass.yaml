@@ -1,6 +1,6 @@
 slug: forward-pass
 lessonSlug: forward-pass
-title: "Run a Forward Pass"
+title: "The forward pass"
 instructions: |
   Add one dense layer with 3 units and `inputShape: [2]`. Keep its default
   linear activation and random starting weights.
@@ -18,7 +18,7 @@ starterCode: |
   const model = tf.sequential();
   // Add a dense layer here
 
-  // One call has to carry the whole stack, whatever its height.
+  // Return a result for every row in the supplied batch.
   function forward(batch) {
     return null; // your code here
   }
@@ -64,14 +64,14 @@ testCode: |
     const forwardFn = () => {
       expect(
         typeof forward,
-        'forward is not defined. The grader calls it with batches of its own, so keep the function the starter handed you.',
+        'Your code does not define forward. The grader calls it with batches of its own, so keep the function the starter handed you.',
       ).toBe('function');
       return forward;
     };
     const readPrediction = () => {
       expect(
         prediction,
-        'prediction is still empty. forward() has to hand back what the model answers for the batch it was given.',
+        'prediction is still empty. forward() has to hand back what the model answers for the supplied batch.',
       ).toBeDefined();
       return prediction;
     };
@@ -111,7 +111,7 @@ testCode: |
         rows: input.arraySync().map((row, i) => [i + 1, ...row, ...Array.from(actual).slice(i * 3, i * 3 + 3)]),
       });
     });
-    it('one predict call carries the whole stack, at any height', () => {
+    it('one predict call processes the whole batch, for different row counts', () => {
       const layer = firstLayer();
       const submitted = forwardFn();
       const height = 3 + Math.floor(Math.random() * 6);
@@ -134,7 +134,7 @@ testCode: |
       }
       expect(
         out,
-        'forward() returned nothing for a new batch. Use the batch passed into the function, not just the starter input.',
+        'forward() returned nothing for a new batch. Use the batch from each call to the function.',
       ).toBeDefined();
       expect(
         out.shape,
@@ -158,7 +158,7 @@ testCode: |
     it('gives one flat reading the batch axis the layer expects', () => {
       expect(
         typeof asBatch,
-        'asBatch is not defined. The grader hands it readings of its own, so keep the function the starter handed you.',
+        'Your code does not define asBatch. The grader hands it readings of its own, so keep the function the starter handed you.',
       ).toBe('function');
       expect(
         batched,
@@ -176,7 +176,7 @@ testCode: |
         throw new Error(
           'asBatch() threw on a reading of 4 values: ' +
             err.message +
-            '. The axis goes on whatever arrives, so the body cannot be built around the starter width.',
+            '. The axis goes on whatever arrives, so the function must work with widths beyond the starter example.',
         );
       }
       expect(
@@ -188,7 +188,7 @@ testCode: |
       for (let i = 0; i < before.length; i++) {
         expect(
           after[i],
-          'The values changed on the way through. Adding the batch axis rewraps the reading; it leaves every number where it was.',
+          'The values changed on the way through. Adding the batch axis rewraps the reading. It leaves every number where it was.',
         ).toBeCloseTo(before[i], 5);
       }
       const reading = tf.randomUniform([2], -1, 1);

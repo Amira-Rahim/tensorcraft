@@ -9,28 +9,28 @@ scene:
   time: "Under four hours to the window"
   epilogueLocation: "Archimedes, Bridge"
   portraitAlt: "Farah and Demir trace archive rows flowing into a prompt panel on the lab displays, building retrieval before generation."
-  epiloguePortraitAlt: "On the bridge display wall a generated answer overruns its retrieved context; Nazari points at the mismatch while Demir looks on."
+  epiloguePortraitAlt: "On the bridge display wall a generated answer overruns its retrieved context. Nazari points at the mismatch while Demir looks on."
 estimatedMinutes: 15
 difficulty: advanced
 context:
   narrative: "The LLM has not seen DEEP SCAN's current signal data. Farah builds a RAG pipeline that finds matching database records and adds them to the prompt."
   speaker: "Dr. Farah"
 concept:
-  explanation: "RAG retrieves the relevant records first and hands them to the model, so answers can cite your data instead of the model's memory."
+  explanation: "RAG retrieves the relevant records first and hands them to the model, so answers can cite records you can inspect."
   bridge:
     jsTitle: "Server Components"
     jsCode: "async function Page() { const data = await db.query(...); return <View data={data} />; }"
     mlTitle: "RAG Pipeline"
     mlCode: "const context = await db.search(query); const answer = await llm.complete(prompt + context);"
     tier: structural
-    breaks: "Server Components run on the server and can still render misleading data. RAG adds generated text conditioned on retrieved material. A model can contradict a passage while citing it. Check the claim against the identified source, field, and scope rather than trusting the presence of a citation."
+    breaks: "Server Components run on the server and can still render misleading data. RAG adds generated text conditioned on retrieved material. A model can contradict a passage while citing it. Check the claim against the identified source, field, and scope to see whether the citation supports it."
 consequence:
   narrative: "The database returns fourteen Band-7 records, but the model reports seventeen. Demir spends an hour checking earlier answers and building a claim checker."
 hints:
   - level: nudge
     content: "Apply only the filters named in the query. Count all matches before taking the first twenty. The claim-checking exercise has its own hints."
   - level: guidance
-    content: "Combine active filters with AND. Use the supplied now for the age boundary and keep database order. Set matched before slicing; truncated is true only if the slice omits a matching row. With no recognized filters, the whole database matches."
+    content: "Combine active filters with AND. Use the supplied now for the age boundary and keep database order. Set matched before slicing. Truncated is true only if the slice omits a matching row. With no recognized filters, the whole database matches."
   - level: solution
     content: |
       interface Signal {
@@ -94,9 +94,9 @@ The model has not received our current signal archive. A fluent answer about Ban
 That's Server Components! Fetch data on the server, then render with it. RAG fetches data from the signal database, then generates a response with it.
 </Dialogue>
 
-Both approaches fetch records before producing output. But rendering code explicitly maps fields to the page, and you can inspect that mapping. Generated prose has no fixed field-to-sentence mapping. It can misstate a record even when the right data was supplied, so check each claim against its source.
+Both approaches fetch records before producing output. But rendering code explicitly maps fields to the page, and you can inspect that mapping. Generated prose has no fixed field-to-sentence mapping. It can misstate a record even when you supply the right data, so check each claim against its source.
 
-Farah needs to see which records support an answer and which claims still need review. You will return that evidence with its limits, then separate supported structured claims from unsupported ones.
+Farah needs to see which records support an answer and which claims still need review. You’ll retrieve the records, report any left out, and check each structured claim against its source.
 
 <LearningObjectives objectives={["Retrieve signal records and supply them as evidence for a generated answer", "Limit how many records reach the model, and report any matches left out", "Check structured claims against cited fields and units, and explain why free-text answers still need review", "Compare field filters, keyword search, and embedding search, and explain what the record limit leaves out"]} />
 
@@ -158,7 +158,7 @@ function buildRAGPrompt(query: string, signals: Signal[]): string {
   });
 }
 
-// Step 3: GENERATE, parse, and check. The prompt is a request, not a guarantee.
+// Step 3: GENERATE, parse, and check. The model can return text that ignores the prompt.
 // verifyClaims is the second challenge below. It checks allowed fields,
 // units, sources, operations and numeric tolerances.
 async function querySignals(query: string, db: Signal[], llm: LLMClient) {
@@ -176,7 +176,7 @@ async function querySignals(query: string, db: Signal[], llm: LLMClient) {
 }
 
 // The caller must handle malformed output or an unavailable model.
-// Render checked fields directly; do not attach an unchecked prose answer.
+// Render checked fields directly. Do not attach an unchecked prose answer.
 const result = await querySignals(
   'Show anomalous signals in Band-7 from the last 72 hours', signalDatabase, llm,
 );
@@ -186,26 +186,26 @@ for (const claim of result.claims) {
   }
 }
 console.log('Matching signals:', result.matched, 'Context truncated:', result.truncated);
-// A sum describes its cited rows only, not every match or the whole archive.
+// A sum describes only its cited rows. Other matches stay outside that calculation.
 // An empty verified list supplies no checked numerical answer.`}
 </CodeBlock>
 
 Metadata filters work here because signals have named fields. For prose, keyword search can still retrieve relevant passages. Embedding search is another option: a model maps documents and queries to vectors, and retrieval compares those vectors, often with cosine similarity. Some systems combine both. Relevant-looking passages can still omit the evidence needed to answer a question.
 
-The exercise recognizes a small query grammar, not general English. It does not understand negation, "overnight" or arbitrary date ranges. A production interface can expose explicit filters; a query parser needs its own validation. Metadata and keyword retrieval can also be ranked, although this exercise intentionally keeps database order.
+The exercise recognizes only a small set of query patterns. It does not understand negation, "overnight" or arbitrary date ranges. A production interface can expose explicit filters. A query parser needs its own validation. A retrieval system can rank metadata and keyword matches. This exercise keeps database order.
 
-Twenty rows are not a token budget: long fields and a long question can still overflow the context. Count the final serialized prompt with the deployed tokenizer and reserve output space. Treat retrieved text as data, not as instructions granting access or permission to run tools. Prompt wording alone cannot enforce those boundaries.
+Twenty rows are not a token budget: long fields and a long question can still overflow the context. Count the final serialized prompt with the deployed tokenizer and reserve output space. Keep retrieved text in the data context. Enforce tool permissions separately from any instructions it contains. Prompt wording alone cannot enforce those boundaries.
 
-## Check each claim against the field it cites
+## Claims and their cited evidence
 
-Suppose a record says 14 events at 73.4 Hz. A number scan accepts “73.4 events at 14 Hz” because both values exist. It also finds nothing to object to in “the signal is safe,” which contains no numbers. Neither answer has been verified.
+Suppose a record says 14 events at 73.4 Hz. A number scan accepts “73.4 events at 14 Hz” because both values exist. It also finds nothing to object to in “the signal is safe,” which contains no numbers. The number scan has verified neither answer.
 
-The second challenge uses structured claims instead. Each names its source rows, field, value, and unit. A reading must match one cited field; an event-count sum must equal the sum of its distinct cited rows. Unsupported operations and qualitative interpretations stay unverified. The checker permits only the operations described in its contract.
+The second challenge uses structured claims instead. Each names its source rows, field, value, and unit. A reading must match one cited field. An event-count sum must equal the sum of its distinct cited rows. Unsupported operations and qualitative interpretations stay unverified. The checker permits only the operations described in its contract.
 
 This still has limits. Retrieved records may be wrong, a cap may omit important records, and a model may leave a relevant claim out. A checked structured value cannot approve a separate paragraph. Render the verified fields with their labels and citations, or have a reviewer check the complete prose against the evidence.
 ## Challenge
 
-First, choose which records reach the model. Return the matching records up to the limit, the total match count, and whether any matches were left out.
+First, choose which records reach the model. Return the matching records up to the limit, the total match count, and whether the limit excludes any matches.
 
 Inspect the returned record list and the omitted-match count. A report about those records must not quietly present them as the entire archive.
 
@@ -213,20 +213,20 @@ Inspect the returned record list and the omitted-match count. A report about tho
 
 Now check the structured claims against their cited records, including the field, unit, and any allowed calculation.
 
-The result shows the claims your checker accepts and holds. The reporting code can display accepted fields with their sources; a reviewer still handles unsupported interpretations and free text.
+The result shows the claims your checker verifies and those it leaves for review. The reporting code can display accepted fields with their sources. A reviewer still handles unsupported interpretations and free text.
 
 <Exercise slug="rag-pipeline" />
 
 <RecallPrompt
   question="Every number in a generated answer appears somewhere in retrieved records. Is the answer verified?"
-  answer="No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it."
+  answer="No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately. A numeric match cannot approve it."
   checks={[
     {
       "kind": "choice",
       "question": "Every number in a generated answer appears somewhere in retrieved records. Is the answer verified?",
       "options": [
         {
-          "text": "Yes. Matching numbers proves that all claims are supported.",
+          "text": "Yes. Matching numbers proves that the source supports every claim.",
           "feedback": "The answer can use a real number for the wrong field, row or unit."
         },
         {
@@ -235,11 +235,11 @@ The result shows the claims your checker accepts and holds. The reporting code c
         },
         {
           "text": "No. Field meanings, source rows, units and nonnumeric claims still need checking.",
-          "feedback": "No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it."
+          "feedback": "No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately. A numeric match cannot approve it."
         }
       ],
       "correctIndex": 2,
-      "explanation": "No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately; a numeric match cannot approve it."
+      "explanation": "No. It may swap fields, cite the wrong row, use the wrong units, or make unsupported claims without numbers. Check each structured claim against its cited evidence and allowed operation. Review free text separately. A numeric match cannot approve it."
     }
   ]}
 />
@@ -247,15 +247,15 @@ The result shows the claims your checker accepts and holds. The reporting code c
 <LessonRecap
   whatYouLearned={[
     "RAG retrieves evidence before generation. The answer can still misrepresent that evidence or omit important facts.",
-    "Report the total number of matches and whether any were left out. A sum over the cited records may not include every matching record.",
+    "Report the total number of matches and whether the limit excludes any matches. A sum over the cited records may not include every matching record.",
     "Verify a structured claim's source, field, unit, and calculation. Matching a number anywhere in the evidence is insufficient.",
     "Render verified fields with their labels and citations. Free-text interpretations still need review, and checked values do not establish that the source data is correct."
   ]}
-  bridge="RAG and Server Components both fetch data before producing output. Component code maps fields explicitly; generated wording can misrepresent its context and needs evidence checks."
-  youCanNow="Build capped retrieval that reports omissions, then check structured numerical claims against the exact records and fields they cite."
+  bridge="RAG and Server Components both fetch data before producing output. Component code maps fields explicitly. Generated wording can misrepresent its context and needs evidence checks."
+  youCanNow="Retrieve matching records, report any left out, and check each numerical claim against the cited records and fields."
 />
 
-> **DISPATCH archive · field intercept #17-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "our failed run retrieved nothing and did not report the missing evidence." Different domain, identical failure mode.
+> **DISPATCH archive, field intercept #17-D:** Dr. Amara's clinical RAG pipeline also retrieves records before drafting an answer, using patient records. Her note in the log: "our failed run retrieved nothing and did not report the missing evidence." Her team ran into the same problem with different data.
 
 <Epilogue>
 
@@ -267,8 +267,8 @@ Nazari had asked for Band-7 anomalies from the last 72 hours. The model reported
 Fourteen. I logged them myself. Your pipeline retrieved fourteen and reported seventeen with citations, which means I now audit every answer it has produced today. That's an hour, Ensign, out of three.
 </Dialogue>
 
-During the audit hour, Demir connects the generator's source fields to the checker. It catches two more mismatches before the report is drafted. One is in a summary Nazari approved that morning. She initials the correction without comment.
+During the audit hour, Demir connects the generator's source fields to the checker. It catches two more mismatches before Demir drafts the report. One is in a summary Nazari approved that morning. She initials the correction without comment.
 
-She asks him to check the week's reports too. Then she opens the first paragraph to review the claims that cannot be checked against a single field.
+She asks him to check the week's reports too. Then she opens the first paragraph to review the claims that require more than a single field to verify.
 
 </Epilogue>

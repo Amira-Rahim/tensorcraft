@@ -88,7 +88,7 @@ export function ProjectRunRecord() {
       if (raw) setDraft(parse(raw));
     } catch {
       setMessage(
-        "The local project draft could not be read. Your exported project files are unchanged.",
+        "This page could not read the local project draft. Your exported project files stay the same.",
       );
     }
     setReady(true);
@@ -136,7 +136,7 @@ export function ProjectRunRecord() {
       },
     });
     setMessage(
-      "External run reported. This records your account of the work; it does not award an independent project pass.",
+      "External run reported. This records your account of the work. It does not award an independent project pass.",
     );
   }
   function download() {
@@ -145,7 +145,7 @@ export function ProjectRunRecord() {
         JSON.stringify(
           {
             project: "room-occupancy-v1",
-            provenance: "Learner report; not independently verified",
+            provenance: "Learner report. Not independently verified",
             ...draft,
           },
           null,
@@ -176,9 +176,10 @@ export function ProjectRunRecord() {
         from the final test. A rule can be the better result.
       </p>
       <p className="text-sm text-text-muted">
-        The fields below stay in this tab and in your explicit download. Only a
-        compact learner-reported completion and assistance summary syncs to your
-        account. Exporting a folder or GitHub repository is a separate action.
+        The fields below stay in this tab and in your explicit download. Your
+        account saves only a short summary saying that you reported a run and
+        what help you used. Exporting a folder or GitHub repository is a
+        separate action.
       </p>
       <form onSubmit={record}>
         <fieldset disabled={!ready} className="space-y-4">
@@ -235,8 +236,8 @@ export function ProjectRunRecord() {
           </label>
           <label className="block space-y-2">
             <span className="block">
-              What did you observe after artifact reload? Include one input, its
-              output, and a failure or limitation.
+              What happened when you reloaded the saved model? Include one
+              input, its output, and a failure or limitation.
             </span>
             <textarea
               className={field}
@@ -278,7 +279,7 @@ export function ProjectRunRecord() {
           </label>
           <p className="text-sm text-text-muted">
             These fields check completeness and numeric ranges only. Your
-            rationale is for self-review or a later reviewer; it is not
+            rationale is for self-review or a later reviewer. It is not
             automatically graded.
           </p>
           <div className="flex flex-wrap gap-3">

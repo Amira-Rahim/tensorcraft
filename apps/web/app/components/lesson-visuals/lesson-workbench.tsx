@@ -95,7 +95,7 @@ export function LessonMissionScene({
         {heading && worldSlug !== "deep-orbit" && <h2>{heading}</h2>}
         <p className="mission-context-location">
           {locationCaption}
-          {lesson.scene?.time ? ` · ${lesson.scene.time}` : ""}
+          {lesson.scene?.time ? `, ${lesson.scene.time}` : ""}
         </p>
         {heading && worldSlug === "deep-orbit" && <h2>{heading}</h2>}
         {!compact && character && (

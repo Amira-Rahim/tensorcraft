@@ -21,7 +21,7 @@ export function IndependentProject() {
         The download contains 2,056 readings from UCI's Occupancy Detection
         dataset, its attribution, a JavaScript starter, a locked dependency file
         and a local app. You write the training experiment. The artifact checks
-        verify reload and inference; a reviewer assesses your decisions and
+        verify reload and inference. A reviewer assesses your decisions and
         explanation.
       </p>
       <div className="flex flex-wrap gap-3">
@@ -54,8 +54,8 @@ export function IndependentProject() {
         downloaded folder. A reviewer needs 8/10 with no leakage, invalid
         evaluation or missing external inference to mark a pass. Passing
         automated checks alone does not meet that standard. Budget 4 to 8 hours
-        for a first attempt; this is an unvalidated author estimate. Local
-        execution is sufficient, and hosting is optional.
+        for a first attempt. This is our estimate, which we have not yet checked
+        with learners. Local execution is sufficient, and hosting is optional.
       </p>
       <ProjectRunRecord />
       <ProjectExport />

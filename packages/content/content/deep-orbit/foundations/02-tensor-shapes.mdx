@@ -49,7 +49,7 @@ full recording to the chart.
 <StoryPassage>
 
 Farah opens the header Demir sent with the recording. It lists all 64
-sensors in the order their readings were saved at each moment.
+sensors in the order the recorder saved their readings at each moment.
 
 </StoryPassage>
 
@@ -60,7 +60,7 @@ Demir has the connection working. Let’s check what goes into each line before 
 <StoryPassage>
 
 Farah keeps Demir’s selection: sensors A, B, C, and D at three moments.
-Last time, the code that grouped the readings by sensor was already written.
+Last time, the mission supplied the code that grouped the readings by sensor.
 This time, you’ll build that part with her.
 The readings stay the same, so you can compare your result with his chart.
 
@@ -88,13 +88,13 @@ A shape gives the sizes. The recording notes tell us what they mean.
   introduction="Farah wants to see how the readings change over time. Together, you’ll:"
 />
 
-## Put Farah’s plan into JavaScript
+## Farah’s plan in JavaScript
 
 Demir’s selection has 12 readings. Three rows of four give the grid a
 **shape** of `[3, 4]`. Each row holds one moment, and each column follows
 one sensor.
 
-Rows and columns are the grid’s two **axes**. An axis is also called a
+Rows and columns are the grid’s two **axes**. We also call an axis a
 **dimension**. The number of axes is the **rank**: this grid has rank 2.
 The original list has just one axis, so it has rank 1.
 
@@ -134,11 +134,10 @@ tf.dispose([flat, grid, bySensor]);`}
 </CodeBlock>
 
 Farah needs four readings in each row. `reshape([3, 4])` takes the list in
-order and starts a new row after every four values. No readings are added or
-removed: `3 × 4 = 12`.
+order and starts a new row after every four values. The operation keeps all 12 readings: `3 × 4 = 12`.
 
 `arraySync()` copies the tensor's values into nested JavaScript arrays.
-`grid.arraySync()[1]` reads the second row; `grid[1]` does not index a tensor.
+`grid.arraySync()[1]` reads the second row. `grid[1]` does not index a tensor.
 
 After the reshape, Farah can see all four sensors at each time. Her chart
 needs a different view: one sensor per row. `transpose()` turns the columns
@@ -167,24 +166,20 @@ Their shape could be `[32, 224, 224, 3]`:
 - `224` pixels wide per image.
 - `3` color channels per pixel: red, green, and blue.
 
-Here, the color channels come last. This is called a **channels-last**
-layout. Other models expect `[32, 3, 224, 224]`, with color channels before
+Here, the color channels come last, giving us a **channels-last** layout. Other models expect `[32, 3, 224, 224]`, with color channels before
 height and width. Prepare the images in the order your model expects.
 
 For another example, `[32, 5, 3]` could hold 32 short recordings. Each covers
 five points in time, with three measurements at each point. Those
-measurements are **features**. The shape alone does not tell you this;
-the data’s format does.
+measurements are **features**. The data’s format defines what each axis represents.
 
 ### What happens to the data in memory?
 
-Reshape reads across each row before moving down to the next. This is
-called **row-major order**. It makes new rows from that sequence; it does
+Reshape uses **row-major order**: it reads across each row before moving down to the next. It makes new rows from that sequence. It does
 not work out which readings belong to a sensor.
 
 Here, TensorFlow.js lets `reshape()` reuse the data already stored in
-`flat`. The exercise checks that you reshape `flat`, rather than copy its
-values into a new tensor. The arrays from `arraySync()` are separate
+`flat`. The exercise checks that `grid` reuses the data in `flat` through `reshape()`. Creating a tensor from copied values would allocate separate data. The arrays from `arraySync()` are separate
 JavaScript copies.
 
 The example above releases its tensors after reading the results. In the

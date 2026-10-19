@@ -1,16 +1,16 @@
 slug: model-monitor
 lessonSlug: monitoring
-title: "Build a Model Monitor"
+title: "Model monitoring"
 instructions: |
   Help Demir track changes after deployment. Build `ModelMonitor` with a baseline mean vector. Keep its feature order and scale the same as recent inputs.
 
-  1. `logPrediction(confidence)` records a finite model score in [0, 1]. `avgConfidence` returns the arithmetic mean, or null when no score has been logged. These scores are not proven calibrated probabilities.
-  2. `logLatency(ms)` records a finite, nonnegative duration. `getLatencyPercentile(p)` sorts a copy numerically and returns the value at index `max(0, ceil(count * p / 100) - 1)`. This is the nearest-rank rule; P0 returns the minimum. Require a finite `p` in [0, 100]. Return null when there are no durations.
-  3. `computeDrift(recentInputs)` finds each column's recent mean, then returns the Euclidean distance to `baselineMean`. Return null for an empty window. A zero distance only means the means match; the spread or distribution shape could still have changed.
+  1. `logPrediction(confidence)` records a finite model score in [0, 1]. `avgConfidence` returns the arithmetic mean, or null when the log contains no scores. These scores are not proven calibrated probabilities.
+  2. `logLatency(ms)` records a finite, nonnegative duration. `getLatencyPercentile(p)` sorts a copy numerically and returns the value at index `max(0, ceil(count * p / 100) - 1)`. This is the nearest-rank rule. P0 returns the minimum. Require a finite `p` in [0, 100]. Return null when there are no durations.
+  3. `computeDrift(recentInputs)` finds each column's recent mean, then returns the Euclidean distance to `baselineMean`. Return null for an empty window. A zero distance only means the means match. The spread or distribution shape could still have changed.
 
   Reject invalid scores, durations, percentiles, or input rows. The baseline must be a non-empty vector of finite numbers. Each recent row must have that same width and finite values. Do not change caller arrays.
 
-  Null means no measurement. Display it as "No data", not a healthy zero. This short exercise keeps its logs; a production monitor needs a limit on how much history it retains.
+  Null means no measurement. Display it as "No data". Zero would imply an actual measurement. This short exercise keeps its logs. A production monitor needs a limit on how much history it retains.
 starterCode: |
   class ModelMonitor {
     private confidences: number[] = [];
@@ -104,7 +104,7 @@ testCode: |
       monitor.logPrediction(0.7);
       expect(
         monitor.avgConfidence,
-        'Scores have been logged. Return their arithmetic mean; null is reserved for an empty log.',
+        'The log contains scores. Return their arithmetic mean. Return null only for an empty log.',
       ).toBeCloseTo(0.8, 5);
     });
 
@@ -119,7 +119,7 @@ testCode: |
       // exists to catch.
       expect(
         monitor.avgConfidence,
-        'Use the arithmetic mean of all logged scores, not the median.',
+        'Add all logged scores and divide by their count to obtain the arithmetic mean.',
       ).toBeCloseTo(0.7, 5);
     });
 
@@ -196,7 +196,7 @@ testCode: |
       expect(drift).toBeCloseTo(1, 5);
     });
 
-    it('drift is the distance between the means, so a window that only wobbles scores zero', () => {
+    it('returns zero when the means match, even if individual values differ', () => {
       const monitor = new ModelMonitor([0, 0]);
       // Two rows a unit either side of the baseline. The column means are
       // back on the baseline, so the level has not moved and the score is
@@ -216,7 +216,7 @@ testCode: |
       ).toBe('number');
       expect(
         drift,
-        'Collapse the window to its column means first, then measure the distance once. Deviations that cancel in a mean cannot cancel once each row has been turned into a distance.',
+        'Average each column first, then calculate the distance from the baseline mean vector. Averaging a separate distance for each row gives a different result.',
       ).toBeCloseTo(0, 6);
     });
 
@@ -232,13 +232,13 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'The mean shift your monitor detected',
-        summary: 'This fixture moves the column means from [0, 0] to [1, 2]. The returned distance tells the watch to investigate; it does not measure prediction accuracy.',
+        summary: 'This fixture moves the column means from [0, 0] to [1, 2]. The returned distance tells the watch to investigate. It does not measure prediction accuracy.',
         columns: ['Measurement', 'Your result'],
         rows: [['Distance between feature means', drift]],
       });
     });
 
-    it('reports the tail, not the average: nearest-rank P50 is 89 here and the mean is 102.65', () => {
+    it('uses nearest-rank percentiles: P50 is 89 here, while the mean is 102.65', () => {
       // 100 inference times off the wasm seat: 95 of them climbing from
       // 40 ms to 134 ms, and five calls at 400. The mean is 102.65 and
       // reports a system that is mostly fine. The nearest-rank P95 is 134, which is
@@ -248,7 +248,7 @@ testCode: |
       for (let i = 0; i < 5; i++) monitor.logLatency(400);
       expect(
         monitor.getLatencyPercentile(50),
-        'Nearest-rank P50 takes the 50th sorted value, index 49. Other percentile conventions can give a different result; use the specified convention.',
+        'Nearest-rank P50 takes the 50th sorted value, index 49. Other percentile conventions can give a different result. Use the specified convention.',
       ).toBe(89);
       expect(
         monitor.getLatencyPercentile(95),
@@ -259,7 +259,7 @@ testCode: |
       recordResult({
         kind: 'table',
         title: 'Slow calls in the supplied latency log',
-        summary: 'Your monitor calculated these percentiles from 100 supplied durations. They are scenario inputs, not measurements of this browser.',
+        summary: 'Your monitor calculated these percentiles from 100 supplied durations. The scenario supplies these durations. They measure no browser performance.',
         columns: ['Percentile', 'Duration (ms)'],
         rows: [[50, monitor.getLatencyPercentile(50)], [95, monitor.getLatencyPercentile(95)], [99, monitor.getLatencyPercentile(99)]],
       });
@@ -297,7 +297,7 @@ testCode: |
       expect(m.getLatencyPercentile(95)).toBe(0);
     });
 
-    it('one loud reading moves the mean by its share, not the whole way', () => {
+    it('averages an outlying reading with the rest of the window', () => {
       const monitor = new ModelMonitor([0.5, 0.5, 0.5]);
       const window = [
         [0.8, 0.8, 0.8],

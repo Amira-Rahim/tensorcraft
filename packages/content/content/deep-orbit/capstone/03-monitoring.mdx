@@ -30,7 +30,7 @@ hints:
       Distinguish an absent measurement from a measured zero. Validate a reading before recording it.
   - level: guidance
     content: |
-      Confidence uses an arithmetic mean. Percentiles use a numerically sorted copy. Drift compares column means in matching units; a zero mean distance cannot rule out changes in spread. Return null when there is no data to calculate the requested measurement.
+      Confidence uses an arithmetic mean. Percentiles use a numerically sorted copy. Drift compares column means in matching units. A zero mean distance cannot rule out changes in spread. Return null when there is no data to calculate the requested measurement.
   - level: solution
     content: |
       class ModelMonitor {
@@ -111,18 +111,18 @@ Demir adds model scores and input distributions beside the dashboard's existing 
 
 Give the watch a way to spot slow predictions and changing inputs before deciding what to investigate. Track scores too, but keep them separate from evidence that a prediction was right.
 
-<LearningObjectives objectives={["Track model scores and how often each class is predicted", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
+<LearningObjectives objectives={["Track model scores and how often the model predicts each class", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
 <BossBeat
   beatId="deep-orbit-drift-response"
   contentVersion={2}
   showTimer={false}
-  prompt="In rehearsal, drift in fft_5 crosses the 0.5 review threshold. The calibration log records no change, but nobody has checked the raw instrument chain. Recent outcome labels are missing. One engineer has 20 minutes before scheduled maintenance. The active model can stay in place. A saved candidate passed checks on an older period; it has no evidence on this shift. A shadow run cannot issue alerts and must stop if active-model P95 latency exceeds 200 ms. What should use the slot?"
+  prompt="In rehearsal, drift in fft_5 crosses the 0.5 review threshold. The calibration log records no change, but nobody has checked the raw instrument chain. Recent outcome labels are missing. One engineer has 20 minutes before scheduled maintenance. The active model can stay in place. A saved candidate passed checks on an older period. It has no evidence on this shift. A shadow run cannot issue alerts and must stop if active-model P95 latency exceeds 200 ms. What should use the slot?"
   options={[
   {
     "label": "cooperate",
     "display": "Inspect raw captures, calibration and preprocessing for 20 minutes",
-    "consequence": "Nazari owns the instrument check. The current model and alerts stay active. She records what the slot can establish and hands any unresolved item to the next watch; the shadow comparison waits."
+    "consequence": "Nazari owns the instrument check. The current model and alerts stay active. She records what the slot can establish and hands any unresolved item to the next watch. The shadow comparison waits."
   },
   {
     "label": "defect",
@@ -131,8 +131,8 @@ Give the watch a way to spot slow predictions and changing inputs before decidin
   },
   {
     "label": "random",
-    "display": "Mute repeat drift pages and use the slot for maintenance",
-    "consequence": "Maintenance proceeds and raw data stays retained. The interval has no drift-page review owner. High model scores do not establish safety; the next watch must inspect the retained interval before relying on the alert history."
+    "display": "Mute repeated drift alerts and use the time for maintenance",
+    "consequence": "Maintenance proceeds and the recorder keeps the raw data. No one takes responsibility for reviewing drift alerts during that time. High model scores do not establish safety. The next watch must inspect the retained interval before relying on the alert history."
   },
   {
     "label": "dominant",
@@ -149,7 +149,7 @@ Give the watch a way to spot slow predictions and changing inputs before decidin
 <CodeBlock language="typescript" title="monitor.ts">
 {`interface PredictionLog {
   timestamp: number;
-  confidence: number; // model score; calibration must be measured separately
+  confidence: number; // model score. Calibration must be measured separately
   latencyMs: number; // awaited end-to-end inference, with readback
   inputFeatures: number[];
   label: string;
@@ -184,7 +184,7 @@ class ModelMonitor {
     if (!Number.isFinite(p) || p < 0 || p > 100) throw new Error('Invalid percentile');
     const sorted = this.entries.map(row => row.latencyMs).sort((a,b) => a-b);
     if (!sorted.length) return null;
-    return sorted[Math.max(0, Math.ceil(sorted.length * p / 100) - 1)]; // nearest rank; P0=min
+    return sorted[Math.max(0, Math.ceil(sorted.length * p / 100) - 1)]; // nearest rank. P0=min
   }
   computeDrift(recentInputs: number[][]): number | null {
     if (!recentInputs.length) return null;
@@ -212,7 +212,7 @@ console.log('P95 latency:', monitor.getLatencyPercentile(95)?.toFixed(1) ?? 'No 
 <CodeBlock language="typescript" title="drift.ts">
 {`interface DriftReport {
   driftScore: number;
-  thresholdExceeded: boolean; // operational cutoff, not a significance test
+  thresholdExceeded: boolean; // operational review cutoff. It performs no statistical significance test
   features: { name: string; baselineMean: number; currentMean: number; shift: number }[];
 }
 
@@ -234,7 +234,7 @@ function detectDrift(baseline: number[][], current: number[][], threshold: numbe
 }
 
 // Application supplies the arrays. 0.5 is a fictional mission cutoff for
-// 100-row windows, not a calibrated threshold for another dataset.
+// 100-row windows. Calibrate thresholds separately for another dataset.
 const drift = detectDrift(trainingData, recentSignals, 0.5);
 if (drift.thresholdExceeded) {
   console.warn('Investigate mean shift:', drift.driftScore);
@@ -242,9 +242,9 @@ if (drift.thresholdExceeded) {
 }`}
 </CodeBlock>
 
-Accuracy requires trusted outcome labels. In this mission they arrive after manual review, so live scores and drift cannot establish whether a prediction was correct. Track delayed label coverage and compute evaluation metrics when those labels arrive. Some applications receive outcomes quickly; others never obtain reliable labels for every case.
+Accuracy requires trusted outcome labels. In this mission they arrive after manual review, so live scores and drift cannot establish whether a prediction was correct. Track delayed label coverage and compute evaluation metrics when those labels arrive. Some applications receive outcomes quickly. Others never obtain reliable labels for every case.
 
-A drift alert calls for investigation. Check sensor calibration, preprocessing versions, missing values and traffic composition before considering retraining. Supervised retraining needs suitable labels and a new evaluation; an unsupervised model has a different training contract. A shifted input mean does not prove that the model has become inaccurate or that its training set must be replaced.
+A drift alert calls for investigation. Check sensor calibration, preprocessing versions, missing values and traffic composition before considering retraining. Supervised retraining needs suitable labels and a new evaluation. An unsupervised model has a different training contract. A shifted input mean does not prove that the model has become inaccurate or that the crew needs to replace its training set.
 
 Watch the output distribution too: class proportions and score histograms can change while input means remain stable. Conversely, identical means can hide changes in spread, multimodality or relationships between features. Per-feature distribution comparisons, such as a Kolmogorov-Smirnov statistic, can reveal some of these changes, but their interpretation depends on sample size, dependence and repeated testing. They do not test every kind of joint shift.
 
@@ -252,15 +252,15 @@ Watch the output distribution too: class proportions and score histograms can ch
 
 Build the monitor. Average the recorded confidence scores, calculate percentiles from prediction times, and compare recent feature means with the baseline.
 
-Render an absent measurement as "No data". A measured zero distance only says the means match; it does not rule out changes in spread or class mix.
+Render an absent measurement as "No data". A measured zero distance only says the means match. It does not rule out changes in spread or class mix.
 
-Your results show the distance between the supplied feature means and the slow end of a supplied latency log. The watch can use those measurements to open an investigation. The durations are scenario inputs, not timings from your device, and neither measurement establishes accuracy.
+Your results show the distance between the supplied feature means and the slow end of a supplied latency log. The watch can use those measurements to open an investigation. The scenario supplies these durations. Measure device timings and model accuracy separately.
 
 <Exercise slug="model-monitor" />
 
 <RecallPrompt
   question="What model failure can occur while latency and exception rates look normal?"
-  answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong."
+  answer="A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift warns us that the data has changed. Evaluating predictions requires trusted outcomes."
   checks={[
     {
       "kind": "choice",
@@ -268,7 +268,7 @@ Your results show the distance between the supplied feature means and the slow e
       "options": [
         {
           "text": "No model failures are possible while those metrics are stable.",
-          "feedback": "Infrastructure health does not establish predictive quality."
+          "feedback": "The app can run normally while the model makes wrong predictions."
         },
         {
           "text": "A failed backend initialization that prevents every prediction from running.",
@@ -276,11 +276,11 @@ Your results show the distance between the supplied feature means and the slow e
         },
         {
           "text": "Plausible but incorrect predictions.",
-          "feedback": "A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong."
+          "feedback": "A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift warns us that the data has changed. Evaluating predictions requires trusted outcomes."
         }
       ],
       "correctIndex": 2,
-      "explanation": "A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift is one warning signal, not proof that predictions are wrong."
+      "explanation": "A plausible but incorrect prediction can arrive with no exception or latency change. Monitor inputs and outputs, and evaluate with trusted labels when available. Input drift warns us that the data has changed. Evaluating predictions requires trusted outcomes."
     }
   ]}
 />
@@ -297,13 +297,13 @@ Your results show the distance between the supplied feature means and the slow e
     "A drift alert requests investigation. Accuracy requires trusted labels, and retraining requires its own evidence and validation.",
     "Specify the percentile convention and measurement boundary. Render an absent measurement as No data."
   ]}
-  bridge="Application monitoring tracks operation and errors. Model monitoring adds data distributions and delayed outcome labels; a shift is a signal to investigate, not proof of failure."
+  bridge="Application monitoring tracks operation and errors. Model monitoring adds data distributions and delayed outcome labels. A shift calls for investigation. Evaluate the outcomes to find out whether predictions have become less accurate."
   youCanNow="Build a monitor that averages model scores, reports prediction-time percentiles, and measures the distance between recent feature means and the training baseline."
 />
 
-> **DISPATCH archive · field intercept #19-M:** Hassan's dashboard uses the same drift check. Last quarter, it paged him for three days because every feature mean had shifted. Maintenance had recalibrated the cameras; the scene they recorded had not changed.
+> **DISPATCH archive, field intercept #19-M:** Hassan's dashboard uses the same drift check. Last quarter, it paged him for three days because every feature mean had shifted. Maintenance had recalibrated the cameras. The scene they recorded had not changed.
 >
-> The check detected different means but could not explain why. His team corrected the preprocessing, checked labeled outcomes, and approved a new post-calibration baseline. The pages stopped. Hassan added a runbook step: check the maintenance log when a drift alert fires.
+> The check detected different means but could not explain why. His team corrected the preprocessing, checked labeled outcomes, and approved a new post-calibration baseline. The alerts stopped. Hassan added a runbook step: check the maintenance log when a drift alert fires.
 
 <Epilogue>
 

@@ -47,7 +47,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "matrix rank",
     definition:
-      "The number of linearly independent columns or rows of a matrix. Full rank means rank equals the smaller matrix dimension; a wide full-rank matrix can still map nonzero inputs to zero.",
+      "The number of linearly independent columns or rows of a matrix. Full rank means rank equals the smaller matrix dimension. A wide full-rank matrix can still map nonzero inputs to zero.",
     aliases: ["full rank", "full-rank", "rank-deficient"],
     scope: "global",
   },
@@ -61,14 +61,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "dimensions",
     definition:
-      "The axes along which values are arranged. A list has one axis; a grid has two, rows and columns.",
+      "The axes that describe the arrangement of values. A list has one axis. A grid has two, rows and columns.",
     aliases: ["dimension"],
     scope: "global",
   },
   {
     term: "typed-array",
     definition:
-      "A JavaScript view of a buffer with a fixed numeric element type, such as Float32Array. TensorFlow.js accepts typed arrays as input; a GPU backend may store the tensor in a different representation.",
+      "A JavaScript view of a buffer with a fixed numeric element type, such as Float32Array. TensorFlow.js accepts typed arrays as input. A GPU backend may store the tensor in a different representation.",
     aliases: ["typed array", "typed-arrays"],
     scope: "global",
   },
@@ -111,7 +111,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "z-score",
     definition:
-      "A value rescaled by subtracting the mean and dividing by the standard deviation, so it is measured in units of spread.",
+      "A value rescaled by subtracting the mean and dividing by the standard deviation, giving its distance from the mean in units of spread.",
     aliases: ["z score", "z-scores"],
     scope: "global",
   },
@@ -132,7 +132,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "regression",
     definition:
-      "Predicting a number on a continuous scale, such as the next reading's value, rather than picking a class. Logistic regression is a classifier despite its name.",
+      "Predicting a number on a continuous scale, such as the next reading’s value. Logistic regression is a classifier despite its name.",
     scope: "global",
   },
   {
@@ -145,7 +145,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "y-hat",
     definition:
-      "The model's prediction for one example, written with a hat to tell it from y, the true value it is scored against.",
+      "The model's prediction for one example, written with a hat to tell it from y, the true value we compare it with.",
     aliases: ["ŷ"],
     scope: "global",
   },
@@ -174,7 +174,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "layer",
     definition:
-      "A named stage in a model. It transforms its input and passes the result on. In a dense layer that stage is a group of neurons; other layers reshape, drop, or convolve instead.",
+      "A named stage in a model. It transforms its input and passes the result on. In a dense layer that stage is a group of neurons. Other layers reshape, drop, or convolve instead.",
     aliases: ["layers"],
     scope: "global",
   },
@@ -202,14 +202,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "activation",
     definition:
-      "A function applied to a layer's output. Nonlinear activations such as ReLU let stacked dense layers represent more than one affine calculation; a linear activation leaves values unchanged.",
+      "A function applied to a layer's output. Nonlinear activations such as ReLU let stacked dense layers represent more than one affine calculation. A linear activation leaves values unchanged.",
     aliases: ["activations", "activation function"],
     scope: "global",
   },
   {
     term: "nonlinearity",
     definition:
-      "A nonlinear step that lets a network learn curved relationships rather than only straight-line ones.",
+      "A nonlinear step that lets a network learn relationships beyond the straight-line functions of a purely linear network.",
     aliases: ["non-linearity"],
     scope: "global",
   },
@@ -223,7 +223,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sigmoid",
     definition:
-      "An activation that squashes any number into the range 0 to 1, often used for probabilities.",
+      "An activation that maps any finite input to a value between 0 and 1. Models often use it for probability estimates, but those estimates still need evaluation.",
     scope: "global",
   },
   {
@@ -235,7 +235,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "convolution",
     definition:
-      "Applying shared kernel weights at successive positions to form output features. In image models, padding and stride determine which neighborhoods are covered and the output shape.",
+      "Applying shared kernel weights at successive positions to form output features. In image models, padding and stride determine which neighborhoods the kernel covers and the output shape.",
     aliases: ["convolutional", "conv layer"],
     scope: "global",
   },
@@ -251,7 +251,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gradient",
     definition:
-      "A list of slopes, one per parameter, showing how each affects a single output such as loss. Under ordinary Euclidean distance, its negative points toward the steepest local decrease; a large step can still increase the loss.",
+      "A list of slopes, one per parameter, showing how each affects a single output such as loss. Under ordinary Euclidean distance, its negative points toward the steepest local decrease. A large step can still increase the loss.",
     aliases: ["gradients"],
     scope: "global",
   },
@@ -299,7 +299,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "mae",
     definition:
-      "Mean absolute error: average the sizes of the prediction errors, ignoring their signs. It uses the target's units; MSE squares the errors instead.",
+      "Mean absolute error: average the sizes of the prediction errors, ignoring their signs. It uses the target's units. MSE squares the errors instead.",
     aliases: ["MAE", "mean absolute error"],
     scope: "global",
   },
@@ -334,7 +334,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "learning-rate",
     definition:
-      "A setting that scales each optimizer update. Too large can overshoot or make loss grow; too small can make training slow.",
+      "A setting that scales each optimizer update. Too large can overshoot or make loss grow. Too small can make training slow.",
     aliases: ["learning rate"],
     scope: "global",
   },
@@ -348,7 +348,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "batching",
     definition:
-      "Grouping examples so a model processes several together. Batch size changes memory use, speed, and the training updates; larger is not always better.",
+      "Grouping examples so a model processes several together. Batch size changes memory use, speed, and the training updates. Larger is not always better.",
     aliases: ["batch", "batches"],
     scope: "global",
   },
@@ -376,7 +376,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "precision",
     definition:
-      "Of the items the model flagged as positive, the fraction that truly were positive. Distinct from numeric precision, which is how many bits a number is stored in.",
+      "Of the items the model flagged as positive, the fraction that truly were positive. Distinct from numeric precision, which is how many bits represent a number.",
     scope: "global",
   },
   {
@@ -408,7 +408,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "baseline",
     definition:
-      "A reference model, rule or measurement used for comparison. Compare candidates on the same data and relevant costs; keeping a simpler baseline can be the best outcome.",
+      "A reference model, rule or measurement used for comparison. Compare candidates on the same data and relevant costs. Keeping a simpler baseline can be the best outcome.",
     aliases: ["baselines"],
     scope: "global",
   },
@@ -422,14 +422,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "logit",
     definition:
-      "A raw model score before sigmoid or softmax, which can be negative or positive without fixed bounds. A loss that expects logits applies the output activation itself; a loss that expects probabilities needs it applied already.",
+      "A raw model score before sigmoid or softmax, which can be negative or positive without fixed bounds. A loss that expects logits applies the output activation itself. A loss that expects probabilities needs it applied already.",
     aliases: ["logits"],
     scope: "global",
   },
   {
     term: "hyperparameter",
     definition:
-      "A setting you choose for a model or training run, such as layer size or learning rate. It is separate from the weights learned by ordinary training updates and can be tuned using validation data.",
+      "A setting you choose for a model or training run, such as layer size or learning rate. It is separate from the weights learned by ordinary training updates and you can tune it using validation data.",
     aliases: ["hyperparameters"],
     scope: "global",
   },
@@ -472,7 +472,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "gru",
     definition:
-      "A recurrent cell with update and reset gates and no separate cell state. The update gate mixes the previous hidden state with a new candidate; the reset gate controls the previous-state information used to form that candidate.",
+      "A recurrent cell with update and reset gates and no separate cell state. The update gate mixes the previous hidden state with a new candidate. The reset gate controls the previous-state information used to form that candidate.",
     aliases: ["GRU"],
     scope: "global",
   },
@@ -516,7 +516,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "attention",
     definition:
-      "Scoring which input representations to use, then combining their values with weights derived from those scores. A large weight shows a contribution to the combination, not proof of a physical cause.",
+      "Scoring which input representations to use, then combining their values with weights derived from those scores. A large weight gives that value more influence in the combination. It cannot establish a physical cause.",
     scope: "global",
   },
   {
@@ -529,7 +529,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "query-key-value",
     definition:
-      "In attention, queries and keys are compared to obtain scores; the resulting weights combine values. These vectors are commonly learned projections of model representations.",
+      "Attention compares queries and keys to obtain scores. The resulting weights combine values. These vectors are commonly learned projections of model representations.",
     aliases: ["query key value", "QKV"],
     scope: "global",
   },
@@ -594,21 +594,21 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "embedding",
     definition:
-      "A vector representation of an item such as a word, image or record. Similarity in the vector space reflects the representation and training objective; it must be evaluated for the intended use.",
+      "A vector representation of an item such as a word, image or record. Similarity in the vector space reflects the representation and training objective. Evaluate it for the intended use.",
     aliases: ["embeddings", "embedding space"],
     scope: "global",
   },
   {
     term: "tokenization",
     definition:
-      "Converting text to units a model reads and their IDs. Subword and byte methods can represent many unseen words; coverage and unknown-token behavior depend on the tokenizer.",
+      "Converting text to units a model reads and their IDs. Subword and byte methods can represent many unseen words. Coverage and unknown-token behavior depend on the tokenizer.",
     aliases: ["tokenize", "tokenized", "tokenizing"],
     scope: "global",
   },
   {
     term: "cosine similarity",
     definition:
-      "The dot product of two nonzero vectors divided by their lengths, ranging from -1 to 1. It measures direction, not meaning by itself; its usefulness depends on the representation.",
+      "The dot product of two nonzero vectors divided by their lengths, ranging from -1 to 1. It measures direction. A meaningful comparison requires suitable vector representations. Its usefulness depends on the representation.",
     scope: "global",
   },
   {
@@ -637,7 +637,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "diffusion",
     definition:
-      "A family of generative methods that learns to reverse a process that adds noise. Sampling uses the learned denoising process, often starting from noise; outputs can include images, audio or other data.",
+      "A family of generative methods that learns to reverse a process that adds noise. Sampling uses the learned denoising process, often starting from noise. Outputs can include images, audio or other data.",
     aliases: ["diffusion model", "denoising"],
     scope: "global",
   },
@@ -687,7 +687,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "spectral-leakage",
     definition:
-      "A tone spreading into several frequency bins when only a short recording is analyzed. It often occurs when the recording does not contain a whole number of cycles.",
+      "A tone spreading into several frequency bins when we analyze only a short recording. It often occurs when the recording does not contain a whole number of cycles.",
     aliases: ["spectral leakage"],
     scope: "deep-orbit",
   },
@@ -701,7 +701,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "sidelobe",
     definition:
-      "A smaller peak in a window's spectrum, away from its main peak. Its height and decay describe how much leakage reaches other frequencies, rather than a cutoff where leakage ends.",
+      "A smaller peak in a window's spectrum, away from its main peak. Its height and decay describe how much leakage reaches other frequencies, without defining a cutoff where leakage ends.",
     aliases: ["sidelobes", "side lobe", "side lobes"],
     scope: "deep-orbit",
   },
@@ -730,7 +730,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "autoencoder",
     definition:
-      "A network trained to reconstruct an input through an internal representation, often with a bottleneck or other constraint. Reconstruction error can be used as an anomaly score after validation.",
+      "A network trained to reconstruct an input through an internal representation, often with a bottleneck or other constraint. You can use reconstruction error as an anomaly score after validation.",
     aliases: ["autoencoders"],
     scope: "global",
   },
@@ -751,7 +751,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "semi-supervised",
     definition:
-      "Learning from a mixture of labeled and unlabeled training examples. Some anomaly-detection literature also uses this term for training on examples known to be normal; that narrower usage should be stated explicitly.",
+      "Learning from a mixture of labeled and unlabeled training examples. Some anomaly-detection literature also uses this term for training on examples known to be normal. State that narrower usage explicitly when you use it.",
     aliases: ["semi-supervised learning"],
     scope: "global",
   },
@@ -813,35 +813,35 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "pruning",
     definition:
-      "Removing weights or units, then checking whether predictions remain useful. Setting dense weights to zero alone may leave the same storage and calculations; removing whole units can change both.",
+      "Removing weights or units, then checking whether predictions remain useful. Setting dense weights to zero alone may leave the same storage and calculations. Removing whole units can change both.",
     aliases: ["prune", "pruned"],
     scope: "global",
   },
   {
     term: "distillation",
     definition:
-      "Training a student model using a teacher model as a source of targets or intermediate representations, sometimes alongside labeled data. The student may be smaller; matching the teacher does not guarantee its accuracy.",
+      "Training a student model using a teacher model as a source of targets or intermediate representations, sometimes alongside labeled data. The student may be smaller. Matching the teacher does not guarantee its accuracy.",
     aliases: ["distill", "knowledge distillation"],
     scope: "global",
   },
   {
     term: "federated learning",
     definition:
-      "Coordinating training across clients while keeping raw training records local. Clients share updates or statistics, which can still leak information; federation alone is not a privacy guarantee.",
+      "Coordinating training across clients while keeping raw training records local. Clients share updates or statistics, which can still leak information. Federation alone is not a privacy guarantee.",
     aliases: ["federated", "federated averaging"],
     scope: "global",
   },
   {
     term: "sparsity",
     definition:
-      "The fraction of values that are zero. Saving space or work requires storage or code that can skip those zeros; ordinary dense arrays still keep their slots.",
+      "The fraction of values that are zero. Saving space or work requires storage or code that can skip those zeros. Ordinary dense arrays still keep their slots.",
     aliases: ["sparse"],
     scope: "global",
   },
   {
     term: "pretrained",
     definition:
-      "A model whose parameters were learned before the current task. You can reuse it for inference or adapt it through further training.",
+      "A model that learned its parameters before the current task. You can reuse it for inference or adapt it through further training.",
     aliases: ["pre-trained"],
     scope: "global",
   },
@@ -862,42 +862,42 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "wasm",
     definition:
-      "WebAssembly, a portable low-level code format. TFJS offers a CPU-based WASM backend; it can be useful even when a GPU is available, depending on the workload.",
+      "WebAssembly, a portable low-level code format. TFJS offers a CPU-based WASM backend. It can be useful even when a GPU is available, depending on the workload.",
     aliases: ["WASM", "WebAssembly"],
     scope: "global",
   },
   {
     term: "opset",
     definition:
-      "A versioned set of ONNX operator definitions. The target runtime must support the graph operators and their versions; lowering the export opset is not a universal fix for unsupported operations.",
+      "A versioned set of ONNX operator definitions. The target runtime must support the graph operators and their versions. Lowering the export opset is not a universal fix for unsupported operations.",
     aliases: ["op-set", "operator set", "operator-set"],
     scope: "global",
   },
   {
     term: "data-drift",
     definition:
-      "Incoming data changing from the data in a reference period. This may affect predictions, but the change alone does not prove accuracy has fallen.",
+      "A change in incoming data compared with a reference period. This may affect predictions, but the change alone does not prove accuracy has fallen.",
     aliases: ["data drift"],
     scope: "global",
   },
   {
     term: "population stability index",
     definition:
-      "A score comparing proportions in fixed bins between two datasets. Results depend on binning and treatment of empty bins; common numeric cutoffs are conventions, not universal significance thresholds.",
+      "A score comparing proportions in fixed bins between two datasets. Results depend on binning and treatment of empty bins. Common numeric cutoffs follow conventions. They carry no universal statistical significance.",
     aliases: ["PSI", "population-stability-index"],
     scope: "global",
   },
   {
     term: "Kolmogorov-Smirnov",
     definition:
-      "A statistic measuring the largest gap between cumulative distributions. It can reveal marginal distribution changes that means miss; statistical interpretation depends on sampling assumptions.",
+      "A statistic measuring the largest gap between cumulative distributions. It can reveal marginal distribution changes that means miss. Statistical interpretation depends on sampling assumptions.",
     aliases: ["Kolmogorov-Smirnov statistic", "KS statistic"],
     scope: "global",
   },
   {
     term: "shadow model",
     definition:
-      "A model that scores the same inputs as the one in service, with its verdicts logged and never acted on. Keeping the old model in shadow after a new one goes live gives every new verdict something to be checked against.",
+      "A model that scores the same inputs as the one in service. The system logs its verdicts without acting on them. Keeping the old model in shadow lets the crew compare its predictions with the new model’s predictions.",
     aliases: [
       "shadow models",
       "shadow inference",
@@ -909,7 +909,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "canary",
     definition:
-      "A first deploy to a small slice of the fleet, watched on live traffic while everything else keeps running the old version. A bad build then reaches that slice instead of every user, at the cost of the time the watch takes.",
+      "Releasing a new build to a small group first and watching how it handles live traffic. Everyone else keeps the old version while you check whether to continue the rollout.",
     aliases: ["canaries", "canary deployment", "canary deployments"],
     scope: "global",
   },
@@ -953,7 +953,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "probability distribution",
     definition:
-      "A description of the probabilities assigned to possible outcomes. A discrete variable can use a probability mass function; many continuous variables use a probability density function.",
+      "A description of the probabilities assigned to possible outcomes. A discrete variable can use a probability mass function. Many continuous variables use a probability density function.",
     aliases: ["probability distributions", "distribution"],
     scope: "global",
   },
@@ -974,14 +974,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "expected value",
     definition:
-      "A probability-weighted average, when it exists. A sample mean can estimate it under suitable sampling assumptions; many training losses estimate an expected per-example loss.",
+      "A probability-weighted average, when it exists. A sample mean can estimate it under suitable sampling assumptions. Many training losses estimate an expected per-example loss.",
     aliases: ["expectation"],
     scope: "global",
   },
   {
     term: "normal distribution",
     definition:
-      "A bell-shaped distribution specified by its mean and positive standard deviation. Some sums approach it under central-limit conditions; individual sensor readings need not be normal.",
+      "A bell-shaped distribution specified by its mean and positive standard deviation. Some sums approach it under central-limit conditions. Individual sensor readings need not be normal.",
     aliases: ["Gaussian", "Gaussian distribution", "bell curve"],
     scope: "global",
   },
@@ -995,7 +995,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "conditional probability",
     definition:
-      "The probability of one event given that another happened, written P(A | B). Computed by restricting attention to outcomes where B is true and renormalizing.",
+      "The probability of one event among the outcomes where another event happens. To calculate it, restrict the possible outcomes to that group and normalize their probabilities.",
     aliases: ["conditional probabilities"],
     scope: "global",
   },
@@ -1004,14 +1004,14 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "eigenvector",
     definition:
-      "A nonzero vector that a square matrix maps to a scalar multiple of itself; the scalar is its eigenvalue. Repeated multiplication depends on eigenvalue magnitudes and the initial vector, with additional conditions needed for power-iteration convergence.",
+      "A nonzero vector that a square matrix maps to a scalar multiple of itself. The scalar is its eigenvalue. Repeated multiplication depends on eigenvalue magnitudes and the initial vector, with additional conditions needed for power-iteration convergence.",
     aliases: ["eigenvectors", "eigenvalue", "eigenvalues"],
     scope: "global",
   },
   {
     term: "SVD",
     definition:
-      "Singular Value Decomposition: a real matrix factors into orthogonal directions and nonnegative singular values. Keeping the largest singular values gives a best fixed-rank approximation in Frobenius or spectral norm, not necessarily in prediction quality.",
+      "Singular Value Decomposition: a real matrix factors into orthogonal directions and nonnegative singular values. Keeping the largest singular values gives a best fixed-rank approximation in Frobenius or spectral norm. Prediction quality still needs separate evaluation.",
     aliases: ["singular value decomposition"],
     scope: "global",
   },

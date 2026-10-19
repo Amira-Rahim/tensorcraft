@@ -181,7 +181,7 @@ export function MobileNav() {
                   onClick={() => setOpen(false)}
                   className="block w-full text-center border border-primary/30 bg-primary/8 px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider hover:bg-primary/15 hover:border-primary/50 transition-all"
                 >
-                  Start now &rarr;
+                  Start now
                 </Link>
               )}
             </div>

@@ -1,9 +1,9 @@
 slug: classify-anomaly
 lessonSlug: launch
-title: "Zero Hour: Classify the Anomaly"
+title: "The anomaly classification at launch"
 mlContent: systems
 instructions: |
-  Help the bridge crew apply the final decision rule. Use the supplied fictional scores; this exercise does not run the trained detectors or establish the signal's source. Sample 7741 has a zero-hour ensemble score of 0.999, compared with the module-3 score of 0.518. These came from different systems, so their difference is not an accuracy gain.
+  Help the bridge crew apply the final decision rule. Use the supplied fictional scores. This exercise does not run the trained detectors or establish the signal's source. Sample 7741 has a zero-hour ensemble score of 0.999, compared with the module-3 score of 0.518. These came from different systems, so their difference is not an accuracy gain.
 
   Write three functions:
 
@@ -32,11 +32,11 @@ instructions: |
 
   Use 'confirmed-anomaly' when the vote passes and the ratio pattern matches. Use 'anomaly' when the vote passes without a match, and 'noise' when the vote fails.
 
-  Reject invalid inputs. Intervals must be finite and positive, and their ratios must not overflow or underflow. Detector values must be finite, error thresholds nonnegative, and both model scores in [0, 1]. The reference window must be non-empty and contain only finite readings; `actual` must also be finite.
+  Reject invalid inputs. Intervals must be finite and positive, and their ratios must not overflow or underflow. Detector values must be finite, error thresholds nonnegative, and both model scores in [0, 1]. The reference window must be non-empty and contain only finite readings. `actual` must also be finite.
 
-  Check whether the original window is constant before converting it to float32. For a constant window, an exactly matching `actual` gives no statistical vote; any difference gives a vote. Reject a nonconstant window whose variance becomes zero in float32. An undefined z-score is not a measured zero. This exact-match policy is for the exercise; deployment needs a measurement tolerance.
+  Check whether the original window is constant before converting it to float32. For a constant window, an exactly matching `actual` gives no statistical vote. Any difference gives a vote. Reject a nonconstant window whose variance becomes zero in float32. An undefined z-score is not a measured zero. This exact-match policy is for the exercise. Deployment needs a measurement tolerance.
 
-  The pattern check assumes recordings end at the final gap, 13. Aligning from the end does not work for arbitrary recordings, and a short match is weak evidence. The 2% band is relative to each expected value, so an expected 2 allows twice the difference of an expected 1. The mission label 'confirmed-anomaly' combines the vote and this pattern check. It does not establish the signal's origin. The fallback label 'noise' means this rule did not flag the reading, not that the capture contains no signal.
+  The pattern check assumes recordings end at the final gap, 13. Aligning from the end does not work for arbitrary recordings, and a short match is weak evidence. The 2% band is relative to each expected value, so an expected 2 allows twice the difference of an expected 1. The mission label 'confirmed-anomaly' combines the vote and this pattern check. It does not establish the signal's origin. The fallback label 'noise' means this rule did not flag the reading. The capture can still contain a signal.
 starterCode: |
   // Zero hour. The readout for sample 7741, tonight:
   //
@@ -96,7 +96,7 @@ solutionCode: |
   function isFibonacciTrain(ratios) {
     if (ratios.length === 0) return false;
     const fibonacciRatios = [1, 2, 1.5, 5 / 3, 1.6, 1.625];
-    // The reading's first ratio may be the 1:1 opener or start at the 2;
+    // The reading's first ratio may be the 1:1 opener or start at the 2.
     // align on length from the tail, where the train converges on phi.
     const expected = fibonacciRatios.slice(fibonacciRatios.length - ratios.length);
     if (expected.length !== ratios.length) return false;
@@ -219,7 +219,7 @@ testCode: |
       }
     });
 
-    it('recognizes the Fibonacci train and rejects a metronome', () => {
+    it('recognizes the Fibonacci ratios and rejects equally spaced pulses', () => {
       expect(
         isFibonacciTrain(decomposeIntervals([1, 1, 2, 3, 5, 8, 13])),
         'These six ratios match the expected template. Return true.',
@@ -231,7 +231,7 @@ testCode: |
       // A train that omits the 1:1 opener: 5 ratios against the last 5 expected.
       expect(
         isFibonacciTrain(decomposeIntervals([1, 2, 3, 5, 8, 13])),
-        'Five ratios, and the succession holds six slots. Compare them against the END of the list: a capture that starts mid-train has lost the 1:1 opener, not the tail.',
+        'This capture starts partway through the pulse pattern. Compare its five ratios with the last five template ratios.',
       ).toBe(true);
       // More ratios than the succession list has slots: no alignment exists.
       expect(isFibonacciTrain([1, 2, 1.5, 5 / 3, 1.6, 1.625, 1.615])).toBe(false);
@@ -441,13 +441,13 @@ testCode: |
       const expectedRatios = decomposeIntervals(zeroHourReading.intervals);
       expect(
         built(inSeconds).ratios,
-        'The verdict reports ratios, so the seven pulse gaps it was handed have to be collapsed into six numbers before they go in the record. Passing the gaps straight through, or leaving the field empty, records something else.',
+        'The verdict reports ratios, so convert its seven pulse gaps into six adjacent ratios for the record. Passing the gaps straight through, or leaving the field empty, records something else.',
       ).toHaveLength(expectedRatios.length);
       for (let i = 0; i < expectedRatios.length; i++) {
         expect(inSeconds.ratios[i]).toBeCloseTo(expectedRatios[i], 6);
         expect(
           abstract.ratios[i],
-          'A record still carrying seconds reads differently from the same train counted abstractly. Dividing is what removes the units, and it is the reason the calibration overlay lined up at all.',
+          'Divide each interval by the previous one. The ratios have no time unit, so you can compare the pattern across recordings with different pulse speeds.',
         ).toBeCloseTo(inSeconds.ratios[i], 6);
       }
 
@@ -463,21 +463,21 @@ testCode: |
       expect(doubling.classification).toBe('anomaly');
     });
 
-    it('settles the season: confirmed anomaly, and the 51.8 -> 99.9 delta', () => {
+    it('returns the final classification and the difference between the supplied scores', () => {
       expect(built(result).classification).toBe('confirmed-anomaly');
       expect(result.fibonacciTrain).toBe(true);
       expect(result.scoreDelta).toBeCloseTo(0.481, 3);
       recordResult({
         kind: 'table',
         title: 'The zero-hour decision your code returned',
-        summary: 'Computed from the supplied fictional detector scores. The vote and pattern match support this mission label, not a finding about the source or an accuracy gain.',
+        summary: 'Computed from the supplied fictional detector scores. The vote and pattern match determine this mission label. They establish neither the source nor an accuracy gain.',
         columns: ['Decision field', 'Returned value'],
         rows: [['Detector votes', result.votes], ['Anomaly rule passed', result.isAnomaly], ['Interval template matched', result.fibonacciTrain], ['Classification', result.classification], ['Difference between supplied scores', result.scoreDelta]],
       });
       recordResult({
         kind: 'table',
         title: 'The interval ratios behind that decision',
-        summary: 'Each ratio is returned by your decision layer from adjacent gaps. The template check assumes the recording ends at the same final gap.',
+        summary: 'Your decision layer calculates each ratio from adjacent gaps. The template check assumes the recording ends at the same final gap.',
         columns: ['Gap pair', 'Returned ratio'],
         rows: result.ratios.slice(0, 6).map((value, i) => [(i + 1) + ' to ' + (i + 2), value]),
       });

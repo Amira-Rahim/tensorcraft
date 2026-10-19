@@ -55,7 +55,7 @@ export const WORLD_LEARNING_SCOPE: Record<WorldSlug, WorldLearningScope> = {
       "capstone",
     ],
     releaseReview:
-      "Launched course; current improvements are undergoing release verification.",
+      "Launched course. Current improvements are undergoing release verification.",
   },
   "neon-protocol": {
     outcome:

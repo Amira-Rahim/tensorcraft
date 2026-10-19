@@ -18,11 +18,11 @@ concept:
   explanation: "Specific instructions and relevant context help define the task. Output also depends on the model, decoding settings and supplied evidence."
   bridge:
     jsTitle: "Search Queries"
-    jsCode: "// Bad: 'error' → thousands of irrelevant results"
+    jsCode: "// Bad: 'error' to thousands of irrelevant results"
     mlTitle: "Prompt Design"
-    mlCode: "// Bad: 'analyze signal' → vague, unfocused output"
+    mlCode: "// Bad: 'analyze signal' to vague, unfocused output"
     tier: structural
-    breaks: "Search asks a system to retrieve ranked items; a prompt asks a generator to produce a response. Either system can use learned or changing behavior. Clear instructions help define the task, but generated claims still need evidence and output checks."
+    breaks: "Search asks a system to retrieve ranked items. A prompt asks a generator to produce a response. Either system can use learned or changing behavior. Clear instructions help define the task, but generated claims still need evidence and output checks."
 consequence:
   narrative: "The new template includes the sector catalogue. Farah tests both versions on held-out readings."
 hints:
@@ -61,14 +61,14 @@ keywords:
 skillAxes: [deployment, js_integration]
 ---
 
-> **Farah asks Demir to review prompt v1** · Read the prompt and its reply below. Before improving it, name the instructions or information it is missing.
+> **Farah asks Demir to review prompt v1**, Read the prompt and its reply below. Before improving it, name the instructions or information it is missing.
 >
-> v1: `"Analyze this signal data."` · The reply gives three general paragraphs about signals and suggests asking an expert. It uses none of the numbers from the reading.
+> v1: `"Analyze this signal data."`, The reply gives three general paragraphs about signals and suggests asking an expert. It uses none of the numbers from the reading.
 
 The prompt names neither a reading nor the evidence to check it against. Demir also needs a reply his client can parse. Which instructions would let him use the result?
 
 <Dialogue speaker="Dr. Farah">
-My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the draft became specific enough to review against the readings. I still checked its claims before using them. Format matters when code needs to parse the reply; asking for JSON does not guarantee valid JSON.
+My first prompt was 'Analyze this signal data.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the draft became specific enough to review against the readings. I still checked its claims before using them. Format matters when code needs to parse the reply. Asking for JSON does not guarantee valid JSON.
 </Dialogue>
 
 A more specific search query can narrow retrieved results. A prompt instead asks a model to generate an answer. Both benefit from a clear task and relevant context, but precise wording guarantees neither a useful result nor a true claim.
@@ -79,7 +79,7 @@ Demir needs to send each new reading with the same reference facts and response 
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Keep the reference context on a line of its own, so the model can tell the sector's known frequencies from the reading under review", "Request structured output (JSON) for programmatic processing", "Diagnose a vague prompt by naming which of the four parts is missing"]} />
 
-## Give the model a reading and its reference data
+## The reading and its reference data
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -111,7 +111,7 @@ Use this JSON shape:
   "reasoning": "brief explanation",
   "anomalous_features": ["list of unusual features"]
 }\`;
-// Requested shape, not a guaranteed response. Parse and validate it.`}
+// The requested shape still needs parsing and validation.`}
 </CodeBlock>
 
 The prompt uses instrument units so a reviewer can check it against the log. The classifier instead receives three scaled features: amplitude divided by 2048, a zero-crossing count divided by 63, and phase mapped from minus-pi-to-pi onto 0 to 1.
@@ -119,11 +119,11 @@ The prompt uses instrument units so a reviewer can check it against the log. The
 Frequency needs special care. The prompt uses the 73.4 Hz estimate from the crew's longer spectrum measurement. The classifier instead counts zero crossings in 64 samples, a quarter second at 256 Hz. That short window has FFT bins 4 Hz apart, so it does not directly give a 73.4 Hz bin. Keep the frequency estimate and crossing count separate.
 
 <DerivationDrawer summary="Checking the instrument units in this example">
-These are supplied mission measurements, not reproduced experimental results. The fictional normal period has normalized mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Multiplying the percentile endpoints by 2048 gives roughly 570 to 1560 counts. This is the central 90% reference band, not the 3-sigma decision threshold.
+The story supplies these fictional mission measurements. The fictional normal period has normalized mean 0.52, standard deviation 0.15, p5 0.28 and p95 0.76. Multiplying the percentile endpoints by 2048 gives roughly 570 to 1560 counts. This is the central 90% reference band. The 3-sigma decision rule uses a separate threshold.
 
-1024 counts becomes 0.50, about 0.13 standard deviations below that mean. A clean 73.4 Hz sinusoid spans about 18.35 cycles in a quarter second, so roughly 36 or 37 zero crossings might be observed. The exact count depends on phase, sampling and noise; frequency does not uniquely determine it. A measured count of 37 normalizes to 37/63, about 0.59. Phase 0.23 rad maps to about 0.54 across the minus-pi-to-pi range.
+1024 counts becomes 0.50, about 0.13 standard deviations below that mean. A clean 73.4 Hz sinusoid spans about 18.35 cycles in a quarter second, so the recorder might capture roughly 36 or 37 zero crossings. The exact count depends on phase, sampling and noise. Frequency does not uniquely determine it. A measured count of 37 normalizes to 37/63, about 0.59. Phase 0.23 rad maps to about 0.54 across the minus-pi-to-pi range.
 
-The story's classifier score of 51.8% does not establish a calibrated probability. The listed natural frequencies are a limited local catalogue. Absence from it is a reason to investigate, not proof of an unnatural source.
+The story's classifier score of 51.8% does not establish a calibrated probability. The listed natural frequencies are a limited local catalogue. If a frequency is missing from it, investigate further. The catalogue cannot rule out every natural source.
 </DerivationDrawer>
 
 ## Prompt Templates
@@ -134,7 +134,7 @@ The story's classifier score of 51.8% does not establish a calibrated probabilit
 
 interface SignalData {
   amplitude: number;   // hull counts against the sensor's 2048-count full scale
-  frequency: number;   // the FFT line under review, in Hz, not the zero-crossing count
+  frequency: number;   // the FFT line under review, measured in Hz
   phase: number;       // radians
 }
 
@@ -186,28 +186,28 @@ function parseClassification(response: string) {
 
 Write version 9 of the prompt template. Add the missing reference facts on their own line between the role and the current reading. The model cannot know the sector's frequency catalogue unless you supply it.
 
-Your generated prompt appears after the run. Check that the catalogue describes the reference frequencies and that the current reading remains separate. This prepares a request for Farah to evaluate; it does not establish how a language model will answer it.
+Your generated prompt appears after the run. Check that the catalogue describes the reference frequencies and that the current reading remains separate. This prepares a request for Farah to evaluate. It does not establish how a language model will answer it.
 
 <Exercise slug="prompt-template" />
 
 <RecallPrompt
   question="What do the four prompt parts do, and what still needs checking?"
-  answer="Role suggests a perspective, context supplies relevant constraints, data supplies the reading, and format requests a useful output shape. They are a checklist for this task, not four mandatory ingredients for every prompt. Parse the reply and check its claims even when the prompt is clear."
+  answer="Role suggests a perspective, context supplies relevant constraints, data supplies the reading, and format requests a useful output shape. They form a useful checklist for this task. Other tasks may need different information. Parse the reply and check its claims even when the prompt is clear."
   checks={[
     {
       "kind": "choice",
       "question": "Which mapping describes this prompt checklist?",
       "options": [
         {
-          "text": "Role: API message type; context: constraints; data: readings; format: output structure.",
+          "text": "Role: API message type. Context: constraints. Data: readings. Format: output structure.",
           "feedback": "Here, role means the perspective requested inside the prompt. It is separate from the API's system and user message types."
         },
         {
-          "text": "Role: perspective; context: constraints; data: readings; format: output structure.",
+          "text": "Role: perspective. Context: constraints. Data: readings. Format: output structure.",
           "feedback": "These parts help describe this task. Not every prompt needs all four."
         },
         {
-          "text": "Role: output structure; context: readings; data: perspective; format: constraints.",
+          "text": "Role: output structure. Context: readings. Data: perspective. Format: constraints.",
           "feedback": "Separate the requested perspective and structure from the actual readings and task constraints."
         }
       ],
@@ -220,7 +220,7 @@ Your generated prompt appears after the run. Check that the catalogue describes 
       "options": [
         {
           "text": "Yes. JSON formatting verifies the content automatically.",
-          "feedback": "A response can be malformed or contain unsupported claims even when JSON was requested."
+          "feedback": "A response can be malformed or contain unsupported claims even when you request JSON."
         },
         {
           "text": "No. Parse it, validate its fields and check its claims against evidence.",
@@ -234,8 +234,8 @@ Your generated prompt appears after the run. Check that the catalogue describes 
 />
 
 <LessonRecap
-  whatYouLearned={["Role, context, data and format are a useful checklist for this reporting task.", "Requesting JSON does not guarantee valid JSON. Parse it, validate required fields and review claims against the evidence.", "Test prompt revisions on varied examples. Keep cases that expose errors instead of tuning only to one successful reply."]}
-  bridge="Specific queries help retrieval; specific prompts help define a generation task. Neither precise wording nor a structured response guarantees the answer is correct."
+  whatYouLearned={["Role, context, data and format are a useful checklist for this reporting task.", "Requesting JSON does not guarantee valid JSON. Parse it, validate required fields and review claims against the evidence.", "Test prompt revisions on varied examples. Keep cases that expose errors and check each revision against them."]}
+  bridge="Specific queries help retrieval. Specific prompts help define a generation task. Neither precise wording nor a structured response guarantees the answer is correct."
   youCanNow="Build a prompt from the supplied reading and reference facts, with clear instructions for the JSON reply."
 />
 

@@ -13,26 +13,26 @@ context:
   narrative: "Nazari proposes storing the weights at lower precision. Uint8 would cut their stored size to a quarter of float32. She wants to see which predictions change."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Quantization stores weights in fewer bytes. Measure how it changes your model's predictions, memory use, and speed; smaller files alone cannot tell you those results."
+  explanation: "Quantization stores weights in fewer bytes. Measure how it changes your model's predictions, memory use, and speed. Smaller files alone cannot tell you those results."
   bridge:
     jsTitle: "Image Compression"
-    jsCode: "// A lossy image export trades size for changed pixels; inspect the result."
+    jsCode: "// A lossy image export trades size for changed pixels. Inspect the result."
     mlTitle: "Quantization"
-    mlCode: "// Float32 (340MB) → Uint8 (85MB): 4x smaller, then score it and see"
+    mlCode: "// Float32 uses 340MB. Uint8 uses 85MB. Compare predictions after quantization."
     tier: structural
-    breaks: "Both save space by changing stored values. Here, weights are rounded to evenly spaced values. An outlier stretches the range and leaves larger gaps between those values. Check model predictions separately from image quality."
+    breaks: "Both save space by changing stored values. Here, quantization rounds weights to evenly spaced values. An outlier stretches the range and leaves larger gaps between those values. Check model predictions separately from image quality."
 consequence:
   narrative: "The smaller build clears the engineering rig's load test. Nazari records its version beside the result and leaves the bridge-console check open."
 hints:
   - level: nudge
     content: |
-      Record predictions, quantize each kernel, apply the decoded weights and predict again. Count changed classes, not errors against unknown labels.
+      Record predictions, quantize each kernel, apply the decoded weights and predict again. Count the predictions that change class. We lack the labels needed to count errors.
   - level: guidance
     content: |
       Select the 2-D kernels and leave biases unchanged. Give each kernel its
-      own min, max and scale; use scale 0 for a constant kernel. Restore the
+      own min, max and scale. Use scale 0 for a constant kernel. Restore the
       integer codes with q * scale + min, then apply those weights before
-      the second prediction pass. These arrays simulate stored codes; the
+      the second prediction pass. These arrays simulate stored codes. The
       converter lab writes the actual byte files.
   - level: solution
     content: |
@@ -93,10 +93,10 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference; the runtime decodes them back to floats at load. Promise me a file that fits.
+Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Store them as 8-bit integers and the file is 85 MB. One quarter the download, one quarter the disk. Don't promise me faster inference. The runtime decodes them back to floats at load. Promise me a file that fits.
 </Dialogue>
 
-The story uses an 85-million-weight bundle and a 512 MB console to show the size problem. This page downloads a much smaller teaching classifier: 673 float32 parameters, or 2,692 weight bytes. It was trained on synthetic data, so its scores do not tell us how it would perform on real spacecraft signals.
+The story uses an 85-million-weight bundle and a 512 MB console to show the size problem. This page downloads a much smaller teaching classifier: 673 float32 parameters, or 2,692 weight bytes. We trained it on synthetic data, so its scores do not tell us how it would perform on real spacecraft signals.
 
 A reduction in stored bytes is straightforward. The effect on predictions needs an experiment. A small weight change can move a score across a decision threshold, particularly when the original score was close to it.
 
@@ -116,14 +116,14 @@ Help Nazari see what the smaller weight file costs: store the kernels at lower p
 {`import * as tf from '@tensorflow/tfjs';
 
 // Float32: full precision (default)
-// 1.2345678 → stored as 4 bytes
+// Float32 stores 1.2345678 in 4 bytes
 // Model size: 85M params × 4 bytes = 340 MB
 
 // Uint16 storage: 2 bytes per weight, 65,536 levels (0-65535) across the range
-// (an affine integer mapping, not IEEE float16)
+// (an affine integer mapping. IEEE float16 uses a different representation)
 // File size: 85M params × 2 bytes = 170 MB
 
-// Uint8 storage: 1 byte per weight, 256 levels; validate prediction error
+// Uint8 storage: 1 byte per weight, 256 levels. Validate prediction error
 // File size: 85M params × 1 byte = 85 MB
 
 // Simulate quantization effect
@@ -182,9 +182,9 @@ tensorflowjs_converter \\
 # '--quantize_uint8=*/kernel' to retain biases at full precision.`}
 </CodeBlock>
 
-The [TensorFlow.js conversion guide](https://www.tensorflow.org/js/guide/conversion) describes conversion and storage quantization. The pinned setup and runnable checks are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). The lab runs the real converter, checks the storage format in the manifest, and reloads both models in Chromium. It compares their scores on fixed inputs. These inputs have no labels. A changed prediction means the models disagree; it does not tell us which one is right.
+The [TensorFlow.js conversion guide](https://www.tensorflow.org/js/guide/conversion) describes conversion and storage quantization. The pinned setup and runnable checks are in the [browser runtime lab README](/assignments/browser-runtime-lab-v1.zip). The lab runs the real converter, checks the storage format in the manifest, and reloads both models in Chromium. It compares their scores on fixed inputs. These inputs have no labels. A changed prediction means the models disagree. It does not tell us which one is right.
 
-For 673 float32 parameters, the uncompressed weight payload is 2,692 bytes. Quantizing every weight to uint16 produces 1,346 bytes; uint8 produces 673 bytes. JSON metadata and runtime files are additional. Whole-download savings are therefore not exactly 2x or 4x, and gzip results depend on the bytes.
+For 673 float32 parameters, the uncompressed weight payload is 2,692 bytes. Quantizing every weight to uint16 produces 1,346 bytes. Uint8 produces 673 bytes. JSON metadata and runtime files are additional. Whole-download savings are therefore not exactly 2x or 4x, and gzip results depend on the bytes.
 
 TFJS converts the stored integers back to float32 when it loads this LayersModel. The files get smaller, but the model still has the same number of weights and does not switch to integer calculations.
 
@@ -198,13 +198,13 @@ If the verdicts stay the same, write down the inputs you checked. Tomorrow's inp
 
 The coding exercise supplies a separate synthetic classifier with several output classes. Choose a class using the largest output, unlike the browser lab's one-output sigmoid classifier. Store its kernel weights as uint8 codes, decode them, and apply them to the model. Then count how many captures receive a different predicted class.
 
-Your results keep each capture's old and new class side by side, along with the stored codes from one kernel. Nazari can use that comparison to choose what needs closer evaluation. These captures have no trusted labels, so a changed class is a disagreement, not proof that the prediction got worse.
+Your results keep each capture's old and new class side by side, along with the stored codes from one kernel. Nazari can use that comparison to choose what needs closer evaluation. These captures have no trusted labels, so a changed class tells us the models disagree. It cannot tell us which prediction is correct.
 
 <Exercise slug="quantize-weights" />
 
 <RecallPrompt
   question="What does quantization change, and what do you still need to measure?"
-  answer="It stores each selected float32 weight using uint16 or uint8 plus scale metadata. TFJS decodes those weights back to float32. Verify byte counts, conversion error and task metrics on labeled evaluation data. Memory peaks and inference speed require their own measurements; file compression does not establish either."
+  answer="It stores each selected float32 weight using uint16 or uint8 plus scale metadata. TFJS decodes those weights back to float32. Verify byte counts, conversion error and task metrics on labeled evaluation data. Memory peaks and inference speed require their own measurements. File compression does not establish either."
   checks={[
     {
       "kind": "choice",
@@ -212,11 +212,11 @@ Your results keep each capture's old and new class side by side, along with the 
       "options": [
         {
           "text": "The number of neurons necessarily decreases.",
-          "feedback": "Quantization changes representation rather than layer width."
+          "feedback": "Quantization changes how we represent weights. Layer width stays the same."
         },
         {
-          "text": "Selected float32 weights are stored as uint8 or uint16 with scale metadata.",
-          "feedback": "This pass reduces stored precision; TFJS decodes these weights back to float32."
+          "text": "The format stores selected float32 weights as uint8 or uint16 with scale metadata.",
+          "feedback": "This pass reduces stored precision. TFJS decodes these weights back to float32."
         },
         {
           "text": "The graph automatically performs every operation using integer arithmetic.",
@@ -224,14 +224,14 @@ Your results keep each capture's old and new class side by side, along with the 
         }
       ],
       "correctIndex": 1,
-      "explanation": "This pass reduces stored precision; TFJS decodes these weights back to float32."
+      "explanation": "This pass reduces stored precision. TFJS decodes these weights back to float32."
     },
     {
       "kind": "choice",
       "question": "What does a smaller weight download tell you on its own?",
       "options": [
         {
-          "text": "Fewer downloaded weight bytes; quality, runtime memory and speed still need measurement.",
+          "text": "Fewer downloaded weight bytes. Quality, runtime memory and speed still need measurement.",
           "feedback": "Measure byte counts, conversion agreement and labeled task performance, then profile runtime separately."
         },
         {
@@ -240,7 +240,7 @@ Your results keep each capture's old and new class side by side, along with the 
         },
         {
           "text": "Unchanged predictions and task accuracy.",
-          "feedback": "Quantization can change weights and predictions; evaluate conversion error and task metrics."
+          "feedback": "Quantization can change weights and predictions. Evaluate conversion error and task metrics."
         }
       ],
       "correctIndex": 0,
@@ -250,7 +250,7 @@ Your results keep each capture's old and new class side by side, along with the 
 />
 
 <LessonRecap
-  whatYouLearned={["Uint16 and uint8 use two and one bytes per stored weight; metadata and other assets still count toward the download.", "Quantization error depends on the tensor's range. Handle a constant tensor separately because its range is zero.", "Compare the decoded model with the original, then evaluate both on labeled data. Disagreement alone is not accuracy loss.", "Converter patterns can select which weights to quantize. This storage encoding does not provide integer inference kernels."]}
+  whatYouLearned={["Uint16 and uint8 use two and one bytes per stored weight. Metadata and other assets still count toward the download.", "Quantization error depends on the tensor's range. Handle a constant tensor separately because its range is zero.", "Compare the decoded model with the original, then evaluate both on labeled data. Disagreement alone is not accuracy loss.", "Converter patterns can select which weights to quantize. This storage encoding does not provide integer inference kernels."]}
   bridge="Lossy image compression and weight quantization both trade precision for size. Judge a model by measured prediction behavior."
   youCanNow="Quantize a model's kernels, reload actual converter output and measure score changes without confusing file size with runtime memory."
 />
@@ -259,7 +259,7 @@ Your results keep each capture's old and new class side by side, along with the 
 
 After reviewing prediction changes, the crew runs a separate load test on the engineering rig. The uint8 mission build passes. Nazari writes its version beside the memory trace. She leaves the bridge-console check unsigned. The relay slot is eighteen days away.
 
-Then, instead of leaving, she does something Demir has never seen her do. She pulls the live feed onto the rig she just certified, raw waveform, no dashboard in between, and stands through a full cycle waiting for the pulse.
+She stays. Demir has never seen her do that. She pulls the live feed onto the rig she just certified, raw waveform, no dashboard in between, and stands through a full cycle waiting for the pulse.
 
 <Dialogue speaker="Chief Nazari">
 Since the anomaly sprint I've been rationing megabytes for this thing, and I'd never once looked at it. It doesn't look like a malfunction. It looks patient.
