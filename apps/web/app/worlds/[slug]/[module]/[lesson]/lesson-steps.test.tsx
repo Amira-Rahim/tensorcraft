@@ -121,6 +121,20 @@ vi.mock("@tensorcraft/ui", async () => {
   >("../../../../../../../packages/ui/src/mdx/dialogue");
   return {
     Dialogue,
+    CodeBlock: ({
+      children,
+      footer,
+    }: {
+      children: React.ReactNode;
+      footer?: React.ReactNode;
+    }) => (
+      <div data-code-block="">
+        <pre>
+          <code>{children}</code>
+        </pre>
+        {footer}
+      </div>
+    ),
     SceneHeading: () => null,
     AnimatedAvatar: ({ name }: { name: string }) => (
       <span role="img" aria-label={name} />

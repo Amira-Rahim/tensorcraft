@@ -13,7 +13,14 @@ export default defineConfig({
     // and silently blinded the prose gates for package-local runs.
     setupFiles: [path.resolve(__dirname, "vitest.setup.ts")],
     include: ["**/*.test.{ts,tsx}"],
-    exclude: ["**/node_modules/**", ".next", "dist", "e2e"],
+    exclude: [
+      "**/node_modules/**",
+      // Design artifacts can contain archived tests, not active test suites.
+      "**/.superpowers/**",
+      ".next",
+      "dist",
+      "e2e",
+    ],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
