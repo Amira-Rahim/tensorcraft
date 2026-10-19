@@ -4,11 +4,23 @@
   width: 100%;
 }
 .orbit-takeaways {
+  display: grid;
+  gap: var(--lesson-section-gap, 48px);
   --orbit-soft: color-mix(in srgb, var(--tc-primary) 12%, var(--tc-bg));
   color: var(--tc-text);
 }
 .orbit-takeaways :is(.orbit-recap, .orbit-terms) :where(h2, h3, p, figure) {
   margin: 0;
+}
+/* Recall, recap and terms are sibling sections. Their containing stacks
+   supply the spacing; nested questions, diagrams and controls keep theirs. */
+.orbit-takeaways > *,
+.orbit-takeaways [data-testid="takeaways-prose"] .lesson-step-content > * {
+  margin-block: 0;
+}
+.orbit-takeaways [data-testid="takeaways-prose"] .lesson-step-content {
+  display: grid;
+  gap: var(--lesson-section-gap, 48px);
 }
 .orbit-takeaways code {
   font-family: var(--font-mono);
@@ -27,7 +39,14 @@
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.8px;
-  margin: 0 0 24px;
+  margin: 0 0 var(--lesson-content-gap, 24px);
+}
+/* Only the section heading margins override prose defaults. Type stays authored. */
+.lesson-page.deep-orbit-lesson .orbit-takeaways .orbit-check-heading {
+  margin: 0 0 var(--lesson-content-gap, 24px);
+}
+.lesson-page.deep-orbit-lesson .orbit-takeaways .orbit-section-heading {
+  margin: 0;
 }
 .orbit-check-example {
   padding: 22px 26px;
@@ -176,9 +195,8 @@
   color: var(--tc-text);
 }
 .orbit-takeaways .orbit-recap {
-  padding: 44px 0 16px;
-  margin-top: 28px;
-  border-top: 1px solid var(--tc-border);
+  padding: 0;
+  margin: 0;
 }
 .orbit-takeaways .orbit-recap-layout {
   display: grid;
@@ -353,7 +371,7 @@
   color: var(--tc-muted);
 }
 .orbit-takeaways .orbit-terms {
-  margin-top: 29px;
+  margin-top: 0;
   border-top: 1px solid var(--tc-border);
   border-bottom: 1px solid var(--tc-border);
 }
@@ -716,9 +734,6 @@
   }
   .orbit-check-explain {
     font-family: var(--font-sans);
-  }
-  .orbit-takeaways .orbit-recap {
-    padding-top: 30px;
   }
   .orbit-takeaways .orbit-section-heading {
     font-size: 28px;

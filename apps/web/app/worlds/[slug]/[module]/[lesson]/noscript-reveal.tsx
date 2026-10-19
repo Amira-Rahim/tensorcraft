@@ -23,7 +23,7 @@ export function NoscriptReveal() {
   return (
     <noscript>
       <style
-        // Mirrors the four hiding rules in globals.css. Kept as one string
+        // Mirrors the playback hiding rules. Kept as one string
         // so it stays obvious that this is an override and not new styling.
         // The last rule is the one layout override: revealed, the whole
         // teaching body follows the picture in one full-width column.
@@ -48,6 +48,12 @@ export function NoscriptReveal() {
 }
 :is([data-script-state="idle"], [data-script-state="playing"]) [data-scene-notes] {
   display: revert !important;
+}
+:is([data-script-state="idle"], [data-script-state="playing"]) .briefing-reading-column {
+  display: block !important;
+}
+.lesson-briefing-spacious [data-post-scene]:empty {
+  display: none !important;
 }
 .lesson-story-grid {
   grid-template-columns: minmax(0, 1fr) !important;

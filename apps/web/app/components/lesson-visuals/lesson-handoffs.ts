@@ -1,9 +1,9 @@
 /** Connect each practice view to the authored task, without inventing results. */
 export const LESSON_HANDOFFS: Record<string, string> = {
   "introduction-to-tensors":
-    "Demir needs the recording in his viewer. Create a tensor from the selected readings, save its shape, then inspect the chart prepared by the supplied code.",
+    "Demir has the chart code ready. Help him turn the selected readings into a tensor and save its shape. Then run the code to see how each sensor’s readings change over time.",
   "tensor-shapes":
-    "Farah checks the grouping behind Demir’s chart. Help her arrange the same readings by moment, then by sensor, before using the viewer on the full recording.",
+    "Farah wants to make sure each line on Demir’s chart follows the right sensor. Help her arrange the same readings by moment, then by sensor. She’ll use those steps to plot the full recording.",
   "tensor-operations":
     "Help Nazari combine the feeds while keeping each channel in place. Average the two passes and adjust the gain. Then combine channels using a weighted sum.",
   "data-loading":

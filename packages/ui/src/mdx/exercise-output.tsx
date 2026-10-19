@@ -286,7 +286,10 @@ export function ExerciseOutput({
       <div className={stale ? "opacity-60" : ""}>
         {artifacts.map((artifact, i) => (
           <div key={i} className={i ? "mt-8 pt-8 border-t border-border" : ""}>
-            <h3 className="mb-3 text-2xl font-semibold text-text-primary">
+            <h3
+              data-exercise-output-title
+              className="mb-3 text-2xl font-semibold text-text-primary"
+            >
               {artifact.title}
             </h3>
             {artifact.summary && (

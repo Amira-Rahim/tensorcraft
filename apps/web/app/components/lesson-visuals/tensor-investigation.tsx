@@ -1,7 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
-import { AnimatedAvatar, Dialogue, ScenePortrait } from "@tensorcraft/ui";
+import { useState } from "react";
+import {
+  AnimatedAvatar,
+  CodeBlock,
+  Dialogue,
+  ScenePortrait,
+} from "@tensorcraft/ui";
 import { ExerciseOutput } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
 import { TensorFlowApiLink } from "../mdx/tensorflow-reference";
@@ -15,17 +20,14 @@ const demir = portraitSources(
   "focused",
 );
 
-/** A supplied viewer, driven by actual TensorFlow.js output. */
+/** Plot the selected recording using actual TensorFlow.js output. */
 export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
-  const id = useId();
-  const [moments, setMoments] = useState(3);
-  const [completed, setCompleted] = useState<{
-    moments: number;
-    result: Awaited<ReturnType<typeof runTensorExample>>;
-  } | null>(null);
+  const [completed, setCompleted] = useState<Awaited<
+    ReturnType<typeof runTensorExample>
+  > | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const values = WORKED_PACKET.slice(0, moments).flat();
+  const values = WORKED_PACKET.flat();
   async function run() {
     if (pending) return;
     setCompleted(null);
@@ -41,19 +43,17 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
         result.chartRows.length !== 4 ||
         result.chartRows.some(
           (row, sensor) =>
-            row.length !== moments ||
+            row.length !== WORKED_PACKET.length ||
             row.some(
               (v, moment) => Math.abs(v - values[moment * 4 + sensor]!) > 1e-6,
             ),
         )
       ) {
-        throw new Error("The viewer returned different readings.");
+        throw new Error("The chart data does not match the selected readings.");
       }
-      setCompleted({ moments, result });
+      setCompleted(result);
     } catch {
-      setError(
-        "The viewer could not read the selected values. Try running it again.",
-      );
+      setError("We couldn’t draw the chart. Try running the code again.");
     } finally {
       setPending(false);
     }
@@ -68,7 +68,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
       <div className="tensor-investigation-opening">
         <ScenePortrait
           src="/scenes/deep-orbit/foundations/introduction-to-tensors.webp"
-          alt="Demir opens the signal viewer at a console aboard the Archimedes."
+          alt="Demir studies the signal chart at a console aboard the Archimedes."
           aspectRatio="16 / 9"
           className="tensor-investigation-art"
         />
@@ -84,7 +84,7 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
         </div>
       </div>
       <section className="tensor-investigation-purpose">
-        <h3>Connect the recording to the viewer</h3>
+        <h3>Give the chart code its readings</h3>
         <p>{spec.takeaway}</p>
       </section>
       <section className="tensor-investigation-console">
@@ -93,69 +93,61 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
           The recording lists A, B, C, D at each moment. These are the same
           selected sensors and moments you’ll work with in the challenge.
         </p>
-        <div className="my-6">
-          <label htmlFor={`${id}-moments`} className="block mb-3 text-lg">
-            How much of the excerpt should the viewer use?
-          </label>
-          <select
-            id={`${id}-moments`}
-            value={moments}
-            disabled={pending}
-            onChange={(e) => {
-              setMoments(Number(e.target.value));
-              setError("");
-            }}
-            className="border border-border bg-surface-raised text-text-primary px-4 py-3 text-lg"
-          >
-            <option value={3}>All three moments: 12 readings</option>
-            <option value={2}>First two moments: 8 readings</option>
-          </select>
-        </div>
-        <pre
-          className="overflow-x-auto py-5 text-lg"
-          aria-label="Selected readings"
-        >
-          <code>[{values.join(", ")}]</code>
-        </pre>
         <p>
           <TensorFlowApiLink symbol="tf.tensor">tf.tensor()</TensorFlowApiLink>{" "}
-          creates the viewer’s input. The supplied code groups the readings and
-          draws the lines. It does not train a model.
+          creates the tensor. <code>reading.shape</code> tells us how many
+          values it holds. Run this example to see the shape, then explore the
+          chart drawn by the supplied code.
         </p>
-        <button
-          type="button"
-          onClick={run}
-          disabled={pending}
-          className="my-6 px-6 py-3 bg-accent text-surface font-semibold text-lg border border-border rounded"
+        <CodeBlock
+          language="javascript"
+          title="prepare-readings.js"
+          footer={
+            <div className="tensor-example-actions">
+              <button
+                type="button"
+                onClick={run}
+                disabled={pending}
+                className="tensor-example-run"
+              >
+                {pending ? "Running example…" : "Run example"}
+              </button>
+            </div>
+          }
         >
-          {pending ? "Opening the viewer…" : "Create tensor and open viewer"}
-        </button>
+          {`const streamValues = [
+${WORKED_PACKET.map((row) => `  ${row.join(", ")},`).join("\n")}
+];
+
+const reading = tf.tensor(streamValues);
+const shape = reading.shape;`}
+        </CodeBlock>
         {error && <p role="alert">{error}</p>}
         {completed && (
           <>
             <p className="text-xl">
-              The tensor has shape{" "}
-              <code>[{completed.result.shape.join(", ")}]</code>. The supplied
-              viewer reads it into {WORKED_EXCERPT.sensorIds.length} sensor
-              lines.
+              The example’s tensor has shape{" "}
+              <code>[{completed.shape.join(", ")}]</code>: one axis holding{" "}
+              {completed.values.length} values. The supplied chart code groups
+              those readings into {WORKED_EXCERPT.sensorIds.length} lines, one
+              for each sensor.
             </p>
             <ExerciseOutput
-              outputLabel="Output from the supplied viewer"
-              stale={completed.moments !== moments}
-              staleMessage="Your selection has changed. Run the viewer again to update these results."
+              outputLabel="Chart from this example"
+              stale={false}
               complete
               artifacts={[
                 {
                   kind: "series",
                   title: "Readings over time",
                   summary:
-                    "From the tensor you just created. Select a sensor to follow its readings. The moments are positions within this fictional excerpt, not timestamps.",
-                  xLabel: "Moment in this excerpt",
+                    "This chart uses the example’s tensor. Select a sensor to follow its line. The numbers along the bottom show the selected moments in order, not clock times. The readings are part of the ship’s fictional recording.",
+                  xLabel: "Selected moment",
                   yLabel: "Recorded reading",
-                  labels: Array.from({ length: completed.moments }, (_, i) =>
+                  labels: Array.from({ length: WORKED_PACKET.length }, (_, i) =>
                     String(i + 1),
                   ),
-                  series: completed.result.chartRows.map((readings, i) => ({
+                  series: completed.chartRows.map((readings, i) => ({
                     name: `Sensor ${WORKED_EXCERPT.sensorIds[i]}`,
                     values: readings,
                   })),
@@ -163,9 +155,8 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
               ]}
             />
             <p>
-              Change the excerpt length and run again to see what the viewer
-              receives. In the next mission, you’ll build its grouping steps
-              with Farah.
+              Next, Farah will help you write the code that keeps each sensor’s
+              readings together.
             </p>
           </>
         )}

@@ -17,12 +17,9 @@ const requiredRead = (name: string) =>
 describe("the opening investigation's visible prerequisites", () => {
   it("keeps the first task to creation and shape, with supplied readback and cleanup", () => {
     const read = requiredRead("01-introduction-to-tensors");
-    for (const operation of [
-      "[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]",
-      "tf.tensor(streamValues)",
-      "reading.shape",
-    ])
-      expect(read).toContain(operation);
+    expect(read).toContain("[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]");
+    // TensorInvestigation now renders the runnable creation/shape example.
+    // Its component test checks that both lines are visible before running.
     const exercise = readFileSync(
       resolve(foundations, "exercises/create-a-tensor.yaml"),
       "utf8",
@@ -40,7 +37,7 @@ describe("the opening investigation's visible prerequisites", () => {
       starter.indexOf("reading?.dispose()"),
     );
     expect(lesson("01-introduction-to-tensors")).toContain(
-      "The viewer draws four lines from your tensor",
+      "Four lines appear on the chart, one for each selected sensor.",
     );
     for (const deferred of [
       "reading.sum()",
@@ -56,7 +53,7 @@ describe("the opening investigation's visible prerequisites", () => {
     );
     expect(read).not.toContain("?start=experiment");
   });
-  it("uses the same selected recording in both delivered exercises and the interactive viewer", () => {
+  it("uses the same selected recording in both delivered exercises and the interactive chart", () => {
     const exercises = JSON.parse(
       readFileSync(
         resolve(foundations, "../../../.velite/exercises.json"),

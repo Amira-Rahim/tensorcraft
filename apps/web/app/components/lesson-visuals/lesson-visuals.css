@@ -1521,12 +1521,45 @@
   background: var(--tc-bg);
 }
 .tensor-investigation-console {
+  min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 28px;
   padding: clamp(20px, 3vw, 36px);
   background: var(--tc-bg);
   align-items: start;
+}
+/* Code may be wider than a phone's reading area.
+   Shrink the track and its children; the readings pre keeps local scrolling. */
+.tensor-investigation-console > * {
+  min-width: 0;
+}
+.tensor-investigation-console > p {
+  margin: 0;
+  font-size: var(--lesson-body-size, 22px);
+  line-height: 1.65;
+}
+.tensor-investigation-console > [data-code-block] {
+  margin: 0;
+}
+.tensor-example-actions {
+  display: flex;
+  padding: 16px 20px;
+  border-top: 1px solid var(--tc-border);
+}
+.tensor-investigation .tensor-example-run {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--tc-border-interactive);
+  border-radius: 0;
+  background: transparent;
+  color: var(--tc-text);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.tensor-investigation .tensor-example-run:hover:not(:disabled) {
+  background: var(--tc-surface-hover);
 }
 .tensor-investigation-packet {
   min-width: 0;
@@ -1580,12 +1613,13 @@
   align-items: start;
   margin-bottom: 28px;
 }
-.tensor-investigation-purpose > h3 {
+.tensor-investigation-purpose > h3,
+.tensor-investigation-console > h3 {
   margin: 0;
   color: var(--tc-text);
-  font-size: 28px;
+  font-size: var(--lesson-subsection-title-size, 28px);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
   text-wrap: balance;
 }
 .tensor-investigation-purpose > p {
@@ -1680,7 +1714,6 @@
   .lesson-workbench .lesson-goals,
   .tensor-investigation-opening,
   .tensor-investigation-purpose,
-  .tensor-investigation-console,
   .tensor-investigation-findings {
     grid-template-columns: 1fr;
   }

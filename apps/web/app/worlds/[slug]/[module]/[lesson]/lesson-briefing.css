@@ -1,34 +1,37 @@
 /* Deep Orbit briefings read from the story to the scene to the task. */
+.lesson-briefing-spacious > [data-testid="course-orientation"] {
+  margin: 0 0 var(--lesson-section-gap);
+}
+.lesson-briefing-spacious .briefing-scene-heading {
+  margin-bottom: var(--lesson-beat-gap);
+}
 .lesson-briefing-spacious [data-testid="scene-context"] {
-  margin-bottom: 32px;
+  margin: 0 0 var(--lesson-beat-gap);
   font-size: 22px;
   line-height: 1.6;
 }
 .lesson-briefing-spacious .lesson-story-grid {
   grid-template-columns: minmax(0, 1fr);
-  gap: 48px;
+  gap: var(--lesson-section-gap);
   align-items: start;
 }
 .briefing-reading-column {
   min-width: 0;
 }
 .briefing-story-intro {
-  margin-bottom: 36px;
+  margin-bottom: var(--lesson-section-gap);
 }
 .briefing-story-intro > .lesson-step-content {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 32px;
+  gap: var(--lesson-beat-gap);
 }
-.lesson-briefing-spacious
-  .briefing-story-intro
-  .lesson-prose
-  > blockquote:not([style]),
-.lesson-briefing-spacious .briefing-story-intro [data-dialogue] {
-  margin: 0;
+/* This stack owns the gaps. Prose margins must not add a second gap. */
+.lesson-briefing-spacious .briefing-story-intro > .lesson-step-content > * {
+  margin-block: 0;
 }
 .lesson-briefing-spacious .lesson-prose > blockquote:not([style]) {
-  margin: 0 0 32px;
+  margin: 0;
   padding: 0;
   background: transparent;
   color: var(--tc-text);
@@ -45,11 +48,21 @@
   color: var(--tc-primary);
 }
 .lesson-briefing-spacious [data-post-scene] {
-  margin-top: 40px;
+  display: grid;
+  gap: var(--lesson-section-gap);
+  margin-top: var(--lesson-section-gap);
+}
+.lesson-briefing-spacious [data-post-scene] > * {
+  margin-block: 0;
+}
+.lesson-briefing-spacious [data-post-scene]:empty,
+.lesson-briefing-spacious[data-script-state="playing"]
+  .briefing-reading-column {
+  display: none;
 }
 .lesson-briefing-spacious .briefing-integrated-idea {
   display: grid;
-  gap: 40px;
+  gap: var(--lesson-section-gap);
   margin-top: 0;
 }
 .lesson-briefing-spacious .briefing-takeaway {
@@ -59,8 +72,12 @@
   border-radius: 6px;
   background: var(--tc-surface);
 }
-.lesson-briefing-spacious .lesson-prose .briefing-takeaway :is(h2, h3) {
-  margin-bottom: 12px;
+.lesson-page
+  .lesson-briefing-spacious
+  .lesson-prose
+  .briefing-takeaway
+  :is(h2, h3) {
+  margin: 0 0 12px;
   font-size: 28px;
   line-height: 1.3;
 }
@@ -119,10 +136,10 @@
   font-size: 22px;
 }
 .lesson-briefing-spacious .briefing-takeaway[data-part="task"] {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid color-mix(in srgb, var(--tc-primary) 35%, var(--tc-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--tc-primary) 7%, var(--tc-surface));
 }
 .lesson-briefing-spacious .briefing-takeaway-task {
   display: grid;
@@ -131,17 +148,43 @@
 }
 .briefing-task-heading {
   display: grid;
-  gap: 12px;
+  gap: 20px;
 }
-.lesson-briefing-spacious .lesson-prose .briefing-task-heading > h3 {
+/* The assignment owns its hierarchy, above the course's generic h3/p scale. */
+.lesson-briefing-spacious
+  .lesson-prose
+  .briefing-takeaway-task
+  .briefing-task-heading
+  > h3 {
   margin: 0;
   font-size: 32px;
   line-height: 1.3;
-  color: var(--tc-text);
+  color: var(--tc-primary);
 }
-.lesson-briefing-spacious .lesson-prose .briefing-takeaway-next {
-  padding-top: 4px;
-  color: var(--tc-muted);
+.lesson-briefing-spacious
+  .lesson-prose
+  .briefing-takeaway-task
+  .briefing-task-heading
+  > p {
+  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 500;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.lesson-briefing-spacious .briefing-takeaway-task > figure {
+  padding-top: 28px;
+  border-top: 1px solid var(--tc-border);
+}
+.lesson-briefing-spacious .briefing-takeaway-task .briefing-readings-scroll {
+  background: var(--tc-bg);
+}
+.lesson-briefing-spacious
+  .lesson-prose
+  .briefing-takeaway-task
+  .briefing-takeaway-next {
+  padding-top: 24px;
+  border-top: 1px solid var(--tc-border);
+  color: var(--tc-text);
   font-size: 20px;
 }
 .lesson-briefing-spacious .lesson-prose .briefing-readings-array ol > li {
@@ -149,8 +192,12 @@
   line-height: inherit;
 }
 @media (width < 40rem) {
-  .lesson-briefing-spacious .lesson-story-grid {
-    row-gap: 28px;
+  .lesson-briefing-spacious
+    .lesson-prose
+    .briefing-takeaway-task
+    .briefing-task-heading
+    > h3 {
+    font-size: 28px;
   }
   .lesson-briefing-spacious .briefing-takeaway {
     padding: 20px;

@@ -14,7 +14,7 @@ context:
   narrative: "The research ship Archimedes has received an unfamiliar signal from Sector 7-G, a region of space the crew is monitoring. Its existing software, ARIA, follows rules written in advance. The crew needs to find patterns those rules have missed."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Feed Demir’s recording into the TensorFlow.js viewer so the crew can follow each sensor over time."
+  explanation: "Turn Demir’s selected readings into a tensor so the supplied code can draw one line per sensor."
   bridge:
     jsTitle: "JavaScript array"
     jsCode: "const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]"
@@ -23,7 +23,7 @@ concept:
     tier: structural
     breaks: "A JavaScript array and a tensor are different objects. A tensor records its shape and supports TensorFlow.js operations. Use arraySync() to copy its values into a JavaScript array."
 consequence:
-  narrative: "The viewer plots the selected readings. Farah takes the same recording to check how the viewer groups them."
+  narrative: "Demir can now follow the readings on the chart. Farah checks the code that keeps each sensor’s readings together."
 hints:
   - level: nudge
     content: "Select Line 3 or Line 4 above the code. It highlights that line’s `null`, so you can type the new code over it."
@@ -40,12 +40,13 @@ skillAxes: [data_prep]
 
 Sensors along the hull measure the signal reaching the Archimedes.
 Their readings pour onto Demir’s screen, too quickly to follow as numbers.
-He opens the crew’s chart viewer to see how they change over time.
+He opens a chart to see how the readings change over time. Each sensor
+will have its own line.
 
 </StoryPassage>
 
 <Dialogue speaker="Commander Mirza">
-Can ARIA tell which readings from Sector 7-G need a closer look?
+ARIA, do you see anything unusual in the readings from Sector 7-G?
 </Dialogue>
 
 <Dialogue speaker="ARIA">
@@ -58,9 +59,10 @@ Then we need a system that can learn from examples. Demir, start with the readin
 
 <StoryPassage>
 
-The viewer uses TensorFlow.js, the library the crew will also use to build
-DEEP SCAN. It needs a tensor as its input, but the recording arrives as a
-JavaScript array. Demir has one connection left to make.
+The code behind the chart uses TensorFlow.js, the library the crew will
+also use to build DEEP SCAN. That code expects a tensor, but Demir’s
+readings are in a JavaScript array. He needs your help to turn that array
+into a tensor.
 
 He selects sensors A, B, C, and D at three moments. The recording’s header,
 the notes saved at the top of the file, gives their order: A, B, C, D each
@@ -70,45 +72,37 @@ the full 64-sensor recording.
 </StoryPassage>
 
 <BriefingTakeaway
-  task="Connect Demir’s readings to the viewer. Create the tensor, then run the code to see each sensor on the chart."
-  next="The viewer already knows how to arrange this excerpt. Next mission, you’ll take over that part with Farah."
+  task="Help Demir get his readings onto the chart. Create a tensor from his selected readings, then run the code to see one line per sensor."
+  next="The code that groups the readings by sensor is already written. Next mission, you’ll build that part with Farah."
   readings={[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9]}
   readingsLabel="From Demir’s recording: sensors A–D at three moments"
 >
 
 A **tensor** holds numbers in a form **TensorFlow.js** can calculate with.
-Here, it connects the recording to the crew’s existing viewer. Creating it
-does not train a model or discover a pattern.
+Here, it gives the crew’s chart code the input it expects. Creating it does
+not train a model or discover a pattern.
 
 </BriefingTakeaway>
 
-<LearningObjectives objectives={["Create a tensor from the recording’s JavaScript array.", "Read its shape to check that all 12 values are there.", "Run the viewer and inspect each sensor’s readings over time."]} />
+<LearningObjectives objectives={["Create a tensor from the recording’s JavaScript array.", "Read its shape to check that all 12 values are there.", "Run the code and follow each sensor’s readings on the chart."]} />
 
-## Make the connection in JavaScript
-
-The viewer expects a TensorFlow.js tensor. Create one from `streamValues`,
-then save its **shape**, the size of each axis.
-
-<CodeBlock language="javascript" title="prepare-readings.js">
-{`const reading = tf.tensor(streamValues);
-const shape = reading.shape; // [12]`}
-</CodeBlock>
+## What the example shows
 
 The shape is `[12]`: one axis holding 12 values. It does not tell us which
 sensor produced a value. That information comes from the recording’s header.
 
-The supplied viewer code groups the readings by sensor and draws their
-lines. Leave that code in place for now. Farah will help you build those
-steps in the next mission.
+The supplied chart code groups the readings by sensor and draws a line for
+each one. In the challenge, you’ll write the tensor creation and shape lines
+yourself. Farah will help you build the grouping steps in the next mission.
 
 You could plot these values with plain JavaScript too. Here you are connecting
 to a TensorFlow.js pipeline that the crew will extend for machine learning.
 
 ## Challenge
 
-Demir has the viewer ready. Help him connect the recording: create its
-tensor, save the shape, and run the code. Then select a sensor in the
-resulting chart to follow its readings.
+Demir is ready to see the readings on his chart. Create the tensor, save
+its shape, and run the code. Then select a sensor on the chart to follow
+its readings over time.
 
 <Exercise slug="create-a-tensor" />
 
@@ -149,7 +143,7 @@ resulting chart to follow its readings.
   whatYouLearned={[
     "TensorFlow.js uses tensors to hold the numbers that models work with.",
     "tf.tensor(array) creates a tensor from a JavaScript array. Its shape describes how the numbers are arranged: [12] means a list of 12 numbers.",
-    "The supplied viewer uses the tensor to prepare a chart. Creating a tensor does not train a model."
+    "The supplied code groups the tensor’s readings by sensor for the chart. Creating a tensor does not train a model."
   ]}
   bridge="Your JavaScript array supplies the readings; a tensor holds them in a form TensorFlow.js can work with."
   youCanNow="Connect a JavaScript array to a TensorFlow.js pipeline and inspect the result."
@@ -157,14 +151,14 @@ resulting chart to follow its readings.
 
 <Epilogue>
 
-The viewer draws four lines from your tensor, one for each selected sensor.
+Four lines appear on the chart, one for each selected sensor.
 Demir checks the values against the recording. The connection works.
 
 <Dialogue speaker="Ensign Demir">
-There they are. A is rising in this excerpt, and B is falling. Farah, can you check how the viewer keeps each sensor’s readings together?
+There they are. A’s readings go up across these three moments, and B’s go down. Farah, can you check the code that keeps each sensor’s readings together?
 </Dialogue>
 
 Demir sends Farah the same recording, with the sensor order in its header.
-She opens the viewer’s grouping code beside it.
+She opens the code beside it to check which readings go into each line.
 
 </Epilogue>

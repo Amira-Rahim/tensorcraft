@@ -74,7 +74,11 @@ or the relevant recording details in view. Do not interrupt each lesson with
 standalone definitions of the ship's equipment and file format. The opening
 mission establishes the hull sensors and their numerical readings; it introduces the recording’s header through Demir’s selection. The first two
 missions use the same 12 readings: sensors A–D at three moments. Intro supplies
-the viewer’s grouping code; Tensor Shapes hands that work to the learner.
+the code that groups readings for the chart; Tensor Shapes hands that work to
+the learner. Introduce the chart through its purpose: the crew uses one line
+per sensor to follow how its readings change over time. Call the visual result
+a chart and describe the code by what it does. Avoid unexplained names such as
+"Demir’s viewer."
 
 ## The season in one line
 

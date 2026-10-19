@@ -22,8 +22,8 @@ const renderExample = () =>
     />,
   );
 
-describe("the opening recording viewer", () => {
-  it("selects complete moments from the same recording, without inventing readings", async () => {
+describe("the opening signal chart", () => {
+  it("uses the same twelve readings as the mission without a time-window choice", async () => {
     const run = vi
       .spyOn(tensorExample, "runTensorExample")
       .mockImplementation(async (values) => ({
@@ -33,27 +33,30 @@ describe("the opening recording viewer", () => {
           values.filter((_, i) => i % 4 === sensor),
         ),
       }));
-    renderExample();
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
+    const { container } = renderExample();
+    const example = container.querySelector("[data-code-block] code");
+    expect(example).toHaveTextContent(
+      "const reading = tf.tensor(streamValues);",
     );
+    expect(example).toHaveTextContent("const shape = reading.shape;");
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
         "From your latest run",
       ),
     );
     expect(
-      screen.getByRole("region", { name: "Output from the supplied viewer" }),
+      screen.getByRole("region", { name: "Chart from this example" }),
     ).toBeVisible();
     expect(
       screen.queryByRole("region", { name: "Output from your code" }),
     ).not.toBeInTheDocument();
-    expect(run).toHaveBeenCalledWith(WORKED_PACKET.slice(0, 2).flat());
-    expect(screen.getByText("[8]")).toBeInTheDocument();
+    expect(run).toHaveBeenCalledWith(WORKED_PACKET.flat());
+    expect(screen.getByText("[12]")).toBeInTheDocument();
     expect(screen.queryByText(/practice packet/i)).not.toBeInTheDocument();
   });
-  it("locks the excerpt while running and refuses a corrupted chart", async () => {
+  it("prevents duplicate runs and refuses a corrupted chart", async () => {
     let finish!: (
       value: Awaited<ReturnType<typeof tensorExample.runTensorExample>>,
     ) => void;
@@ -64,12 +67,9 @@ describe("the opening recording viewer", () => {
         }),
     );
     renderExample();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
-    expect(screen.getByRole("combobox")).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     expect(
-      screen.getByRole("button", { name: "Opening the viewer…" }),
+      screen.getByRole("button", { name: "Running example…" }),
     ).toBeDisabled();
     finish({
       shape: [12],
@@ -82,14 +82,18 @@ describe("the opening recording viewer", () => {
       ],
     });
     await waitFor(() =>
-      expect(screen.getByRole("alert")).toHaveTextContent("could not read"),
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "couldn’t draw the chart",
+      ),
     );
     expect(
-      screen.queryByRole("region", { name: "Output from the supplied viewer" }),
+      screen.queryByRole("region", { name: "Chart from this example" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("combobox")).not.toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Run example" }),
+    ).not.toBeDisabled();
   });
-  it("removes the earlier chart when a rerun of the same excerpt fails", async () => {
+  it("removes the earlier chart when a rerun of the same readings fails", async () => {
     let fail!: (reason: Error) => void;
     const run = vi
       .spyOn(tensorExample, "runTensorExample")
@@ -107,26 +111,24 @@ describe("the opening recording viewer", () => {
           }),
       );
     renderExample();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await screen.findByRole("region", {
-      name: "Output from the supplied viewer",
+      name: "Chart from this example",
     });
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     expect(run).toHaveBeenNthCalledWith(2, WORKED_PACKET.flat());
     expect(
-      screen.queryByRole("region", { name: "Output from the supplied viewer" }),
+      screen.queryByRole("region", { name: "Chart from this example" }),
     ).not.toBeInTheDocument();
     fail(new Error("backend unavailable"));
     await waitFor(() =>
-      expect(screen.getByRole("alert")).toHaveTextContent("could not read"),
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "couldn’t draw the chart",
+      ),
     );
     expect(
-      screen.queryByRole("region", { name: "Output from the supplied viewer" }),
+      screen.queryByRole("region", { name: "Chart from this example" }),
     ).not.toBeInTheDocument();
     expect(screen.queryByText("From your latest run")).not.toBeInTheDocument();
   });

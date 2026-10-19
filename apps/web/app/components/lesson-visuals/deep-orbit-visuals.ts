@@ -65,12 +65,12 @@ export const DEEP_ORBIT_VISUALS: Record<string, LessonVisualSpec> = {
       "foundations",
       "tensor",
       "create",
-      "Open Demir’s viewer",
-      "The viewer is ready. Help me feed it this excerpt so we can follow each sensor over time.",
-      "The tensor is the viewer’s input. Its shape tells you how many readings you passed in. The supplied code then groups them into sensor lines.",
+      "Put Demir’s readings on the chart",
+      "I’ve got the chart code ready. Help me pass these readings to it so we can see how they change over time.",
+      "The chart code takes a tensor and draws one line for each sensor. You’ll create that tensor from Demir’s readings. Its shape lets you check how many values you included.",
     ),
     introduction:
-      "Demir’s viewer expects a TensorFlow.js tensor. Create one from the selected readings, then inspect the chart it produces. The viewer’s grouping code is supplied for now.",
+      "Demir wants to see how each sensor’s readings change over time. You’ll help him put the selected readings on a chart, with one line per sensor.",
   },
   "tensor-shapes": visual(
     "foundations",

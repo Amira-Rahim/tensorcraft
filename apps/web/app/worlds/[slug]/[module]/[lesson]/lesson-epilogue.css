@@ -4,24 +4,42 @@
   width: 100%;
 }
 .orbit-epilogue {
+  display: grid;
+  gap: var(--lesson-section-gap, 48px);
   color: var(--tc-text);
+}
+/* The outer stack owns gaps around the banner, optional award and guest card. */
+.lesson-page.deep-orbit-lesson .orbit-epilogue > * {
+  margin-block: 0;
+}
+.orbit-epilogue-guest:empty {
+  display: none;
 }
 .orbit-epilogue-scene {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 40px;
+  gap: var(--lesson-section-gap, 48px);
   align-items: start;
 }
 .orbit-epilogue-story,
 .orbit-epilogue-art {
   min-width: 0;
+  width: 100%;
 }
 .orbit-epilogue-story :is(.lesson-epilogue, .lesson-step-content) {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 32px;
+  gap: var(--lesson-beat-gap, 32px);
 }
 .orbit-epilogue-story :is(.lesson-epilogue, .lesson-step-content) > * {
+  margin-block: 0;
+}
+/* Plain archive quotes otherwise inherit 1.5em margins from lesson prose.
+   The story grid owns their outside spacing; the quote keeps its padding. */
+.lesson-page.deep-orbit-lesson
+  .orbit-epilogue-story
+  :is(.lesson-epilogue, .lesson-step-content)
+  > blockquote:not([style]) {
   margin-block: 0;
 }
 .orbit-epilogue-story .lesson-epilogue > p,
@@ -52,7 +70,7 @@
   grid-template-columns: minmax(0, 1fr);
 }
 .orbit-epilogue-guest [data-testid="guest-email-capture"] {
-  margin: 32px 0 0;
+  margin: 0;
   max-width: 640px;
 }
 .orbit-epilogue-guest [data-testid="guest-email-capture"] > p:first-child {
@@ -80,15 +98,6 @@
   > span:last-child {
   font-size: 18px;
   line-height: 1.5;
-}
-@media (max-width: 1279px) {
-  .orbit-epilogue-scene {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
-  }
-  .orbit-epilogue-story {
-    width: 100%;
-  }
 }
 @media (max-width: 650px) {
   .orbit-epilogue-nav [data-testid="lesson-nav"] {

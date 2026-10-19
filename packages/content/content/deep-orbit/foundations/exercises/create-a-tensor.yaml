@@ -1,15 +1,15 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
-title: "Connect the Recording to the Viewer"
+title: "Put Demir’s Readings on the Chart"
 instructions: |
   Replace the two `null` values:
 
   1. Create `reading` with `tf.tensor(streamValues)`.
   2. Save `reading.shape` in `shape`. It should be `[12]`, meaning the tensor holds a list of 12 numbers.
 
-  TensorFlow.js is available as `tf`. The supplied viewer groups these
-  readings for the chart, then releases the tensors. Leave those lines in
-  place and select Run Tests to see the chart from your tensor.
+  TensorFlow.js is available as `tf`. The rest of the code groups the
+  readings by sensor for the chart, then releases the tensors. Leave those
+  lines in place and select Run Tests to see one line per sensor.
 taskBrief:
   steps:
     - title: "Create the tensor"
@@ -29,12 +29,12 @@ starterCode: |
   const reading = null;
   const shape = null;
 
-  // Supplied: read back the values and prepare the viewer’s chart.
+  // Supplied: read back the values and group them by sensor for the chart.
   const values = reading?.arraySync();
   const chartRows = reading ? tf.tidy(() =>
     reading.reshape([3, 4]).transpose().arraySync()
   ) : [];
-  // Supplied: release memory after the viewer has read the values.
+  // Supplied: release memory after saving the values for the chart.
   reading?.dispose();
 solutionCode: |
   const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];
@@ -44,7 +44,7 @@ solutionCode: |
   const chartRows = tf.tidy(() => reading.reshape([3, 4]).transpose().arraySync());
   reading.dispose();
 testCode: |
-  describe('Connect the Recording to the Viewer', () => {
+  describe('Put Demir’s Readings on the Chart', () => {
     // Capture readback calls made by the exercise, before grading begins.
     const reads = (tf.__calls['tensor.arraySync'] || 0)
       + (tf.__calls['tensor.dataSync'] || 0)
@@ -82,15 +82,15 @@ testCode: |
         'Keep the supplied readback line so the values come from the tensor.',
       ).toBeGreaterThan(0);
     });
-    it('the viewer receives each sensor’s readings in time order', () => {
+    it('the chart receives each sensor’s readings in time order', () => {
       const expected = [0, 1, 2, 3].map(sensor =>
         [0, 1, 2].map(moment => source[moment * 4 + sensor]));
-      expect(chartRows, 'Keep the supplied viewer code after creating reading.').toEqual(expected);
+      expect(chartRows, 'Keep the supplied code that groups the readings for the chart.').toEqual(expected);
       expect(reads, 'The chart must read from the tensor.').toBeGreaterThan(0);
       recordResult({
-        kind: 'series', title: 'Demir’s recording in the viewer',
-        summary: 'The supplied viewer groups the values from your tensor. These are sensors A–D at three selected moments in the fictional recording, not a model prediction.',
-        xLabel: 'Moment in this excerpt', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
+        kind: 'series', title: 'Demir’s readings on the chart',
+        summary: 'Each line shows one sensor’s readings from your tensor, grouped by the supplied code. These are sensors A–D at three selected moments in the fictional recording, not a model prediction.',
+        xLabel: 'Selected moment', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
         series: chartRows.map((values, i) => ({ name: 'Sensor ' + ['A', 'B', 'C', 'D'][i], values })),
       });
     });

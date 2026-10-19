@@ -3,7 +3,8 @@ lessonSlug: tensor-shapes
 title: "Prepare Farah's Sensor Chart"
 instructions: |
   Farah keeps the 12 readings from Demir’s chart: four sensors at three
-  moments. They are already in `flat`. Now build the viewer’s grouping steps.
+  moments. They are already in `flat`. Write the code that keeps each sensor’s
+  readings together for the chart.
   The recording notes label these sensors A, B, C, and D, in that order at each moment.
 
   1. Before running the code, predict which four readings go in the second row.
@@ -125,7 +126,7 @@ testCode: |
       recordResult({
         kind: 'series', title: 'Farah’s chart from your arrangement',
         summary: 'Sensors A–D at three selected moments in Demir’s fictional recording. Each line uses one row of your bySensor tensor.',
-        xLabel: 'Moment in this excerpt', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
+        xLabel: 'Selected moment', yLabel: 'Recorded reading', labels: ['1', '2', '3'],
         series: rows.map((values, i) => ({ name: 'Sensor ' + ['A', 'B', 'C', 'D'][i], values })),
       });
     });

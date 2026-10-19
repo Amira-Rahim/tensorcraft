@@ -45,7 +45,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
       lessons.map((l) => l.slug).sort(),
     );
   });
-  it("plots the actual recording excerpt and marks changed selections stale", async () => {
+  it("plots the mission readings and lets the learner follow each sensor", async () => {
     const exercises = JSON.parse(
       readFileSync(root + "packages/content/.velite/exercises.json", "utf8"),
     );
@@ -63,9 +63,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
     expect(
       screen.queryByRole("region", { name: "Output from your code" }),
     ).not.toBeInTheDocument();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
         "From your latest run",
@@ -79,19 +77,9 @@ describe("the complete Deep Orbit visual curriculum", () => {
       "aria-pressed",
       "true",
     );
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Run the viewer again",
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
-    await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "From your latest run",
-      ),
-    );
-    expect(screen.getByText("[8]")).toBeInTheDocument();
+    expect(screen.getByText("Sensor B, 3: 16")).toBeInTheDocument();
+    expect(screen.queryByText("Sensor A, 3: 4")).not.toBeInTheDocument();
+    expect(screen.getByText("[12]")).toBeInTheDocument();
   });
   it("allows retry after TensorFlow.js fails without inventing output", async () => {
     const run = vi
@@ -102,22 +90,20 @@ describe("the complete Deep Orbit visual curriculum", () => {
         spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
       />,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     expect(
-      screen.getByRole("button", { name: "Opening the viewer…" }),
+      screen.getByRole("button", { name: "Running example…" }),
     ).toBeDisabled();
     expect(run).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(screen.getByRole("alert")).toHaveTextContent("could not read"),
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "couldn’t draw the chart",
+      ),
     );
     expect(
       screen.queryByRole("region", { name: "Output from your code" }),
     ).not.toBeInTheDocument();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent(
         "From your latest run",
@@ -140,9 +126,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
         spec={DEEP_ORBIT_VISUALS["introduction-to-tensors"]!}
       />,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Create tensor and open viewer" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
     expect(
       screen.queryByRole("region", { name: "Output from your code" }),
@@ -216,7 +200,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
         if (slider)
           fireEvent.click(
             screen.getByRole("button", {
-              name: "Create tensor and open viewer",
+              name: "Run example",
             }),
           );
         await waitFor(() =>

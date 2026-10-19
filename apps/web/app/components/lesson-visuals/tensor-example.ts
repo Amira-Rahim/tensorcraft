@@ -1,4 +1,4 @@
-/** Run the opening viewer with a selected, time-major recording excerpt. */
+/** Prepare chart data from the selected, time-major readings. */
 export async function runTensorExample(
   values: readonly number[],
   sensorCount = 4,
@@ -11,12 +11,14 @@ export async function runTensorExample(
   const tf = await import("@tensorflow/tfjs");
   await tf.ready();
   return tf.tidy(() => {
-    const reading = tf.tensor([...values]);
+    const streamValues = [...values];
+    const reading = tf.tensor(streamValues);
+    const shape = reading.shape;
     const bySensor = reading
       .reshape([values.length / sensorCount, sensorCount])
       .transpose();
     return {
-      shape: reading.shape,
+      shape,
       values: Array.from(reading.dataSync()),
       chartRows: bySensor.arraySync() as number[][],
     };

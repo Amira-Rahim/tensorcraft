@@ -1094,18 +1094,7 @@ function LessonStepsInner({
         >
           {worldSlug === "deep-orbit" ? (
             <>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d="M19 12H5m6-6-6 6 6 6" />
-              </svg>
+              <span aria-hidden="true">&larr;</span>
               <span>Back</span>
             </>
           ) : (
@@ -1984,7 +1973,7 @@ function StepBriefing({
           row wraps on a phone or there is no scene. The context below stays
           visible while the scene plays, so the learner can understand the
           situation before the picture and dialogue reveal. */}
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border pb-2 mb-4">
+          <div className="briefing-scene-heading flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border pb-2 mb-4">
             {lesson.scene ? (
               <div data-script-beat="" className="min-w-0">
                 <SceneHeading
