@@ -15,6 +15,10 @@ for (const [width, scheme] of [
       localStorage.setItem("tc-cookie-consent", "declined"),
     );
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+    // The server HTML already shows Continue, but a click before hydration
+    // does nothing (flaky on Linux CI, 2026-10-25). The Briefing marks the
+    // client mount by resolving its scene.
+    await expect(page.locator("[data-script-state='done']")).toBeAttached();
     // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     const instrument = page.locator(".lesson-instrument");

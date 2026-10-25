@@ -21,6 +21,10 @@ for (const [width, colorScheme] of [
     await page.goto(route);
     // First-time deep links intentionally clamp to the visited lesson phase.
     // Enter Concept through the actual learner navigation, without seeding progress.
+    // The server HTML already shows Continue, but a click before hydration
+    // does nothing (flaky on Linux CI, 2026-10-25). The Briefing marks the
+    // client mount by resolving its scene.
+    await expect(page.locator("[data-script-state='done']")).toBeAttached();
     // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     const experiment = page.getByTestId("channel-layout-experiment");
