@@ -1,5 +1,12 @@
 import { test, expect } from "@playwright/test";
 
+// CodeMirror ignores accept keys for interactionDelay (75 ms by default)
+// after the list opens, so an accidental keypress cannot pick an option.
+// A keypress sent the instant the list renders lands inside that window on
+// a slow runner: Enter then inserts a newline instead (Linux CI, 2026-10-17
+// and 2026-10-25). Wait it out before each accept key, as a person would.
+const COMPLETION_INTERACTION_DELAY_MS = 75;
+
 test("JavaScript and TensorFlow.js suggestions can be accepted or dismissed by keyboard", async ({
   page,
 }, testInfo) => {
@@ -27,6 +34,7 @@ test("JavaScript and TensorFlow.js suggestions can be accepted or dismissed by k
     fullPage: true,
     style: "nextjs-portal {display:none!important}",
   });
+  await page.waitForTimeout(COMPLETION_INTERACTION_DELAY_MS + 50);
   await page.keyboard.press("Tab");
   await expect(editor).toContainText("const reading = tf.tensor");
   expect((await editor.innerText()).split("\n").at(-1)).toBe(
@@ -35,6 +43,7 @@ test("JavaScript and TensorFlow.js suggestions can be accepted or dismissed by k
   await page.keyboard.insertText("(streamValues);\nconst shape = reading.");
   await page.keyboard.type("sh");
   await expect(page.locator(".cm-completionLabel").first()).toHaveText("shape");
+  await page.waitForTimeout(COMPLETION_INTERACTION_DELAY_MS + 50);
   await page.keyboard.press("Enter");
   await expect(editor).toContainText("const shape = reading.shape");
   await page.keyboard.insertText(";\n");

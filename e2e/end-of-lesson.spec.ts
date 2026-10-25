@@ -124,6 +124,13 @@ test.describe("Patch award moment", () => {
       localStorage.setItem("tc-cookie-consent", "declined");
     });
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+    // The saved step is restored in a client effect, so the server HTML is
+    // the Briefing. Clicking before the restore lands hit the Briefing's
+    // Continue (flaky on Linux CI, 2026-10-25). Legacy index 4 migrates to
+    // Takeaways, step 4 of 5.
+    await expect(
+      page.getByRole("group", { name: /^Step 4 of 5/ }),
+    ).toBeVisible();
 
     await page
       .getByRole("button", { name: /continue|complete/i })
@@ -147,6 +154,13 @@ test.describe("Patch award moment", () => {
       localStorage.setItem("tc-cookie-consent", "declined");
     });
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
+    // The saved step is restored in a client effect, so the server HTML is
+    // the Briefing. Clicking before the restore lands hit the Briefing's
+    // Continue (flaky on Linux CI, 2026-10-25). Legacy index 4 migrates to
+    // Takeaways, step 4 of 5.
+    await expect(
+      page.getByRole("group", { name: /^Step 4 of 5/ }),
+    ).toBeVisible();
 
     await page
       .getByRole("button", { name: /continue|complete/i })
