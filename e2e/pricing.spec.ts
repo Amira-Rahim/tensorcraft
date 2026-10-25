@@ -66,3 +66,29 @@ test.describe("Pricing Page", () => {
     await expect(page.locator("main").getByRole("status")).toHaveCount(0);
   });
 });
+
+/**
+ * The tier cards must arrive in the server HTML. When PricingTiers read
+ * useSearchParams, the static prerender emitted its empty Suspense fallback,
+ * the cards appeared only after hydration, and their arrival pushed the
+ * curriculum preview down: one layout shift worth CLS 0.359 on mobile, over
+ * the 0.35 Lighthouse budget (2026-10-20 to 2026-10-25). This reads the raw
+ * server response, so it fails whenever the grid goes client-only again.
+ * (A JavaScript-off page check cannot stand in for it: the route streams
+ * under pricing/loading.tsx, and an inline script reveals the whole page.)
+ */
+test.describe("Pricing Page server HTML", () => {
+  test("includes every buyable tier card", async ({ request }) => {
+    const response = await request.get("/pricing");
+    expect(response.ok()).toBe(true);
+    const html = await response.text();
+    for (const id of [
+      "pricing-tiers",
+      "tier-card-free",
+      "tier-card-single",
+      "curriculum-preview",
+    ]) {
+      expect(html, id).toContain(`data-testid="${id}"`);
+    }
+  });
+});

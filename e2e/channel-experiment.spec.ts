@@ -21,7 +21,8 @@ for (const [width, colorScheme] of [
     await page.goto(route);
     // First-time deep links intentionally clamp to the visited lesson phase.
     // Enter Concept through the actual learner navigation, without seeding progress.
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     const experiment = page.getByTestId("channel-layout-experiment");
     await expect(experiment).toHaveCount(1);
     await expect(experiment).toBeVisible();
@@ -32,7 +33,22 @@ for (const [width, colorScheme] of [
       .getByRole("button", { name: "Check prediction", exact: true })
       .focus();
     await page.keyboard.press("Enter");
-    await expect(experiment.getByText(/Yes\. The second row/)).toBeVisible();
+    // Since 2026-10-16 the announced feedback opens with a "Correct!" verdict,
+    // followed by the explanation.
+    const predictionFeedback = experiment
+      .getByRole("status")
+      .filter({ hasText: "The second row is [3, 18, 7, 8]." });
+    await expect(predictionFeedback).toHaveAttribute(
+      "data-feedback-state",
+      "correct",
+    );
+    await expect(predictionFeedback).toContainText("Correct!");
+    await expect(
+      experiment.getByText(
+        "The second row is [3, 18, 7, 8]. These are the four sensors’ readings at Time 2.",
+        { exact: true },
+      ),
+    ).toBeVisible();
     await experiment
       .getByRole("button", { name: "Run reshape", exact: true })
       .click();
@@ -50,8 +66,9 @@ for (const [width, colorScheme] of [
       await page.setViewportSize({ width: 390, height: 900 });
       await expect(experiment.getByLabel("Follow a sensor")).toHaveValue("2");
       await page.setViewportSize({ width, height: 900 });
+      // Renamed on 2026-10-16 (02-tensor-shapes.mdx).
       await page
-        .getByText("Optional: more axes, image batches, and memory", {
+        .getByText("Optional: images, extra axes, and memory", {
           exact: true,
         })
         .click();
@@ -62,7 +79,7 @@ for (const [width, colorScheme] of [
       await glossaryTerm.click();
       await expect(experiment.getByLabel("Follow a sensor")).toHaveValue("2");
     }
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(experiment).toHaveCount(0);
     await page
       .getByRole("button", { name: "Step 2: Concept", exact: true })
@@ -88,8 +105,9 @@ for (const [width, colorScheme] of [
       .include('[data-testid="channel-layout-experiment"]')
       .analyze();
     expect(a11y.violations).toEqual([]);
+    // "Try a new example" became "Try the next selection" on 2026-10-17.
     await experiment
-      .getByRole("button", { name: "Try a new example", exact: true })
+      .getByRole("button", { name: "Try the next selection", exact: true })
       .click();
     await experiment.getByLabel("Reshape to [3, 2]", { exact: true }).check();
     await experiment
@@ -100,7 +118,23 @@ for (const [width, colorScheme] of [
     await experiment
       .getByRole("button", { name: "Check my answer", exact: true })
       .click();
-    await expect(experiment.getByText(/Reshape also makes/)).toBeVisible();
+    // Correct readings with the wrong operation: the verdict names the
+    // incorrect part (2026-10-16), and the guidance explains why reshape fails.
+    const checkFeedback = experiment
+      .getByRole("status")
+      .filter({ hasText: "The operation is incorrect." });
+    await expect(checkFeedback).toHaveAttribute(
+      "data-feedback-state",
+      "incorrect",
+    );
+    await expect(checkFeedback).toContainText(
+      "Not quite. The operation is incorrect.",
+    );
+    await expect(
+      experiment.getByText(
+        /Your sensor readings are correct\. Reshape gives you three rows of two, but mixes the sensors’ readings\./,
+      ),
+    ).toBeVisible();
     await experiment
       .getByLabel("Transpose: turn columns into rows", { exact: true })
       .check();
@@ -114,7 +148,7 @@ for (const [width, colorScheme] of [
     ).toBeVisible();
     await expect(
       experiment.getByText(
-        /Your first answer on the new example: incorrect, without help/,
+        /Your first answer on the next selection: incorrect, without help/,
       ),
     ).toBeVisible();
     await expect(
@@ -130,8 +164,10 @@ for (const [width, colorScheme] of [
       await experiment.screenshot({
         path: testInfo.outputPath("check-320-text-200.png"),
       });
+      // The next selection's table, captioned "Another selection from
+      // Demir’s recording" since 2026-10-17.
       const enlargedTable = experiment.getByRole("region", {
-        name: /New input/,
+        name: /^Another selection from Demir’s recording/,
       });
       await enlargedTable.focus();
       await page.keyboard.press("ArrowRight");

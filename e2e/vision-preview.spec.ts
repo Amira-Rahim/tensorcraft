@@ -16,7 +16,12 @@ for (const width of [1440, 1024, 390, 320])
       await page.goto("/worlds/neon-protocol#vision-preview");
       const sample = page.getByTestId("vision-preview");
       await expect(sample).toBeVisible();
-      await expect(sample).toContainText("full course forthcoming");
+      // The label lost its decorative dot separator in the 2026-10-19
+      // construction audit (content fix 12, 07a41013). It still says the
+      // sample is free and the full course is not out yet.
+      await expect(sample).toContainText(
+        "Free vision sample, full course coming later",
+      );
       await sample.getByRole("textbox").fill("2.8");
       await sample.getByRole("button", { name: "Check this window" }).focus();
       await page.keyboard.press("Enter");

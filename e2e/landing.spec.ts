@@ -4,12 +4,16 @@ test.describe("Landing Page", () => {
   test("renders hero section with headline", async ({ page }) => {
     await page.goto("/");
     const h1 = page.getByRole("heading", { level: 1 });
-    // Story-first headline (owner decision 2026-08-31). This DOM assertion
+    // Descriptive course headline from the 2026-10-19 construction audit
+    // (docs/audits/construction-audit-2026-10-19.md, content fix 12,
+    // 07a41013). It replaced the story-first headline of the 2026-08-31 owner
+    // decision
+    // (docs/superpowers/specs/2026-08-31-landing-headline-story-first.md),
+    // and the hero subhead now carries the crew's story. This DOM assertion
     // is the real gate on the headline: the visual baselines magenta-mask
     // the whole hero (ParticleField spans it), so they cannot see the text.
-    // Spec: docs/superpowers/specs/2026-08-31-landing-headline-story-first.md.
-    await expect(h1).toContainText(/stories that take you/i);
-    await expect(h1).toContainText(/from javascript to ml/i);
+    await expect(h1).toContainText(/machine learning for/i);
+    await expect(h1).toContainText(/javascript engineers\./i);
   });
 
   test("primary CTA stays above the fold on a 900px-tall laptop", async ({
@@ -37,8 +41,11 @@ test.describe("Landing Page", () => {
     const faq = page.getByTestId("landing-faq");
     await expect(faq).toBeVisible();
     // Static Q|A rows since 2026-08-14 (no accordion): answers render
-    // without any interaction.
-    await expect(faq.getByText(/no python required/i).first()).toBeVisible();
+    // without any interaction. The 2026-10-19 construction audit (content
+    // fix 12, 07a41013) reworded the no-Python answer to active voice.
+    await expect(
+      faq.getByText(/lessons run in your browser without python/i).first(),
+    ).toBeVisible();
   });
 
   test("displays navigation with brand and CTA", async ({ page }) => {

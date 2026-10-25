@@ -104,7 +104,13 @@ for (const width of [1440, 390]) {
       };
     });
     await writeCode(ownCode + "\n// quota probe");
-    await expect(page.getByText(/Draft could not be saved/)).toBeVisible();
+    // Copy reworded to active voice in content fix 12 (07a41013). The
+    // failure still tells the learner the save failed and to copy the code.
+    await expect(
+      page.getByText(
+        /This browser could not save your draft\. Copy your code before leaving\./,
+      ),
+    ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
     ).toBeDisabled();
@@ -133,7 +139,12 @@ test("an unreadable draft stays intact until an explicit reset", async ({
   await page.goto(
     "/worlds/deep-orbit/foundations/introduction-to-tensors?start=challenge",
   );
-  await expect(page.getByText(/The previous draft is preserved/)).toBeVisible();
+  // Copy reworded to active voice in content fix 12 (07a41013). It still
+  // says the unreadable draft is kept until Reset.
+  const preserved = page.getByText(
+    /Your previous draft stays as you wrote it\. Use Reset to replace it/,
+  );
+  await expect(preserved).toBeVisible();
   const editor = page.locator(".cm-content").first();
   await editor.click();
   await page.keyboard.insertText("// temporary work\n");
@@ -149,9 +160,7 @@ test("an unreadable draft stays intact until an explicit reset", async ({
     .getByRole("button", { name: "Step 3: Challenge", exact: true })
     .click();
   await page.getByRole("button", { name: "Reset", exact: true }).click();
-  await expect(page.getByText(/The previous draft is preserved/)).toHaveCount(
-    0,
-  );
+  await expect(preserved).toHaveCount(0);
   // Reset drops the saved copy, and an untouched editor is not written back
   // as a draft, so the unreadable entry is gone rather than replaced with a
   // version-1 one. Persisting the starter on mount is what kept later starter

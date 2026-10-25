@@ -822,8 +822,8 @@
   line-height: 1.75;
 }
 
-/* The first tensor challenge has one brief beside the code it describes.
-   Its scene spans both columns so it cannot push the task below the editor. */
+/* The first tensor challenge stacks its scene, brief, code and checks in one
+   column at every width (deep-orbit-lessons.css sets that vertical flow). */
 .challenge-workspace-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -1558,7 +1558,7 @@
   font-weight: 600;
   line-height: 1.4;
 }
-.tensor-investigation .tensor-example-run:hover:not(:disabled) {
+.tensor-investigation .tensor-example-run:hover:not([aria-disabled="true"]) {
   background: var(--tc-surface-hover);
 }
 .tensor-investigation-packet {

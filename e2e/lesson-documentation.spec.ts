@@ -15,12 +15,21 @@ for (const [width, scheme] of [
       localStorage.setItem("tc-cookie-consent", "declined"),
     );
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     const instrument = page.locator(".lesson-instrument");
-    await instrument.getByRole("button", { name: "Create tensor" }).click();
-    await expect(instrument.getByRole("status")).toContainText(
-      "All 5 readings match",
+    // Since 2026-10-19 the Concept example runs as "Run example" and reports
+    // the tensor's shape above a chart drawn from it.
+    await instrument
+      .getByRole("button", { name: "Run example", exact: true })
+      .click();
+    const result = instrument.getByText(
+      "The example’s tensor has shape [12]: one axis holding 12 values.",
     );
+    await expect(instrument.getByRole("status")).toHaveText(
+      "From your latest run",
+    );
+    await expect(result).toBeVisible();
     const tensor = instrument.getByRole("link", { name: /^tf.tensor,/ });
     await expect(tensor).toHaveAttribute(
       "href",
@@ -38,9 +47,11 @@ for (const [width, scheme] of [
       "https://js.tensorflow.org/api/4.22.0/#tensor",
     );
     await docs.close();
-    await expect(instrument.getByRole("status")).toContainText(
-      "All 5 readings match",
+    // The run result survives the trip to the documentation.
+    await expect(instrument.getByRole("status")).toHaveText(
+      "From your latest run",
     );
+    await expect(result).toBeVisible();
     await expect(page).toHaveURL(/#step-concept$/);
 
     const shape = page.getByRole("button", { name: "shape", exact: true });

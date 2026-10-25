@@ -79,7 +79,13 @@ test("mobile glossary opens beside the term and returns focus on Escape", async 
   await expect(term).toBeFocused();
 });
 
-test("mobile editor preserves typed work across views and desktop resize", async ({
+// Deep Orbit challenges have no Instructions/Editor toggle on phones. Lesson
+// 1 lost it in clarity fix 12 (2b293a42) and every other mission in clarity
+// fix 17 (2fc52d2f). On lesson 1 the brief and its one editor stay on the
+// page together, and the brief's Line keys move the learner into the code.
+// Typed work and results must survive the trip between the instructions and
+// the code, and a desktop resize.
+test("mobile brief and editor share the page and keep typed work through a desktop resize", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -89,10 +95,16 @@ test("mobile editor preserves typed work across views and desktop resize", async
     localStorage.setItem("tc_step_max_deep-orbit_introduction-to-tensors", "5");
   });
   await page.goto(lesson);
-  await page.getByRole("button", { name: "Editor", exact: true }).click();
+  const brief = page.getByTestId("exercise-brief");
   const editor = page.locator(".cm-content");
+  await expect(page.getByRole("group", { name: "Challenge view" })).toHaveCount(
+    0,
+  );
+  await expect(brief).toBeVisible();
+  await brief.getByRole("button", { name: "Line 3", exact: true }).click();
   await expect(editor).toHaveCount(1);
   await expect(editor).toBeVisible();
+  await expect(editor).toBeFocused();
   expect(
     await page
       .locator(".cm-lineNumbers")
@@ -110,9 +122,15 @@ test("mobile editor preserves typed work across views and desktop resize", async
   await expect(results).toBeVisible({ timeout: 60000 });
   await expect(results).not.toContainText("All tests passed!");
   const savedResults = await results.innerText();
-  await page.getByRole("button", { name: "Instructions", exact: true }).click();
-  await expect(editor).not.toBeVisible();
-  await page.getByRole("button", { name: "Editor", exact: true }).click();
+  // Back up to the instructions, then into the code through a Line key.
+  await brief.scrollIntoViewIfNeeded();
+  await expect(brief.getByRole("heading", { level: 3 })).toBeInViewport();
+  await expect(editor).toHaveCount(1);
+  await brief
+    .getByRole("button", { name: /^Line \d+$/ })
+    .first()
+    .click();
+  await expect(editor).toBeFocused();
   await expect(editor).toContainText("work kept when changing views");
   await expect(results).toHaveText(savedResults, { useInnerText: true });
   await page.setViewportSize({ width: 1280, height: 900 });

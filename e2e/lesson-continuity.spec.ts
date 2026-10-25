@@ -19,14 +19,15 @@ for (const [width, scheme] of [
     await expect(orientation).toBeVisible();
     await expect(orientation).toContainText("machine learning in JavaScript");
     await expect(orientation).toContainText("program trained on examples");
+    // Since 2026-10-14 the Deep Orbit briefing tells its story (passages and
+    // dialogue) in .briefing-story-intro above the plate. The 2026-10-18
+    // rewrite replaced "You will work alongside Demir, the crew's JavaScript
+    // engineer" with a story passage that hands Demir's problem to the learner.
+    const story = page.locator(".briefing-story-intro");
     await expect(
-      page
-        .locator(".lesson-story-grid")
-        .locator("p")
-        .filter({
-          hasText:
-            /You will work alongside Demir, the crew's JavaScript engineer/,
-        }),
+      story.locator("p[data-story-passage]").filter({
+        hasText: "He needs your help to turn that array into a tensor.",
+      }),
     ).toBeVisible();
     const header = await page.getByTestId("lesson-title-header").boundingBox();
     const chrome = await page.getByTestId("lesson-chrome").boundingBox();
@@ -39,28 +40,49 @@ for (const [width, scheme] of [
     await expect(context).toHaveCSS("font-style", "normal");
     const contextBox = (await context.boundingBox())!;
     const picture = (await page.getByTestId("scene-portrait").boundingBox())!;
-    const dialogue = (await page
-      .locator(".lesson-story-grid [data-dialogue]")
+    const dialogue = (await story
+      .locator("[data-dialogue]")
       .first()
       .boundingBox())!;
     expect(contextBox.y + contextBox.height).toBeLessThan(picture.y);
     expect(contextBox.y + contextBox.height).toBeLessThan(dialogue.y);
+    // Since 2026-10-14 the takeaway is two full-width asides after the
+    // story and its picture: the key idea, then the first task with Demir's
+    // 12 selected readings (2026-10-18), the same packet the Concept runs.
     const takeaway = page.getByTestId("briefing-takeaway");
-    await expect(takeaway).toHaveCount(1);
-    await expect(takeaway).toBeVisible();
-    await expect(takeaway).toContainText(
-      "A tensor is a container for numbers.",
+    await expect(takeaway).toHaveCount(2);
+    const idea = page.getByRole("complementary", { name: "Key idea" });
+    const task = page.getByRole("complementary", { name: "Your first task" });
+    await expect(idea).toHaveAttribute("data-part", "idea");
+    await expect(task).toHaveAttribute("data-part", "task");
+    await expect(idea).toBeVisible();
+    await expect(task).toBeVisible();
+    await expect(idea).toContainText(
+      "A tensor holds numbers in a form TensorFlow.js can calculate with.",
     );
-    await expect(takeaway).toContainText(
-      "You will create a tensor from these five readings.",
+    await expect(task).toContainText(
+      "Create a tensor from his selected readings, then run the code to see one line per sensor.",
     );
-    await expect(takeaway.locator("code")).toHaveText(
-      "[0.12, 0.94, 0.31, 0.88, 0.47]",
+    // The array's brackets and commas are aria-hidden decoration, so the
+    // accessibility tree holds exactly the 12 values in recording order.
+    await expect(
+      task.getByRole("list", { name: "Readings in array order" }),
+    ).toMatchAriaSnapshot(
+      [
+        '- list "Readings in array order":',
+        ...[2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9].map(
+          (reading) => `  - listitem: "${reading}"`,
+        ),
+      ].join("\n"),
     );
-    const takeawayBox = (await takeaway.boundingBox())!;
-    const storyBox = (await page.locator(".lesson-story-grid").boundingBox())!;
-    expect(takeawayBox.y).toBeGreaterThanOrEqual(storyBox.y + storyBox.height);
-    expect(takeawayBox.width).toBe(contextBox.width);
+    const ideaBox = (await idea.boundingBox())!;
+    const taskBox = (await task.boundingBox())!;
+    const storyBox = (await story.boundingBox())!;
+    expect(ideaBox.y).toBeGreaterThanOrEqual(storyBox.y + storyBox.height);
+    expect(ideaBox.y).toBeGreaterThanOrEqual(picture.y + picture.height);
+    expect(taskBox.y).toBeGreaterThanOrEqual(ideaBox.y + ideaBox.height);
+    expect(ideaBox.width).toBe(contextBox.width);
+    expect(taskBox.width).toBe(contextBox.width);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);
@@ -76,15 +98,24 @@ for (const [width, scheme] of [
       path: testInfo.outputPath(`briefing-${width}-${scheme}.png`),
       fullPage: true,
     });
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(orientation).toHaveCount(0);
     await expect(takeaway).toHaveCount(0);
+    // Since 2026-10-18 the Concept workbench runs the same 12 readings
+    // through TensorFlow.js and charts them with the supplied code.
     const instrument = page.locator(".lesson-instrument");
-    await expect(instrument).toContainText("Sector 7-G: the first packet");
+    await expect(instrument).toContainText("Demir’s selected readings");
+    await expect(instrument).toContainText(
+      "These are the same selected sensors and moments you’ll work with in the challenge.",
+    );
     await expect(instrument).toContainText("Demir");
-    await expect(page.getByTestId("tensor-story-response")).toHaveCount(0);
+    const chart = instrument.getByRole("region", {
+      name: "Chart from this example",
+    });
+    await expect(chart).toHaveCount(0);
     await expect(page.locator(".lesson-workbench-introduction")).toContainText(
-      "A tensor is a container for numbers",
+      "Demir wants to see how each sensor’s readings change over time.",
     );
     const goals = page.locator(".lesson-goals");
     await expect(
@@ -98,42 +129,48 @@ for (const [width, scheme] of [
     const activityBox = (await instrument.boundingBox())!;
     expect(goalsBox.y + goalsBox.height).toBeLessThanOrEqual(activityBox.y);
     expect(goalsBox.width).toBe(activityBox.width);
+    // The worked example holds the briefing's readings in their array order.
+    await expect(instrument.locator("pre")).toContainText(
+      /const streamValues = \[\s*2, 20, 5, 8,\s*3, 18, 7, 8,\s*4, 16, 6, 9,\s*\];/,
+    );
+    // "Run example" (2026-10-19) has no expanded state, unlike the old
+    // "Create tensor" toggle. The result appears below it after the run.
     const preview = instrument.getByRole("button", {
-      name: "Create tensor",
+      name: "Run example",
+      exact: true,
     });
-    await expect(preview).toHaveAttribute("aria-expanded", "false");
+    await expect(preview).toBeEnabled();
     await preview.focus();
     await page.keyboard.press("Space");
-    await expect(instrument.getByRole("status")).toContainText(
-      "All 5 readings match the original array",
+    await expect(chart.getByRole("status")).toHaveText("From your latest run");
+    const shapeResult = instrument.getByText(
+      "The example’s tensor has shape [12]: one axis holding 12 values. The supplied chart code groups those readings into 4 lines, one for each sensor.",
     );
-    await expect(page.getByTestId("tensor-story-response")).toContainText(
-      "Demir records the successful check for Farah",
+    await expect(shapeResult).toBeVisible();
+    await expect(instrument).toContainText(
+      "Next, Farah will help you write the code that keeps each sensor’s readings together.",
     );
+    // Keyboard users keep their place on the control they activated.
+    await expect(preview).toBeFocused();
+    await expect(shapeResult).toBeInViewport({ ratio: 0.85 });
     await expect(
-      instrument.getByRole("button", { name: "Reset example" }),
-    ).toBeFocused();
-    await expect(page.getByTestId("tensor-story-response")).toBeInViewport({
-      ratio: 0.85,
-    });
-    await expect(
-      page.getByRole("heading", { name: "Now prepare the readings yourself" }),
+      page.getByRole("heading", { name: "What the example shows" }),
     ).toBeVisible();
-    await expect(
-      instrument.getByText("shape [5]", { exact: true }),
-    ).toBeVisible();
-    await expect(
-      instrument
-        .getByRole("list", {
-          name: "Five sensor readings in a JavaScript array",
-        })
-        .getByRole("listitem"),
-    ).toHaveText(["0.12", "0.94", "0.31", "0.88", "0.47"]);
-    await expect(
-      instrument
-        .getByRole("list", { name: "Readings returned from the tensor" })
-        .getByRole("listitem"),
-    ).toHaveText(["0.12", "0.94", "0.31", "0.88", "0.47"]);
+    // The chart's values come back from the tensor, one series per sensor:
+    // each row is one selected moment, in the recording's sensor order.
+    await chart.getByText("Read the values", { exact: true }).click();
+    await expect(chart.getByRole("columnheader")).toHaveText([
+      "Selected moment",
+      "Sensor A",
+      "Sensor B",
+      "Sensor C",
+      "Sensor D",
+    ]);
+    await expect(chart.getByRole("cell")).toHaveText([
+      ...["1", "2", "20", "5", "8"],
+      ...["2", "3", "18", "7", "8"],
+      ...["3", "4", "16", "6", "9"],
+    ]);
     await expect(
       page.getByText("prepare-readings.js", { exact: true }),
     ).toBeVisible();
@@ -163,13 +200,14 @@ for (const [width, scheme] of [
       ),
       contentType: "application/json",
     });
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
+    // The challenge works on the same 12 readings (2026-10-18).
     await expect(page.getByTestId("exercise-brief")).toContainText(
-      "five readings",
+      "Expect [12]: a list of 12 readings.",
       { timeout: 30_000 },
     );
     await expect(page.getByTestId("mission-handoff")).toContainText(
-      "five sensor readings",
+      "Help him turn the selected readings into a tensor and save its shape.",
     );
     await expect(page.getByTestId("challenge-passed-banner")).toHaveCount(0);
     await expect(

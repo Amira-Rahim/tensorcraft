@@ -104,10 +104,13 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
           title="prepare-readings.js"
           footer={
             <div className="tensor-example-actions">
+              {/* aria-disabled, not disabled: a disabled button drops
+                  keyboard focus to the page body mid-run. run() already
+                  ignores clicks while pending. */}
               <button
                 type="button"
                 onClick={run}
-                disabled={pending}
+                aria-disabled={pending || undefined}
                 className="tensor-example-run"
               >
                 {pending ? "Running example…" : "Run example"}

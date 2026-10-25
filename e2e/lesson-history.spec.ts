@@ -24,7 +24,8 @@ test("phase history preserves the document and experiment draft", async ({
     .focus();
   await page.keyboard.press("Enter");
   await expect(experiment.getByRole("status")).toContainText("matches");
-  await page.getByRole("button", { name: "Continue →", exact: true }).click();
+  // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(experiment).toHaveCount(0);
   await page.goBack();
   await page

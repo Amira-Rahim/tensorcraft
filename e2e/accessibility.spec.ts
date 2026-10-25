@@ -105,9 +105,11 @@ for (const scheme of SCHEMES) {
  * had never been scanned once. The design system claims WCAG 2.1 AA, and
  * that claim is only as wide as what the gate actually loads.
  *
- * The step index is seeded through localStorage exactly as exercise-run.spec
- * and end-of-lesson.spec do (see getStorageKey in lesson-steps.tsx); the max
- * key must be seeded too or the step bar clamps back to 0.
+ * The step index is seeded through localStorage under the five-step keys
+ * that lessonStepKeys builds (apps/web/lib/lesson-phases.ts). exercise-run.spec
+ * and end-of-lesson.spec seed the older six-step keys, which
+ * restoreLessonSteps migrates. The max key must be seeded too or the step
+ * bar clamps back to 0.
  */
 const LESSON_PATH = "/worlds/deep-orbit/foundations/introduction-to-tensors";
 const STEP_KEY = "tc_step_v2_deep-orbit_introduction-to-tensors";
@@ -163,6 +165,35 @@ for (const scheme of SCHEMES) {
   });
 }
 
+/**
+ * Wait for a region's reveal to finish before axe samples it.
+ *
+ * The Briefing root is `visibility: hidden` while its script is idle
+ * (lesson-steps.tsx), and the reduced-motion rule in globals.css gives every
+ * element a 0.01ms transition. transition-property keeps its initial value,
+ * `all`, so `visibility` transitions too: each nesting level turns visible
+ * one frame after its parent. The warm-up region passes toBeVisible() while
+ * its radio labels, about a dozen levels down, stay hidden for another 120
+ * to 440 ms (measured 2026-10-25). axe caches each node's computed style at
+ * its first read, so an audit started in that window read an option's text
+ * as hidden and its radio as visible, and reported a `label` violation with
+ * an empty implicit label (CI 2026-10-17, dark). Once settled, both radios
+ * are named. Poll the subtree instead of guessing a delay.
+ */
+async function settleReveal(region: import("@playwright/test").Locator) {
+  await expect
+    .poll(() =>
+      region.evaluate(
+        (root) =>
+          root.getAnimations({ subtree: true }).length === 0 &&
+          [root, ...root.querySelectorAll("*")].every(
+            (el) => getComputedStyle(el).visibility === "visible",
+          ),
+      ),
+    )
+    .toBe(true);
+}
+
 for (const colorScheme of ["light", "dark"] as const) {
   test(`due review warm-up is accessible in ${colorScheme}`, async ({
     page,
@@ -177,8 +208,16 @@ for (const colorScheme of ["light", "dark"] as const) {
     await page.goto(REVIEW_WARMUP_LESSON);
     const warmup = page.getByRole("region", { name: /Warm-up/ });
     await expect(warmup).toBeVisible();
+    await settleReveal(warmup);
     expect((await audit(page)).violations).toEqual([]);
-    await warmup.getByRole("button", { name: "I couldn't recall it" }).click();
+    // In the Deep Orbit layout the card's way out is "Show an explanation"
+    // (clarity fix 14, 2026-10-12). "I couldn't recall it" only renders
+    // outside that layout. The revealed answers are audited too.
+    await warmup.getByRole("button", { name: "Show an explanation" }).click();
+    await expect(warmup.getByRole("status")).toHaveText(
+      "Answers revealed. Read each explanation before continuing.",
+    );
+    await settleReveal(warmup);
     expect((await audit(page)).violations).toEqual([]);
   });
 }

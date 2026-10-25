@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { worlds } from "@tensorcraft/worlds";
 import {
   LAUNCHED_WORLDS,
@@ -129,8 +128,13 @@ export function PricingTiers() {
   // sends signed-out buyers to /auth with redirectTo=/pricing?plan=...&worlds=...;
   // nothing ever read those params back, so the buyer returned to an
   // unselected picker (audit run #7). Only canonical slugs are accepted.
-  const searchParams = useSearchParams();
+  // The query is read from window.location once on mount, not through
+  // useSearchParams: that hook made the static prerender emit the page's
+  // empty Suspense fallback instead of this grid, and the cards arriving
+  // after hydration pushed the curriculum down (Lighthouse CLS 0.359 on
+  // /pricing, 2026-10-25). e2e/pricing.spec.ts checks the server HTML.
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
     const plan = searchParams.get("plan");
     const restored = (searchParams.get("worlds") ?? "")
       .split(",")
@@ -140,7 +144,6 @@ export function PricingTiers() {
     else if (plan === "twoBundle") setTwoWorlds(restored.slice(0, 2));
     else if (plan === "threeBundle") setThreeWorlds(restored.slice(0, 3));
     // allFive needs no selection state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

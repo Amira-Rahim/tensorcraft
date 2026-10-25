@@ -2,18 +2,34 @@ import { test, expect, type Page } from "@playwright/test";
 import { seedDueReview, REVIEW_WARMUP_LESSON } from "./review-fixture";
 
 // Check the reading flow for both authored and build-positioned cards.
-// These lessons are in the free module and need no purchased fixture.
+// These lessons are in the free module and need no purchased fixture. Since
+// content fix 11 (2026-10-19) lesson 1's Concept reading has no companion
+// card. Lesson 2's reading ends on two: a bridge callout after its last
+// paragraph, then a reference the build found nothing to pair with
+// (rehype-pair-companions.ts).
 const LESSONS = {
   paragraphLed: "/worlds/deep-orbit/foundations/introduction-to-tensors",
   headingLed: "/worlds/deep-orbit/foundations/tensor-shapes",
 };
-// Its concept reference follows the normalization experiment and wraps the
-// rest of its section, so the build leaves it with nothing to pair with.
+// The normalization lesson: its Concept keeps both worked examples in the
+// main read, and its Takeaways closes on the room-project checkpoint.
 const SPANNING_LESSON = "/worlds/deep-orbit/foundations/normalization";
-// Concept examples include the lesson with a derivation drawer.
+// Where each Concept step shows its worked code. Lesson 1's example runs in
+// the workbench above the reading, whose "What the example shows" section
+// explains it (content fix 11 moved it out of the reading). The others keep
+// their code in the reading column, and tensor-operations adds a derivation
+// drawer.
+const READING_CODE = '.lesson-step-content[data-layout="reading"] pre';
 const EXAMPLE_LESSONS = {
-  ...LESSONS,
-  withDrawer: "/worlds/deep-orbit/foundations/tensor-operations",
+  paragraphLed: {
+    path: LESSONS.paragraphLed,
+    code: "[data-testid='lesson-workbench'] [data-code-block] pre",
+  },
+  headingLed: { path: LESSONS.headingLed, code: READING_CODE },
+  withDrawer: {
+    path: "/worlds/deep-orbit/foundations/tensor-operations",
+    code: READING_CODE,
+  },
 };
 
 async function openStep(page: Page, path: string, step: number) {
@@ -48,7 +64,7 @@ async function openStep(page: Page, path: string, step: number) {
         page.locator('.lesson-step-content[data-layout="reading"]'),
       ).toBeVisible();
       break;
-    case 2: // Challenge: the editor pane, behind the view toggle on phones
+    case 2: // Challenge: the editor pane, under the instructions at every width
       await expect(
         page.locator("[data-testid='lesson-right'][data-kind='pane']"),
       ).toBeAttached();
@@ -65,14 +81,27 @@ async function openStep(page: Page, path: string, step: number) {
       throw new Error(`openStep has no settled marker for step ${step}`);
   }
   // The marker appears as the client mounts the step, which is when the
-  // step group starts its 0.3 s step-in (a 12 px translateY). On the
-  // Challenge step the right slot and the nav sit outside the group,
-  // so a box read mid-animation shortens every gap across that boundary by
-  // the remaining offset. Measure once the group has settled.
+  // step body starts its 0.3 s step-in (a 12 px translateY). The nav and the
+  // footer sit outside that body, so a box read mid-animation shortens every
+  // gap across that boundary by the remaining offset. Since clarity fix 15
+  // the "Step N of 5" group is the whole lesson frame, and the step-in runs
+  // on the step body inside it (the key={currentStep} wrapper in
+  // lesson-steps.tsx), so the wait collects the group's subtree. It waits
+  // only for running animations that end: the story passages' bar pulses
+  // loop for as long as the page is open.
   await page
     .getByRole("group", { name: /^Step \d of 5/ })
     .evaluate(async (g) => {
-      await Promise.all(g.getAnimations().map((a) => a.finished));
+      const moving = () =>
+        g
+          .getAnimations({ subtree: true })
+          .filter(
+            (a) =>
+              a.playState === "running" &&
+              Number.isFinite(a.effect?.getComputedTiming().endTime),
+          );
+      for (let left = moving(); left.length > 0; left = moving())
+        await Promise.all(left.map((a) => a.finished.catch(() => undefined)));
     });
 }
 
@@ -96,11 +125,15 @@ async function openSettledTakeaways(page: Page, path: string) {
   strict query: an element the check expects once must match exactly once.
 */
 
+// The site footer, by the name SiteFooter gives it. Lesson 2's channel
+// activity has had a <footer> of its own since content fix 8 (2026-10-17).
+const SITE_FOOTER = "footer[aria-label='Site footer']";
+
 // The footer's top edge less the bottom of the nav's lowest control. The
 // nav's own box ends at its bottom padding (--l-nav-bottom, the 40 px), so
 // a reading from that box stays 0 when the padding is lost.
 function footerGap(page: Page) {
-  return page.evaluate(() => {
+  return page.evaluate((footer) => {
     const one = (s: string) => {
       const found = document.querySelectorAll(s);
       if (found.length !== 1) throw new Error(`${s}: ${found.length} matches`);
@@ -113,12 +146,12 @@ function footerGap(page: Page) {
     const lowest = Math.max(
       ...controls.map((el) => el.getBoundingClientRect().bottom),
     );
-    return one("footer").getBoundingClientRect().top - lowest;
-  });
+    return one(footer).getBoundingClientRect().top - lowest;
+  }, SITE_FOOTER);
 }
 
-// The story's lowest painted edge: the border-box bottom of the blocks
-// inside the story grid's two items (the picture and the dialogue),
+// The story grid's lowest painted edge: the border-box bottom of the blocks
+// inside the grid's two items (the scene picture and the learning notes),
 // not the items themselves, whose boxes contain
 // any margin trapped inside them, which is exactly what these checks must
 // see as gap. Read with the post-scene slot and the nav.
@@ -147,36 +180,84 @@ function storyEdges(page: Page) {
   });
 }
 
-// Lesson 1 closes the scene with its key idea and first task. The note owns
-// the post-scene slot, and the nav follows it at the standard 40 px gap.
-async function freshGuestStoryEnd(page: Page) {
+// Lesson 1 closes the scene with two learning notes, "Key idea" then "Your
+// first task", in the story grid's reading column under the scene picture
+// (clarity fix 16, 2026-10-14, moved them there from the post-scene slot).
+// A fresh guest has no warm-up due, so the slot does not render, and the nav
+// follows the task note at --l-nav-top. Deep Orbit sets that token and the
+// gaps around the notes to its section gap: 48 px from 640 px, 32 px below.
+async function freshGuestStoryEnd(page: Page, sectionGap: number) {
   await openStep(page, LESSONS.paragraphLed, 0);
-  const takeaway = page.getByTestId("briefing-takeaway");
-  await expect(takeaway).toBeVisible();
-  const note = (await takeaway.boundingBox())!;
-  const m = await storyEdges(page);
-  expect(m.slotHeight).toBe(note.height);
-  expect(note.y).toBeGreaterThan(m.storyBottom);
-  expect(Math.abs(m.navTop - note.y - note.height - 40)).toBeLessThanOrEqual(1);
+  await expect(
+    page.getByRole("complementary", { name: "Key idea" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("complementary", { name: "Your first task" }),
+  ).toBeVisible();
+  const m = await page.evaluate(() => {
+    const one = (s: string) => {
+      const found = document.querySelectorAll(s);
+      if (found.length !== 1) throw new Error(`${s}: ${found.length} matches`);
+      return found[0];
+    };
+    const box = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, width: r.width };
+    };
+    return {
+      grid: box(one(".lesson-story-grid")),
+      plate: box(one(".lesson-story-plate > figure")),
+      notes: Array.from(
+        document.querySelectorAll("[data-testid='briefing-takeaway']"),
+        (el) => ({ part: el.getAttribute("data-part"), ...box(el) }),
+      ),
+      slots: document.querySelectorAll("[data-post-scene]").length,
+      navTop: one("[data-testid='lesson-nav']").getBoundingClientRect().top,
+    };
+  });
+  expect(m.notes.map((note) => note.part)).toEqual(["idea", "task"]);
+  const [idea, task] = m.notes;
+  expect(m.slots).toBe(0);
+  // Each note spans the story grid, under the picture.
+  for (const note of m.notes) {
+    expect(Math.abs(note.left - m.grid.left)).toBeLessThanOrEqual(1);
+    expect(Math.abs(note.width - m.grid.width)).toBeLessThanOrEqual(1);
+  }
+  expect(Math.abs(idea.top - m.plate.bottom - sectionGap)).toBeLessThanOrEqual(
+    1,
+  );
+  expect(Math.abs(task.top - idea.bottom - sectionGap)).toBeLessThanOrEqual(1);
+  expect(Math.abs(m.navTop - task.bottom - sectionGap)).toBeLessThanOrEqual(1);
 }
 
-// A stacked dialogue beat after the first heading of lesson 1's real reading
-// grid. The Concept step shows 12 such beats, in 11 paid lessons the suite
-// cannot open. The element carries the attributes and classes the Dialogue
-// component gives its stacked layout, and a line long enough to fill the
-// 440 px beat.
-function injectStackedBeat(page: Page) {
+// A dialogue beat after the first heading of lesson 1's real reading grid.
+// The Concept step shows such beats in paid lessons the suite cannot open.
+// Since clarity fix 17 (2026-10-14) Deep Orbit renders every Dialogue as a
+// speech surface (lesson-dialogue.css), so the element carries the
+// attributes and markup the Dialogue component gives that layout, and a line
+// long enough to wrap.
+function injectDialogueBeat(page: Page) {
   return page
     .locator('.lesson-step-content[data-layout="reading"]')
     .evaluate((g) => {
       const beat = document.createElement("div");
+      beat.className = "tc-dialogue-speech";
       beat.setAttribute("data-dialogue", "true");
-      beat.setAttribute("data-layout", "stack");
-      beat.className = "mb-7 mx-auto max-w-[440px]";
+      beat.setAttribute("data-layout", "speech");
+      const header = document.createElement("div");
+      header.setAttribute("data-dialogue-row", "");
+      header.setAttribute("data-dialogue-header", "");
+      const speaker = document.createElement("div");
+      speaker.setAttribute("data-dialogue-speaker", "");
+      speaker.textContent = "Dr. Farah";
+      header.append(speaker);
+      const text = document.createElement("div");
+      text.setAttribute("data-dialogue-text", "");
       const line = document.createElement("p");
       line.textContent =
         "The thermal channel reads in the thirties and signal strength lives under one, so a raw feed lets temperature carry the whole story.";
-      beat.append(line);
+      text.append(line);
+      beat.append(header, text);
       g.querySelector(":scope > h2")!.after(beat);
       const gr = g.getBoundingClientRect();
       const br = beat.getBoundingClientRect();
@@ -189,43 +270,46 @@ function injectStackedBeat(page: Page) {
     });
 }
 
-// The Challenge tracks (spec section 4, amended): instructions on
-// min(440 px, 38% of the content width), the editor on the rest after the
-// 40 px gutter. Read from the two grid items. The instructions item fills
-// its track; the editor pane reaches 20 px into the gutter (lg:-ml-5 with
-// lg:pl-5, which centres its divider in the gutter), so its track is its
-// width less those 20 px.
-function challengeSplit(page: Page) {
+// The Deep Orbit Challenge stacks its two grid items in one full-width
+// column at every width (orbit-challenge-grid, clarity fix 16 and 17): the
+// instructions, then the one editor pane a section gap below, 48 px from
+// 640 px. Read from the two grid items.
+function challengeStack(page: Page) {
   return page.evaluate(() => {
     const one = (s: string) => {
       const found = document.querySelectorAll(s);
       if (found.length !== 1) throw new Error(`${s}: ${found.length} matches`);
       return found[0];
     };
-    const grid = one("[data-testid='lesson-grid']").getBoundingClientRect();
-    const paneEl = one("[data-testid='lesson-right'][data-kind='pane']");
-    const pane = paneEl.getBoundingClientRect();
-    const instructions = paneEl.previousElementSibling!.getBoundingClientRect();
+    const box = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, width: r.width };
+    };
+    const grid = one("[data-testid='lesson-grid']");
+    const pane = one("[data-testid='lesson-right'][data-kind='pane']");
     return {
-      content: grid.width,
-      instructions: instructions.width,
-      pane: pane.width,
-      // Where the pane starts, from the instructions track's right edge.
-      paneOffset: pane.left - instructions.right,
+      tracks: getComputedStyle(grid).gridTemplateColumns.split(" ").length,
+      grid: box(grid),
+      instructions: box(pane.previousElementSibling!),
+      pane: box(pane),
     };
   });
 }
 
-async function expectChallengeSplit(page: Page) {
+async function expectChallengeStack(page: Page) {
   // The tensor introduction uses the continuous workspace, covered in
-  // challenge-workspace.spec.ts. Keep the other lessons' split contract.
+  // challenge-workspace.spec.ts. The other lessons share this stack.
   await openStep(page, LESSONS.headingLed, 2);
-  const m = await challengeSplit(page);
-  const instructions = Math.min(440, 0.38 * m.content);
-  expect(Math.abs(m.instructions - instructions)).toBeLessThanOrEqual(1);
-  expect(Math.abs(m.paneOffset - 20)).toBeLessThanOrEqual(1);
-  const editor = m.content - m.instructions - 40;
-  expect(Math.abs(m.pane - 20 - editor)).toBeLessThanOrEqual(1);
+  const m = await challengeStack(page);
+  expect(m.tracks).toBe(1);
+  for (const item of [m.instructions, m.pane]) {
+    expect(Math.abs(item.left - m.grid.left)).toBeLessThanOrEqual(1);
+    expect(Math.abs(item.width - m.grid.width)).toBeLessThanOrEqual(1);
+  }
+  expect(Math.abs(m.instructions.top - m.grid.top)).toBeLessThanOrEqual(1);
+  expect(Math.abs(m.pane.top - m.instructions.bottom - 48)).toBeLessThanOrEqual(
+    1,
+  );
 }
 
 test.describe("lesson layout, desktop", () => {
@@ -262,7 +346,7 @@ test.describe("lesson layout, desktop", () => {
   }
 
   for (const [name, path] of Object.entries(LESSONS)) {
-    test(`the plate sits beside the first beat on the ${name} lesson`, async ({
+    test(`the story leads into the full-width plate on the ${name} lesson`, async ({
       page,
     }) => {
       await openStep(page, path, 0);
@@ -273,44 +357,62 @@ test.describe("lesson layout, desktop", () => {
             throw new Error(`${s}: ${found.length} matches`);
           return found[0];
         };
-        const plate = one(".lesson-story-plate").getBoundingClientRect();
+        const box = (el: Element) => {
+          const r = el.getBoundingClientRect();
+          return { top: r.top, bottom: r.bottom, left: r.left, width: r.width };
+        };
+        // The story's painted blocks: the passages and dialogue before the
+        // first heading. The teaching body stays mounted there, hidden.
+        const story = [
+          ...one(".briefing-story-intro > .lesson-step-content").children,
+        ].filter((el) => el.getBoundingClientRect().height > 0);
         // The first beat in DOM order is the story's first Dialogue.
-        const beat = document
-          .querySelector(".lesson-story-grid [data-dialogue]")!
-          .getBoundingClientRect();
-        const first = [
-          ...one(".lesson-story-grid > .lesson-step-content").children,
-        ].find((el) => el.getBoundingClientRect().height > 0)!;
+        const beat = story.find((el) => el.matches("[data-dialogue]"));
         return {
-          plateTop: plate.top,
-          plateRight: plate.right,
-          beatLeft: beat.left,
-          storyTop: first.getBoundingClientRect().top,
           contextBottom: one(
             "[data-testid='scene-context']",
           ).getBoundingClientRect().bottom,
+          story: story.map(box),
+          beat: beat ? box(beat) : null,
+          plate: box(one(".lesson-story-plate > figure")),
+          grid: box(one(".lesson-story-grid")),
         };
       });
-      // Context leads into the picture and dialogue with one 24 px gap,
-      // regardless of the course introduction or guest notice above it.
-      expect(Math.abs(m.plateTop - m.contextBottom - 24)).toBeLessThanOrEqual(
-        1,
-      );
-      expect(m.beatLeft).toBeGreaterThan(m.plateRight);
-      // The story's first painted block starts level with the picture. On
-      // lesson 1 that block is the first Dialogue; lesson 2 opens on the
-      // sensor-log blockquote, so this reads the block, not the beat.
-      expect(Math.abs(m.storyTop - m.plateTop)).toBeLessThanOrEqual(1);
+      // The Briefing reads from the story to the scene to the task
+      // (lesson-briefing.css, clarity fix 16). The scene context leads into
+      // the story with one beat gap (32 px) whatever sits above it, and every
+      // story block spans the frame.
+      expect(m.story.length).toBeGreaterThan(0);
+      expect(m.beat).not.toBeNull();
+      const first = m.story[0];
+      const last = m.story[m.story.length - 1];
+      expect(Math.abs(first.top - m.contextBottom - 32)).toBeLessThanOrEqual(1);
+      for (const block of m.story) {
+        expect(Math.abs(block.left - m.grid.left)).toBeLessThanOrEqual(1);
+        expect(Math.abs(block.width - m.grid.width)).toBeLessThanOrEqual(1);
+      }
+      // The first beat reads before the picture, not beside it, and the
+      // picture follows the story's last block a section gap (48 px) below,
+      // as wide as the story.
+      expect(m.beat!.bottom).toBeLessThan(m.plate.top);
+      expect(Math.abs(m.plate.top - last.bottom - 48)).toBeLessThanOrEqual(1);
+      expect(Math.abs(m.plate.left - m.grid.left)).toBeLessThanOrEqual(1);
+      expect(Math.abs(m.plate.width - m.grid.width)).toBeLessThanOrEqual(1);
     });
   }
 
-  test("adjacent row beats sit --l-beat apart", async ({ page }) => {
+  test("adjacent dialogue beats sit --lesson-beat-gap apart", async ({
+    page,
+  }) => {
     await openStep(page, LESSONS.paragraphLed, 0);
-    // Beat gap (spec section 6: --l-beat is 16 px). Measured from the lower
-    // of the first beat's last line and its avatar cell, not from the beat's
-    // own box: a stray paragraph margin inside the row's text cell stretches
-    // that box, so a box-to-box reading shows 16 even when beats sit 43 apart.
-    const gap = await page.evaluate(() => {
+    // Every Deep Orbit beat is a bordered speech surface (lesson-dialogue.css,
+    // clarity fix 17), and the story stack spaces its blocks with
+    // --lesson-beat-gap, 32 px from 640 px. The surfaces paint their own
+    // edges, so the gap is read between them. A stray paragraph margin inside
+    // a beat would stretch its surface instead, so the beat's last line must
+    // also sit exactly the surface's bottom padding and border (32 + 1 px)
+    // above its edge.
+    const m = await page.evaluate(() => {
       const painted = (el: Element | null) =>
         !!el && el.getBoundingClientRect().height > 0;
       // Painted beats only: the Briefing keeps a lesson's mid-lesson
@@ -318,7 +420,7 @@ test.describe("lesson layout, desktop", () => {
       // selector alone walks those too. The first two with nothing between
       // them: a stage direction between two beats would add its own height.
       const first = [
-        ...document.querySelectorAll(".lesson-story-grid [data-dialogue]"),
+        ...document.querySelectorAll(".briefing-story-intro [data-dialogue]"),
       ].find(
         (b) =>
           painted(b) &&
@@ -326,29 +428,28 @@ test.describe("lesson layout, desktop", () => {
           painted(b.nextElementSibling),
       );
       if (!first) return null;
-      const lines = first.querySelectorAll("p");
+      const lines = first.querySelectorAll("[data-dialogue-text] p");
       const line = lines[lines.length - 1];
-      const avatar = first.querySelector(
-        "[data-dialogue-row]",
-      )?.firstElementChild;
-      if (!line || !avatar) return null;
-      const bottom = Math.max(
-        line.getBoundingClientRect().bottom,
-        avatar.getBoundingClientRect().bottom,
-      );
-      return first.nextElementSibling!.getBoundingClientRect().top - bottom;
+      if (!line) return null;
+      const beat = first.getBoundingClientRect();
+      return {
+        gap:
+          first.nextElementSibling!.getBoundingClientRect().top - beat.bottom,
+        inset: beat.bottom - line.getBoundingClientRect().bottom,
+      };
     });
     // null means no two adjacent painted beats in this lesson's story zone;
     // switch LESSONS.paragraphLed for a lesson that has them rather than
     // drop this.
-    expect(gap).not.toBeNull();
-    expect(Math.abs((gap ?? 0) - 16)).toBeLessThanOrEqual(2);
+    expect(m).not.toBeNull();
+    expect(Math.abs(m!.gap - 32)).toBeLessThanOrEqual(2);
+    expect(Math.abs(m!.inset - 33)).toBeLessThanOrEqual(1);
   });
 
-  test("a fresh guest's learning note ends --l-nav-top above the nav at 1,440 px", async ({
+  test("a fresh guest's learning notes end --l-nav-top above the nav at 1,440 px", async ({
     page,
   }) => {
-    await freshGuestStoryEnd(page);
+    await freshGuestStoryEnd(page, 48);
   });
 
   test("a due warm-up sits --l-slot below the story", async ({ page }) => {
@@ -359,7 +460,8 @@ test.describe("lesson layout, desktop", () => {
     await expect(page.getByRole("region", { name: /Warm-up/ })).toBeVisible();
     const m = await storyEdges(page);
     expect(m.slotTop).not.toBeNull();
-    expect(Math.abs(m.slotTop! - m.storyBottom - 24)).toBeLessThanOrEqual(1);
+    // Deep Orbit's --l-slot is its section gap, 48 px at this width.
+    expect(Math.abs(m.slotTop! - m.storyBottom - 48)).toBeLessThanOrEqual(1);
   });
 
   test("with no scene picture the story grid is one column", async ({
@@ -377,21 +479,34 @@ test.describe("lesson layout, desktop", () => {
           throw new Error(`${s}: ${found.length} matches`);
         return found[0];
       };
+      const grid = one(".lesson-story-grid");
+      const g = grid.getBoundingClientRect();
+      const column = one(
+        ".lesson-story-grid > .briefing-reading-column",
+      ).getBoundingClientRect();
       return {
-        gridLeft: one(".lesson-story-grid").getBoundingClientRect().left,
-        beatLeft: document
-          .querySelector(".lesson-story-grid [data-dialogue]")!
-          .getBoundingClientRect().left,
-        columnWidth: one(
-          ".lesson-story-grid > .lesson-step-content",
-        ).getBoundingClientRect().width,
+        tracks: getComputedStyle(grid).gridTemplateColumns.split(" ").length,
+        plateShown: one(".lesson-story-plate").getClientRects().length > 0,
+        gridLeft: g.left,
+        gridTop: g.top,
+        gridWidth: g.width,
+        noteLeft: one(
+          "[data-testid='briefing-takeaway'][data-part='idea']",
+        ).getBoundingClientRect().left,
+        columnTop: column.top,
+        columnWidth: column.width,
       };
     });
-    // One column: the first beat starts at the grid's left edge, below the
-    // stage direction, instead of beside an empty picture column. The grid
-    // container spans the frame; its single track is the 820 px column.
-    expect(Math.abs(m.beatLeft - m.gridLeft)).toBeLessThanOrEqual(1);
-    expect(m.columnWidth).toBeLessThanOrEqual(820);
+    // One column: the empty plate takes no track, row or gap, so the
+    // learning notes start at the grid's top left corner instead of under an
+    // empty picture. Since adjust width (2026-10-12) the single track spans
+    // the frame: 1,440 px less its two 48 px gutters.
+    expect(m.plateShown).toBe(false);
+    expect(m.tracks).toBe(1);
+    expect(Math.abs(m.noteLeft - m.gridLeft)).toBeLessThanOrEqual(1);
+    expect(Math.abs(m.columnTop - m.gridTop)).toBeLessThanOrEqual(1);
+    expect(m.gridWidth).toBe(1344);
+    expect(Math.abs(m.columnWidth - m.gridWidth)).toBeLessThanOrEqual(1);
   });
 
   for (const [name, path] of Object.entries(LESSONS)) {
@@ -419,7 +534,9 @@ test.describe("lesson layout, desktop", () => {
             })
             .filter((r) => r.height > 0),
         }));
-      expect(width).toBe(820);
+      // The reading column spans the frame (adjust width, 2026-10-12): 1,440
+      // px less the frame's two 48 px gutters.
+      expect(width).toBe(1344);
       const cardCount = rows.filter((r) => r.aside).length;
       if (name === "paragraphLed") expect(cardCount).toBe(0);
       else expect(cardCount).toBeGreaterThan(0);
@@ -427,7 +544,10 @@ test.describe("lesson layout, desktop", () => {
         expect(Math.abs(row.left - left)).toBeLessThanOrEqual(1);
         expect(Math.abs(row.width - width)).toBeLessThanOrEqual(1);
         if (i > 0) {
-          const gap = row.heading ? 40 : 24;
+          // Deep Orbit's reading rhythm (deep-orbit-lessons.css): the
+          // content gap (24 px) between blocks, and the section gap (48 px)
+          // above a heading that starts a new section.
+          const gap = row.heading ? 48 : 24;
           expect(
             Math.abs(row.top - rows[i - 1].bottom - gap),
           ).toBeLessThanOrEqual(1);
@@ -499,8 +619,9 @@ test.describe("lesson layout, desktop", () => {
     await expect(
       read.getByText("score-the-scaled-input.ts", { exact: true }),
     ).toBeVisible();
+    // Content fix 12 (2026-10-19) named the section for what it covers.
     await expect(
-      read.getByRole("heading", { name: "Compare with min-max scaling" }),
+      read.getByRole("heading", { name: "Min-max scaling" }),
     ).toBeVisible();
     expect(
       await read
@@ -509,24 +630,25 @@ test.describe("lesson layout, desktop", () => {
     ).toBe(false);
   });
 
-  test("a stacked dialogue beat centres on the 820 px text measure", async ({
+  test("a dialogue beat spans the reading column at 1,440 px", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
-    const m = await injectStackedBeat(page);
-    // (820 - 440) / 2 = 190 px in from the grid's left, the centre of the
-    // reading column.
-    expect(Math.abs(m.left - (m.gridLeft + 190))).toBeLessThanOrEqual(1);
-    expect(Math.abs(m.width - 440)).toBeLessThanOrEqual(1);
+    const m = await injectDialogueBeat(page);
+    // A speech beat in the reading grid starts at its left edge and spans
+    // it (deep-orbit-lessons.css), like every other block in the column.
+    expect(m.gridWidth).toBe(1344);
+    expect(Math.abs(m.left - m.gridLeft)).toBeLessThanOrEqual(1);
+    expect(Math.abs(m.width - m.gridWidth)).toBeLessThanOrEqual(1);
   });
 
-  test("the Challenge instructions take min(440 px, 38%) and the editor the rest", async ({
+  test("the Challenge instructions and the editor stack full width, a section gap apart", async ({
     page,
   }) => {
-    await expectChallengeSplit(page);
+    await expectChallengeStack(page);
   });
 
-  for (const [name, path] of Object.entries(EXAMPLE_LESSONS)) {
+  for (const [name, { path, code }] of Object.entries(EXAMPLE_LESSONS)) {
     test(`Concept keeps code in context on the ${name} lesson`, async ({
       page,
     }) => {
@@ -535,11 +657,7 @@ test.describe("lesson layout, desktop", () => {
         page.getByRole("button", { name: /^Step .*Code/ }),
       ).toHaveCount(0);
       await expect(page.getByTestId("lesson-workbench")).toBeVisible();
-      await expect(
-        page
-          .locator('.lesson-step-content[data-layout="reading"] pre:visible')
-          .first(),
-      ).toBeVisible();
+      await expect(page.locator(`${code}:visible`).first()).toBeVisible();
       await expect(page.getByTestId("lesson-right")).toHaveCount(0);
       expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
     });
@@ -590,9 +708,11 @@ test.describe("lesson layout, desktop", () => {
     await openStep(page, LESSONS.paragraphLed, 3);
     await expect(page.getByTestId("takeaways-prose")).toHaveCount(0);
     await expect(page.getByTestId("lesson-terms-list")).toHaveCount(0);
+    // Inside the Deep Orbit lesson layout the recall card's bail button
+    // reads "Show an explanation" (checked-recall-card.tsx, clarity fix 14).
     await page
-      .getByRole("button", { name: /recall it/i })
-      .first()
+      .getByRole("form", { name: "Knowledge check" })
+      .getByRole("button", { name: "Show an explanation", exact: true })
       .click();
     await expect(page.getByTestId("takeaways-prose")).toBeVisible();
     const m = await page.evaluate(() => {
@@ -618,21 +738,33 @@ test.describe("lesson layout, desktop", () => {
     await openStep(page, LESSONS.paragraphLed, 3);
     await expect(page.getByTestId("takeaways-prose")).toBeVisible();
     await expect(page.getByTestId("lesson-terms-list")).toBeVisible();
-    // The card is back in its prompt state, for practice.
+    // The card is back in its prompt state, for practice: it still offers
+    // its explanation (the Deep Orbit card's bail button).
     await expect(
-      page.getByRole("button", { name: /recall it/i }).first(),
+      page
+        .getByRole("form", { name: "Knowledge check" })
+        .getByRole("button", { name: "Show an explanation", exact: true }),
     ).toBeVisible();
   });
 
-  // Owner, 2026-10-10: Takeaways uses the whole frame, the step bar alone
-  // names the step, and the terms list is one row per term.
-  test("Takeaways spans the frame: no step label, a two-column recap, one row per term", async ({
+  // Owner, 2026-10-10: Takeaways uses the whole frame and the step bar alone
+  // names the step. Since clarity fix 14 and 17 (2026-10-12 and 14) the Deep
+  // Orbit recap stacks its copy over its figure, and the terms list is a
+  // "Review lesson terms" disclosure that shows one chosen term at a time.
+  test("Takeaways spans the frame: no step label, a stacked recap, one term at a time", async ({
     page,
   }) => {
     await openSettledTakeaways(page, LESSONS.paragraphLed);
     await expect(
       page.getByRole("group", { name: /^Step 4 of 5/ }).getByText(/takeaways/i),
     ).toHaveCount(0);
+    const terms = page.getByTestId("lesson-terms-list");
+    await expect(terms).not.toHaveAttribute("open");
+    await terms.getByRole("heading", { name: "Review lesson terms" }).click();
+    await expect(terms).toHaveAttribute("open", "");
+    await expect(
+      terms.getByRole("button", { name: "Tensor", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
     const m = await page.evaluate(() => {
       const one = (s: string) => {
         const found = document.querySelectorAll(s);
@@ -642,99 +774,138 @@ test.describe("lesson layout, desktop", () => {
       };
       const box = (el: Element) => {
         const r = el.getBoundingClientRect();
-        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom };
+        return { left: r.left, top: r.top, bottom: r.bottom, width: r.width };
       };
-      const width = (s: string) => one(s).getBoundingClientRect().width;
-      const [learned, bridge, nextAbility] = Array.from(
-        one(".lesson-recap-sections").children,
-        box,
-      );
-      const [term, definition, source] = Array.from(
-        one("[data-testid='glossary-entry-tensor']").children,
-        box,
-      );
+      const entry = one("[data-testid='glossary-entry-tensor']");
       return {
-        grid: width("[data-testid='lesson-grid']"),
-        widths: [
-          width("[data-testid='takeaways-recall']"),
-          width(".lesson-recap"),
-          width("[data-testid='lesson-terms-list']"),
-        ],
-        learned,
-        bridge,
-        nextAbility,
-        term,
-        definition,
-        source,
+        grid: box(one("[data-testid='lesson-grid']")),
+        // The step's three sections, in reading order.
+        sections: [
+          "[data-testid='takeaways-recall']",
+          "[data-testid='takeaways-prose']",
+          "[data-testid='lesson-terms-list']",
+        ].map((s) => box(one(s))),
+        recap: box(one(".orbit-recap")),
+        copy: box(one(".orbit-recap-copy")),
+        figure: box(one(".orbit-recap-layout > figure")),
+        // The chosen term's definition, example and reading, then the
+        // illustration that follows them.
+        entry: Array.from(entry.children, box),
+        illustration: box(entry.nextElementSibling!),
         labels: Array.from(
-          document.querySelectorAll(".lesson-recap-label, .review-prompt-note"),
+          document.querySelectorAll(".review-prompt-note"),
           (el) => getComputedStyle(el).fontSize,
         ),
       };
     });
-    for (const width of m.widths) {
-      expect(Math.abs(width - m.grid)).toBeLessThanOrEqual(1);
+    for (const section of [...m.sections, m.recap]) {
+      expect(Math.abs(section.left - m.grid.left)).toBeLessThanOrEqual(1);
+      expect(Math.abs(section.width - m.grid.width)).toBeLessThanOrEqual(1);
     }
-    // The learned list on the left; the bridge beside it, top-aligned, and
-    // the next ability right under the bridge.
-    expect(m.bridge.left).toBeGreaterThanOrEqual(m.learned.right + 40);
-    expect(Math.abs(m.bridge.top - m.learned.top)).toBeLessThanOrEqual(1);
-    expect(m.nextAbility.top - m.bridge.bottom).toBeGreaterThanOrEqual(0);
-    expect(m.nextAbility.top - m.bridge.bottom).toBeLessThanOrEqual(24);
-    // Headword, definition and reading share one row, left to right.
-    expect(Math.abs(m.definition.top - m.term.top)).toBeLessThanOrEqual(1);
-    expect(Math.abs(m.source.top - m.term.top)).toBeLessThanOrEqual(1);
-    expect(m.definition.left).toBeGreaterThan(m.term.right);
-    expect(m.source.left).toBeGreaterThan(m.definition.right);
-    // The prose p rule no longer sets these 12 px labels at body size.
-    expect(m.labels).toEqual(["12px", "12px", "12px", "12px"]);
+    // The recall card, the recap and the terms list stack a section gap
+    // (48 px) apart.
+    for (let i = 1; i < m.sections.length; i++) {
+      expect(
+        Math.abs(m.sections[i].top - m.sections[i - 1].bottom - 48),
+      ).toBeLessThanOrEqual(1);
+    }
+    // The recap's copy, then its figure 32 px below, each as wide as the
+    // recap.
+    for (const part of [m.copy, m.figure]) {
+      expect(Math.abs(part.left - m.recap.left)).toBeLessThanOrEqual(1);
+      expect(Math.abs(part.width - m.recap.width)).toBeLessThanOrEqual(1);
+    }
+    expect(Math.abs(m.figure.top - m.copy.bottom - 32)).toBeLessThanOrEqual(1);
+    // Definition, example and reading share one column, one per row, and
+    // the illustration follows them.
+    expect(m.entry).toHaveLength(3);
+    for (let i = 1; i < m.entry.length; i++) {
+      expect(m.entry[i].top).toBeGreaterThanOrEqual(m.entry[i - 1].bottom);
+      expect(Math.abs(m.entry[i].left - m.entry[0].left)).toBeLessThanOrEqual(
+        1,
+      );
+    }
+    expect(m.illustration.top).toBeGreaterThan(m.entry[2].bottom);
 
-    // The revealed answer keeps a readable measure inside its full-width
-    // panel.
-    await page
-      .getByRole("button", { name: /recall it/i })
-      .first()
+    // Show an explanation settles the card, announces it, and reveals each
+    // check's expected answer in a panel across the card. Deep Orbit dropped
+    // its reading measures (clarity fix 19, 2026-10-14), so each panel's text
+    // runs the panel's full content width.
+    const check = page.getByRole("form", { name: "Knowledge check" });
+    await check
+      .getByRole("button", { name: "Show an explanation", exact: true })
       .click();
-    const answer = page.locator(".review-prompt-answer");
-    await expect(answer).toBeVisible();
-    const [text, panel] = await answer.evaluate((el) => {
-      const style = getComputedStyle(el);
-      return [
-        el.clientWidth -
-          parseFloat(style.paddingLeft) -
-          parseFloat(style.paddingRight),
-        el.getBoundingClientRect().width,
-      ];
-    });
-    expect(text).toBeLessThan(720);
-    expect(panel).toBeGreaterThan(1100);
+    await expect(check.getByRole("status")).toHaveText(
+      "Answers revealed. Read each explanation before continuing.",
+    );
+    const answers = check.locator("[data-feedback-state='neutral']");
+    await expect(answers).toHaveCount(2);
+    await expect(answers.nth(0)).toContainText("Expected answer: [12].");
+    await expect(answers.nth(1)).toContainText(
+      "Expected answer: No, it only creates a tensor.",
+    );
+    const panels = await answers.evaluateAll((els) =>
+      els.map((el) => {
+        const style = getComputedStyle(el);
+        return {
+          panel: el.getBoundingClientRect().width,
+          content:
+            el.clientWidth -
+            parseFloat(style.paddingLeft) -
+            parseFloat(style.paddingRight),
+          text: Math.max(
+            ...Array.from(
+              el.querySelectorAll("p"),
+              (p) => p.getBoundingClientRect().width,
+            ),
+          ),
+        };
+      }),
+    );
+    for (const { panel, content, text } of panels) {
+      expect(panel).toBeGreaterThan(1100);
+      expect(Math.abs(text - content)).toBeLessThanOrEqual(1);
+    }
+
+    // The card's two notes keep the 14 px the Deep Orbit check card sets for
+    // them (deep-orbit-takeaways.css): the shared prose p rule must not set
+    // them at body size. Last, so the layout checks above always run.
+    expect(m.labels).toEqual(["14px", "14px"]);
   });
 
-  test("a room-project checkpoint keeps its reading measure on the full-width step", async ({
+  test("a room-project checkpoint spans the full-width step, its heading at the card's top", async ({
     page,
   }) => {
     await openSettledTakeaways(page, SPANNING_LESSON);
     const m = await page.evaluate(() => {
       const card = document.querySelector(".project-milestone")!;
+      const style = getComputedStyle(card);
       const top = card.getBoundingClientRect().top;
       return {
         card: card.getBoundingClientRect().width,
-        text: Math.max(
-          ...Array.from(
-            card.querySelectorAll(":scope > p"),
-            (p) => p.getBoundingClientRect().width,
-          ),
+        content:
+          card.clientWidth -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight),
+        text: Array.from(
+          card.querySelectorAll(":scope > p"),
+          (p) => p.getBoundingClientRect().width,
         ),
         heading: card.querySelector("h3")!.getBoundingClientRect().top - top,
       };
     });
     expect(m.card).toBeGreaterThan(1100);
-    expect(m.text).toBeLessThanOrEqual(800);
+    // Deep Orbit dropped its reading measures (clarity fix 19), so the
+    // checkpoint's text runs the card's full content width.
+    expect(m.text.length).toBeGreaterThan(0);
+    for (const width of m.text) {
+      expect(Math.abs(width - m.content)).toBeLessThanOrEqual(1);
+    }
     // The card's 16 px padding and border, with no prose margin above.
     expect(m.heading).toBeLessThanOrEqual(18);
   });
 
-  test("on the Concept step the nav sits 40 px below the reading, with Continue at the frame's right edge", async ({
+  test("on the Concept step the nav sits --l-nav-top below the reading, with Continue at the frame's right edge", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
@@ -759,7 +930,8 @@ test.describe("lesson layout, desktop", () => {
         frameRight: frame.right,
       };
     });
-    expect(Math.abs(m.navTop - m.last - 40)).toBeLessThanOrEqual(2);
+    // Deep Orbit's --l-nav-top is its section gap, 48 px at this width.
+    expect(Math.abs(m.navTop - m.last - 48)).toBeLessThanOrEqual(2);
     // Continue sits in the nav row, under its hairline, at the frame's
     // right content edge (the frame's 48 px padding).
     expect(m.goTop).toBeGreaterThan(m.navTop);
@@ -871,7 +1043,9 @@ test.describe("lesson layout, narrow desktop", () => {
           }),
         };
       });
-    expect(m.width).toBe(820);
+    // The reading column spans the frame: 1,024 px less its two 48 px
+    // gutters.
+    expect(m.width).toBe(928);
     expect(m.cards.length).toBeGreaterThan(0);
     for (const card of m.cards) {
       expect(card.width).toBe(m.width);
@@ -880,10 +1054,10 @@ test.describe("lesson layout, narrow desktop", () => {
     }
   });
 
-  test("the Challenge instructions take min(440 px, 38%) and the editor the rest", async ({
+  test("the Challenge instructions and the editor stack full width, a section gap apart", async ({
     page,
   }) => {
-    await expectChallengeSplit(page);
+    await expectChallengeStack(page);
   });
 
   test("no step label is clipped at the narrowest desktop width", async ({
@@ -904,24 +1078,23 @@ test.describe("lesson layout, narrow desktop", () => {
 test.describe("lesson layout, phone", () => {
   test.use({ viewport: { width: 390, height: 844 }, colorScheme: "dark" });
 
-  test("a fresh guest's learning note ends --l-nav-top above the nav at 390 px", async ({
+  test("a fresh guest's learning notes end --l-nav-top above the nav at 390 px", async ({
     page,
   }) => {
-    // One column here, so the beats column is always the story's last row.
-    await freshGuestStoryEnd(page);
+    // Deep Orbit's section gap is 32 px below 640 px.
+    await freshGuestStoryEnd(page, 32);
   });
 
-  test("a stacked dialogue beat fills the grid's width at 390 px", async ({
+  test("a dialogue beat fills the reading column at 390 px", async ({
     page,
   }) => {
     await openStep(page, LESSONS.paragraphLed, 1);
-    const m = await injectStackedBeat(page);
-    // The measure is narrower than the beat here, so it fills the column.
+    const m = await injectDialogueBeat(page);
     expect(Math.abs(m.left - m.gridLeft)).toBeLessThanOrEqual(1);
     expect(Math.abs(m.width - m.gridWidth)).toBeLessThanOrEqual(1);
   });
 
-  test("on the Challenge step's Instructions view the nav sits 40 px below the hint panel", async ({
+  test("on the Challenge step the hint panel ends the instructions, a section gap above the editor and the nav", async ({
     page,
   }) => {
     await openStep(page, LESSONS.headingLed, 2);
@@ -932,20 +1105,36 @@ test.describe("lesson layout, phone", () => {
           throw new Error(`${s}: ${found.length} matches`);
         return found[0];
       };
-      // The Instructions view is the phone default; the hint panel is the
-      // last block of the instructions column and paints a bordered box.
-      const panel = one(
-        "[role='group'][aria-label^='Step 3'] .lesson-step-content > :last-child",
-      ).getBoundingClientRect();
+      const box = (el: Element) => {
+        const r = el.getBoundingClientRect();
+        return { top: r.top, bottom: r.bottom, height: r.height };
+      };
+      // Deep Orbit shows the instructions and the editor together, one
+      // under the other, with no Instructions and Editor toggle (clarity
+      // fix 17). The hint panel is the instructions column's last painted
+      // block: the column keeps the lesson's other prose mounted, hidden.
+      const pane = one("[data-testid='lesson-right'][data-kind='pane']");
+      const column = pane.previousElementSibling!;
+      const blocks = [
+        ...column.querySelectorAll(".lesson-step-content > *"),
+      ].filter((el) => el.getBoundingClientRect().height > 0);
+      const hint = blocks[blocks.length - 1];
       return {
-        panelHeight: panel.height,
-        gap:
-          one("[data-testid='lesson-nav']").getBoundingClientRect().top -
-          panel.bottom,
+        hintAction: hint.querySelector("button")?.textContent ?? null,
+        hint: box(hint),
+        column: box(column),
+        pane: box(pane),
+        navTop: one("[data-testid='lesson-nav']").getBoundingClientRect().top,
       };
     });
-    expect(m.panelHeight).toBeGreaterThan(0);
-    expect(Math.abs(m.gap - 40)).toBeLessThanOrEqual(2);
+    expect(m.hintAction).toBe("Get a nudge");
+    expect(m.hint.height).toBeGreaterThan(0);
+    // The panel ends the column with no trailing margin, the editor pane
+    // follows a section gap (32 px below 640 px) under it, and the nav sits
+    // --l-nav-top, the same 32 px, under the editor.
+    expect(Math.abs(m.column.bottom - m.hint.bottom)).toBeLessThanOrEqual(1);
+    expect(Math.abs(m.pane.top - m.hint.bottom - 32)).toBeLessThanOrEqual(2);
+    expect(Math.abs(m.navTop - m.pane.bottom - 32)).toBeLessThanOrEqual(2);
   });
 
   for (const [name, path] of Object.entries(LESSONS)) {
@@ -953,9 +1142,10 @@ test.describe("lesson layout, phone", () => {
       page,
     }) => {
       await openStep(page, path, 1);
-      // One column below 1,024 px: a companion starts at its block's left
-      // edge, spans the grid, and sits a row gap (24 px) below the block.
-      // Reading order alone would pass a companion placed beside its block.
+      // One column: a companion starts at its block's left edge, spans the
+      // grid, and sits one content gap below the block. Deep Orbit's
+      // --lesson-content-gap is 20 px below 640 px. Reading order alone
+      // would pass a companion placed beside its block.
       const companions = await page
         .locator('.lesson-step-content[data-layout="reading"]')
         .evaluate((g) => {
@@ -970,7 +1160,13 @@ test.describe("lesson layout, phone", () => {
             const p = prev ? prev.getBoundingClientRect() : null;
             return [
               {
-                prevTag: prev ? prev.tagName.toLowerCase() : null,
+                // A companion the build could not pair stays after the
+                // companion before it (rehype-pair-companions.ts).
+                prev: !prev
+                  ? null
+                  : prev.hasAttribute("data-aside")
+                    ? "companion"
+                    : prev.tagName.toLowerCase(),
                 leftDelta: p ? c.left - p.left : null,
                 width: c.width,
                 gridWidth: grid.width,
@@ -981,13 +1177,17 @@ test.describe("lesson layout, phone", () => {
           });
         });
       if (name === "paragraphLed") expect(companions).toHaveLength(0);
-      else expect(companions.length).toBeGreaterThan(0);
+      else {
+        expect(companions.length).toBeGreaterThan(0);
+        // The first companion pairs with the prose block it follows.
+        expect(["p", "ul", "ol", "blockquote"]).toContain(companions[0].prev);
+      }
       for (const c of companions) {
-        expect(["p", "ul", "ol", "blockquote"]).toContain(c.prevTag);
+        expect(["p", "ul", "ol", "blockquote", "companion"]).toContain(c.prev);
         expect(Math.abs(c.leftDelta!)).toBeLessThanOrEqual(1);
         expect(Math.abs(c.width - c.gridWidth)).toBeLessThanOrEqual(1);
-        expect(c.top).toBeGreaterThanOrEqual(c.prevBottom! + 22);
-        expect(c.top).toBeLessThanOrEqual(c.prevBottom! + 26);
+        expect(c.top).toBeGreaterThanOrEqual(c.prevBottom! + 18);
+        expect(c.top).toBeLessThanOrEqual(c.prevBottom! + 22);
       }
     });
   }
@@ -1014,7 +1214,7 @@ test.describe("lesson layout, phone", () => {
       // Toasts render outside <main>, in the root layout, and the lessons
       // drawer renders nothing while closed; the position filter skips only
       // elements that are themselves fixed, not their children.
-      const between = await page.evaluate(() => {
+      const between = await page.evaluate((footer) => {
         const one = (s: string) => {
           const found = document.querySelectorAll(s);
           if (found.length !== 1)
@@ -1025,7 +1225,7 @@ test.describe("lesson layout, phone", () => {
           el.getBoundingClientRect().top + window.scrollY;
         const go = one("[data-step-continue]");
         const top = doc(go) + go.getBoundingClientRect().height;
-        const bottom = doc(one("footer"));
+        const bottom = doc(one(footer));
         return [...document.querySelectorAll("main *")]
           .filter((el) => {
             if (!el.checkVisibility()) return false;
@@ -1042,7 +1242,7 @@ test.describe("lesson layout, phone", () => {
             (el) =>
               `${el.tagName.toLowerCase()}: ${el.textContent!.trim().slice(0, 40)}`,
           );
-      });
+      }, SITE_FOOTER);
       expect(between).toEqual([]);
       expect(await footerGap(page)).toBeGreaterThanOrEqual(39);
     });
@@ -1052,34 +1252,44 @@ test.describe("lesson layout, phone", () => {
     page,
   }) => {
     await openSettledTakeaways(page, LESSONS.paragraphLed);
+    // The Deep Orbit terms list is a closed "Review lesson terms" disclosure
+    // that shows one chosen term at a time (clarity fix 14).
+    const terms = page.getByTestId("lesson-terms-list");
+    await terms.getByRole("heading", { name: "Review lesson terms" }).click();
+    await expect(terms).toHaveAttribute("open", "");
     const m = await page.evaluate(() => {
+      const one = (s: string) => {
+        const found = document.querySelectorAll(s);
+        if (found.length !== 1)
+          throw new Error(`${s}: ${found.length} matches`);
+        return found[0];
+      };
       const box = (el: Element) => {
         const r = el.getBoundingClientRect();
         return { left: r.left, top: r.top, bottom: r.bottom };
       };
-      const [learned, bridge] = Array.from(
-        document.querySelector(".lesson-recap-sections")!.children,
-        box,
-      );
-      const [term, definition, source] = Array.from(
-        document.querySelector("[data-testid='glossary-entry-tensor']")!
-          .children,
-        box,
-      );
+      const entry = one("[data-testid='glossary-entry-tensor']");
+      const [definition, detail, source] = Array.from(entry.children, box);
       return {
-        learned,
-        bridge,
-        term,
+        copy: box(one(".orbit-recap-copy")),
+        figure: box(one(".orbit-recap-layout > figure")),
         definition,
+        detail,
         source,
+        illustration: box(entry.nextElementSibling!),
         overflow: document.documentElement.scrollWidth - window.innerWidth,
       };
     });
-    expect(m.bridge.top).toBeGreaterThanOrEqual(m.learned.bottom);
-    expect(m.definition.top).toBeGreaterThanOrEqual(m.term.bottom);
-    expect(m.source.top).toBeGreaterThanOrEqual(m.definition.bottom);
-    expect(m.definition.left).toBe(m.term.left);
-    expect(m.source.left).toBe(m.term.left);
+    // The recap's copy, then its figure under it.
+    expect(m.figure.top).toBeGreaterThanOrEqual(m.copy.bottom);
+    expect(m.figure.left).toBe(m.copy.left);
+    // The term's definition, example and reading stack, then its picture.
+    expect(m.detail.top).toBeGreaterThanOrEqual(m.definition.bottom);
+    expect(m.source.top).toBeGreaterThanOrEqual(m.detail.bottom);
+    expect(m.detail.left).toBe(m.definition.left);
+    expect(m.source.left).toBe(m.definition.left);
+    expect(m.illustration.top).toBeGreaterThanOrEqual(m.source.bottom);
+    expect(m.illustration.left).toBe(m.definition.left);
     expect(m.overflow).toBeLessThanOrEqual(0);
   });
 
@@ -1133,7 +1343,7 @@ test.describe("lesson layout, phone", () => {
     expect(Math.abs(m.right - m.frameRight)).toBeLessThanOrEqual(1);
   });
 
-  test("the Instructions view holds the brief and its header wraps only between chips", async ({
+  test("the brief's header wraps only between chips, and the editor follows the brief", async ({
     page,
   }) => {
     await openStep(page, LESSONS.headingLed, 2);
@@ -1156,20 +1366,43 @@ test.describe("lesson layout, phone", () => {
       // chip's padding, or the eyebrow's larger glyph, stays under 1.9.
       expect(item.height).toBeLessThan(item.lineHeight * 1.9);
     }
-    await page.getByRole("button", { name: "Editor" }).click();
+    // Deep Orbit keeps the brief and its one editor on the page together:
+    // no Instructions and Editor toggle (clarity fix 17). The editor sits
+    // under the brief, and the brief stays in view.
+    await expect(
+      page.getByRole("group", { name: "Challenge view" }),
+    ).toHaveCount(0);
     await expect(
       page.locator(
         "[data-testid='lesson-right'][data-kind='pane'] .cm-content",
       ),
     ).toBeVisible({ timeout: 30000 });
-    await expect(brief).toBeHidden();
+    await expect(brief).toBeVisible();
+    const [briefBottom, editorTop] = await page.evaluate(() => {
+      const one = (s: string) => {
+        const found = document.querySelectorAll(s);
+        if (found.length !== 1)
+          throw new Error(`${s}: ${found.length} matches`);
+        return found[0];
+      };
+      return [
+        one("[data-testid='exercise-brief']").getBoundingClientRect().bottom,
+        one(
+          "[data-testid='lesson-right'][data-kind='pane'] [data-editor-frame]",
+        ).getBoundingClientRect().top,
+      ];
+    });
+    expect(editorTop).toBeGreaterThan(briefBottom);
   });
 
   for (const step of [1]) {
     test(`every code block fits the phone on step ${step + 1}, with no blank line between code lines`, async ({
       page,
     }) => {
-      await openStep(page, LESSONS.paragraphLed, step);
+      // Lesson 2: since content fix 11 lesson 1's Concept prose has no code.
+      // Its example sits in the workbench, whose code block keeps local
+      // scrolling by design (lesson-visuals.css, .tensor-investigation-console).
+      await openStep(page, LESSONS.headingLed, step);
       // Rendered blocks only: the Concept step keeps the reference drawer's
       // example inside a closed <details>, which lays out nothing. Shiki
       // highlights on the client after mount, so wait until every rendered

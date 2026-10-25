@@ -95,8 +95,12 @@ test.describe("World Detail Page", () => {
     await page.goto("/worlds/deep-orbit");
     await expect(page.getByTestId("module-map")).toBeVisible();
     await expect(page.getByText(/foundations/i).first()).toBeVisible();
+    // Lesson 1 (slug introduction-to-tensors) is titled "From JavaScript
+    // Arrays to Tensors" since 2026-10-09.
     await expect(
-      page.getByText(/introduction to tensors/i).first(),
+      page
+        .getByTestId("module-map")
+        .getByText("From JavaScript Arrays to Tensors", { exact: true }),
     ).toBeVisible();
   });
 
@@ -128,7 +132,7 @@ test.describe("World Detail Page", () => {
     });
     await page.goto("/worlds/deep-orbit");
     await page
-      .getByRole("link", { name: /introduction to tensors/i })
+      .getByRole("link", { name: /^From JavaScript Arrays to Tensors, / })
       .first()
       .click();
     await expect(page).toHaveURL(
@@ -168,7 +172,10 @@ test.describe("Lesson Viewer Page", () => {
   test("renders lesson content with title", async ({ page }) => {
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
     await expect(
-      page.getByText(/introduction to tensors/i).first(),
+      page.getByRole("heading", {
+        level: 1,
+        name: "From JavaScript Arrays to Tensors",
+      }),
     ).toBeVisible();
   });
 
@@ -177,7 +184,21 @@ test.describe("Lesson Viewer Page", () => {
     await expect(
       page.getByRole("button", { name: "Step 1: Briefing" }),
     ).toBeVisible();
-    await expect(page.getByRole("button", { name: /^Step \d/ })).toHaveCount(6);
+    // Five steps since LESSON_STEPS_VERSION 2 merged Concept and Code
+    // (apps/web/lib/lesson-phases.ts).
+    const steps = page.getByRole("button", { name: /^Step \d/ });
+    await expect(steps).toHaveCount(5);
+    for (const [index, name] of [
+      "Briefing",
+      "Concept",
+      "Challenge",
+      "Takeaways",
+      "Epilogue",
+    ].entries()) {
+      await expect(steps.nth(index)).toHaveAccessibleName(
+        `Step ${index + 1}: ${name}`,
+      );
+    }
   });
 
   test("shows Continue button", async ({ page }) => {
@@ -214,9 +235,10 @@ test.describe("Lesson Viewer Page", () => {
 
 test.describe("Lesson reading experience", () => {
   // Seed the persisted step BEFORE first render so the lesson lands on the
-  // Concept step (index 1). The storage key uses the slugified lesson TITLE
-  // ("Introduction to Tensors" -> introduction-to-tensors), which happens to
-  // match the slug here (see getStorageKey in lesson-steps.tsx).
+  // seeded step. These are the legacy six-step keys built from the lesson
+  // SLUG. restoreLessonSteps (apps/web/lib/lesson-phases.ts) maps legacy
+  // indexes 0-5 onto the five current steps: 1 and 2 restore as Concept,
+  // 4 as Takeaways.
   const LESSON = "/worlds/deep-orbit/foundations/introduction-to-tensors";
   const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
   const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
@@ -258,19 +280,36 @@ test.describe("Lesson reading experience", () => {
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
     // The terms list follows the recap, which waits for the recall card
-    // (spec 2026-09-24, section 2): bail on the card first.
+    // (spec 2026-09-24, section 2): bail on the card first. Inside the Deep
+    // Orbit lesson layout the bail button reads "Show an explanation"
+    // (checked-recall-card.tsx, 2026-10-12).
     await page
-      .getByRole("button", { name: /recall it/i })
-      .first()
+      .getByRole("form", { name: "Knowledge check" })
+      .getByRole("button", { name: "Show an explanation", exact: true })
       .click();
+    // Since 2026-10-12 the Deep Orbit terms list is a collapsed "Review
+    // lesson terms" disclosure with a term picker (deep-orbit-terms.tsx).
     const list = page.getByTestId("lesson-terms-list");
     await expect(list).toBeVisible({ timeout: 15000 });
-    await expect(
-      list.getByRole("heading", { level: 2, name: "Terms in this lesson" }),
-    ).toBeVisible();
+    const heading = list.getByRole("heading", {
+      level: 2,
+      name: "Review lesson terms",
+    });
+    await expect(heading).toBeVisible();
+    await heading.click();
+    await expect(list).toHaveAttribute("open", "");
+    expect(
+      await list
+        .getByRole("group", { name: "Choose a lesson term" })
+        .getByRole("button")
+        .count(),
+    ).toBeGreaterThan(0);
     expect(
       await list.locator('[data-testid^="glossary-entry-"]').count(),
     ).toBeGreaterThan(0);
+    await expect(
+      list.locator('[data-testid^="glossary-entry-"]').first(),
+    ).toBeVisible();
   });
 
   test("inline code renders as a chip in the prose (not a code block)", async ({
@@ -305,12 +344,15 @@ test.describe("Lesson reading experience", () => {
     );
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByTestId("lesson-workbench")).toBeVisible();
-    await expect(
-      page
-        .locator('.lesson-step-content[data-layout="reading"] pre:visible')
-        .first(),
-    ).toBeVisible();
+    // Since 2026-10-19 the worked example (prepare-readings.js) lives in the
+    // Concept workbench instead of the reading column below it.
+    const workbench = page.getByTestId("lesson-workbench");
+    await expect(workbench).toBeVisible();
+    const code = workbench.locator("pre:visible").first();
+    await expect(code).toBeVisible();
+    await expect(code).toContainText(
+      "const reading = tf.tensor(streamValues);",
+    );
     await expect(page.getByTestId("lesson-right")).toHaveCount(0);
     await expect(page).toHaveURL(/#step-concept$/);
   });

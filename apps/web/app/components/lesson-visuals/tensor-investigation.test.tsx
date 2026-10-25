@@ -60,17 +60,23 @@ describe("the opening signal chart", () => {
     let finish!: (
       value: Awaited<ReturnType<typeof tensorExample.runTensorExample>>,
     ) => void;
-    vi.spyOn(tensorExample, "runTensorExample").mockImplementation(
-      () =>
-        new Promise((resolve) => {
-          finish = resolve;
-        }),
-    );
+    const runSpy = vi
+      .spyOn(tensorExample, "runTensorExample")
+      .mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      );
     renderExample();
     fireEvent.click(screen.getByRole("button", { name: "Run example" }));
-    expect(
-      screen.getByRole("button", { name: "Running example…" }),
-    ).toBeDisabled();
+    // aria-disabled, not disabled: a disabled button drops keyboard focus to
+    // the page body mid-run (e2e/lesson-continuity.spec.ts checks focus).
+    const busy = screen.getByRole("button", { name: "Running example…" });
+    expect(busy).toHaveAttribute("aria-disabled", "true");
+    expect(busy).not.toBeDisabled();
+    fireEvent.click(busy);
+    expect(runSpy).toHaveBeenCalledTimes(1);
     finish({
       shape: [12],
       values: WORKED_PACKET.flat(),
@@ -91,7 +97,7 @@ describe("the opening signal chart", () => {
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Run example" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
   });
   it("removes the earlier chart when a rerun of the same readings fails", async () => {
     let fail!: (reason: Error) => void;

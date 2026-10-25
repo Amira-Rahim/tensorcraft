@@ -39,7 +39,8 @@ for (const [width, colorScheme] of [
       .focus();
     await page.keyboard.press("Enter");
     await expect(box.getByRole("status")).toContainText("matches");
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(box).toHaveCount(0);
     await page
       .getByRole("button", { name: "Step 2: Concept", exact: true })

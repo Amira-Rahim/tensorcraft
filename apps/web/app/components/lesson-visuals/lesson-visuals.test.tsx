@@ -93,7 +93,7 @@ describe("the complete Deep Orbit visual curriculum", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run example" }));
     expect(
       screen.getByRole("button", { name: "Running example…" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled", "true");
     expect(run).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(

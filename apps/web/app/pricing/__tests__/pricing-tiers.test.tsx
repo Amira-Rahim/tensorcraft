@@ -19,12 +19,12 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// Minimal router stub, CheckoutButton pulls in next/navigation.
+// Minimal router stub, CheckoutButton pulls in next/navigation. There is
+// deliberately no useSearchParams stub: PricingTiers reads the auth
+// roundtrip's ?plan=&worlds= from window.location, because the hook forced
+// the whole grid out of the server HTML (CLS 0.359 on /pricing, 2026-10-25).
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
-  // PricingTiers reads ?plan=&worlds= to restore a selection carried
-  // through the auth roundtrip; default empty params.
-  useSearchParams: () => new URLSearchParams(),
 }));
 
 // Supabase client, no session so we don't hit owned-world lookups.

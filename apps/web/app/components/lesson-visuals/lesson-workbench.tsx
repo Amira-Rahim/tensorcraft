@@ -32,6 +32,23 @@ const DEEP_ORBIT_LOCATION_CAPTIONS: Record<string, string> = {
     "At the dashboard station in the control room on the spaceship Archimedes.",
 };
 
+/**
+ * The line under a mission scene: where it happens, then when. Deep Orbit
+ * places are whole sentences ("Inside the control room on the spaceship
+ * Archimedes."), other worlds pass short labels ("Deep Orbit"), and
+ * authored times are capitalised phrases ("Six hours after first contact",
+ * "Relay minus five days"). Joining with a bare comma printed
+ * "Archimedes., Six hours after first contact" from 2026-10-15.
+ */
+function sceneCaption(place: string, time?: string): string {
+  if (!time) return place;
+  // A short label takes the time after a comma, as before.
+  if (!/[.!?]$/.test(place)) return `${place}, ${time}`;
+  // A whole-sentence place gets the time as its own sentence, keeping the
+  // authored capital ("Relay minus five days" names an event).
+  return /[.!?]$/.test(time) ? `${place} ${time}` : `${place} ${time}.`;
+}
+
 interface SceneLesson {
   slug: string;
   context: { narrative: string; speaker?: string };
@@ -94,8 +111,7 @@ export function LessonMissionScene({
       <div className="mission-context-copy">
         {heading && worldSlug !== "deep-orbit" && <h2>{heading}</h2>}
         <p className="mission-context-location">
-          {locationCaption}
-          {lesson.scene?.time ? `, ${lesson.scene.time}` : ""}
+          {sceneCaption(locationCaption, lesson.scene?.time)}
         </p>
         {heading && worldSlug === "deep-orbit" && <h2>{heading}</h2>}
         {!compact && character && (

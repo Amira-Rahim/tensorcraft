@@ -540,6 +540,20 @@
   font-size: 22px;
   line-height: 1.45;
 }
+/* The card's notes keep the card's small type. The shared prose p rule
+   out-specified deep-orbit-takeaways.css and set them at 22 px. */
+.lesson-page.deep-orbit-lesson
+  .orbit-takeaways
+  .orbit-check
+  .review-prompt-note {
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* A checkpoint heading opens its card. The shared h3 top margin
+   out-specified globals.css and left an empty band above it. */
+.lesson-page.deep-orbit-lesson .lesson-prose .project-milestone > h3 {
+  margin-top: 0;
+}
 .lesson-page.deep-orbit-lesson .orbit-recap :is(p, li) {
   font-size: 22px;
   line-height: 1.65;

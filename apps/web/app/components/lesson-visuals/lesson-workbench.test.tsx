@@ -82,4 +82,32 @@ describe("the rendered workbench for every Deep Orbit lesson", () => {
       unmount();
     }
   });
+
+  it("adds each authored scene time to its caption without a stray full stop", () => {
+    const timed = orbit.filter((lesson) => lesson.scene?.time);
+    expect(timed.length).toBeGreaterThan(0);
+    for (const lesson of timed) {
+      const { container, unmount } = render(
+        <LessonMissionScene
+          lesson={{
+            slug: "caption-check",
+            scene: lesson.scene,
+            context: { narrative: "The crew checks the next recording." },
+          }}
+          worldSlug="deep-orbit"
+          moduleSlug="foundations"
+        />,
+      );
+      const caption = container.querySelector(
+        ".mission-context-location",
+      )!.textContent!;
+      expect(caption.toLowerCase(), lesson.slug).toContain(
+        lesson.scene!.time!.toLowerCase(),
+      );
+      // A full stop followed by a comma read "Archimedes., Six hours after
+      // first contact" on every timed mission from 2026-10-15.
+      expect(caption, lesson.slug).not.toMatch(/[.!?],/);
+      unmount();
+    }
+  });
 });

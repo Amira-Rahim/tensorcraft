@@ -45,23 +45,26 @@ test("legacy exercise passes still open the gate and Back keeps semantic history
   );
   await page.goto(path);
   await expect(page).toHaveURL(/#step-challenge$/);
-  await expect(
-    page
-      .getByTestId("lesson-nav")
-      .getByRole("button", { name: "Continue →", exact: true }),
-  ).toBeEnabled();
-  await page
+  // Since 2026-10-09 lesson 1's challenge workspace moves the unlocked
+  // Continue from the lesson nav into the saved-completion banner, and the
+  // nav keeps no gate button. The open gate is the banner's enabled Continue.
+  const banner = page.getByTestId("challenge-passed-banner");
+  const unlocked = banner.getByRole("button", {
+    name: "Continue",
+    exact: true,
+  });
+  const gate = page
     .getByTestId("lesson-nav")
-    .getByRole("button", { name: "Continue →", exact: true })
-    .click();
+    .getByRole("button", { name: /^Pass \d+ more exercises? to continue$/ });
+  await expect(banner).toContainText("Completion saved");
+  await expect(unlocked).toBeEnabled();
+  await expect(gate).toHaveCount(0);
+  await unlocked.click();
   await expect(page).toHaveURL(/#step-takeaways$/);
   await page.goBack();
   await expect(page).toHaveURL(/#step-challenge$/);
-  await expect(
-    page
-      .getByTestId("lesson-nav")
-      .getByRole("button", { name: "Continue →", exact: true }),
-  ).toBeEnabled();
+  await expect(unlocked).toBeEnabled();
+  await expect(gate).toHaveCount(0);
   expect(
     await page.evaluate(
       (key) => JSON.parse(localStorage.getItem(key + "-passed")!),

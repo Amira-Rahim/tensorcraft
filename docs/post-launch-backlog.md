@@ -11,6 +11,44 @@ a link to the detail spec if one exists). Detail specs stay in their own files;
 this doc is the index of record. Deferred mentions surviving elsewhere
 (`dev-plan.md`, audit ledgers) are historical and non-authoritative.
 
+## CI repair follow-ups (2026-10-25)
+
+Found while bringing `main` CI back to green after it stayed red from
+2026-10-06. None blocks CI; each is a real defect or an owner call.
+
+- [ ] **Lesson 1 recap contradicts its own recall.** The learner answers `[12]`
+  for `tf.tensor(streamValues)`, then DeepOrbitRecap shows the retired
+  three-value example (`[0.2, 0.4, 0.6]`, "Its shape is [3]"), unlabelled.
+  Breaks the one-continuous-recording rule. Files: `deep-orbit-recap.tsx`,
+  `deep-orbit-tensor-figure.tsx`, `deep-orbit-terms.tsx`. The authored MDX
+  recap ("[12] means a list of 12 numbers") never renders in that branch.
+- [ ] **Warm-up asks about a line it never shows.** "Does this line train a
+  model?" has an `example` in the recall prompt, but `parse-recall-prompts.ts`,
+  `ResolvedReviewItem` and `lesson-warmup.tsx` drop it (since 1f213595).
+- [ ] **"Run example" result is not announced reliably.** The only status
+  region mounts together with its text (`tensor-investigation.tsx`,
+  `exercise-output.tsx`). Keep a live region mounted before the run.
+- [ ] **Reduced-motion reveal cascades.** `globals.css` sets
+  `transition-duration: 0.01ms` with `transition-property: all`, so a
+  `visibility` reveal steps down one nesting level per frame (120 to 440 ms);
+  content is hidden from screen readers meanwhile. Owner call on the rule.
+- [ ] **Shared Deep Orbit prose rules out-specify component rules.** Two
+  cases were patched in `deep-orbit-lessons.css` (recall notes, checkpoint
+  heading). The binding fix is moving the shared prose rules into a cascade
+  layer, then reviewing every lesson visually.
+- [ ] **Phone keyboard guarantee from the 2026-10-10 challenge spec is gone.**
+  At 390 px a step's code sits 590 and 376 px from its line (budget 320). The
+  e2e now checks the Line keys instead. Owner call: restore or retire.
+- [ ] **Lighthouse runs each URL once.** `/worlds` Time to Interactive missed
+  its budget in 1 of 4 identical runs. `numberOfRuns: 3` in
+  `.github/lighthouserc.json` asserts the median at about 3x the step's
+  Actions minutes. Owner call.
+- [ ] **Small items.** "Next, Farah will help you" skips ProseText, so no
+  character mention; `.tensor-investigation .iv-cells` CSS is dead since
+  32022a1b; the checkpoint text runs about 120 characters a line at 1440 px;
+  pricing restore accepts unlaunched world slugs (the API rejects them at
+  checkout); `zod 4.6.5` remains dev-only through eslint-plugin-react-hooks.
+
 ## Foundations opening follow-ups (2026-10-03)
 
 Detail: [visual story driven foundations plan](foundations-opening-plan.md).

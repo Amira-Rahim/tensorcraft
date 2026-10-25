@@ -38,11 +38,13 @@ test("character portraits stay hoverable and keyboard accessible throughout a le
   await expect(demir).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(demir).toBeFocused();
+  // The next stop is the speaker of Demir's request in the workbench. Its
+  // .tensor-investigation-speaker wrapper was removed on 2026-10-14.
   await page.keyboard.press("Tab");
   await expect(
     page
       .locator(
-        '.tensor-investigation-speaker [data-character-mention="Ensign Demir"]',
+        '.tensor-investigation-request [data-character-mention="Ensign Demir"]',
       )
       .first(),
   ).toBeFocused();
@@ -50,16 +52,26 @@ test("character portraits stay hoverable and keyboard accessible throughout a le
   await page.mouse.move(0, 0);
   await page.keyboard.press("Escape");
 
-  await page
-    .getByRole("button", { name: "Create tensor", exact: true })
-    .click();
+  // "Run example" (2026-10-19) replaced the old "Create tensor" control. The
+  // story beat with Farah's mention left the run result on 2026-10-18, and
+  // the result's closing line names Farah as plain text, so the mention
+  // checked after the run is Farah in the reading that follows the workbench.
+  await page.getByRole("button", { name: "Run example", exact: true }).click();
   await expect(
     page.locator(".lesson-instrument").getByRole("status"),
-  ).toContainText("All 5 readings match");
+  ).toHaveText("From your latest run");
+  await expect(
+    page
+      .locator(".lesson-instrument")
+      .getByText(
+        "The example’s tensor has shape [12]: one axis holding 12 values.",
+      ),
+  ).toBeVisible();
   await page
     .locator(
-      '.tensor-investigation-consequence [data-character-mention="Dr. Farah"]',
+      '.lesson-step-content[data-layout="reading"] [data-character-mention="Dr. Farah"]:visible',
     )
+    .first()
     .hover();
   await expect(tooltip).toContainText("astrophysicist");
   expect(
@@ -71,14 +83,18 @@ test("character portraits stay hoverable and keyboard accessible throughout a le
     ).violations,
   ).toEqual([]);
   await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "Continue →", exact: true }).click();
-  // The challenge brief names no character since 2026-10-10; the mission
-  // header's "Demir" is the Challenge step's mention.
+  // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  // The challenge brief names no character since 2026-10-10. Since
+  // 2026-10-15 the Challenge step's mention is "Demir" in the mission scene
+  // (lesson-challenge-scene.tsx), which replaced the mission header.
   await page
-    .locator(".challenge-mission-header [data-character-mention]")
+    .getByTestId("challenge-scene")
+    .locator("[data-character-mention]")
     .first()
     .hover();
   await expect(tooltip).toBeVisible();
+  await expect(tooltip).toContainText("Ensign Demir");
   await expect(
     page.locator(
       "pre [data-character-mention], code [data-character-mention], a [data-character-mention], button button",
@@ -123,8 +139,10 @@ test("character cards fit a narrow touch screen in light mode", async ({
   await demir.tap();
   await expect(tooltip).toHaveCount(0);
   await demir.tap();
+  // Tapping plain content elsewhere closes the card. The workbench heading
+  // now holds a Demir mention itself (2026-10-18), so tap the next heading.
   await page
-    .getByRole("heading", { name: "Prepare the readings for TensorFlow.js" })
+    .getByRole("heading", { name: "Give the chart code its readings" })
     .tap();
   await expect(tooltip).toHaveCount(0);
   expect(

@@ -1,15 +1,23 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * End-of-lesson close, verified end-to-end: the Takeaways step (index 4) of a
- * deep-orbit lesson must render the new RecallPrompt + LessonRecap close.
+ * End-of-lesson close, verified end-to-end: the Takeaways step of a
+ * deep-orbit lesson must render the RecallPrompt + LessonRecap close.
  *
  * RecallPrompt sits above LessonRecap; every checked part must be resolved
  * before the recap appears. Incorrect attempts remain retryable.
  *
- * The step index persists in localStorage under the slugified lesson TITLE
- * ("Introduction to Tensors" -> introduction-to-tensors), seeded before the
- * page's first render reads it (see getStorageKey in lesson-steps.tsx).
+ * In the Deep Orbit layout (clarity fix 14, 2026-10-12) the recall card's
+ * visible heading reads "Check what you learned", and lesson 1's LessonRecap
+ * renders as DeepOrbitRecap's "Reading the shape" section: a short reading of
+ * the shape beside a figure, in place of the shared panel's "What you
+ * learned", "The bridge" and "You can now" labels.
+ *
+ * The step index persists in localStorage under the lesson slug, seeded
+ * before the page's first render reads it (lessonStepKeys in
+ * apps/web/lib/lesson-phases.ts). "4" is the six-step layout's Takeaways
+ * index, which restoreLessonSteps migrates to Takeaways in the five-step
+ * layout.
  */
 test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
   test("Takeaways checks both answers and reveals the recap after correction", async ({
@@ -28,9 +36,9 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     // The recall card renders first, alone; the recap waits for it (spec
     // 2026-09-24, section 2).
     const recall = page
-      .getByRole("heading", { name: "Knowledge check", exact: true })
+      .getByRole("heading", { name: "Check what you learned", exact: true })
       .first();
-    const recap = page.getByText("Lesson Recap", { exact: true }).first();
+    const recap = page.getByRole("region", { name: "Reading the shape" });
     await expect(recall).toBeVisible({ timeout: 15000 });
     await expect(recap).toHaveCount(0);
 
@@ -39,24 +47,28 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
       exact: true,
     });
     await expect(check).toBeDisabled();
+    // Since content fix 10 (2026-10-18) the card asks about
+    // tf.tensor(streamValues), Demir's 12 selected readings, so the expected
+    // shape is [12]. [1, 12] is the plausible slip: an extra leading axis.
     const shape = page.getByRole("textbox", {
-      name: "What is the shape of tf.tensor([0.2, 0.4, 0.6])?",
+      name: "What is this tensor’s shape?",
     });
-    await shape.fill("[1, 3]");
-    await page
-      .getByRole("radio", { name: "No, it only creates a tensor." })
-      .check();
+    // The Deep Orbit layout sets "No" on its own line, so the radio's
+    // accessible name has no comma.
+    const noTraining = page.getByRole("radio", {
+      name: "No it only creates a tensor.",
+    });
+    await shape.fill("[1, 12]");
+    await noTraining.check();
     await check.click();
     await expect(
       page.getByRole("status").filter({ hasText: "1 of 2 correct" }),
     ).toBeVisible();
     await expect(recap).toHaveCount(0);
     await expect(shape).toHaveAttribute("aria-invalid", "true");
-    await expect(
-      page.getByRole("radio", { name: "No, it only creates a tensor." }),
-    ).toBeDisabled();
+    await expect(noTraining).toBeDisabled();
 
-    await shape.fill(" [ 3 ] ");
+    await shape.fill(" [ 12 ] ");
     await page
       .getByRole("button", { name: "Check again", exact: true })
       .click();
@@ -65,7 +77,7 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     ).toBeVisible();
     await expect(recap).toBeVisible();
     await expect(shape).toBeDisabled();
-    await expect(shape).toHaveValue(" [ 3 ] ");
+    await expect(shape).toHaveValue(" [ 12 ] ");
     await expect(
       page.getByRole("button", { name: "Got it", exact: true }),
     ).toHaveCount(0);
@@ -75,16 +87,12 @@ test.describe("End-of-lesson close: RecallPrompt + LessonRecap", () => {
     expect(recapBox).not.toBeNull();
     expect(recallBox!.y).toBeLessThan(recapBox!.y);
 
-    // The recap shows its three sub-labels.
+    // The recap shows its parts: the heading above, the note that ties the
+    // shape back to the recall's second answer, and the figure.
     await expect(
-      page.getByText("What you learned", { exact: true }).first(),
+      recap.getByText("Training a model is a separate step."),
     ).toBeVisible();
-    await expect(
-      page.getByText("The bridge", { exact: true }).first(),
-    ).toBeVisible();
-    await expect(
-      page.getByText("You can now", { exact: true }).first(),
-    ).toBeVisible();
+    await expect(recap.getByRole("figure")).toBeVisible();
   });
 });
 

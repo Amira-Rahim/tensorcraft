@@ -1,7 +1,20 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+/**
+ * The Briefing's learning notes are two asides since clarity fix 16
+ * (2026-10-14): "Key idea" and "Your first task". Both carry the
+ * briefing-takeaway test id. includeHidden lets the playback test find them
+ * while the scene holds them back with display: none.
+ */
+function briefingNotes(page: Page, includeHidden = false) {
+  return [
+    page.getByRole("complementary", { name: "Key idea", includeHidden }),
+    page.getByRole("complementary", { name: "Your first task", includeHidden }),
+  ];
+}
 
 test.describe("Lesson script playback", () => {
-  test("reveals beats progressively, then scrolls to the explanation", async ({
+  test("reveals beats progressively, then shows the Briefing notes without scrolling", async ({
     page,
   }) => {
     await page.addInitScript(() => {
@@ -22,7 +35,13 @@ test.describe("Lesson script playback", () => {
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
     await expect(page.getByTestId("course-orientation")).toBeVisible();
     await expect(page.getByTestId("scene-context")).toHaveCSS("opacity", "1");
-    await expect(page.getByTestId("briefing-takeaway")).toBeHidden();
+    // The notes wait with the scene notes until the scene finishes.
+    await expect(page.getByTestId("briefing-takeaway")).toHaveCount(2);
+    const notes = briefingNotes(page, true);
+    for (const note of notes) {
+      await expect(note).toBeAttached();
+      await expect(note).toBeHidden();
+    }
 
     // Sample the revealed-beat count across the timeline.
     const counts: number[] = [];
@@ -38,26 +57,37 @@ test.describe("Lesson script playback", () => {
       expect(counts[i]).toBeGreaterThanOrEqual(counts[i - 1]);
     }
     await expect(page.locator("[data-script-state='done']")).toBeAttached();
-    // The context stays visible outside playback: slugline + 3 dialogues
-    // + 1 story paragraph on foundations/01, with the art deliberately absent.
-    expect(await page.locator("[data-beat-shown]").count()).toBe(5);
+    // The context stays visible outside playback: slugline + 3 story
+    // paragraphs + 3 dialogues on foundations/01, with the art deliberately
+    // absent. Content fix 10 (2026-10-18) put a story paragraph before the
+    // dialogues and two after them, where one paragraph used to follow.
+    expect(await page.locator("[data-beat-shown]").count()).toBe(7);
     expect(Math.max(...counts)).toBeGreaterThanOrEqual(3);
-    await expect(page.getByTestId("briefing-takeaway")).toBeVisible();
+    for (const note of notes) await expect(note).toBeVisible();
 
     // Prose partition (2026-09-04): the Briefing ends at the story zone, so
     // there is no auto-scroll and the teaching body must NOT be readable
     // here. The first teaching heading exists in the DOM but stays hidden;
-    // the read happens once, on the Concept step.
+    // the read happens once, on the Concept step. Lesson 1's first teaching
+    // heading reads "What the example shows" since content fix 11
+    // (2026-10-19). The Briefing renders the body in three slices (the story
+    // and the two notes), so the heading has three hidden copies.
+    // toBeHidden() also passes when nothing matches, which kept this check
+    // green after the old heading was renamed on 2026-10-08, so prove a copy
+    // is in the DOM and that none is visible.
     await page.waitForTimeout(600);
     expect(await page.evaluate(() => window.scrollY)).toBeLessThan(200);
-    await expect(
-      page.getByRole("heading", { name: "Create and check your tensor" }),
-    ).toBeHidden();
+    const teachingHeading = page.getByRole("heading", {
+      name: "What the example shows",
+      includeHidden: true,
+    });
+    await expect(teachingHeading.first()).toBeAttached();
+    await expect(teachingHeading.filter({ visible: true })).toHaveCount(0);
 
     // Replay resets and replays.
     await page.getByRole("button", { name: /replay/i }).click();
     await expect(page.locator("[data-script-state='playing']")).toBeAttached();
-    await expect(page.getByTestId("briefing-takeaway")).toBeHidden();
+    for (const note of notes) await expect(note).toBeHidden();
     await expect(page.getByTestId("scene-context")).toHaveCSS("opacity", "1");
     expect(await page.locator("[data-beat-shown]").count()).toBeLessThanOrEqual(
       1,
@@ -96,13 +126,27 @@ test("a due warm-up waits for the story and appears after it", async ({
     warmup.boundingBox().then((b) => b?.y),
   ]);
   expect(cardTop).toBeGreaterThan(titleTop ?? Infinity);
-  await warmup.getByRole("button", { name: "I couldn't recall it" }).click();
-  await expect(warmup.getByRole("status")).toHaveText("Answer revealed.");
+  // The warm-up is a checked recall card in the Deep Orbit layout (clarity
+  // fix 14, 2026-10-12). Its way out is "Show an explanation", which reveals
+  // every expected answer with its explanation. "I couldn't recall it" only
+  // renders outside that layout.
+  await warmup.getByRole("button", { name: "Show an explanation" }).click();
+  await expect(warmup.getByRole("status")).toHaveText(
+    "Answers revealed. Read each explanation before continuing.",
+  );
+  await expect(warmup.getByText("Expected answer: [12].")).toBeVisible();
+  await expect(
+    warmup.getByText("Expected answer: No, it only creates a tensor."),
+  ).toBeVisible();
   await warmup.getByRole("button", { name: "Continue to lesson" }).click();
   await expect(warmup).toHaveCount(0);
   // Answering the card never restarts the scene.
   await expect(page.locator("[data-script-state='done']")).toBeAttached();
-  await expect(page.getByRole("button", { name: "Continue →" })).toBeFocused();
+  // The step button reads "Continue" without an arrow since content fix 12
+  // (2026-10-19).
+  await expect(
+    page.getByRole("button", { name: "Continue", exact: true }),
+  ).toBeFocused();
 });
 
 test.describe("Lesson without JavaScript", () => {
@@ -111,7 +155,8 @@ test.describe("Lesson without JavaScript", () => {
     await page.goto("/worlds/deep-orbit/foundations/introduction-to-tensors");
     await expect(page.getByTestId("course-orientation")).toBeVisible();
     await expect(page.getByTestId("scene-context")).toBeVisible();
-    await expect(page.getByTestId("briefing-takeaway")).toBeVisible();
+    await expect(page.getByTestId("briefing-takeaway")).toHaveCount(2);
+    for (const note of briefingNotes(page)) await expect(note).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: "From JavaScript Arrays to Tensors",
@@ -120,7 +165,7 @@ test.describe("Lesson without JavaScript", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: "Create and check your tensor",
+        name: "What the example shows",
         exact: true,
       }),
     ).toBeVisible();

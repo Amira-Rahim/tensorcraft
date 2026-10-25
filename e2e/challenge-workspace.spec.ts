@@ -35,14 +35,22 @@ for (const [width, scheme] of [
     });
     await page.goto(LESSON, { waitUntil: "domcontentloaded" });
     const workspace = page.locator(".lesson-challenge-workspace");
-    const mission = workspace.locator(".challenge-mission-header");
+    // Story first (CLAUDE.md, binding since 2026-10-15). Since content fix 1
+    // (4b379453) the mission scene sits under the step's "Challenge"
+    // heading, before the task. It replaced the compact mission header that
+    // carried the exercise title.
+    const chapter = workspace.getByRole("heading", {
+      name: "Challenge",
+      exact: true,
+    });
+    const mission = workspace.getByRole("region", { name: "Mission scene" });
+    const story = mission.getByTestId("mission-handoff");
     const pane = page.locator("[data-exercise-workspace]");
     const brief = pane.getByTestId("exercise-brief");
     const codeFrame = pane.locator("[data-editor-frame]");
     const editor = codeFrame.locator(".cm-content");
     const line = (n: number) => editor.locator(".cm-line").nth(n - 1);
 
-    // Measured before anything scrolls: line 3 is on the first screen.
     await expect(line(3)).toBeAttached({ timeout: 30_000 });
     await page.evaluate(async () => {
       await document.fonts.ready;
@@ -56,28 +64,32 @@ for (const [width, scheme] of [
           ),
       )
       .toBe(true);
+    // Measured before anything scrolls: the scene's story is on the first
+    // screen. The editor follows the scene and the brief, so line 3 no
+    // longer fits there by design (deep-orbit-lessons.css: "Read the
+    // mission and instructions before reaching the full-width editor").
     if (width === 1440) {
-      const line3Bottom = await line(3).evaluate(
+      const storyBottom = await story.evaluate(
         (el) => el.getBoundingClientRect().bottom + window.scrollY,
       );
-      expect(line3Bottom).toBeLessThanOrEqual(900);
+      expect(storyBottom).toBeLessThanOrEqual(900);
     }
 
     await codeFrame.scrollIntoViewIfNeeded();
     await expect(editor).toBeVisible();
     await expect(brief).toBeVisible();
-    await expect(
-      workspace.getByRole("heading", {
-        name: "Prepare the Five Readings",
-        exact: true,
-      }),
-    ).toHaveCount(1);
+    // The step's one visible section heading orients the reader, and the
+    // scene follows it directly.
+    await expect(chapter).toHaveCount(1);
+    await expect(chapter).toBeVisible();
+    expect(
+      await chapter.evaluate(
+        (el) => el.nextElementSibling?.getAttribute("aria-label") ?? null,
+      ),
+    ).toBe("Mission scene");
     await expect(brief.getByRole("heading", { level: 3 })).toHaveText(
       "Finish lines 3 and 4",
     );
-    await expect(
-      workspace.getByRole("heading", { name: "Challenge", exact: true }),
-    ).toBeHidden();
     await expect(
       page.getByRole("group", { name: "Challenge view" }),
     ).toHaveCount(0);
@@ -86,26 +98,52 @@ for (const [width, scheme] of [
       page.getByRole("button", { name: "Pass 1 more exercise to continue" }),
     ).toBeDisabled();
 
-    const headerBox = (await mission.boundingBox())!;
+    const chapterBox = (await chapter.boundingBox())!;
+    const sceneBox = (await mission.boundingBox())!;
     const gridBox = (await page.getByTestId("lesson-grid").boundingBox())!;
+    const paneBox = (await page.getByTestId("lesson-right").boundingBox())!;
     const briefBox = (await brief.boundingBox())!;
     const codeBox = (await codeFrame.boundingBox())!;
     const checksBox = (await page.locator(".challenge-checks").boundingBox())!;
-    expect(headerBox.width).toBeGreaterThanOrEqual(gridBox.width);
-    expect(gridBox.width).toBeLessThanOrEqual(1440);
-    expect(headerBox.y + headerBox.height).toBeLessThan(gridBox.y);
-    // The brief heads the code: the frame starts where the brief ends.
+    // Every step shares one full-width frame (705ee73e retired the 1,440 px
+    // cap): the grid spans the viewport inside the page gutters
+    // (--l-page-gutter, 48 px from 48rem and 20 px below), and the scene
+    // spans the grid.
+    const gutter = width >= 768 ? 48 : 20;
+    expect(Math.abs(gridBox.width - (width - 2 * gutter))).toBeLessThanOrEqual(
+      1,
+    );
+    expect(Math.abs(sceneBox.width - gridBox.width)).toBeLessThanOrEqual(1);
+    // Story first, then the task: heading, scene, brief, code, checks, in
+    // the spacing hierarchy of deep-orbit-lessons.css (audit 2026-10-18).
+    // Related content sits 24 px apart (20 px below 40rem), and the task
+    // column ends one major section gap (48 px, 32 px below 40rem) above
+    // the editor pane.
+    const contentGap = width >= 640 ? 24 : 20;
+    const sectionGap = width >= 640 ? 48 : 32;
+    expect(
+      Math.abs(sceneBox.y - (chapterBox.y + chapterBox.height) - contentGap),
+    ).toBeLessThanOrEqual(1);
+    expect(sceneBox.y + sceneBox.height).toBeLessThan(paneBox.y);
+    const taskBox = (await page
+      .getByTestId("lesson-grid")
+      .locator(":scope > div")
+      .first()
+      .boundingBox())!;
+    expect(
+      Math.abs(paneBox.y - (taskBox.y + taskBox.height) - sectionGap),
+    ).toBeLessThanOrEqual(1);
+    // The brief heads the code: the frame starts where the brief ends, in
+    // the same column.
     expect(codeBox.y).toBeGreaterThanOrEqual(briefBox.y + briefBox.height - 1);
     expect(codeBox.y - (briefBox.y + briefBox.height)).toBeLessThanOrEqual(1);
-    if (width === 1440) expect(briefBox.height).toBeLessThanOrEqual(230);
-    if (width === 390) expect(briefBox.height).toBeLessThanOrEqual(360);
-    if (width >= 1024) {
-      expect(codeBox.x + codeBox.width).toBeLessThanOrEqual(checksBox.x + 1);
-      expect(codeBox.width).toBeLessThan(910);
-      expect(checksBox.width).toBeGreaterThan(300);
-    } else {
-      expect(checksBox.y).toBeGreaterThanOrEqual(codeBox.y + codeBox.height);
-    }
+    expect(Math.abs(codeBox.x - briefBox.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(codeBox.width - briefBox.width)).toBeLessThanOrEqual(1);
+    // Brief, editor and checks use one vertical flow at every width
+    // (clarity fix 17, 2fc52d2f): the checks sit under the code, as wide.
+    expect(checksBox.y).toBeGreaterThanOrEqual(codeBox.y + codeBox.height - 1);
+    expect(Math.abs(checksBox.x - codeBox.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(checksBox.width - codeBox.width)).toBeLessThanOrEqual(1);
 
     // Each key names a line the editor marks, and both nulls are framed.
     await expect(brief.getByRole("button", { name: /^Line \d+$/ })).toHaveText([
@@ -119,28 +157,17 @@ for (const [width, scheme] of [
       "null",
       "null",
     ]);
-    if (width === 390) {
-      // Each step's code stays within a keyboard-open screen of its line.
-      for (const [index, n] of [
-        [0, 3],
-        [1, 4],
-      ] as const) {
-        const chipTop = await brief
-          .locator("code.challenge-stop-code")
-          .nth(index)
-          .evaluate((el) => el.getBoundingClientRect().top);
-        const lineBottom = await line(n).evaluate(
-          (el) => el.getBoundingClientRect().bottom,
-        );
-        expect(lineBottom - chipTop).toBeLessThanOrEqual(320);
-      }
-    }
 
+    // The learner turns this recording excerpt into a tensor. Its readings
+    // arrive in the editor's first line, in recorded order (content fix 10,
+    // 32022a1b, replaced the five-reading Expected tensor panel). Until a
+    // run, the checks column only invites one.
+    await expect(line(1)).toHaveText(
+      "const streamValues = [2, 20, 5, 8, 3, 18, 7, 8, 4, 16, 6, 9];",
+    );
     await expect(
-      page
-        .getByRole("list", { name: "Expected sensor readings" })
-        .getByRole("listitem"),
-    ).toHaveText(["0.12", "0.94", "0.31", "0.88", "0.47"]);
+      page.getByRole("complementary", { name: "Test results", exact: true }),
+    ).toHaveText("Run Tests to see your result and check your code.");
     await expect(page.getByText("3 / 5", { exact: true })).toHaveCount(0);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
@@ -163,9 +190,22 @@ for (const [width, scheme] of [
       style: SCREENSHOT_STYLE,
     });
 
+    // On a phone each key is the route from a step to its line. The stacked
+    // brief (clarity fix 17, 2fc52d2f) sets each step's code farther above
+    // its line than a keyboard-open screen, so the key itself must bring
+    // the line on screen with exactly its null selected.
+    if (width === 390) {
+      await brief.getByRole("button", { name: "Line 4" }).click();
+      await expect(editor).toBeFocused();
+      await expect(line(4)).toBeInViewport();
+      expect(
+        await page.evaluate(() => document.getSelection()?.toString()),
+      ).toBe("null");
+    }
     // A Line key selects its null; typing replaces it and quiets the stop.
     await brief.getByRole("button", { name: "Line 3" }).click();
     await expect(editor).toBeFocused();
+    if (width === 390) await expect(line(3)).toBeInViewport();
     await page.keyboard.insertText("tf.tensor(streamValues)");
     // The key selected exactly the null: typing replaced it and nothing else.
     await expect(line(3)).toHaveText(
@@ -217,14 +257,19 @@ for (const [width, scheme] of [
     ).toHaveCount(0);
     expect(Math.abs((await codeTop()) - before)).toBeLessThanOrEqual(1);
 
-    // Returning from the concept lands at the whole mission, including
-    // the scene above the task, instead of scrolling straight past it.
+    // Returning from the concept lands at the start of the mission instead
+    // of scrolling straight past it to the editor. The scene's artwork now
+    // spans the frame, so on desktop the whole scene is taller than the
+    // screen: its heading and its story are fully on screen, and the scene
+    // begins there.
     await page
       .getByRole("button", { name: "Step 2: Concept", exact: true })
       .click();
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(workspace).toBeFocused();
-    await expect(mission).toBeInViewport({ ratio: 0.8 });
+    await expect(chapter).toBeInViewport({ ratio: 1 });
+    await expect(story).toBeInViewport({ ratio: 1 });
+    await expect(mission).toBeInViewport();
 
     // A resize does not switch between hidden instruction and editor views.
     // The learner's in-progress code remains in the same mounted editor.

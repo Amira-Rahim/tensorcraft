@@ -46,7 +46,7 @@ burn the 6-hour default.
 | `e2e` | Builds the web app WITH placeholder Supabase env (`NEXT_PUBLIC_*` inline at build time), serves it via `next start`, runs `pnpm test:e2e` (Playwright, 2 workers, 1 retry). See the webServer comment in [`playwright.config.ts`](../playwright.config.ts). | Advisory |
 | `exercise-runtime` | Runs the exercise corpus through the shipped runtime (`EXERCISE_CORPUS=1`). | Advisory |
 | `migrations` | Migration ledger drift check against production Supabase (fail-closed without secrets). Skipped for Dependabot-triggered runs, which read the Dependabot secrets store and so can never see the Actions secrets. | Advisory |
-| `links` | Runs `lychee` over every markdown file in the repo using [`.lychee.toml`](../.lychee.toml). Internal dead links fail; external 4xx/5xx are tolerated per the `accept` list. | Advisory |
+| `links` | Runs `lychee` over every markdown file in the repo using [`.lychee.toml`](../.lychee.toml). Internal dead links fail; external 4xx/5xx are tolerated per the `accept` list, and a host that times out is reported without failing the job (`accept_timeouts`). Fragments are checked on remote pages too, so link a lesson by its bare URL: its `#step-N` hash is client-side state, not an element id. | Advisory |
 
 Concurrency: superseded runs are cancelled on PRs only. On `main` every
 commit keeps its completed verdict; cancel-in-progress there left rapid
@@ -67,6 +67,17 @@ live in `docs/post-launch-backlog.md` §7. Assertions come only from the
 budget file: the action's `budgetPath` bypasses any `assert` block in
 `lighthouserc.json`, which is why that file holds only `collect`
 settings.
+
+The workflow runs each URL once, so timing metrics such as Time to
+Interactive vary between runs on a shared runner, while layout shift is
+close to deterministic. A CLS value that repeats exactly across unrelated
+PRs is a real regression in `main`. That is how the 2026-10-20 to
+2026-10-25 `/pricing` failure (CLS 0.359 against 0.35) read: `PricingTiers`
+called `useSearchParams`, so the static prerender emitted an empty Suspense
+fallback in place of the tier grid, and the grid's arrival after hydration
+pushed the curriculum preview down. The grid now reads the query string in
+an effect, and the "Pricing Page server HTML" test in
+`e2e/pricing.spec.ts` fails if the grid leaves the server HTML again.
 
 ### Exercise validator
 
@@ -101,11 +112,17 @@ rather than `FAIL`; `--strict` treats allowlisted slugs as hard failures.
 The `links` job runs [`lychee`](https://github.com/lycheeverse/lychee-action)
 as a GitHub Action, so no devDependency or local installation is needed.
 
-Local check (requires the `lychee` binary):
+Local check (requires the `lychee` binary, pinned to v0.24.2 in `ci.yml`):
 
 ```bash
-lychee --config .lychee.toml './**/*.md'
+GITHUB_TOKEN=$(gh auth token) lychee --config .lychee.toml $(git ls-files '*.md')
 ```
+
+Both parts matter for a faithful result. Without a token, links to this
+private repository's Actions runs answer 404, while CI's action passes its
+own token. And `./**/*.md` also scans untracked local folders (a Python
+virtualenv under `learning-study-private/` adds dozens of third-party
+README links), which a fresh CI checkout never contains.
 
 ---
 

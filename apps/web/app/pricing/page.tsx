@@ -137,12 +137,12 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* Buyable tiers: Free and Single. */}
-        {/* Suspense: PricingTiers reads useSearchParams to restore a
-            selection carried through the auth roundtrip. */}
-        <Suspense fallback={null}>
-          <PricingTiers />
-        </Suspense>
+        {/* Buyable tiers: Free and Single. No Suspense on purpose: the grid
+            must be in the server HTML, or its late arrival shifts the page
+            (CLS 0.359, 2026-10-25). Without a boundary, a useSearchParams
+            call added to PricingTiers fails the build instead of quietly
+            turning the grid client-only again. */}
+        <PricingTiers />
 
         {/* Curriculum preview, what a purchase unlocks */}
         <CurriculumPreview />

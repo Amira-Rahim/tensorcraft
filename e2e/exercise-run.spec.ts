@@ -89,21 +89,31 @@ test.describe("Exercise run in the real browser worker", () => {
     await expect(results).toContainText("All tests passed!", {
       timeout: 90_000,
     });
-    const banner = page.getByTestId("challenge-passed-banner");
-    await expect(banner).toContainText("Exercise passed");
+    // The verdict on the current code belongs to the results panel above and
+    // its live region. The banner reports the saved completion and carries
+    // the way forward, because it outlives later edits to the code (content
+    // fix 10, 32022a1b). A guest's pass is saved in this browser.
     await expect(
-      banner.getByRole("list", { name: "Checked work" }),
+      page.getByRole("status").filter({ hasText: /^All \d+ tests passed\.$/ }),
+    ).toHaveCount(1);
+    const banner = page.getByTestId("challenge-passed-banner");
+    await expect(banner).toHaveAttribute("data-completion-state", "saved");
+    await expect(banner).toContainText("Completion saved");
+    await expect(banner).toContainText("We saved your exercise completion.");
+    await expect(
+      banner.getByRole("list", { name: "Completed exercises" }),
     ).toHaveCount(0);
     await expect(
-      banner.getByText("Exercise passed", { exact: true }),
+      banner.getByText("Completion saved", { exact: true }),
     ).toHaveCSS("font-weight", "700");
-    // The workspace's pass result owns the next action; no second Continue
-    // at the bottom of the page competing with it.
+    // The workspace's pass result owns the next action. No second Continue
+    // at the bottom of the page competes with it.
     await expect(
-      page.getByRole("button", { name: "Continue →", exact: true }),
+      page.getByRole("button", { name: "Continue", exact: true }),
     ).toHaveCount(1);
-    // Results must not stretch the brief's row into an empty panel: the
-    // editor frame still starts where the brief ends (spec 2026-10-10).
+    // Results open in the checks under the code and must not open a gap
+    // between the brief and the code: the editor frame still starts where
+    // the brief ends (spec 2026-10-10).
     const briefBox = (await page.getByTestId("exercise-brief").boundingBox())!;
     const editorFrameBox = (await page
       .locator("[data-editor-frame]")

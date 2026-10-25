@@ -45,9 +45,15 @@ test("guest completion becomes a due warm-up the next day", async ({
     exact: true,
   });
   await expect(check).toBeDisabled();
-  await warmup.getByRole("textbox").fill("[3]");
+  // Lesson 1's recall asks about Demir's 12 selected readings since content
+  // fix 10 (2026-10-18), so the shape is [12]. The Deep Orbit layout
+  // (clarity fix 14, 2026-10-12) sets "No" on its own line, so the radio's
+  // accessible name has no comma.
   await warmup
-    .getByRole("radio", { name: "No, it only creates a tensor." })
+    .getByRole("textbox", { name: "What is this tensor’s shape?" })
+    .fill("[12]");
+  await warmup
+    .getByRole("radio", { name: "No it only creates a tensor." })
     .check();
   await check.click();
   await expect(warmup.getByRole("status")).toHaveText(

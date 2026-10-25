@@ -25,11 +25,16 @@ for (const [width, colorScheme] of [
     ).toHaveCount(0);
     await expect(page.getByText("Course preferences")).toHaveCount(0);
     await page.locator("summary", { hasText: "Project brief" }).click();
+    // Retitled on 2026-10-19 (course-project-preview.tsx). The preview must
+    // still mark the recorded reading as our demonstration run, separate
+    // from the learner's work (CLAUDE.md, 2026-10-18).
     const preview = page.getByRole("region", {
-      name: "Take the work outside the course",
+      name: "Your independent browser project",
     });
     await expect(preview).toBeVisible();
-    await expect(preview).toContainText("Maintainer demonstration");
+    await expect(preview).toContainText(
+      "Here is one validation reading from our demonstration run, separate from the work you’ll do",
+    );
     await expect(preview).toContainText("0.656");
     await preview.screenshot({
       path: testInfo.outputPath(`project-${width}.png`),
@@ -60,6 +65,11 @@ for (const [width, colorScheme] of [
     await experiment
       .getByRole("button", { name: "Check prediction", exact: true })
       .click();
+    await expect(
+      experiment
+        .getByRole("status")
+        .filter({ hasText: "Not quite. That’s not the second row." }),
+    ).toHaveAttribute("data-feedback-state", "incorrect");
     await experiment
       .getByRole("button", { name: "Run reshape", exact: true })
       .click();
@@ -72,8 +82,9 @@ for (const [width, colorScheme] of [
     await expect(experiment.getByTestId("channel-result")).toContainText(
       "[2, 3, 4]",
     );
+    // "Try a new example" became "Try the next selection" on 2026-10-17.
     await experiment
-      .getByRole("button", { name: "Try a new example", exact: true })
+      .getByRole("button", { name: "Try the next selection", exact: true })
       .click();
     await experiment
       .getByLabel("Transpose: turn columns into rows", { exact: true })
@@ -88,28 +99,27 @@ for (const [width, colorScheme] of [
       .click();
     await expect(
       experiment.getByText(
-        /Your first answer on the new example: correct, without help/,
+        /Your first answer on the next selection: correct, without help/,
       ),
     ).toBeVisible();
+    // The optional reference was renamed and its two sections split into
+    // three on 2026-10-16 (02-tensor-shapes.mdx).
     const reference = page.locator("details").filter({
-      has: page.getByText("Optional: more axes, image batches, and memory", {
+      has: page.getByText("Optional: images, extra axes, and memory", {
         exact: true,
       }),
     });
     await reference.locator("summary").click();
     await expect(reference).toHaveAttribute("open", "");
-    await expect(
-      reference.getByRole("heading", {
-        name: "Shapes can have more than two axes",
-        exact: true,
-      }),
-    ).toBeVisible();
-    await expect(
-      reference.getByRole("heading", {
-        name: "Reshape, transpose, and memory",
-        exact: true,
-      }),
-    ).toBeVisible();
+    for (const name of [
+      "The same idea works for images",
+      "What happens to the data in memory?",
+      "Swapping axes in a bigger tensor",
+    ]) {
+      await expect(
+        reference.getByRole("heading", { name, exact: true }),
+      ).toBeVisible();
+    }
     await expect(
       page.getByRole("button", { name: "Step 5: Epilogue", exact: true }),
     ).toBeDisabled();
@@ -118,7 +128,8 @@ for (const [width, colorScheme] of [
         () => document.documentElement.scrollWidth <= innerWidth + 1,
       ),
     ).toBe(true);
-    await page.getByRole("button", { name: "Continue →", exact: true }).click();
+    // The lesson nav button reads "Continue" with no arrow since 2026-10-19.
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(experiment).toHaveCount(0);
     await expect(
       page.getByRole("group", { name: "Step 3 of 5: Challenge", exact: true }),
@@ -128,7 +139,7 @@ for (const [width, colorScheme] of [
       body: JSON.stringify({
         durationMs: Date.now() - started,
         includes:
-          "navigation, project brief, guest paywall, wrong prediction, transforms, new sensor example and optional reference",
+          "navigation, project brief, guest paywall, wrong prediction, transforms, next sensor selection and optional reference",
         excludes: "human reading and thinking time; this is not learner timing",
       }),
       contentType: "application/json",
