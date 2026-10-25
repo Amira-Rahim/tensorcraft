@@ -13,6 +13,11 @@ test("guest completion becomes a due warm-up the next day", async ({
     localStorage.setItem("tc_step_max_deep-orbit_introduction-to-tensors", "4");
   });
   await page.goto(REVIEW_LESSON);
+  // The saved step is restored in a client effect, so the server HTML is
+  // the Briefing. Clicking before the restore lands hit the Briefing's
+  // Continue and recorded nothing (failed twice on Linux CI, 2026-10-25).
+  // Legacy index 4 migrates to Takeaways, step 4 of 5.
+  await expect(page.getByRole("group", { name: /^Step 4 of 5/ })).toBeVisible();
   await page
     .getByRole("button", { name: /continue|complete/i })
     .first()

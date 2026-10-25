@@ -649,7 +649,6 @@ function RecordingNotes({
   excerpt: RecordingExcerpt;
   firstReadings: readonly number[];
 }) {
-  const uid = useId();
   const [selectedSensor, setSelectedSensor] = useState(0);
   const positions = ["first", "second", "third", "fourth"];
   return (
@@ -678,28 +677,26 @@ function RecordingNotes({
         <ol className="channel-source-readings">
           {excerpt.sensorIds.map((sensor, index) => (
             <li key={sensor}>
+              {/* Named by its visible text ("second reading Sensor B 20"),
+                  so speech users can say what they see (WCAG 2.5.3). The
+                  old aria-label "Inspect sensor B" dropped the visible
+                  position and value, which axe 4.14 flags. */}
               <button
                 type="button"
                 className="channel-source-sensor"
-                aria-label={`Inspect sensor ${sensor}`}
-                aria-describedby={`${uid}-${sensor}-position ${uid}-${sensor}-value`}
                 aria-pressed={selectedSensor === index}
                 onClick={() => setSelectedSensor(index)}
               >
-                <span
-                  id={`${uid}-${sensor}-position`}
-                  className="channel-source-position"
-                >
+                <span className="channel-source-position">
                   {positions[index]} reading
-                </span>
-                <strong>Sensor {sensor}</strong>
+                </span>{" "}
+                {/* The spaces keep the name's words apart; the grid layout
+                    ignores them. */}
+                <strong>Sensor {sensor}</strong>{" "}
                 <span className="channel-source-arrow" aria-hidden="true">
                   ↓
-                </span>
-                <span
-                  id={`${uid}-${sensor}-value`}
-                  className="channel-source-value"
-                >
+                </span>{" "}
+                <span className="channel-source-value">
                   {firstReadings[index]}
                 </span>
               </button>

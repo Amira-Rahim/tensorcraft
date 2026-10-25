@@ -51,17 +51,18 @@ it("connects each sensor to its first-moment reading and position without answer
     screen.getByRole("complementary", {
       name: "Selected readings from Demir’s recording",
     });
+  // Each button is named by its visible text, position and value included,
+  // so speech users can say what they see (WCAG 2.5.3, axe 4.14).
   const sensorB = within(notes()).getByRole("button", {
-    name: "Inspect sensor B",
+    name: "second reading Sensor B 20",
   });
   fireEvent.click(sensorB);
   expect(sensorB).toHaveAttribute("aria-pressed", "true");
-  expect(sensorB).toHaveAccessibleDescription("second reading 20");
   expect(within(notes()).getByRole("status")).toHaveTextContent(
     "Sensor B recorded 20. Its reading is the second number in this moment’s recording.",
   );
   fireEvent.click(
-    within(notes()).getByRole("button", { name: "Inspect sensor D" }),
+    within(notes()).getByRole("button", { name: "fourth reading Sensor D 8" }),
   );
   expect(within(notes()).getByRole("status")).toHaveTextContent(
     "Sensor D recorded 8. Its reading is the fourth number in this moment’s recording.",
@@ -73,7 +74,7 @@ it("connects each sensor to its first-moment reading and position without answer
 
   click("Try the next selection");
   expect(
-    within(notes()).queryByRole("button", { name: "Inspect sensor D" }),
+    within(notes()).queryByRole("button", { name: /Sensor D/ }),
   ).not.toBeInTheDocument();
   expect(within(notes()).getByRole("status")).toHaveTextContent(
     "Sensor A recorded 10. Its reading is the first number in this moment’s recording.",
