@@ -22,6 +22,12 @@ max_retries = 2
 retry_wait_time = 2
 timeout = 20
 
+# A host that never answers is the same third-party outage as a 503, so a
+# timeout is reported but does not fail the job. Refused connections, DNS
+# failures and 404s still fail. Added 2026-10-25, when two Netlify-hosted
+# sites linked from docs stopped answering from every network tried.
+accept_timeouts = true
+
 # Exclude paths that either are not real docs or contain intentionally broken
 # example links (e.g. MDX fixture snippets, example.com placeholders).
 exclude_path = [
@@ -72,7 +78,11 @@ require_https = false
 # Include fragment (#anchor) validation for local Markdown files so broken
 # internal TOC anchors fail the build. As of lychee v0.24 (the version pinned
 # in ci.yml) this takes a mode string, not a boolean; "full" checks all
-# fragments (see lychee.example.toml for the pinned version).
+# fragments (see lychee.example.toml for the pinned version). "All" includes
+# fragments on REMOTE pages: lychee fetches the page and looks for a matching
+# id. A lesson's `#step-N` hash is client-side state (parseStepHash in
+# lesson-steps.tsx), not an element id, so docs must link the bare lesson URL;
+# `#step-1` turned main red from 2026-10-06 to 2026-10-25.
 include_fragments = "full"
 
 # Do not cache across CI runs (ephemeral runner anyway).

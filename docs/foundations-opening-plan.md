@@ -204,7 +204,7 @@ Review the revised [Concept](design-previews/foundations/screenshots/desktop-ten
 Existing Deep Orbit colors and typography remain the design vocabulary. No
 additional phase, branching path, or required dialogue click is introduced.
 
-The [current lesson](https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors#step-1)
+The [current lesson](https://tensorcraft.app/worlds/deep-orbit/foundations/introduction-to-tensors)
 is the visual baseline. Preserve the approved two-tone 60 px desktop and
 36 px phone title, mission metadata, segmented progress, lesson drawer,
 scene heading, and paired artwork and crew dialogue. Keep the existing
