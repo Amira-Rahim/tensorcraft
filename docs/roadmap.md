@@ -1,5 +1,9 @@
 # Tensorcraft - Growth Roadmap
 
+For the complete product delivery view, see the root
+[product roadmap](../ROADMAP.md). This document retains the current growth
+strategy, commercial goals, and evidence gates.
+
 > **Status:** living document. The owner confirmed a long-term goal of 200,000 unique paying customers on 2026-10-03. This supersedes the earlier 100,000 target and the version-roadmap tables in `docs/prd.md` §7 and `docs/dev-plan.md`. Earlier channel, revenue, staffing, and timing scenarios are planning assumptions, not forecasts for the current goal.
 > **Scope:** what to build, in what order, to grow revenue. Engineering phase detail stays in `docs/dev-plan.md`; pricing/positioning detail stays in `docs/product-plan.md`.
 > **Task index (2026-07-21):** the Horizon 1-3 work items are indexed canonically in `docs/post-launch-backlog.md` §8, the single source of truth for post-launch tasks. This file remains the strategy detail doc (arithmetic, gates, framing). Still-open Horizon 0 defects: `docs/audits/launch-blockers-history-2026-08-23.md`.

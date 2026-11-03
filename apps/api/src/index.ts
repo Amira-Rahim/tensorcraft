@@ -133,6 +133,7 @@ assertEnv();
 const server = serve({
   fetch: app.fetch,
   port,
+  hostname: process.env.TENSORCRAFT_REVIEW === "1" ? "127.0.0.1" : undefined,
 });
 
 // Graceful shutdown

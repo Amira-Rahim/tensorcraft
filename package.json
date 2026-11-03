@@ -1,6 +1,7 @@
 {
   "name": "tensorcraft",
   "private": true,
+  "license": "MPL-2.0",
   "packageManager": "pnpm@10.12.4",
   "engines": {
     "node": ">=22"
@@ -16,6 +17,10 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:rls": "node scripts/test-rls.mjs",
+    "review:prepare": "node scripts/review.mjs prepare",
+    "review:dev": "node scripts/review.mjs dev",
+    "review:stop": "node scripts/review.mjs stop",
+    "review:check": "node --test scripts/review.test.mjs",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:visual": "RUN_VISUAL=1 playwright test e2e/visual --project=chromium --update-snapshots=none",

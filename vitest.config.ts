@@ -17,6 +17,8 @@ export default defineConfig({
       "**/node_modules/**",
       // Design artifacts can contain archived tests, not active test suites.
       "**/.superpowers/**",
+      // The review launcher copies source here for an isolated local runtime.
+      "**/.review/**",
       ".next",
       "dist",
       "e2e",

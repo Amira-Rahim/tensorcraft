@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint .",
-    "seed": "npx tsx seed.ts"
+    "seed": "node ../../scripts/review.mjs prepare"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0"
