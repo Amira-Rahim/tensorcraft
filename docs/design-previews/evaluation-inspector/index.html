@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-world="deep-orbit" data-scheme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evaluation inspector | Tensorcraft visual review</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../packages/worlds/src/css/worlds.css">
+  <link rel="stylesheet" href="../../../apps/web/app/worlds/[slug]/[module]/[lesson]/deep-orbit-lessons.css">
+  <link rel="stylesheet" href="../../../apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-dialogue.css">
+  <link rel="stylesheet" href="../../../apps/web/app/worlds/[slug]/[module]/[lesson]/lesson-story.css">
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <a class="skip" href="#phase-body">Skip to lesson preview</a>
+  <aside class="preview-bar" aria-label="Design review controls">
+    <p>Local visual prototype. The recorded run belongs to a maintainer.</p>
+    <details id="preview-settings">
+      <summary>Preview settings</summary>
+      <div class="settings-body">
+        <label for="preview-state">Result state</label>
+        <select id="preview-state">
+          <option value="measured">Recorded maintainer run</option>
+          <option value="empty">No run yet</option>
+          <option value="zero">Zero errors: synthetic fixture</option>
+          <option value="partial">Incomplete: synthetic fixture</option>
+          <option value="stale">Edited-code state preview</option>
+          <option value="failed">Failed-rerun state preview</option>
+        </select>
+        <p>Selected lesson passages provide story context. Production editing, grading, progress, and access checks are outside this prototype.</p>
+      </div>
+    </details>
+    <button id="scheme-toggle" type="button">Light appearance</button>
+  </aside>
+  <div class="lesson-page deep-orbit-lesson">
+    <div class="preview-frame">
+      <header class="preview-header">
+        <p>Deep Orbit / The Training Loop</p>
+        <h1>Evaluating DEEP SCAN</h1>
+        <nav class="phase-nav" aria-label="Lesson sections">
+          <button data-phase="briefing" aria-current="step">Briefing</button>
+          <button data-phase="concept">Concept</button>
+          <button data-phase="challenge">Challenge</button>
+          <button data-phase="takeaways">Takeaways</button>
+          <button data-phase="epilogue">Epilogue</button>
+        </nav>
+      </header>
+      <main id="phase-body" tabindex="-1"><p>Loading the captured example…</p></main>
+      <footer><p>Tensorcraft visual review. No course progress is recorded.</p><a href="README.md">Review scope and evidence</a></footer>
+    </div>
+  </div>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script type="module" src="preview.js"></script>
+</body>
+</html>
