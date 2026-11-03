@@ -66,11 +66,18 @@ production release.
 | `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
 | `upgrade_cta_shown` | Land on `/pricing?locked=<launched-slug>` (fires headlessly from `<PaywallNotice>`; the visible banner was removed 2026-09-15), OR `/paywall` mounts | `source="paywall"`, `worldId?` |
 | `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
-| `free_lesson_cta_clicked` | Click any "Start Module 1 free" CTA on `/learn`, or the trailer end card on a world page | `source` (`learn_hero`/`learn_footer`/`world_trailer_endcard`) |
+| `free_lesson_cta_clicked` | Click a free-lesson CTA: the `/learn` hero or footer, the landing hero "Start Mission: Deep Orbit" or closing "Start Module 1" (since 2026-11-02), the `/pricing` closing "Start Module 1" (since 2026-11-02), or the trailer end card on a world page | `source` (`learn_hero`/`learn_footer`/`landing_hero`/`landing_footer`/`pricing_footer`/`world_trailer_endcard`) |
 | `learn_trailer_played` | `/learn` hero loop begins, or "Watch the trailer" opens the full cut (only once trailer assets ship) | `mode` (`loop`/`full`) |
 | `world_trailer_played` | World-page trailer band opens the lightbox cut (only once `/media/<slug>-trailer.mp4` ships; prospects only, no loop mode on this surface) | `worldId`, `mode="full"` |
 | `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `worldId` |
 | `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `worldId`, `lessonId`, `exerciseSlug`, `commitSha` |
+
+`free_lesson_cta_clicked` counts activations after hydration: mouse clicks
+(Cmd, Ctrl and Shift clicks included), Enter and taps. Middle-click and
+context-menu or long-press opens send nothing at every placement, so the
+event runs lower than `lesson_started`. A click before hydration also sends
+nothing, which rarely matters: PostHog starts only for a visitor who accepted
+the banner, and the banner appears after hydration.
 
 ## SDK events and data hygiene (added 2026-10-03)
 

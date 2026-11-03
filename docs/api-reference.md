@@ -152,6 +152,8 @@ or losing their upgrade credit during a database outage.
 
 **Abandoned-cart recovery:** the session carries `customer_email` (read from `profiles`) and `after_expiration.recovery`, so Stripe can mail a buyer who drops out. `customer_email` is omitted rather than sent empty when the profile has no address, since Stripe rejects a blank string.
 
+**Acquisition source:** when `ACQUISITION_SOURCES` in `apps/api/src/lib/acquisition-source.ts` has entries, the session carries one optional `custom_fields` dropdown (`key: "source"`, label "How did you find Tensorcraft?"). Stripe stores the buyer's answer on the Checkout Session. `acquisitionSourceFields()` leaves the field out while the list is empty or breaks one of Stripe's rules: unique values of 1 to 100 letters or digits, unique labels of 1 to 100 characters, and at most 200 options. Stripe test mode enforced all of them on 2026-11-02, including the unique-label rule that its documentation leaves out. When the API drops the field, checkout opens without the question and the API logs a warning that lists the problems. The API does not copy the answer into the database.
+
 **Response (normal checkout):**
 ```json
 {

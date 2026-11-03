@@ -1,7 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import {
+  DEFAULT_WORLD,
+  WORLD_CONTENT,
+  getModuleLessonCount,
+} from "@tensorcraft/shared";
 import { ParticleField } from "@tensorcraft/ui/effects";
+import { FreeLessonCtaTracker } from "./free-lesson-cta-tracker";
+
+// Read from the shared content shape that module-counts.test.ts pins to the
+// built lessons, so the note cannot drift from the free module's real size.
+const FREE_LESSONS = getModuleLessonCount(
+  DEFAULT_WORLD,
+  WORLD_CONTENT.freeModuleSlug,
+);
 
 /**
  * Brutalist landing hero (Phase 11 §11d Wave 1; conversion pass 2026-06-10).
@@ -53,21 +66,34 @@ export function LandingHero() {
               and train the models in JavaScript, then run them in your browser.
             </p>
 
-            <div className="flex gap-4 flex-wrap shrink-0">
-              <Link
-                href="/worlds/deep-orbit/foundations/introduction-to-tensors"
-                data-testid="landing-cta-primary"
-                className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            {/* The note under the buttons restores the hero's only risk
+                reversal (first-1,000 plan §9 item 2) without touching the
+                owner-decided headline or button labels. */}
+            <div className="flex flex-col gap-3 shrink-0">
+              <div className="flex gap-4 flex-wrap">
+                <FreeLessonCtaTracker source="landing_hero">
+                  <Link
+                    href="/worlds/deep-orbit/foundations/introduction-to-tensors"
+                    data-testid="landing-cta-primary"
+                    className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+                  >
+                    Start Mission: Deep Orbit
+                  </Link>
+                </FreeLessonCtaTracker>
+                <Link
+                  href="/learn"
+                  data-testid="landing-cta-secondary"
+                  className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+                >
+                  About the course
+                </Link>
+              </div>
+              <p
+                data-testid="landing-cta-note"
+                className="font-mono text-xs text-text-muted tracking-wider"
               >
-                Start Mission: Deep Orbit
-              </Link>
-              <Link
-                href="/learn"
-                data-testid="landing-cta-secondary"
-                className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-              >
-                About the course
-              </Link>
+                The first {FREE_LESSONS} lessons are free, no account needed.
+              </p>
             </div>
           </div>
         </div>

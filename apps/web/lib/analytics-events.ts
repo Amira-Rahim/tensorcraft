@@ -275,10 +275,16 @@ export interface EventProperties {
   };
   [EVENTS.FREE_LESSON_CTA_CLICKED]: {
     /**
-     * Placement of the clicked free-lesson CTA. Extend the union when
-     * landing/pricing adopt the tracker.
+     * Placement of the clicked free-lesson CTA. Landing and pricing adopted
+     * the tracker 2026-11-02 so the funnel can compare entry points.
      */
-    source: "learn_hero" | "learn_footer" | "world_trailer_endcard";
+    source:
+      | "learn_hero"
+      | "learn_footer"
+      | "world_trailer_endcard"
+      | "landing_hero"
+      | "landing_footer"
+      | "pricing_footer";
   };
   [EVENTS.TRAILER_PLAYED]: {
     /** loop = silent hero loop began; full = the lightbox 90s cut opened. */

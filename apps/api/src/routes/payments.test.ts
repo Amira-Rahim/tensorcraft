@@ -1,6 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
 import { payments } from "./payments";
+import { acquisitionSourceFields } from "../lib/acquisition-source";
+
+// This mock returns no source field whatever ACQUISITION_SOURCES holds, so
+// every other checkout test sees the session exactly as before. The describe
+// block "checkout asks where the buyer found Tensorcraft" switches it on.
+vi.mock("../lib/acquisition-source", () => ({
+  acquisitionSourceFields: vi.fn(() => []),
+}));
 
 const mockInsert = vi.fn();
 const mockUpdate = vi.fn();
@@ -1483,6 +1491,93 @@ describe("checkout collects the billing country with Stripe Tax off", () => {
     expect(res.status).toBe(200);
     expect(mockSessionCreate).toHaveBeenCalledWith(
       expect.objectContaining({ billing_address_collection: "required" }),
+    );
+  });
+});
+
+/**
+ * Acquisition source (first-1,000 plan §9 item 5). PostHog only sees visitors
+ * who accept analytics, so a buyer who declines leaves no source. An optional
+ * Stripe Checkout question records the buyer's own answer on the session.
+ */
+describe("checkout asks where the buyer found Tensorcraft", () => {
+  const checkout = () =>
+    app.request("/api/payments/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+      },
+      body: JSON.stringify({ planId: "single", worldIds: ["deep-orbit"] }),
+    });
+
+  beforeEach(() => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("APP_URL", "http://localhost:3000");
+    mockSessionCreate.mockReset();
+    mockSessionCreate.mockResolvedValue({ url: "https://stripe.test/source" });
+    mockExistingPurchases = null;
+    mockProfileEmail = "buyer@example.com";
+    mockProfileCustomerId = null;
+  });
+
+  const field = {
+    key: "source",
+    label: {
+      type: "custom" as const,
+      custom: "How did you find Tensorcraft?",
+    },
+    type: "dropdown" as const,
+    optional: true,
+    dropdown: { options: [{ label: "Hacker News", value: "hackernews" }] },
+  };
+
+  it("passes the optional source question to Stripe when options exist", async () => {
+    vi.mocked(acquisitionSourceFields).mockReturnValueOnce([field]);
+
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ custom_fields: [field] }),
+    );
+  });
+
+  it("keeps the question when it retries without a stale saved customer", async () => {
+    vi.mocked(acquisitionSourceFields).mockReturnValueOnce([field]);
+    mockProfileCustomerId = "cus_stale_deleted";
+    // The handler mutates one params object between the two creates, so
+    // mock.calls would show only its final state. Copy each call instead.
+    const sent: Array<Record<string, unknown>> = [];
+    mockSessionCreate
+      .mockImplementationOnce(async (params: Record<string, unknown>) => {
+        sent.push(structuredClone(params));
+        throw new Error("No such customer: cus_stale_deleted");
+      })
+      .mockImplementationOnce(async (params: Record<string, unknown>) => {
+        sent.push(structuredClone(params));
+        return { url: "https://stripe.test/retry" };
+      });
+
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(sent.map((params) => params.customer)).toEqual([
+      "cus_stale_deleted",
+      undefined,
+    ]);
+    expect(sent.map((params) => params.custom_fields)).toEqual([
+      [field],
+      [field],
+    ]);
+  });
+
+  it("sends no custom_fields while the option list is empty", async () => {
+    const res = await checkout();
+
+    expect(res.status).toBe(200);
+    expect(mockSessionCreate.mock.calls[0][0]).not.toHaveProperty(
+      "custom_fields",
     );
   });
 });

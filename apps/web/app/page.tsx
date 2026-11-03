@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { FaqSection } from "./components/faq-section";
+import { FreeLessonCtaTracker } from "./components/free-lesson-cta-tracker";
 import { LandingHero } from "./components/landing-hero";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
@@ -122,7 +123,7 @@ export default function Home() {
           heading="Common Questions"
         />
 
-        {/* ===== FINAL CTA (server-rendered, zero JS) =====
+        {/* ===== FINAL CTA (server-rendered, FreeLessonCtaTracker client island) =====
             Centered bookend: the one symmetric moment on an asymmetric
             page; closes without a dead half. */}
         <section className="px-10 md:px-20 py-20 flex flex-col items-center text-center gap-8">
@@ -141,13 +142,15 @@ export default function Home() {
               only a free-lesson link, so a reader who was already sold had
               nowhere to act on it without going back to the nav. */}
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Link
-              href="/worlds/deep-orbit/foundations/introduction-to-tensors"
-              data-testid="landing-cta-final"
-              className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-on-primary font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-            >
-              Start Module 1
-            </Link>
+            <FreeLessonCtaTracker source="landing_footer">
+              <Link
+                href="/worlds/deep-orbit/foundations/introduction-to-tensors"
+                data-testid="landing-cta-final"
+                className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-on-primary font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow brutalist-stamp focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+              >
+                Start Module 1
+              </Link>
+            </FreeLessonCtaTracker>
             <Link
               href="/pricing"
               data-testid="landing-cta-final-pricing"

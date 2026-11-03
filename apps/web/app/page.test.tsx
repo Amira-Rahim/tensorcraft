@@ -1,6 +1,12 @@
-import { describe, it, expect, vi, beforeAll } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { BRIDGES } from "@tensorcraft/shared";
+import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import {
+  BRIDGES,
+  DEFAULT_WORLD,
+  WORLD_CONTENT,
+  getModuleLessonCount,
+} from "@tensorcraft/shared";
+import { capture } from "@/lib/posthog";
 import { LandingHero } from "./components/landing-hero";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { CommitTrail } from "./components/commit-trail";
@@ -77,6 +83,34 @@ vi.mock("framer-motion", () => ({
   ),
 }));
 
+// Mock the posthog transport. A factory mock of the widely imported
+// analytics-events module is the vi.mock drift trap from the 2026-08-26
+// PostHog wiring incident. This mock is partial, so every other export of
+// the module stays real.
+vi.mock("@/lib/posthog", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/posthog")>()),
+  capture: vi.fn(),
+}));
+
+beforeEach(() => {
+  vi.mocked(capture).mockClear();
+});
+
+// jsdom cannot navigate, and following the link would log "Not implemented:
+// navigation". Cancel the default action so the click exercises the tracker.
+function clickWithoutNavigating(el: HTMLElement) {
+  el.addEventListener("click", (e) => e.preventDefault());
+  fireEvent.click(el);
+}
+
+// The free-lesson events among everything `capture` recorded, so a test can
+// assert exactly one per click.
+function ctaClicks() {
+  return vi
+    .mocked(capture)
+    .mock.calls.filter(([event]) => event === "free_lesson_cta_clicked");
+}
+
 describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("LandingHero", () => {
     it("renders the descriptive course headline", () => {
@@ -122,9 +156,10 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     // lesson-steps.tsx, so the button names the thing the way the product
     // names it three seconds later. The world name follows the same
     // precedent as onboarding's "Start Deep Orbit" (audit :450). Owner also
-    // dropped the "(free)" tag here, so no free assertion: if it comes
-    // back, restore one, since module 1 is the entire free tier and the
-    // claim is the hero's only risk reversal.
+    // dropped the "(free)" tag from the button. On 2026-11-02 the free claim
+    // returned as a note under the CTAs (first-1,000 plan §9 item 2). The next
+    // test asserts that note. Module 1 is the entire free tier, and the note
+    // is the hero's only risk reversal.
     it("primary CTA names the mission and world and keeps the free-lesson href", () => {
       render(<LandingHero />);
       const primary = screen.getByTestId("landing-cta-primary");
@@ -133,6 +168,36 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(primary.getAttribute("href")).toBe(
         "/worlds/deep-orbit/foundations/introduction-to-tensors",
       );
+    });
+
+    it("says the free lessons need no account, next to the CTAs", () => {
+      render(<LandingHero />);
+      const note = screen.getByTestId("landing-cta-note");
+      const freeLessons = getModuleLessonCount(
+        DEFAULT_WORLD,
+        WORLD_CONTENT.freeModuleSlug,
+      );
+      expect(note.textContent).toBe(
+        `The first ${freeLessons} lessons are free, no account needed.`,
+      );
+      // The note qualifies the buttons, so it sits right after their row.
+      expect(note.previousElementSibling).toContainElement(
+        screen.getByTestId("landing-cta-primary"),
+      );
+    });
+
+    it("reports a primary CTA click as a landing_hero free-lesson click", () => {
+      render(<LandingHero />);
+      clickWithoutNavigating(screen.getByTestId("landing-cta-primary"));
+      expect(ctaClicks()).toEqual([
+        ["free_lesson_cta_clicked", { source: "landing_hero" }],
+      ]);
+    });
+
+    it("sends no free-lesson click for the About the course button", () => {
+      render(<LandingHero />);
+      clickWithoutNavigating(screen.getByTestId("landing-cta-secondary"));
+      expect(ctaClicks()).toEqual([]);
     });
 
     it("subhead connects the crew story to the browser workflow", () => {
@@ -264,6 +329,15 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(cta.className).toMatch(/brutalist-stamp/);
       expect(cta.className).toMatch(/brutalist-shadow/);
       expect(cta.className).toMatch(/brutalist-hover/);
+    });
+
+    it("reports a final CTA click as a landing_footer free-lesson click", async () => {
+      const { default: Home } = await import("./page");
+      render(<Home />);
+      clickWithoutNavigating(screen.getByTestId("landing-cta-final"));
+      expect(ctaClicks()).toEqual([
+        ["free_lesson_cta_clicked", { source: "landing_footer" }],
+      ]);
     });
   });
 

@@ -9,6 +9,7 @@ import { PricingAnalytics } from "./pricing-analytics";
 import { PricingTiers } from "./pricing-tiers";
 import { buildPricingOffers } from "./pricing-jsonld";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { FreeLessonCtaTracker } from "@/app/components/free-lesson-cta-tracker";
 
 // 2026-08-14 (owner directive, screenshot feedback): future product plans are
 // not shown to users. The bundle ladder left this page entirely: the
@@ -170,12 +171,14 @@ export default function PricingPage() {
               Was "See All 5 Worlds" pointing at /worlds, four of which are
               coming-soon and unbuyable (future plans are not user-facing,
               header comment above). */}
-          <Link
-            href="/worlds/deep-orbit/foundations/introduction-to-tensors"
-            className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
-          >
-            Start Module 1
-          </Link>
+          <FreeLessonCtaTracker source="pricing_footer">
+            <Link
+              href="/worlds/deep-orbit/foundations/introduction-to-tensors"
+              className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-on-primary border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
+            >
+              Start Module 1
+            </Link>
+          </FreeLessonCtaTracker>
         </section>
       </div>
     </main>

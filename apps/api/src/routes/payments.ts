@@ -13,6 +13,7 @@ import {
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import { sendPurchaseReceipt } from "../lib/email";
 import { worldDisplayName } from "../lib/world-name";
+import { acquisitionSourceFields } from "../lib/acquisition-source";
 import { sendOperatorAlert } from "../lib/operator-alert";
 import { logger } from "../lib/logger";
 import { captureServer, SERVER_EVENTS } from "../lib/posthog";
@@ -303,6 +304,7 @@ payments.post("/checkout", async (c) => {
     appUrl = "http://localhost:3000";
   }
 
+  const sourceFields = acquisitionSourceFields();
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: "payment",
     client_reference_id: userId,
@@ -351,6 +353,12 @@ payments.post("/checkout", async (c) => {
       creditApplied: String(credit),
       originalPrice: String(plan.price),
     },
+    // Optional "How did you find Tensorcraft?" dropdown. Consent-gated
+    // analytics cannot attribute a buyer who declined, and Stripe keeps the
+    // answer on the session. acquisitionSourceFields() returns nothing while
+    // the option list is empty or breaks Stripe's rules
+    // (lib/acquisition-source.ts), and the spread then adds no field.
+    ...(sourceFields.length > 0 ? { custom_fields: sourceFields } : {}),
     success_url: `${appUrl}/dashboard/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/pricing?purchase=cancelled`,
   };

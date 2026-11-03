@@ -11,6 +11,85 @@ a link to the detail spec if one exists). Detail specs stay in their own files;
 this doc is the index of record. Deferred mentions surviving elsewhere
 (`dev-plan.md`, audit ledgers) are historical and non-authoritative.
 
+## First-1,000 funnel follow-ups (2026-11-02)
+
+Repo work from §9 of the [first-1,000 plan](marketing-first-1000-paid.md). A
+fresh-visitor walkthrough of production on desktop ("Essential only" consent,
+analytics requests blocked) passed every step a guest can take: homepage,
+lesson one without an account, failing starter, passing solution, completion
+saved and kept after a reload, the end-of-lesson sign-up prompt, `/auth`,
+`/pricing`, and the signed-out "Buy now" redirect to sign-in. An iPhone 13
+profile covered the homepage, the consent banner, the hero CTA and the
+opening of lesson one. Stripe
+test mode (the key in the gitignored `apps/api/.env.checkout-test.local`)
+accepted Checkout Sessions built with the handler's exact parameters, with and
+without the source question. Not yet covered: entry from a campaign link,
+signup with guest-progress carry-over, a completed test-mode purchase, and the
+access it grants. A local purchase also needs the Docker-based Supabase stack.
+
+- [x] **Free-lesson CTA tracking beyond /learn** (§4, item 2 of the /learn
+  redesign entry): `landing_hero`, `landing_footer`, and `pricing_footer`.
+- [ ] **(OWNER) The hero note awaits approval.** "The first 5 lessons are
+  free, no account needed." sits under the hero buttons (`landing-hero.tsx`),
+  as §9 item 2 of the plan asks. The count comes from
+  `getModuleLessonCount()`, which `module-counts.test.ts` checks against the
+  lesson files. The record it
+  touches:
+  - It returns the content of the trust line "No credit card. No account for
+    module 1." to the same slot. Commit 0be63b29 removed that line on
+    2026-08-19.
+  - It brings back the free claim dropped from the button on 2026-08-22
+    (b3f7b7ae, "Run Your First Tensor (Free)"). The owner also had the bridge
+    section's free CTA removed on 2026-08-31. The session record gives
+    redundancy as the reason: the hero and closing CTAs already led to the
+    same free lesson.
+  - On wide screens it lifts the buttons 28px off the subhead's bottom edge,
+    which the 2026-08-31 one-row layout aligned. Hanging the note below the
+    row on wide screens would keep that alignment.
+  - On phones it sits under the second button, 84px below the primary one.
+    On a first visit at 375 by 667 the consent bar covers it. At 320 by 568
+    the note sits below the fold, and the consent bar covers the primary
+    button itself.
+  If approved, update the history comments in `e2e/landing.spec.ts` and
+  `apps/web/app/page.test.tsx`. The landing visual baselines mask the hero
+  canvas, so a baseline diff will not show the note. The 320px capture still
+  changes height and needs a re-mint.
+- [ ] **(OWNER, before the first sale) The checkout source question stays
+  off while `ACQUISITION_SOURCES` is empty.** Filling the list in
+  `apps/api/src/lib/acquisition-source.ts` switches on the optional "How did
+  you find Tensorcraft?" question. Labels and values
+  must each be unique, and the unit test enforces every rule Stripe test mode
+  enforced on 2026-11-02. Put these privacy changes in a web deploy that is
+  live before the API deploy that carries the list:
+  - `/privacy` section 2 (purchase data): Stripe keeps the optional answer
+    with the payment, and Tensorcraft does not copy it.
+  - Section 3 (purposes): the purpose, learning which channels bring buyers,
+    and its legal basis. The owner or counsel picks consent for a voluntary
+    answer or a stated legitimate interest.
+  - Section 9 (retention): how long the answer stays. The ten-year tax
+    retention for purchase records does not cover it.
+  - The "Last updated" date and the privacy snapshot test.
+  - Access and erasure: add a Stripe Dashboard step to section 4 of
+    [the support runbook](support-runbook.md), and widen Stripe's purpose in
+    [privacy-compliance.md](privacy-compliance.md). Stripe's Redaction Jobs
+    API (public preview) can also redact Checkout Sessions.
+- [ ] **(B5) Guest exercise runs call two signed-in endpoints.**
+  `lesson-content.tsx` posts `/api/exercise-attempts` on every run and
+  `/api/github/commit` after a pass without checking for a session. Both
+  return 401 for guests (three console errors in the walkthrough). The API's
+  global rate limiter (`apps/api/src/index.ts`) runs before auth, so a traffic
+  spike spends Upstash quota on requests that can only fail. Skip both calls
+  when there is no session.
+- [ ] **(B2) The nav's "Blog" link opens "Our first post is coming soon."**
+  That line states a future plan on a user surface. Hide the link until the
+  first post ships, or publish the first post (source material:
+  [tensor cleanup article material](articles/tensor-cleanup-material.md)).
+- [ ] **(OWNER) The Kit drafts carry two stale claims.** Fix them before
+  creating the automations (plan §9 item 6). In [the drafts](email-retention-sequences.md), A1 says "The
+  first lesson takes fifteen minutes", but lesson one's `estimatedMinutes` is
+  8 (the module totals 59). A2 says "55 bridges", but the shared `BRIDGES`
+  list has 51 entries, and no page on the site states a count.
+
 ## CI repair follow-ups (2026-10-25)
 
 Found while bringing `main` CI back to green after it stayed red from
@@ -634,12 +713,11 @@ memory was refuted by that audit: `pnpm audit` clean.)
      `<video preload="none" poster controls>` (click-to-play, zero bytes
      against the audited load) and the /learn visual baselines are re-minted.
      An externally produced video can replace the file at the same path later.
-  2. **Adopt `FreeLessonCtaTracker` beyond /learn.** The landing hero, landing
-     final CTA, bridge-preview section, and /pricing footer all link the free
-     lesson untracked. Wrap them in
-     `apps/web/app/components/free-lesson-cta-tracker.tsx` and widen the
-     event's `source` union in `apps/web/lib/analytics-events.ts` as surfaces
-     adopt it.
+  2. **Adopt `FreeLessonCtaTracker` beyond /learn. DONE 2026-11-02.** The
+     landing hero (`landing_hero`), landing final CTA (`landing_footer`), and
+     /pricing footer (`pricing_footer`) now fire `free_lesson_cta_clicked`.
+     The bridge-preview section no longer links the free lesson, so it needs
+     no tracker.
   3. [ ] (OPERATOR) **Request GSC re-indexing of /learn after the redesign
      deploys** (Search Console URL inspection, "Request indexing"). Already
      queued as an open operator leftover in
@@ -1348,10 +1426,15 @@ post-launch by its own definition ("not before launch"), user-count-gated
 like §3. Last two items were prose-only findings (launch-blockers R2-5)
 with no checkbox anywhere until now.
 
-- [ ] `skill_events` partitions end **2027-04-01**;
-  `ensure_skill_events_partitions()` has zero callers and inserts are
-  fire-and-forget, so expiry fails silently and the skill genome dies
-  unnoticed. Wire a scheduled caller + alert.
+- [x] `skill_events` partitions end **2027-04-01** unless extended. A
+  scheduled caller exists: `.github/workflows/partitions.yml` runs
+  `ensure_skill_events_partitions()` on the 1st of each month and fails loud
+  on a non-2xx response (green every month from 2026-08-01 to 2026-11-01).
+  Inserts stay fire-and-forget, so the workflow carries the warning: a red
+  run, or a missed ping on the Sentry Crons `partitions` heartbeat
+  (`docs/observability.md`, Task 4), raises the alert. Every run so far was a
+  no-op, because partitions exist through 2027-03. The 2027-02-01 run is the
+  first to create one (`skill_events_2027_04`), so confirm it then.
 - [ ] Six `auth.getUser()` round-trips per authenticated page view; no
   `React.cache()` anywhere in the repo.
 - [ ] All 22 RLS policies use unwrapped `auth.uid()` (Supabase's documented
