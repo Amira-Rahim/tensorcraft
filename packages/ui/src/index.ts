@@ -23,7 +23,14 @@ export {
   SceneHeading,
   LessonPrefsProvider,
 } from "./mdx";
-export type { ExerciseData, ExerciseSubmitResult, LessonPrefs } from "./mdx";
+export type {
+  ExerciseData,
+  ExerciseSubmitResult,
+  ExerciseRunSnapshot,
+  ExerciseSavedRunsContext,
+  ExerciseProps,
+  LessonPrefs,
+} from "./mdx";
 export { CharacterAvatar } from "./character-avatar";
 export { AnimatedAvatar } from "./animated-avatar";
 export type { AnimatedAvatarProps } from "./animated-avatar";
@@ -42,3 +49,10 @@ export type { ColorScheme } from "./use-scheme";
 export { AnswerFeedback } from "./answer-feedback";
 
 export { ExerciseOutput } from "./mdx/exercise-output";
+export { validateArtifacts } from "./mdx/exercise-artifacts.mjs";
+export type { ExerciseArtifact } from "./mdx/exercise-artifacts.mjs";
+export {
+  exerciseDraftKey,
+  readExerciseDraft,
+  markExerciseSolutionViewed,
+} from "./mdx/exercise-draft";

@@ -97,6 +97,87 @@ solutionCode: |
   const trainedSweep = tf.tidy(() => Array.from(model.predict(readings).dataSync()));
 testCode: |
   describe('Compiled, then trained', () => {
+    const selectedRows = [...Array.from({ length: 8 }, (_, i) => i), ...Array.from({ length: 8 }, (_, i) => i + 60)];
+    // Sequential.fit delegates to its internal LayersModel in TFJS 4.22.
+    const firstModelFits = tf.__fits.filter((fit) => fit && (fit.model === model || fit.model === model.model));
+    const fitted = firstModelFits[firstModelFits.length - 1];
+    const sameValues = (snapshot, tensor) => {
+      if (!snapshot || !snapshot.complete || !(tensor instanceof tf.Tensor) ||
+          snapshot.shape.join(',') !== tensor.shape.join(',')) return false;
+      const actual = tensor.dataSync();
+      return snapshot.values.length === actual.length && snapshot.values.every((value, i) => value === actual[i]);
+    };
+    let matchingTrainingRows = false;
+    try {
+      matchingTrainingRows = !!fitted && !!fitted.settings && fitted.settings.validationSplit === 0 &&
+        sameValues(fitted.x, readings) && sameValues(fitted.y, labels);
+      if (matchingTrainingRows && readings.shape.join(',') === '120,8' && labels.shape.join(',') === '120,1') {
+        const inputRows = readings.arraySync();
+        const targetValues = Array.from(labels.dataSync());
+        if (selectedRows.every((i) => inputRows[i].every(Number.isFinite) && Number.isFinite(targetValues[i]))) {
+          recordResult({
+            kind: 'table', title: 'Selected training readings',
+            summary: 'Actual rows 0-7 and 60-67 from this run, in the supplied feature order. These dimensionless generated practice values belong to the first model’s training batch. They are separate from the normalization exercise and the ship’s measurements.',
+            columns: ['Row ID', 'Label', 'Amplitude proxy', 'Zero-crossing proxy', 'Phase proxy', 'Practice feature 4', 'Practice feature 5', 'Practice feature 6', 'Practice feature 7', 'Practice feature 8'],
+            rows: selectedRows.map((i) => [i, targetValues[i], ...inputRows[i]]),
+          });
+        }
+      }
+    } catch {
+      // The graded checks still report an unavailable or changed input.
+    }
+    if (fitted && fitted.settings) {
+      const settings = fitted.settings;
+      recordResult({
+        kind: 'table', title: 'Training settings from this run',
+        summary: 'Observed settings for the most recent fit on the first model. Completed epochs and loss come from that fit. The checks below report whether the run followed the requested task.',
+        columns: ['Setting', 'Value'],
+        rows: [
+          ['Parameters', settings.parameters],
+          ['Layer units', settings.units.join(', ')],
+          ['Activations', settings.activations.join(', ')],
+          ['Optimizer', settings.optimizer],
+          ['Learning rate', settings.learningRate],
+          ['Loss', settings.loss],
+          ['Metrics', settings.metrics.join(', ')],
+          ['Requested epochs', settings.epochs],
+          ['Batch size', settings.batchSize],
+          ['Shuffle', settings.shuffle],
+          ['Initial epoch', settings.initialEpoch],
+          ['Validation split', settings.validationSplit],
+          ['Completed epochs', fitted.completed ? fitted.completed.completedEpochs : 0],
+          ['Rows passed to fit', fitted.x ? fitted.x.shape[0] : null],
+          ['Fits on first model', firstModelFits.length],
+        ],
+      });
+    }
+    if (fitted && fitted.completed && fitted.completed.points.length > 0) {
+      const completed = fitted.completed;
+      recordResult({
+        kind: 'series', title: 'Training loss from this run',
+        summary: 'Measured loss on the training batch for the most recent fit. ' +
+          (completed.sampled ? 'Showing 64 sampled epochs from ' + completed.completedEpochs + ' completed epochs. ' : 'Showing the recorded finite loss for each completed epoch. ') +
+          (completed.finiteEpochs < completed.completedEpochs ? 'Some epochs had no finite loss to display. ' : '') +
+          'Lower training loss alone does not establish performance on new readings.',
+        xLabel: 'Epoch', yLabel: fitted.settings && fitted.settings.loss === 'binaryCrossentropy' ? 'Binary crossentropy' : 'Training loss',
+        labels: completed.points.map((point) => String(point.epoch)),
+        series: [{ name: 'Loss', values: completed.points.map((point) => point.loss) }],
+      });
+    }
+    try {
+      const validSweep = (sweep) => Array.isArray(sweep) && sweep.length === 120 &&
+        sweep.every((value) => Number.isFinite(value) && value >= 0 && value <= 1);
+      if (matchingTrainingRows && validSweep(sweepOne) && validSweep(sweepTwo) && validSweep(trainedSweep)) {
+        recordResult({
+          kind: 'table', title: 'Scores from your before-and-after run',
+          summary: 'Sixteen selected rows from the supplied 120-row synthetic rehearsal, eight from each label group. These rows belong to training. The checks below verify the saved scores. Evaluate on separate data to check how the model handles new examples.',
+          columns: ['Row ID', 'Label', 'First model before training', 'Second model untrained', 'First model after training'],
+          rows: selectedRows.map((i) => [i, labels.dataSync()[i], sweepOne[i], sweepTwo[i], trainedSweep[i]]),
+        });
+      }
+    } catch {
+      // Missing predictions remain visible in the graded checks.
+    }
     const CALM = 60;
     const avg = (a) => a.reduce((s, x) => s + x, 0) / a.length;
     // Positive when the flagged rows score higher than the calm ones, which
@@ -285,19 +366,19 @@ testCode: |
     });
 
     it('runs the requested training schedule and reports finite trained scores', () => {
+      expect(firstModelFits.length, 'Train the first model once with the requested epochs and batch size.').toBe(1);
+      expect(fitted.settings.epochs, 'Use the requested number of epochs.').toBe(50);
+      expect(fitted.settings.batchSize, 'Use the requested batch size.').toBe(16);
+      expect(fitted.settings.initialEpoch, 'Start this fit at epoch zero.').toBe(0);
+      expect(fitted.settings.validationSplit, 'Train on the supplied rehearsal rows. This task has no validation split.').toBe(0);
+      expect(fitted.completed.completedEpochs, 'Let the requested training schedule finish.').toBe(50);
+      expect(matchingTrainingRows, 'Train on the supplied readings and matching labels. Equivalent tensor copies are accepted.').toBe(true);
       expect(model.optimizer.iterations).toBe(50 * Math.ceil(120 / 16));
       for (const value of readSweep('trainedSweep', trainedSweep)) {
         expect(Number.isFinite(value)).toBe(true);
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(1);
       }
-      const selectedRows = [...Array.from({ length: 8 }, (_, i) => i), ...Array.from({ length: 8 }, (_, i) => i + 60)];
-      recordResult({
-        kind: 'table', title: 'Scores from your before-and-after run',
-        summary: 'Sixteen selected rows from the supplied 120-row synthetic rehearsal, eight from each label group. These rows belong to training. Evaluate on separate data to check how the model handles new examples.',
-        columns: ['Row ID', 'Label', 'First model before training', 'Second model untrained', 'First model after training'],
-        rows: selectedRows.map((i) => [i, labels.dataSync()[i], sweepOne[i], sweepTwo[i], trainedSweep[i]]),
-      });
     });
   });
 estimatedMinutes: 15

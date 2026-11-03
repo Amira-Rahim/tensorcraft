@@ -206,7 +206,7 @@ describe("browser worker backend pin", () => {
     const src = WORKER_BODY_STRING;
     const pin = src.indexOf("setBackend('cpu')");
     expect(pin).toBeGreaterThan(-1);
-    expect(pin).toBeLessThan(src.indexOf("post({ ready: true })"));
+    expect(pin).toBeLessThan(src.indexOf("post(Object.assign({ ready: true }"));
     // The Node branch is the graded reference (exercise-runner-node.ts) and
     // already runs on cpu, so it stays untouched.
     const nodeStart = src.indexOf(

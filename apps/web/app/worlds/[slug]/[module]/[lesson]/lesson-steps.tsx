@@ -433,6 +433,7 @@ function LessonStepsInner({
     [attemptScope],
   );
   const getHintsUsed = useCallback(() => hintsRevealedRef.current.size, []);
+  const getHintLevels = useCallback(() => [...hintsRevealedRef.current], []);
 
   const stepKeys = lessonStepKeys(worldSlug, lesson.slug, reviewUserId);
   const {
@@ -1238,6 +1239,7 @@ function LessonStepsInner({
           onExerciseComplete={handleExerciseComplete}
           onExerciseAttempt={handleExerciseAttempt}
           getHintsUsed={getHintsUsed}
+          getHintLevels={getHintLevels}
         />
         <ChallengePassedBanner
           compact={challengeWorkspace}

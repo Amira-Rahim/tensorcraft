@@ -36,7 +36,12 @@ function DataTable({
       aria-label={`${title}: result data`}
       tabIndex={0}
     >
-      <table className="w-full text-left text-base leading-relaxed">
+      <table
+        className="text-left text-base leading-relaxed"
+        // Narrative tables use fixed columns. Exact run values need their
+        // natural widths inside this keyboard-accessible scrolling region.
+        style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}
+      >
         <thead>
           <tr>
             {columns.map((c, i) => (
@@ -106,10 +111,16 @@ function SeriesOutput({
           { value: min / 2 + max / 2, position: 140 },
           { value: min, position: 224 },
         ];
+  // Keep the sign and leading decimals inside the viewport, including when
+  // a captured loss series uses more digits than a narrow card can spare.
+  const left = Math.max(
+    60,
+    ...ticks.map((tick) => display(tick.value).length * 9 + 16),
+  );
   const x = (i: number) =>
     artifact.labels.length === 1
       ? width / 2
-      : 60 + (i * (width - 90)) / (artifact.labels.length - 1);
+      : left + (i * (width - left - 30)) / (artifact.labels.length - 1);
   const y = (v: number) =>
     min === max ? 140 : 224 - ((v / scale - low) / (high - low)) * 168;
   return (
@@ -159,7 +170,7 @@ function SeriesOutput({
           {ticks.map((tick, i) => (
             <g key={i}>
               <line
-                x1="60"
+                x1={left}
                 x2={width - 30}
                 y1={tick.position}
                 y2={tick.position}
@@ -167,7 +178,8 @@ function SeriesOutput({
                 opacity=".15"
               />
               <text
-                x="50"
+                data-exercise-y-tick
+                x={left - 10}
                 y={tick.position + 5}
                 textAnchor="end"
                 fill="currentColor"
@@ -177,7 +189,7 @@ function SeriesOutput({
               </text>
             </g>
           ))}
-          <text x="60" y="20" fill="currentColor" fontSize="16">
+          <text x="8" y="20" fill="currentColor" fontSize="16">
             {artifact.yLabel}
           </text>
           {shown.map((series) => {
@@ -260,12 +272,14 @@ export function ExerciseOutput({
   complete,
   staleMessage = "Your code has changed. Run it again to update these results.",
   outputLabel = "Output from your code",
+  statusMessage,
 }: {
   artifacts: ExerciseArtifact[];
   stale: boolean;
   complete: boolean;
   staleMessage?: string;
   outputLabel?: string;
+  statusMessage?: string;
 }) {
   if (!artifacts.length) return null;
   return (
@@ -279,9 +293,10 @@ export function ExerciseOutput({
       >
         {stale
           ? staleMessage
-          : complete
-            ? "From your latest run"
-            : "From your latest run. Some checks still need attention."}
+          : (statusMessage ??
+            (complete
+              ? "From your latest run"
+              : "From your latest run. Some checks still need attention."))}
       </p>
       <div className={stale ? "opacity-60" : ""}>
         {artifacts.map((artifact, i) => (

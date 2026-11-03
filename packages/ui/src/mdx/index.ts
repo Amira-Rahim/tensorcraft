@@ -9,6 +9,9 @@ export { ExerciseBrief } from "./exercise-brief";
 export type {
   ExerciseData,
   ExerciseSubmitResult,
+  ExerciseRunSnapshot,
+  ExerciseSavedRunsContext,
+  ExerciseProps,
   ExerciseBridge,
 } from "./exercise";
 export { GlossaryTerm } from "./glossary-term";

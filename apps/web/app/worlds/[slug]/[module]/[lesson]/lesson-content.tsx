@@ -30,6 +30,7 @@ import {
   KeyTakeaways,
   LearningObjectives,
   LessonRecap,
+  markExerciseSolutionViewed,
   Quiz,
 } from "@tensorcraft/ui";
 import { portraitSources, resolveCharacter } from "@/lib/character-art";
@@ -51,6 +52,13 @@ const Exercise = dynamic(
       </div>
     ),
   },
+);
+const LearningEvidenceExercise = dynamic(
+  () =>
+    import("@/app/components/learning-evidence-exercise").then(
+      (m) => m.LearningEvidenceExercise,
+    ),
+  { ssr: false },
 );
 import {
   BossBeat,
@@ -139,6 +147,7 @@ interface LessonContentProps {
    * the RIGHT pane instance, and a prop value would be stale.
    */
   getHintsUsed?: () => number;
+  getHintLevels?: () => number[];
   glossaryTerms?: GlossaryEntry[];
   /**
    * XS renderer slice (fresh-eyes rerun §4/T1-16): prose visibility is a
@@ -239,6 +248,7 @@ export function LessonContent({
   onHintRevealed,
   onRecallPending,
   getHintsUsed,
+  getHintLevels,
   glossaryTerms,
   hideChallengeOnward,
   hideTeaching,
@@ -262,6 +272,10 @@ export function LessonContent({
     }
     return map;
   }, [exercises]);
+  // Content updates must not change the MDX component identities and remount
+  // an active editor or an already-open hint panel.
+  const exerciseMapRef = useRef(exerciseMap);
+  exerciseMapRef.current = exerciseMap;
 
   const handleExerciseSubmit = useCallback(
     (result: ExerciseSubmitResult) => {
@@ -330,10 +344,22 @@ export function LessonContent({
 
   const handleHintRevealed = useCallback(
     (hintLevel: 1 | 2 | 3) => {
+      if (
+        hintLevel === 3 &&
+        worldId === "deep-orbit" &&
+        (lessonId === "normalization" || lessonId === "building-a-network")
+      ) {
+        // The lesson's help panel lives outside the exercise. Retain exposure
+        // even if the learner leaves before running their code.
+        markExerciseSolutionViewed(
+          lessonId === "normalization" ? "normalize-data" : "simple-network",
+          draftOwner,
+        );
+      }
       onHintRevealed?.(hintLevel);
       trackHintRequested(hintLevel, { worldId, lessonId });
     },
-    [worldId, lessonId, onHintRevealed],
+    [worldId, lessonId, onHintRevealed, draftOwner],
   );
 
   // Recall cards register here (RegisteredRecallPrompt below). Both the set
@@ -653,22 +679,31 @@ export function LessonContent({
         );
       }
       if (!shouldShow("Exercise")) return null;
-      return (
-        <Exercise
-          {...props}
-          key={`${props.slug}:${draftOwner ?? "guest"}`}
-          draftOwner={draftOwner}
-          bridge={exerciseWorkspace ? undefined : bridgeHint}
-          workspace={exerciseWorkspace}
-          hints={exerciseWorkspace ? lesson.hints : undefined}
-          onHintRevealed={handleHintRevealed}
-          onSubmit={submit}
-          brief={scoped ? "external" : "inline"}
-          titled={scoped && exerciseCount > 1}
-          editorHeading={
-            worldId === "deep-orbit" && scoped ? "Your JavaScript" : undefined
-          }
+      const paneProps = {
+        ...props,
+        draftOwner,
+        bridge: exerciseWorkspace ? undefined : bridgeHint,
+        workspace: exerciseWorkspace,
+        hints: exerciseWorkspace ? lesson.hints : undefined,
+        onHintRevealed: handleHintRevealed,
+        getHintLevels,
+        onSubmit: submit,
+        brief: scoped ? ("external" as const) : ("inline" as const),
+        titled: scoped && exerciseCount > 1,
+        editorHeading:
+          worldId === "deep-orbit" && scoped ? "Your JavaScript" : undefined,
+      };
+      const key = `${props.slug}:${draftOwner ?? "guest"}`;
+      return worldId === "deep-orbit" &&
+        (props.slug === "normalize-data" || props.slug === "simple-network") ? (
+        <LearningEvidenceExercise
+          {...paneProps}
+          slug={props.slug}
+          key={key}
+          content={exerciseMapRef.current.get(props.slug)}
         />
+      ) : (
+        <Exercise {...paneProps} key={key} />
       );
     };
 
@@ -725,6 +760,7 @@ export function LessonContent({
     lesson.concept.bridge,
     glossaryByTerm,
     exerciseCount,
+    getHintLevels,
     visibleComponents,
     scoped,
     exerciseWorkspace,
