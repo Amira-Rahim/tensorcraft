@@ -23,6 +23,27 @@ export function investigationDomain(
   return low === high ? [low, high + 1] : [low, high];
 }
 
+/** Match the same graphic across runs, or an explicitly compatible quantity. */
+export function comparisonDomain(
+  graphic: Graphic,
+  candidates: Graphic[],
+): [number, number] | undefined {
+  if (graphic.kind !== "bars" && graphic.kind !== "line") return undefined;
+  return investigationDomain([
+    graphic,
+    ...candidates.filter((candidate) => {
+      if (candidate.kind !== "bars" && candidate.kind !== "line") return false;
+      if (graphic.scaleGroup || candidate.scaleGroup)
+        return Boolean(
+          graphic.scaleGroup && graphic.scaleGroup === candidate.scaleGroup,
+        );
+      return (
+        candidate.kind === graphic.kind && candidate.label === graphic.label
+      );
+    }),
+  ]);
+}
+
 function GraphicValues({ graphic }: { graphic: Graphic }) {
   return (
     <details className="orbit-investigation-values">
@@ -67,6 +88,78 @@ function NumericChart({
     typeof value === "number" && Number.isFinite(value) ? value : 0,
   );
   const [low, high] = domain ?? investigationDomain([graphic]) ?? [0, 1];
+  if (
+    graphic.kind === "bars" &&
+    graphic.labels?.length &&
+    graphic.layout !== "series"
+  ) {
+    const zero = ((0 - low) / (high - low)) * 100;
+    return (
+      <>
+        <div
+          className="orbit-investigation-category-chart"
+          role="img"
+          aria-label={graphic.label}
+          aria-describedby={descriptionId}
+          data-domain-low={low}
+          data-domain-high={high}
+        >
+          <span id={descriptionId} className="sr-only">
+            {values
+              .map(
+                (value, index) =>
+                  `${graphic.labels?.[index] ?? index + 1}: ${formatInvestigationValue(value)}${graphic.highlight?.includes(index) ? " (selected)" : ""}`,
+              )
+              .join(", ")}
+          </span>
+          <ol className="orbit-investigation-bar-rows" aria-hidden="true">
+            {values.map((value, index) => {
+              const end = ((value - low) / (high - low)) * 100;
+              return (
+                <li className="orbit-investigation-bar-row" key={index}>
+                  <div className="orbit-investigation-bar-heading">
+                    <span className="orbit-investigation-bar-label">
+                      {graphic.labels?.[index] ?? index + 1}
+                    </span>
+                    <span className="orbit-investigation-bar-value">
+                      {formatInvestigationValue(value)}
+                      {graphic.highlight?.includes(index) && " (selected)"}
+                    </span>
+                  </div>
+                  <div className="orbit-investigation-bar-track">
+                    <span
+                      className="orbit-investigation-bar-zero"
+                      style={{ left: `${zero}%` }}
+                    />
+                    <span
+                      className="orbit-investigation-bar-fill"
+                      data-selected={
+                        graphic.highlight?.includes(index) ? "true" : undefined
+                      }
+                      style={{
+                        left: `${Math.min(zero, end)}%`,
+                        width: `${Math.abs(end - zero)}%`,
+                        opacity:
+                          graphic.highlight?.length &&
+                          !graphic.highlight.includes(index)
+                            ? 0.4
+                            : 1,
+                      }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+          <div className="orbit-investigation-bar-axis" aria-hidden="true">
+            <span>{formatInvestigationValue(low)}</span>
+            <span>{formatInvestigationValue(high)}</span>
+          </div>
+        </div>
+        <GraphicValues graphic={graphic} />
+      </>
+    );
+  }
   const width = 460;
   const height = 220;
   const left = 62;
@@ -105,6 +198,8 @@ function NumericChart({
         role="img"
         aria-label={graphic.label}
         aria-describedby={descriptionId}
+        data-domain-low={low}
+        data-domain-high={high}
       >
         <desc id={descriptionId}>
           {graphic.values

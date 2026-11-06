@@ -11,6 +11,46 @@ import { LessonInvestigation } from "./lesson-investigation";
 
 afterEach(cleanup);
 
+describe("the GPU workload activity", () => {
+  it("keeps workload totals and their components on one time axis across runs", () => {
+    render(
+      <LessonInvestigation
+        spec={FLOW_INVESTIGATIONS["webgpu-acceleration"]!}
+        lessonSlug="webgpu-acceleration"
+      />,
+    );
+    const run = screen.getByRole("button", { name: "Run experiment" });
+    fireEvent.change(screen.getByLabelText("GPU initialization"), {
+      target: { value: "0" },
+    });
+    fireEvent.click(run);
+    for (const name of ["End-to-end time (ms)", "GPU time components (ms)"]) {
+      expect(screen.getByRole("img", { name })).toHaveAttribute(
+        "data-domain-high",
+        "56",
+      );
+    }
+
+    fireEvent.change(screen.getByRole("slider", { name: "Workload units" }), {
+      target: { value: "50" },
+    });
+    fireEvent.click(run);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compare with previous run" }),
+    );
+    for (const region of ["Previous run", "Latest run"]) {
+      for (const name of ["End-to-end time (ms)", "GPU time components (ms)"]) {
+        expect(
+          within(screen.getByRole("region", { name: region })).getByRole(
+            "img",
+            { name },
+          ),
+        ).toHaveAttribute("data-domain-high", "100");
+      }
+    }
+  });
+});
+
 describe("the assembled report activity", () => {
   it("shows approved text and a separate omission block in full-width prose cells", () => {
     render(

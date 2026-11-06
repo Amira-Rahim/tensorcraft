@@ -13,7 +13,7 @@ import {
 import {
   formatInvestigationValue,
   InvestigationGraphic,
-  investigationDomain,
+  comparisonDomain,
 } from "./investigation-graphic";
 
 interface ExperimentRun {
@@ -134,23 +134,10 @@ function RunResult({
       </AnswerFeedback>
       <div className="orbit-investigation-graphics">
         {graphics.map((graphic, index) => {
-          const pairedGraphics =
-            pairedRun?.result.graphics.length &&
-            pairedRun.result.graphics.length > 1
-              ? pairedRun.result.graphics.slice(1)
-              : pairedRun?.result.graphics;
-          const pairedGraphic = pairedGraphics?.[index];
-          const inputGraphic = run.result.graphics[0];
-          const pairedInput = pairedRun?.result.graphics[0];
-          const domain =
-            graphic.kind === "bars" || graphic.kind === "line"
-              ? investigationDomain(
-                  [graphic, pairedGraphic, inputGraphic, pairedInput].filter(
-                    (item): item is NonNullable<typeof item> =>
-                      Boolean(item && item.kind === graphic.kind),
-                  ),
-                )
-              : undefined;
+          const domain = comparisonDomain(graphic, [
+            ...run.result.graphics,
+            ...(pairedRun?.result.graphics ?? []),
+          ]);
           return (
             <InvestigationGraphic
               key={`${graphic.label}-${index}`}
@@ -230,12 +217,10 @@ export function LessonInvestigation({
     !dirty &&
     inputGraphic &&
     (inputGraphic.kind === "bars" || inputGraphic.kind === "line")
-      ? investigationDomain(
-          [
-            ...latest.result.graphics,
-            ...(compare && previous ? previous.result.graphics : []),
-          ].filter((graphic) => graphic.kind === inputGraphic.kind),
-        )
+      ? comparisonDomain(inputGraphic, [
+          ...latest.result.graphics,
+          ...(compare && previous ? previous.result.graphics : []),
+        ])
       : undefined;
   const status = inputsChanged
     ? "Inputs changed. Run again to update the result. The last run below keeps its original inputs."
@@ -501,23 +486,22 @@ export function BriefingInvestigationVisual({
   const result = spec.evaluate(values, spec.cases[0]!.id);
   const first = result.graphics[0];
   const last = result.graphics.at(-1);
-  const sharedDomain =
-    first &&
-    last &&
-    first.kind === last.kind &&
-    (first.kind === "bars" || first.kind === "line")
-      ? investigationDomain([first, last])
-      : undefined;
   return (
     <div className="orbit-investigation-briefing-visual">
       {first && (
         <div className="orbit-investigation-briefing-figure">
-          <InvestigationGraphic graphic={first} domain={sharedDomain} />
+          <InvestigationGraphic
+            graphic={first}
+            domain={comparisonDomain(first, result.graphics)}
+          />
         </div>
       )}
       {last && last !== first && (
         <div className="orbit-investigation-briefing-figure">
-          <InvestigationGraphic graphic={last} domain={sharedDomain} />
+          <InvestigationGraphic
+            graphic={last}
+            domain={comparisonDomain(last, result.graphics)}
+          />
         </div>
       )}
     </div>

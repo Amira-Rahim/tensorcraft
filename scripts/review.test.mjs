@@ -101,6 +101,28 @@ test("review environment drops inherited service keys, proxies and Node preloads
   assert.throws(() => reviewEnvironment({ API_URL: local.SUPABASE_URL }));
 });
 
+test("evaluation saving requires an explicit local review opt-in", () => {
+  assert.equal(
+    cleanEnvironment({}).NEXT_PUBLIC_EVALUATION_SAVES_ENABLED,
+    "false",
+  );
+  assert.equal(
+    cleanEnvironment({ NEXT_PUBLIC_EVALUATION_SAVES_ENABLED: "true" })
+      .NEXT_PUBLIC_EVALUATION_SAVES_ENABLED,
+    "false",
+  );
+  assert.equal(
+    cleanEnvironment({ TENSORCRAFT_REVIEW_EVALUATION_SAVES: "true" })
+      .NEXT_PUBLIC_EVALUATION_SAVES_ENABLED,
+    "true",
+  );
+  assert.equal(
+    cleanEnvironment({ TENSORCRAFT_REVIEW_EVALUATION_SAVES: "1" })
+      .NEXT_PUBLIC_EVALUATION_SAVES_ENABLED,
+    "false",
+  );
+});
+
 test("review Docker selection accepts explicit local sockets and rejects remote engines", () => {
   assert.equal(reviewDockerHost(), "unix:///var/run/docker.sock");
   const socket = "unix:///test/home/.colima/tensorcraft-review/docker.sock";

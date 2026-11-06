@@ -56,7 +56,7 @@ tensorcraft/
 
 ### Design Philosophy
 
-Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every world has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23; `docs/dev-plan.md` (2026-07-23 entry) has the implementation and verification record.
+Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every world has a unique color palette but shares the same structural design tokens. Light and dark color schemes are both supported (added 2026-07-22): dark remains the brand-default aesthetic, light mode follows the OS `prefers-color-scheme` by default with a manual override toggle, and every world palette has a light variant with WCAG AA-verified contrast. OG images and favicons intentionally stay dark. See `docs/audits/light-mode-readiness-2026-07-22.md` for the design rationale. Shipped 2026-07-23. The [July 23 implementation record](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md#L44) records its verification.
 
 ### 5 Worlds
 

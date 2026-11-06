@@ -116,6 +116,47 @@ from the current course sources. It refuses every database URL except
 that flag and reads keys from the dedicated local stack's status output. It
 never uses the repository's hosted Supabase CLI link.
 
+## Signed-in lesson review
+
+The retained Chromium suite signs in through the actual email form and local
+inbox. It covers normalization, network training and evaluation through all five
+lesson phases, plus unpaid access, prerequisites and normal-motion story playback.
+The full lesson flows use 1440, 1024, 390 and 320px widths in both themes.
+
+Start the review services first, then run:
+
+```bash
+pnpm exec playwright test --config e2e/signed-in-results.config.ts
+```
+
+Set `TENSORCRAFT_REVIEW_DOCKER_HOST` on this command too when using a custom
+socket. The suite resets only Alex's selected pilot lessons and sets fictional
+module prerequisites in the isolated database. Successful exercise runs use the
+authored solution and retain that assistance label. These are browser workflow
+checks, not evidence of independent learner performance.
+
+Evaluation saving stays off by default. To review saving, restoration and the
+project entry, stop `review:dev` and restart it with the local opt-in. Pass the
+same opt-in to the test command:
+
+```bash
+TENSORCRAFT_REVIEW_EVALUATION_SAVES=true pnpm review:dev
+# In a second terminal, after the services are ready:
+TENSORCRAFT_REVIEW_EVALUATION_SAVES=true pnpm exec playwright test --config e2e/signed-in-results.config.ts
+```
+
+The launcher ignores an inherited `NEXT_PUBLIC_EVALUATION_SAVES_ENABLED` value.
+Only this explicit review opt-in enables local evaluation writes. Restarting
+without it restores the default reader mode. Production configuration is separate.
+
+Keep this suite serial. Its dedicated config disables traces, video and automatic
+failure screenshots so sign-in links and session data do not enter those
+artifacts. Explicit screenshots are taken after authenticated lesson navigation.
+The ordinary Playwright config excludes these specs, and the helpers reject
+other configs, parallel workers or recording-enabled overrides. Use separate
+`--output` folders for separate review invocations. Local development server logs
+can contain callback codes and should not be shared without redaction.
+
 ## Shutdown and troubleshooting
 
 Press Ctrl+C in the `review:dev` terminal to stop the two app servers. Then run:

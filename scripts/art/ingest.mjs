@@ -23,6 +23,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { renderAria } from "./render-aria.mjs";
 
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -53,9 +54,7 @@ const CHARACTERS = {
   "dr-farah": ["delighted", "absorbed", "shaken"],
   "chief-nazari": ["skeptical", "grudging-respect", "haunted"],
   "ensign-demir": ["overwhelmed", "breakthrough", "focused"],
-  // ARIA ships art like the rest of the cast; her states are waveform
-  // shapes inside the voice-orb ring, never a face.
-  aria: ["emphasis", "deadpan", "alarm"],
+  // ARIA is rendered from one approved ring below, keeping its geometry fixed.
 };
 
 const PORTRAIT = { size: 512, quality: 82, budget: 40 * 1024 };
@@ -147,50 +146,160 @@ async function portraits() {
       );
     }
   }
+  for (const asset of await renderAria({ dryRun: DRY })) {
+    results.shipped.push(
+      `apps/web/public/characters/${WORLD}/${asset.filename}  ${(asset.bytes / 1024).toFixed(1)} KB`,
+    );
+  }
 }
 
-/** Lesson slugs are globbed from the content tree, so a scene file can only
-    ship under a name some lesson actually resolves at runtime. */
-function lessonIds() {
-  const base = path.join(ROOT, "packages/content/content", WORLD);
-  const ids = [];
+/** Frontmatter defines runtime slugs, which can differ from MDX filenames. */
+function lessonIds(root, world) {
+  const base = path.join(root, "packages/content/content", world);
+  const ids = new Map();
   for (const mod of fs.readdirSync(base, { withFileTypes: true })) {
     if (!mod.isDirectory()) continue;
     for (const file of fs.readdirSync(path.join(base, mod.name))) {
-      const m = file.match(/^\d+-(.+)\.mdx$/);
-      if (m) ids.push(`${mod.name}/${m[1]}`);
+      if (!/^\d+-.+\.mdx$/.test(file)) continue;
+      const filename = path.join(base, mod.name, file);
+      const text = fs.readFileSync(filename, "utf8");
+      const frontmatter = text.match(
+        /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/,
+      )?.[1];
+      const slug = frontmatter?.match(
+        /^slug:\s*["']?([a-z0-9-]+)["']?\s*$/m,
+      )?.[1];
+      if (!slug)
+        throw new Error(
+          `${path.relative(root, filename)}: missing valid frontmatter slug`,
+        );
+      const filenameSlug = file.match(/^\d+-(.+)\.mdx$/)[1];
+      ids.set(`${mod.name}/${filenameSlug}`, `${mod.name}/${slug}`);
     }
   }
   return ids;
 }
 
-async function scenes() {
-  const valid = new Set(lessonIds());
-  const dir = path.join(ROOT, "art-src/scenes");
-  if (!fs.existsSync(dir)) {
-    results.missing.push("art-src/scenes (no staged scene art yet)");
-    return;
-  }
-  for (const file of fs.readdirSync(dir).filter((n) => n.endsWith(".png"))) {
-    // Staged as <module>__<lesson>[-epilogue]-<provider>-<stamp>.png
-    const stem = file.replace(/-(fal|openai)-.*$/, "");
-    const isEpilogue = stem.endsWith("-epilogue");
-    const id = (isEpilogue ? stem.slice(0, -"-epilogue".length) : stem).replace(
-      "__",
-      "/",
+const APPROVED_SCENES =
+  "docs/art-refs/deep-orbit/face-visible-scenes-2026-11-06/approved-scenes.json";
+
+/** Resolve every source before emitting, so a missing approval cannot fall
+ * back to an older candidate or leave a partially ingested batch. */
+export function planSceneIngest(
+  root,
+  { world = "deep-orbit", approvedIndex = APPROVED_SCENES } = {},
+) {
+  const runtimeIds = lessonIds(root, world);
+  const validLessons = new Set(runtimeIds.values());
+  const runtimeSceneId = (id) => {
+    const epilogue = id.endsWith("-epilogue");
+    const base = epilogue ? id.slice(0, -"-epilogue".length) : id;
+    return `${runtimeIds.get(base) ?? base}${epilogue ? "-epilogue" : ""}`;
+  };
+  const validScene = (id) =>
+    validLessons.has(
+      id.endsWith("-epilogue") ? id.slice(0, -"-epilogue".length) : id,
     );
-    if (!valid.has(id)) {
-      results.missing.push(`${file}: '${id}' matches no lesson`);
+  const destination = (id) => `apps/web/public/scenes/${world}/${id}.webp`;
+  const sources = new Map();
+  const missing = [];
+  const approvedFile = path.join(root, approvedIndex);
+
+  if (fs.existsSync(approvedFile)) {
+    const approved = JSON.parse(fs.readFileSync(approvedFile, "utf8"));
+    if (!Array.isArray(approved.scenes))
+      throw new Error(`${approvedIndex}: expected a scenes array`);
+    for (const scene of approved.scenes) {
+      if (typeof scene.id !== "string" || !validScene(scene.id))
+        throw new Error(
+          `${approvedIndex}: '${scene.id}' matches no runtime lesson slug`,
+        );
+      if (sources.has(scene.id))
+        throw new Error(
+          `${approvedIndex}: duplicate approved scene '${scene.id}'`,
+        );
+      if (scene.destination !== destination(scene.id))
+        throw new Error(
+          `${approvedIndex}: invalid destination for '${scene.id}'`,
+        );
+      if (
+        typeof scene.source !== "string" ||
+        path.isAbsolute(scene.source) ||
+        !scene.source.endsWith(".png") ||
+        !path
+          .resolve(root, scene.source)
+          .startsWith(path.resolve(root) + path.sep)
+      )
+        throw new Error(`${approvedIndex}: invalid source for '${scene.id}'`);
+      const source = path.resolve(root, scene.source);
+      if (!fs.existsSync(source) || !fs.statSync(source).isFile())
+        throw new Error(
+          `Approved scene '${scene.id}' is missing source '${scene.source}'. Scene ingest aborted.`,
+        );
+      sources.set(scene.id, {
+        id: scene.id,
+        source,
+        destination: scene.destination,
+        approved: true,
+      });
+    }
+  }
+
+  const staged = path.join(root, "art-src/scenes");
+  if (!fs.existsSync(staged)) {
+    if (!sources.size) missing.push("art-src/scenes (no staged scene art yet)");
+    return { sources: [...sources.values()], missing };
+  }
+
+  // Keep the historical filename ordering only for scenes without approval.
+  // A rejected or newer candidate can never replace an indexed winner.
+  const approvedSources = new Set(
+    [...sources.values()]
+      .filter((scene) => scene.approved)
+      .map((scene) => scene.source),
+  );
+  const knownStems = new Map();
+  for (const [filenameId, runtimeId] of runtimeIds) {
+    for (const id of [filenameId, runtimeId]) {
+      knownStems.set(id.replace("/", "__"), runtimeId);
+      knownStems.set(
+        `${id.replace("/", "__")}-epilogue`,
+        `${runtimeId}-epilogue`,
+      );
+    }
+  }
+  // Longest first keeps an unindexed epilogue separate from an approved
+  // briefing whose filename is its prefix.
+  const stems = [...knownStems].sort(([a], [b]) => b.length - a.length);
+  for (const file of fs.readdirSync(staged).sort()) {
+    if (!file.endsWith(".png")) continue;
+    if (approvedSources.has(path.join(staged, file))) continue;
+    const indexedId = stems.find(([stem]) => file.startsWith(`${stem}-`))?.[1];
+    if (indexedId && sources.get(indexedId)?.approved) continue;
+    const match = file.match(/^(.+)-(?:fal|openai)-.+\.png$/);
+    const id = match?.[1]
+      ? runtimeSceneId(match[1].replace("__", "/"))
+      : undefined;
+    if (!id || !validScene(id)) {
+      missing.push(`${file}: '${id ?? file}' matches no runtime lesson slug`);
       continue;
     }
-    const [mod, lesson] = id.split("/");
-    const name = isEpilogue ? `${lesson}-epilogue` : lesson;
-    await emit(
-      path.join(dir, file),
-      `apps/web/public/scenes/${WORLD}/${mod}/${name}.webp`,
-      SCENE,
-    );
+    if (sources.get(id)?.approved) continue;
+    sources.set(id, {
+      id,
+      source: path.join(staged, file),
+      destination: destination(id),
+      approved: false,
+    });
   }
+  return { sources: [...sources.values()], missing };
+}
+
+async function scenes() {
+  const plan = planSceneIngest(ROOT);
+  results.missing.push(...plan.missing);
+  for (const scene of plan.sources)
+    await emit(scene.source, scene.destination, SCENE);
 }
 
 /** Location master plates, reused as marketing / world-page art. Unlike
@@ -307,27 +416,32 @@ async function og() {
   }
 }
 
-if (mode === "portraits") await portraits();
-else if (mode === "scenes") await scenes();
-else if (mode === "masters") await masters();
-else if (mode === "patches") await patches();
-else if (mode === "seals") await seals();
-else if (mode === "og") await og();
-else {
-  console.error(
-    "usage: ingest.mjs portraits|scenes|masters|patches|seals|og [--dry-run]",
-  );
-  process.exit(1);
-}
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
+  if (mode === "portraits") await portraits();
+  else if (mode === "scenes") await scenes();
+  else if (mode === "masters") await masters();
+  else if (mode === "patches") await patches();
+  else if (mode === "seals") await seals();
+  else if (mode === "og") await og();
+  else {
+    console.error(
+      "usage: ingest.mjs portraits|scenes|masters|patches|seals|og [--dry-run]",
+    );
+    process.exit(1);
+  }
 
-console.log(`${DRY ? "[dry run] " : ""}shipped ${results.shipped.length}:`);
-for (const line of results.shipped) console.log(`  ${line}`);
-if (results.missing.length) {
-  console.log(`\nmissing ${results.missing.length}:`);
-  for (const line of results.missing) console.log(`  ${line}`);
-}
-if (results.overBudget.length) {
-  console.error(`\nOVER BUDGET ${results.overBudget.length}:`);
-  for (const line of results.overBudget) console.error(`  ${line}`);
-  process.exit(1);
+  console.log(`${DRY ? "[dry run] " : ""}shipped ${results.shipped.length}:`);
+  for (const line of results.shipped) console.log(`  ${line}`);
+  if (results.missing.length) {
+    console.log(`\nmissing ${results.missing.length}:`);
+    for (const line of results.missing) console.log(`  ${line}`);
+  }
+  if (results.overBudget.length) {
+    console.error(`\nOVER BUDGET ${results.overBudget.length}:`);
+    for (const line of results.overBudget) console.error(`  ${line}`);
+    process.exit(1);
+  }
 }

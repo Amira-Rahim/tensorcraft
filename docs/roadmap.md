@@ -4,8 +4,8 @@ For the complete product delivery view, see the root
 [product roadmap](../ROADMAP.md). This document retains the current growth
 strategy, commercial goals, and evidence gates.
 
-> **Status:** living document. The owner confirmed a long-term goal of 200,000 unique paying customers on 2026-10-03. This supersedes the earlier 100,000 target and the version-roadmap tables in `docs/prd.md` §7 and `docs/dev-plan.md`. Earlier channel, revenue, staffing, and timing scenarios are planning assumptions, not forecasts for the current goal.
-> **Scope:** what to build, in what order, to grow revenue. Engineering phase detail stays in `docs/dev-plan.md`; pricing/positioning detail stays in `docs/product-plan.md`.
+> **Status:** living document. The owner confirmed a long-term goal of 200,000 unique paying customers on 2026-10-03. This supersedes the earlier 100,000 target and the version-roadmap tables in `docs/prd.md` §7 and [the earlier development plan](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md#L1304). Earlier channel, revenue, staffing, and timing scenarios are planning assumptions, not forecasts for the current goal.
+> **Scope:** what to build, in what order, to grow revenue. Engineering phase detail stays in [the product roadmap](../ROADMAP.md); pricing/positioning detail stays in `docs/product-plan.md`.
 > **Task index (2026-07-21):** the Horizon 1-3 work items are indexed canonically in `docs/post-launch-backlog.md` §8, the single source of truth for post-launch tasks. This file remains the strategy detail doc (arithmetic, gates, framing). Still-open Horizon 0 defects: `docs/audits/launch-blockers-history-2026-08-23.md`.
 > **Deduped 2026-07-22:** horizon sections carry rationale, decisions, and codebase facts only - item enumerations and exit criteria live solely in the backlog §8 index; still-open defect lists live solely in `docs/audits/launch-blockers-history-2026-08-23.md`.
 
@@ -65,7 +65,7 @@ Retained as the record of how the 100,000 goal was expected to be reached, so th
 |---|---|---|
 | `prd.md` §7 V5.0 "Universe" (2028-Q3) | **100,000 _free_ users**, $250K MRR | Goal is ~**30×** this, in paying users |
 | `prd.md` §7 V1.0 "Liftoff" (2026-Q3 - now) | 2,000 free users, 3% conversion ≈ **60 paying**; requires all 5 worlds | **Already slipping**: 1 world launched |
-| `dev-plan.md` V2.0 (2027-Q1) | Team tier, admin dashboard | Correct instinct - this is the enterprise lever, and it matters far more than its position implied |
+| [Earlier V2.0 plan](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md#L1318) (2027-Q1) | Team tier, admin dashboard | Correct instinct - this is the enterprise lever, and it matters far more than its position implied |
 
 **Implication:** the old roadmap paces toward ~$3M ARR by 2028. 100k paying implies **$10–50M ARR**. Re-base, don't extend.
 
@@ -106,7 +106,7 @@ Conversion repairs to the current product, most of them trivial. **Several resto
 
 ### P0 - Verified defects that were costing sales
 
-- [x] **Paywall analytics restored.** `page.tsx:151-153` called `redirect()`, which throws, so line 155's `requiresPaywall` re-tested the *identical* condition and was always `false` - the `LessonPaywall` block at 184-207 was **provably dead code**. Its only consumer, `trackPaywallShown`, therefore never ran: **`paywall_hit` recorded nothing from launch until 2026-07-21.** Treat all earlier paywall funnel data as absent, not as zero conversions. Fixed by firing `paywall_hit` from `<PaywallNotice>` (which renders at exactly the paywall-hit moment on the redirect target) and deleting `LessonPaywall` plus the orphaned helper. Redirects now carry `&module=<slug>` to preserve the module dimension. Closes the long-open `dev-plan.md` §4c checkbox.
+- [x] **Paywall analytics restored.** `page.tsx:151-153` called `redirect()`, which throws, so line 155's `requiresPaywall` re-tested the *identical* condition and was always `false` - the `LessonPaywall` block at 184-207 was **provably dead code**. Its only consumer, `trackPaywallShown`, therefore never ran: **`paywall_hit` recorded nothing from launch until 2026-07-21.** Treat all earlier paywall funnel data as absent, not as zero conversions. Fixed by firing `paywall_hit` from `<PaywallNotice>` (which renders at exactly the paywall-hit moment on the redirect target) and deleting `LessonPaywall` plus the orphaned helper. Redirects now carry `&module=<slug>` to preserve the module dimension. Closes the earlier paywall-analytics task.
 - [x] **Redirect contract kept deliberately.** The audit proposed rendering the paywall in-context. Rejected: redirect-based enforcement is the documented §4c contract and `page.tsx:117` was deliberately changed on 2026-07-19 to show price rather than a signup form. Reversing that silently would have undone a considered UX decision, so `/pricing` was strengthened instead (see P3).
 
 ### P1 - Recover abandoned intent
@@ -270,10 +270,10 @@ Every item here could ship perfectly and the goal could still be missed.
 
 | Domain | Document |
 |---|---|
-| Engineering phases, session log, deferrals | `docs/dev-plan.md` |
+| Engineering phases and retained deferrals | [Product roadmap](../ROADMAP.md) |
 | Pricing, revenue projections, positioning | `docs/product-plan.md` |
 | Requirements, release gates (superseded §7) | `docs/prd.md` |
-| SEO, launch sequence, paid ads | `docs/marketing-plan.md` |
+| Current acquisition plan and channel tests | [First 1,000 paying customers](marketing-first-1000-paid.md) |
 | Retention email sequences (operator setup pending) | `docs/email-retention-sequences.md` |
 | **Launch blockers (actionable subset)** | `docs/audits/launch-blockers-history-2026-08-23.md` |
 | **Full six-dimension audit register (everything found)** | `docs/audits/full-audit-2026-07-21.md` |

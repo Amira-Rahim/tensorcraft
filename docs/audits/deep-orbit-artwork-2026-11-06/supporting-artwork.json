@@ -1,0 +1,1033 @@
+[
+  {
+    "id": "portrait/commander-mirza",
+    "asset": "apps/web/public/characters/deep-orbit/commander-mirza.webp",
+    "category": "portrait",
+    "storyBeat": "Calm authority before a question or decision.",
+    "observed": "Direct open eyes, a small relaxed mouth, silver temples, facial lines, brass piping and a blank chest chronometer stay clearly identifiable.",
+    "strengths": [
+      "The default expression is welcoming enough for a light adventure while preserving seniority."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep the neutral. Let warmer story moments use the existing approving state instead of redrawing the character.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the neutral. Let warmer story moments use the existing approving state instead of redrawing the character.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 8,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/commander-mirza-resolved",
+    "asset": "apps/web/public/characters/deep-orbit/commander-mirza-resolved.webp",
+    "category": "portrait",
+    "storyBeat": "A decision made with steady authority.",
+    "observed": "The mouth is firmer and the upper lids lower slightly than neutral. Head, hair, age marks, jacket and clock remain stable.",
+    "strengths": [
+      "The restrained change avoids turning command into anger."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The state is very close to neutral, particularly at a 56px dialogue size.",
+        "evidence": "The mouth is firmer and the upper lids lower slightly than neutral. Head, hair, age marks, jacket and clock remain stable.",
+        "fix": "If expression clarity needs another pass, strengthen the direct gaze and jaw very slightly in the existing frame. Check the change at 56px before accepting it."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "If expression clarity needs another pass, strengthen the direct gaze and jaw very slightly in the existing frame. Check the change at 56px before accepting it.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "If expression clarity needs another pass, strengthen the direct gaze and jaw very slightly in the existing frame. Check the change at 56px before accepting it.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 7,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/commander-mirza-concerned",
+    "asset": "apps/web/public/characters/deep-orbit/commander-mirza-concerned.webp",
+    "category": "portrait",
+    "storyBeat": "A leader weighs an unresolved risk.",
+    "observed": "Lowered gaze and gently knitted inner brows create quiet concern without tears or panic. The clock and silver temples match neutral.",
+    "strengths": [
+      "The concern feels adult and measured, useful beside uncertain model evidence."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep for an earned doubtful decision. Do not force it into every warning or use alarm to make routine work entertaining.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep for an earned doubtful decision. Do not force it into every warning or use alarm to make routine work entertaining.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 0,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/commander-mirza-approving",
+    "asset": "apps/web/public/characters/deep-orbit/commander-mirza-approving.webp",
+    "category": "portrait",
+    "storyBeat": "Small, earned recognition from the commander.",
+    "observed": "The mouth corners lift, eyes soften, and the chin stays level. No props or age markers visibly change.",
+    "strengths": [
+      "This is a useful source of warmth that remains true to Mirza."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Use this existing state at an actual recognition beat. Her approval can carry the lightness without a broad celebratory grin.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Use this existing state at an actual recognition beat. Her approval can carry the lightness without a broad celebratory grin.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 0,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/dr-farah",
+    "asset": "apps/web/public/characters/deep-orbit/dr-farah.webp",
+    "category": "portrait",
+    "storyBeat": "Interested, trustworthy scientific guide.",
+    "observed": "The AR lens, tied loose hair, slate lab layer and lanyard are consistent. A slight smile and open eyes make her approachable.",
+    "strengths": [
+      "The visible lens gives a clear identity cue and the face invites curiosity."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. In scenes, make her physically engaged with a particular odd result so the inviting face does not become a generic lecturer pose.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. In scenes, make her physically engaged with a particular odd result so the inviting face does not become a generic lecturer pose.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 49,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/dr-farah-absorbed",
+    "asset": "apps/web/public/characters/deep-orbit/dr-farah-absorbed.webp",
+    "category": "portrait",
+    "storyBeat": "Thoughtful absorption while an explanation takes shape.",
+    "observed": "Her eyes turn slightly aside and the lips stay calm. Face shape, lens and clothes closely match the default portrait.",
+    "strengths": [
+      "The state now conveys thought rather than sadness."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The gaze shift is so slight that neutral and absorbed can be hard to distinguish at dialogue size.",
+        "evidence": "Her eyes turn slightly aside and the lips stay calm. Face shape, lens and clothes closely match the default portrait.",
+        "fix": "A slightly clearer sideways gaze or asymmetric thoughtful brow could improve the small-size read. Preserve adult proportions and the quiet tone."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "A slightly clearer sideways gaze or asymmetric thoughtful brow could improve the small-size read. Preserve adult proportions and the quiet tone.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "A slightly clearer sideways gaze or asymmetric thoughtful brow could improve the small-size read. Preserve adult proportions and the quiet tone.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 5,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/dr-farah-delighted",
+    "asset": "apps/web/public/characters/deep-orbit/dr-farah-delighted.webp",
+    "category": "portrait",
+    "storyBeat": "The pleasure of understanding a real discovery.",
+    "observed": "Lifted brows, bright eyes and an open smile form a distinct state while the AR lens and mature face remain recognizable.",
+    "strengths": [
+      "This is one of the most immediately readable and enjoyable expressions in the set."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep and use selectively after a genuine click. This is a better source of fun than adding arbitrary jokes or a mascot.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep and use selectively after a genuine click. This is a better source of fun than adding arbitrary jokes or a mascot.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 1,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/dr-farah-shaken",
+    "asset": "apps/web/public/characters/deep-orbit/dr-farah-shaken.webp",
+    "category": "portrait",
+    "storyBeat": "A rare finding unsettles her trust in a method.",
+    "observed": "Raised inner brows and a slightly parted mouth communicate surprise and concern. The head, hair and lens remain fixed.",
+    "strengths": [
+      "It preserves vulnerability without cartoon panic or tears."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep as a reserved story state. Give it a specific unsettling discovery, with no pressure to increase its usage merely because the file exists.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep as a reserved story state. Give it a specific unsettling discovery, with no pressure to increase its usage merely because the file exists.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 0,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/chief-nazari",
+    "asset": "apps/web/public/characters/deep-orbit/chief-nazari.webp",
+    "category": "portrait",
+    "storyBeat": "Competent evaluation with guarded trust.",
+    "observed": "Set brows, mature lines, gray-streaked hair and the olive coverall create a stable, distinct identity. The closed mouth is severe.",
+    "strengths": [
+      "The default carries her caution and experience without losing facial clarity."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep the portrait. Reduce reliance on this severe expression during friendly exchanges by selecting the existing skeptical or grudging-respect state when the writing earns it.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the portrait. Reduce reliance on this severe expression during friendly exchanges by selecting the existing skeptical or grudging-respect state when the writing earns it.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 26,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/chief-nazari-skeptical",
+    "asset": "apps/web/public/characters/deep-orbit/chief-nazari-skeptical.webp",
+    "category": "portrait",
+    "storyBeat": "A precise, dry reaction to an overconfident claim.",
+    "observed": "One eyebrow rises while the mouth stays mostly level. Age lines, gray hair and coverall are preserved.",
+    "strengths": [
+      "The asymmetry is expressive enough to carry deadpan humor without making her a clown."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. A raised brow paired with Demir noticing his mistake can supply an enjoyable scene reaction without belittling the learner.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. A raised brow paired with Demir noticing his mistake can supply an enjoyable scene reaction without belittling the learner.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 15,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/chief-nazari-grudging-respect",
+    "asset": "apps/web/public/characters/deep-orbit/chief-nazari-grudging-respect.webp",
+    "category": "portrait",
+    "storyBeat": "Approval earned by evidence.",
+    "observed": "Her eyes soften and the mouth barely lifts. The same lined face and gray hair survive the expression change.",
+    "strengths": [
+      "The small change suits a character whose warmth grows slowly."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Use the restrained approval as a payoff after a verified result or practical care from another crew member, not a universal success badge.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Use the restrained approval as a payoff after a verified result or practical care from another crew member, not a universal success badge.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 4,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/chief-nazari-haunted",
+    "asset": "apps/web/public/characters/deep-orbit/chief-nazari-haunted.webp",
+    "category": "portrait",
+    "storyBeat": "A brief memory of the Vanguard loss.",
+    "observed": "The gaze shifts away and inner brows lift slightly. She looks distracted and vulnerable, with mature facial detail intact.",
+    "strengths": [
+      "The state leaves room for serious emotion without melodrama."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep. This beat needs quiet rather than a joke. Place warmth around it through another character giving her space, never through a gag about the loss.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. This beat needs quiet rather than a joke. Place warmth around it through another character giving her space, never through a gag about the loss.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 1,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/ensign-demir",
+    "asset": "apps/web/public/characters/deep-orbit/ensign-demir.webp",
+    "category": "portrait",
+    "storyBeat": "An engaged, approachable learner counterpart.",
+    "observed": "Wide alert eyes, light stubble, tousled hair, a visible comms earpiece and slate uniform establish him quickly.",
+    "strengths": [
+      "The slight smile and imperfect hair support a friendly adventure tone."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Let posture and task-specific props show his growth across scenes, since this neutral portrait intentionally sits between uncertainty and confidence.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Let posture and task-specific props show his growth across scenes, since this neutral portrait intentionally sits between uncertainty and confidence.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 34,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/ensign-demir-overwhelmed",
+    "asset": "apps/web/public/characters/deep-orbit/ensign-demir-overwhelmed.webp",
+    "category": "portrait",
+    "storyBeat": "A recoverable moment of confusion.",
+    "observed": "Brows tilt upward and the mouth opens slightly. The earpiece and facial proportions stay aligned with neutral.",
+    "strengths": [
+      "The expression reads immediately while leaving him capable and human."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep for an occasional mismatch or surprising output. Let the next action show him investigating rather than making him the permanent butt of a joke.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep for an occasional mismatch or surprising output. Let the next action show him investigating rather than making him the permanent butt of a joke.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 0,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/ensign-demir-breakthrough",
+    "asset": "apps/web/public/characters/deep-orbit/ensign-demir-breakthrough.webp",
+    "category": "portrait",
+    "storyBeat": "The moment a concept clicks.",
+    "observed": "The open grin, raised brows and bright gaze clearly separate this from the other states. Stubble and uniform remain stable.",
+    "strengths": [
+      "It has real charm and supplies a visually legible payoff."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Reserve the grin for earned understanding and pair it with the actual thing he has just noticed.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Reserve the grin for earned understanding and pair it with the actual thing he has just noticed.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 4,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/ensign-demir-focused",
+    "asset": "apps/web/public/characters/deep-orbit/ensign-demir-focused.webp",
+    "category": "portrait",
+    "storyBeat": "Late-course calm competence.",
+    "observed": "Lowered lids and level brows give concentration without the old angry scowl. The mouth stays closed and the head remains level.",
+    "strengths": [
+      "This supports his growth from novice to a dependable operator."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep. Use relaxed shoulders and a purposeful hand action in late-course scenes so focus still feels inviting. Competence can be enjoyable without a grin.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Use relaxed shoulders and a purposeful hand action in late-course scenes so focus still feels inviting. Competence can be enjoyable without a grin.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 1,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/aria",
+    "asset": "apps/web/public/characters/deep-orbit/aria.webp",
+    "category": "portrait",
+    "storyBeat": "ARIA at rest while providing precise guidance.",
+    "observed": "A rounded ripple sits on a horizontal baseline. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+    "strengths": [
+      "All four states now retain exactly one instrument identity and never suggest a human face."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The shell is more ornate and gold-dominant than the bible's thin, restrained voice-orb. At small size, ring texture competes with the trace.",
+        "evidence": "A rounded ripple sits on a horizontal baseline. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+        "fix": "Keep this as the default calm trace. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Keep this as the default calm trace. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Keep this as the default calm trace. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 15,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/aria-emphasis",
+    "asset": "apps/web/public/characters/deep-orbit/aria-emphasis.webp",
+    "category": "portrait",
+    "storyBeat": "A concise interruption or exact point.",
+    "observed": "One sharp up-and-down spike interrupts the baseline. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+    "strengths": [
+      "All four states now retain exactly one instrument identity and never suggest a human face."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The shell is more ornate and gold-dominant than the bible's thin, restrained voice-orb. At small size, ring texture competes with the trace.",
+        "evidence": "One sharp up-and-down spike interrupts the baseline. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+        "fix": "Use the spike sparingly as the visual equivalent of a dry correction. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Use the spike sparingly as the visual equivalent of a dry correction. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Use the spike sparingly as the visual equivalent of a dry correction. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 1,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/aria-deadpan",
+    "asset": "apps/web/public/characters/deep-orbit/aria-deadpan.webp",
+    "category": "portrait",
+    "storyBeat": "ARIA delivers a dry, certain observation.",
+    "observed": "A flat green horizontal trace sits in the same ring. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+    "strengths": [
+      "All four states now retain exactly one instrument identity and never suggest a human face."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The shell is more ornate and gold-dominant than the bible's thin, restrained voice-orb. At small size, ring texture competes with the trace.",
+        "evidence": "A flat green horizontal trace sits in the same ring. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+        "fix": "The flat trace already carries visual wit. Keep its deadpan simplicity. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "The flat trace already carries visual wit. Keep its deadpan simplicity. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "The flat trace already carries visual wit. Keep its deadpan simplicity. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 5,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "portrait/aria-alarm",
+    "asset": "apps/web/public/characters/deep-orbit/aria-alarm.webp",
+    "category": "portrait",
+    "storyBeat": "A rare urgent state or unstable signal.",
+    "observed": "Many tight irregular peaks fill the central band. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+    "strengths": [
+      "All four states now retain exactly one instrument identity and never suggest a human face."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The shell is more ornate and gold-dominant than the bible's thin, restrained voice-orb. At small size, ring texture competes with the trace.",
+        "evidence": "Many tight irregular peaks fill the central band. The shared shell has multiple brass rings, dense ticks, diagonal facets and a bright green lower rim.",
+        "fix": "Reserve this busy state for real urgency, which makes the calmer dry moments more effective. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Reserve this busy state for real urgency, which makes the calmer dry moments more effective. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Reserve this busy state for real urgency, which makes the calmer dry moments more effective. If the shell gets another design pass, simplify it once for all four states and keep the waveform large and legible.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "authoredDialogueUses": 0,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "location/bridge",
+    "asset": "apps/web/public/locations/deep-orbit/bridge.webp",
+    "category": "location",
+    "storyBeat": "Establish the Archimedes bridge and invite the learner into its shared work area.",
+    "observed": "The empty raised command tier, central clock, round holo table, brass rails and broad star windows create a readable room. Screen glyphs remain incidental.",
+    "strengths": [
+      "The retro clock and round shared worktable have distinctive adventure charm."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep as the empty room reference and world backdrop. For a more inviting marketing foreground, add a separate crew composition only where text and people can coexist cleanly. Do not populate this master and destabilize room references.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep as the empty room reference and world backdrop. For a more inviting marketing foreground, add a separate crew composition only where text and people can coexist cleanly. Do not populate this master and destabilize room references.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "location/lab",
+    "asset": "apps/web/public/locations/deep-orbit/lab.webp",
+    "category": "location",
+    "storyBeat": "A practical, curious space for observing signals.",
+    "observed": "A bright wall board, green column, small instruments, specimen bottles, coiled leads and a coffee ring fill the bench.",
+    "strengths": [
+      "The domestic wear and small tools make it feel inhabited, warm and approachable."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Borrow the coffee-ring and bench-scale intimacy when staging quieter story scenes, and keep main instructional charts out of generic background scribbles.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Borrow the coffee-ring and bench-scale intimacy when staging quieter story scenes, and keep main instructional charts out of generic background scribbles.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "location/engineering",
+    "asset": "apps/web/public/locations/deep-orbit/engineering.webp",
+    "category": "location",
+    "storyBeat": "A capable workshop for practical limits and repairs.",
+    "observed": "Tool wall, overhead pipes, warm task lamps, central bench and dark racks create an orderly mechanical interior.",
+    "strengths": [
+      "The tools and lamps give Nazari a clear home territory and a tactile counterpoint to holograms."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep the master. Show purposeful handling and shared practical work in derived scenes rather than always placing Nazari with crossed arms beside a screen.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the master. Show purposeful handling and shared practical work in derived scenes rather than always placing Nazari with crossed arms beside a screen.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "location/dashboard-station",
+    "asset": "apps/web/public/locations/deep-orbit/dashboard-station.webp",
+    "category": "location",
+    "storyBeat": "A place to sit down and monitor the system.",
+    "observed": "Five green monitors face an empty chair. A brass mug sits on the right of the desk, with softer bridge detail behind.",
+    "strengths": [
+      "The chair and mug invite the learner to occupy the station. The image already supplies gentle lived-in character."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. The accepted five-monitor layout can stay. Give future derived scenes one dominant active screen so five competing panels do not dilute the task.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. The accepted five-monitor layout can stay. Give future derived scenes one dominant active screen so five competing panels do not dilute the task.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "location/adrift",
+    "asset": "apps/web/public/locations/deep-orbit/adrift.webp",
+    "category": "location",
+    "storyBeat": "A friendly visual metaphor for a lost route or failed page.",
+    "observed": "A small brass-and-gray probe floats in a large dark starfield with a loose looping tether and a green running light.",
+    "strengths": [
+      "The compact, slightly awkward probe feels endearing without becoming an extra character."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Its empty space is functional for error-page copy. Preserve the small scale and avoid turning this quiet recovery moment into an explosion or crisis.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Its empty space is functional for error-page copy. Preserve the small scale and avoid turning this quiet recovery moment into an explosion or crisis.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/foundations",
+    "asset": "apps/web/public/patches/deep-orbit/foundations.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for manipulating data.",
+    "observed": "A white glove supports a stack of fine green wireframe planes inside a flat brass ring.",
+    "strengths": [
+      "The hand makes an abstract module feel tangible and collectible."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The many thin plane edges collapse before the hand does at 28px. Its flat border differs from the stitched, dimensional rings elsewhere.",
+        "evidence": "A white glove supports a stack of fine green wireframe planes inside a flat brass ring.",
+        "fix": "Simplify to three or four distinct data planes and standardize the outer ring treatment across the collection. Preserve the hand and sense of handling data."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Simplify to three or four distinct data planes and standardize the outer ring treatment across the collection. Preserve the hand and sense of handling data.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Simplify to three or four distinct data planes and standardize the outer ring treatment across the collection. Preserve the hand and sense of handling data.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/neural-networks",
+    "asset": "apps/web/public/patches/deep-orbit/neural-networks.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for building a layered model.",
+    "observed": "A dense circular mesh surrounds a central brass star, with green nodes scattered around it.",
+    "strengths": [
+      "The star and glow feel rewarding."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "It reads as a web around a star rather than the bible's layered lattice converging to one output. Small-size lines are crowded.",
+        "evidence": "A dense circular mesh surrounds a central brass star, with green nodes scattered around it.",
+        "fix": "Use three legible node columns feeding one larger output star, with the shared badge ring. Keep it an emblem, not a full teaching diagram."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Use three legible node columns feeding one larger output star, with the shared badge ring. Keep it an emblem, not a full teaching diagram.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Use three legible node columns feeding one larger output star, with the shared badge ring. Keep it an emblem, not a full teaching diagram.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/training-loop",
+    "asset": "apps/web/public/patches/deep-orbit/training-loop.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for iterative improvement.",
+    "observed": "Green elliptical coils narrow into a bright central point, then continue into a smaller lower cone.",
+    "strengths": [
+      "The spring-like silhouette is memorable and playful."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The brightest point sits midway through the coils, making the destination of the descending spiral less clear.",
+        "evidence": "Green elliptical coils narrow into a bright central point, then continue into a smaller lower cone.",
+        "fix": "Consider one unambiguous spiral ending at one bright minimum. Reduce closely spaced lower coils if the 28px proof loses their separation."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Consider one unambiguous spiral ending at one bright minimum. Reduce closely spaced lower coils if the 28px proof loses their separation.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Consider one unambiguous spiral ending at one bright minimum. Reduce closely spaced lower coils if the 28px proof loses their separation.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/browser-runtimes",
+    "asset": "apps/web/public/patches/deep-orbit/browser-runtimes.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for running models in a browser.",
+    "observed": "A compact shuttle launches inside a browser window with three small chrome dots. The badge has a textured black field and stitched gold rim.",
+    "strengths": [
+      "The browser-and-launch combination communicates the module quickly and feels fun."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. A slightly larger central shuttle could help tiny render sizes, but it already earns its place and should not be removed for literal engine-versus-shuttle wording.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. A slightly larger central shuttle could help tiny render sizes, but it already earns its place and should not be removed for literal engine-versus-shuttle wording.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/signal-processing",
+    "asset": "apps/web/public/patches/deep-orbit/signal-processing.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for exploring signal content.",
+    "observed": "A wave enters a diamond-like prism and exits as symmetric bars. Opaque white corners surround the black circular patch.",
+    "strengths": [
+      "The wave-to-bars silhouette is distinct from the other emblems."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "Opaque white corners break the collection on dark surfaces. The icon itself remains valid emblem shorthand.",
+        "evidence": "A wave enters a diamond-like prism and exits as symmetric bars. Opaque white corners surround the black circular patch.",
+        "fix": "Remove the white outer field or use the same edge treatment as the collection. Optionally simplify the prism and bars for small-size clarity. This emblem is not a quantitative spectrum."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Remove the white outer field or use the same edge treatment as the collection. Optionally simplify the prism and bars for small-size clarity. This emblem is not a quantitative spectrum.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Remove the white outer field or use the same edge treatment as the collection. Optionally simplify the prism and bars for small-size clarity. This emblem is not a quantitative spectrum.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/recurrent-networks",
+    "asset": "apps/web/public/patches/deep-orbit/recurrent-networks.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for retaining state across time.",
+    "observed": "A green ring of repeated arrows surrounds a tiny square memory chip. The outer gold ring is flat and distressed.",
+    "strengths": [
+      "The loop around memory is a strong, recognizable metaphor."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The small chip becomes a dot and numerous arrowheads compete with it at sidebar size.",
+        "evidence": "A green ring of repeated arrows surrounds a tiny square memory chip. The outer gold ring is flat and distressed.",
+        "fix": "Keep the loop idea but reduce it to two or three large arrows and enlarge the memory core. Match the same ring weight used by the other badges."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Keep the loop idea but reduce it to two or three large arrows and enlarge the memory core. Match the same ring weight used by the other badges.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Keep the loop idea but reduce it to two or three large arrows and enlarge the memory core. Match the same ring weight used by the other badges.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/anomaly-detection",
+    "asset": "apps/web/public/patches/deep-orbit/anomaly-detection.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for spotting unusual readings.",
+    "observed": "A green trace and a separate brass lightning bolt overlap inside a crosshair circle.",
+    "strengths": [
+      "The crosshair gives the eye one central target."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The lightning bolt can suggest an electrical fault rather than an unexplained signal and partially hides the trace.",
+        "evidence": "A green trace and a separate brass lightning bolt overlap inside a crosshair circle.",
+        "fix": "If redrawn, let one unusual peak in the trace be the target instead of adding a separate bolt. Keep the mystery open rather than illustrating a known failure cause."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "If redrawn, let one unusual peak in the trace be the target instead of adding a separate bolt. Keep the mystery open rather than illustrating a known failure cause.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "If redrawn, let one unusual peak in the trace be the target instead of adding a separate bolt. Keep the mystery open rather than illustrating a known failure cause.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/advanced-time-series",
+    "asset": "apps/web/public/patches/deep-orbit/advanced-time-series.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for looking ahead with uncertainty.",
+    "observed": "A small comet launches several green and pale trajectory lines that fan outward across the badge.",
+    "strengths": [
+      "The fanning paths are legible and make forecasting feel exploratory."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "There are more trajectories than the three named in the emblem brief, and some thin lines merge at tiny size.",
+        "evidence": "A small comet launches several green and pale trajectory lines that fan outward across the badge.",
+        "fix": "Keep the motif. Three stronger paths would improve small-scale clarity if the patch system is simplified, but this is not a reason to remove a successful emblem."
+      }
+    ],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep the motif. Three stronger paths would improve small-scale clarity if the patch system is simplified, but this is not a reason to remove a successful emblem.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the motif. Three stronger paths would improve small-scale clarity if the patch system is simplified, but this is not a reason to remove a successful emblem.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/llm-integration",
+    "asset": "apps/web/public/patches/deep-orbit/llm-integration.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for language linked to ship systems.",
+    "observed": "Five speech bubbles branch through circuitry to a small antenna-like base. Its outer field is visibly gray.",
+    "strengths": [
+      "Speech bubbles make this module recognizable and more playful than a generic chip."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "Five bubbles and many circuit stems are crowded at 28px. The gray square field differs from the mostly black collection.",
+        "evidence": "Five speech bubbles branch through circuitry to a small antenna-like base. Its outer field is visibly gray.",
+        "fix": "Reduce to two or three distinct bubbles, enlarge the antenna and standardize the square background or transparent exterior with the other patches."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Reduce to two or three distinct bubbles, enlarge the antenna and standardize the square background or transparent exterior with the other patches.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Reduce to two or three distinct bubbles, enlarge the antenna and standardize the square background or transparent exterior with the other patches.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/optimization-edge",
+    "asset": "apps/web/public/patches/deep-orbit/optimization-edge.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for an efficient deployable system.",
+    "observed": "A green-rimmed satellite with two large panel wings crosses the badge diagonally.",
+    "strengths": [
+      "The diagonal orientation is lively and the silhouette reads as spacecraft hardware."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep the identifiable satellite and lively diagonal. The emblem need not literally remove a panel to represent efficient deployment. If the collection is simplified, preserve its compact silhouette.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep the identifiable satellite and lively diagonal. The emblem need not literally remove a panel to represent efficient deployment. If the collection is simplified, preserve its compact silhouette.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "patch/capstone",
+    "asset": "apps/web/public/patches/deep-orbit/capstone.webp",
+    "category": "patch",
+    "storyBeat": "An earned emblem for the finished monitoring system.",
+    "observed": "A brass dish antenna stands above concentric orbital rings, all within a more elaborate multi-ring border.",
+    "strengths": [
+      "The upright dish feels like a completed, working piece of equipment."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Its formal finish is appropriate for the final module. Preserve enough contrast around the dish when standardizing other patch borders.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Its formal finish is appropriate for the final module. Preserve enough contrast around the dish when standardizing other patch borders.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "seal/deep-orbit",
+    "asset": "apps/web/public/seals/deep-orbit.webp",
+    "category": "seal",
+    "storyBeat": "Completion of the whole world.",
+    "observed": "A small brass star sits inside orbital rings and a balanced laurel wreath on a dark field.",
+    "strengths": [
+      "The radial symmetry, wreath and heavier structure clearly distinguish the world award."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The star is relatively small and dim beside the much brighter outer wreath.",
+        "evidence": "A small brass star sits inside orbital rings and a balanced laurel wreath on a dark field.",
+        "fix": "Keep the formal design. A small increase in central-star contrast would help the 72px certificate rendering, without adding confetti or turning the award into a joke."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "mixed",
+    "delightDirection": "Keep the formal design. A small increase in central-star contrast would help the 72px certificate rendering, without adding confetti or turning the award into a joke.",
+    "decision": "refine",
+    "priority": "P3",
+    "artDirection": "Keep the formal design. A small increase in central-star contrast would help the 72px certificate rendering, without adding confetti or turning the award into a joke.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "og/bridge.jpg",
+    "asset": "apps/web/public/og/deep-orbit/bridge.jpg",
+    "category": "og",
+    "storyBeat": "A readable Deep Orbit setting behind social-card content.",
+    "observed": "The landscape crop retains the central clock and holo table while trimming floor and ceiling from the full master.",
+    "strengths": [
+      "The room remains identifiable at the wider social-card ratio."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep as an intentional format derivative. It is not an accidental duplicate: the OG renderer needs a predictable JPEG background. Review any future foreground text on the actual social card.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep as an intentional format derivative. It is not an accidental duplicate: the OG renderer needs a predictable JPEG background. Review any future foreground text on the actual social card.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "og/seal.jpg",
+    "asset": "apps/web/public/og/deep-orbit/seal.jpg",
+    "category": "og",
+    "storyBeat": "A compact world-completion mark for social cards.",
+    "observed": "The 256px JPEG retains the wreath and orbital rings, with a somewhat soft central star.",
+    "strengths": [
+      "The design survives the derivative size and preserves the world award."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "mixed",
+    "delightDirection": "Keep as the OG renderer's required derivative. If the source seal gets a contrast improvement, regenerate this derivative from that approved source.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep as the OG renderer's required derivative. If the source seal gets a contrast improvement, regenerate this derivative from that approved source.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "Individual native asset viewed. Small-size comparison checked separately in the audit proofs."
+  },
+  {
+    "id": "media/deep-orbit-trailer-poster.webp",
+    "asset": "apps/web/public/media/deep-orbit-trailer-poster.webp",
+    "category": "media",
+    "storyBeat": "Invite a prospect to meet the crew and watch their adventure.",
+    "observed": "Four human crew walk toward the viewer under a bright waveform. Nazari looks older and more severe than the new portrait; Mirza looks much younger; Demir is small behind them.",
+    "strengths": [
+      "It has visible faces, a correct four-human cast and a clear ensemble promise."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The poster differs from the current portrait anchors: Mirza has reduced age detail and a smoother face, Nazari has longer hair and a harsher face, and Demir lacks the same strong earpiece cue. The stern procession offers less warmth than the current lesson scenes.",
+        "evidence": "Four human crew walk toward the viewer under a bright waveform. Nazari looks older and more severe than the new portrait; Mirza looks much younger; Demir is small behind them.",
+        "fix": "Replace the poster with a frame or new composition that matches the current crew. Prefer an active shared discovery with a little warmth to another march toward camera. Preserve its relationship to the actual film."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "weak",
+    "delightDirection": "Replace the poster with a frame or new composition that matches the current crew. Prefer an active shared discovery with a little warmth to another march toward camera. Preserve its relationship to the actual film.",
+    "decision": "replace",
+    "priority": "P2",
+    "artDirection": "Replace the poster with a frame or new composition that matches the current crew. Prefer an active shared discovery with a little warmth to another march toward camera. Preserve its relationship to the actual film.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true
+  },
+  {
+    "id": "media/deep-orbit-trailer.mp4",
+    "asset": "apps/web/public/media/deep-orbit-trailer.mp4",
+    "category": "media",
+    "storyBeat": "Present the world as a crew-led mystery the learner can join.",
+    "observed": "One-second samples across all 88 seconds show ship exteriors, ARIA's waveform failure, the crew walk at32-38s, a friendly Demir turn at40-46s, shared work and a final unresolved reading.",
+    "strengths": [
+      "The Demir invitation and Farah's smile at57-61s supply more warmth and person-to-person energy than many lesson stills."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "Several faces, especially the crew walk, use older designs. Large full-frame green flashes appear in the sampled transitions. This audit does not establish temporal flash safety or audio quality.",
+        "evidence": "One-second samples across all 88 seconds show ship exteriors, ARIA's waveform failure, the crew walk at32-38s, a friendly Demir turn at40-46s, shared work and a final unresolved reading.",
+        "fix": "Keep the useful narrative cut and consider targeted character-shot replacement. Bring that friendly invitation into lesson staging. Judge transition motion in playback before making an accessibility claim. The 1fps visual audit cannot clear every intermediate frame."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "strong",
+    "delightDirection": "Keep the useful narrative cut and consider targeted character-shot replacement. Bring that friendly invitation into lesson staging. Judge transition motion in playback before making an accessibility claim. The 1fps visual audit cannot clear every intermediate frame.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the useful narrative cut and consider targeted character-shot replacement. Bring that friendly invitation into lesson staging. Judge transition motion in playback before making an accessibility claim. The 1fps visual audit cannot clear every intermediate frame.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "One visual frame per second across the full duration. No audio review, real-time motion assessment or exhaustive per-frame inspection."
+  },
+  {
+    "id": "media/learn-trailer-poster.webp",
+    "asset": "apps/web/public/media/learn-trailer-poster.webp",
+    "category": "media",
+    "storyBeat": "Create wonder before the learn-page trailer starts.",
+    "observed": "A compact brass ship floats before a large cratered planet amid green clouds. No faces or instructional charts appear.",
+    "strengths": [
+      "The warm little ship against a vast world feels adventurous and inviting."
+    ],
+    "issues": [],
+    "soulFit": "strong",
+    "delight": "strong",
+    "delightDirection": "Keep. Its quiet scale offers valuable breathing room. Preserve the hero copy's legibility over the actual crop and avoid adding a crowded crew collage.",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Keep. Its quiet scale offers valuable breathing room. Preserve the hero copy's legibility over the actual crop and avoid adding a crowded crew collage.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true
+  },
+  {
+    "id": "media/learn-trailer.mp4",
+    "asset": "apps/web/public/media/learn-trailer.mp4",
+    "category": "media",
+    "storyBeat": "Introduce learning through the Deep Orbit mystery.",
+    "observed": "One-second samples across72s show a mechanical code orb, illegible generated code around6-11s, ship exteriors, industrial machinery, tense faces around36-53s and a burst of green energy.",
+    "strengths": [
+      "The small spacecraft and mechanical invention have a distinctive, curious visual world."
+    ],
+    "issues": [
+      {
+        "severity": "high",
+        "finding": "The floating code is visibly malformed. The commander's angular face, hair silhouette and apparent complexion change from the canonical Mirza and vary between shots. The energy eruption reads as a physical disaster; that is a tonal interpretation rather than proof of a canon event.",
+        "evidence": "One-second samples across72s show a mechanical code orb, illegible generated code around6-11s, ship exteriors, industrial machinery, tense faces around36-53s and a burst of green energy.",
+        "fix": "Prioritize replacing the malformed code inserts and character shots. Use real authored code composited into frames. Recut the discovery toward curious surprise and shared problem solving, while preserving the owner-approved trailer's basic adventure premise. Do not delete the live film before a replacement is ready."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "weak",
+    "delightDirection": "Prioritize replacing the malformed code inserts and character shots. Use real authored code composited into frames. Recut the discovery toward curious surprise and shared problem solving, while preserving the owner-approved trailer's basic adventure premise. Do not delete the live film before a replacement is ready.",
+    "decision": "refine",
+    "priority": "P1",
+    "artDirection": "Prioritize replacing the malformed code inserts and character shots. Use real authored code composited into frames. Recut the discovery toward curious surprise and shared problem solving, while preserving the owner-approved trailer's basic adventure premise. Do not delete the live film before a replacement is ready.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "One visual frame per second across the full duration. No audio review, real-time motion assessment or exhaustive per-frame inspection."
+  },
+  {
+    "id": "media/learn-trailer-loop.webm",
+    "asset": "apps/web/public/media/learn-trailer-loop.webm",
+    "category": "media",
+    "storyBeat": "A low-pressure moving background on the learn page.",
+    "observed": "One-second samples across24s show the ship, stone pillars, a sparking industrial column, module-count display and tense older character shots.",
+    "strengths": [
+      "The exterior opening has scale and wonder."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The loop repeats sparks, a crushing-looking column and serious faces rather than the gentler sense of discovery the user now requests. It repeats the older commander design.",
+        "evidence": "One-second samples across24s show the ship, stone pillars, a sparking industrial column, module-count display and tense older character shots.",
+        "fix": "Recut the loop from calm exteriors and a warm, canonical shared-work moment, with a quiet loop seam. Keep the full trailer separately. The loop should invite interaction without repeatedly signaling an emergency."
+      }
+    ],
+    "soulFit": "mixed",
+    "delight": "weak",
+    "delightDirection": "Recut the loop from calm exteriors and a warm, canonical shared-work moment, with a quiet loop seam. Keep the full trailer separately. The loop should invite interaction without repeatedly signaling an emergency.",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Recut the loop from calm exteriors and a warm, canonical shared-work moment, with a quiet loop seam. Keep the full trailer separately. The loop should invite interaction without repeatedly signaling an emergency.",
+    "deletionRationale": "Retain this asset and its role. No verified unused runtime asset was found here.",
+    "inspected": true,
+    "inspection": "One visual frame per second across the full duration. No audio review, real-time motion assessment or exhaustive per-frame inspection."
+  }
+]

@@ -2,12 +2,17 @@ import {
   act,
   fireEvent,
   render,
+  renderHook,
   screen,
   waitFor,
   within,
 } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { ExerciseProps, ExerciseRunSnapshot } from "@tensorcraft/ui";
+import type {
+  ExerciseAttemptState,
+  ExerciseProps,
+  ExerciseRunSnapshot,
+} from "@tensorcraft/ui";
 import type { LearningEvidenceSnapshot } from "@/lib/learning-evidence-types";
 
 const mocks = vi.hoisted(() => ({
@@ -15,6 +20,7 @@ const mocks = vi.hoisted(() => ({
   save: vi.fn(),
   remove: vi.fn(),
   create: vi.fn(),
+  canSave: vi.fn(),
   run: null as ExerciseRunSnapshot | null,
   restore: vi.fn(),
 }));
@@ -29,12 +35,34 @@ vi.mock("@/lib/learning-evidence-store", () => ({
 vi.mock("@/lib/learning-evidence-types", () => ({
   learningEvidenceVersion: async () => "current-version",
   createLearningEvidence: mocks.create,
+  canSaveLearningEvidence: mocks.canSave,
 }));
 vi.mock("@tensorcraft/ui", async () => {
-  const { useState } = await import("react");
+  const { useId, useRef, useState } = await import("react");
   return {
     Exercise: (props: ExerciseProps) => {
       const [code, setCode] = useState("newer draft");
+      const [attempt, setAttempt] = useState<ExerciseAttemptState>({
+        status: "idle",
+      });
+      const sequence = useRef(0);
+      const pendingToken = useRef<string | null>(null);
+      const instance = useId();
+      const start = () => {
+        const runToken = `${instance}:${++sequence.current}`;
+        pendingToken.current = runToken;
+        setAttempt({ status: "running", runToken });
+        props.onRunLifecycle?.({ type: "started", runToken });
+        return runToken;
+      };
+      const finish = (runToken = pendingToken.current) => {
+        if (!runToken) return;
+        pendingToken.current = null;
+        const snapshot = mocks.run!;
+        setAttempt({ status: "settled", runToken, snapshot });
+        props.onRunLifecycle?.({ type: "captured", runToken, snapshot });
+        props.onRunSnapshot?.(snapshot);
+      };
       return (
         <>
           <input
@@ -42,13 +70,36 @@ vi.mock("@tensorcraft/ui", async () => {
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          <button onClick={() => props.onRunSnapshot?.(mocks.run!)}>
-            Run tests
+          <button onClick={() => finish(start())}>Run tests</button>
+          <button onClick={start}>Start run</button>
+          <button onClick={() => finish()}>Finish run</button>
+          <button
+            onClick={() => {
+              pendingToken.current = null;
+              setAttempt({ status: "idle" });
+              props.onRunLifecycle?.({ type: "invalidated", reason: "reset" });
+            }}
+          >
+            Reset
           </button>
+          {props.renderResult?.({
+            attempt,
+            currentCode: code,
+            editorId: "mock-editor",
+            resultId: "mock-result",
+          })}
           {props.renderSavedRuns?.({
             currentCode: code,
+            restoreAvailable: true,
             restore: (source, solutionViewed) => {
               mocks.restore(source, solutionViewed);
+              if (source !== code) {
+                setAttempt({ status: "idle" });
+                props.onRunLifecycle?.({
+                  type: "invalidated",
+                  reason: "restore",
+                });
+              }
               setCode(source);
               return true;
             },
@@ -76,6 +127,7 @@ vi.mock("@tensorcraft/ui", async () => {
 });
 
 import { LearningEvidenceExercise } from "./learning-evidence-exercise";
+import { useLearningEvidence } from "./learning-evidence";
 
 function record(
   overrides: Partial<LearningEvidenceSnapshot> = {},
@@ -144,9 +196,55 @@ function networkRecord(): LearningEvidenceSnapshot {
   });
 }
 
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((done) => {
+    resolve = done;
+  });
+  return { promise, resolve };
+}
+
+function inspectableArtifacts(): ExerciseRunSnapshot["artifacts"] {
+  return [
+    {
+      kind: "table",
+      title: "Input readings",
+      columns: ["Reading", "Temperature", "Signal strength"],
+      rows: [
+        [1, 20, 0.2],
+        [2, 24, 0.4],
+      ],
+    },
+    {
+      kind: "table",
+      title: "Saved training statistics",
+      columns: ["Feature", "Mean", "Standard deviation"],
+      rows: [
+        ["Temperature", 22, 2],
+        ["Signal strength", 0.3, 0.1],
+      ],
+    },
+    {
+      kind: "table",
+      title: "Scaled readings entering Farah's preview",
+      columns: [
+        "Reading",
+        "Temperature z-score",
+        "Signal z-score",
+        "Model score",
+      ],
+      rows: [
+        [1, -1, -1, 0.2],
+        [2, 1, 1, 0.8],
+      ],
+    },
+  ];
+}
+
 describe("saved normalization runs", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    mocks.canSave.mockReturnValue(true);
     mocks.list.mockResolvedValue([record()]);
     mocks.save.mockResolvedValue(undefined);
     mocks.remove.mockResolvedValue(undefined);
@@ -168,6 +266,321 @@ describe("saved normalization runs", () => {
         solutionViewed: false,
       },
     };
+  });
+
+  it("discards capture preparation that finishes after reset", async () => {
+    const preparation = deferred<LearningEvidenceSnapshot>();
+    mocks.create.mockReturnValue(preparation.promise);
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    expect(screen.getByText("Preparing this run…")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    await act(async () => preparation.resolve(record({ runId: "reset-run" })));
+    expect(
+      screen.queryByRole("button", { name: "Save this run" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Result from this run" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Preparing this run…")).not.toBeInTheDocument();
+  });
+
+  it.each(["rerun", "restore"])(
+    "finishes preparing an inspectable previous run after %s",
+    async (action) => {
+      const preparation = deferred<LearningEvidenceSnapshot>();
+      mocks.run = { ...mocks.run!, artifacts: inspectableArtifacts() };
+      mocks.create.mockReturnValue(preparation.promise);
+      render(
+        <LearningEvidenceExercise
+          slug="normalize-data"
+          draftOwner="alice"
+          content={content}
+        />,
+      );
+      fireEvent.click(await screen.findByText("Saved run: All checks passed"));
+      fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+      expect(
+        screen.getByRole("heading", { name: "A reading from this run" }),
+      ).toBeVisible();
+      if (action === "rerun")
+        fireEvent.click(screen.getByRole("button", { name: "Start run" }));
+      else
+        fireEvent.click(
+          screen.getByRole("button", { name: "Restore saved code" }),
+        );
+      const previous = screen.getByText("Previous run").closest("details")!;
+      expect(previous).not.toHaveAttribute("open");
+      await act(async () =>
+        preparation.resolve(
+          record({ runId: "previous-run", artifacts: inspectableArtifacts() }),
+        ),
+      );
+      fireEvent.click(screen.getByText("Previous run"));
+      expect(
+        within(previous).getByRole("button", { name: "Download previous run" }),
+      ).toBeEnabled();
+      expect(
+        within(previous).getByRole("button", { name: "Save previous run" }),
+      ).toBeEnabled();
+      expect(
+        screen.queryByRole("button", { name: "Save this run" }),
+      ).not.toBeInTheDocument();
+    },
+  );
+
+  it("prepares and saves with the actual owner before the initial history read finishes", async () => {
+    const initial = deferred<LearningEvidenceSnapshot[]>();
+    const current = record({
+      runId: "early-run",
+      submittedCode: "newer draft",
+    });
+    mocks.list
+      .mockReturnValueOnce(initial.promise)
+      .mockResolvedValue([current]);
+    mocks.create.mockResolvedValue(current);
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    const save = await screen.findByRole("button", { name: "Save this run" });
+    expect(mocks.create).toHaveBeenCalledWith(mocks.run, "account:alice");
+    expect(save).toBeEnabled();
+    fireEvent.click(save);
+    await screen.findByText(
+      "Saved in this browser. Your earliest retained and latest saved runs stay available here.",
+    );
+    expect(mocks.save).toHaveBeenCalledWith(current);
+    await act(async () => initial.resolve([]));
+    expect(screen.getByRole("button", { name: "Run saved" })).toBeDisabled();
+  });
+
+  it("opens and focuses a retained previous result from its saved entry without duplicating the viewer", async () => {
+    const saved = record({
+      runId: "saved-a",
+      submittedCode: "newer draft",
+      artifacts: inspectableArtifacts(),
+    });
+    mocks.list.mockResolvedValueOnce([]).mockResolvedValue([saved]);
+    mocks.run = {
+      ...mocks.run!,
+      submittedCode: "newer draft",
+      artifacts: inspectableArtifacts(),
+      checks: [{ name: "Correct scale", passed: true }],
+    };
+    mocks.create
+      .mockResolvedValueOnce(saved)
+      .mockResolvedValueOnce(
+        record({ runId: "failed-b", artifacts: [], runOutcome: "errored" }),
+      );
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    await screen.findByText(/No saved normalization runs here yet/);
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Save this run" }),
+    );
+    await screen.findByText("Saved run: All checks passed");
+    mocks.run = { ...mocks.run!, artifacts: [], checks: [], errored: true };
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    const previous = screen.getByText("Previous run").closest("details")!;
+    expect(previous).not.toHaveAttribute("open");
+    fireEvent.click(screen.getByText("Saved run: All checks passed"));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Inspect this run above" }),
+    );
+    expect(previous).toHaveAttribute("open");
+    expect(previous).toHaveFocus();
+    expect(
+      within(previous).getByRole("heading", {
+        name: "A reading from this run",
+      }),
+    ).toBeVisible();
+    expect(
+      screen.getAllByRole("heading", {
+        name: "A reading from this run",
+        hidden: true,
+      }),
+    ).toHaveLength(1);
+  });
+
+  it("does not claim an unread history is empty when saving interrupts its initial read and fails", async () => {
+    const initial = deferred<LearningEvidenceSnapshot[]>();
+    mocks.list
+      .mockReturnValueOnce(initial.promise)
+      .mockResolvedValue([record()]);
+    mocks.save.mockRejectedValue(new Error("write failed"));
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Save this run" }),
+    );
+    expect(
+      await screen.findByText(/This browser could not save the run/),
+    ).toBeVisible();
+    expect(screen.getByText(/Saved history is unavailable/)).toBeVisible();
+    expect(
+      screen.queryByText(/No saved normalization runs here yet/),
+    ).not.toBeInTheDocument();
+    await act(async () => initial.resolve([]));
+    expect(screen.getByText(/Saved history is unavailable/)).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Refresh saved runs" }));
+    expect(
+      await screen.findByText("Saved run: All checks passed"),
+    ).toBeVisible();
+  });
+
+  it("keeps a pending save attached to run A while run B becomes current", async () => {
+    const saving = deferred<void>();
+    const first = record({ runId: "run-a", submittedCode: "newer draft" });
+    const second = record({ runId: "run-b", submittedCode: "newer draft" });
+    mocks.list.mockResolvedValueOnce([]).mockResolvedValue([first]);
+    mocks.create.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+    mocks.save.mockReturnValue(saving.promise);
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    await screen.findByText(/No saved normalization runs here yet/);
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Save this run" }),
+    );
+    expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    expect(
+      await screen.findByRole("button", { name: "Save this run" }),
+    ).toBeDisabled();
+    expect(
+      screen.queryByRole("button", { name: "Saving…" }),
+    ).not.toBeInTheDocument();
+    await act(async () => saving.resolve());
+    expect(screen.getByRole("button", { name: "Save this run" })).toBeEnabled();
+    expect(
+      screen.queryByRole("button", { name: "Run saved" }),
+    ).not.toBeInTheDocument();
+    expect(mocks.save).toHaveBeenCalledExactlyOnceWith(first);
+  });
+
+  it("reports a committed save separately from a failed history refresh", async () => {
+    mocks.list
+      .mockResolvedValueOnce([])
+      .mockRejectedValue(new Error("read failed"));
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    await screen.findByText(/No saved normalization runs here yet/);
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Save this run" }),
+    );
+    expect(
+      await screen.findByText(
+        /Saved in this browser, but the saved list could not refresh/,
+      ),
+    ).toBeVisible();
+    expect(
+      screen.queryByText(/This browser could not save the run/),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/No saved normalization runs here yet/),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Refresh saved runs" }),
+    ).toBeEnabled();
+  });
+
+  it("shows unreadable history without claiming it is empty or blocking current output", async () => {
+    mocks.list.mockRejectedValue(new Error("unsupported owner record"));
+    render(
+      <LearningEvidenceExercise
+        slug="normalize-data"
+        draftOwner="alice"
+        content={content}
+      />,
+    );
+    expect(
+      await screen.findByText(/Saved history is unavailable/),
+    ).toBeVisible();
+    expect(
+      screen.queryByText(/No saved normalization runs here yet/),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Run tests" }));
+    expect(
+      await screen.findByRole("button", { name: "Download this run" }),
+    ).toBeEnabled();
+    expect(
+      screen.getByRole("heading", { name: "Result from this run" }),
+    ).toBeVisible();
+  });
+
+  it("loads a new owner during an old save and prevents the old completion clearing a newer mutation", async () => {
+    const aliceSave = deferred<void>(),
+      bobSave = deferred<void>();
+    mocks.list.mockResolvedValue([]);
+    mocks.save.mockImplementation((snapshot) =>
+      snapshot.ownerScope === "account:alice"
+        ? aliceSave.promise
+        : bobSave.promise,
+    );
+    const { result, rerender } = renderHook(
+      ({ userId }) => useLearningEvidence(userId),
+      { initialProps: { userId: "alice" } },
+    );
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => {
+      void result.current.save(record({ runId: "alice-run" }));
+    });
+    expect(result.current.busy).toBe(true);
+    rerender({ userId: "bob" });
+    await waitFor(() =>
+      expect(mocks.list).toHaveBeenCalledWith("account:bob", "normalize-data"),
+    );
+    expect(result.current.busy).toBe(false);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => {
+      void result.current.save(
+        record({ ownerScope: "account:bob", runId: "bob-run" }),
+      );
+    });
+    expect(result.current.mutation).toMatchObject({
+      kind: "save",
+      runId: "bob-run",
+    });
+    await act(async () => aliceSave.resolve());
+    expect(result.current.busy).toBe(true);
+    expect(result.current.mutation).toMatchObject({ runId: "bob-run" });
+    await act(async () => bobSave.resolve());
+    expect(result.current.busy).toBe(false);
+    expect(result.current.loading).toBe(false);
   });
 
   it("opens old results read-only, labels changed code, and restores only on request", async () => {

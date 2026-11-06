@@ -164,3 +164,44 @@ for (const slug of ["tensor-shapes", "tensor-operations"]) {
     );
   });
 }
+
+for (const [width, colorScheme] of [
+  [320, "light"],
+  [390, "dark"],
+  [1440, "light"],
+  [1440, "dark"],
+] as const) {
+  test(`dialogue portraits fit at ${width}px in ${colorScheme} mode`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ colorScheme });
+    await page.goto(LESSON);
+    const dialogue = page
+      .locator('[data-dialogue][data-layout="speech"]')
+      .first();
+    await expect(dialogue).toBeVisible();
+    const portrait = dialogue.getByTestId("animated-avatar");
+    await expect(portrait).toHaveCSS("width", width < 650 ? "56px" : "64px");
+    await expect
+      .poll(() =>
+        portrait
+          .getByTestId("animated-avatar-base")
+          .evaluate((image: HTMLImageElement) => image.naturalWidth),
+      )
+      .toBe(512);
+    const name = dialogue.locator("[data-dialogue-speaker]");
+    const portraitBox = await portrait.boundingBox();
+    const nameBox = await name.boundingBox();
+    expect(nameBox!.x).toBeGreaterThanOrEqual(
+      portraitBox!.x + portraitBox!.width,
+    );
+    expect(nameBox!.x + nameBox!.width).toBeLessThanOrEqual(width);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(width);
+    await dialogue.screenshot({
+      path: testInfo.outputPath(`dialogue-${width}-${colorScheme}.png`),
+    });
+  });
+}

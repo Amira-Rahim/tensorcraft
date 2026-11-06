@@ -78,3 +78,5 @@ export * from "./story-decisions";
 export * from "./learning-activity";
 export * from "./curriculum";
 export * from "./scan-stops";
+export * from "./evaluation-result.mjs";
+export { EVALUATION_CAPTURE_SOURCE } from "./evaluation-capture-source.mjs";

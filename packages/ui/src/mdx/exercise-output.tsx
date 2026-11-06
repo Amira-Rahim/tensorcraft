@@ -4,14 +4,14 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { ArtifactCell, ExerciseArtifact } from "./exercise-artifacts.mjs";
 
 const COLORS = [
-  "#6baa8a",
-  "#85b4ce",
-  "#c1a678",
-  "#c58d9b",
-  "#a39dcc",
-  "#ce9b72",
-  "#8ebdb6",
-  "#b3b795",
+  "var(--tc-primary, currentColor)",
+  "var(--tc-tier-structural, currentColor)",
+  "var(--tc-accent, currentColor)",
+  "var(--tc-axis-evaluation, currentColor)",
+  "var(--tc-axis-js-integration, currentColor)",
+  "var(--tc-streak, currentColor)",
+  "var(--tc-success, currentColor)",
+  "var(--tc-muted, currentColor)",
 ];
 const display = (value: ArtifactCell) =>
   typeof value === "number"
@@ -195,7 +195,12 @@ function SeriesOutput({
           {shown.map((series) => {
             const index = artifact.series.indexOf(series);
             return (
-              <g key={index} fill={COLORS[index]} stroke={COLORS[index]}>
+              <g
+                key={index}
+                data-exercise-series={index}
+                fill={COLORS[index]}
+                stroke={COLORS[index]}
+              >
                 <polyline
                   fill="none"
                   strokeWidth="3"

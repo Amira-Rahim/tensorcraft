@@ -25,6 +25,7 @@
 .lesson-page.deep-orbit-lesson
   [data-dialogue][data-layout="speech"]
   [data-dialogue-avatar] {
+  --tc-avatar-size: 64px;
   flex-shrink: 0;
 }
 .lesson-page.deep-orbit-lesson
@@ -77,6 +78,11 @@
     gap: 12px;
     margin-bottom: 16px;
     padding-bottom: 16px;
+  }
+  .lesson-page.deep-orbit-lesson
+    [data-dialogue][data-layout="speech"]
+    [data-dialogue-avatar] {
+    --tc-avatar-size: 56px;
   }
   .lesson-page.deep-orbit-lesson
     [data-dialogue][data-layout="speech"]

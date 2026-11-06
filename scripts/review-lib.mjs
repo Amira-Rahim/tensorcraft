@@ -69,6 +69,9 @@ export function cleanEnvironment(source = process.env) {
     DOCKER_HOST: reviewDockerHost(source.TENSORCRAFT_REVIEW_DOCKER_HOST),
     TENSORCRAFT_REVIEW: "1",
     NEXT_PUBLIC_TENSORCRAFT_REVIEW: "1",
+    // Explicit local opt-in tests the writer without changing release defaults.
+    NEXT_PUBLIC_EVALUATION_SAVES_ENABLED:
+      source.TENSORCRAFT_REVIEW_EVALUATION_SAVES === "true" ? "true" : "false",
   };
 }
 

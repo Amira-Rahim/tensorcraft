@@ -122,7 +122,7 @@ for *Subscriber complains*) → action *Webhook*:
   `route: "webhooks.kit-bounce"` + `event` + `email` + `reason`). Fly log
   aggregation + Sentry breadcrumbs capture it.
 - **Deferred**: marking `profiles.email_invalid = true` requires a new
-  migration + re-validation UX; tracked in `dev-plan.md` §4e.
+  migration + re-validation UX; tracked in [the product roadmap](../ROADMAP.md#observability-and-delivery-operations).
 
 ## 4. Monitoring Cadence
 

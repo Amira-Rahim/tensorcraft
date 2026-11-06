@@ -40,7 +40,12 @@ The owner subsequently authorized the complete course migration. This review sup
 
 ## Verification
 
-See [verification.json](verification.json) for the machine-readable record and `verify.cjs` for repeatable checks. The suite covers 80 responsive views, 54 accessibility scans, nine interaction groups, and eight real-runner scenarios. The original training solution passes six checks; the evaluation solution passes nine. No expected model accuracy is substituted for actual evaluation.
+The [verification record](verification.json) preserves the original run: 80
+responsive views, 54 accessibility scans, nine interaction groups, and eight
+real-runner scenarios. The original training solution passed six checks and the
+evaluation solution passed nine. The full-course rollout replaced the prototype,
+whose runtime and verification script were retired on November 6, 2026. These
+historical results do not validate the current lesson renderer.
 
 Generated snapshots include:
 

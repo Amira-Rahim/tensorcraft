@@ -93,7 +93,7 @@ Enhance the live `RecallPrompt` (`{ question, answer }`): after the answer is re
 ## Documentation
 
 - `docs/story-style-bible.md`: authoring note for the lesson close (RecallPrompt first, then LessonRecap; what belongs in each recap part; story stays in the Epilogue, not the recap).
-- `docs/dev-plan.md`: record deferred migration of the other 4 themes off `Quiz`/`KeyTakeaways` onto `RecallPrompt`/`LessonRecap` (gated on launch); note `Quiz`/`KeyTakeaways` are deprecated-but-retained.
+- [the product roadmap](../../../ROADMAP.md): record deferred migration of the other 4 themes off `Quiz`/`KeyTakeaways` onto `RecallPrompt`/`LessonRecap` (gated on launch); note `Quiz`/`KeyTakeaways` are deprecated-but-retained.
 
 ## Risks / open questions
 

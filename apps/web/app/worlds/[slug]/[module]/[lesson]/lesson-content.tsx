@@ -347,12 +347,18 @@ export function LessonContent({
       if (
         hintLevel === 3 &&
         worldId === "deep-orbit" &&
-        (lessonId === "normalization" || lessonId === "building-a-network")
+        (lessonId === "normalization" ||
+          lessonId === "building-a-network" ||
+          lessonId === "evaluating-deep-scan")
       ) {
         // The lesson's help panel lives outside the exercise. Retain exposure
         // even if the learner leaves before running their code.
         markExerciseSolutionViewed(
-          lessonId === "normalization" ? "normalize-data" : "simple-network",
+          lessonId === "normalization"
+            ? "normalize-data"
+            : lessonId === "building-a-network"
+              ? "simple-network"
+              : "deep-scan-eval",
           draftOwner,
         );
       }
@@ -478,11 +484,10 @@ export function LessonContent({
       Dialogue: (props: React.ComponentProps<typeof Dialogue>) => {
         // Mirror wrapVisibility's epilogue bypass: inside an <Epilogue>, the
         // epilogue wrapper is the gate, so render unconditionally; elsewhere
-        // gate on shouldShow("Dialogue"). Then resolve the speaker to a world
-        // character to build the avatar slot: ARIA renders as her live
-        // procedural waveform (never raster art, per the bible), humans as
-        // the expression-crossfading portrait. Unknown speakers stay
-        // avatar-less, exactly as before.
+        // gate on shouldShow("Dialogue"). Resolve the speaker to a world
+        // character and crossfade its annotated expression portrait. ARIA's
+        // portrait shows her abstract waveform glyph. Unknown speakers stay
+        // avatar-less.
         const insideEpilogue = useContext(EpilogueContext);
         if (!insideEpilogue && !shouldShow("Dialogue")) return null;
         const ch = worldId
@@ -496,6 +501,8 @@ export function LessonContent({
           avatarSlot = (
             <AnimatedAvatar
               name={ch.name}
+              isAI={ch.isAI}
+              size={64}
               {...portraitSources(worldId, ch, props.expression)}
             />
           );
@@ -695,7 +702,9 @@ export function LessonContent({
       };
       const key = `${props.slug}:${draftOwner ?? "guest"}`;
       return worldId === "deep-orbit" &&
-        (props.slug === "normalize-data" || props.slug === "simple-network") ? (
+        (props.slug === "normalize-data" ||
+          props.slug === "simple-network" ||
+          props.slug === "deep-scan-eval") ? (
         <LearningEvidenceExercise
           {...paneProps}
           slug={props.slug}

@@ -75,7 +75,7 @@ describe("PaywallNotice", () => {
   });
 
   /**
-   * paywall_hit was specced in dev-plan §4c but never fired: its only call
+   * paywall_hit previously never fired: its only call
    * site lived in <LessonPaywall>, which became unreachable when the lesson
    * route switched to redirect-based enforcement. This component mounts at
    * exactly the paywall-hit moment, so it is the correct home for the event.

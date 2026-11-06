@@ -103,7 +103,7 @@ export default async function LessonPage({ params, searchParams }: Props) {
   // Sequential unlock: a paid module opens after the previous one is done
   // (owner ruling 2026-09-20, reversing the advisory prerequisites of P2).
   //
-  // Per dev-plan §4c, the paywall uses redirect-based enforcement. Both the
+  // The paywall uses redirect-based enforcement. Both the
   // signed-out and the authenticated-but-locked case land on
   // /pricing?locked=<worldSlug>&module=<moduleSlug>; <PaywallNotice> reads
   // those params to explain the gate and to fire `paywall_hit`.

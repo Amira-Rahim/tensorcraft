@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ExerciseOutput } from "@tensorcraft/ui";
-import { NormalizationRunExplanation } from "./normalization-run-explanation";
-import { NetworkRunExplanation } from "./network-run-explanation";
+import { ResultExplanation } from "./result-explanation";
+import { canSaveLearningEvidence } from "@/lib/learning-evidence-types";
 import type {
   LearningEvidenceSnapshot,
   LearningEvidenceExerciseSlug,
@@ -21,7 +21,17 @@ export const NORMALIZATION_HREF =
 export const NETWORK_HREF =
   "/worlds/deep-orbit/neural-networks/building-a-network#step-challenge";
 
+export const EVALUATION_HREF =
+  "/worlds/deep-orbit/training-loop/evaluating-deep-scan#step-challenge";
+
 const presentations = {
+  "deep-scan-eval": {
+    name: "evaluation",
+    title: "Your evaluation runs",
+    description:
+      "Keep the measured decisions and their source limits for the prototype review.",
+    href: EVALUATION_HREF,
+  },
   "normalize-data": {
     name: "normalization",
     title: "Your normalization runs",
@@ -56,19 +66,33 @@ export function useLearningEvidence(
   userId: string | null,
   exerciseSlug: LearningEvidenceExerciseSlug = "normalize-data",
 ) {
-  const [ownerScope, setOwnerScope] = useState<string | null>(null);
+  const ownerScope = resolveEvidenceOwner(userId);
+  const scopeKey = `${ownerScope}:${exerciseSlug}`;
+  const scope = useMemo(() => ({ key: scopeKey }), [scopeKey]);
+  const activeScope = useRef(scope);
+  activeScope.current = scope;
   const [records, setRecords] = useState<LearningEvidenceSnapshot[]>([]);
+  const [loadedScope, setLoadedScope] = useState<typeof scope | null>(null);
+  const [readScope, setReadScope] = useState<typeof scope | null>(null);
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const [readFailed, setReadFailed] = useState(false);
+  const [mutation, setMutation] = useState<{
+    scope: typeof scope;
+    id: number;
+    kind: "save" | "delete";
+    runId: string;
+  } | null>(null);
+  const [notice, setNotice] = useState<{
+    scope: typeof scope;
+    text: string;
+  } | null>(null);
   const mounted = useRef(false);
   const operation = useRef(0);
-  const busyRef = useRef(false);
   const invalidateOperation = useCallback(() => {
     operation.current++;
   }, []);
-  // Consumers key this hook's subtree by account. An old asynchronous read or
-  // save must never update the next account's panel.
+  const busyRef = useRef<{ scope: typeof scope; id: number } | null>(null);
+  const refreshPending = useRef<typeof scope | null>(null);
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -76,91 +100,155 @@ export function useLearningEvidence(
       invalidateOperation();
     };
   }, [invalidateOperation]);
+
   const load = useCallback(async () => {
-    if (busyRef.current) return;
+    if (!mounted.current || activeScope.current !== scope) return;
+    if (
+      busyRef.current?.scope === scope &&
+      busyRef.current.id === operation.current
+    ) {
+      refreshPending.current = scope;
+      return;
+    }
     const id = ++operation.current;
-    const active = () => mounted.current && id === operation.current;
+    const active = () =>
+      mounted.current &&
+      id === operation.current &&
+      activeScope.current === scope;
+    setReadScope(scope);
     setLoading(true);
     try {
-      const owner = resolveEvidenceOwner(userId);
-      setOwnerScope(owner);
-      const saved = await listLearningEvidence(owner, exerciseSlug);
+      const saved = await listLearningEvidence(ownerScope, exerciseSlug);
       if (!active()) return;
       setRecords(saved);
-      setMessage("");
+      setLoadedScope(scope);
+      setReadFailed(false);
+      setNotice(null);
     } catch {
-      if (active())
-        setMessage(
-          "This browser could not read your saved runs. Your current output stays available.",
-        );
+      if (active()) {
+        setReadFailed(true);
+        setNotice({
+          scope,
+          text: "This browser could not read your saved runs. Previously loaded entries may be out of date. Your current output stays available.",
+        });
+      }
     } finally {
       if (active()) setLoading(false);
     }
-  }, [userId, exerciseSlug]);
+  }, [ownerScope, exerciseSlug, scope]);
   useEffect(() => {
     void load();
-  }, [load]);
+    const refresh = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      document.removeEventListener("visibilitychange", refresh);
+      invalidateOperation();
+    };
+  }, [load, invalidateOperation]);
 
-  const save = async (snapshot: LearningEvidenceSnapshot) => {
+  const mutate = async (
+    kind: "save" | "delete",
+    runId: string,
+    action: () => Promise<void>,
+  ) => {
+    if (!mounted.current || activeScope.current !== scope) return;
     if (
-      !ownerScope ||
-      snapshot.ownerScope !== ownerScope ||
-      snapshot.exerciseSlug !== exerciseSlug ||
-      busyRef.current
+      busyRef.current?.scope === scope &&
+      busyRef.current.id === operation.current
     )
       return;
-    busyRef.current = true;
     const id = ++operation.current;
-    const active = () => mounted.current && id === operation.current;
-    setBusy(true);
+    const ticket = { scope, id };
+    busyRef.current = ticket;
+    const active = () =>
+      mounted.current &&
+      id === operation.current &&
+      activeScope.current === scope;
+    setMutation({ ...ticket, kind, runId });
+    setNotice(null);
+    let committed = false;
     try {
+      await action();
+      committed = true;
+      if (!active()) return;
+      setNotice({
+        scope,
+        text:
+          kind === "save"
+            ? "Saved in this browser. Your earliest retained and latest saved runs stay available here."
+            : "Deleted this saved run. Your editor draft stays as you wrote it.",
+      });
+      const saved = await listLearningEvidence(ownerScope, exerciseSlug);
+      if (!active()) return;
+      setRecords(saved);
+      setLoadedScope(scope);
+      setReadScope(scope);
+      setReadFailed(false);
+    } catch {
+      if (active()) {
+        if (committed) {
+          setReadFailed(true);
+          setNotice({
+            scope,
+            text:
+              kind === "save"
+                ? "Saved in this browser, but the saved list could not refresh. Choose Refresh saved runs to check it."
+                : "Deleted the run, but the saved list could not refresh. Choose Refresh saved runs to check it.",
+          });
+        } else {
+          // The mutation superseded any pending read. An unread list is unknown.
+          if (loadedScope !== scope) setReadFailed(true);
+          setNotice({
+            scope,
+            text:
+              kind === "save"
+                ? "This browser could not save the run. Download this run to keep a copy. You can retry, or remove an entry from a readable saved list to make room."
+                : "This browser could not delete the run. Your saved list may need to refresh before you try again.",
+          });
+        }
+      }
+    } finally {
+      if (busyRef.current === ticket) busyRef.current = null;
+      if (active()) {
+        setMutation(null);
+        setLoading(false);
+        if (refreshPending.current === scope) {
+          refreshPending.current = null;
+          void load();
+        }
+      }
+    }
+  };
+  const save = async (snapshot: LearningEvidenceSnapshot) => {
+    if (
+      snapshot.ownerScope !== ownerScope ||
+      snapshot.exerciseSlug !== exerciseSlug ||
+      !canSaveLearningEvidence(exerciseSlug)
+    )
+      return;
+    await mutate("save", snapshot.runId, async () => {
       await saveLearningEvidence(snapshot);
-      const saved = await listLearningEvidence(ownerScope, exerciseSlug);
-      if (!active()) return;
-      setRecords(saved);
-      setMessage(
-        "Saved in this browser. Your first and latest saved runs stay available here.",
-      );
-    } catch {
-      if (active())
-        setMessage(
-          "This browser could not save the run. Use Download this run, or delete an older saved run and try again.",
-        );
-    } finally {
-      busyRef.current = false;
-      if (active()) {
-        setBusy(false);
-        setLoading(false);
-      }
-    }
+    });
   };
-
   const remove = async (runId: string) => {
-    if (!ownerScope || busyRef.current) return;
-    busyRef.current = true;
-    const id = ++operation.current;
-    const active = () => mounted.current && id === operation.current;
-    setBusy(true);
-    try {
+    await mutate("delete", runId, async () => {
       await deleteLearningEvidence(ownerScope, runId);
-      const saved = await listLearningEvidence(ownerScope, exerciseSlug);
-      if (!active()) return;
-      setRecords(saved);
-      setMessage(
-        "Deleted this saved run. Your editor draft stays as you wrote it.",
-      );
-    } catch {
-      if (active())
-        setMessage("This browser could not delete the run. Try again.");
-    } finally {
-      busyRef.current = false;
-      if (active()) {
-        setBusy(false);
-        setLoading(false);
-      }
-    }
+    });
   };
-  return { ownerScope, records, loading, busy, message, load, save, remove };
+  return {
+    ownerScope,
+    records: loadedScope === scope ? records : [],
+    loading: readScope !== scope || loading,
+    readFailed: readScope === scope && readFailed,
+    busy: mutation?.scope === scope,
+    mutation: mutation?.scope === scope ? mutation : null,
+    message: notice?.scope === scope ? notice.text : "",
+    load,
+    save,
+    remove,
+  };
 }
 
 export type LearningEvidenceState = ReturnType<typeof useLearningEvidence>;
@@ -182,6 +270,10 @@ export function LearningEvidencePanel({
   restore,
   project = false,
   captureMessage,
+  restoreAvailable = true,
+  inlineRunId,
+  inlineRunIds = [],
+  onInspectInlineRun,
 }: {
   exerciseSlug?: LearningEvidenceExerciseSlug;
   store: LearningEvidenceState;
@@ -191,8 +283,13 @@ export function LearningEvidencePanel({
   restore?: (code: string, solutionViewed: boolean) => boolean;
   project?: boolean;
   captureMessage?: string;
+  restoreAvailable?: boolean;
+  inlineRunId?: string;
+  inlineRunIds?: readonly string[];
+  onInspectInlineRun?: (runId: string) => void;
 }) {
   const [restoreMessage, setRestoreMessage] = useState("");
+  const [openSavedId, setOpenSavedId] = useState<string | null>(null);
   const presentation = presentations[exerciseSlug];
   const records = store.records.filter(
     (snapshot) => snapshot.exerciseSlug === exerciseSlug,
@@ -201,16 +298,16 @@ export function LearningEvidencePanel({
     currentRun && store.records.some((r) => r.runId === currentRun.runId);
   return (
     <section
-      className="my-6 w-full min-w-0 border border-border bg-surface p-4 sm:p-6"
+      className="my-6 w-full min-w-0 border-t border-border py-4 sm:py-6"
       aria-label={`Saved ${presentation.name} runs`}
     >
       <h2 className="text-xl font-semibold text-text-primary">
         {presentation.title}
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-        {presentation.description} This browser keeps your first and latest
-        saved runs, including their code and checks. These records do not sync
-        across devices.
+        {presentation.description} This browser keeps your earliest retained and
+        latest saved runs, including their code and checks. These records do not
+        sync across devices.
       </p>
       {currentRun && (
         <div className="mt-4 space-y-3">
@@ -219,7 +316,9 @@ export function LearningEvidencePanel({
             {currentCode !== undefined &&
             currentCode !== currentRun.submittedCode
               ? " Your code has changed since this run. Saving keeps the code that produced these results."
-              : " This run is ready to save."}
+              : canSaveLearningEvidence(exerciseSlug)
+                ? " This run is ready to save."
+                : " This run is ready to download."}
           </p>
           <div className="flex flex-wrap gap-2">
             <button
@@ -227,6 +326,7 @@ export function LearningEvidencePanel({
               className={buttonClass}
               disabled={
                 store.busy ||
+                !canSaveLearningEvidence(exerciseSlug) ||
                 currentRun.ownerScope !== store.ownerScope ||
                 Boolean(alreadySaved)
               }
@@ -234,7 +334,8 @@ export function LearningEvidencePanel({
             >
               {alreadySaved
                 ? "Run saved"
-                : store.busy
+                : store.mutation?.kind === "save" &&
+                    store.mutation.runId === currentRun.runId
                   ? "Saving…"
                   : "Save this run"}
             </button>
@@ -247,6 +348,12 @@ export function LearningEvidencePanel({
             </button>
           </div>
         </div>
+      )}
+      {currentRun && !canSaveLearningEvidence(exerciseSlug) && (
+        <p className="mt-3 text-sm text-text-muted">
+          Saving evaluation runs is not available in this release. You can
+          download this run.
+        </p>
       )}
       {captureMessage && (
         <p className="mt-3 text-sm text-warning" role="status">
@@ -263,9 +370,21 @@ export function LearningEvidencePanel({
           {restoreMessage}
         </p>
       )}
+      <button
+        type="button"
+        className={`${buttonClass} mt-3`}
+        disabled={store.busy || store.loading}
+        onClick={() => void store.load()}
+      >
+        Refresh saved runs
+      </button>
       {store.loading ? (
         <p className="mt-4 text-sm" role="status">
           Loading saved runs…
+        </p>
+      ) : records.length === 0 && store.readFailed ? (
+        <p className="mt-4 text-sm text-warning">
+          Saved history is unavailable. Refresh the list to try again.
         </p>
       ) : records.length === 0 ? (
         <p className="mt-4 text-sm text-text-muted">
@@ -281,13 +400,18 @@ export function LearningEvidencePanel({
               </Link>
               .
             </>
-          ) : (
+          ) : canSaveLearningEvidence(exerciseSlug) ? (
             " Run your code, then choose Save this run."
+          ) : (
+            " You can inspect and download new runs from this lesson."
           )}
         </p>
       ) : (
         <div className="mt-5 divide-y divide-border">
           {records.map((snapshot, index) => {
+            const shownAbove =
+              snapshot.runId === inlineRunId ||
+              inlineRunIds.includes(snapshot.runId);
             const historical = Boolean(
               currentVersion && snapshot.exerciseVersion !== currentVersion,
             );
@@ -301,58 +425,79 @@ export function LearningEvidencePanel({
               <details
                 key={snapshot.runId}
                 className="py-3"
-                open={
-                  project && index === records.length - 1 ? true : undefined
-                }
+                open={openSavedId === snapshot.runId}
+                onToggle={(event) => {
+                  if (event.currentTarget.open) setOpenSavedId(snapshot.runId);
+                  else
+                    setOpenSavedId((current) =>
+                      current === snapshot.runId ? null : current,
+                    );
+                }}
               >
                 <summary className="min-h-11 cursor-pointer py-2 font-medium">
                   {records.length === 1
                     ? "Saved run"
                     : index === 0
-                      ? "First saved run"
+                      ? "Earlier saved run"
                       : "Latest saved run"}
                   {": "}
                   {outcomeText(snapshot)}
                   <span className="mt-1 block text-sm font-normal text-text-muted">
-                    {new Date(snapshot.capturedAt).toLocaleString()}
+                    Run from {new Date(snapshot.capturedAt).toLocaleString()}
                   </span>
                 </summary>
                 <div className="space-y-3 text-sm leading-relaxed">
-                  <p>Saved in this browser. {snapshot.sourceLabel}</p>
-                  <p>
-                    Feature order: {snapshot.featureOrder.join(", ")}.{" "}
-                    {exerciseSlug === "simple-network"
-                      ? "These dimensionless practice features come from a separate synthetic dataset."
-                      : "The exercise does not specify physical units."}
+                  <p className="text-sm">
+                    Saved in this browser. {snapshot.sourceLabel}
                   </p>
-                  <p>
+                  {exerciseSlug !== "deep-scan-eval" && (
+                    <p className="text-sm">
+                      Feature order: {snapshot.featureOrder.join(", ")}.{" "}
+                      {exerciseSlug === "simple-network"
+                        ? "These dimensionless practice features come from a separate synthetic dataset."
+                        : "The exercise does not specify physical units."}
+                    </p>
+                  )}
+                  <p className="text-sm">
                     {snapshot.assistance.solutionViewed
                       ? "Solution viewed before this run."
                       : "No solution reveal recorded for this draft."}
                   </p>
-                  <p>
+                  <p className="text-sm">
                     {snapshot.assistance.hintsRevealed.length
                       ? `Hint levels opened in this session: ${snapshot.assistance.hintsRevealed.join(", ")}.`
                       : "No hint reveals recorded in this session."}{" "}
                     Earlier hint use is unknown.
                   </p>
                   {(historical || edited) && (
-                    <p className="text-warning" role="status">
+                    <p className="text-sm text-warning" role="status">
                       {staleMessage}
                     </p>
                   )}
-                  {exerciseSlug === "simple-network" ? (
-                    <NetworkRunExplanation
+                  {!shownAbove ? (
+                    <ResultExplanation
+                      exerciseSlug={exerciseSlug}
                       artifacts={snapshot.artifacts}
                       complete={snapshot.runOutcome === "passed"}
                     />
                   ) : (
-                    <NormalizationRunExplanation
-                      artifacts={snapshot.artifacts}
-                      complete={snapshot.runOutcome === "passed"}
-                    />
+                    <div>
+                      <p className="text-sm">
+                        This run has an inspection view above. Its saved copy is
+                        available in this browser.
+                      </p>
+                      {onInspectInlineRun && (
+                        <button
+                          type="button"
+                          className={`${buttonClass} mt-2`}
+                          onClick={() => onInspectInlineRun(snapshot.runId)}
+                        >
+                          Inspect this run above
+                        </button>
+                      )}
+                    </div>
                   )}
-                  {snapshot.artifacts.length ? (
+                  {shownAbove ? null : snapshot.artifacts.length ? (
                     <details>
                       <summary className="min-h-11 cursor-pointer py-2">
                         {exerciseSlug === "simple-network"
@@ -368,7 +513,9 @@ export function LearningEvidencePanel({
                       />
                     </details>
                   ) : (
-                    <p>This run captured no result tables.</p>
+                    <p className="text-sm">
+                      This run captured no result tables.
+                    </p>
                   )}
                   <details>
                     <summary className="min-h-11 cursor-pointer py-2">
@@ -376,7 +523,7 @@ export function LearningEvidencePanel({
                     </summary>
                     <ul className="my-3 space-y-2">
                       {snapshot.checks.map((check, i) => (
-                        <li key={i}>
+                        <li key={i} className="text-sm">
                           <span
                             className={
                               check.passed ? "text-success" : "text-warning"
@@ -386,23 +533,23 @@ export function LearningEvidencePanel({
                           </span>
                           : {check.name}
                           {!check.passed && check.error && (
-                            <p className="break-words text-text-muted">
+                            <p className="break-words text-sm text-text-muted">
                               {check.error}
                             </p>
                           )}
                         </li>
                       ))}
                     </ul>
-                    <p>
+                    <p className="text-sm">
                       TensorFlow.js{" "}
                       {snapshot.runtimeVersion ?? "version unavailable"}.
                       Backend: {snapshot.backend ?? "unavailable"}.
                     </p>
-                    <p>
+                    <p className="text-sm">
                       Fixture: {snapshot.fixtureId}, version{" "}
                       {snapshot.fixtureVersion}. Browser-reported run.
                     </p>
-                    <p className="break-all">
+                    <p className="break-all text-sm">
                       Code version: <code>{snapshot.codeHash}</code>
                     </p>
                   </details>
@@ -415,10 +562,10 @@ export function LearningEvidencePanel({
                     </pre>
                   </details>
                   {restore && (
-                    <p>
+                    <p className="text-sm">
                       Restoring preserves your current draft for recovery. It
                       does not run the saved code.
-                      {exerciseSlug === "simple-network" &&
+                      {exerciseSlug !== "normalize-data" &&
                         " A new run trains a fresh model and may produce different scores."}
                     </p>
                   )}
@@ -427,7 +574,7 @@ export function LearningEvidencePanel({
                       <button
                         type="button"
                         className={buttonClass}
-                        disabled={store.busy}
+                        disabled={store.busy || !restoreAvailable}
                         onClick={() => {
                           const restored = restore(
                             snapshot.submittedCode,
@@ -470,16 +617,6 @@ export function LearningEvidencePanel({
             );
           })}
         </div>
-      )}
-      {!store.loading && (
-        <button
-          type="button"
-          className="mt-3 min-h-11 text-sm underline underline-offset-4"
-          disabled={store.busy}
-          onClick={() => void store.load()}
-        >
-          Reload saved runs
-        </button>
       )}
     </section>
   );

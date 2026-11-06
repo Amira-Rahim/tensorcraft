@@ -3,8 +3,7 @@
  *
  * Use {@link errorMessageForCode} to resolve a machine code to a friendly
  * string. Unknown or missing codes fall back to `ERROR_MESSAGES.unknown`.
- *
- * Phase 6e, dev-plan.md §6e.
+
  */
 export const ERROR_MESSAGES = {
   network: "Can't reach the server. Check your connection and try again.",

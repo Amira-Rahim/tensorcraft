@@ -2,7 +2,8 @@
  * Analytics Event Taxonomy, canonical, type-safe registry of every
  * product event fired from the Tensorcraft web client.
  *
- * Source of truth: `docs/dev-plan.md` Appendix B + PRD 4.7.
+ * This registry defines client event names and payloads. Verification steps
+ * live in `docs/analytics-verification.md`.
  *
  * Design rules:
  *  - Event names are `snake_case` (PostHog convention).
@@ -82,7 +83,7 @@ export const EVENTS = {
   ONBOARDING_COMPLETED: "onboarding_completed",
 
   // Story pacing. The content-QA rule ">40% skip triggers narrative redesign"
-  // (post-launch-backlog §2, dev-plan §10c risk #1) was uncomputable until
+  // (docs/post-launch-backlog.md §2) was uncomputable until
   // this event existed. 2026-09-04: `via` added because the 2026-08-23
   // skip-preference change made the metric structurally biased low - the
   // remembered preference auto-skipped every later scene with no event, and

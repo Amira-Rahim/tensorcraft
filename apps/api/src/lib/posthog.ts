@@ -56,7 +56,7 @@ export function captureServerEvent(
 // ──────────────────────────────────────────────
 
 /**
- * Convenience alias matching the dev-plan spec name. Equivalent to
+ * Convenience alias. Equivalent to
  * {@link captureServerEvent}, prefer this in new code.
  */
 export function captureServer(

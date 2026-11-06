@@ -98,6 +98,10 @@ for (const width of [1440, 390]) {
       "All tests passed!",
       { timeout: 60_000 },
     );
+    const current = fixture.getByRole("region", {
+      name: "Result from this run",
+      exact: true,
+    });
     await panel
       .getByRole("button", { name: "Save this run", exact: true })
       .click();
@@ -106,15 +110,21 @@ for (const width of [1440, 390]) {
     ).toBeVisible();
     await panel.locator("summary").filter({ hasText: "Saved run:" }).click();
     await expect(panel).toContainText("training");
-    await expect(panel.getByRole("combobox")).toBeVisible();
-    const settings = panel.getByRole("region", {
+    await expect(panel).toContainText("This run has an inspection view above");
+    await expect(panel.getByRole("combobox")).toHaveCount(0);
+    await panel
+      .getByRole("button", { name: "Inspect this run above", exact: true })
+      .click();
+    await expect(current).toBeFocused();
+    await expect(current.getByRole("combobox")).toBeVisible();
+    const settings = current.getByRole("region", {
       name: "Captured training settings",
     });
     await expect(settings).toBeVisible();
     await expect(settings).toContainText("Rows passed to fit");
     await expect(settings).toContainText("120");
     expect(
-      await panel
+      await current
         .locator("[data-exercise-y-tick]")
         .evaluateAll(
           (ticks) =>
@@ -142,7 +152,7 @@ for (const width of [1440, 390]) {
     expect(losses?.kind === "series" && losses.labels.length).toBe(50);
     expect(modelRun.assistance.solutionViewed).toBe(true);
     expect(modelRun).not.toHaveProperty("testCode");
-    await panel.screenshot({
+    await current.screenshot({
       path: testInfo.outputPath(`trained-network-${width}.png`),
     });
 
@@ -178,6 +188,13 @@ for (const width of [1440, 390]) {
       .click();
     await page.reload();
     await mount(page, false);
+    await panel
+      .locator("summary")
+      .filter({ hasText: "Earlier saved run:" })
+      .click();
+    await expect(
+      panel.getByRole("combobox", { name: "Training row", exact: true }),
+    ).toBeVisible();
     await fixture
       .getByRole("button", { name: "Restore My Code", exact: true })
       .click();

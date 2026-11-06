@@ -214,12 +214,12 @@ describe("the lesson investigation", () => {
     // A shared chart domain keeps the two totals visually comparable.
     const priorBar = within(previous)
       .getByRole("img", { name: "Output total" })
-      .querySelector("rect")!;
+      .querySelector<HTMLElement>(".orbit-investigation-bar-fill")!;
     const latestBar = within(latest)
       .getByRole("img", { name: "Output total" })
-      .querySelector("rect")!;
-    expect(Number(priorBar.getAttribute("height"))).toBeLessThan(
-      Number(latestBar.getAttribute("height")),
+      .querySelector<HTMLElement>(".orbit-investigation-bar-fill")!;
+    expect(Number.parseFloat(priorBar.style.width)).toBeLessThan(
+      Number.parseFloat(latestBar.style.width),
     );
     const priorText = within(previous).getByRole("img", {
       name: "Output total",
@@ -229,6 +229,186 @@ describe("the lesson investigation", () => {
     }).textContent;
     expect(priorText).toContain("11");
     expect(latestText).toContain("11");
+  });
+
+  it("keeps evaluation scores and counts on separate briefing axes", () => {
+    render(
+      <BriefingInvestigationVisual
+        spec={NUMERIC_INVESTIGATIONS["evaluating-deep-scan"]!}
+      />,
+    );
+    const scores = screen.getByRole("img", {
+      name: "Scores with reviewed labels",
+    });
+    const counts = screen.getByRole("img", {
+      name: "Correct predictions, false alarms and misses",
+    });
+    expect(scores).toHaveAttribute("data-domain-high", "0.91");
+    expect(counts).toHaveAttribute("data-domain-high", "5");
+    expect(
+      Array.from(
+        counts.querySelectorAll(".orbit-investigation-bar-label"),
+        (label) => label.textContent,
+      ),
+    ).toEqual([
+      "True positive",
+      "False positive",
+      "False negative",
+      "True negative",
+    ]);
+    expect(
+      scores.querySelectorAll(".orbit-investigation-bar-label"),
+    ).toHaveLength(12);
+  });
+
+  it("does not share raw, z-score and min-max output axes when comparing normalization methods", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS.normalization!}
+        lessonSlug="normalization"
+      />,
+    );
+    const method = screen.getByLabelText("Scaling rule");
+    const run = screen.getByRole("button", { name: "Run experiment" });
+    fireEvent.change(method, { target: { value: "0" } });
+    fireEvent.click(run);
+    fireEvent.change(method, { target: { value: "1" } });
+    fireEvent.click(run);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compare with previous run" }),
+    );
+    const output = (name: string) =>
+      within(screen.getByRole("region", { name })).getByRole("img", {
+        name: "New row after scaling",
+      });
+    expect(output("Previous run")).toHaveAttribute("data-domain-high", "24");
+    expect(output("Latest run")).toHaveAttribute("data-domain-high", "0.447");
+    fireEvent.change(method, { target: { value: "2" } });
+    fireEvent.click(run);
+    expect(output("Previous run")).toHaveAttribute("data-domain-high", "0.447");
+    expect(output("Latest run")).toHaveAttribute("data-domain-high", "0.667");
+  });
+
+  it("aligns training and validation loss without relying on matching titles", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS["training-loop"]!}
+        lessonSlug="training-loop"
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(
+      screen.getByRole("img", { name: "Observed validation loss by epoch" }),
+    ).toHaveAttribute("data-domain-high", "0.83");
+    expect(
+      screen.getByRole("img", { name: "Training loss by epoch" }),
+    ).toHaveAttribute("data-domain-high", "0.83");
+  });
+
+  it("keeps forecast and observations comparable while separating absolute error", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS.forecasting!}
+        lessonSlug="forecasting"
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    const observed = screen.getByRole("img", {
+      name: "Starting reading and later observations by horizon",
+    });
+    const forecast = screen.getByRole("img", {
+      name: "Fixed-rule forecast by horizon",
+    });
+    const error = screen.getByRole("img", {
+      name: "Absolute error at each horizon",
+    });
+    expect(observed.getAttribute("data-domain-high")).toBe(
+      forecast.getAttribute("data-domain-high"),
+    );
+    expect(Number(error.getAttribute("data-domain-high"))).toBeLessThan(
+      Number(forecast.getAttribute("data-domain-high")),
+    );
+  });
+
+  it("compares equivalent evaluation graphs across runs without mixing scores and counts", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS["evaluating-deep-scan"]!}
+        lessonSlug="evaluating-deep-scan"
+      />,
+    );
+    const scores = () =>
+      screen.getByRole("img", { name: "Scores with reviewed labels" });
+    expect(scores()).toHaveAttribute("data-domain-high", "0.91");
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(scores()).toHaveAttribute("data-domain-high", "0.91");
+    fireEvent.change(screen.getByLabelText("Choose an example"), {
+      target: { value: "changed" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(scores()).toHaveAttribute("data-domain-high", "0.76");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compare with previous run" }),
+    );
+    expect(scores()).toHaveAttribute("data-domain-high", "0.91");
+    for (const name of ["Previous run", "Latest run"]) {
+      const counts = within(screen.getByRole("region", { name })).getByRole(
+        "img",
+        {
+          name: "Correct predictions, false alarms and misses",
+        },
+      );
+      expect(counts).toHaveAttribute("data-domain-high", "5");
+    }
+  });
+
+  it("shares declared prediction units while keeping squared error independent", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS["loss-functions"]!}
+        lessonSlug="loss-functions"
+      />,
+    );
+    fireEvent.change(
+      screen.getByRole("slider", { name: "Prediction for the middle example" }),
+      {
+        target: { value: "8" },
+      },
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    expect(screen.getByRole("img", { name: "Targets" })).toHaveAttribute(
+      "data-domain-high",
+      "8",
+    );
+    expect(screen.getByRole("img", { name: "Predictions" })).toHaveAttribute(
+      "data-domain-high",
+      "8",
+    );
+    expect(screen.getByRole("img", { name: "Squared errors" })).toHaveAttribute(
+      "data-domain-high",
+      "16",
+    );
+  });
+
+  it("retains a shared weight axis when pruning removes every connection", () => {
+    render(
+      <LessonInvestigation
+        spec={NUMERIC_INVESTIGATIONS.pruning!}
+        lessonSlug="pruning"
+      />,
+    );
+    fireEvent.change(screen.getByRole("slider", { name: "Magnitude cutoff" }), {
+      target: { value: "1" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Run experiment" }));
+    const original = screen.getByRole("img", { name: "Original connections" });
+    const pruned = screen.getByRole("img", {
+      name: "Connections after magnitude pruning",
+    });
+    for (const chart of [original, pruned]) {
+      expect(chart).toHaveAttribute("data-domain-low", "-0.83");
+      expect(chart).toHaveAttribute("data-domain-high", "0.91");
+    }
   });
 
   it("gives retry guidance for a wrong prediction and clears runs on reset", () => {

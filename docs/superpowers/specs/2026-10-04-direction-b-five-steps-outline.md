@@ -117,12 +117,12 @@ Use five steps everywhere, migrate existing progress, and emit semantic links wi
 ## 8. Relation to other work
 
 The owner requested frontend-design work before production coding. The
-[isolated visual prototype](../../design-previews/foundations/index.html)
-shows the five-step shell, visible prerequisite teaching, and the proposed
-foundations instruments on desktop and phone. Design rationale is included in
-the artifact. It is available for visual review; feedback and unlocked phase
-navigation are prototype states, not implemented production behavior. Its
-existence does not close the runtime or learner-validation tasks.
+[original verification record](../../design-previews/foundations/verification.json)
+and retained screenshots document the five-step shell and proposed Foundations
+instruments. The full-course rollout replaced that isolated prototype, whose
+runtime was retired on November 6, 2026. Its simulated feedback and unlocked
+navigation remain historical design evidence. For the current renderer, use
+`/design/deep-orbit` on the development server.
 
 Keep the approved lesson header from the
 [existing layout spec](2026-09-23-lesson-layout-design.md): the large two-tone

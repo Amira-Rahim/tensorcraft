@@ -203,6 +203,70 @@
 .orbit-investigation-chart text {
   fill: var(--tc-text);
 }
+.orbit-investigation-category-chart {
+  min-width: 0;
+  color: var(--tc-text);
+}
+.orbit-investigation-bar-rows {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.orbit-investigation-bar-row {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.orbit-investigation-bar-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 5px;
+}
+.orbit-investigation-bar-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.orbit-investigation-bar-value {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.orbit-investigation-bar-track {
+  position: relative;
+  height: 12px;
+  background: var(--tc-border);
+}
+.orbit-investigation-bar-fill {
+  position: absolute;
+  inset-block: 2px;
+  background: var(--tc-primary);
+}
+.orbit-investigation-bar-fill[data-selected="true"] {
+  outline: 2px solid var(--tc-text);
+}
+.orbit-investigation-bar-zero {
+  position: absolute;
+  z-index: 1;
+  inset-block: -2px;
+  width: 1px;
+  background: var(--tc-text);
+}
+.orbit-investigation-bar-axis {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: var(--tc-muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
 .orbit-investigation-pipeline {
   display: grid;
   gap: 12px;

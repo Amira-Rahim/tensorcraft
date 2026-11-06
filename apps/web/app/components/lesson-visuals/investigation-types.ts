@@ -24,7 +24,10 @@ export interface InvestigationGraphic {
   labels?: string[];
   columns?: number;
   highlight?: number[];
-  layout?: "prose";
+  /** Continuous numeric bins keep a compact plot instead of categorical rows. */
+  layout?: "prose" | "series";
+  /** Opt in to a shared axis for the same quantity and units within an activity. */
+  scaleGroup?: string;
 }
 
 export interface InvestigationResult {

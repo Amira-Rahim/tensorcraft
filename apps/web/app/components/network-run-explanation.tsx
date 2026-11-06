@@ -171,6 +171,27 @@ function trainingLoss(artifacts: ExerciseArtifact[]): Series | null {
   return loss;
 }
 
+export function readNetworkRun(artifacts: ExerciseArtifact[]): {
+  rows:
+    | {
+        id: number;
+        label: number;
+        before: number;
+        second: number;
+        after: number;
+        inputs: number[];
+      }[]
+    | null;
+  settings: Table["rows"] | null;
+  loss: Series | null;
+} | null {
+  if (!Array.isArray(artifacts)) return null;
+  const rows = comparison(artifacts);
+  const settings = trainingSettings(artifacts);
+  const loss = trainingLoss(artifacts);
+  return rows || settings || loss ? { rows, settings, loss } : null;
+}
+
 export function NetworkRunExplanation({
   artifacts,
   complete,
@@ -180,10 +201,11 @@ export function NetworkRunExplanation({
 }) {
   const id = useId();
   const [rowIndex, setRowIndex] = useState(0);
-  const captured = Array.isArray(artifacts) ? artifacts : [];
-  const rows = comparison(captured);
-  const settings = trainingSettings(captured);
-  const loss = trainingLoss(captured);
+  const { rows, settings, loss } = readNetworkRun(artifacts) ?? {
+    rows: null,
+    settings: null,
+    loss: null,
+  };
   const row = rows?.[rowIndex] ?? rows?.[0];
 
   return (
@@ -251,25 +273,26 @@ export function NetworkRunExplanation({
                 {
                   name: "Second model, kept untrained",
                   score: row.second,
-                  tone: "bg-text-secondary",
+                  tone: "bg-text-primary",
                 },
               ].map(({ name, score, tone }) => (
-                <div key={name} className="space-y-2">
-                  <div className="flex flex-wrap justify-between gap-2">
-                    <dt className="text-sm">{name}</dt>
-                    <dd className="font-mono text-base text-text-primary">
-                      {format(score)}
-                    </dd>
-                  </div>
-                  <div
+                <div
+                  key={name}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-2"
+                >
+                  <dt className="text-sm">{name}</dt>
+                  <dd className="font-mono text-base text-text-primary">
+                    {format(score)}
+                  </dd>
+                  <dd
                     aria-hidden="true"
-                    className="h-3 w-full bg-surface-overlay"
+                    className="col-span-2 h-3 w-full bg-surface-overlay"
                   >
                     <div
                       className={`h-full ${tone}`}
                       style={{ width: `${score * 100}%` }}
                     />
-                  </div>
+                  </dd>
                 </div>
               ))}
             </dl>

@@ -1,0 +1,403 @@
+<div id="tc-clarity-risk-review">
+  <style>
+    #tc-clarity-risk-review {
+      color: var(--foreground);
+    }
+    #tc-clarity-risk-review .review-heading {
+      margin-bottom: calc(var(--font-size-base) * 1);
+      padding-right: 90px;
+    }
+    #tc-clarity-risk-review .review-controls {
+      margin-bottom: calc(var(--font-size-base) * 1.5);
+    }
+    #tc-clarity-risk-review figure {
+      margin: 0;
+      display: grid;
+      gap: calc(var(--font-size-base) * 1.25);
+    }
+    #tc-clarity-risk-review .journey-lane {
+      display: grid;
+      gap: calc(var(--font-size-base) * 0.5);
+    }
+    #tc-clarity-risk-review .journey-lane h3 {
+      font-weight: 500;
+    }
+    #tc-clarity-risk-review .journey-steps {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: calc(var(--font-size-base) * 0.75);
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    #tc-clarity-risk-review .journey-steps::before {
+      content: "";
+      position: absolute;
+      top: calc(var(--font-size-base) * 0.8);
+      left: 16.66%;
+      right: 16.66%;
+      height: 1px;
+      background: var(--border);
+    }
+    #tc-clarity-risk-review .journey-step {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: calc(var(--font-size-base) * 0.4);
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+    #tc-clarity-risk-review .step-mark {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: calc(var(--font-size-base) * 1.6);
+      height: calc(var(--font-size-base) * 1.6);
+      border-radius: 50%;
+      background: var(--muted);
+      color: var(--foreground);
+      font-weight: 500;
+    }
+    #tc-clarity-risk-review [data-lane="proposed"] .step-mark {
+      background: color-mix(
+        in srgb,
+        var(--viz-series-1) 20%,
+        var(--background)
+      );
+    }
+    #tc-clarity-risk-review .review-constraint {
+      margin-top: calc(var(--font-size-base) * 1.25);
+      padding-top: calc(var(--font-size-base) * 0.75);
+      border-top: 1px solid var(--border);
+    }
+    #tc-clarity-risk-review .review-status {
+      margin-top: calc(var(--font-size-base) * 0.5);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #tc-clarity-risk-review * {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+  <div class="review-heading">
+    <h2>Clarity changes and the learner's path</h2>
+  </div>
+  <div class="review-controls">
+    <label class="form-label" for="tc-risk-choice">Change under review</label>
+    <select class="form-select" id="tc-risk-choice">
+      <option value="models">1. Model and data continuity</option>
+      <option value="names">2. Feature names and units</option>
+      <option value="training">3. Training diagnosis</option>
+      <option value="finale">4. Finale orientation</option>
+      <option value="entry">5. Entry and resume</option>
+      <option value="outcome">6. Product outcomes</option>
+    </select>
+  </div>
+  <figure
+    aria-label="Current path, smallest proposed change, protected story progression, and learning to retain"
+  >
+    <div class="journey-lane" data-lane="current">
+      <h3>Current path</h3>
+      <ol class="journey-steps">
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">1</span
+          ><span>Bridge model example</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">2</span
+          ><span>Generated rehearsal</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">3</span
+          ><span>Return to the archive</span>
+        </li>
+      </ol>
+    </div>
+    <div class="journey-lane" data-lane="proposed">
+      <h3>Smallest proposed change</h3>
+      <ol class="journey-steps">
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">1</span
+          ><span>Identify each model</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">2</span
+          ><span>Identify each source</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">3</span
+          ><span>Explain the handoff</span>
+        </li>
+      </ol>
+    </div>
+    <div class="journey-lane" data-lane="story">
+      <h3>Protected story progression</h3>
+      <ol class="journey-steps">
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">1</span
+          ><span>Mirza's deadline</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">2</span
+          ><span>Farah's evidence check</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">3</span
+          ><span>7741 stays unresolved</span>
+        </li>
+      </ol>
+    </div>
+    <div class="journey-lane" data-lane="learning">
+      <h3>Learning to retain</h3>
+      <ol class="journey-steps">
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">1</span
+          ><span>Independent models</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">2</span
+          ><span>Actual training</span>
+        </li>
+        <li class="journey-step">
+          <span class="step-mark" aria-hidden="true">3</span
+          ><span>Trace and compare results</span>
+        </li>
+      </ol>
+    </div>
+  </figure>
+  <div class="review-constraint">
+    <span class="text-small">Release blocker</span>
+    <p id="tc-risk-blocker">
+      Undefined mission-data source for any fixture redesign.
+    </p>
+  </div>
+  <p
+    class="review-status text-small text-muted"
+    role="status"
+    aria-live="polite"
+    id="tc-risk-status"
+  >
+    Model and data continuity selected. Proposed changes remain untested.
+  </p>
+  <script>
+    (function () {
+      var root = document.getElementById("tc-clarity-risk-review");
+      if (!root) return;
+      var selector = root.querySelector("#tc-risk-choice");
+      var blocker = root.querySelector("#tc-risk-blocker");
+      var status = root.querySelector("#tc-risk-status");
+      var lanes = ["current", "proposed", "story", "learning"];
+      var cases = {
+        models: {
+          name: "Model and data continuity",
+          current: [
+            "Bridge model example",
+            "Generated rehearsal",
+            "Return to the archive",
+          ],
+          proposed: [
+            "Identify each model",
+            "Identify each source",
+            "Explain the handoff",
+          ],
+          story: [
+            "Mirza's deadline",
+            "Farah's evidence check",
+            "7741 stays unresolved",
+          ],
+          learning: [
+            "Independent models",
+            "Actual training",
+            "Trace and compare results",
+          ],
+          blocker: "Undefined mission-data source for any fixture redesign.",
+        },
+        names: {
+          name: "Feature names and units",
+          current: [
+            "Legacy field names",
+            "Scaled or proxy inputs",
+            "Later meaning corrections",
+          ],
+          proposed: [
+            "Identify the contract",
+            "Display accurate units",
+            "Preserve stored values",
+          ],
+          story: [
+            "Farah checks meaning",
+            "Crew inspects the data",
+            "Later discoveries stay later",
+          ],
+          learning: [
+            "Raw measurements",
+            "Scaling and provenance",
+            "Frequency and phase distinctions",
+          ],
+          blocker: "Any generated proxy shown as a measured physical quantity.",
+        },
+        training: {
+          name: "Training diagnosis",
+          current: [
+            "Run the real fit",
+            "Inspect sampled curves",
+            "Test diagnosis on fixtures",
+          ],
+          proposed: [
+            "Keep the same fit",
+            "Mark actual epoch windows",
+            "Inspect the learner report",
+          ],
+          story: [
+            "Nazari counts compute",
+            "Demir interprets evidence",
+            "Mirza asks for unseen data",
+          ],
+          learning: [
+            "Early stopping",
+            "Window comparison",
+            "Observation with limits",
+          ],
+          blocker: "Sampled plot points used as the actual diagnostic history.",
+        },
+        finale: {
+          name: "Finale orientation",
+          current: [
+            "Read all task briefs",
+            "Work through three editors",
+            "Earn the ending",
+          ],
+          proposed: [
+            "See three task titles",
+            "Follow stable editor anchors",
+            "Keep the same ending gate",
+          ],
+          story: [
+            "Demir owns the checks",
+            "Nazari earns trust",
+            "ARIA's final record",
+          ],
+          learning: [
+            "Release verification",
+            "Training rehearsal",
+            "Evidence-based decision",
+          ],
+          blocker:
+            "Hidden story, lost drafts, or any change to completion rules.",
+        },
+        entry: {
+          name: "Entry and resume",
+          current: [
+            "Choose an advanced route",
+            "Open runtime lesson",
+            "Possible prerequisite block",
+          ],
+          proposed: [
+            "Check actual access",
+            "Offer an available lesson",
+            "Preserve resume and review",
+          ],
+          story: [
+            "Context appears in sequence",
+            "Nazari's concern is earned",
+            "Replay stays optional",
+          ],
+          learning: [
+            "Required prerequisites",
+            "Targeted review",
+            "Reliable return to work",
+          ],
+          blocker:
+            "An intentional link or saved resume position stops working.",
+        },
+        outcome: {
+          name: "Product outcomes",
+          current: [
+            "Read system promise",
+            "Complete guided missions",
+            "Discover separate project",
+          ],
+          proposed: [
+            "See two related outcomes",
+            "Keep real mission work",
+            "Build independent local app",
+          ],
+          story: [
+            "Join the crew",
+            "Earn the crew's result",
+            "Leave the final beat intact",
+          ],
+          learning: [
+            "Guided ML practice",
+            "Independent decisions",
+            "Runnable model and evaluation",
+          ],
+          blocker:
+            "Spoilers, diminished real ML work, or an implied new service.",
+        },
+      };
+      function selectedFrom(value) {
+        if (!value || typeof value !== "object") return null;
+        var id = value.modelContent && value.modelContent.issue;
+        if (!id && value.privateContent) id = value.privateContent.issue;
+        return typeof id === "string" &&
+          Object.prototype.hasOwnProperty.call(cases, id)
+          ? id
+          : null;
+      }
+      function render(id, save) {
+        if (!Object.prototype.hasOwnProperty.call(cases, id)) return;
+        var item = cases[id];
+        selector.value = id;
+        lanes.forEach(function (lane) {
+          var list = root.querySelector(
+            '[data-lane="' + lane + '"] .journey-steps',
+          );
+          var nodes = item[lane].map(function (label, index) {
+            var li = document.createElement("li");
+            li.className = "journey-step";
+            var mark = document.createElement("span");
+            mark.className = "step-mark";
+            mark.setAttribute("aria-hidden", "true");
+            mark.textContent = String(index + 1);
+            var text = document.createElement("span");
+            text.textContent = label;
+            li.append(mark, text);
+            return li;
+          });
+          list.replaceChildren.apply(list, nodes);
+        });
+        blocker.textContent = item.blocker;
+        status.textContent =
+          item.name + " selected. Proposed changes remain untested.";
+        if (
+          save &&
+          window.openai &&
+          typeof window.openai.setWidgetState === "function"
+        ) {
+          Promise.resolve(
+            window.openai.setWidgetState({
+              modelContent: {
+                issue: id,
+                review: "clarity-preservation-risk-plan",
+              },
+              privateContent: null,
+            }),
+          ).catch(function () {});
+        }
+      }
+      selector.addEventListener("change", function () {
+        render(selector.value, true);
+      });
+      window.addEventListener("openai:set_globals", function (event) {
+        var globals = event.detail && event.detail.globals;
+        var restored = selectedFrom(globals && globals.widgetState);
+        if (restored) render(restored, false);
+      });
+      var initial = selectedFrom(window.openai && window.openai.widgetState);
+      if (initial) render(initial, false);
+    })();
+  </script>
+</div>

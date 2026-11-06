@@ -154,7 +154,7 @@ sell to anyone in the EU/UK. I am flagging exposure, not giving legal advice.
 
 - **Zero alerting.** Sentry captures; nothing notifies. A failing Stripe
   webhook, a 500 spike, or a payment failure would reach you only via a user
-  email. `pre-launch-checklist.md:561` already specifies the three rules
+  email. [pre-launch-checklist.md:561](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L561) already specifies the three rules
   needed; §B10 remains unticked.
 - **8 of 11 error boundaries never reported to Sentry** - including `/pricing`
   and `/paywall`. A nested boundary stops propagation, so crashes on the two
@@ -679,7 +679,7 @@ that touch THIS document's lists):
 > (Tier 1-LEGAL) are handled separately by the owner and are no longer
 > tracked through this session's action list. DISTRIBUTION work (blog
 > batch, Product Hunt, X/Twitter, Search Console, domain warmup, Discord)
-> executes under `docs/marketing-plan.md` - the reach-flavored Tier 1-OPS
+> executes under [marketing-plan.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/marketing-plan.md) - the reach-flavored Tier 1-OPS
 > checkboxes above remain the launch-gating subset of that plan. "Buy your
 > own product twice" is sequenced AFTER testing completes.
 
@@ -750,7 +750,7 @@ battery. Found and fixed once the gates opened:
   fully env-blanked build exits 0, normal build exits 0.
 - **50 broken markdown links, now visible.** The lychee job had never
   scanned anything (config was unparseable), so links rotted silently.
-  Living docs fixed for real: 18 links in pre-launch-checklist.md were
+  Living docs fixed for real: 18 links in [the old launch checklist](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md) were
   written repo-root-relative and needed `../`; digest-runbook.md linked a
   local plan file that is not in the repo (de-linked). Dated records
   (docs/audits, docs/superpowers) are excluded from scanning per the
@@ -791,7 +791,7 @@ two findings, both environment-class, both fixed:**
 - **lychee, now actually scanning, flagged an auth-walled external URL.**
   `supabase.com/dashboard/project/...` answers 404 to anonymous visitors
   by design (project ids must not leak), so a logged-out CI bot can never
-  validate those links. Both dashboard URLs in pre-launch-checklist.md
+  validate those links. Both dashboard URLs in [the old launch checklist](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md)
   are excluded as a class in .lychee.toml. Full online scan: 88 links, 0
   errors.
 

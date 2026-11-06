@@ -1,34 +1,49 @@
 import { worlds } from "@tensorcraft/worlds";
+import type { WorldCharacter } from "@tensorcraft/worlds";
 import { portraitSources } from "./character-art";
 
 // Reader-facing roles, rather than the story bible's narrative archetypes.
 const DEEP_ORBIT_CREW: Record<
   string,
-  { aliases: string[]; description: string }
+  { aliases: string[]; role: string; description: string }
 > = {
   "commander-mirza": {
     aliases: ["Mirza"],
+    role: "Commander",
     description: "Commander of the research ship Archimedes.",
   },
   "dr-farah": {
     aliases: ["Farah"],
+    role: "Astrophysicist",
     description: "The crew’s astrophysicist. She studies signals from space.",
   },
   "chief-nazari": {
     aliases: ["Nazari"],
+    role: "Chief engineer",
     description: "The ship’s chief engineer. She keeps its systems running.",
   },
   "ensign-demir": {
     aliases: ["Demir"],
+    role: "Communications",
     description:
       "The crew’s JavaScript engineer, responsible for communications.",
   },
   aria: {
     aliases: [],
+    role: "Ship AI",
     description:
       "The ship’s AI. She processes signals using rules written by the crew.",
   },
 };
+
+export function characterDisplayRole(
+  worldSlug: string,
+  character: WorldCharacter,
+): string {
+  return worldSlug === "deep-orbit" && character.slug
+    ? (DEEP_ORBIT_CREW[character.slug]?.role ?? character.role)
+    : character.role;
+}
 
 export interface LessonCharacter {
   name: string;

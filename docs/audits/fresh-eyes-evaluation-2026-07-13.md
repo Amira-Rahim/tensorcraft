@@ -1563,7 +1563,7 @@ Asked to delete `bridge-collection.tsx` as dead code. Checked the target first
 and **it contradicted its description**, so this was surfaced instead of
 executed:
 
-- `docs/prd.md:207`, `docs/marketing-plan.md:419`, and `docs/dev-plan.md:682`
+- `docs/prd.md:207`, [marketing-plan.md:419](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/marketing-plan.md#L419), and [dev-plan.md:682](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md#L682)
   all describe dashboard bridge collectibles as **shipped**, and dev-plan
   records that the standalone `/bridges` route was removed *in favour of* it.
 - The data pipeline was fully built and connected: `page.tsx` calls

@@ -3,6 +3,7 @@ import {
   type ExerciseArtifact,
   type ExerciseRunSnapshot,
 } from "@tensorcraft/ui";
+import { decodeEvaluationResult } from "@tensorcraft/shared";
 
 export const LEARNING_EVIDENCE_LIMITS = {
   codeBytes: 256 * 1024,
@@ -10,7 +11,9 @@ export const LEARNING_EVIDENCE_LIMITS = {
   ownerBytes: 2 * 1024 * 1024,
 } as const;
 
-export const LEARNING_EVIDENCE_CONTEXTS = {
+// These descriptors preserve the exact schema-1 meanings already stored in
+// browsers. Add another descriptor for a new contract instead of editing one.
+const HISTORICAL_CONTEXTS = {
   "normalize-data": {
     worldId: "deep-orbit",
     moduleId: "foundations",
@@ -46,13 +49,115 @@ export const LEARNING_EVIDENCE_CONTEXTS = {
     ],
     units: Array<string>(8).fill("dimensionless practice value"),
   },
+  "deep-scan-eval": {
+    worldId: "deep-orbit",
+    moduleId: "training-loop",
+    lessonId: "evaluating-deep-scan",
+    exerciseSlug: "deep-scan-eval",
+    milestoneId: "held-out-evaluation",
+    fixtureId: "deep-scan-evaluation-100-43",
+    fixtureVersion: "1",
+    sourceLabel: "Assigned exercise: 100 training rows and 43 evaluation cases",
+    origin: "browser exercise run",
+    featureOrder: [
+      "Practice feature 1",
+      "Practice feature 2",
+      "Practice feature 3",
+    ],
+    units: Array<string>(3).fill("dimensionless practice value"),
+  },
 } as const;
 
-export type LearningEvidenceExerciseSlug =
-  keyof typeof LEARNING_EVIDENCE_CONTEXTS;
+export type LearningEvidenceExerciseSlug = keyof typeof HISTORICAL_CONTEXTS;
 type EvidenceContext =
-  (typeof LEARNING_EVIDENCE_CONTEXTS)[LearningEvidenceExerciseSlug];
+  (typeof HISTORICAL_CONTEXTS)[LearningEvidenceExerciseSlug];
 export type LearningEvidenceMilestoneId = EvidenceContext["milestoneId"];
+
+for (const context of Object.values(HISTORICAL_CONTEXTS)) {
+  Object.freeze(context.featureOrder);
+  Object.freeze(context.units);
+  Object.freeze(context);
+}
+Object.freeze(HISTORICAL_CONTEXTS);
+
+function authoringContext<T extends EvidenceContext>(context: T): T {
+  // Keep the current registry independent, including its nested arrays.
+  return JSON.parse(JSON.stringify(context)) as T;
+}
+
+export const LEARNING_EVIDENCE_CONTEXTS = {
+  "normalize-data": authoringContext(HISTORICAL_CONTEXTS["normalize-data"]),
+  "simple-network": authoringContext(HISTORICAL_CONTEXTS["simple-network"]),
+  "deep-scan-eval": authoringContext(HISTORICAL_CONTEXTS["deep-scan-eval"]),
+} as const;
+
+type DescriptorId = "normalization-v1" | "network-v1" | "evaluation-v1";
+interface EvidenceDescriptor {
+  readonly id: DescriptorId;
+  readonly schemaVersion: 1;
+  readonly context: EvidenceContext;
+}
+const HISTORICAL_DESCRIPTORS: readonly EvidenceDescriptor[] = Object.freeze([
+  Object.freeze({
+    id: "normalization-v1",
+    schemaVersion: 1,
+    context: HISTORICAL_CONTEXTS["normalize-data"],
+  } as const),
+  Object.freeze({
+    id: "network-v1",
+    schemaVersion: 1,
+    context: HISTORICAL_CONTEXTS["simple-network"],
+  } as const),
+  Object.freeze({
+    id: "evaluation-v1",
+    schemaVersion: 1,
+    context: HISTORICAL_CONTEXTS["deep-scan-eval"],
+  } as const),
+]);
+const IDENTITY_KEYS = [
+  "worldId",
+  "moduleId",
+  "lessonId",
+  "exerciseSlug",
+  "milestoneId",
+  "fixtureId",
+  "fixtureVersion",
+] as const;
+
+function historicalDescriptor(value: unknown): EvidenceDescriptor | null {
+  if (!record(value)) return null;
+  return (
+    HISTORICAL_DESCRIPTORS.find(
+      (descriptor) =>
+        value.schemaVersion === descriptor.schemaVersion &&
+        IDENTITY_KEYS.every((key) => value[key] === descriptor.context[key]),
+    ) ?? null
+  );
+}
+
+export function getHistoricalLearningEvidenceContext(
+  value: unknown,
+): EvidenceContext | null {
+  return historicalDescriptor(value)?.context ?? null;
+}
+
+export const LEARNING_EVIDENCE_MILESTONES = Object.freeze([
+  ...new Set(
+    HISTORICAL_DESCRIPTORS.map((descriptor) => descriptor.context.milestoneId),
+  ),
+]);
+
+export function getLearningEvidenceMilestones(
+  slug: unknown,
+): readonly LearningEvidenceMilestoneId[] {
+  return Object.freeze([
+    ...new Set(
+      HISTORICAL_DESCRIPTORS.filter(
+        (descriptor) => descriptor.context.exerciseSlug === slug,
+      ).map((descriptor) => descriptor.context.milestoneId),
+    ),
+  ]);
+}
 
 export function getLearningEvidenceContext(
   slug: unknown,
@@ -61,6 +166,15 @@ export function getLearningEvidenceContext(
     Object.hasOwn(LEARNING_EVIDENCE_CONTEXTS, slug)
     ? LEARNING_EVIDENCE_CONTEXTS[slug as LearningEvidenceExerciseSlug]
     : null;
+}
+
+/** Reader support ships before the separately enabled evaluation writer. */
+export function canSaveLearningEvidence(slug: unknown): boolean {
+  if (slug === "normalize-data" || slug === "simple-network") return true;
+  return (
+    slug === "deep-scan-eval" &&
+    process.env.NEXT_PUBLIC_EVALUATION_SAVES_ENABLED === "true"
+  );
 }
 
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
@@ -134,11 +248,11 @@ export async function learningEvidenceVersion(
   return hash(`${starterHash}:${testHash}`);
 }
 
-function selectedInputs(
+function legacySelectedInputs(
   artifacts: ExerciseArtifact[],
   context: EvidenceContext,
+  network: boolean,
 ) {
-  const network = context.exerciseSlug === "simple-network";
   const title = network ? "Selected training readings" : "Input readings";
   const tables = artifacts.filter((artifact) => artifact.title === title);
   if (!tables.length) return { selectedRowIds: [], actualSelectedValues: [] };
@@ -173,6 +287,29 @@ function selectedInputs(
   };
 }
 
+function selectedInputs(
+  artifacts: ExerciseArtifact[],
+  descriptor: EvidenceDescriptor,
+) {
+  switch (descriptor.id) {
+    case "normalization-v1":
+      return legacySelectedInputs(artifacts, descriptor.context, false);
+    case "network-v1":
+      return legacySelectedInputs(artifacts, descriptor.context, true);
+    case "evaluation-v1": {
+      const decoded = decodeEvaluationResult(artifacts);
+      if (!decoded.context || decoded.integrity.status === "invalid")
+        throw new Error(
+          "This evaluation result has an unsupported or invalid format.",
+        );
+      return {
+        selectedRowIds: decoded.cases.map((row) => row.position),
+        actualSelectedValues: decoded.cases.map((row) => [...row.features]),
+      };
+    }
+  }
+}
+
 /** Hashes identify submitted source. They do not verify browser execution. */
 export async function createLearningEvidence(
   incoming: ExerciseRunSnapshot,
@@ -188,9 +325,21 @@ export async function createLearningEvidence(
       hintsRevealed: [...incoming.assistance.hintsRevealed],
     },
   };
-  const context = getLearningEvidenceContext(run.exerciseSlug);
-  if (!context)
+  const currentContext = getLearningEvidenceContext(run.exerciseSlug);
+  const descriptor =
+    currentContext &&
+    historicalDescriptor({ schemaVersion: 1, ...currentContext });
+  if (
+    !currentContext ||
+    !descriptor ||
+    Object.entries(descriptor.context).some(
+      ([key, expected]) =>
+        JSON.stringify(currentContext[key as keyof EvidenceContext]) !==
+        JSON.stringify(expected),
+    )
+  )
     throw new Error("This exercise does not support saved runs yet.");
+  const context = descriptor.context;
   if (evidenceBytes(run.submittedCode) > LEARNING_EVIDENCE_LIMITS.codeBytes)
     throw new Error("This run's source is too large to save.");
   const [starterHash, testHash, codeHash] = await Promise.all([
@@ -213,7 +362,7 @@ export async function createLearningEvidence(
       submittedCode: run.submittedCode,
       runtimeVersion: run.runtimeVersion,
       backend: run.backend,
-      ...selectedInputs(artifacts, context),
+      ...selectedInputs(artifacts, descriptor),
       artifacts,
       checks: run.checks.map(({ name, passed, error }) => ({
         name,
@@ -268,8 +417,9 @@ export function validateLearningEvidence(
     value.schemaVersion !== 1
   )
     return invalid();
-  const context = getLearningEvidenceContext(value.exerciseSlug);
-  if (!context) return invalid();
+  const descriptor = historicalDescriptor(value);
+  if (!descriptor) return invalid();
+  const context = descriptor.context;
   const allowed = [
     "schemaVersion",
     "runId",
@@ -325,7 +475,7 @@ export function validateLearningEvidence(
       LEARNING_EVIDENCE_LIMITS.artifactBytes
   )
     return invalid();
-  const inputs = selectedInputs(artifacts, context);
+  const inputs = selectedInputs(artifacts, descriptor);
   if (
     JSON.stringify(value.selectedRowIds) !==
       JSON.stringify(inputs.selectedRowIds) ||

@@ -33,7 +33,7 @@ function numericRows(value: Table) {
   );
 }
 
-function readCapturedValues(artifacts: Artifacts) {
+export function readNormalizationRun(artifacts: Artifacts) {
   if (!Array.isArray(artifacts)) return null;
   const inputs = table(artifacts, "Input readings", [
     "Reading",
@@ -110,7 +110,7 @@ export function NormalizationRunExplanation({
   const id = useId();
   const [rowIndex, setRowIndex] = useState(0);
   const [featureIndex, setFeatureIndex] = useState(0);
-  const captured = readCapturedValues(artifacts);
+  const captured = readNormalizationRun(artifacts);
   if (!captured) return null;
   const selectedRowIndex = rowIndex < captured.rows.length ? rowIndex : 0;
   const row = captured.rows[selectedRowIndex]!;

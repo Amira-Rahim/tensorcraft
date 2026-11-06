@@ -1,17 +1,23 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { WorldCast } from "./world-cast";
 
 describe("WorldCast", () => {
   it("renders one portrait per crew member, ARIA included", () => {
     render(<WorldCast slug="deep-orbit" />);
     expect(screen.getAllByTestId("animated-avatar")).toHaveLength(5);
+    const aria = screen.getByRole("img", { name: "ARIA" });
+    fireEvent.error(aria.querySelector("img")!);
+    expect(screen.getByRole("img", { name: "ARIA" })).toHaveTextContent("◉");
   });
 
   it("names every crew member and their role", () => {
     render(<WorldCast slug="deep-orbit" />);
     expect(screen.getByText("Commander Mirza")).toBeInTheDocument();
-    expect(screen.getByText("Mentor")).toBeInTheDocument();
+    expect(screen.getByText("Commander")).toBeInTheDocument();
+    expect(screen.getByText("Chief engineer")).toBeInTheDocument();
+    expect(screen.queryByText("Mentor")).not.toBeInTheDocument();
+    expect(screen.queryByText("Skeptic")).not.toBeInTheDocument();
     expect(screen.getByText("ARIA")).toBeInTheDocument();
     expect(screen.getByText("Ship AI")).toBeInTheDocument();
   });

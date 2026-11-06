@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import * as tf from "@tensorflow/tfjs";
 import { NUMERIC_INVESTIGATIONS } from "./numeric-investigations";
 import { magnitudeSpectrum, teachingSignal } from "./instrument-math";
+import { comparisonDomain, investigationDomain } from "./investigation-graphic";
 import {
   clampInvestigationValues,
   initialInvestigationValues,
@@ -26,6 +27,52 @@ const run = (
 };
 
 describe("audited numeric investigations", () => {
+  it("preserves common axes for the catalog's same-quantity comparisons", () => {
+    const pairs = [
+      ["loss-functions", 0, 1],
+      ["training-loop", 0, 1],
+      ["lstm-gates", 0, 1],
+      ["sequence-prediction", 0, 1],
+      ["forecasting", 0, 1],
+      ["kalman-filters", 0, 2],
+      ["quantization", 0, 1],
+      ["pruning", 0, 1],
+    ] as const;
+    for (const [slug, first, second] of pairs) {
+      for (const example of NUMERIC_INVESTIGATIONS[slug]!.cases) {
+        const { graphics } = run(slug, {}, example.id);
+        const pair = [graphics[first]!, graphics[second]!];
+        const expected = investigationDomain(pair);
+        for (const graphic of pair) {
+          expect(
+            comparisonDomain(graphic, graphics),
+            `${slug}: ${graphic.label}`,
+          ).toEqual(expected);
+        }
+      }
+    }
+  });
+
+  it("preserves the quantity when chart captions change across runs", () => {
+    const comparisons = [
+      ["activation-functions", 1, { function: 0 }, { function: 1 }],
+      ["time-vs-frequency", 0, { frequency: 12 }, { frequency: 20 }],
+      ["fourier-transform", 0, { frequency: 12 }, { frequency: 20 }],
+      ["spectrograms", 0, { start: 0 }, { start: 40 }],
+      ["fft-as-features", 0, { frequency: 12 }, { frequency: 20 }],
+      ["windowing-and-overlap", 0, { taper: 0 }, { taper: 1 }],
+      ["beyond-lstm", 0, { query: 0.8 }, { query: -1 }],
+      ["temporal-attention", 0, { query: 0.8 }, { query: -1 }],
+    ] as const;
+    for (const [slug, index, before, after] of comparisons) {
+      const prior = run(slug, before).graphics[index]!;
+      const latest = run(slug, after, "changed").graphics[index]!;
+      const expected = investigationDomain([prior, latest]);
+      expect(comparisonDomain(prior, [latest]), slug).toEqual(expected);
+      expect(comparisonDomain(latest, [prior]), slug).toEqual(expected);
+    }
+  });
+
   it("moves the signal between fixed FFT feature columns", () => {
     for (const frequency of [12, 20]) {
       const result = run("fft-as-features", { frequency, amplitude: 0.6 });

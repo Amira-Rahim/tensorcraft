@@ -77,7 +77,9 @@ export function TensorInvestigation({ spec }: { spec: LessonVisualSpec }) {
             speaker="Demir"
             direction="At the signal console"
             layout="speech"
-            avatarSlot={<AnimatedAvatar name="Ensign Demir" {...demir} />}
+            avatarSlot={
+              <AnimatedAvatar name="Ensign Demir" {...demir} size={64} />
+            }
           >
             {spec.action}
           </Dialogue>

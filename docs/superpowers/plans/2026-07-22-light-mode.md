@@ -82,7 +82,7 @@ Note on dark-theme `--tc-primary-rgb` bugs found during audit: neon-protocol's d
 - Modify: `docs/ui-ux-notes.md:275` (the "dark-mode only" paragraph)
 - Modify: `docs/architecture.md:59`
 - Modify: `docs/prd.md:364`
-- Modify: `docs/dev-plan.md` (add the light-mode project entry)
+- Modify: [dev-plan.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md) (add the light-mode project entry)
 
 - [x] **Step 1:** In each file, replace the "dark mode only / no light mode" claim with the new stance. Wording to use (adapt to each doc's voice, keep it short):
 
@@ -590,7 +590,7 @@ pnpm exec playwright test        # full e2e incl. accessibility matrix
 
   All green or STOP and report with output.
 - [x] **Step 2:** Manual sweep in dev, BOTH schemes: landing (hero demo, five-worlds hovers, ticker), /auth, /pricing, /dashboard (heatmap, skill genome, streak), one full lesson (all 6 steps: dialogue, code block, exercise, hints, quiz), a coming-soon stub, /compare, /settings, certificate page. Also: OS-level scheme flip live-updates the app when no override; toggle override wins; reduced-motion static canvas frames re-render on toggle.
-- [x] **Step 3:** Update `docs/dev-plan.md` status; append implementation-complete note + any deviations to `docs/audits/light-mode-readiness-2026-07-22.md`.
+- [x] **Step 3:** Update [dev-plan.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md) status; append implementation-complete note + any deviations to `docs/audits/light-mode-readiness-2026-07-22.md`.
 - [x] **Step 4:** FINAL CHECKPOINT - full report to user (what shipped, test evidence, screenshots dark/light). User commits.
 
 ---

@@ -61,7 +61,7 @@ purchases.get("/access", async (c) => {
     if (!Array.isArray(row.world_ids)) continue;
     for (const slug of row.world_ids) {
       // Defensive: filter unknown slugs so a DB-level anomaly can't
-      // grant access to an unknown world. See dev-plan §6h.
+      // grant access to an unknown world.
       if (isValidWorldSlug(slug)) {
         owned.add(slug);
       }

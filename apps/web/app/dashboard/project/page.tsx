@@ -3,7 +3,6 @@ import { getExercise } from "@tensorcraft/content";
 import { learningEvidenceVersion } from "@/lib/learning-evidence-types";
 import { LearningEvidenceProject } from "@/app/components/learning-evidence-project";
 import Link from "next/link";
-import { SystemEvidence } from "@/app/components/system-evidence";
 import { loadDashboardData } from "../_lib/load-dashboard";
 import styles from "../dashboard-view.module.css";
 import { ExpeditionHeader } from "../expedition-header";
@@ -38,6 +37,19 @@ export default async function ProjectPage() {
         starterCode: network.starterCode,
       }
     : undefined;
+  const evaluation =
+    entitled && dashboard.worldSlug === "deep-orbit"
+      ? getExercise("deep-scan-eval")
+      : undefined;
+  const evaluationEvidence = evaluation
+    ? {
+        currentVersion: await learningEvidenceVersion(
+          evaluation.starterCode,
+          evaluation.testCode,
+        ),
+        starterCode: evaluation.starterCode,
+      }
+    : undefined;
   return (
     <main className={styles.main}>
       <Link className={styles.textLink} href="/dashboard">
@@ -55,9 +67,7 @@ export default async function ProjectPage() {
         currentVersion={currentVersion}
         starterCode={normalization?.starterCode ?? ""}
         network={networkEvidence}
-      />
-      <SystemEvidence
-        userId={userId}
+        evaluation={evaluationEvidence}
         stages={stages}
         unavailable={evidenceUnavailable}
         entitled={entitled}

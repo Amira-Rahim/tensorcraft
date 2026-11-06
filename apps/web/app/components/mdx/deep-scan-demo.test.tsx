@@ -54,6 +54,12 @@ describe("DeepScanDemo", () => {
       { timeout: 8000 },
     );
     expect(screen.getByTestId("demo-verdict-7741").textContent).toMatch(/51/);
+    expect(screen.getByTestId("demo-verdict-7741")).toHaveTextContent(
+      "True label unknown",
+    );
+    expect(screen.getByTestId("deep-scan-demo")).toHaveTextContent(
+      "evaluate its predictions against known labels",
+    );
   }, 10000);
 
   it("releases both tensors when reading scores fails", async () => {

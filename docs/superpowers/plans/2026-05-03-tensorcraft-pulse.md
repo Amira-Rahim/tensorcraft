@@ -62,7 +62,7 @@
 **Modify root:**
 - `pnpm-workspace.yaml` - add `apps/pulse-worker`
 - `turbo.json` - register pulse-worker tasks
-- `docs/dev-plan.md` - mark Pulse as deferred V2 item with link to this plan
+- [the product roadmap](../../../ROADMAP.md) - mark Pulse as deferred V2 item with link to this plan
 
 ---
 
@@ -1493,5 +1493,5 @@ When V1 launch is settled and you want to start this:
 
 ## References
 - Spec: `~/.claude/plans/brainstorm-how-to-keep-giggly-lightning.md`
-- Related: `docs/post-launch-backlog.md` (canonical post-launch index), `docs/dev-plan.md`
+- Related: `docs/post-launch-backlog.md` (canonical post-launch index), [the product roadmap](../../../ROADMAP.md)
 - Existing patterns to follow: `apps/api/` for service structure, `packages/supabase/migrations/` for schema, `apps/web/app/admin/` (if exists) for admin route conventions.

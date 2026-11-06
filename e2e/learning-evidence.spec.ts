@@ -32,6 +32,10 @@ for (const width of [1440, 390]) {
       "All tests passed!",
       { timeout: 60_000 },
     );
+    const current = page.getByRole("region", {
+      name: "Result from this run",
+      exact: true,
+    });
     await history
       .getByRole("button", { name: "Save this run", exact: true })
       .click();
@@ -40,31 +44,41 @@ for (const width of [1440, 390]) {
     ).toBeVisible();
     await history.locator("summary").filter({ hasText: "Saved run:" }).click();
     await expect(history).toContainText("Solution viewed before this run.");
-    await history.getByText("All captured tables", { exact: true }).click();
+    await expect(history).toContainText(
+      "This run has an inspection view above",
+    );
+    await expect(history.getByRole("combobox")).toHaveCount(0);
+    await history
+      .getByRole("button", { name: "Inspect this run above", exact: true })
+      .click();
+    await expect(current).toBeFocused();
+    await current
+      .getByText("Captured values and run details", { exact: true })
+      .click();
     await expect(
-      history.getByRole("heading", { name: "Input readings", exact: true }),
+      current.getByRole("heading", { name: "Input readings", exact: true }),
     ).toBeVisible();
     await expect(
-      history.getByRole("heading", {
+      current.getByRole("heading", {
         name: "Saved training statistics",
         exact: true,
       }),
     ).toBeVisible();
-    await history
+    await current
       .getByRole("combobox", { name: "Reading", exact: true })
       .selectOption("2");
-    await history
+    await current
       .getByRole("combobox", { name: "Feature", exact: true })
       .selectOption("1");
-    await expect(history).toContainText("0.4");
+    await expect(current).toContainText("0.4");
     expect(
-      await history
+      await current
         .locator("th, td")
         .evaluateAll((cells) =>
           cells.every((cell) => cell.scrollWidth <= cell.clientWidth + 1),
         ),
     ).toBe(true);
-    await history.screenshot({
+    await current.screenshot({
       path: testInfo.outputPath(`saved-normalization-${width}.png`),
     });
 
@@ -89,7 +103,7 @@ for (const width of [1440, 390]) {
       .getByRole("button", { name: "Save this run", exact: true })
       .click();
     await expect(
-      history.locator("summary").filter({ hasText: "First saved run:" }),
+      history.locator("summary").filter({ hasText: "Earlier saved run:" }),
     ).toBeVisible();
     await expect(
       history.locator("summary").filter({ hasText: "Latest saved run:" }),
@@ -107,15 +121,18 @@ for (const width of [1440, 390]) {
       .click();
     await expect(editor).toContainText(newerCode);
     await expect(
-      history.locator("summary").filter({ hasText: "First saved run:" }),
+      history.locator("summary").filter({ hasText: "Earlier saved run:" }),
     ).toBeVisible();
     await expect(
       history.locator("summary").filter({ hasText: "Latest saved run:" }),
     ).toBeVisible();
     await history
       .locator("summary")
-      .filter({ hasText: "First saved run:" })
+      .filter({ hasText: "Earlier saved run:" })
       .click();
+    await expect(
+      history.getByRole("combobox", { name: "Reading", exact: true }),
+    ).toBeVisible();
     await history
       .getByText("All captured tables", { exact: true })
       .first()

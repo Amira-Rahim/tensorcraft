@@ -4,7 +4,7 @@ Working plan, 2026-09-25. Starting point confirmed by the owner: **zero users, a
 
 Audience size and available working hours are unknown. This plan assumes no existing audience and proposes 10 hours of marketing work per week. The workload and timeline must change if less time is available. The $200 is treated as incremental marketing spend; hosting and other existing operating costs are outside it.
 
-This is the operating plan for this target. It supersedes the acquisition budgets, waitlist targets, launch forecasts and channel calendar in [Marketing Plan v3.3](marketing-plan.md). Conversion rates below are planning assumptions, not Tensorcraft results or industry benchmarks.
+This is the operating plan for this target. It supersedes the acquisition budgets, waitlist targets, launch forecasts and channel calendar in [the earlier marketing plan](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/marketing-plan.md). Conversion rates below are planning assumptions, not Tensorcraft results or industry benchmarks.
 
 ## 1. Decision
 

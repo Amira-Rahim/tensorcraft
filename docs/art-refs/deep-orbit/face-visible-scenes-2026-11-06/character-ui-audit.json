@@ -1,0 +1,697 @@
+[
+  {
+    "id": "foundations/normalization",
+    "assetId": "foundations/normalization",
+    "location": "bridge",
+    "cast": "Commander Mirza (command tier, brass chronometer), Ensign Demir (glowing wrist terminal), Dr. Farah (stylus)",
+    "characters": [
+      {
+        "name": "Commander Mirza",
+        "surname": "Mirza",
+        "slug": "commander-mirza",
+        "identity": "a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer"
+      },
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Mirza orders every sensor feed normalized to one scale before the deep scan: the thermal channel reads in the thirties while signal strength lives under one, and raw feeds would let temperature drown the story. Mid-job, the archive scroll stops on sample 7741, inside every baseline yet wrong on one scale out of four.",
+    "alt": "The bridge holo table squeezes four mismatched sensor traces onto one shared scale while a lone ringed sample hangs apart.",
+    "body": "Wide holo-table shot from the port-forward quarter looking aft in duty light, the table projecting four sensor traces at wildly mismatched amplitudes converging into one narrow shared band with a single archive glyph ringed and hovering apart, Mirza rim-lit on the raised tier by the chronometer while Demir and Farah stand small at the table edge, her stylus mid-gesture",
+    "refs": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Commander Mirza: a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 4 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 3 human characters: Commander Mirza, Dr. Farah, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Mirza orders every sensor feed normalized to one scale before the deep scan: the thermal channel reads in the thirties while signal strength lives under one, and raw feeds would let temperature drown the story. Mid-job, the archive scroll stops on sample 7741, inside every baseline yet wrong on one scale out of four.\nScene action and equipment: Wide holo-table shot from the port-forward quarter looking aft in duty light, the table projecting four sensor traces at wildly mismatched amplitudes converging into one narrow shared band with a single archive glyph ringed and hovering apart, Mirza rim-lit on the raised tier by the chronometer while Demir and Farah stand at the table edge, her stylus mid-gesture\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+    "status": "superseded",
+    "method": "built-in image_gen",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-3d77b6cf-3f23-4c88-99b2-0d018acc835c.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures.",
+    "webpBytes": 182848,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "supersededBy": "docs/art-refs/deep-orbit/face-visible-scenes-2026-11-06/normalization-cleanup.json",
+    "supersededPngSha256": "519d35861a7fd7dc03bbb505229c253d5c96936e761e9790f485b6d7dd3bc613",
+    "supersededWebpSha256": "47e962d01944e3b0ceb1aad2a75b634bdb8599bf90e8a1cc49f1553d1f66b06e",
+    "sourceNote": "The earlier normalization candidate was replaced by the approved four-trace diagram refinement."
+  },
+  {
+    "id": "foundations/normalization-epilogue",
+    "assetId": "foundations/normalization-epilogue",
+    "location": "bridge",
+    "cast": "Ensign Demir and Dr. Farah (small silhouettes at the rail, backs to camera)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "The normalized feeds go live and the bridge displays settle onto one scale, but sample 7741 still refuses to look like the others. Farah runs a preview classifier across the archive: five clean verdicts and one shrug stuck at the midpoint, and she flags the sample instead of deleting it.",
+    "alt": "Bridge displays settle onto one scale; one ringed sample sits beside a half-lit verdict gauge as Demir and Farah watch.",
+    "body": "Camera push from the port-forward quarter toward the forward display wall in duty light, every display carrying feeds aligned to a single calm scale except one panel where a lone trace sits ringed beside a verdict gauge stuck at its midpoint, Demir and Farah tiny recognizable crew at the rail with their in three-quarter view with visible faces",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Dr. Farah, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: The normalized feeds go live and the bridge displays settle onto one scale, but sample 7741 still refuses to look like the others. Farah runs a preview classifier across the archive: five clean verdicts and one shrug stuck at the midpoint, and she flags the sample instead of deleting it.\nScene action and equipment: Camera push from the port-forward quarter toward the forward display wall in duty light, every display carrying feeds aligned to a single calm scale except one panel where a lone trace sits ringed beside a verdict gauge stuck at its midpoint, Demir and Farah  recognizable crew at the rail with their in three-quarter view with visible faces\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/foundations__normalization-epilogue-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-5bb5d99f-590f-4fd0-b486-02d8343a15d7.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures.",
+    "webpBytes": 180932,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "f554cb426dbf5cee5f64c0d74ae0db4ee7fed36e1f38a44830a706f49b170038",
+    "selectedPngSha256": "340ccf150b109fcf0b18beaacde355249abb94ce424acc4506ea1f1936d715c9"
+  },
+  {
+    "id": "browser-runtimes/inference-pipeline",
+    "assetId": "browser-runtimes/inference-pipeline",
+    "location": "bridge",
+    "cast": "Ensign Demir (glowing wrist terminal), Chief Nazari (multitool)",
+    "characters": [
+      {
+        "name": "Chief Nazari",
+        "surname": "Nazari",
+        "slug": "chief-nazari",
+        "identity": "a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "The signal feed goes live: one reading per second flows through the model and classifications stream across the dashboard, while Nazari reminds Demir that 86,400 undisposed tensors a day will kill the tab before shift change.",
+    "alt": "Live classification pulses stream green across the bridge displays, one amber tick among them, as Demir and Nazari watch.",
+    "body": "Mid shot from the port-forward quarter looking aft, duty lighting with a live animated feel, forward displays streaming a rolling ticker of small green pulses broken by a single brass-amber tick, the holo table carrying a rolling waveform with a fresh reading blooming at its edge; Demir a recognizable crew at his console with wrist terminal glowing, Nazari behind the rail watching the feed, arms crossed over her multitool",
+    "refs": [
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Chief Nazari: a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Chief Nazari, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: The signal feed goes live: one reading per second flows through the model and classifications stream across the dashboard, while Nazari reminds Demir that 86,400 undisposed tensors a day will kill the tab before shift change.\nScene action and equipment: Mid shot from the port-forward quarter looking aft, duty lighting with a live animated feel, forward displays streaming a rolling ticker of small green pulses broken by a single brass-amber tick, the holo table carrying a rolling waveform with a fresh reading blooming at its edge; Demir a recognizable crew at his console with wrist terminal glowing, Nazari behind the rail watching the feed, arms crossed over her multitool\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/browser-runtimes__inference-pipeline-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-a13c66f0-6197-4481-bfe6-13c99b6f4a75.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures.",
+    "webpBytes": 163154,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "87858446358615d2b89c731b9390f5a4b8d6da05b6fc57619ad2fe041b5646f7",
+    "selectedPngSha256": "6041a5350c17110aa348f0b39cfad6bcfa32aacd63941dc5e94b47b6f81a4a87"
+  },
+  {
+    "id": "recurrent-networks/simple-rnns",
+    "assetId": "recurrent-networks/simple-rnns",
+    "location": "engineering",
+    "cast": "Ensign Demir and Dr. Farah as small silhouettes, faces averted (glowing wrist terminal; stylus)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Demir hand-runs a single RNN cell at the diagnostics bay, three inputs through a tanh whose output loops back in, and the same 0.5 input scores two different outputs; Farah points at the last line as proof his reducer's guarantees are gone.",
+    "alt": "At an engineering console a diagram loops a cell's output back into itself; a silhouetted ensign traces it as a scientist points.",
+    "body": "Mid shot from the bay entrance, warm hanging work lamps at the end of shift, the diagnostics display showing a small cell diagram whose output arrow loops back into its own input beside three stepped output marks, Demir a recognizable crew hunched at the console with his wrist terminal glowing while Farah's recognizable crew points past his shoulder, faces clearly visible in three-quarter view",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Dr. Farah, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Demir hand-runs a single RNN cell at the diagnostics bay, three inputs through a tanh whose output loops back in, and the same 0.5 input scores two different outputs; Farah points at the last line as proof his reducer's guarantees are gone.\nScene action and equipment: Mid shot from the bay entrance, warm hanging work lamps at the end of shift, the diagnostics display showing a small cell diagram whose output arrow loops back into its own input beside three stepped output marks, Demir a recognizable crew hunched at the console with his wrist terminal glowing while Farah's recognizable crew points past his shoulder, faces clearly visible in three-quarter view\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/recurrent-networks__simple-rnns-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-210cc860-41b3-451c-92d0-e5c2605f2e5d.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures.",
+    "webpBytes": 171458,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "a0691be20bd7633dbf6d59fe616b207646bb37cc2f4930defe38a14f4bd257c6",
+    "selectedPngSha256": "6320c89ffb428915efe5e00798da85f8db24b7141dd75a2b54569918a4eddd89"
+  },
+  {
+    "id": "recurrent-networks/sliding-windows",
+    "assetId": "recurrent-networks/sliding-windows",
+    "location": "bridge",
+    "cast": "Ensign Demir as a small silhouette, face averted (glowing wrist terminal)",
+    "characters": [
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Demir alone, turning the continuous feed into fixed 80-step inputs: slice, step forward one, slice again, a window that manufactures a sample at every position where his IntersectionObserver instinct only fired at thresholds.",
+    "alt": "A silhouetted ensign at a bridge alcove watches a bracket step along an endless stream trace on the signal boards.",
+    "body": "Mid shot from the port-forward quarter looking aft into the port-side comms alcove, duty lighting, the alcove's stacked signal boards showing one long unbroken stream trace with a bracket window repeated stepwise along its length, Demir a small lone recognizable crew at the alcove with his wrist terminal glowing, the holo table quiet behind him",
+    "refs": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Demir alone, turning the continuous feed into fixed 80-step inputs: slice, step forward one, slice again, a window that manufactures a sample at every position where his IntersectionObserver instinct only fired at thresholds.\nScene action and equipment: Mid shot from the port-forward quarter looking aft into the port-side comms alcove, duty lighting, the alcove's stacked signal boards showing one long unbroken stream trace with a bracket window repeated stepwise along its length, Demir a  recognizable crew at the alcove with his wrist terminal glowing, the holo table quiet behind him\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/recurrent-networks__sliding-windows-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-f9b3c6f1-5ac3-473b-a6b6-8dc15dc56e25.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 135068,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "e4820935c4e32a04263a5563e7c3f8a76097c05962e51996c090097fb04d8b7d",
+    "selectedPngSha256": "39679d6476faba3d5980869fe83a868fe0cea8b9b2f6addb821e6ea56c28a86e"
+  },
+  {
+    "id": "recurrent-networks/sequence-prediction",
+    "assetId": "recurrent-networks/sequence-prediction",
+    "location": "bridge",
+    "cast": "Ensign Demir and Dr. Farah as small rim-lit silhouettes, faces toward the holo (glowing wrist terminal; stylus)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "The LSTM calls the next reading within 3 percent and puts a number on the anomaly's return, 47 minutes out; Farah closes the loop: if the timing is predictable the signal has structure, and structure is not random noise.",
+    "alt": "A bridge holo table projects a signal trace forward to a predicted spike as two silhouetted crew lean in.",
+    "body": "Wide shot from the port-forward quarter looking aft, duty lighting, the central holo table projecting a signal trace that continues past a time marker into a predicted spike drawn ahead of the data, viewports a band of near-black starfield on the left, Demir and Farah recognizable crew at the table edge, faces turned to the holo",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Dr. Farah, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: The LSTM calls the next reading within 3 percent and puts a number on the anomaly's return, 47 minutes out; Farah closes the loop: if the timing is predictable the signal has structure, and structure is not random noise.\nScene action and equipment: Wide shot from the port-forward quarter looking aft, duty lighting, the central holo table projecting a signal trace that continues past a time marker into a predicted spike drawn ahead of the data, viewports a band of near-black starfield on the left, Demir and Farah recognizable crew at the table edge, faces turned to the holo\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/recurrent-networks__sequence-prediction-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-5535366c-1b7e-4841-873d-5d71ab623bc2.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 158496,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "438bb91dff1801ef37fb01fdd6bdcd234ac610656d2a3f80b439c5ece97543ac",
+    "selectedPngSha256": "1d43e4736ead62fe85be0ad645d0adad37cc8fd59fed48b7813e6fc9d62fc013"
+  },
+  {
+    "id": "recurrent-networks/sequence-prediction-epilogue",
+    "assetId": "recurrent-networks/sequence-prediction-epilogue",
+    "location": "bridge",
+    "cast": "Commander Mirza, Dr. Farah, Ensign Demir and Chief Nazari as small crew silhouettes from behind, all facing the display wall",
+    "characters": [
+      {
+        "name": "Commander Mirza",
+        "surname": "Mirza",
+        "slug": "commander-mirza",
+        "identity": "a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer"
+      },
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Chief Nazari",
+        "surname": "Nazari",
+        "slug": "chief-nazari",
+        "identity": "a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "The 47-minute forecast goes up at 2010 and by 2050 the whole bridge is watching anyway; Nazari kills the room audio, the trace holds flat through 47:00, and at 47:03 the spike walks onto the display exactly as drawn. Mirza orders the three seconds logged: ours or theirs.",
+    "alt": "A bridge crew in silhouette faces the main display as a real spike lands exactly on a forecast trace's drawn outline.",
+    "body": "Camera push toward the forward display wall from the port-forward quarter, consoles dimmed so the display glow dominates, the main screen showing a long flat anomaly trace with a ghosted predicted spike outline and the real spike just arriving on top of it, a handful of recognizable crew at the bottom of frame, every face turned away toward the wall",
+    "refs": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Commander Mirza: a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 4 is the identity reference for Chief Nazari: a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 5 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 4 human characters: Commander Mirza, Dr. Farah, Chief Nazari, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: The 47-minute forecast goes up at 2010 and by 2050 the whole bridge is watching anyway; Nazari kills the room audio, the trace holds flat through 47:00, and at 47:03 the spike walks onto the display exactly as drawn. Mirza orders the three seconds logged: ours or theirs.\nScene action and equipment: Camera push toward the forward display wall from the port-forward quarter, consoles dimmed so the display glow dominates, the main screen showing a long flat anomaly trace with a ghosted predicted spike outline and the real spike just arriving on top of it, a handful of recognizable crew at the bottom of frame, every face turned away toward the wall\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-epilogue.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/recurrent-networks__sequence-prediction-epilogue-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-epilogue.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-93bdb640-a952-4c5b-bcc0-bb8891c025cc.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 172914,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "e85fd654e0fab6b75b1f417fb629ef8cc049dfe5bb2a0025e9a7274db650ec05",
+    "selectedPngSha256": "5d5a384fb1f9e94621e85e9d1ed5951bc840a5710adc8732b9c6c86bfda788ed"
+  },
+  {
+    "id": "anomaly-detection/normal-vs-anomalous",
+    "assetId": "anomaly-detection/normal-vs-anomalous",
+    "location": "bridge",
+    "cast": "Chief Nazari (multitool), Dr. Farah (stylus), Commander Mirza (command tier, brass chronometer)",
+    "characters": [
+      {
+        "name": "Commander Mirza",
+        "surname": "Mirza",
+        "slug": "commander-mirza",
+        "identity": "a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer"
+      },
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Chief Nazari",
+        "surname": "Nazari",
+        "slug": "chief-nazari",
+        "identity": "a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Third alert of the shift, after a loose cable and a cosmic ray, and Nazari demands a definition of \"anomalous\" in numbers before anyone wakes the Commander a fourth time. Farah admits the model was trained to recognize what things are, never to say \"none of the above.\"",
+    "alt": "Bridge crew silhouettes ring a holo table where one flagged signal trace glows beside two dimmed false alarms.",
+    "body": "Wide shot from the port-forward quarter looking aft, duty lighting, the holo table projecting one bright flagged signal trace beside two dimmed dismissed traces, a calm bell-curve band on a forward display; Nazari and Farah as recognizable crew facing the table, her multitool at her belt and Farah's stylus raised, Mirza a smaller recognizable crew above on the command tier beside the brass chronometer",
+    "refs": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Commander Mirza: a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 4 is the identity reference for Chief Nazari: a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 3 human characters: Commander Mirza, Dr. Farah, Chief Nazari. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Third alert of the shift, after a loose cable and a cosmic ray, and Nazari demands a definition of \"anomalous\" in numbers before anyone wakes the Commander a fourth time. Farah admits the model was trained to recognize what things are, never to say \"none of the above.\"\nScene action and equipment: Wide shot from the port-forward quarter looking aft, duty lighting, the holo table projecting one bright flagged signal trace beside two dimmed dismissed traces, a calm bell-curve band on a forward display; Nazari and Farah as recognizable crew facing the table, her multitool at her belt and Farah's stylus raised, Mirza a smaller recognizable crew above on the command tier beside the brass chronometer\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/anomaly-detection__normal-vs-anomalous-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-3354d6ba-7f36-4789-885b-c4e114187c31.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 150136,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "7249a8388cbd6b02da722083efae70da43e85eb5cbb8408f44d844fc43d84d68",
+    "selectedPngSha256": "e2f3c7cc300cf45250ce7ca7183fc5765d1fca51c9303876d8809b963f820c81"
+  },
+  {
+    "id": "anomaly-detection/autoencoders",
+    "assetId": "anomaly-detection/autoencoders",
+    "location": "lab",
+    "cast": "Dr. Farah (stylus and holo lines)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Z-scores have run out of road on the ship's high-dimensional signals, so Farah proposes an autoencoder: compress normal signals through a bottleneck and rebuild them, and whatever comes back mangled is anomalous by definition.",
+    "alt": "Dr. Farah sketches an hourglass network on the lab whiteboard, wide layers pinched to a two-node bottleneck.",
+    "body": "Shot from the corridor-side corner with the whiteboard wall facing camera, working light with whiteboard glow dominant, the holographic whiteboard carrying an hourglass network diagram of wide layer bands pinched to two small nodes and widening again, bench telemetry looping clean repeating waveforms; Farah alone as a recognizable crew at the board, stylus mid-stroke trailing holo lines",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Dr. Farah. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Z-scores have run out of road on the ship's high-dimensional signals, so Farah proposes an autoencoder: compress normal signals through a bottleneck and rebuild them, and whatever comes back mangled is anomalous by definition.\nScene action and equipment: Shot from the corridor-side corner with the whiteboard wall facing camera, working light with whiteboard glow dominant, the holographic whiteboard carrying an hourglass network diagram of wide layer bands pinched to two small nodes and widening again, bench telemetry looping clean repeating waveforms; Farah alone as a recognizable crew at the board, stylus mid-stroke trailing holo lines\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/anomaly-detection__autoencoders-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-fbfe90cf-655c-45c6-842a-1f3a3d5bc996.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 178890,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "3276a655ece7c6c752da3e3c3aa9e99ca1af424b572c03bb9fdbc20b88c70d9c",
+    "selectedPngSha256": "da44deaa740ba776239fb521aba01c852a011e3206a941ce3c67693219206e11"
+  },
+  {
+    "id": "anomaly-detection/reconstruction-error",
+    "assetId": "anomaly-detection/reconstruction-error",
+    "location": "lab",
+    "cast": "Dr. Farah (stylus), Ensign Demir (glowing wrist terminal)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Demir feeds the anomalous signal through the trained autoencoder and it comes back mangled at twelve times the normal error; he calls the score a git diff, and Farah challenges him to say which channel his diff claims changed.",
+    "alt": "Farah and Demir study a lab screen pairing a clean waveform with its mangled reconstruction beside one towering error bar.",
+    "body": "Closer shot from the corridor-side corner tight on the workbench displays, discovery light with every display lit at once, the main telemetry screen pairing a clean input waveform above its warped reconstruction, a side panel with one error bar towering over a row of low ones; Demir a recognizable crew leaning in with his wrist terminal glowing, Farah half turned beside him, stylus in hand",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Dr. Farah, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Demir feeds the anomalous signal through the trained autoencoder and it comes back mangled at twelve times the normal error; he calls the score a git diff, and Farah challenges him to say which channel his diff claims changed.\nScene action and equipment: Closer shot from the corridor-side corner tight on the workbench displays, discovery light with every display lit at once, the main telemetry screen pairing a clean input waveform above its warped reconstruction, a side panel with one error bar towering over a row of low ones; Demir a recognizable crew leaning in with his wrist terminal glowing, Farah half turned beside him, stylus in hand\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/anomaly-detection__reconstruction-error-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-dac83846-fbf5-4ea5-9754-53610e5ddb8f.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 184620,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "dc5020c7e18b0d059170a0a21f4deb43e1f79318e7ce1f094dc89ae0d1be2c9a",
+    "selectedPngSha256": "cd2611c9e6e8698230dc37bfa3a2c6074533e81396c87b2f646f655d1b8dedd0"
+  },
+  {
+    "id": "anomaly-detection/reconstruction-error-epilogue",
+    "assetId": "anomaly-detection/reconstruction-error-epilogue",
+    "location": "bridge",
+    "cast": "Ensign Demir (glowing wrist terminal); ARIA as her waveform on a side screen",
+    "characters": [
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": true,
+    "moment": "Demir pins the per-feature error map to the shared display, one bar carrying nearly the whole error while everything else sits flat, when ARIA speaks up unprompted and asks to know her own reconstruction error.",
+    "alt": "One bar towers over a flat error chart on the bridge display wall while ARIA's waveform flickers on a side screen above Demir.",
+    "body": "Camera push toward the forward display wall from the port-forward side, after-hours light with consoles dimmed, the main display carrying a bar chart of flat glyph-marked bars with a single bar towering alone, a smaller side screen lit by ARIA's speaking waveform; Demir a recognizable crew below the wall, faces clearly visible in three-quarter view upward, wrist terminal glowing",
+    "refs": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Ensign Demir. No additional people, duplicates, bystanders or background crew.\nARIA is present only as an abstract green waveform inside a fixed brass ring on a screen, with no human or robot face.\nStory moment: Demir pins the per-feature error map to the shared display, one bar carrying nearly the whole error while everything else sits flat, when ARIA speaks up unprompted and asks to know her own reconstruction error.\nScene action and equipment: Camera push toward the forward display wall from the port-forward side, after-hours light with consoles dimmed, the main display carrying a bar chart of flat glyph-marked bars with a single bar towering alone, a smaller side screen lit by ARIA's speaking waveform; Demir a recognizable crew below the wall, faces clearly visible in three-quarter view upward, wrist terminal glowing\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/anomaly-detection__reconstruction-error-epilogue-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-e471b15a-9f96-441d-bb05-7a783544bff8.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "initialGenerated": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-14fa0c4d-7889-4932-836f-eb45d7389344.png",
+    "cleanupPrompt": "Use case: precise-object-edit. Change only the large histogram panel in this illustration. Remove ALL dark letter-like symbols, numerals and class glyph marks from the green bars, including the symbol at the top of the tall middle bar and the row of label-like marks at the bottom. Leave the bars as simple solid unlettered rectangular green bars on the same dark grid. Preserve the visual story of one exceptionally tall bar among many short bars. Keep the entire rest of the image unchanged: the exact Ensign Demir face, age, hair, earpiece, clothing, hands, pose and lighting, his wrist terminal, the brass-framed display, the two abstract waveform panels on the right including ARIA's waveform ring, room and camera. No letters, numerals, captions, logos, marks resembling writing, extra people or humanoid AI. Output1536x1024 landscape.",
+    "cleanupReason": "Removed inherited label-like class glyphs from the histogram.",
+    "webpBytes": 106436,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "9d55e97ff46644a5089b455102d87220915e2460ec1dffbec96611e0d4c2cbd1",
+    "selectedPngSha256": "534ff79fc2493899285c3cbacd2928afbfc6ebb1e99565c5c78565a992bcad8f"
+  },
+  {
+    "id": "anomaly-detection/threshold-tuning",
+    "assetId": "anomaly-detection/threshold-tuning",
+    "location": "bridge",
+    "cast": "Chief Nazari (multitool), Dr. Farah (stylus)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Chief Nazari",
+        "surname": "Nazari",
+        "slug": "chief-nazari",
+        "identity": "a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Fourteen flags in a week and twelve were cosmic background; Nazari, who checked every one herself, orders the threshold set so DEEP SCAN fires only on real anomalies, while Farah warns that setting it too high misses the genuine article.",
+    "alt": "Nazari and Farah face a bridge holo table as fourteen alert blips scatter the displays, twelve dimmed to false alarms.",
+    "body": "Mid shot from the port-forward quarter looking aft, weary duty lighting, forward displays scattered with fourteen small alert blips of which twelve are dimmed to embers, the holo table showing a threshold line sliding across an error distribution curve; Nazari a recognizable crew leaning on the table edge with her multitool set down beside her hand, Farah opposite gesturing with her stylus",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/chief-nazari.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Chief Nazari: a woman aged 48, weathered tan skin, mature facial lines, practical short dark hair with a gray streak, scuffed gunmetal and olive engineering coverall, a multitool. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Dr. Farah, Chief Nazari. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Fourteen flags in a week and twelve were cosmic background; Nazari, who checked every one herself, orders the threshold set so DEEP SCAN fires only on real anomalies, while Farah warns that setting it too high misses the genuine article.\nScene action and equipment: Mid shot from the port-forward quarter looking aft, weary duty lighting, forward displays scattered with fourteen small alert blips of which twelve are dimmed to embers, the holo table showing a threshold line sliding across an error distribution curve; Nazari a recognizable crew leaning on the table edge with her multitool set down beside her hand, Farah opposite gesturing with her stylus\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.",
+    "target": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/anomaly-detection__threshold-tuning-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-5f8541de-24f7-44a0-824c-99441d6eab61.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 172202,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "459a0a015358ef8aef58d3616f104d0de5cf0f429f3bc5da54c029ac97b60899",
+    "selectedPngSha256": "9b8a55af692b6956c010120f979afc7465598f872be6bf7832b9ac6868c4b190"
+  },
+  {
+    "id": "advanced-time-series/temporal-attention",
+    "assetId": "advanced-time-series/temporal-attention",
+    "location": "bridge",
+    "cast": "Ensign Demir as a small lone silhouette, face averted (glowing wrist terminal)",
+    "characters": [
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Demir reads the attention weights as a heatmap over time: two hot ranges, the amplitude spike at step 4 and the frequency shift at step 77, seventy-three steps apart, the interval drawn as geometry.",
+    "alt": "A lone silhouette studies a bridge holo where two glowing hotspots on a heat band flank a long stretch of signal.",
+    "body": "Close shot on the central holo table from the port-forward quarter, duty lighting, the holo projecting a waveform with a heat band running beneath it, two glowing hotspots far apart joined by a measured arc, Demir a small lone recognizable crew leaning over the table with his wrist terminal lit, faces clearly visible in three-quarter view, consoles soft in the background",
+    "refs": [
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 1 human character: Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Demir reads the attention weights as a heatmap over time: two hot ranges, the amplitude spike at step 4 and the frequency shift at step 77, seventy-three steps apart, the interval drawn as geometry.\nScene action and equipment: Close shot on the central holo table from the port-forward quarter, duty lighting, the holo projecting a waveform with a heat band running beneath it, two glowing hotspots far apart joined by a measured arc, Demir a  recognizable crew leaning over the table with his wrist terminal lit, faces clearly visible in three-quarter view, consoles soft in the background\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.\nErase every inherited letter-like class glyph, digit and fake writing mark from old screens. Replace those marks with clean unlettered geometric chart elements such as plain bars, dots and curves. Keep task meaning, readable recognizable faces and exact cast. No invented mathematical symbols used as labels.",
+    "target": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/advanced-time-series__temporal-attention-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/advanced-time-series/temporal-attention.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-471d09e6-1765-44e7-a8a7-6f4228d26525.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 115602,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "f038060dbd67969f6faa984390d3b9deba51c7f05a5adcd82142b94e971d1575",
+    "selectedPngSha256": "9c9cc457c907ada12e1042c25bdd29a09647e9eac47f165881c713e6ad1d4417"
+  },
+  {
+    "id": "advanced-time-series/forecasting",
+    "assetId": "advanced-time-series/forecasting",
+    "location": "bridge",
+    "cast": "Dr. Farah and Commander Mirza as small silhouettes, faces averted (stylus; brass chronometer at her station)",
+    "characters": [
+      {
+        "name": "Commander Mirza",
+        "surname": "Mirza",
+        "slug": "commander-mirza",
+        "identity": "a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer"
+      },
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      }
+    ],
+    "hasAria": false,
+    "moment": "A hushed chain of logic on the third watch: Farah says if they can predict it, it has structure, and structure is not noise; Mirza finishes the sentence for her: then someone, or something, is sending it.",
+    "alt": "Under starlight two silhouettes on a dim bridge weigh a holo forecast whose trace fans into a widening cone.",
+    "body": "Wide shot from the port-forward quarter looking aft, after-hours light with consoles dimmed and starlight dominant through the viewport band, the holo table low-glowing a forecast trace that fans forward into a widening cone, Mirza a recognizable crew on the raised tier beside the brass chronometer with Farah below at the table, faces clearly visible in three-quarter view",
+    "refs": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/dr-farah.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Commander Mirza: a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Commander Mirza, Dr. Farah. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: A hushed chain of logic on the third watch: Farah says if they can predict it, it has structure, and structure is not noise; Mirza finishes the sentence for her: then someone, or something, is sending it.\nScene action and equipment: Wide shot from the port-forward quarter looking aft, after-hours light with consoles dimmed and starlight dominant through the viewport band, the holo table low-glowing a forecast trace that fans forward into a widening cone, Mirza a recognizable crew on the raised tier beside the brass chronometer with Farah below at the table, faces clearly visible in three-quarter view\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.\nErase every inherited letter-like class glyph, digit and fake writing mark from old screens. Replace those marks with clean unlettered geometric chart elements such as plain bars, dots and curves. Keep task meaning, readable recognizable faces and exact cast. No invented mathematical symbols used as labels.",
+    "target": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/advanced-time-series__forecasting-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/advanced-time-series/forecasting.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-c693a888-c5ca-4dd7-bcfc-464f2c4ea19c.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 149264,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "05efdb1f18a1214eaa3d173451d774cdef536923278658b7ce74e0b7b8ba5d84",
+    "selectedPngSha256": "b1ddc8f197c550deb86d9bbcc502b7e13d1f0479e3b7397d021d6f65b0a0b9ad"
+  },
+  {
+    "id": "advanced-time-series/kalman-filters",
+    "assetId": "advanced-time-series/kalman-filters",
+    "location": "lab",
+    "cast": "Ensign Demir and Dr. Farah as small silhouettes, faces averted (glowing wrist terminal; stylus)",
+    "characters": [
+      {
+        "name": "Dr. Farah",
+        "surname": "Farah",
+        "slug": "dr-farah",
+        "identity": "an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "Eight days of pulse intervals wander, but only wander downhill; Demir's moving average either lags the drift or inherits the noise, and in asking for an alpha that adjusts itself he specifies the Kalman filter without knowing its name. Farah supplies it.",
+    "alt": "On a lab display a descending scatter of interval marks carries two imperfect smoothing curves as two silhouettes confer.",
+    "body": "Mid shot across the workbench from the corridor-side corner, working light with the spectrograph column rippling, a bench display plotting a descending scatter of interval marks threaded by two smoothing curves, one trailing low behind the drift and one jittering with the noise, Demir a recognizable crew at the bench with Farah's recognizable crew beyond, faces clearly visible in three-quarter view",
+    "refs": [
+      "docs/art-refs/deep-orbit/dr-farah.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Dr. Farah: an adult woman aged 38, warm olive-tan skin, dark wavy hair loosely tied back with escaping strands, slate-gray lab layer, green AR lens over one eye, a stylus. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Dr. Farah, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: Eight days of pulse intervals wander, but only wander downhill; Demir's moving average either lags the drift or inherits the noise, and in asking for an alpha that adjusts itself he specifies the Kalman filter without knowing its name. Farah supplies it.\nScene action and equipment: Mid shot across the workbench from the corridor-side corner, working light with the spectrograph column rippling, a bench display plotting a descending scatter of interval marks threaded by two smoothing curves, one trailing low behind the drift and one jittering with the noise, Demir a recognizable crew at the bench with Farah's recognizable crew beyond, faces clearly visible in three-quarter view\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.\nErase every inherited letter-like class glyph, digit and fake writing mark from old screens. Replace those marks with clean unlettered geometric chart elements such as plain bars, dots and curves. Keep task meaning, readable recognizable faces and exact cast. No invented mathematical symbols used as labels.",
+    "target": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/advanced-time-series__kalman-filters-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/advanced-time-series/kalman-filters.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-e250b450-c824-434d-9e12-181bac2c4f74.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "initialGenerated": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-9381833c-3c81-442c-82d4-1df463f2a0d5.png",
+    "cleanupPrompt": "Use case: precise-object-edit. Image1 is the edit target. Image2 is the canonical Dr. Farah identity reference. Change only one detail on Dr. Farah, the woman on the right: restore her signature faint translucent green rounded-rectangular AR lens over one eye, matching the placement, green hue and transparent glass appearance in Image2. Her eye must remain visible through the lens. Preserve the exact same face, hair, expression, age lines, outfit, stylus, body pose and hands. Preserve Ensign Demir completely. Keep all lab furnishings, room geometry, descending chart curves, bars and wordless screens, camera, lighting and cel-shaded style unchanged. Do not add lettering, numbers, other people or any other changes. Output1536x1024 landscape.",
+    "cleanupReason": "Restored Farah's signature translucent green AR lens.",
+    "webpBytes": 178312,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "24ae67d6037d46e4bc1ccee4074b172b5e44d0c4c40797176bf568383958558e",
+    "selectedPngSha256": "8abde6fbe872fbf9e33261a349c6325fc5bbd5a53a928f86a2e506c339f4f02a"
+  },
+  {
+    "id": "capstone/system-architecture",
+    "assetId": "capstone/system-architecture",
+    "location": "bridge",
+    "cast": "Commander Mirza (brass chronometer at her station) and Ensign Demir (wrist terminal), silhouettes",
+    "characters": [
+      {
+        "name": "Commander Mirza",
+        "surname": "Mirza",
+        "slug": "commander-mirza",
+        "identity": "a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer"
+      },
+      {
+        "name": "Ensign Demir",
+        "surname": "Demir",
+        "slug": "ensign-demir",
+        "identity": "a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal"
+      }
+    ],
+    "hasAria": false,
+    "moment": "The main display reads pulse interval 47.0 seconds, down from 73.4 when the mission began; Mirza stands and orders ten modules of separate pieces assembled into one system. Demir lays out five typed pipeline stages that must run on the repaired 512 MB bridge dashboard, the box with one prior fatality on its record.",
+    "alt": "Mirza stands at the command tier as Demir projects five pipeline stages over the holo table, the pulse interval ticking on the main display.",
+    "body": "Full-width shot from the port-forward quarter under duty lighting, the forward display carrying a single slow pulse waveform above a large interval arc, the holo table projecting five linked component blocks, Mirza a small upright recognizable crew on the raised tier beside the brass chronometer while Demir's recognizable crew stands at the table, wrist terminal raised toward the projection",
+    "refs": [
+      "docs/art-refs/deep-orbit/commander-mirza.png",
+      "docs/art-refs/deep-orbit/ensign-demir.png"
+    ],
+    "owner": "character_ui_audit",
+    "prompt": "Use case: identity-preserve. Asset: Deep Orbit narrative lesson illustration, landscape 3:2.\nImage 1 is the scene edit target. Preserve the recognizable room, instruments, furniture, green #6BAA8A interfaces and warm brass #A89060 trim.\nImage 2 is the identity reference for Commander Mirza: a Black woman aged 52, dark brown skin, visibly mature face, close-cropped natural hair silvered at the temples, charcoal command jacket with brass piping and a blank brass chest chronometer. Preserve that exact face, hair, skin tone, age and wardrobe.\nImage 3 is the identity reference for Ensign Demir: a young man aged 25, light-medium warm skin, tousled dark hair, light uneven stubble, slate-blue junior uniform, comms earpiece and glowing wrist terminal. Preserve that exact face, hair, skin tone, age and wardrobe.\nShow EXACTLY 2 human characters: Commander Mirza, Ensign Demir. No additional people, duplicates, bystanders or background crew.\nDo not add an AI person, robot or extra figure.\nStory moment: The main display reads pulse interval 47.0 seconds, down from 73.4 when the mission began; Mirza stands and orders ten modules of separate pieces assembled into one system. Demir lays out five typed pipeline stages that must run on the repaired 512 MB bridge dashboard, the box with one prior fatality on its record.\nScene action and equipment: Full-width shot from the port-forward quarter under duty lighting, the forward display carrying a single slow pulse waveform above a large interval arc, the holo table projecting five linked component blocks, Mirza a upright recognizable crew on the raised tier beside the brass chronometer while Demir's recognizable crew stands at the table, wrist terminal raised toward the projection\nReplace every black shadow figure with the actual reference character. Use medium narrative framing, naturally posed three-quarter views, readable facial lighting and clearly visible eyes and expressions. The characters look at each other or their work while their faces remain visible to the viewer. Reframe closer or adjust the camera within the same room as needed. Keep the relevant story display visible. No faceless silhouettes, black cutouts, hidden faces or back-only figures. Preserve the mature women's age markers.\nMatch the portraits' clean cel-shaded cartoon style, bold consistent linework, restrained texture and one soft key light. Screens show only wordless waveforms, charts, dials, grids and abstract shapes. No letters, words, abbreviations, numerals, labels, captions, logos, watermarks or marks resembling writing anywhere. Never draw human faces on a screen.\nFinal framing priority: show every character's actual face and eyes clearly, not a distant miniature. Use a medium story shot with natural three-quarter faces lit by a soft warm key and green console fill. Faces should be roughly 100 to 160 pixels high within the 1536x1024 image. Reposition characters or camera within the same room as needed to keep both their faces and the task display readable. Preserve exact cast count. Create a single integrated illustration, not a collage or portrait montage. Output 1536x1024 pixels.\nErase every inherited letter-like class glyph, digit and fake writing mark from old screens. Replace those marks with clean unlettered geometric chart elements such as plain bars, dots and curves. Keep task meaning, readable recognizable faces and exact cast. No invented mathematical symbols used as labels.",
+    "target": "apps/web/public/scenes/deep-orbit/capstone/system-architecture.webp",
+    "status": "shipped",
+    "method": "built-in image_gen",
+    "selectedPng": "art-src/scenes/capstone__system-architecture-openai-20261106.png",
+    "shipWebp": "apps/web/public/scenes/deep-orbit/capstone/system-architecture.webp",
+    "generatedSource": "/Users/amira.salah/.codex/generated_images/01a1b22c-6da5-78d1-aad2-b87fc259ee32/exec-d3a934ab-a9d5-46f7-9d74-31defafe2035.png",
+    "visualReview": "Exact canonical cast, visible recognizable three-quarter faces, age and outfit markers retained, relevant story displays visible, no extra human figures, no inherited writing.",
+    "webpBytes": 181542,
+    "webpQuality": 80,
+    "width": 1536,
+    "height": 1024,
+    "webpSha256": "107fd43d4ae2b944f2674752305672604c2dfc727ce47aca06bb2c89069b2e7b",
+    "selectedPngSha256": "522c27f813177cbdd8d353cd811700fb2ae94838bff8cb8e138f0e16004dfd86"
+  }
+]

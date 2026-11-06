@@ -1,6 +1,7 @@
 import { worlds } from "@tensorcraft/worlds";
 import { AnimatedAvatar } from "@tensorcraft/ui/animated-avatar";
 import { portraitSources } from "@/lib/character-art";
+import { characterDisplayRole } from "@/lib/lesson-characters";
 
 /**
  * The crew, on /learn: the story dimension made visible with the shipped
@@ -24,6 +25,7 @@ export function CrewStrip() {
           <AnimatedAvatar
             name={c.name}
             src={portraitSources(WORLD, c).src}
+            isAI={c.isAI}
             size={72}
           />
           <div className="flex flex-col">
@@ -32,7 +34,7 @@ export function CrewStrip() {
             </span>
             {c.role && (
               <span className="font-mono text-xs md:text-sm text-text-muted">
-                {c.role}
+                {characterDisplayRole(WORLD, c)}
               </span>
             )}
           </div>

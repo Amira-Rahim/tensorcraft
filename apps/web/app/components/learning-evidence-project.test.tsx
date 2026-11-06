@@ -4,8 +4,10 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { SystemEvidenceStage } from "@/lib/system-evidence";
 import type { LearningEvidenceSnapshot } from "@/lib/learning-evidence-types";
 
 const mocks = vi.hoisted(() => ({
@@ -14,6 +16,8 @@ const mocks = vi.hoisted(() => ({
     (event: string, session: { user: { id: string } } | null) => void
   >(),
 }));
+
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: vi.fn() }) }));
 
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
@@ -120,6 +124,8 @@ function changeAccount(owner: string | null) {
 }
 
 async function openCapturedTables() {
+  const saved = await screen.findByText("Saved run: All checks passed");
+  if (!saved.parentElement?.hasAttribute("open")) fireEvent.click(saved);
   const summary = await screen.findByText("All captured tables");
   expect(summary.parentElement).not.toHaveAttribute("open");
   fireEvent.click(summary);
@@ -145,6 +151,7 @@ describe("project normalization records", () => {
         starterCode="starter code"
       />,
     );
+    fireEvent.click(await screen.findByText("Saved run: All checks passed"));
     expect(
       await screen.findByText(/Saved results from earlier code/),
     ).toBeVisible();
@@ -324,5 +331,84 @@ describe("project normalization records", () => {
     );
     expect(model).not.toHaveTextContent("alice captured result");
     expect(data).not.toHaveTextContent("Network captured output");
+  });
+  it("keeps local runs within their matching project stage and separates server practice", async () => {
+    mocks.list.mockResolvedValue([]);
+    const stages: SystemEvidenceStage[] = (
+      ["data", "model", "evaluation"] as const
+    ).map((id) => ({
+      id,
+      title: id === "data" ? "Data" : id === "model" ? "Model" : "Evaluation",
+      purpose: "Practice for this stage",
+      completedLessons: 1,
+      due: [],
+      work: [
+        {
+          label: "Recorded exercise attempt",
+          href: "/dashboard",
+          detail: "Browser-reported practice",
+        },
+      ],
+      next: { label: "Continue practice", href: "/dashboard", detail: "" },
+    }));
+    render(
+      <LearningEvidenceProject
+        userId="alice"
+        currentVersion="current-version"
+        starterCode="starter code"
+        network={{
+          currentVersion: "network-version",
+          starterCode: "network starter",
+        }}
+        evaluation={{
+          currentVersion: "evaluation-version",
+          starterCode: "evaluation starter",
+        }}
+        stages={stages}
+      />,
+    );
+    await waitFor(() =>
+      expect(mocks.list).toHaveBeenCalledWith(
+        "account:alice",
+        "deep-scan-eval",
+      ),
+    );
+    const evaluationStage = screen.getByText("Evaluation", {
+      selector: "summary",
+    }).parentElement!;
+    expect(
+      within(evaluationStage).getByRole("region", {
+        name: "Saved evaluation runs",
+        hidden: true,
+      }),
+    ).not.toBeVisible();
+    fireEvent.click(
+      within(evaluationStage).getByText("Evaluation", { selector: "summary" }),
+    );
+    expect(
+      within(evaluationStage).getByRole("region", {
+        name: "Saved evaluation runs",
+      }),
+    ).toBeVisible();
+    expect(
+      within(evaluationStage).queryByRole("region", {
+        name: "Saved network runs",
+        hidden: true,
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(evaluationStage).getByText("Practice and review records"),
+    ).toBeVisible();
+    expect(
+      within(evaluationStage).getByText("Recorded exercise attempt"),
+    ).toBeVisible();
+    expect(
+      within(evaluationStage).getByRole("link", {
+        name: "Open the evaluation exercise",
+      }),
+    ).toHaveAttribute(
+      "href",
+      "/worlds/deep-orbit/training-loop/evaluating-deep-scan#step-challenge",
+    );
   });
 });

@@ -266,7 +266,7 @@ Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md`
    - Update existing `dashboard/page.tsx` and `dashboard-view.tsx` tests
 
 4. **Phase 4 - Documentation (depends on Phase 3):**
-   - Update `docs/dev-plan.md` §11b marking the visualization entry `[x]` with completion date
+   - Update [dev-plan.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md) §11b marking the visualization entry `[x]` with completion date
    - Update §5b cross-reference
    - Append Session log entry
 
@@ -278,7 +278,7 @@ Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md`
 
 ## 13. Related documents
 
-- Dev plan: `docs/dev-plan.md` §11b (new shared components), §5b (dashboard), §5a (progress tracking)
+- Dev plan: [dev-plan.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md) §11b (new shared components), §5b (dashboard), §5a (progress tracking)
 - Prior Phase 11 decisions: `docs/superpowers/specs/2026-04-15-design-system-color-overhaul.md`
 - Accessibility audit: `docs/audits/accessibility-audit-2026-04-20.md`
 - Schema source: `apps/api/src/routes/skill-events.ts:17` (`VALID_SKILL_AXES`), `packages/supabase/migrations/` (skill_genome, exercise_attempts tables)

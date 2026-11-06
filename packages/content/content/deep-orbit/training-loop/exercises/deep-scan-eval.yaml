@@ -197,215 +197,94 @@ solutionCode: |
   const testAcc = evalResult[1].dataSync()[0];
   const verdict = diagnose(trainAcc, testAcc);
 testCode: |
+  // Capture completes before the harness schedules any diagnosis checks.
+  const evaluationCapture = captureEvaluation({
+    model: typeof model === 'undefined' ? null : model,
+    history: typeof history === 'undefined' ? null : history,
+    testX: typeof testX === 'undefined' ? null : testX,
+    testY: typeof testY === 'undefined' ? null : testY,
+    evalResult: typeof evalResult === 'undefined' ? null : evalResult,
+    trainAcc: typeof trainAcc === 'undefined' ? null : trainAcc,
+    testAcc: typeof testAcc === 'undefined' ? null : testAcc,
+    verdict: typeof verdict === 'undefined' ? null : verdict,
+  });
+  evaluationCapture.artifacts.forEach((artifact) => recordResult(artifact));
+  const observed = evaluationCapture.context;
+
   describe('Train DEEP SCAN, Then Read the Gap', () => {
     it('trained for exactly 30 epochs', () => {
-      expect(
-        history,
-        'history is empty. Await model.fit() and store the returned training record.',
-      ).toBeDefined();
-      expect(
-        history.history,
-        'The record carries a history object holding one entry per epoch for every metric the run tracked.',
-      ).toBeDefined();
-      expect(
-        history.history.loss,
-        'The loss trace holds one entry per epoch, so its length is the epoch count the instructions asked for.',
-      ).toHaveLength(30);
+      expect(observed.requestedEpochs,
+        'Await the supplied model.fit call with epochs: 30.').toBe(30);
+      expect(observed.completedEpochs,
+        'The recorded fit must finish all 30 epochs.').toBe(30);
     });
     it('records finite losses without imposing a training outcome', () => {
-      expect(history).toBeDefined();
-      expect(history.history.loss.every((v) => Number.isFinite(v) && v >= 0)).toBe(true);
+      expect(observed.trainingLogStatus,
+        'Use the supplied training call without custom callbacks. The check needs its original loss and accuracy log.').toBe('available');
+      expect(Number.isFinite(evaluationCapture.trainingLoss)).toBe(true);
+      expect(evaluationCapture.trainingLoss >= 0).toBe(true);
     });
-    it('the training call saw the 100 archive rows and none of the 43 held out', () => {
-      // The lesson's whole point, and the one thing this grader used to leave
-      // unchecked: a submission that trained on the archive AND the held-out
-      // slice cleared all eight tests on 2026-09-08 (audit round 5). Training
-      // on the slice makes the held-out accuracy easier, not harder, so no
-      // accuracy check anywhere can catch it. These two counters can.
-      expect(
-        history,
-        'history is empty. Await model.fit() and store the returned training record.',
-      ).toBeDefined();
-      expect(
-        history.params,
-        'The record keeps the settings the run used, including how many rows went into it.',
-      ).toBeDefined();
-      expect(
-        history.params.samples,
-        'Train on all 100 supplied training rows. Keep the test rows out and do not hold back an extra validationSplit in this exercise.',
-      ).toBe(100);
-      expect(
-        model.optimizer.iterations,
-        'Use 30 epochs over 100 rows, with batch size 16. The model must record the resulting weight updates.',
-      ).toBe(210);
+    it('the training call saw the 100 supplied rows and none of the 43 held out', () => {
+      expect(observed.trainingRows,
+        'Train on all 100 training rows. Keep the test rows separate.').toBe(100);
+      expect(observed.fitHistoryStatus,
+        'Use one recorded fit on this model for 30 epochs with batch size 16. Keep test rows and extra validation data out of training.').toBe('matched');
+      expect(observed.recordingStatus,
+        'The recorded training history must be complete. Await training and use the supplied fitting procedure.').toBe('complete');
     });
-    it('the fit used the supplied training values, not an equal-sized mixture with test rows', () => {
-      const fit = tf.__fits.find((entry) => entry && entry.history === history);
-      expect(fit, 'No recorded model.fit call produced this history. Train the supplied model.').toBeDefined();
-      expect(fit.x && fit.x.complete, 'The check could not inspect the training inputs. Use the supplied tensor.').toBe(true);
-      expect(fit.y && fit.y.complete, 'The check could not inspect the training labels. Use the supplied tensor.').toBe(true);
-      expect(fit.x.shape).toEqual(trainX.shape);
-      expect(fit.y.shape).toEqual(trainY.shape);
-      const pairedRows = (xs, ys) => Array.from({ length: xs.shape[0] }, (_, i) =>
-        JSON.stringify([xs.values.slice(i * xs.shape[1], (i + 1) * xs.shape[1]), ys.values[i]])).sort();
-      const suppliedX = { shape: trainX.shape, values: Array.from(trainX.dataSync()) };
-      const suppliedY = { values: Array.from(trainY.dataSync()) };
-      expect(pairedRows(fit.x, fit.y),
-        'Keep the supplied training rows and their paired labels. Reordering pairs is valid. Substituting test rows is leakage.').toEqual(pairedRows(suppliedX, suppliedY));
+    it('uses every supplied training pair and rejects an equal-sized mixture with test rows', () => {
+      expect(observed.trainingSourceStatus,
+        'Keep every supplied training row with its paired label. Reordering pairs is valid. Changing values or substituting test rows fails this check.').toBe('matched');
     });
     it('evaluates the original held-out rows and labels', () => {
-
-      // The slice is pinned first. Without the three late-confirmed rows
-      // every run scored a round 1.0 on both sides, so a typed-in 1 passed as
-      // "the number this run produced" (round 7, 2026-09-13). Measured over
-      // 60 runs with them in: the run misses all three every time, held-out
-      // accuracy lands at 0.9302 and the gap at 0.07. Pinning the slice
-      // stops the round number being restored by trimming it.
-      expect(
-        testX.shape,
-        'Keep the supplied 43 test rows: 20 calm examples, 20 flagged examples, and the three story cases.',
-      ).toEqual([43, 3]);
-      expect(testY.shape, 'testY has to carry one label per held-out row, 43 of them.').toEqual([
-        43, 1,
-      ]);
-      const tail = testX.slice([40, 0], [3, 3]).arraySync();
-      const want = [
-        [0.3, 0.68, 0.34],
-        [0.26, 0.75, 0.29],
-        [0.33, 0.71, 0.36],
-      ];
-      tail.forEach((row, i) =>
-        row.forEach((v, j) => {
-          expect(
-            v,
-            'Row ' +
-              (40 + i) +
-              ' of testX is not the late-confirmed window the starter placed there. Keep the supplied rows regardless of whether this run classifies them correctly.',
-          ).toBeCloseTo(want[i][j], 4);
-        }),
-      );
-      expect(
-        Array.from(testY.dataSync()).slice(40),
-        'The three late-confirmed rows are flagged windows, so their labels are 1.',
-      ).toEqual([1, 1, 1]);
-
-
-      expect(
-        evalResult,
-        'evalResult is still null. model.evaluate returns its scores directly, with no await needed.',
-      ).toBeDefined();
-      expect(
-        Array.isArray(evalResult),
-        'With a metric compiled in, evaluate returns a list: the loss first, then each compiled metric in order.',
-      ).toBe(true);
-      expect(
-        evalResult.length,
-        'This model compiles one metric, so the list holds the loss and that metric.',
-      ).toBe(2);
-      const fresh = model.evaluate(testX, testY);
-      expect(
-        evalResult[0].dataSync()[0],
-        'The loss you stored does not match what the model scores on the held-out slice now.',
-      ).toBeCloseTo(fresh[0].dataSync()[0], 4);
-      expect(
-        evalResult[1].dataSync()[0],
-        'The accuracy you stored does not match what the model scores on the held-out slice now, so evaluate ran on something else.',
-      ).toBeCloseTo(fresh[1].dataSync()[0], 4);
-
-  });
-
+      expect(evaluationCapture.captureUnavailable,
+        'The evaluation report uses the four output slots. Remove extra recordResult calls to make room. Your earlier output remains available.').toBe(null);
+      expect(observed.evaluationSourceStatus,
+        'Keep all 43 supplied test rows and labels in their original order.').toBe('matched');
+      expect(observed.modelSupportStatus,
+        'Keep the supplied three-layer sigmoid classifier compiled with binary crossentropy and accuracy.').toBe('supported');
+      expect(observed.measurementStatus,
+        'The measured accuracy must agree with the captured decisions from one model state.').toBe('consistent');
+      expect(observed.submittedEvaluationStatus,
+        'Store the loss and accuracy returned by model.evaluate(testX, testY). They must agree with the measured model output.').toBe('matched');
+    });
+    it('keeps the trained model state for evaluation', () => {
+      expect(observed.modelStateStatus,
+        'Evaluate the model produced by the recorded fit. The check could not confirm unchanged weights and configuration.').toBe('matched');
+    });
     it('diagnose reports a large gap above the stated boundary', () => {
-      expect(
-        diagnose(0.95, 0.6),
-        'The training score exceeds the held-out score by more than 0.15. Report the gap. Its cause needs investigation.',
-      ).toBe('large-gap');
-      expect(
-        diagnose(0.99, 0.83),
-        'Compare the training and validation scores. Their gap determines this result.',
-      ).toBe('large-gap');
-      expect(diagnose(0.9, 0.74), 'This spread clears the cutoff the instructions name.').toBe(
-        'large-gap',
-      );
-      expect(
-        diagnose(0.9, 0.76),
-        'The gap is below the stated cutoff, so this rule raises no gap warning. That does not establish generalization.',
-      ).toBe('no-gap-warning');
-      expect(
-        diagnose(0.93, 0.91),
-        'These scores trigger neither condition. Return no-gap-warning. This is not a release decision.',
-      ).toBe('no-gap-warning');
+      expect(diagnose(0.95, 0.6), 'A gap above 0.15 returns large-gap.').toBe('large-gap');
+      expect(diagnose(0.99, 0.83)).toBe('large-gap');
+      expect(diagnose(0.9, 0.74)).toBe('large-gap');
+      expect(diagnose(0.9, 0.76), 'A smaller gap raises no gap warning.').toBe('no-gap-warning');
+      expect(diagnose(0.93, 0.91)).toBe('no-gap-warning');
     });
     it('diagnose reports low scores only after checking the gap', () => {
-      expect(
-        diagnose(0.55, 0.52),
-        'Both scores are below 0.7 and the gap is small. Report low-scores without assigning a cause.',
-      ).toBe('low-scores');
-      expect(
-        diagnose(0.69, 0.69),
-        'Both numbers sit just under the cutoff the instructions name.',
-      ).toBe('low-scores');
-      expect(
-        diagnose(0.7, 0.7),
-        'Both scores equal 0.7. The low-scores rule uses a strict comparison, so equality does not trigger it.',
-      ).toBe('no-gap-warning');
-      expect(diagnose(0.71, 0.71), 'Both scores exceed the stated low-score cutoff.').toBe(
-        'no-gap-warning',
-      );
-      expect(
-        diagnose(0.71, 0.69),
-        'Only one of the two is below the cutoff, and the rule needs both.',
-      ).toBe('no-gap-warning');
-      expect(
-        diagnose(0.69, 0.71),
-        'Only one of the two is below the cutoff in this pair too, with the order flipped.',
-      ).toBe('no-gap-warning');
-      expect(
-        diagnose(0.68, 0.4),
-        'Both scores are low, but the gap exceeds 0.15. Check the gap first and return large-gap.',
-      ).toBe('large-gap');
+      expect(diagnose(0.55, 0.52)).toBe('low-scores');
+      expect(diagnose(0.69, 0.69)).toBe('low-scores');
+      expect(diagnose(0.7, 0.7), 'The low-score comparison is strict. Equality does not trigger it.').toBe('no-gap-warning');
+      expect(diagnose(0.71, 0.71)).toBe('no-gap-warning');
+      expect(diagnose(0.71, 0.69)).toBe('no-gap-warning');
+      expect(diagnose(0.69, 0.71)).toBe('no-gap-warning');
+      expect(diagnose(0.68, 0.4), 'Check the gap before checking whether both scores are low.').toBe('large-gap');
     });
-    it('trainAcc and testAcc are the two numbers THIS run produced', () => {
-      expect(
-        history,
-        'history is empty. Await model.fit() and store the returned training record.',
-      ).toBeDefined();
-      expect(
-        history.history,
-        'The record carries its per-epoch traces in a history object.',
-      ).toBeDefined();
-      const acc = history.history.acc;
-      expect(
-        acc,
-        'No accuracy trace came back. TFJS files the accuracy metric under a short key, one entry per epoch.',
-      ).toBeDefined();
-      expect(acc, 'The accuracy trace holds one entry per epoch, like the loss trace.').toHaveLength(
-        30,
-      );
-      expect(
-        trainAcc,
-        'trainAcc has to be the final training accuracy of this run, which is the last entry of that trace.',
-      ).toBe(acc[acc.length - 1]);
-      const fresh = model.evaluate(testX, testY);
-      expect(
-        testAcc,
-        'testAcc has to be the held-out accuracy of this run. evaluate returns tensors, so the number comes out with dataSync or data.',
-      ).toBeCloseTo(fresh[1].dataSync()[0], 4);
+    it('trainAcc and testAcc are the two numbers this run produced', () => {
+      expect(evaluationCapture.submitted.trainAcc,
+        'Read the final training accuracy from history.history.acc before changing the history.').toBe(evaluationCapture.trainingAccuracy);
+      expect(Number.isFinite(evaluationCapture.submitted.trainAcc)).toBe(true);
+      expect(Number.isFinite(evaluationCapture.submitted.testAcc)).toBe(true);
+      expect(Math.abs(evaluationCapture.submitted.testAcc - evaluationCapture.evaluationAccuracy) <= 1e-6,
+        'Read testAcc from evalResult[1].dataSync()[0].').toBe(true);
     });
     it('reports the rule applied to the actual measured scores', () => {
-      expect(typeof trainAcc).toBe('number');
-      expect(typeof testAcc).toBe('number');
-      expect(verdict).toBe(diagnose(trainAcc, testAcc));
-      recordResult({
-        kind: 'table', title: 'The scores from your evaluation run',
-        summary: 'Training values are the final fit log. Test values come from your held-out evaluation on 43 supplied fixture rows. They are not the story\'s 94% result.',
-        columns: ['Dataset', 'Rows', 'Loss', 'Accuracy'],
-        rows: [['Training', trainX.shape[0], history.history.loss[history.history.loss.length - 1], trainAcc], ['Held-out test', testX.shape[0], evalResult[0].dataSync()[0], testAcc]],
-      });
-      recordResult({
-        kind: 'text', title: 'Your gap check',
-        summary: 'This label describes the measured scores. It does not identify the cause or authorize release.',
-        text: verdict,
-      });
+      const training = evaluationCapture.trainingAccuracy;
+      const evaluation = evaluationCapture.evaluationAccuracy;
+      expect(Number.isFinite(training)).toBe(true);
+      expect(Number.isFinite(evaluation)).toBe(true);
+      const expected = training - evaluation > 0.15 ? 'large-gap'
+        : training < 0.7 && evaluation < 0.7 ? 'low-scores' : 'no-gap-warning';
+      expect(evaluationCapture.submitted.verdict,
+        'Apply the diagnosis rule to the recorded scores from this run. Its label does not identify a cause or authorize release.').toBe(expected);
     });
   });
 estimatedMinutes: 20

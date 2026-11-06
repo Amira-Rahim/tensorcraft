@@ -1,0 +1,807 @@
+[
+  {
+    "id": "foundations/introduction-to-tensors",
+    "asset": "apps/web/public/scenes/deep-orbit/foundations/introduction-to-tensors.webp",
+    "lessonFile": "packages/content/content/deep-orbit/foundations/01-introduction-to-tensors.mdx",
+    "section": "briefing",
+    "storyBeat": "Mirza asks Demir to begin investigating an unfamiliar signal. His immediate task is connecting twelve selected readings to a four-sensor chart.",
+    "intendedEmotion": "An inviting first assignment, with curiosity and a manageable first step inside a much larger mystery.",
+    "observed": "Mirza extends an open hand from the command tier while Demir looks toward her. A tall column of repeated waves and histogram shapes dominates the center. ARIA appears as a waveform on the left screen.",
+    "strengths": [
+      "The two human identities, uniforms and signature devices are recognizable. The open gesture and attentive exchange make the bridge feel welcoming.",
+      "The starfield and familiar command tier establish the adventure without an emergency."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The central spectacle does not show the current first task.",
+        "evidence": "The lesson starts with a flat list and a chart connection. The image instead gives the tallest object many already-organized waves and spectrum-like bars.",
+        "fix": "Replace the tower with a modest selected-reading tray and an adjacent chart awaiting input. Keep exact values and labels in the authored interface."
+      },
+      {
+        "severity": "low",
+        "finding": "The protagonists compete with too many equally bright instruments.",
+        "evidence": "The central tower, left ARIA ring and colored right display pull attention in three directions.",
+        "fix": "Lower secondary display contrast and let Mirza, Demir and one task surface form the main triangle."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the wide bridge welcome. Bring the task to Demir’s working height and make Mirza’s gesture invite him into it. A short, visible queue of selected data makes the first job feel achievable.",
+    "deletionRationale": "Keep a dedicated opening illustration. It establishes both the ship and the relationship that makes the learning task personal.",
+    "newArtOpportunity": "No extra opening or epilogue bitmap is needed. The learner’s actual four-line chart supplies the payoff.",
+    "delight": "strong",
+    "delightDirection": "Preserve the easy eye contact and open invitation. Let Demir have the small, expectant smile of someone about to make a useful thing work.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "partial",
+      "observation": "The same Mirza-and-Demir bridge image returns after four chart lines appear and Demir sends the recording to Farah. Its abstract tower does not show that small completed result.",
+      "recommendation": "Keep the establishing art if the actual chart stays prominent. Prefer a shared initial/final screen variant when revising the central display, without adding another full scene."
+    },
+    "assetSha256": "9ce6d4459494c1c617d0e6e07b80ce6d5e59fd543dd5643bceefcbf301580ca7",
+    "lessonSha256": "0a0cd049c5e4f4682c34acc782bd0aeb1c18567a8a112bc4aad48f6509ff334a",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "foundations/tensor-shapes",
+    "asset": "apps/web/public/scenes/deep-orbit/foundations/tensor-shapes.webp",
+    "lessonFile": "packages/content/content/deep-orbit/foundations/02-tensor-shapes.mdx",
+    "section": "briefing",
+    "storyBeat": "Farah checks that Demir’s twelve readings become three rows of four, then four sensor rows in time order.",
+    "intendedEmotion": "Pleasure in making an initially confusing arrangement click, with Farah as a curious collaborator.",
+    "observed": "Farah points toward a floating polyhedron in front of a dense wall display. A decorative wave divides into two similar perspective grids. A large waveform and several circular instruments occupy most of the wall.",
+    "strengths": [
+      "Farah’s AR lens, tied hair and lab layer remain identifiable. The stylus supplies an active gesture.",
+      "The brass bench instruments and green column clearly locate the scene in the lab."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The main diagram leaves the arrangement problem unclear.",
+        "evidence": "A wave branches into two similar grids. That could be conceptual shape shorthand, but it does not visibly distinguish the current 3-by-4 arrangement from its 4-by-3 transpose. The polyhedron adds another competing concept.",
+        "fix": "Replace the branch and polyhedron with one selected grid and its transposed arrangement, preserving the same twelve marked cells."
+      },
+      {
+        "severity": "medium",
+        "finding": "The scene reads as a generic science lecture at small size.",
+        "evidence": "Farah is relatively small beside a huge busy display, and the point of her gesture is an ornamental object.",
+        "fix": "Crop closer, reduce surrounding panels and give her gesture a clear destination in the selected data."
+      }
+    ],
+    "soulFit": "weak",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Make this a small visual puzzle. Farah can turn a transparent grid panel while the same four sensor colors stay together. Draw exact grid geometry in a controlled vector layer, then keep her face and stylus integrated with it.",
+    "deletionRationale": "The location and collaboration matter. Replace the misleading display treatment rather than removing the scene.",
+    "newArtOpportunity": "The live chart already delivers the epilogue’s grouping payoff. A second static lab image would repeat it.",
+    "delight": "mixed",
+    "delightDirection": "Let Farah look delighted by a simple rearrangement, as if she is inviting the learner to spot the trick. Reduce the wall of intimidating instruments.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "partial",
+      "observation": "The ending shows Farah applying the arrangement to450 moments and64 sensors. A generic lab grouping image can bridge the moments, but the current ornamental grids do not show the discovery.",
+      "recommendation": "A corrected grouping scene can serve both stages if it avoids presenting an exact full result. The actual output chart should carry the change in scale."
+    },
+    "assetSha256": "9df5b23790d44f6a3c11888739de7b1404af52c83bd56781a5528df9d976bc76",
+    "lessonSha256": "34ffb2c88c0b150d667fe5d473d4d4cc9cef440cb5ac209c3e1baf0b23093ef7",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "foundations/tensor-operations",
+    "asset": "apps/web/public/scenes/deep-orbit/foundations/tensor-operations.webp",
+    "lessonFile": "packages/content/content/deep-orbit/foundations/03-tensor-operations.mdx",
+    "section": "briefing",
+    "storyBeat": "Demir’s wrong multiplication has stalled the sensor feed. Nazari needs a working amplifier before more readings arrive.",
+    "intendedEmotion": "A recoverable, slightly comic mistake under practical pressure.",
+    "observed": "Nazari leans across the console with a multitool and an emphatic expression. Demir has one hand in his hair and one on the controls. Behind them, many stacked traces sit under a large tangled line motif.",
+    "strengths": [
+      "This is a specific interaction rather than two people posing beside a graph. Their opposing postures carry both the mistake and Nazari’s impatience.",
+      "Faces, age markers, earpiece, wrist terminal and workwear read well. The foreground makes the human exchange legible even when the background shrinks."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The knot can look like an attractive signal pattern instead of a stopped computation.",
+        "evidence": "The central tangle is symmetrical and bright, and the surrounding traces remain regular. There is little visual evidence of a failed connection.",
+        "fix": "Use a small, clearly interrupted connector or stalled input slots on the working console. Keep the abstract knot subordinate."
+      },
+      {
+        "severity": "low",
+        "finding": "Nazari’s anger is close to overpowering the joke.",
+        "evidence": "Her leaning posture, open mouth and knitted brows make the scene more scolding than the dry coffee-ration threat later in the lesson.",
+        "fix": "Soften the mouth slightly and keep the precise, raised-brow impatience."
+      },
+      {
+        "severity": "high",
+        "finding": "The failure artwork is also reused after the successful fix.",
+        "evidence": "The epilogue says the amplifier works and Nazari notices a repeated coordinated ripple. Reusing a distressed Demir, confrontational Nazari and frozen knot visually restores the crash.",
+        "fix": "Add an aftermath variant: a steady working console, a common ripple marked across several channels, Demir relieved and Nazari leaning in with interest. Keep the full64-channel claim in text or authored graphics."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "keep",
+    "priority": "P2",
+    "artDirection": "Retain the camera distance and action. If touching it again, clarify the stalled computation and keep the comedy directed at Demir’s wrong operation rather than his competence.",
+    "deletionRationale": "This scene earns its place through clear character action and a memorable failure. It should not be deleted.",
+    "newArtOpportunity": "Add an aftermath variant: a steady working console, a common ripple marked across several channels, Demir relieved and Nazari leaning in with interest. Keep the full64-channel claim in text or authored graphics.",
+    "delight": "strong",
+    "delightDirection": "Preserve the familiar debugging disaster and Nazari’s practical tools. A more deadpan look would make her formidable and funny without becoming hostile.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "contradiction",
+      "observation": "The epilogue says the amplifier works and Nazari notices a repeated coordinated ripple. Reusing a distressed Demir, confrontational Nazari and frozen knot visually restores the crash.",
+      "recommendation": "Add an aftermath variant: a steady working console, a common ripple marked across several channels, Demir relieved and Nazari leaning in with interest. Keep the full64-channel claim in text or authored graphics."
+    },
+    "assetSha256": "d15c710ab06aede2dd07567177d228beede7bf19998f733cf2c4cbf6db7c632b",
+    "lessonSha256": "8e5e93d1c6617287beb12dd714ebf49baa45b3595512bc6a29e166fe74a8fd1b",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "foundations/data-loading",
+    "asset": "apps/web/public/scenes/deep-orbit/foundations/data-loading.webp",
+    "lessonFile": "packages/content/content/deep-orbit/foundations/04-data-loading.mdx",
+    "section": "briefing",
+    "storyBeat": "Demir’s overnight fetch-everything array has exhausted memory and disrupted ARIA’s queue. The morning task is to rebuild it as a lazy loader.",
+    "intendedEmotion": "Rueful embarrassment and a clear opportunity to recover.",
+    "observed": "Demir slumps at the left of an engineering console, supporting his head. A large rising trace ends in a dashed drop to an X. A full segmented gauge and red overhead lamp signal trouble. ARIA’s ring watches from the right.",
+    "strengths": [
+      "The red lamp breaks the otherwise uniform green palette for a story reason. The full gauge and weary posture make the failure immediately understandable.",
+      "ARIA has a separate visual presence, making the dry exchange feel like a conversation rather than invisible narration."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The last chart segment has an ambiguous meaning.",
+        "evidence": "The drawn line descends from its last point to the X. That could represent released memory after failure rather than a false measurement, but it does not clearly communicate the allocation failure while capacity is full.",
+        "fix": "Use an interrupted trace at the capacity limit or a separate crash marker so the main failure reads without interpreting the dashed descent."
+      },
+      {
+        "severity": "low",
+        "finding": "This weary pose repeats almost exactly in backpropagation.",
+        "evidence": "Both place Demir low left with his temple resting in one hand beside ARIA and a wall-sized display.",
+        "fix": "Keep this first exhaustion pose, then give the later scene a different, more active form of impatience."
+      },
+      {
+        "severity": "high",
+        "finding": "The consequence step reuses a visibly broken state after the repair.",
+        "evidence": "The ending celebrates a completed read with steady memory and a small fist pump. The reused red-lamp image still shows exhaustion, full memory and a crash mark.",
+        "fix": "Add a consequence variant with a bounded memory trace, cleared lamp and small victorious gesture. ARIA can remain deadpan, preserving the nine-second joke."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the room, red lamp and visual punch line. Make the filled-memory state unambiguous and let Demir glance toward ARIA as though he has just heard her perfectly timed correction.",
+    "deletionRationale": "The distinct color cue and consequences of a specific mistake justify the image.",
+    "newArtOpportunity": "Add a consequence variant with a bounded memory trace, cleared lamp and small victorious gesture. ARIA can remain deadpan, preserving the nine-second joke.",
+    "delight": "strong",
+    "delightDirection": "Make the embarrassment brief and affectionate. A sideways look to the impossibly calm waveform can carry the humor without another comic prop.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "contradiction",
+      "observation": "The ending celebrates a completed read with steady memory and a small fist pump. The reused red-lamp image still shows exhaustion, full memory and a crash mark.",
+      "recommendation": "Add a consequence variant with a bounded memory trace, cleared lamp and small victorious gesture. ARIA can remain deadpan, preserving the nine-second joke."
+    },
+    "assetSha256": "545cd4a1b6b50758c377b9b78a8bd8dd5187bc628ec5e4ebecbbc540e0bbfdd2",
+    "lessonSha256": "001d3f69f3df20a01c70b58c887990e1a964f98bcec971ff149b52ad7b7ff2bc",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "foundations/normalization",
+    "asset": "apps/web/public/scenes/deep-orbit/foundations/normalization.webp",
+    "lessonFile": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+    "section": "briefing",
+    "storyBeat": "Mirza orders comparable input scales. Farah and Demir prepare the feeds while a suspicious archived sample enters the story.",
+    "intendedEmotion": "Collaborative problem solving that gives way to a small, intriguing exception.",
+    "observed": "The three named humans lean or gesture toward a large horizontal display. Four input strips remain connected separately to four output strips. A gold ringed marker floats above the output area.",
+    "strengths": [
+      "The latest four-strip correction preserves separate feeds instead of visually merging them. That is an important improvement.",
+      "Readable faces and the triangular grouping make the team feel engaged. The separate gold marker provides a useful mystery accent."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The explicit before-and-after mapping does not clearly preserve waveform shape through scaling.",
+        "evidence": "The top input has a tall-pulse pattern, but its corresponding output has a different sequence of small irregular peaks. Since paired connectors invite a direct scaling comparison, this is more confusing than an unpaired atmospheric waveform. It is not a claim that the illustration must reproduce the lesson data exactly.",
+        "fix": "Use exact scaled copies of each trace in a controlled diagram layer. Scaling can shift and resize a trace vertically, but it should preserve the sample sequence."
+      },
+      {
+        "severity": "low",
+        "finding": "The anomalous sample lacks a clear link to one record.",
+        "evidence": "The ringed diamond hovers over a broad portion of the output bank, without a distinct selected row or position.",
+        "fix": "Tie the marker to a clearly selected reading while keeping it separate from the feed connectors."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the sociable composition and Mirza’s concise direction. Make the scaled diagram trustworthy at a glance, then use a tiny pause in Farah’s stylus movement to introduce the exception.",
+    "deletionRationale": "This is an essential bridge from data preparation into the recurring mystery. Keep the scene.",
+    "newArtOpportunity": "The existing epilogue already covers the separate discovery beat, so no additional illustration is needed here.",
+    "delight": "strong",
+    "delightDirection": "Keep the sense of the crew solving something together. Farah’s absorbed curiosity can make the anomalous marker feel like an invitation to investigate rather than a warning siren.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "dedicated",
+      "observation": "This lesson uses its separate normalization-epilogue illustration for the discovery.",
+      "recommendation": "Keep the separate ending and fix its correctness-check iconography."
+    },
+    "assetSha256": "7bef052c13d15519681541fa5d4eb24ce31cc6d1923a11de879c4556cc5421d0",
+    "lessonSha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "foundations/normalization-epilogue",
+    "asset": "apps/web/public/scenes/deep-orbit/foundations/normalization-epilogue.webp",
+    "lessonFile": "packages/content/content/deep-orbit/foundations/05-normalization.mdx",
+    "section": "epilogue",
+    "storyBeat": "The scaled archive still contains sample7741. A preview classifier gives five more decisive scores and one boundary score, leaving the cause unresolved.",
+    "intendedEmotion": "A small successful task opening into a curious question.",
+    "observed": "Farah presents a tablet with five green checkmarked rows and one yellow highlighted row. Demir leans comfortably on the rail. A large screen repeats five simple traces and a central gauge.",
+    "strengths": [
+      "The six-row foreground composition gives this epilogue a clear focal point. The yellow final row is visible before any text is read.",
+      "The crew’s warmth and casual posture are a welcome reward after the preparation work."
+    ],
+    "issues": [
+      {
+        "severity": "high",
+        "finding": "Green checkmarks imply correctness that the preview has not established.",
+        "evidence": "The lesson explicitly says scores do not establish novelty or explain uncertainty. The tablet marks the first five rows as approved successes.",
+        "fix": "Show position-on-scale indicators or unlabeled score bars instead of correctness checks. Reserve the gold emphasis for the unresolved selected row."
+      },
+      {
+        "severity": "medium",
+        "finding": "The finished presentation is more settled than the story ending.",
+        "evidence": "Both characters smile while Farah points confidently at the yellow row. Neither appears to be examining a question.",
+        "fix": "Keep the warmth, but turn their attention toward the selected record and give Farah a curious, slightly questioning brow."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P1",
+    "artDirection": "Preserve the approachable two-shot and tablet. Convert the screen language from five passes and one warning into six observations, one requiring another look. The highlight must not visually decide the sample’s true class.",
+    "deletionRationale": "Keep this earned epilogue. It is the first substantial visual handoff to the recurring unknown.",
+    "newArtOpportunity": "No additional image is needed. This one already has the right narrative placement and manageable scope.",
+    "delight": "strong",
+    "delightDirection": "Aim for the pleasure of finding an interesting puzzle. A shared look between Farah and Demir can retain the friendly tone while keeping the answer open.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "dedicated",
+      "observation": "This file is a dedicated consequence illustration.",
+      "recommendation": "Keep its separate narrative placement."
+    },
+    "assetSha256": "f554cb426dbf5cee5f64c0d74ae0db4ee7fed36e1f38a44830a706f49b170038",
+    "lessonSha256": "f750ce2bcfc02b304b1c1646c48c8badbf71669658899f083c84cd9574a84eb8",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "neural-networks/first-neuron",
+    "asset": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron.webp",
+    "lessonFile": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+    "section": "briefing",
+    "storyBeat": "Farah starts with one weighted-sum calculation and known calibration tones before trusting anything on the unknown signal.",
+    "intendedEmotion": "An encouraging first experiment that makes a sophisticated idea feel small enough to try.",
+    "observed": "Farah sits at the bench, turns toward the viewer and points at three lines converging on one circular node. A waveform emerges from that node. A smooth top wave and jagged lower trace share the wall display.",
+    "strengths": [
+      "The inviting glance, seated posture and specific pointing action make Farah an approachable guide.",
+      "The three-to-one structure is large and readable. The lab location and canonical portrait cues hold."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The waveform output blurs one score with a sequence of scores.",
+        "evidence": "The central node directly emits a sine-like line, while the current exercise returns one scalar for one reading. A waveform could legitimately represent scores over multiple readings, but the image does not identify that temporal interpretation.",
+        "fix": "End the neuron schematic in one output marker or a single score position. Keep both calibration tones in separate small input panels."
+      },
+      {
+        "severity": "low",
+        "finding": "The two known tones and the stranger are not clearly separated from the computation.",
+        "evidence": "One of the smooth waves is visually attached to the neuron, while the jagged trace sits below it.",
+        "fix": "Use three distinct signal cards, then connect only their extracted input features to the calculation."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep Farah’s playful teaching pose and simple visual hierarchy. Make the distinction between a signal waveform and a scalar neuron output explicit through layout, with exact technical graphics authored outside the raster generator.",
+    "deletionRationale": "The image gives the learner a friendly, concrete beginning to network construction. Keep it.",
+    "newArtOpportunity": "The existing coffee-monitor epilogue supplies a distinct character payoff. A second concept illustration would be unnecessary.",
+    "delight": "strong",
+    "delightDirection": "Preserve the direct, knowing glance and the sense that Farah has found a wonderfully small experiment. Avoid turning it into a solemn wall lecture.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "dedicated",
+      "observation": "The galley image changes location and character for Nazari’s private reaction.",
+      "recommendation": "Keep the dedicated epilogue. It is a strong example of a second image earning its place."
+    },
+    "assetSha256": "7f66543782b43c9c2d3bb51de41c6a60cbf64d1a92c502f6abbaf00b4e3986da",
+    "lessonSha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "neural-networks/first-neuron-epilogue",
+    "asset": "apps/web/public/scenes/deep-orbit/neural-networks/first-neuron-epilogue.webp",
+    "lessonFile": "packages/content/content/deep-orbit/neural-networks/01-first-neuron.mdx",
+    "section": "epilogue",
+    "storyBeat": "Nazari pauses off shift to watch the two calibration-tone outputs hold apart, then carries her coffee away while still questioning the full cost.",
+    "intendedEmotion": "Quietly earned interest, with a restrained coffee-break joke and the first hint of trust.",
+    "observed": "Nazari holds a plain mug under a screen showing two separate flat green traces. Hanging mugs establish the galley. Her gaze is directed to the monitor, and her expression softens without a broad grin.",
+    "strengths": [
+      "This is one of the most character-specific images in the opening modules. The mug, pause and attentive gaze tell a story without needing a complex display.",
+      "The two constant output levels now match the text. The spare composition remains legible at reduced size.",
+      "The warm brass lighting provides a useful rest between technical work scenes."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "The monitor could be slightly less monumental.",
+        "evidence": "It occupies nearly half the frame and resembles a major installed display rather than a spare monitor above a coffee machine.",
+        "fix": "If revisited, reduce it a little and include the edge of the coffee machine or a modest mounting bracket. Keep the same calm two-line read."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "keep",
+    "priority": "none",
+    "artDirection": "Protect this scene’s restraint. The small off-duty action is the emotional point. Do not add dashboards, triumphant gestures or a large celebratory smile just to make it busier.",
+    "deletionRationale": "Do not delete. It brings variety, warmth and an earned change in Nazari’s attitude that the technical scenes cannot supply.",
+    "newArtOpportunity": "No new artwork is required. This is the standard to use when deciding whether another epilogue deserves its own image.",
+    "delight": "strong",
+    "delightDirection": "Keep the almost-smile and reluctant extra minute of watching. The coffee ritual already supplies lighthearted personality without a gag forced into the frame.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "dedicated",
+      "observation": "This file is a dedicated consequence illustration.",
+      "recommendation": "Keep its separate narrative placement."
+    },
+    "assetSha256": "64a220b6e4783b9d7ff8644624aa1c810c99b6f484a50f81cd3fcf9103820c6c",
+    "lessonSha256": "2e80b5ed0507fadf35422f15f7b0d45e9c51a9548c2c1ca2801279dab3388e42",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "neural-networks/activation-functions",
+    "asset": "apps/web/public/scenes/deep-orbit/neural-networks/activation-functions.webp",
+    "lessonFile": "packages/content/content/deep-orbit/neural-networks/02-activation-functions.mdx",
+    "section": "briefing",
+    "storyBeat": "Nazari asks which raw score should trigger an alert. The lesson separates that rule from the hidden-layer ReLU function Farah needs next.",
+    "intendedEmotion": "Practical skepticism with a little dry impatience, followed by an understandable distinction.",
+    "observed": "Nazari points a multitool at one small negative bar and one larger positive bar. Demir looks up from the console. A gold wave-like glyph sits between screens, with numerous generic charts behind them.",
+    "strengths": [
+      "The raw positive and negative bars relate directly to Nazari’s opening question.",
+      "The exchange has life: her pointing hand, hand-on-hip posture and his upward look provide a clear conversational rhythm."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The art still frames the entire lesson around bounded output scores.",
+        "evidence": "The old scene brief emphasizes a sigmoid glyph. The current challenge implements ReLU for hidden layers and says alert thresholding is a separate setting.",
+        "fix": "Retain the opening bars, but place a compact ReLU transfer sketch beside a visibly separate threshold control. Keep the distinction visually clear."
+      },
+      {
+        "severity": "low",
+        "finding": "The gold emblem reads as a loose wave rather than a definite sigmoid curve.",
+        "evidence": "It has no axes or clear flat tails and could simply be a decorative signal badge.",
+        "fix": "Remove that emblem or replace it with a controlled diagram that matches the intended operation."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the lively two-person staging. Use two clearly separated controls to give Nazari something precise to question, while the hidden-layer test becomes a small, graspable experiment.",
+    "deletionRationale": "The character exchange earns a dedicated briefing image. Its technical focus needs updating, not removal.",
+    "newArtOpportunity": "The epilogue’s conflicting alerts can appear in an authored interface detail. It does not require another full bridge illustration.",
+    "delight": "strong",
+    "delightDirection": "Keep the multitool pointer and Demir’s slightly sheepish attention. Make Nazari’s look a dry challenge rather than a reprimand.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "partial",
+      "observation": "The ending centers ARIA’s disagreement over7741 and both tones triggering the new rule. The reused Nazari-Demir bar discussion does not show that conflict, but does not depict a resolved outcome either.",
+      "recommendation": "Use a small authored alert-list detail and an ARIA waveform beat with the epilogue. A second full bridge picture is lower priority."
+    },
+    "assetSha256": "ff8a54968fc6c350c3fe14e4a95ed847d38ef064c999b7f4d9a1cbc780ad40c2",
+    "lessonSha256": "ec6d3323ae4f9c19c707957f53edeb3ce651262655a0faaf8b5302290f4c6294",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "neural-networks/layers-and-architecture",
+    "asset": "apps/web/public/scenes/deep-orbit/neural-networks/layers-and-architecture.webp",
+    "lessonFile": "packages/content/content/deep-orbit/neural-networks/03-layers-and-architecture.mdx",
+    "section": "briefing",
+    "storyBeat": "Nazari demands a staged network and a parameter quote after an unnecessarily large first design.",
+    "intendedEmotion": "A practical engineering challenge with the dry humor of asking a model to earn every part.",
+    "observed": "Nazari stands facing outward with folded arms and a multitool. Three narrowing blocks lead to a circular endpoint above her. A small ascending-bar symbol sits under the blocks, while a cabinet and many other monitors remain lit behind her.",
+    "strengths": [
+      "Nazari’s lined face and workwear are consistent. The engineering tool wall and pipes anchor the location.",
+      "The large block diagram reads clearly as composition through stages."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The central diagram can be read as three layers plus a fourth output stage.",
+        "evidence": "Three separate boxes precede a final circle, while the bridge model has two hidden layers and one output layer.",
+        "fix": "Make the two hidden stages and output unit structurally explicit. Keep numeric counts in an authored overlay if needed."
+      },
+      {
+        "severity": "medium",
+        "finding": "The parameter-budget story has become a generic crossed-arms portrait.",
+        "evidence": "The small bars do not communicate a quote, comparison or count. Nazari neither examines nor changes the design.",
+        "fix": "Give her a physical parameter quote or a small comparison between the oversized rejected stack and the proposed one, with the latter clearly awaiting judgment."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Move from a pose to a decision. Nazari can hold the absurdly long first quote beside a shorter revised one, with a single raised brow. Any readable numbers should be authored after generation.",
+    "deletionRationale": "Keep the engineering scene, but make its specific budget conflict visible. Deleting it would lose an important part of Nazari’s personality.",
+    "newArtOpportunity": "The taped parameter quote can be an authored epilogue artifact rather than a second full raster scene.",
+    "delight": "weak",
+    "delightDirection": "The discarded overlarge quote is a character-true visual joke. It makes parameter counting memorable while respecting Nazari’s concern for cost.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "partial",
+      "observation": "The ending pins the673-parameter quote to the engineering board. The existing folded-arms Nazari can read as waiting for proof, but the quote is absent.",
+      "recommendation": "A physical quote artifact can make this scene work for both stages. Put the exact count and layer breakdown in authored text."
+    },
+    "assetSha256": "dcdd31db5fce1e89251b06cc92459ae9a5d77f3486faca935c9ede03c4466b70",
+    "lessonSha256": "a7038476fd232a05ec906207f60c0d83a4f59463901eb673c2d00049810501de",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "neural-networks/forward-pass",
+    "asset": "apps/web/public/scenes/deep-orbit/neural-networks/forward-pass.webp",
+    "lessonFile": "packages/content/content/deep-orbit/neural-networks/04-forward-pass.mdx",
+    "section": "briefing",
+    "storyBeat": "After an embarrassing demo failure, Farah helps Demir repair the missing batch axis and rerun the model.",
+    "intendedEmotion": "Supportive recovery and the satisfaction of locating one small, consequential mismatch.",
+    "observed": "Demir thinks at the console with his hand under his chin. Farah stands behind him, smiling slightly with a stylus held across folded arms. A three-strand ribbon stops short of the first pipeline block, which has a red indicator.",
+    "strengths": [
+      "The gap before the first stage gives the eye a specific failure to inspect. The later blocks remain connected.",
+      "Farah’s warmth prevents the failed demo from feeling punitive. Demir looks engaged rather than defeated. The cast and bridge identity are clear."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The disconnected input does not yet show what is missing.",
+        "evidence": "The problem is a flat three-feature reading lacking its leading batch axis. The image instead suggests a physically disconnected cable or several empty ports.",
+        "fix": "Show the same three-feature strip needing one enclosing row frame before it fits the first stage. Keep exact shape notation in the interface."
+      },
+      {
+        "severity": "low",
+        "finding": "The center bridge clock has become a blank brass disc.",
+        "evidence": "The canonical bridge master and nearby scenes retain a functioning round clock at this position.",
+        "fix": "Restore the established clock shell and simple hands during any future edit."
+      },
+      {
+        "severity": "high",
+        "finding": "The consequence step reuses a visibly broken state after the repair.",
+        "evidence": "The ending explicitly has Demir alone, the missing batch axis repaired and scores appearing. The reused image has Farah present and the input visibly disconnected.",
+        "fix": "Add a matched aftermath variant with Demir alone and the input row properly enclosed and connected. Keep the scores visibly provisional rather than green approvals."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Preserve the calm coaching scene. Make the mismatch a small visual puzzle the learner can recognize, with Farah inviting a second attempt rather than announcing the answer.",
+    "deletionRationale": "The scene captures a necessary recovery beat and should remain.",
+    "newArtOpportunity": "Add a matched aftermath variant with Demir alone and the input row properly enclosed and connected. Keep the scores visibly provisional rather than green approvals.",
+    "delight": "strong",
+    "delightDirection": "Keep the gentle smile and the almost-solved posture. Let Demir’s slight upward glance toward Farah carry the relief of finding the bug.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "contradiction",
+      "observation": "The ending explicitly has Demir alone, the missing batch axis repaired and scores appearing. The reused image has Farah present and the input visibly disconnected.",
+      "recommendation": "Add a matched aftermath variant with Demir alone and the input row properly enclosed and connected. Keep the scores visibly provisional rather than green approvals."
+    },
+    "assetSha256": "dc10e650c87ac176fd635c07cfc1815d63a7a337e55c15e2e7a7d29c7df288ca",
+    "lessonSha256": "cc23b59a2052e8d8dfb940636c8df9a224da4bc8ea8f0c5ab89da17342dd1e3d",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "neural-networks/building-a-network",
+    "asset": "apps/web/public/scenes/deep-orbit/neural-networks/building-a-network.webp",
+    "lessonFile": "packages/content/content/deep-orbit/neural-networks/05-building-a-network.mdx",
+    "section": "briefing",
+    "storyBeat": "Mirza orders the classifier assembled and configured for training by the end of watch. The result is an initialized system that still needs evidence.",
+    "intendedEmotion": "A clear, achievable commissioning challenge and anticipation of making the pieces work together.",
+    "observed": "A closely framed Mirza gestures outward from her chair. The foreground hologram has three input rectangles, a radial wheel of linked nodes and a radar-like output panel. Her face and blank chest chronometer are prominent.",
+    "strengths": [
+      "The corrected single-character cast and mature Mirza identity are strong. Her face stays clear at small display sizes.",
+      "The open hand gives the order an inviting, purposeful tone, and the foreground task surface shares the frame with her."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The dominant network icon does not clearly communicate the sequential classifier being assembled.",
+        "evidence": "The panel uses a radial wheel of linked nodes and a radar-like output. This may simply be a stylized network emblem, not a literal recurrent graph. It nevertheless makes the current dense-stage plan and single output score hard to recognize.",
+        "fix": "Replace the wheel and radar with a simple input, hidden-stage and scalar-output composition that matches the bridge model. Show configuration readiness without implying learned competence."
+      },
+      {
+        "severity": "low",
+        "finding": "Mirza repeats the same open-hand presentation used in the opening and normalization.",
+        "evidence": "Across the sequence, this makes distinct command decisions feel like the same pose with a new screen.",
+        "fix": "Turn her gesture toward an unfinished configuration slot or the end-of-watch clock to make the deadline specific."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the excellent close character framing. Treat the hologram as a plan under review, with one clear remaining setup action. Use controlled diagrams rather than decorative network geometry.",
+    "deletionRationale": "This module-ending commission deserves artwork. Repair the technical centerpiece instead of replacing the whole character treatment.",
+    "newArtOpportunity": "A separate Farah-and-ARIA score comparison could be an interface artifact in the ending. Another broad bridge meeting is unnecessary.",
+    "delight": "mixed",
+    "delightDirection": "Give Mirza a small, confident challenge in her expression. An inviting deadline beat can feel adventurous without making her explain the model.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "weak",
+      "observation": "The ending changes from Mirza’s order to Farah comparing two random initializations with ARIA. Reusing Mirza beside a complete schematic misses the actual uncertainty and reproducibility beat.",
+      "recommendation": "Prioritize an authored side-by-side run artifact showing saved initial states. If a new scene is commissioned later, use Farah removing alert colors while ARIA records the runs."
+    },
+    "assetSha256": "e3615ff622bfd465324e09bf9fa10df1a4671ff9878c80a2259bbfb76564c28c",
+    "lessonSha256": "3cbd330f1c0cc6b79ff4461cca449cd4f6ceac4001f353f23d54e690b44ceebf",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "training-loop/loss-functions",
+    "asset": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions.webp",
+    "lessonFile": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+    "section": "briefing",
+    "storyBeat": "Farah asks how to measure the gap between a prediction and a known label so runs can be compared.",
+    "intendedEmotion": "Attentive curiosity and the pleasure of turning a vague mistake into something inspectable.",
+    "observed": "Farah leans toward a small instrument holding two bright points on a rail and a bracket between them. A large parabola occupies the wall above numerous other waveform and circular charts. Warm bench light separates her from the background.",
+    "strengths": [
+      "The foreground bracket makes comparison tactile and gives Farah a real action. Her engaged expression suits the lesson.",
+      "The lamp and close bench activity vary the tone from the bridge command scenes. No gross anatomy or cast error is apparent."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "Background chart clutter weakens the simple comparison.",
+        "evidence": "Several unrelated waves, rings and crossing curves compete with the small two-point instrument. The image only needs one comparison and one supporting loss sketch.",
+        "fix": "Darken or remove unrelated panels and enlarge the foreground bracket slightly."
+      },
+      {
+        "severity": "low",
+        "finding": "The parabola may be read as the full loss story.",
+        "evidence": "The lesson compares MSE and binary cross-entropy. A single quadratic is appropriate to squared error but does not represent both objectives.",
+        "fix": "Keep it visibly attached to the squared-error example or use a generic comparison view. Let the authored lesson explain the two losses precisely."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "keep",
+    "priority": "P3",
+    "artDirection": "Protect the hands-on laboratory feeling. A small exact diagram cleanup and simpler background would be enough. Keep uncertainty in the task rather than drawing a completed verdict.",
+    "deletionRationale": "The specific measuring action and warm lighting justify keeping this image.",
+    "newArtOpportunity": "The glass-wall epilogue already gives the lesson a distinctive second visual beat. Additional art would be excessive.",
+    "delight": "strong",
+    "delightDirection": "Keep Farah’s almost-playful concentration as she measures the gap. The brass instrument makes error measurement feel like an experiment the learner can join.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "dedicated",
+      "observation": "The glass-wall image changes camera position and action to record the baseline.",
+      "recommendation": "Keep the separate epilogue and pair it with an accessible exact baseline record."
+    },
+    "assetSha256": "33f55c069afb1be63c2d4a871c5931f4facd4704f6bc0e4b1e629f547d4cdcaa",
+    "lessonSha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "training-loop/loss-functions-epilogue",
+    "asset": "apps/web/public/scenes/deep-orbit/training-loop/loss-functions-epilogue.webp",
+    "lessonFile": "packages/content/content/deep-orbit/training-loop/01-loss-functions.mdx",
+    "section": "epilogue",
+    "storyBeat": "Farah records the coin-flip loss baseline on the glass, leaving room for stronger comparisons and separate test results.",
+    "intendedEmotion": "A modest shared milestone and a concrete promise to judge the future model honestly.",
+    "observed": "Viewed through the lab glass, Farah holds a marker beside two equal-height bars. Demir watches with folded arms and a small smile. The warm frame and transparent pane separate the pair from the busy lab behind them.",
+    "strengths": [
+      "The reverse angle and marker action make this feel like a real end-of-watch ritual. It is a useful break from console-centered compositions.",
+      "Both faces are clearly visible, and the relaxed expression makes learning feel collaborative. The equal bars provide a simple coin-flip visual shorthand."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The recorded loss baseline itself is absent.",
+        "evidence": "Two equal bars suggest equal class probabilities, but the text’s enduring object is the written0.6931 baseline and space for a class-frequency baseline and held-out score.",
+        "fix": "Keep the raster wordless, but pair it with a small authored baseline record beside the illustration. If revising the art, show deliberate blank spaces reserved on the glass."
+      },
+      {
+        "severity": "low",
+        "finding": "The brightest background panel competes with the tiny glass marks.",
+        "evidence": "The large green display behind the bars makes the important new annotation less distinct.",
+        "fix": "Lower that panel’s contrast and let the marker tip and fresh marks be the brightest local detail."
+      }
+    ],
+    "soulFit": "strong",
+    "decision": "keep",
+    "priority": "P3",
+    "artDirection": "Preserve this quiet, friendly scene. It should feel like a small ritual the crew will return to, not a victory announcement. Exact numbers belong in the accessible authored record.",
+    "deletionRationale": "Do not delete. Its different camera angle, material gesture and shared warmth earn a separate epilogue image.",
+    "newArtOpportunity": "No new bitmap is needed. An authored baseline card would complete the story meaning more accurately.",
+    "delight": "strong",
+    "delightDirection": "Keep the shared little smile and the satisfying act of making the first mark. Leave room on the glass for the next discovery.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "dedicated",
+      "observation": "This file is a dedicated consequence illustration.",
+      "recommendation": "Keep its separate narrative placement."
+    },
+    "assetSha256": "55371f964042210f145a26a1aa4de3ee6479952fb9455f4027658e0132685f6a",
+    "lessonSha256": "60b18335025328be661ac60eaa4f6a3f7d9d9a34dee268c1b4347fc7d099ba8f",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "training-loop/gradient-descent",
+    "asset": "apps/web/public/scenes/deep-orbit/training-loop/gradient-descent.webp",
+    "lessonFile": "packages/content/content/deep-orbit/training-loop/02-gradient-descent.mdx",
+    "section": "briefing",
+    "storyBeat": "Nazari asks which weights should change and by how much. The learner tests one gradient update before scaling to the remaining parameters.",
+    "intendedEmotion": "Practical curiosity about a small mechanism that can do a large job.",
+    "observed": "Nazari holds a multitool and looks toward a large bowl-shaped curve. Dots descend toward its bottom, shrinking both in spacing and visible size. Her other hand rests on her hip. The engineering tool wall fills the left background.",
+    "strengths": [
+      "The scalar descent picture matches the lesson’s simple quadratic example. The shrinking distances are readable.",
+      "Nazari’s age, uniform and competence remain consistent, and the engineering location is unmistakable."
+    ],
+    "issues": [
+      {
+        "severity": "low",
+        "finding": "Shrinking marker sizes add an avoidable visual ambiguity.",
+        "evidence": "The dots become smaller toward the minimum. This may indicate emphasis or motion and does not prove a changing learning rate. Constant-size points would more clearly leave shrinking spacing to communicate the smaller updates.",
+        "fix": "Keep marker size constant. Let horizontal step spacing and an optional tangent cue show why updates shrink."
+      },
+      {
+        "severity": "medium",
+        "finding": "Nazari mostly poses beside the answer.",
+        "evidence": "The static hand-on-hip stance and already-finished descent sequence give little sense of testing a setting.",
+        "fix": "Place her hand at one control and show a partial path, with the next move still under consideration."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Turn the diagram into a small practical trial. One visible knob, one current point and a few earlier positions are enough. The lesson’s interactive trace can supply the exact calculations and alternate learning rates.",
+    "deletionRationale": "Keep a visual setup for the scalar experiment. The pose and graphic need more purpose, not removal.",
+    "newArtOpportunity": "ARIA’s unsolicited logging in the ending merits a small authored log insert or waveform beat. A new full-room illustration is not necessary.",
+    "delight": "mixed",
+    "delightDirection": "Give Nazari the dry satisfaction of testing a mechanism herself. A slight raised brow toward the next point can make the math feel like a hands-on puzzle.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "partial",
+      "observation": "The ending adds Demir’s first update and ARIA’s unsolicited logging. Nazari beside a descent curve remains compatible, but misses the new AI behavior.",
+      "recommendation": "Show the small unsolicited log entry in the authored epilogue. Another full engineering illustration would add less than that precise beat."
+    },
+    "assetSha256": "0f83f05e69806a5b01aeace2c335e72c1c6a0f3c8d68654a58a14f4752af3058",
+    "lessonSha256": "1f6a8253c62182ec3205440af7eb0ed00032bf45a10d68957c77bccf81942983",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "training-loop/backpropagation",
+    "asset": "apps/web/public/scenes/deep-orbit/training-loop/backpropagation.webp",
+    "lessonFile": "packages/content/content/deep-orbit/training-loop/03-backpropagation.mdx",
+    "section": "briefing",
+    "storyBeat": "Demir is paying for a separate forward calculation for each parameter. ARIA has waited long enough to point out the efficient alternative.",
+    "intendedEmotion": "Comic impatience at repeated work, followed by the prospect of a satisfying shortcut.",
+    "observed": "Demir sits low left with his temple in one hand, almost repeating the data-loading pose. ARIA’s clear ring sits to the right. The wall contains dozens of fully lit miniature dashboards under a long arc, with only a small bright segment at the left.",
+    "strengths": [
+      "ARIA is clearly abstract and visually present as the second participant. Demir’s face and equipment remain recognizable.",
+      "The overwhelming amount of displayed work provides a useful starting idea for the repeated-pass cost."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The display does not make the slow per-parameter work legible.",
+        "evidence": "The cells contain unrelated waves and charts and almost all are lit. The small highlighted arc could be a progress marker, but it is unlabeled; treating it as an exact depiction of parameter 500 of 673 would overstate the evidence. The stronger issue is that neither the repetitive work nor the reason for waiting is clear.",
+        "fix": "Replace the dashboard collage with a simple parameter-progress view consistent with the chosen moment. Show one current calculation and a long remaining or completed sequence without pretending each cell is a new plot."
+      },
+      {
+        "severity": "medium",
+        "finding": "The staging repeats an earlier failure without showing Demir’s growth.",
+        "evidence": "The head-in-hand pose, left placement and ARIA screen echo data-loading closely.",
+        "fix": "Have Demir turn toward ARIA with an incredulous look, finger paused over the repeated-run control. Keep visible impatience rather than defeat."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Use the efficient-alternative setup as a visual joke. Simplify the work counter, retain ARIA’s calm trace, and let their contrasting reactions carry the scene. Restore a stronger engineering cue in this close crop.",
+    "deletionRationale": "Keep the briefing. It establishes the cost that makes the algorithm matter.",
+    "newArtOpportunity": "Add a dedicated epilogue image of Nazari holding a stopwatch while Demir waits through the naive rerun. This changes the cast, delivers the joke and shows earned verification after the exercise.",
+    "delight": "mixed",
+    "delightDirection": "The best joke is ARIA watching an avoidable wait. Demir can look sideways at the waveform as though asking why she let him continue.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "contradiction",
+      "observation": "The ending has Nazari timing both methods after the learner has implemented the efficient one. The reused image returns to Demir looking defeated beside ARIA.",
+      "recommendation": "Add the stopwatch epilogue scene. It changes the cast and turns the cost comparison into an earned character joke."
+    },
+    "assetSha256": "b926b99b670accff944f10426b941968e1c87108c909adfe1e8e069df0fed207",
+    "lessonSha256": "f3a2cc6722bb6ea6d35b0f13d028e0cafdf8d4df521eb2752b04df9669d6601d",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "training-loop/training-loop",
+    "asset": "apps/web/public/scenes/deep-orbit/training-loop/training-loop.webp",
+    "lessonFile": "packages/content/content/deep-orbit/training-loop/04-training-loop.mdx",
+    "section": "briefing",
+    "storyBeat": "Demir lets model.fit repeat the updates, then learns to monitor validation and stop based on evidence rather than a guessed epoch budget.",
+    "intendedEmotion": "The excitement of seeing the system learn, tempered by curiosity about whether that progress holds up.",
+    "observed": "Demir stands with folded arms in a dark engineering bay, smiling slightly. A single smooth loss curve falls toward almost zero on the large display. Many smaller panels repeat generic charts around him.",
+    "strengths": [
+      "His calmer stance provides some progression from the earlier crashes. The darkened room gives the overnight run a distinct atmosphere.",
+      "The large curve is easy to read as falling loss, and the engineering cues remain consistent."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The single curve leaves out the monitoring decision central to the current lesson.",
+        "evidence": "The task compares training and validation histories before configuring early stopping. A single training descent is a legitimate conceptual illustration, but it does not show the disagreement or stopping question that gives this scene its meaning. Its near-zero endpoint is not treated as a fabricated measured result.",
+        "fix": "Show separately identifiable training and validation traces. For a briefing, use an in-progress observation window rather than a completed success curve."
+      },
+      {
+        "severity": "medium",
+        "finding": "The scene feels like a generic success poster.",
+        "evidence": "Demir’s folded arms and upward gaze do not engage with the evidence on the display. The many surrounding charts add scale but no decision.",
+        "fix": "Give him an active comparison: checking two traces, marking a checkpoint, or catching the moment they stop improving together."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Keep the nighttime satisfaction but make the monitoring decision central. Use distinct line styles as well as color, reserve exact values for the interface, and avoid drawing the same universally successful curve for every run.",
+    "deletionRationale": "This is an important change from manual updates to a real run. Keep its illustration and correct what progress means.",
+    "newArtOpportunity": "The taped pair of curves in the ending can be an authored result artifact. Another large engineering portrait would add little.",
+    "delight": "mixed",
+    "delightDirection": "Show the small delight of a curve finally moving, followed by Demir noticing the second curve. A half-raised fist that pauses as he checks validation could make that tension warm and funny.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "weak",
+      "observation": "The ending tapes both curves above the console after validation-based stopping. The reused picture presents one clean training curve near zero.",
+      "recommendation": "The main two-curve correction is essential. A matched completed-run screen variant or authored taped-curve artifact can handle the ending without an additional broad portrait."
+    },
+    "assetSha256": "c54d6369eed3294099009a9ef307b36b2a361bae669bb1d38d738d72864e551f",
+    "lessonSha256": "a396b49131248dcf91d4dfe8bc9a1f782f43974bbc82cc627727d47be8bf6246",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  },
+  {
+    "id": "training-loop/evaluating-deep-scan",
+    "asset": "apps/web/public/scenes/deep-orbit/training-loop/evaluating-deep-scan.webp",
+    "lessonFile": "packages/content/content/deep-orbit/training-loop/05-evaluating-deep-scan.mdx",
+    "section": "briefing",
+    "storyBeat": "Mirza requests results on unseen readings and evidence about mistakes before allowing a limited supervised prototype test.",
+    "intendedEmotion": "A consequential review that still feels like an achievable next step, with curiosity about the cases the score hides.",
+    "observed": "Mirza sits close to the viewer with a hand at her chronometer. Four equally glowing waveform panels form a two-by-two group on the foreground console, with dials around them. She looks outward rather than toward one case.",
+    "strengths": [
+      "Mirza is recognizable and mature, with an appropriately composed expression. The closer framing gives the review weight.",
+      "The four-panel grouping and incoming trace leave space for a clear evaluation visual."
+    ],
+    "issues": [
+      {
+        "severity": "medium",
+        "finding": "The claimed verdict grid does not visually distinguish the four evaluation outcomes.",
+        "evidence": "The alt text calls this a two-by-two verdict grid, but the panels contain only waveforms. They could represent four cases rather than a literal confusion matrix. The lesson-specific distinction among detections, false alarms, calm cases and misses is therefore missing, not mathematically disproven.",
+        "fix": "Make the display a deliberately authored category board or show a small set of reviewed cases with predicted and known status separated. Keep exact counts in the interface."
+      },
+      {
+        "severity": "low",
+        "finding": "The uniform panels give little visual emphasis to uncertainty or exceptions.",
+        "evidence": "All panels glow equally green. Green is the general ship palette, so this does not establish that every case passed. Combined with the confident instrumentation and outward gaze, it still makes the review feel more settled than the text.",
+        "fix": "Give one selected miss a restrained contrasting outline, and direct Mirza’s attention toward it. Do not reveal a final exercise score in the briefing."
+      }
+    ],
+    "soulFit": "mixed",
+    "decision": "refine",
+    "priority": "P2",
+    "artDirection": "Make this a review of exceptions rather than a generic command portrait. Mirza can be calm and interested while asking for the case behind the aggregate number. Keep the current face and room.",
+    "deletionRationale": "The supervised-test decision needs a story image. Its missing evaluation meaning is a reason to refine it, not delete it.",
+    "newArtOpportunity": "Add an epilogue close scene of Farah alone recognizing sample7741 beside her old sensor-calibration note. The current Mirza briefing cannot carry that private, curious return to the mystery.",
+    "delight": "mixed",
+    "delightDirection": "Preserve the composed warmth. Let the review feel like solving a puzzle together, and reserve Farah’s more playful, wondering curiosity for the new epilogue.",
+    "inspected": true,
+    "epilogueReuse": {
+      "status": "weak",
+      "observation": "The ending belongs to Farah alone on the quiet bridge, recognizing7741 again. The reused image keeps Mirza and a general review console in view.",
+      "recommendation": "Add a Farah ending scene or a close composition of her recognition and old calibration note. It should leave the cause open and feel curious rather than triumphant."
+    },
+    "assetSha256": "c8dc87b5e21fb98d67428927315927b3586b3a966ea0260190fabd2b09d22963",
+    "lessonSha256": "346e588a866184548776f48668552b11cfa6dc8643b5dec1a184fe2ffd89838c",
+    "mobileReadability": "Static full-resolution review only. Face and primary diagram proportions informed narrow-screen recommendations; no fresh browser validation performed for this individual scene."
+  }
+]

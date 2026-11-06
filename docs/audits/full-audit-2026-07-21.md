@@ -264,7 +264,7 @@ is exposure, not legal advice.**
 - **[OPEN] Sub-processor list out of date.** `privacy/page.tsx:104-149` omits
   **Resend** (the live digest sender) and **Vercel Web Analytics** (Vercel is
   listed as hosting only). Resend is also absent from the DPA list at
-  `pre-launch-checklist.md:527-535`, and **no DPA in that list has been signed**.
+  [pre-launch-checklist.md:527-535](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L527-L535), and **no DPA in that list has been signed**.
 - **[OPEN] Unsubscribe does not propagate to the ESP.** Both handlers flip
   `waitlist.subscribed = false` in Supabase only; neither calls Kit.
   `unsubscribeFromAll()` (`kit.ts:173`) is dead code, and no Kit webhook exists.
@@ -309,7 +309,7 @@ JSON-LD is self-`recognizedBy` with `credentialCategory: "Course Completion"`.
   Supabase CLI state, no CI application, no ledger, no drift detection. The
   documented process is manual SQL-editor paste
   (`docs/deployment-guide.md:149`). The only applied-state record is prose that
-  **stops at migration 026** (`pre-launch-checklist.md:44,94-110`) - migrations
+  **stops at migration 026** ([pre-launch-checklist.md:44,94-110](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L44)) - migrations
   027-040 have no record at all, and four docs actively conflict. **Nobody can
   state the production schema.**
 - **[OPEN] No restore procedure exists anywhere.** Not in deployment-guide,
@@ -423,7 +423,7 @@ with `cascade` (intentional).
 `CREATE POLICY IF NOT EXISTS`). Correct drop-then-create: 018, 019, 020, 021,
 024, 034, 035, 037, 038, 039, 040.
 
-**Rollback covers 3 of 40.** `pre-launch-checklist.md:655-668` has SQL for
+**Rollback covers 3 of 40.** [pre-launch-checklist.md:655-668](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L655-L668) has SQL for
 018/019/020 only. The 019 entry has a **signature mismatch** - it drops
 `get_shared_certificate(text)` but the function is `(p_id uuid)`, so it
 silently succeeds while leaving the anon-callable function live. **No
@@ -431,7 +431,7 @@ down-migrations exist, and not one migration is wrapped in BEGIN/COMMIT**, so a
 multi-statement file failing halfway leaves the schema partially migrated with
 no record of how far it got.
 
-**[P1] The incident runbook is dangerous.** `pre-launch-checklist.md:670-673`
+**[P1] The incident runbook is dangerous.** [pre-launch-checklist.md:670-673](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L670-L673)
 suggests `update purchases set status='refunded' where created_at > '<ts>'` -
 revokes access from every legitimate purchaser in the window, issues no Stripe
 refund, no dry-run. And if 038 is applied, its trigger makes those rows
@@ -466,7 +466,7 @@ already wrapped.
   for pagerduty/opsgenie/uptimerobot/betterstack/checkly/cronitor/
   healthchecks.io/SLACK_WEBHOOK/DISCORD_WEBHOOK/alert_rule returns **no
   configuration** - only two doc lines admitting the gap
-  (`pre-launch-checklist.md:561,716`). §B10 specifies exactly the three rules
+  ([pre-launch-checklist.md:561,716](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L561)). §B10 specifies exactly the three rules
   needed (error rate >5% in 5min, API p95 >2s, **any 5xx on
   `/api/payments/webhook` → immediate email**) and remains unticked. The
   webhook handler logs errors at ~20 sites and correctly 500s so Stripe
@@ -543,7 +543,7 @@ migration drift.
 
 **Rollback is adequate** - git revert / Vercel promote-prior
 (`ci-cd.md:135-137`), `fly deploy --image <prior>`
-(`pre-launch-checklist.md:679`). Note the API rollback lives in the checklist,
+([pre-launch-checklist.md:679](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L679)). Note the API rollback lives in the checklist,
 not in `ci-cd.md` where an operator under pressure would look. **No deploy
 workflow exists for the API** - `fly deploy` is manual, so web and API deploy
 independently and version skew is possible and unmonitored.

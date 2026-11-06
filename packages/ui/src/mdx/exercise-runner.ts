@@ -14,6 +14,12 @@ import {
   type ExerciseArtifact,
 } from "./exercise-artifacts.mjs";
 import { FIT_RECORDING_SOURCE } from "./exercise-fit-recording.mjs";
+import {
+  EVALUATION_CAPTURE_SOURCE,
+  EVALUATION_FIXTURE,
+  EVALUATION_CONTEXT_KEYS,
+  EVALUATION_ROLES,
+} from "@tensorcraft/shared";
 import { SHAPE_RECORDING_SOURCE } from "./exercise-shape-recording.mjs";
 
 export interface TestResult {
@@ -1183,6 +1189,8 @@ function buildFullCode(userCode: string, testCode: string): string {
 const WORKER_BODY = `
   var createFitRecorder = ${FIT_RECORDING_SOURCE};
   var fitRecorder;
+  var createEvaluationCapture = ${EVALUATION_CAPTURE_SOURCE};
+  var evaluationCapture;
   var createShapeRecorder = ${SHAPE_RECORDING_SOURCE};
   var shapeRecorder;
 (function() {
@@ -1304,6 +1312,7 @@ const WORKER_BODY = `
     var tf = globalThis.tf;
     if (!tf) return;
     if (!fitRecorder) fitRecorder = createFitRecorder(tf);
+    if (!evaluationCapture) evaluationCapture = createEvaluationCapture(tf, fitRecorder, ${JSON.stringify(EVALUATION_FIXTURE)}, ${JSON.stringify(EVALUATION_ROLES)}, ${JSON.stringify(EVALUATION_CONTEXT_KEYS)}, ${ARTIFACT_COLLECTOR_SOURCE});
     if (!shapeRecorder) shapeRecorder = createShapeRecorder(tf);
 
     // Part of the call spy above: tensor METHODS (a.add(b), x.matMul(w),
@@ -1632,6 +1641,7 @@ const WORKER_BODY = `
                 // (round 7b, 2026-09-14). Same rule as the validator.
                 if (prop === '__calls') return Object.freeze(Object.assign(Object.create(null), calls));
                 if (prop === '__fits') return fitRecorder ? fitRecorder.read() : Object.freeze([]);
+                if (prop === '__fitStatus') return fitRecorder.status();
                 if (prop === '__shapeOf') return shapeRecorder.read;
                 if (stubs[prop]) return stubs[prop];
                 var v = target[prop];
@@ -1654,8 +1664,11 @@ const WORKER_BODY = `
             })
           : globalThis.tf;
         var artifactCollector = (${ARTIFACT_COLLECTOR_SOURCE})();
-        var fn = new Function('console', 'tf', 'recordResult', code);
-        var results = await fn(capturedConsole, tfProxy, artifactCollector.record);
+        var captureForRun = function(input) {
+          return evaluationCapture(input, artifactCollector.read);
+        };
+        var fn = new Function('console', 'tf', 'recordResult', 'captureEvaluation', code);
+        var results = await fn(capturedConsole, tfProxy, artifactCollector.record, captureForRun);
         post(Object.assign({ ok: true, results: results, logs: logs, artifacts: artifactCollector.read() }, runtimeMetadata()));
       } catch (err) {
         post(Object.assign({ ok: false, error: (err && err.message) || String(err), logs: logs }, runtimeMetadata()));

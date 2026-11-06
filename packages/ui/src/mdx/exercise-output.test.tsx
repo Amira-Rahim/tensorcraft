@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { contrastRatio, worldSlugs } from "@tensorcraft/worlds";
 import { ExerciseOutput } from "./exercise-output";
 import type { ExerciseArtifact } from "./exercise-artifacts.mjs";
 
@@ -17,6 +20,87 @@ const comparison: Extract<ExerciseArtifact, { kind: "series" }> = {
 };
 
 describe("ExerciseOutput", () => {
+  it("keeps every series visible against all themed chart surfaces", () => {
+    const css = readFileSync(
+      resolve(__dirname, "../../../worlds/src/css/worlds.css"),
+      "utf8",
+    ).replace(/\/\*[\s\S]*?\*\//g, "");
+    const { container } = render(
+      <ExerciseOutput
+        artifacts={[
+          {
+            ...comparison,
+            series: Array.from({ length: 8 }, (_, index) => ({
+              name: `Series ${index + 1}`,
+              values: [index, index + 1, index + 2],
+            })),
+          },
+        ]}
+        stale={false}
+        complete
+      />,
+    );
+    const lines = Array.from(
+      container.querySelectorAll("[data-exercise-series]"),
+    );
+    expect(lines).toHaveLength(8);
+    for (const world of worldSlugs) {
+      for (const scheme of ["dark", "light"]) {
+        const selectors = new Set([
+          ":root",
+          `[data-world="${world}"]`,
+          ...(scheme === "light"
+            ? [
+                '[data-scheme="light"]',
+                `[data-world="${world}"][data-scheme="light"]`,
+              ]
+            : []),
+        ]);
+        const variables = new Map<string, string>();
+        for (const block of css.matchAll(/([^{}]+)\{([^{}]+)\}/g)) {
+          if (
+            !block[1]!
+              .split(",")
+              .some((selector) => selectors.has(selector.trim()))
+          )
+            continue;
+          for (const declaration of block[2]!.matchAll(
+            /(--[\w-]+):\s*([^;]+);/g,
+          )) {
+            variables.set(declaration[1]!, declaration[2]!.trim());
+          }
+        }
+        const color = (value: string): string => {
+          const token = value.match(/^var\((--[\w-]+)/)?.[1];
+          if (token) return color(variables.get(token)!);
+          expect(value).toMatch(/^#[0-9a-f]{6}$/i);
+          return value;
+        };
+        for (const line of lines) {
+          const stroke = color(line.getAttribute("stroke")!);
+          expect(color(line.getAttribute("fill")!)).toBe(stroke);
+          for (const surface of [
+            "--tc-bg",
+            "--tc-surface",
+            "--tc-surface-overlay",
+          ]) {
+            expect(
+              contrastRatio(stroke, color(variables.get(surface)!)),
+              `${world} ${scheme} series ${line.getAttribute("data-exercise-series")} on ${surface}`,
+            ).toBeGreaterThanOrEqual(3);
+          }
+        }
+      }
+    }
+    const lastColor = lines[7]!.getAttribute("stroke");
+    fireEvent.click(screen.getByRole("button", { name: "Series 8" }));
+    expect(container.querySelectorAll("polyline")).toHaveLength(1);
+    expect(container.querySelector("[data-exercise-series]")).toHaveAttribute(
+      "stroke",
+      lastColor,
+    );
+  });
+
   it("keeps every finite value on a finite chart, including extreme and constant series", () => {
     const { container, rerender } = render(
       <ExerciseOutput

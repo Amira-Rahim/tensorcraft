@@ -44,7 +44,14 @@ const bars = (
   label: string,
   labels: string[],
   values: number[],
-): InvestigationGraphic => ({ kind: "bars", label, labels, values });
+  scaleGroup?: string,
+): InvestigationGraphic => ({
+  kind: "bars",
+  label,
+  labels,
+  values,
+  scaleGroup,
+});
 
 const cells = (
   label: string,
@@ -731,11 +738,13 @@ export const FLOW_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             "End-to-end time (ms)",
             ["CPU fallback", "Example GPU"],
             [cpu, gpu],
+            "workload-time",
           ),
           bars(
             "GPU time components (ms)",
             ["Compute", "Transfer/readback", "Initialization"],
             [v.units! * 0.5, transfer, initialization],
+            "workload-time",
           ),
         ],
         answer: selected,

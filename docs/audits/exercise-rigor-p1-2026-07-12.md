@@ -169,7 +169,7 @@ stripper is a second pass over near-clean JS (defense in depth).
 (node); browsers pick WebGL. All ops used have registered WebGL kernels
 and assertions use toBeCloseTo, so risk is precision-only; bulk WebGL
 verification needs seeded-auth e2e (paywalled lessons) - tracked with the
-existing seeded-auth gap in `docs/gt-narrative-polish-checklist.md`.
+existing seeded-auth gap in [gt-narrative-polish-checklist.md](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/gt-narrative-polish-checklist.md).
 
 ## Deliberately not in this slice
 

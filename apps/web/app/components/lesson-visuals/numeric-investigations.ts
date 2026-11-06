@@ -68,23 +68,27 @@ const bars = (
   label: string,
   values: number[],
   labels?: string[],
+  scaleGroup?: string,
 ): InvestigationGraphic => ({
   kind: "bars",
   label,
   values: values.map(rounded),
   labels,
+  scaleGroup,
 });
 const line = (
   label: string,
   values: number[],
   highlight?: number[],
   labels = values.map((_, index) => String(index)),
+  scaleGroup?: string,
 ): InvestigationGraphic => ({
   kind: "line",
   label,
   values: values.map(rounded),
   highlight,
   labels,
+  scaleGroup,
 });
 const pipe = (label: string, values: string[]): InvestigationGraphic => ({
   kind: "pipeline",
@@ -344,9 +348,23 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             : raw;
       return {
         graphics: [
-          bars("New row before scaling", raw, ["Temperature", "Signal"]),
+          bars(
+            "New row before scaling",
+            raw,
+            ["Temperature", "Signal"],
+            "raw-features",
+          ),
           cells("Training rows: temperature, signal", training.flat(), 2),
-          bars("New row after scaling", output, ["Temperature", "Signal"]),
+          bars(
+            "New row after scaling",
+            output,
+            ["Temperature", "Signal"],
+            method === 0
+              ? "raw-features"
+              : method === 1
+                ? "z-score-features"
+                : "min-max-features",
+          ),
         ],
         answer: output[0]!,
         answerLabel: "Scaled temperature",
@@ -458,11 +476,13 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             samples,
             [Math.round((input + 4) * 4)],
             samples.map((_, index) => String(-4 + index / 4)),
+            "activation-output",
           ),
           bars(
             "Before and after activation",
             [input, answer],
             ["Weighted sum", "Activated value"],
+            `activation-comparison-${fn}`,
           ),
         ],
         answer,
@@ -656,12 +676,18 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       const errors = predicted.map((value, i) => (value - target[i]!) ** 2);
       return {
         graphics: [
-          bars("Targets", target, ["Example A", "Example B", "Example C"]),
-          bars("Predictions", predicted, [
-            "Example A",
-            "Example B",
-            "Example C",
-          ]),
+          bars(
+            "Targets",
+            target,
+            ["Example A", "Example B", "Example C"],
+            "prediction-values",
+          ),
+          bars(
+            "Predictions",
+            predicted,
+            ["Example A", "Example B", "Example C"],
+            "prediction-values",
+          ),
           bars("Squared errors", errors, [
             "Example A",
             "Example B",
@@ -812,12 +838,14 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             trace.map((item) => item.validation),
             [epoch],
             trace.map((item) => String(item.epoch)),
+            "training-loss",
           ),
           line(
             "Training loss by epoch",
             trace.map((item) => item.train),
             [epoch],
             trace.map((item) => String(item.epoch)),
+            "training-loss",
           ),
           pipe("Checkpoint comparison", [
             `Latest epoch ${epoch}: validation ${rounded(trace[epoch]!.validation)}`,
@@ -980,11 +1008,13 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             "Memory before gating",
             [old, candidate],
             ["Old cell", "Candidate"],
+            "cell-memory",
           ),
           bars(
             "Contributions after gating",
             [kept, added],
             ["Retained old memory", "Added candidate"],
+            "cell-memory",
           ),
           pipe("Cell update", [
             `Forget gate ${forget}`,
@@ -1225,6 +1255,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             "Prediction and new measurement",
             [prediction, measurement],
             ["Prediction", "Measurement"],
+            "estimated-reading",
           ),
           bars(
             "Uncertainty and gain",
@@ -1235,6 +1266,7 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
             "Estimate after the measurement update",
             [prediction, result.estimate, measurement],
             ["Prior prediction", "Updated estimate", "Measurement"],
+            "estimated-reading",
           ),
         ],
         answer: result.estimate,
@@ -1337,8 +1369,13 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
         errors = output.map((value, i) => Math.abs(value - original[i]!));
       return {
         graphics: [
-          bars("Original weights", original),
-          bars(`Rounded weights, ${2 ** bits} levels`, output),
+          bars("Original weights", original, undefined, "weights"),
+          bars(
+            `Rounded weights, ${2 ** bits} levels`,
+            output,
+            undefined,
+            "weights",
+          ),
           bars("Absolute rounding error", errors),
         ],
         answer: output[position]!,
@@ -1377,8 +1414,13 @@ export const NUMERIC_INVESTIGATIONS: Record<string, LessonInvestigationSpec> = {
       const count = output.filter((value) => value !== 0).length;
       return {
         graphics: [
-          bars("Original connections", original),
-          bars("Connections after magnitude pruning", output),
+          bars("Original connections", original, undefined, "weights"),
+          bars(
+            "Connections after magnitude pruning",
+            output,
+            undefined,
+            "weights",
+          ),
           cells(
             "Connection status",
             output.map((value) => (value === 0 ? "Removed" : "Kept")),
@@ -1634,12 +1676,16 @@ function signalSpec(
             window,
             undefined,
             window.map((_, i) => String(i + (timed ? start : 0))),
+            "waveform-amplitude",
           ),
-          bars(
-            "Magnitude spectrum, bins 0 through 32 Hz",
-            spectrum,
-            spectrum.map((_, i) => `${i} Hz`),
-          ),
+          {
+            ...bars(
+              "Magnitude spectrum, bins 0 through 32 Hz",
+              spectrum,
+              spectrum.map((_, i) => `${i} Hz`),
+            ),
+            layout: "series",
+          },
           ...(timed
             ? [
                 cells(
@@ -1730,12 +1776,14 @@ function forecastSpec(recursive: boolean): LessonInvestigationSpec {
             actual,
             [horizon],
             actual.map((_, i) => `h${i}`),
+            "forecast-reading",
           ),
           line(
             "Fixed-rule forecast by horizon",
             forecast,
             [horizon],
             forecast.map((_, i) => `h${i}`),
+            "forecast-reading",
           ),
           bars(
             "Absolute error at each horizon",
@@ -1875,6 +1923,7 @@ function attentionSpec(temporal: boolean): LessonInvestigationSpec {
             `Keys for query ${query}`,
             keys,
             values.map((value, i) => `t${i}: value ${value}`),
+            "attention-key",
           ),
           ...(temporal
             ? [

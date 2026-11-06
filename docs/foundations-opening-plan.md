@@ -164,10 +164,15 @@ clarity and accurate interpretation rather than reducing a caveat count.
 
 Follow the established [lesson layout](superpowers/specs/2026-09-23-lesson-layout-design.md) and [direction A design](superpowers/specs/2026-09-24-lesson-tightening-design.md), then B's verified navigation contract. Preserve sequential unlocks, purchase checks, certificates, and current onboarding/profile contracts. No new learning route, schema, or paid tier belongs to this release.
 
-## Visual prototype before runtime work
+## Historical visual prototype
 
-The [foundations visual prototype](design-previews/foundations/index.html)
-demonstrates all five free lessons in the proposed five-step shell. It includes
+The [original verification record](design-previews/foundations/verification.json)
+and retained screenshots document the five-lesson prototype. The full-course
+rollout replaced its runnable HTML and verification script, which were retired
+on November 6, 2026. Use `/design/deep-orbit` on the development server to inspect
+the current lesson renderer. The following notes describe the earlier prototype.
+
+That prototype demonstrated all five free lessons in the proposed five-step shell. It included
 the packet strip linked to code, shape transformations, operation results,
 bounded batch consumption, scaling, and authored retry/success states. Existing
 Deep Orbit artwork, fonts, and world colors ground the design. The normal
@@ -242,9 +247,9 @@ appearance controls are included. The refreshed
 200 responsive views, 16 review-panel layouts, 24 interaction checks, and 52
 automated accessibility checks with no violations. Desktop and phone captures were visually reviewed.
 These checks do not establish assistive technology compatibility or beginner
-learning outcomes. Rerun them with
-`node docs/design-previews/foundations/verify.cjs` while serving the repository
-at `http://127.0.0.1:8767`.
+learning outcomes. The retained report records that historical run. Current
+verification uses the application checks described in the
+[local review setup](review-setup.md).
 
 ## Internal implementation
 

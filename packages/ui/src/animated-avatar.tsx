@@ -26,6 +26,7 @@ export interface AnimatedAvatarProps {
   /** Annotated expression variant, crossfaded in over the base. */
   expressionSrc?: string;
   accentColor?: string;
+  isAI?: boolean;
   size?: number;
 }
 
@@ -34,6 +35,7 @@ export function AnimatedAvatar({
   src,
   expressionSrc,
   accentColor = "var(--tc-primary)",
+  isAI = false,
   size = 44,
 }: AnimatedAvatarProps) {
   // States are keyed by the src they refer to, so a prop swap to a
@@ -67,7 +69,12 @@ export function AnimatedAvatar({
 
   if (!src || failedBase === src) {
     return (
-      <CharacterAvatar name={name} accentColor={accentColor} size={size} />
+      <CharacterAvatar
+        name={name}
+        accentColor={accentColor}
+        isAI={isAI}
+        size={size}
+      />
     );
   }
 
@@ -81,8 +88,8 @@ export function AnimatedAvatar({
       aria-label={name}
       className="shrink-0 select-none relative overflow-hidden"
       style={{
-        width: size,
-        height: size,
+        width: `var(--tc-avatar-size, ${size}px)`,
+        height: `var(--tc-avatar-size, ${size}px)`,
         border: `2px solid ${accentColor}`,
         background: "var(--tc-surface)",
         borderRadius: 0,

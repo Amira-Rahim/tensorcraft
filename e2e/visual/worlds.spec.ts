@@ -1,7 +1,7 @@
 /**
  * Visual regression tests, world palette rendering.
  *
- * Per dev-plan §8k. Confirms the CSS-var cascade works for each of the 5
+ * See docs/visual-regression.md. Confirms the CSS-var cascade works for each of the 5
  * world landing pages. One baseline per world.
  *
  * Slugs are the single source of truth from `packages/worlds`.

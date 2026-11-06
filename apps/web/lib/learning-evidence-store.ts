@@ -1,7 +1,8 @@
 import {
   evidenceBytes,
-  getLearningEvidenceContext,
-  LEARNING_EVIDENCE_CONTEXTS,
+  canSaveLearningEvidence,
+  getLearningEvidenceMilestones,
+  LEARNING_EVIDENCE_MILESTONES,
   LEARNING_EVIDENCE_LIMITS,
   validateLearningEvidence,
   validEvidenceOwner,
@@ -24,9 +25,7 @@ interface OwnerRecords {
   milestones: Partial<Record<LearningEvidenceMilestoneId, MilestoneRecords>>;
 }
 
-const MILESTONES = Object.values(LEARNING_EVIDENCE_CONTEXTS).map(
-  (context) => context.milestoneId,
-);
+const MILESTONES = LEARNING_EVIDENCE_MILESTONES;
 
 /** Signing in never adopts the browser's guest records automatically. */
 export function resolveEvidenceOwner(userId: string | null): string {
@@ -168,7 +167,7 @@ function ownerSnapshots(
   exerciseSlug?: LearningEvidenceExerciseSlug,
 ) {
   const milestoneIds = exerciseSlug
-    ? [LEARNING_EVIDENCE_CONTEXTS[exerciseSlug].milestoneId]
+    ? getLearningEvidenceMilestones(exerciseSlug)
     : MILESTONES;
   return milestoneIds.flatMap((id) => {
     const milestone = records.milestones[id];
@@ -226,7 +225,10 @@ export async function listLearningEvidence(
   ownerScope: string,
   exerciseSlug?: LearningEvidenceExerciseSlug,
 ): Promise<LearningEvidenceSnapshot[]> {
-  if (exerciseSlug !== undefined && !getLearningEvidenceContext(exerciseSlug))
+  if (
+    exerciseSlug !== undefined &&
+    !getLearningEvidenceMilestones(exerciseSlug).length
+  )
     throw new Error("This exercise does not support saved runs yet.");
   const snapshots = await transaction(ownerScope, "readonly", (records) =>
     ownerSnapshots(records, exerciseSlug),
@@ -272,6 +274,10 @@ async function mutateVerifiedOwner(
 export async function saveLearningEvidence(
   snapshot: LearningEvidenceSnapshot,
 ): Promise<void> {
+  if (!canSaveLearningEvidence(snapshot.exerciseSlug))
+    throw new Error(
+      "Saving this exercise's runs is not enabled yet. You can inspect or download this run.",
+    );
   const validated = await verifyLearningEvidence(snapshot, snapshot.ownerScope);
   return mutateVerifiedOwner(validated.ownerScope, (records, store) => {
     const existing = ownerSnapshots(records).find(

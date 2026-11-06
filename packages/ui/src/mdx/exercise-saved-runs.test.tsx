@@ -6,11 +6,15 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { StrictMode } from "react";
 import {
   Exercise,
   ExerciseDataProvider,
   type ExerciseData,
   type ExerciseProps,
+  type ExerciseResultContext,
+  type ExerciseRunEvent,
+  type ExerciseSavedRunsContext,
 } from "./exercise";
 import { parseAndRunTests, type TestRunOutcome } from "./exercise-runner";
 import { markExerciseSolutionViewed } from "./exercise-draft";
@@ -81,11 +85,17 @@ function tree(props: Partial<ExerciseProps> = {}) {
       <Exercise
         slug={exercise.slug}
         {...props}
-        renderSavedRuns={({ restore }) => (
-          <button onClick={() => restore("const value = 3;", true)}>
-            Restore saved test run
-          </button>
-        )}
+        renderSavedRuns={
+          props.renderSavedRuns ??
+          (({ restore, restoreAvailable }) => (
+            <button
+              disabled={restoreAvailable === false}
+              onClick={() => restore("const value = 3;", true)}
+            >
+              Restore saved test run
+            </button>
+          ))
+        }
       />
     </ExerciseDataProvider>
   );
@@ -308,5 +318,296 @@ describe("saved exercise runs", () => {
       checks: partial.results,
       errored: false,
     });
+  });
+});
+
+describe("exercise result lifecycle", () => {
+  function inspector(context: ExerciseResultContext) {
+    return (
+      <section aria-label="Inspected result">
+        <p>{context.attempt.status}</p>
+        <p data-testid="inspector-code">{context.currentCode}</p>
+        <a href={`#${context.editorId}`}>Return to code</a>
+      </section>
+    );
+  }
+
+  it("publishes one immutable snapshot and places history after the result with one editor", async () => {
+    const task = pending();
+    vi.mocked(parseAndRunTests).mockReturnValue(task.promise);
+    const events: ExerciseRunEvent[] = [];
+    const snapshots = vi.fn();
+    const submit = vi.fn();
+    render(
+      tree({
+        renderResult: inspector,
+        onRunLifecycle: (event) => events.push(event),
+        onRunSnapshot: snapshots,
+        onSubmit: submit,
+      }),
+    );
+    const button = await screen.findByRole("button", { name: "Run Tests" });
+    button.focus();
+    fireEvent.click(button);
+    expect(events[0]).toMatchObject({ type: "started" });
+    expect(
+      screen.getByRole("region", { name: "Inspected result" }),
+    ).toHaveTextContent("running");
+    await act(async () => task.resolve(passed));
+    expect(events.map((event) => event.type)).toEqual(["started", "captured"]);
+    const captured = events[1];
+    if (captured?.type !== "captured" || events[0]?.type !== "started")
+      throw new Error("Missing run events");
+    expect(captured.runToken).toBe(events[0].runToken);
+    expect(Object.isFrozen(captured.snapshot)).toBe(true);
+    expect(Object.isFrozen(captured.snapshot.artifacts[0])).toBe(true);
+    expect(captured.snapshot.artifacts).not.toBe(passed.artifacts);
+    expect(snapshots).toHaveBeenCalledExactlyOnceWith(captured.snapshot);
+    expect(submit).toHaveBeenCalledOnce();
+    expect(screen.getAllByRole("textbox", { name: "Code" })).toHaveLength(1);
+    const result = screen.getByRole("region", { name: "Inspected result" });
+    const restore = screen.getByRole("button", {
+      name: "Restore saved test run",
+    });
+    expect(
+      result.compareDocumentPosition(restore) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(screen.getByRole("status")).toHaveTextContent("All 1 test passed");
+    expect(button).toHaveFocus();
+    const inspect = screen.getByRole("link", { name: "Inspect result" });
+    expect(result.parentElement).toHaveAttribute(
+      "id",
+      inspect.getAttribute("href")!.slice(1),
+    );
+  });
+
+  it("keeps submitted code and current editor code distinct after an edit during execution", async () => {
+    const task = pending();
+    vi.mocked(parseAndRunTests).mockReturnValue(task.promise);
+    const contexts: ExerciseResultContext[] = [];
+    render(
+      tree({
+        renderResult: (context) => {
+          contexts.push(context);
+          return inspector(context);
+        },
+      }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Code" }), {
+      target: { value: "const later = 2;" },
+    });
+    await act(async () => task.resolve(passed));
+    const context = contexts.at(-1)!;
+    expect(context.currentCode).toBe("const later = 2;");
+    expect(context.attempt).toMatchObject({
+      status: "settled",
+      snapshot: { submittedCode: exercise.starterCode },
+    });
+    expect(screen.getByTestId("exercise-result-verdict")).toHaveTextContent(
+      "These checks belong to the submitted code",
+    );
+  });
+
+  it("invalidates a pending run on reset and accepts only the newer run token", async () => {
+    const first = pending(),
+      second = pending();
+    vi.mocked(parseAndRunTests)
+      .mockReturnValueOnce(first.promise)
+      .mockReturnValueOnce(second.promise);
+    const events: ExerciseRunEvent[] = [];
+    const snapshots = vi.fn();
+    render(
+      tree({
+        renderResult: inspector,
+        onRunLifecycle: (event) => events.push(event),
+        onRunSnapshot: snapshots,
+      }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect(events[1]).toEqual({ type: "invalidated", reason: "reset" });
+    fireEvent.click(screen.getByRole("button", { name: "Run Tests" }));
+    await act(async () => first.resolve(passed));
+    expect(snapshots).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("region", { name: "Inspected result" }),
+    ).toHaveTextContent("running");
+    await act(async () => second.resolve(passed));
+    expect(events.map((event) => event.type)).toEqual([
+      "started",
+      "invalidated",
+      "started",
+      "captured",
+    ]);
+    expect(events[0]).not.toEqual(events[2]);
+    expect(snapshots).toHaveBeenCalledOnce();
+  });
+
+  it("clears an already completed raw attempt immediately on reset", async () => {
+    const events: ExerciseRunEvent[] = [];
+    render(
+      tree({
+        renderResult: inspector,
+        onRunLifecycle: (event) => events.push(event),
+      }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    await screen.findByText("settled");
+    fireEvent.click(screen.getByRole("button", { name: "Reset" }));
+    expect(
+      screen.getByRole("region", { name: "Inspected result" }),
+    ).toHaveTextContent("idle");
+    expect(
+      screen.queryByTestId("exercise-result-verdict"),
+    ).not.toBeInTheDocument();
+    expect(events.at(-1)).toEqual({ type: "invalidated", reason: "reset" });
+  });
+
+  it("preserves the latest draft before restore invalidates a run", async () => {
+    const task = pending();
+    vi.mocked(parseAndRunTests).mockReturnValue(task.promise);
+    const snapshots = vi.fn();
+    const events: ExerciseRunEvent[] = [];
+    let recoveryAtInvalidation: unknown;
+    render(
+      tree({
+        renderResult: inspector,
+        onRunSnapshot: snapshots,
+        onRunLifecycle: (event) => {
+          events.push(event);
+          if (event.type === "invalidated" && event.reason === "restore") {
+            recoveryAtInvalidation = JSON.parse(
+              localStorage.getItem("tc-code-saved-run")!,
+            );
+          }
+        },
+      }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Code" }), {
+      target: { value: "const newer = 4;" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Restore saved test run" }),
+    );
+    expect(recoveryAtInvalidation).toMatchObject({
+      code: "const value = 3;",
+      stashedCode: "const newer = 4;",
+    });
+    expect(events.at(-1)).toEqual({ type: "invalidated", reason: "restore" });
+    await act(async () => task.resolve(passed));
+    expect(snapshots).not.toHaveBeenCalled();
+  });
+
+  it("leaves a running attempt active when preserving its draft fails", async () => {
+    const task = pending();
+    vi.mocked(parseAndRunTests).mockReturnValue(task.promise);
+    const events: ExerciseRunEvent[] = [];
+    render(
+      tree({
+        renderResult: inspector,
+        onRunLifecycle: (event) => events.push(event),
+      }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Restore saved test run" }),
+    );
+    expect(events.map((event) => event.type)).toEqual(["started"]);
+    expect(screen.getByRole("textbox", { name: "Code" })).toHaveValue(
+      exercise.starterCode,
+    );
+    await act(async () => task.resolve(passed));
+    expect(events.at(-1)?.type).toBe("captured");
+  });
+
+  it("rejects an old restore command after leaving and returning to the same owner scope", async () => {
+    let oldRestore: ExerciseSavedRunsContext["restore"] | undefined;
+    const events: ExerciseRunEvent[] = [];
+    const props = {
+      renderResult: inspector,
+      onRunLifecycle: (event: ExerciseRunEvent) => events.push(event),
+      renderSavedRuns: (context: ExerciseSavedRunsContext) => {
+        if (context.restoreAvailable && !oldRestore)
+          oldRestore = context.restore;
+        return null;
+      },
+    };
+    const view = render(tree({ ...props, draftOwner: "one" }));
+    await waitFor(() => expect(oldRestore).toBeDefined());
+    view.rerender(tree({ ...props, draftOwner: "two" }));
+    await screen.findByRole("textbox", { name: "Code" });
+    expect(oldRestore!("old owner's code", false)).toBe(false);
+    view.rerender(tree({ ...props, draftOwner: "one" }));
+    await screen.findByRole("textbox", { name: "Code" });
+    expect(oldRestore!("old instance code", false)).toBe(false);
+    expect(screen.getByRole("textbox", { name: "Code" })).toHaveValue(
+      exercise.starterCode,
+    );
+    expect(events.filter((event) => event.type === "invalidated")).toEqual([
+      { type: "invalidated", reason: "scope-change" },
+      { type: "invalidated", reason: "scope-change" },
+    ]);
+  });
+
+  it("keeps current registration usable under effect cleanup and rejects commands after unmount", async () => {
+    let latest: ExerciseSavedRunsContext | undefined;
+    const availability: (boolean | undefined)[] = [];
+    const view = render(
+      <StrictMode>
+        {tree({
+          renderSavedRuns: (context) => {
+            latest = context;
+            availability.push(context.restoreAvailable);
+            return null;
+          },
+        })}
+      </StrictMode>,
+    );
+    await waitFor(() => expect(latest?.restoreAvailable).toBe(true));
+    expect(availability).toContain(false);
+    expect(latest!.restore(exercise.starterCode, false)).toBe(true);
+    const oldRestore = latest!.restore;
+    view.unmount();
+    render(tree());
+    await screen.findByRole("textbox", { name: "Code" });
+    expect(oldRestore("stale code", false)).toBe(false);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Restore saved test run" }),
+    );
+    expect(screen.getByRole("textbox", { name: "Code" })).toHaveValue(
+      "const value = 3;",
+    );
+  });
+
+  it("keeps fallback output and grading when host callbacks throw", async () => {
+    const snapshot = vi.fn(() => {
+      throw new Error("host snapshot failed");
+    });
+    const lifecycle = vi.fn(() => {
+      throw new Error("host lifecycle failed");
+    });
+    const submit = vi.fn();
+    render(
+      tree({
+        renderResult: () => undefined,
+        onRunSnapshot: snapshot,
+        onRunLifecycle: lifecycle,
+        onSubmit: submit,
+      }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Run Tests" }));
+    await screen.findByRole("heading", { name: "Reading" });
+    expect(snapshot).toHaveBeenCalledOnce();
+    expect(lifecycle).toHaveBeenCalledTimes(2);
+    expect(submit).toHaveBeenCalledOnce();
+    expect(screen.getByTestId("test-results-panel")).toHaveTextContent(
+      "passed",
+    );
   });
 });

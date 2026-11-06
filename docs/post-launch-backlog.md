@@ -1,15 +1,15 @@
 # Post-Launch Backlog (canonical)
 
 **This file is the single source of truth for every task deferred to after V1
-launch.** Created 2026-07-21 by consolidating `v2-polish-backlog.md`,
-`dev-plan.md` §9d/§10d/§10e/§10f, `v2-beat-expansion-plan.md`,
+launch.** Created 2026-07-21 by consolidating the former polish and development
+ledgers (retired 2026-11-06, available in Git history), `v2-beat-expansion-plan.md`,
 `email-retention-sequences.md`, the growth roadmap task lists
 (`roadmap.md` Horizons 1-3), and Claude memory entries.
 
 **Rule:** when postponing any work, add a checkbox line HERE (with its gate and
 a link to the detail spec if one exists). Detail specs stay in their own files;
-this doc is the index of record. Deferred mentions surviving elsewhere
-(`dev-plan.md`, audit ledgers) are historical and non-authoritative.
+this doc is the index of record. Deferred mentions in dated audit ledgers
+are historical and non-authoritative.
 
 ## First-1,000 funnel follow-ups (2026-11-02)
 
@@ -147,11 +147,14 @@ The [roadmap](roadmap.md) now records the owner's long-term goal of 200,000
 unique paying customers. This opening project cannot establish that demand.
 
 - [x] **Visual design before production coding, 2026-10-04.** Used the
-  frontend-design skill to create an [isolated prototype](design-previews/foundations/index.html)
+  frontend-design skill to create an isolated prototype, preserved in the
+  [Foundations verification record](design-previews/foundations/verification.json)
   covering all five free lessons and five steps, with desktop/phone captures,
   existing artwork and tokens, linked packet/code selection, shape and scaling
   interactions, and authored retry/success states. Token choices, wireframes,
-  self-critique, and implementation limits are included in the artifact.
+  self-critique, and implementation limits informed the retained opening plan.
+  The prototype runtime was retired after the production rollout. Use the
+  development-only `/design/deep-orbit` route for the current lesson preview.
   This records prototype creation and internal review, not owner design
   acceptance, production implementation, learner results, or paying demand.
 - [x] **Connect and simplify the Foundations opening, 2026-10-06.** The
@@ -833,7 +836,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   signal-ward launch sprint runs (see `docs/audits/ai-slop-audit-2026-08-12.md`).
 
 - [ ] **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context
-  in `docs/dev-plan.md` 2026-07-23 entry + `docs/superpowers/plans/2026-07-22-light-mode.md`):
+  in `docs/superpowers/plans/2026-07-22-light-mode.md`):
   - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless -
     no site nav - so today learners flip scheme from other pages or the OS;
     candidate spot: the lesson ChromeBar).
@@ -963,7 +966,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
   - [ ] The other 20 character sheets (Neon / Signal / Nova / Terra) +
     world wiring + their scene art: gated on those worlds launching (see §5).
 - **Audit-parked UX + a11y** (flagged "parked on post-launch backlog" in
-  `pre-launch-checklist.md` Rounds 11-12 but never filed until 2026-07-22;
+  the retired pre-launch checklist, Rounds 11-12, and filed 2026-07-22;
   a third item, "HintPanel coverage 3/56", was dropped as stale - Run #7
   regenerated 77 hint ladders on 2026-07-16):
   - [ ] Sandpack offline fallback for the exercise editor.
@@ -990,17 +993,18 @@ memory was refuted by that audit: `pnpm audit` clean.)
   `certificates.ts:137`.
 - [ ] DISPATCH weekly-intel cron: the milestone producer shipped 2026-07-13
   but the *weekly* push (#13's premise) has no scheduler - pick pg_cron or
-  a Vercel Scheduled Function (explicitly deferred in
-  `docs/gt-narrative-polish-checklist.md`, never filed until 2026-07-22).
+  a Vercel Scheduled Function if the DISPATCH feature is restored. This
+  deferred work was consolidated here on 2026-07-22.
   Same for the dispatch-messages email mirror via Resend.
 - [ ] Counterfactual data layer: migration 031 + `counterfactual-client.ts`
   still collect choices but the `/log/rewind` surface was cut 2026-06-01 -
   data accrues that nothing reads. Build a surface (#3's payoff) or stop
   collecting; GDPR minimization argues against hoarding it
   (added 2026-07-22).
-- [ ] Reconcile `docs/gt-narrative-polish-checklist.md` open items against
-  Runs 6-8 - verify what's done, fold survivors here, mark the checklist
-  historical.
+- [x] Retired the superseded GT narrative checklist, 2026-11-06. Deferred
+  DISPATCH scheduler/email work and restoration decisions remain here. Current
+  story requirements live in [Q4](content-quality-plan.md#q4-improve-story-and-consequential-choices)
+  and the [story style bible](story-style-bible.md).
 - [ ] Verify R0-R4 structural-variety closure: the
   copy-humanization-reaudit plan (2026-06-10) was likely absorbed by Run 7
   cadence work + Run 8 endorsement, but never formally ticked off. Check
@@ -1262,7 +1266,7 @@ memory was refuted by that audit: `pnpm audit` clean.)
 - [ ] `ActivityHeatmap` component (post-V0.5).
 - [ ] Remove deprecated `<Quiz>` + `<KeyTakeaways>` MDX components once all
   worlds are migrated off them.
-- **Audit-parked email + pipeline resilience** (pre-launch-checklist Rounds
+- **Audit-parked email + pipeline resilience** (retired pre-launch checklist, Rounds
   11-12, filed here 2026-07-22):
   - [ ] Refund-comms email (transactional template when a refund is issued).
   - [ ] News-scrape failure alerts.
@@ -1460,8 +1464,7 @@ with no checkbox anywhere until now.
 ## /extras removal (2026-08-15)
 
 Owner decision, executed 2026-08-15: the /extras surface and its content were
-removed in full. Plan + execution ledger:
-`docs/superpowers/plans/2026-08-15-extras-removal.md`.
+removed in full. The removal record and restoration guidance follow.
 
 **What was removed**
 
@@ -1483,7 +1486,8 @@ removed in full. Plan + execution ledger:
 
 - Free tier is Module 1 (5 lessons) only.
 - The §4.10 roadmap-response marketing asset is BLOCKED (its topic map used
-  the deep-dive track as its spine; see `docs/marketing-plan.md`).
+  the deep-dive track as its spine). Current acquisition work follows the
+  [first-1,000 plan](marketing-first-1000-paid.md).
 - Curriculum no longer covers classical ML, ethics, math derivations, or the
   Python bridge anywhere.
 
@@ -1679,8 +1683,9 @@ has already been written off once (see above) - do not launch dark again.
 - [ ] (OPERATOR) **Sentry alerting.** Capture is real and verified in both
   apps (`apps/api/src/lib/sentry.ts` + `middleware/sentry.ts`; web's three
   `sentry.*.config.ts` loaded via `instrumentation.ts:14-18`), but alert
-  rules have no repo representation at all. Create the three rules specified
-  at `pre-launch-checklist.md` §B10 in each Sentry project.
+  rules live in Sentry. The [observability guide](observability.md#task-2-sentry-alert-rules-15-min-free)
+  records six rules created and read back on 2026-08-25. Verify their current
+  delivery using that guide before treating alerting as a release check.
 - [ ] (OPERATOR) **Plausible:** add site `tensorcraft.app`, set
   `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` in Vercel. ~EUR 9/mo. The script component
   (`apps/web/app/components/plausible-script.tsx:8`) is already conditional
@@ -1696,11 +1701,9 @@ has already been written off once (see above) - do not launch dark again.
   blocker.
 - [ ] (OPERATOR) **Product Hunt "upcoming" page** - follower capture only works
   pre-launch.
-- [ ] (OPERATOR) **Twitter/X account @tensorcraft** - create now (posting cadence can
-  wait). Launch execution (`dev-plan.md` §10b) announces on Twitter/X, so
-  the account must predate launch; also removes handle-squatting risk. The
-  old "DEFERRED to V1.0" note contradicted §10b and is resolved in favor of
-  pre-launch (2026-07-22).
+- [ ] (OPERATOR) **Twitter/X account @tensorcraft** - reserve the handle before
+  announcing there. Follow the [first-1,000 plan](marketing-first-1000-paid.md)
+  for the current distribution plan and posting priorities.
 - [x] **FAQPage JSON-LD on `/pricing`** - **DONE 2026-07-25**: FaqSection
   now emits the FAQPage markup itself, so `/` and `/pricing` both carry it,
   and the sitewide copy was removed from the root layout (wrong-page
@@ -1928,7 +1931,7 @@ has already been written off once (see above) - do not launch dark again.
   stay applied, so a function it created being present is correct, not a
   finding.
   **The real defect was one line of rollback SQL, and it is now FIXED:**
-  `docs/pre-launch-checklist.md:671` said
+  the [historical pre-launch checklist](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/pre-launch-checklist.md#L671) said
   `drop function if exists public.get_shared_certificate(text) cascade;`.
   No such overload exists, so `if exists` made it a silent no-op and a
   genuine 019 rollback would have left the function behind pointing at a

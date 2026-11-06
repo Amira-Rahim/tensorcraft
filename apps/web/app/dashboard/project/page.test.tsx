@@ -47,6 +47,7 @@ describe("project saved-run content access", () => {
     });
     render(await ProjectPage());
     expect(mocks.exercise).not.toHaveBeenCalledWith("simple-network");
+    expect(mocks.exercise).not.toHaveBeenCalledWith("deep-scan-eval");
     expect(mocks.received.mock.calls[0][0].network).toBeUndefined();
   });
 
@@ -63,7 +64,9 @@ describe("project saved-run content access", () => {
       render(await ProjectPage());
       const resolved = mocks.exercise.mock.calls.map(([slug]) => slug);
       expect(resolved).toEqual(
-        entitled ? ["normalize-data", "simple-network"] : ["normalize-data"],
+        entitled
+          ? ["normalize-data", "simple-network", "deep-scan-eval"]
+          : ["normalize-data"],
       );
       const props = mocks.received.mock.calls[0][0];
       expect(props.network).toEqual(
@@ -74,6 +77,15 @@ describe("project saved-run content access", () => {
             }
           : undefined,
       );
+      expect(props.evaluation).toEqual(
+        entitled
+          ? {
+              starterCode: "deep-scan-eval starter",
+              currentVersion: "content-hash",
+            }
+          : undefined,
+      );
+      expect(props.stages).toEqual([]);
       expect(JSON.stringify(props)).not.toContain("hidden grading source");
       expect(JSON.stringify(props)).not.toContain("authored solution source");
     },

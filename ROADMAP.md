@@ -121,24 +121,40 @@ and [learning-product release record](docs/audits/learning-product-release-2026-
 
 ### Remaining learning-evidence pilot
 
+The [story-driven result design](docs/superpowers/specs/2026-11-06-story-driven-result-inspection.md)
+maps all 56 launched lessons to suitable result interactions and defines shared
+current-run inspection, historical compatibility, and selective saving. The
+[implementation record](docs/superpowers/plans/2026-11-06-result-inspection-design-review.md#implementation-progress-on-november-6)
+now records the locally implemented three-lesson pilot: capture, immediate
+inspection, history, and project-stage integration. Evaluation writes default to
+off until the reader-first release sequence is complete.
+
+The full signed-in pilot review is complete locally: 27 Chromium cases cover
+all five phases at four widths in both themes, access restrictions, prerequisites
+and normal-motion story playback. Four final targeted flows also verify the last
+chart correction and default evaluation reader mode. The review fixed chart
+scales, category labels, contrast, saved metadata sizing and misleading preview
+copy. Human screen-reader review and observed learner understanding remain open.
+
 Build on the locally implemented normalization and first-network saved runs.
 Their owner-scoped storage, download/delete controls, stale labels, and draft
 recovery already exist. Preserve those contracts as the pilot expands.
 
-1. Harden evaluation provenance first. Bind the recorded fit to the evaluated
-   model, reject observed training on held-out rows, and check immutable fixture
-   identity. Mark unsupported or incomplete capture as unknown provenance.
-   Capture useful output independently of the learner's final
-   verdict so a mistaken diagnosis does not hide the run's evidence.
-2. Implement the reviewed evaluation inspector in the actual lesson. Show
-   the run's scores, missed anomalies, false alarms, selected input, supplied
-   label, and fixed decision rule together. Keep all cases available and
-   distinguish generated rows, authored cases, and fictional crew results.
-3. Add the evaluation saved-run and project-stage entry using existing
-   retention and recovery controls. Keep browser-local records distinct
-   from server practice history. The normalization, network, and evaluation
-   exercises use different fixtures and models. Their milestones must not
-   imply that one saved model passes through the whole course.
+1. Evaluation capture and semantic validation are implemented locally. The
+   recorder tracks immutable metrics and weight state, including shared weights
+   across recompilation. The grader preserves actual case output when diagnosis
+   checks fail. The interface retains the documented source/procedure limits.
+2. The evaluation inspector is implemented in the actual lesson, with scores,
+   missed anomalies, false alarms, selected inputs, supplied labels, and the fixed
+   decision rule together. Normalization and network views also appear directly
+   after a run. Browser checks and observed learner understanding remain separate
+   release evidence.
+3. Evaluation history and the project-stage entry are implemented using existing
+   retention and recovery controls. Browser-local records remain distinct from
+   server practice history. Ship compatible readers before enabling evaluation
+   writes, and preserve those readers during rollback. The three milestones use
+   different fixtures and models; they do not transfer one saved model through
+   the course.
 4. Complete the remaining proposed optimization explanation and explicit
    guest-record adoption work. Account synchronization, JSON import, and
    full-model persistence remain outside this bounded pilot.
@@ -387,7 +403,7 @@ relevant work forward.
 Sources: [platform and scale backlog](docs/post-launch-backlog.md),
 [deployment guide](docs/deployment-guide.md),
 [infrastructure](docs/infrastructure.md), and
-[development-plan history](docs/dev-plan.md).
+[development-plan history](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md).
 
 ## Platform expansion through stories and community
 
@@ -732,7 +748,7 @@ Source: [November learning-evidence plan](docs/superpowers/plans/2026-11-02-lear
   startup work while preserving deployment artifacts, source maps, and health.
 
 Sources: [infrastructure proposals](docs/infrastructure.md),
-[development-plan history](docs/dev-plan.md), [GitHub specification](docs/tech-spec.md),
+[development-plan history](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md), [GitHub specification](docs/tech-spec.md),
 and the detailed canonical inventory below.
 
 ### Observability and delivery operations
@@ -754,7 +770,7 @@ and the detailed canonical inventory below.
   measured performance improvements.
 
 Sources: [observability follow-ups](docs/observability.md),
-[development-plan follow-ups](docs/dev-plan.md), and
+[historical development follow-ups](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md), and
 [web lint configuration](apps/web/eslint.config.mjs).
 
 ### Tensorcraft Pulse technical implementation
@@ -814,7 +830,7 @@ and [drafting](scripts/news/draft.mjs).
   across catalog, Stripe/test mode, entitlements, receipts, copy, metadata,
   reporting, and affected tests as one coordinated implementation.
 
-Sources: [development-plan history](docs/dev-plan.md),
+Sources: [development-plan history](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md),
 [video integration](docs/future-ai-video-scenes.md),
 [content-quality plan](docs/content-quality-plan.md),
 [learning-product plan](docs/learning-product-development-plan.md),
@@ -951,7 +967,7 @@ curriculum reuse or feature restoration needs its own current scope.
 Sources: [optional growth directions](docs/roadmap.md),
 [canonical deferred proposals](docs/post-launch-backlog.md),
 [arena scoring contract](docs/arena-scoring-contract.md), and
-[historical polish context](docs/v2-polish-backlog.md). Pulse's proposed
+[historical polish context](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/v2-polish-backlog.md). Pulse's proposed
 workflow is recorded in its [deferred implementation plan](docs/superpowers/plans/2026-05-03-tensorcraft-pulse.md).
 
 ## Long-range platform possibilities
@@ -1066,10 +1082,10 @@ the course on their own. Any rewards need a new decision that fits the current
 purchase model and preserves honest progress records.
 
 Sources: [historical product vision](docs/prd.md#7-release-plan),
-[superseded version roadmap](docs/dev-plan.md#version-roadmap),
+[superseded version roadmap](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/dev-plan.md#version-roadmap),
 [product options and founder questions](docs/product-plan.md),
 [localization design](docs/tech-spec.md#8-internationalization-descoped-to-post-v10),
-[historical community and creator proposals](docs/marketing-plan.md),
+[historical community and creator proposals](https://github.com/Amira-Rahim/tensorcraft/blob/8550adf771dbb40f1c7cef9af56990caf316bf61/docs/marketing-plan.md),
 [current referral approach](docs/marketing-first-1000-paid.md), and
 [learning-pilot extension boundaries](docs/superpowers/plans/2026-11-02-learning-evidence-pilot.md).
 
@@ -1345,7 +1361,7 @@ implementation. One contact address is omitted from this reading inventory.
 
 - **CB-059**, source line 835. Status: Conditional proposal / verify need.
 
-  **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context in `docs/dev-plan.md` 2026-07-23 entry + `docs/superpowers/plans/2026-07-22-light-mode.md`): - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless - no site nav - so today learners flip scheme from other pages or the OS; candidate spot: the lesson ChromeBar). - [ ] Scheme toggle inside the open mobile-nav drawer (overlay covers the top bar while open; duplicate the toggle next to the drawer's close button). - [ ] One-time Windows/Linux visual check of the nav toggle glyphs (◐ U+25D0 has no production precedent and sits outside the latin font subset; tofu risk on non-mac platforms). - [ ] `Ticker`/`TickerCanvas` appears to be dead code (no live importer, only a stale layout.test mock) - confirm and delete or re-mount. - [ ] Tighten `SceneCanvas`'s `rgbLight` from optional-with-fallback to a required dark/light tuple once all call sites are stable (a new consumer can currently omit it and silently render dark-only hues in light). - [ ] Optional: scope `transition-colors`/`transition-all` utilities to hover/focus states so the scheme flip is perfectly uniform (today ~186 small chrome elements ease 150ms while surfaces snap - assessed fine). - [ ] Optional: client-sync `meta[name=world-color]` when the user's manual override disagrees with the OS (browser chrome color mismatch, cosmetic).
+  **Light-mode follow-ups** (deferred from the 2026-07-23 rollout; context in `docs/superpowers/plans/2026-07-22-light-mode.md`): - [ ] Scheme toggle inside the lesson viewer (lesson pages are chromeless - no site nav - so today learners flip scheme from other pages or the OS; candidate spot: the lesson ChromeBar). - [ ] Scheme toggle inside the open mobile-nav drawer (overlay covers the top bar while open; duplicate the toggle next to the drawer's close button). - [ ] One-time Windows/Linux visual check of the nav toggle glyphs (◐ U+25D0 has no production precedent and sits outside the latin font subset; tofu risk on non-mac platforms). - [ ] `Ticker`/`TickerCanvas` appears to be dead code (no live importer, only a stale layout.test mock) - confirm and delete or re-mount. - [ ] Tighten `SceneCanvas`'s `rgbLight` from optional-with-fallback to a required dark/light tuple once all call sites are stable (a new consumer can currently omit it and silently render dark-only hues in light). - [ ] Optional: scope `transition-colors`/`transition-all` utilities to hover/focus states so the scheme flip is perfectly uniform (today ~186 small chrome elements ease 150ms while surfaces snap - assessed fine). - [ ] Optional: client-sync `meta[name=world-color]` when the user's manual override disagrees with the OS (browser chrome color mismatch, cosmetic).
 
 - **CB-060**, source line 837. Status: Open as recorded / reproduce current state.
 
@@ -1463,9 +1479,9 @@ implementation. One contact address is omitted from this reading inventory.
 
   A11y medium/low sweep (audit register §5, triaged 2026-07-22): tell keyboard users Escape exits the editor (Tab indents); make the screenshot dropzone keyboard-operable; `tabIndex={0}` on overflowing code blocks; announce step _completion_ in the step bar (visited state is colour-only, `title` swallowed by `aria-label`); `role="alert"` + `aria-invalid`/`aria-describedby` on auth errors (`aria-invalid` appears zero times in the codebase); onboarding `<main>`; fix `role="tabpanel"` placed on `<main>` in settings; label the second `<nav>`s; real arrow-key/Escape handling for `role="menu"` in user-menu; stop hiding "Best Value"/"Available Now" behind `aria-hidden`; enlarge the 15.5s-scene Skip control; 15px/12px inputs to ≥16px (iOS zoom); report-issue panel clips at `left:-60px` @320px.
 
-- **CB-092**, source line 1001. Status: Partly open / reconcile inline status.
+- **CB-092**, source line 1001. Status: Closed, 2026-11-06 documentation cleanup.
 
-  Reconcile `docs/gt-narrative-polish-checklist.md` open items against Runs 6-8 - verify what's done, fold survivors here, mark the checklist historical.
+  Retired the superseded GT narrative checklist. Deferred DISPATCH scheduler/email work and restoration decisions remain in the canonical backlog. Current story requirements live in `docs/content-quality-plan.md` Q4 and `docs/story-style-bible.md`.
 
 - **CB-093**, source line 1004. Status: Open as recorded / reproduce current state.
 
@@ -1777,7 +1793,7 @@ implementation. One contact address is omitted from this reading inventory.
 
 - **CB-166**, source line 1699. Status: Operator verification / dashboard action.
 
-  (OPERATOR) **Twitter/X account @tensorcraft** - create now (posting cadence can wait). Launch execution (`dev-plan.md` §10b) announces on Twitter/X, so the account must predate launch; also removes handle-squatting risk. The old "DEFERRED to V1.0" note contradicted §10b and is resolved in favor of pre-launch (2026-07-22).
+  (OPERATOR) **Twitter/X account @tensorcraft** - reserve the handle before announcing there. Follow `docs/marketing-first-1000-paid.md` for the current distribution plan and posting priorities.
 
 - **CB-167**, source line 1708. Status: Partly open / reconcile inline status.
 

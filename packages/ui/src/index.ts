@@ -31,6 +31,11 @@ export type {
   ExerciseProps,
   LessonPrefs,
 } from "./mdx";
+export type {
+  ExerciseAttemptState,
+  ExerciseRunEvent,
+  ExerciseResultContext,
+} from "./mdx/exercise";
 export { CharacterAvatar } from "./character-avatar";
 export { AnimatedAvatar } from "./animated-avatar";
 export type { AnimatedAvatarProps } from "./animated-avatar";

@@ -23,7 +23,7 @@ import { EVENTS, track } from "@/lib/analytics-events";
  * keeps an arbitrary or stale `locked` value, and a coming-soon world that
  * has nothing to unlock, out of the funnel numbers.
  *
- * Fires `paywall_hit` (dev-plan §4c). That event was specced but never
+ * Fires `paywall_hit`. That event was specced but never
  * actually fired: its only call site was <LessonPaywall>, which the lesson
  * route stopped rendering when it moved to redirect-based enforcement, so
  * the funnel's most important stage recorded nothing. This mounts at

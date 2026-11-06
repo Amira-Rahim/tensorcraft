@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Mobile responsive smoke tests, dev-plan §6b.
+ * Mobile responsive smoke tests. See docs/browser-support.md.
  *
  * Runs against the mobile/tablet Playwright projects defined in
  * `playwright.config.ts`:
@@ -11,7 +11,7 @@ import { test, expect } from "@playwright/test";
  *   - mobile-pixel-7   - Pixel 7 (412×915)
  *   - tablet-ipad      - iPad gen 7 (810×1080, proxy for iPad Air)
  *
- * We cover the routes the dev-plan calls out: landing, auth, pricing,
+ * We cover landing, auth, pricing,
  * worlds, paywall. For each, we assert (1) the page renders, (2) no
  * horizontal scroll at the viewport width, and (3) the primary CTA is
  * visible and has a touch-friendly hit area (>= 44×44 px).

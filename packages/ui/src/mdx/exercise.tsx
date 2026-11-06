@@ -11,6 +11,8 @@ import {
   useMemo,
   useRef,
   useContext,
+  useId,
+  useLayoutEffect,
   type ReactNode,
 } from "react";
 
@@ -189,8 +191,46 @@ export interface ExerciseRunSnapshot {
 
 export interface ExerciseSavedRunsContext {
   currentCode: string;
+  restoreAvailable?: boolean;
   /** Returns false when the browser cannot preserve the current draft. */
   restore: (code: string, solutionViewed: boolean) => boolean;
+}
+
+export type ExerciseAttemptState =
+  | { status: "idle" }
+  | { status: "running"; runToken: string }
+  | { status: "settled"; runToken: string; snapshot: ExerciseRunSnapshot };
+
+export type ExerciseRunEvent =
+  | { type: "started"; runToken: string }
+  | { type: "captured"; runToken: string; snapshot: ExerciseRunSnapshot }
+  | { type: "invalidated"; reason: "reset" | "restore" | "scope-change" };
+
+export interface ExerciseResultContext {
+  attempt: ExerciseAttemptState;
+  currentCode: string;
+  editorId: string;
+  resultId: string;
+}
+
+type RestoreCommand = ExerciseSavedRunsContext["restore"];
+type RestoreRegistration = {
+  scope: object;
+  id: symbol;
+  restore: RestoreCommand;
+};
+
+function immutableRunSnapshot(
+  snapshot: ExerciseRunSnapshot,
+): ExerciseRunSnapshot {
+  const copied = JSON.parse(JSON.stringify(snapshot)) as ExerciseRunSnapshot;
+  function freeze(value: unknown) {
+    if (!value || typeof value !== "object") return;
+    Object.values(value).forEach(freeze);
+    Object.freeze(value);
+  }
+  freeze(copied);
+  return copied;
 }
 
 export interface ExerciseBridge {
@@ -205,6 +245,9 @@ export interface ExerciseProps {
   draftOwner?: string | null;
   onSubmit?: (result: ExerciseSubmitResult) => void;
   onRunSnapshot?: (run: ExerciseRunSnapshot) => void;
+  onRunLifecycle?: (event: ExerciseRunEvent) => void;
+  /** Return undefined to use ordinary output. Null intentionally hides it. */
+  renderResult?: (context: ExerciseResultContext) => ReactNode;
   renderSavedRuns?: (context: ExerciseSavedRunsContext) => ReactNode;
   getHintLevels?: () => number[];
   /** Optional JS-to-ML bridge hint shown below the editor. */
@@ -353,6 +396,16 @@ function resultsSummary(results: TestResult[]): string {
   }
   const failed = results.filter((r) => !r.passed).map((r) => r.name);
   return `Challenge not passed. ${passed} of ${total} ${total === 1 ? "test" : "tests"} passed. Failed: ${failed.join(", ")}.`;
+}
+
+function currentRunSummary(snapshot: ExerciseRunSnapshot): string {
+  if (snapshot.errored) return "This run stopped before grading finished.";
+  const total = snapshot.checks.length;
+  if (!total) return "This run returned no checks.";
+  const passed = snapshot.checks.filter((check) => check.passed).length;
+  if (passed === total)
+    return `All ${total} ${total === 1 ? "check" : "checks"} passed.`;
+  return `${passed} of ${total} checks passed. Review the failed checks.`;
 }
 
 /**
@@ -600,8 +653,8 @@ function ExerciseControls({
   onCodeChange,
   onShowSolution,
   onAttempt,
-  onRunSnapshot,
-  renderSavedRuns,
+  onRunLifecycle,
+  registerRestore,
   hintsRevealed,
   getHintLevels,
   showSolution,
@@ -624,8 +677,8 @@ function ExerciseControls({
   onCodeChange: (code: string) => void;
   onShowSolution: () => void;
   onAttempt?: (result: ExerciseSubmitResult) => void;
-  onRunSnapshot?: (run: ExerciseRunSnapshot) => void;
-  renderSavedRuns?: (context: ExerciseSavedRunsContext) => ReactNode;
+  onRunLifecycle: (event: ExerciseRunEvent) => void;
+  registerRestore: (restore: RestoreCommand) => () => void;
   hintsRevealed: number[];
   getHintLevels?: () => number[];
   showSolution: boolean;
@@ -669,6 +722,7 @@ function ExerciseControls({
   const currentCodeRef = useRef(currentCode);
   currentCodeRef.current = currentCode;
   const runSequenceRef = useRef(0);
+  const runInstance = useId();
   const activeRunRef = useRef<number | null>(null);
   const runOwnerRef = useRef(draftKey);
   runOwnerRef.current = draftKey;
@@ -732,10 +786,12 @@ function ExerciseControls({
   const handleRun = useCallback(async () => {
     if (activeRunRef.current !== null) return;
     const run = ++runSequenceRef.current;
+    const runToken = `${runInstance}:${run}`;
     activeRunRef.current = run;
     const isCurrentRun = () =>
       activeRunRef.current === run && runOwnerRef.current === draftKey;
     setRunning(true);
+    onRunLifecycle({ type: "started", runToken });
     onOutput(null);
     onResults([]);
     onLogs([]);
@@ -749,6 +805,7 @@ function ExerciseControls({
       hintHistory: "session-only",
       solutionViewed: showSolution || revealed.includes(3),
     };
+    let captured = false;
     const capture = (
       checks: TestResult[],
       artifacts: ExerciseArtifact[],
@@ -756,9 +813,10 @@ function ExerciseControls({
       runtimeVersion: string | null = null,
       backend: string | null = null,
     ) => {
+      if (captured) return;
       // A persistence callback must never turn a graded run into an execution error.
       try {
-        onRunSnapshot?.({
+        const snapshot = immutableRunSnapshot({
           exerciseSlug: exercise.slug,
           submittedCode: code,
           starterCode: exercise.starterCode,
@@ -771,6 +829,8 @@ function ExerciseControls({
           backend,
           assistance,
         });
+        captured = true;
+        onRunLifecycle({ type: "captured", runToken, snapshot });
       } catch {
         /* The host owns its storage failure feedback. */
       }
@@ -886,7 +946,8 @@ function ExerciseControls({
     onLogs,
     onOutput,
     onAttempt,
-    onRunSnapshot,
+    onRunLifecycle,
+    runInstance,
     hintsRevealed,
     getHintLevels,
     onShowSolution,
@@ -897,6 +958,7 @@ function ExerciseControls({
   const handleReset = useCallback(() => {
     activeRunRef.current = null;
     setRunning(false);
+    onRunLifecycle({ type: "invalidated", reason: "reset" });
     sandpack.updateFile("/index.js", exercise.starterCode);
     try {
       // Reset means reset: drop the saved copy too.
@@ -909,7 +971,15 @@ function ExerciseControls({
     onOutput(null);
     setDraftNotice("");
     setStorageBlocked(false);
-  }, [sandpack, exercise.starterCode, draftKey, onResults, onLogs, onOutput]);
+  }, [
+    sandpack,
+    exercise.starterCode,
+    draftKey,
+    onResults,
+    onLogs,
+    onOutput,
+    onRunLifecycle,
+  ]);
 
   const handleShowSolution = useCallback(() => {
     if (hasStash) {
@@ -950,13 +1020,14 @@ function ExerciseControls({
       };
       activeRunRef.current = null;
       setRunning(false);
+      onRunLifecycle({ type: "invalidated", reason: "restore" });
       sandpack.updateFile("/index.js", code);
       stashedCodeRef.current = null;
       setHasStash(false);
       setShowRecoveryCopy(false);
       setDraftNotice("Your earlier draft is back in the editor.");
     }
-  }, [sandpack, exercise.starterCode, showSolution, draftKey]);
+  }, [sandpack, exercise.starterCode, showSolution, draftKey, onRunLifecycle]);
 
   const restoreSavedRun = (code: string, solutionViewed: boolean) => {
     if (code === currentCode) {
@@ -992,6 +1063,7 @@ function ExerciseControls({
     }
     activeRunRef.current = null;
     setRunning(false);
+    onRunLifecycle({ type: "invalidated", reason: "restore" });
     stashedCodeRef.current = currentCode;
     setHasStash(true);
     if (solutionViewed) onShowSolution();
@@ -1003,6 +1075,16 @@ function ExerciseControls({
     );
     return true;
   };
+
+  const restoreSavedRunRef = useRef(restoreSavedRun);
+  restoreSavedRunRef.current = restoreSavedRun;
+  useLayoutEffect(
+    () =>
+      registerRestore((code, solutionViewed) =>
+        restoreSavedRunRef.current(code, solutionViewed),
+      ),
+    [registerRestore],
+  );
 
   return (
     <>
@@ -1084,7 +1166,6 @@ function ExerciseControls({
           </pre>
         </details>
       )}
-      {renderSavedRuns?.({ currentCode, restore: restoreSavedRun })}
     </>
   );
 }
@@ -1113,6 +1194,8 @@ export function Exercise({
   draftOwner,
   onSubmit,
   onRunSnapshot,
+  onRunLifecycle,
+  renderResult,
   renderSavedRuns,
   getHintLevels,
   bridge,
@@ -1127,6 +1210,102 @@ export function Exercise({
   const exercise = exerciseMap.get(slug);
   const scheme = useScheme();
   const draftKey = exerciseDraftKey(slug, draftOwner);
+  const exerciseInstance = useId();
+  const editorId = `${exerciseInstance}-editor`;
+  const resultId = `${exerciseInstance}-result`;
+  const scope = useMemo(() => ({}), [draftKey]);
+  const activeScope = useRef<object | null>(scope);
+  activeScope.current = scope;
+  const previousScope = useRef(scope);
+  const lifecycleCallback = useRef(onRunLifecycle);
+  lifecycleCallback.current = onRunLifecycle;
+  const snapshotCallback = useRef(onRunSnapshot);
+  snapshotCallback.current = onRunSnapshot;
+  const [attemptState, setAttemptState] = useState<{
+    scope: object;
+    attempt: ExerciseAttemptState;
+  }>({ scope, attempt: { status: "idle" } });
+  const attempt: ExerciseAttemptState =
+    attemptState.scope === scope ? attemptState.attempt : { status: "idle" };
+  useLayoutEffect(() => {
+    activeScope.current = scope;
+    if (previousScope.current !== scope) {
+      previousScope.current = scope;
+      try {
+        lifecycleCallback.current?.({
+          type: "invalidated",
+          reason: "scope-change",
+        });
+      } catch {
+        // A host callback must not interrupt editor scope changes.
+      }
+    }
+    return () => {
+      if (activeScope.current === scope) activeScope.current = null;
+    };
+  }, [scope]);
+  const handleRunLifecycle = useCallback(
+    (event: ExerciseRunEvent) => {
+      if (activeScope.current !== scope) return;
+      const next: ExerciseAttemptState =
+        event.type === "started"
+          ? { status: "running", runToken: event.runToken }
+          : event.type === "captured"
+            ? {
+                status: "settled",
+                runToken: event.runToken,
+                snapshot: event.snapshot,
+              }
+            : { status: "idle" };
+      setAttemptState({ scope, attempt: next });
+      try {
+        lifecycleCallback.current?.(event);
+      } catch {
+        // Host inspection and storage cannot change the worker verdict.
+      }
+      if (event.type === "captured") {
+        try {
+          snapshotCallback.current?.(event.snapshot);
+        } catch {
+          // Preserve the existing independent completion callback.
+        }
+      }
+    },
+    [scope],
+  );
+  const restoreRegistration = useRef<RestoreRegistration | null>(null);
+  const [registeredRestore, setRegisteredRestore] =
+    useState<RestoreRegistration | null>(null);
+  const registerRestore = useCallback(
+    (restore: RestoreCommand) => {
+      const registration = { scope, id: Symbol("editor restore"), restore };
+      restoreRegistration.current = registration;
+      setRegisteredRestore(registration);
+      return () => {
+        if (restoreRegistration.current === registration) {
+          restoreRegistration.current = null;
+          setRegisteredRestore((current) =>
+            current === registration ? null : current,
+          );
+        }
+      };
+    },
+    [scope],
+  );
+  const restore = useCallback<RestoreCommand>(
+    (code, solutionViewed) => {
+      const current = restoreRegistration.current;
+      if (
+        activeScope.current !== scope ||
+        !current ||
+        current.scope !== scope ||
+        current.id !== registeredRestore?.id
+      )
+        return false;
+      return current.restore(code, solutionViewed);
+    },
+    [scope, registeredRestore],
+  );
   const [solutionViewedKey, setSolutionViewedKey] = useState<string | null>(
     null,
   );
@@ -1158,18 +1337,23 @@ export function Exercise({
     artifacts: ExerciseArtifact[];
     complete: boolean;
   } | null>(null);
-  const [editorCode, setEditorCode] = useState("");
-  const handleCodeChange = useCallback((code: string) => {
-    setEditorCode(code);
-    setResults([]);
-    setLogs([]);
-  }, []);
-  useEffect(() => {
+  const [editorState, setEditorState] = useState({ scope, code: "" });
+  const editorCode = editorState.scope === scope ? editorState.code : "";
+  const handleCodeChange = useCallback(
+    (code: string) => {
+      if (activeScope.current !== scope) return;
+      setEditorState({ scope, code });
+      setResults([]);
+      setLogs([]);
+    },
+    [scope],
+  );
+  useLayoutEffect(() => {
     setOutput(null);
     setResults([]);
     setLogs([]);
     setHintsRevealed([]);
-  }, [slug, draftOwner]);
+  }, [scope]);
   const showSolution = solutionViewedKey === draftKey;
   const [draftState, setDraftState] = useState<{
     key: string;
@@ -1276,6 +1460,23 @@ export function Exercise({
       : mlConfig.tone
     : null;
   const allPassed = results.length > 0 && results.every((r) => r.passed);
+  const renderedResult = renderResult?.({
+    attempt,
+    currentCode: editorCode,
+    editorId,
+    resultId,
+  });
+  const resultOutput =
+    renderedResult === undefined
+      ? attemptState.scope === scope &&
+        output && (
+          <ExerciseOutput
+            artifacts={output.artifacts}
+            stale={output.code !== editorCode}
+            complete={output.complete}
+          />
+        )
+      : renderedResult;
 
   return (
     <div
@@ -1378,6 +1579,8 @@ export function Exercise({
       <Suspense fallback={<ExerciseLoadingSkeleton />}>
         <div
           ref={setEditorBox}
+          id={renderResult ? editorId : undefined}
+          tabIndex={renderResult ? -1 : undefined}
           data-editor-frame=""
           className="overflow-hidden border border-border rounded-none"
         >
@@ -1424,8 +1627,8 @@ export function Exercise({
                   onCodeChange={handleCodeChange}
                   onShowSolution={() => setSolutionViewedKey(draftKey)}
                   onAttempt={onSubmit}
-                  onRunSnapshot={onRunSnapshot}
-                  renderSavedRuns={renderSavedRuns}
+                  onRunLifecycle={handleRunLifecycle}
+                  registerRestore={registerRestore}
                   hintsRevealed={hintsRevealed}
                   getHintLevels={getHintLevels}
                   showSolution={showSolution}
@@ -1438,16 +1641,52 @@ export function Exercise({
         </div>
       </Suspense>
 
-      {/* Test Results. The live region is mounted unconditionally so it can
-          announce; the panel renders only once there is something to show. */}
-      {output && (
-        <ExerciseOutput
-          artifacts={output.artifacts}
-          stale={output.code !== editorCode}
-          complete={output.complete}
-        />
-      )}
+      {/* One mounted verdict announcement serves ordinary and adapted results. */}
       <TestResultsLiveRegion results={results} />
+      {renderResult && attempt.status !== "idle" && (
+        <a
+          href={`#${resultId}`}
+          className="mt-3 inline-block min-h-11 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          Inspect result
+        </a>
+      )}
+      {renderResult && attempt.status === "settled" && (
+        <div
+          className="mt-3 space-y-2 text-sm text-text-primary"
+          data-testid="exercise-result-verdict"
+        >
+          <p>{currentRunSummary(attempt.snapshot)}</p>
+          {attempt.snapshot.submittedCode !== editorCode && (
+            <p>
+              The editor has changed since this run. These checks belong to the
+              submitted code.
+            </p>
+          )}
+          {attempt.snapshot.checks.find((check) => !check.passed && check.error)
+            ?.error && (
+            <p className="whitespace-pre-wrap break-words text-text-secondary">
+              {
+                attempt.snapshot.checks.find(
+                  (check) => !check.passed && check.error,
+                )!.error
+              }
+            </p>
+          )}
+        </div>
+      )}
+      {renderResult ? (
+        <div id={resultId} tabIndex={-1}>
+          {resultOutput}
+        </div>
+      ) : (
+        resultOutput
+      )}
+      {renderSavedRuns?.({
+        currentCode: editorCode,
+        restore,
+        restoreAvailable: registeredRestore?.scope === scope,
+      })}
       {workspace ? (
         <aside
           className="challenge-checks"

@@ -21,9 +21,13 @@ Use anonymous participant IDs P01–P05. Note JavaScript experience, prior ML le
 
 ## Materials and setup
 
-- Serve the repository locally on port 8767, with the generated pilot files in place. See [README](README.md).
-- Training: `index.html?lesson=0&phase=0`.
-- Evaluation: `index.html?lesson=1&phase=0`.
+The original proposal used two local prototype lessons. The full-course rollout
+replaced those prototypes, and their runtime was retired on November 6, 2026.
+The [retained review](review.md) and screenshots document the original interface.
+Any future study needs the current application and a separately commissioned
+protocol. The [learning-study kit](../../learning-study/README.md) records the
+current research setup.
+
 - Each participant starts in a fresh browser tab/session, with no draft or answer reveals from QA.
 - Use the participant's normal device. Include phone users if mobile learning is part of the intended rollout. Run a dedicated keyboard/assistive-technology session with a person who uses those tools before claiming accessibility beyond automated checks.
 - Confirm fonts, scenes, controls, and local TensorFlow.js runtime load before the session. Do not count runtime setup problems against the participant.

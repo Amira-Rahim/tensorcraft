@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import type { ExerciseArtifact } from "@tensorcraft/ui";
 import { NetworkRunExplanation } from "./network-run-explanation";
 
@@ -81,6 +83,35 @@ function artifacts(): ExerciseArtifact[] {
 }
 
 describe("captured network explanation", () => {
+  it("paints all three score bars with defined colors and updates the untrained comparison", () => {
+    const captured = artifacts();
+    if (captured[1].kind !== "table") throw new Error("fixture");
+    captured[1].rows[8][3] = 0.81;
+    const { container } = render(
+      <NetworkRunExplanation artifacts={captured} complete />,
+    );
+    const theme = readFileSync(resolve(__dirname, "../globals.css"), "utf8");
+    const bars = container.querySelectorAll("dd[aria-hidden] > div");
+    expect(bars).toHaveLength(3);
+    for (const bar of bars) {
+      const color = Array.from(bar.classList)
+        .find((name) => name.startsWith("bg-"))
+        ?.slice(3);
+      expect(color).toBeDefined();
+      expect(theme).toContain(`--color-${color}:`);
+    }
+    const comparison = screen.getByText(
+      "Second model, kept untrained",
+    ).parentElement!;
+    expect(within(comparison).getByText("0.37")).toBeVisible();
+    expect(bars[2]).toHaveStyle({ width: "37%" });
+    fireEvent.change(screen.getByRole("combobox", { name: "Training row" }), {
+      target: { value: "8" },
+    });
+    expect(within(comparison).getByText("0.81")).toBeVisible();
+    expect(bars[2]).toHaveStyle({ width: "81%" });
+  });
+
   it("compares the same captured row and retains weak training results", () => {
     render(<NetworkRunExplanation artifacts={artifacts()} complete />);
     expect(screen.getByText(/Row 0 has label 0/)).toBeVisible();

@@ -1,0 +1,1308 @@
+{
+  "scope": {
+    "modules": [
+      "browser-runtimes",
+      "signal-processing",
+      "recurrent-networks",
+      "anomaly-detection"
+    ],
+    "sceneCount": 23,
+    "lessonCount": 21,
+    "auditDate": "2026-11-06"
+  },
+  "method": {
+    "visualInspection": "Every listed WebP was opened individually with view_image at available original image detail. Canonical Mirza, Farah, Nazari and Demir portraits were also viewed. No conclusions were inferred only from filenames or art prompts.",
+    "reading": "Read all 21 complete corresponding MDX lessons, including challenges, code, recall blocks, epilogues and the branch-dependent StoryConsequence in autoencoders. Read project instructions, writing rubric, story style bible, character bible and relevant scene-bible entries.",
+    "limits": "Artwork audit, not browser QA or exercise execution. Mobile comments are judgments from image hierarchy and detail size, not measured viewport screenshots. Plot claims compare visible pixels with the explicit lesson source. A symbolic unlabeled chart is called ambiguous where its exact meaning cannot be established.",
+    "identity": "Across these 23, the principal improvement requested earlier is present: human faces are visible and the four cast identities are recognizable. No high-severity face, age, anatomy or clothing drift was observed. The larger remaining problem is repetitive acting and source-specific visual truth.",
+    "continuity": "Brass hardware, green scientific displays, worn consoles and established bridge/lab/engineering cues provide broad continuity. The illustrations do not establish enough shared room geometry to certify a precise architectural plan. Different camera angles are not treated as proven continuity errors."
+  },
+  "summary": {
+    "keep": 7,
+    "refine": 14,
+    "replace": 2,
+    "remove": 0,
+    "P1": [
+      "signal-processing/spectrograms",
+      "signal-processing/windowing-and-overlap"
+    ],
+    "deletion": "No currently used scene in this scope should be deleted. Repetitive staging should be replaced or varied within its story slot. Only superseded outputs should be removed when replacements are verified.",
+    "delight": "The best moments are Demir's palm-up disbelief in Transformers.js, shared Fourier enthusiasm, the prediction lean-in and the reconstruction-error exchange. Repeated Farah-pointing/Demir-chin-rest/Nazari-crossed-arms combinations make the rest feel more formal and less playful than the writing. Variation must come from each written task, not arbitrary jokes.",
+    "technical": "Prioritize correct spectrogram orientation/pattern, Hann broadening rather than sharpening, and ordinary amplitude versus high error in The Anomaly. Render scientific panels from real data or native components; use image generation for people, place and mood.",
+    "epiloguePolicy": "Add selectively where the ending introduces an irreplaceable action or relationship turn. Most endings can reuse a context image with a meaningful display/expression state; adding a second generic lesson diagram would not improve them."
+  },
+  "assets": [
+    {
+      "id": "browser-runtimes/why-the-browser",
+      "asset": "apps/web/public/scenes/deep-orbit/browser-runtimes/why-the-browser.webp",
+      "lessonFile": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+      "section": "Briefing",
+      "storyBeat": "Nazari makes local browser inference a ship-availability requirement; Demir must build where the crew actually works.",
+      "intendedEmotion": "Inviting practical challenge, with the rookie realizing that the ordinary dashboard can do consequential work.",
+      "observed": "Demir sits at the left with a hand at his chin; Nazari stands at the right, one hand on her hip and the other indicating the dark console. Their visible faces, uniforms and ages read as the canonical pair. A small route schematic and a round waveform display establish the task without swallowing them. The empty console feels like something the learner will get to bring to life.",
+      "strengths": [
+        "Clear senior/junior relationship without faceless silhouettes.",
+        "Warm brass and green light make a utilitarian bridge feel inhabitable.",
+        "The large figures and single pointing gesture survive substantial downscaling."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "The availability argument is less legible than the generic computer discussion.",
+          "evidence": "The distant route schematic is tiny; the pointed-at console is mostly empty. The text cares about surviving loss of the compute-bay link, not winning a latency race.",
+          "fix": "If revisiting, give the local console an independent cached-model indicator and make the remote link visibly intermittent. Keep this schematic secondary."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "none",
+      "artDirection": "Retain the conversational composition and clear faces. A small, readable local-versus-remote route can sharpen the premise without turning the scene into a diagram.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Give Demir a slight intrigued half-smile as he realizes the browser is the mission platform. Nazari can have dry certainty rather than a permanent reprimand.",
+      "epilogueReuse": "Acceptable reuse: the signed deployment order and console survey follow naturally from this same decision. It does not show the signature or oldest chair, but the unchanged image does not contradict them. A new epilogue is low value.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "line": 186,
+          "text": "Nazari signs the deployment order and writes 86,400 in the margin: one live dashboard reading every second, all day. The archive stores one row every 33 seconds, giving it 28,800 rows over eleven days. A server would need the link to the compute bay for every one of those 86,400 daily predictions. Each trip takes 180 milliseconds, which fits the time budget. Losing the link would stop predictions altogether. An outside download server is eleven light-minutes away."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/01-why-the-browser.mdx",
+          "line": 192,
+          "text": "Demir opens a terminal and types `npm install`. The model is going to live where the crew lives. While the package downloads, he starts a survey of the ship's consoles, oldest chair first."
+        }
+      ]
+    },
+    {
+      "id": "browser-runtimes/tensorflow-js-setup",
+      "asset": "apps/web/public/scenes/deep-orbit/browser-runtimes/tensorflow-js-setup.webp",
+      "lessonFile": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir thinks installation is routine; Nazari makes him measure which backend each actual crew console can run.",
+      "intendedEmotion": "Affectionate professional skepticism, then earned competence.",
+      "observed": "The seated Demir turns from three prominent benchmark bars toward Nazari, who holds her familiar multitool like a pointer. The close framing gives both faces readable reactions. The rising bars provide an immediate performance-comparison cue, and the hardware feels used rather than showroom clean. Nazari looms somewhat over him, so the scene can read as another scolding instead of a wry reality check.",
+      "strengths": [
+        "Memorable practical prop and recognizable character ages.",
+        "A clear three-option comparison at image scale.",
+        "The turn of Demir's head gives the conversation a small comic interruption."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "Backend identity and device context are invisible.",
+          "evidence": "Three unlabeled bars communicate different speeds, but the scene cannot distinguish a fallback backend from a different station. The epilogue specifically contrasts five WebGL consoles with one WASM engineering panel.",
+          "fix": "Use a small console/device badge beside each test and reserve exact backend names and timings for real interface text."
+        },
+        {
+          "severity": "low",
+          "finding": "The same hierarchical staging repeats through the module.",
+          "evidence": "Nazari stands over a seated, interrupted Demir, a pattern repeated in several neighboring scenes.",
+          "fix": "Keep her dry look but let Demir actively record the surprising result."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "P3",
+      "artDirection": "Keep the intimate hardware-benchmark scene. Treat bars as schematic until real labels are rendered; do not encode an old 30-times claim from stale art direction.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Aim for the familiar comedy of a developer saying the setup is done just before a fallback appears. A raised eyebrow and his rueful grin carry that without slapstick.",
+      "epilogueReuse": "Acceptable but incomplete reuse: the ending is a station survey and six-times comparison. The existing three-bar console scene covers the lesson, although it does not convey the six-station discovery. Reuse is preferable to another generic benchmark picture.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "line": 227,
+          "text": "Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth (the engineering panel, oldest display on the ship) comes back `wasm`: 3.0 ms per matmul, compared with 0.5 on the bridge consoles."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/02-tensorflow-js-setup.mdx",
+          "line": 230,
+          "text": "So the engineering chair runs that matmul six times slower than the helm. Log it. If anyone ever has to watch from that station, I want to know what they are missing and by how much."
+        }
+      ]
+    },
+    {
+      "id": "browser-runtimes/model-loading",
+      "asset": "apps/web/public/scenes/deep-orbit/browser-runtimes/model-loading.webp",
+      "lessonFile": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir confronts a 404 and learns how a model manifest, weight shards and cached versions reach the browser.",
+      "intendedEmotion": "An approachable debugging puzzle, followed by alertness about what actually shipped.",
+      "observed": "Demir studies a vertical stack of monitors alone. A warning triangle above a central cube branching to smaller cubes makes the failed model-load problem immediately visible. A brass-colored secured mug and his chin-resting concentration add lived-in charm. The face is visible and youthful, with the canonical short hair and ear hardware. The tight workstation is distinct from the larger group briefings.",
+      "strengths": [
+        "Strong solo debugging identity.",
+        "The manifest-and-shards visual matches the loader task conceptually.",
+        "The mug gives the ship ordinary working-life warmth without hijacking the plot."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "The error is generic rather than the specific wrong manifest URL.",
+          "evidence": "The large alert could mean missing weights, a bad model, or a network outage. The opening is a 404 during fetch.",
+          "fix": "Keep the warning, but separate the manifest request from its downstream shard diagram; place the actual 404 in accessible UI text."
+        },
+        {
+          "severity": "medium",
+          "finding": "Unchanged reuse misses the cache-version mistake at the ending.",
+          "evidence": "The epilogue compares notebook and dashboard scores from old versus new weights; the artwork still depicts a load failure at one workstation.",
+          "fix": "A small version-comparison state or secondary paired-score panel would convey the new failure without commissioning another room scene."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "P3",
+      "artDirection": "Preserve the solo portrait, mug and tangible console. If refreshed, make the loading stages and eventual cache version state intelligible with restrained overlays.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Let Demir wear the mildly embarrassed recognition of having chased the wrong URL. His active finger finding the culprit would be livelier than another chin-rest pose.",
+      "epilogueReuse": "Weak reuse for the specific ending: a 404 and a successfully loaded stale model are different failures. Prefer a lightweight alternate display state, not a new standalone illustration.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "line": 300,
+          "text": "Farah notices that her notebook and the bridge dashboard give scores three percentage points apart for the same reading. The server received the retrained weights hours ago, but the dashboard kept loading its cached copy. Demir reused the cache key after the weights changed. For three hours and 10,800 readings, the bridge has used last week’s weights from `deep-scan-v1` in IndexedDB."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/03-model-loading.mdx",
+          "line": 200,
+          "text": "// 'indexeddb://deep-scan-v2', and nothing reads the v1 entry after that."
+        }
+      ]
+    },
+    {
+      "id": "browser-runtimes/inference-pipeline",
+      "asset": "apps/web/public/scenes/deep-orbit/browser-runtimes/inference-pipeline.webp",
+      "lessonFile": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+      "section": "Briefing",
+      "storyBeat": "The live pipeline leaks tensors after cancellation; Demir must make preprocessing, prediction, readback and cleanup reliable before replaying the archive.",
+      "intendedEmotion": "The satisfaction of a working instrument earned by careful debugging.",
+      "observed": "Demir works at the left console while Nazari stands behind him with crossed arms. A central green trace ends in a bright amber point; another small status strip contains one amber event. Faces are clear and there is a friendly sense of operational success. Nothing visible suggests accumulating resources, an interrupted readback or the particular cleanup bug now driving the opening.",
+      "strengths": [
+        "The amber event makes a readable bridge-dashboard payoff.",
+        "Good face visibility and credible workstation use.",
+        "The image suits the eventual archive replay better than many generic technical illustrations."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The briefing illustrates a later successful pipeline, not the current cancellation leak.",
+          "evidence": "The opening now concerns an output surviving canceled asynchronous readback; the picture shows normal monitoring and an isolated flagged event.",
+          "fix": "At briefing, show a canceled request and a small stack of retained tensors on one relevant display, with Demir catching the growth. Keep the archive event for the consequence state."
+        },
+        {
+          "severity": "low",
+          "finding": "Nazari is again a crossed-arm observer.",
+          "evidence": "Her posture contributes little beyond inspection already repeated in setup and later lessons.",
+          "fix": "Have her check the stabilization log while Demir owns the fix."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Retain faces and working bridge, but create two modest screen states: leak investigation and steady-count replay. Keep the technical overlay explicit enough to be educational.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Make the pleasure of finally flat resource usage visible in a small shared grin. For the opening, use a recognizably absurd pile of lingering resource tiles rather than grim alarm lighting.",
+      "epilogueReuse": "Good reuse for the ending: the amber archive point evokes 7741 and the newly visible alert. The ending has Farah's reaction, however, while only Demir and Nazari are shown. Prioritize fixing briefing timing; a dedicated Farah reaction is optional.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+          "line": 335,
+          "text": "For a full hour after the 03:10 alert, the patched pipeline holds a steady tensor count and takes 3.4 ms per reading. Demir then replays the eleven-day archive to check for problems over a longer run, and known events light up amber."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+          "line": 337,
+          "text": "At 14:31 ship-time, it flags an unlabeled reading from a quiet part of the archive: sample 7741. Farah flagged it before the network existed. Now the whole crew can see it on the bridge dashboard."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/04-inference-pipeline.mdx",
+          "line": 343,
+          "text": "Anomaly score: 0.518. Farah routes the reading for review. The score supplies no explanation."
+        }
+      ]
+    },
+    {
+      "id": "browser-runtimes/onnx-runtime-web",
+      "asset": "apps/web/public/scenes/deep-orbit/browser-runtimes/onnx-runtime-web.webp",
+      "lessonFile": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+      "section": "Briefing",
+      "storyBeat": "The crew compares runtime choices only after checking equivalent computation; ARIA later contributes an unsolicited comparison of her own.",
+      "intendedEmotion": "Curious engineering comparison, then a quiet personal surprise.",
+      "observed": "A doorway frames Demir at a two-screen workstation and Nazari leaning into the comparison with her multitool. Each large screen has a waveform and round gauges. The waveforms visibly differ. This could represent different timing traces, so it is not proof of numerically inconsistent predictions, but the unlabeled display fails to make parity the prerequisite. The faces are legible; the familiar supervisor-and-junior staging is less distinctive than the lesson's actual ending.",
+      "strengths": [
+        "Paired screens communicate comparison immediately.",
+        "The doorway and bench give useful room variation.",
+        "Canonical faces and work clothing remain recognizable."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The comparison does not distinguish equal results from different performance.",
+          "evidence": "The two main traces have different shapes, with no output-versus-latency separation. The source calls for the same weights and inputs before comparing speed.",
+          "fix": "Give both screens matching prediction rows and separate timing gauges; use real labels outside the raster."
+        },
+        {
+          "severity": "medium",
+          "finding": "The reused scene cannot carry ARIA's self-initiated successor remark.",
+          "evidence": "The ending adds a third log entry owned by ARIA while the image only shows the earlier two-person benchmark.",
+          "fix": "Reserve a distinct quiet epilogue for Demir discovering ARIA's added entry."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Make output parity visually obvious and distinguish it from timing measurements. Keep the lived-in engineering bay, but reduce secondary dials.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "Add a quiet epilogue after the third log is discovered: Demir alone, hand paused above the keyboard, an abstract ARIA ring beside a newly appended third row. Keep the exact successor line in text, not generated lettering.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Replace looming correction with two colleagues enjoying a surprising result. The richer delight belongs to the epilogue: Demir reading ARIA's unexpected self-description twice.",
+      "epilogueReuse": "Poor reuse: the ending turns from runtime choice to ARIA's unprompted agency. The existing busy paired-screen scene has no ARIA presence or private surprise.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "line": 226,
+          "text": "Nazari keeps TF.js on the consoles for this release. Demir files the ONNX export with the measurements, then finds a third entry in the log. Timestamp 0317. Owner: ARIA."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "line": 231,
+          "text": "Those timings cover different work, so they do not isolate backend cost for this 673-parameter model. I will repeat the comparison as my successor grows."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/05-onnx-runtime-web.mdx",
+          "line": 234,
+          "text": "\"My successor.\" Demir reads the line twice. Nobody taught her to call it that."
+        }
+      ]
+    },
+    {
+      "id": "browser-runtimes/transformers-js",
+      "asset": "apps/web/public/scenes/deep-orbit/browser-runtimes/transformers-js.webp",
+      "lessonFile": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir learns that a pretrained sentiment pipeline can handle a report-sorting task in ten lines, then realizes the unexplained signal still needs original work.",
+      "intendedEmotion": "Comic disbelief, relief, and renewed curiosity.",
+      "observed": "Demir opens one palm in a wonderfully readable \"that is it?\" gesture while holding a laptop. Nazari stands opposite with crossed arms and a restrained knowing expression. The large pipeline panel, download box and progress indicator make packaged capability plausible. Unfortunately, the dominant wall contains many waveforms, so the actual crew-report sentiment task is visually swallowed by the signal-analysis vocabulary.",
+      "strengths": [
+        "One of the strongest character exchanges in this audit.",
+        "Demir's open palm is more expressive than the recurrent chin-rest pose.",
+        "Clear faces and warm light invite the learner into the joke."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The screen implies another signal model rather than crew-report classification.",
+          "evidence": "Waveforms dominate the wall; there is no legible visual distinction for report cards, sentiment outputs or the separate Sector 7-G problem.",
+          "fix": "Replace the central diagram with a few abstract report cards flowing through the pretrained pipeline to two score groups. Keep the unfamiliar waveform on a secondary background panel."
+        },
+        {
+          "severity": "low",
+          "finding": "Nazari's crossed arms are becoming a repeated default.",
+          "evidence": "The gesture works here as a deadpan response but recurs too often in adjacent art.",
+          "fix": "Preserve it here, where it earns the joke, and change it in less suitable scenes."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep the faces, palm-up exchange and comedic timing. Change the interface content to report sentiment so the joke has the correct technical object.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Protect the gently insulted developer reaction and Nazari's tiny amused confidence. This is character-specific fun already working, not a scene that needs arbitrary comic props.",
+      "epilogueReuse": "Partly good reuse: Demir's disbelief fits the ten-line payoff. The ending adds Farah and the unresolved wave task; a secondary waveform can suggest the pivot without a whole new image.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "line": 184,
+          "text": "The sentiment classifier runs in ten lines, and Demir spends a full minute being quietly insulted by that. Across the lab, Farah has the Sector 7-G feed open again: the raw time-domain plot, scrolling like weather."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/browser-runtimes/06-transformers-js.mdx",
+          "line": 187,
+          "text": "Enjoy having a ready-made model for this one. We still have the signal we came here to study. Tomorrow, bring me everything you know about waves."
+        }
+      ]
+    },
+    {
+      "id": "signal-processing/time-vs-frequency",
+      "asset": "apps/web/public/scenes/deep-orbit/signal-processing/time-vs-frequency.webp",
+      "lessonFile": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+      "section": "Briefing",
+      "storyBeat": "Farah reopens an old suspicious capture whose time-domain shape still looks like ordinary background; the pair need another view of the same data.",
+      "intendedEmotion": "Shared curiosity and the honest pleasure of an unsolved puzzle.",
+      "observed": "Two large lab displays show noisy slow-swelling traces. Farah explains with stylus and open hand while Demir stands at the right, hand at his chin. Both faces are clear and warmly lit, and the comparable traces make uncertainty credible. The image is pleasant and readable, but looks like a generic tutorial unless the archive-versus-live context is supplied by surrounding prose.",
+      "strengths": [
+        "The visual similarity supports the admission that time alone is not enough.",
+        "Friendly two-person scientific collaboration.",
+        "Large screen forms remain legible when details disappear at small sizes."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "The returning archival clue lacks a visual anchor.",
+          "evidence": "No pinned older capture or visibly different archive frame ties the displayed curves to Farah's earlier suspicion.",
+          "fix": "Add one small worn/pinned archive capture next to the current panel, keeping the actual identifier in accessible text."
+        },
+        {
+          "severity": "low",
+          "finding": "Both figures default to explanation/listening.",
+          "evidence": "Farah points while Demir strokes his chin, a pose pair repeated in Fourier, spectrograms and later scenes.",
+          "fix": "Have Demir actively align the two traces while Farah admits she cannot distinguish them either."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "refine",
+      "priority": "P3",
+      "artDirection": "Keep the similar traces and warm laboratory. Make the old clue physically persistent and let both characters inspect it instead of staging a lecture.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Use mutual puzzled amusement, particularly Farah's frank admission of uncertainty. A shared small shrug would be more inviting than adding spectacle.",
+      "epilogueReuse": "Good reuse: the ending explicitly places confirmed background and the suspect trace side by side, and both characters remain unable to tell them apart. This is a justified single image across the lesson.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "line": 214,
+          "text": "Farah queues the full Sector 7-G capture for transform overnight: 64 channels, eleven days, every window of it. Before she leaves the lab she pins two time-domain plots side by side on the main display, confirmed cosmic background on the left, the stretch the crew has been arguing about for a week on the right. Demir stares until the traces blur. Sample for sample, he cannot tell them apart."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/01-time-vs-frequency.mdx",
+          "line": 217,
+          "text": "Neither can I. That is an uncomfortable thing for a signal analyst to admit, which is why tomorrow we stop looking at time."
+        }
+      ]
+    },
+    {
+      "id": "signal-processing/fourier-transform",
+      "asset": "apps/web/public/scenes/deep-orbit/signal-processing/fourier-transform.webp",
+      "lessonFile": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+      "section": "Briefing",
+      "storyBeat": "Farah makes a composite wave understandable as familiar components; only later does an unexplained fifth peak turn the explanation into discovery.",
+      "intendedEmotion": "Accessible scientific delight, followed by a specific investigative surprise.",
+      "observed": "A large board on the left splits a tangled waveform into three cleaner sinusoidal traces. Farah points with visible enthusiasm; Demir smiles from his seat. Brass laboratory objects and warm light make the explanation feel tactile. This is among the most inviting images: the topic has a visible action and the characters appear to enjoy understanding it.",
+      "strengths": [
+        "Strong conceptual decomposition with an immediately readable visual hierarchy.",
+        "Farah's enthusiasm and Demir's smile provide genuine warmth.",
+        "No premature specific 73.4 Hz answer is printed into the briefing."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "Demir's passive chin-rest pose repeats.",
+          "evidence": "He is receiving the explanation rather than testing a component himself.",
+          "fix": "A future refinement could put his hand on a component control while Farah follows the result."
+        },
+        {
+          "severity": "medium",
+          "finding": "Reusing decomposition at the ending loses the fifth-peak discovery.",
+          "evidence": "The epilogue specifies Farah catching Demir's wrist before he logs the result and checking an unexplained peak; none of that action is present.",
+          "fix": "Add a distinct epilogue with the interrupted logging gesture and a correctly rendered five-peak plot."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "none",
+      "artDirection": "Retain this briefing. Its warmth and clear decomposition are valuable; spend new-art effort on the different discovery beat after the work is complete.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "Add a post-exercise epilogue where Farah catches Demir's wrist at the log and directs him to the fifth peak. Plot the initial grid and refined measurement accurately; keep the key reveal out of the briefing.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Keep the shared pleasure of recognition. The epilogue can add the playful physical interruption of a hand caught just before logging, changing into concentrated wonder.",
+      "epilogueReuse": "Weak reuse: an explanatory three-wave illustration cannot convey the discovery, wrist catch, catalog checks or longer-window refinement. This is a high-value new epilogue, not decorative duplication.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "line": 302,
+          "text": "Four familiar peaks appear on the lab display: 5, 12, 23 and 47 Hz. Demir reaches for the log, but Farah catches his wrist and points to a fifth peak: 73.5 Hz on the half-hertz grid, magnitude 12.0. She checks the background catalog three times. Nothing explains it."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "line": 302,
+          "text": "Four familiar peaks appear on the lab display: 5, 12, 23 and 47 Hz. Demir reaches for the log, but Farah catches his wrist and points to a fifth peak: 73.5 Hz on the half-hertz grid, magnitude 12.0. She checks the background catalog three times. Nothing explains it."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/02-fourier-transform.mdx",
+          "line": 304,
+          "text": "Overnight, she reruns the capture with a window four times longer. Its 0.125 Hz grid puts the strongest bin at 73.375 Hz, displayed as 73.4 Hz."
+        }
+      ]
+    },
+    {
+      "id": "signal-processing/spectrograms",
+      "asset": "apps/web/public/scenes/deep-orbit/signal-processing/spectrograms.webp",
+      "lessonFile": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+      "section": "Briefing",
+      "storyBeat": "Farah abandons a steady-oscillator hypothesis and asks when the suspicious tone is present; the learner constructs a time-frequency view.",
+      "intendedEmotion": "The thrill of discovering a temporal pattern together.",
+      "observed": "A huge green display dominates the lab. It contains tall bright vertical streaks spanning much of its height, with darker gaps between columns. Farah points into it while Demir watches with his familiar chin-rest gesture. Faces are visible and the overall image is striking, but the luminous texture reads more like repeated broadband events than an intermittent tone confined to one frequency band.",
+      "strengths": [
+        "A large, distinctive analysis surface.",
+        "Good cast recognition and clear lab continuity."
+      ],
+      "issues": [
+        {
+          "severity": "high",
+          "finding": "The plotted pattern contradicts the lesson's specified axes and signal.",
+          "evidence": "The source puts time horizontally and frequency vertically, then describes bright dashes at a fixed tone. The artwork instead has long vertical streaks spanning frequencies.",
+          "fix": "Replace the display with a computed spectrogram: a localized horizontal frequency band appearing in separated time segments, measured background around it, and real axis labels outside the raster."
+        },
+        {
+          "severity": "low",
+          "finding": "The breakthrough is acted as another lecture.",
+          "evidence": "Only Farah points; Demir remains passive despite the shared discovery.",
+          "fix": "Let Demir identify the next repeated dash while Farah measures the interval."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P1",
+      "artDirection": "Retain the laboratory and faces, but rebuild the screen from correct data. A beautiful false plot is more harmful here than a restrained accurate one.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "Prefer a consequence display state showing the interval measurement and ARIA's stored-copy request, rather than another generic lab scene.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Give both characters something to discover. Use a moment of \"there it is again\" with two coordinated gestures and lightly surprised expressions.",
+      "epilogueReuse": "Currently poor reuse because the ending explicitly depends on bright dashes and measured gaps. Once corrected, reuse works if the consequence adds a native measurement overlay and a small ARIA presence; no separate full-room painting is necessary.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "line": 60,
+          "text": "Like a DevTools waterfall, this plot puts time on the horizontal axis. The vertical axis shows frequency. A waterfall bar shows an event’s duration. A spectrogram’s color shows a measured magnitude. A dark cell shows a low magnitude. It does not mean the measurement is missing."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "line": 274,
+          "text": "The spectrogram shows bright dashes: the tone switches on and off. Farah measures gaps of roughly 73.4 seconds. She writes \"~73.4 s\" on the board, keeping the tilde because the timing is approximate."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/03-spectrograms.mdx",
+          "line": 279,
+          "text": "No rule of mine could have produced this image. Request: store a copy of this spectrogram in my reference partition."
+        }
+      ]
+    },
+    {
+      "id": "signal-processing/fft-as-features",
+      "asset": "apps/web/public/scenes/deep-orbit/signal-processing/fft-as-features.webp",
+      "lessonFile": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir must justify extra FFT features and write an expected accuracy before spending compute; the result earns Nazari's limited approval.",
+      "intendedEmotion": "Playful professional accountability, then restrained earned pride.",
+      "observed": "Demir holds a large slate at the left, Nazari stands in the middle with crossed arms, and Farah points to a feature display at the right. Two large bars imply a substantial performance gain, with a strip of bins nearby. Faces are clear, but the slate looks like a generic progress indicator rather than the signed precommitment that makes this scene personal.",
+      "strengths": [
+        "Three characters have distinct task roles.",
+        "The slate is a useful physical anchor for Demir's responsibility.",
+        "Readable cost-versus-gain premise."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The central comparison visually overstates or obscures the actual nine-point gain.",
+          "evidence": "Unlabeled bars appear much farther apart proportionally than 78% and 87%; without a scale this is ambiguous rather than a proven numeric error.",
+          "fix": "Render a labeled 78-to-87 comparison with a common baseline, and show the 85 prediction as a distinct marker."
+        },
+        {
+          "severity": "medium",
+          "finding": "The signed estimate and earned respect are missing.",
+          "evidence": "The tablet's prominent progress bar could belong to any training scene; the source keeps Demir's signed 85 beside the measured 87.",
+          "fix": "Give the slate a real expectation/result overlay and let Demir visibly own it; soften Nazari's brow into guarded approval."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep the three-person discussion, but prioritize expectation, measurement and the eight added FFT features over anonymous machine graphics.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "The fun is Demir trying not to smile while Nazari refuses applause. Capture that precise asymmetry; a generic stern boss loses it.",
+      "epilogueReuse": "Mixed reuse: the same cast fits the ending, but the unchanged stern pose and progress bar omit the 85-versus-87 payoff. A second screen/expression state would be enough.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "line": 85,
+          "text": "Eight more measurements are not free either. Increasing from three inputs to eleven means a bigger first weight matrix, more parameters, and a longer training run on my hardware. You are nearly quadrupling the input width on a hunch, Ensign. Write down the accuracy you expect before you spend the compute."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "line": 214,
+          "text": "// Enhanced model: 11 inputs to 32 to 16 to 1 (87% accuracy)"
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/04-fft-as-features.mdx",
+          "line": 312,
+          "text": "If the nine-point gain holds across the full archive, it would mean roughly 2,600 fewer mistakes. Nazari marks the projection as provisional. The cost also depends on which mistakes disappear. Next to Demir's signed 85 she writes the actual 87 and leaves both on the board."
+        }
+      ]
+    },
+    {
+      "id": "signal-processing/windowing-and-overlap",
+      "asset": "apps/web/public/scenes/deep-orbit/signal-processing/windowing-and-overlap.webp",
+      "lessonFile": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+      "section": "Briefing",
+      "storyBeat": "Farah diagnoses spectral leakage after an expensive false lead; applying a taper must reduce distant sidelobes without pretending to sharpen the real peak.",
+      "intendedEmotion": "A satisfying correction, then cautious confidence in the surviving clue.",
+      "observed": "Three crew members gather beside a very readable before-and-after display. The left plot is a broad noisy band; the right becomes a tall needle-like isolated peak. Farah gestures warmly with a tablet, Demir rests his chin, and Nazari crosses her arms. The cast is clear, but the clean visual promise is the wrong scientific promise for the source.",
+      "strengths": [
+        "The before/after layout is instantly understandable.",
+        "Visible canonical faces and a warm lab maintain approachability."
+      ],
+      "issues": [
+        {
+          "severity": "high",
+          "finding": "The after plot implies dramatic peak sharpening, contrary to the taught Hann tradeoff.",
+          "evidence": "The source explicitly says less distant leakage, broader peaks and changed magnitudes; the epilogue says a broader peak remains. The pictured needle removes that central distinction.",
+          "fix": "Rebuild both spectra on identical axes from the lesson signal. Show lower distant sidelobes, a broader main lobe and the changed peak height; do not draw generic denoising."
+        },
+        {
+          "severity": "medium",
+          "finding": "Reused group explanation loses the lesson's singular personal payoff.",
+          "evidence": "The ending has Farah printing her first physical copy and pinning it beside 7741, not another group presentation.",
+          "fix": "Add that small physical epilogue after the analysis."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P1",
+      "artDirection": "Preserve the scene slot and visible faces; replace the technical panel accurately. For the ending, let a paper artifact carry earned meaning.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "Add Farah pinning the first physical clean spectrum beside 7741, with Demir quietly amused by the paper and both plots correct. Place only after the taper result is earned.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "The best new delight is already written: Demir notices Farah using actual paper for the first time. A tiny amused look can coexist with her concentrated scientific caution.",
+      "epilogueReuse": "Poor reuse: it repeats the initial teaching tableau and omits the pinned-paper action. Correcting the plot is essential, but a separate paper-print epilogue offers much greater narrative payoff.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "line": 251,
+          "text": "\"text\": \"Less distant spectral leakage, but broader peaks and changed magnitudes.\","
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "line": 322,
+          "text": "With the Hann window applied, the distant sidelobes fall close to zero. A broader peak remains near 73.4 Hz, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/signal-processing/05-windowing-and-overlap.mdx",
+          "line": 322,
+          "text": "With the Hann window applied, the distant sidelobes fall close to zero. A broader peak remains near 73.4 Hz, pulsing on its 73.4-second cycle. Farah prints the clean spectrum (actual paper, the first hard copy anyone aboard has seen her make) and pins it beside sample 7741's transform."
+        }
+      ]
+    },
+    {
+      "id": "recurrent-networks/sequences-matter",
+      "asset": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequences-matter.webp",
+      "lessonFile": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+      "section": "Briefing",
+      "storyBeat": "The existing per-reading classifier cannot notice shuffled order; Demir must see what information the current representation throws away.",
+      "intendedEmotion": "Curiosity about a deceptively simple blind spot.",
+      "observed": "Farah stands at a large waveform board with overlapping rectangular windows leading to a smaller target box. Demir sits nearby with a tablet and his chin in hand. The warm light and clear faces are pleasant, and the window geometry is readable. However, the same composition could introduce the later sliding-window lesson; it does not show the peculiar unchanged scores after readings are scrambled.",
+      "strengths": [
+        "A clear visual sequence and approachable laboratory.",
+        "The simple frames remain readable at small sizes."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The central image emphasizes window extraction instead of the order-blindness problem.",
+          "evidence": "Repeated overlapping boxes explain batching, while the source opening and ending hinge on the same readings reordered without changing per-reading scores.",
+          "fix": "Show two short rows containing the same sample cards in different orders, with matching per-card scores. Keep a next-step target separate from the input window."
+        },
+        {
+          "severity": "low",
+          "finding": "The characters are again teacher and passive listener.",
+          "evidence": "Farah points; Demir watches in the same pose as neighboring scenes.",
+          "fix": "Have Demir actively reorder the samples while Farah watches the surprising invariant results."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Make the scene a small experiment the learner wants to try, not another abstract lecture. A handful of movable sample cards will tell the exact story more clearly than many tiny traces.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Use the gentle absurdity of scrambled nonsense earning identical scores. Demir can be amused first, then realize why it matters.",
+      "epilogueReuse": "Weak reuse: the ending contains a concrete solo test and two printed runs left on Farah's desk. A revised image with the two ordered/shuffled strips can support both sections without a new full scene.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+          "line": 216,
+          "text": "After the shift, Demir runs one more test. He feeds the classifier an hour of archived stream in order, then again with the readings shuffled into nonsense. The scores come back identical for every reading. The model scores each reading on its own, so it cannot notice the changed order."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/01-sequences-matter.mdx",
+          "line": 222,
+          "text": "He prints both runs and leaves them on Farah's desk, the scrambled one on top."
+        }
+      ]
+    },
+    {
+      "id": "recurrent-networks/simple-rnns",
+      "asset": "apps/web/public/scenes/deep-orbit/recurrent-networks/simple-rnns.webp",
+      "lessonFile": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir connects a recurrent state update to a reducer, then learns that the simple recurrent model fails to carry the needed long-range training signal.",
+      "intendedEmotion": "Hands-on recognition followed by a credible failed experiment.",
+      "observed": "Farah leans beside seated Demir at a recurrent diagram. Three arrows appear to feed one looped cell together; three stair-like traces rise toward plateaus on the right. The close partnership and warm engineering room work, but Farah's knitted expression reads more corrective than delighted. The diagram is not clearly a sequence of updates, and the plotted rises do not match the specific small calculation used in the lesson.",
+      "strengths": [
+        "A visible feedback loop anchors the recurrence idea.",
+        "Close framing gives the interaction more immediacy than distant hologram meetings."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The diagram can suggest parallel inputs and monotonic accumulating state.",
+          "evidence": "The source processes 0.5, 0.9, 0.5 sequentially and produces 0.4621, 0.8537, 0.8284; the last result decreases slightly. The artwork shows three feeds and rising plateaus.",
+          "fix": "Use three ordered time tiles through the same shared cell, and plot three points with the second slightly above the third. Label exact values in native text."
+        },
+        {
+          "severity": "low",
+          "finding": "The expression suppresses the reducer-analogy delight.",
+          "evidence": "Farah appears to reprimand Demir during what is initially an accessible recognition moment.",
+          "fix": "Give her an encouraging look and have him test the repeated input himself."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep the intimate two-person bench scene but make time order and the third-state dip precise. Avoid decorative state curves with no source meaning.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Let the familiar JavaScript analogy create a small delighted recognition. Save disappointment for the failed overnight result.",
+      "epilogueReuse": "Poor literal reuse: the ending is a failed six-hour run and Nazari's cost objection, not Farah explaining recurrence. Do not add a redundant failure painting here: the next LSTM briefing already depicts that aftermath well. A flat-loss consequence overlay is enough.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+          "line": 98,
+          "text": "// 0.8284: the same 0.5 that scored 0.4621 two steps ago`}"
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+          "line": 262,
+          "text": "Demir queues the run before he leaves: the simple RNN on 80-step windows, long enough to span one full pulse interval. A reducer holds state, he figures, so catching the pattern is just a matter of epochs. At 0640 he checks the log: six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The predictions sit near 0.5 on both classes."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/02-simple-rnns.mdx",
+          "line": 268,
+          "text": "The gradients die out around step twenty. The pattern lives at step seventy-four."
+        }
+      ]
+    },
+    {
+      "id": "recurrent-networks/lstm-gates",
+      "asset": "apps/web/public/scenes/deep-orbit/recurrent-networks/lstm-gates.webp",
+      "lessonFile": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+      "section": "Briefing",
+      "storyBeat": "The morning after a failed overnight RNN run, Farah brings a gated-memory proposal while Nazari demands an honest cost estimate.",
+      "intendedEmotion": "Weary developer humor, practical encouragement and a way forward.",
+      "observed": "Demir sits with a hand against his forehead. Nazari stands behind him with crossed arms, while Farah holds a tablet showing a compact gate diagram. A nearly flat loss curve on the right supplies the cause of the fatigue. All three faces are visible and distinct. This is one of the few scenes in which the repeated stern Nazari posture is specifically earned by the current story.",
+      "strengths": [
+        "Character acting communicates an actual event rather than generic teaching.",
+        "The flat curve, tired Demir and proposed replacement form a coherent visual chain.",
+        "Warm light keeps the failure from becoming oppressive."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "The gate diagram is symbolic rather than a fully legible LSTM.",
+          "evidence": "Tiny gate boxes on the tablet cannot convey every gate and state connection at mobile scale.",
+          "fix": "Treat it as an emblem of Farah's proposal; retain the real interactive diagram for mechanics rather than crowding this illustration."
+        },
+        {
+          "severity": "medium",
+          "finding": "Reusing the failed-run mood after successful replay reverses the emotional direction.",
+          "evidence": "The ending reports later-day pulse recognition and ARIA's unprompted reflection; Demir remains defeated in the repeated artwork.",
+          "fix": "Use a small later display state and relieved posture, or an ARIA-focused consequence treatment, instead of repeating the exhausted frame unchanged."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "none",
+      "artDirection": "Protect this briefing composition. It has specific story acting and a recognizable, humane failed-build mood.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "A tiny sympathetic smile from Farah and Nazari studying the cost log can make the morning-after joke land without belittling Demir.",
+      "epilogueReuse": "Emotionally poor reuse: the successful replay and ARIA reflection need a calmer, more hopeful state. An alternate display/expression treatment is preferable to another large lecture scene; a new ARIA scene is optional after higher-value additions.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+          "line": 300,
+          "text": "Seventy-two hours beyond the training data, the model still catches each pulse within an 80-step window. Each window starts with fresh state and keeps the trained weights. ARIA stays silent for four seconds before speaking."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/03-lstm-gates.mdx",
+          "line": 303,
+          "text": "I filed this without a directive. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and recognizes pulses outside its training data, three days downstream. Nothing in my tables explains why that works."
+        }
+      ]
+    },
+    {
+      "id": "recurrent-networks/sliding-windows",
+      "asset": "apps/web/public/scenes/deep-orbit/recurrent-networks/sliding-windows.webp",
+      "lessonFile": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+      "section": "Briefing",
+      "storyBeat": "A suspiciously high score reveals overlapping train/evaluation windows; Demir must split chronologically before windowing and then use a live buffer honestly.",
+      "intendedEmotion": "An instructive debugging surprise, followed by earned operational confidence.",
+      "observed": "Demir is alone at a large console, smiling in a three-quarter turn toward the viewer. A long waveform is covered by repeated overlapping rectangular frames, with a smaller trace below. His wrist device is unusually bright. The solo competence and warm expression are welcome variety, but there is no visible boundary separating training from evaluation, so the core leakage problem is absent.",
+      "strengths": [
+        "A rare active, cheerful solo Demir image.",
+        "Overlapping windows are immediately visible.",
+        "The workstation feels like a real implementation task rather than a detached concept."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The image represents generic windowing rather than the current split-leakage lesson.",
+          "evidence": "The opening explicitly describes windowing everything first, shuffling and holding out every fifth pair; the art has one undivided stream.",
+          "fix": "Introduce a clear chronological cut and show overlapping windows confined to either side. Let Demir notice a formerly crossing window."
+        },
+        {
+          "severity": "low",
+          "finding": "His gaze bypasses the evidence.",
+          "evidence": "He smiles outward rather than inspecting the waveform the source says he is watching.",
+          "fix": "Turn the eyes toward the unexpected overlap or the live buffer while preserving the approachable expression."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep solo Demir and the friendly mood. Rebuild the main panel around split-first window creation, with a distinct live-buffer inset for the consequence.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Retain the pleasure of making the system work, but make it a rueful discovery about an inflated score rather than an unexplained grin at the audience.",
+      "epilogueReuse": "Good reuse for the live-buffer ending if the split report is added beside it. The existing artwork already suits this later confidence better than the problematic-score opening.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+          "line": 61,
+          "text": "The first pipeline scored in the high nineties on eleven days of archive. Demir windowed the whole stream, shuffled the pairs, and held out every fifth one for evaluation. Before trusting the score, Farah asks for a 200-reading run whose training and evaluation windows they can inspect together."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/04-sliding-windows.mdx",
+          "line": 265,
+          "text": "Eighty readings fill the buffer. Demir sends the first complete window to the LSTM the crew built earlier, and the dashboard shows its classification beside the signal trace. For ten minutes, it updates as each new reading arrives. Demir keeps the split report open beside it."
+        }
+      ]
+    },
+    {
+      "id": "recurrent-networks/sequence-prediction",
+      "asset": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction.webp",
+      "lessonFile": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir and Farah move from classifying a window to forecasting future values, while keeping baselines and units in view.",
+      "intendedEmotion": "Inviting anticipation and shared delight in a new capability.",
+      "observed": "Farah and Demir lean toward the same luminous trace, their faces clearly visible and quietly excited. A solid historical segment gives way to a dashed future segment beyond a divider; an amber event lies ahead. Their common gaze and forward posture create more shared agency than the standard pointing lecture. Secondary panels stay behind the central act of looking ahead.",
+      "strengths": [
+        "Past versus forecast is readable without tiny lettering.",
+        "The characters visibly discover something together.",
+        "Clear faces, warm expressions and the future-space composition give the scene adventure."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "The single thin future spike can imply more certainty than the learner has established.",
+          "evidence": "The lesson asks for baseline comparisons and careful units; the raster depicts one clean projected event.",
+          "fix": "If the panel is revised, add a restrained uncertainty region or comparison trace in native UI, without burying the narrative image."
+        },
+        {
+          "severity": "low",
+          "finding": "Tiny side-panel detail has little mobile value.",
+          "evidence": "Peripheral waveforms and interface marks collapse before the faces or main trace do.",
+          "fix": "Simplify peripheral panels during any future revision."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "none",
+      "artDirection": "Keep the composition and shared gaze. Use the real lesson visualization to supply numerical uncertainty and baseline detail rather than overloading the artwork.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Preserve the mutual lean and pleased concentration. This is the right kind of fun for prediction: the anticipation of seeing whether the world cooperates.",
+      "epilogueReuse": "Not reused as the epilogue: a distinct sequence-prediction-epilogue asset already exists and is narratively justified. Preserve that separation.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+          "line": 338,
+          "text": "At 2010, the main bridge display predicts the next episode in 47 minutes. By 2050, the whole crew is watching. Between episodes, the 73-second pulses fall below the noise floor, leaving a flat trace that will make the return easy to spot."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+          "line": 340,
+          "text": "Nazari turns off the room audio as the timer reaches 46:59. At 47:00 the trace is still flat, and Demir watches it hold through 47:01 and 47:02. At 47:03, the predicted spike appears."
+        }
+      ]
+    },
+    {
+      "id": "recurrent-networks/sequence-prediction-epilogue",
+      "asset": "apps/web/public/scenes/deep-orbit/recurrent-networks/sequence-prediction-epilogue.webp",
+      "lessonFile": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+      "section": "Consequence / Epilogue",
+      "storyBeat": "The whole crew watches the forecast return three seconds late, and Mirza first calls the possible source \"theirs.\"",
+      "intendedEmotion": "Collective held breath, relief, wonder and a newly personal mystery.",
+      "observed": "All four canonical faces are present around the bridge table. Mirza speaks at the left, Farah holds a tablet, Nazari carries a multitool, and Demir rests his chin at the right. Behind them, a ghosted prediction and a slightly displaced real spike plausibly show the late arrival. The dominant social action, however, is discussion with Mirza rather than everyone watching the display in silence.",
+      "strengths": [
+        "Correct full crew with visible, distinct faces and ages.",
+        "The predicted/actual offset is a useful story-specific detail.",
+        "A dedicated epilogue correctly protects the payoff from the briefing."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "Blocking misses the scene's essential shared watch.",
+          "evidence": "Most attention is around the table or toward Mirza; the text has everyone watching the trace, Nazari cutting room audio and a three-second wait.",
+          "fix": "Recompose around a common screen gaze. Put Nazari's hand on the audio control, Demir leaning forward, Farah's stylus paused, and Mirza quietly reading the late arrival."
+        },
+        {
+          "severity": "low",
+          "finding": "The carried multitool is an unmotivated focal prop here.",
+          "evidence": "It helps identify Nazari but competes with the audio-control action actually specified.",
+          "fix": "Leave it clipped to her belt and use her hand for the written action."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "replace",
+      "priority": "P2",
+      "artDirection": "Keep the dedicated ending and faces, but stage the exact 47:03 moment. Use a restrained reaction ensemble, not a formal debrief.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "The delight is shared suspense releasing into astonishment. Demir can almost grin while Farah checks the discrepancy; Mirza's calm keeps the mystery credible.",
+      "epilogueReuse": "Dedicated epilogue, not a fallback. Replacement should keep the scene after the exercise and retain the slight prediction/arrival discrepancy.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+          "line": 340,
+          "text": "Nazari turns off the room audio as the timer reaches 46:59. At 47:00 the trace is still flat, and Demir watches it hold through 47:01 and 47:02. At 47:03, the predicted spike appears."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+          "line": 340,
+          "text": "Nazari turns off the room audio as the timer reaches 46:59. At 47:00 the trace is still flat, and Demir watches it hold through 47:01 and 47:02. At 47:03, the predicted spike appears."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/recurrent-networks/05-sequence-prediction.mdx",
+          "line": 346,
+          "text": "It is the first time anyone on the bridge has said \"theirs.\""
+        }
+      ]
+    },
+    {
+      "id": "anomaly-detection/normal-vs-anomalous",
+      "asset": "apps/web/public/scenes/deep-orbit/anomaly-detection/normal-vs-anomalous.webp",
+      "lessonFile": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+      "section": "Briefing",
+      "storyBeat": "The third alert of the shift brings Nazari's frustration to the bridge; Farah needs a defensible baseline, then the learner must decide how to treat unresolved sample 7741.",
+      "intendedEmotion": "Dry workplace humor, honest uncertainty and responsibility for a data decision.",
+      "observed": "Nazari leans over the holographic table with an open hand; Farah sits with her stylus; Mirza watches from the raised bridge area with a patient expression. A prominent flagged trace and dimmer alternatives give the false-alert discussion an object. The readable faces and Mirza's restrained reaction create a more lived-in social scene than a row of people facing diagrams.",
+      "strengths": [
+        "Good distribution of active irritation, analysis and patient command.",
+        "The layered bridge depth supports hierarchy without hiding faces.",
+        "A small amount of interpersonal comedy fits the third-alert premise."
+      ],
+      "issues": [
+        {
+          "severity": "low",
+          "finding": "A large waveform excursion can overemphasize amplitude as the meaning of anomaly.",
+          "evidence": "The visible spike is much simpler than the module's eventual unusual combination of ordinary individual features.",
+          "fix": "Keep it tied to this initial amplitude-baseline discussion and do not reuse it as proof of the later frequency anomaly."
+        },
+        {
+          "severity": "medium",
+          "finding": "The ending shifts to Demir's unresolved training-data decision, but he is absent.",
+          "evidence": "The consequence keeps the original capture and awaits a documented choice about 7741. The image still shows the earlier crew alert debate.",
+          "fix": "Use a branch-neutral decision-card overlay or alternate screen state; do not depict one user choice as already made."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "keep",
+      "priority": "P3",
+      "artDirection": "Retain the bridge conversation and lightly amused Mirza. Keep the ending visually neutral about whether 7741 is included or excluded.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Let Nazari look tired of interruptions rather than personally hostile. Mirza's patient, nearly amused response makes the crew enjoyable without trivializing the analysis.",
+      "epilogueReuse": "Mixed reuse: the discussion context remains relevant, but the actual ending belongs to Demir and a paused data filter. A neutral capture-review panel is more useful than another whole-crew painting.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+          "line": 231,
+          "text": "The filter takes four seconds to turn eleven days of readings into a training set. Then it stops at one reading and waits for someone to decide."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/01-normal-vs-anomalous.mdx",
+          "line": 237,
+          "text": "He saves the baseline report with the training settings. The original capture stays unchanged, so the next crew can check the reading and see why he kept or removed it."
+        }
+      ]
+    },
+    {
+      "id": "anomaly-detection/autoencoders",
+      "asset": "apps/web/public/scenes/deep-orbit/anomaly-detection/autoencoders.webp",
+      "lessonFile": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+      "section": "Briefing",
+      "storyBeat": "Farah proposes learning normal combinations through reconstruction; the first run later demonstrates how contaminated training data can teach the unwanted signal too.",
+      "intendedEmotion": "Curious experimentation, then humble revision rather than a miracle detector.",
+      "observed": "Farah stands alone beside a large symmetric hourglass-like network, smiling with tablet and stylus. Several slabs narrow to two connected central circles and expand again; waveforms flank the diagram. Her lens, tied hair and adult features are recognizable, and the solo scientist is welcome cast variation. The visual is inviting but does not distinguish the mission model from the smaller exercise.",
+      "strengths": [
+        "Warm, confident solo Farah portrait.",
+        "Compression and reconstruction are immediately readable.",
+        "Clean foreground hierarchy is easier to scan than multi-person console scenes."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The bottleneck does not match the mission architecture.",
+          "evidence": "The briefing's code specifies 11 to 32 to 16 to 4 and back. The artwork emphasizes two central circles, while the exercise separately uses eight input features.",
+          "fix": "Show one four-unit latent layer and eleven feature bundles, or explicitly label a smaller explanatory excerpt in native text. Avoid serial-looking two-cell ambiguity."
+        },
+        {
+          "severity": "medium",
+          "finding": "Waveform reconstruction obscures the actual eleven-feature input.",
+          "evidence": "The surrounding sine-like traces suggest raw time samples, but this mission autoencoder reconstructs a feature vector.",
+          "fix": "Use paired compact feature bars as the principal input/output representation."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep Farah's warmth and the narrowing visual, but make the diagram correspond to the specific feature model. Exact topology should be code-rendered.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Farah can demonstrate the narrow bottleneck with her hands or stylus as a little practical puzzle. Keep her interested rather than presenting reconstruction as a solved triumph.",
+      "epilogueReuse": "Poor reuse for the failed contaminated run: the smiling proposal does not show the miss, row review or 0115 restart. Prefer a branch-neutral before/after training-set display state, because the written consequence varies with the learner's earlier choice.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+          "line": 97,
+          "text": "// Encoder stages: 11 -> 32 -> 16 -> 4. Decoder stages: 4 -> 16 -> 32 -> 11."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+          "line": 151,
+          "text": "Before the crew's next archive fit, check the screening and training workflow on a small synthetic archive. It uses eight features per reading. The mission model uses eleven. Remove flagged rows, then train on the remaining rows."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+          "line": 200,
+          "text": "Nazari logs ninety minutes of training and 412 contaminated rows out of 28,800. She orders a review of the training rows containing that frequency band. Excluding those rows changes what the model learns as normal. It does not prove what caused the pattern."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/02-autoencoders.mdx",
+          "line": 202,
+          "text": "The second run starts at 0115."
+        }
+      ]
+    },
+    {
+      "id": "anomaly-detection/reconstruction-error",
+      "asset": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error.webp",
+      "lessonFile": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "section": "Briefing",
+      "storyBeat": "Demir likes the git-diff analogy; Farah insists on measuring what failed to reconstruct before deciding what the alert means.",
+      "intendedEmotion": "Friendly intellectual friction and the pleasure of narrowing a question.",
+      "observed": "Demir opens a palm animatedly toward Farah, who holds her stylus near her face with a concentrated, doubtful expression. The main board pairs a smooth upper sinusoid with a jagged lower trace; an adjacent bar chart singles out one large contribution. The exchange is lively and character-specific, with clear faces. The screen is less faithful: it looks like raw-wave reconstruction and has already announced a dramatic mismatch.",
+      "strengths": [
+        "Strong expressive difference between excited Demir and cautious Farah.",
+        "Readable interpersonal wit without slapstick.",
+        "The scene has an actual disagreement to resolve."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The technical object is wrong or at least unmarked.",
+          "evidence": "The mission compares eleven input features with eleven reconstructed features, while the main visual uses continuous waveforms. A conceptual waveform excerpt is not identified.",
+          "fix": "Replace the main pair with matched eleven-feature vectors, retaining a small raw capture only as context."
+        },
+        {
+          "severity": "medium",
+          "finding": "The briefing visually supplies the result before Farah's requested measurement.",
+          "evidence": "The large mismatch and dominant error bar look conclusive, while the opening emphasizes that they do not yet know which feature failed.",
+          "fix": "Show the comparison awaiting calculation, then reveal the dominant feature only in the dedicated epilogue."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Preserve this unusually good character acting. Correct the screen representation and respect the before-measurement timing.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Keep Demir's enthusiastic analogy and Farah's amused precision. Her expression can say \"which feature?\" without reading as displeasure with him.",
+      "epilogueReuse": "Not reused: this lesson already has a distinct epilogue for the feature result and ARIA's request. Preserve that earned reveal and avoid pre-revealing it in the briefing.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 77,
+          "text": "// It combines all eleven features into one number."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 123,
+          "text": "// This map is Farah's actual answer, and she wants it computed"
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 266,
+          "text": "Demir puts the error for each feature on the shared display. Almost all of it comes from fft_5, the frequency bin centered at 72 Hz, nearest to the 73.4 Hz component. The errors for fft_6 and amplitude are much smaller. The other eight are below 0.1. He is still labeling the axes when ARIA speaks up."
+        }
+      ]
+    },
+    {
+      "id": "anomaly-detection/reconstruction-error-epilogue",
+      "asset": "apps/web/public/scenes/deep-orbit/anomaly-detection/reconstruction-error-epilogue.webp",
+      "lessonFile": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+      "section": "Consequence / Epilogue",
+      "storyBeat": "Demir displays the per-feature error and ARIA asks to replay the sensor windows from her last 400 decisions.",
+      "intendedEmotion": "Quiet surprise at an increasingly self-directed collaborator.",
+      "observed": "Demir faces a large shared display with an open, slightly surprised gesture. An abstract green-and-brass ARIA ring occupies the right side, with no human face. The chart has roughly eight bars, one much taller than the others. This makes the human-machine exchange clear and intimate, and the strong simple silhouette of the ring reads well at small size.",
+      "strengths": [
+        "ARIA remains abstract and canonical instead of becoming a human avatar.",
+        "A distinct ending gives the request emotional room.",
+        "Demir's attentive reaction adds warmth and curiosity."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The feature chart is ambiguous about what it includes and how it is ordered.",
+          "evidence": "The source lists eleven features, with fft_5 dominant, fft_6 smaller, amplitude smaller again and eight below 0.1. The image looks like an eight-bin subset with near-equal short bars. That could be an FFT excerpt, but no excerpt is identified.",
+          "fix": "Render all eleven labeled bars, or explicitly mark an eight-FFT-feature subset and provide amplitude separately. Preserve the 64.12, 2.89 and 0.71 hierarchy; choose original order or sorted order consistently."
+        },
+        {
+          "severity": "low",
+          "finding": "The queued replay is not visible.",
+          "evidence": "The ring could simply be speaking about the existing chart.",
+          "fix": "A small newly queued job card in native UI can make ARIA's initiative concrete."
+        }
+      ],
+      "soulFit": "strong",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep the intimate composition, abstract ARIA and surprised Demir. Rebuild the diagnostic plot from source values rather than asking a raster model to count bars.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "strong",
+      "delightDirection": "Use the small delight of ARIA asking an unexpected, useful question and Demir immediately making room for it. No exaggerated face or robot mannerism is needed.",
+      "epilogueReuse": "Dedicated epilogue. It should stay separate from the measurement-before-judgment briefing; update the plot without erasing this valuable character moment.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 143,
+          "text": "'amplitude', 'frequency', 'phase',"
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 149,
+          "text": "// fft_5: 64.12: the 72 Hz-centered bin nearest the 73.4 Hz component, 90x the amplitude row"
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 269,
+          "text": "Request. When the pipeline is idle, replay the sensor windows attached to my last 400 decisions through the autoencoder. My rules and the new detector disagree more often. I would like the error scores beside those decisions."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/03-reconstruction-error.mdx",
+          "line": 272,
+          "text": "Demir queues the job before he can think of a reason not to. It sits there at priority three, waiting."
+        }
+      ]
+    },
+    {
+      "id": "anomaly-detection/threshold-tuning",
+      "asset": "apps/web/public/scenes/deep-orbit/anomaly-detection/threshold-tuning.webp",
+      "lessonFile": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+      "section": "Briefing",
+      "storyBeat": "Twelve false alarms out of fourteen make pager workload tangible; the crew compares cutoff choices and preserves different policies for capture and waking people.",
+      "intendedEmotion": "Practical, mildly exasperated collaboration with a satisfying reduction in needless interruptions.",
+      "observed": "Farah and Nazari lean toward a central curve and a visibly shifted vertical cutoff. A strip of fourteen small markers contains two bright ones and twelve subdued ones. Nazari's multitool rests at the edge rather than being waved. The two-person composition is strong, but the single distribution and bright-marker row do not clearly show what is lost when the threshold rises.",
+      "strengths": [
+        "The fourteen-marker motif is unusually specific to the scene.",
+        "Both women are engaged with the same object rather than posing.",
+        "The cutoff is large enough to remain visible when scaled down."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The display can make the higher cutoff look like a cost-free cleanup.",
+          "evidence": "Only one distribution is visible, with no clear anomalous readings on the wrong side of the boundary. The lesson compares false alarms and missed events, rather than optimizing silence alone.",
+          "fix": "Use a small labeled reviewed set or overlapping distributions showing both kinds of error, with the fourteen historical alerts visibly separate from the score axis."
+        },
+        {
+          "severity": "low",
+          "finding": "The serious faces suppress some of the scene's dry workplace humor.",
+          "evidence": "Nazari appears intensely confrontational despite a task that can be two colleagues reducing annoying pages.",
+          "fix": "Keep her tired skepticism but let Farah invite her to try the cutoff, with a small look of recognition when the replay improves."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "refine",
+      "priority": "P2",
+      "artDirection": "Keep the duet and fourteen-alert visual. Clarify tradeoffs, distinguish the retrospective replay from a future guarantee, and reduce spare decorative gauges.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "No additional standalone scene is needed for this lesson.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Make this feel like fixing the alarm that keeps interrupting real work. Nazari's relief at returning to coolant inspection can provide warmth without minimizing missed-event risk.",
+      "epilogueReuse": "Good partial reuse: the fourteen-marker replay corresponds to the ending. A subtle handoff of the log to Demir would be more specific but is not worth another full scene. The following major alert should remain in the next lesson.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+          "line": 339,
+          "text": "Demir sets the cutoff to 1.0 before the next crew takes over. It is above every error in the normal validation readings. Nazari checks it herself by replaying last week's fourteen alerts. The twelve cosmic-background readings no longer trigger an alert. The other two still do. Both contain the signal."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+          "line": 339,
+          "text": "Demir sets the cutoff to 1.0 before the next crew takes over. It is above every error in the normal validation readings. Nazari checks it herself by replaying last week's fourteen alerts. The twelve cosmic-background readings no longer trigger an alert. The other two still do. Both contain the signal."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/04-threshold-tuning.mdx",
+          "line": 342,
+          "text": "Two alerts worth reviewing in this replay. Take the next watch's threshold log, Ensign. I have a coolant inspection to finish. Page me if the workload changes."
+        }
+      ]
+    },
+    {
+      "id": "anomaly-detection/the-anomaly",
+      "asset": "apps/web/public/scenes/deep-orbit/anomaly-detection/the-anomaly.webp",
+      "lessonFile": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+      "section": "Briefing",
+      "storyBeat": "The archive clue and a new capture both trigger two detectors while amplitude stays ordinary; the crew investigates before a later calibration-pattern match deepens the mystery.",
+      "intendedEmotion": "Earned collective discovery and adventurous uncertainty, with scientific caution intact.",
+      "observed": "All four crew faces are present on the bridge. A very thick, jagged central waveform dominates the back wall over smaller repeating traces. Mirza looks upward, Demir turns partly outward, Farah looks toward Mirza and Nazari studies a handheld device. The cast is recognizable, but their divided attention and generic giant zigzag make the image closer to another bridge meeting than the culmination of many earlier clues.",
+      "strengths": [
+        "The full crew is correctly assembled, with visible faces.",
+        "Nazari's handheld check is compatible with her independent calibration work.",
+        "A clear large event communicates urgency."
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "finding": "The main signal graphic is ambiguous in a way that obscures the decisive ordinary-amplitude detail.",
+          "evidence": "The dominant unlabeled shape resembles an enormous raw-amplitude spike, while the source says each individual reading stays in range and the amplitude gate is quiet. It could instead be an error plot, so the image alone does not establish a false numerical result. The three glowing table circles are also unlabeled and cannot establish which checks fired.",
+          "fix": "Make the raw amplitude visibly ordinary and place the large excursion on a clearly labeled error plot. Show two active detector indicators and one quiet amplitude check."
+        },
+        {
+          "severity": "medium",
+          "finding": "Blocking and generic waveform miss both the ensemble disagreement and shared discovery.",
+          "evidence": "The crew look in several directions; the specific two-of-three disagreement and 7741/live comparison are not legible.",
+          "fix": "Stage distinct roles around one investigation: Farah compares captures, Nazari checks calibration, Demir tracks the votes, and Mirza asks what the evidence permits."
+        }
+      ],
+      "soulFit": "mixed",
+      "decision": "replace",
+      "priority": "P2",
+      "artDirection": "Rebuild this important briefing around ordinary-looking input producing two specific failed checks. Keep expressive three-quarter faces and adventurous interest, not a wall of alarm-red spectacle.",
+      "deletionRationale": "Keep the story slot. This is a used scene with a distinct narrative purpose; replacement should supersede its current file, not erase the illustrated beat.",
+      "newArtOpportunity": "Add a dedicated final epilogue showing the two matching ratio patterns, with Farah and Nazari independently aligning results and the others quietly realizing the implication. Render the trace alignment accurately and retain both hypotheses; do not depict an alien or confirm intent.",
+      "inspected": true,
+      "delight": "mixed",
+      "delightDirection": "Use shared wonder and lively investigation as the fun. Let Demir visibly connect the old clue to the live capture; keep Mirza composed and Farah curious. Do not turn the unresolved origin into a joke.",
+      "epilogueReuse": "Poor reuse: the ending's defining picture is two traces sitting on top of each other, ratio for ratio, after independent-machine confirmation. A single giant zigzag cannot carry the calibration-leak versus external-pattern dilemma.",
+      "sourceEvidence": [
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+          "line": 104,
+          "text": "Now the crew has two captures to compare: sample 7741 from the archive and the new live capture. Both contain the same pattern, even though each individual sensor reading stays within its usual range."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+          "line": 119,
+          "text": "The reconstruction error is twelve times our highest normal error. There is a 73.4 Hz component that matches no known stellar phenomenon. The LSTM's forecast error is 0.041, four times its cutoff. Two detectors flagged it. The amplitude-only check stayed quiet because the amplitude is ordinary. The other individual sensor readings are within their usual ranges too, just like 7741. We need to explain why the other checks disagree."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+          "line": 358,
+          "text": "Across the bridge, Nazari compares it with the frequency patterns used to calibrate the ship's sensors. The correlation is 0.9987. The signal from Sector 7-G follows the same ratios as the Archimedes' sensor calibration."
+        },
+        {
+          "file": "packages/content/content/deep-orbit/anomaly-detection/05-the-anomaly.mdx",
+          "line": 364,
+          "text": "Nobody answers her. On the main display the two traces sit one on top of the other, ratio for ratio. The question hanging over the bridge is one no model can score. Not \"what is it\" anymore: is it answering us?"
+        }
+      ]
+    }
+  ],
+  "newArtRecommendations": [
+    {
+      "lesson": "signal-processing/fourier-transform",
+      "priority": "P2",
+      "timing": "Epilogue only, after transform work",
+      "scene": "Farah catches Demir's wrist before he logs the fifth peak; both pivot from familiar components to an unexplained clue.",
+      "why": "Distinct physical action, emotional turn and exact discovery. The present decomposition image cannot do this job.",
+      "delight": "The small interrupted gesture supplies warmth before the serious catalog check."
+    },
+    {
+      "lesson": "signal-processing/windowing-and-overlap",
+      "priority": "P2",
+      "timing": "Epilogue after the corrected Hann spectrum",
+      "scene": "Farah pins her first physical print beside sample 7741; Demir notices the unusual paper with a small smile.",
+      "why": "The story makes this material choice exceptional. It connects two evidence artifacts and rewards the analysis.",
+      "delight": "Character-specific surprise at a digital-first scientist choosing actual paper."
+    },
+    {
+      "lesson": "browser-runtimes/onnx-runtime-web",
+      "priority": "P2",
+      "timing": "After the 03:17 third log entry and ARIA dialogue",
+      "scene": "Demir reads ARIA's new third comparison entry, then looks toward her abstract ring.",
+      "why": "ARIA's unprompted agency and successor phrase are the real ending, unrelated to the preceding two-person benchmark.",
+      "delight": "Quiet curiosity at an unexpected colleague, not a cute robot face."
+    },
+    {
+      "lesson": "anomaly-detection/the-anomaly",
+      "priority": "P2",
+      "timing": "Final epilogue only, after independent-machine recheck",
+      "scene": "Calibrating and received ratio patterns overlap exactly while the crew hold both origin hypotheses open.",
+      "why": "This is the module's defining unanswered question, and the currently repeated alert image omits its evidence.",
+      "delight": "Discovery and anticipation, with warmth in shared investigation; no premature alien reveal."
+    }
+  ],
+  "sourceDrift": [
+    {
+      "lesson": "browser-runtimes/inference-pipeline",
+      "finding": "The scene-bible going-live premise is behind the current cancellation/readback cleanup opening. Treat the MDX as current source when revising art."
+    },
+    {
+      "lesson": "browser-runtimes/tensorflow-js-setup",
+      "finding": "Old art-direction timing ratios should not override current backend/device values. The epilogue specifically uses a six-times WASM/WebGL comparison."
+    },
+    {
+      "lesson": "recurrent-networks/sliding-windows",
+      "finding": "The current opening is train/evaluation overlap leakage, while the illustration still reads as generic window construction."
+    },
+    {
+      "lesson": "anomaly-detection/reconstruction-error-epilogue",
+      "finding": "The current request is to replay sensor windows attached to ARIA's last 400 decisions, not to autoencode ARIA herself. Keep future visuals literal about that distinction."
+    }
+  ]
+}
