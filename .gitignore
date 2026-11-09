@@ -7,6 +7,9 @@ dist/
 .turbo/
 *.tsbuildinfo
 
+# Local generated media, previews, and review artifacts
+/output/
+
 # Environment
 .env
 .env.local
